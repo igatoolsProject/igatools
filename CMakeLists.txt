@@ -158,13 +158,8 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 #
 
 # Choose the precision for the real values
-option(REAL_IS_LONG_DOUBLE "Quadruple precision" OFF)
-
-# Compile with the addons
-option(has_addons "Build Addons" OFF)
-option(add_contrib "Build contrib sources" ON)
-
-option(mt_support "Add support for multithreading" OFF)
+option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
+option(mt_support "Enable support for Multi-threading" OFF)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Use multithreading
