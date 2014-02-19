@@ -4,17 +4,7 @@
 // under the LGPL (see http://www.dealii.org/).
 // I has been modified by the igatools authors to fit the igatools framework.
 //-+--------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//    $Id: logstream.h 27640 2012-11-20 23:28:15Z heister $
-//
-//    Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2008, 2009, 2011, 2012 by the deal.II authors
-//
-//    This file is subject to QPL and may not be  distributed
-//    without copyright and license information. Please refer
-//    to the file deal.II/doc/license.html for the  text  and
-//    further information on this license.
-//
-//---------------------------------------------------------------------------
+
 #ifndef _logstream_h
 #define _logstream_h
 
@@ -79,10 +69,9 @@ IGA_NAMESPACE_OPEN
  * output and make it less accurate. Therefore, they are only
  * recommended if the output needs to be reproducible.
  *
- * @ingroup textoutput
  * @author Guido Kanschat, Wolfgang Bangerth, 1999, 2003, 2011
  */
-class LogStream //: public Subscriptor
+class LogStream 
 {
 public:
     /**
@@ -206,23 +195,7 @@ public:
      */
     const std::string &get_prefix() const;
 
-    /**
-     * @deprecated Use Prefix instead
-     *
-     * Push another prefix on the
-     * stack. Prefixes are
-     * automatically separated by a
-     * colon and there is a double
-     * colon after the last prefix.
-     */
-    void push(const std::string &text);
-
-    /**
-     * @deprecated Use Prefix instead
-     *
-     * Remove the last prefix.
-     */
-    void pop();
+   
 
     /**
      * Maximum number of levels to be

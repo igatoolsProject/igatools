@@ -4,26 +4,10 @@
 // under the LGPL (see http://www.dealii.org/).
 // I has been modified by the igatools authors to fit the igatools framework.
 //-+--------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//    $Id: logstream.cc 27640 2012-11-20 23:28:15Z heister $
-//    Version: $Name$
-//
-//    Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2008, 2009, 2010, 2011, 2012 by the deal.II authors
-//
-//    This file is subject to QPL and may not be  distributed
-//    without copyright and license information. Please refer
-//    to the file deal.II/doc/license.html for the  text  and
-//    further information on this license.
-//
-//---------------------------------------------------------------------------
-
 
 #include <igatools/base/logstream.h>
-//#include <igatools/base/job_identifier.h>
-//#include <igatools/base/memory_consumption.h>
-//#include <igatools/base/thread_management.h>
-#  include <sys/resource.h>
-#  include <unistd.h>
+#include <sys/resource.h>
+#include <unistd.h>
 
 #include <iostream>
 #include <iomanip>
@@ -32,16 +16,6 @@
 
 
 IGA_NAMESPACE_OPEN
-
-//namespace
-//{
-//  Threads::ThreadMutex log_lock;
-//  Threads::ThreadMutex write_lock;
-//}
-//
-//
-//LogStream deallog;
-
 
 LogStream::LogStream(const std::string head)
     :
@@ -129,33 +103,14 @@ LogStream::~LogStream()
     if (old_cerr)
         std::cerr.rdbuf(old_cerr);
 
-    // on some systems, destroying the
-    // outstreams objects of deallog
-    // triggers some sort of memory
-    // corruption, in particular when
-    // we also link with Trilinos;
-    // since this happens at the very
-    // end of the program, we take the
-    // liberty to simply not do it by
-    // putting that object into a
-    // deliberate memory leak and
-    // instead destroying an empty
-    // object
-#ifdef DEAL_II_USE_TRILINOS
-    if (this == &deallog)
-    {
-        stream_map_type *dummy = new stream_map_type();
-        dummy->swap(outstreams);
-        delete dummy;
-    }
-#endif
+   
 }
 
 
 void
 LogStream::test_mode(bool on)
 {
-// Threads::ThreadMutex::ScopedLock lock(log_lock);
+
     if (on)
     {
         long_double_threshold = 1.e-10;
@@ -279,24 +234,6 @@ const std::string &
 LogStream::get_prefix() const
 {
     return prefixes.top();
-}
-
-
-void
-LogStream::push(const std::string &text)
-{
-// Threads::ThreadMutex::ScopedLock lock(log_lock);
-    std::string pre=prefixes.top();
-    pre += text;
-    prefixes.push(pre);
-}
-
-
-void LogStream::pop()
-{
-// Threads::ThreadMutex::ScopedLock lock(log_lock);
-    if (prefixes.size() > 1)
-        prefixes.pop();
 }
 
 
