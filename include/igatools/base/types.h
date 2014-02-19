@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef __IGA_TYPES_H_
 #define __IGA_TYPES_H_
 
@@ -33,10 +32,9 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @file Declaration of types use in the library and some utilities associated
- * with this types.
+ * This file contains the declaration of types used in the library
+ * as well as some utility functions associated with these types.
  */
-
 
 /**
  * Real type.
@@ -104,13 +102,13 @@ using boundary_id = int;
  * Id use to identify patches, could be interpret as
  * a material id.
  */
-typedef int patch_id;
+using patch_id = int;
 
 
 /**
  * Id to assign to elements inside a patch.
  */
-typedef int element_id;
+using element_id = int;
 
 
 /**
@@ -265,7 +263,7 @@ enum class ValueFlags : std::int64_t
     /** compute the second derivatives of basis functions */
     face_divergence    =    1L << 32
 
-                            ///@}
+    ///@}
 };
 
 
@@ -390,26 +388,24 @@ inline bool contains(const Flag &a, const Flag b)
     return ((a & b) ==  b);
 }
 
+//TODO(pauletti, Feb 19, 2014): the item below should be documented
 template<class Flag>
 int bitcount(Flag a)
 {
-    int count = 0;
-
-    //Loop the value while there are still bits
+	//Loop the value while there are still bits
+	//Remove the end bit
+	int count = 0;
     while (a != 0)
     {
-        //Remove the end bit
-        a = a & static_cast< Flag >((static_cast< int >(a) - 1));
-
-        //Increment the count
-        count++;
+    	a = a & static_cast< Flag >((static_cast< int >(a) - 1));
+    	count++;
     }
 
     return count;
 }
 
 
-
+//TODO(pauletti, Feb 19, 2014): the item below should be documented
 inline
 std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
 {
