@@ -730,14 +730,14 @@ LogStream::Prefix::Prefix(const std::string &text, LogStream &s)
     :
     stream(&s)
 {
-    stream->push(text);
+ //   stream->push(text);
 }
 
 
 inline
 LogStream::Prefix::~Prefix()
 {
-    stream->pop();
+  //  stream->pop();
 }
 
 
