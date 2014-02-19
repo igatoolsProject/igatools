@@ -159,17 +159,6 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 
 # Choose the precision for the real values
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
-option(mt_support "Enable support for Multi-threading" OFF)
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Use multithreading
-#
-if(mt_support)
-# Find TBB
-find_package(TBB 4.1 REQUIRED)
-include_directories( ${TBB_INCLUDE_DIRS} )
-endif(mt_support)
-#-------------------------------------------------------------------------------
 
 set(lib_name igatools)
 
