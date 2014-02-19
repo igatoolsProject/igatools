@@ -28,8 +28,9 @@ message("Configuring unit tests")
 
 #--------------------------------------------------------------
 # Find the igatools library
-set( CMAKE_PREFIX_PATH ${igatools_BINARY_DIR} ${CMAKE_PREFIX_PATH} )
-find_package( igatools REQUIRED)
+set(CMAKE_PREFIX_PATH ${iga_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+
+find_package(igatools REQUIRED)
 
 include_directories(${IGA_INCLUDE_DIRS})
 link_directories(${IGA_LIBRARY_DIR})

@@ -183,27 +183,13 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h")
 
 # Collect all igatools source files, contained in the directory list below
-set (source_dirs base utils geometry basis_functions linear_algebra io)
-if(add_contrib)
-    set(source_dirs ${source_dirs} contrib)
-endif()
 
-if(has_addons)
- set (addons_source_dirs equations)
- set(addons_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/igatools_addons/include)
-endif()
-
+set (source_dirs base)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})
 endforeach()
 
-if(has_addons)
-foreach(dir ${addons_source_dirs})
-  file(GLOB source ${PROJECT_SOURCE_DIR}/igatools_addons/source/${dir}/*.cpp)
-  list(APPEND source_files ${source})
-endforeach()
-endif()
 
 # Pass the igatools include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
@@ -299,12 +285,6 @@ install(DIRECTORY   ${PROJECT_SOURCE_DIR}/include/
   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
   PATTERN ".*" EXCLUDE
   PATTERN "*.in" EXCLUDE)
-if(has_addons)
-  install(DIRECTORY   ${PROJECT_SOURCE_DIR}/igatools_addons/include/
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
-    PATTERN ".*" EXCLUDE
-    PATTERN "*.in" EXCLUDE)
-endif()
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake 
@@ -326,9 +306,6 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/tutorial)
 option(build_test "Build test" ON)
 option(submit_test "Allow test submition" OFF)
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
-if(has_addons)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/igatools_addons/tests)
-endif()
 #
 #-------------------------------------------------------------------------------
 
