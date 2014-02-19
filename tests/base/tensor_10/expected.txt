@@ -1,0 +1,73 @@
+Test for standard Constructor
+Tensor of rank: 1 and dim: 1
+A =
+[ 0 ] 
+B =
+[ 0 ] 
+C =
+[ [ 0 ]  ] 
+D =
+[ [ 0 ]  ] 
+
+A+A=
+[ 0 ] 
+Test for standard Constructor
+Tensor of rank: 1 and dim: 3
+A =
+[ 0 0 0 ] 
+B =
+[ 0 0 0 ] 
+C =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+D =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+
+A+A=
+[ 0 0 0 ] 
+Test for standard Constructor
+Tensor of rank: 2 and dim: 1
+A =
+[ [ 0 ]  ] 
+B =
+[ [ 0 ]  ] 
+C =
+[ [ [ [ 0 ]  ]  ]  ] 
+D =
+[ [ [ [ 0 ]  ]  ]  ] 
+
+A+A=
+[ [ 0 ]  ] 
+Test for filling a tensor
+Tensor of rank: 2 1
+[ [ 0 ]  ] 
+
+Test accesing unsing tensor indices
+Tensor of rank: 2 and dim: 1
+[ [ 0 ]  ] 
+0  0
+
+Test for standard Constructor
+Tensor of rank: 2 and dim: 2
+A =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+B =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+C =
+[ [ [ [ 0 0 ]  [ 0 0 ]  ]  [ [ 0 0 ]  [ 0 0 ]  ]  ]  [ [ [ 0 0 ]  [ 0 0 ]  ]  [ [ 0 0 ]  [ 0 0 ]  ]  ]  ] 
+D =
+[ [ [ [ 0 0 ]  [ 0 0 ]  ]  [ [ 0 0 ]  [ 0 0 ]  ]  ]  [ [ [ 0 0 ]  [ 0 0 ]  ]  [ [ 0 0 ]  [ 0 0 ]  ]  ]  ] 
+
+A+A=
+[ [ 0 0 ]  [ 0 0 ]  ] 
+Test for filling a tensor
+Tensor of rank: 2 2
+[ [ 0 1.00000 ]  [ 2.00000 3.00000 ]  ] 
+
+Test accesing unsing tensor indices
+Tensor of rank: 2 and dim: 2
+[ [ 0 1.00000 ]  [ 2.00000 3.00000 ]  ] 
+0  0
+1.00000  1.00000
+2.00000  2.00000
+3.00000  3.00000
+
