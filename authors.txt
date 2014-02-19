@@ -1,0 +1,21 @@
+igatools authors
+
+igatools is administered by a group of developers. 
+The leading developers are in charge of being the guardian
+of the overall design principles decided for the project in 
+the developers strategic meetings. All developers have 
+provided substantial and continuous contribution to the library and 
+hold a global overview of the library. Contributors have provided 
+important patches over the years.
+
+Leading developers
+
+    Massimiliano Martinelli
+    Sebastian Pauletti 
+
+Developers
+
+    Pablo Antolin
+    Nicola Cavallini 
+
+Contributors
