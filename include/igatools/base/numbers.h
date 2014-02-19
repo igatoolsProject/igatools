@@ -17,12 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- * numbers.h
- *
- *  Created on: Sep 7, 2012
- *      Author: seba
- */
 
 #ifndef __IGA_NUMBERS_H_
 #define __IGA_NUMBERS_H_
@@ -46,9 +40,9 @@ IGA_NAMESPACE_OPEN
 namespace numbers
 {
 
-static const Real DegToRad = 0.0174532925199433;
-
-static const Real RadToDeg = 57.295779513082323;
+//TODO(pauletti, Feb 19, 2014): remove commented lines if not used
+//static const Real DegToRad = 0.0174532925199433;
+//static const Real RadToDeg = 57.295779513082323;
 /**
  * e
  */
@@ -78,11 +72,6 @@ static const Real  LN10    = 2.30258509299404568402;
  * pi
  */
 static const Real  PI      = 3.14159265358979323846;
-
-/**
- * Maximum int (use as an invalid number)
- */
-static const int invalid_int = static_cast < int >(-1);
 
 }
 
