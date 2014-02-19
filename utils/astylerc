@@ -1,0 +1,30 @@
+# todo: put copyright information
+# astyle indentation style for igatools
+#
+
+# general style
+--style=allman
+
+# no tabs, we use spaces
+--convert-tabs
+
+# how to handle the indentation
+--indent=spaces=4
+--indent-switches
+--indent-labels
+--indent-preprocessor
+--min-conditional-indent=0
+--max-instatement-indent=60
+
+--pad-header
+--unpad-paren
+--lineend=linux
+
+
+# write things as 'char *p'
+--align-pointer=name
+--align-reference=name
+
+
+--suffix=none
+--quiet

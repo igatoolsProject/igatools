@@ -217,13 +217,14 @@ target_link_libraries( ${lib_name}
   ${TBB_LIBRARIES})
 set_property( TARGET ${libname} PROPERTY VERSION ${IGA_VERSION} )
 
+# todo: put in a CMakelist.txt in the config directory
 # generate the cmake scripts for external applications to find igatools
 # install will put them in the install/lib directory
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/igatools/${lib_name}Config.cmake.in 
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}Config.cmake.in 
   ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake @ONLY)
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/igatools/${lib_name}ConfigVersion.cmake.in 
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}ConfigVersion.cmake.in 
   ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake @ONLY)
 #
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -246,20 +247,21 @@ set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
 message("Configuring instantiations")
 message(STATUS "Generating physical space table to create instantiations.")
 execute_process(COMMAND 
-      ${PYTHON_EXECUTABLE} 
-      -B ${PROJECT_SOURCE_DIR}/cmake/instantiations/generate_inst_table.py 
-        dim_ref=${dim_ref}
-        range_ref=${range_ref}
-        rank_ref=${rank_ref}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      RESULT_VARIABLE res) 
+  ${PYTHON_EXECUTABLE} 
+  -B ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_inst_table.py 
+  dim_ref=${dim_ref}
+  range_ref=${range_ref}
+  rank_ref=${rank_ref}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  RESULT_VARIABLE res) 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Generate instantiation files
 #
 # We look for all *.inst.py files in the source directories
 #
-set(inst_script ${PROJECT_SOURCE_DIR}/cmake/instantiations/${lib_name}_instantiation.py)
+set(inst_script 
+  ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/init_instantiation_data.py)
 
 foreach(dir ${source_dirs})
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir})
@@ -283,30 +285,6 @@ foreach(dir ${source_dirs})
      PROPERTY OBJECT_DEPENDS ${inst_file})
   endforeach() 
 endforeach()
-
-if(has_addons)
-foreach(dir ${addons_source_dirs})
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/igatools_addons/${dir})
-  file(GLOB files ${PROJECT_SOURCE_DIR}/igatools_addons/source/${dir}/*.inst.py)
-  foreach(py_file ${files})
-    get_filename_component(name ${py_file} NAME_WE)
-    set (inst_file ${CMAKE_CURRENT_BINARY_DIR}/include/igatools_addons/${dir}/${name}.inst)
-    set (target_name inst-${dir}-${name}) 
-    add_custom_command(OUTPUT ${inst_file}
-      COMMAND PYTHONPATH=${PROJECT_SOURCE_DIR}/cmake/instantiations
-        ${PYTHON_EXECUTABLE} -B ${py_file} out_file=${name}.inst 
-        config_file=${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
-        max_der_order=${max_der_order}
-      DEPENDS ${py_file}  
-              ${inst_script} 
-              ${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/igatools_addons/${dir}
-      COMMENT "Generating file ${dir}/${name}.inst")
-    set_property(SOURCE ${PROJECT_SOURCE_DIR}/igatools_addons/source/${dir}/${name}.cpp
-     PROPERTY OBJECT_DEPENDS ${inst_file})
-  endforeach() 
-endforeach()
-endif()
 #
 #-------------------------------------------------------------------------------
 

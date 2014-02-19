@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# This hook script runs the astyle program in order to apply the style defined by ../../utils/astylerc_ansi
+#
+#
+# the astyle configuratios for igatools can be also found in igatools/utils/astylerc_ansi
+#
+astyle --style=allman --convert-tabs --indent-preprocessor --indent=spaces=4 \
+       --indent-switches --min-conditional-indent=0 --pad-header \
+       --unpad-paren --lineend=linux --indent-labels --align-pointer=name \
+       --align-reference=name --max-instatement-indent=60 --suffix=none \
+       --quiet \
+       $(git status | awk -F : '(/modified:/ || /new file:/) && (/\.h\>/ || /\.cpp\>/) {print $2}')
+
