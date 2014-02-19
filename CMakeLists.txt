@@ -200,6 +200,8 @@ configure_file(
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Dealing with template instatiations
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Specifying the spaces for which we wish to compile the library
@@ -214,6 +216,7 @@ set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
 #TODO: these properties should be marked as advenced
 #set_property(CACHE dims1 PROPERTY ADVANCED)
 
+
 message("Configuring instantiations")
 message(STATUS "Generating physical space table to create instantiations.")
 execute_process(COMMAND 
@@ -225,38 +228,8 @@ execute_process(COMMAND
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   RESULT_VARIABLE res) 
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Generate instantiation files
-#
-# We look for all *.inst.py files in the source directories
-#
-set(inst_script 
-  ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/init_instantiation_data.py)
-
-foreach(dir ${source_dirs})
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir})
-  file(GLOB files ${PROJECT_SOURCE_DIR}/source/${dir}/*.inst.py)
-  foreach(py_file ${files})
-    get_filename_component(name ${py_file} NAME_WE)
-    set (inst_file ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}/${name}.inst)
-    set (target_name inst-${dir}-${name}) 
-    add_custom_command(OUTPUT ${inst_file}
-      COMMAND PYTHONPATH=${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts
-        ${PYTHON_EXECUTABLE} -B ${py_file} out_file=${name}.inst 
-        config_file=${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
-        max_der_order=${max_der_order}
-      DEPENDS ${py_file}  
-              ${inst_script} 
-              ${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
-              ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_inst_table.py
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}
-      COMMENT "Generating file ${dir}/${name}.inst")
-    set_property(SOURCE ${PROJECT_SOURCE_DIR}/source/${dir}/${name}.cpp
-     PROPERTY OBJECT_DEPENDS ${inst_file})
-  endforeach() 
-endforeach()
-#
-#-------------------------------------------------------------------------------
+include (${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_instantiations.cmake)
+generate_instantiations()
 
 
 
