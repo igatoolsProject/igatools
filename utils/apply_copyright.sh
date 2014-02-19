@@ -78,7 +78,7 @@ files="`find . -name "*.py"` CMakeLists.txt"
 files="$files `find ./utils -name "*.sh"`"
 copyright "#" "./utils/copyright_header.txt" "$files"
 
-files="`find ./utils/logo "*.tex"`
+files=`find ./utils/logo -name "*.tex"`
 copyright "%" "./utils/copyright_header.txt" "$files"
 
 # apply copyright to dealii copied files
