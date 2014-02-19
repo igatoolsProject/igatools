@@ -64,7 +64,7 @@ endif()
 # Set the igatools version 
 #
 set(IGA_MAJOR_VERSION 0)
-set(IGA_MINOR_VERSION 1)
+set(IGA_MINOR_VERSION 2)
 set(IGA_PATCH_VERSION 0)
 set(IGA_VERSION
   ${IGA_MAJOR_VERSION}.${IGA_MINOR_VERSION}.${IGA_PATCH_VERSION})
@@ -241,14 +241,14 @@ foreach(dir ${source_dirs})
     set (inst_file ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}/${name}.inst)
     set (target_name inst-${dir}-${name}) 
     add_custom_command(OUTPUT ${inst_file}
-      COMMAND PYTHONPATH=${PROJECT_SOURCE_DIR}/cmake/instantiations
+      COMMAND PYTHONPATH=${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts
         ${PYTHON_EXECUTABLE} -B ${py_file} out_file=${name}.inst 
         config_file=${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
         max_der_order=${max_der_order}
       DEPENDS ${py_file}  
               ${inst_script} 
               ${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
-              ${PROJECT_SOURCE_DIR}/cmake/instantiations/generate_inst_table.py
+              ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_inst_table.py
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}
       COMMENT "Generating file ${dir}/${name}.inst")
     set_property(SOURCE ${PROJECT_SOURCE_DIR}/source/${dir}/${name}.cpp
