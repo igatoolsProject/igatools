@@ -74,8 +74,10 @@ files="$files `find . -name "*.cpp"`"
 files="$files `find . -name "*.h.in"`"
 copyright "//" "./utils/copyright_header.txt" "$files"
 
-files="`find . -name "*.py"` CMakeLists.txt"
+files="`find . -name "*.py"`  ./tutorial/cmake_template.txt"
 files="$files `find ./utils -name "*.sh"`"
+files="$files `find . -name "*.cmake"`"
+files="$files `find . -name "CMakeLists.txt"`"
 copyright "#" "./utils/copyright_header.txt" "$files"
 
 files=`find ./utils/logo -name "*.tex"`
