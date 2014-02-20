@@ -103,7 +103,7 @@ LogStream::~LogStream()
     if (old_cerr)
         std::cerr.rdbuf(old_cerr);
 
-   
+
 }
 
 

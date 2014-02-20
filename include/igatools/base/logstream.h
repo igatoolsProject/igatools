@@ -71,7 +71,7 @@ IGA_NAMESPACE_OPEN
  *
  * @author Guido Kanschat, Wolfgang Bangerth, 1999, 2003, 2011
  */
-class LogStream 
+class LogStream
 {
 public:
     /**
@@ -195,7 +195,7 @@ public:
      */
     const std::string &get_prefix() const;
 
-   
+
 
     /**
      * Maximum number of levels to be
@@ -730,14 +730,14 @@ LogStream::Prefix::Prefix(const std::string &text, LogStream &s)
     :
     stream(&s)
 {
- //   stream->push(text);
+//   stream->push(text);
 }
 
 
 inline
 LogStream::Prefix::~Prefix()
 {
-  //  stream->pop();
+    //  stream->pop();
 }
 
 

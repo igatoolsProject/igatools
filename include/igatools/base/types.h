@@ -263,7 +263,7 @@ enum class ValueFlags : std::int64_t
     /** compute the second derivatives of basis functions */
     face_divergence    =    1L << 32
 
-    ///@}
+                            ///@}
 };
 
 
@@ -392,13 +392,13 @@ inline bool contains(const Flag &a, const Flag b)
 template<class Flag>
 int bitcount(Flag a)
 {
-	//Loop the value while there are still bits
-	//Remove the end bit
-	int count = 0;
+    //Loop the value while there are still bits
+    //Remove the end bit
+    int count = 0;
     while (a != 0)
     {
-    	a = a & static_cast< Flag >((static_cast< int >(a) - 1));
-    	count++;
+        a = a & static_cast< Flag >((static_cast< int >(a) - 1));
+        count++;
     }
 
     return count;
