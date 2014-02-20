@@ -24,24 +24,21 @@
 #include <igatools/base/config.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/base/logstream.h>
-#include <type_traits>
+
 #include <boost/concept_check.hpp>
 
-
+#include <type_traits>
 #include <cstring>
 #include <cmath>
 
-
 IGA_NAMESPACE_OPEN
 
-//TODO (Nov 9, 2013, antolin): move implementation of functions to tensor.cpp
-//TODO (Nov 9, 2013, antolin): instantiate functions moved to cpp.
-//TODO (Nov 9, 2013, antolin): move inline functions to tensor-inline.h.
-
-
-
-
-
+//TODO (Nov 9, 2013, antolin): move implementation of functions to tensor.cpp or
+//                              in inline to tensor-inline.h.
+// TODO (pauletti, Feb 20, 2014): replace typdef by using
+// TODO (pauletti, Feb 20, 2014): some members are missing documentation
+// TODO (pauletti, Feb 20, 2014): I see typedef int_array<rank>  product_Index
+//                                when we have a type for this
 
 template<int dim_, int rank_, class tensor_type, class value_type>
 class Tensor;
@@ -76,11 +73,6 @@ struct raw
 } // end namespace tensor
 
 
-
-
-
-
-
 /**
  * The double class we need for tensors.
  * @note From the theoretical point of view this class should not
@@ -103,28 +95,26 @@ public:
     typedef self_t     co_tensor_t;
     typedef Real     value_t;
 
-
     typedef int_array<rank>  product_Index;
-
 
     /**
      * @name Constructors
      */
     ///@{
-    Tdouble(const Real val = 0.) ;
+    Tdouble(const Real val = 0.);
 
     Tdouble(const bool non_init)
     {}
 
     /** Copy constructor */
-    Tdouble(const Tdouble &td) = default ;
+    Tdouble(const Tdouble &td) = default;
 
     /** Move constructor */
-    Tdouble(Tdouble &&td) = default ;
+    Tdouble(Tdouble &&td) = default;
 
 
     /** Destructor */
-    ~Tdouble() = default ;
+    ~Tdouble() = default;
     ///@}
 
     /**
@@ -135,19 +125,19 @@ public:
     /**
      * Copy assignment operator.
      */
-    Tdouble &operator=(const Tdouble &td) = default ;
+    Tdouble &operator=(const Tdouble &td) = default;
 
 
     /**
      * Move assignment operator.
      */
-    Tdouble &operator=(Tdouble &&td) = default ;
+    Tdouble &operator=(Tdouble &&td) = default;
 
 
     /**
      * Assignment operator from a Real @p val1.
      */
-    Tdouble &operator=(const value_t &val1) ;
+    Tdouble &operator=(const value_t &val1);
     ///@}
 
 
@@ -164,54 +154,54 @@ public:
     /**
      * Read write access operator
      */
-    value_t &operator[](const int i) noexcept ;
+    value_t &operator[](const int i) noexcept;
 
 
     /**
      * Read access operator
      */
-    const value_t &operator[](const int i) const noexcept ;
+    const value_t &operator[](const int i) const noexcept;
 
     /**
      * Read write access operator using a tensor index
      */
-    value_t &operator()(const product_Index  &i) noexcept ;
+    value_t &operator()(const product_Index  &i) noexcept;
 
     /**
      * Read access operator using a tensor index
      */
-    const value_t &operator()(const product_Index  &i) const noexcept ;
+    const value_t &operator()(const product_Index  &i) const noexcept;
 
     /**
      * Read write access operator using the flat index
      */
-    value_t &operator()(const int i) noexcept ;
+    value_t &operator()(const int i) noexcept;
 
     /**
      * Read access operator using the flat index
      */
-    const value_t &operator()(const int i) const noexcept ;
+    const value_t &operator()(const int i) const noexcept;
 
 
-    Tdouble &operator+=(const Real td) noexcept ;
+    Tdouble &operator+=(const Real td) noexcept;
 
-    Tdouble &operator-=(const Real td) noexcept ;
+    Tdouble &operator-=(const Real td) noexcept;
 
-    Tdouble &operator*=(const Real td) noexcept ;
+    Tdouble &operator*=(const Real td) noexcept;
 
-    Tdouble &operator/=(const Real td) noexcept ;
+    Tdouble &operator/=(const Real td) noexcept;
 
-    Real norm() const noexcept ;
+    Real norm() const noexcept;
 
-    Real norm_square() const noexcept ;
+    Real norm_square() const noexcept;
 
     product_Index
-    flat_to_tensor_index(const int flat_index) const noexcept ;
+    flat_to_tensor_index(const int flat_index) const noexcept;
 
     /**
      * The last index moves faster.
      */
-    int tensor_to_flat_index(const product_Index &tensor_index) const noexcept ;
+    int tensor_to_flat_index(const product_Index &tensor_index) const noexcept;
 
 
 private:
@@ -236,7 +226,7 @@ using CoTensor =
     Conditional<
     T::is_tensor,
     Tensor<T::dim, T::rank, typename T::tensor_t::co_type, typename T::value_t::co_tensor_t>,
-    Tdouble> ;
+    Tdouble>;
 
 
 
@@ -255,7 +245,7 @@ using Transpose =
     Tensor<T::value_t::dim,T::value_t::rank,typename T::value_t::tensor_t,
     Tensor<T::dim,T::rank,typename T::tensor_t,typename T::value_t::value_t> >
     >,
-    Tdouble > ;
+    Tdouble >;
 
 
 
@@ -306,12 +296,12 @@ using ActionTensor = Conditional<
  * In the language of the Tensor class it is
  * represented with the following code
  * \code
- * Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant> > T ;
+ * Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant> > T;
  * \endcode
  *
  * Similarly, the bilinear function \f$ S: V^* \times V \to \mathbb R \f$ would be
  * \code
- * Tensor<dim, 1, tensor::contravariant, Tensor<dim, 1, tensor::covariant> > S ;
+ * Tensor<dim, 1, tensor::contravariant, Tensor<dim, 1, tensor::covariant> > S;
  * \endcode
  *
  * Once a basis for the vectors is selected and the corresponding dual basis for
@@ -393,7 +383,7 @@ public:
     static const int rank  = rank_;
 
     /** Flat size of the tensor, i.e. total number of components of type value_type */
-    static const int size = iga::constexpr_pow(dim_, rank_) ;
+    static const int size = iga::constexpr_pow(dim_, rank_);
 
 
     typedef tensor_type tensor_t;
@@ -414,7 +404,7 @@ public:
     /**
      * Default constructor. Sets all entries to 0.
      */
-    Tensor() = default ;
+    Tensor() = default;
 
     /** Copy constructor */
     Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
@@ -423,11 +413,11 @@ public:
     Tensor(Tensor<dim_, rank_, tensor_type, value_type> &&tensor) = default;
 
     /** Constructor from an initializer-list of value_type */
-    Tensor(std::initializer_list<value_type> list) ;
+    Tensor(std::initializer_list<value_type> list);
 
 
     /** Destructor */
-    ~Tensor() = default ;
+    ~Tensor() = default;
     ///@}
 
 
@@ -458,7 +448,7 @@ public:
      * @p entry_val.
      */
     Tensor<dim_, rank_, tensor_type, value_type> &operator=(
-        const value_type &entry_val) ;
+        const value_type &entry_val);
 
     /**
      * Assigning using a Real. For safety of meaning only assigning 0 is allowed.
@@ -473,18 +463,18 @@ public:
     ///@{
 
     /** Read write access operator using a tensor index */
-    value_type &operator()(const product_Index  &i) ;
+    value_type &operator()(const product_Index  &i);
 
     /** Read access operator using a tensor index */
-    const value_type &operator()(const product_Index  &i) const ;
+    const value_type &operator()(const product_Index  &i) const;
 
     /** Read write access operator using the flat index */
-    value_type &operator()(const int i) ;
+    value_type &operator()(const int i);
 
     /**
      * Read access operator using the flat index
      */
-    const value_type &operator()(const int i) const ;
+    const value_type &operator()(const int i) const;
 
     ///@}
 
@@ -562,16 +552,16 @@ public:
      */
     ///@{
     product_Index
-    flat_to_tensor_index(const int flat_index) const noexcept ;
+    flat_to_tensor_index(const int flat_index) const noexcept;
 
     /**
      * The last index moves faster.
      */
-    int tensor_to_flat_index(const product_Index &tensor_index) const noexcept ;
+    int tensor_to_flat_index(const product_Index &tensor_index) const noexcept;
     ///@}
 
 private :
-    SubTensor<self_t> tensor_[dim_== 0? 1: dim_] ;
+    SubTensor<self_t> tensor_[dim_== 0? 1: dim_];
 
 };
 
@@ -773,7 +763,7 @@ template < class T >
 Enable_if<T::is_tensor,Transpose<T>>
                                   transpose(const T &A)
 {
-    Transpose<T> B ;
+    Transpose<T> B;
 
     const int size1 = T::size;
     const int size2 = T::value_t::size;
@@ -823,8 +813,8 @@ Enable_if<T::is_tensor,CoTensor<T>>
 {
     // we copy the memory of A in coA in order to avoid the
     // aliasing due to the use of reinterpret_cast
-    CoTensor<T> coA ;
-    memcpy(&coA, &A, sizeof(A)) ;
+    CoTensor<T> coA;
+    memcpy(&coA, &A, sizeof(A));
     return coA;
 }
 
@@ -853,7 +843,7 @@ Enable_if<T::is_tensor,Real>
 scalar_product(const T &t1, const T &t2) noexcept
 {
     Real result = 0.;
-    for (int i = 0; i < T::dim ; ++i)
+    for (int i = 0; i < T::dim; ++i)
         result += scalar_product(t1[i],t2[i]);
 
     Assert(!std::isnan(result),ExcNotANumber());
@@ -874,7 +864,7 @@ Tensor<T1::dim,1,typename T1::tensor_t,Tdouble>
 contract_1(const T1 &t1, const T2 &t2) noexcept
 {
     Tensor<T1::dim,1,typename T1::tensor_t,Tdouble> result;
-    for (int i = 0; i < T1::dim ; ++i)
+    for (int i = 0; i < T1::dim; ++i)
         result[i] = scalar_product(t1[i],t2);
 
     return result;
@@ -895,12 +885,12 @@ Real
 inverse_(const Tensor<1,1,tensor_type1,Tensor<1,1,tensor_type2,Tdouble>> &t,
          Tensor<1,1,typename tensor_type2::co_type,Tensor<1,1,typename tensor_type1::co_type,Tdouble>> &t_inv)
 {
-    const Real det = t[0][0] ;
+    const Real det = t[0][0];
     Assert(det != Real(0.0), ExcDivideByZero());
 
-    const Real InvDet = 1.0 / det ;
+    const Real InvDet = 1.0 / det;
 
-    t_inv[0][0] =  InvDet ;
+    t_inv[0][0] =  InvDet;
 
     return det;
 }
@@ -912,16 +902,16 @@ Real
 inverse_(const Tensor<2,1,tensor_type1,Tensor<2,1,tensor_type2,Tdouble>> &t,
          Tensor<2,1,typename tensor_type2::co_type,Tensor<2,1,typename tensor_type1::co_type,Tdouble>> &t_inv)
 {
-    const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0] ;
+    const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0];
     Assert(det != Real(0.0), ExcDivideByZero());
 
-    const Real InvDet = 1.0 / det ;
+    const Real InvDet = 1.0 / det;
 
 
-    t_inv[0][0] = t[1][1] * InvDet ;
-    t_inv[0][1] = t[0][1] * (-InvDet) ;
-    t_inv[1][0] = t[1][0] * (-InvDet) ;
-    t_inv[1][1] = t[0][0] * InvDet ;
+    t_inv[0][0] = t[1][1] * InvDet;
+    t_inv[0][1] = t[0][1] * (-InvDet);
+    t_inv[1][0] = t[1][0] * (-InvDet);
+    t_inv[1][1] = t[0][0] * InvDet;
 
     return det;
 }
@@ -1012,7 +1002,7 @@ inline
 Real
 det_(const Tensor< 2, 1, tensor_type1, Tensor< 2, 1, tensor_type2, Tdouble > > &t)
 {
-    const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0] ;
+    const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0];
     return det;
 }
 
@@ -1111,7 +1101,7 @@ operator<<(LogStream &out, const Tensor<dim_,rank_,tensor_type,T > &tensor)
     }
     out << "] ";
 
-    return (out) ;
+    return (out);
 }
 
 /**
@@ -1124,7 +1114,7 @@ LogStream &
 operator<<(LogStream &out, const Tdouble &tensor)
 {
     out << tensor[0];
-    return (out) ;
+    return (out);
 }
 
 
@@ -1135,18 +1125,10 @@ operator<<(LogStream &out, const Tdouble &tensor)
  * a template alias (or templated typedef).
  */
 template< int m, int n = m >
-using TMatrix = Tensor< m, 1, tensor::raw, Tensor< n, 1, tensor::raw, Tdouble > > ;
-
-
+using TMatrix = Tensor< m, 1, tensor::raw, Tensor< n, 1, tensor::raw, Tdouble > >;
 
 IGA_NAMESPACE_CLOSE
 
-// If we are in debug mode we do not inline to gain some compilation speed,
-// but we do in Release mode
-//#ifdef NDEBUG
-// Include the inline definitions
 #include <igatools/base/tensor-inline.h>
-//#endif
-
 
 #endif

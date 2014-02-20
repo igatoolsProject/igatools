@@ -23,13 +23,11 @@
 
 #include <igatools/base/tensor.h>
 
-
 IGA_NAMESPACE_OPEN
-
 
 /*------ Inline functions: Tensor<  dim_, rank_, tensor_type, value_type > ---*/
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor< dim_, rank_, tensor_type, value_type >::
 Tensor(std::initializer_list<value_type> list)
@@ -42,7 +40,7 @@ Tensor(std::initializer_list<value_type> list)
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor<dim_, rank_, tensor_type, value_type> &
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -57,7 +55,7 @@ operator=(std::initializer_list<value_type> list)
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor<dim_, rank_, tensor_type, value_type> &
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -69,7 +67,8 @@ operator=(const value_type &entry_val)
 }
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 auto
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -81,7 +80,7 @@ operator[](const int  i) -> SubTensor<self_t> &
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 auto
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -91,7 +90,9 @@ operator[](const int  i) const -> const SubTensor<self_t> &
     return tensor_[i] ;
 }
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -102,7 +103,9 @@ operator()(const product_Index &i)
     return (reinterpret_cast<value_type *>(tensor_)[tensor_to_flat_index(i)]);
 }
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 const value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -113,7 +116,9 @@ operator()(const product_Index &i) const
     return (reinterpret_cast<value_type const *>(tensor_)[tensor_to_flat_index(i)]);
 }
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -123,7 +128,9 @@ operator()(const int i)
     return (reinterpret_cast<value_type *>(tensor_)[i]);
 }
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 const value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -134,7 +141,8 @@ operator()(const int i) const
 }
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(const Real value)
@@ -153,8 +161,7 @@ operator=(const Real value)
 
 
 
-
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
 operator+=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
@@ -167,7 +174,7 @@ operator+=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
 operator-=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
@@ -180,7 +187,7 @@ operator-=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
 operator*=(const Real value)
@@ -196,8 +203,7 @@ operator*=(const Real value)
 
 
 
-
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
 operator/=(const Real value)
@@ -214,7 +220,7 @@ operator/=(const Real value)
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Real
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -225,7 +231,7 @@ norm() const noexcept
 
 
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 Real
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -240,8 +246,7 @@ norm_square() const noexcept
 
 
 
-
-template < int dim_, int rank_, class tensor_type, class value_type >
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 auto
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -263,7 +268,9 @@ flat_to_tensor_index(const int flat_index) const noexcept -> product_Index
     return tensor_index;
 }
 
-template < int dim_, int rank_, class tensor_type, class value_type >
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 int
 Tensor< dim_, rank_, tensor_type, value_type >::
@@ -276,13 +283,6 @@ tensor_to_flat_index(const product_Index &tensor_index) const noexcept
     return flat_index;
 }
 
-
-
-
-
-
 IGA_NAMESPACE_CLOSE
-
-
 
 #endif /* TENSOR_INLINE_H_ */

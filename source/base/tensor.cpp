@@ -21,7 +21,6 @@
 #include <igatools/base/tensor.h>
 #include <igatools/base/tensor-inline.h>
 
-
 IGA_NAMESPACE_OPEN
 
 Tdouble::
@@ -32,6 +31,8 @@ Tdouble(const Real val)
 
     val_ = val;
 }
+
+
 
 Tdouble &
 Tdouble::
@@ -44,12 +45,16 @@ operator=(const value_t &val)
     return (*this);
 }
 
+
+
 auto
 Tdouble::
 operator[](const int i) noexcept -> value_t &
 {
     return *this;
 }
+
+
 
 auto
 Tdouble::
@@ -58,12 +63,16 @@ operator[](const int i) const noexcept -> const value_t &
     return *this;
 }
 
+
+
 auto
 Tdouble::
 operator()(const product_Index  &i) noexcept -> value_t &
 {
     return *this;
 }
+
+
 
 auto
 Tdouble::
@@ -72,6 +81,8 @@ operator()(const product_Index  &i) const noexcept -> const value_t &
     return *this;
 }
 
+
+
 auto
 Tdouble::
 operator()(const int i) noexcept -> value_t &
@@ -79,12 +90,16 @@ operator()(const int i) noexcept -> value_t &
     return *this;
 }
 
+
+
 auto
 Tdouble::
 operator()(const int i) const noexcept -> const value_t &
 {
     return *this;
 }
+
+
 
 Tdouble &
 Tdouble::
@@ -97,6 +112,8 @@ operator+=(const Real val) noexcept
     return (*this);
 }
 
+
+
 Tdouble &
 Tdouble::
 operator-=(const Real val) noexcept
@@ -108,6 +125,8 @@ operator-=(const Real val) noexcept
     return (*this);
 }
 
+
+
 Tdouble &
 Tdouble::
 operator*=(const Real val) noexcept
@@ -118,6 +137,8 @@ operator*=(const Real val) noexcept
     val_ *= val;
     return (*this);
 }
+
+
 
 Tdouble &
 Tdouble::
@@ -131,12 +152,16 @@ operator/=(const Real val) noexcept
     return (*this);
 }
 
+
+
 Real
 Tdouble::
 norm() const noexcept
 {
     return std::abs(val_);
 }
+
+
 
 Real
 Tdouble::
@@ -145,12 +170,16 @@ norm_square() const noexcept
     return val_ * val_;
 }
 
+
+
 auto
 Tdouble::
 flat_to_tensor_index(const int flat_index) const noexcept -> product_Index
 {
     return product_Index();
 }
+
+
 
 int
 Tdouble::
@@ -159,13 +188,6 @@ tensor_to_flat_index(const product_Index &tensor_index) const noexcept
     return 0;
 }
 
-
 IGA_NAMESPACE_CLOSE
 
-
-//TODO: the next line was changed temp for #ifdef IGA_DEBUG
-//#ifdef NDEBUG
 #include <igatools/base/tensor.inst>
-//#endif
-
-
