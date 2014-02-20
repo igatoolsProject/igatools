@@ -30,23 +30,23 @@ cmake_minimum_required(VERSION 2.8)
 project(iga CXX)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Make sure the build directory is not the source directory
-#
-include (${PROJECT_SOURCE_DIR}/cmake/macros/MacroOutOfSourceBuild.cmake)
-macro_ensure_out_of_source_build()
+# Include all local macros
+file(GLOB macro_list ${PROJECT_SOURCE_DIR}/cmake/macros/*.cmake)
+foreach(item ${macro_list})
+  include (${item})
+endforeach(item)
 #
 #-------------------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Make sure the build directory is not the install directory
+# Make sure the build directory is not the source or
+# the install directory
 #
-include (${PROJECT_SOURCE_DIR}/cmake/macros/MacroOutOfBuildInstall.cmake)
+macro_ensure_out_of_source_build()
 macro_ensure_out_of_build_install()
 #
 #-------------------------------------------------------------------------------
 
-# Add the path of igatools cmake modules
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # If the prefix is not provided by the user but the
@@ -74,88 +74,40 @@ set(IGA_VERSION
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Compiler and compile flags
-
-# Initialize CXXFLAGS.
-set(CMAKE_CXX_FLAGS                "-Wall -O0 -g")
-set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g")
-set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -mtune=native -DNDEBUG -g")
-
-# Compiler-specific C++11 activation.
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-  execute_process(
-    COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-  if (NOT (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8))
-    message(FATAL_ERROR "${PROJECT_NAME} requires gcc version 4.8 or greater.")
-  endif ()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-  message(FATAL_ERROR "Your C++ CLANG compiler is not supported by igatools")
-elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
-  message(FATAL_ERROR "Your C++ INTEL compiler is not supported by igatools")
-else ()
-  message(FATAL_ERROR "Your C++ compiler is not supported by igatools")
-endif ()
-#
-#-------------------------------------------------------------------------------
-set(LINKER_FLAGS "-rdynamic")
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find python (Required)
-#
-include(FindPythonInterp)
-find_package( PythonInterp REQUIRED)
+init_cxx_flags()
 #
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find sed (Required)
+# Find Required programs
 #
-find_program(SED_EXECUTABLE sed)
-message(STATUS "Found sed:  ${SED_EXECUTABLE}.")
-#
-#-------------------------------------------------------------------------------
-
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Trilinos library (Required)
-#
-set( Trilinos_PREFIX $ENV{TRILINOS_PREFIX}  CACHE LOCATION 
-    "Location where Trilinos library is installed")
-find_package( Trilinos 11 REQUIRED 
-    PATHS ${Trilinos_PREFIX} )
-message(STATUS "Found Trilinos:  version ${Trilinos_VERSION}.")
-if (NOT (Trilinos_VERSION VERSION_GREATER 11.6.1 OR 
-    Trilinos_VERSION VERSION_EQUAL 11.6.1))
-   message(FATAL_ERROR "${PROJECT_NAME} requires Trilinos 11.6.1 or greater.")
-endif()
-include_directories( ${Trilinos_INCLUDE_DIRS} )
-message(STATUS "Testing for Trilinos required pacakges")
-find_package( Tpetra REQUIRED PATHS ${Trilinos_PREFIX})
-message(STATUS "  Found Tpetra.")
-find_package( Belos REQUIRED PATHS ${Trilinos_PREFIX})
-message(STATUS "  Found Belos.")
+find_sed()
+find_python()
 #
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Boost library (Required)
+# Find Required libraries
 #
-find_package( Boost 1.48.0 REQUIRED )
-include_directories( ${Boost_INCLUDE_DIRS} )
+find_trilinos()
+find_boost()
 #
 #-------------------------------------------------------------------------------
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Optional features for building  igatools
+#
+option(build_tutorial "Build tutorial" ON)
+option(build_test "Build test" ON)
+option(submit_test "Allow test submition" OFF)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Igatools specific configuration 
 #
 
-# Optional features allowed by igatools
-#
+
 
 # Choose the precision for the real values
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
@@ -252,16 +204,17 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Tutorial example section
-option(build_tutorial "Build tutorial" ON)
-add_subdirectory(${PROJECT_SOURCE_DIR}/tutorial)
+
+if(build_tutorial)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/tutorial)
+endif(build_tutorial)
 #
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Unit Test configuration
-option(build_test "Build test" ON)
-option(submit_test "Allow test submition" OFF)
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 #
 #-------------------------------------------------------------------------------
@@ -292,33 +245,5 @@ endif(DOXYGEN_FOUND)
 #
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#
-message("")
-message("")
-message("******************************************************************")
-message("**")
-message("** [1] To compile and install the library run: ")
-message("** \t make install")
-message("**")
-message("** [2] To use the library it should be made visible to the loader.")
-if(APPLE)
-  message("**     Add the following line to your ~/.bash_login")
-  message("** \t export DYLD_LIBRARY_PATH=\\")
-  message("** \t  $DYLD_LIBRARY_PATH:${CMAKE_INSTALL_PREFIX}/lib")
-else(APPLE)
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    message("**     Add the following line to your ~/.bash_rc")
-    message("** \t export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CMAKE_INSTALL_PREFIX}/lib")
-#    message("** \t  $LD_LIBRARY_PATH:${CMAKE_INSTALL_PREFIX}/lib")   
-  endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-endif(APPLE)
-message("**")
-message("** [3] To generate and install the online documentation run: ")
-message("** \t make doc")
-message("**")
-message("******************************************************************")
-message("")
-message("")
-#
-#-------------------------------------------------------------------------------
+
+print_final_message()
