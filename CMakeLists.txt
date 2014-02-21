@@ -120,12 +120,11 @@ configure_file (
 
 # Collect all igatools source files, contained in the directory list below
 
-set (source_dirs base)
+set (source_dirs base utils)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})
 endforeach()
-
 
 # Pass the igatools include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 

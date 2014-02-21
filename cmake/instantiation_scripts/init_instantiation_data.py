@@ -78,12 +78,16 @@ class InstantiationInfo:
         self.face_ref_dom_dims = []
         
         self.derivatives=[]  #derivative classes 
+        
+        self.tensor_sizes=[] #TensorSize classes
+		        
         self.read_dimensions_file(filename)
         self.create_RefSpaces()
         self.create_PhysSpaces()
         self.create_ref_dim()
         self.create_Mappings()
         self.create_derivatives()
+        self.create_tensor_sizes()
         return None
 
 
@@ -269,6 +273,24 @@ class InstantiationInfo:
                 self.derivatives= unique(C_list)
     
         return None
+
+
+##################################
+    def create_tensor_sizes(self):
+        '''Creates a list of the TensorSize class that needs to be instantiated'''
+
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'TensorSize<%d>' % (dim_domain)
+            C_list.append(C)
+            C = 'TensorSize<%d>' % (dim_domain+1)
+            C_list.append(C)
+		
+        self.tensor_sizes = unique(C_list)        
+        return None
+##################################
 
 
 def intialize_instantiation():
