@@ -275,6 +275,8 @@ using ActionTensor = Conditional<
 ///@}
 
 /**
+ *  @brief Mathematical tensor of given rank and type.
+ *
  *  The Tensor class is used to represent a mathematical tensor of
  *  given rank and type.
  *  This class is a core computational support for the library.

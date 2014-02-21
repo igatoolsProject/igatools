@@ -80,7 +80,7 @@ public:
     ///@}
 
 
-    /** @name Access operators. */
+    /** @name Access (read/write) operators */
     ///@{
     /**
      * Read/write operator. Returns the reference to the i-th size.
