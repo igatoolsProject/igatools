@@ -24,8 +24,8 @@
 #include <igatools/base/config.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/tensor_index.h>
 
-#include <boost/concept_check.hpp>
 
 #include <type_traits>
 #include <cstring>
@@ -35,10 +35,7 @@ IGA_NAMESPACE_OPEN
 
 //TODO (Nov 9, 2013, antolin): move implementation of functions to tensor.cpp or
 //                              in inline to tensor-inline.h.
-// TODO (pauletti, Feb 20, 2014): replace typdef by using
 // TODO (pauletti, Feb 20, 2014): some members are missing documentation
-// TODO (pauletti, Feb 20, 2014): I see typedef int_array<rank>  product_Index
-//                                when we have a type for this
 
 template<int dim_, int rank_, class tensor_type, class value_type>
 class Tensor;
@@ -57,17 +54,17 @@ struct covariant;
 
 struct contravariant
 {
-    typedef  covariant co_type;
+    using co_type = covariant;
 };
 
 struct covariant
 {
-    typedef  contravariant co_type;
+    using co_type = contravariant;
 };
 
 struct raw
 {
-    typedef  raw co_type;
+    using co_type = raw;
 };
 
 } // end namespace tensor
@@ -91,11 +88,9 @@ public:
     static const int dim    = 1;
     static const int rank   = 0;
 
-    typedef Tdouble    self_t;
-    typedef self_t     co_tensor_t;
-    typedef Real     value_t;
-
-    typedef int_array<rank>  product_Index;
+    using self_t = Tdouble;
+    using co_tensor_t = self_t;
+    using value_t = Real;
 
     /**
      * @name Constructors
@@ -165,12 +160,12 @@ public:
     /**
      * Read write access operator using a tensor index
      */
-    value_t &operator()(const product_Index  &i) noexcept;
+    value_t &operator()(const TensorIndex<0> &i) noexcept;
 
     /**
      * Read access operator using a tensor index
      */
-    const value_t &operator()(const product_Index  &i) const noexcept;
+    const value_t &operator()(const TensorIndex<0> &i) const noexcept;
 
     /**
      * Read write access operator using the flat index
@@ -195,13 +190,13 @@ public:
 
     Real norm_square() const noexcept;
 
-    product_Index
+    TensorIndex<0>
     flat_to_tensor_index(const int flat_index) const noexcept;
 
     /**
      * The last index moves faster.
      */
-    int tensor_to_flat_index(const product_Index &tensor_index) const noexcept;
+    int tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept;
 
 
 private:
@@ -388,15 +383,11 @@ public:
     static const int size = iga::constexpr_pow(dim_, rank_);
 
 
-    typedef tensor_type tensor_t;
-    typedef value_type value_t;
-    typedef Tensor<dim,rank,tensor_t,value_t> self_t;
+    using tensor_t = tensor_type ;
+    using value_t = value_type;
+    using self_t = Tensor<dim,rank,tensor_t,value_t>;
 
-    typedef CoTensor<self_t> co_tensor_t;
-
-
-    typedef int_array<rank_> product_Index;
-
+    using co_tensor_t = CoTensor<self_t>;
 
     /**
      * @name Constructors
@@ -465,10 +456,10 @@ public:
     ///@{
 
     /** Read write access operator using a tensor index */
-    value_type &operator()(const product_Index  &i);
+    value_type &operator()(const TensorIndex<rank_>  &i);
 
     /** Read access operator using a tensor index */
-    const value_type &operator()(const product_Index  &i) const;
+    const value_type &operator()(const TensorIndex<rank_>  &i) const;
 
     /** Read write access operator using the flat index */
     value_type &operator()(const int i);
@@ -553,13 +544,13 @@ public:
      * TODO: maybe these functions could be outside
      */
     ///@{
-    product_Index
+    TensorIndex<rank_>
     flat_to_tensor_index(const int flat_index) const noexcept;
 
     /**
      * The last index moves faster.
      */
-    int tensor_to_flat_index(const product_Index &tensor_index) const noexcept;
+    int tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept;
     ///@}
 
 private :

@@ -89,7 +89,6 @@ void run_test3()
 
     Tensor< dim, rank, type, Tdouble > A;
 
-    typename Tensor< dim, rank, type, Tdouble >::product_Index index;
 
     for (int i=0; i<dim; ++i)
         for (int j=0; j<dim; ++j)
@@ -97,6 +96,7 @@ void run_test3()
     out << A << endl;
 
 
+    TensorIndex<rank> index;
     for (int i=0; i<dim; ++i)
         for (int j=0; j<dim; ++j)
         {

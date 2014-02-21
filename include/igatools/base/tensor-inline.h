@@ -96,7 +96,7 @@ template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
-operator()(const product_Index &i)
+operator()(const TensorIndex<rank_> &i)
 {
     Assert(tensor_to_flat_index(i) < self_t::size,
            ExcIndexRange(tensor_to_flat_index(i), 0, self_t::size)) ;
@@ -109,7 +109,7 @@ template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 const value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
-operator()(const product_Index &i) const
+operator()(const TensorIndex<rank_> &i) const
 {
     Assert(tensor_to_flat_index(i) < self_t::size,
            ExcIndexRange(tensor_to_flat_index(i), 0, self_t::size)) ;
@@ -250,12 +250,12 @@ template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 auto
 Tensor< dim_, rank_, tensor_type, value_type >::
-flat_to_tensor_index(const int flat_index) const noexcept -> product_Index
+flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<rank_>
 {
     Assert(flat_index < self_t::size,
            ExcIndexRange(flat_index, 0, self_t::size)) ;
 
-    product_Index tensor_index;
+    TensorIndex<rank_> tensor_index;
 
     int l = flat_index;
     for (int i = 0; i < rank_ ; ++i)
@@ -274,7 +274,7 @@ template<int dim_, int rank_, class tensor_type, class value_type >
 inline
 int
 Tensor< dim_, rank_, tensor_type, value_type >::
-tensor_to_flat_index(const product_Index &tensor_index) const noexcept
+tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept
 {
     int flat_index = 0;
     for (int i = 0; i < rank_; ++i)

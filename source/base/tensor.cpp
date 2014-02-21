@@ -67,7 +67,7 @@ operator[](const int i) const noexcept -> const value_t &
 
 auto
 Tdouble::
-operator()(const product_Index  &i) noexcept -> value_t &
+operator()(const TensorIndex<0>  &i) noexcept -> value_t &
 {
     return *this;
 }
@@ -76,7 +76,7 @@ operator()(const product_Index  &i) noexcept -> value_t &
 
 auto
 Tdouble::
-operator()(const product_Index  &i) const noexcept -> const value_t &
+operator()(const TensorIndex<0>  &i) const noexcept -> const value_t &
 {
     return *this;
 }
@@ -174,16 +174,16 @@ norm_square() const noexcept
 
 auto
 Tdouble::
-flat_to_tensor_index(const int flat_index) const noexcept -> product_Index
+flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<0>
 {
-    return product_Index();
+    return TensorIndex<0>();
 }
 
 
 
 int
 Tdouble::
-tensor_to_flat_index(const product_Index &tensor_index) const noexcept
+tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept
 {
     return 0;
 }
