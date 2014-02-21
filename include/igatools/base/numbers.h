@@ -27,7 +27,9 @@
 IGA_NAMESPACE_OPEN
 
 /**
-  Namespace for the declaration of universal constants. Since the
+  @brief Namespace for the declaration of universal constants.
+
+  Since the
   availability in <tt>math.h</tt> is not always guaranteed, we put
   them here. Since this file is included by <tt>base/config.h</tt>,
   they are available to the whole library.
