@@ -34,8 +34,8 @@ TensorIndex<rank>::
 TensorIndex(Index val) noexcept
 {
     Assert(val >= 0, ExcLowerRange(val,0));
-    for (int i= 0 ; i < rank ; ++i)
-        (*this)[i] = val;
+    for (auto & idx : (*this))
+    	idx = val;
 }
 
 
@@ -47,8 +47,8 @@ TensorIndex(const std::array<int,rank> &arr) noexcept
 std::array<int,rank>::array(arr)
 {
 #ifndef NDEBUG
-    for (int i = 0; i < rank; ++i)
-        Assert((*this)[i] >= 0,ExcLowerRange((*this)[i],0));
+    for (const auto & idx : (*this))
+        Assert(idx >= 0,ExcLowerRange(idx,0));
 #endif
 }
 
@@ -61,8 +61,8 @@ TensorIndex(std::initializer_list<Index> list) noexcept
     std::copy(list.begin(), list.end(), this->begin());
 
 #ifndef NDEBUG
-    for (int i = 0; i < rank; ++i)
-        Assert((*this)[i] >= 0,ExcLowerRange((*this)[i],0));
+    for (const auto & idx : (*this))
+        Assert(idx >= 0,ExcLowerRange(idx,0));
 #endif
 }
 
@@ -84,11 +84,11 @@ TensorIndex<rank> &
 TensorIndex<rank>::
 operator -=(const int j) noexcept
 {
-    for (int i = 0; i < rank; ++i)
+    Assert(j >= 0, ExcLowerRange(j,0));
+    for (auto & idx : (*this))
     {
-        Assert(j >= 0, ExcLowerRange(j,0));
-        Assert((*this)[i] >= j,ExcIndexRange(j,0,(*this)[i]+1));
-        (*this)[i] -= j;
+        Assert(idx >= j,ExcIndexRange(j,0,idx+1));
+        idx -= j;
     }
 
     return *this;
@@ -101,11 +101,9 @@ TensorIndex<rank>::
 operator +=(const int j) noexcept
 {
     Assert(j >= 0, ExcLowerRange(j,0));
-    for (int i = 0; i < rank; ++i)
-    {
-        Assert(j >= 0, ExcLowerRange(j,0));
-        (*this)[i] += j;
-    }
+    for (auto & idx : (*this))
+        idx += j;
+
     return *this;
 }
 

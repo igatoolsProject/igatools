@@ -38,6 +38,9 @@ IGA_NAMESPACE_OPEN
  *
  * This class makes possible the
  * rank independent treatment of tensor type containers.
+ *
+ * @author M.Martinelli
+ * @date 20 Jan 2014
  */
 template <int rank>
 class TensorIndex : public std::array<Index, rank>
