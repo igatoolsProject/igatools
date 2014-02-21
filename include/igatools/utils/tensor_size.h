@@ -111,7 +111,7 @@ private:
 
 /**
  * Equality operator.
- * Returns true if @p size1 and @size2 are entry-by-entry equal.
+ * Returns true if @p size1 and @p size2 are entry-by-entry equal.
  */
 template <int rank>
 bool
