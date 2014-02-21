@@ -25,13 +25,13 @@
 #TODO: Define the configure time variable for dimension compilation
 #TODO: split this CMakeList into modules to make it more understandable
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.10)
 
 project(iga CXX)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Include all local macros
-file(GLOB macro_list ${PROJECT_SOURCE_DIR}/cmake/macros/*.cmake)
+file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake)
 foreach(item ${macro_list})
   include (${item})
 endforeach(item)
@@ -84,6 +84,7 @@ init_cxx_flags()
 #
 find_sed()
 find_python()
+find_doxygen()
 #
 #-------------------------------------------------------------------------------
 
@@ -96,153 +97,104 @@ find_boost()
 #
 #-------------------------------------------------------------------------------
 
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Optional features for building  igatools
 #
-option(build_tutorial "Build tutorial" ON)
-option(build_test "Build test" ON)
+
 option(submit_test "Allow test submition" OFF)
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Igatools specific configuration 
-#
-
-
 
 # Choose the precision for the real values
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  spaces dimensions and ranks to compile the library for
+#
+set(dim   CACHE STRINGS "list of domain dimensions")
+set(codim CACHE STRINGS "list of domain codimension")
+set(range CACHE STRINGS "list of reference space range dim")
+set(rank  CACHE STRINGS "list of reference space rank")
+set(trans_type  CACHE STRINGS "list of transformation type")
+set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
+#
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Configuration of the library 
+#
 set(lib_name igatools)
 
-configure_file (
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/${lib_name}/base/config.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h")
-
-# Collect all igatools source files, contained in the directory list below
-
+# igatools source files
 set (source_dirs base utils)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})
 endforeach()
 
-# Pass the igatools include directories
+# igatools include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
-                    ${CMAKE_CURRENT_BINARY_DIR}/include
-                    ${addons_include_dir})
+                    ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-# Add the igatools library
+# the igatools library targent
 add_library(${lib_name} SHARED  ${source_files})
-target_link_libraries( ${lib_name} 
-  ${Trilinos_LIBRARIES} ${Trilinos_TPL_LIBRARIES} ${Boost_LIBRARIES}
-  ${TBB_LIBRARIES})
-set_property( TARGET ${libname} PROPERTY VERSION ${IGA_VERSION} )
+target_link_libraries(${lib_name} 
+  ${Trilinos_LIBRARIES} 
+  ${Trilinos_TPL_LIBRARIES} 
+  ${Boost_LIBRARIES})
+set_property(TARGET ${lib_name} PROPERTY VERSION ${IGA_VERSION})
 
-# todo: put in a CMakelist.txt in the config directory
-# generate the cmake scripts for external applications to find igatools
-# install will put them in the install/lib directory
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Generate configure dependent source files (in the build directory)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/${lib_name}/base/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h")
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}Config.cmake.in 
   ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake @ONLY)
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}ConfigVersion.cmake.in 
   ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake @ONLY)
-#
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Dealing with template instatiations
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Specifying the spaces for which we wish to compile the library
-#
-set(dim_ref   CACHE STRINGS "list of reference space dom dim")
-set(range_ref CACHE STRINGS "list of reference space range dim")
-set(rank_ref  CACHE STRINGS "list of reference space rank")
-set(dim_phys  CACHE STRINGS "list of physical embedding space dim")
-set(trans_type  CACHE STRINGS "list of transformation type")
-set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
-
-#TODO: these properties should be marked as advenced
-#set_property(CACHE dims1 PROPERTY ADVANCED)
 
 
+
+# Create the instantiation files
 message("Configuring instantiations")
-message(STATUS "Generating physical space table to create instantiations.")
-execute_process(COMMAND 
-  ${PYTHON_EXECUTABLE} 
-  -B ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_inst_table.py 
-  dim_ref=${dim_ref}
-  range_ref=${range_ref}
-  rank_ref=${rank_ref}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  RESULT_VARIABLE res) 
-
-include (${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_instantiations.cmake)
+create_space_table()
 generate_instantiations()
-
-
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# set the directory where the lib and include directories will be installed 
-install( TARGETS   ${lib_name}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-install(DIRECTORY   ${PROJECT_SOURCE_DIR}/include/
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
-  PATTERN ".*" EXCLUDE
-  PATTERN "*.in" EXCLUDE)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
-   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake 
-  ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 #
 #-------------------------------------------------------------------------------
 
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Create install target
+create_install_target()
+#
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Create target to generate documentation
+create_doc_target()
+#
+#-------------------------------------------------------------------------------
+
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Tutorial example section
-
-if(build_tutorial)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/tutorial)
-endif(build_tutorial)
+add_subdirectory(${PROJECT_SOURCE_DIR}/tutorial)
 #
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Unit Test configuration
-
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 #
 #-------------------------------------------------------------------------------
-
-
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Create a target to generate the online documentation 
-# using Doxygen
-find_package(Doxygen 1.8.1 REQUIRED)
-if(DOXYGEN_FOUND)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in 
-    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/doc/html/index.html
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating API documentation with Doxygen" VERBATIM)
-  add_custom_target(doc COMMAND ${CMAKE_COMMAND} -P install_doc.cmake
-    DEPENDS ${CMAKE_BINARY_DIR}/doc/html/index.html 
-    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    COMMENT "The documentation is found at: ${CMAKE_INSTALL_PREFIX}/doc" VERBATIM)
-  file(WRITE ${CMAKE_BINARY_DIR}/install_doc.cmake
-    "file( INSTALL ${CMAKE_BINARY_DIR}/doc/html
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/doc)\n"
-    "file( REMOVE_RECURSE ${CMAKE_BINARY_DIR}/doc/html)")
-endif(DOXYGEN_FOUND)
-#
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 print_final_message()
