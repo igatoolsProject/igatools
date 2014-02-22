@@ -95,6 +95,9 @@ class InstantiationInfo:
         
         self.tensor_sized_containers=[] #list TensorSizedContainer classes
         self.create_tensor_sized_containers()
+
+        self.dynamic_multi_array=[] #list DynamicMultiArray classes
+        self.create_dynamic_multi_array()
         
         return None
 
@@ -335,6 +338,33 @@ class InstantiationInfo:
         self.tensor_sized_containers = unique(C_list)        
         return None
 ##################################
+
+
+##################################
+    def create_dynamic_multi_array(self):
+        '''Creates a list of the DynamicMultiArray class that needs to be instantiated'''
+
+        C_list=[]
+
+        types=['Real','Index']
+        for t in types:
+            for row in self.table:
+                dim = row.dim_ref
+                C = 'DynamicMultiArray<%s,%s>' % (t,dim)
+                C_list.append(C)
+                
+        for deriv in self.derivatives:
+            C = 'DynamicMultiArray<%s,2>' % (deriv)
+            C_list.append(C)
+
+#for row in inst.table:
+#    C_list.append ("DynamicMultiArray<Tensor< %d, %d, tensor::contravariant, Tdouble >, 2 >" \
+#                   %(row.dim_phys, row.rank_ref))
+		
+        self.dynamic_multi_array = unique(C_list)        
+        return None
+##################################
+
 
 def intialize_instantiation():
     """
