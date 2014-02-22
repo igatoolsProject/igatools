@@ -92,6 +92,10 @@ class InstantiationInfo:
 
         self.tensor_indices=[] #list TensorIndex classes
         self.create_tensor_indices()
+        
+        self.tensor_sized_containers=[] #list TensorSizedContainer classes
+        self.create_tensor_sized_containers()
+        
         return None
 
 
@@ -311,6 +315,24 @@ class InstantiationInfo:
             C_list.append(C)
 		
         self.tensor_indices = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_tensor_sized_containers(self):
+        '''Creates a list of the TensorSizedContainer class that needs to be instantiated'''
+
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'TensorSizedContainer<%d>' % (dim_domain)
+            C_list.append(C)
+#            C = 'TensorSizedContainer<%d>' % (dim_domain+1)
+#            C_list.append(C)
+		
+        self.tensor_sized_containers = unique(C_list)        
         return None
 ##################################
 

@@ -144,8 +144,8 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-
+#ifdef NDEBUG
 #include <igatools/utils/tensor_sized_container-inline.h>
-
+#endif
 
 #endif // #ifndef TENSOR_SIZED_CONTAINER_H_

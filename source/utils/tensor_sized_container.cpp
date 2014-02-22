@@ -18,74 +18,44 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-// QualityAssurance: martinelli, 28 Jan 2014
-
-
-#ifndef TENSOR_SIZED_CONTAINER_INLINE_H_
-#define TENSOR_SIZED_CONTAINER_INLINE_H_
-
 
 #include <igatools/utils/tensor_sized_container.h>
+#include <igatools/base/exceptions.h>
 #include <igatools/utils/multi_array_utils.h>
+
+#ifndef NDEBUG
+#include <igatools/utils/tensor_sized_container-inline.h>
+#endif
+
 
 IGA_NAMESPACE_OPEN
 
 
-template <int rank>
-inline
-TensorSize<rank>
-TensorSizedContainer<rank>::
-tensor_size() const
-{
-    return size_;
-}
-
 
 template <int rank>
-inline
-Size
 TensorSizedContainer<rank>::
-flat_size() const
-{
-    return size_.flat_size();
-}
-
+TensorSizedContainer()
+    :
+    TensorSizedContainer(0)
+{}
 
 template <int rank>
-inline
-void
 TensorSizedContainer<rank>::
-reset_size(const TensorSize<rank> &size)
-{
-    size_ = size;
-    weight_ = MultiArrayUtils<rank>::compute_weight(size_) ;
-}
+TensorSizedContainer(const Size size)
+    :
+    TensorSizedContainer<rank>(TensorSize<rank>(size))
+{}
 
-
-
-template<int rank>
-inline
-Index
+template <int rank>
 TensorSizedContainer<rank>::
-tensor_to_flat(const TensorIndex<rank> &tensor_index) const
-{
-    return MultiArrayUtils<rank>::tensor_to_flat_index(tensor_index, weight_);
-}
-
-
-template<int rank>
-inline
-TensorIndex<rank>
-TensorSizedContainer<rank>::
-flat_to_tensor(const Index flat_index) const
-{
-    return MultiArrayUtils<rank>::flat_to_tensor_index(flat_index, weight_);
-}
-
+TensorSizedContainer(const TensorSize<rank> &size)
+    :
+    size_(size),
+    weight_(MultiArrayUtils<rank>::compute_weight(size_))
+{}
 
 
 IGA_NAMESPACE_CLOSE
 
 
-#endif // #ifndef TENSOR_SIZED_CONTAINER_INLINE_H_
-
+#include <igatools/utils/tensor_sized_container.inst>

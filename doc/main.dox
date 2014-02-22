@@ -1,0 +1,19 @@
+/**
+   
+   \mainpage igatools An isogeometric analysis tool
+
+   The software library igatools provides the tools to approximate 
+   the solution of partial differential equation using 
+   spaces of the isogeometric types.
+
+   - Installation instruction (and more) is available at the official
+   site: http://www.igatools.org
+
+   - For hands-on start check the \subpage tutorial
+ 
+   - A reference manual, modules and search facility is available
+     in the liks of this page http://www.igatools.altervista.com
+   
+
+*/
+
