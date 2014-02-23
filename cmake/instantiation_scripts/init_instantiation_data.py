@@ -47,11 +47,11 @@ class PhysSpaceTableRow:
 
 
 
-# Object to store different tables with useful
-# information used for instantiations.  
-#
-# They are all generated from the physical spaces tables
-# that the user wishes to compile the library for.
+# Object to store different tables with useful entries to be
+# used for instantiations.  
+# This information is generated using a
+# physical spaces tables that was genererated at configure time
+# by the user.
 class InstantiationInfo:
     # Constructor of the class.
     def __init__(self, filename, max_der_order):
@@ -59,11 +59,12 @@ class InstantiationInfo:
         self.face_table=[] # Spaces that are faces of the user spaces
         self.table = [] #the main data, contains the physical spaces the user 
                         #provides plus the one that are necesary on top
+                        
         self.UserRefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces
         self.RefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces       
         self.RefSpaces=[] # all required reference spaces
         self.UserRefSpaces=[]
-        self.UserFilteredRefSpaces=[]
+        self.UserFilteredRefSpaces=[] #iga mapping required ref spaces
         
         self.UserMappingDims=[] #list of <dim, codims>
         self.MappingDims=[] #list of <dim, codims>
@@ -140,23 +141,27 @@ class InstantiationInfo:
 
     def create_RefSpaces(self):
         ''' Creates a list of Reference spaces '''
-        spaces =('BSplineSpace', 'NURBSSpace')
+                
         self.RefDims = unique( ['<%d,%d,%d>' % (x.dim_ref, x.range_ref, x.rank_ref)
                                 for x in self.table] )
-        self.RefSpaces = ( ['%s%s' % (sp, dims)  
-                            for sp in spaces
-                            for dims in self.RefDims] )
+        
         self.UserRefDims = unique( ['<%d,%d,%d>' % (x.dim_ref, x.range_ref, x.rank_ref)
                                 for x in self.user_table] )
+        
+       
+        spaces =('BSplineSpace', 'NURBSSpace')
+        self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
+                            for dims in self.RefDims] )
         self.UserRefSpaces = ( ['%s%s' % (sp, dims)  
                             for sp in spaces
                             for dims in self.UserRefDims] )
-        temp=[]
+        
         temp = unique( ['<%d,%d,%d>' % (x.dim_ref, x.range_ref, x.rank_ref)
                                 for x in self.user_table if x.dim_ref >= x.range_ref] )
         self.UserFilteredRefSpaces = ( ['%s%s' % (sp, dims)  
                                        for sp in spaces
-                                       for dims in temp] )
+                                       for dims in temp] ) 
+       
         return None
     
     

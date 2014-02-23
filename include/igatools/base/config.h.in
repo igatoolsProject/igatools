@@ -21,11 +21,7 @@
 #ifndef __IGA_CONFIG_H_
 #define __IGA_CONFIG_H_
 
-#cmakedefine HAVE_LIBSTDCXX_DEMANGLER
-#cmakedefine COMPILER_HAS_ATTRIBUTE_FUNCTION
 #cmakedefine REAL_IS_LONG_DOUBLE
-#cmakedefine USE_TRILINOS
-#cmakedefine USE_PETSC
 
 #define BOOST_DISABLE_ASSERT
 
@@ -36,9 +32,6 @@
 #include <igatools/base/numbers.h>
 
 #include <cmath>
-
-#define IGA_USE_MT 1
-
 
 #endif /* __IGA_CONFIG_H_ */
 

@@ -26,7 +26,6 @@
 #include <igatools/base/logstream.h>
 #include <igatools/utils/tensor_index.h>
 
-
 #include <type_traits>
 #include <cstring>
 #include <cmath>
@@ -74,8 +73,8 @@ struct raw
  * The double class we need for tensors.
  * @note From the theoretical point of view this class should not
  * be necessary, provided that we can inherit from double.
- * Unfortunately C++ does not allow to inherit from built-in types so we have to
- * wrap it using this class.
+ * Unfortunately C++ does not allow to inherit from built-in types so
+ * we have to wrap it using this class.
  * All functions are inlined so in principle there should be no difference
  * in performance.
  */
@@ -92,21 +91,22 @@ public:
     using co_tensor_t = self_t;
     using value_t = Real;
 
-    /**
-     * @name Constructors
-     */
+    /** @name Constructors */
     ///@{
+    /** Default constructor */
     Tdouble(const Real val = 0.);
 
-    Tdouble(const bool non_init)
-    {}
+    /**
+     * Advance constructor to optimization when zero
+     * init is not necessary
+     */
+    Tdouble(const bool non_init);
 
     /** Copy constructor */
     Tdouble(const Tdouble &td) = default;
 
     /** Move constructor */
     Tdouble(Tdouble &&td) = default;
-
 
     /** Destructor */
     ~Tdouble() = default;
@@ -1122,6 +1122,8 @@ using TMatrix = Tensor< m, 1, tensor::raw, Tensor< n, 1, tensor::raw, Tdouble > 
 
 IGA_NAMESPACE_CLOSE
 
+// #ifdef NDEBUG
 #include <igatools/base/tensor-inline.h>
+// #endif
 
 #endif

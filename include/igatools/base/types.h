@@ -463,7 +463,7 @@ template<bool C, typename T, typename F>
 using Conditional = typename std::conditional<C,T,F>::type;
 
 
-
+//TODO(pauletti, Feb 23, 2014): not satisfy the style, rename to EnableIf
 template<bool B, typename T = void>
 using Enable_if = typename std::enable_if<B,T>::type;
 

@@ -25,6 +25,194 @@
 
 IGA_NAMESPACE_OPEN
 
+inline
+Tdouble::
+Tdouble(const Real val)
+{
+    Assert(!std::isnan(val),ExcNotANumber());
+    Assert(!std::isinf(val),ExcNumberNotFinite());
+    val_ = val;
+}
+
+
+
+inline
+Tdouble::
+Tdouble(const bool non_init)
+{}
+
+
+
+inline
+Tdouble &
+Tdouble::operator=(const value_t &val)
+{
+    Assert(!std::isnan(val),ExcNotANumber());
+    Assert(!std::isinf(val),ExcNumberNotFinite());
+
+    val_ = val;
+    return (*this);
+}
+
+
+
+inline
+auto
+Tdouble::operator[](const int i) noexcept -> value_t &
+{
+    return *this;
+}
+
+
+
+inline
+auto
+Tdouble::
+operator[](const int i) const noexcept -> const value_t &
+{
+    return *this;
+}
+
+
+
+inline
+auto
+Tdouble::
+operator()(const TensorIndex<0>  &i) noexcept -> value_t &
+{
+    return *this;
+}
+
+
+
+inline
+auto
+Tdouble::
+operator()(const TensorIndex<0>  &i) const noexcept -> const value_t &
+{
+    return *this;
+}
+
+
+
+inline
+auto
+Tdouble::
+operator()(const int i) noexcept -> value_t &
+{
+    return *this;
+}
+
+
+
+inline
+auto
+Tdouble::
+operator()(const int i) const noexcept -> const value_t &
+{
+    return *this;
+}
+
+
+
+inline
+Tdouble &
+Tdouble::
+operator+=(const Real val) noexcept
+{
+    Assert(!std::isnan(val),ExcNotANumber());
+    Assert(!std::isinf(val),ExcNumberNotFinite());
+
+    val_ += val;
+    return *this;
+}
+
+
+
+inline
+Tdouble &
+Tdouble::
+operator-=(const Real val) noexcept
+{
+    Assert(!std::isnan(val),ExcNotANumber());
+    Assert(!std::isinf(val),ExcNumberNotFinite());
+
+    val_ -= val;
+    return *this;
+}
+
+
+
+inline
+Tdouble &
+Tdouble::
+operator*=(const Real val) noexcept
+{
+    Assert(!std::isnan(val),ExcNotANumber());
+    Assert(!std::isinf(val),ExcNumberNotFinite());
+
+    val_ *= val;
+    return *this;
+}
+
+
+
+inline
+Tdouble &
+Tdouble::
+operator/=(const Real val) noexcept
+{
+    Assert(!std::isnan(val),ExcNotANumber());
+    Assert(!std::isinf(val),ExcNumberNotFinite());
+    Assert(val != Real(0.0),ExcDivideByZero());
+
+    val_ /= val;
+    return *this;
+}
+
+
+
+inline
+Real
+Tdouble::
+norm() const noexcept
+{
+    return std::abs(val_);
+}
+
+
+
+inline
+Real
+Tdouble::
+norm_square() const noexcept
+{
+    return val_ * val_;
+}
+
+
+
+inline
+auto
+Tdouble::
+flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<0>
+{
+    return TensorIndex<0>();
+}
+
+
+
+inline
+int
+Tdouble::
+tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept
+{
+    return 0;
+}
+
+
+
+
 /*------ Inline functions: Tensor<  dim_, rank_, tensor_type, value_type > ---*/
 
 template<int dim_, int rank_, class tensor_type, class value_type >
