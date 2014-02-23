@@ -83,9 +83,14 @@ class Tdouble
 public:
     static const bool is_tensor = false;
 
-    static const int size   = 1;
-    static const int dim    = 1;
-    static const int rank   = 0;
+    /** Dimension of the vector space */
+    static const int dim   = 1; //Could actually be any number
+
+    /** Rank of the tensor */
+    static const int rank  = 0;
+
+    /** Flat size of the tensor, i.e. total number of components of type value_type */
+    static const int size = 1; //iga::constexpr_pow(dim_, rank_);
 
     using self_t = Tdouble;
     using co_tensor_t = self_t;
