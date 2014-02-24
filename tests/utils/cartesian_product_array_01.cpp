@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- * Test for ProductArray
+ * Test for CartesianProductArray
  * pauletti
  * 2013-01-15
  *
@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 
-#include <igatools/utils/product_array.h>
+#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/multi_array_utils.h>
 
 
@@ -35,7 +35,7 @@
 template <int dim>
 void do_test()
 {
-    typedef ProductArray<Index, dim> ProdArr;
+    typedef CartesianProductArray<Index, dim> ProdArr;
 
     ProdArr data1;
     data1.print_info(out);

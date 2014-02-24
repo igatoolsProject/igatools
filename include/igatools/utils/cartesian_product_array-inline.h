@@ -19,35 +19,25 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef PRODUCT_ARRAY_INLINE_H_
-#define PRODUCT_ARRAY_INLINE_H_
+#ifndef CARTESIAN_PRODUCT_ARRAY_INLINE_H_
+#define CARTESIAN_PRODUCT_ARRAY_INLINE_H_
 
 
-#include<igatools/utils/product_array.h>
+#include<igatools/utils/cartesian_product_array.h>
 
 IGA_NAMESPACE_OPEN
 
 template< class T, int rank>
 inline
 const std::vector<T> &
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 get_data_direction(const int i) const
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i, 0, rank)) ;
     return (data_[i]) ;
 }
 
-/*
-template< class T, int rank>
-inline
-std::vector<T> &
-ProductArray<T,rank>::
-operator[](const int i)
-{
-    Assert(i >= 0 && i < rank, ExcIndexRange(i, 0, rank)) ;
-    return (data_[ i ]) ;
-}
-//*/
 
 IGA_NAMESPACE_CLOSE
-#endif
+#endif // #ifndef CARTESIAN_PRODUCT_ARRAY_INLINE_H_
+

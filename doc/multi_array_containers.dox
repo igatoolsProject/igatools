@@ -40,11 +40,11 @@
        \f$\mathbf{Y}_{r} \otimes \mathbf{Y}_{s} = 
        \{ y_{i_r,i_s} = y_{i_r} y_{i_s}, \quad \forall y_{i_r}\in \mathbf{Y}_{r} ,\; \forall y_{i_s}\in \mathbf{Y}_{s} \}\f$.
          
-       The container for representing the cartesian product structure is ProductArray, 
+       The container for representing the cartesian product structure is CartesianProductArray, 
        while the one for representing the tensor product structure is TensorProductArray.
        
        In order to access the internal 1-dimensional data, we provide the functions 
-       ProductArray::get_data_direction() and  ProductArray::copy_data_direction()
+       CartesianProductArray::get_data_direction() and  CartesianProductArray::copy_data_direction()
      - <b><em>not tensor-product</em></b>.
        This kind of containers represent collections of objects that can be referred with 
        \f$d\f$-dimensional multi-indices, e.g.
@@ -63,7 +63,7 @@
        The containers in this category are: std::array and StaticMultiArray;
      - <b><em>dynamic</em></b>: the size of the container is passed as argument of the constructors. 
        The container can be resized with the function resize().
-       The containers in this category are: DynamicMultiArray, ProductArray and TensorProductArray;
+       The containers in this category are: DynamicMultiArray, CartesianProductArray and TensorProductArray;
      
    
    @remark All the multi-dimensional containers share the flat to tensor (and viceversa) index convention.

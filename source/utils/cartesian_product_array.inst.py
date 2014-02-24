@@ -37,7 +37,7 @@ for file in include_files:
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
 # instantiating ProductArray
-for row in inst.product_arrays:
+for row in inst.cartesian_product_arrays:
     file_output.write('template class %s; \n' % (row))
 
 

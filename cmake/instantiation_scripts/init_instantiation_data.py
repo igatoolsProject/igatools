@@ -100,8 +100,8 @@ class InstantiationInfo:
         self.dynamic_multi_arrays=[] #list DynamicMultiArray classes
         self.create_dynamic_multi_array()
 
-        self.product_arrays=[] #list ProductArray classes
-        self.create_product_array()
+        self.cartesian_product_arrays=[] #list CartesainProductArray classes
+        self.create_cartesian_product_array()
         
         return None
 
@@ -375,8 +375,8 @@ class InstantiationInfo:
 
 
 ##################################
-    def create_product_array(self):
-        '''Creates a list of the ProductArray class that needs to be instantiated'''
+    def create_cartesian_product_array(self):
+        '''Creates a list of the CartesianProductArray class that needs to be instantiated'''
 
         C_list=[]
 #        for row in self.table:
@@ -391,7 +391,7 @@ class InstantiationInfo:
         for t in types:
             for row in self.table:
                 dim = row.dim_ref
-                C = 'ProductArray<%s,%s>' % (t,dim)
+                C = 'CartesianProductArray<%s,%s>' % (t,dim)
                 C_list.append(C)
                 
 
@@ -407,7 +407,7 @@ class InstantiationInfo:
 #                C_list.append(C)
 
         
-        self.product_arrays = unique(C_list)        
+        self.cartesian_product_arrays = unique(C_list)        
         return None
 ##################################
 

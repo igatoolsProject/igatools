@@ -19,17 +19,15 @@
 //-+--------------------------------------------------------------------
 
 
-//TODO: maybe tensorproduct data and Product array can be just one class
-//TODO: it should be called ProductStaticMultiArray
 
-#ifndef __PRODUCT_ARRAY_H_
-#define __PRODUCT_ARRAY_H_
+#ifndef CARTESIAN_PRODUCT_ARRAY_H_
+#define CARTESIAN_PRODUCT_ARRAY_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/tensor_sized_container.h>
-//#include <type_traits>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -75,7 +73,7 @@ IGA_NAMESPACE_OPEN
  * @author Pauletti, 2012,2013
  */
 template< class T, int rank>
-class ProductArray : public TensorSizedContainer<rank>
+class CartesianProductArray : public TensorSizedContainer<rank>
 {
 public:
 
@@ -84,47 +82,47 @@ public:
     /**
      * Construct a rank-dimensional empty array.
      */
-    ProductArray() ;
+    CartesianProductArray() ;
 
     // TODO (pauletti, Dec 23, 2013): Document this
-    ProductArray(std::initializer_list<std::initializer_list<T>> list);
+    CartesianProductArray(std::initializer_list<std::initializer_list<T>> list);
 
     /**
-     * Construct a rank-dimensional ProductArray where the
+     * Construct a rank-dimensional CartesianProductArray where the
      * the i-th direction is initialized to be
      * of size size[i], calling the default constructor of T for
      * each entry of the vectors.
      */
-    explicit ProductArray(const TensorSize<rank> size);
+    explicit CartesianProductArray(const TensorSize<rank> size);
 
     /**
-     * Constructor. Same as ProductArray(const array< int, rank > size)
+     * Constructor. Same as CartesianProductArray(const array< int, rank > size)
      * but with all direction sizes equal to size.
      */
-    explicit ProductArray(const Size size);
+    explicit CartesianProductArray(const Size size);
 
 
     /**
-     * Constructor. Construct a rank-dimensional ProductArray where the
+     * Constructor. Construct a rank-dimensional CartesianProductArray where the
      * the i-th direction is initialized to be equal to @p data_directions[i]
      */
-    explicit ProductArray(const std::array<std::vector<T>,rank> &data_directions) ;
+    explicit CartesianProductArray(const std::array<std::vector<T>,rank> &data_directions) ;
 
 
     /**
      * Destructor.
      */
-    ~ProductArray() = default;
+    ~CartesianProductArray() = default;
 
     /**
      * Copy constructor.
      */
-    ProductArray(const ProductArray<T,rank> &product_array) = default;
+    CartesianProductArray(const CartesianProductArray<T,rank> &product_array) = default;
 
     /**
      * Move constructor.
      */
-    ProductArray(ProductArray<T,rank> &&product_array) = default;
+    CartesianProductArray(CartesianProductArray<T,rank> &&product_array) = default;
 
     ///@}
 
@@ -135,13 +133,13 @@ public:
      * Copy assignment operator.
      * @note Use with care as it may be an expensive operation.
      */
-    ProductArray<T,rank> &
-    operator=(const ProductArray<T,rank> &product_array) = default;
+    CartesianProductArray<T,rank> &
+    operator=(const CartesianProductArray<T,rank> &product_array) = default;
 
 
     /** Move assignment operator. */
-    ProductArray<T,rank> &
-    operator=(ProductArray<T,rank> &&product_array) = default;
+    CartesianProductArray<T,rank> &
+    operator=(CartesianProductArray<T,rank> &&product_array) = default;
     ///@}
 
 private:
@@ -157,13 +155,13 @@ private:
           std::array<T,rank> >;
 
     /**
-     * sub-ProductArray of the ProductArray.
+     * sub-CartesianProductArray of the CartesianProductArray.
      * @todo make it a template function
      * @warning There must be a bug in the compiler as it cannot put >0 instead !=0
      */
     using sub_product_t = Conditional< (rank > 0),
-          ProductArray<T,rank-1>,
-          ProductArray<T,0> >;
+          CartesianProductArray<T,rank-1>,
+          CartesianProductArray<T,0> >;
 
 public:
 
@@ -178,7 +176,7 @@ public:
 
     /**
      * Copy input @p data to the data relative to the @p i-th direction.
-     * @note The ProductArray object will be internally resized (if needed)
+     * @note The CartesianProductArray object will be internally resized (if needed)
      * in order to contains all the entries in the input @p data.
      */
     void copy_data_direction(const int i, const std::vector<T> &data) ;
@@ -193,7 +191,7 @@ public:
     /** @name Functions returning new objects */
     ///@{
     /**
-     * Returns a sub ProductArray of the ProductArray.
+     * Returns a sub CartesianProductArray of the CartesianProductArray.
      * @todo document more.
      */
     sub_product_t get_sub_product(const TensorIndex<rank-1> &index) const;
@@ -210,7 +208,7 @@ public:
     /**
      * Returns a flat vector of the cartesian product of the
      * product array.
-     * For example if the ProductArray is
+     * For example if the CartesianProductArray is
      * \f[
      * \mathbf{x}=\{1,2\} \quad , \quad
      * \mathbf{y}=\{4,3\}
@@ -251,8 +249,8 @@ IGA_NAMESPACE_CLOSE
 // If we are in debug mode we do not inline to gain some compilation speed,
 // but we do in Release mode
 #ifdef NDEBUG
-#include <igatools/utils/product_array-inline.h>
+#include <igatools/utils/cartesian_product_array-inline.h>
 #endif
 
 
-#endif
+#endif // #ifndef CARTESIAN_PRODUCT_ARRAY_H_

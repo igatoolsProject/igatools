@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/utils/product_array.h>
+#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/base/exceptions.h>
 
 
@@ -28,14 +28,16 @@ using std::vector;
 IGA_NAMESPACE_OPEN
 
 template< class T, int rank>
-ProductArray<T,rank>::ProductArray()
+CartesianProductArray<T,rank>::
+CartesianProductArray()
     :
-    ProductArray(0)
+    CartesianProductArray(0)
 {}
 
 
 template< class T, int rank>
-ProductArray<T,rank>::ProductArray(std::initializer_list<std::initializer_list<T>> list)
+CartesianProductArray<T,rank>::
+CartesianProductArray(std::initializer_list<std::initializer_list<T>> list)
 {
     Assert(list.size() == rank,
            ExcDimensionMismatch(list.size(),rank)) ;
@@ -51,8 +53,8 @@ ProductArray<T,rank>::ProductArray(std::initializer_list<std::initializer_list<T
 
 
 template< class T, int rank>
-ProductArray<T,rank>::
-ProductArray(const TensorSize<rank> size)
+CartesianProductArray<T,rank>::
+CartesianProductArray(const TensorSize<rank> size)
     :
     TensorSizedContainer<rank>(size)
 {
@@ -65,16 +67,16 @@ ProductArray(const TensorSize<rank> size)
 
 
 template< class T, int rank>
-ProductArray<T,rank>::
-ProductArray(const Size size)
+CartesianProductArray<T,rank>::
+CartesianProductArray(const Size size)
     :
-    ProductArray(TensorSize<rank>(filled_array<Size,rank>(size)))
+    CartesianProductArray(TensorSize<rank>(filled_array<Size,rank>(size)))
 {}
 
 
 template< class T, int rank>
-ProductArray<T,rank>::
-ProductArray(const array<vector<T>,rank> &data_directions)
+CartesianProductArray<T,rank>::
+CartesianProductArray(const array<vector<T>,rank> &data_directions)
 {
     TensorSize<rank> size;
     for (int i=0; i<rank; ++i)
@@ -87,7 +89,7 @@ ProductArray(const array<vector<T>,rank> &data_directions)
 
 
 template< class T, int rank>
-void ProductArray<T,rank>::
+void CartesianProductArray<T,rank>::
 resize(const TensorSize<rank> &size)
 {
     TensorSizedContainer<rank>::reset_size(size);
@@ -102,7 +104,7 @@ resize(const TensorSize<rank> &size)
 
 template< class T, int rank>
 T &
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 entry(const int i, const int j)
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
@@ -114,7 +116,7 @@ entry(const int i, const int j)
 
 template< class T, int rank>
 void
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 copy_data_direction(const int i, const vector<T> &data)
 {
     Assert(i>=0 && i<rank, ExcIndexRange(i,0,rank));
@@ -135,7 +137,7 @@ copy_data_direction(const int i, const vector<T> &data)
 
 template< class T, int rank>
 auto
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 cartesian_product(const TensorIndex<rank> &index) const -> point_t
 {
     point_t result;
@@ -148,7 +150,7 @@ cartesian_product(const TensorIndex<rank> &index) const -> point_t
 
 template< class T, int rank>
 auto
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 get_flat_cartesian_product() const -> vector<point_t>
 {
     const Size flat_size = this->flat_size();
@@ -166,7 +168,7 @@ get_flat_cartesian_product() const -> vector<point_t>
 
 template< class T, int rank>
 auto
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 get_sub_product(const TensorIndex<rank-1> &index) const -> sub_product_t
 {
     sub_product_t sub_data;
@@ -183,7 +185,7 @@ get_sub_product(const TensorIndex<rank-1> &index) const -> sub_product_t
 
 template< class T, int rank>
 void
-ProductArray<T,rank>::
+CartesianProductArray<T,rank>::
 print_info(LogStream &out) const
 {
     for (int i = 0 ; i < rank ; i++)
@@ -197,8 +199,8 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #ifndef NDEBUG
-#include <igatools/utils/product_array-inline.h>
+#include <igatools/utils/cartesian_product_array-inline.h>
 #endif
 
 
-#include <igatools/utils/product_array.inst>
+#include <igatools/utils/cartesian_product_array.inst>
