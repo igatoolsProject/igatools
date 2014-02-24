@@ -40,7 +40,14 @@ class ConstantFunction
     : public Function<dim, range, rank>
 {
 public:
+    /**
+     * Type for the input argument of the function.
+     */
     using PointType = typename Function<dim, range, rank>::PointType;
+
+    /**
+     * Type for the return of the function.
+     */
     using ValueType = typename Function<dim, range, rank>::ValueType;
 
     /**
