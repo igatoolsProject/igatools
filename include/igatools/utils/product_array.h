@@ -229,6 +229,11 @@ public:
      */
     void resize(const TensorSize<rank> &size);
 
+    /**
+     * Prints some internal informations. Mainly used for testing and debugging purposes.
+     */
+    void print_info(LogStream &out) const;
+
 protected:
     /**
      * This member contain the data for each coordinate direction.
@@ -239,13 +244,6 @@ protected:
 
 };
 
-
-/**
- * Output operator
- * @relates ProductArray
- */
-template< class T, int rank>
-LogStream &operator<<(LogStream &out, const ProductArray< T, rank> &data) ;
 
 
 IGA_NAMESPACE_CLOSE

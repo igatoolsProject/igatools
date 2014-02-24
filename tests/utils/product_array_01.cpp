@@ -38,17 +38,20 @@ void do_test()
     typedef ProductArray<Index, dim> ProdArr;
 
     ProdArr data1;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
         size(i) = 2+i;
 
     ProdArr data2(size);
-    out << data2 << endl;
+    data2.print_info(out);
+    out << endl;
 
     ProdArr data3(3);
-    out << data3 << endl;
+    data3.print_info(out);
+    out << endl;
 }
 
 

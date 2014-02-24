@@ -40,12 +40,6 @@ file_output.write('IGA_NAMESPACE_OPEN\n')
 for row in inst.product_arrays:
     file_output.write('template class %s; \n' % (row))
 
-file_output.write('\n')
-
-# Operator <<
-for row in inst.product_arrays:
-    file_output.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
-
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 

@@ -182,12 +182,12 @@ get_sub_product(const TensorIndex<rank-1> &index) const -> sub_product_t
 
 
 template< class T, int rank>
-LogStream &operator<<(LogStream &out, const ProductArray< T, rank > &data)
+void
+ProductArray<T,rank>::
+print_info(LogStream &out) const
 {
     for (int i = 0 ; i < rank ; i++)
-        out << data.get_data_direction(i) << std::endl;
-
-    return (out) ;
+        out << data_[i] << std::endl;
 }
 
 
