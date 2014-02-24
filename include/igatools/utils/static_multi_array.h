@@ -24,7 +24,6 @@
 #define STATIC_MULTI_ARRAY_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/logstream.h>
 #include <igatools/utils/multi_array.h>
 
 IGA_NAMESPACE_OPEN
@@ -56,7 +55,8 @@ public:
     /** @name Constructors and destructor */
     ///@{
     /**
-     * Construct a StaticMultiArray in which its elements are in undefined state.
+     * Construct a StaticMultiArray in which its elements are
+     * initialized with the proper default constructor.
      */
     StaticMultiArray();
 

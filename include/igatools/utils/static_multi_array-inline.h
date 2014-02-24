@@ -26,6 +26,7 @@
 
 
 #include<igatools/utils/static_multi_array.h>
+#include <igatools/base/logstream.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -36,7 +37,7 @@ template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray()
     :
-    base_t(filled_array<Size,rank>(dim))
+    base_t(TensorSize<rank>(dim))
 {
     Assert(this->flat_size() == n_entries, ExcDimensionMismatch(this->flat_size(),n_entries));
 }
@@ -46,9 +47,8 @@ template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray(const T &val)
     :
-    base_t(filled_array<Size,rank>(dim))
+    StaticMultiArray<T,dim,rank>()
 {
-    Assert(this->flat_size() == n_entries, ExcDimensionMismatch(this->flat_size(),n_entries));
     this->data_ = filled_array<T,n_entries>(val) ;
 }
 
@@ -57,12 +57,10 @@ template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray(const std::array<T,dim> &val)
     :
-    base_t(filled_array<Size,rank>(dim))
+    StaticMultiArray<T,dim,rank>()
 {
-    Assert(this->flat_size() == n_entries, ExcDimensionMismatch(this->flat_size(),n_entries));
-
-    int i = 0 ;
-    for (int r=0 ; r < rank ; ++r)
+    Index i = 0 ;
+    for (int r=0 ; r <= rank ; ++r)
         for (int d=0 ; d < dim ; ++d,++i)
             this->data_[i] = val[d];
 }
@@ -74,7 +72,6 @@ StaticMultiArray(std::initializer_list<T> list)
     :
     StaticMultiArray<T,dim,rank>()
 {
-    Assert(this->flat_size() == n_entries, ExcDimensionMismatch(this->flat_size(),n_entries));
     Assert(list.size() == n_entries, ExcDimensionMismatch(list.size(),n_entries));
 
     for (int i = 0 ; i < n_entries  ; ++i)

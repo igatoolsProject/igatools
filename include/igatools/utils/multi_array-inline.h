@@ -183,6 +183,17 @@ fill(const Entry &value)
 
 
 
+template<class STLContainer, int rank>
+inline
+void
+MultiArray<STLContainer,rank>::
+print_info(LogStream &out) const
+{
+    for (const auto &v : data_)
+        out << v << " ";
+}
+
+
 
 IGA_NAMESPACE_CLOSE
 

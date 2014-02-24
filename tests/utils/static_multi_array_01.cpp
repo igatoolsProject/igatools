@@ -19,37 +19,43 @@
 //-+--------------------------------------------------------------------
 
 /*
- * Test for DynamicMultiArray: construction, index accessing and resizing
- * author: pauletti, martinelli
- * data:   2013-06-15
+ * Test for StaticMultiArray: construction, index accessing
+ * author: martinelli
+ * data:   24 Feb 2014
  *
  */
 
 #include "../tests.h"
 
-#include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/utils/static_multi_array.h>
 
 
 //Test the different constructors
 template <int dim>
 void do_test()
 {
-    out << "Default constructor "<< endl;
-    DynamicMultiArray<Index, dim> data1;
-    out << data1 << endl;
+    out << "========== BEGIN do_test<" << dim << "> ==========" << endl;
+
+//    out << "Default constructor "<< endl;
+    StaticMultiArray<Index,dim,2> data1;
+//    out << endl;
 
 
-    out << "Uniform constructor "<< endl;
-    DynamicMultiArray<Index, dim> data2(3);
-    out << data2 << endl;
+    out << "Constant value constructor (value=3)"<< endl;
+    StaticMultiArray<Index,dim,2> data2(3);
+    data2.print_info(out);
+    out << endl;
 
 
-    out << "Rectangular constructor "<< endl;
-    TensorSize<dim> size;
+    out << "Variable value constructor (value=dim)"<< endl;
+    array<Index,dim> val;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
-    DynamicMultiArray<Index, dim> data3(size);
-    out << data3 << endl;
+        val[i] = i;
+    StaticMultiArray<Index,dim,2> data3(val);
+    data3.print_info(out);
+    out << endl;
+    out << "========== END do_test<" << dim << "> ==========" << endl;
+    out << endl;
 }
 
 
@@ -57,74 +63,65 @@ void do_test()
 template <int dim>
 void do_test_1()
 {
-    out << "Default constructor "<< endl;
-    DynamicMultiArray<Index, dim> data1;
-    out << data1 << endl;
-
-    data1.resize(3);
+    out << "========== BEGIN do_test_1<" << dim << "> ==========" << endl;
+    StaticMultiArray<Index,dim,2> data1;
 
     out << "Size: " << data1.flat_size() << endl;
 
-    for (int i = 0; i < data1.flat_size(); ++i)
-        out << data1(i) << " ";
 
     for (int i = 0; i < data1.flat_size(); ++i)
         data1(i) = i;
 
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
 
-    TensorSize<dim> size;
-    for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
-    data1.resize(size);
     out << "Size: " << data1.flat_size() << endl;
     for (int i = 0; i < data1.flat_size(); ++i)
         data1(i) = i;
 
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
+    out << "========== END do_test_1<" << dim << "> ==========" << endl;
+    out << endl;
 }
 
 
 template <int dim>
 void do_test_2()
 {
-    out << "Default constructor "<< endl;
-    DynamicMultiArray<Index, dim> data1(3);
+    out << "========== BEGIN do_test_2<" << dim << "> ==========" << endl;
+    out << "Fill progression from 0 "<< endl;
+    StaticMultiArray<Index,dim,2> data1(3);
     data1.fill_progression();
     out << "Size: " << data1.flat_size() << endl;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
 
-    TensorSize<dim> size;
-    for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
-    data1.resize(size);
+    out << "Fill progression from 10 "<< endl;
     data1.fill_progression(10);
     out << "Size: " << data1.flat_size() << endl;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
+    out << "========== END do_test_2<" << dim << "> ==========" << endl;
+    out << endl;
 }
 
 
-//Test the extract flat view
 template <int dim>
 void do_test_3()
 {
-    out << "Default constructor "<< endl;
-    DynamicMultiArray<Index, dim> data1(4);
-    data1.fill_progression();
+    out << "========== BEGIN do_test_3<" << dim << "> ==========" << endl;
+    out << "Constant value constructor (value=4)"<< endl;
+    StaticMultiArray<Index,dim,2> data1(4);
+    out << "Fill progression from 2 "<< endl;
+    data1.fill_progression(2);
     out << "Size: " << data1.flat_size() << endl;
-    out << data1 << endl;
-
-
-    TensorIndex<dim> origin;
-    for (int i = 0; i < dim; ++i)
-        origin[i] = 1;
-    TensorIndex<dim> increment;
-    for (int i = 0; i < dim; ++i)
-        increment[i] = 3-i;
-
-    out << "Flat view: " << data1.get_flat_view(origin, increment) << endl;
+    data1.print_info(out);
+    out << endl;
+    out << "========== END do_test_3<" << dim << "> ==========" << endl;
+    out << endl;
 }
 
 

@@ -199,6 +199,18 @@ public:
     void fill(const Entry &value);
     ///@}
 
+
+    /**
+     * @name Printing info
+     */
+    ///@{
+    /**
+     * Prints the content of the MultiArray on the LogStream @p out.
+     * Its use is intended mainly for testing and debugging purpose.
+     */
+    void print_info(LogStream &out) const ;
+    ///@}
+
 protected:
 
     /**

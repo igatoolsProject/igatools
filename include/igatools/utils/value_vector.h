@@ -122,6 +122,7 @@ public :
     ///@{
     /**
      * Prints the content of the ValueVector on the LogStream @p out.
+     * Its use is intended mainly for testing and debugging purpose.
      */
     void print_info(LogStream &out) const ;
     ///@}
