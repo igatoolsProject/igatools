@@ -1,0 +1,51 @@
+[ ]
+
+[ 0 0 ]
+
+[ 0 0 0 ]
+
+[ ]
+[ ]
+
+[ 0 0 ]
+[ 0 0 0 ]
+
+[ 0 0 0 ]
+[ 0 0 0 ]
+
+[ ]
+[ ]
+[ ]
+
+[ 0 0 ]
+[ 0 0 0 ]
+[ 0 0 0 0 ]
+
+[ 0 0 0 ]
+[ 0 0 0 ]
+[ 0 0 0 ]
+
+Size: 
+2
+Tensor weight: 
+2
+Flat index: 10  Tensor index: ( 10 )
+Tensor index: ( 0 )  Flat index: 0
+Size: 
+2
+3
+Tensor weight: 
+2
+6
+Flat index: 10  Tensor index: ( 0 5 )
+Tensor index: ( 0 1 )  Flat index: 2
+Size: 
+2
+3
+4
+Tensor weight: 
+2
+6
+24
+Flat index: 10  Tensor index: ( 0 2 1 )
+Tensor index: ( 0 1 2 )  Flat index: 14

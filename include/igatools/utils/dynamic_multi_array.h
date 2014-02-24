@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 // QualityAssurance: martinelli, 31 Jan 2014
 
 #ifndef DYNAMIC_MULTI_ARRAY_H_

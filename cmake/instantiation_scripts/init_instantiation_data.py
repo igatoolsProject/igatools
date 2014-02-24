@@ -97,8 +97,11 @@ class InstantiationInfo:
         self.tensor_sized_containers=[] #list TensorSizedContainer classes
         self.create_tensor_sized_containers()
 
-        self.dynamic_multi_array=[] #list DynamicMultiArray classes
+        self.dynamic_multi_arrays=[] #list DynamicMultiArray classes
         self.create_dynamic_multi_array()
+
+        self.product_arrays=[] #list ProductArray classes
+        self.create_product_array()
         
         return None
 
@@ -337,8 +340,8 @@ class InstantiationInfo:
             dim_domain = row.dim_ref
             C = 'TensorSizedContainer<%d>' % (dim_domain)
             C_list.append(C)
-#            C = 'TensorSizedContainer<%d>' % (dim_domain+1)
-#            C_list.append(C)
+            C = 'TensorSizedContainer<%d>' % (dim_domain+1)
+            C_list.append(C)
 		
         self.tensor_sized_containers = unique(C_list)        
         return None
@@ -366,7 +369,44 @@ class InstantiationInfo:
 #    C_list.append ("DynamicMultiArray<Tensor< %d, %d, tensor::contravariant, Tdouble >, 2 >" \
 #                   %(row.dim_phys, row.rank_ref))
 		
-        self.dynamic_multi_array = unique(C_list)        
+        self.dynamic_multi_arrays = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_product_array(self):
+        '''Creates a list of the ProductArray class that needs to be instantiated'''
+
+        C_list=[]
+        for row in self.table:
+            dim = row.dim_ref
+            C = 'ProductArray<Real,%s>' % (dim)
+            C_list.append(C)
+            C = 'ProductArray<Real,%s>' % (dim+1)
+            C_list.append(C)
+
+        types=['Real*','Index']
+        for t in types:
+            for row in self.table:
+                dim = row.dim_ref
+                C = 'ProductArray<%s,%s>' % (t,dim)
+                C_list.append(C)
+                
+
+# The following instantiations are for the cache of basisfucntion in Bspline space
+# and the bezier operators
+# todo: do we need both index types here?
+        matrix = "boost::numeric::ublas::matrix<Real>"
+        types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
+        for t in types:
+            for row in self.table:
+                dim = row.dim_ref
+                C = "ProductArray<%s,%d>" % (t,dim)
+                C_list.append(C)
+
+        
+        self.product_arrays = unique(C_list)        
         return None
 ##################################
 

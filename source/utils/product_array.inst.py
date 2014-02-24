@@ -19,14 +19,16 @@
 #-+--------------------------------------------------------------------
 
 
-
-
 from init_instantiation_data import *
 
 file_output, inst = intialize_instantiation()
 
 
-include_files = ['#include <igatools/base/tensor.h>\n']
+
+include_files = [ '#include <igatools/base/tensor.h>\n',
+#				  '#include <igatools/utils/value_table.h>\n',
+				  '#include <boost/numeric/ublas/matrix.hpp>\n',
+				  '#include <boost/numeric/ublas/io.hpp>\n' ]
 for file in include_files:
     file_output.write(file)
 
@@ -34,18 +36,21 @@ for file in include_files:
 
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating DynamicMultiArray
-for row in inst.dynamic_multi_arrays:
+# instantiating ProductArray
+for row in inst.product_arrays:
     file_output.write('template class %s; \n' % (row))
 
 file_output.write('\n')
 
 # Operator <<
-for row in inst.dynamic_multi_arrays:
+for row in inst.product_arrays:
     file_output.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
+
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 
 file_output.close()
 
 
+ 
+ 
