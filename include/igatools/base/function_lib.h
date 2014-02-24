@@ -68,7 +68,7 @@ public:
              std::vector<ValueType> &values) const;
 
 private:
-    /** Constant given value. */
+    /** Constant given value that defines the function. */
     const ValueType value_;
 
 };
