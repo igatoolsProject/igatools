@@ -142,4 +142,4 @@ using TensorFunction = Function<dim, dim, 2>;
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* _FUNCTIONS_H */
+#endif /* __FUNCTIONS_H */
