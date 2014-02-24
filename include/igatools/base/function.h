@@ -29,15 +29,16 @@
 IGA_NAMESPACE_OPEN
 
 /**
- *  This class represents a function
- *  \f[ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r_{times}}} \f].
+ *  @brief This class represents a function
+ *  \f$ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r_{times}}}. \f$
  *
  *  For example:
  *  - Function<n,m,1> is an m-vector valued function from <i> R <sup> n </sup> </i>.
  *  - Function<n,m,0> is a scalar function for any m.
  *
- *  This is a pure virtual function and to be instantiate a derived class
- *  defining evaluate must be provided.
+ *  This is a pure abstract class and cannot be instantiated.
+ *  Its purpose is to give an unified interface for concrete classes implementing
+ *  function evaluation through the specialization of Function::evaluate().
  *
  *  For example to define a liner function from R^m to R^n
  *  \code
