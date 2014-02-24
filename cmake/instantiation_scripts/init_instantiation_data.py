@@ -102,6 +102,9 @@ class InstantiationInfo:
 
         self.cartesian_product_arrays=[] #list CartesainProductArray classes
         self.create_cartesian_product_array()
+
+        self.tensor_product_arrays=[] #list TensorProductArray classes
+        self.create_tensor_product_array()
         
         return None
 
@@ -379,12 +382,12 @@ class InstantiationInfo:
         '''Creates a list of the CartesianProductArray class that needs to be instantiated'''
 
         C_list=[]
-#        for row in self.table:
-#            dim = row.dim_ref
-#            C = 'ProductArray<Real,%s>' % (dim)
-#            C_list.append(C)
-#            C = 'ProductArray<Real,%s>' % (dim+1)
-#            C_list.append(C)
+        for row in self.table:
+            dim = row.dim_ref
+            C = 'CartesianProductArray<Real,%s>' % (dim)
+            C_list.append(C)
+            C = 'CartesianProductArray<Real,%s>' % (dim+1)
+            C_list.append(C)
 
 #        types=['Real*','Index']
         types=['Index']
@@ -408,6 +411,22 @@ class InstantiationInfo:
 
         
         self.cartesian_product_arrays = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_tensor_product_array(self):
+        '''Creates a list of the TensorProductArray class that needs to be instantiated'''
+
+        C_list=[]
+        for row in self.table:
+            dim = row.dim_ref
+            C = 'TensorProductArray<%s>' % (dim)
+            C_list.append(C)
+
+        
+        self.tensor_product_arrays = unique(C_list)        
         return None
 ##################################
 

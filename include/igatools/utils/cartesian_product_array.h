@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief Dynamic sized, tensor product type of multi dimensional array.
  *
- * Special type of <tt>rank></tt>-dimensional multidimensional array container.
+ * Special type of <tt>rank</tt>-dimensional multidimensional array container.
  * Each entry of the array can be though as indexed by
  * rank number of indices, but each entry is the ordered
  * rank-tuple generated as the  cartesian (or direct) product of

@@ -18,33 +18,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
 from init_instantiation_data import *
 
 file_output, inst = intialize_instantiation()
 
 
 
-include_files = [ '#include <igatools/base/tensor.h>\n',
-#				  '#include <igatools/utils/value_table.h>\n',
-				  '#include <boost/numeric/ublas/matrix.hpp>\n',
-				  '#include <boost/numeric/ublas/io.hpp>\n' ]
-for file in include_files:
-    file_output.write(file)
-
-
 
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating CartesianProductArray
-for row in inst.cartesian_product_arrays:
+# instantiating TensorProductArray
+for row in inst.tensor_product_arrays:
     file_output.write('template class %s; \n' % (row))
 
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 
 file_output.close()
-
 
  
  
