@@ -33,6 +33,8 @@ IGA_NAMESPACE_OPEN
  * @brief Static multi-dimensional array container, i.e. a tensor-like array
  * container of fixed dimension and fixed @p rank.
  *
+ * Basically is a MultiArray in which the STL container is a std::array.
+ *
  * @see MultiArray
  *
  * @ingroup multi_array_containers
@@ -55,8 +57,7 @@ public:
     /** @name Constructors and destructor */
     ///@{
     /**
-     * Construct a StaticMultiArray in which its elements are
-     * initialized with the proper default constructor.
+     * Construct a StaticMultiArray in which its elements are in undefined state.
      */
     StaticMultiArray();
 
@@ -64,14 +65,14 @@ public:
      * Construct a StaticMultiArray in which its elements are set to be equal
      * to the argument value @p val.
      */
-    StaticMultiArray(const T &val);
+    explicit StaticMultiArray(const T &val);
 
 
     /**
      * Construct a StaticMultiArray in which its elements are equal between different rank indices,
      * and for a given rank are set to be equal to the argument values @p val.
      */
-    StaticMultiArray(const std::array<T,dim> &val);
+    explicit StaticMultiArray(const std::array<T,dim> &val);
 
     /**
      * Initializer list constructor.
@@ -84,13 +85,13 @@ public:
     /**
      * Copy constructor. It performs a deep copy of the StaticMultiArray @p m_array.
      */
-    StaticMultiArray(const StaticMultiArray< T, dim, rank > &m_array) = default;
+    StaticMultiArray(const StaticMultiArray<T,dim,rank> &m_array) = default;
 
 
     /**
      * Move constructor.
      */
-    StaticMultiArray(StaticMultiArray< T, dim, rank > &&m_array) = default;
+    StaticMultiArray(StaticMultiArray<T,dim,rank> &&m_array) = default;
 
     /**
      * Destructor. It does nothing.
