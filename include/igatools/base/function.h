@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *  This class represents a function
- *  \f[ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r times}} \f].
+ *  \f[ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r_{times}}} \f].
  *
  *  For example:
  *  - Function<n,m,1> is an m-vector valued function from <i> R <sup> n </sup> </i>.
