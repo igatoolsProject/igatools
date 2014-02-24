@@ -78,8 +78,15 @@ std::vector<T>
 DynamicMultiArray<T,rank>::
 get_flat_view(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) const
 {
-    auto loc_weight = MultiArrayUtils<rank>::compute_weight(inc);
-    const Size size = MultiArrayUtils<rank>::size(inc);
+    TensorSize<rank> loc_size;
+    for (int i = 0 ; i < rank ; ++i)
+        loc_size(i) = inc[i];
+
+    auto loc_weight = MultiArrayUtils<rank>::compute_weight(loc_size);
+    const Size size = loc_size.flat_size();
+    Assert(size == MultiArrayUtils<rank>::size(inc),
+           ExcDimensionMismatch(size,MultiArrayUtils<rank>::size(inc)));
+
     std::vector<T> result(size);
     for (int i = 0; i < size; ++i)
     {
@@ -192,11 +199,11 @@ copy_slice(const int direction, const Index index,
 template<class T, int rank>
 LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)
 {
-	Size size = data.flat_size();
+    Size size = data.flat_size();
 
-	for (Index i = 0 ; i < size ; ++i)
-		out << data(i) << " ";
-	return out;
+    for (Index i = 0 ; i < size ; ++i)
+        out << data(i) << " ";
+    return out;
 }
 
 

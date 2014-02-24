@@ -187,8 +187,11 @@ public:
      * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
      */
     const std::vector<T> &get_data_direction(const int i) const ;
+    ///@}
 
 
+    /** @name Functions returning new objects */
+    ///@{
     /**
      * Returns a sub ProductArray of the ProductArray.
      * @todo document more.
@@ -218,9 +221,7 @@ public:
      * \f]
      */
     std::vector< point_t > get_flat_cartesian_product() const;
-
     ///@}
-
 
     /**
      * Resize the vectors containing the data, where

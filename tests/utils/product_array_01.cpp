@@ -40,9 +40,9 @@ void do_test()
     ProdArr data1;
     out << data1 << endl;
 
-    std::array< Index, dim> size;
+    TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size[i] = 2+i;
+        size(i) = 2+i;
 
     ProdArr data2(size);
     out << data2 << endl;
@@ -56,13 +56,13 @@ void do_test()
 template <int dim>
 void do_test1()
 {
-    std::array< Index, dim > size;
+    TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size[i] = 2+i;
+        size(i) = 2+i;
     auto weight = MultiArrayUtils<dim>::compute_weight(size);
     out << "Size: " << endl;
     for (int i = 0; i < dim; ++i)
-        out << size[i] << endl;
+        out << size(i) << endl;
 
     out << "Tensor weight: " << endl;
     for (int i = 0; i < dim; ++i)
@@ -77,7 +77,7 @@ void do_test1()
     out << ")" << endl;
 
     for (int i = 0; i < dim; ++i)
-        tensor_index[i] = size[i]-2;
+        tensor_index[i] = size(i)-2;
     out << "Tensor index: ( ";
     for (int i = 0; i < dim; ++i)
         out << tensor_index[i] << " ";

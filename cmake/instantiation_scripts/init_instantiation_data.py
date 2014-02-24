@@ -379,14 +379,15 @@ class InstantiationInfo:
         '''Creates a list of the ProductArray class that needs to be instantiated'''
 
         C_list=[]
-        for row in self.table:
-            dim = row.dim_ref
-            C = 'ProductArray<Real,%s>' % (dim)
-            C_list.append(C)
-            C = 'ProductArray<Real,%s>' % (dim+1)
-            C_list.append(C)
+#        for row in self.table:
+#            dim = row.dim_ref
+#            C = 'ProductArray<Real,%s>' % (dim)
+#            C_list.append(C)
+#            C = 'ProductArray<Real,%s>' % (dim+1)
+#            C_list.append(C)
 
-        types=['Real*','Index']
+#        types=['Real*','Index']
+        types=['Index']
         for t in types:
             for row in self.table:
                 dim = row.dim_ref
@@ -397,13 +398,13 @@ class InstantiationInfo:
 # The following instantiations are for the cache of basisfucntion in Bspline space
 # and the bezier operators
 # todo: do we need both index types here?
-        matrix = "boost::numeric::ublas::matrix<Real>"
-        types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
-        for t in types:
-            for row in self.table:
-                dim = row.dim_ref
-                C = "ProductArray<%s,%d>" % (t,dim)
-                C_list.append(C)
+#        matrix = "boost::numeric::ublas::matrix<Real>"
+#        types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
+#        for t in types:
+#            for row in self.table:
+#                dim = row.dim_ref
+#                C = "ProductArray<%s,%d>" % (t,dim)
+#                C_list.append(C)
 
         
         self.product_arrays = unique(C_list)        

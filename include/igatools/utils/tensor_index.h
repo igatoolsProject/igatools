@@ -51,10 +51,10 @@ public:
     ///@{
 
     /** Default constructor. Initializes all the direction indices to zero. */
-    TensorIndex(const Index value = 0) noexcept ;
+    explicit TensorIndex(const Index value = 0) noexcept ;
 
     /** Constructor using an std::array. */
-    TensorIndex(const std::array<Index,rank> &arr) noexcept;
+    explicit TensorIndex(const std::array<Index,rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
     TensorIndex(std::initializer_list<Index> list) noexcept;

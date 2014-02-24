@@ -46,13 +46,13 @@ public:
     ///@{
 
     /** Default constructor. Initializes all the direction indices to zero. */
-    TensorSize(const Size value = 0) noexcept ;
+    explicit TensorSize(const Size value = 0) noexcept ;
 
     /** Constructor using an std::array. */
-    TensorSize(const std::array<Size,rank> &arr) noexcept;
+    explicit TensorSize(const std::array<Size,rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
-    TensorSize(std::initializer_list<Size> list) noexcept;
+    explicit TensorSize(std::initializer_list<Size> list) noexcept;
 
     /** Copy constructor. */
     TensorSize(const TensorSize<rank> &arr) = default;

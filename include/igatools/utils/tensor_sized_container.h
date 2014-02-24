@@ -56,13 +56,13 @@ public:
      * Constuctor. Sets the size of the container with size (in each dimension) specified by
      * the input argument @p size.
      */
-    TensorSizedContainer(const TensorSize<rank> &size);
+    explicit TensorSizedContainer(const TensorSize<rank> &size);
 
     /**
      * Constuctor. Sets the size of the container with the same size in each dimension,
      *  specified by the input argument @p size.
      */
-    TensorSizedContainer(const Size size);
+    explicit TensorSizedContainer(const Size size);
 
     /** Copy constructor. */
     TensorSizedContainer(const TensorSizedContainer<rank> &in) = default;

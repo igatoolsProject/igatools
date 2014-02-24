@@ -96,6 +96,7 @@ public:
 
     /**
      * Computes the size of a given tensor index
+     * @todo remove this function because a TensorIndex is not a TensorSize
      */
     static Size
     size(const TensorIndex<rank> &extend) noexcept ;
