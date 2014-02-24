@@ -119,7 +119,7 @@ TensorProductArray<rank+1>
 TensorProductArray<rank>::
 insert(const int index, const std::vector<Real> &new_vector) const
 {
-    Assert(index<rank+1, ExcIndexRange(0,index,rank+1));
+    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 
     TensorSize<rank+1> size;
 
