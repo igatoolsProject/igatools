@@ -237,6 +237,24 @@ LogStream::get_prefix() const
 }
 
 
+void
+LogStream::push(const std::string &text)
+{
+// Threads::ThreadMutex::ScopedLock lock(log_lock);
+    std::string pre=prefixes.top();
+    pre += text;
+    prefixes.push(pre);
+}
+
+
+void LogStream::pop()
+{
+// Threads::ThreadMutex::ScopedLock lock(log_lock);
+    if (prefixes.size() > 1)
+        prefixes.pop();
+}
+
+
 unsigned int
 LogStream::depth_console(const unsigned int n)
 {

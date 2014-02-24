@@ -2,7 +2,7 @@
 // This file is part of igatools, a general purpose Isogeometric analysis
 // library. It was copied from the deal.II project where it is licensed
 // under the LGPL (see http://www.dealii.org/).
-// I has been modified by the igatools authors to fit the igatools framework.
+// It has been modified by the igatools authors to fit the igatools framework.
 //-+--------------------------------------------------------------------
 
 #ifndef _logstream_h
@@ -195,7 +195,23 @@ public:
      */
     const std::string &get_prefix() const;
 
+    /**
+     * @deprecated Use Prefix instead
+     *
+     * Push another prefix on the
+     * stack. Prefixes are
+     * automatically separated by a
+     * colon and there is a double
+     * colon after the last prefix.
+     */
+    void push(const std::string &text);
 
+    /**
+     * @deprecated Use Prefix instead
+     *
+     * Remove the last prefix.
+     */
+    void pop();
 
     /**
      * Maximum number of levels to be
@@ -730,14 +746,14 @@ LogStream::Prefix::Prefix(const std::string &text, LogStream &s)
     :
     stream(&s)
 {
-//   stream->push(text);
+    stream->push(text);
 }
 
 
 inline
 LogStream::Prefix::~Prefix()
 {
-    //  stream->pop();
+    stream->pop();
 }
 
 

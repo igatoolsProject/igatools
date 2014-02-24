@@ -40,6 +40,8 @@ IGA_NAMESPACE_OPEN
  * vectors (that we call directions).
  *
  * @ingroup multi_array_containers
+ * @author Martinelli, 2012, 2013, 2014
+ *
  */
 template<int rank>
 class TensorProductArray :
@@ -76,6 +78,15 @@ public :
     TensorProductArray(TensorProductArray<rank> &&data) = default;
 
     /**
+     * Constructor from the CartesianProductArray object @p data.
+     *
+     * @note The use of this constructor is safe because TensorProductArray<rank> and
+     * CartesianProductArray<Real,rank> differs only for the members functions and
+     * not for the member variables.
+     */
+    TensorProductArray(const CartesianProductArray<Real,rank> &data);
+
+    /**
      * Destructor
      */
     ~TensorProductArray() = default;
@@ -97,27 +108,21 @@ public :
 
 
 
-    /** @name Functions for performing dilatation and translation of the values in the container */
+    /** @name Functions for performing dilation and translation of the values in the container */
     ///@{
-    /**
-     * \brief Dilated and translated tensor product data.
-     */
+    /** Dilation followed by a translation of the TensorProductArray data. */
     void dilate_translate(const std::array<Real,rank> &dilate,
                           const Point<rank> &translate) ;
 
-    /**
-     * Dilated tensor product data.
-     */
+    /** Dilation of the TensorProductArray data.*/
     void dilate(const std::array<Real,rank> &dilate) ;
 
 
-    /**
-     * Translated tensor product data.
-     */
+    /** Translation of the TensorProductArray data.*/
     void translate(const Point<rank> &translate) ;
     ///@}
 
-    /** Functions returning new objects */
+    /** @name Functions returning the tensor product entries */
     ///@{
     /**
      * Returns the entry identified by the tensor index given by @p tensor_id.
@@ -129,14 +134,6 @@ public :
      * through the tensor product operation.
      */
     std::vector<Real> get_flat_tensor_product() const;
-
-
-    /**
-     * Returns a TensorProductArray of one higher rank built from the insertion
-     * of a given vector at the given direction index.
-     */
-    TensorProductArray<rank+1> insert(const Index index, const std::vector<Real> &new_vector) const;
-
     ///@}
 
 

@@ -169,18 +169,52 @@ get_flat_cartesian_product() const -> vector<point_t>
 template< class T, int rank>
 auto
 CartesianProductArray<T,rank>::
-get_sub_product(const TensorIndex<rank-1> &index) const -> sub_product_t
+get_sub_product(const TensorIndex<rank-1> &index) const -> SubProduct
 {
-    sub_product_t sub_data;
+    SubProduct sub_data;
     for (int i=0; i<rank-1; ++i)
     {
-        Assert(index[i]<int(rank), ExcIndexRange(0,rank,index[i]));
+        Assert(index[i]<rank, ExcIndexRange(index[i],0,rank));
         sub_data.copy_data_direction(i,data_[index[i]]);
     }
 
     return sub_data;
 }
 
+template <class T, int rank>
+CartesianProductArray<T,rank+1>
+CartesianProductArray<T,rank>::
+insert(const int index, const std::vector<T> &new_vector) const
+{
+    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+
+    TensorSize<rank+1> size;
+
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            size(i) = new_vector.size();
+        else
+        {
+            size(i) = this->tensor_size()(j);
+            ++j;
+        }
+    }
+
+    CartesianProductArray<T,rank+1> product(size);
+
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            product.copy_data_direction(i,new_vector);
+        else
+        {
+            product.copy_data_direction(i,this->data_[j]);
+            ++j;
+        }
+    }
+    return product;
+}
 
 
 template< class T, int rank>

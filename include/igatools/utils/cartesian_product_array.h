@@ -32,7 +32,6 @@
 IGA_NAMESPACE_OPEN
 
 
-
 /**
  * @brief Dynamic sized, tensor product type of multi dimensional array.
  *
@@ -73,9 +72,17 @@ IGA_NAMESPACE_OPEN
  * @author Pauletti, 2012,2013
  */
 template< class T, int rank>
-class CartesianProductArray : public TensorSizedContainer<rank>
+class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
+    /**
+     * Type for the <tt>rank-1</tt> CartesianProductArray
+     */
+    using SubProduct = Conditional< (rank > 0),
+          CartesianProductArray<T,rank-1>,
+          CartesianProductArray<T,0> >;
+
+
 
     /** @name Constructors */
     ///@{
@@ -97,7 +104,7 @@ public:
 
     /**
      * Constructor. Same as CartesianProductArray(const array< int, rank > size)
-     * but with all direction sizes equal to size.
+     * but with all direction sizes equal to @p size.
      */
     explicit CartesianProductArray(const Size size);
 
@@ -154,14 +161,6 @@ private:
           TensorIndex<rank>>,
           std::array<T,rank> >;
 
-    /**
-     * sub-CartesianProductArray of the CartesianProductArray.
-     * @todo make it a template function
-     * @warning There must be a bug in the compiler as it cannot put >0 instead !=0
-     */
-    using sub_product_t = Conditional< (rank > 0),
-          CartesianProductArray<T,rank-1>,
-          CartesianProductArray<T,0> >;
 
 public:
 
@@ -187,14 +186,36 @@ public:
     const std::vector<T> &get_data_direction(const int i) const ;
     ///@}
 
-
-    /** @name Functions returning new objects */
+    /** @name Functions returning rank-1 and rank+1 objects */
     ///@{
     /**
-     * Returns a sub CartesianProductArray of the CartesianProductArray.
-     * @todo document more.
+     * Returns a rank-1 CartesianProductArray built
+     * copying some part of the the data from the calling object.
+     *
+     * The data to be copied is selected using the @p index argument, where
+     * <tt>index[j]</tt> means that the data along <tt>j</tt>-th direction of the new object
+     * is the copy of the data along the <tt>index[j]</tt>-th direction of the old object.
+     * @code
+       //example
+       CartesianProductArray<T,rank> old_obj;
+       CartesianProductArray<T,rank-1> new_obj;
+       //
+       new_obj.data_[j] = old_obj.data_[index[j]];
+       @endcode
+     *
      */
-    sub_product_t get_sub_product(const TensorIndex<rank-1> &index) const;
+    SubProduct get_sub_product(const TensorIndex<rank-1> &index) const;
+
+
+    /**
+     * Returns a CartesianProductArray of one higher rank built from the insertion
+     * of a given @p new_vector at the given direction @p index.
+     */
+    CartesianProductArray<T,rank+1> insert(const Index index, const std::vector<T> &new_vector) const;
+    ///@}
+
+    /** @name Functions returning the cartesian product entries */
+    ///@{
 
     /**
      * Given the product index, it returns the corresponding

@@ -1,0 +1,72 @@
+---------------------------------------
+Test the different constructors
+
+Defult constructor
+ValueVector (num_points=0) :
+
+
+Constructor with the size of the vector
+ValueVector (num_points=3) :
+0 0 0 
+
+Initializer-list constructor
+ValueVector (num_points=3) :
+1.00000 2.00000 3.00000 
+
+Copy constructor
+ValueVector (num_points=3) :
+1.00000 2.00000 3.00000 
+ValueVector (num_points=3) :
+1.00000 2.00000 3.00000 
+
+Move constructor
+ValueVector (num_points=3) :
+1.00000 2.00000 3.00000 
+ValueVector (num_points=0) :
+
+---------------------------------------
+
+---------------------------------------
+Test the copy/move assignment operators
+
+Copy assignment
+before copy
+	ValueVector (num_points=3) :
+	1.00000 2.00000 3.00000 
+	ValueVector (num_points=0) :
+	
+after copy
+	ValueVector (num_points=3) :
+	1.00000 2.00000 3.00000 
+	ValueVector (num_points=3) :
+	1.00000 2.00000 3.00000 
+
+Move assignment
+before move
+	ValueVector (num_points=3) :
+	1.00000 2.00000 3.00000 
+	ValueVector (num_points=0) :
+	
+after move
+	ValueVector (num_points=0) :
+	
+	ValueVector (num_points=3) :
+	1.00000 2.00000 3.00000 
+---------------------------------------
+
+---------------------------------------
+Test the scalar-by-vector multiplication
+
+Original data =
+ValueVector (num_points=3) :
+1.00000 2.00000 3.00000 
+
+-1.0 * data =
+ValueVector (num_points=3) :
+-1.00000 -2.00000 -3.00000 
+
+data * 2.0 =
+ValueVector (num_points=3) :
+2.00000 4.00000 6.00000 
+---------------------------------------
+

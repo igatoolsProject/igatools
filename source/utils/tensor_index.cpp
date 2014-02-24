@@ -44,7 +44,7 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
     if (rank > 0)
     {
         out << tensor_index[0];
-        for (int i = 1 ; i < rank-1 ; ++i)
+        for (int i = 1 ; i < rank ; ++i)
             out << "," << tensor_index[i];
     }
     out << "]";

@@ -1,36 +1,85 @@
+========= BEGIN do_test<1> =========
+Testing the default constructor
 [ ]
 
-[ 0 0 ]
+Testing the entry() function
+[ 1 2 ]
 
-[ 0 0 0 ]
+Testing the copy constructor
+[ 1 2 ]
 
+Testing the get_flat_cartesian_product() function
+[ [1] [2] ]
+
+Testing the get_sub_product() function
+
+Testing the insert() function
+[ 10 11 ]
+========= END do_test<1> =========
+
+========= BEGIN do_test<2> =========
+Testing the default constructor
 [ ]
 [ ]
 
-[ 0 0 ]
-[ 0 0 0 ]
+Testing the entry() function
+[ 1 2 ]
+[ 3 4 5 ]
 
-[ 0 0 0 ]
-[ 0 0 0 ]
+Testing the copy constructor
+[ 1 2 ]
+[ 3 4 5 ]
 
+Testing the get_flat_cartesian_product() function
+[ [1,3] [2,3] [1,4] [2,4] [1,5] [2,5] ]
+
+Testing the get_sub_product() function
+[ 3 4 5 ]
+
+Testing the insert() function
+[ 3 4 5 ]
+[ 10 11 ]
+========= END do_test<2> =========
+
+========= BEGIN do_test<3> =========
+Testing the default constructor
 [ ]
 [ ]
 [ ]
 
-[ 0 0 ]
-[ 0 0 0 ]
-[ 0 0 0 0 ]
+Testing the entry() function
+[ 1 2 ]
+[ 3 4 5 ]
+[ 6 7 8 9 ]
 
-[ 0 0 0 ]
-[ 0 0 0 ]
-[ 0 0 0 ]
+Testing the copy constructor
+[ 1 2 ]
+[ 3 4 5 ]
+[ 6 7 8 9 ]
 
+Testing the get_flat_cartesian_product() function
+[ [1,3,6] [2,3,6] [1,4,6] [2,4,6] [1,5,6] [2,5,6] [1,3,7] [2,3,7] [1,4,7] [2,4,7] [1,5,7] [2,5,7] [1,3,8] [2,3,8] [1,4,8] [2,4,8] [1,5,8] [2,5,8] [1,3,9] [2,3,9] [1,4,9] [2,4,9] [1,5,9] [2,5,9] ]
+
+Testing the get_sub_product() function
+[ 3 4 5 ]
+[ 6 7 8 9 ]
+
+Testing the insert() function
+[ 3 4 5 ]
+[ 6 7 8 9 ]
+[ 10 11 ]
+========= END do_test<3> =========
+
+========= BEGIN do_test1<1> =========
 Size: 
 2
 Tensor weight: 
 2
 Flat index: 10  Tensor index: ( 10 )
 Tensor index: ( 0 )  Flat index: 0
+========= END do_test1<1> =========
+
+========= BEGIN do_test1<2> =========
 Size: 
 2
 3
@@ -39,6 +88,9 @@ Tensor weight:
 6
 Flat index: 10  Tensor index: ( 0 5 )
 Tensor index: ( 0 1 )  Flat index: 2
+========= END do_test1<2> =========
+
+========= BEGIN do_test1<3> =========
 Size: 
 2
 3
@@ -49,3 +101,5 @@ Tensor weight:
 24
 Flat index: 10  Tensor index: ( 0 2 1 )
 Tensor index: ( 0 1 2 )  Flat index: 14
+========= END do_test1<3> =========
+

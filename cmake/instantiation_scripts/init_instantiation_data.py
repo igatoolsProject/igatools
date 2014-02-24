@@ -106,6 +106,9 @@ class InstantiationInfo:
         self.tensor_product_arrays=[] #list TensorProductArray classes
         self.create_tensor_product_array()
         
+        self.value_vectors=[] #list ValueVector classes
+        self.create_value_vector()
+        
         return None
 
 
@@ -386,8 +389,8 @@ class InstantiationInfo:
             dim = row.dim_ref
             C = 'CartesianProductArray<Real,%s>' % (dim)
             C_list.append(C)
-            C = 'CartesianProductArray<Real,%s>' % (dim+1)
-            C_list.append(C)
+#            C = 'CartesianProductArray<Real,%s>' % (dim+1)
+#            C_list.append(C)
 
 #        types=['Real*','Index']
         types=['Index']
@@ -396,6 +399,8 @@ class InstantiationInfo:
                 dim = row.dim_ref
                 C = 'CartesianProductArray<%s,%s>' % (t,dim)
                 C_list.append(C)
+ #               C = 'CartesianProductArray<%s,%s>' % (t,dim+1)
+ #               C_list.append(C)
                 
 
 # The following instantiations are for the cache of basisfucntion in Bspline space
@@ -427,6 +432,30 @@ class InstantiationInfo:
 
         
         self.tensor_product_arrays = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_value_vector(self):
+        '''Creates a list of the ValueVector class that needs to be instantiated'''
+
+        C_list=[]
+        
+        C_list.append('ValueVector<Real>')
+        
+        for deriv in self.derivatives:
+            C = 'ValueVector<%s>' % (deriv)
+            C_list.append(C)
+
+#    for row in inst.table:
+#        C_list.append ("%s< Tensor<%d, %d, tensor::contravariant, Tdouble>>" \
+#                %(container,row.dim_phys, row.rank_ref))
+#    for row in inst.table:
+#        C_list.append ("%s< Tensor<%d, %d, tensor::contravariant, Tdouble>>" \
+#                %(container,row.dim_ref, row.rank_ref))
+#        
+        self.value_vectors = unique(C_list)        
         return None
 ##################################
 

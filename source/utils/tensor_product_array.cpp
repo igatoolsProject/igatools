@@ -42,7 +42,12 @@ TensorProductArray(const Size size)
     CartesianProductArray<Real,rank>(size)
 {}
 
-
+template<int rank>
+TensorProductArray<rank>::
+TensorProductArray(const CartesianProductArray<Real,rank> &data)
+    :
+    CartesianProductArray<Real,rank>(data)
+{}
 
 template<int rank>
 void
@@ -114,40 +119,6 @@ tensor_product(const TensorIndex<rank> &tensor_id) const
 }
 
 
-template<int rank>
-TensorProductArray<rank+1>
-TensorProductArray<rank>::
-insert(const int index, const std::vector<Real> &new_vector) const
-{
-    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
-
-    TensorSize<rank+1> size;
-
-    for (int i=0, j=0; i<rank+1; ++i)
-    {
-        if (i == index)
-            size(i) = new_vector.size();
-        else
-        {
-            size(i) = this->tensor_size()(j);
-            ++j;
-        }
-    }
-
-    TensorProductArray<rank+1> product(size);
-
-    for (int i=0, j=0; i<rank+1; ++i)
-    {
-        if (i == index)
-            product.copy_data_direction(i,new_vector);
-        else
-        {
-            product.copy_data_direction(i,this->data_[j]);
-            ++j;
-        }
-    }
-    return product;
-}
 
 
 
