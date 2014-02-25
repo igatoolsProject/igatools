@@ -650,7 +650,7 @@ tensor_product(const V1 &a, const V2 &b)
  * @relates Tensor
  */
 template<class T>
-Enable_if<T::is_tensor, T>
+EnableIf<T::is_tensor, T>
 operator+(const T &A, const T &B) noexcept;
 
 /**
@@ -660,7 +660,7 @@ operator+(const T &A, const T &B) noexcept;
  * @relates Tensor
  */
 template<class T>
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator-(const T &A, const T &B) noexcept;
 
 /**
@@ -671,7 +671,7 @@ operator-(const T &A, const T &B) noexcept;
  * @relates Tensor
  */
 template<class T>
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator*(const T &A, const Real scalar) noexcept;
 
 /**
@@ -682,7 +682,7 @@ operator*(const T &A, const Real scalar) noexcept;
  * @relates Tensor
  */
 template<class T>
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator*(const Real scalar, const T &A) noexcept;
 
 /**
@@ -693,12 +693,12 @@ operator*(const Real scalar, const T &A) noexcept;
  * @relates Tensor
  */
 template<class T>
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator/(const T &A, const Real scalar) noexcept;
 /** @} */
 
 template<class T>
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 action(const T &A, const Tdouble &x)
 {
     T B(A);
@@ -714,9 +714,9 @@ action(const T &A, const Tdouble &x)
  * returning the tensor A(x).
  */
 template <class A_t, class V_t>
-Enable_if<!std::is_same<V_t,Tdouble>::value,
-          ActionTensor<A_t> >
-          action(const A_t &A, const V_t &x)
+EnableIf<!std::is_same<V_t,Tdouble>::value,
+         ActionTensor<A_t> >
+         action(const A_t &A, const V_t &x)
 {
     Assert(bool(std::is_same<typename A_t::tensor_t::co_type, typename V_t::tensor_t>::value),
            ExcMessage("Wrong tensor types in action"));
@@ -753,8 +753,8 @@ compose(const T1 &S, const T2 &T)
  *
  */
 template < class T >
-Enable_if<T::is_tensor,Transpose<T>>
-                                  transpose(const T &A)
+EnableIf<T::is_tensor,Transpose<T>>
+                                 transpose(const T &A)
 {
     Transpose<T> B;
 
@@ -780,7 +780,7 @@ Enable_if<T::is_tensor,Transpose<T>>
  * @relates Tensor
  */
 template < class T >
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 symmetric_tensor(const T &A)
 {
     Assert(T::dim == T::value_t::dim, ExcMessage("Only for square tensors."));
@@ -801,8 +801,8 @@ symmetric_tensor(const T &A)
 * @relates Tensor
 */
 template < class T >
-Enable_if<T::is_tensor,CoTensor<T>>
-                                 co_tensor(const T &A)
+EnableIf<T::is_tensor,CoTensor<T>>
+                                co_tensor(const T &A)
 {
     // we copy the memory of A in coA in order to avoid the
     // aliasing due to the use of reinterpret_cast
@@ -832,7 +832,7 @@ scalar_product(const Tdouble a, const Tdouble b) noexcept
  */
 template< class T >
 inline
-Enable_if<T::is_tensor,Real>
+EnableIf<T::is_tensor,Real>
 scalar_product(const T &t1, const T &t2) noexcept
 {
     Real result = 0.;
@@ -947,7 +947,7 @@ inverse_(const Tensor<3,1,type1,Tensor<3,1,type2,Tdouble>> &t,
 
 template< int dim, int range >
 inline
-Enable_if<(dim==range),Real>
+EnableIf<(dim==range),Real>
 inverse(const Derivatives<dim, range, 1, 1> &DF,
         Derivatives<range, dim, 1, 1> &DF_inv)
 {
@@ -957,7 +957,7 @@ inverse(const Derivatives<dim, range, 1, 1> &DF,
 
 template< int dim, int range >
 inline
-Enable_if<(dim<range),Real>
+EnableIf<(dim<range),Real>
 inverse(const Derivatives<dim,range,1,1> &DF,
         Derivatives<range,dim,1,1> &DF_inv)
 {
@@ -1031,7 +1031,7 @@ det_(const Tensor< 3, 1, type1, Tensor< 3, 1, type2, Tdouble > > &t)
  */
 template< int dim, int range >
 inline
-Enable_if<(dim==range),Real>
+EnableIf<(dim==range),Real>
 determinant(const Derivatives<dim,range,1,1> &DF)
 {
     return det_(DF);
@@ -1046,7 +1046,7 @@ determinant(const Derivatives<dim,range,1,1> &DF)
  */
 template< int dim, int range >
 inline
-Enable_if<(dim<range),Real>
+EnableIf<(dim<range),Real>
 determinant(const Derivatives<dim, range,1,1> &DF)
 {
     // G = DF_t o DF

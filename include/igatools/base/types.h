@@ -329,6 +329,8 @@ enum class LinearAlgebraPackage
 
    auto redValue = to_integral(Color::Red); //where Color is an enum class! *
    @endcode
+ * @author M.Martinelli
+ * @date 2013
  */
 template<typename E>
 constexpr auto
@@ -339,6 +341,8 @@ to_integral(E e) -> typename std::underlying_type<E>::type
 
 /**
  * Return the number of elements in any enum class.
+ * @author M.Martinelli
+ * @date 2013
  */
 template<typename E>
 constexpr auto
@@ -463,9 +467,8 @@ template<bool C, typename T, typename F>
 using Conditional = typename std::conditional<C,T,F>::type;
 
 
-//TODO(pauletti, Feb 23, 2014): not satisfy the style, rename to EnableIf
 template<bool B, typename T = void>
-using Enable_if = typename std::enable_if<B,T>::type;
+using EnableIf = typename std::enable_if<B,T>::type;
 
 
 IGA_NAMESPACE_CLOSE

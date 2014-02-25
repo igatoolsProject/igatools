@@ -441,7 +441,7 @@ Tensor< dim_, rank_, tensor_type, value_type >::
 flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<rank_>
 {
     Assert(flat_index < self_t::size,
-           ExcIndexRange(flat_index, 0, self_t::size)) ;
+    ExcIndexRange(flat_index, 0, self_t::size)) ;
 
     TensorIndex<rank_> tensor_index;
 
@@ -475,7 +475,7 @@ tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept
 //--------------  Related functions   ------------------------------------------
 template<class T>
 inline
-Enable_if<T::is_tensor, T>
+EnableIf<T::is_tensor, T>
 operator+(const T &A, const T &B) noexcept
 {
     T R(A);
@@ -487,7 +487,7 @@ operator+(const T &A, const T &B) noexcept
 
 template<class T>
 inline
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator-(const T &A, const T &B) noexcept
 {
     T R(A);
@@ -499,7 +499,7 @@ operator-(const T &A, const T &B) noexcept
 
 template<class T>
 inline
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator*(const T &A, const Real scalar) noexcept
 {
     Assert(!std::isnan(scalar),ExcNotANumber());
@@ -514,7 +514,7 @@ operator*(const T &A, const Real scalar) noexcept
 
 template<class T>
 inline
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator*(const Real scalar, const T &A) noexcept
 {
     return A * scalar;
@@ -524,7 +524,7 @@ operator*(const Real scalar, const T &A) noexcept
 
 template<class T>
 inline
-Enable_if<T::is_tensor,T>
+EnableIf<T::is_tensor,T>
 operator/(const T &A, const Real scalar) noexcept
 {
     Assert(!std::isnan(scalar), ExcNotANumber());

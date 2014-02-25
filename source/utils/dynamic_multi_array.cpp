@@ -207,6 +207,36 @@ LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)
 }
 
 
+template<class T, int rank>
+EnableIf<std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank> >
+operator*(const Real a, const DynamicMultiArray<T,rank> &B)
+{
+    DynamicMultiArray<T,rank> res(B);
+
+    for (auto & r : res)
+        r *= a;
+
+    return res;
+}
+
+
+template<class T, int rank>
+EnableIf< std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank>>
+        operator+(const DynamicMultiArray<T,rank> &A, const DynamicMultiArray<T,rank> &B)
+{
+    for (Index i = 0 ; i < rank ; ++i)
+        Assert(A.tensor_size()[i] == B.tensor_size()[i],
+               ExcDimensionMismatch(A.tensor_size()[i],B.tensor_size()[i]));
+
+    DynamicMultiArray<T,rank> res(A);
+
+    const Size n_entries = res.flat_size();
+    for (Index i = 0 ; i < n_entries ; ++i)
+        res(i) += B(i);
+
+    return res;
+}
+
 
 IGA_NAMESPACE_CLOSE
 

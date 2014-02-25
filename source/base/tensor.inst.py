@@ -32,12 +32,12 @@ file_output.write('\n')
 
 # Operator +
 for row in inst.derivatives:
-    file_output.write('template Enable_if<%s::is_tensor,%s> operator+ < %s > (const %s &A, const %s &B) noexcept ;\n'
+    file_output.write('template EnableIf<%s::is_tensor,%s> operator+ < %s > (const %s &A, const %s &B) noexcept ;\n'
             % (row, row, row, row, row))
 
 # Operator -
 for row in inst.derivatives:
-    file_output.write('template Enable_if<%s::is_tensor,%s> operator- < %s > (const %s &A, const %s &B) noexcept ;\n'
+    file_output.write('template EnableIf<%s::is_tensor,%s> operator- < %s > (const %s &A, const %s &B) noexcept ;\n'
             % (row, row, row, row, row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
