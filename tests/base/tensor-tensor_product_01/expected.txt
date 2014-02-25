@@ -1,0 +1,12 @@
+The tensor product of:
+[ 0 0 ] 
+and:
+[ 0 0 ] 
+is:
+[ [ 0 0 ]  [ 0 0 ]  ] 
+The tensor product of:
+[ 0 0 ] 
+and:
+[ 0 0 0 ] 
+is:
+[ [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  ] 
