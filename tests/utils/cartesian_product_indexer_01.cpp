@@ -32,13 +32,16 @@ template<int rank>
 void
 do_test()
 {
+    out << "========== BEGIN do_test<" << rank << "> ==========" << endl;
     TensorSize<rank> size;
     for (int i = 0 ; i < rank ; ++i)
         size(i) = i+2;
 
     CartesianProductIndexer<rank> indexer(size);
-
+    out << "Num. indices = " << indexer.get_num_indices() << endl;
     indexer.print_info(out);
+    out << endl;
+    out << "========== END do_test<" << rank << "> ==========" << endl;
     out << endl;
 }
 
