@@ -114,6 +114,9 @@ class InstantiationInfo:
         
         self.cartesian_product_indexers=[] #list CartesianProductIndexer classes
         self.create_cartesian_product_indexer()
+
+        self.unit_elements=[] #list UnitElement classes
+        self.create_unit_element()
         
         return None
 
@@ -500,6 +503,22 @@ class InstantiationInfo:
             C_list.append(C)
 
         self.cartesian_product_indexers = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_unit_element(self):
+        '''Creates a list of the UnitElement class that needs to be instantiated'''
+
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'UnitElement<%d>' % (dim_domain)
+            C_list.append(C)
+        
+        self.unit_elements = unique(C_list)        
         return None
 ##################################
 

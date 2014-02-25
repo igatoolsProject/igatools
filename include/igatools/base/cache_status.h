@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef _CACHE_STATUS_H_
-#define _CACHE_STATUS_H_
+#ifndef CACHE_STATUS_H_
+#define CACHE_STATUS_H_
 
 #include <igatools/base/config.h>
 
@@ -34,6 +34,9 @@ IGA_NAMESPACE_OPEN
  * - <b>filled</b>, true if the cache is filled at least one time and ready to be used;
  * - <b>filled_once</b>, true if the cache is filled exactly one time and ready to be used;
  * - <b>copied</b>, true if the cache is copied from another object.
+ *
+ * @author M.Martinelli
+ * @date 2013
  */
 class CacheStatus
 {
@@ -129,4 +132,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#endif // _CACHE_STATUS_H_
+#endif // CACHE_STATUS_H_
