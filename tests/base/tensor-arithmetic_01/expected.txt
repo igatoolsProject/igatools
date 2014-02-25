@@ -1,0 +1,33 @@
+Test for tensor arithmetic operators
+Testing Derivatives<2,2,1,1>
+A =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+B =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+alpha = 1.00000
+A + B =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+A - B =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+alpha * A =
+[ [ 0 0 ]  [ 0 0 ]  ] 
+ A * alpha 
+[ [ 0 0 ]  [ 0 0 ]  ] 
+ A / alpha 
+[ [ 0 0 ]  [ 0 0 ]  ] 
+Testing Derivatives<3,3,1,1>
+A =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+B =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+alpha = 1.00000
+A + B =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+A - B =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+alpha * A =
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+ A * alpha 
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
+ A / alpha 
+[ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 

@@ -471,6 +471,71 @@ tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept
     return flat_index;
 }
 
+
+//--------------  Related functions   ------------------------------------------
+template<class T>
+inline
+Enable_if<T::is_tensor, T>
+operator+(const T &A, const T &B) noexcept
+{
+    T R(A);
+    R += B;
+    return R;
+}
+
+
+
+template<class T>
+inline
+Enable_if<T::is_tensor,T>
+operator-(const T &A, const T &B) noexcept
+{
+    T R(A);
+    R -= B;
+    return R;
+}
+
+
+
+template<class T>
+inline
+Enable_if<T::is_tensor,T>
+operator*(const T &A, const Real scalar) noexcept
+{
+    Assert(!std::isnan(scalar),ExcNotANumber());
+    Assert(!std::isinf(scalar),ExcNumberNotFinite());
+
+    T R(A);
+    R *= scalar;
+    return (R);
+}
+
+
+
+template<class T>
+inline
+Enable_if<T::is_tensor,T>
+operator*(const Real scalar, const T &A) noexcept
+{
+    return A * scalar;
+}
+
+
+
+template<class T>
+inline
+Enable_if<T::is_tensor,T>
+operator/(const T &A, const Real scalar) noexcept
+{
+    Assert(!std::isnan(scalar), ExcNotANumber());
+    Assert(!std::isinf(scalar), ExcNumberNotFinite());
+    Assert(scalar !=0 , ExcDivideByZero());
+
+    T R(A);
+    R /= scalar;
+    return R;
+}
+
 IGA_NAMESPACE_CLOSE
 
 #endif /* TENSOR_INLINE_H_ */

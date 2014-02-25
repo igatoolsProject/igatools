@@ -142,11 +142,13 @@ public:
     ///@}
 
 
+    // TODO (pauletti, Feb 25, 2014): document and implementation in other file
     operator value_t &() noexcept
     {
         return val_;
     }
 
+    // TODO (pauletti, Feb 25, 2014): document and implementation in other file
     operator value_t const &() const noexcept
     {
         return val_;
@@ -182,7 +184,6 @@ public:
      * Read access operator using the flat index
      */
     const value_t &operator()(const int i) const noexcept;
-
 
     Tdouble &operator+=(const Real td) noexcept;
 
@@ -252,7 +253,8 @@ using Transpose =
 
 /**
  * This alias represents the sub-tensor part of tensor of type T,
- * i.e. a tensor with same dim and tensor_type of T but with rank equal to T::rank - 1.
+ * i.e. a tensor with same dim and tensor_type of T
+ * but with rank equal to T::rank - 1.
  * @note If T has rank <= 1 then the sub-tensor type is T::value_t
  * @relates Tensor
  */
@@ -265,7 +267,8 @@ using SubTensor =
 
 
 /**
- * This alias represents the tensor A(x), i.e. the action of the tensor A (of type T) on x
+ * This alias represents the tensor A(x), i.e. the action of the
+ * tensor A (of type T) on x
  * @relates Tensor
  */
 template<typename T>
@@ -377,6 +380,7 @@ template<int dim_, int rank_, class tensor_type, class value_type>
 class Tensor
 {
 public:
+    // TODO (pauletti, Feb 25, 2014): Document this
     static const bool is_tensor = true;
 
     /** Dimension of the vector space */
@@ -389,8 +393,10 @@ public:
     static const int size = iga::constexpr_pow(dim_, rank_);
 
 
-    using tensor_t = tensor_type ;
+    using tensor_t = tensor_type;
+
     using value_t = value_type;
+
     using self_t = Tensor<dim,rank,tensor_t,value_t>;
 
     using co_tensor_t = CoTensor<self_t>;
@@ -573,19 +579,19 @@ private :
  * It fits the derivative of a function ... at a given point.
  * @todo complete the documentation.
  */
-template< int dim_domain, int dim_range, int rank, int order >
+template<int dim, int range, int rank, int order>
 using Derivatives =
     Conditional<
     order==0,
     Tensor<1,1,tensor::covariant,
-    Tensor<dim_range,rank,tensor::contravariant,Tdouble>>,
-    Tensor<dim_domain,order,tensor::covariant,
-    Tensor<dim_range,rank,tensor::contravariant,Tdouble>>
+    Tensor<range,rank,tensor::contravariant,Tdouble>>,
+    Tensor<dim,order,tensor::covariant,
+    Tensor<range,rank,tensor::contravariant,Tdouble>>
     >;
 
 
-template< int dim_domain, int dim_range, int rank>
-using Values = Tensor<dim_range,rank,tensor::contravariant,Tdouble>;
+template<int dim, int range, int rank>
+using Values = Tensor<range, rank, tensor::contravariant, Tdouble>;
 
 
 /**
@@ -608,6 +614,11 @@ using Point = Tensor<dim,1,tensor::contravariant,Tdouble>;
 
 
 
+
+
+
+
+
 /**
  *  Returns the tensor product of two rank one tensors.
  *  Mathematically denoted by \f$ value\_type = a \otimes b \f$,
@@ -616,8 +627,8 @@ using Point = Tensor<dim,1,tensor::contravariant,Tdouble>;
  * @relates Tensor
  */
 template<class V1, class V2>
-Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble>>
-        tensor_product(const V1 &a, const V2 &b)
+Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble> >
+tensor_product(const V1 &a, const V2 &b)
 {
     Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble>> R;
 
@@ -629,79 +640,62 @@ Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1
 
 
 
-
+/** @defgroup tensor_arith_oper Tensor arithmetic operators */
+/** @} */
 /**
- * Adds two tensors. If possible use += instead as it
- * does not require the creation of temporary space.
- *
- * @relates Tensor
- */
-//template<class T>
-//Enable_if<T::is_tensor,T>
-//operator+(const T &A, const T &B) noexcept
-//{
-//    T R(A);
-//    R += B;
-//    return (R);
-//}
-template<class T>
-Enable_if<T::is_tensor,T>
-operator+(const T &A, const T &B) noexcept
-{
-    T R(A);
-    R += B;
-    return (R);
-}
-
-
-
-/**
- * Subtract two tensor. If possible use -= instead as it
- * does not require the creation of temporary space.
+ * Adds two tensors of the same type.
+ * @note When possible use *= instead as it
+ * does not require the creation of new tensor.
  *
  * @relates Tensor
  */
 template<class T>
-Enable_if<T::is_tensor,T>
-operator-(const T &A, const T &B) noexcept
-{
-    T R(A);
-    R -= B;
-    return (R);
-}
+Enable_if<T::is_tensor, T>
+operator+(const T &A, const T &B) noexcept;
 
 /**
- * Multiply a tensor by a scalar. If possible use *= instead as it
- * does not require the creation of temporary space.
+ * Subtract two tensors.
+ * @note When possible use *= instead as it
+ * does not require the creation of new tensor.
+ * @relates Tensor
+ */
+template<class T>
+Enable_if<T::is_tensor,T>
+operator-(const T &A, const T &B) noexcept;
+
+/**
+ * Multiply a tensor by a scalar.
+ * @note When possible use *= instead as it
+ * does not require the creation of new tensor.
  *
  * @relates Tensor
  */
 template<class T>
 Enable_if<T::is_tensor,T>
-operator*(const T &A, const Real scalar) noexcept
-{
-    Assert(!std::isnan(scalar),ExcNotANumber());
-    Assert(!std::isinf(scalar),ExcNumberNotFinite());
+operator*(const T &A, const Real scalar) noexcept;
 
-    T R(A);
-    R *= scalar;
-    return (R);
-}
-
+/**
+ * Multiply a tensor by a scalar.
+ * @note When possible use *= instead as it
+ * does not require the creation of new tensor.
+ *
+ * @relates Tensor
+ */
 template<class T>
 Enable_if<T::is_tensor,T>
-operator*(const Real scalar, const T &A) noexcept
-{
-    Assert(!std::isnan(scalar),ExcNotANumber());
-    Assert(!std::isinf(scalar),ExcNumberNotFinite());
+operator*(const Real scalar, const T &A) noexcept;
 
-    T R(A);
-    R *= scalar;
-    return (R);
-}
-
-
-
+/**
+ * Divide a tensor by a scalar.
+ * @note When possible use /= instead as it
+ * does not require the creation of new tensor.
+ *
+ * @relates Tensor
+ */
+template<class T>
+Enable_if<T::is_tensor,T>
+operator/(const T &A, const Real scalar) noexcept;
+/** @} */
 
 template<class T>
 Enable_if<T::is_tensor,T>
@@ -1128,8 +1122,7 @@ using TMatrix = Tensor< m, 1, tensor::raw, Tensor< n, 1, tensor::raw, Tdouble > 
 
 IGA_NAMESPACE_CLOSE
 
-// #ifdef NDEBUG
 #include <igatools/base/tensor-inline.h>
-// #endif
+
 
 #endif
