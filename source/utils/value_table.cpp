@@ -116,28 +116,53 @@ get_num_points() const noexcept
 template <class T>
 auto
 ValueTable<T>::
-get_function_view(const int i) -> function_view
+get_function_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
     Assert(i >= 0 && i < num_functions_, ExcIndexRange(i,0,num_functions_));
-    return function_view(
+    return view(
         iterator(*this, i    * num_points_, 1),
         iterator(*this,(i+1) * num_points_, 1));
 }
 
 
+template <class T>
+auto
+ValueTable<T>::
+get_function_view(const int i) const -> const_view
+{
+    Assert(this->size() > 0, ExcEmptyObject()) ;
+    Assert(i >= 0 && i < num_functions_, ExcIndexRange(i,0,num_functions_));
+    return const_view(
+               const_iterator(*this, i    * num_points_, 1),
+               const_iterator(*this,(i+1) * num_points_, 1));
+}
 
 template <class T>
 auto
 ValueTable<T>::
-get_function_view(const int i) const -> const_function_view
+get_point_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < num_functions_, ExcIndexRange(i,0,num_functions_));
-    return const_function_view(
-               const_iterator(*this, i    * num_points_, 1),
-               const_iterator(*this,(i+1) * num_points_, 1));
+    Assert(i >= 0 && i < num_points_, ExcIndexRange(i,0,num_points_));
+    return view(
+        iterator(*this, i   ,num_points_),
+        iterator(*this,IteratorState::pass_the_end,num_points_));
+//    iterator(*this,(num_functions_-1) * num_points_ + i+1,num_points_));
+}
 
+
+template <class T>
+auto
+ValueTable<T>::
+get_point_view(const int i) const -> const_view
+{
+    Assert(this->size() > 0, ExcEmptyObject()) ;
+    Assert(i >= 0 && i < num_points_, ExcIndexRange(i,0,num_points_));
+    return const_view(
+               const_iterator(*this, i   ,num_points_),
+               const_iterator(*this,IteratorState::pass_the_end,num_points_));
+//               const_iterator(*this,(num_functions_-1) * num_points_ + i+1,num_points_));
 }
 
 

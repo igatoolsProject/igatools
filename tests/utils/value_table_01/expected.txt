@@ -1,0 +1,123 @@
+========== BEGIN do_test (n_funcs=3,n_pts=2) ==========
+Default constructor
+ValueTable (num_functions=0,num_points=0) :
+
+Standard constructor (n_funcs=3,n_pts=2)
+ValueTable (num_functions=3,num_points=2) :
+	Function[0] : [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[1] : [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[2] : [ [ 0 ]  ]  [ [ 0 ]  ]  
+
+Filling the table with the iterator
+ValueTable (num_functions=3,num_points=2) :
+	Function[0] : [ [ 0 ]  ]  [ [ 1.00000 ]  ]  
+	Function[1] : [ [ 2.00000 ]  ]  [ [ 3.00000 ]  ]  
+	Function[2] : [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  
+
+Testing the function view using the begin()/end() functions
+	Function[0] = [ [ 0 ]  ]  [ [ 1.00000 ]  ]  
+	Function[1] = [ [ 2.00000 ]  ]  [ [ 3.00000 ]  ]  
+	Function[2] = [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  
+
+Testing the function view using the access operator[]
+	Function[0] = [ [ 0 ]  ]  [ [ 1.00000 ]  ]  
+	Function[1] = [ [ 2.00000 ]  ]  [ [ 3.00000 ]  ]  
+	Function[2] = [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  
+
+Testing the point view using the begin()/end() functions
+	Point[0] = [ [ 0 ]  ]  [ [ 2.00000 ]  ]  [ [ 4.00000 ]  ]  
+	Point[1] = [ [ 1.00000 ]  ]  [ [ 3.00000 ]  ]  [ [ 5.00000 ]  ]  
+
+Testing the point view using the access operator[]
+	Point[0] = [ [ 0 ]  ]  [ [ 2.00000 ]  ]  [ [ 4.00000 ]  ]  
+	Point[1] = [ [ 1.00000 ]  ]  [ [ 3.00000 ]  ]  [ [ 5.00000 ]  ]  
+========== END do_test (n_funcs=3,n_pts=2) ==========
+
+========== BEGIN do_test (n_funcs=3,n_pts=4) ==========
+Default constructor
+ValueTable (num_functions=0,num_points=0) :
+
+Standard constructor (n_funcs=3,n_pts=4)
+ValueTable (num_functions=3,num_points=4) :
+	Function[0] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[1] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[2] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+
+Filling the table with the iterator
+ValueTable (num_functions=3,num_points=4) :
+	Function[0] : [ [ 0 ]  ]  [ [ 1.00000 ]  ]  [ [ 2.00000 ]  ]  [ [ 3.00000 ]  ]  
+	Function[1] : [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 7.00000 ]  ]  
+	Function[2] : [ [ 8.00000 ]  ]  [ [ 9.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 11.0000 ]  ]  
+
+Testing the function view using the begin()/end() functions
+	Function[0] = [ [ 0 ]  ]  [ [ 1.00000 ]  ]  [ [ 2.00000 ]  ]  [ [ 3.00000 ]  ]  
+	Function[1] = [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 7.00000 ]  ]  
+	Function[2] = [ [ 8.00000 ]  ]  [ [ 9.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 11.0000 ]  ]  
+
+Testing the function view using the access operator[]
+	Function[0] = [ [ 0 ]  ]  [ [ 1.00000 ]  ]  [ [ 2.00000 ]  ]  [ [ 3.00000 ]  ]  
+	Function[1] = [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 7.00000 ]  ]  
+	Function[2] = [ [ 8.00000 ]  ]  [ [ 9.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 11.0000 ]  ]  
+
+Testing the point view using the begin()/end() functions
+	Point[0] = [ [ 0 ]  ]  [ [ 4.00000 ]  ]  [ [ 8.00000 ]  ]  
+	Point[1] = [ [ 1.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 9.00000 ]  ]  
+	Point[2] = [ [ 2.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 10.0000 ]  ]  
+	Point[3] = [ [ 3.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 11.0000 ]  ]  
+
+Testing the point view using the access operator[]
+	Point[0] = [ [ 0 ]  ]  [ [ 4.00000 ]  ]  [ [ 8.00000 ]  ]  
+	Point[1] = [ [ 1.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 9.00000 ]  ]  
+	Point[2] = [ [ 2.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 10.0000 ]  ]  
+	Point[3] = [ [ 3.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 11.0000 ]  ]  
+========== END do_test (n_funcs=3,n_pts=4) ==========
+
+========== BEGIN do_test (n_funcs=6,n_pts=3) ==========
+Default constructor
+ValueTable (num_functions=0,num_points=0) :
+
+Standard constructor (n_funcs=6,n_pts=3)
+ValueTable (num_functions=6,num_points=3) :
+	Function[0] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[1] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[2] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[3] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[4] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+	Function[5] : [ [ 0 ]  ]  [ [ 0 ]  ]  [ [ 0 ]  ]  
+
+Filling the table with the iterator
+ValueTable (num_functions=6,num_points=3) :
+	Function[0] : [ [ 0 ]  ]  [ [ 1.00000 ]  ]  [ [ 2.00000 ]  ]  
+	Function[1] : [ [ 3.00000 ]  ]  [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  
+	Function[2] : [ [ 6.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 8.00000 ]  ]  
+	Function[3] : [ [ 9.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 11.0000 ]  ]  
+	Function[4] : [ [ 12.0000 ]  ]  [ [ 13.0000 ]  ]  [ [ 14.0000 ]  ]  
+	Function[5] : [ [ 15.0000 ]  ]  [ [ 16.0000 ]  ]  [ [ 17.0000 ]  ]  
+
+Testing the function view using the begin()/end() functions
+	Function[0] = [ [ 0 ]  ]  [ [ 1.00000 ]  ]  [ [ 2.00000 ]  ]  
+	Function[1] = [ [ 3.00000 ]  ]  [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  
+	Function[2] = [ [ 6.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 8.00000 ]  ]  
+	Function[3] = [ [ 9.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 11.0000 ]  ]  
+	Function[4] = [ [ 12.0000 ]  ]  [ [ 13.0000 ]  ]  [ [ 14.0000 ]  ]  
+	Function[5] = [ [ 15.0000 ]  ]  [ [ 16.0000 ]  ]  [ [ 17.0000 ]  ]  
+
+Testing the function view using the access operator[]
+	Function[0] = [ [ 0 ]  ]  [ [ 1.00000 ]  ]  [ [ 2.00000 ]  ]  
+	Function[1] = [ [ 3.00000 ]  ]  [ [ 4.00000 ]  ]  [ [ 5.00000 ]  ]  
+	Function[2] = [ [ 6.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 8.00000 ]  ]  
+	Function[3] = [ [ 9.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 11.0000 ]  ]  
+	Function[4] = [ [ 12.0000 ]  ]  [ [ 13.0000 ]  ]  [ [ 14.0000 ]  ]  
+	Function[5] = [ [ 15.0000 ]  ]  [ [ 16.0000 ]  ]  [ [ 17.0000 ]  ]  
+
+Testing the point view using the begin()/end() functions
+	Point[0] = [ [ 0 ]  ]  [ [ 3.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 9.00000 ]  ]  [ [ 12.0000 ]  ]  [ [ 15.0000 ]  ]  
+	Point[1] = [ [ 1.00000 ]  ]  [ [ 4.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 13.0000 ]  ]  [ [ 16.0000 ]  ]  
+	Point[2] = [ [ 2.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 8.00000 ]  ]  [ [ 11.0000 ]  ]  [ [ 14.0000 ]  ]  [ [ 17.0000 ]  ]  
+
+Testing the point view using the access operator[]
+	Point[0] = [ [ 0 ]  ]  [ [ 3.00000 ]  ]  [ [ 6.00000 ]  ]  [ [ 9.00000 ]  ]  [ [ 12.0000 ]  ]  [ [ 15.0000 ]  ]  
+	Point[1] = [ [ 1.00000 ]  ]  [ [ 4.00000 ]  ]  [ [ 7.00000 ]  ]  [ [ 10.0000 ]  ]  [ [ 13.0000 ]  ]  [ [ 16.0000 ]  ]  
+	Point[2] = [ [ 2.00000 ]  ]  [ [ 5.00000 ]  ]  [ [ 8.00000 ]  ]  [ [ 11.0000 ]  ]  [ [ 14.0000 ]  ]  [ [ 17.0000 ]  ]  
+========== END do_test (n_funcs=6,n_pts=3) ==========
+
