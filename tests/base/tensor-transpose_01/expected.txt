@@ -1,0 +1,40 @@
+Test for the transpose of a tensor:
+on a tensor of ranks: 1, 1
+ and dims: 1, 2.
+A= 
+[ [ 0 1.00000 ]  ] 
+A^t= 
+[ [ 0 ]  [ 1.00000 ]  ] 
+
+Test for the transpose of a tensor:
+on a tensor of ranks: 1, 1
+ and dims: 2, 2.
+A= 
+[ [ 0 1.00000 ]  [ 2.00000 3.00000 ]  ] 
+A^t= 
+[ [ 0 2.00000 ]  [ 1.00000 3.00000 ]  ] 
+
+Test for the transpose of a tensor:
+on a tensor of ranks: 1, 2
+ and dims: 2, 2.
+A= 
+[ [ [ 0 1.00000 ]  [ 2.00000 3.00000 ]  ]  [ [ 4.00000 5.00000 ]  [ 6.00000 7.00000 ]  ]  ] 
+A^t= 
+[ [ [ 0 4.00000 ]  [ 1.00000 5.00000 ]  ]  [ [ 2.00000 6.00000 ]  [ 3.00000 7.00000 ]  ]  ] 
+
+Test for the transpose of a tensor:
+on a tensor of ranks: 1, 1
+ and dims: 3, 3.
+A= 
+[ [ 0 1.00000 2.00000 ]  [ 3.00000 4.00000 5.00000 ]  [ 6.00000 7.00000 8.00000 ]  ] 
+A^t= 
+[ [ 0 3.00000 6.00000 ]  [ 1.00000 4.00000 7.00000 ]  [ 2.00000 5.00000 8.00000 ]  ] 
+
+Test for the transpose of a tensor:
+on a tensor of ranks: 1, 1
+ and dims: 3, 2.
+A= 
+[ [ 0 1.00000 ]  [ 2.00000 3.00000 ]  [ 4.00000 5.00000 ]  ] 
+A^t= 
+[ [ 0 2.00000 4.00000 ]  [ 1.00000 3.00000 5.00000 ]  ] 
+

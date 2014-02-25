@@ -89,7 +89,8 @@ public:
     /** Rank of the tensor */
     static const int rank  = 0;
 
-    /** Flat size of the tensor, i.e. total number of components of type value_type */
+    /** Flat size of the tensor, i.e.
+     * total number of components of type value_type */
     static const int size = 1; //iga::constexpr_pow(dim_, rank_);
 
     using self_t = Tdouble;
