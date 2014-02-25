@@ -26,8 +26,6 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/multi_array.h>
 
-
-
 IGA_NAMESPACE_OPEN
 
 /**
@@ -55,12 +53,14 @@ public:
     DynamicMultiArray() = default;
 
     /**
-     * Construct a square multiarray of zeros with @p dim entries in each array dimension.
+     * Construct a square multiarray of zeros with @p dim entries in each
+     * array dimension.
      */
     DynamicMultiArray(const Size dim);
 
     /**
-     * Construct a rectangular multiarray of zeros with @p dim[i] entries in the i-th array dimension.
+     * Construct a rectangular multiarray of zeros with @p dim[i] entries
+     * in the i-th array dimension.
      */
     DynamicMultiArray(const TensorSize<rank> &dim);
 
@@ -89,14 +89,15 @@ public:
     ///@{
 
     /**
-     * Resize the multiarray as square container with @p dim entries in each array dimension.
+     * Resize the multiarray as square container with @p dim entries in each
+     * array dimension.
      */
     void resize(const Size dim);
 
 
     /**
-     * Resize the multiarray as rectangular container with <p>dim[i]</p> entries in
-     * the i-th array dimension.
+     * Resize the multiarray as rectangular container with <p>dim[i]</p> entries
+     * in the i-th array dimension.
      */
     void resize(const TensorSize<rank> &dim);
     ///@}
@@ -109,7 +110,8 @@ public:
      * as a flat vector.
      * @todo: where do we need this function? (MM 22 Feb 2014)
      */
-    std::vector<T> get_flat_view(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) const;
+    std::vector<T> get_flat_view(const TensorIndex<rank> &start,
+                                 const TensorIndex<rank> &inc) const;
 
 
 
@@ -117,10 +119,10 @@ public:
     /** @name Functions to get/set slices of the DynamicMultiArray */
     ///@{
     /**
-     * Return a slice of the DynamicMultiArray corresponding to the @p index in the @p direction
-     *  specified by the input arguments.
+     * Return a slice of the DynamicMultiArray corresponding to the @p index
+     * in the @p direction specified by the input arguments.
      */
-    Conditional< (rank > 0),DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0> >
+    Conditional<(rank > 0),DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0> >
     get_slice(const int direction, const Index index) const;
 
     /**
@@ -130,7 +132,8 @@ public:
      *  specified by the input arguments.
      */
     void copy_slice(const int direction, const Index index,
-                    const Conditional<(rank > 0),DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0>> &slice);
+                    const Conditional<(rank > 0),DynamicMultiArray<T,rank-1>,
+                    DynamicMultiArray<T,0>> &slice);
     ///@}
 
 
@@ -139,7 +142,7 @@ public:
 
 /**
  * Output operator.
- * @relates DynamicMultiArray.
+ * @relates DynamicMultiArray
  */
 template<class T, int rank>
 LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
@@ -151,11 +154,11 @@ LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
  * @note This function is enabled only if @p T is a floating point type
  * and @p rank >= 0.
  *
- * @relates DynamicMultiArray.
+ * @relates DynamicMultiArray
  */
 template<class T, int rank>
-Enable_if< std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank>>
-        operator*(const Real a, const DynamicMultiArray<T,rank> &B)
+Enable_if<std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank> >
+operator*(const Real a, const DynamicMultiArray<T,rank> &B)
 {
     DynamicMultiArray<T,rank> res(B);
 
@@ -168,13 +171,13 @@ Enable_if< std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,ran
 
 /**
  * Given two DynamicMultiArray @p A and @p B,
- * returns a DynamicMultiArray that is the sum (entry-by-entry) <tt>A + B<tt>.
- * \warning @p A and @p B must have the same sizes, otherwise an assertion will be raised
- * (in debug mode).
+ * returns a DyqnamicMultiArray that is the sum (entry-by-entry) <tt>A + B</tt>.
+ * \warning @p A and @p B must have the same sizes, otherwise an assertion
+ * will be raised (in debug mode).
  * @note This function is enabled only if @p T is a floating point type
  * and @p rank >= 0.
  *
- * @relates DynamicMultiArray.
+ * @relates DynamicMultiArray
  */
 template<class T, int rank>
 Enable_if< std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank>>
