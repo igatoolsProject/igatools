@@ -35,18 +35,19 @@ IGA_NAMESPACE_OPEN
 
 /**
  * @class ValueTable
- * @brief This class represents a 2-dimensional dynamic array for objects of type T.
+ * @brief This class represents a 2-dimensional dynamic container for objects of type T.
  *
- * Each entry of the 2-dimensional array are associated to a single function
- * at one single point.
+ * Each entry in the container is associated to a single function
+ * at one single point. This means that the entries can be accessed specifying two
+ * (flat) indices: one for the function and the other for the point.
  *
- * Internally the data are stored as single std::vector<T>
+ * Internally the data are stored as single <tt>std::vector<T></tt>
  * (through the inherithance from DynamicMultiArray<T,2>) of length
- * <tt num_functions * num_points</tt> and the memory is ordered is made as
+ * <tt> num_functions * num_points</tt> and the memory is ordered as
  * <tt>num_functions</tt> chunks of length <tt>num_points</tt> objects of type @p T.
- * The array element with index @p i refers to the function index resulting by the
+ * The container element with (flat) index @p i refers to the function index resulting by the
  * integer division <tt>i/num_points</tt> and to the point index resulting by
- * the modulo operation <tt>i%num_points</tt>: in other words,
+ * the modulo operation <tt>i\%num_points</tt>: in other words,
  * the point-index runs faster than the function-index.
  *
  * The container can be iterated with the iterator ValueTable::iterator
@@ -57,13 +58,15 @@ IGA_NAMESPACE_OPEN
  * We provide two types of ``views'' (i.e. two grouping criteria):
  * - <b>function view</b>: i.e. iterators that runs on entries related to the same function.
  *   For this kind of view, the number of entries are equal to the number of points.
- * - <b>point view</b>: i.e. iterators that runs on entries related to the same point
+ *   This view is obtained with the function ValueTable<T>::get_function_view().
+ * - <b>point view</b>: i.e. iterators that runs on entries related to the same point.
  *   For this kind of view, the number of entries are equal to the number of functions.
+ *   This view is obtained with the function ValueTable<T>::get_point_view().
  *
  * The types associated with the views are ValueTable<T>::view and ValueTable<T>::const_view
  *
  *
- * @tparam T Type of the object to be stored in the table.
+ * @tparam T Type of the object to be stored in each entry of the table.
  * \todo Missing documentation.
  * @author M.Martinelli
  * @date 2013,2014
