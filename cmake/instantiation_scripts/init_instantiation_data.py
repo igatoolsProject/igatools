@@ -117,6 +117,9 @@ class InstantiationInfo:
 
         self.unit_elements=[] #list UnitElement classes
         self.create_unit_element()
+
+        self.multiplicities=[] #list Multiplicity classes
+        self.create_multiplicity()
         
         return None
 
@@ -519,6 +522,22 @@ class InstantiationInfo:
             C_list.append(C)
         
         self.unit_elements = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_multiplicity(self):
+        '''Creates a list of the Multiplicity class that needs to be instantiated'''
+
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'Multiplicity<%d>' % (dim_domain)
+            C_list.append(C)
+        
+        self.multiplicities = unique(C_list)        
         return None
 ##################################
 
