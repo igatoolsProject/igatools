@@ -68,6 +68,7 @@ public:
 
     /** @name Constructor & destructor */
     ///@{
+
     /**
      * Construct a view defined by the iterator @p begin pointing to the first element,
      * and the iterator @p end pointing to one-past-the-end element
@@ -88,6 +89,7 @@ public:
 
     /** @name Assignment operators */
     ///@{
+
     /** Copy assignment operator. */
     ContainerView<Container> &operator=(const ContainerView<Container> &view) = default;
 

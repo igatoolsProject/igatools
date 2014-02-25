@@ -37,7 +37,8 @@ IGA_NAMESPACE_OPEN
  * (and for the derived classes DynamicMultiArray and StaticMultiArray).
  *
  * This iterator can move in a non-contiguous way along the @p Container entries,
- * specifying (in the constructor) a @p stride value greater than @p 1.
+ * specifying (using the proper the constructor parameter) a @p stride value greater
+ * than @p 1.
  *
  * @ingroup multi_array_containers
  *
@@ -77,6 +78,7 @@ public:
 
     /** @name Constructors and destructor */
     ///@{
+
     /** Default constructor. Not allowed to be used.*/
     MultiArrayIterator() = delete;
 
