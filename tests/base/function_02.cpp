@@ -64,7 +64,7 @@ private:
 
 
 
-int main(int argc, char *argv[])
+int main()
 {
     const int dim=2;
     const int range=2;
@@ -80,7 +80,6 @@ int main(int argc, char *argv[])
     out << x << endl;
     out << y << endl;
 
-
-
+    return 0;
 }
 
