@@ -112,6 +112,9 @@ class InstantiationInfo:
         self.value_tables=[] #list ValueTable classes
         self.create_value_table()
         
+        self.cartesian_product_indexers=[] #list CartesianProductIndexer classes
+        self.create_cartesian_product_indexer()
+        
         return None
 
 
@@ -364,11 +367,15 @@ class InstantiationInfo:
         C_list=[]
 
         types=['Real','Index']
-        for t in types:
-            for row in self.table:
-                dim = row.dim_ref
+        for row in self.table:
+            dim = row.dim_ref
+            C = 'DynamicMultiArray<TensorIndex<%s>,%s>' % (dim,dim)
+            C_list.append(C)
+            for t in types:
                 C = 'DynamicMultiArray<%s,%s>' % (t,dim)
                 C_list.append(C)
+
+
                 
         for deriv in self.derivatives:
             C = 'DynamicMultiArray<%s,2>' % (deriv)
@@ -430,7 +437,7 @@ class InstantiationInfo:
         C_list=[]
         for row in self.table:
             dim = row.dim_ref
-            C = 'TensorProductArray<%s>' % (dim)
+            C = 'TensorProductArray<%d>' % (dim)
             C_list.append(C)
 
         
@@ -477,6 +484,22 @@ class InstantiationInfo:
 #                %(container,row.dim_phys, row.rank_ref))
 
         self.value_tables = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_cartesian_product_indexer(self):
+        '''Creates a list of the CartesianProductIndexer class that needs to be instantiated'''
+
+        C_list=[]
+
+        for row in self.table:
+            dim = row.dim_ref
+            C = 'CartesianProductIndexer<%d>' % (dim)
+            C_list.append(C)
+
+        self.cartesian_product_indexers = unique(C_list)        
         return None
 ##################################
 
