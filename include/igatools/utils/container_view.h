@@ -70,7 +70,7 @@ public:
     ///@{
     /**
      * Construct a view defined by the iterator @p begin pointing to the first element,
-     * and the iterator @p end pointing to one-pass-the-end element
+     * and the iterator @p end pointing to one-past-the-end element
      * satisfying the chosen criteria.
      */
     explicit ContainerView(const iterator begin, const iterator end);
@@ -150,11 +150,11 @@ public:
     /** @name Constructor & destructor */
     ///@{
     /**
-     * Construct a view defined by the iterator @p begin pointing to the first element,
-     * and the iterator @p end pointing to one-pass-the-end element
+     * Construct a view defined by the const iterator @p begin pointing to the first element,
+     * and the const iterator @p end pointing to one-past-the-end element
      * satisfying the chosen criteria.
      */
-    explicit ConstContainerView(const iterator begin, const iterator end);
+    explicit ConstContainerView(const const_iterator begin, const const_iterator end);
 
 
     /** Copy constructor. */
