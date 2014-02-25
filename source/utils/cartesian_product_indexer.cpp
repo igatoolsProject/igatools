@@ -70,6 +70,13 @@ get_num_indices() const
 }
 
 
+template <int rank>
+void
+CartesianProductIndexer<rank>::
+print_info_(LogStream &out) const
+{
+    out << tensor_indices_ << std::endl;
+}
 
 
 IGA_NAMESPACE_CLOSE

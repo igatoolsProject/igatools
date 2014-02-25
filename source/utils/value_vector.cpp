@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-//TODO: inline, check constructor, fix headers
+//TODO: inline, check constructor
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/exceptions.h>
-#include <boost/multi_array.hpp>
+//#include <boost/multi_array.hpp>
 
 using std::vector ;
 

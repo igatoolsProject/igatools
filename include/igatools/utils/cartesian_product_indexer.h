@@ -32,10 +32,13 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief This class represent a set of rank-dimensional indices arranged in a cartesian-product way.
+ * @brief This class represent a set of <tt>rank</tt>-dimensional
+ * indices arranged in a cartesian-product way.
  *
- * Basically is an hash table from flat-indices to tensor-indices and it can be used in order to
- * avoid the on-the-fly index transformation TensorSizedContainer<rank>::flat_to_tensor().
+ * Basically it is an look-up table from flat-indices to
+ * tensor-indices and it can be used in order to
+ * avoid the on-the-fly index transformation
+ * TensorSizedContainer<rank>::flat_to_tensor().
  *
  * @author M. Martinelli
  * @date 29 Jan 2014
@@ -80,6 +83,8 @@ public:
 
     /** Returns the total number of indices. */
     Size get_num_indices() const ;
+
+    void print_info_(LogStream &out) const ;
 
 private:
 
