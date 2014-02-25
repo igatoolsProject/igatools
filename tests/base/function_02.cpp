@@ -20,7 +20,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for user defined linear function based on the virtual function.
+ *  Test for user defined linear function based on the virtual class Function.
  */
 
 #include "../tests.h"
@@ -49,8 +49,7 @@ public:
 
     void evaluate(
         const std::vector < typename LinearFunction<dim, range>::PointType >   &points,
-              std::vector < typename LinearFunction<dim, range>::ValueType >   &values
-    ) const
+              std::vector < typename LinearFunction<dim, range>::ValueType >   &values) const
     {
 
         for (int i=0; i<points.size(); i++)
