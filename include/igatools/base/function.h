@@ -113,7 +113,8 @@ public:
         const std::vector<PointType> &points,
         std::vector<HessianType> &hessians) const;
 
-    /** Compute the @values and the @p gradients of Function at some @p points. */
+    /** Compute the @p values and the @p gradients of Function at some
+     *  @p points. */
     virtual void evaluate_values_and_gradients(
         const std::vector<PointType> &points,
         std::vector<ValueType> &values,

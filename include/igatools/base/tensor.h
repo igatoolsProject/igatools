@@ -640,7 +640,7 @@ tensor_product(const V1 &a, const V2 &b)
 
 
 
-/** @defgroup tensor_arith_oper Tensor arithmetic operators */
+/** @name tensor_arith_oper Tensor arithmetic operators */
 /** @} */
 /**
  * Adds two tensors of the same type.
