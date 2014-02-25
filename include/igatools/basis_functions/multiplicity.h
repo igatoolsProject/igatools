@@ -28,7 +28,8 @@ IGA_NAMESPACE_OPEN
 
 /**
  * @brief Multiplicity of knot vectors.
- * It is use in conjunction with the knot vectors
+ *
+ * It is used in conjunction with the knot vectors
  * to initiate a BSpline space.
  *
  * @author pauletti, 2013
@@ -59,7 +60,7 @@ public:
     Multiplicity<dim> accumulate() ;
 
     /**
-     // TODO (Nov 9 2013, antolin): document.
+      * @todo (Nov 9 2013, antolin): document.
      */
     Multiplicity<dim> compute_index_space_offset(const std::array<int,dim> &degree) ;
 
