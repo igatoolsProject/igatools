@@ -38,7 +38,8 @@ do_test()
 
     CartesianProductIndexer<rank> indexer(size);
 
-    indexer.print_info_(out);
+    indexer.print_info(out);
+    out << endl;
 }
 
 

@@ -26,6 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 #include <igatools/utils/tensor_index.h>
+#include <igatools/utils/dynamic_multi_array.h>
 
 
 
@@ -45,6 +46,7 @@ IGA_NAMESPACE_OPEN
  */
 template <int rank>
 class CartesianProductIndexer
+    : public DynamicMultiArray<TensorIndex<rank>,rank>
 {
 public:
     /** @name Constructors and destructor */
@@ -56,7 +58,7 @@ public:
      * Constructor. Builds an indexer with <p>n_indices_direction[i]M</p>
      * indices along the i-th direction.
      */
-    CartesianProductIndexer(const TensorSize<rank> &n_indices_direction);
+    explicit CartesianProductIndexer(const TensorSize<rank> &n_indices_direction);
 
     /** Copy constructor. Not allowed to be used. */
     CartesianProductIndexer(const CartesianProductIndexer<rank> &in) = delete;
@@ -78,21 +80,11 @@ public:
     ///@}
 
 
-    /** Returns the tensor index corresponding to the fucntion argument @p flat_index.*/
+    /** Returns the tensor index corresponding to the function argument @p flat_index.*/
     TensorIndex<rank> get_tensor_index(const Index flat_index) const ;
 
     /** Returns the total number of indices. */
     Size get_num_indices() const ;
-
-    void print_info_(LogStream &out) const ;
-
-private:
-
-    /**
-     * Map between flat-index to tensor-index.
-     * tensor_indices_[i] is the tensor index corresponding to the i-th flat-index.
-     */
-    std::vector<TensorIndex<rank>> tensor_indices_ ;
 };
 
 

@@ -367,11 +367,15 @@ class InstantiationInfo:
         C_list=[]
 
         types=['Real','Index']
-        for t in types:
-            for row in self.table:
-                dim = row.dim_ref
+        for row in self.table:
+            dim = row.dim_ref
+            C = 'DynamicMultiArray<TensorIndex<%s>,%s>' % (dim,dim)
+            C_list.append(C)
+            for t in types:
                 C = 'DynamicMultiArray<%s,%s>' % (t,dim)
                 C_list.append(C)
+
+
                 
         for deriv in self.derivatives:
             C = 'DynamicMultiArray<%s,2>' % (deriv)

@@ -23,7 +23,6 @@
 
 #include <igatools/utils/cartesian_product_indexer.h>
 #include <igatools/base/exceptions.h>
-#include <igatools/utils/cartesian_product_array.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -33,21 +32,13 @@ IGA_NAMESPACE_OPEN
 template <int rank>
 CartesianProductIndexer<rank>::
 CartesianProductIndexer(const TensorSize<rank> &num_indices_direction)
+    :
+    DynamicMultiArray<TensorIndex<rank>,rank>(num_indices_direction)
 {
-    CartesianProductArray<Index,rank> direction_indices(num_indices_direction) ;
+    const Size flat_size = this->flat_size();
 
-    for (int i = 0 ; i < rank ; ++i)
-    {
-        Assert(num_indices_direction(i) >= 1,
-               ExcLowerRange(num_indices_direction(i),1));
-
-        const Size n_indices_dir = num_indices_direction(i) ;
-
-        for (Index id = 0 ; id < n_indices_dir ; ++id)
-            direction_indices.entry(i,id) = id ;
-    }
-
-    tensor_indices_ = direction_indices.get_flat_cartesian_product();
+    for (Index flat_id = 0 ; flat_id < flat_size ; ++flat_id)
+        (*this)(flat_id) = this->flat_to_tensor(flat_id);
 }
 
 
@@ -56,27 +47,20 @@ TensorIndex<rank>
 CartesianProductIndexer<rank>::
 get_tensor_index(const Index flat_index) const
 {
-    Assert((flat_index >=0) && (flat_index < tensor_indices_.size()),
-           ExcIndexRange(flat_index,0,tensor_indices_.size()));
-    return tensor_indices_[flat_index] ;
+    Assert((flat_index >=0) && (flat_index < this->flat_size()),
+           ExcIndexRange(flat_index,0,this->flat_size()));
+    return this->data_[flat_index] ;
 }
+
 
 template <int rank>
 Size
 CartesianProductIndexer<rank>::
 get_num_indices() const
 {
-    return tensor_indices_.size() ;
+    return this->flat_size() ;
 }
 
-
-template <int rank>
-void
-CartesianProductIndexer<rank>::
-print_info_(LogStream &out) const
-{
-    out << tensor_indices_ << std::endl;
-}
 
 
 IGA_NAMESPACE_CLOSE
