@@ -35,17 +35,33 @@ IGA_NAMESPACE_OPEN
 
 /**
  * @class ValueTable
- * This class represents a 2-dimensional array for objects of type T.
+ * @brief This class represents a 2-dimensional dynamic array for objects of type T.
  *
- * Each entry of the 2-dimensional array can be associated to a single function
+ * Each entry of the 2-dimensional array are associated to a single function
  * at one single point.
  *
- * Internally the data are stored as single std::vector<T> of length num_functions * num_points
- * and the memory is ordered is made as num_functions chunks of length num_points objects of type T.
- * The array element with index i refers to the function index resulting by the integer division i/num_points
- * and to the point index resulting by the modulo operation i%num_points.
+ * Internally the data are stored as single std::vector<T>
+ * (through the inherithance from DynamicMultiArray<T,2>) of length
+ * <tt num_functions * num_points</tt> and the memory is ordered is made as
+ * <tt>num_functions</tt> chunks of length <tt>num_points</tt> objects of type @p T.
+ * The array element with index @p i refers to the function index resulting by the
+ * integer division <tt>i/num_points</tt> and to the point index resulting by
+ * the modulo operation <tt>i%num_points</tt>: in other words,
+ * the point-index runs faster than the function-index.
  *
- * In other words, the point-index runs faster than the function-index.
+ * The container can be iterated with the iterator ValueTable::iterator
+ * or its const version ValueTable::const_iterator.
+ * Moreover the class provides ``views'' (in const and non-const version),
+ * i.e. special iterators that operates on entries that
+ * can be grouped in accordance with some criteria.
+ * We provide two types of ``views'' (i.e. two grouping criteria):
+ * - <b>function view</b>: i.e. iterators that runs on entries related to the same function.
+ *   For this kind of view, the number of entries are equal to the number of points.
+ * - <b>point view</b>: i.e. iterators that runs on entries related to the same point
+ *   For this kind of view, the number of entries are equal to the number of functions.
+ *
+ * The types associated with the views are ValueTable<T>::view and ValueTable<T>::const_view
+ *
  *
  * @tparam T Type of the object to be stored in the table.
  * \todo Missing documentation.
@@ -57,10 +73,18 @@ class ValueTable :
     public DynamicMultiArray<T,2>
 {
 public :
+    /** Type for the iterator (non-const version). */
     using iterator = typename DynamicMultiArray<T,2>::iterator ;
+
+    /** Type for the iterator (const version). */
     using const_iterator = typename DynamicMultiArray<T,2>::const_iterator;
-    using function_view = ContainerView<DynamicMultiArray<T,2>>;
-    using const_function_view = ConstContainerView<DynamicMultiArray<T,2>>;
+
+    /** Type for the view (non-const version). */
+    using view = ContainerView<DynamicMultiArray<T,2>>;
+
+
+    /** Type for the view (const version). */
+    using const_view = ConstContainerView<DynamicMultiArray<T,2>>;
 
 
     /**
@@ -173,18 +197,36 @@ public :
 
 
     /**
-     * @name Functions for getting values in the container
+     * @name Functions for getting views
      */
     ///@{
     /**
-     * Return a view of the elements relative to the i-th function. Non-const version.
+     * Return a view of the elements relative to the <tt>i</tt>-th function. Non-const version.
+     * @note In Debug mode, the function index @p i is checked if it is in the correct
+     * functions-index range.
      */
-    function_view get_function_view(const int i);
+    view get_function_view(const int i);
 
     /**
-     * Return a view of the elements relative to the i-th function. Const version.
+     * Return a view of the elements relative to the <tt>i</tt>-th function. Const version.
+     * @note In Debug mode, the function index @p i is checked if it is in the correct
+     * functions-index range.
      */
-    const_function_view get_function_view(const int i) const;
+    const_view get_function_view(const int i) const;
+
+    /**
+     * Return a view of the elements relative to the <tt>i</tt>-th point. Non-const version.
+     * @note In Debug mode, the function index @p i is checked if it is in the correct
+     * points-index range.
+     */
+    view get_point_view(const int i);
+
+    /**
+     * Return a view of the elements relative to the <tt>i</tt>-th point. Const version.
+     * @note In Debug mode, the function index @p i is checked if it is in the correct
+     * points-index range.
+     */
+    const_view get_point_view(const int i) const;
     ///@}
 
 
