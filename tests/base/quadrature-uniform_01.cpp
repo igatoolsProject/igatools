@@ -47,9 +47,7 @@ void do_test_zero()
 template <int dim>
 void do_test()
 {
-    array<array<iga::Real,2>,dim> domain_coordinates_new ;
-    for (int j = 0; j < dim; ++j)
-        domain_coordinates_new[j] = {{1.0,3.0}} ;
+
 
     out << "-------------------------------" << endl ;
     const int max_n_pts = 4;
@@ -64,16 +62,6 @@ void do_test()
         quad.print_info(out) ;
         out << endl ;
 
-//        out << "Modified element" << endl ;
-//        quad.reset_domain(domain_coordinates_new) ;
-//        quad.print_info(out) ;
-//        out << endl ;
-//
-//
-//        out << "Reset to unit element" << endl ;
-//        quad.reset_to_unit_domain() ;
-//        quad.print_info(out) ;
-//        out << endl ;
 
     }
     out << "-------------------------------" << endl ;
@@ -95,10 +83,10 @@ void do_test_aniso()
     for (int i = 2; i < max_n_pts; ++i)
     {
         out << "Points per direction: ";
-        array<int, dim> n_points;
+        TensorSize<dim> n_points;
         for (int j = 0; j < dim; ++j)
         {
-            n_points[j] = i + j;
+            n_points(j) = i + j;
             out << i+j << " ";
         }
         out << endl << endl ;
@@ -108,16 +96,6 @@ void do_test_aniso()
         out << "Unit element" << endl ;
         quad.print_info(out) ;
         out << endl ;
-
-//        out << "Modified element" << endl ;
-//        quad.reset_domain(domain_coordinates_new) ;
-//        quad.print_info(out) ;
-//        out << endl ;
-//
-//        out << "Reset to unit element" << endl ;
-//        quad.reset_to_unit_domain() ;
-//        quad.print_info(out) ;
-//        out << endl ;
 
     }
     out << "-------------------------------" << endl ;
