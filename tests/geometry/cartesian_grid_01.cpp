@@ -98,7 +98,5 @@ int main()
     non_uniform_const<2>();
     non_uniform_const<3>();
 
-    Quadrature<3> quad;
-
     return 0;
 }
