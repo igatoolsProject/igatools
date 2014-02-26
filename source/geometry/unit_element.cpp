@@ -145,22 +145,22 @@ UnitElement<4>::face_to_component[faces_per_element][2]
 };
 
 template <>
-const std::array<int, 0>
+const TensorIndex<0>
 UnitElement<0>::face_active_directions[faces_per_element]
     = {};
 
 template <>
-const std::array<int, 0>
+const TensorIndex<0>
 UnitElement<1>::face_active_directions[faces_per_element]
 = {{},{}};
 
 template <>
-const std::array<int, 1>
+const TensorIndex<1>
 UnitElement<2>::face_active_directions[faces_per_element]=
 {{{1}},{{1}},{{0}},{{0}}};
 
 template <>
-const std::array<int, 2>
+const TensorIndex<2>
 UnitElement<3>::face_active_directions[faces_per_element]=
 {
     {{1, 2}} ,
@@ -172,7 +172,7 @@ UnitElement<3>::face_active_directions[faces_per_element]=
 };
 
 template <>
-const std::array<int, 3>
+const TensorIndex<3>
 UnitElement<4>::face_active_directions[faces_per_element]=
 {
     {{1, 2, 3}} ,

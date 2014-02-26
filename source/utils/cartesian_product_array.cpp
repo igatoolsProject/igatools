@@ -169,7 +169,7 @@ get_flat_cartesian_product() const -> vector<point_t>
 template< class T, int rank>
 auto
 CartesianProductArray<T,rank>::
-get_sub_product(const TensorIndex<rank-1> &index) const -> SubProduct
+get_sub_product(const SubProductTensorIndex &index) const -> SubProduct
 {
     SubProduct sub_data;
     for (int i=0; i<rank-1; ++i)

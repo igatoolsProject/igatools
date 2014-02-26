@@ -135,8 +135,7 @@ public:
 
 
     /**
-     * @name Function returning restriction
-     * and extension quadrature (useful for face evaluation)
+     * @name Function returning restriction and extension quadrature (useful for face evaluation)
      */
     ///@{
 

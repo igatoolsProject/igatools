@@ -188,6 +188,8 @@ public:
 
     /** @name Functions returning rank-1 and rank+1 objects */
     ///@{
+    using SubProductTensorIndex = Conditional<(rank>0),TensorIndex<rank-1>,TensorIndex<0>>;
+
     /**
      * Returns a rank-1 CartesianProductArray built
      * copying some part of the the data from the calling object.
@@ -204,7 +206,7 @@ public:
        @endcode
      *
      */
-    SubProduct get_sub_product(const TensorIndex<rank-1> &index) const;
+    SubProduct get_sub_product(const SubProductTensorIndex &index) const;
 
 #if 0
     /**

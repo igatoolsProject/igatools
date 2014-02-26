@@ -84,7 +84,7 @@ struct UnitElement
      * active directions.
      */
     static const
-    Conditional<dim != 0, std::array<int,dim-1>, std::array<int,0> >
+    Conditional<dim != 0, TensorIndex<dim-1>, TensorIndex<0> >
     face_active_directions[faces_per_element];
 
     /** Direction along which the face coordinates are constant. */

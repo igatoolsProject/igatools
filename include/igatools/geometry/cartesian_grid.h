@@ -99,6 +99,9 @@ public:
         uniform, direction_uniform, non_uniform
     };
 
+    /** Type for the face of the grid */
+    using FaceType = Conditional<(dim>0),CartesianGrid<dim-1>,CartesianGrid<0> >;
+
 
     /** Type for iterator over the elements.*/
     using ElementIterator = GridForwardIterator<CartesianGridElementAccessor<dim> >;
@@ -275,6 +278,9 @@ public:
      * unit normal vector to the face number @p face_no.
      */
     Point<dim> get_face_normal(const int face_no) const;
+
+    FaceType get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
+
     ///@}
 
 

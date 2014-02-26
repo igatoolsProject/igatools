@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the grid_utils get_face_grid
+ *  Test for the  CartesianGrid::get_face_grid
  *
  *  author: pauletti
  *  date: 2013-01-27
@@ -27,7 +27,6 @@
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/grid_utils.h>
 
 template<int dim>
 void face_uniform(const int n_knots)
@@ -38,8 +37,8 @@ void face_uniform(const int n_knots)
     {
         out << "Face: " << i << endl;
         map<int, int> elem_map;
-        auto face_grid = get_face_grid<dim>(grid, i, elem_map);
-        face_grid->print_info(out);
+        auto face_grid = grid->get_face_grid(i, elem_map);
+        face_grid.print_info(out);
         for (auto x : elem_map)
             out << x.first << " " << x.second << endl;
     }
@@ -59,8 +58,8 @@ void face_non_uniform()
     {
         out << "Face: " << i << endl;
         map<int, int> elem_map;
-        auto face_grid = get_face_grid<dim>(grid, i, elem_map);
-        face_grid->print_info(out);
+        auto face_grid = grid->get_face_grid(i, elem_map);
+        face_grid.print_info(out);
         for (auto x : elem_map)
             out << x.first << " " << x.second << endl;
     }

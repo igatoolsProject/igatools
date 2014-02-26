@@ -426,6 +426,41 @@ print_info(LogStream &out) const
 }
 
 
+template <int dim_>
+auto
+CartesianGrid<dim_>::
+get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> FaceType
+{
+    Assert(dim > 0, ExcLowerRange(dim,1));
+
+    const auto active_dirs = UnitElement<dim>::face_active_directions[face_id];
+    const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
+    const int const_value = UnitElement<dim>::face_side[face_id];
+
+    TensorIndex<dim> v_index;
+    auto knot_coordinates_ = this->get_knot_coordinates();
+    v_index[const_dir] = const_value==0 ?
+                         0 :
+                         (knot_coordinates_.tensor_size()(const_dir)-2);
+
+    auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
+    auto face_grid = FaceType(face_knots);
+
+    auto v_elem = this->begin();
+    auto f_elem = face_grid.begin();
+    auto end = face_grid.end();
+    for (; f_elem != end; ++f_elem)
+    {
+        auto f_index = f_elem->get_tensor_index();
+        for (int j=0; j<dim-1; ++j)
+            v_index[active_dirs[j]] = f_index[j];
+        v_elem->reset_flat_tensor_indices(v_index);
+        elem_map[f_elem->get_flat_index()]=v_elem->get_flat_index();
+    }
+
+    return face_grid;
+}
+
 
 
 template <int dim_>
