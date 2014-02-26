@@ -34,8 +34,19 @@ IGA_NAMESPACE_OPEN
 
 
 /**
+ * @brief Element accessor for the CartesianGrid.
+ *
+ * The element can be queried for informations
+ * that can be generated on-the-fly
+ * (i.e. without the use of a cache) and for informations
+ * that are obtained throuch a cache mechanism
+ *
+ *
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
+ *
+ * @author S.Pauletti, 2012, 2013, 2014
+ * @author M.Martinelli, 2013, 2014
  */
 template <int dim_>
 class CartesianGridElementAccessor : public CartesianGridElement<dim_>
@@ -111,8 +122,7 @@ public:
     &operator=(CartesianGridElementAccessor<dim_> &&elem) = default;
     ///@}
 
-
-    ///@name Query information that requires the use of the cache
+    /** @name Functions for the cache initialization and filling. */
     ///@{
     /**
      * Initializes the internal cache for the efficient
@@ -152,6 +162,11 @@ public:
      * and fill flags specified in init_values.
      */
     void fill_face_values(const Index face_id);
+    ///@}
+
+
+    ///@name Query information that requires the use of the cache
+    ///@{
 
     /**
      * Returns the measure of the element in the CartesianGrid<dim_>
@@ -229,7 +244,8 @@ private:
 
 
     /**
-     * Global cache storing the interval length in each direction
+     * @brief Global CartesianGrid cache, storing the interval length in each direction.
+     *
      * For now only a uniform quad is taken care of.
      */
     class LengthCache : public CacheStatus
@@ -251,6 +267,9 @@ private:
     };
 
 
+    /**
+     * @brief Base class for cache of CartesianGridElementAccessor.
+     */
     class ValuesCache : public CacheStatus
     {
     public:
@@ -273,7 +292,7 @@ private:
     };
 
     /**
-     * Cache for the element values at quadrature points
+     * @brief Cache for the element values at quadrature points
      */
     class ElementValuesCache : public ValuesCache
     {
@@ -287,7 +306,7 @@ private:
 
 
     /**
-     * Cache for the face values at quadrature points
+     * @brief Cache for the face values at quadrature points
      */
     class FaceValuesCache : public ValuesCache
     {

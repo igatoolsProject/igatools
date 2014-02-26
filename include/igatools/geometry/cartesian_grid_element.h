@@ -27,6 +27,19 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This class represents an element within a CartesianGrid.
+ *
+ * The element can be queried for informations
+ * that can be generated on-the-fly
+ * (i.e. without the use of a cache).
+ *
+ * It is used as base class for CartesianGridElementAccessor.
+ *
+ * @tparam dim Dimensionality of the grid.
+ *
+ * @author M.Martinelli, 2014
+ */
 template <int dim>
 class CartesianGridElement
 {
@@ -39,7 +52,7 @@ public:
     CartesianGridElement() = delete;
 
     /**
-     * Construct an accessor pointing to the element with
+     * Construct an object pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
     CartesianGridElement(const CartesianGrid<dim> &grid,
@@ -84,7 +97,7 @@ public:
     const CartesianGrid<dim> *get_grid() const;
 
 
-    /** Functions related to the indices of the element in the cartesian grid. */
+    /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const;
@@ -137,7 +150,8 @@ public:
     bool is_boundary() const;
 
     /**
-     * Test if the face @p face on the current element is on the boundary of the cartesian grid.
+     * Test if the face identified by @p face_id on the current element is on the
+     * boundary of the cartesian grid.
      */
     bool is_boundary(const Index face_id) const;
 

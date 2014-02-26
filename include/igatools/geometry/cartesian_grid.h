@@ -40,49 +40,13 @@ template <int> class CartesianGridElementAccessor;
 
 
 /**
- * This class represents a the knotspan or knot vector.
- * View with a tensor product structure it is also known as
- * a rectilinear grid in the dim-dimensional space.
+ * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
- *
- * \section sec1 Creating a patch
- * - Example 1: creating a 3-dimensional grid in the \f$ [0,1] \times [0,1] \times [0,1] \f$ domain
- * with 4 uniform intervals in each coordinate direction
- * \code
- *    CartesianGrid<3> grid( 5 ); // 4 intervals == 5 knot values
- * \endcode
- * - Example 2: creating a 2-dimensional grid in the \f$ [0,1] \times [0,1] \f$ domain
- * with 4 uniform intervals in the coordinate direction 0 and 2 uniform intervals in
- * the coordinate direction 1
- * \code
- *   array< int, 2 > num_knots;
- *   num_knots[0] = 5;
- *   num_knots[1] = 3;
- *   CartesianGrid<2> grid( num_knots );
- * \endcode
- *
- *
- * \section sec2 Accessing data through Iterators and Accessors
- * The data of the patch is access through iterators (STL like).
- * The main advantage of using iterators are:
- * - you can write code independent of the dimension
- * - you can work on the patch data without worrying of its internal data structure
- *
- * \subsection ex Examples
- * - Count the number of elements on a patch
- * \code
- *   CartesianGrid<dim>::ElementIterator element = patch.begin();
- *   CartesianGrid<dim>::ElementIterator endelement = patch.end();
- *   int n_elements=0;
- *   for (; element!=endelement; ++element)
- *       ++n_elements;
- * \endcode
- *
- *   \author Massimiliano Martinelli (massimiliano.martinelli@gmail.com), 2012, 2013
- *   \author pauletti 2012, 2013
+ * @author M. Martinelli 2012, 2013, 2014
+ * @author pauletti 2012, 2013
  *
  * @ingroup refinement
- *
+ * @todo document more
  */
 template< int dim_ >
 class CartesianGrid
@@ -106,17 +70,19 @@ public:
     /** Type for iterator over the elements.*/
     using ElementIterator = GridForwardIterator<CartesianGridElementAccessor<dim> >;
 
+
     /** @name Constructors*/
     ///@{
     /**
-     * Construct a uniform cartesian grid of the unit <b>d</b>-dimensional
-     * cube [0,1]^d, with \b n knots (equally spaced) in each dimension.
+     * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
+     * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
     explicit CartesianGrid(const Size n = 2);
 
     /**
-     * Construct a uniform cartesian grid of the unit <b>d</b>-dimensional
-     * cube [0,1]^d, with <b>n</b>[0],..,<b>n</b>[dim-1] knots in each dimension
+     * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
+     * hypercube \f$[0,1]^{dim}\f$,
+     * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
     explicit CartesianGrid(const TensorSize<dim> &n_knots);
@@ -127,7 +93,7 @@ public:
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
-     * @note In debug mode, a check for this precondition (up to machine precision)
+     * @note In Debug mode, a check for this precondition (up to machine precision)
      * is perform and if not satistified an exception is raised.
      */
     explicit
@@ -155,11 +121,24 @@ public:
     ///@}
 
 
-    /** @name Creators */
-    ///@{
     /**
-     * Create a uniform cartesian grid of the unit <b>d</b>-dimensional
-     * cube [0,1]^d, with <b>n</b>[0],..,<b>n</b>[dim-1] knots in each dimension
+     * @name Creators
+     * @note The functions here return a CartesianGrid<dim> object wrapped by
+     * a std::shared_ptr
+     */
+    ///@{
+
+    /**
+     * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
+     * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
+     */
+    static std::shared_ptr<CartesianGrid<dim_> > create(const Index n = 2);
+
+
+    /**
+     * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
+     * hypercube \f$[0,1]^{dim}\f$,
+     * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
     static std::shared_ptr< CartesianGrid<dim_> > create(const TensorSize<dim> &n);
@@ -171,7 +150,7 @@ public:
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
-     * \note n debug mode, a check for this precondition (up to machine precision)
+     * @note In Debug mode, a check for this precondition (up to machine precision)
      * is perform and if not satistified an exception is raised.
      */
     static std::shared_ptr< CartesianGrid<dim_> >
@@ -180,13 +159,8 @@ public:
 
 
     /**
-     * Create a uniform cartesian grid of the unit <b>d</b>-dimensional
-     * cube [0,1]^d, with \b n knots in each dimension.
+     * @todo document me
      */
-    static std::shared_ptr<CartesianGrid<dim_> > create(const Index n = 2);
-
-
-
     static std::shared_ptr< CartesianGrid<dim_> >
     create(const BBox<dim> &end_points,
            const TensorSize<dim> &n);
@@ -230,7 +204,7 @@ public:
     TensorSize<dim> get_num_knots_dim() const;
 
     /**
-     * Returns the knot coordinates along the direction \b i.
+     * Returns the knot coordinates along the direction @p i.
      */
     std::vector<Real> const &get_knot_coordinates(const int i) const;
 
@@ -240,9 +214,8 @@ public:
     CartesianProductArray<Real, dim> const &get_knot_coordinates() const;
 
 
-
     /**
-     * Returns the knot coordinates along the direction \b i.
+     * Returns the knot coordinates along the direction @p i.
      */
     CartesianProductArray<Real, dim> get_element_lengths() const ;
     ///@}
@@ -264,12 +237,12 @@ public:
     ///@name Dealing with boundary information
     ///@{
     /**
-     * Get the patch \b face boundary id.
+     * Get the patch @p face boundary id.
      */
     boundary_id get_boundary_id(const int face) const;
 
     /**
-     * Set the patch \b face to have the boundary \b id.
+     * Set the patch @p face to have the boundary @p id.
      */
     void set_boundary_id(const int face, const boundary_id id);
 
@@ -279,6 +252,9 @@ public:
      */
     Point<dim> get_face_normal(const int face_no) const;
 
+    /**
+     * Returns the CartesianGrid on the @p face_id.
+     */
     FaceType get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
 
     ///@}
