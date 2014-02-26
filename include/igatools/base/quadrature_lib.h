@@ -17,8 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#ifndef __QUADRATURE_LIB_H
-#define __QUADRATURE_LIB_H
+#ifndef QUADRATURE_LIB_H_
+#define QUADRATURE_LIB_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
@@ -28,7 +28,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Gauss-Legendre quadrature of arbitrary order.
+ * @brief Gauss-Legendre quadrature of arbitrary order.
  *
  * The coefficients of these quadrature rules are computed by the
  * function found in <tt>Numerical Recipies</tt>.
@@ -161,7 +161,7 @@ private:
 
 
 /**
- * Gauss-Lobatto quadrature of arbitrary order.
+ * @brief Gauss-Lobatto quadrature of arbitrary order.
  *
  * @note this code was adapted from the dealii library for use
  * in igatools
@@ -298,7 +298,7 @@ private:
 
 
 /**
- * Uniform quadrature rule.
+ * @brief Uniform quadrature rule.
  */
 template< int dim >
 class QUniform :
@@ -357,7 +357,7 @@ private:
 
 
 /**
- * Trapezoidal quadrature rule, exact for linear polynomials.
+ * @brief Trapezoidal quadrature rule, exact for linear polynomials.
  */
 template <int dim>
 class QTrapez :
@@ -395,4 +395,4 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // #ifndef __QUADRATURE_LIB_H
+#endif // #ifndef QUADRATURE_LIB_H_
