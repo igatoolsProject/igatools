@@ -22,6 +22,8 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/unit_element.h>
 
+#include <vector>
+
 using std::vector;
 using std::array;
 using std::endl;
@@ -48,7 +50,7 @@ Quadrature< dim >::Quadrature(const Index num_points)
 
 template< int dim >
 Quadrature< dim >::
-Quadrature(const TensorProductArray<dim> &points,
+Quadrature(const CartesianProductArray<Real,dim> &points,
            const TensorProductArray<dim> &weights)
     :
     points_(points),
@@ -62,7 +64,7 @@ Quadrature(const TensorProductArray<dim> &points,
 
 
 template< int dim >
-TensorProductArray<dim>
+CartesianProductArray<Real,dim>
 Quadrature< dim >::
 get_points() const noexcept
 {
@@ -139,7 +141,7 @@ get_restriction(const int face_id) const
     const auto points_old  = this->get_points();
     const auto weights_old = this->get_weights();
 
-    TensorProductArray<dim> points_new;
+    CartesianProductArray<Real,dim> points_new;
     TensorProductArray<dim> weights_new;
 
     points_new.copy_data_direction(face_const_dir,vector<Real>(1,face_value));
@@ -154,19 +156,23 @@ get_restriction(const int face_id) const
     return Quadrature<dim>(points_new, weights_new);
 }
 
+
+
 template< int dim >
-Quadrature< dim+1 > extend_quad_dim(const Quadrature< dim > &quad_surf,
-                                    const int face_id)
+inline
+Quadrature<dim+1>
+Quadrature<dim> ::
+get_extension(const int face_id) const
 {
     AssertIndexRange(face_id, UnitElement<dim+1>::faces_per_element);
 
 
     const int const_direction = UnitElement<dim+1>::face_constant_direction[face_id];
 
-    TensorProductArray<dim> points_old = quad_surf.get_points();
-    TensorProductArray<dim> weights_old = quad_surf.get_weights();
+    CartesianProductArray<Real,dim> points_old = this->get_points();
+    TensorProductArray<dim> weights_old = this->get_weights();
 
-    TensorProductArray<dim+1> points_new;
+    CartesianProductArray<Real,dim+1> points_new;
     TensorProductArray<dim+1> weights_new;
 
     for (int i = 0, j = 0; i < dim + 1; ++i, ++j)
@@ -179,44 +185,15 @@ Quadrature< dim+1 > extend_quad_dim(const Quadrature< dim > &quad_surf,
         else
         {
             points_new.copy_data_direction(
-                i,vector<Real>(1,UnitElement<dim+1>::face_constant_coordinate[face_id]));
-            weights_new.copy_data_direction(i,vector<Real>(1,1.0));
+                i,
+                std::vector<Real>(1,UnitElement<dim+1>::face_constant_coordinate[face_id]));
+            weights_new.copy_data_direction(i,std::vector<Real>(1,1.0));
             --j;
         }
     }
 
     return Quadrature<dim+1>(points_new, weights_new);
 }
-
-
-#if 0
-template< int dim >
-Quadrature< dim > restricted_quad(const Quadrature< dim > &quad_surf,
-                                  const int face_id)
-{
-    AssertIndexRange(face_id, UnitElement<dim>::faces_per_element);
-
-    const int face_const_dir = UnitElement<dim>::face_constant_direction[face_id];
-    const Real face_value = UnitElement<dim>::face_constant_coordinate[face_id];
-
-    const auto points_old  = quad_surf.get_points();
-    const auto weights_old = quad_surf.get_weights();
-
-    TensorProductArray<dim> points_new;
-    TensorProductArray<dim> weights_new;
-
-    points_new.copy_data_direction(face_const_dir,vector<Real>(1,face_value));
-    weights_new.copy_data_direction(face_const_dir,vector<Real>(1,1.0));
-
-    for (auto i : UnitElement<dim>::face_active_directions[face_id])
-    {
-        points_new.copy_data_direction(i,points_old.get_data_direction(i));
-        weights_new.copy_data_direction(i,weights_old.get_data_direction(i));
-    }
-
-    return Quadrature<dim>(points_new, weights_new);
-}
-#endif
 
 IGA_NAMESPACE_CLOSE
 

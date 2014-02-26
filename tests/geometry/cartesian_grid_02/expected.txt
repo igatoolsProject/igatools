@@ -1,0 +1,54 @@
+
+CartesianGrid Dimension: 1
+Face number: 0
+Face boundary id: 0
+Face number: 1
+Face boundary id: 0
+Face number: 0
+Face boundary id: 0
+Face number: 1
+Face boundary id: 1
+
+CartesianGrid Dimension: 2
+Face number: 0
+Face boundary id: 0
+Face number: 1
+Face boundary id: 0
+Face number: 2
+Face boundary id: 0
+Face number: 3
+Face boundary id: 0
+Face number: 0
+Face boundary id: 0
+Face number: 1
+Face boundary id: 1
+Face number: 2
+Face boundary id: 2
+Face number: 3
+Face boundary id: 3
+
+CartesianGrid Dimension: 3
+Face number: 0
+Face boundary id: 0
+Face number: 1
+Face boundary id: 0
+Face number: 2
+Face boundary id: 0
+Face number: 3
+Face boundary id: 0
+Face number: 4
+Face boundary id: 0
+Face number: 5
+Face boundary id: 0
+Face number: 0
+Face boundary id: 0
+Face number: 1
+Face boundary id: 1
+Face number: 2
+Face boundary id: 2
+Face number: 3
+Face boundary id: 3
+Face number: 4
+Face boundary id: 4
+Face number: 5
+Face boundary id: 5

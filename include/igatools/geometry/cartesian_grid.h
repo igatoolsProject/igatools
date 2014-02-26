@@ -103,11 +103,57 @@ public:
     /** Type for iterator over the elements.*/
     using ElementIterator = GridForwardIterator<CartesianGridElementAccessor<dim> >;
 
-    /**
-     * @name Constructors and creators
-     */
+    /** @name Constructors*/
     ///@{
+    /**
+     * Construct a uniform cartesian grid of the unit <b>d</b>-dimensional
+     * cube [0,1]^d, with \b n knots (equally spaced) in each dimension.
+     */
+    explicit CartesianGrid(const Size n = 2);
 
+    /**
+     * Construct a uniform cartesian grid of the unit <b>d</b>-dimensional
+     * cube [0,1]^d, with <b>n</b>[0],..,<b>n</b>[dim-1] knots in each dimension
+     * respectively.
+     */
+    explicit CartesianGrid(const TensorSize<dim> &n_knots);
+
+    /**
+     * Construct a cartesian grid where the knot coordinate in each
+     * direction is provided.
+     *
+     * The knot coordinate in each direction must be sorted and without
+     * repetition.
+     * @note In debug mode, a check for this precondition (up to machine precision)
+     * is perform and if not satistified an exception is raised.
+     */
+    explicit
+    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates);
+
+
+    /**
+     * @todo Document me
+     */
+    explicit CartesianGrid(const BBox<dim> &end_points,
+                           const TensorSize<dim> &n_knots);
+
+    /**
+     * Copy constructor.
+     * Perform a deep copy of the member variables except the
+     * signal_refine_ variable, that is not copied at all.
+     */
+    CartesianGrid(const CartesianGrid<dim_> &grid);
+
+    /**  Move constructor */
+    CartesianGrid(CartesianGrid<dim_> &&grid) = default;
+
+    /** Destructor */
+    ~CartesianGrid() = default;
+    ///@}
+
+
+    /** @name Creators */
+    ///@{
     /**
      * Create a uniform cartesian grid of the unit <b>d</b>-dimensional
      * cube [0,1]^d, with <b>n</b>[0],..,<b>n</b>[dim-1] knots in each dimension
@@ -127,14 +173,8 @@ public:
      */
     static std::shared_ptr< CartesianGrid<dim_> >
     create(const CartesianProductArray<Real,dim> &knot_coordinates) ;
-    ///@}
 
 
-    /**
-     * Construct a uniform cartesian grid of the unit <b>d</b>-dimensional
-     * cube [0,1]^d, with \b n knots (equally spaced) in each dimension.
-     */
-    explicit CartesianGrid(const Size n = 2);
 
     /**
      * Create a uniform cartesian grid of the unit <b>d</b>-dimensional
@@ -142,45 +182,11 @@ public:
      */
     static std::shared_ptr<CartesianGrid<dim_> > create(const Index n = 2);
 
-    /**
-     * Construct a uniform cartesian grid of the unit <b>d</b>-dimensional
-     * cube [0,1]^d, with <b>n</b>[0],..,<b>n</b>[dim-1] knots in each dimension
-     * respectively.
-     */
-    explicit CartesianGrid(const TensorSize<dim> &n_knots);
 
-    CartesianGrid(const BBox<dim> &end_points,
-                  const TensorSize<dim> &n_knots);
 
     static std::shared_ptr< CartesianGrid<dim_> >
     create(const BBox<dim> &end_points,
            const TensorSize<dim> &n);
-    /**
-     * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided.
-     *
-     * The knot coordinate in each direction must be sorted and without
-     * repetition.
-     * @note In debug mode, a check for this precondition (up to machine precision)
-     * is perform and if not satistified an exception is raised.
-     */
-    explicit
-    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates);
-
-
-    /**
-     * Copy constructor.
-     * Perform a deep copy of the member variables except the
-     * signal_refine_ variable, that is not copied at all.
-     */
-    CartesianGrid(const CartesianGrid<dim_> &grid);
-
-    /**  Move constructor */
-    CartesianGrid(CartesianGrid<dim_> &&grid) = default;
-
-    /** Destructor */
-    ~CartesianGrid() = default;
-
     ///@}
 
 
@@ -236,8 +242,8 @@ public:
      * Returns the knot coordinates along the direction \b i.
      */
     CartesianProductArray<Real, dim> get_element_lengths() const ;
-
     ///@}
+
 
     ///@name Iterating of grid elements
     ///@{
@@ -295,7 +301,6 @@ private:
      */
     CartesianProductArray<Real,dim> knot_coordinates_;
 
-private:
     /** Type for the refinement signal. */
     using signal_refine_t = boost::signals2::signal<
                             void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;

@@ -420,8 +420,8 @@ class InstantiationInfo:
             dim = row.dim_ref
             C = 'CartesianProductArray<Real,%s>' % (dim)
             C_list.append(C)
-#            C = 'CartesianProductArray<Real,%s>' % (dim+1)
-#            C_list.append(C)
+            C = 'CartesianProductArray<Real,%s>' % (dim+1)
+            C_list.append(C)
 
 #        types=['Real*','Index']
         types=['Real*','Index']

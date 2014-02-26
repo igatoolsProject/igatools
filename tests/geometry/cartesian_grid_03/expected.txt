@@ -1,0 +1,30 @@
+
+Cartesian Grid Dimension: 1
+Face number : 0
+Outer normal: [ -1.00000 ] 
+Face number : 1
+Outer normal: [ 1.00000 ] 
+
+Cartesian Grid Dimension: 2
+Face number : 0
+Outer normal: [ -1.00000 0 ] 
+Face number : 1
+Outer normal: [ 1.00000 0 ] 
+Face number : 2
+Outer normal: [ 0 -1.00000 ] 
+Face number : 3
+Outer normal: [ 0 1.00000 ] 
+
+Cartesian Grid Dimension: 3
+Face number : 0
+Outer normal: [ -1.00000 0 0 ] 
+Face number : 1
+Outer normal: [ 1.00000 0 0 ] 
+Face number : 2
+Outer normal: [ 0 -1.00000 0 ] 
+Face number : 3
+Outer normal: [ 0 1.00000 0 ] 
+Face number : 4
+Outer normal: [ 0 0 -1.00000 ] 
+Face number : 5
+Outer normal: [ 0 0 1.00000 ] 

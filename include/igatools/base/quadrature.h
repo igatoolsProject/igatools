@@ -22,17 +22,21 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_product_array.h>
-#include <igatools/utils/static_multi_array.h>
 
-#include <vector>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * Base class for tensor product quadrature formulas in @p dim dimensions.
+ * @brief Base class for tensor product quadrature formulas in @p dim dimensions.
+ *
  * This class stores quadrature points and weights on a dim-dimensional unit
  * hypercube
  * \f$ [0,1]^\text{dim} \f$.
+ *
+ * It also provides methods for projecting the points on the face and for building
+ * quadrature extension in the hypercube
+ * \f$ [0,1]^\text{dim+1} \f$.
+ *
  */
 template<int dim>
 class Quadrature
@@ -66,7 +70,7 @@ public:
      * weights and the domain coordinates of the d-dimensional hypercube
      * upon which the quadrature is referred to.
      */
-    explicit Quadrature(const TensorProductArray<dim> &points,
+    explicit Quadrature(const CartesianProductArray<Real,dim> &points,
                         const TensorProductArray<dim> &weights);
 
     /**
@@ -125,7 +129,7 @@ public:
      * Return all quadrature points in
      * a tensor-product structure.
      */
-    TensorProductArray<dim> get_points() const noexcept;
+    CartesianProductArray<Real,dim> get_points() const noexcept;
 
     ///@}
 
@@ -141,6 +145,12 @@ public:
      * identified by the input argument @p face_id.
      */
     Quadrature<dim> get_restriction(const int face_id) const;
+
+
+    /**
+     * Returns an extended dimension version of this quadrature.
+     */
+    Quadrature<dim+1> get_extension(const int face_id) const;
     ///@}
 
     /**
@@ -153,7 +163,7 @@ protected:
     /**
      * Quadrature points.
      */
-    TensorProductArray<dim> points_ ;
+    CartesianProductArray<Real,dim> points_ ;
 
     /**
      * Quadrature weights.
@@ -182,27 +192,6 @@ protected:
 
 
 
-/**
- * This functions receives a quadrature and returns an extended dimension
- * version of this quadrature.
- *
- * @relates Quadrature
- */
-template< int dim >
-Quadrature< dim+1 > extend_quad_dim(const Quadrature< dim > &quad,
-                                    const int face_id);
-
-#if 0
-/**
- * This functions receives a quadrature and returns another
- * quadrature obtained by projecting the quadrature to the face.
- *
- * @relates Quadrature
- */
-template< int dim >
-Quadrature<dim> restricted_quad(const Quadrature< dim > &quad,
-                                const int face_id);
-#endif
 
 IGA_NAMESPACE_CLOSE
 
