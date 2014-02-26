@@ -135,6 +135,9 @@ class InstantiationInfo:
 
         self.grid_forward_iterators=[] #list GridForwardIterator classes
         self.create_grid_forward_iterator()
+
+        self.grid_wrappers=[] #list GridWrapper classes
+        self.create_grid_wrapper()
         
         return None
 
@@ -672,6 +675,21 @@ class InstantiationInfo:
             C_list.append(C)
         
         self.cartesian_grid_element_accessors = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_grid_wrapper(self):
+        '''Creates a list of the GridWrapper class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for grid in self.cartesian_grids:
+            C = 'GridWrapper<%s>' % (grid)
+            C_list.append(C)
+        
+        self.grid_wrappers = unique(C_list)        
         return None
 ##################################
 
