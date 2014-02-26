@@ -1,0 +1,131 @@
+/**
+   
+   @defgroup refinement Refinement
+   @{   
+
+   The Isogeometric Analysis is a discretization method for partial differential
+   equations that uses as approximation space for unknown fields the discrete spaces 
+   \f$ \hat{V}_h = S^{p}_{\alpha}(\hat{\Omega}_h) \f$ 
+   of degree \f$ p \f$ and continuity \f$ \alpha \f$, built on a mesh \f$\hat{\Omega}_h \f$ of
+   size \f$ h \f$ .
+   
+   Clearly, the accuracy of an isogeometric approach depends on the
+   approximation properties of the space \f$\hat{V}_h\f$. 
+   Three kinds of refinement are possible, which are summarized below:
+   - <b><em>h-refinement</em></b>: the refined space is built using a finer mesh 
+   \f$\hat{\Omega}_{h_f}\f$ (\f$h_f < h\f$), maintaining the degrees
+   \f$p\f$ of the space. That is, \f$h\f$ is reduced, and the global regularity
+   of the space, \f$\alpha\f$, is maintained;
+   - <b><em>p-refinement</em></b>: on the same mesh \f$\hat{\Omega}_{h}\f$, 
+   an higher degree is used, keeping the same regularity at the mesh lines. 
+   That is, \f$p\f$ is increased;
+   - <b><em>k-refinement</em></b>: both mesh refinement (i.e. h-refinement) 
+   and degree elevation (i.e. p-refinement) are performed in sequence,
+   with highest regularity at the new mesh interfaces. 
+   That is, first \f$h\f$ is reduced, then \f$p\f$ is increased.
+  
+  
+   Let see how the different refinement can be performed by igatools: 
+*/
+
+
+
+/**
+  @page h-refinement h-refinement
+  
+  In this case the refinement is performed refining the mesh (i.e. a CartesianGrid object), through
+  the memeber function CartesianGrid::refine() (or, if you want more control on the refinement directions,
+  through the member functions CartesianGrid::refine_directions() and CartesianGrid::refine_direction()).
+  
+  
+  The following piece of code shows how to uniformly refine a two-dimensional
+  grid made of 1x1 elements, to a grid made by 4x4 elements. 
+  @code{.cpp}
+    const int dim = 2;
+    
+    using Grid = CartesianGrid<dim>;    
+    auto grid = Grid::create(); // initial grid made by 1x1 element
+    
+    grid->refine(4); // now grid is made by 4x4 elements
+    
+  @endcode
+  
+  
+  One interesting feature is that if we refine grid that is used by another object for which
+  the h-refinement has valid meaning (e.g. Mapping,  BSplineSpace, NURBSSpace or PhysicalSpace), 
+  then the refinement is performed also to all the objects that are using the grid. 
+  
+    For example we can define some objects built on the same grid
+  @code{.cpp}
+    auto grid_shared = Grid::create(); // initial grid made by 1x1 element
+    
+    using RefSpace = BSplineSpace<dim,1,1>;
+    auto ref_space = RefSpace::create(grid_shared); // space of scalar BSpline functions
+    
+    auto map = SphereMapping<dim>::create(grid_shared); // dim-dimensional sphere of radius = 1
+
+    using PushFwd = PushForward<Transformation::h_grad,dim,dim>; 
+    auto push_fwd = PushFwd::create(map); // push-forward built using the map above
+    
+    using PhysSpace = PhysicalSpace<RefSpace,PushFwd>;
+    auto phys_space = PhysSpace::create(ref_space,push_fwd);
+  @endcode
+  
+  Then we refine the grid in order to have a 3x3 mesh    
+  @code{.cpp}    
+    grid_shared->refine(3); // now grid is a 3x3 mesh
+  @endcode
+  Due to the fact that some objects are based/built using grid_shared, then the h-refinement is
+  not performed only to grid_shared, but it is propagated to those objects.
+  In other words, the objects <tt>ref_space</tt>, <tt>map</tt>, <tt>push_fwd</tt> 
+  and <tt>phys_space</tt> are internally modified in 
+  order to be defined used on the same 3x3 mesh.
+  
+  This mechanism works also in the opposite sense, i.e. if we h-refine the object representing the 
+  physical space <tt>phys_space</tt>
+  @code{.cpp}
+  phys_space->refine_h(4); //now phys_space is defined on a 12x12 mesh
+  @endcode
+  also the objects needed for the construction of <tt>phys_space</tt> 
+  (i.e. <tt>ref_space</tt>, <tt>push_fwd</tt>, <tt>map</tt> and <tt>grid_shared</tt>) are h-refined
+  accordingly.
+  
+  <div class="row">
+    <a href="#hide1" class="hide" id="hide1">Show the technical details</a>
+    <a href="#show1" class="show" id="show1">Hide the technical details</a>
+    <div class="list">
+      The mechanism we adopted in order to communicate the h-refinement from one object A to another 
+      object B that internally uses A is the so-called signals/slot system from the
+      <a href="http://www.boost.org/doc/libs/1_55_0/doc/html/signals2.html">Boost.Signals2</a>
+      library. 
+      The h-refine signals variable (that can be thought as a list of function pointers) 
+      is kept by a CartesianGrid object (CartesianGrid::refine_signals_) and is filled  
+      by the objects that uses that CartesianGrid object when they are constructed, with 
+      a pointer to the function that implements the refinement for the particular object.
+      Then, when one of the refinement function of the CartesianGrid is called 
+      (e.g. CartesianGrid::refine()), first is refined the grid and then are executed the functions
+      held by the h-refine signals variable (if present).
+      The execution order of these functions is important and it is determined by the order in which they 
+      are registered in the list (FIFO), 
+      that is the order of construction of the objects that are built upon
+      the same CartesianGrid.
+    </div>
+ </div>
+  @todo complete the documentation
+
+*/
+
+/**
+  @page p-refinement p-refinement
+  @todo write the documentation
+  Bla bla
+*/
+
+/**
+  @page k-refinement k-refinement
+  @todo write the documentation
+  
+  Bla bla
+*/
+
+/** @}*/ //end of group refinement
