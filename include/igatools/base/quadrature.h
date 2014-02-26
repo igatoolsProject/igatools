@@ -23,7 +23,6 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_product_array.h>
 
-
 IGA_NAMESPACE_OPEN
 
 /**
@@ -170,21 +169,21 @@ protected:
     TensorProductArray<dim> weights_ ;
 
 
-    /**
-     * Coordinates of the domain (i.e. d-dimensional hypercube) in which the quadrature is referred to.
-     */
-    std::array< std::array<Real,2>, dim> domain_coordinates_ ;
-
-    /**
-     * This flags specifies if (and in which component) the point coordinates have constant value.
-     *
-     * * If all the entries of this variable are false, then the all points do not belong to any lower dimension element.
-     * * If the entry @b i is true and the others are false, then the points coordinates have the i-th coordinate fixed, i.e. the points
-     * belongs to an element with dimension dim-1, and so on.
-     *
-     * @note This variable is useful for knowing if the points belong to an element face.
-     */
-    std::array<bool,dim> info_constant_coordinates_ ;
+//    /**
+//     * Coordinates of the domain (i.e. d-dimensional hypercube) in which the quadrature is referred to.
+//     */
+//    std::array< std::array<Real,2>, dim> domain_coordinates_ ;
+//
+//    /**
+//     * This flags specifies if (and in which component) the point coordinates have constant value.
+//     *
+//     * * If all the entries of this variable are false, then the all points do not belong to any lower dimension element.
+//     * * If the entry @b i is true and the others are false, then the points coordinates have the i-th coordinate fixed, i.e. the points
+//     * belongs to an element with dimension dim-1, and so on.
+//     *
+//     * @note This variable is useful for knowing if the points belong to an element face.
+//     */
+//    std::array<bool,dim> info_constant_coordinates_ ;
 
 } ;
 

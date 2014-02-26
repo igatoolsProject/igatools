@@ -17,10 +17,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Testing quadratur extension from dim to dim+1
- *  author: antolin
- *  date: 2013-04-02
+ *  Testing quadrature extension from dim to dim+1
+ *  author: pauletti
+ *  date: 2014-26 -02
  *
  */
 
@@ -28,66 +29,30 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/unit_element.h>
-#include <igatools/base/types.h>
+
+template <int dim>
+void run_test()
+{
+    const int num_pts = 3;
+    out << "======  Extension from "<< dim <<"D to "<<dim+1<<"D  ======" << endl;
+    QGauss<dim> quad_surf(num_pts);
+    out << "Original quadrature" << endl;
+    quad_surf.print_info(out);
+    out << endl;
+    for (int i = 0; i < UnitElement<dim+1>::faces_per_element; ++i)
+    {
+        Quadrature<dim+1> quad_extended = quad_surf.get_extension(i);
+        quad_surf.print_info(out);
+    }
+}
 
 
-
-
-int main(int argc, char *argv[])
+int main()
 {
 
+    run_test<2>();
+    run_test<1>();
 
-    const int num_pts = 3;
-
-    out << "======  Extension from 2D to 3D  ======" << endl ;
-
-    QGauss<2> quad_surf_2d(num_pts) ;
-
-    out << "Points of the original quadrature" << endl ;
-    out << quad_surf_2d.get_points() << endl ;
-    out << "Weights of the original quadrature" << endl ;
-    out << quad_surf_2d.get_weights() << endl ;
-    out << endl ;
-
-
-    for (int i = 0; i < UnitElement<3>::faces_per_element; ++i)
-    {
-        Quadrature<3> quad_surf_2d_3d = extend_quad_dim<2>(quad_surf_2d, i) ;
-        out << endl ;
-        out << "Points of the quadrature of the face " << i << endl ;
-        out << quad_surf_2d_3d.get_points() << endl ;
-        out << "Weights of the quadrature of the face " << i << endl ;
-        out << quad_surf_2d_3d.get_weights() << endl ;
-    }
-
-    out << "=======================================" << endl ;
-    out << endl ;
-    out << endl ;
-
-    out << "======  Extension from 1D to 2D  ======" << endl ;
-
-    QGauss<1> quad_surf_1d(num_pts) ;
-
-    out << "Points of the original quadrature" << endl ;
-    out << quad_surf_1d.get_points() << endl ;
-    out << "Weights of the original quadrature" << endl ;
-    out << quad_surf_1d.get_weights() << endl ;
-    out << endl ;
-
-
-    for (int i = 0; i < UnitElement<2>::faces_per_element; ++i)
-    {
-        Quadrature<2> quad_surf_1d_2d = extend_quad_dim<1>(quad_surf_1d, i) ;
-        out << endl ;
-        out << "Points of the quadrature of the face " << i << endl ;
-        out << quad_surf_1d_2d.get_points() << endl ;
-        out << "Weights of the quadrature of the face " << i << endl ;
-        out << quad_surf_1d_2d.get_weights() << endl ;
-    }
-
-    out << "=======================================" << endl ;
-
-
-    return (0) ;
+    return 0;
 }
 
