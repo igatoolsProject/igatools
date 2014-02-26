@@ -120,6 +120,9 @@ class InstantiationInfo:
 
         self.multiplicities=[] #list Multiplicity classes
         self.create_multiplicity()
+
+        self.grid_forward_iterators=[] #list GridForwardIterator classes
+        self.create_grid_forward_iterator()
         
         return None
 
@@ -538,6 +541,62 @@ class InstantiationInfo:
             C_list.append(C)
         
         self.multiplicities = unique(C_list)        
+        return None
+##################################
+
+
+
+##################################
+    def create_grid_forward_iterator(self):
+        '''Creates a list of the GridForwardIterator class that needs to be instantiated'''
+
+        C_list=[]
+
+#        for row in self.table:
+#            dim_domain = row.dim_ref
+#            C = 'Multiplicity<%d>' % (dim_domain)
+#            C_list.append(C)
+
+
+        self.grid_forward_iterators = unique(C_list)
+
+
+# include_files =['#include <igatools/geometry/cartesian_grid.h>\n',
+#                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n',
+#                 '#include <igatools/geometry/mapping.h>\n',
+#                 '#include <igatools/geometry/mapping_lib.h>\n',
+#                 '#include <igatools/geometry/ig_mapping.h>\n',
+#                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
+#                 '#include <igatools/geometry/push_forward_element_accessor.h>\n',
+#                 '#include <igatools/basis_functions/bspline_space.h>\n',
+#                 '#include <igatools/basis_functions/bspline_element_accessor.h>\n',
+#                 '#include <igatools/basis_functions/nurbs_space.h>\n',
+#                 '#include <igatools/basis_functions/nurbs_element_accessor.h>\n',
+#                 '#include <igatools/basis_functions/physical_space.h>\n',
+#                 '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
+# 
+# for include in include_files:
+#     file_output.write(include)
+# 
+# file_output.write('IGA_NAMESPACE_OPEN\n')
+# 
+# elem_accessor=[];
+# 
+# for dim in inst.ref_dom_dims:
+#     elem_accessor.append('CartesianGridElementAccessor<%d>' %dim )   
+#       
+# for dims in inst.MappingDims:
+#     elem_accessor.append('MappingElementAccessor%s' %dims )   
+# 
+# ref_spaces = ['BSplineElementAccessor', 'NURBSElementAccessor']
+# for sp in ref_spaces:
+#     for dims in inst.RefDims:
+#         elem_accessor.append('%s%s' %(sp,dims) )
+# 
+# for phys_space in inst.PhysSpaces:
+#     elem_accessor.append('PhysicalSpaceElementAccessor<%s>' %phys_space )      
+
+        
         return None
 ##################################
 
