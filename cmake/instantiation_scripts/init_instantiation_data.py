@@ -121,6 +121,18 @@ class InstantiationInfo:
         self.multiplicities=[] #list Multiplicity classes
         self.create_multiplicity()
 
+        self.quadratures=[] #list Quadrature classes
+        self.create_quadrature()
+
+        self.cartesian_grids=[] #list CartesianGrid classes
+        self.create_cartesian_grid()
+
+        self.cartesian_grid_elements=[] #list CartesianGridElement classes
+        self.create_cartesian_grid_element()
+
+        self.cartesian_grid_element_accessors=[] #list CartesianGridElementAccessor classes
+        self.create_cartesian_grid_element_accessor()
+
         self.grid_forward_iterators=[] #list GridForwardIterator classes
         self.create_grid_forward_iterator()
         
@@ -412,7 +424,7 @@ class InstantiationInfo:
 #            C_list.append(C)
 
 #        types=['Real*','Index']
-        types=['Index']
+        types=['Real*','Index']
         for t in types:
             for row in self.table:
                 dim = row.dim_ref
@@ -545,6 +557,22 @@ class InstantiationInfo:
 ##################################
 
 
+##################################
+    def create_quadrature(self):
+        '''Creates a list of the Quadrature class that needs to be instantiated'''
+
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'Quadrature<%d>' % (dim_domain)
+            C_list.append(C)
+        
+        self.quadratures = unique(C_list)        
+        return None
+##################################
+
+
 
 ##################################
     def create_grid_forward_iterator(self):
@@ -552,10 +580,9 @@ class InstantiationInfo:
 
         C_list=[]
 
-#        for row in self.table:
-#            dim_domain = row.dim_ref
-#            C = 'Multiplicity<%d>' % (dim_domain)
-#            C_list.append(C)
+        for row in self.cartesian_grid_element_accessors:
+            C = 'GridForwardIterator<%s>' % (row)
+            C_list.append(C)
 
 
         self.grid_forward_iterators = unique(C_list)
@@ -597,6 +624,54 @@ class InstantiationInfo:
 #     elem_accessor.append('PhysicalSpaceElementAccessor<%s>' %phys_space )      
 
         
+        return None
+##################################
+
+
+##################################
+    def create_cartesian_grid(self):
+        '''Creates a list of the CartesianGrid class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'CartesianGrid<%d>' % (dim_domain)
+            C_list.append(C)
+        
+        self.cartesian_grids = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_cartesian_grid_element(self):
+        '''Creates a list of the CartesianGridElement class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'CartesianGridElement<%d>' % (dim_domain)
+            C_list.append(C)
+        
+        self.cartesian_grid_elements = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_cartesian_grid_element_accessor(self):
+        '''Creates a list of the CartesianGridElementAccessors class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for row in self.table:
+            dim_domain = row.dim_ref
+            C = 'CartesianGridElementAccessor<%d>' % (dim_domain)
+            C_list.append(C)
+        
+        self.cartesian_grid_element_accessors = unique(C_list)        
         return None
 ##################################
 

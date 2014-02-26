@@ -26,7 +26,7 @@ template <typename Accessor>
 inline
 GridForwardIterator<Accessor>::
 GridForwardIterator(
-    typename Accessor::AccessorOfType &patch,
+    ContainerType &patch,
     const Index index)
     :
     accessor_(patch, index)

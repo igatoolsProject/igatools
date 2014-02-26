@@ -52,6 +52,14 @@ ValueVector(const std::initializer_list<T> &list)
     : std::vector<T>(list)
 {}
 
+template <class T>
+ValueVector<T> &
+ValueVector<T>::
+operator=(const std::vector<T> &vector)
+{
+    std::vector<T>::operator=(vector);
+    return (*this);
+}
 
 
 

@@ -73,9 +73,6 @@ IGA_NAMESPACE_OPEN
   @endcode
  *
  *
- *
- *
- *
  * Iterators are not much slower than operating directly on the data
  * structures, since they perform the loops that you had to handcode
  * yourself anyway. Most iterator and accessor functions are inlined.
@@ -108,12 +105,12 @@ IGA_NAMESPACE_OPEN
  * has to fulfill some requirements:
  *
  * <ul>
- * <li> It must have a type called <tt>AccessorOfType</tt> representing
+ * <li> It must have a type called <tt>ContainerType</tt> representing
  * the type of the "grid-like" container from which the accessor is getting the data.
  *
  * <li> It must have a member named
  * <tt>present_index</tt> storing the address of the element in the
- * <tt>AccessorOfType</tt> object presently pointed to. These data have to be
+ * <tt>ContainerType</tt> object presently pointed to. These data have to be
  * accessible by all grid iterator.
  *
  * <li> It must have a constructor which takes a <tt>const AccessorOfType*</tt> argument
@@ -155,6 +152,9 @@ public:
     /** Type of the accessor. */
     using AccessorType = Accessor;
 
+    /** Type of the grid-like container . */
+    using ContainerType = typename Accessor::ContainerType;
+
     /** @name Constructors & destructor */
     ///@{
     /**
@@ -168,7 +168,7 @@ public:
      * like type pointed to by patch and the index of the
      * object pointed to by the iterator.
      */
-    GridForwardIterator(typename Accessor::AccessorOfType &patch,
+    GridForwardIterator(ContainerType &patch,
                         const Index index);
 
 
@@ -245,7 +245,7 @@ public:
      *  the next element and returns
      *  a reference to <tt>*this</tt>.
      */
-    GridForwardIterator<Accessor> &operator++ ();
+    GridForwardIterator<Accessor> &operator++();
     ///@}
 
 

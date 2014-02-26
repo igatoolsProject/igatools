@@ -97,6 +97,11 @@ public :
     ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
 
     /**
+     * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
+     */
+    ValueVector<T> &operator=(const std::vector<T> &vector);
+
+    /**
      * Move assignment operator.
      */
     ValueVector<T> &operator=(ValueVector<T> &&value_vector) = default ;

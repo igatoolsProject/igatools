@@ -18,36 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+
 from init_instantiation_data import *
 
 file_output, inst = intialize_instantiation()
 
-
-# include_files =['#include <igatools/geometry/cartesian_grid.h>\n',
-#                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n',
-#                 '#include <igatools/geometry/mapping.h>\n',
-#                 '#include <igatools/geometry/mapping_lib.h>\n',
-#                 '#include <igatools/geometry/ig_mapping.h>\n',
-#                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
-#                 '#include <igatools/geometry/push_forward_element_accessor.h>\n',
-#                 '#include <igatools/basis_functions/bspline_space.h>\n',
-#                 '#include <igatools/basis_functions/bspline_element_accessor.h>\n',
-#                 '#include <igatools/basis_functions/nurbs_space.h>\n',
-#                 '#include <igatools/basis_functions/nurbs_element_accessor.h>\n',
-#                 '#include <igatools/basis_functions/physical_space.h>\n',
-#                 '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
-# 
-include_files = ['#include <igatools/geometry/cartesian_grid_element_accessor.h>\n']
-for include in include_files:
-    file_output.write(include)
-
-
-
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating GridForwardIterator
-for row in inst.grid_forward_iterators:
+# instantiating Quadrature
+for row in inst.quadratures:
     file_output.write('template class %s; \n' % (row))
 
 file_output.write('\n')
@@ -55,4 +34,22 @@ file_output.write('\n')
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 
 file_output.close()
+
+
+# ###############################################################################
+# # Common header for instantiation files 
+# from igatools_instantiation import *
+# file_output, inst = intialize_instantiation()
+# ###############################################################################
+# 
+# for dim in inst.ref_dom_dims:
+#     file_output.write('template class Quadrature< %d > ;\n' % (dim))
+#     file_output.write('template Quadrature< %d > restricted_quad' %(dim) +
+#                       '(const Quadrature< %d > &, const int) ;\n' % (dim))
+# 
+# for dim in inst.face_ref_dom_dims:
+#     file_output.write('template Quadrature< %d > extend_quad_dim< %d >' % (dim+1, dim) +
+#                       '(const Quadrature < %d > &, const int);\n' %(dim))
+# 
+# file_output.close()
 
