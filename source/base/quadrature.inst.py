@@ -29,8 +29,6 @@ file_output.write('IGA_NAMESPACE_OPEN\n')
 for row in inst.quadratures:
     file_output.write('template class %s; \n' % (row))
 
-file_output.write('\n')
-
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 
 file_output.close()

@@ -29,6 +29,8 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 
+#include <igatools/base/quadrature.h>
+
 template<int dim>
 void def_const()
 {
@@ -95,6 +97,8 @@ int main()
     non_uniform_const<1>();
     non_uniform_const<2>();
     non_uniform_const<3>();
+
+    Quadrature<3> quad;
 
     return 0;
 }
