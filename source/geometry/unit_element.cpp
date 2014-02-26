@@ -64,6 +64,29 @@ UnitElement<3>::vertex_to_component[vertices_per_element][3]
     { 1, 1, 1 }
 };
 
+template <>
+const int
+UnitElement<4>::vertex_to_component[vertices_per_element][4]
+=
+{
+    { 0, 0, 0, 0},
+    { 1, 0, 0, 0},
+    { 0, 1, 0, 0},
+    { 1, 1, 0, 0},
+    { 0, 0, 1, 0},
+    { 1, 0, 1, 0},
+    { 0, 1, 1, 0},
+    { 1, 1, 1, 0},
+    { 0, 0, 0, 1},
+    { 1, 0, 0, 1},
+    { 0, 1, 0, 1},
+    { 1, 1, 0, 1},
+    { 0, 0, 1, 1},
+    { 1, 0, 1, 1},
+    { 0, 1, 1, 1},
+    { 1, 1, 1, 1}
+};
+
 
 template <>
 const int
@@ -107,6 +130,21 @@ UnitElement<3>::face_to_component[faces_per_element][2]
 };
 
 template <>
+const int
+UnitElement<4>::face_to_component[faces_per_element][2]
+=
+{
+    {0, -1} ,
+    {0, 1} ,
+    {1, -1} ,
+    {1, 1} ,
+    {2, -1} ,
+    {2, 1},
+    {3, -1} ,
+    {3, 1}
+};
+
+template <>
 const std::array<int, 0>
 UnitElement<0>::face_active_directions[faces_per_element]
     = {};
@@ -133,6 +171,20 @@ UnitElement<3>::face_active_directions[faces_per_element]=
     {{0, 1}}
 };
 
+template <>
+const std::array<int, 3>
+UnitElement<4>::face_active_directions[faces_per_element]=
+{
+    {{1, 2, 3}} ,
+    {{1, 2, 3}} ,
+    {{0, 2, 3}} ,
+    {{0, 2, 3}} ,
+    {{0, 1, 3}} ,
+    {{0, 1, 3}} ,
+    {{0, 1, 2}} ,
+    {{0, 1, 2}}
+};
+
 
 template <>
 const int_array<0>
@@ -153,6 +205,16 @@ UnitElement<3>::active_directions[3]=
     {{1, 2}} ,
     {{0, 2}} ,
     {{0, 1}}
+};
+
+template <>
+const int_array<3>
+UnitElement<4>::active_directions[4]=
+{
+    {{1, 2, 3}} ,
+    {{0, 2, 3}} ,
+    {{0, 1, 3}} ,
+    {{0, 1, 2}}
 };
 
 
@@ -179,6 +241,11 @@ UnitElement<3>::face_side[faces_per_element]=
 
 template <>
 const int
+UnitElement<4>::face_side[faces_per_element]=
+{0,1,0,1,0,1,0,1};
+
+template <>
+const int
 UnitElement<0>::face_constant_direction[faces_per_element]=
     {};
 
@@ -196,6 +263,11 @@ template <>
 const int
 UnitElement<3>::face_constant_direction[faces_per_element]=
 {0,0,1,1,2,2};
+
+template <>
+const int
+UnitElement<4>::face_constant_direction[faces_per_element]=
+{0,0,1,1,2,2,3,3};
 
 template <>
 const Real
@@ -219,6 +291,11 @@ UnitElement<3>::face_constant_coordinate[faces_per_element]=
 {0.,1.,0.,1.,0.,1.};
 
 template <>
+const Real
+UnitElement<4>::face_constant_coordinate[faces_per_element]=
+{0.,1.,0.,1.,0.,1.,0.,1.};
+
+template <>
 const int
 UnitElement<0>::face_normal_direction[faces_per_element]
     = {};
@@ -237,6 +314,11 @@ template <>
 const int
 UnitElement<3>::face_normal_direction[faces_per_element]
     = {-1, 1, -1, 1, -1, 1};
+
+template <>
+const int
+UnitElement<4>::face_normal_direction[faces_per_element]
+    = {-1, 1, -1, 1, -1, 1, -1, 1};
 
 template <>
 const int
@@ -259,6 +341,11 @@ template <>
 const int
 UnitElement<3>::opposite_vertex[vertices_per_element]
     = {7,6,5,4,3,2,1,0};
+
+template <>
+const int
+UnitElement<4>::opposite_vertex[vertices_per_element]
+    = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
 
 template <>
 const Point<0>
@@ -294,6 +381,20 @@ UnitElement<3>::face_normal[faces_per_element]=
     Point<3>({Real(0.0),Real(1.0),Real(0.0)}),
     Point<3>({Real(0.0),Real(0.0),Real(-1.0)}),
     Point<3>({Real(0.0),Real(0.0),Real(1.0)})
+};
+
+template <>
+const Point<4>
+UnitElement<4>::face_normal[faces_per_element]=
+{
+    Point<4>({Real(-1.0),Real(0.0),Real(0.0),Real(0.0)}),
+    Point<4>({Real(1.0),Real(0.0),Real(0.0),Real(0.0)}),
+    Point<4>({Real(0.0),Real(-1.0),Real(0.0),Real(0.0)}),
+    Point<4>({Real(0.0),Real(1.0),Real(0.0),Real(0.0)}),
+    Point<4>({Real(0.0),Real(0.0),Real(-1.0),Real(0.0)}),
+    Point<4>({Real(0.0),Real(0.0),Real(1.0),Real(0.0)}),
+    Point<4>({Real(0.0),Real(0.0),Real(0.0),Real(1.0)}),
+    Point<4>({Real(0.0),Real(0.0),Real(0.0),Real(-1.0)})
 };
 
 
