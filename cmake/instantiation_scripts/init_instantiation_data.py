@@ -139,6 +139,9 @@ class InstantiationInfo:
         self.mappings=[] #list Mapping classes
         self.create_mapping()
 
+        self.identity_mappings=[] #list IdentityMapping classes
+        self.create_identity_mapping()
+
         self.mappings_lib=[] #list of Mapping specialization classes
         self.create_mapping_lib()
 
@@ -726,6 +729,22 @@ class InstantiationInfo:
         self.mappings = unique(C_list)        
         return None
 ##################################
+
+
+##################################
+    def create_identity_mapping(self):
+        '''Creates a list of the IdentityMapping class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for dims in self.MappingDims:
+            C = 'IdentityMapping%s' % (dims)
+            C_list.append(C)
+        
+        self.identity_mappings = unique(C_list)        
+        return None
+##################################
+
 
 ##################################
     def create_mapping_lib(self):
