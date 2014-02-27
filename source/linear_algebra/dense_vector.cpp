@@ -18,28 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/linear_algebra/dense_vector.h>
 #include <igatools/base/exceptions.h>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-
 
 IGA_NAMESPACE_OPEN
 
-DenseMatrix &
-DenseMatrix::operator=(const Real value)
+
+DenseVector &
+DenseVector::
+operator=(const Real value)
 {
-    using zero_matrix = boost::numeric::ublas::zero_matrix<Real>;
+    using zero_vector = boost::numeric::ublas::zero_vector<Real>;
     Assert(value==0, ExcNonZero());
-    *this = zero_matrix(this->size1(), this->size2());
+    *this = zero_vector(this->size());
     return *this;
 }
 
-auto
-DenseMatrix::
-get_row(const int row_id) const -> MatrixRowType
-{
-    return MatrixRowType(*this,row_id);
-}
 
 IGA_NAMESPACE_CLOSE
 

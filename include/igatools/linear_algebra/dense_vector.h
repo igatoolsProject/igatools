@@ -19,60 +19,52 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef DENSE_MATRIX_H_
-#define DENSE_MATRIX_H_
+#ifndef DENSE_VECTOR_H_
+#define DENSE_VECTOR_H_
 
 #include <igatools/base/config.h>
-#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/vector.hpp>
 
 IGA_NAMESPACE_OPEN
 
 /** @addtogroup linear_algebra
  *@{
  */
+
 /**
- * @brief Dense matrix with real entries.
+ * @brief Dense vector with real entries.
  *
- * A typical use of it is the local matrix.
- * @note This class inherits (also the constructors) from the matrix type in the
+ * A typical use of it is the local vector.
+ * @note This class inherits (also the constructors) from the vector type in the
  * <a href="http://www.boost.org/doc/libs/1_55_0/libs/numeric/ublas/doc/index.htm">Boost uBlas library</a>
- * Therefore it can be used as a boost::numeric::ublas::matrix<Real>.
+ * Therefore it can be used as a boost::numeric::ublas::vector<Real>.
  *
  * @author M. Martinelli, 2012, 2013, 2014
  * @author S. Pauletti, 2012, 2013
  */
-class DenseMatrix : public boost::numeric::ublas::matrix<Real>
+class DenseVector : public boost::numeric::ublas::vector<Real>
 {
 public:
-    /** Type of the base class. */
-    using BoostMatrix =  boost::numeric::ublas::matrix<Real> ;
 
     /** We inherith the constructors of the base class. */
-    using BoostMatrix::BoostMatrix;
+    using vector<Real>::vector;
 
     /**
-     * Assignment operator for assigning zeros to all entries of the matrix
+     * Assignment operator for assigning zeros to all entries of the vector
      * by writing
      * @code
-       DenseMatrix matrix;
-       ... // working with the matrix
-       matrix = 0.0; // reset the matrix entries to zero
+       DenseVector vec;
+       ... // working with the vector
+       vector = 0.0; // reset the vector entries to zero
        @endcode
      * @note If used in Debug mode with a @p value different from zero,
      * an assertion will be raised.
      */
-    DenseMatrix &operator=(const Real value) ;
-
-    /** Type for a row of the matrix. */
-    using MatrixRowType = boost::numeric::ublas::matrix_row<const BoostMatrix> ;
-
-    /** Returns the mtrix row identified by @p row_id. */
-    MatrixRowType
-    get_row(const int row_id) const;
+    DenseVector &operator=(const Real value);
 };
 
 /**@}*/
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* DENSE_MATRIX_H_ */
+#endif /* DENSE_VECTOR_H_ */
