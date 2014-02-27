@@ -20,7 +20,6 @@
 
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/base/exceptions.h>
-//#include <igatools/linear_algebra/dof_tools.h>
 
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 

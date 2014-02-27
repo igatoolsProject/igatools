@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef SPARCITY_PATTERN_H_
-#define SPARCITY_PATTERN_H_
+#ifndef SPARSITY_PATTERN_H_
+#define SPARSITY_PATTERN_H_
 
 #include <igatools/base/config.h>
 
@@ -33,7 +33,6 @@ IGA_NAMESPACE_OPEN
  *@{
 */
 
-//TODO: sparsity pattern should be a wrapper to the trilinos sp
 /**
  *
  * @todo SparsityPattern should be a wrapper to the Trilinos sparsity pattern
