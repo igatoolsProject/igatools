@@ -18,23 +18,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
+###############################################################################
+# Common header for instantiation files 
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
+###############################################################################
 
 
-include_files = ['#include <igatools/geometry/mapping.h>\n']#,
-#                  '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n']
-for include in include_files:
+includes = ['#include <igatools/geometry/mapping_element_accessor.h>\n']
+
+for include in includes:
     file_output.write(include)
-
 
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating MappingElementAccessor
-for row in inst.mapping_element_accessors:
-    file_output.write('template class %s; \n' % (row))
+output = []
+ 
+for row in inst.face_table:
+    output.append('template class MappingSlice<%d,%d> ;\n' % (row.dim_ref,row.dim_phys-row.dim_ref))
+  
+for s in unique(output): # Removing repeated entries.
+    file_output.write(s)
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 
 file_output.close()
+
+
+
+
+

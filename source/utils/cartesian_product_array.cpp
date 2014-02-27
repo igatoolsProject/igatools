@@ -181,7 +181,7 @@ get_sub_product(const SubProductTensorIndex &index) const -> SubProduct
     return sub_data;
 }
 
-#if 0
+
 template <class T, int rank>
 CartesianProductArray<T,rank+1>
 CartesianProductArray<T,rank>::
@@ -216,7 +216,8 @@ insert(const int index, const std::vector<T> &new_vector) const
     }
     return product;
 }
-#endif
+
+
 
 template< class T, int rank>
 void

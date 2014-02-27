@@ -208,13 +208,13 @@ public:
      */
     SubProduct get_sub_product(const SubProductTensorIndex &index) const;
 
-#if 0
     /**
      * Returns a CartesianProductArray of one higher rank built from the insertion
      * of a given @p new_vector at the given direction @p index.
      */
-    CartesianProductArray<T,rank+1> insert(const Index index, const std::vector<T> &new_vector) const;
-#endif
+    CartesianProductArray<T,rank+1>
+    insert(const Index index, const std::vector<T> &new_vector) const;
+
     ///@}
 
     /** @name Functions returning the cartesian product entries */
