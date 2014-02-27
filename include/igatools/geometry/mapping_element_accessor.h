@@ -36,6 +36,8 @@ template <int,int> class Mapping;
 /**
  * See module on @ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
+ *
+ * @todo document me
  */
 template<int dim_ref_, int codim_>
 class MappingElementAccessor
@@ -47,30 +49,26 @@ public:
     using ContainerType = Mapping<dim_ref_,codim_>;
 
 
+    /** Dimension of the reference domain */
     using CartesianGridElementAccessor<dim_ref_>::dim;
 
-    /**
-     * see Mapping<dim_,codim_>::codim
-     */
+
+    /** Codimension of the deformed domain */
     static const auto codim = ContainerType::codim;
-    /**
-     * see Mapping<dim_,codim_>::space_dim
-     */
+
+
+    /** Dimension of the deformed domain embedding space. */
     static const auto space_dim = ContainerType::space_dim;
 
-    /**
-     * Dimension of the face.
-     */
-    static const auto face_dim = dim_ref_>0 ? dim_ref_-1 : 0 ;
+
+    /** Dimension of the face.*/
+    static const auto face_dim = ContainerType::face_dim ;
 
     /**
      * see UnitElement<dim_>::faces_per_element
      */
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
-
-
-    typedef MappingElementAccessor<dim,codim> Self;
 
     /**
      * see Mapping<dim, codim>::Value
@@ -159,27 +157,44 @@ public:
     /**
      * Initializes the internal cache for the efficient
      * computation of the values requested in
-     * the fill_flag on the given quadrature points.
+     * the fill_flag on the given @p quadrature points.
      * This implies a uniform quadrature scheme
      * (i.e. the same for all elements).
      * @note This function should be called before fill_values()
      */
     void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+                     const Quadrature<dim> &quadrature);
 
-    void init_face_values(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
 
     /**
-     * Fills the cache in accordance with the flag specifications used in the reset function.
-     * @param[in] points Quadrature points in the reference domain.
-     * @note Before invoking this function, you must call the reset function.
+     * Initializes the internal cache for the efficient
+     * computation of the values requested in
+     * the fill_flag on the given @p quadrature points,
+     * on the face specified by @p face_id.
+     * This implies a uniform quadrature scheme
+     * (i.e. the same for all elements).
+     * @note This function should be called before fill_face_values()
+     */
+    void init_face_values(const Index face_id,
+                          const ValueFlags fill_flag,
+                          const Quadrature<dim-1> &quadrature);
+
+
+    /**
+     * Fills the cache in accordance with the flag specifications used in the
+     * init_values() function.
+     * @precondition Before invoking this function, you must call init_values().
      */
     void fill_values();
 
-    void fill_face_values(const Index face_id);
 
+    /**
+     * Fills the cache in accordance with the flag specifications used in the
+     * init_face_values() function.
+     * @param face_id Face identifier.
+     * @precondition Before invoking this function, you must call init_face_values().
+     */
+    void fill_face_values(const Index face_id);
     ///@}
 
     /**
@@ -187,41 +202,36 @@ public:
      * @note In order to use these functions, the cache of the MappingElementAccessor must be properly filled.
      */
     ///@{
-    /**
-     * Returns the value of the map at the dilated quadrature points
-     */
+    /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &get_values_map() const;
 
-    /**
-     * Returns the gradient of the map at the dilated quadrature points
-     */
+
+    /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &get_gradients_map() const;
 
-    /**
-     * Returns the hessian of the map at the dilated quadrature points
-     */
+
+    /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &get_hessians_map() const;
 
 
-    /**
-     * Returns the inverse of the gradient of the map at the dilated quadrature points
-     */
+    /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &get_inv_gradients_map() const;
 
-    /**
-     * Returns the inverse of the hessian of the map at the dilated quadrature points
-     */
+
+    /** Returns the inverse of the hessian of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,2 > > &get_inv_hessians_map() const;
 
-    /**
-     * Returns the gradient determinant of the map at the dilated quadrature points
-     */
+
+    /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &get_dets_map() const;
 
+
     /**
-     * Returns the quadrature weights multiplied by the gradient determinant of the map at the dilated quadrature points.
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of the map at the dilated quadrature points.
      */
     const ValueVector< Real > &get_w_measures() const;
+
 
     /**
      * Returns the face value of the map at the dilated quadrature points
@@ -229,11 +239,13 @@ public:
      */
     const ValueVector<ValueMap> &get_face_values_map(const Index face_id) const;
 
+
     /**
      * Returns the face gradient of the map at the dilated quadrature points
      * at the specified face.
      */
     const ValueVector<GradientFaceMap> &get_face_gradients_map(const Index face_id) const;
+
 
     /**
      * Returns the face hessian of the map at the dilated quadrature points
@@ -246,23 +258,25 @@ public:
      * Returns the inverse of the face gradient of the map at the dilated quadrature points
      * at the specified face.
      */
-    const ValueVector< Derivatives< space_dim, face_dim,1,1 > > &get_face_inv_gradients_map(const Index face_id) const;
+    const ValueVector< Derivatives<space_dim,face_dim,1,1> > &get_face_inv_gradients_map(const Index face_id) const;
+
 
     /**
      * Returns the inverse of the face hessian of the map at the dilated quadrature points
      * at the specified face.
      */
-    const ValueVector< Derivatives< space_dim, face_dim,1,2 > > &get_face_inv_hessians_map(const Index face_id) const;
+    const ValueVector< Derivatives<space_dim,face_dim,1,2> > &get_face_inv_hessians_map(const Index face_id) const;
 
     /**
-     * Returns the face gradient determinant of the map at the dilated quadrature points
+     * Returns the face gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector< Real > &get_face_dets_map(const Index face_id) const;
+    const ValueVector<Real> &get_face_dets_map(const Index face_id) const;
 
     /**
-     * Returns the quadrature weights multiplied by the gradient determinant of the face map at the dilated quadrature points.
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of the face map at the dilated quadrature points.
      */
-    const ValueVector< Real > &get_face_w_measures(const Index face_id) const;
+    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
 
     /**
      * Returns the face normals for every quadrature point for the
@@ -277,17 +291,24 @@ public:
      * Returns the number of evaluation points currently used
      * in the element cache.
      */
-    int get_num_points() const;
+    Size get_num_points() const;
 
     /**
      * Returns the number of evaluation points currently used
      * in the face cache.
      */
-    int get_num_face_points(const Index face_id) const;
+    Size get_num_face_points(const Index face_id) const;
 
-
+    /**
+     * Prints some internal information.
+     * @note Mostly used for testing and debugging.
+     */
     void print_info(LogStream &out) const;
 
+    /**
+     * Prints some internal memory information.
+     * @note Mostly used for testing and debugging.
+     */
     void print_memory_info(LogStream &out) const;
 
 private:

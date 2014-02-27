@@ -42,7 +42,7 @@ template <int, int> class MappingElementAccessor;
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
- * In igatools the mapping is a grid like container, so that on top
+ * In igatools the mapping is a grid-like container, so that on top
  * of being a deformation is aware of an underlying grid structure.
  *
  * Most of the methods in this class are virtual,
@@ -65,52 +65,53 @@ public:
     /** Dimension of the reference domain */
     static const int dim = dim_;
 
-    /** Codimension of the deformed domain */
+
+    /** Codimension of the deformed domain. */
     static const int codim = codim_;
 
-    /** Dimension of the deformed domain embedding space */
+
+    /** Dimension of the deformed domain embedding space. */
     static const int space_dim = dim + codim;
 
-    /**
-     * Dimension of the face.
-     */
+
+    /** Dimension of the face.*/
     static const auto face_dim = dim_>0 ? dim_-1 : 0 ;
 
-private:
-    using self_t = Mapping<dim, codim>;
 
-public:
     /** Type of the Grid */
     using GridType = CartesianGrid<dim>;
+
 
     /** Type of the element accessor */
     using ElementAccessor = MappingElementAccessor<dim, codim>;
 
+
     /** Type of the element iterator */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
+
 private:
-    /** Type of the different order derivates the mapping */
+    /** Type of the different order derivates the mapping. */
     template<int order>
     using DerivativeType = Derivatives<dim, space_dim, 1, order>;
 
 public:
-    /** Type of the mapping evaluation point */
+    /** Type of the mapping evaluation point. */
     using PointType = Point<dim>;
 
-    /** Type of the mapping return value */
+    /** Type of the mapping return value. */
     using ValueType = Point<space_dim>;
 
-    /** Type of the mapping gradient */
+    /** Type of the mapping gradient. */
     using GradientType = DerivativeType<1>;
 
-    /** Typedef for the mapping hessian */
+    /** Typedef for the mapping hessian. */
     using HessianType = DerivativeType<2>;
 
-    /** Type of the mapping gradient */
+    /** Type of the mapping gradient on the face. */
     using GradientFaceType = Derivatives<face_dim, space_dim, 1, 1>;
 
-    /** Typedef for the mapping hessian */
+    /** Typedef for the mapping hessian on the face. */
     using HessianFaceType = Derivatives<face_dim, space_dim, 1, 2>;
 
 public:
@@ -128,20 +129,20 @@ public:
     /**
      * Copy constructor.
      */
-    Mapping(const self_t &map);
+    Mapping(const Mapping<dim_,codim_> &map);
     ///@}
 
     /** @name Assignment operators. */
     ///@{
 
     /** Copy assignment operator. Not allowed to be used. */
-    self_t &operator=(const self_t &map) = delete;
+    Mapping<dim_,codim_> &operator=(const Mapping<dim_,codim_> &map) = delete;
     ///@}
 
     /**
      * Return a Mapping that is a deep copy of the caller object.
      */
-    virtual std::shared_ptr<self_t> clone() const;
+    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const;
 
 
     /** @name Mapping as a standard function */
@@ -157,7 +158,6 @@ public:
     virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const;
 
     virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const;
-
     ///@}
 
     /** @name Virtual user functions to define the map */
@@ -178,11 +178,6 @@ public:
     virtual void set_face_element(const Index face_id,
                                   const CartesianGridElementAccessor<dim> &elem);
 
-    /**
-     * return the flag required to evaluate this mapping.
-     * This is used from the mapping accessor.
-     */
-    virtual ValueFlags required_flags() const;
 
     virtual std::vector<ValueType> values() const;
 
@@ -218,6 +213,14 @@ public:
     virtual void print_info(LogStream &out) const;
 
 private:
+
+    /**
+     * Return the flag required to evaluate this mapping.
+     *
+     * This is used from the mapping accessor.
+     */
+    virtual ValueFlags required_flags() const;
+
     friend ElementAccessor;
 };
 

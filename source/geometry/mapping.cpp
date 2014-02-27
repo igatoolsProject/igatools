@@ -115,20 +115,20 @@ Mapping<dim_,codim_>::
 
 template<int dim_, int codim_>
 Mapping<dim_,codim_>::
-Mapping(const self_t &map)
+Mapping(const Mapping<dim_,codim_> &map)
     :
-    GridWrapper<GridType >(make_shared<GridType>(GridType(*(map.get_grid()))))
+    GridWrapper<GridType>(make_shared<GridType>(GridType(*(map.get_grid()))))
 {}
 
 
 
 template<int dim_, int codim_>
 auto
-Mapping<dim_, codim_>::clone() const -> shared_ptr<self_t>
+Mapping<dim_,codim_>::clone() const -> shared_ptr<Mapping<dim_,codim_>>
 {
     AssertThrow(false,ExcNotImplemented()) ;
     auto grid = GridType::create();
-    return (shared_ptr<self_t>(new self_t(grid))) ;
+    return (shared_ptr<Mapping<dim_,codim_>>(new Mapping<dim_,codim_>(grid))) ;
 }
 
 
@@ -209,7 +209,7 @@ auto
 Mapping<dim_,codim_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t &>(*this), 0);
+    return ElementIterator(const_cast<Mapping<dim_,codim_> &>(*this), 0);
 }
 
 
@@ -219,7 +219,7 @@ auto
 Mapping<dim_,codim_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(const_cast< self_t & >(*this),
+    return ElementIterator(const_cast<Mapping<dim_,codim_> & >(*this),
                            this->get_grid()->get_num_elements() - 1);
 }
 
@@ -230,7 +230,7 @@ auto
 Mapping<dim_,codim_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t &>(*this),
+    return ElementIterator(const_cast<Mapping<dim_,codim_> &>(*this),
                            IteratorState::pass_the_end);
 }
 

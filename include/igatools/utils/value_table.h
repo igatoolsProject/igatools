@@ -67,7 +67,6 @@ IGA_NAMESPACE_OPEN
  *
  *
  * @tparam T Type of the object to be stored in each entry of the table.
- * \todo Missing documentation.
  * @author M.Martinelli
  * @date 2013,2014
  */
