@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #ifndef VALUE_TABLE_H_
-#define __VALUE_TABLE_H_
+#define VALUE_TABLE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>

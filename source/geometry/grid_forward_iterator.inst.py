@@ -37,7 +37,9 @@ file_output, inst = intialize_instantiation()
 #                 '#include <igatools/basis_functions/physical_space.h>\n',
 #                 '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
 # 
-include_files = ['#include <igatools/geometry/cartesian_grid_element_accessor.h>\n']
+include_files = ['#include <igatools/geometry/cartesian_grid_element_accessor.h>\n',
+                 '#include <igatools/geometry/mapping.h>\n',
+                 '#include <igatools/geometry/mapping_element_accessor.h>\n']
 for include in include_files:
     file_output.write(include)
 

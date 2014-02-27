@@ -133,11 +133,18 @@ class InstantiationInfo:
         self.cartesian_grid_element_accessors=[] #list CartesianGridElementAccessor classes
         self.create_cartesian_grid_element_accessor()
 
-        self.grid_forward_iterators=[] #list GridForwardIterator classes
-        self.create_grid_forward_iterator()
-
         self.grid_wrappers=[] #list GridWrapper classes
         self.create_grid_wrapper()
+
+        self.mappings=[] #list Mapping classes
+        self.create_mapping()
+
+        self.mapping_element_accessors=[] #list MappingElementAccessor classes
+        self.create_mapping_element_accessor()
+
+
+        self.grid_forward_iterators=[] #list GridForwardIterator classes
+        self.create_grid_forward_iterator()
         
         return None
 
@@ -482,12 +489,17 @@ class InstantiationInfo:
             C = 'ValueVector<%s>' % (deriv)
             C_list.append(C)
 
-#    for row in inst.table:
-#        C_list.append ("%s< Tensor<%d, %d, tensor::contravariant, Tdouble>>" \
-#                %(container,row.dim_phys, row.rank_ref))
-#    for row in inst.table:
-#        C_list.append ("%s< Tensor<%d, %d, tensor::contravariant, Tdouble>>" \
-#                %(container,row.dim_ref, row.rank_ref))
+
+        for row in self.user_table:
+            C = 'ValueVector<Tensor<%d,%d,tensor::contravariant,Tdouble> >' \
+                                    %(row.dim_ref, row.rank_ref)
+            C_list.append(C)
+
+
+        for row in self.face_table:
+            C = 'ValueVector<Tensor<%d,%d,tensor::contravariant,Tdouble> >' \
+                                    %(row.dim_ref, row.rank_ref)
+            C_list.append(C)
 #        
         self.value_vectors = unique(C_list)        
         return None
@@ -584,6 +596,10 @@ class InstantiationInfo:
         C_list=[]
 
         for row in self.cartesian_grid_element_accessors:
+            C = 'GridForwardIterator<%s>' % (row)
+            C_list.append(C)
+
+        for row in self.mapping_element_accessors:
             C = 'GridForwardIterator<%s>' % (row)
             C_list.append(C)
 
@@ -690,6 +706,36 @@ class InstantiationInfo:
             C_list.append(C)
         
         self.grid_wrappers = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_mapping(self):
+        '''Creates a list of the Mapping class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for dims in self.MappingDims:
+            C = 'Mapping%s' % (dims)
+            C_list.append(C)
+        
+        self.mappings = unique(C_list)        
+        return None
+##################################
+
+
+##################################
+    def create_mapping_element_accessor(self):
+        '''Creates a list of the Mapping class that needs to be instantiated'''
+        
+        C_list=[]
+
+        for dims in self.MappingDims:
+            C = 'MappingElementAccessor%s' % (dims)
+            C_list.append(C)
+        
+        self.mapping_element_accessors = unique(C_list)        
         return None
 ##################################
 
