@@ -139,6 +139,9 @@ class InstantiationInfo:
         self.mappings=[] #list Mapping classes
         self.create_mapping()
 
+        self.mappings_lib=[] #list of Mapping specialization classes
+        self.create_mapping_lib()
+
         self.mapping_element_accessors=[] #list MappingElementAccessor classes
         self.create_mapping_element_accessor()
 
@@ -721,6 +724,27 @@ class InstantiationInfo:
             C_list.append(C)
         
         self.mappings = unique(C_list)        
+        return None
+##################################
+
+##################################
+    def create_mapping_lib(self):
+        '''Creates a list of the of some Mapping specialization that needs to be instantiated'''
+        
+        C_list=[]
+        
+        for dims in self.UserMappingDims:
+            C = 'LinearMapping%s' % (dims)
+            C_list.append(C)
+
+        for dim in self.user_ref_dom_dims:
+            C = 'BallMapping<%d>' % (dim)
+            C_list.append(C)
+            if dim>1:
+                C = 'SphereMapping<%d>' % (dim-1)
+                C_list.append(C)
+        
+        self.mappings_lib = unique(C_list)        
         return None
 ##################################
 

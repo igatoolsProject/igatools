@@ -22,10 +22,7 @@
 #define MAPPING_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/tensor.h>
 #include <igatools/base/quadrature.h>
-#include <igatools/geometry/unit_element.h>
-#include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
 
