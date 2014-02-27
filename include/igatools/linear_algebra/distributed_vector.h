@@ -42,6 +42,9 @@ IGA_NAMESPACE_OPEN
  * \author cavallini 2013
  * \author M. Martinelli 2013, 2014
  * \author pauletti 2013
+ *
+ * @todo (MM, Feb 2014) Re-design in order to be used with different linear algebra package
+ * (Trilinos, PETSc,etc.)
  */
 class Vector
 {
