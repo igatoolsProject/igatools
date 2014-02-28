@@ -336,8 +336,7 @@ class InstantiationInfo:
          dim_domain = row.dim
          C = 'TensorSize<%d>' % (dim_domain)
          C_list.append(C)
-         C = 'TensorSize<%d>' % (dim_domain+1)
-         C_list.append(C)
+       
 
       self.tensor_sizes = unique(C_list)
       return None
@@ -354,8 +353,7 @@ class InstantiationInfo:
          dim_domain = row.dim
          C = 'TensorIndex<%d>' % (dim_domain)
          C_list.append(C)
-         C = 'TensorIndex<%d>' % (dim_domain+1)
-         C_list.append(C)
+         
 
       self.tensor_indices = unique(C_list)
       return None
@@ -372,8 +370,7 @@ class InstantiationInfo:
          dim_domain = row.dim
          C = 'TensorSizedContainer<%d>' % (dim_domain)
          C_list.append(C)
-         C = 'TensorSizedContainer<%d>' % (dim_domain+1)
-         C_list.append(C)
+        
  
       self.tensor_sized_containers = unique(C_list)
       return None
@@ -415,19 +412,16 @@ class InstantiationInfo:
       for row in self.all_table:
          dim = row.dim
          C = 'CartesianProductArray<Real,%s>' % (dim)
-         C_list.append(C)
-         C = 'CartesianProductArray<Real,%s>' % (dim+1)
+         
          C_list.append(C)
 
-      #        types=['Real*','Index']
       types=['Real*','Index']
       for t in types:
          for row in self.all_table:
             dim = row.dim
             C = 'CartesianProductArray<%s,%s>' % (t,dim)
             C_list.append(C)
-            #               C = 'CartesianProductArray<%s,%s>' % (t,dim+1)
-            #               C_list.append(C)
+          
 
 
 # The following instantiations are for the cache of basisfucntion in Bspline space

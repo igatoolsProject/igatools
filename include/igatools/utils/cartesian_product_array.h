@@ -75,6 +75,7 @@ template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
+    static const int rank_ = rank;//todo: swap names
     /**
      * Type for the <tt>rank-1</tt> CartesianProductArray
      */
@@ -208,12 +209,7 @@ public:
      */
     SubProduct get_sub_product(const SubProductTensorIndex &index) const;
 
-    /**
-     * Returns a CartesianProductArray of one higher rank built from the insertion
-     * of a given @p new_vector at the given direction @p index.
-     */
-    CartesianProductArray<T,rank+1>
-    insert(const Index index, const std::vector<T> &new_vector) const;
+
 
     ///@}
 
@@ -266,8 +262,49 @@ protected:
 
 };
 
+/**
+ * Returns a CartesianProductArray of one higher rank built from the insertion
+ * of a given @p new_vector at the given direction @p index.
+ */
 
+//template class <T>
+//CartesianProductArray<T,T::rank_+1>
+//insert(const Index index, const std::vector<T> &new_vector) const;
 
+template <class T>
+CartesianProductArray<T,T::rank_+1>
+insert(const CartesianProductArray<T,T::rank_> &orig, const int index, const std::vector<T> &new_vector)
+{
+    const int rank = T::rank_;
+    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+
+    TensorSize<rank+1> size;
+
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            size(i) = new_vector.size();
+        else
+        {
+            size(i) = orig.tensor_size()(j);
+            ++j;
+        }
+    }
+
+    CartesianProductArray<T,rank+1> product(size);
+
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            product.copy_data_direction(i,new_vector);
+        else
+        {
+            product.copy_data_direction(i,orig.data_[j]);
+            ++j;
+        }
+    }
+    return product;
+}
 IGA_NAMESPACE_CLOSE
 
 // If we are in debug mode we do not inline to gain some compilation speed,

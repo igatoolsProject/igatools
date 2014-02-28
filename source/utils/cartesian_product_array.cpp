@@ -182,40 +182,7 @@ get_sub_product(const SubProductTensorIndex &index) const -> SubProduct
 }
 
 
-template <class T, int rank>
-CartesianProductArray<T,rank+1>
-CartesianProductArray<T,rank>::
-insert(const int index, const std::vector<T> &new_vector) const
-{
-    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 
-    TensorSize<rank+1> size;
-
-    for (int i=0, j=0; i<rank+1; ++i)
-    {
-        if (i == index)
-            size(i) = new_vector.size();
-        else
-        {
-            size(i) = this->tensor_size()(j);
-            ++j;
-        }
-    }
-
-    CartesianProductArray<T,rank+1> product(size);
-
-    for (int i=0, j=0; i<rank+1; ++i)
-    {
-        if (i == index)
-            product.copy_data_direction(i,new_vector);
-        else
-        {
-            product.copy_data_direction(i,this->data_[j]);
-            ++j;
-        }
-    }
-    return product;
-}
 
 
 
