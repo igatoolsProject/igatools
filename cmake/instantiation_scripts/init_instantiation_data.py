@@ -448,27 +448,11 @@ class InstantiationInfo:
    def create_value_vector(self):
       '''Creates a list of the ValueVector class that needs to be instantiated'''
 
-      C_list=[]
+      self.value_vectors=['ValueVector<Real>']
 
-      C_list.append('ValueVector<Real>')
+      for deriv in self.derivatives + self.values:
+         self.value_vectors.append('ValueTable<%s>' % (deriv))
 
-      for deriv in self.derivatives:
-         C = 'ValueVector<%s>' % (deriv)
-         C_list.append(C)
-
-
-      for row in self.user_table:
-         C = 'ValueVector<Tensor<%d,%d,tensor::contravariant,Tdouble> >' \
-               %(row.dim_ref, row.rank_ref)
-         C_list.append(C)
-
-
-      for row in self.face_table:
-         C = 'ValueVector<Tensor<%d,%d,tensor::contravariant,Tdouble> >' \
-               %(row.dim_ref, row.rank_ref)
-         C_list.append(C)
-           
-      self.value_vectors = unique(C_list)
       return None
 ##################################
 
