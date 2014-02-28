@@ -36,49 +36,45 @@ for include in include_files:
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
 output = []
-#todo should be read form table
-transformation_types = ['Transformation::h_grad']#, 'Transformation::h_div', 'Transformation::h_curl', 'Transformation::l_2']
-
 containers = ['ValueTable', 'ValueVector']
 
-for transformation_name in transformation_types:
-
 # Trasformation for values
-    for row in inst.table:
-        PF = 'PushForward<%s,%d,%d>' %(transformation_name,row.dim_ref,row.dim_phys-row.dim_ref)
-        push_fwd_elem_acc = 'PushForwardElementAccessor<%s>' %(PF)
-        output.append('template class %s ;\n' %(push_fwd_elem_acc) )
-        value_ref = ("Values<%d,%d,%d>" %(row.dim_ref, row.range_ref, row.rank_ref)) 
-        value_phys = ("Values<%d,%d,%d>" %(row.dim_phys, row.range_ref, row.rank_ref)) 
-        deriv_ref = ("Derivatives<%d,%d,%d,1>" %(row.dim_ref, row.range_ref, row.rank_ref)) 
-        deriv_phys = ("Derivatives<%d,%d,%d,1>" %(row.dim_phys, row.range_ref, row.rank_ref)) 
-        for container in containers:
-            v_ref  = 'const %s<%s> &' %(container, value_ref)
-            v_phys = '%s<%s> &' %(container, value_phys)
-            output.append(
-                    'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_values<%d,%d,%s,%s>' %(row.range_ref, row.rank_ref,container,transformation_name) +
-                    '( %s, %s, void *) const ;\n' %(v_ref, v_phys)
-                    )
-            output.append(
-                    'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_face_values<%d,%d,%s,%s>' %(row.range_ref, row.rank_ref,container,transformation_name) +
-                    '( const Index, %s, %s, void *) const ;\n' %(v_ref, v_phys)
-                    )
+for row in inst.all_table:
 
-# Trasformation for gradients
-            dv_ref  = 'const %s<%s> &' %(container, deriv_ref)
-            dv_phys = '%s<%s> &' %(container, deriv_phys)
-            output.append(
+    PF = 'PushForward<%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
+    push_fwd_elem_acc = 'PushForwardElementAccessor<%s>' %(PF)
+    output.append('template class %s ;\n' %(push_fwd_elem_acc) )
+    
+    value_ref  = ("Values<%d,%d,%d>" %(row.dim, row.range, row.rank)) 
+    value_phys = ("Values<%d,%d,%d>" %(row.space_dim, row.phys_range, row.phys_rank)) 
+    for container in containers:
+        v_ref  = 'const %s<%s> &' %(container, value_ref)
+        v_phys = '%s<%s> &' %(container, value_phys)
+        output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_gradients<%d,%d,%s,%s>' %(row.range_ref, row.rank_ref,container, transformation_name) +
-                    '(%s,%s,%s, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
+                    'transform_values<%d,%d,%s,%s>' %(row.range, row.rank, container,row.trans_type) +
+                    '(%s, %s, void *) const ;\n' %(v_ref, v_phys)
                     )
-            output.append(
+        output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_face_gradients<%d,%d,%s,%s>' %(row.range_ref, row.rank_ref,container, transformation_name) +
-                    '(const Index, %s,%s,%s, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
+                    'transform_face_values<%d,%d,%s,%s>' %(row.range, row.rank, container,row.trans_type) +
+                    '(const Index, %s, %s, void *) const ;\n' %(v_ref, v_phys)
                     )
+        order = 1
+        deriv_ref  = ("Derivatives<%d,%d,%d,%d>" %(row.dim, row.range, row.rank, order)) 
+        deriv_phys = ("Derivatives<%d,%d,%d,%d>" %(row.space_dim, row.phys_range, row.phys_rank, order)) 
+        dv_ref  = 'const %s<%s> &' %(container, deriv_ref)
+        dv_phys = '%s<%s> &' %(container, deriv_phys)
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_gradients<%d,%d,%s,%s>' %(row.range, row.rank, container,row.trans_type) +
+            '(%s,%s,%s, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
+        )
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_face_gradients<%d,%d,%s,%s>' %(row.range, row.rank, container,row.trans_type) +
+            '(const Index, %s,%s,%s, void * ) const;\n' %(v_ref, dv_ref, dv_phys)
+        )
  
 
 

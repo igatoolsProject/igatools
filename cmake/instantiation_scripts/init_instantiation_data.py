@@ -39,14 +39,32 @@ def unique(seq):
 class PhysSpaceTableRow:
    # Constructor of the class.
    def __init__(self, arg_list):
-      self.dim_ref    = arg_list[0]
-      self.range_ref  = arg_list[1]
-      self.rank_ref   = arg_list[2]
-      self.dim_phys   = arg_list[3]
+      self.dim        = arg_list[0]
+      self.codim      = arg_list[1]
+      self.range      = arg_list[2]
+      self.rank       = arg_list[3]
       self.trans_type = arg_list[4]
+      self.space_dim  = self.dim +  self.codim
+      self.phys_range = self.physical_range(self.range,  self.space_dim, self.trans_type)
+      self.phys_rank  = self.physical_rank(self.rank)
       return None
 
+   def physical_range(self, ref_range, space_dim, trans_type):
+      if trans_type == 'h_grad':
+         return ref_range
+      if trans_type == 'h_div':
+         return space_dim
 
+   def physical_rank(self, ref_rank):
+      return ref_rank
+
+class FunctionRow:
+   #function dim, range and rank
+   def __init__(self, arg_list):
+      self.dim        = arg_list[0]
+      self.range      = arg_list[1]  
+      self.rank       = arg_list[2]
+      return None
 
 # Object to store different tables with useful entries to be
 # used for instantiations.
@@ -56,10 +74,11 @@ class PhysSpaceTableRow:
 class InstantiationInfo:
    # Constructor of the class.
    def __init__(self, filename, max_der_order):
-      self.user_table=[] # Spaces that the library is suppussed to be used on
-      self.face_table=[] # Spaces that are faces of the user spaces
-      self.table = [] #the main data, contains the physical spaces the user
-                      #provides plus the one that are necesary on top
+      self.user_table =[] # Spaces that the library is suppussed to be used on
+      self.face_table =[] # Spaces that are faces of the user spaces
+      self.all_table  =[] #the physical spaces the user provides plus the one that are necesary on top
+
+      self.function_dims=[] # list of dim, range, rank for functions
 
       self.UserRefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces
       self.RefDims=[]       # the list of the dimension  <d,d,d> of all ref spaces
@@ -83,6 +102,8 @@ class InstantiationInfo:
       self.values=[]
 
       self.read_dimensions_file(filename)
+
+      self.create_function_dims()
       self.create_RefSpaces()
       self.create_PhysSpaces()
       self.create_ref_dim()
@@ -160,41 +181,62 @@ class InstantiationInfo:
       user_spaces=[]
       for i in file_input:
          row = i.strip().split()
-         try: # This is for skipping commented lines (starting with #)
-            user_spaces.append([int(x) for x in row])
-         except:
-            pass
+         if len(row) > 0:
+            if (row[0] != '#'):
+               print (row)
+               user_spaces.append( [int(x) for x in row[0:4]] + row[-1:])
+               
       file_input.close()
-
+      print(user_spaces)
 
       for row in user_spaces:
          self.user_table.append(PhysSpaceTableRow(row))
-         self.table.append(PhysSpaceTableRow(row))
+         self.all_table.append(PhysSpaceTableRow(row))
+
+
+      #Add the IGMapping spaces
+      # ig_space_table = unique(
+      #    [ [sp.dim, sp.range, sp.rank,
+      #         sp.space_dim, sp.trans_type]
+      #        for sp in self.user_table ]
+      #    ) 
+
 
       face_spaces = unique(
-         [ [sp.dim_ref-1, sp.range_ref, sp.rank_ref,
-              sp.dim_phys, sp.trans_type]
+         [ [sp.dim-1, sp.range, sp.rank,
+              sp.space_dim, sp.trans_type]
              for sp in self.user_table ]
          )
 
 
       for row in face_spaces:
          self.face_table.append(PhysSpaceTableRow(row))
-         self.table.append(PhysSpaceTableRow(row))
+         self.all_table.append(PhysSpaceTableRow(row))
 
-      unique(self.table)
+      unique(self.all_table)
      
       return None
 
+
+   def create_function_dims(self):
+      dims_list=[]
+      for row in self.all_table:
+         # Add derivative for the reference space and physical space
+         dims_list.append((row.dim,  row.range, row.rank))
+         dims_list.append((row.space_dim, row.phys_range, row.phys_rank))
+         
+      for row in unique(dims_list):
+          self.function_dims.append(FunctionRow(row))
+      return None
 
 
    def create_RefSpaces(self):
       ''' Creates a list of Reference spaces '''
 
-      self.RefDims = unique( ['<%d,%d,%d>' % (x.dim_ref, x.range_ref, x.rank_ref)
-                                for x in self.table] )
+      self.RefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+                                for x in self.all_table] )
 
-      self.UserRefDims = unique( ['<%d,%d,%d>' % (x.dim_ref, x.range_ref, x.rank_ref)
+      self.UserRefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                                     for x in self.user_table] )
 
 
@@ -205,8 +247,8 @@ class InstantiationInfo:
                                 for sp in spaces
                                 for dims in self.UserRefDims] )
 
-      temp = unique( ['<%d,%d,%d>' % (x.dim_ref, x.range_ref, x.rank_ref)
-                        for x in self.user_table if x.dim_ref >= x.range_ref] )
+      temp = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+                        for x in self.user_table if x.dim >= x.range] )
       self.UserFilteredRefSpaces = ( ['%s%s' % (sp, dims)
                                         for sp in spaces
                                         for dims in temp] )
@@ -214,72 +256,51 @@ class InstantiationInfo:
       return None
 
 
-    # Mapping<dim_ref, codim>
+    # Mapping<dim, codim>
    def create_Mappings(self):
       ''' Creates a list of mappings '''
-      self.MappingDims = unique( ['<%d,%d>' % (x.dim_ref, x.dim_phys-x.dim_ref)
-                                   for x in self.table] )
-      self.MappingDims = self.MappingDims + unique( ['<%d,%d>' % (x.dim_ref, 0)
-                                                      for x in self.table] )
+      self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.space_dim-x.dim)
+                                   for x in self.all_table] )
+      self.MappingDims = self.MappingDims + unique( ['<%d,%d>' % (x.dim, 0)
+                                                      for x in self.all_table] )
       self.MappingDims = unique(self.MappingDims)
-      self.UserMappingDims = unique( ['<%d,%d>' % (x.dim_ref, x.dim_phys-x.dim_ref)
+      self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.space_dim-x.dim)
                                        for x in self.user_table] )
       return None
 
 
 
    def create_PhysSpaces(self):
-      self.PushForwards = unique(['PushForward<Transformation::h_grad, %d,%d>'
-                                    %(x.dim_ref, x.dim_phys - x.dim_ref) for x in self.table] )
-      self.PushForwards = self.PushForwards + \
-                            (unique(['PushForward<Transformation::h_grad, %d,%d>'
-                                     %(x.dim_ref, 0) for x in self.table] ) )
-      self.PushForwards = unique(self.PushForwards)
-
+      self.PushForwards = unique(['PushForward<Transformation::%s, %d, %d>'
+                                    %(x.trans_type, x.dim, x.codim) for x in self.all_table] )
+     
       spaces =('BSplineSpace', 'NURBSSpace')
       self.PhysSpaces = unique( ['PhysicalSpace <' +
-                                   '%s<%d,%d,%d>' % (sp, x.dim_ref, x.range_ref, x.rank_ref) +
-                                   ', PushForward<Transformation::h_grad, %d,%d> >'
-                                   % (x.dim_ref, x.dim_phys-x.dim_ref)
+                                   '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
+                                   ', PushForward<Transformation::%s, %d, %d>'
+                                   %(x.trans_type, x.dim, x.codim)
                                    for sp in spaces
-                                   for x in self.table] )
+                                   for x in self.all_table] )
 
-      self.UserPhysSpaces = \
-                              unique( ['PhysicalSpace <' +
-                                       '%s<%d,%d,%d>' % (sp, x.dim_ref, x.range_ref, x.rank_ref) +
-                                       ', PushForward<Transformation::h_grad, %d,%d> >'
-                                       % (x.dim_ref, x.dim_phys-x.dim_ref)
-                                       for sp in spaces
-                                       for x in self.user_table] )
+      self.UserPhysSpaces = unique( ['PhysicalSpace <' +
+                                     '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
+                                     ', PushForward<Transformation::%s, %d, %d>'
+                                     %(x.trans_type, x.dim, x.codim)
+                                     for sp in spaces
+                                     for x in self.user_table] )
 
 
    def create_ref_dim(self):
-      self.ref_dom_dims = unique([x.dim_ref for x in self.table])
-      self.user_ref_dom_dims = unique([x.dim_ref for x in self.user_table])
-      self.face_ref_dom_dims = unique([x.dim_ref for x in self.face_table])
+      self.ref_dom_dims = unique([x.dim for x in self.all_table])
+      self.user_ref_dom_dims = unique([x.dim for x in self.user_table])
+      self.face_ref_dom_dims = unique([x.dim for x in self.face_table])
       return None
 
-   def physical_range(self, ref_range, space_dim, trans_type):
-      if trans_type == 'h_grad':
-         return ref_range
-      if trans_type == 'h_div':
-         return space_dim
+  
 
    def create_derivatives(self):
       '''Creates a list of the tensor types for the required values and derivatives'''
-          
-      trans_type = 'h_grad' #todo, use the table when implemented
-
-      dims_list=[]
-      for row in self.table:
-         # Add derivative for the reference space 
-         dims_list.append((row.dim_ref,  row.range_ref, row.rank_ref));
-         # Add derivative for the physical space
-         phys_range = self.physical_range(row.range_ref, row.dim_phys, trans_type)
-         phys_rank = row.rank_ref
-         dims_list.append((row.dim_phys, phys_range, phys_rank))
-      dims_list = unique(dims_list)
-      print(dims_list)
+      dims_list = self.function_dims
       deriv ='Tensor<dim, order, tensor::covariant, Tensor<range, rank, tensor::contravariant, Tdouble>>'
       value ='Tensor<range, rank, tensor::contravariant, Tdouble>'
 
@@ -287,7 +308,7 @@ class InstantiationInfo:
       value_list=[]
       for order in self.deriv_order:
          for dims in dims_list:
-            (dim, range, rank) = dims
+            (dim, range, rank) = (dims.dim, dims.range, dims.rank)
             if order == 0:
                (dim, order) = (1,1)
             replace_table = (('order', str(order)), ('dim', str(dim)),('range', str(range)),('rank', str(rank)))
@@ -311,8 +332,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'TensorSize<%d>' % (dim_domain)
          C_list.append(C)
          C = 'TensorSize<%d>' % (dim_domain+1)
@@ -329,8 +350,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'TensorIndex<%d>' % (dim_domain)
          C_list.append(C)
          C = 'TensorIndex<%d>' % (dim_domain+1)
@@ -347,8 +368,8 @@ class InstantiationInfo:
       '''Creates a list of the TensorSizedContainer class that needs to be instantiated'''
       C_list=[]
  
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'TensorSizedContainer<%d>' % (dim_domain)
          C_list.append(C)
          C = 'TensorSizedContainer<%d>' % (dim_domain+1)
@@ -366,8 +387,8 @@ class InstantiationInfo:
       C_list=[]
 
       types=['Real','Index']
-      for row in self.table:
-         dim = row.dim_ref
+      for row in self.all_table:
+         dim = row.dim
          C = 'DynamicMultiArray<TensorIndex<%s>,%s>' % (dim,dim)
          C_list.append(C)
          for t in types:
@@ -376,13 +397,10 @@ class InstantiationInfo:
 
 
 
-      for deriv in self.derivatives:
+      for deriv in self.derivatives + self.values:
          C = 'DynamicMultiArray<%s,2>' % (deriv)
          C_list.append(C)
 
-#for row in inst.table:
-#    C_list.append ("DynamicMultiArray<Tensor< %d, %d, tensor::contravariant, Tdouble >, 2 >" \
-   #                   %(row.dim_phys, row.rank_ref))
 
       self.dynamic_multi_arrays = unique(C_list)
       return None
@@ -394,8 +412,8 @@ class InstantiationInfo:
       '''Creates a list of the CartesianProductArray class that needs to be instantiated'''
 
       C_list=[]
-      for row in self.table:
-         dim = row.dim_ref
+      for row in self.all_table:
+         dim = row.dim
          C = 'CartesianProductArray<Real,%s>' % (dim)
          C_list.append(C)
          C = 'CartesianProductArray<Real,%s>' % (dim+1)
@@ -404,8 +422,8 @@ class InstantiationInfo:
       #        types=['Real*','Index']
       types=['Real*','Index']
       for t in types:
-         for row in self.table:
-            dim = row.dim_ref
+         for row in self.all_table:
+            dim = row.dim
             C = 'CartesianProductArray<%s,%s>' % (t,dim)
             C_list.append(C)
             #               C = 'CartesianProductArray<%s,%s>' % (t,dim+1)
@@ -418,8 +436,8 @@ class InstantiationInfo:
 #        matrix = "boost::numeric::ublas::matrix<Real>"
 #        types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
 #        for t in types:
-#            for row in self.table:
-#                dim = row.dim_ref
+#            for row in self.all_table:
+#                dim = row.dim
 #                C = "ProductArray<%s,%d>" % (t,dim)
 #                C_list.append(C)
 
@@ -434,8 +452,8 @@ class InstantiationInfo:
       '''Creates a list of the TensorProductArray class that needs to be instantiated'''
 
       C_list=[]
-      for row in self.table:
-         dim = row.dim_ref
+      for row in self.all_table:
+         dim = row.dim
          C = 'TensorProductArray<%d>' % (dim)
          C_list.append(C)
 
@@ -475,8 +493,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim = row.dim_ref
+      for row in self.all_table:
+         dim = row.dim
          C = 'CartesianProductIndexer<%d>' % (dim)
          C_list.append(C)
 
@@ -491,8 +509,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'UnitElement<%d>' % (dim_domain)
          C_list.append(C)
 
@@ -507,8 +525,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'Multiplicity<%d>' % (dim_domain)
          C_list.append(C)
 
@@ -523,8 +541,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'Quadrature<%d>' % (dim_domain)
          C_list.append(C)
 
@@ -598,8 +616,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'CartesianGrid<%d>' % (dim_domain)
          C_list.append(C)
 
@@ -614,8 +632,8 @@ class InstantiationInfo:
 
       C_list=[]
 
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'CartesianGridElement<%d>' % (dim_domain)
          C_list.append(C)
 
@@ -629,8 +647,8 @@ class InstantiationInfo:
       '''Creates a list of the CartesianGridElementAccessors class that needs to be instantiated'''
 
       C_list=[]
-      for row in self.table:
-         dim_domain = row.dim_ref
+      for row in self.all_table:
+         dim_domain = row.dim
          C = 'CartesianGridElementAccessor<%d>' % (dim_domain)
          C_list.append(C)
 
@@ -713,8 +731,8 @@ def intialize_instantiation():
    inst = InstantiationInfo(args['config_file'], args['max_der_order'])
    #  Some debug information printing
    if True:
-      for x in inst.table:
-         print (x.dim_ref, x.range_ref, x.rank_ref, x.dim_phys)
+      for x in inst.all_table:
+         print (x.dim, x.range, x.rank, x.space_dim)
          #    print inst.deriv_order
 
    # Openning the output file.

@@ -20,7 +20,7 @@
 
 
 ## @package generate_inst_table
-# Script to create and instantiantion table that...
+# Script to create an instantiantion table that...
 #
 # @author: antolin, 2013
 # @author: pauletti, 2013
@@ -38,22 +38,22 @@ for k in args.keys():
 file_output = open('instantiation_table.txt', 'w')
 file_output.write('# Each line describes a physical discrete space that the\n')
 file_output.write('# library want to be compile for. \n')
-file_output.write('# dim_ref   range_ref   rank_ref   dim_phys   trans_type\n')
+file_output.write('# dim   codim  range  rank trans_type\n')
 
 
 #if len(args['dim_ref']) == 0 and len(args['range_ref']) == 0 and len(args['rank_ref']) == 0:
 file_output.write(
-'''    1          1          1         1        0
-    1          1          1         2        0
-    1          1          1         3        0
-    1          2          1         2        0
-    1          3          1         3        0
-    2          1          1         2        0
-    2          1          1         3        0
-    2          2          1         2        0
-    2          3          1         3        0
-    3          1          1         3        0
-    3          3          1         3        0''')
+'''1          0          1         1        h_grad
+    1          1          1         1        h_grad
+    1          1          2         1        h_grad
+    1          2          1         1        h_grad
+    1          2          3         1        h_grad
+    2          0          1         1        h_grad
+    2          0          2         1        h_grad
+    2          1          1         1        h_grad
+    2          1          3         1        h_grad
+    3          0          1         1        h_grad
+    3          0          3         1        h_grad''')
 print('Default instantiation table was created.')
 
 #elif args.has_key('dom_dim') and args.has_key('space_dim') and args.has_key('range_rank') and \
