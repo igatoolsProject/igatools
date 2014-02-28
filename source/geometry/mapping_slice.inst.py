@@ -37,8 +37,8 @@ output = []
 for row in inst.face_table:
     output.append('template class MappingSlice<%d,%d> ;\n' % (row.dim_ref,row.dim_phys-row.dim_ref))
   
-for s in unique(output): # Removing repeated entries.
-    file_output.write(s)
+#for s in unique(output): # Removing repeated entries.
+#    file_output.write(s)
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 

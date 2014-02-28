@@ -183,6 +183,7 @@ class InstantiationInfo:
          self.table.append(PhysSpaceTableRow(row))
 
       unique(self.table)
+     
       return None
 
 
@@ -278,7 +279,7 @@ class InstantiationInfo:
          phys_rank = row.rank_ref
          dims_list.append((row.dim_phys, phys_range, phys_rank))
       dims_list = unique(dims_list)
-      
+      print(dims_list)
       deriv ='Tensor<dim, order, tensor::covariant, Tensor<range, rank, tensor::contravariant, Tdouble>>'
       value ='Tensor<range, rank, tensor::contravariant, Tdouble>'
 
@@ -711,7 +712,7 @@ def intialize_instantiation():
    # Reading information from dimensions file.
    inst = InstantiationInfo(args['config_file'], args['max_der_order'])
    #  Some debug information printing
-   if False:
+   if True:
       for x in inst.table:
          print (x.dim_ref, x.range_ref, x.rank_ref, x.dim_phys)
          #    print inst.deriv_order
