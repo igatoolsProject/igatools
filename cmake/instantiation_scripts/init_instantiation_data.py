@@ -451,7 +451,7 @@ class InstantiationInfo:
       self.value_vectors=['ValueVector<Real>']
 
       for deriv in self.derivatives + self.values:
-         self.value_vectors.append('ValueTable<%s>' % (deriv))
+         self.value_vectors.append('ValueVector<%s>' % (deriv))
 
       return None
 ##################################
