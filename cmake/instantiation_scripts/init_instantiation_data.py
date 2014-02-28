@@ -477,18 +477,9 @@ class InstantiationInfo:
    def create_value_table(self):
       '''Creates a list of the ValueTable class that needs to be instantiated'''
 
-      C_list=[]
+      for deriv in self.derivatives + self.values:
+         self.value_tables.append('ValueTable<%s>' % (deriv))
 
-      for deriv in self.derivatives:
-         C = 'ValueTable<%s>' % (deriv)
-         C_list.append(C)
-
-
-      # for row in self.table:
-      #    C_list.append ("%s< Tensor<%d, %d, tensor::contravariant, Tdouble>>" \
-         #                   %(container,row.dim_phys, row.rank_ref))
-
-      self.value_tables = unique(C_list)
       return None
 ##################################
 
