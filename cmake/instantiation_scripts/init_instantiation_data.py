@@ -66,6 +66,14 @@ class FunctionRow:
       self.rank       = arg_list[2]
       return None
 
+class MappingRow:
+   #mappings dim, codim and space_dim
+   def __init__(self, arg_list):
+      self.dim        = arg_list[0]
+      self.codim      = arg_list[1]  
+      self.space_dim  = self.dim + self.codim
+      return None
+
 # Object to store different tables with useful entries to be
 # used for instantiations.
 # This information is generated using a
@@ -88,6 +96,7 @@ class InstantiationInfo:
 
       self.UserMappingDims=[] #list of <dim, codims>
       self.MappingDims=[] #list of <dim, codims>
+      self.mapping_dims=[]
 
       self.PushForwards=[]
       self.UserPhysSpaces=[]
@@ -102,8 +111,10 @@ class InstantiationInfo:
       self.values=[]
 
       self.read_dimensions_file(filename)
-
+      
+      self.create_mapping_dims()
       self.create_function_dims()
+      
       self.create_RefSpaces()
       self.create_PhysSpaces()
       self.create_ref_dim()
@@ -183,12 +194,12 @@ class InstantiationInfo:
          row = i.strip().split()
          if len(row) > 0:
             if (row[0] != '#'):
-               print (row)
+               #print (row)
                user_spaces.append( [int(x) for x in row[0:4]] + row[-1:])
                
       file_input.close()
-      print(user_spaces)
-
+      #print(user_spaces)
+      
       for row in user_spaces:
          self.user_table.append(PhysSpaceTableRow(row))
          self.all_table.append(PhysSpaceTableRow(row))
@@ -202,12 +213,11 @@ class InstantiationInfo:
       #    ) 
 
 
+     
       face_spaces = unique(
-         [ [sp.dim-1, sp.range, sp.rank,
-              sp.space_dim, sp.trans_type]
-             for sp in self.user_table ]
-         )
-
+                           [ [sp.dim-1, sp.codim+1, sp.range, sp.rank, sp.trans_type]
+                           for sp in self.user_table ]
+                           )
 
       for row in face_spaces:
          self.face_table.append(PhysSpaceTableRow(row))
@@ -218,6 +228,20 @@ class InstantiationInfo:
       return None
 
 
+
+   def create_mapping_dims(self):
+      dims_list=[]
+      for row in self.all_table:
+         dims_list.append([row.dim,  row.codim])
+               
+      for row in unique(dims_list):
+          self.mapping_dims.append(MappingRow(row))
+      print(dims_list)
+      
+      return None
+
+
+   
    def create_function_dims(self):
       dims_list=[]
       for row in self.all_table:
@@ -225,10 +249,16 @@ class InstantiationInfo:
          dims_list.append((row.dim,  row.range, row.rank))
          dims_list.append((row.space_dim, row.phys_range, row.phys_rank))
          
+      for row in self.mapping_dims:
+         dims_list.append((row.dim,  row.space_dim, 1))
+         dims_list.append((row.space_dim,  row.dim, 1))
+         
       for row in unique(dims_list):
           self.function_dims.append(FunctionRow(row))
+     
+      print(dims_list)
       return None
-
+     
 
    def create_RefSpaces(self):
       ''' Creates a list of Reference spaces '''
@@ -259,12 +289,11 @@ class InstantiationInfo:
     # Mapping<dim, codim>
    def create_Mappings(self):
       ''' Creates a list of mappings '''
-      self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.space_dim-x.dim)
+      self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
                                    for x in self.all_table] )
-      self.MappingDims = self.MappingDims + unique( ['<%d,%d>' % (x.dim, 0)
-                                                      for x in self.all_table] )
+     
       self.MappingDims = unique(self.MappingDims)
-      self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.space_dim-x.dim)
+      self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
                                        for x in self.user_table] )
       return None
 
@@ -319,7 +348,7 @@ class InstantiationInfo:
                temp_v = temp_v.replace(rep[0], rep[1])
             deriv_list.append(temp)
             value_list.append(temp_v)
-            
+          
       self.derivatives = unique(deriv_list)
       self.values = unique(value_list)
     
@@ -725,8 +754,9 @@ def intialize_instantiation():
    inst = InstantiationInfo(args['config_file'], args['max_der_order'])
    #  Some debug information printing
    if True:
+      print('dim codim range rank space_dim')
       for x in inst.all_table:
-         print (x.dim, x.range, x.rank, x.space_dim)
+         print (x.dim, x.codim, x.range, x.rank, x.space_dim)
          #    print inst.deriv_order
 
    # Openning the output file.

@@ -610,14 +610,7 @@ using Values = Tensor<range, rank, tensor::contravariant, Tdouble>;
  *
  */
 template< int dim >
-using Point = Tensor<dim,1,tensor::contravariant,Tdouble>;
-
-
-
-
-
-
-
+using Point = Tensor<dim, 1, tensor::contravariant, Tdouble>;
 
 /**
  *  Returns the tensor product of two rank one tensors.
