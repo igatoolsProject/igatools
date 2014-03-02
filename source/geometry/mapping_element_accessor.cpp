@@ -174,7 +174,7 @@ reset(const Index face_id,
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    quad_ = quad.get_restriction(face_id);
+    quad_ = quad.collapse_to_face(face_id);
     num_points_ = quad_.get_num_points();
 
     Assert(contains(fill_flag, ValueFlags::none),

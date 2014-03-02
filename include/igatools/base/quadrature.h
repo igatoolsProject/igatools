@@ -132,24 +132,13 @@ public:
 
     ///@}
 
-
     /**
-     * @name Function returning restriction and extension quadrature (useful for face evaluation)
+     * Returns a dim dimensional quadrature obtained by using
+     * a single point on the active face direction.
+     * @todo write example
+     * Usually use for face values
      */
-    ///@{
-
-    /**
-     * Returns a quadrature obtained by projecting the quadrature to the face
-     * identified by the input argument @p face_id.
-     */
-    Quadrature<dim> get_restriction(const int face_id) const;
-
-
-    /**
-     * Returns an extended dimension version of this quadrature.
-     */
-    Quadrature<dim+1> get_extension(const int face_id) const;
-    ///@}
+    Quadrature<dim> collapse_to_face(const int face_id) const;
 
     /**
      * Prints internal information about the quadrature scheme.
@@ -168,26 +157,20 @@ protected:
      */
     TensorProductArray<dim> weights_ ;
 
-
-//    /**
-//     * Coordinates of the domain (i.e. d-dimensional hypercube) in which the quadrature is referred to.
-//     */
-//    std::array< std::array<Real,2>, dim> domain_coordinates_ ;
-//
-//    /**
-//     * This flags specifies if (and in which component) the point coordinates have constant value.
-//     *
-//     * * If all the entries of this variable are false, then the all points do not belong to any lower dimension element.
-//     * * If the entry @b i is true and the others are false, then the points coordinates have the i-th coordinate fixed, i.e. the points
-//     * belongs to an element with dimension dim-1, and so on.
-//     *
-//     * @note This variable is useful for knowing if the points belong to an element face.
-//     */
-//    std::array<bool,dim> info_constant_coordinates_ ;
-
 } ;
 
 
+
+/**
+ * Given a quadrature rule on a dim dimensional face, of a dim+1
+ * domain, this functions creates an extended dimension
+ * version of this quadrature applicable to the volume.
+ *
+ * @relates Quadrature
+ */
+template< int face_dim >
+Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
+		          const int face_id);
 
 
 

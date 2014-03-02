@@ -414,7 +414,7 @@ FaceValuesCache::
 reset(const Quadrature<dim_> &quad1, const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    const auto quad = quad1.get_restriction(face_id);
+    const auto quad = quad1.collapse_to_face(face_id);
     ValuesCache::reset(quad);
 }
 

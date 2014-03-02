@@ -130,8 +130,8 @@ print_info(LogStream &out) const
 
 template< int dim >
 Quadrature<dim>
-Quadrature<dim> ::
-get_restriction(const int face_id) const
+Quadrature<dim>::
+collapse_to_face(const int face_id) const
 {
     AssertIndexRange(face_id, UnitElement<dim>::faces_per_element);
 
@@ -158,24 +158,22 @@ get_restriction(const int face_id) const
 
 
 
-template< int dim >
-inline
-Quadrature<dim+1>
-Quadrature<dim> ::
-get_extension(const int face_id) const
+template< int face_dim >
+Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
+		          const int face_id)
 {
-    AssertIndexRange(face_id, UnitElement<dim+1>::faces_per_element);
+	const int dim = face_dim + 1;
 
+    AssertIndexRange(face_id, UnitElement<dim>::faces_per_element);
+    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
 
-    const int const_direction = UnitElement<dim+1>::face_constant_direction[face_id];
+    CartesianProductArray<Real,face_dim> points_old = quad.get_points();
+    TensorProductArray<face_dim> weights_old = quad.get_weights();
 
-    CartesianProductArray<Real,dim> points_old = this->get_points();
-    TensorProductArray<dim> weights_old = this->get_weights();
+    CartesianProductArray<Real,dim> points_new;
+    TensorProductArray<dim> weights_new;
 
-    CartesianProductArray<Real,dim+1> points_new;
-    TensorProductArray<dim+1> weights_new;
-
-    for (int i = 0, j = 0; i < dim + 1; ++i, ++j)
+    for (int i = 0, j = 0; i < dim ; ++i, ++j)
     {
         if (i != const_direction)
         {
@@ -186,13 +184,13 @@ get_extension(const int face_id) const
         {
             points_new.copy_data_direction(
                 i,
-                std::vector<Real>(1,UnitElement<dim+1>::face_constant_coordinate[face_id]));
+                vector<Real>(1,UnitElement<dim>::face_constant_coordinate[face_id]));
             weights_new.copy_data_direction(i,std::vector<Real>(1,1.0));
             --j;
         }
     }
 
-    return Quadrature<dim+1>(points_new, weights_new);
+    return Quadrature<dim>(points_new, weights_new);
 }
 
 IGA_NAMESPACE_CLOSE

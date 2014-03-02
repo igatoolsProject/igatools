@@ -20,34 +20,19 @@
 
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating Quadrature
-for row in inst.quadratures:
-    file_output.write('template class %s; \n' % (row))
+for dim in inst.ref_dom_dims:
+    file_output.write('template class Quadrature<%d> ;\n' % (dim))
+ 
+for dim in inst.face_ref_dom_dims:
+    file_output.write('template Quadrature<%d> extend_face_quad<%d>' % (dim+1, dim) +
+                      '(const Quadrature <%d> &, const int);\n' %(dim))
+ 
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
 
 
-# ###############################################################################
-# # Common header for instantiation files 
-# from igatools_instantiation import *
-# file_output, inst = intialize_instantiation()
-# ###############################################################################
-# 
-# for dim in inst.ref_dom_dims:
-#     file_output.write('template class Quadrature< %d > ;\n' % (dim))
-#     file_output.write('template Quadrature< %d > restricted_quad' %(dim) +
-#                       '(const Quadrature< %d > &, const int) ;\n' % (dim))
-# 
-# for dim in inst.face_ref_dom_dims:
-#     file_output.write('template Quadrature< %d > extend_quad_dim< %d >' % (dim+1, dim) +
-#                       '(const Quadrature < %d > &, const int);\n' %(dim))
-# 
-# file_output.close()
 
