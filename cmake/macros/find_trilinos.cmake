@@ -28,6 +28,10 @@ macro(find_trilinos)
   if (NOT (Trilinos_VERSION VERSION_GREATER 11.6))
     message(FATAL_ERROR "Trilinos 11.6.1 or greater is required.")
   endif()
+
+  # add the location of Trilinos headers to the include directories
+  include_directories( ${Trilinos_INCLUDE_DIRS} )
+
   # Check that individual required Trilinos packages are available
   set(tri_required_packages Tpetra Belos)
   foreach(package ${tri_required_packages})

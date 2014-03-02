@@ -36,10 +36,4 @@ for dims in inst.MappingDims:
     file_output.write('template class IdentityMapping%s ;\n' %dims)
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
-
-
-
-
-

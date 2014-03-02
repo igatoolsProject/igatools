@@ -706,6 +706,22 @@ class InstantiationInfo:
       return None
 ##################################
 
+
+##################################
+   def create_identity_mapping(self):
+      '''Creates a list of the IdentityMapping class that needs to be instantiated'''
+        
+      C_list=[]
+
+      for dims in self.MappingDims:
+         C = 'IdentityMapping%s' % (dims)
+         C_list.append(C)
+        
+      self.identity_mappings = unique(C_list)        
+      return None
+##################################
+
+
 ##################################
    def create_mapping_lib(self):
       '''Creates a list of the of some Mapping specialization that needs to be instantiated'''

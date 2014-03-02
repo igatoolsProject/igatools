@@ -27,12 +27,14 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Affine mapping from R^dim to R^s.
+ * @brief Affine mapping from \f$\mathbb{R}^{dim}\f$ to \f$\mathbb{R}^{dim+codim}\f$.
  *
- * F(x) = A x + b.
+ * \f[
+ * \mathbf{x} = \mathbf{F}(\mathbf{\hat{x}}) = \mathbf{A} \mathbf{\hat{x}} + \mathbf{b}.
+ * \f]
  *
  * @author Pauletti, 2012
- * @todo Missing documentation
+ * @todo Document more. Missing member documentation.
  */
 template<int dim_, int codim_>
 class LinearMapping : public Mapping <dim_, codim_>

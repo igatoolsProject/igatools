@@ -26,7 +26,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * The identity mapping.
+ * @brief The identity mapping.
  *
  * @note It is not a mapping to be used by user.
  * It is mostly used for testing and debugging and as
@@ -35,12 +35,12 @@ IGA_NAMESPACE_OPEN
  *
  * @note Do not use this map if you don't need to
  */
-template<int dim_reference, int codim = 0>
-class IdentityMapping : public Mapping <dim_reference, codim>
+template<int dim, int codim = 0>
+class IdentityMapping : public Mapping <dim, codim>
 {
 private:
-    using self_t = IdentityMapping<dim_reference, codim>;
-    using base_t = Mapping<dim_reference, codim>;
+    using self_t = IdentityMapping<dim, codim>;
+    using base_t = Mapping<dim, codim>;
 
     using typename base_t::PointType;
     using typename base_t::ValueType;
@@ -65,23 +65,13 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim_reference> &elem);
+    void set_element(const CartesianGridElementAccessor<dim> &elem);
 
-    void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim_reference> &elem);
-
-    //TODO: remove function below
     void evaluate(std::vector<ValueType> &values) const override;
 
     void evaluate_gradients(std::vector<GradientType> &gradients) const override;
 
     void evaluate_hessians(std::vector<HessianType> &hessians) const override;
-
-    void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
-
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const override;
-
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const override;
 
     /**
      * Return a Mapping that is a deep copy of the caller object.
@@ -96,9 +86,7 @@ public:
 
 private:
     GradientType A_;
-    std::array<GradientFaceType, UnitElement<dim_reference>::faces_per_element> face_A_;
     std::vector<PointType> points_;
-    std::array<std::vector<PointType>, UnitElement<dim_reference>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE
