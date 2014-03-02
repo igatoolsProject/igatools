@@ -23,9 +23,12 @@
 #TODO: structure that are not of common use shuld be defined in their
 #      respectiy .inst.py file. Ex: tensor_index, value_table, etc
 
-# This module is loaded from all instantiation scripts.
-# It will read a .txt table created by another script called
-# generate_instantiation_table.py
+"""@package init_instantiation_data
+
+This module is loaded from all instantiation scripts.
+It will read a .txt table created by another script called
+generate_instantiation_table.py
+"""
 
 # Removes duplicates of a list while keeping the original order
 def unique(seq):
@@ -74,19 +77,30 @@ class MappingRow:
       self.space_dim  = self.dim + self.codim
       return None
 
-# Object to store different tables with useful entries to be
-# used for instantiations.
-# This information is generated using a
-# physical spaces tables that was genererated at configure time
-# by the user.
+
 class InstantiationInfo:
-   # Constructor of the class.
+   """ Stores "tables" with useful entries to be used for instantiations.
+   
+   This information is generated using a
+   physical spaces tables that was genererated at configure time
+   by the user.
+
+   """
+  
    def __init__(self, filename, max_der_order):
+      """The constructor."""
       self.user_table =[] # Spaces that the library is suppussed to be used on
       self.face_table =[] # Spaces that are faces of the user spaces
       self.all_table  =[] #the physical spaces the user provides plus the one that are necesary on top
 
-      self.function_dims=[] # list of dim, range, rank for functions
+      self.function_dims=[] # table of dim, range, rank for functions
+      self.mapping_dims =[] # list of dim codim
+      
+      self.deriv_order = range(int(max_der_order)+1)
+      self.derivatives=[]  # allderivative classes
+      self.values=[]
+      
+      self.domain_dims = [] # list all domain dimensions
 
       self.UserRefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces
       self.RefDims=[]       # the list of the dimension  <d,d,d> of all ref spaces
@@ -96,30 +110,31 @@ class InstantiationInfo:
 
       self.UserMappingDims=[] #list of <dim, codims>
       self.MappingDims=[] #list of <dim, codims>
-      self.mapping_dims=[]
+      
 
       self.PushForwards=[]
       self.UserPhysSpaces=[]
       self.PhysSpaces=[]
-      self.deriv_order = range(int(max_der_order)+1)
+      
 
-      self.ref_dom_dims = [] # list ref domain dimension todo: change to ref_domain
+      
       self.user_ref_dom_dims = []
       self.face_ref_dom_dims = []
 
-      self.derivatives=[]  #derivative classes
-      self.values=[]
+      
 
       self.read_dimensions_file(filename)
       
       self.create_mapping_dims()
       self.create_function_dims()
+      self.create_derivatives()
+      self.create_ref_dim()
       
       self.create_RefSpaces()
       self.create_PhysSpaces()
-      self.create_ref_dim()
+      
       self.create_Mappings()
-      self.create_derivatives()
+      
 
       self.tensor_sizes=[] #list TensorSize classes
       self.create_tensor_sizes()
@@ -186,38 +201,24 @@ class InstantiationInfo:
 
    def read_dimensions_file(self, filename):
       '''Reads a text file where each line describes a physical space and
-            genereate the tables '''
+            genereate the main tables '''
 
       file_input = open(filename, 'r')
       user_spaces=[]
       for i in file_input:
          row = i.strip().split()
-         if len(row) > 0:
-            if (row[0] != '#'):
-               #print (row)
-               user_spaces.append( [int(x) for x in row[0:4]] + row[-1:])
-               
+         if (len(row) > 0) and (row[0] != '#') :
+            user_spaces.append( [int(x) for x in row[0:4]] + row[-1:])
       file_input.close()
-      #print(user_spaces)
+    
       
       for row in user_spaces:
          self.user_table.append(PhysSpaceTableRow(row))
          self.all_table.append(PhysSpaceTableRow(row))
 
-
-      #Add the IGMapping spaces
-      # ig_space_table = unique(
-      #    [ [sp.dim, sp.range, sp.rank,
-      #         sp.space_dim, sp.trans_type]
-      #        for sp in self.user_table ]
-      #    ) 
-
-
-     
-      face_spaces = unique(
-                           [ [sp.dim-1, sp.codim+1, sp.range, sp.rank, sp.trans_type]
-                           for sp in self.user_table ]
-                           )
+      #Add the spaces for the faces     
+      face_spaces = unique ([ [sp.dim-1, sp.codim+1, sp.range, sp.rank, sp.trans_type]
+                    for sp in self.user_table ] )
 
       for row in face_spaces:
          self.face_table.append(PhysSpaceTableRow(row))
@@ -230,6 +231,7 @@ class InstantiationInfo:
 
 
    def create_mapping_dims(self):
+      '''Fills mapping_dims with a list of all mappings '''
       dims_list=[]
       for row in self.all_table:
          dims_list.append([row.dim,  row.codim])

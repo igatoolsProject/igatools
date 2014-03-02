@@ -25,7 +25,7 @@ file_output, inst = intialize_instantiation()
 # instantiating derivatives
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-for row in inst.derivatives:
+for row in inst.derivatives + inst.values:
     file_output.write('template class %s ;\n' % (row))
 
 file_output.write('\n')

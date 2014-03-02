@@ -18,13 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
 
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
 for row in inst.function_dims:
-    s = 'template class functions::ConstantFunction< %d, %d, %d > ;\n' %(row.dim, row.range, row.rank)
+    s = ('template class functions::ConstantFunction<%d, %d, %d>;\n' 
+         %(row.dim, row.range, row.rank) )
     file_output.write(s)
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
