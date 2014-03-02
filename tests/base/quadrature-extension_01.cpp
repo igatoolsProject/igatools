@@ -41,7 +41,7 @@ void run_test()
     out << endl;
     for (int i = 0; i < UnitElement<dim+1>::faces_per_element; ++i)
     {
-        Quadrature<dim+1> quad_extended = quad_surf.get_extension(i);
+        Quadrature<dim+1> quad_extended = extend_face_quad(quad_surf, i);
         quad_surf.print_info(out);
     }
 }

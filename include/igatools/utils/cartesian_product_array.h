@@ -75,8 +75,7 @@ template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
-    static const int rank_ = rank;//todo: swap names
-    /**
+	/**
      * Type for the <tt>rank-1</tt> CartesianProductArray
      */
     using SubProduct = Conditional< (rank > 0),
@@ -259,27 +258,23 @@ protected:
      * i-th coordinate direction.
      */
     std::array<std::vector<T>,rank> data_ ;
-
 };
+
+
 
 /**
  * Returns a CartesianProductArray of one higher rank built from the insertion
  * of a given @p new_vector at the given direction @p index.
  */
-
-//template class <T>
-//CartesianProductArray<T,T::rank_+1>
-//insert(const Index index, const std::vector<T> &new_vector) const;
-
-template <class T>
-CartesianProductArray<T,T::rank_+1>
-insert(const CartesianProductArray<T,T::rank_> &orig, const int index, const std::vector<T> &new_vector)
+template <class T, int rank>
+CartesianProductArray<T, rank+1>
+insert(const CartesianProductArray<T, rank> &orig,
+	   const int index,
+	   const std::vector<T> &new_vector)
 {
-    const int rank = T::rank_;
-    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+	Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 
     TensorSize<rank+1> size;
-
     for (int i=0, j=0; i<rank+1; ++i)
     {
         if (i == index)
@@ -299,7 +294,7 @@ insert(const CartesianProductArray<T,T::rank_> &orig, const int index, const std
             product.copy_data_direction(i,new_vector);
         else
         {
-            product.copy_data_direction(i,orig.data_[j]);
+            product.copy_data_direction(i,orig.get_data_direction(j));
             ++j;
         }
     }

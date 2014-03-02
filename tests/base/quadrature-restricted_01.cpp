@@ -42,7 +42,7 @@ void do_test()
 
     for (int face_id = 0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
     {
-        auto new_quad = quad.get_restriction(face_id);
+        auto new_quad = quad.collapse_to_face(face_id);
         out << "Restricted quadrature to face: "<< face_id << endl;
         new_quad.print_info(out);
     }

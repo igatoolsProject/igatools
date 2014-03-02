@@ -80,7 +80,7 @@ void do_test()
 
     out << "Testing the insert() function" << endl;
     vector<Index> new_values = {10,11};
-    CartesianProductArray<Index,dim> data5 = data4.insert(dim-1,new_values);
+    CartesianProductArray<Index,dim> data5 = insert(data4, dim-1,new_values);
     data5.print_info(out);
 
     out << "========= END do_test<" << dim << "> =========" << endl ;
