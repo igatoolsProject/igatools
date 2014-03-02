@@ -1,0 +1,534 @@
+//-+--------------------------------------------------------------------
+// Igatools a general purpose Isogeometric analysis library.
+// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+//
+// This file is part of the igatools library.
+//
+// The igatools library is free software: you can use it, redistribute
+// it and/or modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation, either
+// version 3 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//-+--------------------------------------------------------------------
+
+#ifndef __BSPLINE_SPACE_H_
+#define __BSPLINE_SPACE_H_
+
+#include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
+#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/basis_functions/multiplicity.h>
+#include <igatools/utils/static_multi_array.h>
+#include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/basis_functions/function_space.h>
+#include <boost/numeric/ublas/matrix.hpp>
+
+#include<igatools/geometry/mapping.h>
+#include<igatools/geometry/push_forward.h>
+
+IGA_NAMESPACE_OPEN
+
+//Forward declaration to avoid including the header
+template < int, int, int> class BSplineElementAccessor;
+
+//Forward declaration to avoid including the header
+template<Transformation, int, int> class PushForward;
+
+/**
+ * Multivariate (tensor product) scalar, vector or k-tensor
+ * valued B-spline space.
+ * This object can be thought of as providing the
+ * B-spline basis functions of a spline space.
+ * The space is determined by:
+ * - the knot vectors (implemented in the class CartesianGrid)
+ * - the multiplicity vectors
+ * - and the degree
+ *
+ * BSplineSpace allows the use of different multiplicity vectors
+ * and degrees for each direction and for each component.
+ *
+ * \section const Constructing a BSplineSpace
+ * Similar to the mechanism use in CartesianGrid we use
+ * the create technique to create a smartpointer for each constructor
+ * the class provides.
+ * @todo enter a glossary for create idiom technique and refer from here
+ * \code
+ * auto space = BSplineSpace<dim>::create();
+ * \endcode
+ *
+ * \section eval Evaluating basis function
+ * Basis function are evaluated iterating on the elements.
+ * Similarly we can obtain other information such as the local to global.
+ *
+ * \section dofs Degrees of freedom (dofs)
+ * Each basis function is assigned a degree of freedom (an integer),
+ * the order of this assignment is done following some prescribed
+ * recipe or policy whose knowledge is not Really needed by most users.
+ * They are internally stored in a grid-like multiarray container,
+ * called the index space.
+ * It works together with the index_space_offset which for each element
+ * provides a view of the index
+ * space to know which
+ * are the non-zero basis function on each element, what we generally
+ * refer to as the local to global mapping.
+ *
+ * \section bezier Storage of the basis functions (Bezier Extraction)
+ * The basis functions on each element are stored in the Bspline space
+ * as the 1D Bezier extraction operator.
+ * When they need to be evaluated the operator applied to the Berenstein polynomials,
+ * allows to compute the values at the quadrature points.
+ *
+ * @todo write a module about cache optimization and handling.
+ *
+ * \section hom_range Optimizing homogeneous range type vector spaces
+ *
+ * \author martinelli, 2012, 2013
+ * \author pauletti, 2012, 2013
+ *
+ * @tparam dim Dimensionality of the parametric space (must be equal to the dimensionality
+ * of the grid used top build the space
+ *
+ * @ingroup refinement
+ */
+template<int dim_domain_, int dim_range_ = 1, int rank_ = 1>
+class BSplineSpace :
+    public std::enable_shared_from_this<BSplineSpace<dim_domain_,dim_range_,rank_> >,
+    public FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >
+{
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >;
+
+public:
+
+    /** see documentation in \ref FunctionSpaceOnGrid */
+    using PushForwardType = PushForward<Transformation::h_grad,dim_domain_,0>;
+
+    using RefSpace = BSplineSpace<dim_domain_, dim_range_, rank_>;
+
+    using GridType = typename PushForwardType::GridType;
+
+    static const int dim = PushForwardType::dim;
+
+    static const int codim = PushForwardType::codim;
+
+    static const int space_dim = PushForwardType::space_dim;
+
+    static const int dim_range = dim_range_;
+
+    static const int rank = rank_;
+
+    static constexpr int n_components = constexpr_pow(dim_range, rank);
+
+
+private:
+    /** Container indexed by the components of the space */
+    template< class T>
+    using ComponentTable = StaticMultiArray<T,dim_range,rank>;
+
+    /** Container indexed by the components and dimensions of the space */
+    template< class T>
+    using ComponentDirectionTable = ComponentTable<std::array<T,dim>>;
+
+
+    /** Type for current class. */
+    using self_t = BSplineSpace<dim,dim_range,rank>;
+
+public:
+    static const bool has_weights = false;
+
+    /** Type for the reference face space.*/
+    using RefFaceSpace = BSplineSpace<dim-1,dim_range,rank>;
+
+
+    /** Type for the element accessor. */
+    using ElementAccessor = BSplineElementAccessor<dim,dim_range,rank>;
+
+    /**
+     * Type for iterator over the elements.
+     */
+    using ElementIterator = PatchIterator<ElementAccessor>;
+
+    using Multiplicities = ComponentTable<Multiplicity<dim>>;
+
+
+
+
+    /** @name Constructor and destructor */
+    ///@{
+    /**
+     * Constructs a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree in all directions and homogeneous
+     * in all components.
+     */
+    explicit BSplineSpace(std::shared_ptr<GridType> knots,
+                          const int degree);
+
+    /**
+     * Smart pointer create construction technique, see more detail
+     * in the corresponding wrapped constructor before.
+     */
+    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    create(std::shared_ptr<GridType> knots,
+           int degree);
+
+    /**
+     * Constructs a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree[i] in the i-th direction and homogeneous
+     * in all components.
+     */
+    explicit BSplineSpace(std::shared_ptr<GridType> knots,
+                          const std::array<int,dim> &degree);
+
+    /**
+     * Smart pointer create construction technique, see more detail
+     * in the corresponding wrapped constructor before.
+     */
+    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    create(std::shared_ptr<GridType> knots,
+           const std::array<int,dim> &degree);
+
+    /**
+     * Constructs a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree for each direction and for each
+     * component.
+     */
+    explicit BSplineSpace(std::shared_ptr<GridType> knots,
+                          const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+
+    /**
+     * Smart pointer create construction technique, see more detail
+     * in the corresponding wrapped constructor before.
+     */
+    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    create(std::shared_ptr<GridType> knots,
+           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+
+
+    /**
+     * Constructs a BSpline space over the CartesianGrid
+     * @p knots with the given multiplicity vector @p mult_vectors
+     * for each component
+     * and the given @p degree for each direction and for each
+     * component.
+     */
+    explicit BSplineSpace(std::shared_ptr<GridType> knots,
+                          const Multiplicities &mult_vectors,
+                          const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+
+    /**
+     * Smart pointer create construction technique, see more detail
+     * in the corresponding wrapped constructor before.
+     */
+    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    create(std::shared_ptr<GridType> knots,
+           const Multiplicities &mult_vectors,
+           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+
+    /** Destructor */
+    ~BSplineSpace() = default;
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+
+    /** Copy assignment. Not allowed to be used. */
+    BSplineSpace<dim,dim_range,rank> &
+    operator=(const BSplineSpace<dim,dim_range,rank> &space) = delete;
+    ///@}
+
+    /** @name Getting information about the space */
+    ///@{
+    /**
+     * Returns true if all component belong to the same scalar valued
+     * space.
+     */
+    bool is_range_homogeneous() const;
+
+    /**
+     * Total number of dofs (i.e number of basis functions aka dimensionality)
+     * of the space.
+     */
+    Size get_num_basis() const;
+
+    /** Return the total number of dofs in each space component. */
+    std::array<Size,n_components> get_component_num_basis() const;
+
+    /** Return the total number of dofs for the i-th space component. */
+    Size get_component_num_basis(int i) const;
+
+    /**
+     *  Return the total number of dofs for the i-th space component
+     *  and the j-th direction.
+     */
+    Size get_component_dir_num_basis(int comp, int dir) const ;
+
+    /**
+     * Returns the number of dofs per element.
+     */
+    Size get_num_basis_per_element() const;
+
+    /**
+     *  Return the number of dofs per element for the i-th space component.
+     */
+    Size get_component_num_basis_per_element(int i) const;
+
+
+
+    /**
+     * Returns the degree of the BSpline space for each component and for each coordinate direction.
+     * \return The degree of the BSpline space for each component and for each coordinate direction.
+     * The first index of the returned object is the component id, the second index is the direction id.
+     */
+    const ComponentDirectionTable<int> &get_degree() const;
+
+
+
+
+    ///@}
+
+    /** @name Getting the space data */
+    ///@{
+    /**
+     * Return the knots with repetitions, in each direction, for each component of the space.
+     */
+    const ComponentTable<ProductArray<Real,dim> > &
+    get_knots_with_repetitions() const;
+
+
+
+    std::shared_ptr<const BSplineSpace<dim,dim_range,rank> >
+    get_reference_space() const ;
+
+
+
+    /**
+     * Returns a reference to the dense multi array storing the global dofs.
+     * Each element has a statically defined zone to read their dofs from,
+     * independent of the distribution policy in use.
+     */
+    const ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const;
+
+
+    ///@}
+
+    /** @name Functions involving the element iterator */
+    ///@{
+    /**
+     * Returns a element iterator to the first element of the patch
+     */
+    ElementIterator begin() const;
+
+    /**
+     * Returns a element iterator to the last element of the patch
+     */
+    ElementIterator last() const;
+
+
+    /**
+     * Returns a element iterator to one-pass the end of patch.
+     */
+    ElementIterator end() const;
+
+    /**
+     * Transforms basis flat index of the component comp to a basis
+     * tensor index.
+     */
+    TensorIndex<dim>
+    flat_to_tensor(const Index index, const Index comp = 0) const;
+
+    /**
+     * Transforms a basis tensor index of the component comp to the
+     * corresponding basis flat index.
+     */
+    Index
+    tensor_to_flat(const TensorIndex<dim> &tensor_index,
+                   const Index comp = 0) const ;
+    ///@}
+
+    /**
+     * Prints internal information about the space.
+     * @note Mostly used for debugging and testing.
+     */
+    void print_info(LogStream &out) const;
+
+
+
+
+    /**
+     * Return the knot multiplicities for each component of the space.
+     */
+    const Multiplicities &
+    get_multiplicities() const;
+
+
+    /**
+     * Returns the number of one-dimensional basis function in each component and in
+     * each direction of the space.
+     * @code
+     * num_dofs = ref_space.get_num_dofs();
+     * // num_dofs[comp][dir] is the number of 1D basis functions for the component comp and direction dir
+     * @endcode
+     */
+    ComponentTable<TensorIndex<dim>> get_num_dofs() const ;
+
+
+    /** Return the push forward (non-const version). */
+    std::shared_ptr<PushForwardType> get_push_forward();
+
+
+    /** Return the push forward (const version). */
+    std::shared_ptr<const PushForwardType> get_push_forward() const;
+
+
+
+private:
+
+    /**
+     * @name Common code to initialize a bspline space
+     */
+    ///@{
+    void init();
+    void init_dofs();
+    void fill_num_dof_per_element();
+    void fill_bezier_extraction_operator();
+    void fill_index_space_standard_policy();
+    void fill_element_dofs_from_index_space();
+    ///@}
+
+    /**
+     * Degree of the BSpline Space, they can be different for each direction
+     * and for each component (see documentation on deg_table_t for index order).
+     */
+    const ComponentDirectionTable<int> degree_;
+
+    /**
+     * Number of dofs per element.
+     */
+    int num_dofs_per_element_ = 0;
+
+
+    /**
+     * Multiplicities of the knots.
+     */
+    Multiplicities mult_;
+
+
+    /**
+     * Dense multi array storing the global dofs.
+     * Each element has a statically defined zone to read their dofs from,
+     * independent of the distribution policy in use.
+     */
+    ComponentTable<DynamicMultiArray<Index,dim> > index_space_;
+
+
+    /** Where to read the global dofs of a given element */
+    ComponentTable<Multiplicity<dim> > index_space_offset_;
+
+
+    /**
+     * Table container with one row per element, each row
+     * contains the global dof indices corresponding to each element.
+     * This is element_global_dofs_[elem_index][local_basis_indes]
+     * gives the global dof index corresponding
+     * to the local_basis_index-th on the element with index elem_index.
+     * @todo: has to be removed, superseeded by index_space
+     */
+    using elem_dof_table_t = std::vector<std::vector<Index>>;
+    elem_dof_table_t element_global_dofs_;
+
+
+    /**
+     * Number of one dimensional basis function in each component and in
+     * each direction.
+     * num_dofs_[comp][dir]
+     */
+    ComponentTable<TensorIndex<dim>> num_dofs_;
+
+
+    /** @name Bezier extraction operator. */
+    ///@{
+
+    /** Type for the one dimensional Bezier operator on a single interval.*/
+    using bz_operator_t = boost::numeric::ublas::matrix<Real>;
+
+    template<class T>
+    using comp_p_array_table_t = ComponentTable<ProductArray<T,dim>>;
+
+    comp_p_array_table_t<bz_operator_t>         bezier_op_data_;
+    comp_p_array_table_t<const bz_operator_t *> bezier_op_;
+    ///@}
+
+
+    /** @name Range optimization data */
+    ///@{
+protected:
+    /**
+     * True if each component of the vector valued space belongs
+     * to the same scalar valued space.
+     */
+    const bool homogeneous_range_;
+
+
+    /**
+     * Knots (with repetitions) along each direction of each space component.
+     */
+    ComponentTable<ProductArray<Real,dim>> knots_with_repetitions_;
+
+private:
+
+    /**
+     * Stores information to allow an optimize treatment
+     * of homogeneous range spaces.
+     *
+     */
+    ComponentTable<int> map_component_to_active_data_;
+
+    /**
+     * Number of active components of the space.
+     * If the space is range-homogeneous the number of active components is 1, otherwise
+     * is n_components = pow(dim_range,rank).
+     */
+    Size num_active_components_;
+    ///@}
+
+
+    friend class BSplineElementAccessor<dim, dim_range, rank>;
+
+
+    /**
+     * Refines the function space after a grid uniform refinement.
+     *
+     * @param[in] refinement_directions Directions along which the refinement is performed.
+     * @param[in] grid_old Grid before the refinement.
+     *
+     * @pre Before invoking this function, must be invoked the function grid_->refine().
+     * @note This function is connected to the CartesianGrid's signal for the refinement, and
+     * it is necessary in order to avoid infinite loops in the refine() function calls.
+     */
+    void refine_h_after_grid_refinement(
+        const std::array<bool,dim> &refinement_directions,
+        const GridType &grid_old) ;
+
+
+protected:
+
+    /** Knots with repetitions before refinement */
+    ComponentTable<ProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+
+
+public:
+    DeclException1(ExcScalarRange, int,
+                   << "Range " << arg1 << "should be 0 for a scalar valued"
+                   << " space.");
+};
+
+IGA_NAMESPACE_CLOSE
+
+#endif /* __BSPLINE_SPACE_H_ */

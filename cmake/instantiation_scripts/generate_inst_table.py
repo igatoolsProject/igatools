@@ -41,7 +41,7 @@ file_output.write('# library want to be compile for. \n')
 file_output.write('# dim   codim  range  rank trans_type\n')
 
 
-#if len(args['dim_ref']) == 0 and len(args['range_ref']) == 0 and len(args['rank_ref']) == 0:
+#if len(args['dim']) == 0 and len(args['range']) == 0 and len(args['rank']) == 0:
 file_output.write(
 '''1          0          1         1        h_grad
     1          1          1         1        h_grad
