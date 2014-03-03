@@ -24,6 +24,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/base/function.h>
 
+#include <igatools/utils/multi_array_utils.h>
 #include <algorithm>
 #include <numeric>
 #include <memory>
@@ -1298,7 +1299,7 @@ evaluate_field(const Vector &coefs) const
 
     vector<Real> coefficients(n_basis_element);
     for (int iFn = 0; iFn < n_basis_element; iFn++)
-        coefficients[iFn] = coefs[ local_to_global[iFn] ];
+        coefficients[iFn] = coefs( local_to_global[iFn] );
 
     return D0phi_hat.evaluate_linear_combination(coefficients);
 }
@@ -1324,7 +1325,7 @@ evaluate_field_gradients(const Vector &coefs) const -> ValueVector< Derivative<1
 
     vector<Real> coefficients(n_basis_element);
     for (int iFn = 0; iFn < n_basis_element; iFn++)
-        coefficients[iFn] = coefs[ local_to_global[iFn] ];
+        coefficients[iFn] = coefs( local_to_global[iFn] );
 
     return D1phi_hat.evaluate_linear_combination(coefficients);
 }
@@ -1352,7 +1353,7 @@ evaluate_field_hessians(const Vector &coefs) const -> ValueVector< Derivative<2>
 
     vector<Real> coefficients(n_basis_element);
     for (int iFn = 0; iFn < n_basis_element; iFn++)
-        coefficients[iFn] = coefs[ local_to_global[iFn] ];
+        coefficients[iFn] = coefs( local_to_global[iFn] );
 
     return D2phi_hat.evaluate_linear_combination(coefficients);
 }

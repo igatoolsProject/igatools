@@ -420,16 +420,15 @@ print_info(LogStream &out) const
     for (int i = 0; i < dim; i++)
         out << "Direction[" << i << "] = " << num_elements_dim(i) << endl;
     out.pop();
-
-
     out.pop();
 }
+
 
 
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> FaceType
+get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> shared_ptr<FaceType>
 {
     Assert(dim > 0, ExcLowerRange(dim,1));
 
@@ -444,11 +443,11 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> FaceType
                          (knot_coordinates_.tensor_size()(const_dir)-2);
 
     auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
-    auto face_grid = FaceType(face_knots);
+    auto face_grid = FaceType::create(face_knots);
 
     auto v_elem = this->begin();
-    auto f_elem = face_grid.begin();
-    auto end = face_grid.end();
+    auto f_elem = face_grid->begin();
+    auto end = face_grid->end();
     for (; f_elem != end; ++f_elem)
     {
         auto f_index = f_elem->get_tensor_index();

@@ -53,13 +53,13 @@ size_directions_(arr)
 
 template <int rank>
 TensorSize<rank>::
-TensorSize(const std::array<Size,rank> &arr) noexcept
+TensorSize(const TensorIndex<rank> &arr) noexcept
 {
-	for (int i = 0; i<rank; ++i)
-    {
-		Assert(arr(i) >= 0, ExcLowerRange(arr(i),0));
-		size_directions_[i] = arr(i);
-    }
+	std::copy(arr.begin(), arr.end(), size_directions_.begin());
+#ifndef NDEBUG
+    for ( const auto & size_dir : size_directions_)
+        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
+#endif
 }
 
 

@@ -255,7 +255,7 @@ public:
     /**
      * Returns the CartesianGrid on the @p face_id.
      */
-    FaceType get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
+    std::shared_ptr<FaceType> get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
 
     ///@}
 

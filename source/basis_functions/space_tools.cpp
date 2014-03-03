@@ -61,12 +61,12 @@ get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 
 
 template <class RefSpace>
-StaticMultiArray<std::array<int, RefSpace::dim-1>, RefSpace::dim_range, RefSpace::rank>
+StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::dim_range, RefSpace::rank>
 get_face_degree(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_degree = ref_space->get_degree();
-    StaticMultiArray<std::array<int, RefSpace::dim-1>, RefSpace::dim_range, RefSpace::rank>  f_degree;
+    StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::dim_range, RefSpace::rank>  f_degree;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)
             f_degree(comp)[j] = v_degree(comp)[active_dirs[j]];
@@ -95,8 +95,8 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
                       const Index face_id,
                       std::map<int,int> &elem_map)
 {
-    auto face_grid =
-        get_face_grid<RefSpace::dim>(ref_space->get_grid(), face_id, elem_map);
+	auto face_grid = ref_space->get_grid()->get_face_grid(face_id, elem_map);
+
 
     auto f_mult = get_face_mult<RefSpace> (ref_space, face_id);
     auto f_degree = get_face_degree<RefSpace> (ref_space, face_id);
@@ -169,7 +169,7 @@ get_face_space(std::shared_ptr<const Space> space,
     const auto const_dir = UnitElement<Space::dim>::face_constant_direction[face_id];
     const auto face_side = UnitElement<Space::dim>::face_side[face_id];
 
-    std::array<Index,Space::dim> tensor_index;
+    TensorIndex<Space::dim> tensor_index;
 
     face_to_element_dofs.resize(face_ref_sp->get_num_basis());
     int k=0;
@@ -248,8 +248,8 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
     }
 
 
-    typedef typename Func<Space>::Value ValuePhys_t ;
-    typedef typename Func<Space>::Gradient GradientPhys_t;
+    typedef typename Func<Space>::ValueType ValuePhys_t ;
+    typedef typename Func<Space>::GradientType GradientPhys_t;
 
     vector< ValuePhys_t > u(n_points) ;
     vector< GradientPhys_t > grad_u(n_points) ;
@@ -340,7 +340,7 @@ Vector projection_l2(const Function<Space::space_dim,Space::dim_range,Space::ran
     const int n_qpoints = quad.get_num_points();
 
     vector< Point<dim_domain_domain> > eval_points(n_qpoints);
-    vector< typename Function<dim_domain_domain,dim_domain_range,phys_rank>::Value > func_at_eval_pts(n_qpoints);
+    vector< typename Function<dim_domain_domain,dim_domain_range,phys_rank>::ValueType > func_at_eval_pts(n_qpoints);
 
     auto elem = space->begin() ;
     const auto elem_end = space->end() ;
@@ -393,15 +393,15 @@ Vector projection_l2(const Function<Space::space_dim,Space::dim_range,Space::ran
                 local_matrix(i, j) = local_matrix(j, i) ;
 
 
-        matrix.add(local_dofs,local_dofs,local_matrix) ;
+        matrix.add_block(local_dofs,local_dofs,local_matrix) ;
 
-        rhs.add(local_dofs,local_rhs) ;
+        rhs.add_block(local_dofs,local_rhs) ;
     }
     matrix.fill_complete();
 
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
-    Solver solver(Solver::Type::CG,tolerance,max_num_iter) ;
+    LinearSolver solver(LinearSolver::Type::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
     return sol;
@@ -443,7 +443,7 @@ project_boundary_values(const Function<Space::space_dim,Space::dim_range,Space::
 
         const int face_n_dofs = dof_map.size() ;
         for (int i = 0 ; i< face_n_dofs ; ++i)
-            boundary_values[dof_map[i]] = proj_on_face[i];
+            boundary_values[dof_map[i]] = proj_on_face(i);
     }
 }
 

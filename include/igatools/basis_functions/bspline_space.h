@@ -105,7 +105,6 @@ class BSplineSpace :
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >;
 
 public:
-
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward<Transformation::h_grad,dim_domain_,0>;
 

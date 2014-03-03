@@ -23,7 +23,7 @@
 #define TENSOR_SIZE_H_
 
 #include <igatools/base/config.h>
-
+#include <igatools/utils/tensor_index.h>
 // QualityAssurance: martinelli, 21 Jan 2014
 
 IGA_NAMESPACE_OPEN
