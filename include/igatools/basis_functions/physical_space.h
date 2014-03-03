@@ -78,7 +78,7 @@ public:
     /**
      * Typedef for the element iterator
      */
-    typedef PatchIterator<ElementAccessor> ElementIterator;
+    typedef GridForwardIterator<ElementAccessor> ElementIterator;
 
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,

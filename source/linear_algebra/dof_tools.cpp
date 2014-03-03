@@ -40,7 +40,7 @@ namespace dof_tools
 
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, Enable_if<Is_function_space<SpaceType>()> *)
+get_sparsity_pattern(const SpaceType &space, EnableIfIs_function_space<SpaceType>()> *)
 {
     //--------------------------------------------------------------------------
     // build the dofs graph
@@ -82,7 +82,7 @@ get_sparsity_pattern(const SpaceType &space, Enable_if<Is_function_space<SpaceTy
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const vector< shared_ptr< SpaceType > > &space_multipatch,
-                     Enable_if<Is_function_space<SpaceType>()> *)
+                     EEnableIfs_function_space<SpaceType>()> *)
 {
 
     //--------------------------------------------------------------------------
@@ -142,7 +142,7 @@ SparsityPattern
 get_sparsity_pattern(
     const vector< shared_ptr<SpaceType> > &space_multipatch_rows,
     const vector< shared_ptr<SpaceType> > &space_multipatch_cols,
-    Enable_if<Is_function_space<SpaceType>()> *)
+    EnEnableIf_function_space<SpaceType>()> *)
 {
     Assert(space_multipatch_rows.size() == space_multipatch_cols.size(),
            ExcDimensionMismatch(space_multipatch_rows.size(), space_multipatch_cols.size())) ;
@@ -218,7 +218,7 @@ get_sparsity_pattern(
 
 template < class SpaceType >
 vector<Index>
-get_dofs(const SpaceType &space, Enable_if<Is_function_space<SpaceType>()> *)
+get_dofs(const SpaceType &space, EnaEnableIffunction_space<SpaceType>()> *)
 {
     auto element = space.begin() ;
     const auto element_end = space.end() ;

@@ -39,7 +39,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int dim_domain, int dim_range, int rank> class BSplineSpace;
-template <typename Accessor> class PatchIterator;
+template <typename Accessor> class GridForwardIterator;
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -49,8 +49,8 @@ template <int dim_domain, int dim_range, int rank>
 class BSplineElementAccessor : public CartesianGridElementAccessor<dim_domain>
 {
 public:
-    /** Type required by the PatchIterator templated iterator */
-    typedef const BSplineSpace<dim_domain, dim_range, rank> Patch_t;
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = BSplineSpace<dim_domain, dim_range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
     typedef const BSplineSpace<dim_domain, dim_range, rank> Space_t;
@@ -225,21 +225,21 @@ public:
     ValueTable<Derivative<2>> const &get_basis_hessians() const;
 
 //    ConstVectorView<Value>
-    typename ValueTable<Value>::const_function_view
+    typename ValueTable<Value>::const_view
     get_basis_values(const Index i) const;
 
 
 //    ConstVectorView<Div>
-    typename ValueTable<Div>::const_function_view
+    typename ValueTable<Div>::const_view
     get_basis_divergences(const Index i) const;
 
 
 //    ConstVectorView<Derivative<1> >
-    typename ValueTable<Derivative<1>>::const_function_view
+    typename ValueTable<Derivative<1> >::const_view
                                     get_basis_gradients(const Index i) const;
 
 //    ConstVectorView<Derivative<2> >
-    typename ValueTable<Derivative<2>>::const_function_view
+    typename ValueTable<Derivative<2> >::const_view
                                     get_basis_hessians(const Index i) const;
 
     /**
@@ -432,7 +432,7 @@ private:
      */
     template<class T>
     using ComponentDirectionTable =
-        StaticMultiArray<ProductArray<T,dim_domain>, dim_range, rank>;
+        StaticMultiArray<CartesianProductArray<T,dim_domain>, dim_range, rank>;
 
 
 
@@ -518,7 +518,7 @@ private:
     const Space_t *space_ = nullptr;
 
 
-    template <typename Accessor> friend class PatchIterator;
+    template <typename Accessor> friend class GridForwardIterator;
 };
 
 IGA_NAMESPACE_CLOSE

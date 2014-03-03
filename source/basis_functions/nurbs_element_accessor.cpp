@@ -888,7 +888,7 @@ get_basis_values() const -> ValueTable<ValueRef_t> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_values(int i) const -> typename ValueTable<ValueRef_t>::const_function_view
+get_basis_values(int i) const -> typename ValueTable<ValueRef_t>::const_view
 {
     /*
     Assert(nurbs_elem_values_.is_filled(), ExcCacheNotFilled());
@@ -913,7 +913,7 @@ get_basis_gradients() const -> ValueTable<DerivativeRef_t<1>> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradients(int i) const -> typename ValueTable<DerivativeRef_t<1>>::const_function_view
+get_basis_gradients(int i) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
 {
     return this->get_basis_gradients().get_function(i);
 }
@@ -932,7 +932,7 @@ get_basis_hessians() const -> ValueTable<DerivativeRef_t<2>> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessians(int i) const -> typename ValueTable<DerivativeRef_t<2>>::const_function_view
+get_basis_hessians(int i) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
 {
     return this->get_basis_hessians().get_function(i);
 }

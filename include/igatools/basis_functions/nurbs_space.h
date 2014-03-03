@@ -62,7 +62,7 @@ public:
     /**
      * Type for iterator over the elements.
      */
-    typedef PatchIterator<ElementAccessor> ElementIterator;
+    typedef GridForwardIterator<ElementAccessor> ElementIterator;
 
     /**
      * Type for the face space.

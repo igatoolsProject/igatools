@@ -152,7 +152,7 @@ public:
     /**
      * Type for iterator over the elements.
      */
-    using ElementIterator = PatchIterator<ElementAccessor>;
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
     using Multiplicities = ComponentTable<Multiplicity<dim>>;
 
@@ -298,7 +298,7 @@ public:
     /**
      * Return the knots with repetitions, in each direction, for each component of the space.
      */
-    const ComponentTable<ProductArray<Real,dim> > &
+    const ComponentTable<CartesianProductArray<Real,dim> > &
     get_knots_with_repetitions() const;
 
 
@@ -459,7 +459,7 @@ private:
     using bz_operator_t = boost::numeric::ublas::matrix<Real>;
 
     template<class T>
-    using comp_p_array_table_t = ComponentTable<ProductArray<T,dim>>;
+    using comp_p_array_table_t = ComponentTable<CartesianProductArray<T,dim>>;
 
     comp_p_array_table_t<bz_operator_t>         bezier_op_data_;
     comp_p_array_table_t<const bz_operator_t *> bezier_op_;
@@ -479,7 +479,7 @@ protected:
     /**
      * Knots (with repetitions) along each direction of each space component.
      */
-    ComponentTable<ProductArray<Real,dim>> knots_with_repetitions_;
+    ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_;
 
 private:
 
@@ -520,7 +520,7 @@ private:
 protected:
 
     /** Knots with repetitions before refinement */
-    ComponentTable<ProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+    ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
 
 
 public:

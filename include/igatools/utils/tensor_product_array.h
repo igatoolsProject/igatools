@@ -61,7 +61,7 @@ public :
     explicit TensorProductArray(const TensorSize<rank> &size);
 
     /**
-     * Same as ProductArray(const array< int, rank > size)
+     * Same as CartesianProductArray(const array< int, rank > size)
      * but with all direction sizes equal to size.
      */
     explicit TensorProductArray(const Size size);

@@ -150,7 +150,7 @@ load_xml(const std::string &filename)
             coord[i][j] = breack_point[i][j];
 
     grid_ =  CartesianGrid<dim_ref_domain>::create(
-                 ProductArray< Real, dim_ref_domain>(coord));
+                 CartesianProductArray< Real, dim_ref_domain>(coord));
 }
 
 template<int dim_ref_domain, int dim_phys_domain>

@@ -161,7 +161,7 @@ void project_boundary_values(
 
 //TODO: who uses the next function? delete
 /**
- * Transform a set (ProductArray) of points from the unit reference cube [0,1]^{dim} to the
+ * Transform a set (CartesianProductArray) of points from the unit reference cube [0,1]^{dim} to the
  * element-based reference domain. It returns also the interval id of the elements that contains the points.
  * @param[in] reference_patch - Reference patch.
  * @param[in] points_ref - Set of points in the unit cube [0,1]^{dim}
@@ -171,9 +171,9 @@ void project_boundary_values(
 template < int dim >
 void reference_to_element(
     const CartesianGrid< dim > &reference_patch,
-    const ProductArray< Real, dim> &points_ref,
-    ProductArray< Real, dim> &points_element,
-    ProductArray< int, dim> &knot_interval_id) ;
+    const CartesianProductArray< Real, dim> &points_ref,
+    CartesianProductArray< Real, dim> &points_element,
+    CartesianProductArray< int, dim> &knot_interval_id) ;
 
 } ;
 

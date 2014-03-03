@@ -33,7 +33,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template < typename Accessor > class PatchIterator;
+template < typename Accessor > class GridForwardIterator;
 
 //TODO: trilinos_vector.h should be called vector.h
 //TODO: inline at least all the getters
@@ -186,7 +186,7 @@ public :
      * @brief Return the one-dimensional container with the
      * values of the i-th basis function at the evaluation points.
      */
-    typename ValueTable<Value>::const_function_view
+    typename ValueTable<Value>::const_view
     get_basis_values(int i) const;
 
     const Value &
@@ -199,7 +199,7 @@ public :
      * \brief Return the one-dimensional container with the
      * gradients of the i-th basis function at the evaluation points.
      */
-    typename ValueTable< Derivative<1> >::const_function_view
+    typename ValueTable< Derivative<1> >::const_view
     get_basis_gradients(int i) const;
 
     const Derivative<1> &
@@ -212,7 +212,7 @@ public :
      * \brief Return the one-dimensional container with the
      * hessians of the i-th basis function at the evaluation points.
      */
-    typename ValueTable< Derivative<2> >::const_function_view
+    typename ValueTable< Derivative<2> >::const_view
     get_basis_hessians(int i) const;
 
     const Derivative<2> &
@@ -345,7 +345,7 @@ protected:
 
 
 public :
-    template <typename Accessor> friend class PatchIterator;
+    template <typename Accessor> friend class GridForwardIterator;
 
 };
 

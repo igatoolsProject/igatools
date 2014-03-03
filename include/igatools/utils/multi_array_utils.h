@@ -70,7 +70,7 @@ public:
     /**
      * Given the tensor data component weights, and a
      * flat index it return the corresponding tensor index (see details in
-     * the general documentation of ProductArray.
+     * the general documentation of CartesianProductArray.
      */
     static TensorIndex<rank>
     flat_to_tensor_index(const Index flat_index,
@@ -79,7 +79,7 @@ public:
     /**
      * Given the tensor data component weights, and a
      * tensor index it return the corresponding linear index (see details in
-     * the general documentation of ProductArray.
+     * the general documentation of CartesianProductArray.
      */
     static Index
     tensor_to_flat_index(const TensorIndex<rank> &tensor_index,
@@ -88,7 +88,7 @@ public:
     /**
      * Given the size of the vectors in a tensor data, returns
      * the weight of each tensor index.
-     * (see details in the general documentation of ProductArray).
+     * (see details in the general documentation of CartesianProductArray).
      */
     static TensorIndex<rank>
     compute_weight(const TensorSize<rank> &size) noexcept ;

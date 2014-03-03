@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
  * @brief This class represent a rank-dimensional tensor-sized container.
  *
  * It is intended to be used as base class for tensor-like containers,
- * e.g. MultiArray, StaticMultiArray, ProductArray, TensorProductArray, etc.
+ * e.g. MultiArray, StaticMultiArray, CartesianProductArray, TensorProductArray, etc.
  * in order to have an unified treatment for the size information and for
  * the index transformations through the member functions
  * flat_to_tensor() and tensor_to_flat().

@@ -561,9 +561,9 @@ fill_index_space_standard_policy()
     {
         index_space_offset_(iComp) =
             mult_(iComp).compute_index_space_offset(degree_(iComp));
-        array<Index,dim> index_space_size;
+        TensorSize<dim> index_space_size;
         for (int jDim = 0 ; jDim < dim ; ++jDim)
-            index_space_size[jDim] = index_space_offset_(iComp).get_data_direction(jDim).back();
+            index_space_size(jDim) = index_space_offset_(iComp).get_data_direction(jDim).back();
         index_space_(iComp).resize(index_space_size);
 
     }
@@ -704,7 +704,7 @@ Index
 BSplineSpace<dim_, dim_range_, rank_>::
 get_component_num_basis(int iComp) const
 {
-    //TODO: implement something similar in ProductArray?
+    //TODO: implement something similar in CartesianProductArray?
     Assert(iComp >= 0 && iComp < n_components, ExcIndexRange(iComp, 0, n_components)) ;
 
     return index_space_(iComp).flat_size();
@@ -727,7 +727,7 @@ Index
 BSplineSpace<dim_, dim_range_, rank_>::
 get_component_num_basis_per_element(int iComp) const
 {
-    //TODO: implement something similar in ProductArray?
+    //TODO: implement something similar in CartesianProductArray?
     Assert(iComp >= 0 && iComp < n_components, ExcIndexRange(iComp, 0, n_components)) ;
 
 
@@ -966,7 +966,7 @@ get_num_dofs() const -> StaticMultiArray<TensorIndex<dim>,dim_range,rank>
 template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
-get_knots_with_repetitions() const -> const ComponentTable<ProductArray<Real,dim>> &
+get_knots_with_repetitions() const -> const ComponentTable<CartesianProductArray<Real,dim>> &
 {
     return knots_with_repetitions_;
 }

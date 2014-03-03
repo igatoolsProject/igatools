@@ -185,7 +185,7 @@ public:
     /**
      * TODO: document me .
      */
-    typename ValueTable<ValueRef_t>::const_function_view get_basis_values(int i) const;
+    typename ValueTable<ValueRef_t>::const_view get_basis_values(int i) const;
 
     /**
      * Reference to a ValueTable with the gradients of all local basis function
@@ -197,7 +197,7 @@ public:
      * TODO: document me .
      */
 //    ConstVectorView<DerivativeRef_t<1> >
-    typename ValueTable<DerivativeRef_t<1>>::const_function_view
+    typename ValueTable<DerivativeRef_t<1>>::const_view
                                          get_basis_gradients(int i) const;
 
     /**
@@ -210,7 +210,7 @@ public:
      * TODO: document me .
      */
 //    ConstVectorView<DerivativeRef_t<2>>
-    typename ValueTable<DerivativeRef_t<2>>::const_function_view
+    typename ValueTable<DerivativeRef_t<2>>::const_view
                                          get_basis_hessians(int i) const;
 
     /**
@@ -296,7 +296,7 @@ private:
      */
     ElementValues nurbs_elem_values_;
 
-    template <typename Accessor> friend class PatchIterator ;
+    template <typename Accessor> friend class GridForwardIterator ;
 } ;
 
 

@@ -49,7 +49,7 @@ namespace dof_tools
  */
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, Enable_if<Is_function_space<SpaceType>()>* = nullptr);
+get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()>* = nullptr);
 
 
 /**
@@ -59,7 +59,7 @@ get_sparsity_pattern(const SpaceType &space, Enable_if<Is_function_space<SpaceTy
  */
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, Enable_if<!Is_function_space<SpaceType>()>* = nullptr)
+get_sparsity_pattern(const SpaceType &space, EnableIf<!Is_function_space<SpaceType>()>* = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
     SparsityPattern graph;
@@ -74,7 +74,7 @@ get_sparsity_pattern(const SpaceType &space, Enable_if<!Is_function_space<SpaceT
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     Enable_if<Is_function_space<SpaceType>()>* = nullptr);
+                     EnableIf<Is_function_space<SpaceType>()>* = nullptr);
 
 /**
  * @todo document this function
@@ -83,7 +83,7 @@ get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     Enable_if<!Is_function_space<SpaceType>()>* = nullptr)
+                     EnableIf<!Is_function_space<SpaceType>()>* = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
     SparsityPattern graph;
@@ -97,7 +97,7 @@ get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
  */
 template < class SpaceType >
 std::vector<Index>
-get_dofs(const SpaceType &space, Enable_if<Is_function_space<SpaceType>()>* = nullptr);
+get_dofs(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()>* = nullptr);
 
 
 /**
@@ -106,7 +106,7 @@ get_dofs(const SpaceType &space, Enable_if<Is_function_space<SpaceType>()>* = nu
  */
 template < class SpaceType >
 std::vector<Index>
-get_dofs(const SpaceType &space, Enable_if<!Is_function_space<SpaceType>()>* = nullptr)
+get_dofs(const SpaceType &space, EnableIf<!Is_function_space<SpaceType>()>* = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
     std::vector<Index> vec;
@@ -126,7 +126,7 @@ inline
 SparsityPattern
 get_sparsity_pattern(const Space1 &space_rows,
                      const Space2 &space_cols,
-                     Enable_if<
+                     EnableIf<
                      Is_function_space<Space1>()  &&Is_function_space<Space2>() >* = nullptr)
 {
     const auto &row_dofs = get_dofs(space_rows);
@@ -177,7 +177,7 @@ inline
 SparsityPattern
 get_sparsity_pattern(const Space1 &space_rows,
                      const Space2 &space_cols,
-                     Enable_if<
+                     EnableIf<
                      !(Is_function_space<Space1>() &&Is_function_space<Space2>())>* = nullptr)
 {
     AssertThrow(false,ExcMessage("At least one function argument is not a function space."));
@@ -195,7 +195,7 @@ template < class SpaceType >
 SparsityPattern get_sparsity_pattern(
     const std::vector< std::shared_ptr< SpaceType > > &space_rows,
     const std::vector< std::shared_ptr< SpaceType > > &space_cols,
-    Enable_if<Is_function_space<SpaceType>()>* = nullptr);
+    EnableIf<Is_function_space<SpaceType>()>* = nullptr);
 
 /**
  * @warning This function only works when both spaces have the same cartesian grid.
@@ -206,7 +206,7 @@ template < class SpaceType >
 SparsityPattern get_sparsity_pattern(
     const std::vector< std::shared_ptr< SpaceType > > &space_rows,
     const std::vector< std::shared_ptr< SpaceType > > &space_cols,
-    Enable_if<!Is_function_space<SpaceType>()>* = nullptr)
+    EnableIf<!Is_function_space<SpaceType>()>* = nullptr)
 {
     AssertThrow(false,ExcMessage("The function arguments are not function space."));
     SparsityPattern graph;

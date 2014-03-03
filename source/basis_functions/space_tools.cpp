@@ -467,9 +467,9 @@ project_boundary_values(const Func<Space> &func,
 template < int dim >
 void reference_to_element(
     const CartesianGrid< dim > &reference_patch,
-    const ProductArray< Real, dim > &points_ref,
-    ProductArray< Real, dim > &points_element,
-    ProductArray<   int, dim > &knot_interval_id)
+    const CartesianProductArray< Real, dim > &points_ref,
+    CartesianProductArray< Real, dim > &points_element,
+    CartesianProductArray<   int, dim > &knot_interval_id)
 {
     //----------------------------------------------------------------------------------------------
     for (int iDim = 0 ; iDim < dim ; iDim++)

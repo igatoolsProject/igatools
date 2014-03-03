@@ -1145,7 +1145,7 @@ get_basis_values() const -> ValueTable<Value> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_values(const Index i) const -> typename ValueTable<Value>::const_function_view
+get_basis_values(const Index i) const -> typename ValueTable<Value>::const_view
 {
     return this->get_basis_values().get_function(i);
 }
@@ -1168,7 +1168,7 @@ get_basis_divergences() const -> ValueTable<Div> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_divergences(const Index i) const -> typename ValueTable<Div>::const_function_view
+get_basis_divergences(const Index i) const -> typename ValueTable<Div>::const_view
 {
     return this->get_basis_divergences().get_function(i);
 }
@@ -1189,7 +1189,7 @@ get_basis_gradients() const -> ValueTable<Derivative<1>> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradients(const Index i) const -> typename ValueTable<Derivative<1>>::const_function_view
+get_basis_gradients(const Index i) const -> typename ValueTable<Derivative<1>>::const_view
 {
     return this->get_basis_gradients().get_function(i);
 }
@@ -1211,7 +1211,7 @@ get_basis_hessians() const -> ValueTable<Derivative<2>> const &
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::const_function_view
+get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::const_view
 {
     return this->get_basis_hessians().get_function(i);
 }

@@ -349,7 +349,7 @@ get_basis_values() const -> ValueTable<Value> const &
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_values(int iFunc) const -> typename ValueTable<Value>::const_function_view
+get_basis_values(int iFunc) const -> typename ValueTable<Value>::const_view
 {
     return this->get_basis_values().get_function(iFunc);
 }
@@ -394,7 +394,7 @@ get_basis_gradients() const -> ValueTable< Derivative<1> > const &
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_gradients(int iFunc) const -> typename ValueTable< Derivative<1> >::const_function_view
+get_basis_gradients(int iFunc) const -> typename ValueTable< Derivative<1> >::const_view
 {
     return this->get_basis_gradients().get_function(iFunc);
 }
@@ -429,7 +429,7 @@ get_basis_hessians() const -> ValueTable< Derivative<2> > const &
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessians(int iFunc) const -> typename ValueTable< Derivative<2> >::const_function_view
+get_basis_hessians(int iFunc) const -> typename ValueTable< Derivative<2> >::const_view
 {
     return this->get_basis_hessians().get_function(iFunc);
 }
