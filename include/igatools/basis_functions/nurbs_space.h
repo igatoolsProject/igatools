@@ -47,7 +47,9 @@ public:
     using base_t::dim_range;
     using base_t::rank;
     using base_t::n_components;
-    using Multiplicities = StaticMultiArray<Multiplicity<dim_>,dim_range_,rank_>;
+    using typename base_t::DegreeTable;
+
+    using Multiplicities = typename base_t::template ComponentTable<Multiplicity<dim> >;
 
 private:
     using self_t = NURBSSpace<dim, dim_range, rank>;
@@ -96,7 +98,7 @@ public :
      */
     NURBSSpace(
         std::shared_ptr<GridType> knots,
-        const StaticMultiArray<std::array<int, dim>, dim_range, rank> &degree);
+        const DegreeTable &degree);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -105,7 +107,7 @@ public :
      */
     static std::shared_ptr< self_t >
     create(std::shared_ptr<GridType> knots,
-           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+           const DegreeTable &degree);
 
     /**
      * Construct a NURBSSpace over the CartesianGrid @p knots with
@@ -116,7 +118,7 @@ public :
     NURBSSpace(
         std::shared_ptr< GridType > knots,
         const Multiplicities &mult_vector,
-        const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+        const DegreeTable &degree);
 
     /**
      * Returns shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
@@ -127,7 +129,7 @@ public :
     static std::shared_ptr< self_t >
     create(std::shared_ptr< GridType > knots,
            const Multiplicities &mult_vector,
-           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+           const DegreeTable &degree);
 
     /**
      * Construct a NURBSSpace over the CartesianGrid @p knots with
@@ -137,7 +139,7 @@ public :
     NURBSSpace(
         std::shared_ptr< GridType > knots,
         const Multiplicities &mult_vector,
-        const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree,
+        const DegreeTable &degree,
         const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights);
 
     /**
@@ -148,7 +150,7 @@ public :
     static std::shared_ptr< self_t >
     create(std::shared_ptr< GridType > knots,
            const Multiplicities &mult_vector,
-           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree,
+           const DegreeTable &degree,
            const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights);
 
     /** Destructor */

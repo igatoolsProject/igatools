@@ -88,7 +88,7 @@ template <int dim_, int dim_range_, int rank_>
 NURBSSpace<dim_, dim_range_, rank_>::
 NURBSSpace(
     shared_ptr<GridType> knots,
-    const StaticMultiArray<array<int,dim>,dim_range,rank> &degree)
+    const DegreeTable &degree)
     :
     base_t(knots, degree)
 {
@@ -112,11 +112,12 @@ template <int dim_, int dim_range_, int rank_>
 auto
 NURBSSpace<dim_, dim_range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const StaticMultiArray<array<int,dim>,dim_range,rank> &degree)
+       const DegreeTable &degree)
 -> shared_ptr< self_t >
 {
     return shared_ptr< self_t >(new self_t(knots, degree));
 }
+
 
 
 template <int dim_, int dim_range_, int rank_>
@@ -124,7 +125,7 @@ NURBSSpace<dim_, dim_range_, rank_>::
 NURBSSpace(
     shared_ptr< GridType > knots,
     const Multiplicities &mult_vector,
-    const StaticMultiArray<array<int,dim>,dim_range,rank> &degree)
+    const DegreeTable &degree)
     :
     base_t(knots, mult_vector, degree)
 {
@@ -153,7 +154,7 @@ auto
 NURBSSpace<dim_, dim_range_, rank_>::
 create(shared_ptr< GridType > knots,
        const Multiplicities &mult_vector,
-       const StaticMultiArray<array<int,dim>,dim_range,rank> &degree) -> shared_ptr< self_t >
+       const DegreeTable &degree) -> shared_ptr< self_t >
 {
     return (shared_ptr< self_t >(new self_t(knots, mult_vector, degree)));
 }
@@ -165,7 +166,7 @@ NURBSSpace<dim_, dim_range_, rank_>::
 NURBSSpace(
     std::shared_ptr< GridType > knots,
     const Multiplicities &mult_vector,
-    const StaticMultiArray<array<int,dim>,dim_range,rank> &degree,
+    const DegreeTable &degree,
     const StaticMultiArray<DynamicMultiArray<iga::Real,dim>,dim_range,rank> &weights)
     :
     base_t(knots, mult_vector, degree),
@@ -183,7 +184,7 @@ auto
 NURBSSpace<dim_, dim_range_, rank_>::
 create(std::shared_ptr< GridType > knots,
        const Multiplicities &mult_vector,
-       const StaticMultiArray<array<int,dim>,dim_range,rank> &degree,
+       const DegreeTable &degree,
        const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights) -> shared_ptr< self_t >
 {
     return shared_ptr< self_t >(new self_t(knots, mult_vector, degree, weights));
@@ -316,15 +317,15 @@ refine_h_weights(
 
                 const auto Pw = weights_(comp_id);
                 const auto old_sizes = Pw.tensor_size();
-                Assert(old_sizes[direction_id] == n+1,
-                       ExcDimensionMismatch(old_sizes[direction_id],n+1));
+                Assert(old_sizes(direction_id) == n+1,
+                       ExcDimensionMismatch(old_sizes(direction_id), n+1));
 
 
                 auto new_sizes = old_sizes;
-                new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
-                Assert(new_sizes[direction_id] ==
+                new_sizes(direction_id) += r+1; // r+1 new weights in the refinement direction
+                Assert(new_sizes(direction_id) ==
                        this->get_component_dir_num_basis(comp_id,direction_id),
-                       ExcDimensionMismatch(new_sizes[direction_id],
+                       ExcDimensionMismatch(new_sizes(direction_id),
                                             this->get_component_dir_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);

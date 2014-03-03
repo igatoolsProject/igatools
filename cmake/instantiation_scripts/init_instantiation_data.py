@@ -308,14 +308,14 @@ class InstantiationInfo:
       spaces =('BSplineSpace', 'NURBSSpace')
       self.PhysSpaces = unique( ['PhysicalSpace <' +
                                    '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
-                                   ', PushForward<Transformation::%s, %d, %d>'
+                                   ', PushForward<Transformation::%s, %d, %d> >'
                                    %(x.trans_type, x.dim, x.codim)
                                    for sp in spaces
                                    for x in self.all_table] )
 
       self.UserPhysSpaces = unique( ['PhysicalSpace <' +
                                      '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
-                                     ', PushForward<Transformation::%s, %d, %d>'
+                                     ', PushForward<Transformation::%s, %d, %d> >'
                                      %(x.trans_type, x.dim, x.codim)
                                      for sp in spaces
                                      for x in self.user_table] )

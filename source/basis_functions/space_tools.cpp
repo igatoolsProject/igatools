@@ -80,8 +80,7 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
                       const Index face_id,
                       std::map<int,int> &elem_map)
 {
-    auto face_grid =
-        get_face_grid<RefSpace::dim>(ref_space->get_grid(), face_id, elem_map);
+    auto face_grid = ref_space->get_grid()->get_face_grid(face_id, elem_map);
 
     auto f_mult = get_face_mult<RefSpace> (ref_space, face_id);
 

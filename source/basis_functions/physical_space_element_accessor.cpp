@@ -351,7 +351,7 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_values(int iFunc) const -> typename ValueTable<Value>::const_view
 {
-    return this->get_basis_values().get_function(iFunc);
+    return this->get_basis_values().get_function_view(iFunc);
 }
 
 
@@ -396,7 +396,7 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_gradients(int iFunc) const -> typename ValueTable< Derivative<1> >::const_view
 {
-    return this->get_basis_gradients().get_function(iFunc);
+    return this->get_basis_gradients().get_function_view(iFunc);
 }
 
 
@@ -431,7 +431,7 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_hessians(int iFunc) const -> typename ValueTable< Derivative<2> >::const_view
 {
-    return this->get_basis_hessians().get_function(iFunc);
+    return this->get_basis_hessians().get_function_view(iFunc);
 }
 
 

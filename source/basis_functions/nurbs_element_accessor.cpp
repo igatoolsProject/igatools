@@ -152,7 +152,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
                 {
                     const int basis_flat_id = dof_offset + i ;
 
-                    const auto &N_i = bspline_values.get_function(basis_flat_id) ;
+                    const auto &N_i = bspline_values.get_function_view(basis_flat_id) ;
                     const Real w_i = weights[basis_flat_id] ;
 
                     auto &P_i = P[i] ;
@@ -177,7 +177,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
 
                     for (int iPt = 0 ; iPt < num_points ; ++iPt)
                     {
-                        auto &R = D0_phi_hat.get_function(basis_flat_id)[iPt] ;
+                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt] ;
 
                         R(iComp) = invQ[iPt] * P_i[iPt] ;
                     }
@@ -203,7 +203,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
 
             for (int i = 0 ; i < num_basis_comp ; ++i)
             {
-                const auto &N_i = bspline_values.get_function(i) ;
+                const auto &N_i = bspline_values.get_function_view(i) ;
                 const Real w_i = weights[i] ;
 
                 auto &P_i = P[i] ;
@@ -233,7 +233,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
                     {
                         const int basis_flat_id = i + iComp * num_basis_comp ;
 
-                        auto &R = D0_phi_hat.get_function(basis_flat_id)[iPt] ;
+                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt] ;
                         R(iComp) = tmp_R ;
                     }
                 }
@@ -321,8 +321,8 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
                 {
                     const int basis_flat_id = dof_offset + i ;
 
-                    const auto  &N_i =    bspline_values.get_function(basis_flat_id) ;
-                    const auto &dN_i = bspline_gradients.get_function(basis_flat_id) ;
+                    const auto  &N_i =    bspline_values.get_function_view(basis_flat_id) ;
+                    const auto &dN_i = bspline_gradients.get_function_view(basis_flat_id) ;
 
                     const Real w_i = weights[basis_flat_id] ;
 
@@ -369,7 +369,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
                     for (int iPt = 0 ; iPt < num_points ; iPt++)
                     {
-                        auto &dR = D1_phi_hat.get_function(basis_flat_id)[iPt] ;
+                        auto &dR = D1_phi_hat.get_function_view(basis_flat_id)[iPt] ;
 
                         const Real invQ_tmp = invQ[iPt] ;
                         const Real    P_tmp = P_i[iPt] ;
@@ -408,8 +408,8 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
             for (int i = 0 ; i < num_basis_comp ; ++i)
             {
-                const auto  &N_i =    bspline_values.get_function(i) ;
-                const auto &dN_i = bspline_gradients.get_function(i) ;
+                const auto  &N_i =    bspline_values.get_function_view(i) ;
+                const auto &dN_i = bspline_gradients.get_function_view(i) ;
 
                 const Real w_i = weights[i] ;
 
@@ -467,7 +467,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
                         for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
                         {
-                            auto &dR = D1_phi_hat.get_function(num_basis_comp * iComp + i)[iPt] ;
+                            auto &dR = D1_phi_hat.get_function_view(num_basis_comp * iComp + i)[iPt] ;
                             dR(entry_flat_id)(iComp) = dR_tmp ;
                         } // end iComp loop
                     }
@@ -572,9 +572,9 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                 {
                     const int basis_flat_id = dof_offset + iFn ;
 
-                    const auto   &N_i =    bspline_values.get_function(basis_flat_id) ;
-                    const auto  &dN_i = bspline_gradients.get_function(basis_flat_id) ;
-                    const auto &d2N_i =  bspline_hessians.get_function(basis_flat_id) ;
+                    const auto   &N_i =    bspline_values.get_function_view(basis_flat_id) ;
+                    const auto  &dN_i = bspline_gradients.get_function_view(basis_flat_id) ;
+                    const auto &d2N_i =  bspline_hessians.get_function_view(basis_flat_id) ;
 
                     const Real w_i = weights[basis_flat_id] ;
 
@@ -639,7 +639,7 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
 
                     for (int iPt = 0 ; iPt < num_points ; iPt++)
                     {
-                        auto &d2R = D2_phi_hat.get_function(basis_flat_id)[iPt] ;
+                        auto &d2R = D2_phi_hat.get_function_view(basis_flat_id)[iPt] ;
 
                         const Real invQ_tmp = invQ[iPt] ;
                         const Real    P_tmp = P_i[iPt] ;
@@ -691,9 +691,9 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
 
             for (int iFn = 0 ; iFn < num_basis_comp ; ++iFn)
             {
-                const auto   &N_i =    bspline_values.get_function(iFn) ;
-                const auto  &dN_i = bspline_gradients.get_function(iFn) ;
-                const auto &d2N_i =  bspline_hessians.get_function(iFn) ;
+                const auto   &N_i =    bspline_values.get_function_view(iFn) ;
+                const auto  &dN_i = bspline_gradients.get_function_view(iFn) ;
+                const auto &d2N_i =  bspline_hessians.get_function_view(iFn) ;
 
                 const Real w_i = weights[iFn] ;
 
@@ -774,7 +774,7 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
 
                             for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
                             {
-                                auto &d2R = D2_phi_hat.get_function(iFn + iComp*num_basis_comp)[iPt] ;
+                                auto &d2R = D2_phi_hat.get_function_view(iFn + iComp*num_basis_comp)[iPt] ;
                                 d2R(hess_entry_flat_id)(iComp) = d2R_tmp ;
                             } // end iComp loop
 
@@ -894,9 +894,9 @@ get_basis_values(int i) const -> typename ValueTable<ValueRef_t>::const_view
     Assert(nurbs_elem_values_.is_filled(), ExcCacheNotFilled());
     Assert(nurbs_elem_values_.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return nurbs_elem_values_.D0phi_hat_.get_function(i);
+    return nurbs_elem_values_.D0phi_hat_.get_function_view(i);
     //*/
-    return this->get_basis_values().get_function(i);
+    return this->get_basis_values().get_function_view(i);
 }
 
 template <int dim_domain, int dim_range, int rank>
@@ -915,7 +915,7 @@ auto
 NURBSElementAccessor<dim_domain, dim_range, rank>::
 get_basis_gradients(int i) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
 {
-    return this->get_basis_gradients().get_function(i);
+    return this->get_basis_gradients().get_function_view(i);
 }
 
 template <int dim_domain, int dim_range, int rank>
@@ -934,7 +934,7 @@ auto
 NURBSElementAccessor<dim_domain, dim_range, rank>::
 get_basis_hessians(int i) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
 {
-    return this->get_basis_hessians().get_function(i);
+    return this->get_basis_hessians().get_function_view(i);
 }
 
 
@@ -952,7 +952,7 @@ get_basis_value(int basis, int qp) const -> ValueRef_t const &
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < nurbs_elem_values_.n_points_,
            ExcIndexRange(qp,0,nurbs_elem_values_.n_points_));
@@ -972,7 +972,7 @@ get_basis_gradient(int basis, int qp) const -> DerivativeRef_t<1> const &
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < nurbs_elem_values_.n_points_,
            ExcIndexRange(qp,0,nurbs_elem_values_.n_points_));
@@ -992,7 +992,7 @@ get_basis_hessian(int basis, int qp) const -> DerivativeRef_t<2> const &
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < nurbs_elem_values_.n_points_,
            ExcIndexRange(qp,0,nurbs_elem_values_.n_points_));
@@ -1020,7 +1020,7 @@ evaluate_field(const Vector &coefs) const
 
     vector<Real> coefficients(n_basis_element) ;
     for (int iFn = 0 ; iFn < n_basis_element ; iFn++)
-        coefficients[iFn] = coefs[ local_to_global[iFn] ] ;
+        coefficients[iFn] = coefs(local_to_global[iFn]) ;
 
     return D0phi_hat.evaluate_linear_combination(coefficients) ;
 }
@@ -1048,7 +1048,7 @@ evaluate_field_gradients(const Vector &coefs) const -> ValueVector< DerivativeRe
 
     vector<Real> coefficients(n_basis_element) ;
     for (int iFn = 0 ; iFn < n_basis_element ; iFn++)
-        coefficients[iFn] = coefs[ local_to_global[iFn] ] ;
+        coefficients[iFn] = coefs( local_to_global[iFn] ) ;
 
     return D1phi_hat.evaluate_linear_combination(coefficients) ;
 }
@@ -1077,7 +1077,7 @@ evaluate_field_hessians(const Vector &coefs) const -> ValueVector< DerivativeRef
 
     vector<Real> coefficients(n_basis_element) ;
     for (int iFn = 0 ; iFn < n_basis_element ; iFn++)
-        coefficients[iFn] = coefs[ local_to_global[iFn] ] ;
+        coefficients[iFn] = coefs( local_to_global[iFn] ) ;
 
     return D2phi_hat.evaluate_linear_combination(coefficients) ;
 }

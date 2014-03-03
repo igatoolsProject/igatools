@@ -318,7 +318,7 @@ BSplineSpace<dim_, dim_range_, rank_>::
 BSplineSpace(shared_ptr<GridType> cartesian_grid, const int degree)
     :
     BaseSpace(cartesian_grid),
-    degree_(filled_array<int,dim>(degree)),
+    degree_(TensorIndex<dim>(degree)),
     homogeneous_range_(true)
 {
     Assert((rank!=0) || ((rank==0) && (dim_range==1)),
@@ -344,7 +344,7 @@ create(shared_ptr< GridType > knots, int degree) -> shared_ptr<self_t>
 
 template<int dim_, int dim_range_, int rank_>
 BSplineSpace<dim_, dim_range_, rank_>::
-BSplineSpace(shared_ptr<GridType> knots, const array<int,dim> &degree)
+BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -364,7 +364,7 @@ template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const array<int,dim> &degree) -> shared_ptr<self_t>
+       const TensorIndex<dim> &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots, degree));
 }
@@ -374,7 +374,7 @@ create(shared_ptr<GridType> knots,
 template<int dim_, int dim_range_, int rank_>
 BSplineSpace<dim_, dim_range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
-             const StaticMultiArray<array<int,dim>,dim_range,rank> &degree)
+             const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -396,7 +396,7 @@ template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const StaticMultiArray<array<int,dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
+       const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots, degree));
 }
@@ -407,7 +407,7 @@ template<int dim_, int dim_range_, int rank_>
 BSplineSpace<dim_, dim_range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
              const Multiplicities &mult_vectors,
-             const StaticMultiArray<array<int,dim>,dim_range,rank> &degree)
+             const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -424,7 +424,7 @@ auto
 BSplineSpace<dim_, dim_range_, rank_>::
 create(shared_ptr<GridType> knots,
        const Multiplicities &mult_vectors,
-       const StaticMultiArray<array<int,dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
+       const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots,mult_vectors,degree));
 }
@@ -585,10 +585,13 @@ fill_element_dofs_from_index_space()
 {
     const Index n_elements = this->get_grid()->get_num_elements();
 
-    ComponentDirectionTable<Index> element_n_basis;
-    for (int comp = 0; comp<n_components; ++comp)
-        for (int dir = 0; dir <dim; ++dir)
-            element_n_basis(comp)[dir] = degree_(comp)[dir] + 1;
+    ComponentTable<TensorIndex<dim>> element_n_basis(degree_);
+    for (auto &comp : element_n_basis)
+    	comp += 1;
+
+//    for (int comp = 0; comp<n_components; ++comp)
+//        for (int dir = 0; dir <dim; ++dir)
+//            element_n_basis(comp)[dir] = degree_(comp)[dir] + 1;
 
 
     ComponentTable<int> element_n_basis_comp;
@@ -869,7 +872,7 @@ get_push_forward() const -> shared_ptr<const PushForwardType>
 template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
-get_degree() const -> const ComponentDirectionTable<int> &
+get_degree() const -> const ComponentTable<TensorIndex<dim>> &
 {
     return degree_ ;
 }

@@ -22,12 +22,9 @@
 #include <igatools/utils/tensor_size.h>
 #include <igatools/base/exceptions.h>
 
-
 // QualityAssurance: martinelli, 21 Jan 2014
 
 IGA_NAMESPACE_OPEN
-
-
 
 template <int rank>
 TensorSize<rank>::
@@ -37,6 +34,7 @@ TensorSize(Size val) noexcept
     for ( auto & size_dir : size_directions_)
     	size_dir = val;
 }
+
 
 
 template <int rank>
@@ -50,6 +48,20 @@ size_directions_(arr)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
+
+
+
+template <int rank>
+TensorSize<rank>::
+TensorSize(const std::array<Size,rank> &arr) noexcept
+{
+	for (int i = 0; i<rank; ++i)
+    {
+		Assert(arr(i) >= 0, ExcLowerRange(arr(i),0));
+		size_directions_[i] = arr(i);
+    }
+}
+
 
 
 template <int rank>
@@ -67,6 +79,7 @@ TensorSize(std::initializer_list<Size> list) noexcept
 }
 
 
+
 template <int rank>
 Size
 TensorSize<rank>::
@@ -79,6 +92,7 @@ flat_size() const noexcept
 }
 
 
+
 template <int rank>
 Size &
 TensorSize<rank>::
@@ -89,6 +103,7 @@ operator()(const Index i)
 }
 
 
+
 template <int rank>
 const Size &
 TensorSize<rank>::
@@ -97,6 +112,7 @@ operator()(const Index i) const
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
     return size_directions_[i];
 }
+
 
 
 template <int rank>
@@ -114,10 +130,6 @@ operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2)
     return res;
 }
 
-
-
 IGA_NAMESPACE_CLOSE
-
-
 
 #include <igatools/utils/tensor_size.inst>

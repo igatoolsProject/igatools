@@ -77,6 +77,8 @@ public PhysSpace::RefSpace::ElementAccessor,
 public PhysSpace::PushForwardType::ElementAccessor
 {
 public :
+	using ContainerType = PhysSpace;
+
     using RefSpace = typename PhysSpace::RefSpace;
     using PushForwardType = typename PhysSpace::PushForwardType;
     using PfElemAccessor = typename PushForwardType::ElementAccessor;
@@ -86,7 +88,8 @@ public :
     using PfElemAccessor::space_dim;
     using PfElemAccessor::codim;
     using PfElemAccessor::transformation_type;
-    typedef const PhysSpace Patch_t;
+
+
 
     /** Type for the quadrature scheme. */
     using QuadratureType = Quadrature<dim>;

@@ -25,7 +25,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/grid_utils.h>
+//#include <igatools/geometry/grid_utils.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_slice.h>

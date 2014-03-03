@@ -27,13 +27,13 @@ file_output, inst = intialize_instantiation()
 
 includes = ['#include <igatools/basis_functions/bspline_space.h>\n',
             '#include <igatools/basis_functions/nurbs_space.h>\n',
+            '#include <igatools/geometry/push_forward.h>\n',
             '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n',
             '#include <igatools/geometry/mapping_element_accessor.h>\n',
             '#include <igatools/geometry/push_forward_element_accessor.h>\n',
             '#include <igatools/basis_functions/bspline_element_accessor.h>\n',
             '#include <igatools/basis_functions/nurbs_element_accessor.h>\n',
-            '#include <igatools/basis_functions/physical_space_element_accessor.h>\n',
-            '#include <igatools/basis_functions/physical_space_element_face_accessor.h>\n']
+            '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
 
 for include in includes:
     file_output.write(include)

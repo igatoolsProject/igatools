@@ -126,11 +126,15 @@ public:
     static constexpr int n_components = constexpr_pow(dim_range, rank);
 
 
-private:
+
     /** Container indexed by the components of the space */
     template< class T>
     using ComponentTable = StaticMultiArray<T,dim_range,rank>;
 
+    using DegreeTable = ComponentTable<TensorIndex<dim>>;
+
+private:
+   //TODO(pauletti, Mar 3, 2014):delete this type
     /** Container indexed by the components and dimensions of the space */
     template< class T>
     using ComponentDirectionTable = ComponentTable<std::array<T,dim>>;
@@ -183,7 +187,7 @@ public:
      * in all components.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const std::array<int,dim> &degree);
+                          const TensorIndex<dim> &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -191,7 +195,7 @@ public:
      */
     static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
     create(std::shared_ptr<GridType> knots,
-           const std::array<int,dim> &degree);
+           const TensorIndex<dim> &degree);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -199,7 +203,7 @@ public:
      * component.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+                          const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -207,7 +211,7 @@ public:
      */
     static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
     create(std::shared_ptr<GridType> knots,
-           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+           const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
 
 
     /**
@@ -219,7 +223,7 @@ public:
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
                           const Multiplicities &mult_vectors,
-                          const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+                          const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -228,7 +232,7 @@ public:
     static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
     create(std::shared_ptr<GridType> knots,
            const Multiplicities &mult_vectors,
-           const StaticMultiArray<std::array<int,dim>,dim_range,rank> &degree);
+           const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
 
     /** Destructor */
     ~BSplineSpace() = default;
@@ -286,7 +290,7 @@ public:
      * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
-    const ComponentDirectionTable<int> &get_degree() const;
+    const ComponentTable<TensorIndex<dim>> &get_degree() const;
 
 
 
@@ -406,7 +410,7 @@ private:
      * Degree of the BSpline Space, they can be different for each direction
      * and for each component (see documentation on deg_table_t for index order).
      */
-    const ComponentDirectionTable<int> degree_;
+    const ComponentTable<TensorIndex<dim>> degree_;
 
     /**
      * Number of dofs per element.
@@ -449,7 +453,7 @@ private:
      * each direction.
      * num_dofs_[comp][dir]
      */
-    ComponentTable<TensorIndex<dim>> num_dofs_;
+    ComponentTable<TensorSize<dim>> num_dofs_;
 
 
     /** @name Bezier extraction operator. */

@@ -995,7 +995,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
         {
             const auto func_tensor_id = functions_indexer.get_tensor_index(func_flat_id);
 
-            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function(comp_offset_i+func_flat_id);
+            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
 
             for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
             {
@@ -1039,7 +1039,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 //            out << "comp_offset_i=" << comp_offset_i
 //                << "  func_flat_id=" << func_flat_id
 //                << "  func_id=" << comp_offset_i+func_flat_id<<std::endl;
-            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function(comp_offset_i+func_flat_id);
+            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
 
             for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
             {
@@ -1098,8 +1098,8 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
             const int offset = comp_offset[iComp];
             for (int basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
-                const auto derivatives_phi_hat_copy_from = derivatives_phi_hat.get_function(basis_i);
-                auto derivatives_phi_hat_copy_to = derivatives_phi_hat.get_function(offset+basis_i);
+                const auto derivatives_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
+                auto derivatives_phi_hat_copy_to = derivatives_phi_hat.get_function_view(offset+basis_i);
                 for (int qp = 0; qp < num_points; ++qp)
                 {
                     const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
@@ -1147,7 +1147,7 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_values(const Index i) const -> typename ValueTable<Value>::const_view
 {
-    return this->get_basis_values().get_function(i);
+    return this->get_basis_values().get_function_view(i);
 }
 
 
@@ -1170,7 +1170,7 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_divergences(const Index i) const -> typename ValueTable<Div>::const_view
 {
-    return this->get_basis_divergences().get_function(i);
+    return this->get_basis_divergences().get_function_view(i);
 }
 
 
@@ -1191,7 +1191,7 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_gradients(const Index i) const -> typename ValueTable<Derivative<1>>::const_view
 {
-    return this->get_basis_gradients().get_function(i);
+    return this->get_basis_gradients().get_function_view(i);
 }
 
 
@@ -1213,7 +1213,7 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::const_view
 {
-    return this->get_basis_hessians().get_function(i);
+    return this->get_basis_hessians().get_function_view(i);
 }
 
 
@@ -1230,7 +1230,7 @@ get_basis_value(Index basis, Index qp) const -> Value const &
         Assert(qp >= 0 && qp < int(data.get_num_points()),
                ExcIndexRange(qp,0,int(data.get_num_points())));
 
-        return data.get_function(basis)[qp];
+        return data.get_function_view(basis)[qp];
      //*/
 
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
@@ -1251,7 +1251,7 @@ get_basis_gradient(const Index basis, const Index qp) const -> Derivative<1> con
         Assert(qp >= 0 && qp < int(data.get_num_points()),
                ExcIndexRange(qp,0,int(data.get_num_points())));
 
-        return data.get_function(basis)[qp];
+        return data.get_function_view(basis)[qp];
     //*/
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
@@ -1271,7 +1271,7 @@ get_basis_hessian(const Index basis, const Index qp) const -> Derivative<2> cons
         Assert(qp >= 0 && qp < int(data.get_num_points()),
                ExcIndexRange(qp,0,int(data.get_num_points())));
 
-        return data.get_function(basis)[qp];
+        return data.get_function_view(basis)[qp];
     //*/
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));

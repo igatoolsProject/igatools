@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/push_forward.h>
-#include <igatools/geometry/patch_iterators.h>
+#include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
 
 IGA_NAMESPACE_OPEN

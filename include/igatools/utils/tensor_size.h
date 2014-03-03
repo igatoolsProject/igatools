@@ -28,7 +28,8 @@
 
 IGA_NAMESPACE_OPEN
 
-
+//TODO(pauletti, Mar 3, 2014): should TensorSize be derived from tensor index
+//TODO(pauletti, Mar 3, 2014): why are TensorSize and Index wrapper and not derived from array?
 /**
  * @brief Type for the size of a tensor-like container.
  *
@@ -50,6 +51,9 @@ public:
 
     /** Constructor using an std::array. */
     explicit TensorSize(const std::array<Size,rank> &arr) noexcept;
+
+    /** Copy constructor. */
+    TensorSize(const TensorIndex<rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
     explicit TensorSize(std::initializer_list<Size> list) noexcept;

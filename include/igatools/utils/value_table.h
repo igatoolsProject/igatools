@@ -31,8 +31,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
 /**
  * @class ValueTable
  * @brief This class represents a 2-dimensional dynamic container for objects of type T.
