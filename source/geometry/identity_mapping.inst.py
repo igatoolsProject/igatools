@@ -18,22 +18,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
+# QA (pauletti, Mar 4, 2014 ):
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
-###############################################################################
-
-
 includes = ['#include <igatools/geometry/mapping_element_accessor.h>\n']
-
 for include in includes:
     file_output.write(include)
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
-   
-for dims in inst.MappingDims:
-    file_output.write('template class IdentityMapping%s ;\n' %dims)
+
+# we need the identity mapping for the user spaces and
+# for all reference spaces
+dims = [ '<%d, %d>' %(x.dim, x.codim) for x in inst.user_mapping_dims]
+dims = dims + unique(['<%d, 0>' %(x.dim) for x in inst.all_ref_sp_dims])
+for row in unique(dims):
+    file_output.write('template class IdentityMapping%s ;\n' %row)
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 file_output.close()

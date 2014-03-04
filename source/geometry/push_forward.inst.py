@@ -18,14 +18,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 4, 2014 ):
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-pf_list = ['PushForward<Transformation::%s, %d, %d>'
-            %(x.trans_type, x.dim, x.codim) for x in inst.all_pf_args] 
-for pf in pf_list:
-    file_output.write('template class %s ;\n' %(pf))
+pf_dims = unique( [ [x.dim, x.codim, x.trans_type] for x in 
+                   inst.all_table + inst.extended_table] )
+all_pf_args = [PForwRow(x) for x in pf_dims]
+# We need the pushforwards for all physical spaces and
+# all reference spaces
+pf_args = ['Transformation::%s, %d, %d'
+            %(x.trans_type, x.dim, x.codim) for x in all_pf_args]
+# pf_args = pf_args + unique(['Transformation::h_grad, %d, 0' %(x.dim)
+#                             for x in inst.all_ref_sp_dims])
+for pf in unique(pf_args):
+    file_output.write('template class PushForward<%s> ;\n' %(pf))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 file_output.close()

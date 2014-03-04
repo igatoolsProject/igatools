@@ -34,35 +34,24 @@ include_files = ['#include <igatools/basis_functions/bspline_space.h>\n',
                  '#include <igatools/geometry/mapping_element_accessor.h>\n',
                  '#include <igatools/geometry/push_forward_element_accessor.h>\n',
                  '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
-
 for include in include_files:
     file_output.write(include)
-
-
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-
-
 strings = []
-types = ['double', 'float']
 spaces = ['BSplineSpace', 'NURBSSpace']
-#todo: the trans type should be obtained from inst.table
-transformation_types = ['Transformation::h_grad']#, 'Transformation::h_div', 'Transformation::h_curl', 'Transformation::l_2']
 
-for row in inst.all_table:
-    for type in types:
-        writer = 'Writer<%d,%d,%s>' % (row.dim, row.space_dim,type)
-        strings.append('template class %s ;\n' % (writer))
-        for name in spaces:
-            space_ref  = '%s<%d,%d,%d>' % (name,row.dim,row.range, row.rank)
-            for transformation_name in transformation_types:
-                PushForward = 'PushForward<%s,%d,%d>' %(transformation_name, row.dim, row.space_dim-row.dim)
-                space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
-                func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_phys,space_phys)
-                strings.append('template void %s::%s ;\n' % (writer,func))
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_ref,space_ref)
-            strings.append('template void %s::%s ;\n' % (writer,func))
+for row in inst.user_table:
+   writer = 'Writer<%d, %d, double>' %(row.dim, row.space_dim)
+   strings.append('template class %s ;\n' % (writer))
+   for name in spaces:
+      space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
+      PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
+      space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
+      func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_phys,space_phys)
+      strings.append('template void %s::%s ;\n' % (writer,func))
+      func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_ref,space_ref)
+      strings.append('template void %s::%s ;\n' % (writer,func))
 
 
 for s in unique(strings): # Removing repeated entries.
@@ -70,8 +59,6 @@ for s in unique(strings): # Removing repeated entries.
 
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-
 file_output.close()
 
 	

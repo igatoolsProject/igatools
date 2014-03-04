@@ -108,24 +108,29 @@ class InstantiationInfo:
       self.user_table =[] # Spaces that the library is suppussed to be used on
       self.face_table =[] # Spaces that are faces of the user spaces
       self.all_table  =[] #the physical spaces the user provides plus the one that are necesary on top
+      self.extended_table=[] #Added the reference spaces extended to physical
 
       self.function_dims=[] # table of dim, range, rank for functions
+      
+      self.user_mapping_dims =[] # table of dim codim
       self.mapping_dims =[] # table of dim codim
       
       self.user_ref_sp_dims=[]
       self.face_ref_sp_dims=[]
       self.all_ref_sp_dims=[]
       
-      self.all_pf_args=[]
+    #  self.all_pf_args=[]
       
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
       self.values=[]
       
       self.domain_dims = [] # list all domain dimensions
-
-      self.UserRefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces
-      self.RefDims=[]       # the list of the dimension  <d,d,d> of all ref spaces
+      self.user_domain_dims = []
+      self.face_domain_dims = []
+#----------------------------------------------------------
+      #self.UserRefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces
+      #self.RefDims=[]       # the list of the dimension  <d,d,d> of all ref spaces
       self.RefSpaces=[]     # all required reference spaces
       self.UserRefSpaces=[]
       self.UserFilteredRefSpaces=[] #iga mapping required ref spaces
@@ -140,8 +145,8 @@ class InstantiationInfo:
       
 
       
-      self.user_ref_dom_dims = []
-      self.face_ref_dom_dims = []
+    #  self.user_ref_dom_dims = []
+    #  self.face_ref_dom_dims = []
 
       
 
@@ -152,14 +157,14 @@ class InstantiationInfo:
       self.create_derivatives()
       self.create_ref_dim()
       
-      self.create_RefSpaces()
+      self.create_ref_spaces()
       self.create_PhysSpaces()
       
       #self.create_Mappings()
       
 
-      self.tensor_sizes=[] #list TensorSize classes
-      self.create_tensor_sizes()
+     # self.tensor_sizes=[] #list TensorSize classes
+      #self.create_tensor_sizes()
 
       self.tensor_indices=[] #list TensorIndex classes
       self.create_tensor_indices()
@@ -235,12 +240,14 @@ class InstantiationInfo:
          self.all_table.append(PhysSpaceTableRow(row))
 
       self.all_table = unique(self.all_table)
+      
+      ref_dims = unique( [ [x.dim, 0, x.range, x.rank, 'h_grad'] 
+                          for x in self.all_table ] )
+      self.extended_table = [PhysSpaceTableRow(row) for row in ref_dims]
      
       self.domain_dims = unique([sp.dim for sp in self.all_table])
       
-      #todo: this may not go into this file but in pf.inst.py
-      pf_dims = unique( [ [x.dim, x.codim,x.trans_type] for x in self.all_table] )
-      self.all_pf_args = [PForwRow(x) for x in pf_dims]
+      
       
       return None
 
@@ -248,14 +255,11 @@ class InstantiationInfo:
 
    def create_mapping_dims(self):
       '''Fills mapping_dims with a list of all mappings '''
-      dims_list=[]
-      for row in self.all_table:
-         dims_list.append([row.dim,  row.codim])
+      dims_list = unique([ [row.dim,  row.codim] for row in self.all_table])
+      self.mapping_dims = [MappingRow(row) for row in dims_list]
                
-      for row in unique(dims_list):
-          self.mapping_dims.append(MappingRow(row))
-      #print(dims_list)
-      
+      dims_list = unique([ [row.dim,  row.codim] for row in self.user_table])
+      self.user_mapping_dims = [MappingRow(row) for row in dims_list]     
       return None
 
 
@@ -278,11 +282,11 @@ class InstantiationInfo:
       return None
      
 
-   def create_RefSpaces(self):
+   def create_ref_spaces(self):
       ''' Creates a list of Reference spaces '''
-      
       ref_dims = unique( [ [x.dim, x.range, x.rank] for x in self.all_table ] )
-      self.all_ref_sp_dims = [RefSpaceRow(x) for x in ref_dims] 
+      self.all_ref_sp_dims = [RefSpaceRow(x) for x in ref_dims]
+      
 
 #       self.user_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
 #                                        for x in self.user_table] )
@@ -290,6 +294,7 @@ class InstantiationInfo:
 #       self.face_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
 #                                        for x in self.face_table] )
 
+     
       self.RefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                                 for x in self.all_table] )
 
@@ -382,21 +387,7 @@ class InstantiationInfo:
       return None
  
 
-##################################
-   def create_tensor_sizes(self):
-      '''Creates a list of the TensorSize class that needs to be instantiated'''
 
-      C_list=[]
-
-      for row in self.all_table:
-         dim_domain = row.dim
-         C = 'TensorSize<%d>' % (dim_domain)
-         C_list.append(C)
-       
-
-      self.tensor_sizes = unique(C_list)
-      return None
-##################################
 
 
 ##################################
@@ -747,26 +738,7 @@ class InstantiationInfo:
 # ##################################
 # 
 # 
-# ##################################
-#    def create_mapping_lib(self):
-#       '''Creates a list of the of some Mapping specialization that needs to be instantiated'''
-# 
-#       C_list=[]
-# 
-#       for dims in self.UserMappingDims:
-#          C = 'LinearMapping%s' % (dims)
-#          C_list.append(C)
-# 
-#       for dim in self.user_ref_dom_dims:
-#          C = 'BallMapping<%d>' % (dim)
-#          C_list.append(C)
-#          if dim>1:
-#             C = 'SphereMapping<%d>' % (dim-1)
-#             C_list.append(C)
-# 
-#       self.mappings_lib = unique(C_list)
-#       return None
-# ##################################
+
 # 
 # 
 # ##################################

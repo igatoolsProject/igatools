@@ -106,5 +106,3 @@ GridForwardIterator<Accessor>::operator != (const GridForwardIterator<Accessor> 
 }
 
 IGA_NAMESPACE_CLOSE
-
-#include <igatools/geometry/grid_forward_iterator.inst>

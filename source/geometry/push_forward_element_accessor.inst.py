@@ -34,7 +34,7 @@ output = []
 containers = ['ValueTable', 'ValueVector']
 
 # Trasformation for values
-for row in inst.all_table:
+for row in unique(inst.all_table + inst.extended_table):
     PF = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
     push_fwd_elem_acc = 'PushForwardElementAccessor<%s>' %(PF)
     output.append('template class %s ;\n' %(push_fwd_elem_acc) )
