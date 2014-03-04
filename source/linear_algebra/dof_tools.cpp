@@ -40,7 +40,7 @@ namespace dof_tools
 
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>() >  *)
+get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>() > *)
 {
     //--------------------------------------------------------------------------
     // build the dofs graph

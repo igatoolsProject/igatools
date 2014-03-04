@@ -160,9 +160,9 @@ collapse_to_face(const int face_id) const
 
 template< int face_dim >
 Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
-		          const int face_id)
+                                        const int face_id)
 {
-	const int dim = face_dim + 1;
+    const int dim = face_dim + 1;
 
     AssertIndexRange(face_id, UnitElement<dim>::faces_per_element);
     const int const_direction = UnitElement<dim>::face_constant_direction[face_id];

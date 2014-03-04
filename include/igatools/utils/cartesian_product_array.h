@@ -75,7 +75,7 @@ template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
-	/**
+    /**
      * Type for the <tt>rank-1</tt> CartesianProductArray
      */
     using SubProduct = Conditional< (rank > 0),
@@ -269,10 +269,10 @@ protected:
 template <class T, int rank>
 CartesianProductArray<T, rank+1>
 insert(const CartesianProductArray<T, rank> &orig,
-	   const int index,
-	   const std::vector<T> &new_vector)
+       const int index,
+       const std::vector<T> &new_vector)
 {
-	Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 
     TensorSize<rank+1> size;
     for (int i=0, j=0; i<rank+1; ++i)

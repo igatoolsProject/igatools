@@ -49,7 +49,7 @@ namespace dof_tools
  */
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()> *= nullptr);
 
 
 /**
@@ -74,7 +74,7 @@ get_sparsity_pattern(const SpaceType &space, EnableIf<!Is_function_space<SpaceTy
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+                     EnableIf<Is_function_space<SpaceType>()> *= nullptr);
 
 /**
  * @todo document this function
@@ -97,7 +97,7 @@ get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
  */
 template < class SpaceType >
 std::vector<Index>
-get_dofs(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+get_dofs(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()> *= nullptr);
 
 
 /**
@@ -195,7 +195,7 @@ template < class SpaceType >
 SparsityPattern get_sparsity_pattern(
     const std::vector< std::shared_ptr< SpaceType > > &space_rows,
     const std::vector< std::shared_ptr< SpaceType > > &space_cols,
-    EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+    EnableIf<Is_function_space<SpaceType>()> *= nullptr);
 
 /**
  * @warning This function only works when both spaces have the same cartesian grid.

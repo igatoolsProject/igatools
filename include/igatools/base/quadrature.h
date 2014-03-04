@@ -170,7 +170,7 @@ protected:
  */
 template< int face_dim >
 Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
-		          const int face_id);
+                                        const int face_id);
 
 
 

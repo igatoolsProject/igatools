@@ -587,7 +587,7 @@ fill_element_dofs_from_index_space()
 
     ComponentTable<TensorIndex<dim>> element_n_basis(degree_);
     for (auto &comp : element_n_basis)
-    	comp += 1;
+        comp += 1;
 
 //    for (int comp = 0; comp<n_components; ++comp)
 //        for (int dir = 0; dir <dim; ++dir)

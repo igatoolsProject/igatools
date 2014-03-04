@@ -35,7 +35,7 @@ TensorIndex(Index val) noexcept
 {
     Assert(val >= 0, ExcLowerRange(val,0));
     for (auto & idx : (*this))
-    	idx = val;
+        idx = val;
 }
 
 

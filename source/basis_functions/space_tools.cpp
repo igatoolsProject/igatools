@@ -47,7 +47,7 @@ namespace
 template <class RefSpace>
 StaticMultiArray< Multiplicity< RefSpace::RefFaceSpace::dim >,
                   RefSpace::RefFaceSpace::dim_range, RefSpace::RefFaceSpace::rank>
-get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
+                  get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_mult = ref_space->get_multiplicities();
@@ -95,7 +95,7 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
                       const Index face_id,
                       std::map<int,int> &elem_map)
 {
-	auto face_grid = ref_space->get_grid()->get_face_grid(face_id, elem_map);
+    auto face_grid = ref_space->get_grid()->get_face_grid(face_id, elem_map);
 
 
     auto f_mult = get_face_mult<RefSpace> (ref_space, face_id);
@@ -457,8 +457,8 @@ project_boundary_values(const Func<Space> &func,
                         std::map<Index,Real>  &boundary_values)
 {
     project_boundary_values(func, space, quad,
-    std::set<boundary_id>({{bdry_id}}),
-    boundary_values);
+    std::set<boundary_id>( {{bdry_id}}),
+                            boundary_values);
 }
 
 

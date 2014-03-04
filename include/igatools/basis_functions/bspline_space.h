@@ -133,7 +133,7 @@ public:
     using DegreeTable = ComponentTable<TensorIndex<dim>>;
 
 private:
-   //TODO(pauletti, Mar 3, 2014):delete this type
+    //TODO(pauletti, Mar 3, 2014):delete this type
     /** Container indexed by the components and dimensions of the space */
     template< class T>
     using ComponentDirectionTable = ComponentTable<std::array<T,dim>>;

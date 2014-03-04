@@ -439,8 +439,8 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> shared_pt
     TensorIndex<dim> v_index;
     auto knot_coordinates_ = this->get_knot_coordinates();
     v_index[const_dir] = const_value==0 ?
-                         0 :
-                         (knot_coordinates_.tensor_size()(const_dir)-2);
+    0 :
+    (knot_coordinates_.tensor_size()(const_dir)-2);
 
     auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
     auto face_grid = FaceType::create(face_knots);

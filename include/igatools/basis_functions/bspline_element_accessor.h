@@ -236,11 +236,11 @@ public:
 
 //    ConstVectorView<Derivative<1> >
     typename ValueTable<Derivative<1> >::const_view
-                                    get_basis_gradients(const Index i) const;
+    get_basis_gradients(const Index i) const;
 
 //    ConstVectorView<Derivative<2> >
     typename ValueTable<Derivative<2> >::const_view
-                                    get_basis_hessians(const Index i) const;
+    get_basis_hessians(const Index i) const;
 
     /**
      * Reference to the value of a local basis function

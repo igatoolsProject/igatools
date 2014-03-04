@@ -104,7 +104,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
 
     {
         // here we treat the pure NURBS case
-    	using space_t = ContainerType;
+        using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
 
@@ -256,7 +256,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
     {
         // here we treat the pure NURBS case
-    	using space_t = ContainerType;
+        using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
         typedef array<Real,dim_domain> GradientRange1_t ;
@@ -1045,7 +1045,7 @@ evaluate_field_gradients(const Vector &coefs) const -> ValueVector< DerivativeRe
 
     vector<Real> coefficients(n_basis_element) ;
     for (int iFn = 0 ; iFn < n_basis_element ; iFn++)
-        coefficients[iFn] = coefs( local_to_global[iFn] ) ;
+        coefficients[iFn] = coefs(local_to_global[iFn]) ;
 
     return D1phi_hat.evaluate_linear_combination(coefficients) ;
 }
@@ -1074,7 +1074,7 @@ evaluate_field_hessians(const Vector &coefs) const -> ValueVector< DerivativeRef
 
     vector<Real> coefficients(n_basis_element) ;
     for (int iFn = 0 ; iFn < n_basis_element ; iFn++)
-        coefficients[iFn] = coefs( local_to_global[iFn] ) ;
+        coefficients[iFn] = coefs(local_to_global[iFn]) ;
 
     return D2phi_hat.evaluate_linear_combination(coefficients) ;
 }
