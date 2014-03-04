@@ -19,19 +19,21 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
 
+inc = '#include <igatools/geometry/grid_forward_iterator.h>\n'
+file_output.write(inc)
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating CartesianGridElementAccessor
-for row in inst.cartesian_grid_element_accessors:
-    file_output.write('template class %s; \n' % (row))
+accesors = []
+for dim in inst.domains_dims:
+   accessors.append('CartesianGridElementAccessor<%d>' % (dim))
 
-file_output.write('\n')
+for row in accessors:
+    file_output.write('template class %s; \n' % (row))
+    file_output.write('template class GridForwardIterator<%s>; \n' % (row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
 
 

@@ -27,6 +27,8 @@
 
 IGA_NAMESPACE_OPEN
 
+//TODO(pauletti, Mar 4, 2014): This is used only in one class why is this a
+// different class form the accessor?
 /**
  * @brief This class represents an element within a CartesianGrid.
  *

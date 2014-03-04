@@ -18,26 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
 
 include_files = ['#include <igatools/geometry/cartesian_grid_element_accessor.h>\n']
-
 for include in include_files:
     file_output.write(include)
-
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating UnitElement
-for row in inst.cartesian_grids:
+cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.domain_dims]
+for row in cartesian_grids:
     file_output.write('template class %s; \n' % (row))
 
-file_output.write('\n')
-
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
 	

@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-
+//TODO(pauletti, Mar 4, 2014): the purpose of this class is not well explained
 /**
  * @brief This class wraps a grid of type @p GridType with a std::shared_ptr.
  *
