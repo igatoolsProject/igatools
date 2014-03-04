@@ -295,19 +295,19 @@ class InstantiationInfo:
 #                                        for x in self.face_table] )
 
      
-      self.RefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+      RefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                                 for x in self.all_table] )
 
-      self.UserRefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+      UserRefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                                     for x in self.user_table] )
 
 
-      spaces =('BSplineSpace', 'NURBSSpace')
+      spaces = ('BSplineSpace', 'NURBSSpace')
       self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
-                            for dims in self.RefDims] )
+                            for dims in RefDims] )
       self.UserRefSpaces = ( ['%s%s' % (sp, dims)
                                 for sp in spaces
-                                for dims in self.UserRefDims] )
+                                for dims in UserRefDims] )
 
       temp = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                         for x in self.user_table if x.dim >= x.range] )
@@ -361,7 +361,9 @@ class InstantiationInfo:
 
    def create_derivatives(self):
       '''Creates a list of the tensor types for the required values and derivatives'''
-      dims_list = self.function_dims
+      mapping_list = [FunctionRow([x.dim, x.space_dim, 1]) for x in self.mapping_dims]
+      mapping_list.append(FunctionRow([0, 0, 1])) #todo fix approprietly
+      dims_list = self.function_dims + mapping_list
       deriv ='Tensor<dim, order, tensor::covariant, Tensor<range, rank, tensor::contravariant, Tdouble>>'
       value ='Tensor<range, rank, tensor::contravariant, Tdouble>'
 
@@ -474,13 +476,13 @@ class InstantiationInfo:
 # The following instantiations are for the cache of basisfucntion in Bspline space
 # and the bezier operators
 # todo: do we need both index types here?
-#        matrix = "boost::numeric::ublas::matrix<Real>"
-#        types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
-#        for t in types:
-#            for row in self.all_table:
-#                dim = row.dim
-#                C = "ProductArray<%s,%d>" % (t,dim)
-#                C_list.append(C)
+      matrix = "boost::numeric::ublas::matrix<Real>"
+      types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
+      for t in types:
+          for row in self.all_table:
+              dim = row.dim
+              C = "CartesianProductArray<%s,%d>" % (t,dim)
+              C_list.append(C)
 
 
       self.cartesian_product_arrays = unique(C_list)

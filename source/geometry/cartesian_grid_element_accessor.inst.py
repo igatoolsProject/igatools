@@ -22,7 +22,7 @@
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
 
-inc = '#include <igatools/geometry/grid_forward_iterator.h>\n'
+inc = '#include <../source/geometry/grid_forward_iterator.cpp>\n'
 file_output.write(inc)
 file_output.write('IGA_NAMESPACE_OPEN\n')
 

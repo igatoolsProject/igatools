@@ -104,8 +104,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
 
     {
         // here we treat the pure NURBS case
-
-        typedef typename NURBSElementAccessor<dim_domain,dim_range,rank>::Patch_t space_t ;
+    	using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
 
@@ -257,9 +256,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
     {
         // here we treat the pure NURBS case
-
-
-        typedef typename NURBSElementAccessor<dim_domain,dim_range,rank>::Patch_t space_t ;
+    	using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
         typedef array<Real,dim_domain> GradientRange1_t ;
@@ -495,7 +492,7 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
     {
         // here we treat the pure NURBS case
 
-        typedef typename NURBSElementAccessor<dim_domain,dim_range,rank>::Patch_t space_t ;
+        using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
         typedef array<Real,dim_domain> GradientRange1_t ;

@@ -27,7 +27,7 @@ file_output, inst = intialize_instantiation()
 include_files = ['#include <igatools/geometry/cartesian_grid.h>\n',
                  '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
                  '#include <igatools/basis_functions/bspline_space.h>\n',
-                 '#include <igatools/geometry/grid_forward_iterator.h>\n']
+                 '#include <../source/geometry/grid_forward_iterator.cpp>\n']
 for include in include_files:
     file_output.write(include)
 file_output.write('IGA_NAMESPACE_OPEN\n')

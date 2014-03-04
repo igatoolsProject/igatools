@@ -31,7 +31,7 @@ include_files = ['#include <igatools/basis_functions/bspline_space.h>\n',
                  '#include <igatools/geometry/mapping_element_accessor.h>\n',
                  '#include <igatools/geometry/push_forward_element_accessor.h>\n',
                  '#include <igatools/basis_functions/physical_space_element_accessor.h>\n',
-                 '#include <igatools/geometry/grid_forward_iterator.h>\n']
+                 '#include <../source/geometry/grid_forward_iterator.cpp>\n']
 for file in include_files:
     file_output.write(file)
 file_output.write('IGA_NAMESPACE_OPEN\n')

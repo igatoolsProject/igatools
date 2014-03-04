@@ -42,7 +42,7 @@ class NURBSElementAccessor :
     public BSplineElementAccessor< dim_domain, dim_range, rank >
 {
 public:
-    typedef NURBSSpace< dim_domain, dim_range, rank > Patch_t ;
+	using ContainerType = NURBSSpace< dim_domain, dim_range, rank>;
     typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
 
     typedef NURBSElementAccessor<dim_domain,dim_range,rank> Self_t ;

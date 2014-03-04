@@ -28,6 +28,7 @@ for include in include_files:
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
 mappings = ['Mapping<%d, %d>' %(x.dim, x.codim) for x in inst.mapping_dims]
+mappings = mappings + ['Mapping<0, 0>'] #todo use porper ref to phys dims
 for row in mappings:
     file_output.write('template class %s; \n' % (row))
 
