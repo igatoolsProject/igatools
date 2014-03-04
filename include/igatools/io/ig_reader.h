@@ -27,7 +27,7 @@
 
 #include <igatools/base/exceptions.h>
 
-#include <igatools/utils/product_array.h>
+#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/basis_functions/nurbs_space.h>
@@ -75,7 +75,7 @@ private:
     std::vector<std::vector<Real> > breack_point;
     std::vector<std::vector<Real> > control_point;
     DynamicMultiArray<Real,dim_ref_domain> weights_;
-    std::array<int,dim_ref_domain> cp_per_ref_dir;
+    TensorSize<dim_ref_domain> cp_per_ref_dir;
 
     std::array< int, dim_ref_domain > n_knots;
     std::array< int, dim_ref_domain > degree;

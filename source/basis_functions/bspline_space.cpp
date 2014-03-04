@@ -959,7 +959,7 @@ refine_h_after_grid_refinement(
 template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
-get_num_dofs() const -> StaticMultiArray<TensorIndex<dim>,dim_range,rank>
+get_num_dofs() const -> StaticMultiArray<TensorSize<dim>,dim_range,rank>
 {
     return num_dofs_;
 }

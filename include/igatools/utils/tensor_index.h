@@ -84,6 +84,23 @@ public:
 
     ///@}
 
+    /** @name Access (read/write) operators */
+    ///@{
+    /**
+     * Read/write operator. Returns the reference to the i-th size.
+     * @note In Debug mode the index @p i is checked in order to be
+     * in the bounds of the array containing the different direction sizes.
+     */
+    Index &operator()(const Index i);
+
+    /**
+     * Read operator. Returns the const-reference to the i-th size.
+     * @note In Debug mode the index @p i is checked in order to be
+     * in the bounds of the array containing the different direction sizes.
+     */
+    const Index &operator()(const Index i) const;
+    ///@}
+
     /**
      * @name Increment/decrement operators.
      */

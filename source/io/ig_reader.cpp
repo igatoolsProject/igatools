@@ -164,7 +164,7 @@ IgReader< dim_ref_domain, dim_phys_domain>::get_nurbs_space()
         degree[i] = deg[i];
     }
 
-    mult.resize(mlt.size()) ;
+    //mult.resize(mlt.size()) ;
     for (int i = 0 ; i < mlt.size() ; ++i)
     {
         mult.copy_data_direction(i, mlt[i]) ;
@@ -204,7 +204,7 @@ IgReader< dim_ref_domain, dim_phys_domain>::get_mapping_iga()
         for (int j = 0; j<control_point[i].size(); ++j)
         {
             Index el = off_set[i] + j;
-            cp_ptr.add(el,control_point[i][j]);
+            cp_ptr.add_entry(el,control_point[i][j]);
         }
 
     return std::shared_ptr< IgMapping<NURBSSpace< dim_ref_domain,dim_phys_domain,1>> > (new

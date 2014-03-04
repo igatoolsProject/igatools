@@ -134,6 +134,7 @@ public:
  * @relates FunctionSpace
  *
  */
+//TODO(pauletti, Mar 3, 2014): uncapitalize first letter
 template<class T>
 constexpr bool Is_function_space()
 {

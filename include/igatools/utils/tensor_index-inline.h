@@ -108,6 +108,25 @@ operator +=(const int j) noexcept
 }
 
 
+template <int rank>
+Index &
+TensorIndex<rank>::
+operator()(const Index i)
+{
+    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
+    return (*this)[i];
+}
+
+
+
+template <int rank>
+const Index &
+TensorIndex<rank>::
+operator()(const Index i) const
+{
+    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
+    return (*this)[i];
+}
 
 IGA_NAMESPACE_CLOSE
 

@@ -29,10 +29,9 @@ IGA_NAMESPACE_OPEN
 template <int rank>
 TensorSize<rank>::
 TensorSize(Size val) noexcept
+: TensorIndex<rank>::TensorIndex(val)
 {
     Assert(val >= 0, ExcLowerRange(val,0));
-    for ( auto & size_dir : size_directions_)
-    	size_dir = val;
 }
 
 
@@ -40,11 +39,10 @@ TensorSize(Size val) noexcept
 template <int rank>
 TensorSize<rank>::
 TensorSize(const std::array<Size,rank> &arr) noexcept
-:
-size_directions_(arr)
+: TensorIndex<rank>::TensorIndex(arr)
 {
 #ifndef NDEBUG
-    for ( const auto & size_dir : size_directions_)
+    for ( const auto & size_dir : *this)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
@@ -54,10 +52,10 @@ size_directions_(arr)
 template <int rank>
 TensorSize<rank>::
 TensorSize(const TensorIndex<rank> &arr) noexcept
+: TensorIndex<rank>::TensorIndex(arr)
 {
-	std::copy(arr.begin(), arr.end(), size_directions_.begin());
 #ifndef NDEBUG
-    for ( const auto & size_dir : size_directions_)
+    for ( const auto & size_dir : *this)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
@@ -68,12 +66,10 @@ template <int rank>
 inline
 TensorSize<rank>::
 TensorSize(std::initializer_list<Size> list) noexcept
+: TensorIndex<rank>::TensorIndex(list)
 {
-    Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
-    std::copy(list.begin(), list.end(), size_directions_.begin());
-
 #ifndef NDEBUG
-    for ( const auto & size_dir : size_directions_)
+    for ( const auto & size_dir : *this)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
@@ -86,32 +82,13 @@ TensorSize<rank>::
 flat_size() const noexcept
 {
     Size res=1;
-    for ( const auto & size_dir : size_directions_)
+    for ( const auto & size_dir : *this)
         res *= size_dir;
     return res;
 }
 
 
 
-template <int rank>
-Size &
-TensorSize<rank>::
-operator()(const Index i)
-{
-    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    return size_directions_[i];
-}
-
-
-
-template <int rank>
-const Size &
-TensorSize<rank>::
-operator()(const Index i) const
-{
-    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    return size_directions_[i];
-}
 
 
 

@@ -25,6 +25,7 @@
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/identity_mapping.h>
+#include <igatools/utils/multi_array_utils.h>
 
 #include <vector>
 #include <sstream>
@@ -537,7 +538,7 @@ get_subelements(
 
         for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
         {
-            array<Index,dim_ref> vtk_vertex_tensor_idx;
+            TensorIndex<dim_ref> vtk_vertex_tensor_idx;
             for (int i = 0; i < dim_ref; ++i)
                 vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i] + delta_idx[iVertex][i];
 

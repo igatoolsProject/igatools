@@ -379,7 +379,7 @@ public:
      * // num_dofs[comp][dir] is the number of 1D basis functions for the component comp and direction dir
      * @endcode
      */
-    ComponentTable<TensorIndex<dim>> get_num_dofs() const ;
+    ComponentTable<TensorSize<dim>> get_num_dofs() const ;
 
 
     /** Return the push forward (non-const version). */

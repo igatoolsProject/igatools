@@ -36,7 +36,6 @@ using std::accumulate;
 using std::sort;
 
 using std::shared_ptr;
-//using std::unique_ptr;
 using std::make_shared;
 
 using std::array;
@@ -65,6 +64,7 @@ namespace
  *
  */
 // TODO (pauletti, Nov 1, 2013): Document how this class work and its internals
+//TODO(pauletti, Mar 3, 2014): rename dim_domain to dim and deriv_order to order
 template<int dim_domain, int deriv_order>
 class DerivativeSymmetryManager
 {
@@ -104,7 +104,7 @@ public:
     ///@}
 
 
-
+    static const int new_deriv_order = deriv_order>0?deriv_order:1;
     const array<int,num_entries_eval> &get_entries_flat_id_evaluate() const
     {
         return entries_flat_id_evaluate_;
@@ -120,7 +120,7 @@ public:
         return entries_flat_id_copy_from_;
     }
 
-    const array<typename Derivative_t::product_Index,num_entries_total> &get_entries_tensor_id() const
+    const array<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
     {
         return entries_tensor_id_;
     }
@@ -129,7 +129,8 @@ private:
     bool test_if_evaluate(const array<int,deriv_order> &tensor_index) const;
 
     /** Tensor ids of all the entries */
-    array<typename Derivative_t::product_Index,num_entries_total> entries_tensor_id_;
+
+    array<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
 
     /** Flat ids of the entries that need to be computed */
     array<int,num_entries_eval> entries_flat_id_evaluate_;
@@ -140,7 +141,7 @@ private:
     /** Flat ids of the source entries that need to be copied */
     array<int,num_entries_copy> entries_flat_id_copy_from_;
 
-    array<int,deriv_order> size_deriv_index_;
+    TensorSize<deriv_order> size_deriv_index_;
 };
 
 
@@ -169,9 +170,9 @@ DerivativeSymmetryManager()
     }
     else
     {
-        array<int,deriv_order> weights = MAUtils::compute_weight(size_deriv_index_);
+        auto weights = MAUtils::compute_weight(size_deriv_index_);
 
-        for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
+        for (Index flat_id = 0; flat_id < num_entries_total; ++flat_id)
         {
             entries_tensor_id_[flat_id] = derivative.flat_to_tensor_index(flat_id);
 
@@ -248,14 +249,14 @@ public:
         return entries_flat_id_copy_from_;
     }
 
-    const array<typename Derivative_t::product_Index,num_entries_total> &get_entries_tensor_id() const
+    const array<TensorIndex<deriv_order>,num_entries_total> &get_entries_tensor_id() const
     {
         return entries_tensor_id_;
     }
 
 private:
     /** Tensor ids of all the entries */
-    array<typename Derivative_t::product_Index,num_entries_total> entries_tensor_id_;
+    array<TensorIndex<deriv_order>,num_entries_total> entries_tensor_id_;
 
     /** Flat ids of the entries that need to be computed */
     array<int,num_entries_eval> entries_flat_id_evaluate_;
@@ -607,7 +608,7 @@ reset(const ValueFlags fill_flag,
       const Quadrature<dim_domain> &quad1,
       const int face_no)
 {
-    const auto quad = restricted_quad(quad1, face_no);
+    const auto quad = quad1.collapse_to_face(face_no);
 
     ValuesData::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
 }
@@ -621,7 +622,7 @@ reset(const Space_t &space,
       const int face_no,
       int max_der)
 {
-    const auto quad = restricted_quad(quad1, face_no);
+    const auto quad = quad1.collapse_to_face(face_no);
     max_deriv_order = max_der;
     // resizing the structures for the one dimensional splines
     const int n_active_components = space.num_active_components_;

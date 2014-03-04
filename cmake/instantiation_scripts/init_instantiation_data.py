@@ -591,6 +591,15 @@ class InstantiationInfo:
          C = 'GridForwardIterator<%s>' % (row)
          C_list.append(C)
 
+#       for row in self.all_table:
+#          CA = 'BSplineElementAccessor< %d, %d, %d >' % (row.dim,
+#                 row.range, row.rank)
+#          bs.append('template class %s ;\n' % (CA))
+      
+#       for row in bs_element_accessors:
+#          C = 'GridForwardIterator<%s>' % (row)
+#          C_list.append(C)
+
 
       self.grid_forward_iterators = unique(C_list)
 

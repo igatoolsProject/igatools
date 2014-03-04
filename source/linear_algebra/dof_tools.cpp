@@ -40,7 +40,7 @@ namespace dof_tools
 
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, EnableIfIs_function_space<SpaceType>()> *)
+get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>() >  *)
 {
     //--------------------------------------------------------------------------
     // build the dofs graph
@@ -82,7 +82,7 @@ get_sparsity_pattern(const SpaceType &space, EnableIfIs_function_space<SpaceType
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const vector< shared_ptr< SpaceType > > &space_multipatch,
-                     EEnableIfs_function_space<SpaceType>()> *)
+                     EnableIf<Is_function_space<SpaceType>()> *)
 {
 
     //--------------------------------------------------------------------------
@@ -142,7 +142,7 @@ SparsityPattern
 get_sparsity_pattern(
     const vector< shared_ptr<SpaceType> > &space_multipatch_rows,
     const vector< shared_ptr<SpaceType> > &space_multipatch_cols,
-    EnEnableIf_function_space<SpaceType>()> *)
+    EnableIf<Is_function_space<SpaceType>()> *)
 {
     Assert(space_multipatch_rows.size() == space_multipatch_cols.size(),
            ExcDimensionMismatch(space_multipatch_rows.size(), space_multipatch_cols.size())) ;
@@ -218,7 +218,7 @@ get_sparsity_pattern(
 
 template < class SpaceType >
 vector<Index>
-get_dofs(const SpaceType &space, EnaEnableIffunction_space<SpaceType>()> *)
+get_dofs(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()> *)
 {
     auto element = space.begin() ;
     const auto element_end = space.end() ;
@@ -264,7 +264,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         const Real bc_value  = dof->second;
         const Real mat_value = matrix(row_id,row_id);
 
-//        std::cout << "row id="<<row_id<< "  val="<<mat_value<<std::endl;
+
         // set the matrix in write mode
         matrix.resume_fill();
 
@@ -273,18 +273,15 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
         // set the diagonal element corresponding to the entry
         // (row_id,row_id) to mat_value
-        matrix.add(row_id, row_id, mat_value);
+        matrix.add_entry(row_id, row_id, mat_value);
 
         // communicate the matrix values to the different processors
         matrix.fill_complete();
 
-        rhs[row_id] = bc_value * mat_value;
-        solution[row_id] = bc_value;
+        rhs(row_id) = bc_value * mat_value;
+        solution(row_id) = bc_value;
     }
-    /*
-    out <<"After" <<std::endl;
-    rhs.print(out) ;
-    //*/
+
 }
 
 

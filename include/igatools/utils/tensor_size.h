@@ -30,6 +30,7 @@ IGA_NAMESPACE_OPEN
 
 //TODO(pauletti, Mar 3, 2014): should TensorSize be derived from tensor index
 //TODO(pauletti, Mar 3, 2014): why are TensorSize and Index wrapper and not derived from array?
+//TODO(pauletti, Mar 3, 2014):  create a class assertion for the chechink the sizes
 /**
  * @brief Type for the size of a tensor-like container.
  *
@@ -39,7 +40,7 @@ IGA_NAMESPACE_OPEN
  * @date 21 Jan 2014
  */
 template <int rank>
-class TensorSize
+class TensorSize : public TensorIndex<rank>
 {
 public:
 
@@ -84,32 +85,13 @@ public:
     ///@}
 
 
-    /** @name Access (read/write) operators */
-    ///@{
-    /**
-     * Read/write operator. Returns the reference to the i-th size.
-     * @note In Debug mode the index @p i is checked in order to be
-     * in the bounds of the array containing the different direction sizes.
-     */
-    Size &operator()(const Index i);
 
-    /**
-     * Read operator. Returns the const-reference to the i-th size.
-     * @note In Debug mode the index @p i is checked in order to be
-     * in the bounds of the array containing the different direction sizes.
-     */
-    const Size &operator()(const Index i) const;
-    ///@}
 
     /**
      * Return the flat size, i.e. the multiplications of the sizes along each direction.
      */
     Size flat_size() const noexcept ;
 
-private:
-
-    /** Size along each direction. */
-    std::array<Size,rank> size_directions_;
 };
 
 

@@ -48,13 +48,6 @@ for row in inst.all_table:
     master1 = master.replace('dim_domain', str(row.dim) ).replace('dim_range', str(row.range) ).replace('rank', str(row.rank) );
     for d in inst.deriv_order:
         strings.append(master1.replace('deriv_order', str(d)))
-#         VT = 'ValueTable< Derivatives< %d, %d, %d, %d > >' % (row.dim,
-#                 row.range, row.rank, d)
-#         strings.append('template void %s::evaluate_bspline_derivatives<%d>(const FuncPointSize &,
-#             StaticMultiArray<std::array<BasisValues1d*, dim_domain>, dim_range, rank> &elem_values,
-#             ValueTable< DerivativeRef_t<deriv_order> > &derivatives_phi_hat%s &, const int) const ;\n' %
-#                 (CA,d,VT))
-
 
 for s in unique(strings): # Removing repeated entries.
     file_output.write(s)
