@@ -35,7 +35,7 @@ namespace
 {
 template<class RefSpace>
 StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::dim_range,1>
-get_weights_from_ref_space(const RefSpace &ref_space, EnableIf<RefSpace::has_weights> *= 0)
+get_weights_from_ref_space(const RefSpace &ref_space, EnableIf<RefSpace::has_weights> * = 0)
 {
     //in the case of NURBSSpace get the weights used in the space
     return ref_space.get_weights();
