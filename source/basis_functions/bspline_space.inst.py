@@ -18,28 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
-###############################################################################
 
 include_files = ['#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
                  '#include <igatools/basis_functions/bspline_element_accessor.h>\n']
-
 for include in include_files:
     file_output.write(include)
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-strings = []
-for dims in inst.RefDims:
-    strings.append('template class BSplineSpace%s ;\n' %dims)
-
-for s in strings:
-    file_output.write(s)
+spaces = ['BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
+          for x in inst.all_ref_sp_dims ]
+for sp in spaces:
+   file_output.write('template class %s ;\n' %sp)
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-
 file_output.close()

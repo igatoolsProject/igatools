@@ -77,7 +77,14 @@ class MappingRow:
       self.space_dim  = self.dim + self.codim
       return None
 
-
+class PForwRow:
+   #mappings dim, codim and space_dim
+   def __init__(self, arg_list):
+      self.dim        = arg_list[0]
+      self.codim      = arg_list[1]  
+      self.trans_type = arg_list[2]
+      return None
+   
 class RefSpaceRow:
    #mappings dim, codim and space_dim
    def __init__(self, arg_list):
@@ -109,6 +116,8 @@ class InstantiationInfo:
       self.face_ref_sp_dims=[]
       self.all_ref_sp_dims=[]
       
+      self.all_pf_args=[]
+      
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
       self.values=[]
@@ -121,11 +130,11 @@ class InstantiationInfo:
       self.UserRefSpaces=[]
       self.UserFilteredRefSpaces=[] #iga mapping required ref spaces
 
-      self.UserMappingDims=[] #list of <dim, codims>
-      self.MappingDims=[] #list of <dim, codims>
+      #self.UserMappingDims=[] #list of <dim, codims>
+      #self.MappingDims=[] #list of <dim, codims>
       
 
-      self.PushForwards=[]
+      #self.PushForwards=[]
       self.UserPhysSpaces=[]
       self.PhysSpaces=[]
       
@@ -146,7 +155,7 @@ class InstantiationInfo:
       self.create_RefSpaces()
       self.create_PhysSpaces()
       
-      self.create_Mappings()
+      #self.create_Mappings()
       
 
       self.tensor_sizes=[] #list TensorSize classes
@@ -229,8 +238,10 @@ class InstantiationInfo:
      
       self.domain_dims = unique([sp.dim for sp in self.all_table])
       
+      #todo: this may not go into this file but in pf.inst.py
+      pf_dims = unique( [ [x.dim, x.codim,x.trans_type] for x in self.all_table] )
+      self.all_pf_args = [PForwRow(x) for x in pf_dims]
       
-      self.cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in self.domain_dims]
       return None
 
 
@@ -270,14 +281,14 @@ class InstantiationInfo:
    def create_RefSpaces(self):
       ''' Creates a list of Reference spaces '''
       
-      self.all_ref_sp_dims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
-                                      for x in self.all_table] )
+      ref_dims = unique( [ [x.dim, x.range, x.rank] for x in self.all_table ] )
+      self.all_ref_sp_dims = [RefSpaceRow(x) for x in ref_dims] 
 
-      self.user_ref_sp_dims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
-                                       for x in self.user_table] )
-
-      self.face_ref_sp_dims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
-                                       for x in self.face_table] )
+#       self.user_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
+#                                        for x in self.user_table] )
+# 
+#       self.face_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
+#                                        for x in self.face_table] )
 
       self.RefDims = unique( ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                                 for x in self.all_table] )
@@ -302,16 +313,16 @@ class InstantiationInfo:
       return None
 
 
-    # Mapping<dim, codim>
-   def create_Mappings(self):
-      ''' Creates a list of mappings '''
-      self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
-                                   for x in self.all_table] )
-     
-      self.MappingDims = unique(self.MappingDims)
-      self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
-                                       for x in self.user_table] )
-      return None
+#     # Mapping<dim, codim>
+#    def create_Mappings(self):
+#       ''' Creates a list of mappings '''
+#       self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
+#                                    for x in self.all_table] )
+#      
+#       self.MappingDims = unique(self.MappingDims)
+#       self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
+#                                        for x in self.user_table] )
+#       return None
 
 
 

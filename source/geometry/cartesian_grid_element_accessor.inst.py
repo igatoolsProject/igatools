@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 4, 2014 ):
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
 
@@ -25,13 +26,10 @@ inc = '#include <igatools/geometry/grid_forward_iterator.h>\n'
 file_output.write(inc)
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-accesors = []
-for dim in inst.domains_dims:
-   accessors.append('CartesianGridElementAccessor<%d>' % (dim))
-
+accessors = ['CartesianGridElementAccessor<%d>' %(dim) for dim in inst.domain_dims]
 for row in accessors:
-    file_output.write('template class %s; \n' % (row))
-    file_output.write('template class GridForwardIterator<%s>; \n' % (row))
+    file_output.write('template class %s; \n' %(row))
+    file_output.write('template class GridForwardIterator<%s>;\n' %(row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 file_output.close()

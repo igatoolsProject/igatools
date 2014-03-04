@@ -18,21 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
+# QA (pauletti, Mar 4, 2014 ):
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
-###############################################################################
 
-
-include_files = [ '#include <igatools/geometry/push_forward.h>\n',
-                  '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
-                  '#include <igatools/geometry/mapping_element_accessor.h>\n']
-
+include_files = ['#include <igatools/geometry/push_forward.h>\n',
+                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
+                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
+                 '#include <igatools/geometry/grid_forward_iterator.h>\n']
 for include in include_files:
     file_output.write(include)
-
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
 output = []
@@ -40,11 +35,10 @@ containers = ['ValueTable', 'ValueVector']
 
 # Trasformation for values
 for row in inst.all_table:
-
     PF = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
     push_fwd_elem_acc = 'PushForwardElementAccessor<%s>' %(PF)
     output.append('template class %s ;\n' %(push_fwd_elem_acc) )
-    
+    output.append('template class GridForwardIterator<%s> ;\n' %(push_fwd_elem_acc) )
     value_ref  = ("Values<%d,%d,%d>" %(row.dim, row.range, row.rank)) 
     value_phys = ("Values<%d,%d,%d>" %(row.space_dim, row.phys_range, row.phys_rank)) 
     for container in containers:
@@ -83,6 +77,4 @@ for s in unique(output):
 
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-
 file_output.close()

@@ -43,21 +43,6 @@ file_output.write('IGA_NAMESPACE_OPEN\n')
 for space in inst.PhysSpaces:
     file_output.write( 'template class %s;\n' %space)
 
-# strings = []
-# space_types = ['BSplineSpace', 'NURBSSpace']
-# transformation_types = ['Transformation::h_grad', 'Transformation::h_div', 'Transformation::h_curl', 'Transformation::l_2']
-# 
-# for sp_name in space_types:
-#     for row in inst.all_spaces:
-#         ref_space=('%s<%d,%d,%d>' %(sp_name, row.dim, row.range, row.rank))
-#         for transformation_name in transformation_types:
-#             PushForward = ( 'PushForward<%s,%d,%d>' %(transformation_name,row.dim,row.space_dim)) 
-#             strings.append('template class PhysicalSpace<%s,%s> ;\n' %(ref_space,PushForward) )
-# 
-# for s in unique(strings):
-#     file_output.write(s)
-
-
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 
 

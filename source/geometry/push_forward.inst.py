@@ -18,17 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
-###############################################################################
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-for pf in inst.PushForwards:
+pf_list = ['PushForward<Transformation::%s, %d, %d>'
+            %(x.trans_type, x.dim, x.codim) for x in inst.all_pf_args] 
+for pf in pf_list:
     file_output.write('template class %s ;\n' %(pf))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
