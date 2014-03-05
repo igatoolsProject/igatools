@@ -192,19 +192,19 @@ IgReader< dim_ref_domain, dim_phys_domain>::get_mapping_iga()
     for (Index dof = 0 ; dof < l ; ++dof)
         global_dofs[dof] = dof ;
 
-    Vector cp_ptr(global_dofs);
+    std::vector<Real> cp_ptr(global_dofs.size());
 
     std::array<Index, dim_phys_domain> off_set;
 
     off_set[0] = 0;
     for (int i = 1; i<control_point.size(); ++i)
-        off_set[i] =off_set[i-1] + control_point[i-1].size();
+        off_set[i] = off_set[i-1] + control_point[i-1].size();
 
     for (int i = 0; i<control_point.size(); ++i)
         for (int j = 0; j<control_point[i].size(); ++j)
         {
             Index el = off_set[i] + j;
-            cp_ptr.add_entry(el,control_point[i][j]);
+            cp_ptr[el] = control_point[i][j];
         }
 
     return std::shared_ptr< IgMapping<NURBSSpace< dim_ref_domain,dim_phys_domain,1>> > (new

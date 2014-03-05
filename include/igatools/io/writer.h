@@ -26,6 +26,7 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/base/quadrature.h>
 

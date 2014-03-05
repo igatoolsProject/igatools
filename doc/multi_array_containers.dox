@@ -7,8 +7,8 @@
    - <b>data structure</b>:
      - <b><em>tensor-product</em></b>.
        The containers with this data structures are intended to be used to represent multi-dimensional
-       quantities that can be fully described by one dimensional quantities and ``concepts'' like
-       the tensor product or the cartesian product.
+       quantities that can be fully described by one dimensional quantities and "concepts" like
+       the <em>tensor product</em> or the <em>cartesian product</em>.
        For example, if we have the set of points in \f$ \mathbb{R}^d\f$
        \f[
          \mathbf{X} = \{ \mathbf{x}_{i_1,\dots,i_d} = (x_{i_1},\dots,x_{i_d}) \in \mathbb{R}^d, 
@@ -41,7 +41,8 @@
        \{ y_{i_r,i_s} = y_{i_r} y_{i_s}, \quad \forall y_{i_r}\in \mathbf{Y}_{r} ,\; \forall y_{i_s}\in \mathbf{Y}_{s} \}\f$.
          
        The container for representing the cartesian product structure is CartesianProductArray, 
-       while the one for representing the tensor product structure is TensorProductArray.
+       while the one for representing the tensor product structure is TensorProductArray 
+       (that is a derived class of CartesianProductArray).
        
        In order to access the internal 1-dimensional data, we provide the functions 
        CartesianProductArray::get_data_direction() and  CartesianProductArray::copy_data_direction()
@@ -54,7 +55,7 @@
        \f]
        Internally the memory is organized as 1-dimensional vector of
        objects, so we provide the entries access operators () (const and non-const version) accepting both 
-       multi-indices (trhough its representation via the class TensorIndex) and flat indices.
+       multi-indices (through its representation via the class TensorIndex) and flat indices.
        The containers in this category are: DynamicMultiArray and StaticMultiArray, both derived by
        MultiArray.
    - <b>type of memory allocation</b>: 

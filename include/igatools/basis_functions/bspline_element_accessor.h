@@ -32,7 +32,6 @@
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/cartesian_product_indexer.h>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <igatools/linear_algebra/distributed_vector.h>
 
 #include <igatools/basis_functions/bernstein_basis.h>
 
@@ -67,7 +66,10 @@ public:
         ValueFlags::divergence |
         ValueFlags::face_value |
         ValueFlags::face_gradient |
-        ValueFlags::face_hessian;
+        ValueFlags::face_hessian |
+        ValueFlags::face_divergence;
+
+    static const Size n_faces = UnitElement<dim_domain>::faces_per_element;
 
 public:
     /** @name Constructors */
@@ -177,12 +179,19 @@ public:
                      const Quadrature<dim_domain> &quad);
 
     /**
+     * For a given face quadrature.
+     */
+    void init_face_values(const Index face_id,
+                          const ValueFlags fill_flag,
+                          const Quadrature<dim_domain-1> &quad);
+
+    /**
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
     void fill_values();
 
-    void fill_face_values(const int face_id);
+    void fill_face_values(const Index face_id);
 
     /** Reset the global cache */
     void reset_global_cache();
@@ -246,7 +255,13 @@ public:
      * Reference to the value of a local basis function
      * at one evaluation point.
      */
-    Value const &get_basis_value(Index basis, Index qp) const;
+    Value const &get_basis_value(const Index basis, const Index qp) const;
+
+    /**
+     * Reference to the divergence of a local basis function
+     * at one evaluation point.
+     */
+    Div const &get_basis_divergence(const Index basis, const Index qp) const;
 
     /**
      * Reference to the gradient of a local basis function
@@ -260,31 +275,124 @@ public:
      */
     Derivative<2> const &get_basis_hessian(const Index basis, const Index qp) const;
 
-    static const int n_faces = UnitElement<dim_domain>::faces_per_element;
 
-    ValueTable<Value> const &get_face_basis_values(const int face) const;
+    /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point for the specified face.
+     */
+    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
+
+    /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point for the specified face.
+     */
+    ValueTable<Div> const &get_face_basis_divergences(const Index face_id) const;
+
+    /**
+     * Reference to a ValueTable with the gradients of all local basis function
+     * evaluated at each evaluation point for the specified face.
+     */
+    ValueTable<Derivative<1>> const &get_face_basis_gradients(const Index face_id) const;
+
+    /**
+     * Reference to a ValueTable with hessians of all local basis function
+     * at each evaluation point for the specified face.
+     */
+    ValueTable<Derivative<2>> const &get_face_basis_hessians(const Index face_id) const;
+
+    typename ValueTable<Value>::const_view
+    get_face_basis_values(const Index face_id, const Index i) const;
+
+
+    typename ValueTable<Div>::const_view
+    get_face_basis_divergences(const Index face_id, const Index i) const;
+
+
+    typename ValueTable<Derivative<1>>::const_view
+                                    get_face_basis_gradients(const Index face_id, const Index i) const;
+
+    typename ValueTable<Derivative<2>>::const_view
+                                    get_face_basis_hessians(const Index face_id, const Index i) const;
+
+    /**
+     * Reference to the value of a local basis function
+     * at one evaluation point for the specified face.
+     */
+    Value const &get_face_basis_value(const Index face_id, const Index basis, const Index qp) const;
+
+    /**
+     * Reference to the divergence of a local basis function
+     * at one evaluation point for the specified face.
+     */
+    Div const &get_face_basis_divergence(const Index face_id, const Index basis, const Index qp) const;
+
+    /**
+     * Reference to the gradient of a local basis function
+     * at one evaluation point for the specified face.
+     */
+    Derivative<1> const &get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const;
+
+    /**
+     * Reference to the hessian of a local basis function
+     * at one evaluation point for the specified face.
+     */
+    Derivative<2> const &get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const;
+
 
     //Fields related
     /**
-     * Vector with the evaluation of the field @coeffs at the evaluation
-     * points
+     * Vector with the evaluation of the field @local_coefs at the evaluation
+     * points.
+     *
+     * @see get_local_coefs
      */
     ValueVector<Value>
-    evaluate_field(const Vector &coefs) const;
+    evaluate_field(const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the gradient of the field @coeffs
-     * at the evaluation points
+     * Vector with the evaluation of the gradient of the field @local_coefs
+     * at the evaluation points.
+     *
+     * @see get_local_coefs
      */
     ValueVector<Derivative<1> >
-    evaluate_field_gradients(const Vector &coefs) const;
+    evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the hessians of the field @coeffs
-     * at the evaluation points
+     * Vector with the evaluation of the hessians of the field @local_coefs
+     * at the evaluation points.
+     *
+     * @see get_local_coefs
      */
     ValueVector<Derivative<2> >
-    evaluate_field_hessians(const Vector &coefs) const;
+    evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Vector with the evaluation of the field @local_coefs at the evaluation
+     * points at the specified face.
+     *
+     * @see get_local_coefs
+     */
+    ValueVector<Value>
+    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Vector with the evaluation of the gradient of the field @local_coefs
+     * at the evaluation points at the specified face.
+     *
+     * @see get_local_coefs
+     */
+    ValueVector<Derivative<1> >
+    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Vector with the evaluation of the hessians of the field @local_coefs
+     * at the evaluation points at the specified face.
+     *
+     * @see get_local_coefs
+     */
+    ValueVector<Derivative<2> >
+    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
     ///@}
 
 private:
@@ -333,7 +441,7 @@ private:
     /**
      * Base class for the cache of the element values and for the cache of the face values.
      */
-    class ValuesData : public CacheStatus
+    class ValuesCache : public CacheStatus
     {
     public:
         /**
@@ -365,7 +473,7 @@ private:
     /**
      * Cache for the element values at quadrature points
      */
-    class ElementValues : public ValuesData
+    class ElementValuesCache : public ValuesCache
     {
     public:
         /**
@@ -382,19 +490,36 @@ private:
     /**
      * Cache for the face values at quadrature points
      */
-    class FaceValues : public ValuesData
+    class FaceValuesCache : public ValuesCache
     {
     public:
         /**
          * Allocate space for the values and derivatives
          * at quadrature points
          */
-        void reset(const ValueFlags fill_flag,
+        void reset(const Index face_id,
+                   const ValueFlags fill_flag,
                    const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-                   const Quadrature<dim_domain> &quad,
-                   const int face_no);
+                   const Quadrature<dim_domain> &quad);
+
+        /**
+         * Allocate space for the values and derivatives
+         * at quadrature points for a specified face.
+         */
+        void reset(const Index face_id,
+                   const ValueFlags fill_flag,
+                   const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
+                   const Quadrature<dim_domain-1> &quad);
+
     };
     ///@}
+
+    /**
+     * For a given flags input argument identifies the face quantities and
+     * returns a new ValueFlags variable containing only face quantities.
+     * The output flags does not contain the word face.
+     */
+    ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
 
 private:
@@ -478,7 +603,7 @@ private:
          */
         void reset(const Space_t &space,
                    const Quadrature<dim_domain> &quad1,
-                   const int face_no,
+                   const Index face_id,
                    const int max_der);
 
         /**
@@ -504,13 +629,13 @@ private:
      * Element cache to store the values and derivatives
      * of the B-spline basis functions
      */
-    ElementValues elem_values_;
+    ElementValuesCache elem_values_;
 
     /**
      * Face cache to store the values and derivatives
      * of the B-spline basis functions on the faces of the element
      */
-    std::array<FaceValues, n_faces> face_values_;
+    std::array<FaceValuesCache, n_faces> face_values_;
 
     /**
      * Space for which the BSplineElementAccessor refers to.

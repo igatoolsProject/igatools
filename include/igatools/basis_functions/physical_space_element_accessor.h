@@ -93,9 +93,13 @@ public :
 
     /** Type for the quadrature scheme. */
     using QuadratureType = Quadrature<dim>;
+    using QuadratureFaceType = Quadrature<dim-1>;
+
+    static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 
     using Value = typename PfElemAccessor::template PhysValue<RefSpace::dim_range, RefSpace::rank>;
+    using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 
     /**
      * Typedef for specifying the derivatives of the basis function in the physical domain.
@@ -167,8 +171,13 @@ public :
     void init_values(const ValueFlags fill_flag,
                      const QuadratureType &quad);
 
+    void init_face_values(const Index face_id,
+                          const ValueFlags fill_flag,
+                          const QuadratureFaceType &quad);
 
     void fill_values();
+
+    void fill_face_values(const Index face_id);
     ///@}
 
 
@@ -178,11 +187,6 @@ public :
     ///@{
     //Shape functions related
 
-
-
-    Real get_basis_divergence(const Index func, const Index qp) const;
-
-
     ValueTable<Value> const &get_basis_values() const;
 
     /**
@@ -190,7 +194,7 @@ public :
      * values of the i-th basis function at the evaluation points.
      */
     typename ValueTable<Value>::const_view
-    get_basis_values(int i) const;
+    get_basis_values(const Index func) const;
 
     const Value &
     get_basis_value(const Index func, const Index qp) const;
@@ -203,7 +207,7 @@ public :
      * gradients of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<1> >::const_view
-    get_basis_gradients(int i) const;
+    get_basis_gradients(const Index func) const;
 
     const Derivative<1> &
     get_basis_gradient(const Index func, const Index qp) const;
@@ -216,10 +220,53 @@ public :
      * hessians of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<2> >::const_view
-    get_basis_hessians(int i) const;
+    get_basis_hessians(const Index func) const;
 
     const Derivative<2> &
     get_basis_hessian(const Index func, const Index qp) const;
+
+    Real get_basis_divergence(const Index func, const Index qp) const;
+
+
+    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
+
+    /**
+     * @brief Return the one-dimensional container with the
+     * values of the i-th basis function at the evaluation points.
+     */
+    typename ValueTable<Value>::const_view
+    get_face_basis_values(const Index face_id, const Index func) const;
+
+    const Value &
+    get_face_basis_value(const Index face_id, const Index func, const Index qp) const;
+
+
+    ValueTable<Derivative<1> > const &get_face_basis_gradients(const Index face_id) const;
+
+    /**
+     * \brief Return the one-dimensional container with the
+     * gradients of the i-th basis function at the evaluation points.
+     */
+    typename ValueTable< Derivative<1> >::const_view
+    get_face_basis_gradients(const Index face_id, const Index func) const;
+
+    const Derivative<1> &
+    get_face_basis_gradient(const Index face_id, const Index func, const Index qp) const;
+
+
+    ValueTable<Derivative<2> > const &get_face_basis_hessians(const Index face_id) const;
+
+    /**
+     * \brief Return the one-dimensional container with the
+     * hessians of the i-th basis function at the evaluation points.
+     */
+    typename ValueTable< Derivative<2> >::const_view
+    get_face_basis_hessians(const Index face_id, const Index func) const;
+
+    const Derivative<2> &
+    get_face_basis_hessian(const Index face_id, const Index func, const Index qp) const;
+
+    Real get_face_basis_divergence(const Index face_id, const Index func, const Index qp) const;
 
     ///@}
 
@@ -233,6 +280,8 @@ public :
 
     const ValueVector<Real> &get_w_measures() const;
 
+    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
+
 
     const Point<space_dim> &get_point(const Index qp) const;
 
@@ -242,8 +291,11 @@ public :
      * \author M.Martinelli
      * \date 29 Jan 2013
      */
-    const ValueVector< Point< space_dim > > &get_points() const;
+    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    get_points() const;
 
+    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    get_face_points(const Index face_id) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the gradients of the map (i.e. the Jacobian) at the evaluation points.
@@ -254,6 +306,17 @@ public :
     const ValueVector< typename Mapping<dim,codim>::GradientType > &
     get_map_gradient_at_points() const;
 
+    const ValueVector< typename Mapping<dim,codim>::GradientFaceType > &
+    get_face_map_gradient_at_points(const Index face_id) const;
+
+
+
+    /**
+     * Return a const reference to the one-dimensional container with the normals at the face evaluation points.
+     */
+    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    get_face_normals(const Index face_id) const;
+
     /**
      * Test if the element has a boundary face.
      */
@@ -262,7 +325,7 @@ public :
     /**
      * Test if the face @p face on the current element is on the boundary.
      */
-    bool is_boundary(int face) const;
+    bool is_boundary(const Index face) const;
 
     ///@}
 
@@ -273,13 +336,22 @@ public :
     ///@{
     //Fields related
     ValueVector< Value >
-    evaluate_field(const Vector &coefs) const;
+    evaluate_field(const std::vector<Real> &local_coefs) const;
 
     ValueVector< Derivative<1> >
-    evaluate_field_gradients(const Vector &coefs) const;
+    evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
 
     ValueVector< Derivative<2> >
-    evaluate_field_hessians(const Vector &coefs) const;
+    evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
+
+    ValueVector< Value >
+    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    ValueVector< Derivative<1> >
+    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    ValueVector< Derivative<2> >
+    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
     ///@}
 
 
@@ -306,7 +378,7 @@ protected:
     const PhysSpace *phys_space_;
 
 
-    struct ElementValuesCache : CacheStatus
+    struct ValuesCache : CacheStatus
     {
         void reset(const int n_basis_per_element,
                    const QuadratureType &quad,
@@ -324,7 +396,39 @@ protected:
         ValueTable<Derivative<2>> D2phi_;
     };
 
+
+    struct ElementValuesCache : ValuesCache
+    {
+        void reset(const int n_basis_per_element,
+                   const QuadratureType &quad,
+                   const ValueFlags fill_flag);
+    };
+
+
+    struct FaceValuesCache : ValuesCache
+    {
+        void reset(const Index face_id,
+                   const int n_basis_per_element,
+                   const QuadratureType &quad,
+                   const ValueFlags fill_flag);
+
+
+        void reset(const Index face_id,
+                   const int n_basis_per_element,
+                   const QuadratureFaceType &quad,
+                   const ValueFlags fill_flag);
+    };
+
+    /**
+     * For a given flags input argument identifies the face quantities and
+     * returns a new ValueFlags variable containing only face quantities.
+     * The output flags does not contain the word face.
+     */
+    ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
+
     ElementValuesCache elem_values_;
+
+    std::array<FaceValuesCache, n_faces> face_values_;
 
     void operator++();
 

@@ -22,7 +22,6 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/linear_algebra/dof_tools.h>
 
 using std::vector;
 using std::array;
@@ -60,7 +59,7 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
-          const Vector &control_points)
+          const std::vector<Real> &control_points)
     :
     base_t::Mapping(space->get_grid()),
     ref_space_(space),
@@ -118,10 +117,10 @@ IgMapping(const std::shared_ptr<RefSpace> space,
                 // if NURBS, transform the control points from euclidean to projective coordinates
                 const Real w = weights_pre_refinement_comp(loc_id);
 
-                ctrl_mesh_comp(loc_id) = w * control_points_(glob_id);
+                ctrl_mesh_comp(loc_id) = w * control_points_[glob_id];
             }
             else
-                ctrl_mesh_comp(loc_id) = control_points_(glob_id);
+                ctrl_mesh_comp(loc_id) = control_points_[glob_id];
 
         }
 //        out << "ctrl_mesh_["<<comp_id<<"]= " << ctrl_mesh_[comp_id] << endl;
@@ -151,14 +150,29 @@ init_element(const ValueFlags flag,
         ref_space_flag |= ValueFlags::value;
     }
 
+    if (contains(flag,ValueFlags::face_point) || contains(flag,ValueFlags::map_face_value))
+    {
+        ref_space_flag |= ValueFlags::face_value;
+    }
+
     if (contains(flag,ValueFlags::map_gradient))
     {
         ref_space_flag |= ValueFlags::gradient;
     }
 
+    if (contains(flag,ValueFlags::map_face_gradient))
+    {
+        ref_space_flag |= ValueFlags::face_gradient;
+    }
+
     if (contains(flag,ValueFlags::map_hessian))
     {
         ref_space_flag |= ValueFlags::hessian;
+    }
+
+    if (contains(flag,ValueFlags::map_face_hessian))
+    {
+        ref_space_flag |= ValueFlags::face_hessian;
     }
 
     element_->init_values(ref_space_flag, quad);
@@ -177,10 +191,22 @@ set_element(const CartesianGridElementAccessor<dim> &elem)
 
 
 template<class RefSpace>
+void IgMapping<RefSpace>::
+set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem)
+{
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    element_->reset_flat_tensor_indices(elem.get_flat_index());
+    element_->fill_face_values(face_id);
+}
+
+
+
+template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const Vector &control_points) -> shared_ptr<base_t>
+    const std::vector<Real> &control_points) -> shared_ptr<base_t>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));
@@ -205,7 +231,14 @@ void
 IgMapping<RefSpace>::
 evaluate(vector<ValueType> &values) const
 {
-    values = element_->evaluate_field(control_points_);
+    const auto &local_to_global = element_->get_local_to_global();
+
+    vector<Real> ctrl_pts_element;
+
+    for (const auto &local_id : local_to_global)
+        ctrl_pts_element.emplace_back(control_points_[local_id]);
+
+    values = element_->evaluate_field(ctrl_pts_element);
 }
 
 
@@ -215,7 +248,15 @@ void
 IgMapping<RefSpace>::
 evaluate_gradients(std::vector<GradientType> &gradients) const
 {
-    gradients = element_->evaluate_field_gradients(control_points_);
+    const auto &local_to_global = element_->get_local_to_global();
+
+    vector<Real> ctrl_pts_element;
+
+    for (const auto &local_id : local_to_global)
+        ctrl_pts_element.emplace_back(control_points_[local_id]);
+
+    gradients = element_->evaluate_field_gradients(ctrl_pts_element);
+
 }
 
 
@@ -224,7 +265,75 @@ void
 IgMapping<RefSpace>::
 evaluate_hessians(std::vector<HessianType> &hessians) const
 {
-    hessians = element_->evaluate_field_hessians(control_points_);
+    const auto &local_to_global = element_->get_local_to_global();
+
+    vector<Real> ctrl_pts_element;
+
+    for (const auto &local_id : local_to_global)
+        ctrl_pts_element.emplace_back(control_points_[local_id]);
+
+    hessians = element_->evaluate_field_hessians(ctrl_pts_element);
+}
+
+
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_face(const Index face_id, vector<ValueType> &values) const
+{
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    const auto &local_to_global = element_->get_local_to_global();
+
+    vector<Real> ctrl_pts_element;
+
+    for (const auto &local_id : local_to_global)
+        ctrl_pts_element.emplace_back(control_points_[local_id]);
+
+    values = element_->evaluate_face_field(face_id, ctrl_pts_element);
+}
+
+
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const
+{
+    AssertThrow(false,ExcNotImplemented()) ;
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    const auto &local_to_global = element_->get_local_to_global();
+
+    vector<Real> ctrl_pts_element;
+
+    for (const auto &local_id : local_to_global)
+        ctrl_pts_element.emplace_back(control_points_[local_id]);
+
+//    TODO: to be changed. Sizes do not match.
+//    gradients = element_->evaluate_face_field_gradients(face_id, ctrl_pts_element);
+
+}
+
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const
+{
+    AssertThrow(false,ExcNotImplemented()) ;
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    const auto &local_to_global = element_->get_local_to_global();
+
+    vector<Real> ctrl_pts_element;
+
+    for (const auto &local_id : local_to_global)
+        ctrl_pts_element.emplace_back(control_points_[local_id]);
+
+//    TODO: to be changed. Sizes do not match.
+//    hessians = element_->evaluate_face_field_hessians(face_id, ctrl_pts_element);
 }
 
 
@@ -233,7 +342,7 @@ evaluate_hessians(std::vector<HessianType> &hessians) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-set_control_points(const Vector &control_points)
+set_control_points(const std::vector<Real> &control_points)
 {
     Assert(control_points_.size() == control_points.size(),
            ExcDimensionMismatch(control_points_.size(), control_points.size()));
@@ -363,31 +472,33 @@ refine_h_control_mesh(
 
     //----------------------------------
     // copy the control mesh after the refinement
-    control_points_ = Vector(dof_tools::get_dofs(*ref_space_));
+    control_points_.resize(ref_space_->get_num_basis());
+//    control_points_ = Vector(dof_tools::get_dofs(*ref_space_));
 
-    const auto &index_space = ref_space_->get_index_space();
+//    const auto &index_space = ref_space_->get_index_space();
 
     const auto weights_after_refinement = get_weights_from_ref_space(*ref_space_);
 
+    Index ctrl_pt_id = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const auto &index_space_comp = index_space(comp_id);
+//        const auto &index_space_comp = index_space(comp_id);
         const auto &ctrl_mesh_comp = ctrl_mesh_(comp_id);
         const auto &weights_after_refinement_comp = weights_after_refinement(comp_id);
 
         const Size n_dofs_comp = ref_space_->get_component_num_basis(comp_id);
-        for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
+        for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
         {
-            const Index glob_id = index_space_comp(loc_id);
+//            const Index glob_id = index_space_comp(loc_id);
             if (RefSpace::has_weights)
             {
                 // if NURBS, transform the control points from  projective to euclidean coordinates
                 const Real w = weights_after_refinement_comp(loc_id);
 
-                control_points_(glob_id) = ctrl_mesh_comp(loc_id) / w ;
+                control_points_[ctrl_pt_id] = ctrl_mesh_comp(loc_id) / w ;
             }
             else
-                control_points_(glob_id) = ctrl_mesh_comp(loc_id);
+                control_points_[ctrl_pt_id] = ctrl_mesh_comp(loc_id);
         }
     }
     //----------------------------------
@@ -419,8 +530,11 @@ print_info(LogStream &out) const
     out.pop();
 
 
-    out << "Control points info (euclidean coordinates):" << endl;
-    control_points_.print(out);
+    out << "Control points info (euclidean coordinates): [ ";
+    for (const auto &ctrl_pt : control_points_)
+        out << ctrl_pt << " ";
+    out << endl;
+//    control_points_.print(out);
 
     out.pop();
 }

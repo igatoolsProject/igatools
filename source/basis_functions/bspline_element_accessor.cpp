@@ -23,8 +23,8 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/base/function.h>
-
 #include <igatools/utils/multi_array_utils.h>
+
 #include <algorithm>
 #include <numeric>
 #include <memory>
@@ -349,24 +349,39 @@ init_values(const ValueFlags fill_flag,
 
     int max_der_order = -1;
     if (contains(f_flag, ValueFlags::value))
-    {
         max_der_order=std::max(max_der_order,0);
-    }
+
+    if (contains(f_flag, ValueFlags::face_value))
+        max_der_order=std::max(max_der_order,0);
 
     if (contains(f_flag, ValueFlags::gradient))
-    {
         max_der_order=std::max(max_der_order,1);
-    }
+
+    if (contains(f_flag, ValueFlags::face_gradient))
+        max_der_order=std::max(max_der_order,1);
 
     if (contains(f_flag, ValueFlags::hessian))
-    {
         max_der_order=std::max(max_der_order,2);
-    }
+
+    if (contains(f_flag, ValueFlags::face_hessian))
+        max_der_order=std::max(max_der_order,2);
 
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
     reset_univariate_cache(quad, max_der_order);
     reset_element_cache(f_flag, quad);
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+void
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+init_face_values(const Index face_id,
+                 const ValueFlags fill_flag,
+                 const Quadrature<dim_domain-1> &quad)
+{
+    AssertThrow(false,ExcNotImplemented()) ;
 }
 
 
@@ -424,10 +439,10 @@ reset_element_cache(const ValueFlags fill_flag,
 
     elem_values_.reset(fill_flag, n_basis_direction, quad);
 
-    for (int i = 0; i < n_faces; ++i)
-    {
-        face_values_[i].reset(fill_flag, n_basis_direction, quad, i);
-    }
+    Index face_id = 0 ;
+    const auto face_fill_flag = get_face_flags(fill_flag) ;
+    for (auto& face_value : face_values_)
+        face_value.reset(face_id++, face_fill_flag, n_basis_direction, quad);
 }
 
 
@@ -436,19 +451,19 @@ reset_element_cache(const ValueFlags fill_flag,
 template <int dim_domain, int dim_range, int rank>
 void
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-ElementValues::
+ElementValuesCache::
 reset(const ValueFlags fill_flag,
       const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
       const Quadrature<dim_domain> &quad)
 {
-    ValuesData::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
 }
 
 
 template <int dim_domain, int dim_range, int rank>
 void
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-ValuesData::
+ValuesCache::
 reset(const ValueFlags fill_flag,
       const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
       const TensorSize<dim_domain> &n_points_direction)
@@ -575,6 +590,31 @@ reset(const ValueFlags fill_flag,
 }
 
 
+
+template <int dim_domain, int dim_range, int rank>
+ValueFlags
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_flags(const ValueFlags fill_flag) const
+{
+
+    ValueFlags face_fill_flag = ValueFlags::none ;
+
+    if (contains(fill_flag , ValueFlags::face_value))
+        face_fill_flag |= ValueFlags::value ;
+
+    if (contains(fill_flag , ValueFlags::face_divergence))
+        face_fill_flag |= ValueFlags::divergence ;
+
+    if (contains(fill_flag , ValueFlags::face_gradient))
+        face_fill_flag |= ValueFlags::gradient ;
+
+    if (contains(fill_flag , ValueFlags::face_hessian))
+        face_fill_flag |= ValueFlags::hessian ;
+
+    return face_fill_flag ;
+}
+
+
 template <int dim_domain, int dim_range, int rank>
 void
 BSplineElementAccessor<dim_domain, dim_range, rank>::
@@ -599,19 +639,38 @@ reset(StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> n_basis_directio
 }
 
 
+
 template <int dim_domain, int dim_range, int rank>
 void
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-FaceValues::
-reset(const ValueFlags fill_flag,
+FaceValuesCache::
+reset(const Index face_id,
+      const ValueFlags fill_flag,
       const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-      const Quadrature<dim_domain> &quad1,
-      const int face_no)
+      const Quadrature<dim_domain> &quad1)
 {
-    const auto quad = quad1.collapse_to_face(face_no);
+    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    ValuesData::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
+    const auto quad = quad1.collapse_to_face(face_id);
+
+    ValuesCache::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
 }
+
+
+
+template <int dim_domain, int dim_range, int rank>
+void
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+FaceValuesCache::
+reset(const Index face_id,
+      const ValueFlags fill_flag,
+      const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
+      const Quadrature<dim_domain-1> &quad)
+{
+    AssertThrow(false,ExcNotImplemented()) ;
+}
+
+
 
 template <int dim_domain, int dim_range, int rank>
 void
@@ -619,10 +678,10 @@ BSplineElementAccessor<dim_domain, dim_range, rank>::
 GlobalFaceCache::
 reset(const Space_t &space,
       const Quadrature<dim_domain> &quad1,
-      const int face_no,
+      const Index face_id,
       int max_der)
 {
-    const auto quad = quad1.collapse_to_face(face_no);
+    const auto quad = quad1.collapse_to_face(face_id);
     max_deriv_order = max_der;
     // resizing the structures for the one dimensional splines
     const int n_active_components = space.num_active_components_;
@@ -651,7 +710,7 @@ reset(const Space_t &space,
     {
         BasisValues1d &basis = splines1d_cache_data_(iComp);
 
-        const int jDim = UnitElement<dim_domain>::face_constant_direction[face_no];//const_dir;
+        const int jDim = UnitElement<dim_domain>::face_constant_direction[face_id];//const_dir;
         {
             const int degree = degree_(iComp)[ jDim ];
             const std::vector<Real> &pt_coords = eval_points.get_data_direction(jDim);
@@ -756,12 +815,16 @@ fill_values()
 template <int dim_domain, int dim_range, int rank>
 void
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-fill_face_values(const int face_no)
+fill_face_values(const Index face_id)
 {
-    Assert(face_values_[face_no].is_initialized(), ExcNotInitialized());
+    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    CartesianGridElementAccessor<dim_domain>::fill_face_values(face_no);
-    const int const_dir = UnitElement<dim_domain>::face_constant_direction[face_no];
+    auto &face_value = face_values_[face_id] ;
+
+    Assert(face_value.is_initialized(), ExcNotInitialized());
+
+    CartesianGridElementAccessor<dim_domain>::fill_face_values(face_id);
+    const int const_dir = UnitElement<dim_domain>::face_constant_direction[face_id];
 
     const auto &element_tensor_id = this->get_tensor_index();
     StaticMultiArray<array<const BasisValues1d *,dim_domain>,dim_range,rank>
@@ -771,36 +834,36 @@ fill_face_values(const int face_no)
         for (int i = 0; i < int (dim_domain); ++i)
         {
             if (i==const_dir)
-                elem_univariate_values(iComp)[i] = values_1d_faces_[face_no]->splines1d_cache_(iComp);
+                elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
             else
                 elem_univariate_values(iComp)[i] =
                     values_1d_data_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
         }
     }
-    if (face_values_[face_no].fill_values_)
+    if (face_value.fill_values_)
     {
-        evaluate_bspline_derivatives<0>(face_values_[face_no].size_,
+        evaluate_bspline_derivatives<0>(face_value.size_,
                                         elem_univariate_values,
-                                        face_values_[face_no].D0phi_hat_);
-        auto phi_hat = face_values_[face_no].phi_hat_.begin();
-        for (const auto &D0phi_hat : face_values_[face_no].D0phi_hat_)
+                                        face_value.D0phi_hat_);
+        auto phi_hat = face_values_[face_id].phi_hat_.begin();
+        for (const auto &D0phi_hat : face_value.D0phi_hat_)
         {
             *phi_hat = (D0phi_hat)(0);
             ++phi_hat;
         }
     }
 
-    if (face_values_[face_no].fill_gradients_)
-        evaluate_bspline_derivatives<1>(face_values_[face_no].size_,
+    if (face_value.fill_gradients_)
+        evaluate_bspline_derivatives<1>(face_value.size_,
                                         elem_univariate_values,
-                                        face_values_[face_no].D1phi_hat_);
+                                        face_value.D1phi_hat_);
 
-    if (face_values_[face_no].fill_hessians_)
-        evaluate_bspline_derivatives<2>(face_values_[face_no].size_,
+    if (face_value.fill_hessians_)
+        evaluate_bspline_derivatives<2>(face_value.size_,
                                         elem_univariate_values,
-                                        face_values_[face_no].D2phi_hat_);
+                                        face_value.D2phi_hat_);
 
-    face_values_[face_no].set_filled(true);
+    face_value.set_filled(true);
 }
 
 
@@ -1222,7 +1285,7 @@ get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::c
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_value(Index basis, Index qp) const -> Value const &
+get_basis_value(const Index basis, const Index qp) const -> Value const &
 {
     /*
         const auto &data = elem_values_.phi_hat_;
@@ -1238,6 +1301,28 @@ get_basis_value(Index basis, Index qp) const -> Value const &
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_basis_values(basis)[qp];
+}
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_basis_divergence(const Index basis, const Index qp) const -> Div const &
+{
+    /*
+        const auto &data = elem_values_.phi_hat_;
+
+        Assert(basis >= 0 && basis < int(data.get_num_functions()),
+               ExcIndexRange(basis,0,int(data.get_num_functions())));
+        Assert(qp >= 0 && qp < int(data.get_num_points()),
+               ExcIndexRange(qp,0,int(data.get_num_points())));
+
+        return data.get_function(basis)[qp];
+     //*/
+
+    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+    return this->get_basis_divergences(basis)[qp];
 }
 
 template <int dim_domain, int dim_range, int rank>
@@ -1280,29 +1365,165 @@ get_basis_hessian(const Index basis, const Index qp) const -> Derivative<2> cons
     return this->get_basis_hessians(basis)[qp];
 }
 
+
+
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field(const Vector &coefs) const
+get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
+{
+    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_values_, ExcCacheNotFilled());
+
+    return face_values_[face_id].phi_hat_;
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_values(const Index face_id, const Index i) const -> typename ValueTable<Value>::const_view
+{
+    return this->get_face_basis_values(face_id).get_function_view(i);
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_divergences(const Index face_id) const -> ValueTable<Div> const &
+{
+    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_divs_, ExcCacheNotFilled());
+
+    return face_values_[face_id].div_phi_hat_;
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_divergences(const Index face_id, const Index i) const -> typename ValueTable<Div>::const_view
+{
+    return this->get_face_basis_divergences(face_id).get_function_view(i);
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_gradients(const Index face_id) const -> ValueTable<Derivative<1>> const &
+{
+    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_gradients_, ExcCacheNotFilled());
+
+    return face_values_[face_id].D1phi_hat_;
+}
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_gradients(const Index face_id, const Index i) const -> typename ValueTable<Derivative<1>>::const_view
+{
+    return this->get_face_basis_gradients(face_id).get_function_view(i);
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_hessians(const Index face_id) const -> ValueTable<Derivative<2>> const &
+{
+    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_hessians_, ExcCacheNotFilled());
+
+    return face_values_[face_id].D2phi_hat_;
+}
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_hessians(const Index face_id, const Index i) const -> typename ValueTable<Derivative<2>>::const_view
+{
+    return this->get_face_basis_hessians(face_id).get_function_view(i);
+}
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_value(const Index face_id, const Index basis, const Index qp) const -> Value const &
+{
+
+    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+    return this->get_face_basis_values(face_id, basis)[qp];
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_divergence(const Index face_id, const Index basis, const Index qp) const -> Div const &
+{
+    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+    return this->get_face_basis_divergences(face_id, basis)[qp];
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const -> Derivative<1> const &
+{
+    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+    return this->get_face_basis_gradients(face_id, basis)[qp];
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const -> Derivative<2> const &
+{
+    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+    return this->get_face_basis_hessians(face_id, basis)[qp];
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+evaluate_field(const std::vector<Real> &local_coefs) const
 -> ValueVector<Value>
 {
     Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
     Assert(elem_values_.fill_values_ == true, ExcInvalidState());
-    Assert(space_->get_num_basis() == coefs.size(),
-    ExcDimensionMismatch(space_->get_num_basis(), coefs.size()));
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const int n_basis_element = this->get_num_basis();
-    const auto &D0phi_hat = this->get_basis_values();
-    Assert(D0phi_hat.get_num_functions() == n_basis_element,
-    ExcDimensionMismatch(D0phi_hat.get_num_functions(), n_basis_element));
+    const auto &D0phi_hat = this->get_basis_values() ;
+    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
 
-    const vector< Index > &local_to_global = this->get_local_to_global();
-
-    vector<Real> coefficients(n_basis_element);
-    for (int iFn = 0; iFn < n_basis_element; iFn++)
-        coefficients[iFn] = coefs(local_to_global[iFn]);
-
-    return D0phi_hat.evaluate_linear_combination(coefficients);
+    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
 
@@ -1310,67 +1531,98 @@ evaluate_field(const Vector &coefs) const
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field_gradients(const Vector &coefs) const -> ValueVector< Derivative<1> >
+evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<1> >
 {
     Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
     Assert(elem_values_.fill_gradients_ == true, ExcInvalidState());
-    Assert(space_->get_num_basis() == coefs.size(),
-    ExcDimensionMismatch(space_->get_num_basis(), coefs.size()));
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const int n_basis_element  = this->get_num_basis();
-    const auto &D1phi_hat = this->get_basis_gradients();
-    Assert(D1phi_hat.get_num_functions() == n_basis_element,
-    ExcDimensionMismatch(D1phi_hat.get_num_functions(), n_basis_element));
+    const auto &D1phi_hat = this->get_basis_gradients() ;
+    Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
 
-    const vector< Index > &local_to_global = this->get_local_to_global();
-
-    vector<Real> coefficients(n_basis_element);
-    for (int iFn = 0; iFn < n_basis_element; iFn++)
-        coefficients[iFn] = coefs(local_to_global[iFn]);
-
-    return D1phi_hat.evaluate_linear_combination(coefficients);
+    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
 }
-
 
 
 
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field_hessians(const Vector &coefs) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
 {
     Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
     Assert(elem_values_.fill_hessians_ == true, ExcInvalidState());
-    Assert(space_->get_num_basis() == coefs.size(),
-    ExcDimensionMismatch(space_->get_num_basis(), coefs.size()));
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
+    const auto &D2phi_hat = this->get_basis_hessians() ;
+    Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
 
-    const int n_basis_element  = this->get_num_basis();
-    const auto &D2phi_hat = this->get_basis_hessians();
-    Assert(D2phi_hat.get_num_functions() == n_basis_element,
-    ExcDimensionMismatch(D2phi_hat.get_num_functions(), n_basis_element));
-
-    const vector< Index > &local_to_global = this->get_local_to_global();
-
-    vector<Real> coefficients(n_basis_element);
-    for (int iFn = 0; iFn < n_basis_element; iFn++)
-        coefficients[iFn] = coefs(local_to_global[iFn]);
-
-    return D2phi_hat.evaluate_linear_combination(coefficients);
+    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
-
 
 
 
 template <int dim_domain, int dim_range, int rank>
 auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_values(const int face) const -> ValueTable<Value> const &
+evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector<Value>
 {
-    Assert(face_values_[face].is_filled(),ExcCacheNotFilled());
-    Assert(face_values_[face].fill_values_ == true, ExcInvalidState());
-    Assert(face >= 0 && face < n_faces, ExcIndexRange(face,0,n_faces));
-    return face_values_[face].phi_hat_;
+    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_values_ == true, ExcInvalidState());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D0phi_hat = this->get_face_basis_values(face_id) ;
+    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<1> >
+{
+    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_gradients_ == true, ExcInvalidState());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D1phi_hat = this->get_face_basis_gradients(face_id) ;
+    Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
+{
+    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
+    Assert(face_values_[face_id].fill_hessians_ == true, ExcInvalidState());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D2phi_hat = this->get_face_basis_hessians(face_id) ;
+    Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
 

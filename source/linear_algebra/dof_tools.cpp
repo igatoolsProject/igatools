@@ -281,7 +281,31 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         rhs(row_id) = bc_value * mat_value;
         solution(row_id) = bc_value;
     }
+    /*
+    out <<"After" <<std::endl;
+    rhs.print(out) ;
+    //*/
+}
 
+
+std::vector<Real>
+get_local_coefs(const Vector &global_coefs, const std::vector<Index> &local_to_global_ids)
+{
+    /*
+    const Size n = local_to_global_ids.size();
+    vector<Real> local_coefs(n);
+
+    for (int i = 0 ; i < n ; ++i)
+        local_coefs[i] = global_coefs[ local_to_global_ids[i] ];
+    //*/
+    vector<Real> local_coefs;
+    for (const auto &global_id : local_to_global_ids)
+        local_coefs.emplace_back(global_coefs(global_id));
+
+//  AssertThrow(false,ExcNotImplemented());
+
+
+    return local_coefs;
 }
 
 

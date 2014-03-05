@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * This class represent the ''concept'' of function space.
+ * @brief This class represent the "concept" of function space.
  * @note Its purpose is to use a function trait in order to check if a class is a function
  * space.
  *
@@ -40,7 +40,7 @@ class FunctionSpace
 
 
 /**
- * This class represent the ''concept'' of isogeometric function space
+ * This class represent the "concept" of isogeometric function space
  * that is built on a grid.
  *
  * A function space holds functions

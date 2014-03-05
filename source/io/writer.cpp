@@ -323,7 +323,8 @@ add_field(
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
             element->fill_values();
-            const auto field_values = element->evaluate_field(coefs);
+            const auto field_values = element->evaluate_field(
+                                          dof_tools::get_local_coefs(coefs,element->get_local_to_global()));
 
             for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
                 data[pos++] = field_values[iPt][0];
@@ -341,7 +342,8 @@ add_field(
         {
             element->fill_values();
 
-            const auto field_values = element->evaluate_field(coefs);
+            const auto field_values = element->evaluate_field(
+                                          dof_tools::get_local_coefs(coefs,element->get_local_to_global()));
 
             for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
             {
@@ -366,7 +368,8 @@ add_field(
         {
             element->fill_values();
 
-            const auto field_values = element->evaluate_field(coefs);
+            const auto field_values = element->evaluate_field(
+                                          dof_tools::get_local_coefs(coefs,element->get_local_to_global()));
 
             for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
             {

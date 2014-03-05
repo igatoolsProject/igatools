@@ -225,7 +225,20 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Matrix      &matrix,
                            Vector      &rhs,
                            Vector      &solution);
+
+
+
+/**
+ * Returns the local coefficients from the distributed vector of global coefficients
+ * @p global_coefs and from the vector of local-to-global indices.
+ *
+ */
+std::vector<Real>
+get_local_coefs(const Vector &global_coefs, const std::vector<Index> &local_to_global_ids);
+
+
 } // end of namespace dof_tools
+
 
 IGA_NAMESPACE_CLOSE
 

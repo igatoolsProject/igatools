@@ -75,7 +75,7 @@ get_face_degree(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 
 
 template <typename RefSpace>
-typename std::enable_if<!RefSpace::has_weights, std::shared_ptr<typename RefSpace::RefFaceSpace> >::type
+EnableIf<!RefSpace::has_weights, std::shared_ptr<typename RefSpace::RefFaceSpace> >
 create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
                       const Index face_id,
                       std::map<int,int> &elem_map)
@@ -90,13 +90,12 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
 
 
 template <typename RefSpace>
-typename std::enable_if<RefSpace::has_weights, std::shared_ptr<typename RefSpace::RefFaceSpace> >::type
+EnableIf<RefSpace::has_weights, std::shared_ptr<typename RefSpace::RefFaceSpace> >
 create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
                       const Index face_id,
                       std::map<int,int> &elem_map)
 {
     auto face_grid = ref_space->get_grid()->get_face_grid(face_id, elem_map);
-
 
     auto f_mult = get_face_mult<RefSpace> (ref_space, face_id);
     auto f_degree = get_face_degree<RefSpace> (ref_space, face_id);
@@ -272,9 +271,12 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
         const auto &map_at_points = elem->get_points() ;
 
+        vector<Real> solution_coefs_elem = dof_tools::get_local_coefs(
+                                               solution_coefs,elem->get_local_to_global());
+
         if (is_L2_norm)
         {
-            const auto &uh = elem->evaluate_field(solution_coefs);
+            const auto &uh = elem->evaluate_field(solution_coefs_elem);
             exact_solution->evaluate(map_at_points, u);
 
             Real element_err_L2_pow2 = 0.0 ;
@@ -289,7 +291,7 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
         if (is_H1_seminorm)
         {
-            const auto &grad_uh = elem->evaluate_field_gradients(solution_coefs) ;
+            const auto &grad_uh = elem->evaluate_field_gradients(solution_coefs_elem) ;
             exact_solution->evaluate_gradients(map_at_points, grad_u) ;
 
             Real element_err_semiH1_pow2 = 0.0 ;
@@ -442,7 +444,7 @@ project_boundary_values(const Function<Space::space_dim,Space::dim_range,Space::
             projection_l2<FaceSpace<Space> >(func, face_space, quad);
 
         const int face_n_dofs = dof_map.size() ;
-        for (int i = 0 ; i< face_n_dofs ; ++i)
+        for (Index i = 0 ; i< face_n_dofs ; ++i)
             boundary_values[dof_map[i]] = proj_on_face(i);
     }
 }
@@ -457,8 +459,8 @@ project_boundary_values(const Func<Space> &func,
                         std::map<Index,Real>  &boundary_values)
 {
     project_boundary_values(func, space, quad,
-    std::set<boundary_id>( {{bdry_id}}),
-                            boundary_values);
+    std::set<boundary_id>({{bdry_id}}),
+    boundary_values);
 }
 
 

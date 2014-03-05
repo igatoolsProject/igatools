@@ -23,7 +23,6 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
-#include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/static_multi_array.h>
 
@@ -44,6 +43,8 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
+    using typename base_t::GradientFaceType;
+    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     using self_t = IgMapping<RefSpace>;
@@ -62,7 +63,7 @@ public:
      * of the function space used to represents the mapping.
      */
     IgMapping(const std::shared_ptr<RefSpace> space,
-              const Vector &control_points);
+              const std::vector<Real> &control_points);
 
     /**
      *
@@ -71,7 +72,7 @@ public:
      * from a function space and a vector of control points.
      */
     static std::shared_ptr<base_t>
-    create(const std::shared_ptr<RefSpace> space, const Vector &control_points);
+    create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
 
     /**
      * Copy constructor.
@@ -90,6 +91,9 @@ public:
 
     void set_element(const CartesianGridElementAccessor<dim> &elem) override;
 
+    void set_face_element(const Index face_id,
+                          const CartesianGridElementAccessor<dim> &elem) override;
+
     /** @name Mapping as a standard function */
     ///@{
     virtual void evaluate(std::vector<ValueType> &values) const override;
@@ -100,6 +104,15 @@ public:
     virtual void evaluate_hessians
     (std::vector<HessianType> &hessians) const override;
 
+    virtual void evaluate_face
+    (const Index face_id, std::vector<ValueType> &values) const override;
+
+    virtual void evaluate_face_gradients
+    (const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+
+    virtual void evaluate_face_hessians
+    (const Index face_id, std::vector<HessianFaceType> &hessians) const override;
+
     ///@}
 
     /** @name Function used to modify the position of the control points */
@@ -108,7 +121,7 @@ public:
      * Sets the control points defining the map.
      * @param[in] control_points - Coordinates of the control points in the Euclidean space.
      */
-    void set_control_points(const Vector &control_points);
+    void set_control_points(const std::vector<Real> &control_points);
     ///@}
 
     std::shared_ptr<RefSpace> get_iga_space()
@@ -128,7 +141,7 @@ protected:
     std::shared_ptr<RefSpace> ref_space_;
 
     /** Coordinates of the control points in the Euclidean space. */
-    Vector control_points_;
+    std::vector<Real> control_points_;
 
     typename RefSpace::ElementIterator element_;
 
