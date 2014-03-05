@@ -148,18 +148,13 @@ class InstantiationInfo:
       self.domain_dims = [] # list all domain dimensions
       self.user_domain_dims = []
       self.face_domain_dims = []
-#----------------------------------------------------------
-      #self.UserRefDims=[]   # the list of the dimension  <d,d,d> of all ref spaces
-      #self.RefDims=[]       # the list of the dimension  <d,d,d> of all ref spaces
+
+#---------------------------------------
       self.RefSpaces=[]     # all required reference spaces
       self.UserRefSpaces=[]
       self.UserFilteredRefSpaces=[] #iga mapping required ref spaces
 
-      #self.UserMappingDims=[] #list of <dim, codims>
-      #self.MappingDims=[] #list of <dim, codims>
       
-
-      #self.PushForwards=[]
       self.UserPhysSpaces=[]
       self.PhysSpaces=[]
       
@@ -172,18 +167,9 @@ class InstantiationInfo:
       
       self.create_ref_spaces()
       self.create_PhysSpaces()
+          
+
     
-      self.tensor_indices=[] #list TensorIndex classes
-      self.create_tensor_indices()
-
-      self.tensor_sized_containers=[] #list TensorSizedContainer classes
-      self.create_tensor_sized_containers()
-
-      self.dynamic_multi_arrays=[] #list DynamicMultiArray classes
-      self.create_dynamic_multi_array()
-
-      self.cartesian_product_arrays=[] #list CartesainProductArray classes
-      self.create_cartesian_product_array()
 
       self.tensor_product_arrays=[] #list TensorProductArray classes
       self.create_tensor_product_array()
@@ -385,104 +371,6 @@ class InstantiationInfo:
  
 
 
-
-
-##################################
-   def create_tensor_indices(self):
-      '''Creates a list of the TensorIndex class that needs to be instantiated'''
-
-      C_list=[]
-
-      for row in self.all_table:
-         dim_domain = row.dim
-         C = 'TensorIndex<%d>' % (dim_domain)
-         C_list.append(C)
-         
-
-      self.tensor_indices = unique(C_list)
-      return None
-
-##################################
-
-
-##################################
-   def create_tensor_sized_containers(self):
-      '''Creates a list of the TensorSizedContainer class that needs to be instantiated'''
-      C_list=[]
- 
-      for row in self.all_table:
-         dim_domain = row.dim
-         C = 'TensorSizedContainer<%d>' % (dim_domain)
-         C_list.append(C)
-        
- 
-      self.tensor_sized_containers = unique(C_list)
-      return None
-##################################
-
-
-##################################
-   def create_dynamic_multi_array(self):
-      '''Creates a list of the DynamicMultiArray class that needs to be instantiated'''
-
-      C_list=[]
-
-      types=['Real','Index']
-      for row in self.all_table:
-         dim = row.dim
-         C = 'DynamicMultiArray<TensorIndex<%s>,%s>' % (dim,dim)
-         C_list.append(C)
-         for t in types:
-            C = 'DynamicMultiArray<%s,%s>' % (t,dim)
-            C_list.append(C)
-
-
-
-      for deriv in self.derivatives + self.values:
-         C = 'DynamicMultiArray<%s,2>' % (deriv)
-         C_list.append(C)
-
-
-      self.dynamic_multi_arrays = unique(C_list)
-      return None
-      ##################################
-
-
-##################################
-   def create_cartesian_product_array(self):
-      '''Creates a list of the CartesianProductArray class that needs to be instantiated'''
-
-      C_list=[]
-      for row in self.all_table:
-         dim = row.dim
-         C = 'CartesianProductArray<Real,%s>' % (dim)
-         
-         C_list.append(C)
-
-      types=['Real*','Index']
-      for t in types:
-         for row in self.all_table:
-            dim = row.dim
-            C = 'CartesianProductArray<%s,%s>' % (t,dim)
-            C_list.append(C)
-          
-
-
-# The following instantiations are for the cache of basisfucntion in Bspline space
-# and the bezier operators
-# todo: do we need both index types here?
-      matrix = "boost::numeric::ublas::matrix<Real>"
-      types = [ matrix, "const %s *" %matrix, "vector<%s>" %matrix, "const vector<%s> *" %matrix]
-      for t in types:
-          for row in self.all_table:
-              dim = row.dim
-              C = "CartesianProductArray<%s,%d>" % (t,dim)
-              C_list.append(C)
-
-
-      self.cartesian_product_arrays = unique(C_list)
-      return None
-      ##################################
 
 
 ##################################

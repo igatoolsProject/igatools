@@ -19,33 +19,24 @@
 #-+--------------------------------------------------------------------
 
 
-
-
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 
 include_files = ['#include <igatools/base/tensor.h>\n']
 for file in include_files:
     file_output.write(file)
-
-
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating DynamicMultiArray
-for row in inst.dynamic_multi_arrays:
+ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim) 
+           for dim in inst.domain_dims]
+ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
+                     for  dim in inst.domain_dims for t in ('Real','Index')]
+ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
+           for deriv in inst.derivatives + inst.values]
+
+for row in ma_list:
     file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
-
-# Operator <<
-for row in inst.dynamic_multi_arrays:
     file_output.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
-
-

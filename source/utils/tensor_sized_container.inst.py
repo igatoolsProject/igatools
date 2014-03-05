@@ -18,22 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
+# QA (pauletti, Mar 5, 2014):
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
 
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating TensorSizedContainer
-for row in inst.tensor_sized_containers:
-    file_output.write('template class %s; \n' % (row))
-
+ts_list=['TensorSizedContainer<%d>' %dim for dim in inst.domain_dims]
+for row in ts_list:
+   file_output.write('template class %s; \n' % (row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
-
-
-
-

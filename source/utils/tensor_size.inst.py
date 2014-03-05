@@ -25,7 +25,6 @@ file_output, inst = intialize_instantiation()
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
 ts_list=['TensorSize<%d>' %dim for dim in inst.domain_dims]
-
 for row in ts_list:
    file_output.write('template class %s; \n' % (row))
    file_output.write('template bool operator==(const %s &,const %s &); \n' 

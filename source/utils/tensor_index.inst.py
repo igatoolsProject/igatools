@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 5, 2014):
 from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
 file_output.write('IGA_NAMESPACE_OPEN\n')
