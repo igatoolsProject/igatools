@@ -28,6 +28,26 @@
 This module is loaded from all instantiation scripts.
 It will read a .txt table created by another script called
 generate_instantiation_table.py
+
+Instantiation rational
+
+Instantiation dependencies
+
+The user supplies at configure time the physical spaces that library 
+shall be used for.
+
+1) The user physical space require a face physical space
+
+2) Each physical space requires:
+   - A ref space
+   - A mapping
+   - a push-foward
+   
+3) In igatools each reference space is treated as a special physical space,
+   requiring:
+   - a mapping of codimenion  0
+   - a push-foward of h_grad type
+   
 """
 
 # Removes duplicates of a list while keeping the original order
@@ -143,13 +163,6 @@ class InstantiationInfo:
       self.UserPhysSpaces=[]
       self.PhysSpaces=[]
       
-
-      
-    #  self.user_ref_dom_dims = []
-    #  self.face_ref_dom_dims = []
-
-      
-
       self.read_dimensions_file(filename)
       
       self.create_mapping_dims()
@@ -159,13 +172,7 @@ class InstantiationInfo:
       
       self.create_ref_spaces()
       self.create_PhysSpaces()
-      
-      #self.create_Mappings()
-      
-
-     # self.tensor_sizes=[] #list TensorSize classes
-      #self.create_tensor_sizes()
-
+    
       self.tensor_indices=[] #list TensorIndex classes
       self.create_tensor_indices()
 
@@ -198,18 +205,6 @@ class InstantiationInfo:
 
       self.quadratures=[] #list Quadrature classes
       self.create_quadrature()
-
-#       self.mappings=[] #list Mapping classes
-#       self.create_mapping()
-
-#       self.mappings_lib=[] #list of Mapping specialization classes
-#       self.create_mapping_lib()
-#       self.mapping_element_accessors=[] #list MappingElementAccessor classes
-#       self.create_mapping_element_accessor()
-# 
-# 
-#       self.grid_forward_iterators=[] #list GridForwardIterator classes
-#       self.create_grid_forward_iterator()
 
       return None
 

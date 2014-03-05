@@ -19,21 +19,13 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating TensorIndex
-for row in inst.tensor_indices:
+index_list = ['TensorIndex<%d>' %dim for dim in inst.domain_dims]
+for row in index_list:
     file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
-
-# Operator <<
-for row in inst.tensor_indices:
     file_output.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
