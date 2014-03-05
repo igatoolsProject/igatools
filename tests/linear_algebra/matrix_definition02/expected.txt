@@ -1,0 +1,86 @@
+ Domain dim: 1 Range dim: 1
+ Degree of rows space: 3
+ Degree of columns space: 2
+
+Rows space:
+BSplineSpace<1,1>
+	Reference Patch: CartesianGrid<1>
+		Knot coordinates:
+			Direction[0] = [ 0 1.00000 ]
+		Num elements: 1
+			Direction[0] = 1
+	
+		Space component[0]: 
+			Direction[0]:
+				Degree = 3
+				Knot multiplicities: [ 4 4 ]
+				Knots vectors (with repetitions): [ 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
+				Interval[0]
+					Bezier extraction operator:
+						1.00000 0 0 0 
+						0 1.00000 0 0 
+						0 0 1.00000 0 
+						0 0 0 1.00000 
+	Num dofs: 4
+	Dofs: [ 0 1 2 3 ]
+	Num overlapping funcs: [ 4 4 4 4 ]
+
+Columns space:
+BSplineSpace<1,1>
+	Reference Patch: CartesianGrid<1>
+		Knot coordinates:
+			Direction[0] = [ 0 1.00000 ]
+		Num elements: 1
+			Direction[0] = 1
+	
+		Space component[0]: 
+			Direction[0]:
+				Degree = 2
+				Knot multiplicities: [ 3 3 ]
+				Knots vectors (with repetitions): [ 0 0 0 1.00000 1.00000 1.00000 ]
+				Interval[0]
+					Bezier extraction operator:
+						1.00000 0 0 
+						0 1.00000 0 
+						0 0 1.00000 
+	Num dofs: 3
+	Dofs: [ 0 1 2 ]
+	Num overlapping funcs: [ 3 3 3 ]
+
+Number of dofs of rows space: 4
+Number of dofs of columns space: 3
+
+A matrix
+-----------------------------
+Row Index        Col Index        Value
+0       0        2.00000
+0       1        0
+0       2        0
+1       0        0
+1       1        2.00000
+1       2        0
+2       0        0
+2       1        0
+2       2        2.00000
+3       0        1.00000
+3       1        0
+3       2        0
+-----------------------------
+
+b vector
+-----------------------------
+Global_ID        Value
+0        1.00000
+1        2.00000
+2        3.00000
+-----------------------------
+
+c = A . b
+-----------------------------
+Global_ID        Value
+0        2.00000
+1        4.00000
+2        6.00000
+3        1.00000
+-----------------------------
+
