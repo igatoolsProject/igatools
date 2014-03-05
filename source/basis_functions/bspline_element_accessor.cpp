@@ -65,15 +65,15 @@ namespace
  */
 // TODO (pauletti, Nov 1, 2013): Document how this class work and its internals
 //TODO(pauletti, Mar 3, 2014): rename dim_domain to dim and deriv_order to order
-template<int dim_domain, int deriv_order>
+template<int dim, int order>
 class DerivativeSymmetryManager
 {
 public:
-    static const int num_entries_total = pow(dim_domain,deriv_order);
-    static const int num_entries_eval = constexpr_binomial_coefficient(dim_domain-1+deriv_order,deriv_order);
+    static const int num_entries_total = pow(dim,order);
+    static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
     static const int num_entries_copy = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<dim_domain,1,1,deriv_order> Derivative_t;
+    typedef Derivatives<dim,1,1,order> Derivative_t;
 
     /** @name Constructors */
     ///@{
@@ -82,11 +82,11 @@ public:
 
     /** Copy constructor */
     DerivativeSymmetryManager(
-        const DerivativeSymmetryManager<dim_domain,deriv_order> &in) = default;
+        const DerivativeSymmetryManager<dim,order> &in) = default;
 
     /** Move constructor */
     DerivativeSymmetryManager(
-        DerivativeSymmetryManager<dim_domain,deriv_order> &&in) = default;
+        DerivativeSymmetryManager<dim,order> &&in) = default;
 
     ~DerivativeSymmetryManager() = default;
     ///@}
@@ -95,16 +95,16 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator */
-    DerivativeSymmetryManager<dim_domain,deriv_order> &operator=(
-        const DerivativeSymmetryManager<dim_domain,deriv_order> &) = default;
+    DerivativeSymmetryManager<dim,order> &operator=(
+        const DerivativeSymmetryManager<dim,order> &) = default;
 
     /** Move assignment operator */
-    DerivativeSymmetryManager<dim_domain,deriv_order> &operator=(
-        DerivativeSymmetryManager<dim_domain,deriv_order> &&) = default;
+    DerivativeSymmetryManager<dim,order> &operator=(
+        DerivativeSymmetryManager<dim,order> &&) = default;
     ///@}
 
 
-    static const int new_deriv_order = deriv_order>0?deriv_order:1;
+    static const int new_deriv_order = order>0?order:1;
     const array<int,num_entries_eval> &get_entries_flat_id_evaluate() const
     {
         return entries_flat_id_evaluate_;
@@ -126,7 +126,7 @@ public:
     }
 private:
 
-    bool test_if_evaluate(const array<int,deriv_order> &tensor_index) const;
+    bool test_if_evaluate(const array<int,order> &tensor_index) const;
 
     /** Tensor ids of all the entries */
 
@@ -141,26 +141,26 @@ private:
     /** Flat ids of the source entries that need to be copied */
     array<int,num_entries_copy> entries_flat_id_copy_from_;
 
-    TensorSize<deriv_order> size_deriv_index_;
+    TensorSize<order> size_deriv_index_;
 };
 
 
 
 
-template<int dim_domain, int deriv_order>
-DerivativeSymmetryManager<dim_domain,deriv_order>::
+template<int dim, int order>
+DerivativeSymmetryManager<dim,order>::
 DerivativeSymmetryManager()
 {
-    size_deriv_index_.fill(dim_domain);
+    size_deriv_index_.fill(dim);
 
-    typedef MultiArrayUtils<deriv_order> MAUtils;
+    typedef MultiArrayUtils<order> MAUtils;
 
 
-    Derivatives<dim_domain,1,1,deriv_order> derivative;
+    Derivatives<dim,1,1,order> derivative;
 
     int eval_id = 0;
     int copy_id = 0;
-    if (deriv_order == 0)
+    if (order == 0)
     {
         for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
         {
@@ -199,14 +199,14 @@ DerivativeSymmetryManager()
 }
 
 
-template<int dim_domain, int deriv_order>
+template<int dim, int order>
 inline
 bool
-DerivativeSymmetryManager<dim_domain,deriv_order>::
-test_if_evaluate(const array<int,deriv_order> &tensor_index) const
+DerivativeSymmetryManager<dim,order>::
+test_if_evaluate(const array<int,order> &tensor_index) const
 {
     bool test_result = true;
-    for (int i = 0; i < deriv_order-1; ++i)
+    for (int i = 0; i < order-1; ++i)
     {
         if (tensor_index[i+1] > tensor_index[i])
         {
@@ -218,19 +218,19 @@ test_if_evaluate(const array<int,deriv_order> &tensor_index) const
 }
 
 
-template<int deriv_order>
-class DerivativeSymmetryManager<0,deriv_order>
+template<int order>
+class DerivativeSymmetryManager<0,order>
 {
 public:
     static const int num_entries_total = 1;
     static const int num_entries_eval  = 1;
     static const int num_entries_copy  = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<0,1,1,deriv_order> Derivative_t;
+    typedef Derivatives<0,1,1,order> Derivative_t;
 
     DerivativeSymmetryManager()
     {
-        entries_tensor_id_[0] = {{0}};
+        entries_tensor_id_[0] = {{}};
         entries_flat_id_evaluate_[0] = 0;
     }
 
@@ -249,14 +249,14 @@ public:
         return entries_flat_id_copy_from_;
     }
 
-    const array<TensorIndex<deriv_order>,num_entries_total> &get_entries_tensor_id() const
+    const array<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
     {
         return entries_tensor_id_;
     }
 
 private:
     /** Tensor ids of all the entries */
-    array<TensorIndex<deriv_order>,num_entries_total> entries_tensor_id_;
+    array<TensorIndex<order>,num_entries_total> entries_tensor_id_;
 
     /** Flat ids of the entries that need to be computed */
     array<int,num_entries_eval> entries_flat_id_evaluate_;
@@ -441,8 +441,11 @@ reset_element_cache(const ValueFlags fill_flag,
 
     Index face_id = 0 ;
     const auto face_fill_flag = get_face_flags(fill_flag) ;
-    for (auto& face_value : face_values_)
-        face_value.reset(face_id++, face_fill_flag, n_basis_direction, quad);
+
+//    if ( !contains(face_fill_flag, ValueFlags::none) )
+    if (face_fill_flag != ValueFlags::none)
+        for (auto& face_value : face_values_)
+            face_value.reset(face_id++, face_fill_flag, n_basis_direction, quad);
 }
 
 
@@ -581,7 +584,7 @@ reset(const ValueFlags fill_flag,
         D2phi_hat_.clear();
     }
 
-    Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
+//    Assert((max_der_order>=0), ExcMessage("Not a right ValueFlag"));
     //--------------------------------------------------------------------------
 
 

@@ -22,7 +22,6 @@
 #include <igatools/base/exceptions.h>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
-
 IGA_NAMESPACE_OPEN
 
 DenseMatrix &

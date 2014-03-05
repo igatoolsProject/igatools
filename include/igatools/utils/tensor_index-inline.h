@@ -57,8 +57,11 @@ inline
 TensorIndex<rank>::
 TensorIndex(std::initializer_list<Index> list) noexcept
 {
-    Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
-    std::copy(list.begin(), list.end(), this->begin());
+    if (rank > 0)
+    {
+        Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
+        std::copy(list.begin(), list.end(), this->begin());
+    }
 
 #ifndef NDEBUG
     for (const auto & idx : (*this))

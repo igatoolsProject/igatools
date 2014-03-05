@@ -1,0 +1,72 @@
+Domain dim: 1 Range dim: 1 Degree: 0
+Element index: 0
+Global dofs: [ 0 ]
+Element index: 1
+Global dofs: [ 1 ]
+Element index: 2
+Global dofs: [ 2 ]
+
+Domain dim: 1 Range dim: 2 Degree: 0
+Element index: 0
+Global dofs: [ 0 3 ]
+Element index: 1
+Global dofs: [ 1 4 ]
+Element index: 2
+Global dofs: [ 2 5 ]
+
+Domain dim: 1 Range dim: 3 Degree: 0
+Element index: 0
+Global dofs: [ 0 3 6 ]
+Element index: 1
+Global dofs: [ 1 4 7 ]
+Element index: 2
+Global dofs: [ 2 5 8 ]
+
+Domain dim: 1 Range dim: 1 Degree: 1
+Element index: 0
+Global dofs: [ 0 1 ]
+Element index: 1
+Global dofs: [ 1 2 ]
+Element index: 2
+Global dofs: [ 2 3 ]
+
+Domain dim: 1 Range dim: 2 Degree: 1
+Element index: 0
+Global dofs: [ 0 1 4 5 ]
+Element index: 1
+Global dofs: [ 1 2 5 6 ]
+Element index: 2
+Global dofs: [ 2 3 6 7 ]
+
+Domain dim: 1 Range dim: 3 Degree: 1
+Element index: 0
+Global dofs: [ 0 1 4 5 8 9 ]
+Element index: 1
+Global dofs: [ 1 2 5 6 9 10 ]
+Element index: 2
+Global dofs: [ 2 3 6 7 10 11 ]
+
+Domain dim: 1 Range dim: 1 Degree: 2
+Element index: 0
+Global dofs: [ 0 1 2 ]
+Element index: 1
+Global dofs: [ 1 2 3 ]
+Element index: 2
+Global dofs: [ 2 3 4 ]
+
+Domain dim: 1 Range dim: 2 Degree: 2
+Element index: 0
+Global dofs: [ 0 1 2 5 6 7 ]
+Element index: 1
+Global dofs: [ 1 2 3 6 7 8 ]
+Element index: 2
+Global dofs: [ 2 3 4 7 8 9 ]
+
+Domain dim: 1 Range dim: 3 Degree: 2
+Element index: 0
+Global dofs: [ 0 1 2 5 6 7 10 11 12 ]
+Element index: 1
+Global dofs: [ 1 2 3 6 7 8 11 12 13 ]
+Element index: 2
+Global dofs: [ 2 3 4 7 8 9 12 13 14 ]
+

@@ -1,0 +1,80 @@
+domain, range and rank: 1,1,1
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ 0.500000 ]  
+	Function[1] : [ 0.500000 ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ 0.500000 ]  
+	Function[1] : [ 0.500000 ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ [ -2.00000 ]  ]  
+	Function[1] : [ [ 2.00000 ]  ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ [ -2.00000 ]  ]  
+	Function[1] : [ [ 2.00000 ]  ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ [ [ 0 ]  ]  ]  
+	Function[1] : [ [ [ 0 ]  ]  ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ [ [ 0 ]  ]  ]  
+	Function[1] : [ [ [ 0 ]  ]  ]  
+domain, range and rank: 2,1,1
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.250000 ]  
+	Function[2] : [ 0.250000 ]  
+	Function[3] : [ 0.250000 ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.250000 ]  
+	Function[2] : [ 0.250000 ]  
+	Function[3] : [ 0.250000 ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.250000 ]  
+	Function[2] : [ 0.250000 ]  
+	Function[3] : [ 0.250000 ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.250000 ]  
+	Function[2] : [ 0.250000 ]  
+	Function[3] : [ 0.250000 ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ -1.00000 ]  [ -1.00000 ]  ]  
+	Function[1] : [ [ 1.00000 ]  [ -1.00000 ]  ]  
+	Function[2] : [ [ -1.00000 ]  [ 1.00000 ]  ]  
+	Function[3] : [ [ 1.00000 ]  [ 1.00000 ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ -1.00000 ]  [ -1.00000 ]  ]  
+	Function[1] : [ [ 1.00000 ]  [ -1.00000 ]  ]  
+	Function[2] : [ [ -1.00000 ]  [ 1.00000 ]  ]  
+	Function[3] : [ [ 1.00000 ]  [ 1.00000 ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ -1.00000 ]  [ -1.00000 ]  ]  
+	Function[1] : [ [ 1.00000 ]  [ -1.00000 ]  ]  
+	Function[2] : [ [ -1.00000 ]  [ 1.00000 ]  ]  
+	Function[3] : [ [ 1.00000 ]  [ 1.00000 ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ -1.00000 ]  [ -1.00000 ]  ]  
+	Function[1] : [ [ 1.00000 ]  [ -1.00000 ]  ]  
+	Function[2] : [ [ -1.00000 ]  [ 1.00000 ]  ]  
+	Function[3] : [ [ 1.00000 ]  [ 1.00000 ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+	Function[1] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[2] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[3] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+	Function[1] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[2] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[3] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+	Function[1] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[2] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[3] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+	Function[1] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[2] : [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+	Function[3] : [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
