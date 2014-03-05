@@ -1,0 +1,33 @@
+-------------------------
+dim_dimain = 2
+dim_range  = 1
+rank       = 1
+face_id = 0, dof_id = 0
+face_id = 0, dof_id = 3
+face_id = 0, dof_id = 6
+-------------------------
+-------------------------
+dim_dimain = 2
+dim_range  = 2
+rank       = 1
+face_id = 0, dof_id = 0
+face_id = 0, dof_id = 3
+face_id = 0, dof_id = 6
+face_id = 0, dof_id = 9
+face_id = 0, dof_id = 12
+face_id = 0, dof_id = 15
+-------------------------
+-------------------------
+dim_dimain = 3
+dim_range  = 1
+rank       = 1
+face_id = 0, dof_id = 0
+face_id = 0, dof_id = 3
+face_id = 0, dof_id = 6
+face_id = 0, dof_id = 9
+face_id = 0, dof_id = 12
+face_id = 0, dof_id = 15
+face_id = 0, dof_id = 18
+face_id = 0, dof_id = 21
+face_id = 0, dof_id = 24
+-------------------------

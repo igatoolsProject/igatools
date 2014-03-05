@@ -24,6 +24,8 @@
 
 #include <igatools/base/config.h>
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+
 
 IGA_NAMESPACE_OPEN
 

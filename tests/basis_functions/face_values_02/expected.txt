@@ -1,0 +1,39 @@
+Element0
+ValueTable (num_functions=4,num_points=4) :
+	Function[0] : [ 0.622009 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.0446582 ]  
+	Function[1] : [ 0.166667 ]  [ 0.622009 ]  [ 0.0446582 ]  [ 0.166667 ]  
+	Function[2] : [ 0.166667 ]  [ 0.0446582 ]  [ 0.622009 ]  [ 0.166667 ]  
+	Function[3] : [ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
+Face 0
+values: 
+ValueTable (num_functions=4,num_points=2) :
+	Function[0] : [ 0.788675 ]  [ 0.211325 ]  
+	Function[1] : [ 0 ]  [ 0 ]  
+	Function[2] : [ 0.211325 ]  [ 0.788675 ]  
+	Function[3] : [ 0 ]  [ 0 ]  
+
+Face 1
+values: 
+ValueTable (num_functions=4,num_points=2) :
+	Function[0] : [ 0 ]  [ 0 ]  
+	Function[1] : [ 0.788675 ]  [ 0.211325 ]  
+	Function[2] : [ 0 ]  [ 0 ]  
+	Function[3] : [ 0.211325 ]  [ 0.788675 ]  
+
+Face 2
+values: 
+ValueTable (num_functions=4,num_points=2) :
+	Function[0] : [ 0.788675 ]  [ 0.211325 ]  
+	Function[1] : [ 0.211325 ]  [ 0.788675 ]  
+	Function[2] : [ 0 ]  [ 0 ]  
+	Function[3] : [ 0 ]  [ 0 ]  
+
+Face 3
+values: 
+ValueTable (num_functions=4,num_points=2) :
+	Function[0] : [ 0 ]  [ 0 ]  
+	Function[1] : [ 0 ]  [ 0 ]  
+	Function[2] : [ 0.788675 ]  [ 0.211325 ]  
+	Function[3] : [ 0.211325 ]  [ 0.788675 ]  
+
+

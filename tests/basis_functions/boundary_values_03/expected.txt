@@ -1,0 +1,5 @@
+Dimension: 2
+basis index 	 value
+0	0
+1	0.500000
+2	1.00000

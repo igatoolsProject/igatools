@@ -1,0 +1,34 @@
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ 0.500000 ]  
+	Function[1] : [ 0.500000 ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ [ -1.00000 ]  ]  
+	Function[1] : [ [ 1.00000 ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.250000 ]  
+	Function[2] : [ 0.250000 ]  
+	Function[3] : [ 0.250000 ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ -0.500000 ]  [ -0.500000 ]  ]  
+	Function[1] : [ [ 0.500000 ]  [ -0.500000 ]  ]  
+	Function[2] : [ [ -0.500000 ]  [ 0.500000 ]  ]  
+	Function[3] : [ [ 0.500000 ]  [ 0.500000 ]  ]  
+ValueTable (num_functions=8,num_points=1) :
+	Function[0] : [ 0.125000 ]  
+	Function[1] : [ 0.125000 ]  
+	Function[2] : [ 0.125000 ]  
+	Function[3] : [ 0.125000 ]  
+	Function[4] : [ 0.125000 ]  
+	Function[5] : [ 0.125000 ]  
+	Function[6] : [ 0.125000 ]  
+	Function[7] : [ 0.125000 ]  
+ValueTable (num_functions=8,num_points=1) :
+	Function[0] : [ [ -0.250000 ]  [ -0.250000 ]  [ -0.250000 ]  ]  
+	Function[1] : [ [ 0.250000 ]  [ -0.250000 ]  [ -0.250000 ]  ]  
+	Function[2] : [ [ -0.250000 ]  [ 0.250000 ]  [ -0.250000 ]  ]  
+	Function[3] : [ [ 0.250000 ]  [ 0.250000 ]  [ -0.250000 ]  ]  
+	Function[4] : [ [ -0.250000 ]  [ -0.250000 ]  [ 0.250000 ]  ]  
+	Function[5] : [ [ 0.250000 ]  [ -0.250000 ]  [ 0.250000 ]  ]  
+	Function[6] : [ [ -0.250000 ]  [ 0.250000 ]  [ 0.250000 ]  ]  
+	Function[7] : [ [ 0.250000 ]  [ 0.250000 ]  [ 0.250000 ]  ]  
