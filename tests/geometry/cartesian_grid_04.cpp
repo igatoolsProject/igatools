@@ -38,7 +38,7 @@ void face_uniform(const int n_knots)
         out << "Face: " << i << endl;
         map<int, int> elem_map;
         auto face_grid = grid->get_face_grid(i, elem_map);
-        face_grid.print_info(out);
+        face_grid->print_info(out);
         for (auto x : elem_map)
             out << x.first << " " << x.second << endl;
     }
@@ -59,7 +59,7 @@ void face_non_uniform()
         out << "Face: " << i << endl;
         map<int, int> elem_map;
         auto face_grid = grid->get_face_grid(i, elem_map);
-        face_grid.print_info(out);
+        face_grid->print_info(out);
         for (auto x : elem_map)
             out << x.first << " " << x.second << endl;
     }

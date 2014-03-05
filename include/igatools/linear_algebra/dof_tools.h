@@ -49,7 +49,8 @@ namespace dof_tools
  */
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()> * = nullptr);
+get_sparsity_pattern(const SpaceType &space,
+                     EnableIf<Is_function_space<SpaceType>()> *fs = nullptr);
 
 
 /**
@@ -74,7 +75,7 @@ get_sparsity_pattern(const SpaceType &space, EnableIf<!Is_function_space<SpaceTy
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+                     EnableIf<Is_function_space<SpaceType>()> *fs = nullptr);
 
 /**
  * @todo document this function
@@ -83,7 +84,7 @@ get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     EnableIf<!Is_function_space<SpaceType>()>* = nullptr)
+                     EnableIf<!Is_function_space<SpaceType>()> *fs = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
     SparsityPattern graph;
@@ -97,7 +98,8 @@ get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
  */
 template < class SpaceType >
 std::vector<Index>
-get_dofs(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+get_dofs(const SpaceType &space,
+         EnableIf<Is_function_space<SpaceType>()> *fs = nullptr);
 
 
 /**
@@ -106,7 +108,8 @@ get_dofs(const SpaceType &space, EnableIf<Is_function_space<SpaceType>()>* = nul
  */
 template < class SpaceType >
 std::vector<Index>
-get_dofs(const SpaceType &space, EnableIf<!Is_function_space<SpaceType>()>* = nullptr)
+get_dofs(const SpaceType &space,
+         EnableIf<!Is_function_space<SpaceType>()> *fs = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
     std::vector<Index> vec;
@@ -127,7 +130,7 @@ SparsityPattern
 get_sparsity_pattern(const Space1 &space_rows,
                      const Space2 &space_cols,
                      EnableIf<
-                     Is_function_space<Space1>()  &&Is_function_space<Space2>() >* = nullptr)
+                     Is_function_space<Space1>()  &&Is_function_space<Space2>() > *fs= nullptr)
 {
     const auto &row_dofs = get_dofs(space_rows);
     const auto &col_dofs = get_dofs(space_cols);
@@ -178,7 +181,7 @@ SparsityPattern
 get_sparsity_pattern(const Space1 &space_rows,
                      const Space2 &space_cols,
                      EnableIf<
-                     !(Is_function_space<Space1>() &&Is_function_space<Space2>())>* = nullptr)
+                     !(Is_function_space<Space1>() &&Is_function_space<Space2>())> *fs = nullptr)
 {
     AssertThrow(false,ExcMessage("At least one function argument is not a function space."));
     SparsityPattern graph;
@@ -195,7 +198,7 @@ template < class SpaceType >
 SparsityPattern get_sparsity_pattern(
     const std::vector< std::shared_ptr< SpaceType > > &space_rows,
     const std::vector< std::shared_ptr< SpaceType > > &space_cols,
-    EnableIf<Is_function_space<SpaceType>()>* = nullptr);
+    EnableIf<Is_function_space<SpaceType>()> *fs = nullptr);
 
 /**
  * @warning This function only works when both spaces have the same cartesian grid.
