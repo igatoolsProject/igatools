@@ -117,7 +117,7 @@ IdentityMapping< dim, codim>::
 evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-        ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
     const auto &points = face_points_[face_id] ;
     const int num_points = points.size();
     Assert(values.size() == num_points,
@@ -144,7 +144,7 @@ IdentityMapping< dim, codim>::
 evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-        ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
     const int num_points = face_points_[face_id].size();
     Assert(gradients.size() == num_points,
            ExcDimensionMismatch(gradients.size(),num_points));
@@ -162,7 +162,7 @@ IdentityMapping< dim, codim>::
 evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-        ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
     const int num_points = face_points_[face_id].size();
     for (int i = 0; i<num_points; i++)
         hessians[i] = 0.;

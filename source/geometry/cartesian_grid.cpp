@@ -75,8 +75,8 @@ create(const TensorSize<dim> &n)
 template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const BBox<dim> &end_points, const Size n_knots)
-:
-CartesianGrid(end_points, TensorSize<dim>(n_knots))
+    :
+    CartesianGrid(end_points, TensorSize<dim>(n_knots))
 {}
 
 
@@ -95,8 +95,8 @@ CartesianGrid(const BBox<dim> &end_points,
               const TensorSize<dim> &n)
     :
     kind_ {Kind::direction_uniform},
-    boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
-    knot_coordinates_(n)
+      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
+      knot_coordinates_(n)
 {
     vector<Real> knots_1d;
     for (int i = 0; i < dim; ++i)
