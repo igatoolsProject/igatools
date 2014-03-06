@@ -1,0 +1,115 @@
+/**
+
+\page example_01 Example 1: creating a B-spline space
+
+\section Introduction
+In this example we create and plot a the knot vectors without repetition
+realized by the CartesianGrid class, which also defines the reference domain.
+On this grid by providing the knot multiplicities and degree we create 
+a B-spline space.
+
+To run the example program recall the instructions on the
+\ref tutorial page. As this is the first example we briefly
+repeat these instructions
+\code{.bash}
+cd tutorial/example_01
+make run-example_01
+\endcode
+
+If everything goes fine you should see the following
+output on the screen
+\code{.bash}
+Creating a 2 dimensional cartesian grid
+Number of elements: 4
+Creating a spline space of degree 2
+Number of basis functions: 16
+\endcode
+and a .vtu file that is saved in the current directory
+\code{.bash}
+$ ls *.vtu
+grid.vtu
+\endcode
+
+The grid is saved in a VTK format and can be
+visualized using paraview as follows:
+\code{.bash}
+paraview --data=grid.vtu
+\endcode
+\image html example_01-01.png "Cartesian Grid" 
+
+\section code01 Description of the program
+
+First we need to include some header files (where the igatools classes
+we are going to use are declared).
+In this case we have one for the CartesianGrid and one for the BSplineSpace
+classes.
+\snippet example_01.cpp includes
+
+And one more for the class responsible of saving output in graphical format
+\snippet example_01.cpp include_writer
+
+Then we make symbols of a main namespaces accessible 
+in the scope of the using directive so that we can write cout instead of std::cout
+and BSplineSpace instead of iga::BSplineSpace.
+\snippet example_01.cpp using
+
+Then creates a uniformly distributed 2 dimensional knot vector with 3 knots
+in each direction for the unit square.
+notice the strange <dim> notation that appears everywhere, it is part
+of the template programming the library uses to be dimension independent
+\snippet example_01.cpp grid
+
+The next two lines plot the grid geometry in a file 
+called grid.vtu
+\snippet example_01.cpp plot_grid
+
+Having the knot vectors we want to create a B-spline space on them.
+The following lines create an open knot, maximum regularity B-spline 
+space of degree 2.
+\snippet example_01.cpp space
+
+\section exc01 Exercises
+<ol>
+<li> Modify the code to obtain a cartesian grid of different dimension with 
+different number of knots and spline spaces with different degrees, verify that 
+you obtain the expected output.
+<div class="row">
+ <a href="#hide1" class="hide" id="hide1">Show hint</a>
+ <a href="#show1" class="show" id="show1">Hide hint</a>
+ <div class="list">
+\code{.cpp}
+const int dim = 3;
+const int n_knots = 5;
+\endcode
+\image html example_01-02.png "3D Cartesian Grid with 5 knots" 
+ </div>
+ </div>
+<li> How would you modify the code so that the grid has 3 knots in the x direction 
+and 5 in the y?
+<div class="row">
+ <a href="#hide2" class="hide" id="hide2">Show hint</a>
+ <a href="#show2" class="show" id="show2">Hide hint</a>
+ <div class="list">
+\code{.cpp}
+auto grid = CartesianGrid<dim>::create({3,5});
+\endcode
+\image html example_01-03.png "3 by 5 uniform knots cartesian grid" 
+ </div>
+ </div>
+<li> How would you create a grid with non uniform knots?
+ <div class="row">
+  <a href="#hide3" class="hide" id="hide3">Show hint</a>
+  <a href="#show3" class="show" id="show3">Hide hint</a>
+  <div class="list">
+\code{.cpp}
+auto grid = CartesianGrid<dim>::create({{0,0.2,0.8,2},{0,0.25,1}});
+\endcode
+\image html example_01-04.png "Non uniform knots cartesian grid" 
+ </div>
+ </div>
+</ol>
+\section fullcode01 The full program
+
+\include example_01_no_tag.cpp
+  
+*/

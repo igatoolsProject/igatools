@@ -1,0 +1,45 @@
+/**
+
+\page example_03 Example 3: traversing elements of a grid-like container (using values cache)
+\section Introduction
+In example \ref example_02 we accessed element information on grid-like containers
+that do not use a cache.
+igatools is a scientific computing library that aims for efficiency.
+Unfortunately, efficient and clear code are many times opposite and some sort
+of tradeoff is necessary.
+In igatools, in order to attain some effiency in the computation we have adopted
+a cache mechanism, that requires some minimal extra lines of codes,
+an initialization and a filling.
+The use of the cache, generally refered in igatools as the element values is
+associated to the computation of quantities coming from a quadrature scheme.
+
+\section code03 Description of the program
+Besides header files that have been already included in the
+previous examples we include a new one for quadrature schemes
+\snippet example_03.cpp quad include
+
+Similar to the previous example we create a grid and define element iterators
+pointing to the begining and end of the container
+\snippet example_03.cpp loop as before
+
+One difference is that before entering the loop we init the 
+element values cache, saying what information we are going to need and
+for what quadrature rule
+\snippet example_03.cpp init cache
+
+Inside the loop on an element base, we call a smart function to fill the 
+the element values that are going to be requested
+\snippet example_03.cpp fill cache
+Now we can request the weighted measure, this is at each quadrature point
+assign the w_i times the measure (length, area, volume) of the element.
+\snippet example_03.cpp get meas
+\section Exercises 
+-# Different grids (non-uniform, etc.)
+-# Different quad schemes with different numbers of points
+-# What happens if you request an uninitilized data
+-# What happens if you request an data and forgot to fill the value?
+\section fcode03 The full program
+\include example_03_no_tag.cpp
+ 
+  
+*/

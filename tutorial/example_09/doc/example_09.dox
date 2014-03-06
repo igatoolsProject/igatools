@@ -1,0 +1,20 @@
+/**
+
+\page example_09 Example 9: Poisson problem: Physical domain
+
+\section Introduction
+In example_05 we solved Poisson equation on a reference domain.
+Now using the Mapping and PushForward we solve the Poisson problem
+on a deformed domain.
+
+\section code09 Description of the program
+
+\snippet example_09.cpp old includes
+
+\section exc09 Exercises
+
+\section fullcode09 The full program
+\include example_09_no_tag.cpp
+ 
+  
+*/

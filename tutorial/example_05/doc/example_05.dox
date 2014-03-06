@@ -1,0 +1,86 @@
+/**
+
+\page example_05 Example 5: Poisson problem: assembling the local contributions
+
+\section Introduction
+The typical example in a Galerkin method is the Poisson problem:
+find  \f$u:\Omega\subset\mathbb{R}^d\to\mathbb{R}\f$ such that
+\f[
+-\Delta u = f \text{ in } \Omega, \quad u=g \text{ on }
+  \partial\Omega.\f]
+
+It can be rewritten in weak form as: find \f$u\in H^1_0(\Omega) \oplus g\f$ 
+such that
+\f$\mathcal{A}u(v) = F(v) \text{ for all } v \in   H^1_0(\Omega)\f$, where 
+\f$\mathcal{A}u(v) = \int_\Omega \nabla u \cdot \nabla v\f$
+and 
+\f$ F(v)  = \int_\Omega f  v\f$.
+
+The isogeometric method for this problem requires:
+-# the definition of the isogeometric space;
+-# the assembling of the stiffness matrix K
+   and right hand side  F by adding the element contributions;
+-# the solving of the linear system K U =  F.
+
+This example shows how to program the assembling of local contributions
+(matrix and vector) for the Poisson problem, this being a basic ingredient
+that we will use for solving the problem in
+\ref example_05 and \ref example_07.
+
+In here we want to assemble:
+- the local matrices \f$ K^{e}_{ij} = \int_{\Omega^e} \nabla \phi_i \cdot \nabla \phi_j 
+  \approx \sum_{qp} \nabla \phi_i(qp) \cdot \nabla \phi_j(qp) w_{qp} |\hat{\Omega}_e|\det(DF)\f$
+- the local rhs \f$ F^{e}_{i} = \int_{\Omega^e} \phi_i \cdot f
+  \approx \sum_{qp} \phi_i(qp) \cdot f(qp) w_{qp} |\hat{\Omega}_e|\det(DF) \f$
+taking \f$f\f$ to be identically 1. 
+
+We also introduce the use of a class (instead of functions) to 
+approach the problem.
+
+
+\section code05 Description of the program
+
+Besides the headers that were already included in the previous examples,
+we include two new headers for the classes to hold the local matrix and
+vector
+\snippet example_05.cpp new includes
+
+We declare the PoissonPreparation class with its constructor and the public
+member function local_assemble
+\snippet example_05.cpp class declaration
+
+The constructor takes care of initializing (creating) the private members
+grid and space
+\snippet example_05.cpp constructor
+
+The main public function is the local_assemble
+\snippet example_05.cpp assemble function
+
+First we define the local matrix and right hand side vector
+\snippet example_05.cpp local matrix
+
+Then we iterate as we have done in \ref example_02b
+\snippet example_05.cpp iterate as before
+
+and get the values that we need in the assembling
+\snippet example_05.cpp get the values
+
+with the values we can proceed to the actual assembling
+\snippet example_05.cpp assemble
+
+and we finally show the assembled matrix and right hand side
+\snippet example_05.cpp print info
+\section Exercises
+-# Using a coefficient
+-# Using a coefficient matrix
+-# modify the code to deal with \f$f\f$ being identically 5.
+\section Remarks
+-# As this class does not use grid except for the constructor
+we could have written the longer single line
+
+
+\section fullcode05 The full program
+\include example_05_no_tag.cpp
+ 
+  
+*/

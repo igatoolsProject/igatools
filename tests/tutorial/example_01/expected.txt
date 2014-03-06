@@ -1,0 +1,4 @@
+Creating a 2 dimensional cartesian grid
+Number of elements: 4
+Creating a spline space of degree 2
+Number of basis functions: 16

@@ -1,0 +1,47 @@
+/**
+
+\page example_07 Example 7: Geometries (the mapping)
+
+\section Introduction
+In example \ref example_06 we have seen how to solve the poisson problem using
+a B-spline space (that we call a reference space).
+If the domain for the equation is not a hyper rectangle, then a new kind of 
+space (the physical space) is required.
+In the isogeometric conception of igatools the physical space is obtained as 
+the push forward of a reference space.
+A push forward uses the geometry and a transformation type to generate the 
+functions in the physical space from the function in the reference space.
+
+In this example we will deal with the geometry which is realized by the
+Mapping class. 
+We create three different geometries using different possibilities
+-# an analitical map
+-# a manual nurb geometry
+-# a NURB geometry read from file
+
+\section code07 Description of the program
+We have different header for the different approches
+For the analytical mapping
+\snippet example_07.cpp analytical map
+the isogeometric B-spline mapping
+\snippet example_07.cpp ig map bspline
+the NURBS mapping read from a file
+\snippet example_07.cpp ig map read nurb
+the writer to save the output and some using clauses
+\snippet example_07.cpp old includes
+
+The analytical_geometry() creates a BallMapping geometry which is a deformation 
+of the hyperrectangle grid using spherical coordinates
+\snippet example_07.cpp an geometry
+
+
+\section Exercises
+-# Check what else is available form igatools/geometry/mapping_lib.h
+-# Create your own analytical mapping
+-# Use the NURBS toolbox to genereate a geometry of your desire
+and read from igatools
+\section fcode07 The full program
+\include example_07_no_tag.cpp
+ 
+  
+*/

@@ -1,0 +1,74 @@
+/**
+\page example_06 Example 6: Poisson problem: on reference domain
+
+\section Introduction
+In \ref example_04 we assembled the local matrix for a Poisson problem, now we
+will complete that example to solve the Poisson problem on a hyper-rectangle.
+This implies that the discrete spaces are pure spline spaces.
+
+In particular we will work with
+- a function for source
+- a global matrix and vector
+- how to deal with dirichlet boundary conditions
+- solving the linear algebra system and
+- plotting the solution
+
+\section code06 Description of the program
+A header file were the are standar functions to use a souces or boundary 
+functions
+\snippet example_06.cpp functions
+
+Some headers used in previous examples
+\snippet example_06.cpp old includes
+
+Space utilities file that has the project to boundary function
+\snippet example_06.cpp project to boundary
+
+And header for the global matrix and vector, the solver and linear
+algebre routines to deal with the boundary constraints
+\snippet example_06.cpp linear system
+
+For clarity we state we are going to use the short unqualified names
+\snippet example_06.cpp short names
+
+We create a PoissonProblem, with its constructor and public function run.
+snippet example_06.cpp class functions
+and the private members for space and quadratures
+\snippet example_06.cpp members
+
+as well as for the linear system
+\snippet example_06.cpp la members
+
+\section Exercises 
+<ol>
+<li> Set the dirichlet condition only to the \f$x=0\f$ face.
+<div class="row">
+ <a href="#hide51" class="hide" id="hide51">Show hint</a>
+ <a href="#show51" class="show" id="show51">Hide hint</a>
+ <div class="list">
+\code{.cpp}
+boundary_id dir_id = 1;
+auto grid = space->get_grid();
+grid->set_boundary_id(0, dir_id);
+\endcode
+ </div>
+ </div>
+<li> What is the following code doing?
+\code{.cpp}
+const boundary_id id1 = 7;
+const boundary_id id2 = 9;
+ConstantFunction<dim> g1({1.});
+ConstantFunction<dim> g2({5.});
+grid->set_boundary_id(0, id1);
+grid->set_boundary_id(1, id2);
+std::map<Index, Real> values;
+project_boundary_values<Space>(g1, space, face_quad, id1, values);
+project_boundary_values<Space>(g2, space, face_quad, id2, values);
+apply_boundary_values(values, *matrix, *rhs, *solution);
+\endcode
+</ol>
+
+\section fullcode06 The full program
+\include example_06_no_tag.cpp
+
+*/

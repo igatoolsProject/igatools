@@ -1,0 +1,57 @@
+/**
+
+\page example_04 Example 4: coefficient vector, plotting basis functions
+
+\section Introduction
+
+This program introduces an example of a global quantity (a global vector), 
+used to store the coefficients of a field (a function in the discrete space).
+The most frequent field is the solution of a problem, but the basis functions
+themselves are fields.
+The coefficient vector of the i-th basis function of a given B-Spline space is
+(0,...,0,1,0,...0), i.e. all zeros except for the i-th component which is 1.
+
+   
+\section code04 Description of the program
+In the include list there is only one new header where the global vector 
+class Vector is declared.
+\snippet example_04.cpp new include
+
+We define a dim-templated function that creates a uniformly distributed
+maximum regularity open knot spline space of a given degree.
+To obtain at least one basis function that is not affected by the 
+boundary we consider deg+2 knots in each direction.
+\snippet example_04.cpp plot function
+We define a vector or real numbers with the size given by the number of
+basis function in the space initilized to zero
+\snippet example_04.cpp init vec
+To get the "center" basis function we address it by its tensor index, but
+the coefficient vector only knows about sequencial index.
+The tensor index is hardcoded to the space while the flat index depends on the
+the degree of freedom distribution policy, which we can ask the space for
+\snippet example_04.cpp tensor to flat
+Just to double check we print the vector on the screen
+\snippet example_04.cpp print vector
+And we plot the basis function
+\snippet example_04.cpp plot basis
+\section Exercise 
+-# test with other degrees
+-# What happens if we replace the lines
+\code
+Vector coeffs(n_basis);
+TensorIndex<dim> basis_t_index(deg);
+auto basis_index = space->tensor_to_flat(basis_t_index);
+coeffs[basis_index] = 1.;
+\endcode
+by the line
+\code
+Vector coeffs(n_basis, 1.);
+\endcode
+in the original code? Why?
+-# modify the function plot_basis(const int deg) so that it plots all
+   basis functions of the space
+\section fcode04 The full program
+\include example_04_no_tag.cpp
+ 
+  
+*/

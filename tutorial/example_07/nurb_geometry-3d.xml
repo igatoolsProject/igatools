@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XMLFile>
+   <Patch DimPhysicalDomain="3" DimReferenceDomain="3" ID="0">
+      <KnotVector Degree="2" Direction="0" NumBreakPoints="2">
+         <BreakPoints Num="2">    0.000000e+00    1.000000e+00</BreakPoints>
+         <Multiplicities Num="2"> 3 3</Multiplicities>
+      </KnotVector>
+      <KnotVector Degree="2" Direction="1" NumBreakPoints="2">
+         <BreakPoints Num="2">    0.000000e+00    1.000000e+00</BreakPoints>
+         <Multiplicities Num="2"> 3 3</Multiplicities>
+      </KnotVector>
+      <KnotVector Degree="1" Direction="2" NumBreakPoints="2">
+         <BreakPoints Num="2">    0.000000e+00    1.000000e+00</BreakPoints>
+         <Multiplicities Num="2"> 2 2</Multiplicities>
+      </KnotVector>
+      <ControlPoints Num="18">
+         <NumDir> 3 3 2</NumDir>
+         <Coordinates Dir="0" Num="18">    8.000000e-01    8.000000e-01    1.776357e-16    8.000000e-01    8.000000e-01    1.493537e-16    4.000000e-01    4.000000e-01    4.639483e-17    1.000000e+00    1.000000e+00    2.220446e-16    1.000000e+00    1.000000e+00    1.866921e-16    5.000000e-01    5.000000e-01    5.799354e-17</Coordinates>
+         <Coordinates Dir="1" Num="18">    0.000000e+00    4.898587e-17    4.898587e-17    4.618802e-01    4.618802e-01    4.618802e-01    6.928203e-01    6.928203e-01    6.928203e-01    0.000000e+00    6.123234e-17    6.123234e-17    5.773503e-01    5.773503e-01    5.773503e-01    8.660254e-01    8.660254e-01    8.660254e-01</Coordinates>
+         <Coordinates Dir="2" Num="18">    0.000000e+00   -8.000000e-01   -8.000000e-01    0.000000e+00   -8.000000e-01   -8.000000e-01    0.000000e+00   -4.000000e-01   -4.000000e-01    0.000000e+00   -1.000000e+00   -1.000000e+00    0.000000e+00   -1.000000e+00   -1.000000e+00    0.000000e+00   -5.000000e-01   -5.000000e-01</Coordinates>
+         <Weights Num="18">    1.000000e+00    7.071068e-01    1.000000e+00    8.660254e-01    6.123724e-01    8.660254e-01    1.000000e+00    7.071068e-01    1.000000e+00    1.000000e+00    7.071068e-01    1.000000e+00    8.660254e-01    6.123724e-01    8.660254e-01    1.000000e+00    7.071068e-01    1.000000e+00</Weights>
+      </ControlPoints>
+   </Patch>
+</XMLFile>

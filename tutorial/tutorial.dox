@@ -1,0 +1,72 @@
+/**
+\page tutorial Tutorial examples
+
+The tutorial consists of a set of simple example
+programs, each of which teaches the user some feature of the library.
+They also suggest the user some modifications to allow him
+for hands-on learning.
+
+They assume that the user is familiar with the general 
+theory of isogeometric methods or at least with the finite element methods.
+A more theoretical overview is given in the igatools paper \cite PMCA2014 and
+technical details about the classes can be find in the 
+\ref index "reference manual".
+It also assumes a basic knowledge of C++ or object oriented programming.
+
+Before we start, if you haven't done it already, it is a good
+idea to install the visualizer [Paraview](http://www.paraview.org/),
+as we will use it to show outputs.
+
+\section ex_run Running the examples
+To run example 1, first go the tutorial directory in the
+igatools build path
+\code
+cd $IGA_WS/iga_lib/tutorial/example_01
+\endcode
+to compile, link and run the example program
+\code
+make run-example_01
+\endcode
+With a trivial modification the commands apply
+to all the examples.
+
+\section ex_mod Modifying the examples
+The examples invite the user to test his understanding by
+solving some exercises. Usually requiring modification of the
+original example code.
+In order to modify example_01, you have to edit the file
+(replace edit by your favorite editor or IDE).
+\code
+cd $IGA_WS/iga_lib/tutorial/example_01
+edit example_01.cpp
+\endcode
+After editing to compile and run
+\code
+make run-example_01
+\endcode
+We recommend that if you plan to develop with igatools
+you take advantage of the features offered by a modern
+IDE such as eclipse or kdevelop.
+
+If you plan to create your own program, do not use the example directories 
+but instead create a new application as explained in 
+http://matley.imati.cnr.it/igatools/wiki/IgatoolsProjects
+
+\section ex_list List of Examples
+
+The examples are organized by number with a pedagogical order
+from simpler to more difficult.
+They build on and refer to facts of the previous examples
+so it is crucial to study them in order.
+
+Tutorial examples:
+- \subpage example_01
+- \subpage example_02
+- \subpage example_03 
+- \subpage example_04
+- \subpage example_05
+- \subpage example_06
+- \subpage example_07
+- \subpage example_08
+- \subpage example_09
+*/

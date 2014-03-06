@@ -1,0 +1,368 @@
+Traversing the elements of a 1-dimensional grid.
+The center of element: 0 is: [ 0.250000 ] 
+The weighted measure is: ValueVector (num_points=2) :
+0.250000 0.250000 
+
+The center of element: 1 is: [ 0.750000 ] 
+The weighted measure is: ValueVector (num_points=2) :
+0.250000 0.250000 
+
+
+Traversing the elements of a 2-dimensional grid.
+The center of element: 0 is: [ 0.250000 0.250000 ] 
+The weighted measure is: ValueVector (num_points=4) :
+0.0625000 0.0625000 0.0625000 0.0625000 
+
+The center of element: 1 is: [ 0.750000 0.250000 ] 
+The weighted measure is: ValueVector (num_points=4) :
+0.0625000 0.0625000 0.0625000 0.0625000 
+
+The center of element: 2 is: [ 0.250000 0.750000 ] 
+The weighted measure is: ValueVector (num_points=4) :
+0.0625000 0.0625000 0.0625000 0.0625000 
+
+The center of element: 3 is: [ 0.750000 0.750000 ] 
+The weighted measure is: ValueVector (num_points=4) :
+0.0625000 0.0625000 0.0625000 0.0625000 
+
+
+Traversing the elements of a 3-dimensional grid.
+The center of element: 0 is: [ 0.250000 0.250000 0.250000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 1 is: [ 0.750000 0.250000 0.250000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 2 is: [ 0.250000 0.750000 0.250000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 3 is: [ 0.750000 0.750000 0.250000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 4 is: [ 0.250000 0.250000 0.750000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 5 is: [ 0.750000 0.250000 0.750000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 6 is: [ 0.250000 0.750000 0.750000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+The center of element: 7 is: [ 0.750000 0.750000 0.750000 ] 
+The weighted measure is: ValueVector (num_points=8) :
+0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
+
+
+Traversing the elements of a 1-dimensional B-spline space.
+Element: 0 has global basis: [ 0 1 2 ]
+ValueTable (num_functions=3,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.625000 ]  
+	Function[2] : [ 0.125000 ]  
+
+Element: 1 has global basis: [ 1 2 3 ]
+ValueTable (num_functions=3,num_points=1) :
+	Function[0] : [ 0.125000 ]  
+	Function[1] : [ 0.625000 ]  
+	Function[2] : [ 0.250000 ]  
+
+
+Traversing the elements of a 2-dimensional B-spline space.
+Element: 0 has global basis: [ 0 1 2 4 5 6 8 9 10 ]
+ValueTable (num_functions=9,num_points=1) :
+	Function[0] : [ 0.0625000 ]  
+	Function[1] : [ 0.156250 ]  
+	Function[2] : [ 0.0312500 ]  
+	Function[3] : [ 0.156250 ]  
+	Function[4] : [ 0.390625 ]  
+	Function[5] : [ 0.0781250 ]  
+	Function[6] : [ 0.0312500 ]  
+	Function[7] : [ 0.0781250 ]  
+	Function[8] : [ 0.0156250 ]  
+
+Element: 1 has global basis: [ 1 2 3 5 6 7 9 10 11 ]
+ValueTable (num_functions=9,num_points=1) :
+	Function[0] : [ 0.0312500 ]  
+	Function[1] : [ 0.156250 ]  
+	Function[2] : [ 0.0625000 ]  
+	Function[3] : [ 0.0781250 ]  
+	Function[4] : [ 0.390625 ]  
+	Function[5] : [ 0.156250 ]  
+	Function[6] : [ 0.0156250 ]  
+	Function[7] : [ 0.0781250 ]  
+	Function[8] : [ 0.0312500 ]  
+
+Element: 2 has global basis: [ 4 5 6 8 9 10 12 13 14 ]
+ValueTable (num_functions=9,num_points=1) :
+	Function[0] : [ 0.0312500 ]  
+	Function[1] : [ 0.0781250 ]  
+	Function[2] : [ 0.0156250 ]  
+	Function[3] : [ 0.156250 ]  
+	Function[4] : [ 0.390625 ]  
+	Function[5] : [ 0.0781250 ]  
+	Function[6] : [ 0.0625000 ]  
+	Function[7] : [ 0.156250 ]  
+	Function[8] : [ 0.0312500 ]  
+
+Element: 3 has global basis: [ 5 6 7 9 10 11 13 14 15 ]
+ValueTable (num_functions=9,num_points=1) :
+	Function[0] : [ 0.0156250 ]  
+	Function[1] : [ 0.0781250 ]  
+	Function[2] : [ 0.0312500 ]  
+	Function[3] : [ 0.0781250 ]  
+	Function[4] : [ 0.390625 ]  
+	Function[5] : [ 0.156250 ]  
+	Function[6] : [ 0.0312500 ]  
+	Function[7] : [ 0.156250 ]  
+	Function[8] : [ 0.0625000 ]  
+
+
+Traversing the elements of a 3-dimensional B-spline space.
+Element: 0 has global basis: [ 0 1 2 4 5 6 8 9 10 16 17 18 20 21 22 24 25 26 32 33 34 36 37 38 40 41 42 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.0156250 ]  
+	Function[1] : [ 0.0390625 ]  
+	Function[2] : [ 0.00781250 ]  
+	Function[3] : [ 0.0390625 ]  
+	Function[4] : [ 0.0976562 ]  
+	Function[5] : [ 0.0195312 ]  
+	Function[6] : [ 0.00781250 ]  
+	Function[7] : [ 0.0195312 ]  
+	Function[8] : [ 0.00390625 ]  
+	Function[9] : [ 0.0390625 ]  
+	Function[10] : [ 0.0976562 ]  
+	Function[11] : [ 0.0195312 ]  
+	Function[12] : [ 0.0976562 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0488281 ]  
+	Function[15] : [ 0.0195312 ]  
+	Function[16] : [ 0.0488281 ]  
+	Function[17] : [ 0.00976562 ]  
+	Function[18] : [ 0.00781250 ]  
+	Function[19] : [ 0.0195312 ]  
+	Function[20] : [ 0.00390625 ]  
+	Function[21] : [ 0.0195312 ]  
+	Function[22] : [ 0.0488281 ]  
+	Function[23] : [ 0.00976562 ]  
+	Function[24] : [ 0.00390625 ]  
+	Function[25] : [ 0.00976562 ]  
+	Function[26] : [ 0.00195312 ]  
+
+Element: 1 has global basis: [ 1 2 3 5 6 7 9 10 11 17 18 19 21 22 23 25 26 27 33 34 35 37 38 39 41 42 43 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00781250 ]  
+	Function[1] : [ 0.0390625 ]  
+	Function[2] : [ 0.0156250 ]  
+	Function[3] : [ 0.0195312 ]  
+	Function[4] : [ 0.0976562 ]  
+	Function[5] : [ 0.0390625 ]  
+	Function[6] : [ 0.00390625 ]  
+	Function[7] : [ 0.0195312 ]  
+	Function[8] : [ 0.00781250 ]  
+	Function[9] : [ 0.0195312 ]  
+	Function[10] : [ 0.0976562 ]  
+	Function[11] : [ 0.0390625 ]  
+	Function[12] : [ 0.0488281 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0976562 ]  
+	Function[15] : [ 0.00976562 ]  
+	Function[16] : [ 0.0488281 ]  
+	Function[17] : [ 0.0195312 ]  
+	Function[18] : [ 0.00390625 ]  
+	Function[19] : [ 0.0195312 ]  
+	Function[20] : [ 0.00781250 ]  
+	Function[21] : [ 0.00976562 ]  
+	Function[22] : [ 0.0488281 ]  
+	Function[23] : [ 0.0195312 ]  
+	Function[24] : [ 0.00195312 ]  
+	Function[25] : [ 0.00976562 ]  
+	Function[26] : [ 0.00390625 ]  
+
+Element: 2 has global basis: [ 4 5 6 8 9 10 12 13 14 20 21 22 24 25 26 28 29 30 36 37 38 40 41 42 44 45 46 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00781250 ]  
+	Function[1] : [ 0.0195312 ]  
+	Function[2] : [ 0.00390625 ]  
+	Function[3] : [ 0.0390625 ]  
+	Function[4] : [ 0.0976562 ]  
+	Function[5] : [ 0.0195312 ]  
+	Function[6] : [ 0.0156250 ]  
+	Function[7] : [ 0.0390625 ]  
+	Function[8] : [ 0.00781250 ]  
+	Function[9] : [ 0.0195312 ]  
+	Function[10] : [ 0.0488281 ]  
+	Function[11] : [ 0.00976562 ]  
+	Function[12] : [ 0.0976562 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0488281 ]  
+	Function[15] : [ 0.0390625 ]  
+	Function[16] : [ 0.0976562 ]  
+	Function[17] : [ 0.0195312 ]  
+	Function[18] : [ 0.00390625 ]  
+	Function[19] : [ 0.00976562 ]  
+	Function[20] : [ 0.00195312 ]  
+	Function[21] : [ 0.0195312 ]  
+	Function[22] : [ 0.0488281 ]  
+	Function[23] : [ 0.00976562 ]  
+	Function[24] : [ 0.00781250 ]  
+	Function[25] : [ 0.0195312 ]  
+	Function[26] : [ 0.00390625 ]  
+
+Element: 3 has global basis: [ 5 6 7 9 10 11 13 14 15 21 22 23 25 26 27 29 30 31 37 38 39 41 42 43 45 46 47 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00390625 ]  
+	Function[1] : [ 0.0195312 ]  
+	Function[2] : [ 0.00781250 ]  
+	Function[3] : [ 0.0195312 ]  
+	Function[4] : [ 0.0976562 ]  
+	Function[5] : [ 0.0390625 ]  
+	Function[6] : [ 0.00781250 ]  
+	Function[7] : [ 0.0390625 ]  
+	Function[8] : [ 0.0156250 ]  
+	Function[9] : [ 0.00976562 ]  
+	Function[10] : [ 0.0488281 ]  
+	Function[11] : [ 0.0195312 ]  
+	Function[12] : [ 0.0488281 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0976562 ]  
+	Function[15] : [ 0.0195312 ]  
+	Function[16] : [ 0.0976562 ]  
+	Function[17] : [ 0.0390625 ]  
+	Function[18] : [ 0.00195312 ]  
+	Function[19] : [ 0.00976562 ]  
+	Function[20] : [ 0.00390625 ]  
+	Function[21] : [ 0.00976562 ]  
+	Function[22] : [ 0.0488281 ]  
+	Function[23] : [ 0.0195312 ]  
+	Function[24] : [ 0.00390625 ]  
+	Function[25] : [ 0.0195312 ]  
+	Function[26] : [ 0.00781250 ]  
+
+Element: 4 has global basis: [ 16 17 18 20 21 22 24 25 26 32 33 34 36 37 38 40 41 42 48 49 50 52 53 54 56 57 58 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00781250 ]  
+	Function[1] : [ 0.0195312 ]  
+	Function[2] : [ 0.00390625 ]  
+	Function[3] : [ 0.0195312 ]  
+	Function[4] : [ 0.0488281 ]  
+	Function[5] : [ 0.00976562 ]  
+	Function[6] : [ 0.00390625 ]  
+	Function[7] : [ 0.00976562 ]  
+	Function[8] : [ 0.00195312 ]  
+	Function[9] : [ 0.0390625 ]  
+	Function[10] : [ 0.0976562 ]  
+	Function[11] : [ 0.0195312 ]  
+	Function[12] : [ 0.0976562 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0488281 ]  
+	Function[15] : [ 0.0195312 ]  
+	Function[16] : [ 0.0488281 ]  
+	Function[17] : [ 0.00976562 ]  
+	Function[18] : [ 0.0156250 ]  
+	Function[19] : [ 0.0390625 ]  
+	Function[20] : [ 0.00781250 ]  
+	Function[21] : [ 0.0390625 ]  
+	Function[22] : [ 0.0976562 ]  
+	Function[23] : [ 0.0195312 ]  
+	Function[24] : [ 0.00781250 ]  
+	Function[25] : [ 0.0195312 ]  
+	Function[26] : [ 0.00390625 ]  
+
+Element: 5 has global basis: [ 17 18 19 21 22 23 25 26 27 33 34 35 37 38 39 41 42 43 49 50 51 53 54 55 57 58 59 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00390625 ]  
+	Function[1] : [ 0.0195312 ]  
+	Function[2] : [ 0.00781250 ]  
+	Function[3] : [ 0.00976562 ]  
+	Function[4] : [ 0.0488281 ]  
+	Function[5] : [ 0.0195312 ]  
+	Function[6] : [ 0.00195312 ]  
+	Function[7] : [ 0.00976562 ]  
+	Function[8] : [ 0.00390625 ]  
+	Function[9] : [ 0.0195312 ]  
+	Function[10] : [ 0.0976562 ]  
+	Function[11] : [ 0.0390625 ]  
+	Function[12] : [ 0.0488281 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0976562 ]  
+	Function[15] : [ 0.00976562 ]  
+	Function[16] : [ 0.0488281 ]  
+	Function[17] : [ 0.0195312 ]  
+	Function[18] : [ 0.00781250 ]  
+	Function[19] : [ 0.0390625 ]  
+	Function[20] : [ 0.0156250 ]  
+	Function[21] : [ 0.0195312 ]  
+	Function[22] : [ 0.0976562 ]  
+	Function[23] : [ 0.0390625 ]  
+	Function[24] : [ 0.00390625 ]  
+	Function[25] : [ 0.0195312 ]  
+	Function[26] : [ 0.00781250 ]  
+
+Element: 6 has global basis: [ 20 21 22 24 25 26 28 29 30 36 37 38 40 41 42 44 45 46 52 53 54 56 57 58 60 61 62 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00390625 ]  
+	Function[1] : [ 0.00976562 ]  
+	Function[2] : [ 0.00195312 ]  
+	Function[3] : [ 0.0195312 ]  
+	Function[4] : [ 0.0488281 ]  
+	Function[5] : [ 0.00976562 ]  
+	Function[6] : [ 0.00781250 ]  
+	Function[7] : [ 0.0195312 ]  
+	Function[8] : [ 0.00390625 ]  
+	Function[9] : [ 0.0195312 ]  
+	Function[10] : [ 0.0488281 ]  
+	Function[11] : [ 0.00976562 ]  
+	Function[12] : [ 0.0976562 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0488281 ]  
+	Function[15] : [ 0.0390625 ]  
+	Function[16] : [ 0.0976562 ]  
+	Function[17] : [ 0.0195312 ]  
+	Function[18] : [ 0.00781250 ]  
+	Function[19] : [ 0.0195312 ]  
+	Function[20] : [ 0.00390625 ]  
+	Function[21] : [ 0.0390625 ]  
+	Function[22] : [ 0.0976562 ]  
+	Function[23] : [ 0.0195312 ]  
+	Function[24] : [ 0.0156250 ]  
+	Function[25] : [ 0.0390625 ]  
+	Function[26] : [ 0.00781250 ]  
+
+Element: 7 has global basis: [ 21 22 23 25 26 27 29 30 31 37 38 39 41 42 43 45 46 47 53 54 55 57 58 59 61 62 63 ]
+ValueTable (num_functions=27,num_points=1) :
+	Function[0] : [ 0.00195312 ]  
+	Function[1] : [ 0.00976562 ]  
+	Function[2] : [ 0.00390625 ]  
+	Function[3] : [ 0.00976562 ]  
+	Function[4] : [ 0.0488281 ]  
+	Function[5] : [ 0.0195312 ]  
+	Function[6] : [ 0.00390625 ]  
+	Function[7] : [ 0.0195312 ]  
+	Function[8] : [ 0.00781250 ]  
+	Function[9] : [ 0.00976562 ]  
+	Function[10] : [ 0.0488281 ]  
+	Function[11] : [ 0.0195312 ]  
+	Function[12] : [ 0.0488281 ]  
+	Function[13] : [ 0.244141 ]  
+	Function[14] : [ 0.0976562 ]  
+	Function[15] : [ 0.0195312 ]  
+	Function[16] : [ 0.0976562 ]  
+	Function[17] : [ 0.0390625 ]  
+	Function[18] : [ 0.00390625 ]  
+	Function[19] : [ 0.0195312 ]  
+	Function[20] : [ 0.00781250 ]  
+	Function[21] : [ 0.0195312 ]  
+	Function[22] : [ 0.0976562 ]  
+	Function[23] : [ 0.0390625 ]  
+	Function[24] : [ 0.00781250 ]  
+	Function[25] : [ 0.0390625 ]  
+	Function[26] : [ 0.0156250 ]  
+
+
