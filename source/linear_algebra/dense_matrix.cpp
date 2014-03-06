@@ -21,6 +21,7 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/base/exceptions.h>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/ublas/lu.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -38,6 +39,34 @@ DenseMatrix::
 get_row(const int row_id) const -> MatrixRowType
 {
     return MatrixRowType(*this,row_id);
+}
+
+
+DenseMatrix
+DenseMatrix::
+inverse()
+{
+    using namespace boost::numeric::ublas;
+    using pmatrix_t = permutation_matrix<std::size_t>;
+
+    // create a working copy of the input
+    BoostMatrix A(static_cast<BoostMatrix &>(*this)) ;
+
+    // create a permutation matrix for the LU-factorization
+    pmatrix_t P(A.size1());
+
+    // perform LU-factorization
+    int res = lu_factorize(A,P);
+
+    AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
+
+    // create identity matrix of "inverse"
+    BoostMatrix inv_A = identity_matrix<Real>(A.size1());
+
+    // backsubstitute to get the inverse
+    lu_substitute(A, P, inv_A);
+
+    return inv_A;
 }
 
 IGA_NAMESPACE_CLOSE

@@ -71,6 +71,14 @@ public:
     /** Returns the mtrix row identified by @p row_id. */
     MatrixRowType
     get_row(const int row_id) const;
+
+
+    /**
+     * Matrix inversion routine.
+     * @note Uses lu_factorize and lu_substitute in uBLAS to invert a matrix
+     */
+    DenseMatrix inverse();
+
 };
 
 /**@}*/
