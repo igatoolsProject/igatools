@@ -30,8 +30,9 @@ file_output.write('IGA_NAMESPACE_OPEN\n')
 strings = []
 for row in inst.mapping_dims:
    (dim, codim) = (row.dim, row.space_dim - row.dim)
-   map = 'std::shared_ptr<Mapping<%d,%d>>' %(dim, codim)
-   strings.append('template %s ig_mapping_reader(const std::string &);\n' %map)
+   if (dim > 0):
+	   map = 'std::shared_ptr<Mapping<%d,%d>>' %(dim, codim)
+	   strings.append('template %s ig_mapping_reader(const std::string &);\n' %map)
 
 for s in set(strings): # Removing repeated entries.
     file_output.write(s)

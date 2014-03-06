@@ -23,7 +23,9 @@
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 
 using std::vector;
+using std::array;
 using std::shared_ptr;
+using std::string;
 
 IGA_NAMESPACE_OPEN
 
@@ -217,6 +219,7 @@ template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
 ig_mapping_reader(const std::string &filename)
 {
+	const int dim_phys = dim + codim;
 
     using boost::property_tree::ptree;
     ptree xml_tree;
@@ -232,21 +235,24 @@ ig_mapping_reader(const std::string &filename)
 	CartesianProductArray<Real,dim> knots_unique_values;
 	Multiplicity<dim> multiplicities;
 
-	shared_ptr<CartesianGrid<dim>> grid;
+
+    TensorSize<dim> n_ctrl_points_dim;
+    array<vector<Real>,dim_phys> control_pts_coords;
+
+    bool is_nurbs_mapping = false;
 
     for (const tree_value_t & patch : xml_tree.get_child("XMLFile.Patch"))
     {
         if (boost::iequals(patch.first,"<xmlattr>"))
         {
-            const int dim_ref  = patch.second.get<int>("DimReferenceDomain");
-            const int dim_phys = patch.second.get<int>("DimPhysicalDomain");
+            const int dim_ref_domain  = patch.second.get<int>("DimReferenceDomain");
+            const int dim_phys_domain = patch.second.get<int>("DimPhysicalDomain");
 
-            AssertThrow(dim_ref == dim,
-                        ExcDimensionMismatch(dim_ref,dim));
-            AssertThrow(dim_phys == dim+codim,
-                        ExcDimensionMismatch(dim_phys,dim+codim));
+            AssertThrow(dim == dim_ref_domain,
+                        ExcDimensionMismatch(dim,dim_ref_domain));
+            AssertThrow(dim_phys == dim_phys_domain,
+                        ExcDimensionMismatch(dim_phys,dim_phys_domain));
         }
-
 
 
         if (boost::iequals(patch.first,"KnotVector"))
@@ -277,6 +283,14 @@ ig_mapping_reader(const std::string &filename)
                     std::stringstream line_stream(knot.second.get<std::string>(""));
                     while (line_stream >> knt)
                         knots_unique_values_dir.push_back(knt);
+
+                	for (const auto & brk : knot.second)
+                        if (boost::iequals(brk.first,"<xmlattr>"))
+                        {
+                        	const Index n_brk = brk.second.get<Index>("Num");
+                        	AssertThrow(n_brk == knots_unique_values_dir.size(),
+                        			ExcDimensionMismatch(n_brk,knots_unique_values_dir.size()));
+                        }
                 }
 
                 if (boost::iequals(knot.first, "Multiplicities"))
@@ -285,6 +299,15 @@ ig_mapping_reader(const std::string &filename)
                     std::stringstream line_stream(knot.second.get<std::string>(""));
                     while (line_stream >> m)
                         multiplicities_dir.push_back(m);
+
+                	for (const auto & mlt : knot.second)
+                        if (boost::iequals(mlt.first,"<xmlattr>"))
+                        {
+                        	const Index n_mlt = mlt.second.get<Index>("Num");
+                        	AssertThrow(n_mlt == multiplicities_dir.size(),
+                        			ExcDimensionMismatch(n_mlt,multiplicities_dir.size()));
+                        }
+
                 }
                 //*/
             }
@@ -298,36 +321,60 @@ ig_mapping_reader(const std::string &filename)
             multiplicities.copy_data_direction(direction_id,multiplicities_dir);
         }
 
-
         if (boost::iequals(patch.first, "ControlPoints"))
         {
+        	Size n_ctrl_pts = 0;
             vector<Real> weights_vector;
-            TensorSize<dim> n_control_points;
             vector<Real> weights;
+
             for (const auto &cp : patch.second)
             {
+                if (boost::iequals(cp.first,"<xmlattr>"))
+                {
+                	n_ctrl_pts = cp.second.get<Index>("Num");
+                    AssertThrow(n_ctrl_pts >= 0, ExcLowerRange(n_ctrl_pts,0));
+                }
+
+                vector<Size> tmp;
                 if (boost::iequals(cp.first, "NumDir"))
                 {
                     std::stringstream line_stream(cp.second.get<std::string>(""));
-                    int direction_id = 0;
-                    while (line_stream >> n_control_points[direction_id]);
+                    Index direction_id = 0;
+                    while (line_stream >> n_ctrl_points_dim[direction_id])
                     {
                         AssertThrow(direction_id >= 0 && direction_id < dim,
                                     ExcIndexRange(direction_id,0,dim));
                         direction_id++;
                     }
-
                 }
-                /*
+
+
                 if (boost::iequals(cp.first, "Coordinates"))
                 {
-                    std::string iss = cp.second.get<std::string>("");
-                    std::vector<Real> row;
-                    Real num;
-                    std::stringstream line_stream(iss);
-                    while (line_stream >> num) row.push_back(num);
-                    control_point.push_back(row);
+                    vector<Real> control_pts_coord_dir;
+                    Index direction_id = -1 ;
+
+                    Real v;
+                    std::stringstream line_stream(cp.second.get<std::string>(""));
+                    while (line_stream >> v)
+                    	control_pts_coord_dir.push_back(v);
+
+                	for (const auto & coord : cp.second)
+                        if (boost::iequals(coord.first,"<xmlattr>"))
+                        {
+                        	const Index n_coord = coord.second.get<Index>("Num");
+                        	AssertThrow(n_coord == control_pts_coord_dir.size(),
+                        			ExcDimensionMismatch(n_coord,control_pts_coord_dir.size()));
+
+                            direction_id = coord.second.get<Index>("Dir");
+                            AssertThrow(direction_id >= 0, ExcLowerRange(direction_id,0));
+
+                            control_pts_coords[direction_id] = control_pts_coord_dir;
+                            out << "control_pts_coords["<<direction_id<<"] = " << control_pts_coords[direction_id]<< std::endl;
+                        }
                 }//*/
+
+                /*
                 if (boost::iequals(cp.first, "Weights"))
                 {
                     std::stringstream line_stream(cp.second.get<std::string>(""));
@@ -337,6 +384,8 @@ ig_mapping_reader(const std::string &filename)
                 }
                 //*/
             }
+            AssertThrow(n_ctrl_pts == n_ctrl_points_dim.flat_size(),
+            		ExcDimensionMismatch(n_ctrl_pts,n_ctrl_points_dim.flat_size()));
             /*
                         weights_.resize(cp_per_ref_dir);
                         const int n_entries = weights_.flat_size();
@@ -346,10 +395,39 @@ ig_mapping_reader(const std::string &filename)
                             weights_(i) = weights_vector[i];
             //*/
         }
+
     }//PATCH LOOP
-    grid = CartesianGrid<dim>::create(knots_unique_values);
-    grid->print_info(out);
+    auto grid = CartesianGrid<dim>::create(knots_unique_values);
+
+    vector<Real> control_pts;
+    for (int i = 0 ; i < dim_phys ; ++i)
+        control_pts.insert(control_pts.end(),control_pts_coords[i].begin(),control_pts_coords[i].end());
+
+
+
+    std::shared_ptr< Mapping<dim,codim> > map;
+
+    if (is_nurbs_mapping)
+    {
+    	AssertThrow(false,ExcNotImplemented());
+    }
+    else
+    {
+    	using space_t = BSplineSpace<dim,dim_phys,1>;
+    	auto space = space_t::create(
+    			grid,
+    			StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
+    			StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree));
+
+//    	out << "codim = " <<space_t::dim_range-space_t::dim << std::endl;
+//    	space->print_info(out);
+        map = IgMapping<space_t>::create(space,control_pts);
+    }
+    map->print_info(out);
+
 //    bool read = true;
+
+
 
 #if 0
     for (int i = 0; i<breack_point.size(); ++i)
@@ -369,7 +447,6 @@ ig_mapping_reader(const std::string &filename)
                  CartesianProductArray< Real, dim_ref_domain>(coord));
 #endif
 
-    std::shared_ptr< Mapping<dim,codim> > map;
 
     AssertThrow(false,ExcNotImplemented());
 

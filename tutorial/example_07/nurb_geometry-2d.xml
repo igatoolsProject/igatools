@@ -10,7 +10,7 @@
          <Multiplicities Num="2"> 2 2</Multiplicities>
       </KnotVector>
       <ControlPoints Num="6">
-         <NumDir> 3 2</NumDir>
+         <NumDir>3 2</NumDir>
          <Coordinates Dir="0" Num="6">    8.000000e-01    8.000000e-01    4.000000e-01    1.000000e+00    1.000000e+00    5.000000e-01</Coordinates>
          <Coordinates Dir="1" Num="6">    0.000000e+00    4.618802e-01    6.928203e-01    0.000000e+00    5.773503e-01    8.660254e-01</Coordinates>
          <Weights Num="6">    1.000000e+00    8.660254e-01    1.000000e+00    1.000000e+00    8.660254e-01    1.000000e+00</Weights>
