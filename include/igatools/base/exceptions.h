@@ -2,7 +2,7 @@
 // This file is part of igatools, a general purpose Isogeometric analysis
 // library. It was copied from the deal.II project where it is licensed
 // under the LGPL (see http://www.dealii.org/).
-// I has been modified by the igatools authors to fit the igatools framework.
+// It has been modified by the igatools authors to fit the igatools framework.
 //-+--------------------------------------------------------------------
 //---------------------------------------------------------------------------
 // Originally from dealii and modified for igatools
