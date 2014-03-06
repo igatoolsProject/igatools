@@ -112,6 +112,65 @@ evaluate_hessians(vector<HessianType> &hessians) const
 
 
 template<int dim, int codim>
+void
+IdentityMapping< dim, codim>::
+evaluate_face(const Index face_id, vector<ValueType> &values) const
+{
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+        ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    const auto &points = face_points_[face_id] ;
+    const int num_points = points.size();
+    Assert(values.size() == num_points,
+           ExcDimensionMismatch(values.size(),num_points));
+    for (int i = 0; i<num_points; i++)
+    {
+        const auto &x = points[i];
+        for (int k = 0; k < dim; ++k)
+        {
+            values[i][k] = x[k];
+        }
+        for (int k = dim; k < codim; ++k)
+        {
+            values[i][k] = 0.;
+        }
+    }
+}
+
+
+
+template<int dim, int codim>
+void
+IdentityMapping< dim, codim>::
+evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
+{
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+        ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    const int num_points = face_points_[face_id].size();
+    Assert(gradients.size() == num_points,
+           ExcDimensionMismatch(gradients.size(),num_points));
+
+
+    for (int i = 0; i<num_points; i++)
+        gradients[i] = face_A_[face_id];
+}
+
+
+
+template<int dim, int codim>
+void
+IdentityMapping< dim, codim>::
+evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
+{
+    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
+        ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    const int num_points = face_points_[face_id].size();
+    for (int i = 0; i<num_points; i++)
+        hessians[i] = 0.;
+}
+
+
+
+template<int dim, int codim>
 ValueFlags
 IdentityMapping< dim, codim>::
 required_flags() const
@@ -127,6 +186,17 @@ IdentityMapping< dim, codim>::
 set_element(const CartesianGridElementAccessor<dim> &elem)
 {
     points_ = elem.get_points();
+}
+
+
+
+template<int dim, int codim>
+void
+IdentityMapping< dim, codim>::
+set_face_element(const Index face_id,
+                 const CartesianGridElementAccessor<dim> &elem)
+{
+    face_points_[face_id] = elem.get_face_points(face_id);
 }
 
 

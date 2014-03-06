@@ -67,11 +67,20 @@ public:
 
     void set_element(const CartesianGridElementAccessor<dim> &elem);
 
+    void set_face_element(const Index face_id,
+                          const CartesianGridElementAccessor<dim> &elem);
+
     void evaluate(std::vector<ValueType> &values) const override;
 
     void evaluate_gradients(std::vector<GradientType> &gradients) const override;
 
     void evaluate_hessians(std::vector<HessianType> &hessians) const override;
+
+    void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
+
+    void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+
+    void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const override;
 
     /**
      * Return a Mapping that is a deep copy of the caller object.
@@ -86,7 +95,9 @@ public:
 
 private:
     GradientType A_;
+    std::array<GradientFaceType, UnitElement<dim>::faces_per_element> face_A_;
     std::vector<PointType> points_;
+    std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE
