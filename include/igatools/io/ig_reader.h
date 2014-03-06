@@ -20,75 +20,31 @@
 
 
 
+#ifndef IG_READER_H_
+#define IG_READER_H_
 
-
-#ifndef __IG_READER_H_
-#define __IG_READER_H_
-
-#include <igatools/base/exceptions.h>
-
-#include <igatools/utils/cartesian_product_array.h>
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/ig_mapping.h>
-#include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/physical_space.h>
-
-
-#include <boost/algorithm/string.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/foreach.hpp>
-#include <string>
-#include <set>
-#include <exception>
-#include <vector>
-#include <iostream>
-
-#include <array>
+#include <igatools/base/config.h>
+#include <igatools/geometry/mapping.h>
 #include <memory>
+
+
 
 IGA_NAMESPACE_OPEN
 
-//TODO: This class has to be better coded and documented
+//TODO: This function has to be documented
 //TODO: Document the xml format
-//TODO: get_mapping_iga should return a base type
-template<int dim_ref_domain, int dim_phys_domain=dim_ref_domain>
-class IgReader
-{
-public:
-    IgReader();
 
-    void load_xml(const std::string &filename);
-
-    std::shared_ptr<CartesianGrid<dim_ref_domain> > get_cartesian_grid();
-
-    std::shared_ptr<NURBSSpace< dim_ref_domain,dim_phys_domain,1> >
-    get_nurbs_space();
-
-    std::shared_ptr<IgMapping<NURBSSpace< dim_ref_domain,dim_phys_domain,1>> >
-            get_mapping_iga();
-
-private:
-    bool read = false; // use this flag to say that data has been read
-    std::vector<int> deg;
-    std::vector<std::vector<Index> > mlt;
-    std::vector<std::vector<Real> > breack_point;
-    std::vector<std::vector<Real> > control_point;
-    DynamicMultiArray<Real,dim_ref_domain> weights_;
-    TensorSize<dim_ref_domain> cp_per_ref_dir;
-
-    std::array< int, dim_ref_domain > n_knots;
-    std::array< int, dim_ref_domain > degree;
-
-    std::array< std::vector< Real >, dim_ref_domain > coord;
-    Multiplicity< dim_ref_domain > mult;
-
-    std::shared_ptr<CartesianGrid<dim_ref_domain> > grid_;
-
-};
-
-
-
+/**
+ * Reads an IgMapping from an xml file.
+ *
+ * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
+ * because this function returns a shared_ptr to the base class Mapping.
+ *
+ * @todo document the XML file format for IgMapping
+ *
+ * @author M. Martinelli
+ * @date 04 Mar 2014
+ */
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
 ig_mapping_reader(const std::string &filename);
