@@ -211,12 +211,156 @@ IgReader< dim_ref_domain, dim_phys_domain>::get_mapping_iga()
             IgMapping<NURBSSpace< dim_ref_domain,dim_phys_domain,1>>(space_ptr,cp_ptr));
 }
 
+
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader(const std::string &filename)
+{
+
+    using boost::property_tree::ptree;
+    ptree xml_tree;
+
+    read_xml(filename, xml_tree);
+
+
+    using tree_value_t = typename ptree::value_type;
+
+    TensorIndex<dim> degree;
+
+    LogStream out ;
+    for (const tree_value_t & patch : xml_tree.get_child("XMLFile.Patch"))
+    {
+        if (boost::iequals(patch.first,"<xmlattr>"))
+        {
+            const int dim_ref  = patch.second.get<int>("DimReferenceDomain");
+            const int dim_phys = patch.second.get<int>("DimPhysicalDomain");
+
+            AssertThrow(dim_ref == dim,
+                        ExcDimensionMismatch(dim_ref,dim));
+            AssertThrow(dim_phys == dim+codim,
+                        ExcDimensionMismatch(dim_phys,dim+codim));
+        }
+
+        if (boost::iequals(patch.first,"KnotVector"))
+        {
+            Index deg = -1 ;
+            Index direction_id = -1 ;
+            vector<Real> knots_unique_values;
+            vector<Index> multiplicities;
+            for (const auto & knot : patch.second)
+            {
+                if (boost::iequals(knot.first,"<xmlattr>"))
+                    deg = knot.second.get<Index>("Degree");
+
+                if (boost::iequals(knot.first,"<xmlattr>"))
+                    direction_id = knot.second.get<Index>("Direction");
+
+                if (boost::iequals(knot.first, "BreakPoints"))
+                {
+                    std::string iss = knot.second.get<std::string>("");
+                    Real knt;
+                    std::stringstream line_stream(iss);
+                    while (line_stream >> knt)
+                        knots_unique_values.push_back(knt);
+                }
+
+                if (boost::iequals(knot.first, "Multiplicities"))
+                {
+                    std::string iss = knot.second.get<std::string>("");
+                    Index m;
+                    std::stringstream line_stream(iss);
+                    while (line_stream >> m)
+                        multiplicities.push_back(m);
+                }
+                //*/
+            }
+            out << "Degree=" << deg << std::endl;
+            out << "Direction=" << direction_id << std::endl;
+            out << "knots_unique_values=" << knots_unique_values <<std::endl;
+            out << "multiplicities=" << multiplicities <<std::endl;
+        }
+
+
+        if (boost::iequals(patch.first, "ControlPoints"))
+        {
+            vector<Real> weights_vector;
+            TensorSize<dim> n_control_points;
+            vector<Real> weights;
+            for (const auto& cp : patch.second)
+            {
+                if (boost::iequals(cp.first, "NumDir"))
+                {
+                    std::string iss = cp.second.get<std::string>("");
+                    std::stringstream line_stream(iss);
+                    int direction_id = 0;
+                    while (line_stream >> n_control_points[direction_id]);
+                    {
+                        AssertThrow(direction_id >= 0 && direction_id < dim,
+                                    ExcIndexRange(direction_id,0,dim));
+                        direction_id++;
+                    }
+
+                }
+                /*
+                if (boost::iequals(cp.first, "Coordinates"))
+                {
+                    std::string iss = cp.second.get<std::string>("");
+                    std::vector<Real> row;
+                    Real num;
+                    std::stringstream line_stream(iss);
+                    while (line_stream >> num) row.push_back(num);
+                    control_point.push_back(row);
+                }//*/
+                if (boost::iequals(cp.first, "Weights"))
+                {
+                    std::string iss = cp.second.get<std::string>("");
+                    std::stringstream line_stream(iss);
+                    Real w;
+                    while (line_stream >> w) weights.push_back(w);
+                }
+                //*/
+            }
+            /*
+                        weights_.resize(cp_per_ref_dir);
+                        const int n_entries = weights_.flat_size();
+                        AssertThrow(weights_.flat_size() == weights_vector.size(),
+                                    ExcDimensionMismatch(weights_.flat_size(),weights_vector.size()));
+                        for (Size i=0 ; i < n_entries ; ++i)
+                            weights_(i) = weights_vector[i];
+            //*/
+        }
+    }//PATCH LOOP
+//    bool read = true;
+
+#if 0
+    for (int i = 0; i<breack_point.size(); ++i)
+    {
+        n_knots[i] = breack_point[i].size();
+        degree[i] = deg[i];
+    }
+
+    for (int i = 0 ; i < dim_ref_domain ; ++i)
+        coord[i].resize(n_knots[i]);
+
+    for (int i = 0 ; i < dim_ref_domain ; ++i)
+        for (int j = 0 ; j < n_knots[i] ; ++j)
+            coord[i][j] = breack_point[i][j];
+
+    grid_ =  CartesianGrid<dim_ref_domain>::create(
+                 CartesianProductArray< Real, dim_ref_domain>(coord));
+#endif
+
+    std::shared_ptr< Mapping<dim,codim> > map;
+
+    AssertThrow(false,ExcNotImplemented());
+
+    return map;
+}
+
+
+
 IGA_NAMESPACE_CLOSE
-
-
-IGA_NAMESPACE_OPEN
 
 
 #include <igatools/io/ig_reader.inst>
-IGA_NAMESPACE_CLOSE
 

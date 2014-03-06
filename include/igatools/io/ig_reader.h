@@ -86,7 +86,15 @@ private:
     std::shared_ptr<CartesianGrid<dim_ref_domain> > grid_;
 
 };
+
+
+
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader(const std::string &filename);
+
 IGA_NAMESPACE_CLOSE
+
 
 #endif
 
