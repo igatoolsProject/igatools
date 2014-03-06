@@ -88,6 +88,20 @@ public:
     explicit CartesianGrid(const TensorSize<dim> &n_knots);
 
     /**
+     * @todo Document me
+     */
+    explicit CartesianGrid(const BBox<dim> &end_points,
+                           const Size n_knots);
+
+    /**
+     * @todo Document me
+     */
+    explicit CartesianGrid(const BBox<dim> &end_points,
+                           const TensorSize<dim> &n_knots);
+
+
+
+    /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided.
      *
@@ -99,12 +113,6 @@ public:
     explicit
     CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates);
 
-
-    /**
-     * @todo Document me
-     */
-    explicit CartesianGrid(const BBox<dim> &end_points,
-                           const TensorSize<dim> &n_knots);
 
     /**
      * Copy constructor.
@@ -157,6 +165,9 @@ public:
     create(const CartesianProductArray<Real,dim> &knot_coordinates) ;
 
 
+    static std::shared_ptr< CartesianGrid<dim_> >
+    create(const BBox<dim> &end_points,
+           const Size n_knots);
 
     /**
      * @todo document me

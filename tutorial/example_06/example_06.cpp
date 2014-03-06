@@ -109,7 +109,7 @@ void PoissonProblem<dim>::assemble()
     vector<Index> loc_dofs(n_basis);
 
     ConstantFunction<dim> f({5.});
-    using ValueType = typename Function<dim>::Value;
+    using ValueType = typename Function<dim>::ValueType;
     const int n_qp = elem_quad.get_num_points();
     vector<ValueType> f_values(n_qp);
 
@@ -134,16 +134,16 @@ void PoissonProblem<dim>::assemble()
 
         for (int i = 0; i < n_basis; ++i)
         {
-            auto grd_phi_i = grd_phi.get_function(i);
+            auto grd_phi_i = grd_phi.get_function_view(i);
             for (int j = 0; j < n_basis; ++j)
             {
-                auto grd_phi_j = grd_phi.get_function(j);
+                auto grd_phi_j = grd_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
                         scalar_product(grd_phi_i[qp], grd_phi_j[qp])
                         * w_meas[qp];
             }
-            auto phi_i = phi.get_function(i);
+            auto phi_i = phi.get_function_view(i);
 
             for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])

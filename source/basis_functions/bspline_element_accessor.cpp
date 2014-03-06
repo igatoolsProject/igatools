@@ -1320,7 +1320,7 @@ get_basis_divergence(const Index basis, const Index qp) const -> Div const &
         Assert(qp >= 0 && qp < int(data.get_num_points()),
                ExcIndexRange(qp,0,int(data.get_num_points())));
 
-        return data.get_function(basis)[qp];
+        return data.get_function_view(basis)[qp];
      //*/
 
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),

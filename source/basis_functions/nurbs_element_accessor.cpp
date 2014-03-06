@@ -963,7 +963,7 @@ get_basis_values(const Index basis) const -> typename ValueTable<ValueRef_t>::co
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
     Assert(elem_values_.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return elem_values_.D0phi_hat_.get_function(i);
+    return elem_values_.D0phi_hat_.get_function_view(i);
     //*/
     return this->get_basis_values().get_function_view(basis);
 }
@@ -1021,7 +1021,7 @@ get_basis_value(const Index basis, const Index qp) const -> ValueRef_t const &
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < elem_values_.n_points_,
            ExcIndexRange(qp,0,elem_values_.n_points_));
@@ -1041,7 +1041,7 @@ get_basis_gradient(const Index basis, const Index qp) const -> DerivativeRef_t<1
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < elem_values_.n_points_,
            ExcIndexRange(qp,0,elem_values_.n_points_));
@@ -1090,7 +1090,7 @@ get_face_basis_values(const Index face_id, const Index basis) const -> typename 
     Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
     Assert(face_values_[face_id].D0phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return face_values_[face_id].D0phi_hat_.get_function(i);
+    return face_values_[face_id].D0phi_hat_.get_function_view(i);
     //*/
     return this->get_face_basis_values(face_id).get_function_view(basis);
 }
@@ -1150,7 +1150,7 @@ get_face_basis_value(const Index face_id, const Index basis, const Index qp) con
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
            ExcIndexRange(qp,0,face_values_[face_id].n_points_));
@@ -1170,7 +1170,7 @@ get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) 
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
            ExcIndexRange(qp,0,face_values_[face_id].n_points_));
@@ -1190,7 +1190,7 @@ get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) c
     Assert(qp >= 0 && qp < int(data.get_num_points()),
            ExcIndexRange(qp,0,int(data.get_num_points())));
 
-    return data.get_function(basis)[qp] ;
+    return data.get_function_view(basis)[qp] ;
     //*/
     Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
            ExcIndexRange(qp,0,face_values_[face_id].n_points_));

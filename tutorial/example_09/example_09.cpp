@@ -64,7 +64,7 @@ private:
     using RefSpace  = BSplineSpace<dim>;
     using PushFw    = PushForward<Transformation::h_grad, dim>;
     using Space     = PhysicalSpace<RefSpace, PushFw>;
-    using ValueType = typename Function<dim>::Value;
+    using ValueType = typename Function<dim>::ValueType;
     // [type aliases]
 
     shared_ptr<Mapping<dim>> map;
@@ -140,17 +140,17 @@ void PoissonProblem<dim>::assemble()
 
         for (int i = 0; i < n_basis; ++i)
         {
-            auto grd_phi_i = grd_phi.get_function(i);
+            auto grd_phi_i = grd_phi.get_function_view(i);
             for (int j = 0; j < n_basis; ++j)
             {
-                auto grd_phi_j = grd_phi.get_function(j);
+                auto grd_phi_j = grd_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
                         scalar_product(grd_phi_i[qp], grd_phi_j[qp])
                         * w_meas[qp];
             }
 
-            auto phi_i = phi.get_function(i);
+            auto phi_i = phi.get_function_view(i);
             for (int qp = 0; qp < n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
                               * w_meas[qp];

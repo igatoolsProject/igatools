@@ -99,16 +99,16 @@ void  PoissonPreparation<dim>::local_assemble()
         // [assemble]
         for (int i=0; i<n_basis; ++i)
         {
-            auto grd_phi_i = grads.get_function(i);
+            auto grd_phi_i = grads.get_function_view(i);
             for (int j=0; j<n_basis; ++j)
             {
-                auto grd_phi_j = grads.get_function(j);
+                auto grd_phi_j = grads.get_function_view(j);
                 for (int qp=0; qp<n_qp; ++qp)
                     loc_mat(i,j) +=
                         scalar_product(grd_phi_i[qp], grd_phi_j[qp])
                         * w_meas[qp];
             }
-            auto phi_i = values.get_function(i);
+            auto phi_i = values.get_function_view(i);
             for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += phi_i[qp][0] * w_meas[qp];
         }

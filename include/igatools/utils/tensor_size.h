@@ -57,7 +57,7 @@ public:
     TensorSize(const TensorIndex<rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
-    explicit TensorSize(std::initializer_list<Size> list) noexcept;
+    TensorSize(std::initializer_list<Size> list) noexcept;
 
     /** Copy constructor. */
     TensorSize(const TensorSize<rank> &arr) = default;
