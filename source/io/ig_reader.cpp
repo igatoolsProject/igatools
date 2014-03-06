@@ -238,6 +238,7 @@ ig_mapping_reader(const std::string &filename)
 
     TensorSize<dim> n_ctrl_points_dim;
     array<vector<Real>,dim_phys> control_pts_coords;
+    DynamicMultiArray<Real,dim> weights;
 
     bool is_nurbs_mapping = false;
 
@@ -324,8 +325,6 @@ ig_mapping_reader(const std::string &filename)
         if (boost::iequals(patch.first, "ControlPoints"))
         {
         	Size n_ctrl_pts = 0;
-            vector<Real> weights_vector;
-            vector<Real> weights;
 
             for (const auto &cp : patch.second)
             {
@@ -370,22 +369,47 @@ ig_mapping_reader(const std::string &filename)
                             AssertThrow(direction_id >= 0, ExcLowerRange(direction_id,0));
 
                             control_pts_coords[direction_id] = control_pts_coord_dir;
-                            out << "control_pts_coords["<<direction_id<<"] = " << control_pts_coords[direction_id]<< std::endl;
                         }
                 }//*/
 
-                /*
+
                 if (boost::iequals(cp.first, "Weights"))
                 {
+                	is_nurbs_mapping = true;
+
+                	vector<Real> weights_vec;
                     std::stringstream line_stream(cp.second.get<std::string>(""));
                     Real w;
                     while (line_stream >> w)
-                    	weights.push_back(w);
+                    	weights_vec.push_back(w);
+
+                	for (const auto & wght : cp.second)
+                        if (boost::iequals(wght.first,"<xmlattr>"))
+                        {
+                        	const Index n_weights = wght.second.get<Index>("Num");
+                        	AssertThrow(n_weights == weights_vec.size(),
+                        			ExcDimensionMismatch(n_weights,weights_vec.size()));
+                        }
+
+                	weights.resize(n_ctrl_points_dim);
+
+                	AssertThrow(weights_vec.size() == weights.flat_size(),
+                	     ExcDimensionMismatch(weights_vec.size(),weights.flat_size()));
+
+                	Index flat_id = 0;
+                	for ( auto & w : weights)
+                		w =  weights_vec[flat_id++];
                 }
                 //*/
             }
             AssertThrow(n_ctrl_pts == n_ctrl_points_dim.flat_size(),
             		ExcDimensionMismatch(n_ctrl_pts,n_ctrl_points_dim.flat_size()));
+
+            if (is_nurbs_mapping)
+            {
+            	AssertThrow(n_ctrl_pts == weights.flat_size(),
+            	     ExcDimensionMismatch(n_ctrl_pts,weights.flat_size()));
+            }
             /*
                         weights_.resize(cp_per_ref_dir);
                         const int n_entries = weights_.flat_size();
@@ -397,7 +421,6 @@ ig_mapping_reader(const std::string &filename)
         }
 
     }//PATCH LOOP
-    auto grid = CartesianGrid<dim>::create(knots_unique_values);
 
     vector<Real> control_pts;
     for (int i = 0 ; i < dim_phys ; ++i)
@@ -405,11 +428,19 @@ ig_mapping_reader(const std::string &filename)
 
 
 
-    std::shared_ptr< Mapping<dim,codim> > map;
+    auto grid = CartesianGrid<dim>::create(knots_unique_values);
+    shared_ptr< Mapping<dim,codim> > map;
 
     if (is_nurbs_mapping)
     {
-    	AssertThrow(false,ExcNotImplemented());
+    	using space_t = NURBSSpace<dim,dim_phys,1>;
+    	auto space = space_t::create(
+    			grid,
+    			StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
+    			StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree),
+    			StaticMultiArray<DynamicMultiArray<Real,dim>,dim_phys,1>(weights));
+
+        map = IgMapping<space_t>::create(space,control_pts);
     }
     else
     {
@@ -419,36 +450,10 @@ ig_mapping_reader(const std::string &filename)
     			StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
     			StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree));
 
-//    	out << "codim = " <<space_t::dim_range-space_t::dim << std::endl;
-//    	space->print_info(out);
         map = IgMapping<space_t>::create(space,control_pts);
     }
-    map->print_info(out);
+//    map->print_info(out);
 
-//    bool read = true;
-
-
-
-#if 0
-    for (int i = 0; i<breack_point.size(); ++i)
-    {
-        n_knots[i] = breack_point[i].size();
-        degree[i] = deg[i];
-    }
-
-    for (int i = 0 ; i < dim_ref_domain ; ++i)
-        coord[i].resize(n_knots[i]);
-
-    for (int i = 0 ; i < dim_ref_domain ; ++i)
-        for (int j = 0 ; j < n_knots[i] ; ++j)
-            coord[i][j] = breack_point[i][j];
-
-    grid_ =  CartesianGrid<dim_ref_domain>::create(
-                 CartesianProductArray< Real, dim_ref_domain>(coord));
-#endif
-
-
-    AssertThrow(false,ExcNotImplemented());
 
     return map;
 }
