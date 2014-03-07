@@ -3,9 +3,6 @@
     <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
         <NURBSSpace Dim="2" Range="2" Rank="1">
             <CartesianGrid Dim="2">
-                <TensorSize Dim="2">
-                    2 2
-                </TensorSize>
                 <Knots Direction="0" Size="2">
                     0.0 1.0
                 </Knots>

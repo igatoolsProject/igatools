@@ -175,11 +175,27 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
                 ExcDimensionMismatch(dim,dim_from_file));
     //-------------------------------------------------------------------------
 
-    shared_ptr< CartesianGrid<dim> > grid;
 
-    AssertThrow(false,ExcNotImplemented());
+    //-------------------------------------------------------------------------
+    // reading the knots
+    const auto &knots_elements = get_xml_element_vector(tree,"Knots");
+    AssertThrow(knots_elements.size() == dim,ExcDimensionMismatch(knots_elements.size(),dim));
 
-    return grid;
+    array<vector<Real>,dim> knots;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        const auto &knots_attributes = get_xml_element_attributes(knots_elements[i]);
+
+        const int direction_id = knots_attributes.get<int>("Direction");
+        knots[direction_id] = get_vector_data_from_xml<Real>(knots_elements[i]);
+
+        const int n_knts_from_file = knots_attributes.get<int>("Size");
+        AssertThrow(knots[direction_id].size() == n_knts_from_file,
+                    ExcDimensionMismatch(knots[direction_id].size(),n_knts_from_file));
+    }
+    //-------------------------------------------------------------------------
+
+    return CartesianGrid<dim>::create(CartesianProductArray<Real,dim>(knots));
 }
 
 
