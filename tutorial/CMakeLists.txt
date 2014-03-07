@@ -37,9 +37,9 @@ foreach(dir ${dirs})
   
   execute_process(COMMAND ${SED_EXECUTABLE} -e  \\,//,d
     INPUT_FILE ${dir}/${name}.cpp
-    OUTPUT_FILE ${dir}/${name}_no_tag.cpp)
+    OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/../doc/${name}_no_tag.cpp)
     
-  configure_file(${dir}/${name}_no_tag.cpp 
+  configure_file(${CMAKE_CURRENT_BINARY_DIR}/../doc/${name}_no_tag.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/${name}/${name}.cpp)
 
   # Add data files if any
