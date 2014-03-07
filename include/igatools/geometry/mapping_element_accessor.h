@@ -183,7 +183,8 @@ public:
     /**
      * Fills the cache in accordance with the flag specifications used in the
      * init_values() function.
-     * @precondition Before invoking this function, you must call init_values().
+     *
+     * Precondition Before invoking this function, you must call init_values().
      */
     void fill_values();
 
@@ -192,7 +193,8 @@ public:
      * Fills the cache in accordance with the flag specifications used in the
      * init_face_values() function.
      * @param face_id Face identifier.
-     * @precondition Before invoking this function, you must call init_face_values().
+     *
+     * Precondition Before invoking this function, you must call init_face_values().
      */
     void fill_face_values(const Index face_id);
     ///@}

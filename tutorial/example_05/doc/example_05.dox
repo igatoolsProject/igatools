@@ -59,7 +59,7 @@ The main public function is the local_assemble
 First we define the local matrix and right hand side vector
 \snippet example_05.cpp local matrix
 
-Then we iterate as we have done in \ref example_02b
+Then we iterate as we have done in \ref example_03
 \snippet example_05.cpp iterate as before
 
 and get the values that we need in the assembling

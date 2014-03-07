@@ -341,7 +341,7 @@ public:
 
     //Fields related
     /**
-     * Vector with the evaluation of the field @local_coefs at the evaluation
+     * Vector with the evaluation of the field @p local_coefs at the evaluation
      * points.
      *
      * @see get_local_coefs
@@ -350,7 +350,7 @@ public:
     evaluate_field(const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the gradient of the field @local_coefs
+     * Vector with the evaluation of the gradient of the field @p local_coefs
      * at the evaluation points.
      *
      * @see get_local_coefs
@@ -359,7 +359,7 @@ public:
     evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the hessians of the field @local_coefs
+     * Vector with the evaluation of the hessians of the field @p local_coefs
      * at the evaluation points.
      *
      * @see get_local_coefs
@@ -368,7 +368,7 @@ public:
     evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the field @local_coefs at the evaluation
+     * Vector with the evaluation of the field @p local_coefs at the evaluation
      * points at the specified face.
      *
      * @see get_local_coefs
@@ -377,7 +377,7 @@ public:
     evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the gradient of the field @local_coefs
+     * Vector with the evaluation of the gradient of the field @p local_coefs
      * at the evaluation points at the specified face.
      *
      * @see get_local_coefs
@@ -386,7 +386,7 @@ public:
     evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the hessians of the field @local_coefs
+     * Vector with the evaluation of the hessians of the field @p local_coefs
      * at the evaluation points at the specified face.
      *
      * @see get_local_coefs

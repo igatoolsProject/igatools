@@ -109,9 +109,9 @@ private:
  * such that
  * x1 = r cos (phi_1)
  * x2 = r sin (phi_1) cos (phi_2)
- * .
- * .
- * .
+ * etc
+ *
+ *
  * @todo Missing documentation
  */
 template<int dim_>
