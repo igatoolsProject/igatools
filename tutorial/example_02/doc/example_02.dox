@@ -13,7 +13,7 @@ in two categories:
 - requires the use of cache for efficient computations
 
 In this example we request information that does not use a cache,
-while in example \ref example_02b we treat the access to information
+while in example \ref example_03 we treat the access to information
 that uses the cache.
 See also \ref accessors_iterators for more advance information about the topic.
 
