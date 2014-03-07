@@ -24,12 +24,20 @@ from init_instantiation_data import *
 file_output, inst = intialize_instantiation()
 ###############################################################################
 
+file_output.write('IGA_NAMESPACE_OPEN\n')
+
 
 strings = []
-for row in inst.all_table:
+for row in inst.mapping_dims:
+   (dim, codim) = (row.dim, row.space_dim - row.dim)
+   if (dim > 0):
+	   map = 'std::shared_ptr<Mapping<%d,%d>>' %(dim, codim)
+	   strings.append('template %s ig_mapping_reader(const std::string &);\n' %map)
 
-    writer = 'IgReader< %d, %d >' % (row.dim, row.space_dim)
-    strings.append('template class %s ;\n' % (writer))
+for s in set(strings): # Removing repeated entries.
+    file_output.write(s)
 
-# for s in set(strings): # Removing repeated entries.
-#     file_output.write(s)
+    
+file_output.write('IGA_NAMESPACE_CLOSE\n')
+file_output.close()
+

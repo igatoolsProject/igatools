@@ -1,47 +1,19 @@
-//-+--------------------------------------------------------------------
-// Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
-//
-// This file is part of the igatools library.
-//
-// The igatools library is free software: you can use it, redistribute
-// it and/or modify it under the terms of the GNU General Public
-// License as published by the Free Software Foundation, either
-// version 3 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//-+--------------------------------------------------------------------
 
-// [analytical map]
 #include <igatools/geometry/mapping_lib.h>
-// [analytical map]
 
-// [ig map bspline]
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
-// [ig map bspline]
 
-// [ig map read nurb]
 #include <igatools/io/ig_reader.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
-// [ig map read nurb]
 
-// [old includes]
 #include <igatools/io/writer.h>
 
 using namespace iga;
 using namespace std;
 using numbers::PI;
-// [old includes]
 
-// [an geometry]
 template<int dim>
 void analytical_geometry()
 {
@@ -59,10 +31,8 @@ void analytical_geometry()
     string filename = "ball_geometry-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
-// [an geometry]
 
 
-// [bspline geometry]
 void nurb_geometry()
 {
     const int dim = 2;
@@ -106,7 +76,6 @@ void nurb_geometry()
     string filename = "nurb_geometry-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
-// [bspline geometry]
 
 
 template<int dim>
@@ -117,7 +86,6 @@ void nurb_geometry_from_file()
     IgReader<dim> IgReader;
     IgReader.load_xml(input_file);
     auto map = IgReader.get_mapping_iga();
-    //*/
     auto map = ig_mapping_reader<dim>(input_file);
 
     const int n_plot_points = 10;
@@ -129,12 +97,11 @@ void nurb_geometry_from_file()
 
 int main()
 {
-
     analytical_geometry<2>();
     analytical_geometry<3>();
 
     nurb_geometry();
-//*/
+
     nurb_geometry_from_file<2>();
     nurb_geometry_from_file<3>();
 
