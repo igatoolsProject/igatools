@@ -67,13 +67,13 @@ public:
     /**
      * Construct a vector that gets an non consecutive indexing
      * for @p dof_ids degrees of freedom. An example could be the usage of
-     * dof numbering provided from some external library, IRIT as an example.
+     * dof numbering provided from some external library.
      * All entries are set to zero.
      */
     Vector(const std::vector< Index > &dof_ids);
 
-    /** Copy constructor. Performs a shallow copy of the object (i.e.) only the smart pointers are
-     * copied, not the pointed objects. */
+    /** Copy constructor. Performs a shallow copy of the object (i.e.)
+     * only the smart pointers are copied, not the pointed objects. */
     Vector(const Vector &v) = default;
 
     /** Move constructor. */
