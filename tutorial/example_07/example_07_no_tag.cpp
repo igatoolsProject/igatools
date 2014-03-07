@@ -98,7 +98,7 @@ int main()
         analytical_geometry<3>();
 
         nurb_geometry();
-        nurb_geometry_from_file<2>();
+    nurb_geometry_from_file<2>();
 
-        return  0;
+    return  0;
     }

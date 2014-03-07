@@ -64,7 +64,7 @@ get_xml_tree(const std::string &filename)
  * (in Debug and Release mode).
  */
 vector< boost::property_tree::ptree >
-get_xml_element(
+get_xml_element_vector(
     const boost::property_tree::ptree &tree,
     const string &tag_name)
 {
@@ -83,6 +83,25 @@ get_xml_element(
 }
 
 /**
+ * Extracts from the XML @tree, the unique subtree corresponding to the tag @p tag_name.
+ * @note The must be only one element in the @p tree with the given @p tag_name,
+ * otherwise (more than one element on no element present) an assertion will be raised
+ * (in Debug and Release mode).
+ */
+boost::property_tree::ptree
+get_xml_element(
+    const boost::property_tree::ptree &tree,
+    const string &tag_name)
+{
+    const auto &elements = get_xml_element_vector(tree,tag_name);
+
+    AssertThrow(elements.size() == 1,ExcDimensionMismatch(elements.size(),1));
+
+    return elements[0];
+}
+
+
+/**
  * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.
  * @note If any element is present in the tree, an assertion will be raised
  * (in Debug and Release mode).
@@ -90,10 +109,7 @@ get_xml_element(
 boost::property_tree::ptree
 get_xml_element_attributes(const boost::property_tree::ptree &element)
 {
-    vector<boost::property_tree::ptree> attributes = get_xml_element(element,"<xmlattr>");
-
-    AssertThrow(attributes.size() == 1, ExcDimensionMismatch(attributes.size(),1));
-    return attributes[0];
+    return get_xml_element(element,"<xmlattr>");
 }
 
 /**
@@ -146,6 +162,25 @@ get_vector_data_from_xml(const boost::property_tree::ptree &tree)
     return data;
 }
 
+template <int dim>
+shared_ptr< CartesianGrid<dim> >
+get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
+{
+    //-------------------------------------------------------------------------
+    // reading the CartesianGrid attributes
+    const auto &grid_attributes = get_xml_element_attributes(tree);
+
+    const int dim_from_file = grid_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+    //-------------------------------------------------------------------------
+
+    shared_ptr< CartesianGrid<dim> > grid;
+
+    AssertThrow(false,ExcNotImplemented());
+
+    return grid;
+}
 
 
 template <int dim, int range, int rank>
@@ -182,6 +217,34 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //-------------------------------------------------------------------------
 
 
+    //-------------------------------------------------------------------------
+    // reading the CartesianGrid
+    const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
+    auto grid = get_cartesian_grid_from_xml<dim>(grid_tree);
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the Multiplicity
+//    const auto &multiplicities_tree = get_xml_element(tree,"Multiplicities");
+//    auto mult = get_multiplicities_from_xml<dim,range,rank>(multiplicities_tree);
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the weights
+    const auto &weights_tree = get_xml_element(tree,"Weights");
+
+    const auto &weights_attributes = get_xml_element_attributes(weights_tree);
+
+    const int n_weights = weights_attributes.get<int>("Size");
+    AssertThrow(n_weights >= 1,ExcLowerRange(n_weights,1));
+
+    vector<Real> weights = get_vector_data_from_xml<Real>(weights_tree);
+    AssertThrow(weights.size() == n_weights,ExcDimensionMismatch(weights.size(),n_weights));
+    //-------------------------------------------------------------------------
+
+
 
     using space_t = NURBSSpace<dim,range,rank>;
     shared_ptr<space_t> ref_space;
@@ -190,6 +253,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     return ref_space;
 }
+
 
 
 };
@@ -462,9 +526,7 @@ ig_mapping_reader_version_2_0(const boost::property_tree::ptree &mapping_tree)
 
     //-------------------------------------------------------------------------
     // reading the control points
-    const auto &ctrl_pts_elements = get_xml_element(mapping_tree,"ControlPoints");
-    AssertThrow(ctrl_pts_elements.size() == 1,ExcDimensionMismatch(ctrl_pts_elements.size(),1));
-    const auto &ctrl_pts_tree = ctrl_pts_elements[0];
+    const auto &ctrl_pts_tree = get_xml_element(mapping_tree,"ControlPoints");
 
     const auto &ctrl_pts_attributes = get_xml_element_attributes(ctrl_pts_tree);
 
@@ -481,9 +543,7 @@ ig_mapping_reader_version_2_0(const boost::property_tree::ptree &mapping_tree)
 
     //-------------------------------------------------------------------------
     // reading the reference space
-    const auto &ref_space_elements = get_xml_element(mapping_tree,ref_space_type);
-    AssertThrow(ref_space_elements.size() == 1,ExcDimensionMismatch(ref_space_elements.size(),1));
-    const auto &ref_space_tree = ref_space_elements[0];
+    const auto &ref_space_tree = get_xml_element(mapping_tree,ref_space_type);
 
     shared_ptr< Mapping<dim,codim> > map;
 
@@ -526,11 +586,7 @@ ig_mapping_reader(const std::string &filename)
         const auto &file_tree = get_xml_tree(filename);
 
         const auto &igatools_tree = get_xml_element(file_tree,"Igatools");
-        AssertThrow(igatools_tree.size() == 1,ExcDimensionMismatch(igatools_tree.size(),1));
-
-        const auto &mapping_elements = get_xml_element(igatools_tree[0],"IgMapping");
-        AssertThrow(mapping_elements.size() == 1,ExcDimensionMismatch(mapping_elements.size(),1));
-        const auto &mapping_tree = mapping_elements[0];
+        const auto &mapping_tree = get_xml_element(igatools_tree,"IgMapping");
 
         // use the reader for format version 2.0
         map = ig_mapping_reader_version_2_0<dim,codim>(mapping_tree);

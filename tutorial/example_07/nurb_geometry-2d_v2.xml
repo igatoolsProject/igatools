@@ -1,34 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
-   <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
-      <NURBSSpace Dim="2" Range="2" Rank="1">
-   <!--
-         <CartesianGrid Dim="2">
-            <TensorSize Dim="2>
-                2 2
-            </TensorSize>
-            <Knots Direction="0" Size="2">
-                0.0 1.0
-            </Knots>            
-            <Knots Direction="1" Size="2">
-                0.0 1.0
-            </Knots>            
-         </CartesianGrid>
-         <Multiplicities Dim="2">
-            <TensorSize Dim="2>
-                2 2
-            </TensorSize>
-            <Multiplicity Direction="0" Size="2">
-                3 3
-            </Multiplicity>
-            <Multiplicity Direction="1" Size="2">
-                2 2
-            </Multiplicity>
-         </Multiplicities>
+    <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
+        <NURBSSpace Dim="2" Range="2" Rank="1">
+            <CartesianGrid Dim="2">
+                <TensorSize Dim="2">
+                    2 2
+                </TensorSize>
+                <Knots Direction="0" Size="2">
+                    0.0 1.0
+                </Knots>
+                <Knots Direction="1" Size="2">
+                    0.0 1.0
+                </Knots>
+            </CartesianGrid>
+            <Components Num="2">
+                <Component Id="0">
+                    <Degrees Dim="2">
+                        2 2
+                    </Degrees>
+                    <Multiplicities Dim="2">
+                        <TensorSize Dim="2">
+                            2 2
+                        </TensorSize>
+                        <Multiplicity Direction="0" Size="2">
+                            3 3
+                        </Multiplicity>
+                        <Multiplicity Direction="1" Size="2">
+                            2 2
+                        </Multiplicity>
+                    </Multiplicities>
+                </Component>
+                <Component Id="1">
+                    <Degrees Dim="2">
+                        2 2
+                    </Degrees>
+                    <Multiplicities Dim="2">
+                        <TensorSize Dim="2">
+                            2 2
+                        </TensorSize>
+                        <Multiplicity Direction="0" Size="2">
+                            3 3
+                        </Multiplicity>
+                        <Multiplicity Direction="1" Size="2">
+                            2 2
+                        </Multiplicity>
+                    </Multiplicities>
+                </Component>
+         </Components>
          <Weights Size="12">
              1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
          </Weights>
-   -->
       </NURBSSpace>
       <ControlPoints Dim="1" Size="12">
          0.8 0.8 0.4 1.0 1.0 0.5 0.0 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01
