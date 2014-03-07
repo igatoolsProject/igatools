@@ -695,7 +695,7 @@ protected:
     typename std::vector<T>::const_reference el(const TableIndices<N> &indices) const;
 
     /**
-     * @deprecated This function
+     * deprecated This function
      * accesses data directly and
      * should not be used!
      *
