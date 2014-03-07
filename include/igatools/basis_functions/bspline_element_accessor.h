@@ -359,7 +359,7 @@ public:
     evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
 
     /**
-     * Vector with the evaluation of the hessians of the field @local_coefs
+     * Vector with the evaluation of the hessians of the field @p local_coefs
      * at the evaluation points.
      *
      * @see get_local_coefs
