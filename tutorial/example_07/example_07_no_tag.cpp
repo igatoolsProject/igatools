@@ -93,12 +93,12 @@ void nurb_geometry_from_file()
 
 int main()
 {
-    /*
-        analytical_geometry<2>();
-        analytical_geometry<3>();
 
-        nurb_geometry();
+    analytical_geometry<2>();
+    analytical_geometry<3>();
+
+    nurb_geometry();
     nurb_geometry_from_file<2>();
 
     return  0;
-    }
+}

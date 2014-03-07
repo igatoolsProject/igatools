@@ -38,6 +38,7 @@
 using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::string;
 
 IGA_NAMESPACE_OPEN
@@ -70,13 +71,11 @@ get_xml_element_vector(
 {
     vector<boost::property_tree::ptree> element;
 
-    std::cout << "tag_name= " << tag_name << std::endl ;
+//    std::cout << "tag_name= " << tag_name << std::endl ;
     for (const auto & leaf : tree)
-    {
-        std::cout << "leaf.first= " << leaf.first << std::endl ;
         if (boost::iequals(leaf.first,tag_name))
             element.push_back(leaf.second);
-    }
+
     AssertThrow(element.size() > 0,ExcMessage("XML element <"+tag_name+"> not found."));
 
     return element;
@@ -198,15 +197,143 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
     return CartesianGrid<dim>::create(CartesianProductArray<Real,dim>(knots));
 }
 
+template <int dim>
+Multiplicity<dim>
+get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
+{
+    //-------------------------------------------------------------------------
+    // reading the Multiplicity attributes
+    const auto &mult_attributes = get_xml_element_attributes(tree);
+
+    const int dim_from_file = mult_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the multiplicity along each direction
+    const auto &mult_elements = get_xml_element_vector(tree,"Multiplicity");
+    AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
+
+    array<vector<Size>,dim> mlt_data;
+    for (const auto mlt_element : mult_elements)
+    {
+        const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
+
+        const int direction_id = mlt_attributes.get<int>("Direction");
+        mlt_data[direction_id] = get_vector_data_from_xml<Size>(mlt_element);
+
+        const int n_mlt_from_file = mlt_attributes.get<int>("Size");
+        AssertThrow(mlt_data[direction_id].size() == n_mlt_from_file,
+                    ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
+    }
+    //-------------------------------------------------------------------------
+
+
+    Multiplicity<dim> mult(mlt_data);
+
+    return mult;
+}
+
 
 template <int dim, int range, int rank>
 shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
     using space_t = BSplineSpace<dim,range,rank>;
-    shared_ptr<space_t> ref_space;
 
-    AssertThrow(false,ExcNotImplemented());
+    //-------------------------------------------------------------------------
+    // reading the BSplineSpace attributes
+    const auto &ref_space_attributes = get_xml_element_attributes(tree);
+
+    const int dim_from_file = ref_space_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+
+    const int range_from_file = ref_space_attributes.get<int>("Range");
+    AssertThrow(range == range_from_file,
+                ExcDimensionMismatch(range,range_from_file));
+
+    const int rank_from_file = ref_space_attributes.get<int>("Rank");
+    AssertThrow(rank == rank_from_file,
+                ExcDimensionMismatch(range,rank_from_file));
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the CartesianGrid
+    const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
+    auto grid = get_cartesian_grid_from_xml<dim>(grid_tree);
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the ScalarComponents
+    const auto &scalar_components_tree = get_xml_element(tree,"BSplineSpaceScalarComponents");
+    const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
+    const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
+    AssertThrow(space_t::n_components == n_sc_components_from_file,
+                ExcDimensionMismatch(space_t::n_components,n_sc_components_from_file));
+
+    const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"BSplineSpaceScalarComponent");
+    AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
+                ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
+
+
+    typename space_t::Multiplicities multiplicities;
+    typename space_t::DegreeTable degrees;
+
+    for (const auto & comp_element : scalar_component_vector)
+    {
+        const auto &component_attributes = get_xml_element_attributes(comp_element);
+        const int comp_id = component_attributes.get<int>("Id");
+        AssertThrow(comp_id >=0 && comp_id < space_t::n_components,
+                    ExcIndexRange(comp_id,0,space_t::n_components));
+
+        //---------------------------------------------
+        // getting the dofs tensor size
+        const auto &comp_dofs_tens_size_element = get_xml_element(comp_element,"DofsTensorSize");
+        const auto &comp_dofs_tens_size_attributes = get_xml_element_attributes(comp_dofs_tens_size_element);
+        const int dofs_rank = comp_dofs_tens_size_attributes.get<int>("Dim");
+        AssertThrow(dofs_rank == dim,ExcDimensionMismatch(dofs_rank,dim));
+
+        vector<Index> dofs_size_vec = get_vector_data_from_xml<Index>(comp_dofs_tens_size_element);
+        AssertThrow(dofs_rank == dofs_size_vec.size(),ExcDimensionMismatch(dofs_rank,dofs_size_vec.size()));
+
+
+        TensorSize<dim> dofs_size;
+        for (int i = 0 ; i < dim ; ++i)
+            dofs_size[i] = dofs_size_vec[i];
+        //---------------------------------------------
+
+
+        //---------------------------------------------
+        // getting the degrees
+        const auto &comp_degree_element = get_xml_element(comp_element,"Degrees");
+        const auto &comp_degree_attributes = get_xml_element_attributes(comp_degree_element);
+        const int n_degree = comp_degree_attributes.get<int>("Dim");
+        AssertThrow(n_degree == dim,ExcDimensionMismatch(n_degree,dim));
+
+        vector<Index> degrees_vec = get_vector_data_from_xml<Index>(comp_degree_element);
+        AssertThrow(n_degree == degrees_vec.size(),ExcDimensionMismatch(n_degree,degrees_vec.size()));
+
+        for (int i = 0 ; i < dim ; ++i)
+            degrees(comp_id)[i] = degrees_vec[i];
+        //---------------------------------------------
+
+
+        //---------------------------------------------
+        // getting the multiplicities
+        const auto &comp_multiplicities_element = get_xml_element(comp_element,"Multiplicities");
+        multiplicities(comp_id) = get_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        //---------------------------------------------
+
+
+    } // end loop over the scalar components
+    //-------------------------------------------------------------------------
+
+    auto ref_space = space_t::create(grid,multiplicities,degrees);
 
     return ref_space;
 }
@@ -215,6 +342,8 @@ template <int dim, int range, int rank>
 shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 {
+    using space_t = NURBSSpace<dim,range,rank>;
+
     //-------------------------------------------------------------------------
     // reading the NURBSSpace attributes
     const auto &ref_space_attributes = get_xml_element_attributes(tree);
@@ -241,31 +370,90 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
     //-------------------------------------------------------------------------
-    // reading the Multiplicity
-//    const auto &multiplicities_tree = get_xml_element(tree,"Multiplicities");
-//    auto mult = get_multiplicities_from_xml<dim,range,rank>(multiplicities_tree);
+    // reading the ScalarComponents
+    const auto &scalar_components_tree = get_xml_element(tree,"NURBSSpaceScalarComponents");
+    const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
+    const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
+    AssertThrow(space_t::n_components == n_sc_components_from_file,
+                ExcDimensionMismatch(space_t::n_components,n_sc_components_from_file));
+
+    const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"NURBSSpaceScalarComponent");
+    AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
+                ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
+
+
+    typename space_t::Multiplicities multiplicities;
+    typename space_t::DegreeTable degrees;
+    StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> weights;
+
+    for (const auto & comp_element : scalar_component_vector)
+    {
+        const auto &component_attributes = get_xml_element_attributes(comp_element);
+        const int comp_id = component_attributes.get<int>("Id");
+        AssertThrow(comp_id >=0 && comp_id < space_t::n_components,
+                    ExcIndexRange(comp_id,0,space_t::n_components));
+
+        //---------------------------------------------
+        // getting the dofs tensor size
+        const auto &comp_dofs_tens_size_element = get_xml_element(comp_element,"DofsTensorSize");
+        const auto &comp_dofs_tens_size_attributes = get_xml_element_attributes(comp_dofs_tens_size_element);
+        const int dofs_rank = comp_dofs_tens_size_attributes.get<int>("Dim");
+        AssertThrow(dofs_rank == dim,ExcDimensionMismatch(dofs_rank,dim));
+
+        vector<Index> dofs_size_vec = get_vector_data_from_xml<Index>(comp_dofs_tens_size_element);
+        AssertThrow(dofs_rank == dofs_size_vec.size(),ExcDimensionMismatch(dofs_rank,dofs_size_vec.size()));
+
+
+        TensorSize<dim> dofs_size;
+        for (int i = 0 ; i < dim ; ++i)
+            dofs_size[i] = dofs_size_vec[i];
+        //---------------------------------------------
+
+
+        //---------------------------------------------
+        // getting the degrees
+        const auto &comp_degree_element = get_xml_element(comp_element,"Degrees");
+        const auto &comp_degree_attributes = get_xml_element_attributes(comp_degree_element);
+        const int n_degree = comp_degree_attributes.get<int>("Dim");
+        AssertThrow(n_degree == dim,ExcDimensionMismatch(n_degree,dim));
+
+        vector<Index> degrees_vec = get_vector_data_from_xml<Index>(comp_degree_element);
+        AssertThrow(n_degree == degrees_vec.size(),ExcDimensionMismatch(n_degree,degrees_vec.size()));
+
+        for (int i = 0 ; i < dim ; ++i)
+            degrees(comp_id)[i] = degrees_vec[i];
+        //---------------------------------------------
+
+
+        //---------------------------------------------
+        // getting the multiplicities
+        const auto &comp_multiplicities_element = get_xml_element(comp_element,"Multiplicities");
+        multiplicities(comp_id) = get_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        //---------------------------------------------
+
+
+
+        //-------------------------------------------------------------------------
+        // reading the weights
+        const auto &weights_tree = get_xml_element(comp_element,"Weights");
+        const auto &weights_attributes = get_xml_element_attributes(weights_tree);
+
+        const int n_weights = weights_attributes.get<int>("Size");
+        AssertThrow(n_weights == dofs_size.flat_size(),ExcLowerRange(n_weights,dofs_size.flat_size()));
+
+        vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
+        AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
+
+        weights(comp_id).resize(dofs_size);
+        auto &w_comp = weights(comp_id);
+        for (int flat_id = 0 ; flat_id < n_weights ; ++flat_id)
+            w_comp(flat_id) = weights_vec[flat_id];
+        //-------------------------------------------------------------------------
+
+    } // end loop over the scalar components
     //-------------------------------------------------------------------------
 
-
-    //-------------------------------------------------------------------------
-    // reading the weights
-    const auto &weights_tree = get_xml_element(tree,"Weights");
-
-    const auto &weights_attributes = get_xml_element_attributes(weights_tree);
-
-    const int n_weights = weights_attributes.get<int>("Size");
-    AssertThrow(n_weights >= 1,ExcLowerRange(n_weights,1));
-
-    vector<Real> weights = get_vector_data_from_xml<Real>(weights_tree);
-    AssertThrow(weights.size() == n_weights,ExcDimensionMismatch(weights.size(),n_weights));
-    //-------------------------------------------------------------------------
-
-
-
-    using space_t = NURBSSpace<dim,range,rank>;
-    shared_ptr<space_t> ref_space;
-
-    AssertThrow(false,ExcNotImplemented());
+    auto ref_space = space_t::create(grid,multiplicities,degrees,weights);
 
     return ref_space;
 }

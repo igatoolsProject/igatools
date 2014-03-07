@@ -119,16 +119,17 @@ void nurb_geometry_from_file()
     Writer<dim> writer(map, n_plot_points);
     string filename = "nurb_geometry_from_file-" + to_string(dim) + "d" ;
     writer.save(filename);
+    //*/
 }
 
 
 int main()
 {
-    /*
-        analytical_geometry<2>();
-        analytical_geometry<3>();
 
-        nurb_geometry();
+    analytical_geometry<2>();
+    analytical_geometry<3>();
+
+    nurb_geometry();
     //*/
     nurb_geometry_from_file<2>();
 //    nurb_geometry_from_file<3>();

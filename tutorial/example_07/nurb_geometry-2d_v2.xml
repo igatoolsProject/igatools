@@ -10,15 +10,15 @@
                     0.0 1.0
                 </Knots>
             </CartesianGrid>
-            <Components Num="2">
-                <Component Id="0">
+            <NURBSSpaceScalarComponents Size="2">
+                <NURBSSpaceScalarComponent Id="0">
+                    <DofsTensorSize Dim="2">
+                        3 2
+                    </DofsTensorSize>
                     <Degrees Dim="2">
-                        2 2
+                        2 1
                     </Degrees>
                     <Multiplicities Dim="2">
-                        <TensorSize Dim="2">
-                            2 2
-                        </TensorSize>
                         <Multiplicity Direction="0" Size="2">
                             3 3
                         </Multiplicity>
@@ -26,15 +26,18 @@
                             2 2
                         </Multiplicity>
                     </Multiplicities>
-                </Component>
-                <Component Id="1">
+                    <Weights Size="6">
+                       1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
+                    </Weights>
+                </NURBSSpaceScalarComponent>
+                <NURBSSpaceScalarComponent Id="1">
+                    <DofsTensorSize Dim="2">
+                        3 2
+                    </DofsTensorSize>
                     <Degrees Dim="2">
-                        2 2
+                        2 1
                     </Degrees>
                     <Multiplicities Dim="2">
-                        <TensorSize Dim="2">
-                            2 2
-                        </TensorSize>
                         <Multiplicity Direction="0" Size="2">
                             3 3
                         </Multiplicity>
@@ -42,15 +45,15 @@
                             2 2
                         </Multiplicity>
                     </Multiplicities>
-                </Component>
-         </Components>
-         <Weights Size="12">
-             1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
-         </Weights>
-      </NURBSSpace>
-      <ControlPoints Dim="1" Size="12">
-         0.8 0.8 0.4 1.0 1.0 0.5 0.0 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01
-      </ControlPoints>
+                    <Weights Size="6">
+                       20.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
+                    </Weights>
+                </NURBSSpaceScalarComponent>
+            </NURBSSpaceScalarComponents>
+       </NURBSSpace>
+       <ControlPoints Dim="1" Size="12">
+          0.8 0.8 0.4 1.0 1.0 0.5 0.0 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01
+       </ControlPoints>
    </IgMapping>
    <!--
    <Patch DimPhysicalDomain="2" DimReferenceDomain="2" ID="0">
