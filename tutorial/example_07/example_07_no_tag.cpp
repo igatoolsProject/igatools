@@ -81,11 +81,7 @@ void nurb_geometry()
 template<int dim>
 void nurb_geometry_from_file()
 {
-    string input_file = "nurb_geometry-" + to_string(dim) + "d.xml" ;
-    /*
-    IgReader<dim> IgReader;
-    IgReader.load_xml(input_file);
-    auto map = IgReader.get_mapping_iga();
+    string input_file = "nurb_geometry-" + to_string(dim) + "d_v2.xml" ;
     auto map = ig_mapping_reader<dim>(input_file);
 
     const int n_plot_points = 10;
@@ -97,13 +93,12 @@ void nurb_geometry_from_file()
 
 int main()
 {
-    analytical_geometry<2>();
-    analytical_geometry<3>();
+    /*
+        analytical_geometry<2>();
+        analytical_geometry<3>();
 
-    nurb_geometry();
+        nurb_geometry();
+        nurb_geometry_from_file<2>();
 
-    nurb_geometry_from_file<2>();
-    nurb_geometry_from_file<3>();
-
-    return  0;
-}
+        return  0;
+    }

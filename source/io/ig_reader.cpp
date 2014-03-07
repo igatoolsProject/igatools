@@ -42,25 +42,174 @@ using std::string;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int codim = 0>
-std::shared_ptr< Mapping<dim,codim> >
-ig_mapping_reader(const std::string &filename)
+namespace
 {
-	const int dim_phys = dim + codim;
-
+/**
+ * Returns the XML tree contained in the file @p filename.
+ */
+boost::property_tree::ptree
+get_xml_tree(const std::string &filename)
+{
     using boost::property_tree::ptree;
     ptree xml_tree;
 
     read_xml(filename, xml_tree);
 
+    return xml_tree;
+}
 
-    using tree_value_t = typename ptree::value_type;
+/**
+ * Extracts from the XML @tree, the subtrees corresponding to the tag @p tag_name.
+ * @note If any element is present in the tree, an assertion will be raised
+ * (in Debug and Release mode).
+ */
+vector< boost::property_tree::ptree >
+get_xml_element(
+    const boost::property_tree::ptree &tree,
+    const string &tag_name)
+{
+    vector<boost::property_tree::ptree> element;
+
+    std::cout << "tag_name= " << tag_name << std::endl ;
+    for (const auto & leaf : tree)
+    {
+        std::cout << "leaf.first= " << leaf.first << std::endl ;
+        if (boost::iequals(leaf.first,tag_name))
+            element.push_back(leaf.second);
+    }
+    AssertThrow(element.size() > 0,ExcMessage("XML element <"+tag_name+"> not found."));
+
+    return element;
+}
+
+/**
+ * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.
+ * @note If any element is present in the tree, an assertion will be raised
+ * (in Debug and Release mode).
+ */
+boost::property_tree::ptree
+get_xml_element_attributes(const boost::property_tree::ptree &element)
+{
+    vector<boost::property_tree::ptree> attributes = get_xml_element(element,"<xmlattr>");
+
+    AssertThrow(attributes.size() == 1, ExcDimensionMismatch(attributes.size(),1));
+    return attributes[0];
+}
+
+/**
+ * Returns a string containing the fromat of the igatools XML input file.
+ */
+string
+get_xml_input_file_format(const std::string &filename)
+{
+    string file_format_version = "";
+
+    const auto &xml_tree = get_xml_tree(filename);
+
+    for (const auto & leaf : xml_tree)
+    {
+        if (boost::iequals(leaf.first,"XMLFile"))
+        {
+            file_format_version = "1.0";
+        }
+        else if (boost::iequals(leaf.first,"Igatools"))
+        {
+            for (const auto & igatools_tag : leaf.second)
+                if (boost::iequals(igatools_tag.first,"<xmlattr>"))
+                    file_format_version = igatools_tag.second.get<std::string>("FormatVersion");
+        }
+        else
+        {
+            string err_msg("XML input file is not in a valid format for igatools.");
+            AssertThrow(false,ExcMessage(err_msg));
+        }
+    }
+
+    return file_format_version;
+}
+
+/**
+ * Extracts a vector of scalars from the XML @p tree.
+ * The type of scalars is determined by the template parameter @p ScalarType.
+ */
+template <class ScalarType>
+vector<ScalarType>
+get_vector_data_from_xml(const boost::property_tree::ptree &tree)
+{
+    vector<ScalarType> data;
+
+    ScalarType v;
+    std::stringstream line_stream(tree.get<std::string>(""));
+    while (line_stream >> v)
+        data.push_back(v);
+
+    return data;
+}
+
+
+
+template <int dim, int range, int rank>
+shared_ptr< BSplineSpace<dim,range,rank> >
+get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
+{
+    using space_t = BSplineSpace<dim,range,rank>;
+    shared_ptr<space_t> ref_space;
+
+    AssertThrow(false,ExcNotImplemented());
+
+    return ref_space;
+}
+
+template <int dim, int range, int rank>
+shared_ptr< NURBSSpace<dim,range,rank> >
+get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
+{
+    //-------------------------------------------------------------------------
+    // reading the NURBSSpace attributes
+    const auto &ref_space_attributes = get_xml_element_attributes(tree);
+
+    const int dim_from_file = ref_space_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+
+    const int range_from_file = ref_space_attributes.get<int>("Range");
+    AssertThrow(range == range_from_file,
+                ExcDimensionMismatch(range,range_from_file));
+
+    const int rank_from_file = ref_space_attributes.get<int>("Rank");
+    AssertThrow(rank == rank_from_file,
+                ExcDimensionMismatch(range,rank_from_file));
+    //-------------------------------------------------------------------------
+
+
+
+    using space_t = NURBSSpace<dim,range,rank>;
+    shared_ptr<space_t> ref_space;
+
+    AssertThrow(false,ExcNotImplemented());
+
+    return ref_space;
+}
+
+
+};
+
+
+
+
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader_version_1_0(const std::string &filename)
+{
+    const int dim_phys = dim + codim;
+
+    const auto &xml_tree = get_xml_tree(filename);
 
 
     LogStream out ;
     TensorIndex<dim> degree;
-	CartesianProductArray<Real,dim> knots_unique_values;
-	Multiplicity<dim> multiplicities;
+    CartesianProductArray<Real,dim> knots_unique_values;
+    Multiplicity<dim> multiplicities;
 
 
     TensorSize<dim> n_ctrl_points_dim;
@@ -69,7 +218,7 @@ ig_mapping_reader(const std::string &filename)
 
     bool is_nurbs_mapping = false;
 
-    for (const tree_value_t & patch : xml_tree.get_child("XMLFile.Patch"))
+    for (const auto & patch : xml_tree.get_child("XMLFile.Patch"))
     {
         if (boost::iequals(patch.first,"<xmlattr>"))
         {
@@ -112,12 +261,12 @@ ig_mapping_reader(const std::string &filename)
                     while (line_stream >> knt)
                         knots_unique_values_dir.push_back(knt);
 
-                	for (const auto & brk : knot.second)
+                    for (const auto & brk : knot.second)
                         if (boost::iequals(brk.first,"<xmlattr>"))
                         {
-                        	const Index n_brk = brk.second.get<Index>("Num");
-                        	AssertThrow(n_brk == knots_unique_values_dir.size(),
-                        			ExcDimensionMismatch(n_brk,knots_unique_values_dir.size()));
+                            const Index n_brk = brk.second.get<Index>("Num");
+                            AssertThrow(n_brk == knots_unique_values_dir.size(),
+                                        ExcDimensionMismatch(n_brk,knots_unique_values_dir.size()));
                         }
                 }
 
@@ -128,21 +277,21 @@ ig_mapping_reader(const std::string &filename)
                     while (line_stream >> m)
                         multiplicities_dir.push_back(m);
 
-                	for (const auto & mlt : knot.second)
+                    for (const auto & mlt : knot.second)
                         if (boost::iequals(mlt.first,"<xmlattr>"))
                         {
-                        	const Index n_mlt = mlt.second.get<Index>("Num");
-                        	AssertThrow(n_mlt == multiplicities_dir.size(),
-                        			ExcDimensionMismatch(n_mlt,multiplicities_dir.size()));
+                            const Index n_mlt = mlt.second.get<Index>("Num");
+                            AssertThrow(n_mlt == multiplicities_dir.size(),
+                                        ExcDimensionMismatch(n_mlt,multiplicities_dir.size()));
                         }
 
                 }
                 //*/
             }
             AssertThrow(n_break_pts == knots_unique_values_dir.size(),
-            		ExcDimensionMismatch(n_break_pts,knots_unique_values_dir.size()));
+                        ExcDimensionMismatch(n_break_pts,knots_unique_values_dir.size()));
             AssertThrow(n_break_pts == multiplicities_dir.size(),
-            		ExcDimensionMismatch(n_break_pts,multiplicities_dir.size()));
+                        ExcDimensionMismatch(n_break_pts,multiplicities_dir.size()));
 
             degree[direction_id] = deg;
             knots_unique_values.copy_data_direction(direction_id,knots_unique_values_dir);
@@ -151,13 +300,13 @@ ig_mapping_reader(const std::string &filename)
 
         if (boost::iequals(patch.first, "ControlPoints"))
         {
-        	Size n_ctrl_pts = 0;
+            Size n_ctrl_pts = 0;
 
             for (const auto &cp : patch.second)
             {
                 if (boost::iequals(cp.first,"<xmlattr>"))
                 {
-                	n_ctrl_pts = cp.second.get<Index>("Num");
+                    n_ctrl_pts = cp.second.get<Index>("Num");
                     AssertThrow(n_ctrl_pts >= 0, ExcLowerRange(n_ctrl_pts,0));
                 }
 
@@ -183,14 +332,14 @@ ig_mapping_reader(const std::string &filename)
                     Real v;
                     std::stringstream line_stream(cp.second.get<std::string>(""));
                     while (line_stream >> v)
-                    	control_pts_coord_dir.push_back(v);
+                        control_pts_coord_dir.push_back(v);
 
-                	for (const auto & coord : cp.second)
+                    for (const auto & coord : cp.second)
                         if (boost::iequals(coord.first,"<xmlattr>"))
                         {
-                        	const Index n_coord = coord.second.get<Index>("Num");
-                        	AssertThrow(n_coord == control_pts_coord_dir.size(),
-                        			ExcDimensionMismatch(n_coord,control_pts_coord_dir.size()));
+                            const Index n_coord = coord.second.get<Index>("Num");
+                            AssertThrow(n_coord == control_pts_coord_dir.size(),
+                                        ExcDimensionMismatch(n_coord,control_pts_coord_dir.size()));
 
                             direction_id = coord.second.get<Index>("Dir");
                             AssertThrow(direction_id >= 0, ExcLowerRange(direction_id,0));
@@ -202,40 +351,40 @@ ig_mapping_reader(const std::string &filename)
 
                 if (boost::iequals(cp.first, "Weights"))
                 {
-                	is_nurbs_mapping = true;
+                    is_nurbs_mapping = true;
 
-                	vector<Real> weights_vec;
+                    vector<Real> weights_vec;
                     std::stringstream line_stream(cp.second.get<std::string>(""));
                     Real w;
                     while (line_stream >> w)
-                    	weights_vec.push_back(w);
+                        weights_vec.push_back(w);
 
-                	for (const auto & wght : cp.second)
+                    for (const auto & wght : cp.second)
                         if (boost::iequals(wght.first,"<xmlattr>"))
                         {
-                        	const Index n_weights = wght.second.get<Index>("Num");
-                        	AssertThrow(n_weights == weights_vec.size(),
-                        			ExcDimensionMismatch(n_weights,weights_vec.size()));
+                            const Index n_weights = wght.second.get<Index>("Num");
+                            AssertThrow(n_weights == weights_vec.size(),
+                                        ExcDimensionMismatch(n_weights,weights_vec.size()));
                         }
 
-                	weights.resize(n_ctrl_points_dim);
+                    weights.resize(n_ctrl_points_dim);
 
-                	AssertThrow(weights_vec.size() == weights.flat_size(),
-                	     ExcDimensionMismatch(weights_vec.size(),weights.flat_size()));
+                    AssertThrow(weights_vec.size() == weights.flat_size(),
+                                ExcDimensionMismatch(weights_vec.size(),weights.flat_size()));
 
-                	Index flat_id = 0;
-                	for ( auto & w : weights)
-                		w =  weights_vec[flat_id++];
+                    Index flat_id = 0;
+                    for (auto & w : weights)
+                        w =  weights_vec[flat_id++];
                 }
                 //*/
             }
             AssertThrow(n_ctrl_pts == n_ctrl_points_dim.flat_size(),
-            		ExcDimensionMismatch(n_ctrl_pts,n_ctrl_points_dim.flat_size()));
+                        ExcDimensionMismatch(n_ctrl_pts,n_ctrl_points_dim.flat_size()));
 
             if (is_nurbs_mapping)
             {
-            	AssertThrow(n_ctrl_pts == weights.flat_size(),
-            	     ExcDimensionMismatch(n_ctrl_pts,weights.flat_size()));
+                AssertThrow(n_ctrl_pts == weights.flat_size(),
+                            ExcDimensionMismatch(n_ctrl_pts,weights.flat_size()));
             }
             /*
                         weights_.resize(cp_per_ref_dir);
@@ -260,22 +409,22 @@ ig_mapping_reader(const std::string &filename)
 
     if (is_nurbs_mapping)
     {
-    	using space_t = NURBSSpace<dim,dim_phys,1>;
-    	auto space = space_t::create(
-    			grid,
-    			StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
-    			StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree),
-    			StaticMultiArray<DynamicMultiArray<Real,dim>,dim_phys,1>(weights));
+        using space_t = NURBSSpace<dim,dim_phys,1>;
+        auto space = space_t::create(
+                         grid,
+                         StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
+                         StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree),
+                         StaticMultiArray<DynamicMultiArray<Real,dim>,dim_phys,1>(weights));
 
         map = IgMapping<space_t>::create(space,control_pts);
     }
     else
     {
-    	using space_t = BSplineSpace<dim,dim_phys,1>;
-    	auto space = space_t::create(
-    			grid,
-    			StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
-    			StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree));
+        using space_t = BSplineSpace<dim,dim_phys,1>;
+        auto space = space_t::create(
+                         grid,
+                         StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
+                         StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree));
 
         map = IgMapping<space_t>::create(space,control_pts);
     }
@@ -285,6 +434,115 @@ ig_mapping_reader(const std::string &filename)
     return map;
 }
 
+
+
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader_version_2_0(const boost::property_tree::ptree &mapping_tree)
+{
+    //-------------------------------------------------------------------------
+    // reading the IgMapping attributes
+    const auto &mapping_attributes = get_xml_element_attributes(mapping_tree);
+
+    const int dim_from_file = mapping_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+
+    const int codim_from_file = mapping_attributes.get<int>("Codim");
+    AssertThrow(codim == codim_from_file,
+                ExcDimensionMismatch(codim,codim_from_file));
+
+    const string ref_space_type = mapping_attributes.get<string>("RefSpaceType");
+    AssertThrow(ref_space_type == "BSplineSpace" || ref_space_type == "NURBSSpace",
+                ExcMessage("Unknown reference space type: "+ref_space_type));
+
+    const bool is_nurbs_space = (ref_space_type == "NURBSSpace")?true:false;
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the control points
+    const auto &ctrl_pts_elements = get_xml_element(mapping_tree,"ControlPoints");
+    AssertThrow(ctrl_pts_elements.size() == 1,ExcDimensionMismatch(ctrl_pts_elements.size(),1));
+    const auto &ctrl_pts_tree = ctrl_pts_elements[0];
+
+    const auto &ctrl_pts_attributes = get_xml_element_attributes(ctrl_pts_tree);
+
+    const int dim_ctrl_pts = ctrl_pts_attributes.get<int>("Dim");
+    AssertThrow(dim_ctrl_pts == 1,ExcDimensionMismatch(dim_ctrl_pts,1));
+
+    const int n_ctrl_pts = ctrl_pts_attributes.get<int>("Size");
+    AssertThrow(n_ctrl_pts >= 1,ExcLowerRange(n_ctrl_pts,1));
+
+    vector<Real> cntrl_pts = get_vector_data_from_xml<Real>(ctrl_pts_tree);
+    AssertThrow(cntrl_pts.size() == n_ctrl_pts,ExcDimensionMismatch(cntrl_pts.size(),n_ctrl_pts));
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the reference space
+    const auto &ref_space_elements = get_xml_element(mapping_tree,ref_space_type);
+    AssertThrow(ref_space_elements.size() == 1,ExcDimensionMismatch(ref_space_elements.size(),1));
+    const auto &ref_space_tree = ref_space_elements[0];
+
+    shared_ptr< Mapping<dim,codim> > map;
+
+    const int dim_phys = dim + codim;
+    if (is_nurbs_space)
+    {
+        using ref_space_t = NURBSSpace<dim,dim_phys,1>;
+        auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(ref_space_tree);
+
+        map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
+    }
+    else
+    {
+        using ref_space_t = BSplineSpace<dim,dim_phys,1>;
+        auto ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(ref_space_tree);
+
+        map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
+    }
+    //-------------------------------------------------------------------------
+
+    return map;
+}
+
+
+
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader(const std::string &filename)
+{
+    const string file_format_version = get_xml_input_file_format(filename) ;
+
+    shared_ptr< Mapping<dim,codim> > map;
+    if (file_format_version == "1.0")
+    {
+        // use the reader for format version 1.0
+        map = ig_mapping_reader_version_1_0<dim,codim>(filename);
+    }
+    else if (file_format_version == "2.0")
+    {
+        const auto &file_tree = get_xml_tree(filename);
+
+        const auto &igatools_tree = get_xml_element(file_tree,"Igatools");
+        AssertThrow(igatools_tree.size() == 1,ExcDimensionMismatch(igatools_tree.size(),1));
+
+        const auto &mapping_elements = get_xml_element(igatools_tree[0],"IgMapping");
+        AssertThrow(mapping_elements.size() == 1,ExcDimensionMismatch(mapping_elements.size(),1));
+        const auto &mapping_tree = mapping_elements[0];
+
+        // use the reader for format version 2.0
+        map = ig_mapping_reader_version_2_0<dim,codim>(mapping_tree);
+    }
+    else
+    {
+        string err_msg("Input file format version "+file_format_version+" not supported.");
+        AssertThrow(false,ExcMessage(err_msg));
+    }
+
+    return map;
+}
 
 
 IGA_NAMESPACE_CLOSE

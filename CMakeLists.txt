@@ -19,7 +19,7 @@
 #-+--------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Main cmake file for the igatool library
+# Main cmake file for the igatools library
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #TODO: Define the configure time variable for dimension compilation

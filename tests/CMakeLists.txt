@@ -19,7 +19,7 @@
 #-+--------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# cmakefile for the igatool library unit testing configuration
+# cmakefile for the igatools library unit testing configuration
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 project(tests)

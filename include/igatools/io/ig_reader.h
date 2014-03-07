@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
  * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
  * because this function returns a shared_ptr to the base class Mapping.
  *
- * @todo document the XML file format for IgMapping
+ * @todo document the XML file formats (version 1.0 and 2.0) for IgMapping
  *
  * @author M. Martinelli
  * @date 04 Mar 2014
@@ -48,6 +48,41 @@ IGA_NAMESPACE_OPEN
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
 ig_mapping_reader(const std::string &filename);
+
+
+/**
+ * Reads an IgMapping from an xml file in which the IgMapping
+ * is described with the format version 2.0.
+ *
+ * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
+ * because this function returns a shared_ptr to the base class Mapping.
+ *
+ * @todo document the XML file format version 1.0 for IgMapping
+ *
+ * @author M. Martinelli
+ * @date 04 Mar 2014
+ */
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader_version_1_0(const std::string &filename);
+
+
+/**
+ * Reads an IgMapping from an xml file in which the IgMapping
+ * is described with the format version 2.0.
+ *
+ * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
+ * because this function returns a shared_ptr to the base class Mapping.
+ *
+ * @todo document the XML file format version 2.0 for IgMapping
+ *
+ * @author M. Martinelli
+ * @date 04 Mar 2014
+ */
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+ig_mapping_reader_version_2_0(const std::string &filename);
+
 
 IGA_NAMESPACE_CLOSE
 
