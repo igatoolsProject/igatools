@@ -1,0 +1,48 @@
+/**
+
+@defgroup accessors_iterators Iterators on grid-like element containers
+   
+In igatools we have several different classes that are containers
+of elements of a grid-like structure.
+Example are CartesianGrid, BSplineSpace, PhysicalSpace, Mapping and PushForward.
+
+As the iteration process is the same but the stored information is different in
+each class we separate the iteration and the access in separate pieces.
+To iterate on these containers and query its information we use
+the iterator-accessor technique advocated in the c++ standard template library (STL).
+
+@todo information below is outdated and rough
+
+Uniform treatment
+- fill flag
+- init_values
+- fill_values
+- use them
+As they are inherited they follow the standard pattern of resolving
+flags in terms of the original flag.
+
+\section DG Draft guide to standard accessors design
+So what are the accessors?
+Well, the best way to define them is by their use:
+- they are template argument for iterators, so it is safe to think of them as part of the iterators
+- they access information on a container and this access can be divided in two types:
+
+1) General information that only depends on the container (vertex on the Cartesian grid or number of element basis on a BsplineSpace)
+2) Evaluation information that depends both on the container and also on (quadrature) points
+
+Furthermore, for obtaining information of type (2) efficiently we advocate the use of caches that are manage by the accessor itself.
+
+Considering the BsplineSpace, it is natural to think on three different types of cache depending on the quad schemes
+
+a) Same quad scheme in all the elements (this is the only one we have used so far)
+
+b) Non uniform but still of the tensor product type (as in collocation)
+
+c) Completely non uniform (let's ignore this one for now)
+
+For example, the efficient treatment of a) requires a cache of 1d basis indexed by the 1d elements (kind of global),
+(I don't think we are doing this now) and similarly we can describe an appropriate cache types for
+cases b) and c) but it is not the point right now to give this description.
+   
+*/
+
