@@ -132,7 +132,7 @@ int main()
     nurb_geometry();
     //*/
     nurb_geometry_from_file<2>();
-//    nurb_geometry_from_file<3>();
+    nurb_geometry_from_file<3>();
 
     return  0;
 }
