@@ -36,6 +36,67 @@ reason we plan to provide input file convertes from a given file version to a ne
 @page input_v2 Version 2.0
 @todo complete the documentation
 
+@code{.xml}
+<?xml version="1.0" encoding="utf-8"?>
+<Igatools FormatVersion="2.0">
+  <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
+    <NURBSSpace Dim="2" Range="2" Rank="1">
+      <CartesianGrid Dim="2">
+        <Knots Direction="0" Size="2">
+          0.0 1.0
+        </Knots>
+        <Knots Direction="1" Size="2">
+          0.0 1.0
+        </Knots>
+      </CartesianGrid>
+      <NURBSSpaceScalarComponents Size="2">
+        <NURBSSpaceScalarComponent Id="0">
+          <DofsTensorSize Dim="2">
+            3 2
+          </DofsTensorSize>
+          <Degrees Dim="2">
+            2 1
+          </Degrees>
+          <Multiplicities Dim="2">
+            <Multiplicity Direction="0" Size="2">
+              3 3
+            </Multiplicity>
+            <Multiplicity Direction="1" Size="2">
+              2 2
+            </Multiplicity>
+          </Multiplicities>
+          <Weights Size="6">
+            1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
+          </Weights>
+        </NURBSSpaceScalarComponent>
+        <NURBSSpaceScalarComponent Id="1">
+          <DofsTensorSize Dim="2">
+            3 2
+          </DofsTensorSize>
+          <Degrees Dim="2">
+            2 1
+          </Degrees>
+          <Multiplicities Dim="2">
+            <Multiplicity Direction="0" Size="2">
+              3 3
+            </Multiplicity>
+            <Multiplicity Direction="1" Size="2">
+              2 2
+            </Multiplicity>
+          </Multiplicities>
+          <Weights Size="6">
+             1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
+          </Weights>
+        </NURBSSpaceScalarComponent>
+      </NURBSSpaceScalarComponents>
+    </NURBSSpace>
+    <ControlPoints Dim="1" Size="12">
+      0.8 0.8 0.4 1.0 1.0 0.5 0.0 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01
+    </ControlPoints>
+  </IgMapping>
+</Igatools>
+@endcode
+
 */
 
 /**
@@ -48,20 +109,20 @@ This format version only describe IgMapping objects.
 <?xml version="1.0" encoding="utf-8"?>
 <XMLFile>
   <Patch DimPhysicalDomain="2" DimReferenceDomain="2" ID="0">
-    <KnotVector Degree="2" Direction="0" NumBreakPoints="2">
-      <BreakPoints Num="2">0.0 1.0</BreakPoints>
-      <Multiplicities Num="2">3 3</Multiplicities>
-    </KnotVector>
-    <KnotVector Degree="1" Direction="1" NumBreakPoints="2">
-      <BreakPoints Num="2">0.0 1.0</BreakPoints>
-      <Multiplicities Num="2"> 2 2</Multiplicities>
-    </KnotVector>
-    <ControlPoints Num="6">
-      <NumDir>3 2</NumDir>
-      <Coordinates Dir="0" Num="6">0.8 0.8 0.4.0 1.0 1.0 0.5</Coordinates>
-      <Coordinates Dir="1" Num="6">0.8 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01</Coordinates>
-      <Weights Num="6">1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0</Weights>
-    </ControlPoints>
+  <KnotVector Degree="2" Direction="0" NumBreakPoints="2">
+    <BreakPoints Num="2">0.0 1.0</BreakPoints>
+    <Multiplicities Num="2">3 3</Multiplicities>
+  </KnotVector>
+  <KnotVector Degree="1" Direction="1" NumBreakPoints="2">
+    <BreakPoints Num="2">0.0 1.0</BreakPoints>
+    <Multiplicities Num="2"> 2 2</Multiplicities>
+  </KnotVector>
+  <ControlPoints Num="6">
+    <NumDir>3 2</NumDir>
+    <Coordinates Dir="0" Num="6">0.8 0.8 0.4.0 1.0 1.0 0.5</Coordinates>
+    <Coordinates Dir="1" Num="6">0.8 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01</Coordinates>
+    <Weights Num="6">1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0</Weights>
+  </ControlPoints>
   </Patch>
 </XMLFile>
 @endcode
