@@ -32,9 +32,17 @@ reason we plan to provide input file convertes from a given file version to a ne
 @todo complete the documentation
 */
 
+/** @}*/ //end of group input 
+
+
+
 /**
-@page input_v2 Version 2.0
+@defgroup input_v2 Input file format ver. 2.0
+@ingroup input
+@brief Input file format ver. 2.0
+
 @todo complete the documentation
+@{
 
 @code{.xml}
 <?xml version="1.0" encoding="utf-8"?>
@@ -98,9 +106,15 @@ reason we plan to provide input file convertes from a given file version to a ne
 @endcode
 
 */
+/** @}*/ //end of group input_v2
 
 /**
-@page input_v1 Version 1.0
+@defgroup input_v1 Input file format ver. 1.0
+@ingroup input
+@brief Input file format ver. 1.0
+
+@todo complete the documentation
+@{
 
 This format version only describe IgMapping objects.
 
@@ -127,10 +141,9 @@ This format version only describe IgMapping objects.
 </XMLFile>
 @endcode
 
-@todo complete the documentation
 */
 
-/** @}*/ //end of group input 
+/** @}*/ //end of group input_v1 
 
 
 /**

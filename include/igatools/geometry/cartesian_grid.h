@@ -42,9 +42,30 @@ template <int> class CartesianGridElementAccessor;
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
+ *
+ * ### Getting a CartesianGrid by an XML structure.
+ * A CartesianGrid object can be obtained by a Boost XML structure using the function
+ * get_cartesian_grid_from_xml().
+ * An example of valid XML structure for a 2-dimensional CartesianGrid is given by the following
+ * XML block
+ * @code{.xml}
+   <CartesianGrid Dim="2">
+     <Knots Direction="0" Size="2">
+       0.0 1.0
+     </Knots>
+     <Knots Direction="1" Size="2">
+        0.0 1.0
+     </Knots>
+   </CartesianGrid>
+ * @endcode
+ * where the <tt>Dim</tt> attribute in the <tt>"CartesianGrid"</tt> tag is the dimensionality of the CartesianGrid
+ * and the <tt>Size</tt> attribute in each <tt>"Knots"</tt> tag is the number of unique knots values (also called
+ * "breakpoints") along each coordinate direction.
+ *
  * @author M. Martinelli 2012, 2013, 2014
  * @author pauletti 2012, 2013
  *
+ * @see get_cartesian_grid_from_xml()
  * @ingroup refinement
  * @todo document more
  */

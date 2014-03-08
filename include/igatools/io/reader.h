@@ -25,6 +25,9 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
+#include <igatools/basis_functions/nurbs_space.h>
+
+#include <boost/property_tree/ptree.hpp>
 
 #include <memory>
 
@@ -63,40 +66,64 @@ std::shared_ptr< Mapping<dim,codim> >
 get_mapping_from_file(const std::string &filename);
 
 
-#if 0
+/**
+ * Returns a CartesianGrid object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * containing exactly one node with the tag "CartesianGrid".
+ * @note An assertion will be raised (in Debug and Release mode)
+ * if no node or more than one node with the tag "CartesianGrid" are present in XML tree.
+ * @ingroup input_v2
+ * @author M. Martinelli
+ * @date 04 Mar 2014
+ */
+template <int dim>
+std::shared_ptr< CartesianGrid<dim> >
+get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree);
+
 
 /**
- * Reads an IgMapping from an xml file in which the IgMapping
- * is described with the format version 2.0.
- *
- * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
- * because this function returns a shared_ptr to the base class Mapping.
- *
- * @todo document the XML file format version 1.0 for IgMapping
- *
+ * Returns a Mapping object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * containing exactly one node with the a tag decribing a supported mapping.
+ * @warning The kind of instantiated mapping depends on the XML tag describing the mapping class.
+ * Currently, only the IgMapping is supported (for which the specifying tag is "IgMapping").
+ * @note An assertion will be raised (in Debug and Release mode)
+ * if no node or more than one node with a tag with a supported mapping are present in XML tree.
+ * @ingroup input_v2
  * @author M. Martinelli
  * @date 04 Mar 2014
  */
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
-ig_mapping_reader_version_1_0(const std::string &filename);
+get_mapping_from_xml(const boost::property_tree::ptree &tree);
+
+
 
 /**
- * Reads an IgMapping from an xml file in which the IgMapping
- * is described with the format version 2.0.
- *
- * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
- * because this function returns a shared_ptr to the base class Mapping.
- *
- * @todo document the XML file format version 2.0 for IgMapping
- *
+ * Returns a BSplineSpace object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * containing exactly one node with the tag "BSplineSpace".
+ * @note An assertion will be raised (in Debug and Release mode)
+ * if no node or more than one node with the tag "BSplineSpace" are present in XML tree.
+ * @ingroup input_v2
  * @author M. Martinelli
  * @date 04 Mar 2014
  */
-template <int dim, int codim = 0>
-std::shared_ptr< Mapping<dim,codim> >
-ig_mapping_reader_version_2_0(const std::string &filename);
-#endif
+template <int dim, int range, int rank>
+std::shared_ptr< BSplineSpace<dim,range,rank> >
+get_bspline_space_from_xml(const boost::property_tree::ptree &tree);
+
+
+/**
+ * Returns a NURBSSpace object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * containing exactly one node with the tag "NURBSSpace".
+ * @note An assertion will be raised (in Debug and Release mode)
+ * if no node or more than one node with the tag "NURBSSpace" are present in XML tree.
+ * @ingroup input_v2
+ * @author M. Martinelli
+ * @date 04 Mar 2014
+ */
+template <int dim, int range, int rank>
+std::shared_ptr< NURBSSpace<dim,range,rank> >
+get_nurbs_space_from_xml(const boost::property_tree::ptree &tree);
+
 
 IGA_NAMESPACE_CLOSE
 
