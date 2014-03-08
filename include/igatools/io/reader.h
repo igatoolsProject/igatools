@@ -36,6 +36,17 @@ IGA_NAMESPACE_OPEN
 //TODO: Document the xml format
 
 /**
+ * Returns a string containing the format of the igatools XML input file.
+ *
+ * @ingroup input
+ * @author M. Martinelli
+ * @date 04 Mar 2014
+ */
+std::string
+get_xml_input_file_format(const std::string &filename);
+
+
+/**
  * Reads an IgMapping from an xml file.
  *
  * @note The reference space for the IgMapping can be either BSplineSpace or NURBSSpace,
@@ -43,13 +54,16 @@ IGA_NAMESPACE_OPEN
  *
  * @todo document the XML file formats (version 1.0 and 2.0) for IgMapping
  *
+ * @ingroup input
  * @author M. Martinelli
  * @date 04 Mar 2014
  */
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
-ig_mapping_reader(const std::string &filename);
+get_mapping_from_file(const std::string &filename);
 
+
+#if 0
 
 /**
  * Reads an IgMapping from an xml file in which the IgMapping
@@ -67,7 +81,6 @@ template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
 ig_mapping_reader_version_1_0(const std::string &filename);
 
-
 /**
  * Reads an IgMapping from an xml file in which the IgMapping
  * is described with the format version 2.0.
@@ -83,7 +96,7 @@ ig_mapping_reader_version_1_0(const std::string &filename);
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
 ig_mapping_reader_version_2_0(const std::string &filename);
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

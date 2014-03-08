@@ -1,0 +1,82 @@
+/**
+   
+@defgroup in_out Input/Output
+@brief In this section we describe some details about the input/output file formats used by igatools. 
+
+*/
+
+
+
+/**
+@defgroup input Input
+@ingroup in_out
+@brief Description of the input file formats.
+@{   
+
+
+Input files are always based on XML syntax. 
+They are ASCII files and they can be easily readed/edited with any text editor.
+  
+  
+During the library developments, the input file format changed in order to adhere closely 
+to the igatools class design and structure, so we currently have several versions for the format.
+The value of the version reflects also which kind of capabilities can be handled/descripted/loaded from
+the input file (i.e. greater is the format number, greater are the supported capabilities).
+  
+We try to mantain back-compability but we encourage to use the last format version available: for this
+reason we plan to provide input file convertes from a given file version to a newer one.
+
+- @subpage input_v2
+- @subpage input_v1
+
+@todo complete the documentation
+*/
+
+/**
+@page input_v2 Version 2.0
+@todo complete the documentation
+
+*/
+
+/**
+@page input_v1 Version 1.0
+
+This format version only describe IgMapping objects.
+
+  An example of file using this format version is the following:
+@code{.xml}
+<?xml version="1.0" encoding="utf-8"?>
+<XMLFile>
+  <Patch DimPhysicalDomain="2" DimReferenceDomain="2" ID="0">
+    <KnotVector Degree="2" Direction="0" NumBreakPoints="2">
+      <BreakPoints Num="2">0.0 1.0</BreakPoints>
+      <Multiplicities Num="2">3 3</Multiplicities>
+    </KnotVector>
+    <KnotVector Degree="1" Direction="1" NumBreakPoints="2">
+      <BreakPoints Num="2">0.0 1.0</BreakPoints>
+      <Multiplicities Num="2"> 2 2</Multiplicities>
+    </KnotVector>
+    <ControlPoints Num="6">
+      <NumDir>3 2</NumDir>
+      <Coordinates Dir="0" Num="6">0.8 0.8 0.4.0 1.0 1.0 0.5</Coordinates>
+      <Coordinates Dir="1" Num="6">0.8 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01</Coordinates>
+      <Weights Num="6">1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0</Weights>
+    </ControlPoints>
+  </Patch>
+</XMLFile>
+@endcode
+
+@todo complete the documentation
+*/
+
+/** @}*/ //end of group input 
+
+
+/**
+@defgroup output Output
+@ingroup in_out
+@brief Descrption of the output file format.
+@todo write the documentation
+Bla bla
+*/
+

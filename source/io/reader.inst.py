@@ -32,7 +32,7 @@ for row in inst.mapping_dims:
    (dim, codim) = (row.dim, row.space_dim - row.dim)
    if (dim > 0):
 	   map = 'std::shared_ptr<Mapping<%d,%d>>' %(dim, codim)
-	   strings.append('template %s ig_mapping_reader(const std::string &);\n' %map)
+	   strings.append('template %s get_mapping_from_file(const std::string &);\n' %map)
 
 for s in set(strings): # Removing repeated entries.
     file_output.write(s)

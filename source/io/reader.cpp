@@ -58,6 +58,52 @@ get_xml_tree(const std::string &filename)
     return xml_tree;
 }
 
+
+/**
+ * Returns the number of nodes in the XML @p tree that have the tag @p tag_name.
+ */
+Size
+count_xml_elements_same_tag(
+		const boost::property_tree::ptree &tree,
+		const string &tag_name)
+{
+    Size counter = 0;
+
+    for (const auto & leaf : tree)
+        if (boost::iequals(leaf.first,tag_name))
+            counter++;
+
+	return counter;
+}
+
+/**
+ * Returns true if the XML @p tree has at least one node with the tag @p tag_name.
+ */
+bool
+xml_element_is_present(
+		const boost::property_tree::ptree &tree,
+		const string &tag_name)
+{
+	return ( count_xml_elements_same_tag(tree,tag_name) > 0 ) ? true:false;
+}
+
+/**
+ * Returns true if the XML @p tree has exactly one node with the tag @p tag_name.
+ * @note If no node with the tag @p tag_name are present,
+ * an assertion (in Debug and Release mode) will be raised.
+ */
+bool
+xml_element_is_unique(
+		const boost::property_tree::ptree &tree,
+		const string &tag_name)
+{
+	const Size counter = count_xml_elements_same_tag(tree,tag_name);
+
+	AssertThrow(counter >= 1, ExcLowerRange(counter,1));
+	return ( counter == 1 ) ? true:false;
+}
+
+
 /**
  * Extracts from the XML @tree, the subtrees corresponding to the tag @p tag_name.
  * @note If any element is present in the tree, an assertion will be raised
@@ -99,6 +145,8 @@ get_xml_element(
 }
 
 
+
+
 /**
  * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.
  * @note If any element is present in the tree, an assertion will be raised
@@ -109,14 +157,13 @@ get_xml_element_attributes(const boost::property_tree::ptree &element)
 {
     return get_xml_element(element,"<xmlattr>");
 }
+};
 
-/**
- * Returns a string containing the fromat of the igatools XML input file.
- */
+
 string
 get_xml_input_file_format(const std::string &filename)
 {
-    string file_format_version = "";
+    string file_format_version;
 
     const auto &xml_tree = get_xml_tree(filename);
 
@@ -128,9 +175,8 @@ get_xml_input_file_format(const std::string &filename)
         }
         else if (boost::iequals(leaf.first,"Igatools"))
         {
-            for (const auto & igatools_tag : leaf.second)
-                if (boost::iequals(igatools_tag.first,"<xmlattr>"))
-                    file_format_version = igatools_tag.second.get<std::string>("FormatVersion");
+        	const auto & igatools_attr = get_xml_element_attributes(leaf.second);
+            file_format_version = igatools_attr.get<std::string>("FormatVersion");
         }
         else
         {
@@ -141,6 +187,11 @@ get_xml_input_file_format(const std::string &filename)
 
     return file_format_version;
 }
+
+
+
+namespace
+{
 
 /**
  * Extracts a vector of scalars from the XML @p tree.
@@ -164,9 +215,14 @@ template <int dim>
 shared_ptr< CartesianGrid<dim> >
 get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
 {
+    AssertThrow(xml_element_is_unique(tree,"CartesianGrid"),
+    		ExcMessage("The CartesianGrid tag is not unique."));
+
+    const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
+
     //-------------------------------------------------------------------------
     // reading the CartesianGrid attributes
-    const auto &grid_attributes = get_xml_element_attributes(tree);
+    const auto &grid_attributes = get_xml_element_attributes(grid_tree);
 
     const int dim_from_file = grid_attributes.get<int>("Dim");
     AssertThrow(dim == dim_from_file,
@@ -176,7 +232,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
 
     //-------------------------------------------------------------------------
     // reading the knots
-    const auto &knots_elements = get_xml_element_vector(tree,"Knots");
+    const auto &knots_elements = get_xml_element_vector(grid_tree,"Knots");
     AssertThrow(knots_elements.size() == dim,ExcDimensionMismatch(knots_elements.size(),dim));
 
     array<vector<Real>,dim> knots;
@@ -240,11 +296,16 @@ template <int dim, int range, int rank>
 shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
+    AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
+    		ExcMessage("The NURBSSpace tag is not unique."));
+
+    const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
+
     using space_t = BSplineSpace<dim,range,rank>;
 
     //-------------------------------------------------------------------------
     // reading the BSplineSpace attributes
-    const auto &ref_space_attributes = get_xml_element_attributes(tree);
+    const auto &ref_space_attributes = get_xml_element_attributes(ref_space_tree);
 
     const int dim_from_file = ref_space_attributes.get<int>("Dim");
     AssertThrow(dim == dim_from_file,
@@ -262,14 +323,13 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
     //-------------------------------------------------------------------------
     // reading the CartesianGrid
-    const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
-    auto grid = get_cartesian_grid_from_xml<dim>(grid_tree);
+    auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
     //-------------------------------------------------------------------------
 
 
     //-------------------------------------------------------------------------
     // reading the ScalarComponents
-    const auto &scalar_components_tree = get_xml_element(tree,"BSplineSpaceScalarComponents");
+    const auto &scalar_components_tree = get_xml_element(ref_space_tree,"BSplineSpaceScalarComponents");
     const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
     const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
     AssertThrow(space_t::n_components == n_sc_components_from_file,
@@ -341,11 +401,16 @@ template <int dim, int range, int rank>
 shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 {
+    AssertThrow(xml_element_is_unique(tree,"NURBSSpace"),
+    		ExcMessage("The NURBSSpace tag is not unique."));
+
+    const auto &ref_space_tree = get_xml_element(tree,"NURBSSpace");
+
     using space_t = NURBSSpace<dim,range,rank>;
 
     //-------------------------------------------------------------------------
     // reading the NURBSSpace attributes
-    const auto &ref_space_attributes = get_xml_element_attributes(tree);
+    const auto &ref_space_attributes = get_xml_element_attributes(ref_space_tree);
 
     const int dim_from_file = ref_space_attributes.get<int>("Dim");
     AssertThrow(dim == dim_from_file,
@@ -363,14 +428,14 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     //-------------------------------------------------------------------------
     // reading the CartesianGrid
-    const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
-    auto grid = get_cartesian_grid_from_xml<dim>(grid_tree);
+//    const auto &grid_tree = get_xml_element(ref_space_tree,"CartesianGrid");
+    auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
     //-------------------------------------------------------------------------
 
 
     //-------------------------------------------------------------------------
     // reading the ScalarComponents
-    const auto &scalar_components_tree = get_xml_element(tree,"NURBSSpaceScalarComponents");
+    const auto &scalar_components_tree = get_xml_element(ref_space_tree,"NURBSSpaceScalarComponents");
     const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
     const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
     AssertThrow(space_t::n_components == n_sc_components_from_file,
@@ -703,10 +768,25 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
 
 
+/**
+ * Returns a IgMapping (wrapped by a std:shared_ptr) from an XML tree.
+ * @note The XML tree must contains exaclty one IgMapping node,
+ * otherwise an assertion will be raised (in Debug and Release mode).
+ *
+ * @ingroup input_v2
+ * @author M. Martinelli
+ * @date 08 Mar 2014
+ */
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
-ig_mapping_reader_version_2_0(const boost::property_tree::ptree &mapping_tree)
+get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
+    AssertThrow(xml_element_is_unique(igatools_tree,"IgMapping"),
+    		ExcMessage("The IgMapping tag is not unique."));
+
+    const auto &mapping_tree = get_xml_element(igatools_tree,"IgMapping");
+
+
     //-------------------------------------------------------------------------
     // reading the IgMapping attributes
     const auto &mapping_attributes = get_xml_element_attributes(mapping_tree);
@@ -746,22 +826,20 @@ ig_mapping_reader_version_2_0(const boost::property_tree::ptree &mapping_tree)
 
     //-------------------------------------------------------------------------
     // reading the reference space
-    const auto &ref_space_tree = get_xml_element(mapping_tree,ref_space_type);
-
     shared_ptr< Mapping<dim,codim> > map;
 
     const int dim_phys = dim + codim;
     if (is_nurbs_space)
     {
         using ref_space_t = NURBSSpace<dim,dim_phys,1>;
-        auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(ref_space_tree);
+        auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
     }
     else
     {
         using ref_space_t = BSplineSpace<dim,dim_phys,1>;
-        auto ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(ref_space_tree);
+        auto ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
     }
@@ -771,10 +849,38 @@ ig_mapping_reader_version_2_0(const boost::property_tree::ptree &mapping_tree)
 }
 
 
+/**
+ * Returns a Mapping (wrapped by a std:shared_ptr) from an XML tree.
+ * @note The kind of instantiated mapping depends on the XML tag describing the mapping class.
+ * Currently, only the IgMapping is supported.
+ *
+ * @ingroup input_v2
+ * @author M. Martinelli
+ * @date 08 Mar 2014
+ */
+template <int dim, int codim = 0>
+std::shared_ptr< Mapping<dim,codim> >
+get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
+{
+    shared_ptr< Mapping<dim,codim> > map;
+
+    if (xml_element_is_unique(igatools_tree,"IgMapping"))
+    {
+    	// use the reader for format version 2.0
+    	map = get_ig_mapping_from_xml<dim,codim>(igatools_tree);
+    }
+    else
+    {
+    	AssertThrow(false,ExcNotImplemented());
+    }
+
+    return map;
+}
+
 
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
-ig_mapping_reader(const std::string &filename)
+get_mapping_from_file(const std::string &filename)
 {
     const string file_format_version = get_xml_input_file_format(filename) ;
 
@@ -789,10 +895,9 @@ ig_mapping_reader(const std::string &filename)
         const auto &file_tree = get_xml_tree(filename);
 
         const auto &igatools_tree = get_xml_element(file_tree,"Igatools");
-        const auto &mapping_tree = get_xml_element(igatools_tree,"IgMapping");
 
-        // use the reader for format version 2.0
-        map = ig_mapping_reader_version_2_0<dim,codim>(mapping_tree);
+    	// use the format version 2.0
+    	map = get_mapping_from_xml<dim,codim>(igatools_tree);
     }
     else
     {

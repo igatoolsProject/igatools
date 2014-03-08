@@ -113,7 +113,7 @@ template<int dim>
 void nurb_geometry_from_file()
 {
     string input_file = "nurb_geometry-" + to_string(dim) + "d_v2.xml" ;
-    auto map = ig_mapping_reader<dim>(input_file);
+    auto map = get_mapping_from_file<dim>(input_file);
 
     const int n_plot_points = 10;
     Writer<dim> writer(map, n_plot_points);
