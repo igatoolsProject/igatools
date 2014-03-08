@@ -17,9 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-//TODO put copyright here
 
-#include <igatools/io/ig_reader.h>
+#include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/geometry/cartesian_grid.h>
@@ -808,5 +807,5 @@ ig_mapping_reader(const std::string &filename)
 IGA_NAMESPACE_CLOSE
 
 
-#include <igatools/io/ig_reader.inst>
+#include <igatools/io/reader.inst>
 

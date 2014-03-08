@@ -29,7 +29,7 @@
 // [ig map bspline]
 
 // [ig map read nurb]
-#include <igatools/io/ig_reader.h>
+#include <igatools/io/reader.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 // [ig map read nurb]
 

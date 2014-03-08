@@ -20,11 +20,12 @@
 
 
 
-#ifndef IG_READER_H_
-#define IG_READER_H_
+#ifndef READER_H_
+#define READER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
+
 #include <memory>
 
 
