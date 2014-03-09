@@ -1,6 +1,7 @@
 /**
    
    @defgroup refinement Refinement
+   @brief Refinement support in igatools
    @{   
 
    The Isogeometric Analysis is a discretization method for partial differential
@@ -12,26 +13,31 @@
    Clearly, the accuracy of an isogeometric approach depends on the
    approximation properties of the space \f$\hat{V}_h\f$. 
    Three kinds of refinement are possible, which are summarized below:
-   - <b><em>h-refinement</em></b>: the refined space is built using a finer mesh 
+   - @subpage h_refinement the refined space is built using a finer mesh 
    \f$\hat{\Omega}_{h_f}\f$ (\f$h_f < h\f$), maintaining the degrees
    \f$p\f$ of the space. That is, \f$h\f$ is reduced, and the global regularity
    of the space, \f$\alpha\f$, is maintained;
-   - <b><em>p-refinement</em></b>: on the same mesh \f$\hat{\Omega}_{h}\f$, 
+   - @subpage p_refinement on the same mesh \f$\hat{\Omega}_{h}\f$, 
    an higher degree is used, keeping the same regularity at the mesh lines. 
    That is, \f$p\f$ is increased;
-   - <b><em>k-refinement</em></b>: both mesh refinement (i.e. h-refinement) 
+   - @subpage k_refinement both mesh refinement (i.e. h-refinement) 
    and degree elevation (i.e. p-refinement) are performed in sequence,
    with highest regularity at the new mesh interfaces. 
    That is, first \f$h\f$ is reduced, then \f$p\f$ is increased.
-  
-  
-   Let see how the different refinement can be performed by igatools: 
+
+ @author M. Martinelli
+ @date 2013
+    
 */
 
+/** @}*/ //end of group refinement
 
 
 /**
-  @page h-refinement h-refinement
+  @defgroup h_refinement h-refinement
+  @brief Refinement done reducing the element size
+  @ingroup refinement
+  @{
   
   In this case the refinement is performed refining the mesh (i.e. a CartesianGrid object), through
   the memeber function CartesianGrid::refine() (or, if you want more control on the refinement directions,
@@ -111,21 +117,29 @@
       the same CartesianGrid.
     </div>
  </div>
-  @todo complete the documentation
 
+ @author M. Martinelli
+ @date 2013,2014
 */
+/** @}*/ //end of group h-refinement
 
 /**
-  @page p-refinement p-refinement
+  @defgroup p_refinement p-refinement
+  @ingroup refinement
+  @brief Refinement done increasing the polynomial degree
   @todo write the documentation
-  Bla bla
-*/
-
-/**
-  @page k-refinement k-refinement
-  @todo write the documentation
+  @{
   
-  Bla bla
 */
+/** @}*/ //end of group p-refinement
 
-/** @}*/ //end of group refinement
+
+
+/**
+  @defgroup k_refinement k-refinement
+  @ingroup refinement
+  @todo write the documentation
+  @{
+  
+*/
+/** @}*/ //end of group p-refinement

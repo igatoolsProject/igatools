@@ -1,19 +1,89 @@
 /**
    
    \mainpage igatools An isogeometric analysis tool
+   igatools is an open source, modern designed general purpose isogeometric analysis software library to 
+   numerically solve partial differential equations (PDEs) using isogeometric spaces.
 
-   The software library igatools provides the tools to approximate 
-   the solution of partial differential equation using 
-   spaces of the isogeometric types.
+   The library is implemented in C++11, its design is object oriented with extensive use of generic programming 
+   techniques (a.k.a. <em>templates metaprogramming</em>).
+
+   Some of its features are:
+   - Dimension independent code through templates
+   - Support for parallel processing (shared and distributed memory)
+   - Computational efficiency
+   - Extensive and automatic test suite
+   - Defensing programming
+   - Extensive documentation
+
+   <b>igatools is in development stage, it is work in progress and should not be consideded stable.</b>
+   
 
    - Installation instruction (and more) is available at the official
    site: http://www.igatools.org
 
    - For hands-on start check the \subpage tutorial
- 
-   - A reference manual, modules and search facility is available
-     in the liks of this page http://www.igatools.altervista.com
    
+   - For the igatools license check the @subpage license
+   
+   - The list of developers can be found at the page @subpage authors
+ 
+   - An online reference manual, modules and search facility is available
+     in the liks of this page http://www.igatools.altervista.com   
+*/
 
+/**
+  @page license License
+
+  ### igatools license
+  
+  The igatools library has been placed under an Open Source license, in the sense advocated by the 
+  Open Source Initiative. You are thus free to copy and use it, and you have free access to all source code.
+
+  However, igatools is not in the public domain, it is property of and copyrighted by the igatools authors, 
+  and there are restrictions on its use: The legally binding license is the GNU General Public License (GPL) as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+
+  In this document, as well as in the program files, the term "igatools authors" refer to all people mentioned at 
+  the @subpage authors page.
+
+  ### Contribution
+  As a contributor to this project, you agree that any of your contributions be licensed under the same 
+  terms and conditions as the license of the igatools project granted to you.
+
+  The igatools project does not require copyright assignments for contributions. 
+  This means that the copyright for code contributions in the igatools project is held by its respective 
+  contributors who have each agreed to release their contributed code under the terms of the GPL v3 or later.
+*/
+
+  
+/**
+   @page authors Authors
+   
+   igatools authors are divided into 3 categories:
+
+   - <b>Leading developers:</b> are in charge of being the guardian of the overall design principles decided 
+   for the project in the developers strategic meetings.
+     - Massimiliano Martinelli (massimiliano.martinelli <em>at</em> gmail.com) 
+     - Sebastian Pauletti (spauletti <em>at</em> gmail.com)
+   - <b>Developers:</b> have provided substantial and continuous contribution to the library and hold a global 
+   overview of the library.
+     - Pablo Antolin (pablo.antolin.sanchez <em>at</em> gmail.com)
+     - Nicola Cavallini (nicola.cavallini <em>at</em> unipv.it)
+   - <b>Contributors:</b> have provided important patches over the years.
+     - 
+
+*/
+
+/**
+  @page support Supporters
+
+  The development of igatools has been partially supported by
+  - Istituto di Matematica Applicata e Tecnologie Informatiche "E. Magenes" - CNR, Pavia, Italy.
+  - Dipartimento di Matematica "F. Casorati", Universita' di Pavia, Italy.
+  - European Research Council through the FP7 Ideas Starting Grant 259229 ISOBIO
+  - European Research Council through the FP7 Ideas Starting Grant 205004 GeoPDEs
+  - Hutchinson-Total under contract TOTAL DS–2753
+  - Agencia Nacional de Promocíon Cientfica y Tecnolgica, through grant PICT-2008-0622 (Argentina)
+  - FIRB “Futuro in Ricerca” RBFR08CZ0S
+  - TERRIFIC project, European Communitys Seventh Framework Programme, Grant Agreement 284981 Call FP7-2011-NMP-ICT-FoF  
 */
 

@@ -156,6 +156,9 @@ private:
      * @note This function is connected to the CartesianGrid's signal for the refinement, and
      * it is necessary in order to avoid infinite loops in the refine() function calls.
      * @note The implementation of this function is based on "The NURBS Book" Algorithm A5.4.
+     *
+     * @ingroup h_refinement
+     *
      */
     void refine_h_control_mesh(
         const std::array<bool,dim> &refinement_directions,

@@ -44,7 +44,7 @@ IGA_NAMESPACE_OPEN
  * on the signal/slot technology implemented by the
  * <a href="http://www.boost.org/doc/libs/1_55_0/doc/html/signals2.html">Boost.Signals2</a> library.
  *
- * @ingroup refinement
+ * @ingroup h_refinement
  */
 template<class GridType>
 class GridWrapper
@@ -105,6 +105,8 @@ public:
      * @note If the i-th direction is not active for the refinement
      * (i.e. <tt>refinement_directions[i] == false</tt>),
      *  then the corresponding value <tt>n_subdivisions[i]</tt> will be ignored.
+     *
+     * @ingroup h_refinement
      */
     void refine_h_directions(
         const std::array<bool,GridType::dim> &refinement_directions,
@@ -116,6 +118,8 @@ public:
      * @param[in] direction_id Direction along which the refinement is performed.
      * @param[in] n_subdivisions Number of subdivision in which each interval in the grid
      * along the specified direction is divided. This value must be >= 2.
+     *
+     * @ingroup h_refinement
      */
     void refine_h_direction(const int direction_id, const Size n_subdivisions);
 
@@ -125,6 +129,8 @@ public:
      *
      * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
      * sub-intervals.
+     *
+     * @ingroup h_refinement
      */
     void refine_h(const Size n_subdivisions = 2);
     ///@}
@@ -133,6 +139,8 @@ protected:
     /**
      * Connect the function @p subscriber to the h-refinement signal in the grid object and create
      * the relative connection.
+     *
+     * @ingroup h_refinement
      */
     void
     connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber);

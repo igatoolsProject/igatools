@@ -89,13 +89,12 @@ template<Transformation, int, int> class PushForward;
  *
  * \section hom_range Optimizing homogeneous range type vector spaces
  *
- * \author martinelli, 2012, 2013
+ * \author martinelli, 2012, 2013, 2014
  * \author pauletti, 2012, 2013
  *
  * @tparam dim Dimensionality of the parametric space (must be equal to the dimensionality
  * of the grid used top build the space
  *
- * @ingroup refinement
  */
 template<int dim_domain_, int dim_range_ = 1, int rank_ = 1>
 class BSplineSpace :
@@ -514,6 +513,8 @@ private:
      * @pre Before invoking this function, must be invoked the function grid_->refine().
      * @note This function is connected to the CartesianGrid's signal for the refinement, and
      * it is necessary in order to avoid infinite loops in the refine() function calls.
+     *
+     * @ingroup h_refinement
      */
     void refine_h_after_grid_refinement(
         const std::array<bool,dim> &refinement_directions,

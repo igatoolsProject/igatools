@@ -32,7 +32,6 @@ template < int, int, int > class NURBSElementAccessor;
 /**
  * This class represent a function space in which the basis functions are NURBS.
  *
- * @ingroup refinement
  */
 template <int dim_, int dim_range_ = 1, int rank_ = 1>
 class NURBSSpace : public BSplineSpace<dim_, dim_range_, rank_>
@@ -206,6 +205,8 @@ private:
      * @note This function is connected to the CartesianGrid's signal for the refinement, and
      * it is necessary in order to avoid infinite loops in the CartesianGrid::refine() function calls.
      * @note The implementation of this function is based on "The NURBS Book" Algorithm A5.4.
+     *
+     * @ingroup h_refinement
      */
     void refine_h_weights(
         const std::array<bool,dim> &refinement_directions,

@@ -35,7 +35,6 @@ template < class > class PhysicalSpaceElementAccessor;
 /**
  *
  * @sa FunctionSpace
- * @ingroup refinement
  *
  */
 template <class RefSpace_, class PushForward_>
