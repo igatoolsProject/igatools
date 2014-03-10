@@ -441,10 +441,10 @@ constexpr int constexpr_factorial(int a)
 /**
  * Const expression binomial coefficient
  */
-constexpr int constexpr_binomial_coefficient(int a, int b)
+constexpr Real constexpr_binomial_coefficient(int a, int b)
 {
-    return constexpr_factorial(a) /
-           (constexpr_factorial(b) * constexpr_factorial(a-b));
+    return Real(constexpr_factorial(a)) /
+           Real(constexpr_factorial(b) * constexpr_factorial(a-b));
 }
 
 
