@@ -769,19 +769,19 @@ fill_values()
     CartesianGridElementAccessor<dim_domain>::fill_values();
 
     const auto  &element_tensor_id = this->get_tensor_index();
-    StaticMultiArray<array<const BasisValues1d *, dim_domain>, dim_range, rank>
-    elem_univariate_values;
+//    StaticMultiArray<array<const BasisValues1d *, dim_domain>, dim_range, rank>
+//    elem_univariate_values;
     for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
     {
         auto &univariate_values = values_1d_data_->splines1d_cache_(iComp);
         for (int i = 0; i < dim_domain; ++i)
-            elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
+            elem_univariate_values_(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
     }
 
     if (elem_values_.fill_values_)
     {
         evaluate_bspline_derivatives<0>(elem_values_.size_,
-                                        elem_univariate_values,
+                                        elem_univariate_values_,
                                         elem_values_.D0phi_hat_);
         auto phi_hat = elem_values_.phi_hat_.begin();
         for (auto &D0phi_hat : elem_values_.D0phi_hat_)
@@ -793,12 +793,12 @@ fill_values()
 
     if (elem_values_.fill_gradients_)
         evaluate_bspline_derivatives<1>(elem_values_.size_,
-                                        elem_univariate_values,
+                                        elem_univariate_values_,
                                         elem_values_.D1phi_hat_);
 
     if (elem_values_.fill_hessians_)
         evaluate_bspline_derivatives<2>(elem_values_.size_,
-                                        elem_univariate_values,
+                                        elem_univariate_values_,
                                         elem_values_.D2phi_hat_);
 
     if (elem_values_.fill_divs_)

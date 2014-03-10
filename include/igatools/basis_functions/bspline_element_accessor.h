@@ -644,6 +644,17 @@ private:
 
 
     template <typename Accessor> friend class GridForwardIterator;
+
+public:
+
+    /**
+     * Container for the 1D values on the element.
+     * @todo this variable should be private...
+     * it is public only to quicky test the sum_factorization technique
+     */
+    StaticMultiArray<std::array<const BasisValues1d *,dim_domain>,dim_range,rank>
+    elem_univariate_values_;
+
 };
 
 IGA_NAMESPACE_CLOSE
