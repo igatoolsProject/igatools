@@ -564,6 +564,10 @@ assemble()
         //--------------------------------------------------------------------------
 
 
+
+
+
+
         auto points  = elem->get_points();
 //        auto phi     = elem->get_basis_values();
 //        auto grd_phi = elem->get_basis_gradients();
@@ -589,50 +593,194 @@ assemble()
         k_rhs = boost::numeric::ublas::prod(inverse_Bernstein_mass_matrix, integral_rhs) ;
         out << "k rhs = " << k_rhs << endl;
 
+        if (dim==3)
+        {
+            TensorSize<dim> k_tensor_size;
+            for (int i = 0 ; i <dim ; ++i)
+                k_tensor_size[i] = n_bernstein_1d;
 
-        /*
-                for (int i = 0; i < n_basis; ++i)
+            DynamicMultiArray<Real,dim> K(k_tensor_size);
+            AssertThrow(K.flat_size() == k_rhs.size(),
+                        ExcDimensionMismatch(K.flat_size(),k_rhs.size()));
+
+            const Size flat_size = K.flat_size();
+            for (int flat_id = 0 ; flat_id < flat_size ; ++ flat_id)
+                K(flat_id) = k_rhs(flat_id);
+
+            out << "K = " <<endl;
+            K.print_info(out);
+            out << endl;
+
+            Size n_flat_alpha = elem->get_num_basis();
+            Size n_flat_beta = elem->get_num_basis();
+
+
+
+            for (int flat_alpha = 0 ; flat_alpha < n_flat_alpha ; ++flat_alpha)
+            {
+                for (int flat_beta = 0 ; flat_beta < n_flat_beta ; ++flat_beta)
                 {
-                    auto grd_phi_i = grd_phi.get_function(i);
-                    for (int j = 0; j < n_basis; ++j)
+
+                    TensorIndex<3> alpha = {0,0,0};
+                    TensorIndex<3> beta = {0,0,0};
+                    int dir;
+
+
+                    DynamicMultiArray<Real,3> Lambda_3 = K;
+                    TensorSize<3> tensor_size_Lambda_3 = Lambda_3.tensor_size();
+
+                    TensorSize<2> tensor_size_Lambda_2;
+                    tensor_size_Lambda_2(0) = tensor_size_Lambda_3(1);
+                    tensor_size_Lambda_2(1) = tensor_size_Lambda_3(2);
+                    DynamicMultiArray<Real,2> Lambda_2(tensor_size_Lambda_2);
+
+                    TensorIndex<3> tensor_id_lambda_3;
+                    TensorIndex<2> tensor_id_lambda_2;
+                    dir = 0;
+                    for (int i2 = 0 ; i2 < n_bernstein_1d ; ++i2)
                     {
-                        auto grd_phi_j = grd_phi.get_function(j);
-                        for (int qp = 0; qp < n_qp; ++qp)
-                            loc_mat(i,j) +=
-                                scalar_product(grd_phi_i[qp], grd_phi_j[qp])
-                                * w_meas[qp];
+                        tensor_id_lambda_3[2] = i2;
+                        tensor_id_lambda_2[1] = i2;
+                        for (int i1 = 0 ; i1 < n_bernstein_1d ; ++i1)
+                        {
+                            tensor_id_lambda_3[1] = i1;
+                            tensor_id_lambda_2[0] = i1;
+
+                            Real sum = 0.0;
+                            for (int i0 = 0 ; i0 < n_bernstein_1d ; ++i0)
+                            {
+                                tensor_id_lambda_3[0] = i0;
+
+                                const auto omega_B_theta =  omega_B_1d.get_function_view(i0);
+
+                                const auto phi_alpha =  phi_1D[dir].get_function_view(alpha[0]);
+                                const auto phi_beta =  phi_1D[dir].get_function_view(beta[0]);
+
+                                Real sum_quad_pt = 0.0;
+                                for (int gamma = 0 ; gamma < q ; ++gamma)
+                                {
+                                    sum_quad_pt += omega_B_theta[gamma](0) * phi_alpha[gamma](0) * phi_beta[gamma](0);
+                                }
+
+                                sum += Lambda_3(tensor_id_lambda_3) * sum_quad_pt;
+                            }
+                            Lambda_2(tensor_id_lambda_2) = sum;
+                        }
                     }
+                    out << "Lambda2 = " <<endl;
+                    Lambda_2.print_info(out);
+                    out << endl;
 
-                    auto phi_i = phi.get_function(i);
-                    for (int qp = 0; qp < n_qp; ++qp)
-                        loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                                      * w_meas[qp];
+
+                    TensorSize<1> tensor_size_Lambda_1;
+                    tensor_size_Lambda_1(0) = tensor_size_Lambda_2(1);
+                    DynamicMultiArray<Real,1> Lambda_1(tensor_size_Lambda_1);
+
+                    TensorIndex<1> tensor_id_lambda_1;
+                    dir = 1;
+                    for (int i1 = 0 ; i1 < n_bernstein_1d ; ++i1)
+                    {
+                        tensor_id_lambda_2[1] = i1;
+                        tensor_id_lambda_1[0] = i1;
+
+                        Real sum = 0.0;
+                        for (int i0 = 0 ; i0 < n_bernstein_1d ; ++i0)
+                        {
+                            tensor_id_lambda_2[0] = i0;
+
+                            const auto omega_B_theta =  omega_B_1d.get_function_view(i0);
+
+                            const auto phi_alpha =  phi_1D[dir].get_function_view(alpha[0]);
+                            const auto phi_beta =  phi_1D[dir].get_function_view(beta[0]);
+
+                            Real sum_quad_pt = 0.0;
+                            for (int gamma = 0 ; gamma < q ; ++gamma)
+                            {
+                                sum_quad_pt += omega_B_theta[gamma](0) * phi_alpha[gamma](0) * phi_beta[gamma](0);
+                            }
+
+                            sum += Lambda_2(tensor_id_lambda_2) * sum_quad_pt;
+                        }
+                        Lambda_1(tensor_id_lambda_1) = sum;
+                    }
+                    out << "Lambda1 = " <<endl;
+                    Lambda_1.print_info(out);
+                    out << endl;
+
+
+                    Real Lambda_0;
+                    Real sum = 0.0;
+                    dir = 2;
+                    for (int i0 = 0 ; i0 < n_bernstein_1d ; ++i0)
+                    {
+                        tensor_id_lambda_1[0] = i0;
+
+                        const auto omega_B_theta =  omega_B_1d.get_function_view(i0);
+
+                        const auto phi_alpha =  phi_1D[dir].get_function_view(alpha[0]);
+                        const auto phi_beta =  phi_1D[dir].get_function_view(beta[0]);
+
+                        Real sum_quad_pt = 0.0;
+                        for (int gamma = 0 ; gamma < q ; ++gamma)
+                        {
+                            sum_quad_pt += omega_B_theta[gamma](0) * phi_alpha[gamma](0) * phi_beta[gamma](0);
+                        }
+
+                        sum += Lambda_1(tensor_id_lambda_1) * sum_quad_pt;
+                    }
+                    Lambda_0 = sum;
+                    out << "Lambda0 = " << Lambda_0 <<endl;
+
                 }
-        //*/
-        loc_dofs = elem->get_local_to_global();
-        this->matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-        this->rhs->add_block(loc_dofs, loc_rhs);
-    }
+                else
+                {
+                    AssertThrow(false,ExcNotImplemented());
+                }
 
-    this->matrix->fill_complete();
+                /*
+                        for (int i = 0; i < n_basis; ++i)
+                        {
+                            auto grd_phi_i = grd_phi.get_function(i);
+                            for (int j = 0; j < n_basis; ++j)
+                            {
+                                auto grd_phi_j = grd_phi.get_function(j);
+                                for (int qp = 0; qp < n_qp; ++qp)
+                                    loc_mat(i,j) +=
+                                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
+                                        * w_meas[qp];
+                            }
+
+                            auto phi_i = phi.get_function(i);
+                            for (int qp = 0; qp < n_qp; ++qp)
+                                loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
+                                              * w_meas[qp];
+                        }
+                //*/
+                loc_dofs = elem->get_local_to_global();
+                this->matrix->add_block(loc_dofs, loc_dofs, loc_mat);
+                this->rhs->add_block(loc_dofs, loc_rhs);
+            }
+
+            this->matrix->fill_complete();
 
 
 
 
 
 
-    // AssertThrow(false,ExcNotImplemented());
-}
+            // AssertThrow(false,ExcNotImplemented());
+        }
 
 
-int main()
-{
-    const int n_knots = 2;
-    const int space_deg = 1;
-    const int  proj_deg = 2;
-
-    PoissonProblemStandardIntegration<1> poisson_1d({n_knots}, space_deg);
-    poisson_1d.run();
+        int main()
+        {
+            const int n_knots = 2;
+            const int space_deg = 1;
+            const int  proj_deg = 2;
+            /*
+                PoissonProblemStandardIntegration<1> poisson_1d({n_knots}, space_deg);
+                poisson_1d.run();
+            //*/
 
 //    PoissonProblemStandardIntegration<2> poisson_2d({n_knots, n_knots}, space_deg);
 //    poisson_2d.run();
@@ -640,15 +788,15 @@ int main()
 //    PoissonProblemStandardIntegration<3> poisson_3d({n_knots, n_knots, n_knots}, space_deg);
 //    poisson_3d.run();
 
+            /*
+                PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
+                poisson_1d_sf.run();
 
-    PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
-    poisson_1d_sf.run();
-
-    PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
-    poisson_2d_sf.run();
-
-    PoissonProblemSumFactorization<3> poisson_3d_sf({n_knots,n_knots,n_knots}, space_deg, proj_deg);
-    poisson_3d_sf.run();
+                PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
+                poisson_2d_sf.run();
+            //*/
+            PoissonProblemSumFactorization<3> poisson_3d_sf({n_knots,n_knots,n_knots}, space_deg, proj_deg);
+            poisson_3d_sf.run();
 //*/
-    return  0;
-}
+            return  0;
+        }

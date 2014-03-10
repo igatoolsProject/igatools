@@ -40,18 +40,20 @@ file_output.write('IGA_NAMESPACE_OPEN\n')
 
 strings = []
 spaces = ['BSplineSpace', 'NURBSSpace']
+writer_real_types = ['double','float']
 
 for row in inst.user_table:
-   writer = 'Writer<%d, %d, double>' %(row.dim, row.space_dim)
-   strings.append('template class %s ;\n' % (writer))
-   for name in spaces:
-      space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
-      PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
-      space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
-      func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_phys,space_phys)
-      strings.append('template void %s::%s ;\n' % (writer,func))
-      func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_ref,space_ref)
-      strings.append('template void %s::%s ;\n' % (writer,func))
+    for writer_real_t in writer_real_types:
+        writer = 'Writer<%d, %d, %s>' %(row.dim, row.space_dim, writer_real_t)
+        strings.append('template class %s ;\n' % (writer))
+        for name in spaces:
+            space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
+            PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
+            space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
+            func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_phys,space_phys)
+            strings.append('template void %s::%s ;\n' % (writer,func))
+            func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_ref,space_ref)
+            strings.append('template void %s::%s ;\n' % (writer,func))
 
 
 for s in unique(strings): # Removing repeated entries.
