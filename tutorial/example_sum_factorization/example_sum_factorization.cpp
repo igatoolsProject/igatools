@@ -413,6 +413,124 @@ public:
 };
 
 
+template <int dim,int k>
+class IntegratorSumFacMass
+{
+public:
+    using ValueTable1D = ValueTable<typename Function<1>::ValueType> ;
+
+    Real
+    operator()(const DynamicMultiArray<Real,k> &lambda_k,
+               const ValueTable1D &omega_B,
+               const array<ValueTable1D,dim> &phi,
+               const TensorIndex<dim> &alpha_tensor_id,
+               const TensorIndex<dim> &beta_tensor_id)
+    {
+        TensorSize<k> tensor_size_lambda_k = lambda_k.tensor_size();
+
+        TensorSize<k-1> tensor_size_lambda_k_1;
+        for (int i = 0 ; i < k-1 ; ++i)
+            tensor_size_lambda_k_1(i) = tensor_size_lambda_k(i);
+
+        DynamicMultiArray<Real,k-1> lambda_k_1(tensor_size_lambda_k_1);
+
+
+        const Size n_bernst = omega_B.get_num_functions();
+        const Size n_quad = omega_B.get_num_points();
+
+        Assert(n_bernst == tensor_size_lambda_k(0),
+               ExcDimensionMismatch(n_bernst,tensor_size_lambda_k(0)));
+
+
+        TensorIndex<k> tensor_id_lambda_k;
+        TensorIndex<k-1> tensor_id_lambda_k_1;
+        const int dir = dim-k;
+
+        Assert(n_quad == phi[dir].get_num_points(),
+               ExcDimensionMismatch(n_quad,phi[dir].get_num_points()));
+        const auto phi_alpha = phi[dir].get_function_view(alpha_tensor_id[dir]);
+        const auto phi_beta  = phi[dir].get_function_view(beta_tensor_id[dir]);
+
+        Index flat_id_entry_lambda_k_1 = 0;
+        for (auto & value_entry_lambda_k_1 : lambda_k_1)
+        {
+            const auto tensor_id_lambda_k_1 = lambda_k_1.flat_to_tensor(flat_id_entry_lambda_k_1);
+
+            for (int i = dim-1 ; i >= 1 ; --i)
+                tensor_id_lambda_k[i] = tensor_id_lambda_k_1[i-1];
+
+            Real sum = 0.0;
+            for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
+            {
+                const auto omega_B_theta = omega_B.get_function_view(ifn);
+
+                Real sum_quad_pt = 0.0;
+                for (int jpt = 0 ; jpt < n_quad ; ++jpt)
+                    sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha[jpt](0) * phi_beta[jpt](0);
+
+                tensor_id_lambda_k[0] = ifn;
+                sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
+            }
+
+            value_entry_lambda_k_1 = sum;
+
+            flat_id_entry_lambda_k_1++;
+        }
+
+
+        IntegratorSumFacMass<dim,k-1> integrate;
+
+        return integrate(lambda_k_1,omega_B,phi,alpha_tensor_id,beta_tensor_id);
+    };
+};
+
+template <int dim>
+class IntegratorSumFacMass<dim,1>
+{
+public:
+    using ValueTable1D = ValueTable<typename Function<1>::ValueType> ;
+
+    Real
+    operator()(const DynamicMultiArray<Real,1> &lambda_1,
+               const ValueTable1D &omega_B,
+               const array<ValueTable1D,dim> phi,
+               const TensorIndex<dim> &alpha_tensor_id,
+               const TensorIndex<dim> &beta_tensor_id)
+    {
+        const Size size_lambda_1 = lambda_1.flat_size();
+
+        const Size n_bernst = omega_B.get_num_functions();
+        const Size n_quad = omega_B.get_num_points();
+
+        Assert(n_bernst == size_lambda_1,
+               ExcDimensionMismatch(n_bernst,size_lambda_1));
+
+
+        const int dir = dim-1;
+
+        Assert(n_quad == phi[dir].get_num_points(),
+               ExcDimensionMismatch(n_quad,phi[dir].get_num_points()));
+        const auto phi_alpha = phi[dir].get_function_view(alpha_tensor_id[dir]);
+        const auto phi_beta  = phi[dir].get_function_view(beta_tensor_id[dir]);
+
+        Real lambda_0 = 0.0;
+        for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
+        {
+            const auto omega_B_theta = omega_B.get_function_view(ifn);
+
+            Real sum_quad_pt = 0.0;
+            for (int jpt = 0 ; jpt < n_quad ; ++jpt)
+                sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha[jpt](0) * phi_beta[jpt](0);
+
+            lambda_0 += lambda_1(ifn) * sum_quad_pt;
+        }
+
+        return lambda_0;
+    };
+};
+
+
+
 template<int dim>
 void
 PoissonProblemSumFactorization<dim>::
@@ -607,22 +725,28 @@ assemble()
             for (int flat_id = 0 ; flat_id < flat_size ; ++ flat_id)
                 K(flat_id) = k_rhs(flat_id);
 
-            out << "K = " <<endl;
-            K.print_info(out);
-            out << endl;
 
             Size n_flat_alpha = elem->get_num_basis();
             Size n_flat_beta = elem->get_num_basis();
 
+            const auto weight_alpha = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
+            const auto weight_beta  = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
 
+            DenseMatrix local_mass_matrix(n_flat_alpha,n_flat_beta);
 
-            for (int flat_alpha = 0 ; flat_alpha < n_flat_alpha ; ++flat_alpha)
+            IntegratorSumFacMass<dim,dim> integrate;
+
+            for (int alpha_flat_id = 0 ; alpha_flat_id < n_flat_alpha ; ++alpha_flat_id)
             {
-                for (int flat_beta = 0 ; flat_beta < n_flat_beta ; ++flat_beta)
-                {
+                TensorIndex<dim> alpha_tensor_id =
+                    MultiArrayUtils<dim>::flat_to_tensor_index(alpha_flat_id,weight_alpha);
 
-                    TensorIndex<3> alpha = {0,0,0};
-                    TensorIndex<3> beta = {0,0,0};
+                for (int beta_flat_id = 0 ; beta_flat_id < n_flat_beta ; ++beta_flat_id)
+                {
+                    TensorIndex<dim> beta_tensor_id =
+                        MultiArrayUtils<dim>::flat_to_tensor_index(beta_flat_id,weight_beta);
+
+                    /*
                     int dir;
 
 
@@ -653,8 +777,8 @@ assemble()
 
                                 const auto omega_B_theta =  omega_B_1d.get_function_view(i0);
 
-                                const auto phi_alpha =  phi_1D[dir].get_function_view(alpha[0]);
-                                const auto phi_beta =  phi_1D[dir].get_function_view(beta[0]);
+                                const auto phi_alpha =  phi_1D[dir].get_function_view(alpha_tensor_id[dir]);
+                                const auto phi_beta =  phi_1D[dir].get_function_view(beta_tensor_id[dir]);
 
                                 Real sum_quad_pt = 0.0;
                                 for (int gamma = 0 ; gamma < q ; ++gamma)
@@ -667,9 +791,6 @@ assemble()
                             Lambda_2(tensor_id_lambda_2) = sum;
                         }
                     }
-                    out << "Lambda2 = " <<endl;
-                    Lambda_2.print_info(out);
-                    out << endl;
 
 
                     TensorSize<1> tensor_size_Lambda_1;
@@ -690,8 +811,8 @@ assemble()
 
                             const auto omega_B_theta =  omega_B_1d.get_function_view(i0);
 
-                            const auto phi_alpha =  phi_1D[dir].get_function_view(alpha[0]);
-                            const auto phi_beta =  phi_1D[dir].get_function_view(beta[0]);
+                            const auto phi_alpha =  phi_1D[dir].get_function_view(alpha_tensor_id[dir]);
+                            const auto phi_beta =  phi_1D[dir].get_function_view(beta_tensor_id[dir]);
 
                             Real sum_quad_pt = 0.0;
                             for (int gamma = 0 ; gamma < q ; ++gamma)
@@ -703,9 +824,6 @@ assemble()
                         }
                         Lambda_1(tensor_id_lambda_1) = sum;
                     }
-                    out << "Lambda1 = " <<endl;
-                    Lambda_1.print_info(out);
-                    out << endl;
 
 
                     Real Lambda_0;
@@ -717,8 +835,8 @@ assemble()
 
                         const auto omega_B_theta =  omega_B_1d.get_function_view(i0);
 
-                        const auto phi_alpha =  phi_1D[dir].get_function_view(alpha[0]);
-                        const auto phi_beta =  phi_1D[dir].get_function_view(beta[0]);
+                        const auto phi_alpha =  phi_1D[dir].get_function_view(alpha_tensor_id[dir]);
+                        const auto phi_beta =  phi_1D[dir].get_function_view(beta_tensor_id[dir]);
 
                         Real sum_quad_pt = 0.0;
                         for (int gamma = 0 ; gamma < q ; ++gamma)
@@ -729,58 +847,65 @@ assemble()
                         sum += Lambda_1(tensor_id_lambda_1) * sum_quad_pt;
                     }
                     Lambda_0 = sum;
-                    out << "Lambda0 = " << Lambda_0 <<endl;
+
+                    local_mass_matrix(alpha_flat_id,beta_flat_id) = Lambda_0;
+                    //*/
+
+                    local_mass_matrix(alpha_flat_id,beta_flat_id) = integrate(K,omega_B_1d,phi_1D,alpha_tensor_id,beta_tensor_id);
 
                 }
-                else
-                {
-                    AssertThrow(false,ExcNotImplemented());
-                }
-
-                /*
-                        for (int i = 0; i < n_basis; ++i)
-                        {
-                            auto grd_phi_i = grd_phi.get_function(i);
-                            for (int j = 0; j < n_basis; ++j)
-                            {
-                                auto grd_phi_j = grd_phi.get_function(j);
-                                for (int qp = 0; qp < n_qp; ++qp)
-                                    loc_mat(i,j) +=
-                                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
-                                        * w_meas[qp];
-                            }
-
-                            auto phi_i = phi.get_function(i);
-                            for (int qp = 0; qp < n_qp; ++qp)
-                                loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                                              * w_meas[qp];
-                        }
-                //*/
-                loc_dofs = elem->get_local_to_global();
-                this->matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-                this->rhs->add_block(loc_dofs, loc_rhs);
             }
-
-            this->matrix->fill_complete();
-
-
-
-
-
-
-            // AssertThrow(false,ExcNotImplemented());
+            out << "Local Mass Matrix = " << local_mass_matrix << endl;
+        }
+        else
+        {
+            AssertThrow(false,ExcNotImplemented());
         }
 
+        /*
+                for (int i = 0; i < n_basis; ++i)
+                {
+                    auto grd_phi_i = grd_phi.get_function(i);
+                    for (int j = 0; j < n_basis; ++j)
+                    {
+                        auto grd_phi_j = grd_phi.get_function(j);
+                        for (int qp = 0; qp < n_qp; ++qp)
+                            loc_mat(i,j) +=
+                                scalar_product(grd_phi_i[qp], grd_phi_j[qp])
+                                * w_meas[qp];
+                    }
 
-        int main()
-        {
-            const int n_knots = 2;
-            const int space_deg = 1;
-            const int  proj_deg = 2;
-            /*
-                PoissonProblemStandardIntegration<1> poisson_1d({n_knots}, space_deg);
-                poisson_1d.run();
-            //*/
+                    auto phi_i = phi.get_function(i);
+                    for (int qp = 0; qp < n_qp; ++qp)
+                        loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
+                                      * w_meas[qp];
+                }
+        //*/
+        loc_dofs = elem->get_local_to_global();
+        this->matrix->add_block(loc_dofs, loc_dofs, loc_mat);
+        this->rhs->add_block(loc_dofs, loc_rhs);
+    }
+
+    this->matrix->fill_complete();
+
+
+
+
+
+
+    // AssertThrow(false,ExcNotImplemented());
+}
+
+
+int main()
+{
+    const int n_knots = 2;
+    const int space_deg = 2;
+    const int  proj_deg = 2;
+    /*
+        PoissonProblemStandardIntegration<1> poisson_1d({n_knots}, space_deg);
+        poisson_1d.run();
+    //*/
 
 //    PoissonProblemStandardIntegration<2> poisson_2d({n_knots, n_knots}, space_deg);
 //    poisson_2d.run();
@@ -788,15 +913,15 @@ assemble()
 //    PoissonProblemStandardIntegration<3> poisson_3d({n_knots, n_knots, n_knots}, space_deg);
 //    poisson_3d.run();
 
-            /*
-                PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
-                poisson_1d_sf.run();
+    /*
+        PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
+        poisson_1d_sf.run();
 
-                PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
-                poisson_2d_sf.run();
-            //*/
-            PoissonProblemSumFactorization<3> poisson_3d_sf({n_knots,n_knots,n_knots}, space_deg, proj_deg);
-            poisson_3d_sf.run();
+        PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
+        poisson_2d_sf.run();
+    //*/
+    PoissonProblemSumFactorization<3> poisson_3d_sf({n_knots,n_knots,n_knots}, space_deg, proj_deg);
+    poisson_3d_sf.run();
 //*/
-            return  0;
-        }
+    return  0;
+}
