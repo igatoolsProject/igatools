@@ -124,7 +124,7 @@ template <int dim_, int dim_range_, int rank_>
 NURBSSpace<dim_, dim_range_, rank_>::
 NURBSSpace(
     shared_ptr< GridType > knots,
-    const Multiplicities &mult_vector,
+    const MultiplicityTable &mult_vector,
     const DegreeTable &degree)
     :
     base_t(knots, mult_vector, degree)
@@ -153,7 +153,7 @@ template <int dim_, int dim_range_, int rank_>
 auto
 NURBSSpace<dim_, dim_range_, rank_>::
 create(shared_ptr< GridType > knots,
-       const Multiplicities &mult_vector,
+       const MultiplicityTable &mult_vector,
        const DegreeTable &degree) -> shared_ptr< self_t >
 {
     return (shared_ptr< self_t >(new self_t(knots, mult_vector, degree)));
@@ -165,9 +165,9 @@ template <int dim_, int dim_range_, int rank_>
 NURBSSpace<dim_, dim_range_, rank_>::
 NURBSSpace(
     std::shared_ptr< GridType > knots,
-    const Multiplicities &mult_vector,
+    const MultiplicityTable &mult_vector,
     const DegreeTable &degree,
-    const StaticMultiArray<DynamicMultiArray<iga::Real,dim>,dim_range,rank> &weights)
+    const WeightsTable &weights)
     :
     base_t(knots, mult_vector, degree),
     weights_(weights)
@@ -183,9 +183,9 @@ template <int dim_, int dim_range_, int rank_>
 auto
 NURBSSpace<dim_, dim_range_, rank_>::
 create(std::shared_ptr< GridType > knots,
-       const Multiplicities &mult_vector,
+       const MultiplicityTable &mult_vector,
        const DegreeTable &degree,
-       const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights) -> shared_ptr< self_t >
+       const WeightsTable &weights) -> shared_ptr< self_t >
 {
     return shared_ptr< self_t >(new self_t(knots, mult_vector, degree, weights));
 }

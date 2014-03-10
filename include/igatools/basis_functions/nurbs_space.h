@@ -48,7 +48,9 @@ public:
     using base_t::n_components;
     using typename base_t::DegreeTable;
 
-    using Multiplicities = typename base_t::template ComponentTable<Multiplicity<dim> >;
+    using MultiplicityTable = typename base_t::template ComponentTable<Multiplicity<dim> >;
+
+    using WeightsTable = typename base_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
 
 private:
     using self_t = NURBSSpace<dim, dim_range, rank>;
@@ -116,7 +118,7 @@ public :
      */
     NURBSSpace(
         std::shared_ptr< GridType > knots,
-        const Multiplicities &mult_vector,
+        const MultiplicityTable &mult_vector,
         const DegreeTable &degree);
 
     /**
@@ -127,7 +129,7 @@ public :
      */
     static std::shared_ptr< self_t >
     create(std::shared_ptr< GridType > knots,
-           const Multiplicities &mult_vector,
+           const MultiplicityTable &mult_vector,
            const DegreeTable &degree);
 
     /**
@@ -137,9 +139,9 @@ public :
      */
     NURBSSpace(
         std::shared_ptr< GridType > knots,
-        const Multiplicities &mult_vector,
+        const MultiplicityTable &mult_vector,
         const DegreeTable &degree,
-        const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights);
+        const WeightsTable &weights);
 
     /**
      * Returns a shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
@@ -148,9 +150,9 @@ public :
      */
     static std::shared_ptr< self_t >
     create(std::shared_ptr< GridType > knots,
-           const Multiplicities &mult_vector,
+           const MultiplicityTable &mult_vector,
            const DegreeTable &degree,
-           const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights);
+           const WeightsTable &weights);
 
     /** Destructor */
     ~NURBSSpace() = default;
