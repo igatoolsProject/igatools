@@ -74,7 +74,7 @@ template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
 public PhysSpace::RefSpace::ElementAccessor,
-public PhysSpace::PushForwardType::ElementAccessor
+private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
     using ContainerType = PhysSpace;
