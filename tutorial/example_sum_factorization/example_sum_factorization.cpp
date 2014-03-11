@@ -542,13 +542,17 @@ public:
         for (int jpt = 0 ; jpt < n_quad ; ++jpt)
             phi_alpha_phi_beta[jpt] = phi_alpha[jpt](0) * phi_beta[jpt](0);
 
-        Index flat_id_entry_lambda_k_1 = 0;
+//        Index flat_id_entry_lambda_k_1 = 0;
+
+
+        const Real *lambda_k_ptr = &lambda_k.get_data()[0];
+
         for (auto & value_entry_lambda_k_1 : lambda_k_1)
         {
-            const auto tensor_id_lambda_k_1 = lambda_k_1.flat_to_tensor(flat_id_entry_lambda_k_1);
+//            const auto tensor_id_lambda_k_1 = lambda_k_1.flat_to_tensor(flat_id_entry_lambda_k_1);
 
-            for (int i = dim-1 ; i >= 1 ; --i)
-                tensor_id_lambda_k[i] = tensor_id_lambda_k_1[i-1];
+//            for (int i = dim-1 ; i >= 1 ; --i)
+//                tensor_id_lambda_k[i] = tensor_id_lambda_k_1[i-1];
 
             //---------------------
             /*
@@ -572,20 +576,12 @@ public:
 
 
             //---------------------
+//            const Real *lambda_k_ptr = lambda_k_ptr_begin;
             const Real *w_B_theta_ptr = &omega_B.get_data()[0](0)[0];
             Real sum = 0.0;
             for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
             {
-//                const auto omega_B_theta = omega_B.get_function_view(ifn);
-
                 Real sum_quad_pt = 0.0;
-
-                /*
-                for (int jpt = 0 ; jpt < n_quad ; ++jpt)
-                {
-                    sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha_phi_beta[jpt];
-                }
-                //*/
 
                 const Real *phi_alpha_phi_beta_ptr = &phi_alpha_phi_beta[0];
                 for (int jpt = 0 ; jpt < n_quad ; ++jpt)
@@ -595,15 +591,18 @@ public:
                     phi_alpha_phi_beta_ptr++;
                 }
 
-                tensor_id_lambda_k[0] = ifn;
-                sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
+//                tensor_id_lambda_k[0] = ifn;
+//                sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
+                sum += (*lambda_k_ptr) * sum_quad_pt;
+                lambda_k_ptr++;
             }
             //*/
             //---------------------
 
             value_entry_lambda_k_1 = sum;
 
-            flat_id_entry_lambda_k_1++;
+//            flat_id_entry_lambda_k_1++;
+//            lambda_k_ptr_begin++;
         }
 
 
@@ -649,6 +648,7 @@ public:
             phi_alpha_phi_beta[jpt] = phi_alpha[jpt](0) * phi_beta[jpt](0);
 
 
+        /*
         Real lambda_0 = 0.0;
         for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
         {
@@ -656,13 +656,30 @@ public:
 
             Real sum_quad_pt = 0.0;
             for (int jpt = 0 ; jpt < n_quad ; ++jpt)
-            {
-//                sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha[jpt](0) * phi_beta[jpt](0);
                 sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha_phi_beta[jpt];
-            }
 
             lambda_0 += lambda_1(ifn) * sum_quad_pt;
         }
+        //*/
+
+
+        Real lambda_0 = 0.0;
+        const Real *w_B_theta_ptr = &omega_B.get_data()[0](0)[0];
+        for (const auto & lambda_1_val : lambda_1)
+        {
+            const Real *phi_alpha_phi_beta_ptr = &phi_alpha_phi_beta[0];
+
+            Real sum = 0.0;
+            for (int jpt = 0 ; jpt < n_quad ; ++jpt)
+            {
+                sum += (*w_B_theta_ptr) * (*phi_alpha_phi_beta_ptr);
+                w_B_theta_ptr++;
+                phi_alpha_phi_beta_ptr++;
+            }
+            lambda_0 += lambda_1_val * sum;
+        }
+
+
 
         return lambda_0;
     };
@@ -906,6 +923,7 @@ assemble()
 
             for (int beta_flat_id = alpha_flat_id ; beta_flat_id < n_basis ; ++beta_flat_id)
             {
+
                 TensorIndex<dim> beta_tensor_id =
                     MultiArrayUtils<dim>::flat_to_tensor_index(beta_flat_id,weight_basis);
 
@@ -960,7 +978,7 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
@@ -989,7 +1007,7 @@ int main()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_max = 8;
+    int degree_max = 15;
     for (int degree = 1 ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
