@@ -334,6 +334,8 @@ init_values(const ValueFlags fill_flag,
         ValueFlags grid_flag = ValueFlags::none;
         if (contains(fill_flag , ValueFlags::point))
             grid_flag |= ValueFlags::point;
+        if (contains(fill_flag , ValueFlags::ref_elem_measure))
+            grid_flag |= ValueFlags::ref_elem_measure;
         if (contains(fill_flag , ValueFlags::w_measure))
             grid_flag |= ValueFlags::w_measure;
         if (contains(fill_flag , ValueFlags::face_point))

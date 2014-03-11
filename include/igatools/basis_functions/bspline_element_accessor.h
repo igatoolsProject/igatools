@@ -57,6 +57,7 @@ public:
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
         ValueFlags::point|
+        ValueFlags::ref_elem_measure |
         ValueFlags::w_measure |
         ValueFlags::face_point |
         ValueFlags::face_w_measure |

@@ -27,6 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
+
 template< class T, int rank>
 inline
 const std::vector<T> &

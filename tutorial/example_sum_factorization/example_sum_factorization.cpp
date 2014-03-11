@@ -98,7 +98,15 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
     elem_quad(QGauss<dim>(deg+1)),
     face_quad(QGauss<dim-1>(deg+1))
 {
-    auto grid = CartesianGrid<dim>::create(n_knots);
+    BBox<dim> box;
+    for (int i=0 ; i < dim ; ++i)
+    {
+        box[i][0] = 0.0;
+        box[i][1] = 1.0;
+    }
+    box[0][1] = 0.5;
+
+    auto grid = CartesianGrid<dim>::create(box,n_knots);
     auto ref_space = RefSpace::create(grid, deg);
 //    map       = BallMapping<dim>::create(grid);
     map       = IdentityMapping<dim,0>::create(grid);
@@ -243,6 +251,7 @@ class PoissonProblemSumFactorization :
     public PoissonProblem< dim, PoissonProblemSumFactorization<dim> >
 {
 public:
+
     /** @name Constructors & destructor. */
     ///@{
     PoissonProblemSumFactorization() = delete ;
@@ -291,12 +300,37 @@ private:
     int space_deg_ = 0;
     int proj_deg_ = 0;
 
+    /** Number of one-dimensional Bernstein's polynomials used in the projection */
+    Size n_bernst_1D_ = 0 ;
+
+    /** Number of d-dimensional Bernstein's polynomials used in the projection */
+    Size n_basis_proj_ = 0;
+
+    /** Number of points for the one-dimensional quadrature scheme used for projection. */
+    Size n_quad_proj_1D_ = 0;
+
+
+    /** Index weight used to convert tensor-to-flat id (and viceversa) for the Bernstein polynomials.*/
+    TensorIndex<dim> bernst_tensor_weight_;
+
+    /** Quadrature scheme used in the projection phase. */
+    QGauss<dim> quad_proj_;
+
+
+
     chrono::duration<Real> elapsed_time_projection_;
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_;
 
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_old_;
 
     DenseMatrix eval_matrix_proj() const;
+
+    /** Mass matrix of the Bernstein polynomials used in the projection, in [0,1]^dim.*/
+    DenseMatrix B_proj_;
+
+    /** Inverse of the mass matrix of the Bernstein polynomials used in the projection, in [0,1]^dim.*/
+    DenseMatrix inv_B_proj_;
+
 };
 
 template<int dim>
@@ -306,33 +340,58 @@ PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,
     :
     base_t(n_knots,space_deg),
     space_deg_(space_deg),
-    proj_deg_(proj_deg)
-{}
-
-template<int dim>
-DenseMatrix
-PoissonProblemSumFactorization<dim>::
-eval_matrix_proj() const
+    proj_deg_(proj_deg),
+    n_bernst_1D_(proj_deg_+1),
+    n_basis_proj_(pow(n_bernst_1D_,dim)),
+    n_quad_proj_1D_(proj_deg_+1),
+    bernst_tensor_weight_(MultiArrayUtils<dim>::compute_weight(TensorSize<dim>(n_bernst_1D_))),
+    quad_proj_(QGauss<dim>(TensorSize<dim>(n_bernst_1D_)))
 {
+
+    //------------------------------------
+    // evaluation of the Bernstein's mass matrix
+    DenseMatrix B_proj_1D(n_bernst_1D_,n_bernst_1D_);
     const int q = proj_deg_;
-
-    DenseMatrix matrix_proj(q+1,q+1);
-
-    for (int row = 0 ; row <= q ; ++row)
+    for (int i = 0 ; i < n_bernst_1D_ ; ++i)
     {
-        const Real tmp = constexpr_binomial_coefficient(q,row) / (2.0 *q + 1.0) ;
-        for (int col = 0 ; col <= row ; ++col)
+        const Real tmp_i = constexpr_binomial_coefficient(q,i) / (2.0 * q + 1.0);
+        for (int j = 0 ; j < n_bernst_1D_ ; ++j)
         {
-            matrix_proj(row,col) = tmp / constexpr_binomial_coefficient(2*q,row+col) *
-                                   constexpr_binomial_coefficient(q,col) ;
+            B_proj_1D(i,j) =
+                tmp_i * constexpr_binomial_coefficient(q,j) /
+                constexpr_binomial_coefficient(2*q,i+j);
         }
     }
+//    out << "Bernstein 1D mass matrix = " << Bernstein_1d_mass_matrix << endl;
 
-    for (int row = 0 ; row <= q ; ++row)
-        for (int col = row+1 ; col <= q ; ++col)
-            matrix_proj(row,col) = matrix_proj(col,row) ;
 
-    return matrix_proj;
+    using MAUtils = MultiArrayUtils<dim>;
+    B_proj_.resize(n_basis_proj_,n_basis_proj_);
+
+
+    for (Size row = 0 ; row < n_basis_proj_ ; ++row)
+    {
+        const auto row_tensor_id = MAUtils::flat_to_tensor_index(row,bernst_tensor_weight_);
+
+        for (Size col = 0 ; col < n_basis_proj_ ; ++col)
+        {
+            const auto col_tensor_id = MAUtils::flat_to_tensor_index(col,bernst_tensor_weight_);
+
+            Real tmp = 1.0;
+            for (int k = 0 ; k < dim ; ++k)
+                tmp *= B_proj_1D(row_tensor_id[k],col_tensor_id[k]);
+
+            B_proj_(row,col) = tmp;
+        }
+    }
+//    out << "Bernstein "<< dim <<"D mass matrix = " << Bernstein_mass_matrix << endl;
+
+
+    inv_B_proj_ = B_proj_.inverse();
+//    out << "inverse of Bernstein "<< dim <<"D mass matrix = " << inverse_Bernstein_mass_matrix << endl;
+    //------------------------------------
+
+
 }
 
 
@@ -364,7 +423,7 @@ class IntegratorSumFacRHS
 public:
     DynamicMultiArray<Real,k> operator()(
         const DynamicMultiArray<Real,dim> &Gamma,
-        const ValueTable<typename Function<1>::ValueType> &omega_B_1d,
+        const array<ValueTable<typename Function<1>::ValueType>,dim> &omega_B_1d,
         const TensorIndex<dim> &bernstein_tensor_id)
     {
 
@@ -388,9 +447,12 @@ public:
 
         const Index eta_k1 = bernstein_tensor_id[k] ;
 
-        const Size n_pts = omega_B_1d.get_num_points();
-        const auto &B = omega_B_1d.get_function_view(eta_k1);
+        const auto &w_B_k_view = omega_B_1d[k].get_function_view(eta_k1);
+        vector<Real> w_B_k;
+        for (const auto & w_B_k_value : w_B_k_view)
+            w_B_k.emplace_back(w_B_k_value(0));
 
+        const Size n_pts = w_B_k.size();
         for (Index flat_id_C = 0 ; flat_id_C < n_entries_C ; ++flat_id_C)
         {
             TensorIndex<k> tensor_id_C = C.flat_to_tensor(flat_id_C);
@@ -402,7 +464,7 @@ public:
             for (int ipt = 0 ; ipt < n_pts ; ++ipt) // quadrature along the last tensor index
             {
                 tensor_id_C1[k] = ipt ;
-                sum += C1(tensor_id_C1) * B[ipt](0);
+                sum += C1(tensor_id_C1) * w_B_k[ipt];
             }
             C(tensor_id_C) = sum;
 
@@ -424,7 +486,7 @@ class IntegratorSumFacRHS<dim,dim>
 public:
     DynamicMultiArray<Real,dim> operator()(
         const DynamicMultiArray<Real,dim> &Gamma,
-        const ValueTable<typename Function<1>::ValueType> &omega_B_1d,
+        const array<ValueTable<typename Function<1>::ValueType>,dim> &omega_B_1d,
         const TensorIndex<dim> &bernstein_tensor_id)
     {
         return Gamma;
@@ -440,7 +502,7 @@ public:
 
     Real
     operator()(const DynamicMultiArray<Real,k> &lambda_k,
-               const ValueTable1D &omega_B,
+               const array<ValueTable1D,dim> &w_B,
                const array<ValueTable1D,dim> &phi,
                const TensorIndex<dim> &alpha_tensor_id,
                const TensorIndex<dim> &beta_tensor_id)
@@ -453,6 +515,9 @@ public:
 
         DynamicMultiArray<Real,k-1> lambda_k_1(tensor_size_lambda_k_1);
 
+        const int dir = dim-k;
+
+        const auto &omega_B = w_B[dir];
 
         const Size n_bernst = omega_B.get_num_functions();
         const Size n_quad = omega_B.get_num_points();
@@ -463,7 +528,6 @@ public:
 
         TensorIndex<k> tensor_id_lambda_k;
         TensorIndex<k-1> tensor_id_lambda_k_1;
-        const int dir = dim-k;
 
         Assert(n_quad == phi[dir].get_num_points(),
                ExcDimensionMismatch(n_quad,phi[dir].get_num_points()));
@@ -518,12 +582,16 @@ public:
 
     Real
     operator()(const DynamicMultiArray<Real,1> &lambda_1,
-               const ValueTable1D &omega_B,
+               const array<ValueTable1D,dim> &w_B,
                const array<ValueTable1D,dim> phi,
                const TensorIndex<dim> &alpha_tensor_id,
                const TensorIndex<dim> &beta_tensor_id)
     {
 //        const Size size_lambda_1 = lambda_1.flat_size();
+
+        const int dir = dim-1;
+
+        const auto &omega_B = w_B[dir];
 
         const Size n_bernst = omega_B.get_num_functions();
         const Size n_quad = omega_B.get_num_points();
@@ -531,8 +599,6 @@ public:
         Assert(n_bernst == lambda_1.flat_size(),
                ExcDimensionMismatch(n_bernst,lambda_1.flat_size()));
 
-
-        const int dir = dim-1;
 
         Assert(n_quad == phi[dir].get_num_points(),
                ExcDimensionMismatch(n_quad,phi[dir].get_num_points()));
@@ -570,15 +636,11 @@ void
 PoissonProblemSumFactorization<dim>::
 assemble()
 {
-//    using std::cout;
+    using RefSpaceAccessor = typename base_t::RefSpace::ElementAccessor;
+
     LogStream out ;
 
-    DenseMatrix matrix_proj = eval_matrix_proj();
-
-    DenseMatrix inv_matrix_proj = matrix_proj.inverse();
-
-//    cout << "    proj matrix: " <<     matrix_proj <<endl;
-//    cout << "inv proj matrix: " << inv_matrix_proj <<endl;
+    using MAUtils = MultiArrayUtils<dim>;
 
 
     const int n_basis = this->space->get_num_basis_per_element();
@@ -586,103 +648,89 @@ assemble()
     DenseVector loc_rhs(n_basis);
     vector<Index> loc_dofs(n_basis);
 
-//    const int n_qp = this->elem_quad.get_num_points();
     ConstantFunction<dim> f({1.0});
 
-    using Val = typename Function<dim>::ValueType;
+
+
+    //-----------------------------------------------------------------
+    /**
+     * Initialization of the container for the values of the function
+     * that must be projected.
+     */
+    using ValueType = typename Function<dim>::ValueType;
+    vector<ValueType> f_values_proj(quad_proj_.get_num_points());
+    //-----------------------------------------------------------------
+
+
+
 
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
-//    ValueFlags fill_flags = ValueFlags::value | ValueFlags::w_measure | ValueFlags::point;
-    ValueFlags fill_flags = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure | ValueFlags::point;
+    ValueFlags fill_flags = ValueFlags::value |
+                            ValueFlags::gradient |
+                            ValueFlags::ref_elem_measure |
+                            ValueFlags::w_measure |
+                            ValueFlags::point;
+
     elem->init_values(fill_flags, this->elem_quad);
 
-    // quadrature scheme for the projection on Bernstein basis
-    const Size n_quad_proj = proj_deg_+1;
-    QGauss<dim> quad_proj(n_quad_proj);
-    QGauss<1> quad_proj_1d(n_quad_proj);
-    vector<Val> f_values_proj(quad_proj.get_num_points());
-
-    const vector<Real> x_1d = quad_proj_1d.get_points().get_data_direction(0);
-    const vector<Real> w_1d = quad_proj_1d.get_weights().get_data_direction(0);
-
-    // values of the one-dimensional Bernstein basis
-    const DenseMatrix B_1d = BernsteinBasis::evaluate(proj_deg_,x_1d);
-    const Size n_bernstein_1d = B_1d.size1();
-    Assert(n_bernstein_1d == proj_deg_+1, ExcDimensionMismatch(n_bernstein_1d, proj_deg_+1));
 
 
-
-    //------------------------------------
-    // evaluation of the Bernstein's mass matrix
-    DenseMatrix Bernstein_1d_mass_matrix(n_bernstein_1d,n_bernstein_1d);
-    const int q = proj_deg_;
-    for (int i = 0 ; i < n_bernstein_1d ; ++i)
+    //-----------------------------------------------------------------
+    std::array<DenseMatrix,dim> B_proj_1D;
+    for (int i = 0 ; i < dim ; ++i)
     {
-        const Real tmp_i = constexpr_binomial_coefficient(q,i) / (2.0 * q + 1.0);
-        for (int j = 0 ; j < n_bernstein_1d ; ++j)
-        {
-            Bernstein_1d_mass_matrix(i,j) =
-                tmp_i * constexpr_binomial_coefficient(q,j) /
-                constexpr_binomial_coefficient(2*q,i+j);
-        }
+        // values of the one-dimensional Bernstein basis at the projection pts
+        B_proj_1D[i] = BernsteinBasis::evaluate(
+                           proj_deg_,
+                           quad_proj_.get_points().get_data_direction(i));
+        Assert(n_bernst_1D_ == B_proj_1D[i].size1(),
+               ExcDimensionMismatch(n_bernst_1D_, B_proj_1D[i].size1()));
+        Assert(quad_proj_.get_num_points_direction()[i] == B_proj_1D[i].size2(),
+               ExcDimensionMismatch(quad_proj_.get_num_points_direction()[i], B_proj_1D[i].size2()));
     }
-//    out << "Bernstein 1D mass matrix = " << Bernstein_1d_mass_matrix << endl;
-
-
-    Size n_rows_B_mass_matrix = pow(n_bernstein_1d,dim);
-    DenseMatrix Bernstein_mass_matrix(n_rows_B_mass_matrix,n_rows_B_mass_matrix);
-
-    TensorSize<dim> bernstein_tensor_size(n_bernstein_1d);
-    TensorIndex<dim> bernstein_tensor_weight = MultiArrayUtils<dim>::compute_weight(bernstein_tensor_size);
-    for (Size row = 0 ; row < n_rows_B_mass_matrix ; ++row)
-    {
-        TensorIndex<dim> row_tensor_id = MultiArrayUtils<dim>::flat_to_tensor_index(row,bernstein_tensor_weight);
-
-        for (Size col = 0 ; col < n_rows_B_mass_matrix ; ++col)
-        {
-            TensorIndex<dim> col_tensor_id = MultiArrayUtils<dim>::flat_to_tensor_index(col,bernstein_tensor_weight);
-
-            Real tmp = 1.0;
-            for (int k = 0 ; k < dim ; ++k)
-                tmp *= Bernstein_1d_mass_matrix(row_tensor_id[k],col_tensor_id[k]);
-
-            Bernstein_mass_matrix(row,col) = tmp;
-        }
-    }
-//    out << "Bernstein "<< dim <<"D mass matrix = " << Bernstein_mass_matrix << endl;
-
-
-    DenseMatrix inverse_Bernstein_mass_matrix = Bernstein_mass_matrix.inverse();
-//    out << "inverse of Bernstein "<< dim <<"D mass matrix = " << inverse_Bernstein_mass_matrix << endl;
-    //------------------------------------
-
-
 
 
     using ValueType1D = Function<1>::ValueType;
-    ValueTable<ValueType1D> omega_B_1d(n_bernstein_1d,n_quad_proj);
-    for (Index ifunc = 0 ; ifunc < n_bernstein_1d ; ++ifunc)
+    array<ValueTable<ValueType1D>,dim> w_B_proj_1D;
+
+    array<Real,dim> element_edge_size = elem->RefSpaceAccessor::get_coordinate_lengths();
+
+    for (int i = 0 ; i < dim ; ++i)
     {
-        auto omega_B_ifunc =  omega_B_1d.get_function_view(ifunc);
-        for (Index ipt = 0 ; ipt < n_quad_proj ; ++ipt)
-            omega_B_ifunc[ipt] = w_1d[ipt] * B_1d(ifunc,ipt);
+        out <<endl;
+
+        const Size n_pts = quad_proj_.get_num_points_direction()[i];
+        w_B_proj_1D[i].resize(n_bernst_1D_,n_pts);
+
+        const auto &B_i = B_proj_1D[i];
+
+        const vector<Real> w_i = quad_proj_.get_weights().get_data_direction(i);
+
+        for (Index ifn = 0 ; ifn < n_bernst_1D_ ; ++ifn)
+        {
+            auto w_B_ifn = w_B_proj_1D[i].get_function_view(ifn);
+
+            for (Index jpt = 0 ; jpt < n_pts ; ++jpt)
+                w_B_ifn[jpt] = w_i[jpt] * B_i(ifn,jpt) * element_edge_size[i];
+        }
     }
+    //-----------------------------------------------------------------
+
+
+
 
     IntegratorSumFacRHS<dim> integrate_rhs;
 
     TensorIndex<dim> bernst_tensor_id;
 
-    const Size bernstein_flat_size = bernstein_tensor_size.flat_size();
-    DenseVector integral_rhs(bernstein_flat_size);
-    DenseVector k_rhs(bernstein_flat_size);
+    DenseVector integral_rhs(n_basis_proj_);
+    DenseVector k_rhs(n_basis_proj_);
 
     // number of points along each directin for the quadrature scheme.
     TensorSize<dim> n_quad_points = this->elem_quad.get_num_points_direction();
 
     TensorSize<dim> n_basis_elem(space_deg_+1);
-
-
 
 
 
@@ -704,6 +752,7 @@ assemble()
 
     for (; elem != elem_end; ++elem)
     {
+
 
         loc_rhs.clear();
         //*/
@@ -746,9 +795,12 @@ assemble()
         auto phi     = elem->get_basis_values();
 //        auto grd_phi = elem->get_basis_gradients();
         auto w_meas  = elem->get_w_measures();
-        auto elem_measure = elem->get_measure();
 
-        f.evaluate(quad_proj.get_points().get_flat_cartesian_product(), f_values_proj);
+
+
+        auto elem_measure = elem->RefSpaceAccessor::get_measure();
+
+        f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
 
 
 
@@ -757,22 +809,23 @@ assemble()
         //----------------------------------------------------
         // Projection phase -- begin
         start_projection = Clock::now();
-        DynamicMultiArray<Real,dim> c(n_quad_proj);
+        DynamicMultiArray<Real,dim> c;
+        c = DynamicMultiArray<Real,dim>(TensorSize<dim>(n_quad_proj_1D_));
         for (Index i = 0 ; i < c.flat_size() ; ++i)
         {
             c(i) = f_values_proj[i](0) ;
         }
 
-        for (Index bernst_flat_id = 0 ; bernst_flat_id < bernstein_flat_size ; ++bernst_flat_id)
+        for (Index bernst_flat_id = 0 ; bernst_flat_id < n_basis_proj_ ; ++bernst_flat_id)
         {
-            bernst_tensor_id = MultiArrayUtils<dim>::flat_to_tensor_index(bernst_flat_id,bernstein_tensor_weight);
+            bernst_tensor_id = MAUtils::flat_to_tensor_index(bernst_flat_id,bernst_tensor_weight_);
 
-            integral_rhs(bernst_flat_id) = (integrate_rhs(c,omega_B_1d,bernst_tensor_id)).get_data()[0];
+            integral_rhs(bernst_flat_id) = (integrate_rhs(c,w_B_proj_1D,bernst_tensor_id)).get_data()[0];
         }
 //        out << "integral rhs = " << integral_rhs << endl;
 
         // coefficient of the rhs projection with the Bersntein basis
-        k_rhs = boost::numeric::ublas::prod(inverse_Bernstein_mass_matrix, integral_rhs) ;
+        k_rhs = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
 //        out << "k rhs = " << k_rhs << endl;
         end_projection = Clock::now();
         elapsed_time_projection_ += end_projection - start_projection;
@@ -786,7 +839,7 @@ assemble()
         start_assembly_mass_matrix = Clock::now();
         TensorSize<dim> k_tensor_size;
         for (int i = 0 ; i <dim ; ++i)
-            k_tensor_size[i] = n_bernstein_1d;
+            k_tensor_size[i] = n_bernst_1D_;
 
         DynamicMultiArray<Real,dim> K(k_tensor_size);
         AssertThrow(K.flat_size() == k_rhs.size(),
@@ -810,7 +863,7 @@ assemble()
                 TensorIndex<dim> beta_tensor_id =
                     MultiArrayUtils<dim>::flat_to_tensor_index(beta_flat_id,weight_basis);
 
-                loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = integrate(K,omega_B_1d,phi_1D,alpha_tensor_id,beta_tensor_id);
+                loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = integrate(K,w_B_proj_1D,phi_1D,alpha_tensor_id,beta_tensor_id);
 
             }
         }
@@ -836,8 +889,6 @@ assemble()
         start_assembly_mass_matrix_old = Clock::now();
         loc_mat.clear();
 
-        phi.print_info(out);
-        w_meas.print_info(out);
         for (int i = 0; i < n_basis; ++i)
         {
             const auto phi_i = phi.get_function_view(i);
@@ -845,11 +896,7 @@ assemble()
             {
                 const auto phi_j = phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
-                {
-                    out << "phi("<<i<<","<<qp<<")= " << phi_i[qp](0) <<endl;
-                    out << "phi("<<j<<","<<qp<<")= " << phi_j[qp](0) <<endl;
                     loc_mat(i,j) += phi_i[qp](0) * phi_j[qp](0) * w_meas[qp];
-                }
             }
         }
         end_assembly_mass_matrix_old = Clock::now();
@@ -892,7 +939,7 @@ int main()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_max = 2;
+    int degree_max = 3;
     for (int degree = 1 ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
