@@ -37,6 +37,7 @@
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/contrib/table_handler.h>
 
+#include <boost/math/special_functions/binomial.hpp>
 
 #include <chrono>
 // [old includes]
@@ -347,22 +348,23 @@ PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,
     bernst_tensor_weight_(MultiArrayUtils<dim>::compute_weight(TensorSize<dim>(n_bernst_1D_))),
     quad_proj_(QGauss<dim>(TensorSize<dim>(n_bernst_1D_)))
 {
+    using boost::math::binomial_coefficient;
 
     //------------------------------------
     // evaluation of the Bernstein's mass matrix
     DenseMatrix B_proj_1D(n_bernst_1D_,n_bernst_1D_);
+
     const int q = proj_deg_;
     for (int i = 0 ; i < n_bernst_1D_ ; ++i)
     {
-        const Real tmp_i = constexpr_binomial_coefficient(q,i) / (2.0 * q + 1.0);
+        const Real tmp = binomial_coefficient<double>(q,i) / (2.0 * q + 1.0);
+
         for (int j = 0 ; j < n_bernst_1D_ ; ++j)
         {
             B_proj_1D(i,j) =
-                tmp_i * constexpr_binomial_coefficient(q,j) /
-                constexpr_binomial_coefficient(2*q,i+j);
+                tmp / binomial_coefficient<double>(2*q,i+j) * binomial_coefficient<double>(q,j) ;
         }
     }
-//    out << "Bernstein 1D mass matrix = " << Bernstein_1d_mass_matrix << endl;
 
 
     using MAUtils = MultiArrayUtils<dim>;
@@ -384,14 +386,16 @@ PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,
             B_proj_(row,col) = tmp;
         }
     }
-//    out << "Bernstein "<< dim <<"D mass matrix = " << Bernstein_mass_matrix << endl;
 
 
     inv_B_proj_ = B_proj_.inverse();
-//    out << "inverse of Bernstein "<< dim <<"D mass matrix = " << inverse_Bernstein_mass_matrix << endl;
     //------------------------------------
 
-
+    /*
+    LogStream out;
+    out << "Bernstein "<< dim <<"D mass matrix = " << B_proj_ << endl;
+    out << "inverse of Bernstein "<< dim <<"D mass matrix = " << inv_B_proj_ << endl;
+    //*/
 }
 
 
@@ -546,21 +550,56 @@ public:
             for (int i = dim-1 ; i >= 1 ; --i)
                 tensor_id_lambda_k[i] = tensor_id_lambda_k_1[i-1];
 
+            //---------------------
+            /*
+                        Real sum = 0.0;
+                        for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
+                        {
+                            const auto omega_B_theta = omega_B.get_function_view(ifn);
+
+                            Real sum_quad_pt = 0.0;
+
+                            for (int jpt = 0 ; jpt < n_quad ; ++jpt)
+                            {
+                                sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha_phi_beta[jpt];
+                            }
+
+                            tensor_id_lambda_k[0] = ifn;
+                            sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
+                        }
+                        //*/
+            //---------------------
+
+
+            //---------------------
+            const Real *w_B_theta_ptr = &omega_B.get_data()[0](0)[0];
             Real sum = 0.0;
             for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
             {
-                const auto omega_B_theta = omega_B.get_function_view(ifn);
+//                const auto omega_B_theta = omega_B.get_function_view(ifn);
 
                 Real sum_quad_pt = 0.0;
+
+                /*
                 for (int jpt = 0 ; jpt < n_quad ; ++jpt)
                 {
-//                    sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha[jpt](0) * phi_beta[jpt](0);
                     sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha_phi_beta[jpt];
+                }
+                //*/
+
+                const Real *phi_alpha_phi_beta_ptr = &phi_alpha_phi_beta[0];
+                for (int jpt = 0 ; jpt < n_quad ; ++jpt)
+                {
+                    sum_quad_pt += (*w_B_theta_ptr) * (*phi_alpha_phi_beta_ptr);
+                    w_B_theta_ptr++;
+                    phi_alpha_phi_beta_ptr++;
                 }
 
                 tensor_id_lambda_k[0] = ifn;
                 sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
             }
+            //*/
+            //---------------------
 
             value_entry_lambda_k_1 = sum;
 
@@ -570,7 +609,7 @@ public:
 
         IntegratorSumFacMass<dim,k-1> integrate;
 
-        return integrate(lambda_k_1,omega_B,phi,alpha_tensor_id,beta_tensor_id);
+        return integrate(lambda_k_1,w_B,phi,alpha_tensor_id,beta_tensor_id);
     };
 };
 
@@ -820,13 +859,20 @@ assemble()
         {
             bernst_tensor_id = MAUtils::flat_to_tensor_index(bernst_flat_id,bernst_tensor_weight_);
 
-            integral_rhs(bernst_flat_id) = (integrate_rhs(c,w_B_proj_1D,bernst_tensor_id)).get_data()[0];
+            integral_rhs(bernst_flat_id) =
+                (integrate_rhs(c,w_B_proj_1D,bernst_tensor_id)).get_data()[0];
         }
-//        out << "integral rhs = " << integral_rhs << endl;
 
         // coefficient of the rhs projection with the Bersntein basis
         k_rhs = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
-//        out << "k rhs = " << k_rhs << endl;
+        /*
+                auto x = boost::numeric::ublas::prod(B_proj_, k_rhs) ;
+
+                out << "k rhs = " << k_rhs << endl;
+                out << "integral rhs = " << integral_rhs << endl;
+                out << "x = " << x << endl;
+        //*/
+
         end_projection = Clock::now();
         elapsed_time_projection_ += end_projection - start_projection;
 
@@ -892,13 +938,17 @@ assemble()
         for (int i = 0; i < n_basis; ++i)
         {
             const auto phi_i = phi.get_function_view(i);
-            for (int j = 0; j < n_basis; ++j)
+            for (int j = i; j < n_basis; ++j)
             {
                 const auto phi_j = phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) += phi_i[qp](0) * phi_j[qp](0) * w_meas[qp];
             }
         }
+        for (int i = 0; i < n_basis; ++i)
+            for (int j = 0; j < i; ++j)
+                loc_mat(i,j) = loc_mat(j,i);
+
         end_assembly_mass_matrix_old = Clock::now();
         elapsed_time_assembly_mass_matrix_old_ += end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
         //*/
@@ -908,9 +958,9 @@ assemble()
         this->rhs->add_block(loc_dofs, loc_rhs);
         //*/
 
-        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl;
-        out<< "Local mass matrix original=" << loc_mat << endl;
-        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl;
+//        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
+//        out<< "Local mass matrix original=" << loc_mat << endl << endl;
+        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
@@ -939,7 +989,7 @@ int main()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_max = 3;
+    int degree_max = 8;
     for (int degree = 1 ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
@@ -955,23 +1005,23 @@ int main()
 //    PoissonProblemStandardIntegration<3> poisson_3d({n_knots, n_knots, n_knots}, space_deg);
 //    poisson_3d.run();
 
-
-        PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
-        poisson_1d_sf.run();
-//*/
         /*
-        PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
-        poisson_2d_sf.run();
+                PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
+                poisson_1d_sf.run();
         //*/
         /*
+                PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
+                poisson_2d_sf.run();
+                //*/
+
         PoissonProblemSumFactorization<3> poisson_3d_sf({n_knots,n_knots,n_knots}, space_deg, proj_deg);
         poisson_3d_sf.run();
         //*/
         elapsed_time_table.add_value("Space degree",space_deg);
         elapsed_time_table.add_value("Projection degree",proj_deg);
-        elapsed_time_table.add_value(time_proj,poisson_1d_sf.get_elapsed_time_projection());
-        elapsed_time_table.add_value(time_mass_sum_fac,poisson_1d_sf.get_elapsed_time_assembly_mass_matrix());
-        elapsed_time_table.add_value(time_mass_orig,poisson_1d_sf.get_elapsed_time_assembly_mass_matrix_old());
+        elapsed_time_table.add_value(time_proj,poisson_3d_sf.get_elapsed_time_projection());
+        elapsed_time_table.add_value(time_mass_sum_fac,poisson_3d_sf.get_elapsed_time_assembly_mass_matrix());
+        elapsed_time_table.add_value(time_mass_orig,poisson_3d_sf.get_elapsed_time_assembly_mass_matrix_old());
 
     }
 
