@@ -21,7 +21,7 @@
 # Compiler and compile flags
 macro(init_cxx_flags)
   # Initialize CXXFLAGS.
-  set(CMAKE_CXX_FLAGS                "-Wall -O0 -g")
+  set(CMAKE_CXX_FLAGS                "-Wall")
   set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g")
   set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
   set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG")
