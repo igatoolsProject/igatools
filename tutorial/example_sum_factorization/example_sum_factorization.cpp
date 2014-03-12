@@ -323,6 +323,7 @@ private:
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_;
 
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_old_;
+    chrono::duration<Real> elapsed_time_compute_I_;
 
     DenseMatrix eval_matrix_proj() const;
 
@@ -500,6 +501,10 @@ public:
 
 #define OPTIMIZED
 
+
+//int loops_counter = 0;
+//int flops_counter = 0;
+
 template <int dim,int k>
 class IntegratorSumFacMass
 {
@@ -532,10 +537,6 @@ public:
                ExcDimensionMismatch(tensor_size_I(1),tensor_size_lambda_k(0)));
         Assert(tensor_size_I(2)==tensor_size_lambda_k(0),
                ExcDimensionMismatch(tensor_size_I(2),tensor_size_lambda_k(0)));
-
-
-//        TensorIndex<k> tensor_id_lambda_k;
-//        TensorIndex<k-1> tensor_id_lambda_k_1;
 
 
         TensorIndex<3> tensor_id_I;
@@ -577,7 +578,13 @@ public:
 
         for (; lambda_k_1_ptr != lambda_k_1_ptr_end ; ++lambda_k_1_ptr)
             for (const Real *I_ptr = I_ptr_begin ; I_ptr != I_ptr_end ; ++I_ptr,++lambda_k_ptr)
+            {
+//              flops_counter++;
                 (*lambda_k_1_ptr) += (*lambda_k_ptr) * (*I_ptr);
+            }
+
+//        cout <<"dir=" << dir<< "       flops counter = " << flops_counter <<endl;
+//        loops_counter +=2 ;
 
 #endif
         IntegratorSumFacMass<dim,k-1> integrate;
@@ -638,7 +645,12 @@ public:
         const Real *lambda_1_ptr = &lambda_1.get_data()[0];
 
         for (const Real *I_ptr = I_ptr_begin ; I_ptr != I_ptr_end ; ++I_ptr,++lambda_1_ptr)
+        {
+//          flops_counter++;
             lambda_0 += (*lambda_1_ptr) * (*I_ptr);
+        }
+//      loops_counter += 1 ;
+//        cout <<"dir=" << dir<< "       flops counter = " << flops_counter <<endl;
 
 #endif
 
@@ -655,17 +667,18 @@ assemble()
 {
     using RefSpaceAccessor = typename base_t::RefSpace::ElementAccessor;
 
-
-    string filename;
-#ifndef OPTIMIZED
-    filename = "matrix_diff_orig.txt";
-#else
-    filename = "matrix_diff_optim.txt";
-#endif
-
-    ofstream out(filename);
     /*
-        LogStream out;
+        string filename;
+    #ifndef OPTIMIZED
+        filename = "matrix_diff_orig.txt";
+    #else
+        filename = "matrix_diff_optim.txt";
+    #endif
+
+        ofstream out(filename);
+        //*/
+
+    LogStream out;
     //*/
     using MAUtils = MultiArrayUtils<dim>;
 
@@ -851,13 +864,6 @@ assemble()
 
         // coefficient of the rhs projection with the Bersntein basis
         k_rhs = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
-        /*
-                auto x = boost::numeric::ublas::prod(B_proj_, k_rhs) ;
-
-                out << "k rhs = " << k_rhs << endl;
-                out << "integral rhs = " << integral_rhs << endl;
-                out << "x = " << x << endl;
-        //*/
 
         end_projection = Clock::now();
         elapsed_time_projection_ += end_projection - start_projection;
@@ -877,6 +883,8 @@ assemble()
 
         //----------------------------------------------------
         // precalculation of the I[i](lambda,mu1,mu2) terms
+        const auto start_compute_I = Clock::now();
+
         array<DynamicMultiArray<Real,3>,dim> I_container;
         for (int dir = 0 ; dir < dim ; ++dir)
         {
@@ -931,6 +939,8 @@ assemble()
 
                         //*/
         }
+        const auto end_compute_I = Clock::now();
+        elapsed_time_compute_I_ = end_compute_I - start_compute_I;
         //----------------------------------------------------
 
 
@@ -960,11 +970,14 @@ assemble()
 
             for (int beta_flat_id = alpha_flat_id ; beta_flat_id < n_basis ; ++beta_flat_id)
             {
-
                 TensorIndex<dim> beta_tensor_id =
                     MultiArrayUtils<dim>::flat_to_tensor_index(beta_flat_id,weight_basis);
 
+//              loops_counter = 0;
+//              flops_counter = 0;
                 loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = integrate(K,I_container,alpha_tensor_id,beta_tensor_id);
+//                cout <<"loops counter = " << loops_counter <<endl;
+//                cout <<"flops counter = " << flops_counter <<endl;
 
             }
         }
@@ -1015,7 +1028,7 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
@@ -1024,6 +1037,7 @@ assemble()
 
     out << "Dim=" << dim << "         space_deg=" << space_deg_ << "         proj_deg=" << proj_deg_ << endl;
     out << "Elapsed seconds projection           = " << elapsed_time_projection_.count() << endl;
+    out << "Elapsed seconds I computation        = " << elapsed_time_compute_I_.count() << endl;
     out << "Elapsed seconds assembly mass matrix = " << elapsed_time_assembly_mass_matrix_.count() << endl;
     out << "Elapsed seconds assembly mass matrix old = " << elapsed_time_assembly_mass_matrix_old_.count() << endl;
     out << endl;
@@ -1046,8 +1060,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 6;
-    int degree_max = 6;
+    int degree_min = 1;
+    int degree_max = 30;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
