@@ -498,6 +498,8 @@ public:
 };
 
 
+#define OPTIMIZED
+
 template <int dim,int k>
 class IntegratorSumFacMass
 {
@@ -506,11 +508,13 @@ public:
 
     Real
     operator()(const DynamicMultiArray<Real,k> &lambda_k,
+               const array<DynamicMultiArray<Real,3>,dim> &I_container,
                const array<ValueTable1D,dim> &w_B,
                const array<ValueTable1D,dim> &phi,
                const TensorIndex<dim> &alpha_tensor_id,
                const TensorIndex<dim> &beta_tensor_id)
     {
+#ifndef OPTIMIZED
         TensorSize<k> tensor_size_lambda_k = lambda_k.tensor_size();
 
         TensorSize<k-1> tensor_size_lambda_k_1;
@@ -520,7 +524,6 @@ public:
         DynamicMultiArray<Real,k-1> lambda_k_1(tensor_size_lambda_k_1);
 
         const int dir = dim-k;
-
         const auto &omega_B = w_B[dir];
 
         const Size n_bernst = omega_B.get_num_functions();
@@ -542,41 +545,41 @@ public:
         for (int jpt = 0 ; jpt < n_quad ; ++jpt)
             phi_alpha_phi_beta[jpt] = phi_alpha[jpt](0) * phi_beta[jpt](0);
 
-//        Index flat_id_entry_lambda_k_1 = 0;
+        Index flat_id_entry_lambda_k_1 = 0;
 
 
-        const Real *lambda_k_ptr = &lambda_k.get_data()[0];
+//        const Real *lambda_k_ptr = &lambda_k.get_data()[0];
 
         for (auto & value_entry_lambda_k_1 : lambda_k_1)
         {
-//            const auto tensor_id_lambda_k_1 = lambda_k_1.flat_to_tensor(flat_id_entry_lambda_k_1);
+            const auto tensor_id_lambda_k_1 = lambda_k_1.flat_to_tensor(flat_id_entry_lambda_k_1);
 
-//            for (int i = dim-1 ; i >= 1 ; --i)
-//                tensor_id_lambda_k[i] = tensor_id_lambda_k_1[i-1];
+            for (int i = dim-1 ; i >= 1 ; --i)
+                tensor_id_lambda_k[i] = tensor_id_lambda_k_1[i-1];
+
+            //---------------------
+
+            Real sum = 0.0;
+            for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
+            {
+                const auto omega_B_theta = omega_B.get_function_view(ifn);
+
+                Real sum_quad_pt = 0.0;
+
+                for (int jpt = 0 ; jpt < n_quad ; ++jpt)
+                {
+                    sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha_phi_beta[jpt];
+                }
+
+                tensor_id_lambda_k[0] = ifn;
+                sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
+            }
+            //*/
+            //---------------------
+
 
             //---------------------
             /*
-                        Real sum = 0.0;
-                        for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
-                        {
-                            const auto omega_B_theta = omega_B.get_function_view(ifn);
-
-                            Real sum_quad_pt = 0.0;
-
-                            for (int jpt = 0 ; jpt < n_quad ; ++jpt)
-                            {
-                                sum_quad_pt += omega_B_theta[jpt](0) * phi_alpha_phi_beta[jpt];
-                            }
-
-                            tensor_id_lambda_k[0] = ifn;
-                            sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
-                        }
-                        //*/
-            //---------------------
-
-
-            //---------------------
-//            const Real *lambda_k_ptr = lambda_k_ptr_begin;
             const Real *w_B_theta_ptr = &omega_B.get_data()[0](0)[0];
             Real sum = 0.0;
             for (int ifn = 0 ; ifn < n_bernst ; ++ifn)
@@ -591,8 +594,6 @@ public:
                     phi_alpha_phi_beta_ptr++;
                 }
 
-//                tensor_id_lambda_k[0] = ifn;
-//                sum += lambda_k(tensor_id_lambda_k) * sum_quad_pt;
                 sum += (*lambda_k_ptr) * sum_quad_pt;
                 lambda_k_ptr++;
             }
@@ -601,14 +602,67 @@ public:
 
             value_entry_lambda_k_1 = sum;
 
-//            flat_id_entry_lambda_k_1++;
-//            lambda_k_ptr_begin++;
+            flat_id_entry_lambda_k_1++;
         }
+#else
+        TensorSize<k> tensor_size_lambda_k = lambda_k.tensor_size();
 
+        TensorSize<k-1> tensor_size_lambda_k_1;
+        for (int i = 0 ; i < k-1 ; ++i)
+            tensor_size_lambda_k_1(i) = tensor_size_lambda_k(i);
+
+        DynamicMultiArray<Real,k-1> lambda_k_1(tensor_size_lambda_k_1);
+
+        const int dir = dim-k;
+
+        const auto &I = I_container[dir];
+
+
+        TensorSize<3> tensor_size_I = I.tensor_size();
+        const Size n_bernst_1D = tensor_size_I(0);
+
+        Assert(tensor_size_I(1)==tensor_size_lambda_k(0),
+               ExcDimensionMismatch(tensor_size_I(1),tensor_size_lambda_k(0)));
+        Assert(tensor_size_I(2)==tensor_size_lambda_k(0),
+               ExcDimensionMismatch(tensor_size_I(2),tensor_size_lambda_k(0)));
+
+
+
+        TensorIndex<k> tensor_id_lambda_k;
+        TensorIndex<k-1> tensor_id_lambda_k_1;
+
+        Index flat_id_lambda_k = 0;
+
+        TensorIndex<3> tensor_id_I;
+        tensor_id_I[1] = alpha_tensor_id[dir];
+        tensor_id_I[2] =  beta_tensor_id[dir];
+        tensor_id_I[0] = 0;
+
+        Index flat_id_I_begin = I.tensor_to_flat(tensor_id_I);
+
+        for (auto & value_entry_lambda_k_1 : lambda_k_1)
+        {
+            Real sum = 0.0;
+            for (int theta = 0 ; theta < n_bernst_1D ; ++theta)
+            {
+                /*
+                tensor_id_I[0] = theta;
+                sum += lambda_k(flat_id_lambda_k) * I(tensor_id_I);
+                //*/
+
+                const Index flat_id_I = flat_id_I_begin+theta;
+                sum += lambda_k(flat_id_lambda_k) * I(flat_id_I);
+
+                flat_id_lambda_k++;
+            }
+
+            value_entry_lambda_k_1 = sum;
+        }
+#endif
 
         IntegratorSumFacMass<dim,k-1> integrate;
 
-        return integrate(lambda_k_1,w_B,phi,alpha_tensor_id,beta_tensor_id);
+        return integrate(lambda_k_1,I_container,w_B,phi,alpha_tensor_id,beta_tensor_id);
     };
 };
 
@@ -620,18 +674,18 @@ public:
 
     Real
     operator()(const DynamicMultiArray<Real,1> &lambda_1,
+               const array<DynamicMultiArray<Real,3>,dim> &I_container,
                const array<ValueTable1D,dim> &w_B,
                const array<ValueTable1D,dim> phi,
                const TensorIndex<dim> &alpha_tensor_id,
                const TensorIndex<dim> &beta_tensor_id)
     {
-//        const Size size_lambda_1 = lambda_1.flat_size();
 
+#ifndef OPTIMIZED
         const int dir = dim-1;
 
         const auto &omega_B = w_B[dir];
 
-        const Size n_bernst = omega_B.get_num_functions();
         const Size n_quad = omega_B.get_num_points();
 
         Assert(n_bernst == lambda_1.flat_size(),
@@ -678,8 +732,35 @@ public:
             }
             lambda_0 += lambda_1_val * sum;
         }
+#else
+
+        const int dir = dim-1;
+
+        const auto &I = I_container[dir];
 
 
+        Assert(I.tensor_size()(1)==lambda_1.flat_size(),
+               ExcDimensionMismatch(I.tensor_size()(1),lambda_1.flat_size()));
+
+        Assert(I.tensor_size()(2)==lambda_1.flat_size(),
+               ExcDimensionMismatch(tI.tensor_size()(2),lambda_1.flat_size()));
+
+        TensorIndex<3> tensor_index_I;
+        tensor_index_I[1] = alpha_tensor_id[dir];
+        tensor_index_I[2] =  beta_tensor_id[dir];
+
+        Real lambda_0 = 0.0;
+
+        Index theta = 0;
+        for (auto & value_entry_lambda_1 : lambda_1)
+        {
+            tensor_index_I[0] = theta;
+
+            lambda_0 += value_entry_lambda_1 * I(tensor_index_I);
+
+            theta++;
+        }
+#endif
 
         return lambda_0;
     };
@@ -694,7 +775,7 @@ assemble()
 {
     using RefSpaceAccessor = typename base_t::RefSpace::ElementAccessor;
 
-    LogStream out ;
+    LogStream out;
 
     using MAUtils = MultiArrayUtils<dim>;
 
@@ -754,8 +835,6 @@ assemble()
 
     for (int i = 0 ; i < dim ; ++i)
     {
-        out <<endl;
-
         const Size n_pts = quad_proj_.get_num_points_direction()[i];
         w_B_proj_1D[i].resize(n_bernst_1D_,n_pts);
 
@@ -897,9 +976,77 @@ assemble()
         //----------------------------------------------------
 
 
+
+
         //----------------------------------------------------
         // Assembly of the local mass matrix using sum-factorization -- begin
         start_assembly_mass_matrix = Clock::now();
+
+
+
+
+        //----------------------------------------------------
+        // precalculation of the I[i](lambda,mu1,mu2) terms
+        array<DynamicMultiArray<Real,3>,dim> I_container;
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            TensorSize<3> tensor_size_I;
+            tensor_size_I[0] = n_bernst_1D_;
+            tensor_size_I[1] = n_basis_elem[dir];
+            tensor_size_I[2] = n_basis_elem[dir];
+
+            I_container[dir].resize(tensor_size_I);
+
+            auto &I = I_container[dir];
+
+            const auto &phi_dir = phi_1D[dir];
+
+            const auto &w_B_dir = w_B_proj_1D[dir];
+
+            const Size n_pts = n_quad_points[dir];
+//            LogStream out ;
+
+            vector<Real> phi_mu1_mu2(n_pts);
+
+            Index flat_id_I = 0 ;
+            for (int mu2 = 0 ; mu2 < n_basis_elem[dir] ; ++mu2)
+            {
+                const auto phi_1D_mu2 = phi_dir.get_function_view(mu2);
+
+                for (int mu1 = 0 ; mu1 < n_basis_elem[dir] ; ++mu1)
+                {
+                    const auto phi_1D_mu1 = phi_dir.get_function_view(mu1);
+
+                    for (int jpt = 0 ; jpt < n_pts ; ++jpt)
+                        phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0);
+
+                    for (int lambda = 0 ; lambda < n_bernst_1D_ ; ++lambda)
+                    {
+                        const auto w_B_lambda = w_B_dir.get_function_view(lambda);
+
+                        Real sum = 0.0;
+                        for (int jpt = 0 ; jpt < n_pts ; ++jpt)
+                            sum += w_B_lambda[jpt](0) * phi_mu1_mu2[jpt];
+
+                        I(flat_id_I++) = sum;
+                    }
+                }
+            }
+            /*
+                        out << "w_B[" << dir << "]=" << endl;
+                        w_B_proj_1D[dir].print_info(out);
+
+                        out << "phi[" << dir << "]=" << endl;
+                        phi_1D[dir].print_info(out);
+
+                        //*/
+        }
+        //----------------------------------------------------
+
+
+
+
+
         TensorSize<dim> k_tensor_size;
         for (int i = 0 ; i <dim ; ++i)
             k_tensor_size[i] = n_bernst_1D_;
@@ -927,7 +1074,7 @@ assemble()
                 TensorIndex<dim> beta_tensor_id =
                     MultiArrayUtils<dim>::flat_to_tensor_index(beta_flat_id,weight_basis);
 
-                loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = integrate(K,w_B_proj_1D,phi_1D,alpha_tensor_id,beta_tensor_id);
+                loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = integrate(K,I_container,w_B_proj_1D,phi_1D,alpha_tensor_id,beta_tensor_id);
 
             }
         }
@@ -997,7 +1144,9 @@ assemble()
 }
 
 
-int main()
+template <int dim>
+void
+do_test()
 {
     const int n_knots = 2;
 
@@ -1012,34 +1161,15 @@ int main()
     {
         const int space_deg = degree;
         const int  proj_deg = degree;
-        /*
-            PoissonProblemStandardIntegration<1> poisson_1d({n_knots}, space_deg);
-            poisson_1d.run();
-        //*/
 
-//    PoissonProblemStandardIntegration<2> poisson_2d({n_knots, n_knots}, space_deg);
-//    poisson_2d.run();
-
-//    PoissonProblemStandardIntegration<3> poisson_3d({n_knots, n_knots, n_knots}, space_deg);
-//    poisson_3d.run();
-
-        /*
-                PoissonProblemSumFactorization<1> poisson_1d_sf({n_knots}, space_deg, proj_deg);
-                poisson_1d_sf.run();
-        //*/
-        /*
-                PoissonProblemSumFactorization<2> poisson_2d_sf({n_knots,n_knots}, space_deg, proj_deg);
-                poisson_2d_sf.run();
-                //*/
-
-        PoissonProblemSumFactorization<3> poisson_3d_sf({n_knots,n_knots,n_knots}, space_deg, proj_deg);
-        poisson_3d_sf.run();
+        PoissonProblemSumFactorization<dim> poisson_sf(TensorSize<dim>(n_knots), space_deg, proj_deg);
+        poisson_sf.run();
         //*/
         elapsed_time_table.add_value("Space degree",space_deg);
         elapsed_time_table.add_value("Projection degree",proj_deg);
-        elapsed_time_table.add_value(time_proj,poisson_3d_sf.get_elapsed_time_projection());
-        elapsed_time_table.add_value(time_mass_sum_fac,poisson_3d_sf.get_elapsed_time_assembly_mass_matrix());
-        elapsed_time_table.add_value(time_mass_orig,poisson_3d_sf.get_elapsed_time_assembly_mass_matrix_old());
+        elapsed_time_table.add_value(time_proj,poisson_sf.get_elapsed_time_projection());
+        elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_assembly_mass_matrix());
+        elapsed_time_table.add_value(time_mass_orig,poisson_sf.get_elapsed_time_assembly_mass_matrix_old());
 
     }
 
@@ -1052,9 +1182,16 @@ int main()
     elapsed_time_table.set_precision(time_mass_orig,10);
     elapsed_time_table.set_scientific(time_mass_orig,true);
 
-    ofstream elapsed_time_file("sum_factorization_time_3D.txt");
+    ofstream elapsed_time_file("sum_factorization_time_"+to_string(dim)+"D.txt");
     elapsed_time_table.write_text(elapsed_time_file);
 
+}
+
+
+int main()
+{
+
+    do_test<3>();
 //*/
     return  0;
 }
