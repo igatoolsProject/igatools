@@ -438,6 +438,7 @@ private:
     };
 
 
+protected:
     /**
      * Base class for the cache of the element values and for the cache of the face values.
      */
@@ -538,6 +539,7 @@ private:
     };
     ///@}
 
+public:
     /**
      * For a given flags input argument identifies the face quantities and
      * returns a new ValueFlags variable containing only face quantities.

@@ -47,7 +47,7 @@ public:
 
     typedef NURBSElementAccessor<dim_domain,dim_range,rank> Self_t ;
 
-    typedef BSplineElementAccessor<dim_domain,dim_range,rank> Parent_t ;
+    using Parent_t = BSplineElementAccessor<dim_domain,dim_range,rank>;
 
     using BSplineElementAccessor< dim_domain, dim_range, rank >::n_faces;
 
@@ -158,31 +158,37 @@ private:
     using ValueRef_t = Values<dim_domain, dim_range, rank>;
 
     /**
-     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points.
+     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
      * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
     void
-    evaluate_nurbs_values(ValueTable<ValueRef_t> &D0_phi_hat) const ;
+    evaluate_nurbs_values(
+        const typename Parent_t::ValuesCache &bspline_cache,
+        ValueTable<ValueRef_t> &D0_phi_hat) const ;
 
     /**
-     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points.
+     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
      * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
     void
-    evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const ;
+    evaluate_nurbs_gradients(
+        const typename Parent_t::ValuesCache &bspline_cache,
+        ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const ;
 
     /**
      * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points.
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
      * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
     void
-    evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const ;
+    evaluate_nurbs_hessians(
+        const typename Parent_t::ValuesCache &bspline_cache,
+        ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const ;
 
 
 

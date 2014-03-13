@@ -157,7 +157,9 @@ get_face_flags(const ValueFlags fill_flag) const
 template <int dim_domain, int dim_range, int rank  >
 void
 NURBSElementAccessor< dim_domain, dim_range, rank >::
-evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_hat) const
+evaluate_nurbs_values(
+    const typename Parent_t::ValuesCache &bspline_cache,
+    ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_hat) const
 {
     Assert(elem_values_.is_initialized(),ExcNotInitialized());
     Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
@@ -309,7 +311,9 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
 template <int dim_domain, int dim_range, int rank  >
 void
 NURBSElementAccessor< dim_domain, dim_range, rank >::
-evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const
+evaluate_nurbs_gradients(
+    const typename Parent_t::ValuesCache &bspline_cache,
+    ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const
 {
     Assert(elem_values_.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
@@ -545,7 +549,9 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 template <int dim_domain, int dim_range, int rank  >
 void
 NURBSElementAccessor< dim_domain, dim_range, rank >::
-evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const
+evaluate_nurbs_hessians(
+    const typename Parent_t::ValuesCache &bspline_cache,
+    ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const
 {
     Assert(elem_values_.is_initialized(),ExcNotInitialized());
     Assert(D2_phi_hat.get_num_functions() == this->get_num_basis(),
@@ -858,16 +864,23 @@ fill_values()
 
     // fills the cache of the BSplineElementAccessor
     static_cast<Parent_t *>(this)->fill_values() ;
+    const auto &bspline_elem_cache = Parent_t::elem_values_;
 
 
     if (this->elem_values_.fill_values_)
-        evaluate_nurbs_values(this->elem_values_.D0phi_hat_) ;
+        evaluate_nurbs_values(
+            bspline_elem_cache,
+            this->elem_values_.D0phi_hat_) ;
 
     if (this->elem_values_.fill_gradients_)
-        evaluate_nurbs_gradients(this->elem_values_.D1phi_hat_) ;
+        evaluate_nurbs_gradients(
+            bspline_elem_cache,
+            this->elem_values_.D1phi_hat_) ;
 
     if (this->elem_values_.fill_hessians_)
-        evaluate_nurbs_hessians(this->elem_values_.D2phi_hat_) ;
+        evaluate_nurbs_hessians(
+            bspline_elem_cache,
+            this->elem_values_.D2phi_hat_) ;
 
 
     elem_values_.set_filled(true);
@@ -888,16 +901,23 @@ fill_face_values(const Index face_id)
 
     // fills the cache of the BSplineElementAccessor
     static_cast<Parent_t *>(this)->fill_face_values(face_id) ;
+    const auto &bspline_face_cache = Parent_t::face_values_[face_id];
 
 
     if (face_value.fill_values_)
-        evaluate_nurbs_values(face_value.D0phi_hat_) ;
+        evaluate_nurbs_values(
+            bspline_face_cache,
+            face_value.D0phi_hat_) ;
 
     if (face_value.fill_gradients_)
-        evaluate_nurbs_gradients(face_value.D1phi_hat_) ;
+        evaluate_nurbs_gradients(
+            bspline_face_cache,
+            face_value.D1phi_hat_) ;
 
     if (face_value.fill_hessians_)
-        evaluate_nurbs_hessians(face_value.D2phi_hat_) ;
+        evaluate_nurbs_hessians(
+            bspline_face_cache,
+            face_value.D2phi_hat_) ;
 
 
     face_value.set_filled(true);
