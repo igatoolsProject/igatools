@@ -69,7 +69,13 @@ create(const shared_ptr<GridType> grid,
     return (shared_ptr<base_t>(new self_t(grid, A,b)));
 }
 
-
+template<int dim_, int codim_>
+shared_ptr< Mapping<dim_,codim_> >
+LinearMapping<dim_, codim_>::
+clone() const
+{
+    return (shared_ptr<Mapping<dim_,codim_>>(new self_t(*this)));
+}
 
 template<int dim_, int codim_>
 ValueFlags
@@ -189,6 +195,14 @@ BallMapping<dim_>::
 create(const shared_ptr<GridType> grid) -> shared_ptr<base_t>
 {
     return (shared_ptr<base_t> (new self_t(grid)));
+}
+
+template<int dim_>
+shared_ptr< Mapping<dim_,0> >
+BallMapping<dim_>::
+clone() const
+{
+    return (shared_ptr<Mapping<dim_,0>>(new self_t(*this)));
 }
 
 
@@ -481,6 +495,15 @@ create(const shared_ptr<GridType> grid) -> shared_ptr<base_t>
 
 
 template<int dim_>
+shared_ptr< Mapping<dim_,1> >
+SphereMapping<dim_>::
+clone() const
+{
+    return (shared_ptr<Mapping<dim_,1>>(new self_t(*this)));
+}
+
+
+template<int dim_>
 ValueFlags
 SphereMapping<dim_>::required_flags() const
 {
@@ -752,7 +775,7 @@ CylindricalAnnulus::CylindricalAnnulus(
     const Real theta0,
     const Real theta1)
     :
-    Mapping<3,0>(CartesianGrid<dim>::create()),
+    AnalyticalMapping<3,0>(CartesianGrid<dim>::create()),
     r0_(r0),
     r1_(r1),
     h0_(h0),
@@ -947,7 +970,8 @@ evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) c
 
 
 auto
-CylindricalAnnulus::create(
+CylindricalAnnulus::
+create(
     const Real r0,
     const Real r1,
     const Real h0,
@@ -956,6 +980,14 @@ CylindricalAnnulus::create(
     const Real theta1) -> shared_ptr<base_t>
 {
     return (shared_ptr<base_t>(new self_t(r0, r1, h0, h1, theta0, theta1)));
+}
+
+
+shared_ptr< Mapping<3,0> >
+CylindricalAnnulus::
+clone() const
+{
+    return shared_ptr<Mapping<3,0>>(new self_t(*this));
 }
 
 IGA_NAMESPACE_CLOSE

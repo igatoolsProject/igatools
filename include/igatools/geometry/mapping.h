@@ -138,7 +138,7 @@ public:
     /**
      * Return a Mapping that is a deep copy of the caller object.
      */
-    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const;
+    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const = 0;
 
 
     /** @name Mapping as a standard function */
@@ -159,10 +159,12 @@ public:
     /** @name Virtual user functions to define the map */
     ///@{
     /**
-     * An element based mapping may require some initialization
+     * An element based mapping may require some initialization.
+     *
+     * @warning This function must be reimplemented by in every concrete child class of Mapping.
      */
     virtual void init_element(const ValueFlags flag,
-                              const Quadrature<dim> &quad);
+                              const Quadrature<dim> &quad) = 0;
 
     /**
      *

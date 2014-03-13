@@ -21,7 +21,7 @@
 #ifndef IDENTITY_MAPPING_H_
 #define IDENTITY_MAPPING_H_
 
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/analytical_mapping.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -36,11 +36,11 @@ IGA_NAMESPACE_OPEN
  * @note Do not use this map if you don't need to
  */
 template<int dim, int codim = 0>
-class IdentityMapping : public Mapping <dim, codim>
+class IdentityMapping : public AnalyticalMapping <dim, codim>
 {
 private:
     using self_t = IdentityMapping<dim, codim>;
-    using base_t = Mapping<dim, codim>;
+    using base_t = AnalyticalMapping<dim, codim>;
 
     using typename base_t::PointType;
     using typename base_t::ValueType;
@@ -85,7 +85,7 @@ public:
     /**
      * Return a Mapping that is a deep copy of the caller object.
      */
-    std::shared_ptr<base_t> clone() const;
+    virtual std::shared_ptr<Mapping<dim, codim>> clone() const;
 
     /**
      * Prints internal information about the mapping.

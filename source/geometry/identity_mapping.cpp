@@ -32,7 +32,7 @@ template<int dim, int codim>
 IdentityMapping< dim, codim>::
 IdentityMapping(const std::shared_ptr<GridType> grid)
     :
-    Mapping<dim, codim>(grid)
+    base_t(grid)
 {
     for (int i = 0; i < dim; ++i)
         A_[i][i] = 1.;
@@ -44,7 +44,7 @@ template<int dim, int codim>
 IdentityMapping< dim, codim>::
 IdentityMapping(const IdentityMapping<dim,codim> &map)
     :
-    Mapping<dim,codim>::Mapping(map)
+    base_t(map)
 {}
 
 
@@ -206,7 +206,7 @@ shared_ptr< Mapping< dim, codim> >
 IdentityMapping< dim, codim>::
 clone() const
 {
-    return shared_ptr<self_t>(new self_t(*this));
+    return shared_ptr<Mapping<dim,codim>>(new self_t(*this));
 }
 
 

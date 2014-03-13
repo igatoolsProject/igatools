@@ -86,6 +86,13 @@ public:
 
     void set_element(const CartesianGridElementAccessor<dim> &elem) ;
 
+
+    /**
+     * Return a Mapping that is a deep copy of the caller object.
+     */
+    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const override ;
+
+
     /**
      * Prints internal information about the mapping.
      * @note Mostly used for debugging and testing.

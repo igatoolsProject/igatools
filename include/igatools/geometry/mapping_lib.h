@@ -22,9 +22,11 @@
 #define MAPPING_LIB_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/analytical_mapping.h>
 
 IGA_NAMESPACE_OPEN
+
+
 
 /**
  * @brief Affine mapping from \f$\mathbb{R}^{dim}\f$ to \f$\mathbb{R}^{dim+codim}\f$.
@@ -37,10 +39,10 @@ IGA_NAMESPACE_OPEN
  * @todo Document more. Missing member documentation.
  */
 template<int dim_, int codim_>
-class LinearMapping : public Mapping <dim_, codim_>
+class LinearMapping : public AnalyticalMapping <dim_, codim_>
 {
 private:
-    using base_t = Mapping<dim_, codim_>;
+    using base_t = AnalyticalMapping<dim_, codim_>;
 
     using base_t::dim;
     using base_t::codim;
@@ -73,6 +75,8 @@ public:
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<GridType> grid,
            const GradientType &A, const ValueType &b);
+
+    virtual std::shared_ptr< Mapping<dim_,codim_> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -115,10 +119,10 @@ private:
  * @todo Missing documentation
  */
 template<int dim_>
-class BallMapping : public Mapping<dim_, 0>
+class BallMapping : public AnalyticalMapping<dim_, 0>
 {
 private:
-    using base_t = Mapping<dim_, 0>;
+    using base_t = AnalyticalMapping<dim_, 0>;
 
     using base_t::dim;
     using base_t::codim;
@@ -139,6 +143,8 @@ public:
 
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<GridType> grid);
+
+    virtual std::shared_ptr< Mapping<dim_,0> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -178,10 +184,10 @@ private:
  * @todo Missing documentation
  */
 template<int dim_>
-class SphereMapping : public Mapping<dim_, 1>
+class SphereMapping : public AnalyticalMapping<dim_, 1>
 {
 private:
-    using base_t = Mapping<dim_, 1>;
+    using base_t = AnalyticalMapping<dim_, 1>;
 
     using base_t::dim;
     using base_t::codim;
@@ -201,6 +207,8 @@ public:
     SphereMapping(const std::shared_ptr<GridType> grid, const Real R = 1.);
 
     static std::shared_ptr<base_t> create(const std::shared_ptr<GridType> grid);
+
+    virtual std::shared_ptr< Mapping<dim_,1> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -259,10 +267,10 @@ private:
  * \author M.Martinelli
  * \date 31 Jan 2013
  */
-class CylindricalAnnulus : public Mapping<3, 0>
+class CylindricalAnnulus : public AnalyticalMapping<3, 0>
 {
 private:
-    using base_t = Mapping<3, 0>;
+    using base_t = AnalyticalMapping<3, 0>;
 
     using base_t::dim;
     using base_t::codim;
@@ -304,6 +312,8 @@ public:
         const Real h1,
         const Real theta0,
         const Real theta1);
+
+    virtual std::shared_ptr< Mapping<3,0> > clone() const override final;
 
     ValueFlags required_flags() const;
 
