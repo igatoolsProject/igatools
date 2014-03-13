@@ -64,11 +64,24 @@ init_values(const ValueFlags fill_flag,
         fill_flag_bspline |= ValueFlags::value ;
     }
 
+    if (contains(fill_flag, ValueFlags::face_value))
+    {
+        max_der_order=std::max(max_der_order,0);
+        fill_flag_bspline |= ValueFlags::face_value ;
+    }
+
     if (contains(fill_flag, ValueFlags::gradient))
     {
         max_der_order=std::max(max_der_order,1);
         fill_flag_bspline |= ValueFlags::value |
                              ValueFlags::gradient ;
+    }
+
+    if (contains(fill_flag, ValueFlags::face_gradient))
+    {
+        max_der_order=std::max(max_der_order,1);
+        fill_flag_bspline |= ValueFlags::face_value |
+                             ValueFlags::face_gradient ;
     }
 
     if (contains(fill_flag, ValueFlags::hessian))
@@ -77,6 +90,14 @@ init_values(const ValueFlags fill_flag,
         fill_flag_bspline |= ValueFlags::value |
                              ValueFlags::gradient |
                              ValueFlags::hessian ;
+    }
+
+    if (contains(fill_flag, ValueFlags::face_hessian))
+    {
+        max_der_order=std::max(max_der_order,2);
+        fill_flag_bspline |= ValueFlags::face_value |
+                             ValueFlags::face_gradient |
+                             ValueFlags::face_hessian ;
     }
 
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
@@ -175,7 +196,8 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
         */
 
         //----------------------------------------------------------------------------------------------
-        const auto bspline_values = Parent_t::get_basis_values() ;
+        const auto &bspline_cache = Parent_t::elem_values_;
+        const auto &bspline_values = bspline_cache.get_values() ;
         //----------------------------------------------------------------------------------------------
 
         if (space_->homogeneous_range_ == false)
@@ -303,7 +325,6 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
         typedef Real ValueRange1_t ;
         typedef array<Real,dim_domain> GradientRange1_t ;
 
-        typedef DerivativeRef_t<1> Gradient_t ;
 
         const vector< Real > &weights = this->get_weights() ;
 
@@ -337,8 +358,9 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
          */
 
         //----------------------------------------------------------------------------------------------
-        const auto bspline_values = Parent_t::get_basis_values() ;
-        const ValueTable< Gradient_t > bspline_gradients = Parent_t::get_basis_gradients() ;
+        const auto &bspline_cache = Parent_t::elem_values_;
+        const auto &bspline_values = bspline_cache.get_values() ;
+        const auto &bspline_gradients = bspline_cache.get_gradients() ;
         //----------------------------------------------------------------------------------------------
 
 
@@ -540,8 +562,6 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
         typedef array<Real,dim_domain> GradientRange1_t ;
         typedef array<array<Real,dim_domain>,dim_domain> HessianRange1_t ;
 
-        typedef DerivativeRef_t<1> Gradient_t ;
-        typedef DerivativeRef_t<2> Hessian_t ;
 
         const vector< Real > &weights = this->get_weights() ;
 
@@ -585,9 +605,10 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
          //*/
 
         //----------------------------------------------------------------------------------------------
-        const auto bspline_values = Parent_t::get_basis_values() ;
-        const ValueTable< Gradient_t > bspline_gradients = Parent_t::get_basis_gradients() ;
-        const ValueTable< Hessian_t > bspline_hessians = Parent_t::get_basis_hessians() ;
+        const auto &bspline_cache = Parent_t::elem_values_;
+        const auto &bspline_values = bspline_cache.get_values() ;
+        const auto &bspline_gradients = bspline_cache.get_gradients() ;
+        const auto &bspline_hessians = bspline_cache.get_hessians() ;
         //----------------------------------------------------------------------------------------------
 
 

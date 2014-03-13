@@ -452,6 +452,30 @@ private:
                    const StaticMultiArray<TensorSize<dim_domain>,dim_range,rank> &n_basis_direction,
                    const TensorSize<dim_domain> &n_points_direction);
 
+        const ValueTable<Value> &get_values() const
+        {
+            return phi_hat_;
+        }
+
+        const ValueTable<Derivative<1>> &get_gradients() const
+        {
+            return D1phi_hat_;
+        }
+
+        const ValueTable<Derivative<2>> &get_hessians() const
+        {
+            return D2phi_hat_;
+        }
+
+
+        const ValueTable<Div> &get_divergences() const
+        {
+            return div_phi_hat_;
+        }
+
+        //TODO: the member variables should be private
+    public:
+
         ValueTable<Value> phi_hat_;
 
         //TODO (Sep 16, 2013, pauletti): D0phi_hat_ must be removed
@@ -625,6 +649,7 @@ private:
 
     std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
 
+protected:
     /**
      * Element cache to store the values and derivatives
      * of the B-spline basis functions
@@ -637,6 +662,7 @@ private:
      */
     std::array<FaceValuesCache, n_faces> face_values_;
 
+private:
     /**
      * Space for which the BSplineElementAccessor refers to.
      */

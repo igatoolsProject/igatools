@@ -348,6 +348,7 @@ init_values(const ValueFlags fill_flag,
         f_flag |= ValueFlags::gradient;
 
     int max_der_order = -1;
+
     if (contains(f_flag, ValueFlags::value))
         max_der_order=std::max(max_der_order,0);
 
