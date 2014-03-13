@@ -161,7 +161,7 @@ evaluate_nurbs_values(
     const typename Parent_t::ValuesCache &bspline_cache,
     ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_hat) const
 {
-    Assert(elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D0_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -198,7 +198,6 @@ evaluate_nurbs_values(
         */
 
         //----------------------------------------------------------------------------------------------
-        const auto &bspline_cache = Parent_t::elem_values_;
         const auto &bspline_values = bspline_cache.get_values() ;
         //----------------------------------------------------------------------------------------------
 
@@ -315,7 +314,7 @@ evaluate_nurbs_gradients(
     const typename Parent_t::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const
 {
-    Assert(elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D1_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -362,7 +361,6 @@ evaluate_nurbs_gradients(
          */
 
         //----------------------------------------------------------------------------------------------
-        const auto &bspline_cache = Parent_t::elem_values_;
         const auto &bspline_values = bspline_cache.get_values() ;
         const auto &bspline_gradients = bspline_cache.get_gradients() ;
         //----------------------------------------------------------------------------------------------
@@ -553,7 +551,7 @@ evaluate_nurbs_hessians(
     const typename Parent_t::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const
 {
-    Assert(elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D2_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D2_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -611,7 +609,6 @@ evaluate_nurbs_hessians(
          //*/
 
         //----------------------------------------------------------------------------------------------
-        const auto &bspline_cache = Parent_t::elem_values_;
         const auto &bspline_values = bspline_cache.get_values() ;
         const auto &bspline_gradients = bspline_cache.get_gradients() ;
         const auto &bspline_hessians = bspline_cache.get_hessians() ;

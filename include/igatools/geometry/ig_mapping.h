@@ -37,6 +37,7 @@ private:
 
     using base_t::dim;
     using base_t::codim;
+    using base_t::face_dim;
     using base_t::space_dim;
 
     using typename base_t::PointType;

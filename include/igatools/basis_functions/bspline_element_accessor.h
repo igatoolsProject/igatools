@@ -382,8 +382,8 @@ public:
      *
      * @see get_local_coefs
      */
-    ValueVector<Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+    ValueVector<Derivative<1>>
+                            evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
 
     /**
      * Vector with the evaluation of the hessians of the field @p local_coefs

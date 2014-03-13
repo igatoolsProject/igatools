@@ -469,7 +469,9 @@ fill_face_values(const Index face_id)
         mapping_->evaluate_face(face_id, face_value.values_);
 
     if (face_value.fill_gradients_)
+    {
         mapping_->evaluate_face_gradients(face_id, face_value.gradients_);
+    }
 
     if (face_value.fill_hessians_)
         mapping_->evaluate_face_hessians(face_id, face_value.hessians_);
@@ -504,17 +506,25 @@ fill_face_values(const Index face_id)
     if (face_value.fill_dets_ ||
         face_value.fill_w_measures_)
     {
+        LogStream out;
+        using std::endl;
 //    TODO: to be solved
-//        for (Index i = 0; i < num_points; i++)
+        for (Index i = 0; i < num_points; i++)
+        {
+            out << "face_value.gradients_["<<i<<"]="<<face_value.gradients_[i] << endl;
 //            face_value.dets_[i] =
 //                determinant<dim,space_dim>(face_value.gradients_[i]);
-
+        }
 
         if (face_value.fill_w_measures_)
         {
             const ValueVector<Real> &dets_map = face_value.dets_ ;
+            out <<"dets_map="<<endl;
+            dets_map.print_info(out);
             auto weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
-
+            out <<"weights="<<endl;
+            weights.print_info(out);
+            Assert(false,ExcNotImplemented())
             for (Index i = 0; i < num_points; i++)
                 face_value.w_measures_[i] = dets_map[i] * weights[i] ;
         }

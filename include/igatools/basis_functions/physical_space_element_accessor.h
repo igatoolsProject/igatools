@@ -280,6 +280,10 @@ public :
 
     const ValueVector<Real> &get_w_measures() const;
 
+    /**
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of the face map at the dilated quadrature points.
+     */
     const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
 
 

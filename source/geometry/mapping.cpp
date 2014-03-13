@@ -63,6 +63,7 @@ void
 Mapping<dim_, codim_>::
 evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
+    Assert(false,ExcNotImplemented()) ;
     Assert(false, ExcNotImplemented());
 }
 
@@ -73,6 +74,7 @@ void
 Mapping<dim_,codim_>::
 evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
 {
+    Assert(false,ExcNotImplemented()) ;
     Assert(false, ExcNotImplemented());
 }
 
@@ -83,6 +85,7 @@ void
 Mapping<dim_,codim_>::
 evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
 {
+    Assert(false,ExcNotImplemented()) ;
     Assert(false, ExcNotImplemented());
 }
 
