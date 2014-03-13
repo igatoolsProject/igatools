@@ -532,6 +532,8 @@ fill_face_values(const Index face_id)
 
     if (face_value.fill_normals_)
     {
+        Assert(false, ExcMessage("The computation of face normals must be tested before used."));
+        AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
         Point<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id] ;
         for (Index i = 0; i < num_points; i++)
