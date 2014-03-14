@@ -30,9 +30,11 @@ for include in include_files:
 file_output.write('IGA_NAMESPACE_OPEN\n')
 mappings = ['MappingElementAccessor<%d, %d>' %(x.dim, x.codim) for x in inst.mapping_dims]
 mappings = mappings + ['MappingElementAccessor<0, 0>'] #todo use porper ref to phys dims
-for row in mappings:
-    file_output.write('template class %s; \n' % (row))
-    file_output.write('template class GridForwardIterator<%s>; \n'% (row))
+for map in mappings:
+    file_output.write('template class %s; \n' % (map))
+    file_output.write('template class GridForwardIterator<%s>; \n'% (map))
+    file_output.write('template class %s::ValuesCache<0>; \n' %(map))
+    file_output.write('template class %s::ValuesCache<1>; \n' %(map))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
 file_output.close()

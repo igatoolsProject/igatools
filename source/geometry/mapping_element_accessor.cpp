@@ -22,7 +22,6 @@
 #include <igatools/geometry/mapping_element_accessor.h>
 
 #include <igatools/base/exceptions.h>
-#include <igatools/base/value_flags_handler.h>
 #include <igatools/geometry/unit_element.h>
 
 
@@ -43,23 +42,18 @@ MappingElementAccessor(Mapping<dim,codim> &mapping, const int index)
 }
 
 
-
 template< int dim_ref_, int codim_ >
+template< int cache_codim >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-ElementValuesCache::
-reset(const ValueFlags fill_flag,
+ValuesCache<cache_codim>::
+reset(const MappingValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
     this->quad_ = quad;
     this->num_points_ = this->quad_.get_num_points();
 
-    Assert(contains(fill_flag, ValueFlags::none),
-           ExcMessage("nothing to reset"));
-
-    MappingValueFlagsHandler flag_handler(fill_flag);
-
-    if (flag_handler.fill_values())
+    if (flags_handler.fill_values())
     {
         this->fill_values_ = true ;
         if (this->values_.size() != this->num_points_)
@@ -73,7 +67,7 @@ reset(const ValueFlags fill_flag,
         this->values_.clear();
     }
 
-    if (flag_handler.fill_gradients())
+    if (flags_handler.fill_gradients())
     {
         this->fill_gradients_ = true ;
         if (this->gradients_.size() != this->num_points_)
@@ -87,7 +81,7 @@ reset(const ValueFlags fill_flag,
         this->gradients_.clear();
     }
 
-    if (flag_handler.fill_hessians())
+    if (flags_handler.fill_hessians())
     {
         this->fill_hessians_ = true ;
         if (this->hessians_.size() != this->num_points_)
@@ -101,7 +95,7 @@ reset(const ValueFlags fill_flag,
         this->hessians_.clear();
     }
 
-    if (flag_handler.fill_inv_gradients())
+    if (flags_handler.fill_inv_gradients())
     {
         this->fill_inv_gradients_ = true ;
         if (this->inv_gradients_.size() != this->num_points_)
@@ -115,7 +109,7 @@ reset(const ValueFlags fill_flag,
         this->inv_gradients_.clear();
     }
 
-    if (flag_handler.fill_inv_hessians())
+    if (flags_handler.fill_inv_hessians())
     {
         this->fill_inv_hessians_ = true ;
         if (this->inv_hessians_.size() != this->num_points_)
@@ -129,7 +123,7 @@ reset(const ValueFlags fill_flag,
         this->inv_hessians_.clear();
     }
 
-    if (flag_handler.fill_measures())
+    if (flags_handler.fill_measures())
     {
         Assert(this->fill_gradients_, ExcNotInitialized());
         this->fill_measures_ = true ;
@@ -145,7 +139,7 @@ reset(const ValueFlags fill_flag,
     }
 
 
-    if (flag_handler.fill_w_measures())
+    if (flags_handler.fill_w_measures())
     {
         Assert(this->fill_measures_, ExcNotInitialized());
         this->fill_w_measures_ = true ;
@@ -159,6 +153,21 @@ reset(const ValueFlags fill_flag,
         this->fill_w_measures_ = false ;
         this->w_measures_.clear();
     }
+}
+
+template< int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+ElementValuesCache::
+reset(const ValueFlags fill_flag,
+      const Quadrature<dim> &quad)
+{
+
+    Assert(contains(fill_flag, ValueFlags::none),
+           ExcMessage("nothing to reset"));
+
+    MappingValueFlagsHandler flag_handler(fill_flag);
+    ValuesCache<0>::reset(flag_handler,quad);
 
     this->set_initialized(true);
 }
@@ -175,116 +184,13 @@ reset(const Index face_id,
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    this->quad_ = quad.collapse_to_face(face_id);
-    this->num_points_ = this->quad_.get_num_points();
-
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("nothing to reset"));
 
+    MappingFaceValueFlagsHandler flags_handler(fill_flag);
+    ValuesCache<1>::reset(flags_handler,quad.collapse_to_face(face_id));
 
-    if (contains(fill_flag, ValueFlags::face_point) ||
-        contains(fill_flag, ValueFlags::map_face_value))
-    {
-        this->fill_values_ = true ;
-        if (this->values_.size() != this->num_points_)
-            this->values_.resize(this->num_points_);
-
-        this->values_.zero();
-    }
-    else
-    {
-        this->fill_values_ = false ;
-        this->values_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::map_face_gradient))
-    {
-        this->fill_gradients_ = true ;
-        if (this->gradients_.size() != this->num_points_)
-            this->gradients_.resize(this->num_points_);
-
-        this->gradients_.zero();
-    }
-    else
-    {
-        this->fill_gradients_ = false ;
-        this->gradients_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::map_face_hessian))
-    {
-        this->fill_hessians_ = true ;
-        if (this->hessians_.size() != this->num_points_)
-            this->hessians_.resize(this->num_points_);
-
-        this->hessians_.zero();
-    }
-    else
-    {
-        this->fill_hessians_ = false ;
-        this->hessians_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::map_face_inv_gradient))
-    {
-        this->fill_inv_gradients_ = true ;
-        if (this->inv_gradients_.size() != this->num_points_)
-            this->inv_gradients_.resize(this->num_points_);
-
-        this->inv_gradients_.zero();
-    }
-    else
-    {
-        this->fill_inv_gradients_ = false ;
-        this->inv_gradients_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::map_face_inv_hessian))
-    {
-        this->fill_inv_hessians_ = true ;
-        if (this->inv_hessians_.size() != this->num_points_)
-            this->inv_hessians_.resize(this->num_points_);
-
-        this->inv_hessians_.zero();
-    }
-    else
-    {
-        this->fill_inv_hessians_ = false ;
-        this->inv_hessians_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::face_measure))
-    {
-        Assert(this->fill_gradients_, ExcNotInitialized());
-        this->fill_measures_ = true ;
-        if (this->measures_.size() != this->num_points_)
-            this->measures_.resize(this->num_points_);
-
-        this->measures_.zero();
-    }
-    else
-    {
-        this->fill_measures_ = false ;
-        this->measures_.clear();
-    }
-
-
-    if (contains(fill_flag, ValueFlags::face_w_measure))
-    {
-        Assert(this->fill_measures_, ExcNotInitialized());
-        this->fill_w_measures_ = true ;
-        if (this->w_measures_.size() != this->num_points_)
-            this->w_measures_.resize(this->num_points_);
-
-        this->w_measures_.zero();
-    }
-    else
-    {
-        this->fill_w_measures_ = false ;
-        this->w_measures_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::face_normal))
+    if (flags_handler.fill_normals())
     {
         fill_normals_ = true ;
         if (normals_.size() != this->num_points_)

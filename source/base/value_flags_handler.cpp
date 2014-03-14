@@ -165,7 +165,7 @@ MappingValueFlagsHandler(const ValueFlags &flags)
         fill_none_ = false;
     }
 
-    Assert(fill_none_ == false,ExcMessage("Nothing to be filled."))
+//    Assert(fill_none_ == false,ExcMessage("Nothing to be filled."))
 }
 
 
@@ -189,7 +189,83 @@ fill_inv_hessians() const
 
 
 
+//====================================================
+MappingFaceValueFlagsHandler::
+MappingFaceValueFlagsHandler()
+    :
+    MappingValueFlagsHandler(),
+    fill_normals_(false)
+{}
 
+
+MappingFaceValueFlagsHandler::
+MappingFaceValueFlagsHandler(const ValueFlags &flags)
+{
+    if (contains(flags, ValueFlags::face_point) ||
+        contains(flags, ValueFlags::map_face_value))
+    {
+        fill_points_ = true;
+        fill_values_ = true;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::map_face_gradient))
+    {
+        fill_gradients_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::map_face_hessian))
+    {
+        fill_hessians_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::map_face_inv_gradient))
+    {
+        fill_inv_gradients_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::map_face_inv_hessian))
+    {
+        fill_inv_hessians_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::face_measure))
+    {
+        Assert(fill_gradients_, ExcNotInitialized());
+        fill_measures_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::face_w_measure))
+    {
+        Assert(fill_measures_, ExcNotInitialized());
+        fill_w_measures_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::face_normal))
+    {
+        Assert(fill_normals_, ExcNotInitialized());
+        fill_normals_ = true ;
+        fill_none_ = false;
+    }
+
+//    Assert(fill_none_ == false,ExcMessage("Nothing to be filled."))
+}
+
+
+
+bool
+MappingFaceValueFlagsHandler::
+fill_normals() const
+{
+    return fill_normals_;
+}
+//====================================================
 
 
 

@@ -88,6 +88,19 @@ protected:
 
 
 
+/**
+ * This is an helper class that is intended to be used as a filter for the flags that
+ * refers to a grid-like element accessor.
+ *
+ * The enum class ValueFlags is a bitmask that implements a lot of different flags,
+ * also referring to different concepts, and is therefore difficult to manage.
+ * This is why this class is useful: the unique constructor take as input argument a ValueFlags
+ * entry and filters the values that have valid meaning for a grid-like element accessor,
+ * setting the corresponding boolean entries properly.
+ *
+ * @author M. Martinelli
+ * @date 14 Mar 2014
+ */
 class GridElemValueFlagsHandler
 {
 public:
@@ -97,7 +110,8 @@ public:
     GridElemValueFlagsHandler();
 
     /**
-     * Constructor. Transforms the value flags for the mapping in the correspondent booleans
+     * Constructor. Transforms the value flags for grid-like element accessor in
+     * the correspondent booleans
      * that specify the quantities that must be computed/filled.
      */
     GridElemValueFlagsHandler(const ValueFlags &flags);
@@ -146,6 +160,19 @@ protected:
 
 
 
+/**
+ * This is an helper class that is intended to be used as a filter for the flags that
+ * refers to the mapping on the element.
+ *
+ * The enum class ValueFlags is a bitmask that implements a lot of different flags,
+ * also referring to different concepts, and is therefore difficult to manage.
+ * This is why this class is useful: the unique constructor take as input argument a ValueFlags
+ * entry and filters the values that have valid meaning for the mapping on the element, setting the
+ * corresponding boolean entries properly.
+ *
+ * @author M. Martinelli
+ * @date 14 Mar 2014
+ */
 class MappingValueFlagsHandler :
     public ValueFlagsHandler,
     public GridElemValueFlagsHandler
@@ -194,6 +221,67 @@ protected:
     bool fill_inv_gradients_ = false;
 
     bool fill_inv_hessians_ = false;
+};
+
+
+
+/**
+ * This is an helper class that is intended to be used as a filter for the flags that
+ * refers to the face of a mapping.
+ *
+ * The enum class ValueFlags is a bitmask that implements a lot of different flags,
+ * also referring to different concepts, and is therefore difficult to manage.
+ * This is why this class is useful: the unique constructor take as input argument a ValueFlags
+ * entry and filters the values that have valid meaning for the face of a mapping, setting the
+ * corresponding boolean entries properly.
+ *
+ * @author M. Martinelli
+ * @date 14 Mar 2014
+ */
+class MappingFaceValueFlagsHandler :
+    public MappingValueFlagsHandler
+{
+public:
+    /** @name Constructors */
+    ///@{
+    /** Default constructor. Sets all boolean flags to false. */
+    MappingFaceValueFlagsHandler();
+
+    /**
+     * Constructor. Transforms the value flags for the mapping face
+     * in the correspondent booleans
+     * that specify the quantities that must be computed/filled.
+     */
+    MappingFaceValueFlagsHandler(const ValueFlags &flags);
+
+    /** Copy constructor. */
+    MappingFaceValueFlagsHandler(const MappingFaceValueFlagsHandler &in) = default;
+
+    /** Move constructor. */
+    MappingFaceValueFlagsHandler(MappingFaceValueFlagsHandler &&in) = default;
+
+
+    /** Destructor. */
+    ~MappingFaceValueFlagsHandler() = default;
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    MappingFaceValueFlagsHandler &operator=(const MappingFaceValueFlagsHandler &in) = default;
+
+
+    /** Move assignment operator. */
+    MappingFaceValueFlagsHandler &operator=(MappingFaceValueFlagsHandler &&in) = default;
+    ///@}
+
+
+    /** Returns true if the gradients inverse must be filled. */
+    bool fill_normals() const;
+
+protected:
+    bool fill_normals_ = false;
 };
 
 
