@@ -323,6 +323,15 @@ private:
         void reset(const MappingValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
+        /**
+         * Fills the cache in accordance with the flag specifications used in the
+         * reset() function.
+         *
+         * Precondition Before invoking this function, you must call reset().
+         */
+        void fill_values();
+
+
         using Grad = Conditional< (cache_codim == 0), GradientMap, GradientFaceMap>;
         using Hess = Conditional< (cache_codim == 0), HessianMap, HessianFaceMap>;
 

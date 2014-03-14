@@ -155,6 +155,20 @@ reset(const MappingValueFlagsHandler &flags_handler,
     }
 }
 
+
+template< int dim_ref_, int codim_ >
+template< int cache_codim >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+ValuesCache<cache_codim>::
+fill_values()
+{
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+
+
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
