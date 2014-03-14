@@ -156,8 +156,14 @@ public:
      * boundary of the cartesian grid.
      */
     bool is_boundary(const Index face_id) const;
-
     ///@}
+
+    /**
+     * Prints internal information about the CartesianGridElement.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
+
 
 private:
 

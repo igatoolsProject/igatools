@@ -116,14 +116,15 @@ public:
     /** Default constructor. Not allowed to be used. */
     Mapping() = delete;
 
-    /** Constructs map over grid */
+    /** Constructs map over grid. */
     Mapping(const std::shared_ptr<GridType> grid);
 
     /** Destructor */
     virtual ~Mapping();
 
     /**
-     * Copy constructor.
+     * Copy constructor. The new object has a deep copy (i.e. a new instance) of the
+     * grid held by the copied object @p map.
      */
     Mapping(const Mapping<dim_,codim_> &map);
     ///@}
@@ -166,15 +167,15 @@ public:
     virtual void init_element(const ValueFlags flag,
                               const Quadrature<dim> &quad) = 0;
 
+    virtual void set_element(const CartesianGridElementAccessor<dim> &elem) = 0;
+
     /**
      *
      * @todo evaluate if index should be flat index, tensor index, and
      * or GridElement iterator
      */
-    virtual void set_element(const CartesianGridElementAccessor<dim> &elem);
-
     virtual void set_face_element(const Index face_id,
-                                  const CartesianGridElementAccessor<dim> &elem);
+                                  const CartesianGridElementAccessor<dim> &elem) = 0;
 
 
     virtual std::vector<ValueType> values() const;

@@ -138,7 +138,7 @@ Mapping<dim_,codim_>::clone() const -> shared_ptr<Mapping<dim_,codim_>>
 }
 //*/
 
-
+/*
 template<int dim_, int codim_>
 inline
 void
@@ -148,9 +148,9 @@ set_element(const CartesianGridElementAccessor<dim> &elem)
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
 }
+//*/
 
-
-
+/*
 template<int dim_, int codim_>
 inline
 void
@@ -161,7 +161,7 @@ set_face_element(const Index face_id,
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
 }
-
+//*/
 
 /*
 template<int dim_, int codim_>

@@ -82,15 +82,17 @@ public:
 
     void evaluate_gradients(std::vector<GradientType> &gradients) const override;
 
-    void init_element(const ValueFlags flag, const Quadrature<dim> &quad);
+    void init_element(const ValueFlags flag, const Quadrature<dim> &quad) override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) ;
+    void set_element(const CartesianGridElementAccessor<dim> &elem) override ;
 
+    void set_face_element(const Index face_id,
+                          const CartesianGridElementAccessor<dim> &elem) override;
 
     /**
      * Return a Mapping that is a deep copy of the caller object.
      */
-    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const override ;
+    std::shared_ptr<Mapping<dim_,codim_>> clone() const override ;
 
 
     /**

@@ -145,6 +145,17 @@ set_element(const CartesianGridElementAccessor<dim> &elem)
 }
 
 
+template<int dim_, int codim_>
+void
+MappingSlice<dim_,codim_>::
+set_face_element(const Index face_id,
+                 const CartesianGridElementAccessor<dim> &elem)
+{
+    Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
+}
+//*/
+
 
 template<int dim_, int codim_>
 void

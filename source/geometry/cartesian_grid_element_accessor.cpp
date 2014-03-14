@@ -429,6 +429,10 @@ reset(const Quadrature<dim_-1> &quad1, const Index face_id)
     Assert(false, ExcNotImplemented());
 }
 
+
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/cartesian_grid_element_accessor.inst>
