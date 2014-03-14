@@ -367,6 +367,7 @@ init_face_values(const Index face_id,
                  const Quadrature<dim-1> &quad)
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -512,8 +513,19 @@ fill_face_values(const Index face_id)
         for (Index i = 0; i < num_points; i++)
         {
             out << "face_value.gradients_["<<i<<"]="<<face_value.gradients_[i] << endl;
+            out << "face_value.dets_["<<i<<"]="<<face_value.dets_[i] << endl;
+            face_value.dets_[i] =
+                determinant<UnitElement<dim>::face_dim,space_dim>(face_value.gradients_[i]);
+//            out << "face_value.inv_gradients_["<<i<<"]="<<face_value.inv_gradients_[i] << endl;
+
 //            face_value.dets_[i] =
-//                determinant<dim,space_dim>(face_value.gradients_[i]);
+//                inverse<UnitElement<dim>::face_dim,space_dim>(
+//                      face_value.gradients_[i],face_value.inv_gradients_[i]);
+
+            out << "face_value.dets_["<<i<<"]="<<face_value.dets_[i] << endl;
+            Assert(false,ExcNotImplemented())
+            AssertThrow(false,ExcNotImplemented())
+
         }
 
         if (face_value.fill_w_measures_)
@@ -525,6 +537,7 @@ fill_face_values(const Index face_id)
             out <<"weights="<<endl;
             weights.print_info(out);
             Assert(false,ExcNotImplemented())
+            AssertThrow(false,ExcNotImplemented())
             for (Index i = 0; i < num_points; i++)
                 face_value.w_measures_[i] = dets_map[i] * weights[i] ;
         }
