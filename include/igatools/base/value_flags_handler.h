@@ -28,12 +28,17 @@
 IGA_NAMESPACE_OPEN
 
 
+
+
 class ValueFlagsHandler
 {
 public:
     /** @name Constructors */
     ///@{
-    /** Default constructor. Sets all boolean flags to false. */
+    /**
+     * Default constructor. Sets all boolean flags to false
+     * (except fill_none_ that is set to true).
+     */
     ValueFlagsHandler();
 
     /** Copy constructor. */
@@ -72,6 +77,7 @@ public:
 
 
 protected:
+    bool fill_none_ = true;
 
     bool fill_values_ = false;
 
@@ -146,7 +152,7 @@ class MappingValueFlagsHandler :
 {
 public:
     /** Admisible flags that can be handled by this class. */
-    static const ValueFlags admisible_flag =
+    static const ValueFlags admisible_flags =
         ValueFlags::point|
         ValueFlags::measure |
         ValueFlags::w_measure |

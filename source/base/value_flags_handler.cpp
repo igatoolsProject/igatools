@@ -25,10 +25,21 @@
 
 IGA_NAMESPACE_OPEN
 
+
+/**
+ * Exception used when a ValueFlag is not admissibile for the caller object.
+ */
+DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
+               << "The passed ValueFlag " << arg2
+               << " contains a non admissible flag " << (arg1 ^arg2));
+
+
+
 //====================================================
 ValueFlagsHandler::
 ValueFlagsHandler()
     :
+    fill_none_(true),
     fill_values_(false),
     fill_gradients_(false),
     fill_hessians_(false)
@@ -99,6 +110,7 @@ MappingValueFlagsHandler::
 MappingValueFlagsHandler()
     :
     ValueFlagsHandler(),
+    GridElemValueFlagsHandler(),
     fill_inv_gradients_(false),
     fill_inv_hessians_(false)
 {}
@@ -107,8 +119,54 @@ MappingValueFlagsHandler()
 MappingValueFlagsHandler::
 MappingValueFlagsHandler(const ValueFlags &flags)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    Assert((flags|admisible_flags) == admisible_flags,
+           ExcFillFlagNotSupported(admisible_flags, flags));
+
+
+    if (contains(flags, ValueFlags::point) ||
+        contains(flags, ValueFlags::map_value))
+    {
+        fill_points_ = true;
+        fill_values_ = true;
+    }
+
+    if (contains(flags, ValueFlags::map_gradient))
+        fill_gradients_ = true ;
+
+    if (contains(flags, ValueFlags::map_hessian))
+        fill_hessians_ = true ;
+
+    if (contains(flags, ValueFlags::map_inv_gradient))
+        fill_inv_gradients_ = true ;
+
+    if (contains(flags, ValueFlags::map_inv_hessian))
+        fill_inv_hessians_ = true ;
+
+    if (contains(flags, ValueFlags::measure))
+    {
+        Assert(fill_gradients_, ExcNotInitialized());
+        fill_measures_ = true ;
+    }
+
+    if (contains(flags, ValueFlags::w_measure))
+    {
+        Assert(fill_measures_, ExcNotInitialized());
+        fill_w_measures_ = true ;
+    }
+
+    if (fill_points_ ||
+        fill_values_ || fill_gradients_ || fill_hessians_ ||
+        fill_inv_gradients_ || fill_hessians_ ||
+        fill_measures_ || fill_w_measures_)
+    {
+        fill_none_ = false;
+    }
+    else
+    {
+        fill_none_ = false;
+    }
+
+    Assert(fill_none_,ExcMessage("Nothing to be filled."))
 }
 
 
