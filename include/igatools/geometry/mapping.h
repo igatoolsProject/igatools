@@ -214,6 +214,13 @@ public:
 private:
 
     /**
+     * This is an interface for a function that compute the @p values of a Mapping at the @p points.
+     * @warning This function must be implemented in any class derived from Mapping.
+     */
+//    virtual void evaluate_impl(std::vector<PointType> &points, std::vector<ValueType> &values) const = 0;
+
+
+    /**
      * Return the flag required to evaluate this mapping.
      *
      * This is used from the mapping accessor.

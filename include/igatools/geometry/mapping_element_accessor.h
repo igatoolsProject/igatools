@@ -320,7 +320,14 @@ private:
     template <int cache_codim>
     struct ValuesCache : public CacheStatus
     {
-        void reset(const MappingValueFlagsHandler &flags_handler,
+        static const bool is_elem_cache = (cache_codim == 0)?true:false;
+
+        using Grad = Conditional<is_elem_cache, GradientMap, GradientFaceMap>;
+        using Hess = Conditional<is_elem_cache, HessianMap, HessianFaceMap>;
+        using FlagsHandler = Conditional<is_elem_cache,MappingValueFlagsHandler,MappingFaceValueFlagsHandler>;
+
+
+        void reset(const FlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
         /**
@@ -331,18 +338,16 @@ private:
          */
         void fill_values();
 
-
-        using Grad = Conditional< (cache_codim == 0), GradientMap, GradientFaceMap>;
-        using Hess = Conditional< (cache_codim == 0), HessianMap, HessianFaceMap>;
-
-        bool fill_values_ = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_ = false;
-        bool fill_inv_gradients_ = false;
-        bool fill_inv_hessians_ = false;
-        bool fill_measures_ = false;
-        bool fill_w_measures_ = false;
-
+        FlagsHandler flags_handler_;
+        /*
+                bool fill_values_ = false;
+                bool fill_gradients_ = false;
+                bool fill_hessians_ = false;
+                bool fill_inv_gradients_ = false;
+                bool fill_inv_hessians_ = false;
+                bool fill_measures_ = false;
+                bool fill_w_measures_ = false;
+        //*/
 
         ValueVector< ValueMap > values_;
         ValueVector< Grad > gradients_;
