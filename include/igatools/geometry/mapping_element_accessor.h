@@ -318,8 +318,9 @@ private:
 
 
     template <int cache_codim>
-    struct ValuesCache : public CacheStatus
+    class ValuesCache : public CacheStatus
     {
+    public:
         static const bool is_elem_cache = (cache_codim == 0)?true:false;
 
         using Grad = Conditional<is_elem_cache, GradientMap, GradientFaceMap>;
@@ -330,24 +331,20 @@ private:
         void reset(const FlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
+        //TODO: the next member variables should be protected
+    public:
+
         /**
-         * Fills the cache in accordance with the flag specifications used in the
-         * reset() function.
+         * Fills the following cache vlaues in accordance with the
+         * flag specifications used in the reset() function.
          *
-         * Precondition Before invoking this function, you must call reset().
+         * @pre Before invoking this function, values_, gradients_ and hessians_
+         * must be properly filled.
          */
-        void fill_values();
+        void fill_composite_values();
+
 
         FlagsHandler flags_handler_;
-        /*
-                bool fill_values_ = false;
-                bool fill_gradients_ = false;
-                bool fill_hessians_ = false;
-                bool fill_inv_gradients_ = false;
-                bool fill_inv_hessians_ = false;
-                bool fill_measures_ = false;
-                bool fill_w_measures_ = false;
-        //*/
 
         ValueVector< ValueMap > values_;
         ValueVector< Grad > gradients_;
@@ -370,6 +367,7 @@ private:
     {
         void reset(const ValueFlags fill_flag,
                    const Quadrature<dim> &quad);
+
     };
 
     struct FaceValuesCache : ValuesCache<1>
@@ -381,6 +379,7 @@ private:
         void reset(const Index face_id,
                    const ValueFlags fill_flag,
                    const Quadrature<dim-1> &quad);
+
 
         bool fill_normals_ = false;
         ValueVector< ValueMap > normals_;

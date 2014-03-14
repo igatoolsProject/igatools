@@ -144,15 +144,6 @@ reset(const FlagsHandler &flags_handler,
 }
 
 
-template< int dim_ref_, int codim_ >
-template< int cache_codim >
-void
-MappingElementAccessor<dim_ref_,codim_>::
-ValuesCache<cache_codim>::
-fill_values()
-{
-    AssertThrow(false,ExcNotImplemented());
-}
 
 
 
@@ -278,7 +269,6 @@ init_face_values(const Index face_id,
 }
 
 
-
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
@@ -303,6 +293,7 @@ fill_values()
     if (elem_values_.flags_handler_.fill_hessians())
         mapping_->evaluate_hessians(elem_values_.hessians_);
 
+#if 0
     if (elem_values_.flags_handler_.fill_inv_gradients())
         for (Index i = 0; i < elem_values_.num_points_; i++)
         {
@@ -310,6 +301,7 @@ fill_values()
                 inverse<dim,space_dim>(elem_values_.gradients_[i],
                                        elem_values_.inv_gradients_[i]);
         }
+
     /*
      * To fill the hessian of F{^-1}, we use the formula
      * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
@@ -336,7 +328,13 @@ fill_values()
             elem_values_.measures_[i] =
                 determinant<dim,space_dim>(elem_values_.gradients_[i]);
 
+    }
+#endif
 
+
+    if (elem_values_.flags_handler_.fill_measures() ||
+        elem_values_.flags_handler_.fill_w_measures())
+    {
         if (elem_values_.flags_handler_.fill_w_measures())
         {
             const ValueVector<Real> &dets_map = elem_values_.measures_ ;
@@ -346,6 +344,8 @@ fill_values()
                 elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;
         }
     }
+
+    elem_values_.fill_composite_values();
 
     elem_values_.set_filled(true);
 }
@@ -384,6 +384,7 @@ fill_face_values(const Index face_id)
     if (face_value.flags_handler_.fill_hessians())
         mapping_->evaluate_face_hessians(face_id, face_value.hessians_);
 
+#if 0
 //    TODO: to be solved
 //    if (face_value.fill_inv_gradients_)
 //        for (Index i = 0; i < num_points; i++)
@@ -410,7 +411,6 @@ fill_face_values(const Index face_id)
             }
         }
 
-
     if (face_value.flags_handler_.fill_measures() ||
         face_value.flags_handler_.fill_w_measures())
     {
@@ -434,7 +434,15 @@ fill_face_values(const Index face_id)
             AssertThrow(false,ExcNotImplemented())
 
         }
+    }
+#endif
 
+    LogStream out;
+    using std::endl;
+
+    if (face_value.flags_handler_.fill_measures() ||
+        face_value.flags_handler_.fill_w_measures())
+    {
         if (face_value.flags_handler_.fill_w_measures())
         {
             const ValueVector<Real> &dets_map = face_value.measures_ ;
@@ -464,10 +472,75 @@ fill_face_values(const Index face_id)
         }
     }
 
+    face_value.fill_composite_values();
+
     face_value.set_filled(true);
 }
 
+template< int dim_ref_, int codim_ >
+template< int cache_codim>
+void
+MappingElementAccessor<dim_ref_,codim_>::
+ValuesCache<cache_codim>::
+fill_composite_values()
+{
+    //TODO: put some if in order to check if the base quantities are filled
+    if (flags_handler_.fill_inv_gradients())
+        for (Index i = 0; i < num_points_; i++)
+        {
+            measures_[i] =
+                inverse<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
+                    gradients_[i],inv_gradients_[i]);
+        }
 
+
+    /*
+     * To fill the hessian of F{^-1}, we use the formula
+     * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
+     * This formula can be obtained by differentiating the identity
+     * DF * DF{^-1} = I
+     */
+    if (flags_handler_.fill_inv_hessians())
+        for (Index i = 0; i < num_points_; i++)
+        {
+            const auto &DF_inv = inv_gradients_[i];
+            const auto &D2F = hessians_[i];
+            for (int u=0; u<dim; ++u) //TODO: should we define a compose in tensor for this?
+            {
+                const auto temp = compose(DF_inv, D2F[u]);
+                inv_hessians_[i][u] = compose(temp, DF_inv);
+            }
+        }
+
+
+
+    if (flags_handler_.fill_measures() ||
+        flags_handler_.fill_w_measures())
+    {
+//        LogStream out;
+//        using std::endl;
+//    TODO: to be solved
+        for (Index i = 0; i < num_points_; i++)
+        {
+//            out << "gradients_["<<i<<"]="<<gradients_[i] << endl;
+//           out << "measures_["<<i<<"]="<<measures_[i] << endl;
+            measures_[i] =
+                determinant<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
+                    gradients_[i]);
+//            out << "face_value.inv_gradients_["<<i<<"]="<<face_value.inv_gradients_[i] << endl;
+
+//            face_value.measures_[i] =
+//                inverse<UnitElement<dim>::face_dim,space_dim>(
+//                      face_value.gradients_[i],face_value.inv_gradients_[i]);
+
+//            out << "measures_["<<i<<"]="<<measures_[i] << endl;
+//            Assert(false,ExcNotImplemented())
+//            AssertThrow(false,ExcNotImplemented())
+
+        }
+    }
+
+}
 
 template< int dim_ref_, int codim_ >
 auto
