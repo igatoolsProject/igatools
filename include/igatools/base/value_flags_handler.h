@@ -151,18 +151,6 @@ class MappingValueFlagsHandler :
     public GridElemValueFlagsHandler
 {
 public:
-    /** Admisible flags that can be handled by this class. */
-    static const ValueFlags admisible_flags =
-        ValueFlags::point|
-        ValueFlags::measure |
-        ValueFlags::w_measure |
-        ValueFlags::map_value |
-        ValueFlags::map_gradient |
-        ValueFlags::map_hessian |
-        ValueFlags::map_inv_gradient |
-        ValueFlags::map_inv_hessian ;
-
-
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */

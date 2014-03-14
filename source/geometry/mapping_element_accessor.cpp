@@ -22,6 +22,7 @@
 #include <igatools/geometry/mapping_element_accessor.h>
 
 #include <igatools/base/exceptions.h>
+#include <igatools/base/value_flags_handler.h>
 #include <igatools/geometry/unit_element.h>
 
 
@@ -50,113 +51,113 @@ ElementValuesCache::
 reset(const ValueFlags fill_flag,
       const Quadrature<dim> &quad)
 {
-    quad_ = quad;
-    num_points_ = quad.get_num_points();
+    this->quad_ = quad;
+    this->num_points_ = this->quad_.get_num_points();
 
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("nothing to reset"));
 
+    MappingValueFlagsHandler flag_handler(fill_flag);
 
-    if (contains(fill_flag, ValueFlags::point) ||
-        contains(fill_flag, ValueFlags::map_value))
+    if (flag_handler.fill_values())
     {
-        fill_values_ = true ;
-        if (values_.size() != num_points_)
-            values_.resize(num_points_);
+        this->fill_values_ = true ;
+        if (this->values_.size() != this->num_points_)
+            this->values_.resize(this->num_points_);
 
-        values_.zero();
+        this->values_.zero();
     }
     else
     {
-        fill_values_ = false ;
-        values_.clear();
+        this->fill_values_ = false ;
+        this->values_.clear();
     }
 
-    if (contains(fill_flag, ValueFlags::map_gradient))
+    if (flag_handler.fill_gradients())
     {
-        fill_gradients_ = true ;
-        if (gradients_.size() != num_points_)
-            gradients_.resize(num_points_);
+        this->fill_gradients_ = true ;
+        if (this->gradients_.size() != this->num_points_)
+            this->gradients_.resize(this->num_points_);
 
-        gradients_.zero();
-    }
-    else
-    {
-        fill_gradients_ = false ;
-        gradients_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::map_hessian))
-    {
-        fill_hessians_ = true ;
-        if (hessians_.size() != num_points_)
-            hessians_.resize(num_points_);
-
-        hessians_.zero();
+        this->gradients_.zero();
     }
     else
     {
-        fill_hessians_ = false ;
-        hessians_.clear();
+        this->fill_gradients_ = false ;
+        this->gradients_.clear();
     }
 
-    if (contains(fill_flag, ValueFlags::map_inv_gradient))
+    if (flag_handler.fill_hessians())
     {
-        fill_inv_gradients_ = true ;
-        if (inv_gradients_.size() != num_points_)
-            inv_gradients_.resize(num_points_);
+        this->fill_hessians_ = true ;
+        if (this->hessians_.size() != this->num_points_)
+            this->hessians_.resize(this->num_points_);
 
-        inv_gradients_.zero();
-    }
-    else
-    {
-        fill_inv_gradients_ = false ;
-        inv_gradients_.clear();
-    }
-
-    if (contains(fill_flag, ValueFlags::map_inv_hessian))
-    {
-        fill_inv_hessians_ = true ;
-        if (inv_hessians_.size() != num_points_)
-            inv_hessians_.resize(num_points_);
-
-        inv_hessians_.zero();
+        this->hessians_.zero();
     }
     else
     {
-        fill_inv_hessians_ = false ;
-        inv_hessians_.clear();
+        this->fill_hessians_ = false ;
+        this->hessians_.clear();
     }
 
-    if (contains(fill_flag, ValueFlags::measure))
+    if (flag_handler.fill_inv_gradients())
     {
-        Assert(fill_gradients_, ExcNotInitialized());
-        fill_dets_ = true ;
-        if (dets_.size() != num_points_)
-            dets_.resize(num_points_);
+        this->fill_inv_gradients_ = true ;
+        if (this->inv_gradients_.size() != this->num_points_)
+            this->inv_gradients_.resize(this->num_points_);
 
-        dets_.zero();
-    }
-    else
-    {
-        fill_dets_ = false ;
-        dets_.clear();
-    }
-
-
-    if (contains(fill_flag, ValueFlags::w_measure))
-    {
-        Assert(fill_dets_, ExcNotInitialized());
-        fill_w_measures_ = true ;
-        if (w_measures_.size() != num_points_)
-            w_measures_.resize(num_points_);
-
-        w_measures_.zero();
+        this->inv_gradients_.zero();
     }
     else
     {
-        fill_w_measures_ = false ;
-        w_measures_.clear();
+        this->fill_inv_gradients_ = false ;
+        this->inv_gradients_.clear();
+    }
+
+    if (flag_handler.fill_inv_hessians())
+    {
+        this->fill_inv_hessians_ = true ;
+        if (this->inv_hessians_.size() != this->num_points_)
+            this->inv_hessians_.resize(this->num_points_);
+
+        this->inv_hessians_.zero();
+    }
+    else
+    {
+        this->fill_inv_hessians_ = false ;
+        this->inv_hessians_.clear();
+    }
+
+    if (flag_handler.fill_measures())
+    {
+        Assert(this->fill_gradients_, ExcNotInitialized());
+        this->fill_measures_ = true ;
+        if (this->measures_.size() != this->num_points_)
+            this->measures_.resize(this->num_points_);
+
+        this->measures_.zero();
+    }
+    else
+    {
+        this->fill_measures_ = false ;
+        this->measures_.clear();
+    }
+
+
+    if (flag_handler.fill_w_measures())
+    {
+        Assert(this->fill_measures_, ExcNotInitialized());
+        this->fill_w_measures_ = true ;
+        if (this->w_measures_.size() != this->num_points_)
+            this->w_measures_.resize(this->num_points_);
+
+        this->w_measures_.zero();
+    }
+    else
+    {
+        this->fill_w_measures_ = false ;
+        this->w_measures_.clear();
     }
 
     this->set_initialized(true);
@@ -174,8 +175,8 @@ reset(const Index face_id,
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    quad_ = quad.collapse_to_face(face_id);
-    num_points_ = quad_.get_num_points();
+    this->quad_ = quad.collapse_to_face(face_id);
+    this->num_points_ = this->quad_.get_num_points();
 
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("nothing to reset"));
@@ -184,110 +185,110 @@ reset(const Index face_id,
     if (contains(fill_flag, ValueFlags::face_point) ||
         contains(fill_flag, ValueFlags::map_face_value))
     {
-        fill_values_ = true ;
-        if (values_.size() != num_points_)
-            values_.resize(num_points_);
+        this->fill_values_ = true ;
+        if (this->values_.size() != this->num_points_)
+            this->values_.resize(this->num_points_);
 
-        values_.zero();
+        this->values_.zero();
     }
     else
     {
-        fill_values_ = false ;
-        values_.clear();
+        this->fill_values_ = false ;
+        this->values_.clear();
     }
 
     if (contains(fill_flag, ValueFlags::map_face_gradient))
     {
-        fill_gradients_ = true ;
-        if (gradients_.size() != num_points_)
-            gradients_.resize(num_points_);
+        this->fill_gradients_ = true ;
+        if (this->gradients_.size() != this->num_points_)
+            this->gradients_.resize(this->num_points_);
 
-        gradients_.zero();
+        this->gradients_.zero();
     }
     else
     {
-        fill_gradients_ = false ;
-        gradients_.clear();
+        this->fill_gradients_ = false ;
+        this->gradients_.clear();
     }
 
     if (contains(fill_flag, ValueFlags::map_face_hessian))
     {
-        fill_hessians_ = true ;
-        if (hessians_.size() != num_points_)
-            hessians_.resize(num_points_);
+        this->fill_hessians_ = true ;
+        if (this->hessians_.size() != this->num_points_)
+            this->hessians_.resize(this->num_points_);
 
-        hessians_.zero();
+        this->hessians_.zero();
     }
     else
     {
-        fill_hessians_ = false ;
-        hessians_.clear();
+        this->fill_hessians_ = false ;
+        this->hessians_.clear();
     }
 
     if (contains(fill_flag, ValueFlags::map_face_inv_gradient))
     {
-        fill_inv_gradients_ = true ;
-        if (inv_gradients_.size() != num_points_)
-            inv_gradients_.resize(num_points_);
+        this->fill_inv_gradients_ = true ;
+        if (this->inv_gradients_.size() != this->num_points_)
+            this->inv_gradients_.resize(this->num_points_);
 
-        inv_gradients_.zero();
+        this->inv_gradients_.zero();
     }
     else
     {
-        fill_inv_gradients_ = false ;
-        inv_gradients_.clear();
+        this->fill_inv_gradients_ = false ;
+        this->inv_gradients_.clear();
     }
 
     if (contains(fill_flag, ValueFlags::map_face_inv_hessian))
     {
-        fill_inv_hessians_ = true ;
-        if (inv_hessians_.size() != num_points_)
-            inv_hessians_.resize(num_points_);
+        this->fill_inv_hessians_ = true ;
+        if (this->inv_hessians_.size() != this->num_points_)
+            this->inv_hessians_.resize(this->num_points_);
 
-        inv_hessians_.zero();
+        this->inv_hessians_.zero();
     }
     else
     {
-        fill_inv_hessians_ = false ;
-        inv_hessians_.clear();
+        this->fill_inv_hessians_ = false ;
+        this->inv_hessians_.clear();
     }
 
     if (contains(fill_flag, ValueFlags::face_measure))
     {
-        Assert(fill_gradients_, ExcNotInitialized());
-        fill_dets_ = true ;
-        if (dets_.size() != num_points_)
-            dets_.resize(num_points_);
+        Assert(this->fill_gradients_, ExcNotInitialized());
+        this->fill_measures_ = true ;
+        if (this->measures_.size() != this->num_points_)
+            this->measures_.resize(this->num_points_);
 
-        dets_.zero();
+        this->measures_.zero();
     }
     else
     {
-        fill_dets_ = false ;
-        dets_.clear();
+        this->fill_measures_ = false ;
+        this->measures_.clear();
     }
 
 
     if (contains(fill_flag, ValueFlags::face_w_measure))
     {
-        Assert(fill_dets_, ExcNotInitialized());
-        fill_w_measures_ = true ;
-        if (w_measures_.size() != num_points_)
-            w_measures_.resize(num_points_);
+        Assert(this->fill_measures_, ExcNotInitialized());
+        this->fill_w_measures_ = true ;
+        if (this->w_measures_.size() != this->num_points_)
+            this->w_measures_.resize(this->num_points_);
 
-        w_measures_.zero();
+        this->w_measures_.zero();
     }
     else
     {
-        fill_w_measures_ = false ;
-        w_measures_.clear();
+        this->fill_w_measures_ = false ;
+        this->w_measures_.clear();
     }
 
     if (contains(fill_flag, ValueFlags::face_normal))
     {
         fill_normals_ = true ;
-        if (normals_.size() != num_points_)
-            normals_.resize(num_points_);
+        if (normals_.size() != this->num_points_)
+            normals_.resize(this->num_points_);
 
         normals_.zero();
     }
@@ -399,7 +400,7 @@ fill_values()
     if (elem_values_.fill_inv_gradients_)
         for (Index i = 0; i < elem_values_.num_points_; i++)
         {
-            elem_values_.dets_[i] =
+            elem_values_.measures_[i] =
                 inverse<dim,space_dim>(elem_values_.gradients_[i],
                                        elem_values_.inv_gradients_[i]);
         }
@@ -422,17 +423,17 @@ fill_values()
         }
 
 
-    if (elem_values_.fill_dets_ ||
+    if (elem_values_.fill_measures_ ||
         elem_values_.fill_w_measures_)
     {
         for (Index i = 0; i < elem_values_.num_points_; i++)
-            elem_values_.dets_[i] =
+            elem_values_.measures_[i] =
                 determinant<dim,space_dim>(elem_values_.gradients_[i]);
 
 
         if (elem_values_.fill_w_measures_)
         {
-            const ValueVector<Real> &dets_map = elem_values_.dets_ ;
+            const ValueVector<Real> &dets_map = elem_values_.measures_ ;
             auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
             for (Index i = 0; i < elem_values_.num_points_; i++)
@@ -481,7 +482,7 @@ fill_face_values(const Index face_id)
 //    if (face_value.fill_inv_gradients_)
 //        for (Index i = 0; i < num_points; i++)
 //        {
-//            face_value.dets_[i] =
+//            face_value.measures_[i] =
 //                inverse<dim,space_dim>(face_value.gradients_[i],
 //                                       face_value.inv_gradients_[i]);
 //        }
@@ -504,7 +505,7 @@ fill_face_values(const Index face_id)
         }
 
 
-    if (face_value.fill_dets_ ||
+    if (face_value.fill_measures_ ||
         face_value.fill_w_measures_)
     {
         LogStream out;
@@ -513,16 +514,16 @@ fill_face_values(const Index face_id)
         for (Index i = 0; i < num_points; i++)
         {
             out << "face_value.gradients_["<<i<<"]="<<face_value.gradients_[i] << endl;
-            out << "face_value.dets_["<<i<<"]="<<face_value.dets_[i] << endl;
-            face_value.dets_[i] =
+            out << "face_value.measures_["<<i<<"]="<<face_value.measures_[i] << endl;
+            face_value.measures_[i] =
                 determinant<UnitElement<dim>::face_dim,space_dim>(face_value.gradients_[i]);
 //            out << "face_value.inv_gradients_["<<i<<"]="<<face_value.inv_gradients_[i] << endl;
 
-//            face_value.dets_[i] =
+//            face_value.measures_[i] =
 //                inverse<UnitElement<dim>::face_dim,space_dim>(
 //                      face_value.gradients_[i],face_value.inv_gradients_[i]);
 
-            out << "face_value.dets_["<<i<<"]="<<face_value.dets_[i] << endl;
+            out << "face_value.measures_["<<i<<"]="<<face_value.measures_[i] << endl;
             Assert(false,ExcNotImplemented())
             AssertThrow(false,ExcNotImplemented())
 
@@ -530,7 +531,7 @@ fill_face_values(const Index face_id)
 
         if (face_value.fill_w_measures_)
         {
-            const ValueVector<Real> &dets_map = face_value.dets_ ;
+            const ValueVector<Real> &dets_map = face_value.measures_ ;
             out <<"dets_map="<<endl;
             dets_map.print_info(out);
             auto weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
@@ -628,8 +629,8 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_dets_map() const -> const ValueVector<Real> &
 {
     Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.fill_dets_, ExcNotInitialized());
-    return elem_values_.dets_;
+    Assert(elem_values_.fill_measures_, ExcNotInitialized());
+    return elem_values_.measures_;
 }
 
 
@@ -722,8 +723,8 @@ get_face_dets_map(const Index face_id) const -> const ValueVector<Real> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].fill_dets_, ExcNotInitialized());
-    return face_values_[face_id].dets_;
+    Assert(face_values_[face_id].fill_measures_, ExcNotInitialized());
+    return face_values_[face_id].measures_;
 }
 
 

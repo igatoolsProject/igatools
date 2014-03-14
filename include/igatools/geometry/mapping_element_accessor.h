@@ -315,38 +315,66 @@ public:
 
 private:
 
-    /**
-     * Structure to cache mapping information used by the transform_* member
-     * functions.
-     *
-     */
-    struct ElementValuesCache : CacheStatus
-    {
-        void reset(const ValueFlags fill_flag,
-                   const Quadrature<dim> &quad);
 
-        Size num_points_ = 0;
+    template <int cache_codim>
+    struct ValuesCache : public CacheStatus
+    {
+        using Grad = Conditional< (cache_codim == 0), GradientMap, GradientFaceMap>;
+        using Hess = Conditional< (cache_codim == 0), HessianMap, HessianFaceMap>;
 
         bool fill_values_ = false;
         bool fill_gradients_ = false;
         bool fill_hessians_ = false;
         bool fill_inv_gradients_ = false;
         bool fill_inv_hessians_ = false;
-        bool fill_dets_ = false;
+        bool fill_measures_ = false;
         bool fill_w_measures_ = false;
 
+
         ValueVector< ValueMap > values_;
-        ValueVector< GradientMap > gradients_;
-        ValueVector< HessianMap > hessians_;
-        ValueVector< Derivatives< space_dim, dim,1,1 > > inv_gradients_;
-        ValueVector< Derivatives< space_dim, dim,1,2 > > inv_hessians_;
-        ValueVector< Real > dets_;
+        ValueVector< Grad > gradients_;
+        ValueVector< Hess > hessians_;
+        ValueVector< Derivatives< space_dim,((dim-cache_codim>=0)?dim-cache_codim:0),1,1 > > inv_gradients_;
+        ValueVector< Derivatives< space_dim,((dim-cache_codim>=0)?dim-cache_codim:0),1,2 > > inv_hessians_;
+        ValueVector< Real > measures_;
         ValueVector< Real > w_measures_;
 
+        Size num_points_ = 0;
         Quadrature<dim> quad_;
     };
 
-    struct FaceValuesCache : CacheStatus
+    /**
+     * Structure to cache mapping information used by the transform_* member
+     * functions.
+     *
+     */
+    struct ElementValuesCache : ValuesCache<0>
+    {
+        void reset(const ValueFlags fill_flag,
+                   const Quadrature<dim> &quad);
+
+//        Size num_points_ = 0;
+
+//        bool fill_values_ = false;
+//        bool fill_gradients_ = false;
+//        bool fill_hessians_ = false;
+//        bool fill_inv_gradients_ = false;
+//        bool fill_inv_hessians_ = false;
+//        bool fill_measures_ = false;
+//        bool fill_w_measures_ = false;
+
+//        ValueVector< ValueMap > values_;
+//        ValueVector< GradientMap > gradients_;
+//        ValueVector< HessianMap > hessians_;
+//        ValueVector< Derivatives< space_dim, dim,1,1 > > inv_gradients_;
+//        ValueVector< Derivatives< space_dim, dim,1,2 > > inv_hessians_;
+//        ValueVector< Real > measures_;
+//        ValueVector< Real > w_measures_;
+
+//        Quadrature<dim> quad_;
+    };
+
+    struct FaceValuesCache : ValuesCache<1>
     {
         void reset(const Index face_id,
                    const ValueFlags fill_flag,
@@ -356,27 +384,27 @@ private:
                    const ValueFlags fill_flag,
                    const Quadrature<dim-1> &quad);
 
-        Size num_points_ = 0;
+//        Size num_points_ = 0;
 
-        bool fill_values_ = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_ = false;
-        bool fill_inv_gradients_ = false;
-        bool fill_inv_hessians_ = false;
-        bool fill_dets_ = false;
-        bool fill_w_measures_ = false;
+//        bool fill_values_ = false;
+//        bool fill_gradients_ = false;
+//        bool fill_hessians_ = false;
+//        bool fill_inv_gradients_ = false;
+//        bool fill_inv_hessians_ = false;
+//        bool fill_measures_ = false;
+//        bool fill_w_measures_ = false;
         bool fill_normals_ = false;
 
-        ValueVector< ValueMap > values_;
-        ValueVector< GradientFaceMap > gradients_;
-        ValueVector< HessianFaceMap > hessians_;
-        ValueVector< Derivatives< space_dim, face_dim,1,1 > > inv_gradients_;
-        ValueVector< Derivatives< space_dim, face_dim,1,2 > > inv_hessians_;
-        ValueVector< Real > dets_;
-        ValueVector< Real > w_measures_;
+//        ValueVector< ValueMap > values_;
+//        ValueVector< GradientFaceMap > gradients_;
+//        ValueVector< HessianFaceMap > hessians_;
+//        ValueVector< Derivatives< space_dim, face_dim,1,1 > > inv_gradients_;
+//        ValueVector< Derivatives< space_dim, face_dim,1,2 > > inv_hessians_;
+//        ValueVector< Real > measures_;
+//        ValueVector< Real > w_measures_;
         ValueVector< ValueMap > normals_;
 
-        Quadrature<dim> quad_;
+//        Quadrature<dim> quad_;
     };
 
     ElementValuesCache elem_values_;
