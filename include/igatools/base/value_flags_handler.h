@@ -67,23 +67,41 @@ public:
     /** Returns true if the values must be filled. */
     bool fill_values() const;
 
+    /** Returns true if the values are filled. */
+    bool values_filled() const;
+
+    /** Sets the filled status for values. */
+    void set_values_filled(const bool status);
 
     /** Returns true if the gradients must be filled. */
     bool fill_gradients() const;
 
+    /** Returns true if the gradients are filled. */
+    bool gradients_filled() const;
+
+    /** Sets the filled status for gradients. */
+    void set_gradients_filled(const bool status);
 
     /** Returns true if the hessians must be filled. */
     bool fill_hessians() const;
 
+    /** Returns true if the hessians are filled. */
+    bool hessians_filled() const;
+
+    /** Sets the filled status for hessians. */
+    void set_hessians_filled(const bool status);
 
 protected:
     bool fill_none_ = true;
 
     bool fill_values_ = false;
+    bool values_filled_ = false;
 
     bool fill_gradients_ = false;
+    bool gradients_filled_ = false;
 
     bool fill_hessians_ = false;
+    bool hessians_filled_ = false;
 };
 
 
@@ -141,21 +159,43 @@ public:
     /** Returns true if the quadrature points on the element must be filled. */
     bool fill_points() const;
 
+    /** Returns true if the points are filled. */
+    bool points_filled() const;
+
+    /** Sets the filled status for points. */
+    void set_points_filled(const bool status);
 
     /** Returns true if the element measure must be filled. */
     bool fill_measures() const;
 
+    /** Returns true if the measures are filled. */
+    bool measures_filled() const;
+
+    /** Sets the filled status for measures. */
+    void set_measures_filled(const bool status);
 
     /** Returns true if the quadrature weight multiplied by the element measure must be filled. */
     bool fill_w_measures() const;
+
+    /** Returns true if the w_measures are filled. */
+    bool w_measures_filled() const;
+
+    /** Sets the filled status for w_measures. */
+    void set_w_measures_filled(const bool status);
 
 
 protected:
     bool fill_points_ = false;
 
+    bool points_filled_ = false;
+
     bool fill_measures_ = false;
 
+    bool measures_filled_ = false;
+
     bool fill_w_measures_ = false;
+
+    bool w_measures_filled_ = false;
 };
 
 
@@ -210,17 +250,33 @@ public:
     /** Move assignment operator. */
     MappingValueFlagsHandler &operator=(MappingValueFlagsHandler &&in) = default;
     ///@}
+
     /** Returns true if the gradients inverse must be filled. */
     bool fill_inv_gradients() const;
 
+    /** Returns true if the gradients are filled. */
+    bool inv_gradients_filled() const;
+
+    /** Sets the filled status for gradients. */
+    void set_inv_gradients_filled(const bool status);
 
     /** Returns true if the hessians inverse must be filled. */
     bool fill_inv_hessians() const;
 
+    /** Returns true if the hessians are filled. */
+    bool inv_hessians_filled() const;
+
+    /** Sets the filled status for hessians. */
+    void set_inv_hessians_filled(const bool status);
+
 protected:
     bool fill_inv_gradients_ = false;
 
+    bool inv_gradients_filled_ = false;
+
     bool fill_inv_hessians_ = false;
+
+    bool inv_hessians_filled_ = false;
 };
 
 
@@ -280,8 +336,17 @@ public:
     /** Returns true if the gradients inverse must be filled. */
     bool fill_normals() const;
 
+    /** Returns true if the normals are filled. */
+    bool normals_filled() const;
+
+    /** Sets the filled status for normals. */
+    void set_normals_filled(const bool status);
+
+
 protected:
     bool fill_normals_ = false;
+
+    bool normals_filled_ = false;
 };
 
 

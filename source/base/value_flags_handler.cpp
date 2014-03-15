@@ -41,8 +41,11 @@ ValueFlagsHandler()
     :
     fill_none_(true),
     fill_values_(false),
+    values_filled_(false),
     fill_gradients_(false),
-    fill_hessians_(false)
+    gradients_filled_(false),
+    fill_hessians_(false),
+    hessians_filled_(false)
 {}
 
 
@@ -51,6 +54,20 @@ ValueFlagsHandler::
 fill_values() const
 {
     return fill_values_;
+}
+bool
+
+ValueFlagsHandler::
+values_filled() const
+{
+	return values_filled_;
+}
+
+void
+ValueFlagsHandler::
+set_values_filled(const bool status)
+{
+	values_filled_ = status;
 }
 
 bool
@@ -62,9 +79,37 @@ fill_gradients() const
 
 bool
 ValueFlagsHandler::
+gradients_filled() const
+{
+	return gradients_filled_;
+}
+
+void
+ValueFlagsHandler::
+set_gradients_filled(const bool status)
+{
+	gradients_filled_ = status;
+}
+
+bool
+ValueFlagsHandler::
 fill_hessians() const
 {
     return fill_hessians_;
+}
+
+bool
+ValueFlagsHandler::
+hessians_filled() const
+{
+	return hessians_filled_;
+}
+
+void
+ValueFlagsHandler::
+set_hessians_filled(const bool status)
+{
+	hessians_filled_ = status;
 }
 //====================================================
 
@@ -75,8 +120,11 @@ GridElemValueFlagsHandler::
 GridElemValueFlagsHandler()
     :
     fill_points_(false),
+    points_filled_(false),
     fill_measures_(false),
-    fill_w_measures_(false)
+    measures_filled_(false),
+    fill_w_measures_(false),
+    w_measures_filled_(false)
 {}
 
 bool
@@ -86,6 +134,19 @@ fill_points() const
     return fill_points_;
 }
 
+bool
+GridElemValueFlagsHandler::
+points_filled() const
+{
+	return points_filled_;
+}
+
+void
+GridElemValueFlagsHandler::
+set_points_filled(const bool status)
+{
+	points_filled_ = status;
+}
 
 bool
 GridElemValueFlagsHandler::
@@ -94,12 +155,39 @@ fill_measures() const
     return fill_measures_;
 }
 
+bool
+GridElemValueFlagsHandler::
+measures_filled() const
+{
+	return measures_filled_;
+}
+
+void
+GridElemValueFlagsHandler::
+set_measures_filled(const bool status)
+{
+	measures_filled_ = status;
+}
 
 bool
 GridElemValueFlagsHandler::
 fill_w_measures() const
 {
     return fill_w_measures_;
+}
+
+bool
+GridElemValueFlagsHandler::
+w_measures_filled() const
+{
+	return w_measures_filled_;
+}
+
+void
+GridElemValueFlagsHandler::
+set_w_measures_filled(const bool status)
+{
+	w_measures_filled_ = status;
 }
 //====================================================
 
@@ -112,7 +200,9 @@ MappingValueFlagsHandler()
     ValueFlagsHandler(),
     GridElemValueFlagsHandler(),
     fill_inv_gradients_(false),
-    fill_inv_hessians_(false)
+    inv_gradients_filled_(false),
+    fill_inv_hessians_(false),
+    inv_hessians_filled_(false)
 {}
 
 
@@ -176,12 +266,39 @@ fill_inv_gradients() const
     return fill_inv_gradients_;
 }
 
+bool
+MappingValueFlagsHandler::
+inv_gradients_filled() const
+{
+	return inv_gradients_filled_;
+}
+
+void
+MappingValueFlagsHandler::
+set_inv_gradients_filled(const bool status)
+{
+	inv_gradients_filled_ = status;
+}
 
 bool
 MappingValueFlagsHandler::
 fill_inv_hessians() const
 {
     return fill_inv_hessians_;
+}
+
+bool
+MappingValueFlagsHandler::
+inv_hessians_filled() const
+{
+	return inv_hessians_filled_;
+}
+
+void
+MappingValueFlagsHandler::
+set_inv_hessians_filled(const bool status)
+{
+	inv_hessians_filled_ = status;
 }
 //====================================================
 
@@ -194,7 +311,8 @@ MappingFaceValueFlagsHandler::
 MappingFaceValueFlagsHandler()
     :
     MappingValueFlagsHandler(),
-    fill_normals_(false)
+    fill_normals_(false),
+    normals_filled_(false)
 {}
 
 
@@ -264,6 +382,20 @@ MappingFaceValueFlagsHandler::
 fill_normals() const
 {
     return fill_normals_;
+}
+
+bool
+MappingFaceValueFlagsHandler::
+normals_filled() const
+{
+	return normals_filled_;
+}
+
+void
+MappingFaceValueFlagsHandler::
+set_normals_filled(const bool status)
+{
+	normals_filled_ = status;
 }
 //====================================================
 

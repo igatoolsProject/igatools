@@ -66,6 +66,8 @@ reset(const FlagsHandler &flags_handler,
     {
         this->values_.clear();
     }
+    flags_handler_.set_values_filled(false);
+    flags_handler_.set_points_filled(false);
 
     if (flags_handler_.fill_gradients())
     {
@@ -78,6 +80,7 @@ reset(const FlagsHandler &flags_handler,
     {
         this->gradients_.clear();
     }
+    flags_handler_.set_gradients_filled(false);
 
     if (flags_handler_.fill_hessians())
     {
@@ -90,6 +93,7 @@ reset(const FlagsHandler &flags_handler,
     {
         this->hessians_.clear();
     }
+    flags_handler_.set_hessians_filled(false);
 
     if (flags_handler_.fill_inv_gradients())
     {
@@ -102,6 +106,7 @@ reset(const FlagsHandler &flags_handler,
     {
         this->inv_gradients_.clear();
     }
+    flags_handler_.set_inv_gradients_filled(false);
 
     if (flags_handler_.fill_inv_hessians())
     {
@@ -114,6 +119,7 @@ reset(const FlagsHandler &flags_handler,
     {
         this->inv_hessians_.clear();
     }
+    flags_handler_.set_inv_hessians_filled(false);
 
     if (flags_handler_.fill_measures())
     {
@@ -127,6 +133,7 @@ reset(const FlagsHandler &flags_handler,
     {
         this->measures_.clear();
     }
+    flags_handler_.set_measures_filled(false);
 
 
     if (flags_handler.fill_w_measures())
@@ -141,6 +148,7 @@ reset(const FlagsHandler &flags_handler,
     {
         this->w_measures_.clear();
     }
+    flags_handler_.set_w_measures_filled(false);
 }
 
 
@@ -194,6 +202,7 @@ reset(const Index face_id,
     {
         normals_.clear();
     }
+    flags_handler.set_normals_filled(false);
 
     this->set_initialized(true);
 }
@@ -285,14 +294,23 @@ fill_values()
                                 elem_values_.quad_.get_points().flat_size()));
 
     if (elem_values_.flags_handler_.fill_values())
+    {
         mapping_->evaluate(elem_values_.values_);
+        elem_values_.flags_handler_.set_values_filled(true);
+        elem_values_.flags_handler_.set_points_filled(true);
+    }
 
     if (elem_values_.flags_handler_.fill_gradients())
+    {
         mapping_->evaluate_gradients(elem_values_.gradients_);
+        elem_values_.flags_handler_.set_gradients_filled(true);
+    }
 
     if (elem_values_.flags_handler_.fill_hessians())
+    {
         mapping_->evaluate_hessians(elem_values_.hessians_);
-
+        elem_values_.flags_handler_.set_hessians_filled(true);
+    }
 
     elem_values_.fill_composite_values();
 
@@ -301,11 +319,14 @@ fill_values()
     {
         if (elem_values_.flags_handler_.fill_w_measures())
         {
+
+        	Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = elem_values_.measures_ ;
             auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
             for (Index i = 0; i < elem_values_.num_points_; i++)
                 elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;
+            elem_values_.flags_handler_.set_w_measures_filled(true);
         }
     }
 
@@ -338,16 +359,23 @@ fill_face_values(const Index face_id)
                                 face_value.quad_.get_points().flat_size()));
 
     if (face_value.flags_handler_.fill_values())
+    {
         mapping_->evaluate_face(face_id, face_value.values_);
+        face_value.flags_handler_.set_values_filled(true);
+        face_value.flags_handler_.set_points_filled(true);
+    }
 
     if (face_value.flags_handler_.fill_gradients())
     {
         mapping_->evaluate_face_gradients(face_id, face_value.gradients_);
+        face_value.flags_handler_.set_gradients_filled(true);
     }
 
     if (face_value.flags_handler_.fill_hessians())
+    {
         mapping_->evaluate_face_hessians(face_id, face_value.hessians_);
-
+        face_value.flags_handler_.set_hessians_filled(true);
+    }
 
     face_value.fill_composite_values();
 
@@ -359,6 +387,7 @@ fill_face_values(const Index face_id)
     {
         if (face_value.flags_handler_.fill_w_measures())
         {
+        	Assert(face_value.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = face_value.measures_ ;
             out <<"dets_map="<<endl;
             dets_map.print_info(out);
@@ -369,11 +398,14 @@ fill_face_values(const Index face_id)
             AssertThrow(false,ExcNotImplemented())
             for (Index i = 0; i < num_points; i++)
                 face_value.w_measures_[i] = dets_map[i] * weights[i] ;
+
+            face_value.flags_handler_.set_w_measures_filled(true);
         }
     }
 
     if (face_value.flags_handler_.fill_normals())
     {
+    	Assert(face_value.flags_handler_.inv_gradients_filled(),ExcMessage("Inverse gradients not filled."));
         Assert(false, ExcMessage("The computation of face normals must be tested before used."));
         AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
@@ -384,6 +416,7 @@ fill_face_values(const Index face_id)
             face_value.normals_[i] = action(DF_inv_t, n_hat);
             face_value.normals_[i] /= face_value.normals_[i].norm();
         }
+        face_value.flags_handler_.set_normals_filled(true);
     }
 
 
@@ -398,15 +431,17 @@ MappingElementAccessor<dim_ref_,codim_>::
 ValuesCache<cache_codim>::
 fill_composite_values()
 {
-    //TODO: put some if in order to check if the base quantities are filled
     if (flags_handler_.fill_inv_gradients())
+    {
+    	Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
         for (Index i = 0; i < num_points_; i++)
         {
             measures_[i] =
                 inverse<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
                     gradients_[i],inv_gradients_[i]);
         }
-
+        flags_handler_.set_inv_gradients_filled(true);
+    }
 
     /*
      * To fill the hessian of F{^-1}, we use the formula
@@ -415,6 +450,10 @@ fill_composite_values()
      * DF * DF{^-1} = I
      */
     if (flags_handler_.fill_inv_hessians())
+    {
+    	Assert(flags_handler_.hessians_filled(),ExcMessage("Hessians not filled."));
+    	Assert(flags_handler_.inv_gradients_filled(),ExcMessage("Hessians not filled."));
+
         for (Index i = 0; i < num_points_; i++)
         {
             const auto &DF_inv = inv_gradients_[i];
@@ -425,12 +464,17 @@ fill_composite_values()
                 inv_hessians_[i][u] = compose(temp, DF_inv);
             }
         }
+        flags_handler_.set_inv_hessians_filled(true);
+
+    }
 
 
 
     if (flags_handler_.fill_measures() ||
         flags_handler_.fill_w_measures())
     {
+    	Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
+
 //        LogStream out;
 //        using std::endl;
 //    TODO: to be solved
@@ -452,6 +496,8 @@ fill_composite_values()
 //            AssertThrow(false,ExcNotImplemented())
 
         }
+        flags_handler_.set_measures_filled(true);
+
     }
 
 }
@@ -461,8 +507,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_values_map() const -> const ValueVector<ValueMap> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_values(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.values_filled(), ExcMessage("Values not filled."));
     return elem_values_.values_;
 }
 
@@ -473,8 +519,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_gradients_map() const -> const ValueVector<GradientMap> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.gradients_filled(), ExcMessage("Gradients not filled."));
     return elem_values_.gradients_;
 }
 
@@ -485,8 +531,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_hessians_map() const -> const ValueVector<HessianMap> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_hessians(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.hessians_filled(), ExcMessage("Hessians not filled."));
     return elem_values_.hessians_;
 }
 
@@ -497,8 +543,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_inv_gradients_map() const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_inv_gradients(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.inv_gradients_filled(), ExcMessage("Inverse gradients not filled."));
     return elem_values_.inv_gradients_;
 }
 
@@ -509,8 +555,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_inv_hessians_map() const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_inv_hessians(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.inv_hessians_filled(), ExcMessage("Inverse hessians not filled."));
     return elem_values_.inv_hessians_;
 }
 
@@ -521,8 +567,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_dets_map() const -> const ValueVector<Real> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_measures(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.measures_filled(), ExcMessage("Measures not filled."));
     return elem_values_.measures_;
 }
 
@@ -533,8 +579,8 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_w_measures() const -> const ValueVector<Real> &
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_w_measures(), ExcNotInitialized());
+    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
+    Assert(elem_values_.flags_handler_.w_measures_filled(), ExcMessage("W*Measures not filled."));
     return elem_values_.w_measures_;
 }
 
@@ -546,8 +592,8 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_face_values_map(const Index face_id) const -> const ValueVector<ValueMap> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_values(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.values_filled(), ExcMessage("Values not filled."));
     return face_values_[face_id].values_;
 }
 
@@ -560,8 +606,8 @@ get_face_gradients_map(const Index face_id) const ->
 const ValueVector<GradientFaceMap> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_gradients(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.gradients_filled(), ExcMessage("Gradients not filled."));
     return face_values_[face_id].gradients_;
 }
 
@@ -574,8 +620,8 @@ get_face_hessians_map(const Index face_id) const ->
 const ValueVector<HessianFaceMap> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_hessians(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.hessians_filled(), ExcMessage("Hessians not filled."));
     return face_values_[face_id].hessians_;
 }
 
@@ -588,8 +634,8 @@ get_face_inv_gradients_map(const Index face_id) const ->
 const ValueVector<Derivatives<space_dim,face_dim,1,1>> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_inv_gradients(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.inv_gradients_filled(), ExcMessage("Inverse gradients not filled."));
     return face_values_[face_id].inv_gradients_;
 }
 
@@ -602,8 +648,8 @@ get_face_inv_hessians_map(const Index face_id) const ->
 const ValueVector<Derivatives<space_dim,face_dim,1,2>> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_inv_hessians(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.inv_hessians_filled(), ExcMessage("Inverse hessians not filled."));
     return face_values_[face_id].inv_hessians_;
 }
 
@@ -615,8 +661,8 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_face_dets_map(const Index face_id) const -> const ValueVector<Real> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_measures(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.measures_filled(), ExcMessage("Measures not filled."));
     return face_values_[face_id].measures_;
 }
 
@@ -628,8 +674,8 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_face_w_measures(const Index face_id) const -> const ValueVector<Real> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_w_measures(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.w_measures_filled(), ExcMessage("W*Measures not filled."));
     return face_values_[face_id].w_measures_;
 }
 
@@ -641,8 +687,8 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_face_normals(const Index face_id) const -> const ValueVector<ValueMap> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcMessage("The cache is not filled."));
-    Assert(face_values_[face_id].flags_handler_.fill_normals(), ExcNotInitialized());
+    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+    Assert(face_values_[face_id].flags_handler_.normals_filled(), ExcMessage("Normals not filled."));
     return face_values_[face_id].normals_;
 }
 
