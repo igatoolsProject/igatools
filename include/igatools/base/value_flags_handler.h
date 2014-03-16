@@ -200,6 +200,59 @@ protected:
 
 
 
+class GridFaceValueFlagsHandler : public GridElemValueFlagsHandler
+{
+    /** @name Constructors */
+    ///@{
+    /** Default constructor. Sets all boolean flags to false. */
+    GridFaceValueFlagsHandler();
+
+    /**
+     * Constructor. Transforms the value flags for grid-like element-face accessor in
+     * the correspondent booleans
+     * that specify the quantities that must be computed/filled.
+     */
+    GridFaceValueFlagsHandler(const ValueFlags &flags);
+
+    /** Copy constructor. */
+    GridFaceValueFlagsHandler(const GridFaceValueFlagsHandler &in) = default;
+
+    /** Move constructor. */
+    GridFaceValueFlagsHandler(GridFaceValueFlagsHandler &&in) = default;
+
+
+    /** Destructor. */
+    ~GridFaceValueFlagsHandler() = default;
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    GridFaceValueFlagsHandler &operator=(const GridFaceValueFlagsHandler &in) = default;
+
+
+    /** Move assignment operator. */
+    GridFaceValueFlagsHandler &operator=(GridFaceValueFlagsHandler &&in) = default;
+    ///@}
+
+    /** Returns true if the gradients inverse must be filled. */
+    bool fill_normals() const;
+
+    /** Returns true if the normals are filled. */
+    bool normals_filled() const;
+
+    /** Sets the filled status for normals. */
+    void set_normals_filled(const bool status);
+
+
+protected:
+    bool fill_normals_ = false;
+
+    bool normals_filled_ = false;
+};
+
+
 /**
  * This is an helper class that is intended to be used as a filter for the flags that
  * refers to the mapping on the element.

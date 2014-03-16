@@ -166,16 +166,16 @@ enum class ValueFlags : std::int64_t
     ///@name Reference element related values
     ///@{
     /** reference element measure (one single value) */
-    ref_elem_measure       =    1L << 8,
+//    ref_elem_measure       =    1L << 8,
 
     /** reference element face measure (one single value) */
-    ref_elem_face_measure  =    1L << 9,
+//    ref_elem_face_measure  =    1L << 9,
 
     /** reference element coordinate lengths */
     ref_elem_coord_length  =    1L << 10,
 
     /** reference element face outer normal (one single value) */
-    ref_elem_face_normal   =    1L << 11,
+//    ref_elem_face_normal   =    1L << 11,
 
     ///@}
 

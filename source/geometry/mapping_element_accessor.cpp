@@ -163,7 +163,6 @@ ElementValuesCache::
 reset(const ValueFlags fill_flag,
       const Quadrature<dim> &quad)
 {
-
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("nothing to reset"));
 
@@ -188,8 +187,10 @@ reset(const Index face_id,
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("nothing to reset"));
 
+
     MappingFaceValueFlagsHandler flags_handler(fill_flag);
     ValuesCache<1>::reset(flags_handler,quad.collapse_to_face(face_id));
+
 
     if (flags_handler.fill_normals())
     {
@@ -322,7 +323,7 @@ fill_values()
 
         	Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = elem_values_.measures_ ;
-            auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
+            const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
             for (Index i = 0; i < elem_values_.num_points_; i++)
                 elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;
@@ -391,7 +392,7 @@ fill_face_values(const Index face_id)
             const ValueVector<Real> &dets_map = face_value.measures_ ;
             out <<"dets_map="<<endl;
             dets_map.print_info(out);
-            auto weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
+            const auto weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
             out <<"weights="<<endl;
             weights.print_info(out);
             Assert(false,ExcNotImplemented())

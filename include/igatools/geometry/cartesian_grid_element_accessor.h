@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
+#include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/geometry/grid_forward_iterator.h>
@@ -62,10 +63,10 @@ public:
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
         ValueFlags::point|
-        ValueFlags::ref_elem_measure |
+        ValueFlags::measure |
         ValueFlags::w_measure |
         ValueFlags::face_point |
-        ValueFlags::ref_elem_face_measure |
+        ValueFlags::face_measure |
         ValueFlags::face_w_measure |
         ValueFlags::face_normal;
 
@@ -280,7 +281,9 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const Quadrature<dim_> &quad);
+        void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad);
+
+        GridElemValueFlagsHandler flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
@@ -290,9 +293,6 @@ private:
         ValueVector<Real> unit_weights_;
         ///@}
 
-        bool fill_measure_   = false;
-        bool fill_w_measure_ = false;
-        bool fill_points_    = false;
     };
 
     /**
@@ -304,7 +304,7 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const Quadrature<dim_> &quad);
+        void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad);
 
     };
 
@@ -315,9 +315,9 @@ private:
     class FaceValuesCache : public ValuesCache
     {
     public:
-        void reset(const Quadrature<dim_> &quad, const Index face_id);
+        void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad, const Index face_id);
 
-        void reset(const Quadrature<dim_-1> &quad, const Index face_id);
+        void reset(const ValueFlags &fill_flags,const Quadrature<dim_-1> &quad, const Index face_id);
     };
 
 

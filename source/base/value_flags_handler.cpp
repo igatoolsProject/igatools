@@ -127,6 +127,23 @@ GridElemValueFlagsHandler()
     w_measures_filled_(false)
 {}
 
+
+GridElemValueFlagsHandler::
+GridElemValueFlagsHandler(const ValueFlags &flags)
+{
+    if (contains(flags, ValueFlags::point))
+        fill_points_ = true;
+
+    if (contains(flags, ValueFlags::measure))
+        fill_measures_ = true ;
+
+    if (contains(flags, ValueFlags::w_measure))
+    {
+        fill_measures_ = true ;
+        fill_w_measures_ = true ;
+    }
+}
+
 bool
 GridElemValueFlagsHandler::
 fill_points() const
@@ -191,6 +208,60 @@ set_w_measures_filled(const bool status)
 }
 //====================================================
 
+
+//====================================================
+GridFaceValueFlagsHandler::
+GridFaceValueFlagsHandler()
+    :
+	GridElemValueFlagsHandler(),
+    fill_normals_(false),
+    normals_filled_(false)
+{}
+
+
+GridFaceValueFlagsHandler::
+GridFaceValueFlagsHandler(const ValueFlags &flags)
+{
+    if (contains(flags, ValueFlags::face_point))
+        fill_points_ = true;
+
+    if (contains(flags, ValueFlags::face_measure))
+        fill_measures_ = true ;
+
+    if (contains(flags, ValueFlags::face_w_measure))
+    {
+        fill_measures_ = true ;
+        fill_w_measures_ = true ;
+    }
+
+    if (contains(flags, ValueFlags::face_normal))
+    {
+        fill_normals_ = true ;
+    }
+}
+
+
+bool
+GridFaceValueFlagsHandler::
+fill_normals() const
+{
+    return fill_normals_;
+}
+
+bool
+GridFaceValueFlagsHandler::
+normals_filled() const
+{
+	return normals_filled_;
+}
+
+void
+GridFaceValueFlagsHandler::
+set_normals_filled(const bool status)
+{
+	normals_filled_ = status;
+}
+//====================================================
 
 
 //====================================================
@@ -367,7 +438,6 @@ MappingFaceValueFlagsHandler(const ValueFlags &flags)
 
     if (contains(flags, ValueFlags::face_normal))
     {
-        Assert(fill_normals_, ExcNotInitialized());
         fill_normals_ = true ;
         fill_none_ = false;
     }

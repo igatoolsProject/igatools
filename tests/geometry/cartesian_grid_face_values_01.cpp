@@ -43,11 +43,11 @@ void run_test1()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     auto elem = grid->begin();
-    ValueFlags flag = ValueFlags::ref_elem_face_measure|
+    ValueFlags flag = ValueFlags::face_measure|
                       ValueFlags::face_w_measure|
                       ValueFlags::face_point|
                       ValueFlags::point|
-                      ValueFlags::ref_elem_measure|
+                      ValueFlags::measure|
                       ValueFlags::w_measure;
     elem->init_values(flag, QUniform<dim>(2));
     for (; elem != grid->end(); ++elem)
@@ -90,11 +90,11 @@ void run_test2()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     auto elem = grid->begin();
-    ValueFlags flag = ValueFlags::ref_elem_face_measure|
+    ValueFlags flag = ValueFlags::face_measure|
                       ValueFlags::face_w_measure|
                       ValueFlags::face_point|
                       ValueFlags::point|
-                      ValueFlags::ref_elem_measure|
+                      ValueFlags::measure|
                       ValueFlags::w_measure;
     elem->init_values(flag, QUniform<dim>(2));
     for (; elem != grid->end(); ++elem)
