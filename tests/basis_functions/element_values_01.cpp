@@ -55,7 +55,6 @@ void do_test(const int p, const int num_knots)
 
     ValueFlags flags = ValueFlags::value|
                        ValueFlags::gradient |
-                       ValueFlags::hessian |
                        ValueFlags::w_measure ;
 
 
@@ -83,13 +82,6 @@ void do_test(const int p, const int num_knots)
             out << "grad(phi_" << i <<")= \n";
             for (int j=0; j<n_qpoints; ++j)
                 out << elem->get_basis_gradient(i,j) << endl;
-        }
-
-        for (int i=0; i<n_basis; ++i)
-        {
-            out << "hessian(phi_" << i <<")= \n";
-            for (int j=0; j<n_qpoints; ++j)
-                out << elem->get_basis_hessian(i,j) << endl;
         }
 
         out << "w(qp) * det(DF) = \n";
@@ -134,7 +126,6 @@ void do_test1(const int p)
     const int n_qpoints =  quad.get_num_points();
     ValueFlags flags = ValueFlags::value|
                        ValueFlags::gradient |
-                       ValueFlags::hessian |
                        ValueFlags::w_measure ;
 
     const int n_basis = space->get_num_basis_per_element();
@@ -160,13 +151,6 @@ void do_test1(const int p)
             out << "grad(phi_" << i <<")= \n";
             for (int j=0; j<n_qpoints; ++j)
                 out << elem->get_basis_gradient(i,j) << endl;
-        }
-
-        for (int i=0; i<n_basis; ++i)
-        {
-            out << "hessian(phi_" << i <<")= \n";
-            for (int j=0; j<n_qpoints; ++j)
-                out << elem->get_basis_hessian(i,j) << endl;
         }
 
         out << "w(qp) * det(DF) = \n";

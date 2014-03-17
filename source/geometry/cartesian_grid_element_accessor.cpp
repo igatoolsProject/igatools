@@ -144,6 +144,8 @@ fill_values()
 
     if (elem_values_.flags_handler_.fill_w_measures())
     {
+        Assert(elem_values_.flags_handler_.measures_filled(),
+               ExcCacheNotFilled());
         elem_values_.w_measure_ =
             elem_values_.measure_ * elem_values_.unit_weights_;
 
@@ -170,10 +172,10 @@ fill_face_values(const Index face_id)
 
     if (face_value.flags_handler_.fill_w_measures())
     {
+        Assert(face_value.flags_handler_.measures_filled(),
+               ExcCacheNotFilled());
         face_value.w_measure_ =
             face_value.measure_ * face_value.unit_weights_;
-//        Assert(false,ExcNotImplemented());
-//        AssertThrow(false,ExcNotImplemented());
 
         face_value.flags_handler_.set_w_measures_filled(true);
     }

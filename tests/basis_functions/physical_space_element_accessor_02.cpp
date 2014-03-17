@@ -153,7 +153,6 @@ void test_evaluate()
 
     element->init_values(ValueFlags::value |
                          ValueFlags::gradient |
-                         ValueFlags::hessian |
                          ValueFlags::w_measure,
                          quad) ;
     for (; element != element_end ; ++element)
@@ -176,14 +175,6 @@ void test_evaluate()
             out << "Gradients basis[" << i << "] = " << endl ;
             for (int jpt = 0 ; jpt < n_qpoints ; ++jpt)
                 out << element->get_basis_gradient(i,jpt) << endl ;
-            out << endl ;
-        }
-
-        for (int i = 0 ; i < n_basis ; ++i)
-        {
-            out << "Hessians basis[" << i << "] = " << endl ;
-            for (int jpt = 0 ; jpt < n_qpoints ; ++jpt)
-                out << element->get_basis_hessian(i,jpt) << endl ;
             out << endl ;
         }
 

@@ -386,12 +386,10 @@ protected:
     {
         void reset(const int n_basis_per_element,
                    const QuadratureType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisElemValueFlagsHandler &flags_handler);
 
 
-        bool fill_values_    = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_  = false;
+        BasisElemValueFlagsHandler flags_handler_;
 
         Size n_points_ = 0;
 
@@ -405,7 +403,7 @@ protected:
     {
         void reset(const int n_basis_per_element,
                    const QuadratureType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisElemValueFlagsHandler &flags_handler);
     };
 
 
@@ -414,13 +412,13 @@ protected:
         void reset(const Index face_id,
                    const int n_basis_per_element,
                    const QuadratureType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisFaceValueFlagsHandler &flags_handler);
 
 
         void reset(const Index face_id,
                    const int n_basis_per_element,
                    const QuadratureFaceType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisFaceValueFlagsHandler &flags_handler);
     };
 
     /**

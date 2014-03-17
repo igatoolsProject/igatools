@@ -56,54 +56,59 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 ValuesCache::
 reset(const int n_basis_per_element,
       const QuadratureType &quad,
-      const ValueFlags fill_flag)
+      const BasisElemValueFlagsHandler &flags_handler)
 {
+
     n_points_ = quad.get_num_points();
 
-    if (contains(fill_flag , ValueFlags::value))
+    flags_handler_ = flags_handler;
+
+    if (flags_handler_.fill_values())
     {
         if (D0phi_.get_num_points() != n_points_ ||
             D0phi_.get_num_functions() != n_basis_per_element)
             D0phi_.resize(n_basis_per_element,n_points_);
 
         D0phi_.zero();
-        fill_values_ = true;
     }
     else
     {
         D0phi_.clear();
-        fill_values_ = false;
     }
 
-    if (contains(fill_flag , ValueFlags::gradient))
+    if (flags_handler_.fill_gradients())
     {
         if (D1phi_.get_num_points() != n_points_ ||
             D1phi_.get_num_functions() != n_basis_per_element)
             D1phi_.resize(n_basis_per_element,n_points_);
 
         D1phi_.zero();
-        fill_gradients_ = true;
     }
     else
     {
         D1phi_.clear();
-        fill_gradients_ = false;
     }
 
-    if (contains(fill_flag , ValueFlags::hessian))
+    if (flags_handler_.fill_hessians())
     {
         if (D2phi_.get_num_points() != n_points_ ||
             D2phi_.get_num_functions() != n_basis_per_element)
             D2phi_.resize(n_basis_per_element,n_points_);
 
         D2phi_.zero();
-        fill_hessians_ = true;
     }
     else
     {
         D2phi_.clear();
-        fill_hessians_ = false;
     }
+
+
+    if (flags_handler_.fill_divergences())
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
 
     this->set_initialized(true);
 }
@@ -116,9 +121,9 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 ElementValuesCache::
 reset(const int n_basis_per_element,
       const QuadratureType &quad,
-      const ValueFlags fill_flag)
+      const BasisElemValueFlagsHandler &flags_handler)
 {
-    ValuesCache::reset(n_basis_per_element, quad, fill_flag);
+    ValuesCache::reset(n_basis_per_element, quad, flags_handler);
 }
 
 
@@ -130,11 +135,11 @@ FaceValuesCache::
 reset(const Index face_id,
       const int n_basis_per_element,
       const QuadratureType &quad_elem,
-      const ValueFlags fill_flag)
+      const BasisFaceValueFlagsHandler &flags_handler)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     const auto quad_face = quad_elem.collapse_to_face(face_id);
-    ValuesCache::reset(n_basis_per_element, quad_face, fill_flag);
+    ValuesCache::reset(n_basis_per_element, quad_face, flags_handler);
 }
 
 
@@ -146,7 +151,7 @@ FaceValuesCache::
 reset(const Index face_id,
       const int n_basis_per_element,
       const QuadratureFaceType &quad,
-      const ValueFlags fill_flag)
+      const BasisFaceValueFlagsHandler &flags_handler)
 {
     AssertThrow(false,ExcNotImplemented());
 }
@@ -300,12 +305,14 @@ init_values(const ValueFlags fill_flag,
 
 
     const Size n_basis = phys_space_->get_reference_space()->get_num_basis_per_element();
-    elem_values_.reset(n_basis, quad, fill_flag);
+    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
+    elem_values_.reset(n_basis, quad, elem_flags_handler);
 
     Index face_id = 0 ;
-    const auto face_fill_flag = get_face_flags(fill_flag) ;
+//    const auto face_fill_flag = get_face_flags(fill_flag) ;
+    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
     for (auto& face_value : face_values_)
-        face_value.reset(face_id++, n_basis, quad, face_fill_flag);
+        face_value.reset(face_id++, n_basis, quad, face_flags_handler);
 }
 
 
@@ -331,13 +338,15 @@ fill_values()
     PfElemAccessor::fill_values();
     RefElemAccessor::fill_values();
 
-    if (elem_values_.fill_values_)
+    if (elem_values_.flags_handler_.fill_values())
     {
         PfElemAccessor::template transform_values<RefSpace::dim_range,RefSpace::rank>
         (RefElemAccessor::get_basis_values(), elem_values_.D0phi_);
+
+        elem_values_.flags_handler_.set_values_filled(true);
     }
 
-    if (elem_values_.fill_gradients_)
+    if (elem_values_.flags_handler_.fill_gradients())
     {
         if (transformation_type == Transformation::h_grad)
         {
@@ -356,6 +365,19 @@ fill_values()
                 RefElemAccessor::get_basis_gradients(),
                 elem_values_.D1phi_);
         }
+        elem_values_.flags_handler_.set_gradients_filled(true);
+    }
+
+    if (elem_values_.flags_handler_.fill_hessians())
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
+    if (elem_values_.flags_handler_.fill_divergences())
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
     }
 
     elem_values_.set_filled(true);
@@ -374,13 +396,15 @@ fill_face_values(const Index face_id)
     PfElemAccessor::fill_face_values(face_id);
     RefElemAccessor::fill_face_values(face_id);
 
-    if (face_value.fill_values_)
+    if (face_value.flags_handler_.fill_values())
     {
         PfElemAccessor::template transform_face_values<RefSpace::dim_range,RefSpace::rank>
         (face_id, RefElemAccessor::get_face_basis_values(face_id), face_value.D0phi_);
+
+        face_value.flags_handler_.set_values_filled(true);
     }
 
-    if (face_value.fill_gradients_)
+    if (face_value.flags_handler_.fill_gradients())
     {
         if (transformation_type == Transformation::h_grad)
         {
@@ -401,6 +425,19 @@ fill_face_values(const Index face_id)
                 RefElemAccessor::get_face_basis_gradients(face_id),
                 face_value.D1phi_);
         }
+        face_value.flags_handler_.set_gradients_filled(true);
+    }
+
+    if (elem_values_.flags_handler_.fill_hessians())
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
+    if (elem_values_.flags_handler_.fill_divergences())
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
     }
 
     face_value.set_filled(true);
@@ -493,7 +530,7 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVect
     AssertThrow(false,ExcNotImplemented());
 
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_hessians_ == true, ExcInvalidState());
+    Assert(elem_values_.flags_handler_.hessians_filled(), ExcCacheNotFilled());
 
 
     ValueVector< Derivative<2> > D2field;
@@ -563,7 +600,7 @@ evaluate_face_field_hessians(const Index face_id,
 
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_hessians_ == true, ExcInvalidState());
+    Assert(face_values_[face_id].flags_handler_.hessians_filled(), ExcCacheNotFilled());
 
 
     ValueVector< Derivative<2> > D2field;
@@ -579,7 +616,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_values() const -> ValueTable<Value> const &
 {
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_values_,ExcInvalidState());
+    Assert(elem_values_.flags_handler_.values_filled(), ExcCacheNotFilled());
     return elem_values_.D0phi_;
 }
 
@@ -614,7 +651,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_gradients() const -> ValueTable< Derivative<1> > const &
 {
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_gradients_,ExcInvalidState());
+    Assert(elem_values_.flags_handler_.gradients_filled(), ExcCacheNotFilled());
     return elem_values_.D1phi_;
 }
 
@@ -649,7 +686,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_hessians() const -> ValueTable< Derivative<2> > const &
 {
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_hessians_,ExcInvalidState());
+    Assert(elem_values_.flags_handler_.hessians_filled(), ExcCacheNotFilled());
     return elem_values_.D2phi_;
 }
 
@@ -695,7 +732,7 @@ get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_values_,ExcInvalidState());
+    Assert(face_values_[face_id].flags_handler_.values_filled(), ExcCacheNotFilled());
     return face_values_[face_id].D0phi_;
 }
 
@@ -733,7 +770,7 @@ get_face_basis_gradients(const Index face_id) const -> ValueTable< Derivative<1>
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_gradients_,ExcInvalidState());
+    Assert(face_values_[face_id].flags_handler_.gradients_filled(), ExcCacheNotFilled());
     return face_values_[face_id].D1phi_;
 }
 
@@ -771,7 +808,7 @@ get_face_basis_hessians(const Index face_id) const -> ValueTable< Derivative<2> 
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_hessians_,ExcInvalidState());
+    Assert(face_values_[face_id].flags_handler_.hessians_filled(), ExcCacheNotFilled());
     return face_values_[face_id].D2phi_;
 }
 
