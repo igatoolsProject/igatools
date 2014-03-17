@@ -555,6 +555,9 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
 
     if (flags_handler_.fill_divergences())
     {
+        Assert(flags_handler_.fill_gradients(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
         if (div_phi_hat_.get_num_points() != total_n_points ||
             div_phi_hat_.get_num_functions() != total_n_basis)
         {
@@ -815,6 +818,9 @@ fill_from_univariate(
 
     if (flags_handler_.fill_divergences())
     {
+        Assert(flags_handler_.gradients_filled(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
         auto D1  = D1phi_hat_.begin();
         auto div = div_phi_hat_.begin();
         auto end = D1phi_hat_.end();
