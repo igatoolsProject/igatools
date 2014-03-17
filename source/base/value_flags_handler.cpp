@@ -474,7 +474,100 @@ set_normals_filled(const bool status)
 //====================================================
 
 
+//====================================================
+BasisElemValueFlagsHandler::
+BasisElemValueFlagsHandler()
+    :
+    ValueFlagsHandler(),
+    fill_divergences_(false),
+    divergences_filled_(false)
+{}
 
+
+
+
+BasisElemValueFlagsHandler::
+BasisElemValueFlagsHandler(const ValueFlags &flags)
+{
+    if (contains(flags, ValueFlags::value))
+    {
+        fill_values_ = true;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::gradient))
+    {
+        fill_gradients_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::hessian))
+    {
+        fill_hessians_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::divergence))
+    {
+        fill_divergences_ = true ;
+        fill_none_ = false;
+    }
+}
+
+
+
+bool
+BasisElemValueFlagsHandler::
+fill_divergences() const
+{
+    return fill_divergences_;
+}
+
+bool
+BasisElemValueFlagsHandler::
+divergences_filled() const
+{
+    return divergences_filled_;
+}
+
+void
+BasisElemValueFlagsHandler::
+set_divergences_filled(const bool status)
+{
+    divergences_filled_ = status;
+}
+//====================================================
+
+
+//====================================================
+BasisFaceValueFlagsHandler::
+BasisFaceValueFlagsHandler(const ValueFlags &flags)
+{
+    if (contains(flags, ValueFlags::face_value))
+    {
+        fill_values_ = true;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::face_gradient))
+    {
+        fill_gradients_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::face_hessian))
+    {
+        fill_hessians_ = true ;
+        fill_none_ = false;
+    }
+
+    if (contains(flags, ValueFlags::face_divergence))
+    {
+        fill_divergences_ = true ;
+        fill_none_ = false;
+    }
+}
+//====================================================
 
 
 IGA_NAMESPACE_CLOSE

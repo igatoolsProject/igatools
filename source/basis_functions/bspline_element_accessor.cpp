@@ -593,6 +593,42 @@ reset(const ValueFlags fill_flag,
 //    this->set_filled(false);
 }
 
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+ValuesCache::
+get_values() const -> const ValueTable<Value> &
+{
+    return phi_hat_;
+}
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+ValuesCache::
+get_gradients() const -> const ValueTable<Derivative<1>> &
+{
+    return D1phi_hat_;
+}
+
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+ValuesCache::
+get_hessians() const -> const ValueTable<Derivative<2>> &
+{
+    return D2phi_hat_;
+}
+
+template <int dim_domain, int dim_range, int rank>
+auto
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+ValuesCache::
+get_divergences() const -> const ValueTable<Div> &
+{
+    return div_phi_hat_;
+}
 
 
 template <int dim_domain, int dim_range, int rank>

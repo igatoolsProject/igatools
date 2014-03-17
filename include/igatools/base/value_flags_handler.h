@@ -107,14 +107,20 @@ protected:
 
 
 /**
- * This is an helper class that is intended to be used as a filter for the flags that
+ * @brief This is an helper class that is intended to be used as a filter for the flags that
  * refers to a grid-like element accessor.
  *
  * The enum class ValueFlags is a bitmask that implements a lot of different flags,
  * also referring to different concepts, and is therefore difficult to manage.
- * This is why this class is useful: the unique constructor take as input argument a ValueFlags
+ * This is the reason that makes this class useful: the unique constructor
+ * GridElemValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
  * entry and filters the values that have valid meaning for a grid-like element accessor,
  * setting the corresponding boolean entries properly.
+ *
+ * The ValueFlags filtered by this class are:
+ * - ValueFlags::point
+ * - ValueFlags::measure
+ * - ValueFlags::w_measure
  *
  * @author M. Martinelli
  * @date 14 Mar 2014
@@ -200,6 +206,26 @@ protected:
 
 
 
+/**
+ * @brief This is an helper class that is intended to be used as a filter for the flags that
+ * refers to a grid-like element-face accessor.
+ *
+ * The enum class ValueFlags is a bitmask that implements a lot of different flags,
+ * also referring to different concepts, and is therefore difficult to manage.
+ * This is the reason that makes this class useful: the unique constructor
+ * GridFaceValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
+ * entry and filters the values that have valid meaning for a grid-like element accessor,
+ * setting the corresponding boolean entries properly.
+ *
+ * The ValueFlags filtered by this class are:
+ * - ValueFlags::face_point
+ * - ValueFlags::face_measure
+ * - ValueFlags::face_w_measure
+ * - ValueFlags::face_normal
+ *
+ * @author M. Martinelli
+ * @date 14 Mar 2014
+ */
 class GridFaceValueFlagsHandler : public GridElemValueFlagsHandler
 {
 public:
@@ -255,14 +281,25 @@ protected:
 
 
 /**
- * This is an helper class that is intended to be used as a filter for the flags that
+ * @brief This is an helper class that is intended to be used as a filter for the flags that
  * refers to the mapping on the element.
  *
  * The enum class ValueFlags is a bitmask that implements a lot of different flags,
  * also referring to different concepts, and is therefore difficult to manage.
- * This is why this class is useful: the unique constructor take as input argument a ValueFlags
+ * This is the reason that makes this class useful: the unique constructor
+ * MappingValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
  * entry and filters the values that have valid meaning for the mapping on the element, setting the
  * corresponding boolean entries properly.
+ *
+ * The ValueFlags filtered by this class are:
+ * - ValueFlags::point
+ * - ValueFlags::map_value
+ * - ValueFlags::map_gradient
+ * - ValueFlags::map_hessian
+ * - ValueFlags::map_inv_gradient
+ * - ValueFlags::map_inv_hessian
+ * - ValueFlags::measure
+ * - ValueFlags::w_measure
  *
  * @author M. Martinelli
  * @date 14 Mar 2014
@@ -336,14 +373,26 @@ protected:
 
 
 /**
- * This is an helper class that is intended to be used as a filter for the flags that
+ * @brief This is an helper class that is intended to be used as a filter for the flags that
  * refers to the face of a mapping.
  *
  * The enum class ValueFlags is a bitmask that implements a lot of different flags,
  * also referring to different concepts, and is therefore difficult to manage.
- * This is why this class is useful: the unique constructor take as input argument a ValueFlags
+ * This is the reason that makes this class useful: the unique constructor
+ * MappingFaceValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
  * entry and filters the values that have valid meaning for the face of a mapping, setting the
  * corresponding boolean entries properly.
+ *
+ * The ValueFlags filtered by this class are:
+ * - ValueFlags::face_point
+ * - ValueFlags::map_face_value
+ * - ValueFlags::map_face_gradient
+ * - ValueFlags::map_face_hessian
+ * - ValueFlags::map_face_inv_gradient
+ * - ValueFlags::map_face_inv_hessian
+ * - ValueFlags::face_measure
+ * - ValueFlags::face_w_measure
+ * - ValueFlags::face_normal
  *
  * @author M. Martinelli
  * @date 14 Mar 2014
@@ -402,6 +451,156 @@ protected:
 
     bool normals_filled_ = false;
 };
+
+
+
+
+
+
+/**
+ * @brief This is an helper class that is intended to be used as a filter for the flags that
+ * refers to the basis function on the element.
+ *
+ * The enum class ValueFlags is a bitmask that implements a lot of different flags,
+ * also referring to different concepts, and is therefore difficult to manage.
+ * This is the reason that makes this class useful: the unique constructor
+ * BasisElemValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
+ * entry and filters the values that have valid meaning for the mapping on the element, setting the
+ * corresponding boolean entries properly.
+ *
+ * The ValueFlags filtered by this class are:
+ * - ValueFlags::value
+ * - ValueFlags::gradient
+ * - ValueFlags::hessian
+ * - ValueFlags::divergence
+ *
+ * @author M. Martinelli
+ * @date 17 Mar 2014
+ */
+class BasisElemValueFlagsHandler : public ValueFlagsHandler
+{
+public:
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. Sets all boolean flags to false
+     * (except fill_none_ that is set to true).
+     */
+    BasisElemValueFlagsHandler();
+
+    /**
+     * Constructor. Transforms the value flags for the basis functions on the element
+     * in the correspondent booleans
+     * that specify the quantities that must be computed/filled.
+     */
+    BasisElemValueFlagsHandler(const ValueFlags &flags);
+
+
+    /** Copy constructor. */
+    BasisElemValueFlagsHandler(const BasisElemValueFlagsHandler &in) = default;
+
+    /** Move constructor. */
+    BasisElemValueFlagsHandler(BasisElemValueFlagsHandler &&in) = default;
+
+
+    /** Destructor. */
+    ~BasisElemValueFlagsHandler() = default;
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    BasisElemValueFlagsHandler &operator=(const BasisElemValueFlagsHandler &in) = default;
+
+
+    /** Move assignment operator. */
+    BasisElemValueFlagsHandler &operator=(BasisElemValueFlagsHandler &&in) = default;
+    ///@}
+
+
+    /** Returns true if the divergences must be filled. */
+    bool fill_divergences() const;
+
+    /** Returns true if the divergences are filled. */
+    bool divergences_filled() const;
+
+    /** Sets the filled status for divergences. */
+    void set_divergences_filled(const bool status);
+
+protected:
+    bool fill_divergences_ = false;
+
+    bool divergences_filled_ = false;
+};
+
+
+
+
+
+
+/**
+ * @brief This is an helper class that is intended to be used as a filter for the flags that
+ * refers to the basis function on the face if an element.
+ *
+ * The enum class ValueFlags is a bitmask that implements a lot of different flags,
+ * also referring to different concepts, and is therefore difficult to manage.
+ * This is the reason that makes this class useful: the unique constructor
+ * BasisFaceValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
+ * entry and filters the values that have valid meaning for the mapping on the element, setting the
+ * corresponding boolean entries properly.
+ *
+ * The ValueFlags filtered by this class are:
+ * - ValueFlags::face_value
+ * - ValueFlags::face_gradient
+ * - ValueFlags::face_hessian
+ * - ValueFlags::face_divergence
+ *
+ * @author M. Martinelli
+ * @date 17 Mar 2014
+ */
+class BasisFaceValueFlagsHandler : public BasisElemValueFlagsHandler
+{
+public:
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. Sets all boolean flags to false
+     * (except fill_none_ that is set to true).
+     */
+    BasisFaceValueFlagsHandler();
+
+    /**
+     * Constructor. Transforms the value flags for the basis functions on the face
+     * of the element in the correspondent booleans
+     * that specify the quantities that must be computed/filled.
+     */
+    BasisFaceValueFlagsHandler(const ValueFlags &flags);
+
+
+    /** Copy constructor. */
+    BasisFaceValueFlagsHandler(const BasisFaceValueFlagsHandler &in) = default;
+
+    /** Move constructor. */
+    BasisFaceValueFlagsHandler(BasisFaceValueFlagsHandler &&in) = default;
+
+
+    /** Destructor. */
+    ~BasisFaceValueFlagsHandler() = default;
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    BasisFaceValueFlagsHandler &operator=(const BasisFaceValueFlagsHandler &in) = default;
+
+
+    /** Move assignment operator. */
+    BasisFaceValueFlagsHandler &operator=(BasisFaceValueFlagsHandler &&in) = default;
+    ///@}
+};
+
 
 
 IGA_NAMESPACE_CLOSE

@@ -453,26 +453,18 @@ protected:
                    const StaticMultiArray<TensorSize<dim_domain>,dim_range,rank> &n_basis_direction,
                    const TensorSize<dim_domain> &n_points_direction);
 
-        const ValueTable<Value> &get_values() const
-        {
-            return phi_hat_;
-        }
+        /** Returns the values. */
+        const ValueTable<Value> &get_values() const;
 
-        const ValueTable<Derivative<1>> &get_gradients() const
-        {
-            return D1phi_hat_;
-        }
+        /** Returns the gradients. */
+        const ValueTable<Derivative<1>> &get_gradients() const;
 
-        const ValueTable<Derivative<2>> &get_hessians() const
-        {
-            return D2phi_hat_;
-        }
+        /** Returns the hessians. */
+        const ValueTable<Derivative<2>> &get_hessians() const;
 
+        /** Returns the divergences. */
+        const ValueTable<Div> &get_divergences() const;
 
-        const ValueTable<Div> &get_divergences() const
-        {
-            return div_phi_hat_;
-        }
 
         //TODO: the member variables should be private
     public:
@@ -486,6 +478,7 @@ protected:
 
         ValueTable<Div> div_phi_hat_;
 
+    public:
         bool fill_values_    = false;
         bool fill_gradients_ = false;
         bool fill_hessians_  = false;
