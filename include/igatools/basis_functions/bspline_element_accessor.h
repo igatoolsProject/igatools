@@ -437,6 +437,21 @@ private:
     };
 
 
+    /**
+     * rectangular matrix to store for each
+     * univariate basis function
+     * its values or derivatives at the quadrature points
+     * it is a (p+1) x n_qp matrix
+     */
+    typedef boost::numeric::ublas::matrix<Real> matrix_t;
+
+    /**
+     * This type store the values, first second derivatives
+     * of a 1D Bspline functions, i.e BasisValues1d[k]
+     * stores the k-th derivative
+     */
+    typedef std::vector<matrix_t> BasisValues1d;
+
 protected:
     /**
      * Base class for the cache of the element values and for the cache of the face values.
@@ -463,6 +478,21 @@ protected:
 
         /** Returns the divergences. */
         const ValueTable<Div> &get_divergences() const;
+
+
+        using univariate_values_t = StaticMultiArray<std::array<const BasisValues1d *,dim_domain>,dim_range,rank>;
+
+        /**
+         * Fills the cache (accordingly with the flags_handler status)
+         * from the univariate values (and derivatives).
+         *
+         * @note The BSplineElementAccessor @p elem is needed in order to call the function
+         * elem.evaluate_bspline_derivatives<p>()
+         * that computes the @p p-th order derivatives of a BSpline from the univariate values.
+         */
+        void fill_from_univariate(
+            const univariate_values_t &values_1D,
+            const BSplineElementAccessor<dim_domain,dim_range,rank> &elem);
 
 
         //TODO: the member variables should be private
@@ -540,20 +570,6 @@ public:
 
 
 private:
-    /**
-     * rectangular matrix to store for each
-     * univariate basis function
-     * its values or derivatives at the quadrature points
-     * it is a (p+1) x n_qp matrix
-     */
-    typedef boost::numeric::ublas::matrix<Real> matrix_t;
-
-    /**
-     * This type store the values, first second derivatives
-     * of a 1D Bspline functions, i.e BasisValues1d[k]
-     * stores the k-th derivative
-     */
-    typedef std::vector<matrix_t> BasisValues1d;
 
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
@@ -565,7 +581,7 @@ private:
      */
     template <int deriv_order>
     void evaluate_bspline_derivatives(const FuncPointSize &size,
-                                      StaticMultiArray<std::array<const BasisValues1d *, dim_domain>, dim_range, rank> &elem_values,
+                                      const StaticMultiArray<std::array<const BasisValues1d *, dim_domain>, dim_range, rank> &elem_values,
                                       ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const;
 
 

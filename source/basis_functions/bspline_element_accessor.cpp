@@ -632,30 +632,6 @@ get_divergences() const -> const ValueTable<Div> &
     return div_phi_hat_;
 }
 
-/*
-template <int dim_domain, int dim_range, int rank>
-ValueFlags
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_flags(const ValueFlags fill_flag) const
-{
-
-    ValueFlags face_fill_flag = ValueFlags::none ;
-
-    if (contains(fill_flag , ValueFlags::face_value))
-        face_fill_flag |= ValueFlags::value ;
-
-    if (contains(fill_flag , ValueFlags::face_divergence))
-        face_fill_flag |= ValueFlags::divergence ;
-
-    if (contains(fill_flag , ValueFlags::face_gradient))
-        face_fill_flag |= ValueFlags::gradient ;
-
-    if (contains(fill_flag , ValueFlags::face_hessian))
-        face_fill_flag |= ValueFlags::hessian ;
-
-    return face_fill_flag ;
-}
-//*/
 
 template <int dim_domain, int dim_range, int rank>
 void
@@ -797,6 +773,59 @@ reset(const Space_t &space,
 }
 
 
+template <int dim_domain, int dim_range, int rank>
+void
+BSplineElementAccessor<dim_domain, dim_range, rank>::
+ValuesCache::
+fill_from_univariate(
+    const StaticMultiArray<array<const BasisValues1d *, dim_domain>, dim_range, rank> &univariate_values,
+    const BSplineElementAccessor<dim_domain,dim_range,rank> &elem)
+{
+    if (flags_handler_.fill_values())
+    {
+        elem.evaluate_bspline_derivatives<0>(size_,
+                                             univariate_values,
+                                             D0phi_hat_);
+        auto phi_hat = phi_hat_.begin();
+        for (auto &D0phi_hat : D0phi_hat_)
+        {
+            *phi_hat = (D0phi_hat)(0);
+            ++phi_hat;
+        }
+        flags_handler_.set_values_filled(true);
+    }
+
+    if (flags_handler_.fill_gradients())
+    {
+        elem.template evaluate_bspline_derivatives<1>(size_,
+                                                      univariate_values,
+                                                      D1phi_hat_);
+
+        flags_handler_.set_gradients_filled(true);
+    }
+
+    if (flags_handler_.fill_hessians())
+    {
+        elem.template evaluate_bspline_derivatives<2>(size_,
+                                                      univariate_values,
+                                                      D2phi_hat_);
+
+        flags_handler_.set_hessians_filled(true);
+    }
+
+    if (flags_handler_.fill_divergences())
+    {
+        auto D1  = D1phi_hat_.begin();
+        auto div = div_phi_hat_.begin();
+        auto end = D1phi_hat_.end();
+        for (; D1 != end; ++D1, ++div)
+            *div = trace(*D1);
+
+        flags_handler_.set_divergences_filled(true);
+    }
+
+    this->set_filled(true);
+}
 
 template <int dim_domain, int dim_range, int rank>
 void
@@ -818,50 +847,7 @@ fill_values()
             elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
     }
 
-    if (elem_values_.flags_handler_.fill_values())
-    {
-        evaluate_bspline_derivatives<0>(elem_values_.size_,
-                                        elem_univariate_values,
-                                        elem_values_.D0phi_hat_);
-        auto phi_hat = elem_values_.phi_hat_.begin();
-        for (auto &D0phi_hat : elem_values_.D0phi_hat_)
-        {
-            *phi_hat = (D0phi_hat)(0);
-            ++phi_hat;
-        }
-        elem_values_.flags_handler_.set_values_filled(true);
-    }
-
-    if (elem_values_.flags_handler_.fill_gradients())
-    {
-        evaluate_bspline_derivatives<1>(elem_values_.size_,
-                                        elem_univariate_values,
-                                        elem_values_.D1phi_hat_);
-
-        elem_values_.flags_handler_.set_gradients_filled(true);
-    }
-
-    if (elem_values_.flags_handler_.fill_hessians())
-    {
-        evaluate_bspline_derivatives<2>(elem_values_.size_,
-                                        elem_univariate_values,
-                                        elem_values_.D2phi_hat_);
-
-        elem_values_.flags_handler_.set_hessians_filled(true);
-    }
-
-    if (elem_values_.flags_handler_.fill_divergences())
-    {
-        auto D1  = elem_values_.D1phi_hat_.begin();
-        auto div = elem_values_.div_phi_hat_.begin();
-        auto end = elem_values_.D1phi_hat_.end();
-        for (; D1 != end; ++D1, ++div)
-            *div = trace(*D1);
-
-        elem_values_.flags_handler_.set_divergences_filled(true);
-    }
-
-    elem_values_.set_filled(true);
+    elem_values_.fill_from_univariate(elem_univariate_values,*this);
 }
 
 
@@ -885,7 +871,7 @@ fill_face_values(const Index face_id)
     elem_univariate_values;
     for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
     {
-        for (int i = 0; i < int (dim_domain); ++i)
+        for (int i = 0; i < dim_domain; ++i)
         {
             if (i==const_dir)
                 elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
@@ -895,41 +881,7 @@ fill_face_values(const Index face_id)
         }
     }
 
-    if (face_value.flags_handler_.fill_values())
-    {
-        evaluate_bspline_derivatives<0>(face_value.size_,
-                                        elem_univariate_values,
-                                        face_value.D0phi_hat_);
-        auto phi_hat = face_values_[face_id].phi_hat_.begin();
-        for (const auto &D0phi_hat : face_value.D0phi_hat_)
-        {
-            *phi_hat = (D0phi_hat)(0);
-            ++phi_hat;
-        }
-
-        face_value.flags_handler_.set_values_filled(true);
-    }
-
-    if (face_value.flags_handler_.fill_gradients())
-    {
-        evaluate_bspline_derivatives<1>(face_value.size_,
-                                        elem_univariate_values,
-                                        face_value.D1phi_hat_);
-
-        face_value.flags_handler_.set_gradients_filled(true);
-    }
-
-    if (face_value.flags_handler_.fill_hessians())
-    {
-        evaluate_bspline_derivatives<2>(face_value.size_,
-                                        elem_univariate_values,
-                                        face_value.D2phi_hat_);
-
-        face_value.flags_handler_.set_hessians_filled(true);
-
-    }
-
-    face_value.set_filled(true);
+    face_value.fill_from_univariate(elem_univariate_values,*this);
 }
 
 
@@ -1053,7 +1005,7 @@ template < int deriv_order >
 void
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 evaluate_bspline_derivatives(const FuncPointSize &size,
-                             StaticMultiArray<std::array<const BasisValues1d *, dim_domain>, dim_range, rank> &elem_values,
+                             const StaticMultiArray<std::array<const BasisValues1d *, dim_domain>, dim_range, rank> &elem_values,
                              ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const
 {
     Assert(derivatives_phi_hat.size() > 0, ExcEmptyObject());
@@ -1353,17 +1305,6 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_value(const Index basis, const Index qp) const -> Value const &
 {
-    /*
-        const auto &data = elem_values_.phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-     //*/
-
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_basis_values(basis)[qp];
@@ -1375,17 +1316,6 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_divergence(const Index basis, const Index qp) const -> Div const &
 {
-    /*
-        const auto &data = elem_values_.phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-     //*/
-
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_basis_divergences(basis)[qp];
@@ -1396,16 +1326,6 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_gradient(const Index basis, const Index qp) const -> Derivative<1> const &
 {
-    /*
-        const auto &data = elem_values_.D1phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-    //*/
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_basis_gradients(basis)[qp];
@@ -1416,16 +1336,6 @@ auto
 BSplineElementAccessor<dim_domain, dim_range, rank>::
 get_basis_hessian(const Index basis, const Index qp) const -> Derivative<2> const &
 {
-    /*
-        const auto &data = elem_values_.D2phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-    //*/
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_basis_hessians(basis)[qp];
