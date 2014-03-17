@@ -24,6 +24,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
+#include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
@@ -132,7 +133,7 @@ public:
     /**
      *  Number of non zero basis functions over the current element.
      */
-    int get_num_basis() const;
+    Size get_num_basis() const;
 
     /**
      * Number of non-zero scalar basis functions associated
@@ -233,23 +234,21 @@ public:
      */
     ValueTable<Derivative<2>> const &get_basis_hessians() const;
 
-//    ConstVectorView<Value>
     typename ValueTable<Value>::const_view
     get_basis_values(const Index i) const;
 
 
-//    ConstVectorView<Div>
     typename ValueTable<Div>::const_view
     get_basis_divergences(const Index i) const;
 
 
-//    ConstVectorView<Derivative<1> >
     typename ValueTable<Derivative<1> >::const_view
     get_basis_gradients(const Index i) const;
 
-//    ConstVectorView<Derivative<2> >
+
     typename ValueTable<Derivative<2> >::const_view
     get_basis_hessians(const Index i) const;
+
 
     /**
      * Reference to the value of a local basis function
@@ -308,11 +307,11 @@ public:
     get_face_basis_divergences(const Index face_id, const Index i) const;
 
 
-    typename ValueTable<Derivative<1>>::const_view
-                                    get_face_basis_gradients(const Index face_id, const Index i) const;
+    typename ValueTable<Derivative<1> >::const_view
+    get_face_basis_gradients(const Index face_id, const Index i) const;
 
-    typename ValueTable<Derivative<2>>::const_view
-                                    get_face_basis_hessians(const Index face_id, const Index i) const;
+    typename ValueTable<Derivative<2> >::const_view
+    get_face_basis_hessians(const Index face_id, const Index i) const;
 
     /**
      * Reference to the value of a local basis function
@@ -382,8 +381,8 @@ public:
      *
      * @see get_local_coefs
      */
-    ValueVector<Derivative<1>>
-                            evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+    ValueVector<Derivative<1> >
+    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
 
     /**
      * Vector with the evaluation of the hessians of the field @p local_coefs
@@ -449,7 +448,7 @@ protected:
          * Allocate space for the values and derivatives
          * at quadrature points
          */
-        void reset(const ValueFlags fill_flag,
+        void reset(const BasisElemValueFlagsHandler &flags_handler,
                    const StaticMultiArray<TensorSize<dim_domain>,dim_range,rank> &n_basis_direction,
                    const TensorSize<dim_domain> &n_points_direction);
 
@@ -469,6 +468,9 @@ protected:
         //TODO: the member variables should be private
     public:
 
+        BasisElemValueFlagsHandler flags_handler_;
+
+
         ValueTable<Value> phi_hat_;
 
         //TODO (Sep 16, 2013, pauletti): D0phi_hat_ must be removed
@@ -479,10 +481,6 @@ protected:
         ValueTable<Div> div_phi_hat_;
 
     public:
-        bool fill_values_    = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_  = false;
-        bool fill_divs_  = false;
 
         FuncPointSize size_;
     };
@@ -498,7 +496,7 @@ protected:
          * Allocate space for the values and derivatives
          * at quadrature points
          */
-        void reset(const ValueFlags fill_flag,
+        void reset(const BasisElemValueFlagsHandler &flags_handler,
                    const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
                    const Quadrature<dim_domain> &quad);
 
@@ -516,7 +514,7 @@ protected:
          * at quadrature points
          */
         void reset(const Index face_id,
-                   const ValueFlags fill_flag,
+                   const BasisFaceValueFlagsHandler &flags_handler,
                    const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
                    const Quadrature<dim_domain> &quad);
 
@@ -525,7 +523,7 @@ protected:
          * at quadrature points for a specified face.
          */
         void reset(const Index face_id,
-                   const ValueFlags fill_flag,
+                   const BasisFaceValueFlagsHandler &flags_handler,
                    const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
                    const Quadrature<dim_domain-1> &quad);
 

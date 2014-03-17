@@ -63,6 +63,8 @@ public:
     ValueFlagsHandler &operator=(ValueFlagsHandler &&in) = default;
     ///@}
 
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const;
 
     /** Returns true if the values must be filled. */
     bool fill_values() const;
@@ -374,7 +376,7 @@ protected:
 
 /**
  * @brief This is an helper class that is intended to be used as a filter for the flags that
- * refers to the face of a mapping.
+ * refers to the mapping on a face.
  *
  * The enum class ValueFlags is a bitmask that implements a lot of different flags,
  * also referring to different concepts, and is therefore difficult to manage.

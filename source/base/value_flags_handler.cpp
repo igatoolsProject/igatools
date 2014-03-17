@@ -51,12 +51,21 @@ ValueFlagsHandler()
 
 bool
 ValueFlagsHandler::
+fill_none() const
+{
+    return fill_none_;
+}
+
+
+bool
+ValueFlagsHandler::
 fill_values() const
 {
     return fill_values_;
 }
-bool
 
+
+bool
 ValueFlagsHandler::
 values_filled() const
 {
