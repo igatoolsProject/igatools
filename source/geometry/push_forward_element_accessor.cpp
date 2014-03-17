@@ -53,7 +53,7 @@ value_to_mapping_flag(
     const ValueFlags common_flag =
         ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian|
         ValueFlags::w_measure|ValueFlags::face_point|ValueFlags::map_face_gradient|
-        ValueFlags::map_face_hessian|ValueFlags::face_w_measure;
+        ValueFlags::map_face_hessian|ValueFlags::face_w_measure|ValueFlags::face_normal;
 
     /*
      * For each MappingValueFlags there is an if that checks for all

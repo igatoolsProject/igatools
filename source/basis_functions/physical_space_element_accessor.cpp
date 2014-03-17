@@ -267,7 +267,7 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
         ValueFlags::point|ValueFlags::map_value|ValueFlags::map_gradient|ValueFlags::map_hessian|
         ValueFlags::w_measure|ValueFlags::face_point|ValueFlags::map_face_value|
         ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
-        ValueFlags::face_w_measure;
+        ValueFlags::face_w_measure|ValueFlags::face_normal;
 
     ValueFlags pf_flags = fill_flag & common_flag;
 
