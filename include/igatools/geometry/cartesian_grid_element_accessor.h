@@ -275,6 +275,7 @@ private:
     /**
      * @brief Base class for cache of CartesianGridElementAccessor.
      */
+    template <int cache_codim>
     class ValuesCache : public CacheStatus
     {
     public:
@@ -283,7 +284,11 @@ private:
          */
         void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad);
 
-        GridElemValueFlagsHandler flags_handler_;
+
+        static const bool is_elem_cache = (cache_codim == 0)?true:false;
+        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
+
+        FlagsHandler flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
@@ -298,7 +303,7 @@ private:
     /**
      * @brief Cache for the element values at quadrature points
      */
-    class ElementValuesCache : public ValuesCache
+    class ElementValuesCache : public ValuesCache<0>
     {
     public:
         /**
@@ -312,7 +317,7 @@ private:
     /**
      * @brief Cache for the face values at quadrature points
      */
-    class FaceValuesCache : public ValuesCache
+    class FaceValuesCache : public ValuesCache<1>
     {
     public:
         void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad, const Index face_id);

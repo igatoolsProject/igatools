@@ -202,6 +202,7 @@ protected:
 
 class GridFaceValueFlagsHandler : public GridElemValueFlagsHandler
 {
+public:
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */

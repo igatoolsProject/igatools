@@ -321,7 +321,7 @@ fill_values()
         if (elem_values_.flags_handler_.fill_w_measures())
         {
 
-        	Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
+            Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = elem_values_.measures_ ;
             const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
@@ -380,23 +380,23 @@ fill_face_values(const Index face_id)
 
     face_value.fill_composite_values();
 
-    LogStream out;
-    using std::endl;
+//    LogStream out;
+//    using std::endl;
 
     if (face_value.flags_handler_.fill_measures() ||
         face_value.flags_handler_.fill_w_measures())
     {
         if (face_value.flags_handler_.fill_w_measures())
         {
-        	Assert(face_value.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
+            Assert(face_value.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = face_value.measures_ ;
-            out <<"dets_map="<<endl;
-            dets_map.print_info(out);
-            const auto weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
-            out <<"weights="<<endl;
-            weights.print_info(out);
-            Assert(false,ExcNotImplemented())
-            AssertThrow(false,ExcNotImplemented())
+//            out <<"dets_map="<<endl;
+//            dets_map.print_info(out);
+            const auto &weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
+//            out <<"weights="<<endl;
+//            weights.print_info(out);
+//            Assert(false,ExcNotImplemented())
+//            AssertThrow(false,ExcNotImplemented())
             for (Index i = 0; i < num_points; i++)
                 face_value.w_measures_[i] = dets_map[i] * weights[i] ;
 
@@ -406,7 +406,7 @@ fill_face_values(const Index face_id)
 
     if (face_value.flags_handler_.fill_normals())
     {
-    	Assert(face_value.flags_handler_.inv_gradients_filled(),ExcMessage("Inverse gradients not filled."));
+        Assert(face_value.flags_handler_.inv_gradients_filled(),ExcMessage("Inverse gradients not filled."));
         Assert(false, ExcMessage("The computation of face normals must be tested before used."));
         AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
@@ -434,7 +434,7 @@ fill_composite_values()
 {
     if (flags_handler_.fill_inv_gradients())
     {
-    	Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
+        Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
         for (Index i = 0; i < num_points_; i++)
         {
             measures_[i] =
@@ -452,8 +452,8 @@ fill_composite_values()
      */
     if (flags_handler_.fill_inv_hessians())
     {
-    	Assert(flags_handler_.hessians_filled(),ExcMessage("Hessians not filled."));
-    	Assert(flags_handler_.inv_gradients_filled(),ExcMessage("Hessians not filled."));
+        Assert(flags_handler_.hessians_filled(),ExcMessage("Hessians not filled."));
+        Assert(flags_handler_.inv_gradients_filled(),ExcMessage("Hessians not filled."));
 
         for (Index i = 0; i < num_points_; i++)
         {
@@ -474,7 +474,7 @@ fill_composite_values()
     if (flags_handler_.fill_measures() ||
         flags_handler_.fill_w_measures())
     {
-    	Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
+        Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
 
 //        LogStream out;
 //        using std::endl;

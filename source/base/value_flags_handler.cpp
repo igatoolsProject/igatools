@@ -60,14 +60,14 @@ bool
 ValueFlagsHandler::
 values_filled() const
 {
-	return values_filled_;
+    return values_filled_;
 }
 
 void
 ValueFlagsHandler::
 set_values_filled(const bool status)
 {
-	values_filled_ = status;
+    values_filled_ = status;
 }
 
 bool
@@ -81,14 +81,14 @@ bool
 ValueFlagsHandler::
 gradients_filled() const
 {
-	return gradients_filled_;
+    return gradients_filled_;
 }
 
 void
 ValueFlagsHandler::
 set_gradients_filled(const bool status)
 {
-	gradients_filled_ = status;
+    gradients_filled_ = status;
 }
 
 bool
@@ -102,14 +102,14 @@ bool
 ValueFlagsHandler::
 hessians_filled() const
 {
-	return hessians_filled_;
+    return hessians_filled_;
 }
 
 void
 ValueFlagsHandler::
 set_hessians_filled(const bool status)
 {
-	hessians_filled_ = status;
+    hessians_filled_ = status;
 }
 //====================================================
 
@@ -132,10 +132,14 @@ GridElemValueFlagsHandler::
 GridElemValueFlagsHandler(const ValueFlags &flags)
 {
     if (contains(flags, ValueFlags::point))
+    {
         fill_points_ = true;
+    }
 
     if (contains(flags, ValueFlags::measure))
+    {
         fill_measures_ = true ;
+    }
 
     if (contains(flags, ValueFlags::w_measure))
     {
@@ -155,14 +159,14 @@ bool
 GridElemValueFlagsHandler::
 points_filled() const
 {
-	return points_filled_;
+    return points_filled_;
 }
 
 void
 GridElemValueFlagsHandler::
 set_points_filled(const bool status)
 {
-	points_filled_ = status;
+    points_filled_ = status;
 }
 
 bool
@@ -176,14 +180,14 @@ bool
 GridElemValueFlagsHandler::
 measures_filled() const
 {
-	return measures_filled_;
+    return measures_filled_;
 }
 
 void
 GridElemValueFlagsHandler::
 set_measures_filled(const bool status)
 {
-	measures_filled_ = status;
+    measures_filled_ = status;
 }
 
 bool
@@ -197,14 +201,14 @@ bool
 GridElemValueFlagsHandler::
 w_measures_filled() const
 {
-	return w_measures_filled_;
+    return w_measures_filled_;
 }
 
 void
 GridElemValueFlagsHandler::
 set_w_measures_filled(const bool status)
 {
-	w_measures_filled_ = status;
+    w_measures_filled_ = status;
 }
 //====================================================
 
@@ -213,7 +217,7 @@ set_w_measures_filled(const bool status)
 GridFaceValueFlagsHandler::
 GridFaceValueFlagsHandler()
     :
-	GridElemValueFlagsHandler(),
+    GridElemValueFlagsHandler(),
     fill_normals_(false),
     normals_filled_(false)
 {}
@@ -252,14 +256,14 @@ bool
 GridFaceValueFlagsHandler::
 normals_filled() const
 {
-	return normals_filled_;
+    return normals_filled_;
 }
 
 void
 GridFaceValueFlagsHandler::
 set_normals_filled(const bool status)
 {
-	normals_filled_ = status;
+    normals_filled_ = status;
 }
 //====================================================
 
@@ -341,14 +345,14 @@ bool
 MappingValueFlagsHandler::
 inv_gradients_filled() const
 {
-	return inv_gradients_filled_;
+    return inv_gradients_filled_;
 }
 
 void
 MappingValueFlagsHandler::
 set_inv_gradients_filled(const bool status)
 {
-	inv_gradients_filled_ = status;
+    inv_gradients_filled_ = status;
 }
 
 bool
@@ -362,14 +366,14 @@ bool
 MappingValueFlagsHandler::
 inv_hessians_filled() const
 {
-	return inv_hessians_filled_;
+    return inv_hessians_filled_;
 }
 
 void
 MappingValueFlagsHandler::
 set_inv_hessians_filled(const bool status)
 {
-	inv_hessians_filled_ = status;
+    inv_hessians_filled_ = status;
 }
 //====================================================
 
@@ -458,14 +462,14 @@ bool
 MappingFaceValueFlagsHandler::
 normals_filled() const
 {
-	return normals_filled_;
+    return normals_filled_;
 }
 
 void
 MappingFaceValueFlagsHandler::
 set_normals_filled(const bool status)
 {
-	normals_filled_ = status;
+    normals_filled_ = status;
 }
 //====================================================
 
