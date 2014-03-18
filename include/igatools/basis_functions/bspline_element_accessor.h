@@ -38,22 +38,22 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int dim_domain, int dim_range, int rank> class BSplineSpace;
+template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
  */
-template <int dim_domain, int dim_range, int rank>
-class BSplineElementAccessor : public CartesianGridElementAccessor<dim_domain>
+template <int dim, int range, int rank>
+class BSplineElementAccessor : public CartesianGridElementAccessor<dim>
 {
 public:
     /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = BSplineSpace<dim_domain, dim_range, rank> ;
+    using ContainerType = BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
-    typedef const BSplineSpace<dim_domain, dim_range, rank> Space_t;
+    typedef const BSplineSpace<dim, range, rank> Space_t;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -70,7 +70,7 @@ public:
         ValueFlags::face_hessian |
         ValueFlags::face_divergence;
 
-    static const Size n_faces = UnitElement<dim_domain>::faces_per_element;
+    static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 public:
     /** @name Constructors */
@@ -92,13 +92,13 @@ public:
      * creates a new element cache, but it shares
      * the one dimensional cache with the copied element.
      */
-    BSplineElementAccessor(const BSplineElementAccessor<dim_domain, dim_range, rank> &elem)
+    BSplineElementAccessor(const BSplineElementAccessor<dim, range, rank> &elem)
         = default;
 
     /**
      * Move constructor.
      */
-    BSplineElementAccessor(BSplineElementAccessor<dim_domain, dim_range, rank> &&elem)
+    BSplineElementAccessor(BSplineElementAccessor<dim, range, rank> &&elem)
         = default;
 
     /**
@@ -116,15 +116,15 @@ public:
      * @note Creates a new element cache, but it shares
      * the one dimensional cache with the copied element.
      */
-    BSplineElementAccessor<dim_domain, dim_range, rank> &
-    operator=(const BSplineElementAccessor<dim_domain, dim_range, rank> &elem)
+    BSplineElementAccessor<dim, range, rank> &
+    operator=(const BSplineElementAccessor<dim, range, rank> &elem)
         = default;
 
     /**
      * Move assignment operator.
      */
-    BSplineElementAccessor<dim_domain, dim_range, rank> &
-    operator=(BSplineElementAccessor<dim_domain, dim_range, rank> &&elem)
+    BSplineElementAccessor<dim, range, rank> &
+    operator=(BSplineElementAccessor<dim, range, rank> &&elem)
         = default;
     ///@}
 
@@ -177,14 +177,14 @@ public:
      * @note This function should be called before fill_values()
      */
     void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim_domain> &quad);
+                     const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
     void init_face_values(const Index face_id,
                           const ValueFlags fill_flag,
-                          const Quadrature<dim_domain-1> &quad);
+                          const Quadrature<dim-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
@@ -203,11 +203,11 @@ protected:
      * reference domain.
      */
     template <int deriv_order>
-    using Derivative = Derivatives<dim_domain, dim_range, rank, deriv_order>;
+    using Derivative = Derivatives<dim, range, rank, deriv_order>;
 
-    using Value = Values<dim_domain, dim_range, rank>;
+    using Value = Values<dim, range, rank>;
 
-    using Div = Values<dim_domain, 1, 1>;
+    using Div = Values<dim, 1, 1>;
 
 public:
     /**
@@ -404,7 +404,7 @@ private:
      * (the same for each element).
      * The fill_flag provides what information to compute.
      */
-    void reset_univariate_cache(const Quadrature<dim_domain> &quad,
+    void reset_univariate_cache(const Quadrature<dim> &quad,
                                 const int max_der);
 
     /**
@@ -412,7 +412,7 @@ private:
      * the quadrature number of point and the fill_flag.
      */
     void reset_element_cache(const ValueFlags fill_flag,
-                             const Quadrature<dim_domain> &quad);
+                             const Quadrature<dim> &quad);
 
 
 
@@ -424,16 +424,16 @@ private:
     class FuncPointSize
     {
     public:
-        void reset(StaticMultiArray<TensorSize<dim_domain>,dim_range,rank> n_basis_direction,
-                   TensorSize<dim_domain> n_points_direction);
+        void reset(StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction,
+                   TensorSize<dim> n_points_direction);
 
-        StaticMultiArray<TensorSize<dim_domain>,dim_range,rank> n_basis_direction_;
+        StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
 
-        TensorSize<dim_domain> n_points_direction_;
+        TensorSize<dim> n_points_direction_;
 
-        std::shared_ptr<CartesianProductIndexer<dim_domain>> points_indexer_;
+        std::shared_ptr<CartesianProductIndexer<dim>> points_indexer_;
 
-        StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim_domain>>,dim_range,rank> basis_functions_indexer_;
+        StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
     };
 
 
@@ -464,8 +464,8 @@ protected:
          * at quadrature points
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim_domain>,dim_range,rank> &n_basis_direction,
-                   const TensorSize<dim_domain> &n_points_direction);
+                   const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
+                   const TensorSize<dim> &n_points_direction);
 
         /** Returns the values. */
         const ValueTable<Value> &get_values() const;
@@ -480,7 +480,7 @@ protected:
         const ValueTable<Div> &get_divergences() const;
 
 
-        using univariate_values_t = StaticMultiArray<std::array<const BasisValues1d *,dim_domain>,dim_range,rank>;
+        using univariate_values_t = StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>;
 
         /**
          * Fills the cache (accordingly with the flags_handler status)
@@ -492,7 +492,7 @@ protected:
          */
         void fill_from_univariate(
             const univariate_values_t &values_1D,
-            const BSplineElementAccessor<dim_domain,dim_range,rank> &elem);
+            const BSplineElementAccessor<dim,range,rank> &elem);
 
 
         //TODO: the member variables should be private
@@ -527,8 +527,8 @@ protected:
          * at quadrature points
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-                   const Quadrature<dim_domain> &quad);
+                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+                   const Quadrature<dim> &quad);
 
     };
 
@@ -545,8 +545,8 @@ protected:
          */
         void reset(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-                   const Quadrature<dim_domain> &quad);
+                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+                   const Quadrature<dim> &quad);
 
         /**
          * Allocate space for the values and derivatives
@@ -554,8 +554,8 @@ protected:
          */
         void reset(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-                   const Quadrature<dim_domain-1> &quad);
+                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+                   const Quadrature<dim-1> &quad);
 
     };
     ///@}
@@ -581,7 +581,7 @@ private:
      */
     template <int deriv_order>
     void evaluate_bspline_derivatives(const FuncPointSize &size,
-                                      const StaticMultiArray<std::array<const BasisValues1d *, dim_domain>, dim_range, rank> &elem_values,
+                                      const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
                                       ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const;
 
 
@@ -590,7 +590,7 @@ private:
      */
     template<class T>
     using ComponentDirectionTable =
-        StaticMultiArray<CartesianProductArray<T,dim_domain>, dim_range, rank>;
+        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
 
 
 
@@ -610,7 +610,7 @@ private:
          * of a direction.
          */
         void reset(const Space_t &space,
-                   const Quadrature<dim_domain> &quad,
+                   const Quadrature<dim> &quad,
                    const int max_der);
 
         /**
@@ -635,7 +635,7 @@ private:
          * of a direction.
          */
         void reset(const Space_t &space,
-                   const Quadrature<dim_domain> &quad1,
+                   const Quadrature<dim> &quad1,
                    const Index face_id,
                    const int max_der);
 
@@ -644,8 +644,8 @@ private:
          * quadrature points
          * splines1d_cache_data_[comp][order][function][point]
          */
-        StaticMultiArray<BasisValues1d ,dim_range,rank> splines1d_cache_data_;
-        StaticMultiArray<BasisValues1d *,dim_range,rank> splines1d_cache_;
+        StaticMultiArray<BasisValues1d ,range,rank> splines1d_cache_data_;
+        StaticMultiArray<BasisValues1d *,range,rank> splines1d_cache_;
     };
 
     /**
