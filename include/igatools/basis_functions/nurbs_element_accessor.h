@@ -37,19 +37,19 @@ template < int, int , int > class NURBSSpace ;
  * See module on @ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
  */
-template <int dim_domain, int dim_range, int rank >
+template <int dim, int range, int rank >
 class NURBSElementAccessor :
-    public BSplineElementAccessor< dim_domain, dim_range, rank >
+    public BSplineElementAccessor< dim, range, rank >
 {
 public:
-    using ContainerType = NURBSSpace< dim_domain, dim_range, rank>;
-    typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
+    using ContainerType = NURBSSpace< dim, range, rank>;
+    typedef NURBSSpace< dim, range, rank > Space_t ;
 
-    typedef NURBSElementAccessor<dim_domain,dim_range,rank> Self_t ;
+    typedef NURBSElementAccessor<dim,range,rank> Self_t ;
 
-    using Parent_t = BSplineElementAccessor<dim_domain,dim_range,rank>;
+    using Parent_t = BSplineElementAccessor<dim,range,rank>;
 
-    using BSplineElementAccessor< dim_domain, dim_range, rank >::n_faces;
+    using BSplineElementAccessor< dim, range, rank >::n_faces;
 
     /** @name Constructors */
     ///@{
@@ -69,12 +69,12 @@ public:
     /**
      * Copy constructor.
      */
-    NURBSElementAccessor(const NURBSElementAccessor< dim_domain, dim_range, rank > &element) = default;
+    NURBSElementAccessor(const NURBSElementAccessor< dim, range, rank > &element) = default;
 
     /**
      * Move constructor.
      */
-    NURBSElementAccessor(NURBSElementAccessor< dim_domain, dim_range, rank > &&element) = default;
+    NURBSElementAccessor(NURBSElementAccessor< dim, range, rank > &&element) = default;
 
     /** Destructor.*/
     ~NURBSElementAccessor() = default;
@@ -85,16 +85,16 @@ public:
     /**
      * Copy assignment operator.
      */
-    NURBSElementAccessor< dim_domain, dim_range, rank > &
-    operator=(const NURBSElementAccessor< dim_domain, dim_range, rank > &element) = default;
+    NURBSElementAccessor< dim, range, rank > &
+    operator=(const NURBSElementAccessor< dim, range, rank > &element) = default;
 
 
 
     /**
      * Move assignment operator.
      */
-    NURBSElementAccessor< dim_domain, dim_range, rank > &
-    operator=(NURBSElementAccessor< dim_domain, dim_range, rank > &&element) = default;
+    NURBSElementAccessor< dim, range, rank > &
+    operator=(NURBSElementAccessor< dim, range, rank > &&element) = default;
     ///@}
 
 
@@ -118,14 +118,14 @@ public:
      * @note This function should be called before fill_values()
      */
     void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim_domain> &quad);
+                     const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
     void init_face_values(const Index face_id,
                           const ValueFlags fill_flag,
-                          const Quadrature<dim_domain-1> &quad);
+                          const Quadrature<dim-1> &quad);
 
     /**
      * Precomputes the values needed to get the quantities specified by the ValueFlags used as input argument of the reset() function.
@@ -150,12 +150,12 @@ private:
      * \tparam deriv_order - order of the derivative.
      */
     template <int deriv_order>
-    using DerivativeRef_t = Derivatives<dim_domain, dim_range, rank, deriv_order> ;
+    using DerivativeRef_t = Derivatives<dim, range, rank, deriv_order> ;
 
     /**
      * TODO: document me .
      */
-    using ValueRef_t = Values<dim_domain, dim_range, rank>;
+    using ValueRef_t = Values<dim, range, rank>;
 
     /**
      * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
@@ -177,7 +177,7 @@ private:
     void
     evaluate_nurbs_gradients(
         const typename Parent_t::ValuesCache &bspline_cache,
-        ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const ;
+        ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const ;
 
     /**
      * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
@@ -188,7 +188,7 @@ private:
     void
     evaluate_nurbs_hessians(
         const typename Parent_t::ValuesCache &bspline_cache,
-        ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const ;
+        ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const ;
 
 
 
@@ -368,7 +368,7 @@ private:
          */
         void reset(const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain> &quad) ;
+                   const Quadrature<dim> &quad) ;
 
         ValueTable<ValueRef_t> D0phi_hat_;
         ValueTable<DerivativeRef_t<1>> D1phi_hat_;
@@ -394,7 +394,7 @@ private:
          */
         void reset(const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain> &quad) ;
+                   const Quadrature<dim> &quad) ;
     };
 
     /**
@@ -410,7 +410,7 @@ private:
         void reset(const Index face_id,
                    const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain> &quad) ;
+                   const Quadrature<dim> &quad) ;
 
         /**
          * Allocate space for the values and derivatives
@@ -419,7 +419,7 @@ private:
         void reset(const Index face_id,
                    const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain-1> &quad) ;
+                   const Quadrature<dim-1> &quad) ;
     };
 
     /**
