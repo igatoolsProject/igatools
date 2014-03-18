@@ -19,17 +19,11 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating Multiplicity
-for row in inst.multiplicities:
-    file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
-
+for dim in inst.ref_dom_dims:
+    file_output.write('template class Multiplicity<%d> ;\n' % (dim))
+ 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()

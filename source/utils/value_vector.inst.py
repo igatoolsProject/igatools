@@ -19,24 +19,21 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating ValueVector
-for row in inst.value_vectors:
+value_vectors=['ValueVector<Real>']
+
+for deriv in inst.derivatives + inst.values:
+    value_vectors.append('ValueVector<%s>' % (deriv))
+
+for row in value_vectors:
     file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
-
-# Operator *
-for row in inst.value_vectors:
     file_output.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
     file_output.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
 
-file_output.write('IGA_NAMESPACE_CLOSE\n')
 
+file_output.write('IGA_NAMESPACE_CLOSE\n')
 file_output.close()
 
 

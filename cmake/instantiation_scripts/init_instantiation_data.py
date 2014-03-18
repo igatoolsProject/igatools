@@ -20,8 +20,6 @@
 
 #TODO: remove ref and phys space variables
 #TODO: remove table variable replace by userspaces
-#TODO: structure that are not of common use shuld be defined in their
-#      respectiy .inst.py file. Ex: tensor_index, value_table, etc
 
 """@package init_instantiation_data
 
@@ -68,7 +66,8 @@ class PhysSpaceTableRow:
       self.rank       = arg_list[3]
       self.trans_type = arg_list[4]
       self.space_dim  = self.dim +  self.codim
-      self.phys_range = self.physical_range(self.range,  self.space_dim, self.trans_type)
+      self.phys_range = self.physical_range(self.range, self.space_dim, 
+                                            self.trans_type)
       self.phys_rank  = self.physical_rank(self.rank)
       return None
 
@@ -139,8 +138,7 @@ class InstantiationInfo:
       self.face_ref_sp_dims=[]
       self.all_ref_sp_dims=[]
       
-    #  self.all_pf_args=[]
-      
+       
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
       self.values=[]
@@ -157,6 +155,8 @@ class InstantiationInfo:
       
       self.UserPhysSpaces=[]
       self.PhysSpaces=[]
+ #---------------------------------------
+ 
       
       self.read_dimensions_file(filename)
       
@@ -167,32 +167,8 @@ class InstantiationInfo:
       
       self.create_ref_spaces()
       self.create_PhysSpaces()
-          
-
-    
-
-      self.tensor_product_arrays=[] #list TensorProductArray classes
-      self.create_tensor_product_array()
-
-      self.value_vectors=[] #list ValueVector classes
-      self.create_value_vector()
-
-      self.value_tables=[] #list ValueTable classes
-      self.create_value_table()
-
-      self.cartesian_product_indexers=[] #list CartesianProductIndexer classes
-      self.create_cartesian_product_indexer()
-
-      self.unit_elements=[] #list UnitElement classes
-      self.create_unit_element()
-
-      self.multiplicities=[] #list Multiplicity classes
-      self.create_multiplicity()
-
-      self.quadratures=[] #list Quadrature classes
-      self.create_quadrature()
-
       return None
+
 
 
    def read_dimensions_file(self, filename):
@@ -299,19 +275,6 @@ class InstantiationInfo:
       return None
 
 
-#     # Mapping<dim, codim>
-#    def create_Mappings(self):
-#       ''' Creates a list of mappings '''
-#       self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
-#                                    for x in self.all_table] )
-#      
-#       self.MappingDims = unique(self.MappingDims)
-#       self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
-#                                        for x in self.user_table] )
-#       return None
-
-
-
    def create_PhysSpaces(self):
       self.PushForwards = unique(['PushForward<Transformation::%s, %d, %d>'
                                     %(x.trans_type, x.dim, x.codim) for x in self.all_table] )
@@ -370,275 +333,6 @@ class InstantiationInfo:
       return None
  
 
-
-
-
-##################################
-   def create_tensor_product_array(self):
-      '''Creates a list of the TensorProductArray class that needs to be instantiated'''
-
-      C_list=[]
-      for row in self.all_table:
-         dim = row.dim
-         C = 'TensorProductArray<%d>' % (dim)
-         C_list.append(C)
-
-
-      self.tensor_product_arrays = unique(C_list)
-      return None
-##################################
-
-
-##################################
-   def create_value_vector(self):
-      '''Creates a list of the ValueVector class that needs to be instantiated'''
-
-      self.value_vectors=['ValueVector<Real>']
-
-      for deriv in self.derivatives + self.values:
-         self.value_vectors.append('ValueVector<%s>' % (deriv))
-
-      return None
-##################################
-
-
-##################################
-   def create_value_table(self):
-      '''Creates a list of the ValueTable class that needs to be instantiated'''
-
-      for deriv in self.derivatives + self.values:
-         self.value_tables.append('ValueTable<%s>' % (deriv))
-
-      return None
-##################################
-
-
-##################################
-   def create_cartesian_product_indexer(self):
-      '''Creates a list of the CartesianProductIndexer class that needs to be instantiated'''
-
-      C_list=[]
-
-      for row in self.all_table:
-         dim = row.dim
-         C = 'CartesianProductIndexer<%d>' % (dim)
-         C_list.append(C)
-
-      self.cartesian_product_indexers = unique(C_list)
-      return None
-##################################
-
-
-##################################
-   def create_unit_element(self):
-      '''Creates a list of the UnitElement class that needs to be instantiated'''
-
-      C_list=[]
-
-      for row in self.all_table:
-         dim_domain = row.dim
-         C = 'UnitElement<%d>' % (dim_domain)
-         C_list.append(C)
-
-      self.unit_elements = unique(C_list)
-      return None
-##################################
-
-
-##################################
-   def create_multiplicity(self):
-      '''Creates a list of the Multiplicity class that needs to be instantiated'''
-
-      C_list=[]
-
-      for row in self.all_table:
-         dim_domain = row.dim
-         C = 'Multiplicity<%d>' % (dim_domain)
-         C_list.append(C)
-
-      self.multiplicities = unique(C_list)
-      return None
-##################################
-
-
-##################################
-   def create_quadrature(self):
-      '''Creates a list of the Quadrature class that needs to be instantiated'''
-
-      C_list=[]
-
-      for row in self.all_table:
-         dim_domain = row.dim
-         C = 'Quadrature<%d>' % (dim_domain)
-         C_list.append(C)
-
-      self.quadratures = unique(C_list)
-      return None
-##################################
-
-
-# 
-# ##################################
-# #todo: the iterators should be instantiated in the accessor instantiation
-#    def create_grid_forward_iterator(self):
-#       '''Creates a list of the GridForwardIterator class that needs to be instantiated'''
-# 
-#       C_list=[]
-# 
-#       for row in self.cartesian_grid_element_accessors:
-#          C = 'GridForwardIterator<%s>' % (row)
-#          C_list.append(C)
-# 
-#       for row in self.mapping_element_accessors:
-#          C = 'GridForwardIterator<%s>' % (row)
-#          C_list.append(C)
-# 
-#       bs=[]
-#       for row in self.all_table:
-#          CA = 'BSplineElementAccessor< %d, %d, %d >' % (row.dim,row.range, row.rank)
-#          bs.append('template class %s \n' % (CA))
-#          CA = 'NURBSElementAccessor< %d, %d, %d >' % (row.dim,row.range, row.rank)
-#          bs.append('template class %s \n' % (CA))
-#       for row in unique(bs):
-#          C = 'GridForwardIterator<%s>' % (row)
-#          C_list.append(C)
-# 
-# 
-#       self.grid_forward_iterators = unique(C_list)
-# 
-# 
-# # include_files =['#include <igatools/geometry/cartesian_grid.h>\n',
-# #                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n',
-# #                 '#include <igatools/geometry/mapping.h>\n',
-# #                 '#include <igatools/geometry/mapping_lib.h>\n',
-# #                 '#include <igatools/geometry/ig_mapping.h>\n',
-# #                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
-# #                 '#include <igatools/geometry/push_forward_element_accessor.h>\n',
-# #                 '#include <igatools/basis_functions/bspline_space.h>\n',
-# #                 '#include <igatools/basis_functions/bspline_element_accessor.h>\n',
-# #                 '#include <igatools/basis_functions/nurbs_space.h>\n',
-# #                 '#include <igatools/basis_functions/nurbs_element_accessor.h>\n',
-# #                 '#include <igatools/basis_functions/physical_space.h>\n',
-# #                 '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
-# #
-# # for include in include_files:
-# #     file_output.write(include)
-# #
-# # file_output.write('IGA_NAMESPACE_OPEN\n')
-# #
-# # elem_accessor=[];
-# #
-# # for dim in inst.ref_dom_dims:
-# #     elem_accessor.append('CartesianGridElementAccessor<%d>' %dim )
-# #
-# # for dims in inst.MappingDims:
-# #     elem_accessor.append('MappingElementAccessor%s' %dims )
-# #
-# # ref_spaces = ['BSplineElementAccessor', 'NURBSElementAccessor']
-# # for sp in ref_spaces:
-# #     for dims in inst.RefDims:
-# #         elem_accessor.append('%s%s' %(sp,dims) )
-# #
-# # for phys_space in inst.PhysSpaces:
-# #     elem_accessor.append('PhysicalSpaceElementAccessor<%s>' %phys_space )
-# 
-# 
-#       return None
-#         ##################################
-# 
-# 
-# 
-# 
-# 
-# ##################################
-#    def create_cartesian_grid_element(self):
-#       '''Creates a list of the CartesianGridElement class that needs to be instantiated'''
-# 
-#       C_list=[]
-# 
-#       for row in self.all_table:
-#          dim_domain = row.dim
-#          C = 'CartesianGridElement<%d>' % (dim_domain)
-#          C_list.append(C)
-# 
-#       self.cartesian_grid_elements = unique(C_list)
-#       return None
-# ##################################
-# 
-# 
-# ##################################
-#    def create_cartesian_grid_element_accessor(self):
-#       '''Creates a list of the CartesianGridElementAccessors class that needs to be instantiated'''
-# 
-#       C_list=[]
-#       for row in self.all_table:
-#          dim_domain = row.dim
-#          C = 'CartesianGridElementAccessor<%d>' % (dim_domain)
-#          C_list.append(C)
-# 
-#       self.cartesian_grid_element_accessors = unique(C_list)
-#       return None
-# #################################
-# 
-# 
-# ##################################
-#    def create_grid_wrapper(self):
-#       '''Creates a list of the GridWrapper class that needs to be instantiated'''
-#       C_list=[]
-# 
-#       for grid in self.cartesian_grids:
-#          C = 'GridWrapper<%s>' % (grid)
-#          C_list.append(C)
-# 
-#       self.grid_wrappers = unique(C_list)
-#       return None
-# ##################################
-# 
-# 
-# ##################################
-#    def create_mapping(self):
-#       '''Creates a list of the Mapping class that needs to be instantiated'''
-# 
-#       C_list=[]
-#       for dims in self.MappingDims:
-#          C = 'Mapping%s' % (dims)
-#          C_list.append(C)
-#       self.mappings = unique(C_list)
-#       return None
-# ##################################
-# 
-# 
-# ##################################
-#    def create_identity_mapping(self):
-#       '''Creates a list of the IdentityMapping class that needs to be instantiated'''
-#         
-#       C_list=[]
-# 
-#       for dims in self.MappingDims:
-#          C = 'IdentityMapping%s' % (dims)
-#          C_list.append(C)
-#         
-#       self.identity_mappings = unique(C_list)        
-#       return None
-# ##################################
-# 
-# 
-
-# 
-# 
-# ##################################
-#    def create_mapping_element_accessor(self):
-#       '''Creates a list of the Mapping class that needs to be instantiated'''
-# 
-#       C_list=[]
-# 
-#       for dims in self.MappingDims:
-#          C = 'MappingElementAccessor%s' % (dims)
-#          C_list.append(C)
-# 
-#       self.mapping_element_accessors = unique(C_list)
-#       return None
-# ##################################
 
 
 def intialize_instantiation():

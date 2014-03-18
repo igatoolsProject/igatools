@@ -19,15 +19,11 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating UnitElement
-for row in inst.unit_elements:
-    file_output.write('template class %s; \n' % (row))
-
+for dim in inst.ref_dom_dims:
+    file_output.write('template class UnitElement<%d> ;\n' % (dim))
+ 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
