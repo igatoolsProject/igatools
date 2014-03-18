@@ -24,6 +24,9 @@ data = Instantiation()
 for dim in data.inst.ref_dom_dims:
     data.file_output.write('template class Quadrature<%d> ;\n' %dim)
 
+for dim in data.inst.face_ref_dom_dims:
+    data.file_output.write('template Quadrature<%d> extend_face_quad<%d>' % (dim+1, dim) +
+                           '(const Quadrature <%d> &, const int);\n' %(dim))
 
 
 
