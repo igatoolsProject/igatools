@@ -288,7 +288,7 @@ public:
      * Reference to a ValueTable with hessians of all local basis function
      * at each evaluation point.
      */
-    ValueTable<Derivative<2>> const &get_basis_hessians() const;
+    ValueTable<Derivative<2>> const &get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
 
     typename ValueTable<Value>::const_view
     get_basis_values(const Index i,const TopologyId &topology_id = ElemTopology()) const;
@@ -303,7 +303,7 @@ public:
 
 
     typename ValueTable<Derivative<2> >::const_view
-    get_basis_hessians(const Index i) const;
+    get_basis_hessians(const Index i,const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
@@ -328,7 +328,7 @@ public:
      * Reference to the hessian of a local basis function
      * at one evaluation point.
      */
-    Derivative<2> const &get_basis_hessian(const Index basis, const Index qp) const;
+    Derivative<2> const &get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
@@ -343,11 +343,6 @@ public:
      */
     ValueTable<Derivative<1>> const &get_face_basis_gradients(const Index face_id) const;
 
-    /**
-     * Reference to a ValueTable with hessians of all local basis function
-     * at each evaluation point for the specified face.
-     */
-    ValueTable<Derivative<2>> const &get_face_basis_hessians(const Index face_id) const;
 
 
     typename ValueTable<Div>::const_view
@@ -357,8 +352,6 @@ public:
     typename ValueTable<Derivative<1> >::const_view
     get_face_basis_gradients(const Index face_id, const Index i) const;
 
-    typename ValueTable<Derivative<2> >::const_view
-    get_face_basis_hessians(const Index face_id, const Index i) const;
 
     /**
      * Reference to the divergence of a local basis function
@@ -372,11 +365,6 @@ public:
      */
     Derivative<1> const &get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const;
 
-    /**
-     * Reference to the hessian of a local basis function
-     * at one evaluation point for the specified face.
-     */
-    Derivative<2> const &get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const;
 
 
     //Fields related
@@ -405,7 +393,7 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
+    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Vector with the evaluation of the gradient of the field @p local_coefs
@@ -416,14 +404,6 @@ public:
     ValueVector<Derivative<1> >
     evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
 
-    /**
-     * Vector with the evaluation of the hessians of the field @p local_coefs
-     * at the evaluation points at the specified face.
-     *
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
     ///@}
 
 private:

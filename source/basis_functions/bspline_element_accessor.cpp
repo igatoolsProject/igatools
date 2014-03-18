@@ -1298,21 +1298,22 @@ get_basis_gradients(const Index i) const -> typename ValueTable<Derivative<1>>::
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_hessians() const -> ValueTable<Derivative<2>> const &
+get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<Derivative<2>> const &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.hessians_filled(), ExcCacheNotFilled());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.hessians_filled(), ExcCacheNotFilled());
 
-    return elem_values_.D2phi_hat_;
+    return cache.D2phi_hat_;
 }
 
 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::const_view
+get_basis_hessians(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Derivative<2>>::const_view
 {
-    return this->get_basis_hessians().get_function_view(i);
+    return this->get_basis_hessians(topology_id).get_function_view(i);
 }
 
 
@@ -1351,11 +1352,12 @@ get_basis_gradient(const Index basis, const Index qp) const -> Derivative<1> con
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_hessian(const Index basis, const Index qp) const -> Derivative<2> const &
+get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id) const -> Derivative<2> const &
 {
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_basis_hessians(basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
 
@@ -1410,30 +1412,6 @@ get_face_basis_gradients(const Index face_id, const Index i) const -> typename V
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_face_basis_hessians(const Index face_id) const -> ValueTable<Derivative<2>> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.hessians_filled(), ExcCacheNotFilled());
-
-    return face_values_[face_id].D2phi_hat_;
-}
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_hessians(const Index face_id, const Index i) const -> typename ValueTable<Derivative<2>>::const_view
-{
-    return this->get_face_basis_hessians(face_id).get_function_view(i);
-}
-
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
 get_face_basis_divergence(const Index face_id, const Index basis, const Index qp) const -> Div const &
 {
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
@@ -1451,18 +1429,6 @@ get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) 
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_face_basis_gradients(face_id, basis)[qp];
-}
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const -> Derivative<2> const &
-{
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_hessians(face_id, basis)[qp];
 }
 
 
@@ -1510,14 +1476,15 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVec
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<2> >
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.fill_hessians() == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_hessians() == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D2phi_hat = this->get_basis_hessians() ;
+    const auto &D2phi_hat = this->get_basis_hessians(topology_id) ;
     Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1543,26 +1510,6 @@ evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &loca
     ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
 
     return D1phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.fill_hessians() == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D2phi_hat = this->get_face_basis_hessians(face_id) ;
-    Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
 

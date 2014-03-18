@@ -543,14 +543,9 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVec
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<2> >
 {
     AssertThrow(false,ExcNotImplemented());
-
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.hessians_filled(), ExcCacheNotFilled());
-
-
     ValueVector< Derivative<2> > D2field;
 
     return D2field;
@@ -588,24 +583,6 @@ evaluate_face_field_gradients(const Index face_id,
 }
 
 
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_face_field_hessians(const Index face_id,
-                             const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
-{
-    AssertThrow(false,ExcNotImplemented());
-
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.hessians_filled(), ExcCacheNotFilled());
-
-
-    ValueVector< Derivative<2> > D2field;
-
-    return D2field;
-}
 
 
 
@@ -684,11 +661,12 @@ get_basis_gradient(const Index func, const Index qp) const -> const Derivative<1
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessians() const -> ValueTable< Derivative<2> > const &
+get_basis_hessians(const TopologyId &topology_id) const -> ValueTable< Derivative<2> > const &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.hessians_filled(), ExcCacheNotFilled());
-    return elem_values_.D2phi_;
+	const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_.hessians_filled(), ExcCacheNotFilled());
+    return cache.D2phi_;
 }
 
 
@@ -696,9 +674,9 @@ get_basis_hessians() const -> ValueTable< Derivative<2> > const &
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessians(const Index func) const -> typename ValueTable< Derivative<2> >::const_view
+get_basis_hessians(const Index func,const TopologyId &topology_id) const -> typename ValueTable< Derivative<2> >::const_view
 {
-    return this->get_basis_hessians().get_function_view(func);
+    return this->get_basis_hessians(topology_id).get_function_view(func);
 }
 
 
@@ -706,12 +684,13 @@ get_basis_hessians(const Index func) const -> typename ValueTable< Derivative<2>
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessian(const Index func, const Index qp) const -> const Derivative<2> &
+get_basis_hessian(const Index func, const Index qp,const TopologyId &topology_id) const -> const Derivative<2> &
 {
-    Assert(qp >= 0 && qp < elem_values_.n_points_,
-    ExcIndexRange(qp,0,elem_values_.n_points_));
+	const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.n_points_,
+    ExcIndexRange(qp,0,cache.n_points_));
 
-    return this->get_basis_hessians(func)[qp];
+    return this->get_basis_hessians(func,topology_id)[qp];
 }
 
 
@@ -760,44 +739,6 @@ get_face_basis_gradient(const Index face_id, const Index func, const Index qp) c
     ExcIndexRange(qp,0,face_values_[face_id].n_points_));
 
     return this->get_face_basis_gradients(face_id, func)[qp];
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_basis_hessians(const Index face_id) const -> ValueTable< Derivative<2> > const &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.hessians_filled(), ExcCacheNotFilled());
-    return face_values_[face_id].D2phi_;
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_basis_hessians(const Index face_id, const Index func) const -> typename ValueTable< Derivative<2> >::const_view
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    return this->get_face_basis_hessians(face_id).get_function_view(func);
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_basis_hessian(const Index face_id, const Index func, const Index qp) const -> const Derivative<2> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
-    ExcIndexRange(qp,0,face_values_[face_id].n_points_));
-
-    return this->get_face_basis_hessians(face_id, func)[qp];
 }
 
 
