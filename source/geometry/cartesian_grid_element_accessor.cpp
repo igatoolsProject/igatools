@@ -138,23 +138,7 @@ void
 CartesianGridElementAccessor<dim_>::
 fill_values()
 {
-    if (elem_values_.flags_handler_.fill_measures() || elem_values_.flags_handler_.fill_w_measures())
-    {
-        elem_values_.measure_ = measure();
-        elem_values_.flags_handler_.set_measures_filled(true);
-    }
-
-    if (elem_values_.flags_handler_.fill_w_measures())
-    {
-        Assert(elem_values_.flags_handler_.measures_filled(),
-               ExcCacheNotFilled());
-        elem_values_.w_measure_ =
-            elem_values_.measure_ * elem_values_.unit_weights_;
-
-        elem_values_.flags_handler_.set_w_measures_filled(true);
-    }
-
-    elem_values_.set_filled(true);
+    elem_values_.fill(this->measure());
 }
 
 
@@ -166,22 +150,8 @@ fill_face_values(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     auto &face_value = face_values_[face_id] ;
-    if (face_value.flags_handler_.fill_measures() || face_value.flags_handler_.fill_w_measures())
-    {
-        face_value.measure_ = this->face_measure(face_id);
-        face_value.flags_handler_.set_measures_filled(true);
-    }
 
-    if (face_value.flags_handler_.fill_w_measures())
-    {
-        Assert(face_value.flags_handler_.measures_filled(),
-               ExcCacheNotFilled());
-        face_value.w_measure_ =
-            face_value.measure_ * face_value.unit_weights_;
-
-        face_value.flags_handler_.set_w_measures_filled(true);
-    }
-    face_value.set_filled(true);
+    face_value.fill(this->face_measure(face_id));
 }
 
 
@@ -384,6 +354,30 @@ reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &qua
 }
 
 
+template <int dim_>
+template< int cache_codim >
+void
+CartesianGridElementAccessor<dim_>::
+ValuesCache<cache_codim>::
+fill(const Real measure)
+{
+    if (flags_handler_.fill_measures() || flags_handler_.fill_w_measures())
+    {
+        measure_ = measure;
+        flags_handler_.set_measures_filled(true);
+    }
+
+    if (flags_handler_.fill_w_measures())
+    {
+        Assert(flags_handler_.measures_filled(),
+               ExcCacheNotFilled());
+        w_measure_ = measure_ * unit_weights_;
+
+        flags_handler_.set_w_measures_filled(true);
+    }
+
+    set_filled(true);
+}
 
 template <int dim_>
 void

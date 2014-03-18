@@ -284,6 +284,12 @@ private:
          */
         void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
 
+        /**
+         * Fill the cache member.
+         * @note The @p measure is an input argument because of the different function calls
+         * between element-measure and face-measure.
+         */
+        void fill(const Real measure);
 
 //        static const bool is_elem_cache = (cache_codim == 0)?true:false;
 //        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
@@ -315,7 +321,6 @@ private:
          * Allocate space for the values at quadrature points
          */
         void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
-
     };
 
 
