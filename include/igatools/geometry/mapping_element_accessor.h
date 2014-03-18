@@ -90,6 +90,7 @@ public:
         ValueFlags::face_point |
         ValueFlags::face_measure |
         ValueFlags::face_w_measure |
+        ValueFlags::face_normal |
         ValueFlags::map_value |
         ValueFlags::map_gradient |
         ValueFlags::map_hessian |
