@@ -921,6 +921,26 @@ fill_face_values(const Index face_id)
 }
 
 
+
+template <int dim, int range, int rank>
+auto
+NURBSElementAccessor<dim, range, rank>::
+get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+               ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
+
 template <int dim, int range, int rank >
 auto
 NURBSElementAccessor< dim, range, rank >::
@@ -984,26 +1004,21 @@ get_weights() const
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_values() const -> ValueTable<ValueRef_t> const &
+get_basis_values(const TopologyId &topology_id) const -> ValueTable<ValueRef_t> const &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
+	const auto & cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return elem_values_.D0phi_hat_ ;
+    return cache.D0phi_hat_ ;
 }
 
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_values(const Index basis) const -> typename ValueTable<ValueRef_t>::const_view
+get_basis_values(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<ValueRef_t>::const_view
 {
-    /*
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return elem_values_.D0phi_hat_.get_function_view(i);
-    //*/
-    return this->get_basis_values().get_function_view(basis);
+    return this->get_basis_values(topology_id).get_function_view(basis);
 }
 
 template <int dim, int range, int rank>
@@ -1049,21 +1064,12 @@ get_basis_hessians(const Index basis) const -> typename ValueTable<DerivativeRef
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_value(const Index basis, const Index qp) const -> ValueRef_t const &
+get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id) const -> ValueRef_t const &
 {
-    /*
-    const auto &data = elem_values_.D0phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < elem_values_.n_points_,
-           ExcIndexRange(qp,0,elem_values_.n_points_));
-    return this->get_basis_values(basis)[qp];
+	const auto & cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.n_points_,
+           ExcIndexRange(qp,0,cache.n_points_));
+    return this->get_basis_values(basis,topology_id)[qp];
 }
 
 template <int dim, int range, int rank>
@@ -1107,31 +1113,6 @@ get_basis_hessian(const Index basis, const Index qp) const -> DerivativeRef_t<2>
 }
 
 
-template <int dim, int range, int rank>
-auto
-NURBSElementAccessor<dim, range, rank>::
-get_face_basis_values(const Index face_id) const -> ValueTable<ValueRef_t> const &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].D0phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return face_values_[face_id].D0phi_hat_ ;
-}
-
-template <int dim, int range, int rank>
-auto
-NURBSElementAccessor<dim, range, rank>::
-get_face_basis_values(const Index face_id, const Index basis) const -> typename ValueTable<ValueRef_t>::const_view
-{
-    /*
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].D0phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return face_values_[face_id].D0phi_hat_.get_function_view(i);
-    //*/
-    return this->get_face_basis_values(face_id).get_function_view(basis);
-}
 
 template <int dim, int range, int rank>
 auto
@@ -1178,26 +1159,6 @@ get_face_basis_hessians(const Index face_id, const Index basis) const -> typenam
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_face_basis_value(const Index face_id, const Index basis, const Index qp) const -> ValueRef_t const &
-{
-    /*
-    const auto &data = face_values_[face_id].D0phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
-           ExcIndexRange(qp,0,face_values_[face_id].n_points_));
-    return this->get_face_basis_values(face_id, basis)[qp];
-}
-
-template <int dim, int range, int rank>
-auto
-NURBSElementAccessor<dim, range, rank>::
 get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const -> DerivativeRef_t<1> const &
 {
     /*
@@ -1240,15 +1201,16 @@ get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) c
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-evaluate_field(const std::vector<Real> &local_coefs) const
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const
 -> ValueVector<ValueRef_t>
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_values_ == true, ExcInvalidState());
+	const auto & cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.fill_values_ == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D0phi_hat = this->get_basis_values() ;
+    const auto &D0phi_hat = this->get_basis_values(topology_id) ;
     Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1293,26 +1255,6 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVect
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-
-
-template <int dim, int range, int rank>
-auto
-NURBSElementAccessor<dim, range, rank>::
-evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
--> ValueVector<ValueRef_t>
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_values_ == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D0phi_hat = this->get_face_basis_values(face_id) ;
-    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
-}
 
 
 

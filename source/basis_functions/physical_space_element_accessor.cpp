@@ -399,7 +399,7 @@ fill_face_values(const Index face_id)
     if (face_value.flags_handler_.fill_values())
     {
         PfElemAccessor::template transform_face_values<RefSpace::dim_range,RefSpace::rank>
-        (face_id, RefElemAccessor::get_face_basis_values(face_id), face_value.D0phi_);
+        (face_id, RefElemAccessor::get_basis_values(FaceTopology(face_id)), face_value.D0phi_);
 
         face_value.flags_handler_.set_values_filled(true);
     }
@@ -421,7 +421,7 @@ fill_face_values(const Index face_id)
             PfElemAccessor::
             template transform_face_gradients<PhysSpace::dim_range,PhysSpace::rank>(
                 face_id,
-                RefElemAccessor::get_face_basis_values(face_id),
+                RefElemAccessor::get_basis_values(FaceTopology(face_id)),
                 RefElemAccessor::get_face_basis_gradients(face_id),
                 face_value.D1phi_);
         }
@@ -550,7 +550,7 @@ evaluate_face_field(const Index face_id,
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto field_hat = RefElemAccessor::evaluate_face_field(face_id, local_coefs);
+    auto field_hat = RefElemAccessor::evaluate_field(local_coefs,FaceTopology(face_id));
 
     ValueVector< Value > field(field_hat.size());
 
@@ -578,7 +578,7 @@ evaluate_face_field_gradients(const Index face_id,
 
     ValueVector< typename RefElemAccessor::Value > D0field_hat(n_quad_points);
     if (transformation_type != Transformation::h_grad)
-        D0field_hat = RefElemAccessor::evaluate_face_field(face_id, local_coefs);
+        D0field_hat = RefElemAccessor::evaluate_field(local_coefs,FaceTopology(face_id));
 
     ValueVector< Derivative<1> > D1field(n_quad_points);
     PfElemAccessor::

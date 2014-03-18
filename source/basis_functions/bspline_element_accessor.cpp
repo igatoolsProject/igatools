@@ -1360,29 +1360,6 @@ get_basis_hessian(const Index basis, const Index qp) const -> Derivative<2> cons
 
 
 
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.values_filled(), ExcCacheNotFilled());
-
-    return face_values_[face_id].phi_hat_;
-}
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_values(const Index face_id, const Index i) const -> typename ValueTable<Value>::const_view
-{
-    return this->get_face_basis_values(face_id).get_function_view(i);
-}
-
-
 
 template <int dim, int range, int rank>
 auto
@@ -1452,17 +1429,6 @@ get_face_basis_hessians(const Index face_id, const Index i) const -> typename Va
 }
 
 
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_value(const Index face_id, const Index basis, const Index qp) const -> Value const &
-{
-
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_values(face_id, basis)[qp];
-}
-
 
 
 template <int dim, int range, int rank>
@@ -1504,15 +1470,16 @@ get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) c
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field(const std::vector<Real> &local_coefs) const
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const
 -> ValueVector<Value>
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.fill_values() == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_values() == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D0phi_hat = this->get_basis_values() ;
+    const auto &D0phi_hat = this->get_basis_values(topology_id) ;
     Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1557,26 +1524,6 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVect
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
--> ValueVector<Value>
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.fill_values() == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D0phi_hat = this->get_face_basis_values(face_id) ;
-    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
-}
 
 
 

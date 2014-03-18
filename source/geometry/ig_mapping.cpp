@@ -291,7 +291,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    values = element_->evaluate_face_field(face_id, ctrl_pts_element);
+    values = element_->evaluate_field(ctrl_pts_element,FaceTopology(face_id));
 }
 
 

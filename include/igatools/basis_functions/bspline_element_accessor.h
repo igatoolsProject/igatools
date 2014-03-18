@@ -335,12 +335,6 @@ public:
      * Reference to a ValueTable with the values of all local basis function
      * at each evaluation point for the specified face.
      */
-    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
-
-    /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point for the specified face.
-     */
     ValueTable<Div> const &get_face_basis_divergences(const Index face_id) const;
 
     /**
@@ -355,9 +349,6 @@ public:
      */
     ValueTable<Derivative<2>> const &get_face_basis_hessians(const Index face_id) const;
 
-    typename ValueTable<Value>::const_view
-    get_face_basis_values(const Index face_id, const Index i) const;
-
 
     typename ValueTable<Div>::const_view
     get_face_basis_divergences(const Index face_id, const Index i) const;
@@ -368,12 +359,6 @@ public:
 
     typename ValueTable<Derivative<2> >::const_view
     get_face_basis_hessians(const Index face_id, const Index i) const;
-
-    /**
-     * Reference to the value of a local basis function
-     * at one evaluation point for the specified face.
-     */
-    Value const &get_face_basis_value(const Index face_id, const Index basis, const Index qp) const;
 
     /**
      * Reference to the divergence of a local basis function
@@ -402,7 +387,7 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Value>
-    evaluate_field(const std::vector<Real> &local_coefs) const;
+    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Vector with the evaluation of the gradient of the field @p local_coefs
@@ -421,15 +406,6 @@ public:
      */
     ValueVector<Derivative<2> >
     evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Vector with the evaluation of the field @p local_coefs at the evaluation
-     * points at the specified face.
-     *
-     * @see get_local_coefs
-     */
-    ValueVector<Value>
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
 
     /**
      * Vector with the evaluation of the gradient of the field @p local_coefs
