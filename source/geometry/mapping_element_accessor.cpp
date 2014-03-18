@@ -221,7 +221,7 @@ init_values(const ValueFlags fill_flag,
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
 
-    // initalizing the cache of the CartesianGridElementAccessor
+    // initializing the cache of the CartesianGridElementAccessor
     {
         ValueFlags grid_flag = mapping_->required_flags();
         if (contains(fill_flag , ValueFlags::point))

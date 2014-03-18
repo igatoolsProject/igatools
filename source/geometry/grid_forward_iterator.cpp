@@ -37,7 +37,7 @@ GridForwardIterator(
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor> &GridForwardIterator<Accessor>::operator ++ ()
+GridForwardIterator<Accessor> &GridForwardIterator<Accessor>::operator++()
 {
     //TODO: is an assert needed here? If so, implement.
     //Assert ();

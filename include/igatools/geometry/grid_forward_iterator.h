@@ -39,10 +39,10 @@ IGA_NAMESPACE_OPEN
  * The object pointed to the GridForwardIterator is called <em>accessor</em> and
  * its type is passed as template argument <tt>Accessor</tt> of the GridForwardIterator.
  *
- * The accessor is an object that can fetch and use data stored in objects that have
+ * The <em>accessor</em> is an object that can fetch and use data stored in objects that have
  * a "grid-like" structure. The type of the object with this "grid-like" structure,
  * associated to the type <tt>Accessor</tt> can be retrieved with the type
- * <tt>Accessor::AccessorOfType</tt>.
+ * <tt>Accessor::ContainerType</tt>.
  *
  * Using the accessor, the structure of the "grid-like" classes is hidden
  * from the application program.

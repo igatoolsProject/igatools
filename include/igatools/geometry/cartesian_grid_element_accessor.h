@@ -178,7 +178,10 @@ public:
     Real get_measure() const;
 
 
-    // TODO (pauletti, Oct 28, 2013): Document this
+    /**
+     * Returns the element measure multiplied by the weights of the quadrature scheme
+     * used to initialize the accessor's cache.
+     */
     ValueVector<Real> const &get_w_measures() const;
 
 
@@ -203,7 +206,10 @@ public:
      */
     Real get_face_measure(const Index face_id) const;
 
-    // TODO (pauletti, Oct 28, 2013): Document this
+    /**
+     * Returns the element-face measure multiplied by the weights of the quadrature scheme
+     * used to initialize the accessor's cache.
+     */
     ValueVector<Real> const &get_face_w_measures(const Index face_id) const;
 
 
@@ -342,7 +348,7 @@ private:
 
 
     /** Grid (global) lengths cache */
-    std::shared_ptr<LengthCache> length_cache_;
+    LengthCache length_cache_;
 
     /** Element values cache */
     ElementValuesCache elem_values_;
