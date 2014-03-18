@@ -39,8 +39,7 @@ CartesianGridElementAccessor(
     const CartesianGrid<dim_> &patch,
     const Index index)
     :
-    CartesianGridElement<dim>(patch,index),
-    length_cache_ {new LengthCache}
+    CartesianGridElement<dim>(patch,index)
 {}
 
 
@@ -95,7 +94,7 @@ init_values(const ValueFlags flag,
     Assert((flag|admisible_flag) == admisible_flag,
            ExcFillFlagNotSupported(admisible_flag, flag));
 
-    length_cache_->reset(*this->get_grid());
+    length_cache_.reset(*this->get_grid());
 
     GridElemValueFlagsHandler elem_flags_handler(flag);
     GridFaceValueFlagsHandler face_flags_handler(flag);
@@ -116,7 +115,7 @@ init_values(const ValueFlags flag)
 {
     Assert(contains(flag, ValueFlags::ref_elem_coord_length),
            ExcMessage("Wrong flag passed."));
-    length_cache_->reset(*this->get_grid());
+    length_cache_.reset(*this->get_grid());
 }
 
 
@@ -165,14 +164,14 @@ inline Real
 CartesianGridElementAccessor<dim_>::
 measure() const
 {
-    Assert(length_cache_->is_filled(), ExcMessage("Cache not filed."));
+    Assert(length_cache_.is_filled(), ExcMessage("Cache not filed."));
 
     const auto &tensor_index = this->get_tensor_index();
 
     Real result = 1.;
     for (int d = 0; d < dim_; ++d)
     {
-        const auto &length_d = length_cache_->length_.get_data_direction(d);
+        const auto &length_d = length_cache_.length_.get_data_direction(d);
         result *= *(length_d[tensor_index[d]]);
     }
     return result;
@@ -185,14 +184,14 @@ CartesianGridElementAccessor<dim_>::
 face_measure(const Index face_id) const
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(length_cache_->is_filled(), ExcMessage("Cache not filed."));
+    Assert(length_cache_.is_filled(), ExcMessage("Cache not filed."));
 
     const auto &tensor_index = this->get_tensor_index();
 
     Real result = 1.;
     for (auto d : UnitElement<dim_>::face_active_directions[face_id])
     {
-        const auto &length_d = length_cache_->length_.get_data_direction(d);
+        const auto &length_d = length_cache_.length_.get_data_direction(d);
         result *= *(length_d[tensor_index[d]]);
     }
     return result;
@@ -287,14 +286,14 @@ array< Real, dim_>
 CartesianGridElementAccessor<dim_>::
 get_coordinate_lengths() const
 {
-    Assert(length_cache_->is_filled(),ExcMessage("Cache not filled"));
+    Assert(length_cache_.is_filled(),ExcMessage("Cache not filled"));
 
     const auto &tensor_index = this->get_tensor_index();
 
     array<Real,dim_> coord_length;
     for (int d = 0; d<dim_; d++)
     {
-        const auto &length_d = length_cache_->length_.get_data_direction(d);
+        const auto &length_d = length_cache_.length_.get_data_direction(d);
         coord_length[d] = *(length_d[tensor_index[d]]);
     }
     return coord_length;
