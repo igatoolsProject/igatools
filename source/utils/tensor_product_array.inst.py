@@ -19,22 +19,11 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
-
-
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating TensorProductArray
-for row in inst.tensor_product_arrays:
-    file_output.write('template class %s; \n' % (row))
-
-
+for dim in inst.ref_dom_dims:
+    file_output.write('template class TensorProductArray<%d> ;\n' % (dim))
+ 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
-
- 
- 

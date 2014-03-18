@@ -101,11 +101,14 @@ find_boost()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Optional features for building  igatools
 #
+# Choose the precision for the real values
+option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
 
 option(submit_test "Allow test submition" OFF)
 
-# Choose the precision for the real values
-option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
+#
+#-------------------------------------------------------------------------------
+
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #  spaces dimensions and ranks to compile the library for
