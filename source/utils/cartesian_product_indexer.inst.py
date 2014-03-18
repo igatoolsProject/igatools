@@ -18,20 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
 from init_instantiation_data import *
-
 file_output, inst = intialize_instantiation()
-
 file_output.write('IGA_NAMESPACE_OPEN\n')
 
-# instantiating CartesianProductIndexer
-for row in inst.cartesian_product_indexers:
-    file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
+for dim in inst.ref_dom_dims:
+    file_output.write('template class CartesianProductIndexer<%d> ;\n' % (dim))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')
-
 file_output.close()
-

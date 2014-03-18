@@ -27,7 +27,6 @@ value_vectors=['ValueVector<Real>']
 for deriv in inst.derivatives + inst.values:
     value_vectors.append('ValueVector<%s>' % (deriv))
 
-# instantiating ValueVector
 for row in value_vectors:
     file_output.write('template class %s; \n' % (row))
     file_output.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))

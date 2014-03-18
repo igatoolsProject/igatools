@@ -20,8 +20,6 @@
 
 #TODO: remove ref and phys space variables
 #TODO: remove table variable replace by userspaces
-#TODO: structure that are not of common use shuld be defined in their
-#      respectiy .inst.py file. Ex: tensor_index, value_table, etc
 
 """@package init_instantiation_data
 
@@ -68,7 +66,8 @@ class PhysSpaceTableRow:
       self.rank       = arg_list[3]
       self.trans_type = arg_list[4]
       self.space_dim  = self.dim +  self.codim
-      self.phys_range = self.physical_range(self.range,  self.space_dim, self.trans_type)
+      self.phys_range = self.physical_range(self.range, self.space_dim, 
+                                            self.trans_type)
       self.phys_rank  = self.physical_rank(self.rank)
       return None
 
@@ -156,6 +155,8 @@ class InstantiationInfo:
       
       self.UserPhysSpaces=[]
       self.PhysSpaces=[]
+ #---------------------------------------
+ 
       
       self.read_dimensions_file(filename)
       
@@ -166,19 +167,8 @@ class InstantiationInfo:
       
       self.create_ref_spaces()
       self.create_PhysSpaces()
-          
-
-
-      self.value_tables=[] #list ValueTable classes
-      self.create_value_table()
-
-      self.cartesian_product_indexers=[] #list CartesianProductIndexer classes
-      self.create_cartesian_product_indexer()
-
-      
-
-        
       return None
+
 
 
    def read_dimensions_file(self, filename):
@@ -285,19 +275,6 @@ class InstantiationInfo:
       return None
 
 
-#     # Mapping<dim, codim>
-#    def create_Mappings(self):
-#       ''' Creates a list of mappings '''
-#       self.MappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
-#                                    for x in self.all_table] )
-#      
-#       self.MappingDims = unique(self.MappingDims)
-#       self.UserMappingDims = unique( ['<%d,%d>' % (x.dim, x.codim)
-#                                        for x in self.user_table] )
-#       return None
-
-
-
    def create_PhysSpaces(self):
       self.PushForwards = unique(['PushForward<Transformation::%s, %d, %d>'
                                     %(x.trans_type, x.dim, x.codim) for x in self.all_table] )
@@ -355,40 +332,6 @@ class InstantiationInfo:
     
       return None
  
-
-
-
-
-##################################
-   def create_value_table(self):
-      '''Creates a list of the ValueTable class that needs to be instantiated'''
-
-      for deriv in self.derivatives + self.values:
-         self.value_tables.append('ValueTable<%s>' % (deriv))
-
-      return None
-##################################
-
-
-##################################
-   def create_cartesian_product_indexer(self):
-      '''Creates a list of the CartesianProductIndexer class that needs to be instantiated'''
-
-      C_list=[]
-
-      for row in self.all_table:
-         dim = row.dim
-         C = 'CartesianProductIndexer<%d>' % (dim)
-         C_list.append(C)
-
-      self.cartesian_product_indexers = unique(C_list)
-      return None
-##################################
-
-
-
-
-
 
 
 
