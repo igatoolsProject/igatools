@@ -336,6 +336,11 @@ evaluate_nurbs_gradients(
          * from the set of BSpline basis function N_0,...,N_n
          * where the i-th NURBS basis function is defined as
          *
+         *         P_i
+         * R_i = -------
+         *          Q
+         *
+         *
          *          dP_i       P_i * dQ
          * dR_i = -------  -  ------------
          *           Q            Q*Q
@@ -575,9 +580,19 @@ evaluate_nurbs_hessians(
          * from the set of BSpline basis function N_0,...,N_n
          * where the i-th NURBS basis function is defined as
          *
-         *          d2P_i     ( 2 * dP_i * dQ + P_i * d2Q )      2 * P_i * dQ * dQ
-         * dR_i = -------- - ------------------------------- + ---------------------
-         *            Q                    Q*Q                        Q*Q*Q
+         *         P_i
+         * R_i = -------
+         *          Q
+         *
+         *
+         *          dP_i       P_i * dQ
+         * dR_i = -------  -  ------------
+         *           Q            Q*Q
+         *
+         *
+         *           d2P_i     ( 2 * dP_i * dQ + P_i * d2Q )      2 * P_i * dQ * dQ
+         * d2R_i = -------- - ------------------------------- + ---------------------
+         *             Q                    Q*Q                        Q*Q*Q
          *
          * and
          *
