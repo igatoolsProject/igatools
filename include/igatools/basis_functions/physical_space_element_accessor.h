@@ -187,17 +187,17 @@ public :
     ///@{
     //Shape functions related
 
-    ValueTable<Value> const &get_basis_values() const;
+    ValueTable<Value> const &get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * @brief Return the one-dimensional container with the
      * values of the i-th basis function at the evaluation points.
      */
     typename ValueTable<Value>::const_view
-    get_basis_values(const Index func) const;
+    get_basis_values(const Index func,const TopologyId &topology_id = ElemTopology()) const;
 
     const Value &
-    get_basis_value(const Index func, const Index qp) const;
+    get_basis_value(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
     ValueTable<Derivative<1> > const &get_basis_gradients() const;
@@ -227,18 +227,6 @@ public :
 
     Real get_basis_divergence(const Index func, const Index qp) const;
 
-
-    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
-
-    /**
-     * @brief Return the one-dimensional container with the
-     * values of the i-th basis function at the evaluation points.
-     */
-    typename ValueTable<Value>::const_view
-    get_face_basis_values(const Index face_id, const Index func) const;
-
-    const Value &
-    get_face_basis_value(const Index face_id, const Index func, const Index qp) const;
 
 
     ValueTable<Derivative<1> > const &get_face_basis_gradients(const Index face_id) const;
@@ -340,7 +328,7 @@ public :
     ///@{
     //Fields related
     ValueVector< Value >
-    evaluate_field(const std::vector<Real> &local_coefs) const;
+    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     ValueVector< Derivative<1> >
     evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
@@ -348,8 +336,6 @@ public :
     ValueVector< Derivative<2> >
     evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
 
-    ValueVector< Value >
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
 
     ValueVector< Derivative<1> >
     evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
@@ -427,6 +413,10 @@ protected:
      * The output flags does not contain the word face.
      */
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
+
+
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+
 
     ElementValuesCache elem_values_;
 
