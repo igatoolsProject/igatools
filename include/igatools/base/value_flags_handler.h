@@ -29,15 +29,13 @@ IGA_NAMESPACE_OPEN
 
 
 
-
 class ValueFlagsHandler
 {
 public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Sets all boolean flags to false
-     * (except fill_none_ that is set to true).
+     * Default constructor. Sets all boolean flags to false.
      */
     ValueFlagsHandler();
 
@@ -93,9 +91,8 @@ public:
     /** Sets the filled status for hessians. */
     void set_hessians_filled(const bool status);
 
-protected:
-    bool fill_none_ = true;
 
+protected:
     bool fill_values_ = false;
     bool values_filled_ = false;
 
@@ -163,6 +160,9 @@ public:
     /** Move assignment operator. */
     GridElemValueFlagsHandler &operator=(GridElemValueFlagsHandler &&in) = default;
     ///@}
+
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const;
 
     /** Returns true if the quadrature points on the element must be filled. */
     bool fill_points() const;
@@ -265,6 +265,9 @@ public:
     GridFaceValueFlagsHandler &operator=(GridFaceValueFlagsHandler &&in) = default;
     ///@}
 
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const;
+
     /** Returns true if the gradients inverse must be filled. */
     bool fill_normals() const;
 
@@ -343,6 +346,9 @@ public:
     /** Move assignment operator. */
     MappingValueFlagsHandler &operator=(MappingValueFlagsHandler &&in) = default;
     ///@}
+
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const;
 
     /** Returns true if the gradients inverse must be filled. */
     bool fill_inv_gradients() const;
@@ -437,6 +443,8 @@ public:
     MappingFaceValueFlagsHandler &operator=(MappingFaceValueFlagsHandler &&in) = default;
     ///@}
 
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const;
 
     /** Returns true if the gradients inverse must be filled. */
     bool fill_normals() const;
@@ -520,6 +528,8 @@ public:
     BasisElemValueFlagsHandler &operator=(BasisElemValueFlagsHandler &&in) = default;
     ///@}
 
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const;
 
     /** Returns true if the divergences must be filled. */
     bool fill_divergences() const;

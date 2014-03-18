@@ -35,11 +35,11 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 
 
 
+
 //====================================================
 ValueFlagsHandler::
 ValueFlagsHandler()
     :
-    fill_none_(true),
     fill_values_(false),
     values_filled_(false),
     fill_gradients_(false),
@@ -48,12 +48,16 @@ ValueFlagsHandler()
     hessians_filled_(false)
 {}
 
-
 bool
 ValueFlagsHandler::
 fill_none() const
 {
-    return fill_none_;
+    bool fill_none = true;
+
+    if (fill_values_ || fill_gradients_ || fill_hessians_)
+        fill_none = false;
+
+    return fill_none;
 }
 
 
@@ -136,6 +140,17 @@ GridElemValueFlagsHandler()
     w_measures_filled_(false)
 {}
 
+bool
+GridElemValueFlagsHandler::
+fill_none() const
+{
+    bool fill_none = true;
+
+    if (fill_points_ || fill_measures_ || fill_w_measures_)
+        fill_none = false;
+
+    return fill_none;
+}
 
 GridElemValueFlagsHandler::
 GridElemValueFlagsHandler(const ValueFlags &flags)
@@ -231,6 +246,18 @@ GridFaceValueFlagsHandler()
     normals_filled_(false)
 {}
 
+bool
+GridFaceValueFlagsHandler::
+fill_none() const
+{
+    bool fill_none = true;
+
+    if (fill_normals_ || !GridElemValueFlagsHandler::fill_none())
+        fill_none = false;
+
+    return fill_none;
+}
+
 
 GridFaceValueFlagsHandler::
 GridFaceValueFlagsHandler(const ValueFlags &flags)
@@ -290,6 +317,21 @@ MappingValueFlagsHandler()
 {}
 
 
+bool
+MappingValueFlagsHandler::
+fill_none() const
+{
+    bool fill_none = true;
+
+    if (fill_inv_gradients_ ||
+        fill_inv_hessians_ ||
+        !ValueFlagsHandler::fill_none() ||
+        !GridElemValueFlagsHandler::fill_none())
+        fill_none = false;
+
+    return fill_none;
+}
+
 MappingValueFlagsHandler::
 MappingValueFlagsHandler(const ValueFlags &flags)
 {
@@ -298,48 +340,39 @@ MappingValueFlagsHandler(const ValueFlags &flags)
     {
         fill_points_ = true;
         fill_values_ = true;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_gradient))
     {
         fill_gradients_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_hessian))
     {
         fill_hessians_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_inv_gradient))
     {
         fill_inv_gradients_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_inv_hessian))
     {
         fill_inv_hessians_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::measure))
     {
         Assert(fill_gradients_, ExcNotInitialized());
         fill_measures_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::w_measure))
     {
         Assert(fill_measures_, ExcNotInitialized());
         fill_w_measures_ = true ;
-        fill_none_ = false;
     }
-
-//    Assert(fill_none_ == false,ExcMessage("Nothing to be filled."))
 }
 
 
@@ -400,6 +433,18 @@ MappingFaceValueFlagsHandler()
 {}
 
 
+bool
+MappingFaceValueFlagsHandler::
+fill_none() const
+{
+    bool fill_none = true;
+
+    if (fill_normals_ || !MappingValueFlagsHandler::fill_none())
+        fill_none = false;
+
+    return fill_none;
+}
+
 MappingFaceValueFlagsHandler::
 MappingFaceValueFlagsHandler(const ValueFlags &flags)
 {
@@ -408,54 +453,44 @@ MappingFaceValueFlagsHandler(const ValueFlags &flags)
     {
         fill_points_ = true;
         fill_values_ = true;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_face_gradient))
     {
         fill_gradients_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_face_hessian))
     {
         fill_hessians_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_face_inv_gradient))
     {
         fill_inv_gradients_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::map_face_inv_hessian))
     {
         fill_inv_hessians_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::face_measure))
     {
         Assert(fill_gradients_, ExcNotInitialized());
         fill_measures_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::face_w_measure))
     {
         Assert(fill_measures_, ExcNotInitialized());
         fill_w_measures_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::face_normal))
     {
         fill_normals_ = true ;
-        fill_none_ = false;
     }
-
-//    Assert(fill_none_ == false,ExcMessage("Nothing to be filled."))
 }
 
 
@@ -493,6 +528,18 @@ BasisElemValueFlagsHandler()
 {}
 
 
+bool
+BasisElemValueFlagsHandler::
+fill_none() const
+{
+    bool fill_none = true;
+
+    if (fill_divergences_ || !ValueFlagsHandler::fill_none())
+        fill_none = false;
+
+    return fill_none;
+}
+
 
 
 BasisElemValueFlagsHandler::
@@ -501,25 +548,21 @@ BasisElemValueFlagsHandler(const ValueFlags &flags)
     if (contains(flags, ValueFlags::value))
     {
         fill_values_ = true;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::gradient))
     {
         fill_gradients_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::hessian))
     {
         fill_hessians_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::divergence))
     {
         fill_divergences_ = true ;
-        fill_none_ = false;
     }
 }
 
@@ -555,25 +598,21 @@ BasisFaceValueFlagsHandler(const ValueFlags &flags)
     if (contains(flags, ValueFlags::face_value))
     {
         fill_values_ = true;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::face_gradient))
     {
         fill_gradients_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::face_hessian))
     {
         fill_hessians_ = true ;
-        fill_none_ = false;
     }
 
     if (contains(flags, ValueFlags::face_divergence))
     {
         fill_divergences_ = true ;
-        fill_none_ = false;
     }
 }
 //====================================================

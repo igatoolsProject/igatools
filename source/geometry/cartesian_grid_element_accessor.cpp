@@ -95,14 +95,16 @@ init_values(const ValueFlags flag,
     Assert((flag|admisible_flag) == admisible_flag,
            ExcFillFlagNotSupported(admisible_flag, flag));
 
-
     length_cache_->reset(*this->get_grid());
 
-    elem_values_.reset(flag,quad);
+    GridElemValueFlagsHandler elem_flags_handler(flag);
+    GridFaceValueFlagsHandler face_flags_handler(flag);
+
+    elem_values_.reset(elem_flags_handler,quad);
 
     Index face_id = 0 ;
     for (auto& face_value : face_values_)
-        face_value.reset(flag, quad, face_id++);
+        face_value.reset(face_flags_handler, quad, face_id++);
 }
 
 
@@ -352,12 +354,12 @@ template< int cache_codim >
 void
 CartesianGridElementAccessor<dim_>::
 ValuesCache<cache_codim>::
-reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad)
+reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
 {
     const auto n_points_direction = quad.get_num_points_direction();
     const Size n_points = n_points_direction.flat_size();
 
-    flags_handler_ = FlagsHandler(fill_flags);
+    flags_handler_ = flags_handler;
 
     if (flags_handler_.fill_points())
     {
@@ -387,9 +389,9 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 ElementValuesCache::
-reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad)
+reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
 {
-    ValuesCache<0>::reset(fill_flags,quad);
+    ValuesCache<0>::reset(flags_handler,quad);
 }
 
 
@@ -398,11 +400,11 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 FaceValuesCache::
-reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad1, const Index face_id)
+reset(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad1, const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     const auto quad = quad1.collapse_to_face(face_id);
-    ValuesCache<1>::reset(fill_flags,quad);
+    ValuesCache<1>::reset(flags_handler,quad);
 }
 
 
@@ -411,7 +413,7 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 FaceValuesCache::
-reset(const ValueFlags &fill_flags,const Quadrature<dim_-1> &quad1, const Index face_id)
+reset(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_-1> &quad1, const Index face_id)
 {
     Assert(false, ExcNotImplemented());
 }

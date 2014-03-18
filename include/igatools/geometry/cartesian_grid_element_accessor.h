@@ -282,19 +282,24 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad);
+        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
 
 
-        static const bool is_elem_cache = (cache_codim == 0)?true:false;
-        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
+//        static const bool is_elem_cache = (cache_codim == 0)?true:false;
+//        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
 
-        FlagsHandler flags_handler_;
+        GridElemValueFlagsHandler flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
+        /** Measure of the element in the grid (equal to the product of the element lenghts). */
         Real measure_ = 0.0;
+
+        /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
+
         TensorProductArray<dim_> unit_points_;
+
         ValueVector<Real> unit_weights_;
         ///@}
 
@@ -309,7 +314,7 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad);
+        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
 
     };
 
@@ -320,9 +325,13 @@ private:
     class FaceValuesCache : public ValuesCache<1>
     {
     public:
-        void reset(const ValueFlags &fill_flags,const Quadrature<dim_> &quad, const Index face_id);
+        void reset(const GridFaceValueFlagsHandler &flags_handler,
+                   const Quadrature<dim_> &quad,
+                   const Index face_id);
 
-        void reset(const ValueFlags &fill_flags,const Quadrature<dim_-1> &quad, const Index face_id);
+        void reset(const GridFaceValueFlagsHandler &flags_handler,
+                   const Quadrature<dim_-1> &quad,
+                   const Index face_id);
     };
 
 
