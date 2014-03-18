@@ -354,23 +354,27 @@ MappingValueFlagsHandler(const ValueFlags &flags)
 
     if (contains(flags, ValueFlags::map_inv_gradient))
     {
+        fill_gradients_ = true ;
+        fill_measures_ = true ;
         fill_inv_gradients_ = true ;
     }
 
     if (contains(flags, ValueFlags::map_inv_hessian))
     {
+        fill_hessians_ = true ;
         fill_inv_hessians_ = true ;
     }
 
     if (contains(flags, ValueFlags::measure))
     {
-        Assert(fill_gradients_, ExcNotInitialized());
+        fill_gradients_ = true ;
         fill_measures_ = true ;
     }
 
     if (contains(flags, ValueFlags::w_measure))
     {
-        Assert(fill_measures_, ExcNotInitialized());
+        fill_gradients_ = true ;
+        fill_measures_ = true ;
         fill_w_measures_ = true ;
     }
 }
@@ -467,23 +471,27 @@ MappingFaceValueFlagsHandler(const ValueFlags &flags)
 
     if (contains(flags, ValueFlags::map_face_inv_gradient))
     {
+        fill_gradients_ = true ;
+        fill_measures_ = true ;
         fill_inv_gradients_ = true ;
     }
 
     if (contains(flags, ValueFlags::map_face_inv_hessian))
     {
+        fill_hessians_ = true ;
         fill_inv_hessians_ = true ;
     }
 
     if (contains(flags, ValueFlags::face_measure))
     {
-        Assert(fill_gradients_, ExcNotInitialized());
+        fill_gradients_ = true ;
         fill_measures_ = true ;
     }
 
     if (contains(flags, ValueFlags::face_w_measure))
     {
-        Assert(fill_measures_, ExcNotInitialized());
+        fill_gradients_ = true ;
+        fill_measures_ = true ;
         fill_w_measures_ = true ;
     }
 
@@ -562,6 +570,7 @@ BasisElemValueFlagsHandler(const ValueFlags &flags)
 
     if (contains(flags, ValueFlags::divergence))
     {
+        fill_gradients_ = true ;
         fill_divergences_ = true ;
     }
 }
@@ -612,6 +621,7 @@ BasisFaceValueFlagsHandler(const ValueFlags &flags)
 
     if (contains(flags, ValueFlags::face_divergence))
     {
+        fill_gradients_ = true ;
         fill_divergences_ = true ;
     }
 }

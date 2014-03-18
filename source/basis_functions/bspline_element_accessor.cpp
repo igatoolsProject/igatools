@@ -343,8 +343,12 @@ init_values(const ValueFlags fill_flag,
     }
 
     auto f_flag = fill_flag;
+
     if (contains(f_flag, ValueFlags::divergence))
         f_flag |= ValueFlags::gradient;
+
+    if (contains(f_flag, ValueFlags::face_divergence))
+        f_flag |= ValueFlags::face_gradient;
 
     int max_der_order = -1;
 
@@ -365,6 +369,7 @@ init_values(const ValueFlags fill_flag,
 
     if (contains(f_flag, ValueFlags::face_hessian))
         max_der_order=std::max(max_der_order,2);
+
 
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
@@ -451,10 +456,12 @@ reset_element_cache(const ValueFlags fill_flag,
         elem_values_.reset(elem_flags_handler, n_basis_direction, quad);
 
 
-    Index face_id = 0 ;
     if (!face_flags_handler.fill_none())
+    {
+        Index face_id = 0 ;
         for (auto& face_value : face_values_)
             face_value.reset(face_id++, face_flags_handler, n_basis_direction, quad);
+    }
     //--------------------------------------------------------------------------
 }
 
@@ -500,16 +507,8 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     //--------------------------------------------------------------------------
 
 
-//    using std::cout;
-//    using std::endl;
-
     //--------------------------------------------------------------------------
     // resizing the containers for the basis functions
-
-//    Assert(flags_handler_.fill_none() == false,
-//           ExcMessage("Nothing to reset"));
-
-    int max_der_order = -1;
     if (flags_handler_.fill_values())
     {
         if (D0phi_hat_.get_num_points() != total_n_points ||
@@ -525,9 +524,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
             phi_hat_.resize(total_n_basis,total_n_points);
             phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,0);
-
     }
     else
     {
@@ -543,8 +539,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
             D1phi_hat_.resize(total_n_basis,total_n_points);
             D1phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,1);
     }
     else
     {
@@ -563,8 +557,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
             div_phi_hat_.resize(total_n_basis,total_n_points);
             div_phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,1);
     }
     else
     {
@@ -581,15 +573,11 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
             D2phi_hat_.resize(total_n_basis,total_n_points);
             D2phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,2);
     }
     else
     {
         D2phi_hat_.clear();
     }
-
-//    Assert((max_der_order>=0), ExcMessage("Not a right ValueFlag"));
     //--------------------------------------------------------------------------
 
 

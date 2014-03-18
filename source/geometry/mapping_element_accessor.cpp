@@ -160,14 +160,10 @@ template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 ElementValuesCache::
-reset(const ValueFlags fill_flag,
+reset(const MappingValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
-    Assert(contains(fill_flag, ValueFlags::none),
-           ExcMessage("nothing to reset"));
-
-    MappingValueFlagsHandler flag_handler(fill_flag);
-    ValuesCache<0>::reset(flag_handler,quad);
+    ValuesCache<0>::reset(flags_handler,quad);
 
     this->set_initialized(true);
 }
@@ -179,18 +175,12 @@ void
 MappingElementAccessor<dim_ref_,codim_>::
 FaceValuesCache::
 reset(const Index face_id,
-      const ValueFlags fill_flag,
+      const MappingFaceValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    Assert(contains(fill_flag, ValueFlags::none),
-           ExcMessage("nothing to reset"));
-
-
-    MappingFaceValueFlagsHandler flags_handler(fill_flag);
     ValuesCache<1>::reset(flags_handler,quad.collapse_to_face(face_id));
-
 
     if (flags_handler.fill_normals())
     {
@@ -203,7 +193,6 @@ reset(const Index face_id,
     {
         normals_.clear();
     }
-    flags_handler.set_normals_filled(false);
 
     this->set_initialized(true);
 }
@@ -215,7 +204,7 @@ void
 MappingElementAccessor<dim_ref_,codim_>::
 FaceValuesCache::
 reset(const Index face_id,
-      const ValueFlags fill_flag,
+      const MappingFaceValueFlagsHandler &flags_handler,
       const Quadrature<dim-1> &quad1)
 {
     Assert(false, ExcNotImplemented());
@@ -229,7 +218,6 @@ MappingElementAccessor<dim_ref_,codim_>::
 init_values(const ValueFlags fill_flag,
             const Quadrature<dim> &quad)
 {
-//  Assert(elem_values_.initialized_ == false, ExcMessage("Already initialized")) ;
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
 
@@ -257,11 +245,23 @@ init_values(const ValueFlags fill_flag,
     if (contains(f_flag , ValueFlags::face_measure))
         f_flag |= ValueFlags::map_face_gradient;
 
-    elem_values_.reset(f_flag, quad);
+    const MappingValueFlagsHandler elem_flags_handler(f_flag);
+    const MappingFaceValueFlagsHandler face_flags_handler(f_flag);
+    Assert(!elem_flags_handler.fill_none() ||
+           !face_flags_handler.fill_none(),
+           ExcMessage("Nothing to initialize/reset."))
 
-    Index face_id = 0 ;
-    for (auto& face_value : face_values_)
-        face_value.reset(face_id++, f_flag, quad);
+
+    if (!elem_flags_handler.fill_none())
+        elem_values_.reset(elem_flags_handler, quad);
+
+
+    if (!face_flags_handler.fill_none())
+    {
+        Index face_id = 0 ;
+        for (auto& face_value : face_values_)
+            face_value.reset(face_id++, face_flags_handler, quad);
+    }
 
     mapping_->init_element(fill_flag, quad);
 }
@@ -315,20 +315,16 @@ fill_values()
 
     elem_values_.fill_composite_values();
 
-    if (elem_values_.flags_handler_.fill_measures() ||
-        elem_values_.flags_handler_.fill_w_measures())
+    if (elem_values_.flags_handler_.fill_w_measures())
     {
-        if (elem_values_.flags_handler_.fill_w_measures())
-        {
 
-            Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
-            const ValueVector<Real> &dets_map = elem_values_.measures_ ;
-            const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
+        Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
+        const ValueVector<Real> &dets_map = elem_values_.measures_ ;
+        const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
-            for (Index i = 0; i < elem_values_.num_points_; i++)
-                elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;
-            elem_values_.flags_handler_.set_w_measures_filled(true);
-        }
+        for (Index i = 0; i < elem_values_.num_points_; i++)
+            elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;
+        elem_values_.flags_handler_.set_w_measures_filled(true);
     }
 
 
@@ -380,28 +376,15 @@ fill_face_values(const Index face_id)
 
     face_value.fill_composite_values();
 
-//    LogStream out;
-//    using std::endl;
-
-    if (face_value.flags_handler_.fill_measures() ||
-        face_value.flags_handler_.fill_w_measures())
+    if (face_value.flags_handler_.fill_w_measures())
     {
-        if (face_value.flags_handler_.fill_w_measures())
-        {
-            Assert(face_value.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
-            const ValueVector<Real> &dets_map = face_value.measures_ ;
-//            out <<"dets_map="<<endl;
-//            dets_map.print_info(out);
-            const auto &weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
-//            out <<"weights="<<endl;
-//            weights.print_info(out);
-//            Assert(false,ExcNotImplemented())
-//            AssertThrow(false,ExcNotImplemented())
-            for (Index i = 0; i < num_points; i++)
-                face_value.w_measures_[i] = dets_map[i] * weights[i] ;
+        Assert(face_value.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
+        const ValueVector<Real> &dets_map = face_value.measures_ ;
+        const auto &weights = CartesianGridElementAccessor<dim_ref_>::get_face_w_measures(face_id);
+        for (Index i = 0; i < num_points; i++)
+            face_value.w_measures_[i] = dets_map[i] * weights[i] ;
 
-            face_value.flags_handler_.set_w_measures_filled(true);
-        }
+        face_value.flags_handler_.set_w_measures_filled(true);
     }
 
     if (face_value.flags_handler_.fill_normals())
@@ -432,16 +415,25 @@ MappingElementAccessor<dim_ref_,codim_>::
 ValuesCache<cache_codim>::
 fill_composite_values()
 {
-    if (flags_handler_.fill_inv_gradients())
+    if (flags_handler_.fill_measures())
     {
         Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
-        for (Index i = 0; i < num_points_; i++)
+        if (flags_handler_.fill_inv_gradients())
         {
-            measures_[i] =
-                inverse<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
-                    gradients_[i],inv_gradients_[i]);
+            for (Index i = 0; i < num_points_; i++)
+                measures_[i] =
+                    inverse<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
+                        gradients_[i],inv_gradients_[i]);
+
+            flags_handler_.set_inv_gradients_filled(true);
         }
-        flags_handler_.set_inv_gradients_filled(true);
+        else
+        {
+            for (Index i = 0; i < num_points_; i++)
+                measures_[i] = determinant<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
+                                   gradients_[i]);
+        }
+        flags_handler_.set_measures_filled(true);
     }
 
     /*
@@ -468,39 +460,6 @@ fill_composite_values()
         flags_handler_.set_inv_hessians_filled(true);
 
     }
-
-
-
-    if (flags_handler_.fill_measures() ||
-        flags_handler_.fill_w_measures())
-    {
-        Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
-
-//        LogStream out;
-//        using std::endl;
-//    TODO: to be solved
-        for (Index i = 0; i < num_points_; i++)
-        {
-//            out << "gradients_["<<i<<"]="<<gradients_[i] << endl;
-//           out << "measures_["<<i<<"]="<<measures_[i] << endl;
-            measures_[i] =
-                determinant<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
-                    gradients_[i]);
-//            out << "face_value.inv_gradients_["<<i<<"]="<<face_value.inv_gradients_[i] << endl;
-
-//            face_value.measures_[i] =
-//                inverse<UnitElement<dim>::face_dim,space_dim>(
-//                      face_value.gradients_[i],face_value.inv_gradients_[i]);
-
-//            out << "measures_["<<i<<"]="<<measures_[i] << endl;
-//            Assert(false,ExcNotImplemented())
-//            AssertThrow(false,ExcNotImplemented())
-
-        }
-        flags_handler_.set_measures_filled(true);
-
-    }
-
 }
 
 template< int dim_ref_, int codim_ >

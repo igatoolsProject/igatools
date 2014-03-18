@@ -365,7 +365,7 @@ private:
      */
     struct ElementValuesCache : ValuesCache<0>
     {
-        void reset(const ValueFlags fill_flag,
+        void reset(const MappingValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
     };
@@ -373,15 +373,13 @@ private:
     struct FaceValuesCache : ValuesCache<1>
     {
         void reset(const Index face_id,
-                   const ValueFlags fill_flag,
+                   const MappingFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
         void reset(const Index face_id,
-                   const ValueFlags fill_flag,
+                   const MappingFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim-1> &quad);
 
-
-        bool fill_normals_ = false;
         ValueVector< ValueMap > normals_;
     };
 

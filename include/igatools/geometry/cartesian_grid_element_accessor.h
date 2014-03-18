@@ -279,10 +279,13 @@ private:
     class ValuesCache : public CacheStatus
     {
     public:
+        static const bool is_elem_cache = (cache_codim == 0)?true:false;
+        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
+
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+        void reset(const FlagsHandler &flags_handler,const Quadrature<dim_> &quad);
 
         /**
          * Fill the cache member.
@@ -291,10 +294,8 @@ private:
          */
         void fill(const Real measure);
 
-//        static const bool is_elem_cache = (cache_codim == 0)?true:false;
-//        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
 
-        GridElemValueFlagsHandler flags_handler_;
+        FlagsHandler flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
