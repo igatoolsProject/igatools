@@ -116,9 +116,9 @@ class RefSpaceRow:
 class InstantiationInfo:
    """ Stores "tables" with useful entries to be used for instantiations.
    
-   This information is generated using a
-   physical spaces tables that was genererated at configure time
-   by the user.
+   This information is generated using a table of
+   physical spaces that was genererated at configure time
+   by user passed options.
 
    """
   
@@ -362,3 +362,40 @@ def intialize_instantiation():
 
    return file_output, inst
 
+
+
+
+class Instantiation:
+    """ Main function called at the beginning of all instatiation scripts."""
+   
+   
+    def __init__(self, inc_files=[], verbose=False):
+        #Getting a dictionary or arguments.
+        from sys import argv as sysargv
+        from os import sep as ossep
+        args = dict([arg.split('=') for arg in sysargv[1:]])    
+
+        # Reading information from dimensions file.
+        self.inst = InstantiationInfo(args['config_file'], args['max_der_order'])
+        #  Some debug information printing
+        if verbose:
+            print('dim codim range rank space_dim')
+            for x in inst.all_table:
+                print (x.dim, x.codim, x.range, x.rank, x.space_dim)
+       
+        # Openning the output file.
+        self.file_output = open(args['out_file'], 'w')
+        # Writing the header.
+        header = ( '// This file was automatically generated ' +
+                   'from %s \n' % (sysargv[0].split(ossep)[-1]) +
+                   '// DO NOT edit as it will be overwritten.\n\n')
+        self.file_output.write(header)
+        if inc_files:
+            for file in inc_files:
+                self.file_output.write('#include <igatools/%s>\n' %file)
+        self.file_output.write('IGA_NAMESPACE_OPEN\n')
+       
+    def __del__(self):
+        self.file_output.write('IGA_NAMESPACE_CLOSE\n')
+        self.file_output.close() 
+        
