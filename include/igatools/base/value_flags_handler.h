@@ -292,7 +292,7 @@ protected:
  * The enum class ValueFlags is a bitmask that implements a lot of different flags,
  * also referring to different concepts, and is therefore difficult to manage.
  * This is the reason that makes this class useful: the unique constructor
- * MappingValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
+ * MappingElemValueFlagsHandler(const ValueFlags &flags) takes as input argument a ValueFlags
  * entry and filters the values that have valid meaning for the mapping on the element, setting the
  * corresponding boolean entries properly.
  *
@@ -309,7 +309,7 @@ protected:
  * @author M. Martinelli
  * @date 14 Mar 2014
  */
-class MappingValueFlagsHandler :
+class MappingElemValueFlagsHandler :
     public ValueFlagsHandler,
     public GridElemValueFlagsHandler
 {
@@ -317,34 +317,34 @@ public:
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */
-    MappingValueFlagsHandler();
+    MappingElemValueFlagsHandler();
 
     /**
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
      * that specify the quantities that must be computed/filled.
      */
-    MappingValueFlagsHandler(const ValueFlags &flags);
+    MappingElemValueFlagsHandler(const ValueFlags &flags);
 
     /** Copy constructor. */
-    MappingValueFlagsHandler(const MappingValueFlagsHandler &in) = default;
+    MappingElemValueFlagsHandler(const MappingElemValueFlagsHandler &in) = default;
 
     /** Move constructor. */
-    MappingValueFlagsHandler(MappingValueFlagsHandler &&in) = default;
+    MappingElemValueFlagsHandler(MappingElemValueFlagsHandler &&in) = default;
 
 
     /** Destructor. */
-    ~MappingValueFlagsHandler() = default;
+    ~MappingElemValueFlagsHandler() = default;
     ///@}
 
 
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    MappingValueFlagsHandler &operator=(const MappingValueFlagsHandler &in) = default;
+    MappingElemValueFlagsHandler &operator=(const MappingElemValueFlagsHandler &in) = default;
 
 
     /** Move assignment operator. */
-    MappingValueFlagsHandler &operator=(MappingValueFlagsHandler &&in) = default;
+    MappingElemValueFlagsHandler &operator=(MappingElemValueFlagsHandler &&in) = default;
     ///@}
 
     /** Returns true if the nothing must be filled. */
@@ -406,7 +406,7 @@ protected:
  * @date 14 Mar 2014
  */
 class MappingFaceValueFlagsHandler :
-    public MappingValueFlagsHandler
+    public MappingElemValueFlagsHandler
 {
 public:
     /** @name Constructors */

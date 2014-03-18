@@ -448,8 +448,8 @@ reset_element_cache(const ValueFlags fill_flag,
     BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
 
 
-    Assert(elem_flags_handler.fill_none() == false ||
-           face_flags_handler.fill_none() == false,
+    Assert(!elem_flags_handler.fill_none() ||
+           !face_flags_handler.fill_none(),
            ExcMessage("Nothing to reset"));
 
     if (!elem_flags_handler.fill_none())
@@ -582,7 +582,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
 
 
     this->set_initialized(true);
-//    this->set_filled(false);
 }
 
 template <int dim, int range, int rank>

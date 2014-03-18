@@ -160,7 +160,7 @@ template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 ElementValuesCache::
-reset(const MappingValueFlagsHandler &flags_handler,
+reset(const MappingElemValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
     ValuesCache<0>::reset(flags_handler,quad);
@@ -223,7 +223,7 @@ init_values(const ValueFlags fill_flag,
 
     // initalizing the cache of the CartesianGridElementAccessor
     {
-        ValueFlags grid_flag = mapping_->required_flags();;
+        ValueFlags grid_flag = mapping_->required_flags();
         if (contains(fill_flag , ValueFlags::point))
             grid_flag |= ValueFlags::point;
         if (contains(fill_flag , ValueFlags::w_measure))
@@ -245,7 +245,7 @@ init_values(const ValueFlags fill_flag,
     if (contains(f_flag , ValueFlags::face_measure))
         f_flag |= ValueFlags::map_face_gradient;
 
-    const MappingValueFlagsHandler elem_flags_handler(f_flag);
+    const MappingElemValueFlagsHandler elem_flags_handler(f_flag);
     const MappingFaceValueFlagsHandler face_flags_handler(f_flag);
     Assert(!elem_flags_handler.fill_none() ||
            !face_flags_handler.fill_none(),
@@ -254,7 +254,6 @@ init_values(const ValueFlags fill_flag,
 
     if (!elem_flags_handler.fill_none())
         elem_values_.reset(elem_flags_handler, quad);
-
 
     if (!face_flags_handler.fill_none())
     {
@@ -422,16 +421,14 @@ fill_composite_values()
         {
             for (Index i = 0; i < num_points_; i++)
                 measures_[i] =
-                    inverse<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
-                        gradients_[i],inv_gradients_[i]);
+                    inverse<cache_dim,space_dim>(gradients_[i],inv_gradients_[i]);
 
             flags_handler_.set_inv_gradients_filled(true);
         }
         else
         {
             for (Index i = 0; i < num_points_; i++)
-                measures_[i] = determinant<(dim-cache_codim>=0)?dim-cache_codim:0,space_dim>(
-                                   gradients_[i]);
+                measures_[i] = determinant<cache_dim,space_dim>(gradients_[i]);
         }
         flags_handler_.set_measures_filled(true);
     }

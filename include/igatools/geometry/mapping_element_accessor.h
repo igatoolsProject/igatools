@@ -325,8 +325,10 @@ private:
 
         using Grad = Conditional<is_elem_cache, GradientMap, GradientFaceMap>;
         using Hess = Conditional<is_elem_cache, HessianMap, HessianFaceMap>;
-        using FlagsHandler = Conditional<is_elem_cache,MappingValueFlagsHandler,MappingFaceValueFlagsHandler>;
+        using FlagsHandler = Conditional<is_elem_cache,MappingElemValueFlagsHandler,MappingFaceValueFlagsHandler>;
 
+
+        static const int cache_dim = (dim-cache_codim>=0)?dim-cache_codim:0;
 
         void reset(const FlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
@@ -349,8 +351,8 @@ private:
         ValueVector< ValueMap > values_;
         ValueVector< Grad > gradients_;
         ValueVector< Hess > hessians_;
-        ValueVector< Derivatives< space_dim,((dim-cache_codim>=0)?dim-cache_codim:0),1,1 > > inv_gradients_;
-        ValueVector< Derivatives< space_dim,((dim-cache_codim>=0)?dim-cache_codim:0),1,2 > > inv_hessians_;
+        ValueVector< Derivatives< space_dim,cache_dim,1,1 > > inv_gradients_;
+        ValueVector< Derivatives< space_dim,cache_dim,1,2 > > inv_hessians_;
         ValueVector< Real > measures_;
         ValueVector< Real > w_measures_;
 
@@ -365,7 +367,7 @@ private:
      */
     struct ElementValuesCache : ValuesCache<0>
     {
-        void reset(const MappingValueFlagsHandler &flags_handler,
+        void reset(const MappingElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
     };

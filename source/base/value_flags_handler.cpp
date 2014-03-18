@@ -305,8 +305,8 @@ set_normals_filled(const bool status)
 
 
 //====================================================
-MappingValueFlagsHandler::
-MappingValueFlagsHandler()
+MappingElemValueFlagsHandler::
+MappingElemValueFlagsHandler()
     :
     ValueFlagsHandler(),
     GridElemValueFlagsHandler(),
@@ -318,7 +318,7 @@ MappingValueFlagsHandler()
 
 
 bool
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 fill_none() const
 {
     bool fill_none = true;
@@ -332,8 +332,8 @@ fill_none() const
     return fill_none;
 }
 
-MappingValueFlagsHandler::
-MappingValueFlagsHandler(const ValueFlags &flags)
+MappingElemValueFlagsHandler::
+MappingElemValueFlagsHandler(const ValueFlags &flags)
 {
     if (contains(flags, ValueFlags::point) ||
         contains(flags, ValueFlags::map_value))
@@ -381,42 +381,42 @@ MappingValueFlagsHandler(const ValueFlags &flags)
 
 
 bool
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 fill_inv_gradients() const
 {
     return fill_inv_gradients_;
 }
 
 bool
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 inv_gradients_filled() const
 {
     return inv_gradients_filled_;
 }
 
 void
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 set_inv_gradients_filled(const bool status)
 {
     inv_gradients_filled_ = status;
 }
 
 bool
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 fill_inv_hessians() const
 {
     return fill_inv_hessians_;
 }
 
 bool
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 inv_hessians_filled() const
 {
     return inv_hessians_filled_;
 }
 
 void
-MappingValueFlagsHandler::
+MappingElemValueFlagsHandler::
 set_inv_hessians_filled(const bool status)
 {
     inv_hessians_filled_ = status;
@@ -431,7 +431,7 @@ set_inv_hessians_filled(const bool status)
 MappingFaceValueFlagsHandler::
 MappingFaceValueFlagsHandler()
     :
-    MappingValueFlagsHandler(),
+    MappingElemValueFlagsHandler(),
     fill_normals_(false),
     normals_filled_(false)
 {}
@@ -443,7 +443,7 @@ fill_none() const
 {
     bool fill_none = true;
 
-    if (fill_normals_ || !MappingValueFlagsHandler::fill_none())
+    if (fill_normals_ || !MappingElemValueFlagsHandler::fill_none())
         fill_none = false;
 
     return fill_none;
