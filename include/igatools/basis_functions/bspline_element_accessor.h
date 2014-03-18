@@ -38,8 +38,64 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+class TopologyId
+{
+public:
+    TopologyId(const Index id)
+        :
+        id_(id)
+    {};
+
+    Index get_id() const
+    {
+        return id_;
+    }
+
+    bool is_element() const
+    {
+        return (id_ == -1)?true:false;
+    }
+
+    bool is_face() const
+    {
+        return (id_ >= 0)?true:false;
+    }
+
+private:
+    Index id_;
+};
+
+
+class ElemTopology : public TopologyId
+{
+public:
+    ElemTopology()
+        :
+        TopologyId(-1)
+    {};
+};
+
+class FaceTopology : public TopologyId
+{
+public:
+    FaceTopology(const Index id)
+        :
+        TopologyId(id)
+    {
+        Assert(id>=0,ExcMessage("Face ID must be positive."));
+    };
+};
+
+
+
+
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
+
+
+
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -214,7 +270,7 @@ public:
      * Reference to a ValueTable with the values of all local basis function
      * at each evaluation point.
      */
-    ValueTable<Value> const &get_basis_values() const;
+    ValueTable<Value> const &get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to a ValueTable with the values of all local basis function
@@ -235,7 +291,7 @@ public:
     ValueTable<Derivative<2>> const &get_basis_hessians() const;
 
     typename ValueTable<Value>::const_view
-    get_basis_values(const Index i) const;
+    get_basis_values(const Index i,const TopologyId &topology_id = ElemTopology()) const;
 
 
     typename ValueTable<Div>::const_view
@@ -254,7 +310,7 @@ public:
      * Reference to the value of a local basis function
      * at one evaluation point.
      */
-    Value const &get_basis_value(const Index basis, const Index qp) const;
+    Value const &get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to the divergence of a local basis function
@@ -558,6 +614,9 @@ protected:
                    const Quadrature<dim-1> &quad);
 
     };
+
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+
     ///@}
 
 public:

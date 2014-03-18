@@ -44,6 +44,11 @@ using std::vector;
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
+
 //#define NOT_OPTIMIZED
 
 namespace
@@ -1202,17 +1207,36 @@ get_space() const -> const Space_t *
     return (space_);
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+               ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
 
 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_values() const -> ValueTable<Value> const &
+get_basis_values(const TopologyId &topology_id) const -> ValueTable<Value> const &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.values_filled(), ExcCacheNotFilled());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
 
-    return elem_values_.phi_hat_;
+    return cache.phi_hat_;
 }
 
 
@@ -1220,9 +1244,9 @@ get_basis_values() const -> ValueTable<Value> const &
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_values(const Index i) const -> typename ValueTable<Value>::const_view
+get_basis_values(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Value>::const_view
 {
-    return this->get_basis_values().get_function_view(i);
+    return this->get_basis_values(topology_id).get_function_view(i);
 }
 
 
@@ -1295,11 +1319,12 @@ get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::c
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_value(const Index basis, const Index qp) const -> Value const &
+get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id) const -> Value const &
 {
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_basis_values(basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    return this->get_basis_values(basis,topology_id)[qp];
 }
 
 
