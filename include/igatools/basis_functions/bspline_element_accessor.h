@@ -27,6 +27,7 @@
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/base/function.h>
+#include <igatools/geometry/topology.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
@@ -37,56 +38,6 @@
 #include <igatools/basis_functions/bernstein_basis.h>
 
 IGA_NAMESPACE_OPEN
-
-
-
-class TopologyId
-{
-public:
-    TopologyId(const Index id)
-        :
-        id_(id)
-    {};
-
-    Index get_id() const
-    {
-        return id_;
-    }
-
-    bool is_element() const
-    {
-        return (id_ == -1)?true:false;
-    }
-
-    bool is_face() const
-    {
-        return (id_ >= 0)?true:false;
-    }
-
-private:
-    Index id_;
-};
-
-
-class ElemTopology : public TopologyId
-{
-public:
-    ElemTopology()
-        :
-        TopologyId(-1)
-    {};
-};
-
-class FaceTopology : public TopologyId
-{
-public:
-    FaceTopology(const Index id)
-        :
-        TopologyId(id)
-    {
-        Assert(id>=0,ExcMessage("Face ID must be positive."));
-    };
-};
 
 
 
