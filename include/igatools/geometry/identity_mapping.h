@@ -46,8 +46,6 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
 public:
@@ -78,9 +76,9 @@ public:
 
     void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
 
     /**
      * Return a Mapping that is a deep copy of the caller object.
@@ -95,7 +93,7 @@ public:
 
 private:
     GradientType A_;
-    std::array<GradientFaceType, UnitElement<dim>::faces_per_element> face_A_;
+    std::array<GradientType, UnitElement<dim>::faces_per_element> face_A_;
     std::vector<PointType> points_;
     std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
 };

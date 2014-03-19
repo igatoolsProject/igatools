@@ -272,7 +272,7 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
         ValueFlags::point|ValueFlags::map_value|ValueFlags::map_gradient|ValueFlags::map_hessian|
         ValueFlags::w_measure|ValueFlags::face_point|ValueFlags::map_face_value|
         ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
-        ValueFlags::face_w_measure;
+        ValueFlags::face_w_measure|ValueFlags::face_normal;
 
     ValueFlags pf_flags = fill_flag & common_flag;
 
@@ -719,7 +719,7 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_face_map_gradient_at_points(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::GradientFaceType > &
+const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_face_gradients_map(face_id);

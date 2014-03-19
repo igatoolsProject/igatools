@@ -77,8 +77,6 @@ public:
     using ValueMap        = typename ContainerType::ValueType;
     using GradientMap     = typename ContainerType::GradientType;
     using HessianMap      = typename ContainerType::HessianType;
-    using GradientFaceMap = typename ContainerType::GradientFaceType;
-    using HessianFaceMap  = typename ContainerType::HessianFaceType;
 
 
 public:
@@ -90,6 +88,7 @@ public:
         ValueFlags::face_point |
         ValueFlags::face_measure |
         ValueFlags::face_w_measure |
+        ValueFlags::face_normal |
         ValueFlags::map_value |
         ValueFlags::map_gradient |
         ValueFlags::map_hessian |
@@ -247,28 +246,27 @@ public:
      * Returns the face gradient of the map at the dilated quadrature points
      * at the specified face.
      */
-    const ValueVector<GradientFaceMap> &get_face_gradients_map(const Index face_id) const;
+    const ValueVector<GradientMap> &get_face_gradients_map(const Index face_id) const;
 
 
     /**
      * Returns the face hessian of the map at the dilated quadrature points
      * at the specified face.
      */
-    const ValueVector<HessianFaceMap> &get_face_hessians_map(const Index face_id) const;
+    const ValueVector<HessianMap> &get_face_hessians_map(const Index face_id) const;
 
 
     /**
      * Returns the inverse of the face gradient of the map at the dilated quadrature points
      * at the specified face.
      */
-    const ValueVector< Derivatives<space_dim,face_dim,1,1> > &get_face_inv_gradients_map(const Index face_id) const;
-
+    const ValueVector< Derivatives< space_dim,dim,1,1 > > &get_face_inv_gradients_map(const Index face_id) const;
 
     /**
      * Returns the inverse of the face hessian of the map at the dilated quadrature points
      * at the specified face.
      */
-    const ValueVector< Derivatives<space_dim,face_dim,1,2> > &get_face_inv_hessians_map(const Index face_id) const;
+    const ValueVector< Derivatives< space_dim,dim,1,2 > > &get_face_inv_hessians_map(const Index face_id) const;
 
     /**
      * Returns the face gradient determinant of the map at the dilated quadrature points.
@@ -317,18 +315,13 @@ public:
 private:
 
 
-    template <int cache_codim>
+    template <bool is_elem_cache>
     class ValuesCache : public CacheStatus
     {
     public:
-        static const bool is_elem_cache = (cache_codim == 0)?true:false;
 
-        using Grad = Conditional<is_elem_cache, GradientMap, GradientFaceMap>;
-        using Hess = Conditional<is_elem_cache, HessianMap, HessianFaceMap>;
         using FlagsHandler = Conditional<is_elem_cache,MappingElemValueFlagsHandler,MappingFaceValueFlagsHandler>;
 
-
-        static const int cache_dim = (dim-cache_codim>=0)?dim-cache_codim:0;
 
         void reset(const FlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
@@ -337,7 +330,7 @@ private:
     public:
 
         /**
-         * Fills the following cache vlaues in accordance with the
+         * Fills the following cache values in accordance with the
          * flag specifications used in the reset() function.
          *
          * @pre Before invoking this function, values_, gradients_ and hessians_
@@ -349,10 +342,10 @@ private:
         FlagsHandler flags_handler_;
 
         ValueVector< ValueMap > values_;
-        ValueVector< Grad > gradients_;
-        ValueVector< Hess > hessians_;
-        ValueVector< Derivatives< space_dim,cache_dim,1,1 > > inv_gradients_;
-        ValueVector< Derivatives< space_dim,cache_dim,1,2 > > inv_hessians_;
+        ValueVector< GradientMap > gradients_;
+        ValueVector< HessianMap > hessians_;
+        ValueVector< Derivatives< space_dim,dim,1,1 > > inv_gradients_;
+        ValueVector< Derivatives< space_dim,dim,1,2 > > inv_hessians_;
         ValueVector< Real > measures_;
         ValueVector< Real > w_measures_;
 
@@ -365,14 +358,14 @@ private:
      * functions.
      *
      */
-    struct ElementValuesCache : ValuesCache<0>
+    struct ElementValuesCache : ValuesCache<true>
     {
         void reset(const MappingElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
     };
 
-    struct FaceValuesCache : ValuesCache<1>
+    struct FaceValuesCache : ValuesCache<false>
     {
         void reset(const Index face_id,
                    const MappingFaceValueFlagsHandler &flags_handler,

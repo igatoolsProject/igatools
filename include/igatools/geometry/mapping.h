@@ -104,12 +104,6 @@ public:
     /** Typedef for the mapping hessian. */
     using HessianType = DerivativeType<2>;
 
-    /** Type of the mapping gradient on the face. */
-    using GradientFaceType = Derivatives<face_dim, space_dim, 1, 1>;
-
-    /** Typedef for the mapping hessian on the face. */
-    using HessianFaceType = Derivatives<face_dim, space_dim, 1, 2>;
-
 public:
     /** @name Constructors and destructor */
     ///@{
@@ -152,9 +146,9 @@ public:
 
     virtual void evaluate_face(const Index face_id, std::vector<ValueType> &values) const;
 
-    virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const;
+    virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const;
 
-    virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const;
+    virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const;
     ///@}
 
     /** @name Virtual user functions to define the map */

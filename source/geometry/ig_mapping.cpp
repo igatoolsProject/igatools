@@ -284,6 +284,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+
     const auto &local_to_global = element_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
@@ -299,10 +300,11 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const
+evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+
     const auto &local_to_global = element_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
@@ -310,34 +312,18 @@ evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &grad
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    const auto &DF_at_face_pts = element_->evaluate_field_gradients(ctrl_pts_element,FaceTopology(face_id));
-    const Size n_pts = DF_at_face_pts.size();
-
-    Assert(gradients.size() == n_pts,
-           ExcDimensionMismatch(gradients.size(),n_pts));
-
-    const auto active_directions = UnitElement<dim>::face_active_directions[face_id];
-
-    for (Size ipt = 0 ; ipt < n_pts ; ++ipt)
-    {
-        const auto &DF = DF_at_face_pts[ipt];
-        auto &grad_on_face = gradients[ipt];
-
-        for (int dir = 0 ; dir < face_dim ; ++dir)
-            grad_on_face[dir] = DF[active_directions[dir]];
-    }
+    gradients = element_->evaluate_field_gradients(ctrl_pts_element,FaceTopology(face_id));
 }
 
 
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const
+evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const
 {
-    Assert(false,ExcNotImplemented()) ;
-    AssertThrow(false,ExcNotImplemented()) ;
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+
     const auto &local_to_global = element_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
@@ -345,8 +331,7 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessia
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-//    TODO: to be changed. Sizes do not match.
-//    hessians = element_->evaluate_face_field_hessians(face_id, ctrl_pts_element);
+    hessians = element_->evaluate_face_field_hessians(ctrl_pts_element,FaceTopology(face_id));
 }
 
 
