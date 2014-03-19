@@ -369,7 +369,7 @@ class Instantiation:
     """ Main function called at the beginning of all instatiation scripts."""
    
    
-    def __init__(self, inc_files=[], verbose=False):
+    def __init__(self, inc_files=[], other_inc_files=[], verbose=False):
         #Getting a dictionary or arguments.
         from sys import argv as sysargv
         from os import sep as ossep
@@ -393,6 +393,9 @@ class Instantiation:
         if inc_files:
             for file in inc_files:
                 self.file_output.write('#include <igatools/%s>\n' %file)
+        if other_inc_files:
+            for file in other_inc_files:
+                self.file_output.write('#include <%s>\n' %file)        
         self.file_output.write('IGA_NAMESPACE_OPEN\n')
        
     def __del__(self):

@@ -18,26 +18,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 4, 2014 ):
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
 
-include_files = ['#include <igatools/geometry/cartesian_grid.h>\n',
-                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
-                 '#include <igatools/basis_functions/bspline_space.h>\n',
-                 '#include <../source/geometry/grid_forward_iterator.cpp>\n']
-for include in include_files:
-    file_output.write(include)
-file_output.write('IGA_NAMESPACE_OPEN\n')
+include_files = ['geometry/cartesian_grid.h',
+                 'geometry/cartesian_grid_element_accessor.h',
+                 'basis_functions/bspline_space.h',
+                 '../../source/geometry/grid_forward_iterator.cpp']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
 spaces = ['NURBSElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank)  
           for x in inst.all_ref_sp_dims ]
 for sp in spaces:
-   file_output.write('template class %s ;\n' %sp)
-   file_output.write('template class GridForwardIterator<%s> ;\n' %sp)
+   f.write('template class %s ;\n' %sp)
+   f.write('template class GridForwardIterator<%s> ;\n' %sp)
 
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()
+
 
 
 

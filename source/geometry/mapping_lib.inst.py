@@ -18,20 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 4, 2014 ):
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
+data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
 
 args = inst.user_mapping_dims
-
 maps = ['LinearMapping<%d, %d>' %(x.dim, x.codim) for x in args]
 maps = maps + ['BallMapping<%d>' %(x.dim) for x in args if x.codim==0 ]
 maps = maps + ['SphereMapping<%d>' %(x.dim) for x in args if x.codim==1 ]
 
 for row in maps:
-   file_output.write('template class %s; \n' %(row))
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()
+   f.write('template class %s; \n' %(row))

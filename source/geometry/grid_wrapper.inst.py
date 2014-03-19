@@ -18,22 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 4, 2014 ):
-
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
 
-include_files = ['#include <igatools/geometry/cartesian_grid.h>\n']
-for include in include_files:
-    file_output.write(include)
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
+include_files = ['geometry/cartesian_grid.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
 cartesian_grids = ['CartesianGrid<%d>' %(dim) for dim in inst.domain_dims]
 for row in cartesian_grids:
-   file_output.write('template class GridWrapper<%s>; \n' % (row))
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
-
+   f.write('template class GridWrapper<%s>; \n' % (row))
