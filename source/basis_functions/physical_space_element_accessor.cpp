@@ -466,19 +466,9 @@ get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
 template< class PhysSpace >
 const ValueVector<Real> &
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_w_measures() const
+get_w_measures(const TopologyId &topology_id) const
 {
-    return PfElemAccessor::get_w_measures();
-}
-
-
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_w_measures(const Index face_id) const
-{
-    return PfElemAccessor::get_face_w_measures(face_id);
+    return PfElemAccessor::get_w_measures(topology_id);
 }
 
 
@@ -671,9 +661,9 @@ get_basis_hessian(const Index func, const Index qp,const TopologyId &topology_id
 template< class PhysSpace >
 Real
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_divergence(const Index func, const Index qp) const
+get_basis_divergence(const Index func, const Index qp,const TopologyId &topology_id) const
 {
-    return (trace(this->get_basis_gradient(func,qp)));
+    return (trace(this->get_basis_gradient(func,qp,topology_id)));
 }
 
 

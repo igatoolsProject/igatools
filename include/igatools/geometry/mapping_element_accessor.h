@@ -27,6 +27,7 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/topology.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 #include <memory>
 
@@ -232,7 +233,7 @@ public:
      * Returns the quadrature weights multiplied by the
      * gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector< Real > &get_w_measures() const;
+    const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
@@ -274,12 +275,6 @@ public:
     const ValueVector<Real> &get_face_dets_map(const Index face_id) const;
 
     /**
-     * Returns the quadrature weights multiplied by the
-     * gradient determinant of the face map at the dilated quadrature points.
-     */
-    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
-
-    /**
      * Returns the face normals for every quadrature point for the
      * specified face.
      */
@@ -315,15 +310,10 @@ public:
 private:
 
 
-    template <bool is_elem_cache>
     class ValuesCache : public CacheStatus
     {
     public:
-
-        using FlagsHandler = Conditional<is_elem_cache,MappingElemValueFlagsHandler,MappingFaceValueFlagsHandler>;
-
-
-        void reset(const FlagsHandler &flags_handler,
+        void reset(const std::shared_ptr<MappingElemValueFlagsHandler> flags_handler,
                    const Quadrature<dim> &quad);
 
         //TODO: the next member variables should be protected
@@ -339,7 +329,7 @@ private:
         void fill_composite_values();
 
 
-        FlagsHandler flags_handler_;
+        std::shared_ptr<MappingElemValueFlagsHandler> flags_handler_;
 
         ValueVector< ValueMap > values_;
         ValueVector< GradientMap > gradients_;
@@ -358,14 +348,14 @@ private:
      * functions.
      *
      */
-    struct ElementValuesCache : ValuesCache<true>
+    struct ElementValuesCache : ValuesCache
     {
         void reset(const MappingElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
     };
 
-    struct FaceValuesCache : ValuesCache<false>
+    struct FaceValuesCache : ValuesCache
     {
         void reset(const Index face_id,
                    const MappingFaceValueFlagsHandler &flags_handler,
@@ -376,7 +366,11 @@ private:
                    const Quadrature<dim-1> &quad);
 
         ValueVector< ValueMap > normals_;
+
+        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
     };
+
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
     ElementValuesCache elem_values_;
 

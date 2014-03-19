@@ -93,7 +93,7 @@ public:
     TopologyId(TopologyId &&id) = default;
 
     /** Destructor. */
-    ~TopologyId();
+    ~TopologyId() = default;
     ///@}
 
     /** @name Assignment operators */

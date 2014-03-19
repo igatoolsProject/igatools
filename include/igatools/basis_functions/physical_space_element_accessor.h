@@ -200,7 +200,8 @@ public :
     get_basis_value(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
-    ValueTable<Derivative<1> > const &get_basis_gradients(const TopologyId &topology_id = ElemTopology()) const;
+    ValueTable<Derivative<1> > const &
+    get_basis_gradients(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return the one-dimensional container with the
@@ -213,7 +214,8 @@ public :
     get_basis_gradient(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
-    ValueTable<Derivative<2> > const &get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
+    ValueTable<Derivative<2> > const &
+    get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return the one-dimensional container with the
@@ -225,10 +227,7 @@ public :
     const Derivative<2> &
     get_basis_hessian(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
-    Real get_basis_divergence(const Index func, const Index qp) const;
-
-    Real get_face_basis_divergence(const Index face_id, const Index func, const Index qp) const;
-
+    Real get_basis_divergence(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
     ///@}
 
 
@@ -239,13 +238,12 @@ public :
 
     //Geometry related
 
-    const ValueVector<Real> &get_w_measures() const;
-
     /**
      * Returns the quadrature weights multiplied by the
-     * gradient determinant of the face map at the dilated quadrature points.
+     * gradient determinant of map at the dilated quadrature points.
      */
-    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
+    const ValueVector<Real> &
+    get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
 
     const Point<space_dim> &get_point(const Index qp) const;
