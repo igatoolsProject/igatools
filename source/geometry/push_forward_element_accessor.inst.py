@@ -44,12 +44,7 @@ for row in unique(inst.all_table + inst.extended_table):
         output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
                     'transform_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-                    '(%s, %s, void *) const ;\n' %(v_ref, v_phys)
-                    )
-        output.append(
-                    'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_face_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-                    '(const Index, %s, %s, void *) const ;\n' %(v_ref, v_phys)
+                    '(%s, %s, const TopologyId &, void *) const ;\n' %(v_ref, v_phys)
                     )
         order = 1
         deriv_ref  = ("Derivatives<%d,%d,%d,%d>" %(row.dim, row.range, row.rank, order)) 
@@ -59,12 +54,7 @@ for row in unique(inst.all_table + inst.extended_table):
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
             'transform_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-            '(%s,%s,%s, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
-        )
-        output.append(
-            'template void %s::' %(push_fwd_elem_acc) +
-            'transform_face_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-            '(const Index, %s,%s,%s, void * ) const;\n' %(v_ref, dv_ref, dv_phys)
+            '(%s,%s,%s, const TopologyId &, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
         )
  
 

@@ -398,8 +398,10 @@ fill_face_values(const Index face_id)
 
     if (face_value.flags_handler_.fill_values())
     {
-        PfElemAccessor::template transform_face_values<RefSpace::dim_range,RefSpace::rank>
-        (face_id, RefElemAccessor::get_basis_values(FaceTopology(face_id)), face_value.D0phi_);
+        PfElemAccessor::template transform_values<RefSpace::dim_range,RefSpace::rank>
+        (RefElemAccessor::get_basis_values(FaceTopology(face_id)),
+         face_value.D0phi_,
+         FaceTopology(face_id));
 
         face_value.flags_handler_.set_values_filled(true);
     }
@@ -410,20 +412,18 @@ fill_face_values(const Index face_id)
         {
             ValueTable<typename RefElemAccessor::Value> dummy;
             PfElemAccessor::
-            template transform_face_gradients<PhysSpace::dim_range,PhysSpace::rank>(
-                face_id,
+            template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
                 dummy,
                 RefElemAccessor::get_basis_gradients(FaceTopology(face_id)),
-                face_value.D1phi_);
+                face_value.D1phi_,FaceTopology(face_id));
         }
         else
         {
             PfElemAccessor::
-            template transform_face_gradients<PhysSpace::dim_range,PhysSpace::rank>(
-                face_id,
+            template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
                 RefElemAccessor::get_basis_values(FaceTopology(face_id)),
                 RefElemAccessor::get_basis_gradients(FaceTopology(face_id)),
-                face_value.D1phi_);
+                face_value.D1phi_,FaceTopology(face_id));
         }
         face_value.flags_handler_.set_gradients_filled(true);
     }
