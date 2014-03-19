@@ -331,7 +331,7 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    hessians = element_->evaluate_face_field_hessians(ctrl_pts_element,FaceTopology(face_id));
+    hessians = element_->evaluate_field_hessians(ctrl_pts_element,FaceTopology(face_id));
 }
 
 

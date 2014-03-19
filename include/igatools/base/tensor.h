@@ -794,8 +794,8 @@ symmetric_tensor(const T &A)
 * @relates Tensor
 */
 template < class T >
-EnableIf<T::is_tensor,CoTensor<T>>
-                                co_tensor(const T &A)
+EnableIf<T::is_tensor,CoTensor<T> >
+co_tensor(const T &A)
 {
     // we copy the memory of A in coA in order to avoid the
     // aliasing due to the use of reinterpret_cast

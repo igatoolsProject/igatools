@@ -389,7 +389,7 @@ fill_face_values(const Index face_id)
         Derivatives<face_dim, space_dim, 1, 1> face_gradient ;
         for (Index i = 0; i < face_value.num_points_; i++)
         {
-        	auto& gradient = face_value.gradients_[i] ;
+            auto &gradient = face_value.gradients_[i] ;
             for (int dir = 0; dir < face_dim; dir++)
                 face_gradient[dir] = gradient[active_directions[dir]] ;
 
@@ -442,7 +442,7 @@ fill_composite_values()
     {
         Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
         for (Index i = 0; i < num_points_; i++)
-                inverse<dim,space_dim>(gradients_[i],inv_gradients_[i]);
+            inverse<dim,space_dim>(gradients_[i],inv_gradients_[i]);
 
         flags_handler_.set_inv_gradients_filled(true);
     }
