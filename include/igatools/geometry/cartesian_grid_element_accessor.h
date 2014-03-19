@@ -25,6 +25,7 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/topology.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
@@ -175,42 +176,21 @@ public:
      * This is the length for dim_==1,
      * the area for dim_==2 and the volume for dim_==3.
      */
-    Real get_measure() const;
+    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
      * Returns the element measure multiplied by the weights of the quadrature scheme
      * used to initialize the accessor's cache.
      */
-    ValueVector<Real> const &get_w_measures() const;
+    ValueVector<Real> const &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points() const;
-
-
-    /**
-     * Return a const reference to the one-dimensional container with the
-     * values of the map at the evaluation points for the specified face.
-     */
-    std::vector<Point<dim>> const get_face_points(const Index face_id) const;
-
-
-    /**
-     * Returns the measure of the element specified face in the
-     * CartesianGrid<dim> object referred by this accessor.
-     * This is the 0 for dim==1, the length for dim==2 and the area for dim==3.
-     */
-    Real get_face_measure(const Index face_id) const;
-
-    /**
-     * Returns the element-face measure multiplied by the weights of the quadrature scheme
-     * used to initialize the accessor's cache.
-     */
-    ValueVector<Real> const &get_face_w_measures(const Index face_id) const;
+    std::vector<Point<dim>> const get_points(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
@@ -281,17 +261,13 @@ private:
     /**
      * @brief Base class for cache of CartesianGridElementAccessor.
      */
-    template <int cache_codim>
     class ValuesCache : public CacheStatus
     {
     public:
-        static const bool is_elem_cache = (cache_codim == 0)?true:false;
-        using FlagsHandler = Conditional<is_elem_cache,GridElemValueFlagsHandler,GridFaceValueFlagsHandler>;
-
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const FlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
 
         /**
          * Fill the cache member.
@@ -301,7 +277,7 @@ private:
         void fill(const Real measure);
 
 
-        FlagsHandler flags_handler_;
+        GridElemValueFlagsHandler flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
@@ -321,7 +297,7 @@ private:
     /**
      * @brief Cache for the element values at quadrature points
      */
-    class ElementValuesCache : public ValuesCache<0>
+    class ElementValuesCache : public ValuesCache
     {
     public:
         /**
@@ -334,7 +310,7 @@ private:
     /**
      * @brief Cache for the face values at quadrature points
      */
-    class FaceValuesCache : public ValuesCache<1>
+    class FaceValuesCache : public ValuesCache
     {
     public:
         void reset(const GridFaceValueFlagsHandler &flags_handler,
@@ -345,6 +321,11 @@ private:
                    const Quadrature<dim_-1> &quad,
                    const Index face_id);
     };
+
+    /**
+     * @todo Document this function
+     */
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
 
     /** Grid (global) lengths cache */

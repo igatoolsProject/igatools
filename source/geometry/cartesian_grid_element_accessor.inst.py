@@ -29,8 +29,6 @@ file_output.write('IGA_NAMESPACE_OPEN\n')
 accessors = ['CartesianGridElementAccessor<%d>' %(dim) for dim in inst.domain_dims]
 for row in accessors:
     file_output.write('template class %s; \n' %(row))
-    file_output.write('template class %s::ValuesCache<0>; \n' %(row))
-    file_output.write('template class %s::ValuesCache<1>; \n' %(row))
     file_output.write('template class GridForwardIterator<%s>;\n' %(row))
 
 file_output.write('IGA_NAMESPACE_CLOSE\n')

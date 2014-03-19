@@ -197,7 +197,7 @@ IdentityMapping< dim, codim>::
 set_face_element(const Index face_id,
                  const CartesianGridElementAccessor<dim> &elem)
 {
-    face_points_[face_id] = elem.get_face_points(face_id);
+    face_points_[face_id] = elem.get_points(FaceTopology(face_id));
 }
 
 

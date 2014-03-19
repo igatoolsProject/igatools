@@ -105,7 +105,7 @@ set_face_element(const Index face_id,
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
-    face_points_[face_id] = elem.get_face_points(face_id);
+    face_points_[face_id] = elem.get_points(FaceTopology(face_id));
 }
 
 
@@ -157,7 +157,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
-    auto& face_points = face_points_[face_id] ;
+    auto &face_points = face_points_[face_id] ;
     const int num_points = face_points.size();
     for (int i = 0; i<num_points; i++)
     {
@@ -282,11 +282,11 @@ BallMapping<dim_>::set_face_element(const Index face_id,
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
 
-    auto& face_points = face_points_[face_id] ;
-    auto& f_cos_val = face_cos_val[face_id] ;
-    auto& f_sin_val = face_sin_val[face_id] ;
+    auto &face_points = face_points_[face_id] ;
+    auto &f_cos_val = face_cos_val[face_id] ;
+    auto &f_sin_val = face_sin_val[face_id] ;
 
-    face_points = elem.get_face_points(face_id);
+    face_points = elem.get_points(FaceTopology(face_id));
     const int n_points = face_points.size();
 
     for (int der = 0; der < order; ++der)
@@ -691,11 +691,11 @@ SphereMapping<dim_>::set_face_element(const Index face_id,
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
 
-    auto& face_points = face_points_[face_id] ;
-    auto& f_cos_val = face_cos_val[face_id] ;
-    auto& f_sin_val = face_sin_val[face_id] ;
+    auto &face_points = face_points_[face_id] ;
+    auto &f_cos_val = face_cos_val[face_id] ;
+    auto &f_sin_val = face_sin_val[face_id] ;
 
-    face_points = elem.get_face_points(face_id);
+    face_points = elem.get_points(FaceTopology(face_id));
     const int n_points = face_points.size();
 
     for (int der = 0; der < order; ++der)
@@ -1111,7 +1111,7 @@ set_face_element(const Index face_id,
 {
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
-    face_points_[face_id] = elem.get_face_points(face_id);
+    face_points_[face_id] = elem.get_points(FaceTopology(face_id));
 }
 
 
@@ -1236,7 +1236,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-	auto& face_points = face_points_[face_id] ;
+    auto &face_points = face_points_[face_id] ;
     const Size num_points = face_points.size();
 
     Assert(Size(values.size()) == num_points,
@@ -1265,7 +1265,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-	auto& face_points = face_points_[face_id] ;
+    auto &face_points = face_points_[face_id] ;
     const Size num_points = face_points.size();
 
     Assert(Size(gradients.size()) == num_points,
@@ -1302,7 +1302,7 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-	auto& face_points = face_points_[face_id] ;
+    auto &face_points = face_points_[face_id] ;
     const Size num_points = face_points.size();
 
     Assert(Size(hessians.size()) == num_points,

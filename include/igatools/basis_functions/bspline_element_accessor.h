@@ -484,6 +484,9 @@ protected:
 
     };
 
+    /**
+     * @todo Document this function
+     */
     const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
     ///@}
