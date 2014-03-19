@@ -425,13 +425,13 @@ fill_face_values(const Index face_id)
     {
         Assert(flags_handler->gradients_filled(),ExcMessage("Gradients not filled."));
 
-        static const auto active_directions = UnitElement<dim>::face_active_directions[face_id] ;
-        static const auto face_dim = UnitElement<dim>::face_dim ;
-        Derivatives<face_dim, space_dim, 1, 1> face_gradient ;
+        const auto active_directions = UnitElement<dim>::face_active_directions[face_id] ;
+        const auto face_dim = UnitElement<dim>::face_dim ;
+        Derivatives<face_dim, space_dim, 1, 1> face_gradient;
         for (Index i = 0; i < face_value.num_points_; i++)
         {
             auto &gradient = face_value.gradients_[i] ;
-            for (int dir = 0; dir < face_dim; dir++)
+            for (int dir = 0; dir < face_dim; ++dir)
                 face_gradient[dir] = gradient[active_directions[dir]] ;
 
             face_value.measures_[i] = determinant<face_dim,space_dim>(face_gradient);

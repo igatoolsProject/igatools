@@ -1,0 +1,7 @@
+Dimension 3
+Area of face 0 : 1.00000
+Area of face 1 : 1.00000
+Area of face 2 : 1.57080
+Area of face 3 : 3.14159
+Area of face 4 : 2.35619
+Area of face 5 : 2.35619

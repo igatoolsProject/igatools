@@ -38,7 +38,7 @@ void test_evaluate()
     auto grid = CartesianGrid<dim>::create();
     auto map = CylindricalAnnulus::create(grid, 1.0, 2.0, 0.0, 1.0, 0.0, 1.57079632679490);
 
-    QUniform<dim> quad(3);
+    QGauss<dim> quad(3);
     auto elem     = map->begin();
     auto elem_end = map->end();
     ValueFlags flag = ValueFlags::face_w_measure|ValueFlags::face_point;
@@ -56,9 +56,7 @@ void test_evaluate()
                 if (elem->is_boundary(face_id))
                 {
                     elem->fill_face_values(face_id);
-                    auto& w_meas = elem->get_face_w_measures(face_id);
-                    out << "Face " << face_id << endl;
-                    w_meas.print_info(out) ;
+                    auto &w_meas = elem->get_w_measures(FaceTopology(face_id));
                     for (int q = 0; q < w_meas.size(); ++q)
                         face_area[face_id] += w_meas[q] ;
                 }
@@ -69,7 +67,7 @@ void test_evaluate()
     out << "Dimension " << dim << endl;
     for (Index face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
     {
-    	out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
+        out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
     }
 
 
