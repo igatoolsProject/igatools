@@ -206,7 +206,7 @@ public:
      */
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
-    const ValueVector<ValueMap> &get_values_map() const;
+    const ValueVector<ValueMap> &get_values_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
@@ -234,13 +234,6 @@ public:
      * gradient determinant of the map at the dilated quadrature points.
      */
     const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
-
-
-    /**
-     * Returns the face value of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector<ValueMap> &get_face_values_map(const Index face_id) const;
 
 
     /**

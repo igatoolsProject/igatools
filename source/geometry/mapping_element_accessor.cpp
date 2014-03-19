@@ -516,11 +516,12 @@ fill_composite_values()
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_values_map() const -> const ValueVector<ValueMap> &
+get_values_map(const TopologyId &topology_id) const -> const ValueVector<ValueMap> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_->values_filled(), ExcMessage("Values not filled."));
-    return elem_values_.values_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_->values_filled(), ExcMessage("Values not filled."));
+    return cache.values_;
 }
 
 
@@ -594,19 +595,6 @@ get_w_measures(const TopologyId &topology_id) const -> const ValueVector<Real> &
     Assert(cache.is_filled(), ExcCacheNotFilled());
     Assert(cache.flags_handler_->w_measures_filled(), ExcMessage("W*Measures not filled."));
     return cache.w_measures_;
-}
-
-
-
-template< int dim_ref_, int codim_ >
-auto
-MappingElementAccessor<dim_ref_,codim_>::
-get_face_values_map(const Index face_id) const -> const ValueVector<ValueMap> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_->values_filled(), ExcMessage("Values not filled."));
-    return face_values_[face_id].values_;
 }
 
 

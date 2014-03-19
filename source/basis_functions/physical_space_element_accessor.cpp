@@ -700,7 +700,7 @@ const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_face_values_map(face_id);
+    return PfElemAccessor::get_values_map(FaceTopology(face_id));
 }
 
 
