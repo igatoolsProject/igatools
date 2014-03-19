@@ -1254,12 +1254,13 @@ get_basis_values(const Index i,const TopologyId &topology_id) const -> typename 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_divergences() const -> ValueTable<Div> const &
+get_basis_divergences(const TopologyId &topology_id) const -> ValueTable<Div> const &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.divergences_filled(), ExcCacheNotFilled());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.divergences_filled(), ExcCacheNotFilled());
 
-    return elem_values_.div_phi_hat_;
+    return cache.div_phi_hat_;
 }
 
 
@@ -1267,9 +1268,9 @@ get_basis_divergences() const -> ValueTable<Div> const &
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_divergences(const Index i) const -> typename ValueTable<Div>::const_view
+get_basis_divergences(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Div>::const_view
 {
-    return this->get_basis_divergences().get_function_view(i);
+    return this->get_basis_divergences(topology_id).get_function_view(i);
 }
 
 
@@ -1333,10 +1334,11 @@ get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id)
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_divergence(const Index basis, const Index qp) const -> Div const &
+get_basis_divergence(const Index basis, const Index qp,const TopologyId &topology_id) const -> Div const &
 {
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
     return this->get_basis_divergences(basis)[qp];
 }
 
@@ -1362,41 +1364,6 @@ get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_i
     return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_divergences(const Index face_id) const -> ValueTable<Div> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.divergences_filled(), ExcCacheNotFilled());
-
-    return face_values_[face_id].div_phi_hat_;
-}
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_divergences(const Index face_id, const Index i) const -> typename ValueTable<Div>::const_view
-{
-    return this->get_face_basis_divergences(face_id).get_function_view(i);
-}
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_divergence(const Index face_id, const Index basis, const Index qp) const -> Div const &
-{
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_divergences(face_id, basis)[qp];
-}
 
 
 
@@ -1439,6 +1406,25 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &
     return D1phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_divergences(
+    const std::vector<Real> &local_coefs,
+    const TopologyId &topology_id) const -> ValueVector<Div>
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_divergences() == true, ExcInvalidState());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &div_phi_hat = this->get_basis_divergences(topology_id) ;
+    Assert(div_phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(div_phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return div_phi_hat.evaluate_linear_combination(local_coefs) ;
+}
 
 
 template <int dim, int range, int rank>

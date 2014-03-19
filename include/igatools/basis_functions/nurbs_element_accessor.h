@@ -216,7 +216,6 @@ public:
     /**
      * TODO: document me .
      */
-//    ConstVectorView<DerivativeRef_t<1> >
     typename ValueTable<DerivativeRef_t<1> >::const_view
     get_basis_gradients(const Index basis,const TopologyId &topology_id = ElemTopology()) const;
 
@@ -224,12 +223,12 @@ public:
      * Reference to a ValueTable with values of all local basis function
      * at each evaluation point.
      */
-    ValueTable<DerivativeRef_t<2>> const &get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
+    ValueTable<DerivativeRef_t<2>> const &
+                                get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .
      */
-//    ConstVectorView<DerivativeRef_t<2>>
     typename ValueTable<DerivativeRef_t<2> >::const_view
     get_basis_hessians(const Index basis, const TopologyId &topology_id = ElemTopology()) const;
 
@@ -239,7 +238,8 @@ public:
      * @param[in] basis Local id of the basis function.
      * @param[in] qp Local id of the evaluation point.
      */
-    ValueRef_t const &get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    ValueRef_t const &
+    get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to the gradient of a local basis function
@@ -256,7 +256,8 @@ public:
      * @param[in] basis Local id of the basis function.
      * @param[in] qp Local id of the evaluation point.
      */
-    DerivativeRef_t<2> const &get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    DerivativeRef_t<2> const &
+    get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
     //Fields related

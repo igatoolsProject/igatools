@@ -276,7 +276,7 @@ public:
      * Reference to a ValueTable with the values of all local basis function
      * at each evaluation point.
      */
-    ValueTable<Div> const &get_basis_divergences() const;
+    ValueTable<Div> const &get_basis_divergences(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to a ValueTable with the gradients of all local basis function
@@ -295,7 +295,7 @@ public:
 
 
     typename ValueTable<Div>::const_view
-    get_basis_divergences(const Index i) const;
+    get_basis_divergences(const Index i,const TopologyId &topology_id = ElemTopology()) const;
 
 
     typename ValueTable<Derivative<1> >::const_view
@@ -316,7 +316,7 @@ public:
      * Reference to the divergence of a local basis function
      * at one evaluation point.
      */
-    Div const &get_basis_divergence(const Index basis, const Index qp) const;
+    Div const &get_basis_divergence(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to the gradient of a local basis function
@@ -329,26 +329,6 @@ public:
      * at one evaluation point.
      */
     Derivative<2> const &get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
-
-
-    /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point for the specified face.
-     */
-    ValueTable<Div> const &get_face_basis_divergences(const Index face_id) const;
-
-
-    typename ValueTable<Div>::const_view
-    get_face_basis_divergences(const Index face_id, const Index i) const;
-
-
-    /**
-     * Reference to the divergence of a local basis function
-     * at one evaluation point for the specified face.
-     */
-    Div const &get_face_basis_divergence(const Index face_id, const Index basis, const Index qp) const;
-
-
 
     //Fields related
     /**
@@ -368,6 +348,15 @@ public:
      */
     ValueVector<Derivative<1> >
     evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
+
+    /**
+     * Vector with the evaluation of the divergences of the field @p local_coefs
+     * at the evaluation points.
+     *
+     * @see get_local_coefs
+     */
+    ValueVector<Div>
+    evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Vector with the evaluation of the hessians of the field @p local_coefs
