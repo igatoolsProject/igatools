@@ -223,8 +223,8 @@ public:
      * Reference to a ValueTable with values of all local basis function
      * at each evaluation point.
      */
-    ValueTable<DerivativeRef_t<2>> const &
-                                get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
+    ValueTable<DerivativeRef_t<2> > const &
+    get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .

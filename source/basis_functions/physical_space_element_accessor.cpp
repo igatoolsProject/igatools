@@ -476,10 +476,10 @@ get_w_measures(const TopologyId &topology_id) const
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_point(const Index qp) const -> const Point<space_dim> &
+get_point(const Index qp,const TopologyId &topology_id) const -> const Point<space_dim> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    return (PfElemAccessor::get_values_map())[qp];
+    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+    return (PfElemAccessor::get_values_map(topology_id))[qp];
 }
 
 

@@ -185,8 +185,6 @@ public :
      * @name Getting the basis functions values, derivatives and hessians
      */
     ///@{
-    //Shape functions related
-
     ValueTable<Value> const &
     get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
 
@@ -236,9 +234,6 @@ public :
      * @name Getting quantities that are geometry-related
      */
     ///@{
-
-    //Geometry related
-
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points.
@@ -247,7 +242,11 @@ public :
     get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
 
-    const Point<space_dim> &get_point(const Index qp) const;
+    /**
+     * @todo Document this function
+     */
+    const Point<space_dim> &
+    get_point(const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the values of the map at the evaluation points.
