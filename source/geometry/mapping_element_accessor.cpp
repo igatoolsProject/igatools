@@ -529,11 +529,12 @@ get_values_map(const TopologyId &topology_id) const -> const ValueVector<ValueMa
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_gradients_map() const -> const ValueVector<GradientMap> &
+get_gradients_map(const TopologyId &topology_id) const -> const ValueVector<GradientMap> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_->gradients_filled(), ExcMessage("Gradients not filled."));
-    return elem_values_.gradients_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_->gradients_filled(), ExcMessage("Gradients not filled."));
+    return cache.gradients_;
 }
 
 
@@ -541,11 +542,12 @@ get_gradients_map() const -> const ValueVector<GradientMap> &
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_hessians_map() const -> const ValueVector<HessianMap> &
+get_hessians_map(const TopologyId &topology_id) const -> const ValueVector<HessianMap> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_->hessians_filled(), ExcMessage("Hessians not filled."));
-    return elem_values_.hessians_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_->hessians_filled(), ExcMessage("Hessians not filled."));
+    return cache.hessians_;
 }
 
 
@@ -597,33 +599,6 @@ get_w_measures(const TopologyId &topology_id) const -> const ValueVector<Real> &
     return cache.w_measures_;
 }
 
-
-
-template< int dim_ref_, int codim_ >
-auto
-MappingElementAccessor<dim_ref_,codim_>::
-get_face_gradients_map(const Index face_id) const ->
-const ValueVector<GradientMap> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_->gradients_filled(), ExcMessage("Gradients not filled."));
-    return face_values_[face_id].gradients_;
-}
-
-
-
-template< int dim_ref_, int codim_ >
-auto
-MappingElementAccessor<dim_ref_,codim_>::
-get_face_hessians_map(const Index face_id) const ->
-const ValueVector<HessianMap> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_->hessians_filled(), ExcMessage("Hessians not filled."));
-    return face_values_[face_id].hessians_;
-}
 
 
 

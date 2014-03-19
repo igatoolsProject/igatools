@@ -210,11 +210,11 @@ public:
 
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
-    const ValueVector<GradientMap> &get_gradients_map() const;
+    const ValueVector<GradientMap> &get_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the hessian of the map at the dilated quadrature points. */
-    const ValueVector<HessianMap> &get_hessians_map() const;
+    const ValueVector<HessianMap> &get_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
@@ -234,20 +234,6 @@ public:
      * gradient determinant of the map at the dilated quadrature points.
      */
     const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
-
-
-    /**
-     * Returns the face gradient of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector<GradientMap> &get_face_gradients_map(const Index face_id) const;
-
-
-    /**
-     * Returns the face hessian of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector<HessianMap> &get_face_hessians_map(const Index face_id) const;
 
 
     /**
