@@ -293,6 +293,22 @@ public:
         const Real h1,
         const Real theta1);
 
+    CylindricalAnnulus(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h0,
+        const Real h1,
+        const Real theta0,
+        const Real theta1);
+
+    CylindricalAnnulus(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h1,
+        const Real theta1);
+
     /**
      * This function creates a CylindricalAnnulus object
      * and wraps it into a shared_ptr.
@@ -303,6 +319,28 @@ public:
         const Real h0,
         const Real h1,
         const Real theta0,
+        const Real theta1);
+
+    static std::shared_ptr<base_t> create(
+        const Real r0,
+        const Real r1,
+        const Real h1,
+        const Real theta1);
+
+    static std::shared_ptr<base_t> create(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h0,
+        const Real h1,
+        const Real theta0,
+        const Real theta1);
+
+    static std::shared_ptr<base_t> create(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h1,
         const Real theta1);
 
     virtual std::shared_ptr< Mapping<3,0> > clone() const override final;
