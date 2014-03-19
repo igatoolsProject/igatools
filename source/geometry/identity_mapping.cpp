@@ -152,7 +152,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
 
 
     for (int i = 0; i<num_points; i++)
-        gradients[i] = face_A_[face_id];
+        gradients[i] = A_;
 }
 
 
