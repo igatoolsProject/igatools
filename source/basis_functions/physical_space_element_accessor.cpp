@@ -592,7 +592,7 @@ get_basis_gradients(const TopologyId &topology_id) const -> ValueTable< Derivati
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
     Assert(cache.flags_handler_.gradients_filled(), ExcCacheNotFilled());
-    return elem_values_.D1phi_;
+    return cache.D1phi_;
 }
 
 
@@ -671,11 +671,11 @@ get_basis_divergence(const Index func, const Index qp,const TopologyId &topology
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_points() const ->
+get_points(const TopologyId &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_values_map();
+    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+    return PfElemAccessor::get_values_map(topology_id);
 }
 
 
@@ -683,37 +683,13 @@ const ValueVector< typename Mapping<dim, codim>::ValueType > &
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_map_gradient_at_points() const ->
+get_map_gradient_at_points(const TopologyId &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_gradients_map();
+    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+    return PfElemAccessor::get_gradients_map(topology_id);
 }
 
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_points(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_values_map(FaceTopology(face_id));
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_map_gradient_at_points(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::GradientType > &
-{
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_gradients_map(FaceTopology(face_id));
-}
 
 
 

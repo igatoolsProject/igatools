@@ -187,7 +187,8 @@ public :
     ///@{
     //Shape functions related
 
-    ValueTable<Value> const &get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
+    ValueTable<Value> const &
+    get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * @brief Return the one-dimensional container with the
@@ -255,10 +256,7 @@ public :
      * \date 29 Jan 2013
      */
     const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_points() const;
-
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_face_points(const Index face_id) const;
+    get_points(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the gradients of the map (i.e. the Jacobian) at the evaluation points.
@@ -267,10 +265,7 @@ public :
      * \date 03 Jun 2013
      */
     const ValueVector< typename Mapping<dim,codim>::GradientType > &
-    get_map_gradient_at_points() const;
-
-    const ValueVector< typename Mapping<dim,codim>::GradientType > &
-    get_face_map_gradient_at_points(const Index face_id) const;
+    get_map_gradient_at_points(const TopologyId &topology_id = ElemTopology()) const;
 
 
 
