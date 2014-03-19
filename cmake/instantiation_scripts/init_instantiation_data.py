@@ -331,36 +331,6 @@ class InstantiationInfo:
       self.values = unique(value_list)
     
       return None
- 
-
-
-
-def intialize_instantiation():
-   """ Main function called at the beginning of all instatiation scripts."""
-   #Getting a dictionary or arguments.
-   from sys import argv as sysargv
-   from os import sep as ossep
-   args = dict([arg.split('=') for arg in sysargv[1:]])
-
-   # Reading information from dimensions file.
-   inst = InstantiationInfo(args['config_file'], args['max_der_order'])
-   #  Some debug information printing
-   print_info = False
-   if print_info:
-      print('dim codim range rank space_dim')
-      for x in inst.all_table:
-         print (x.dim, x.codim, x.range, x.rank, x.space_dim)
-         #    print inst.deriv_order
-
-   # Openning the output file.
-   file_output = open(args['out_file'], 'w')
-   # Writing the header.
-   header = ( '// This file was automatically generated' +
-              'from %s \n' % (sysargv[0].split(ossep)[-1]) +
-              '// DO NOT edit as it will be overwritten.\n\n')
-   file_output.write(header)
-
-   return file_output, inst
 
 
 
@@ -369,7 +339,7 @@ class Instantiation:
     """ Main function called at the beginning of all instatiation scripts."""
    
    
-    def __init__(self, inc_files=[], verbose=False):
+    def __init__(self, inc_files=[], other_inc_files=[], verbose=False):
         #Getting a dictionary or arguments.
         from sys import argv as sysargv
         from os import sep as ossep
@@ -393,6 +363,9 @@ class Instantiation:
         if inc_files:
             for file in inc_files:
                 self.file_output.write('#include <igatools/%s>\n' %file)
+        if other_inc_files:
+            for file in other_inc_files:
+                self.file_output.write('#include <%s>\n' %file)        
         self.file_output.write('IGA_NAMESPACE_OPEN\n')
        
     def __del__(self):

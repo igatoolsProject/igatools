@@ -18,30 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# todo: this class is inline for completeness many things would need to be inst
 from init_instantiation_data import *
-
-file_output, inst = intialize_instantiation()
-
-# instantiating derivatives
-file_output.write('IGA_NAMESPACE_OPEN\n')
+data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
 
 for row in inst.derivatives + inst.values:
-    file_output.write('template class %s ;\n' % (row))
-
-file_output.write('\n')
-
-# Operator +
-for row in inst.derivatives:
-    file_output.write('template EnableIf<%s::is_tensor,%s> operator+ < %s > (const %s &A, const %s &B) noexcept ;\n'
+    f.write('template class %s ;\n' %row)
+    f.write('template EnableIf<%s::is_tensor,%s> operator+ < %s > (const %s &A, const %s &B) noexcept ;\n'
             % (row, row, row, row, row))
-
-# Operator -
-for row in inst.derivatives:
-    file_output.write('template EnableIf<%s::is_tensor,%s> operator- < %s > (const %s &A, const %s &B) noexcept ;\n'
+    f.write('template EnableIf<%s::is_tensor,%s> operator- < %s > (const %s &A, const %s &B) noexcept ;\n'
             % (row, row, row, row, row))
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
-
-

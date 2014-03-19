@@ -18,17 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 4, 2014 ):
+# QA (pauletti, Mar 19, 2014): review the transform value how is handle
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-
-include_files = ['#include <igatools/geometry/push_forward.h>\n',
-                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
-                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
-                 '#include <../source/geometry/grid_forward_iterator.cpp>\n']
-for include in include_files:
-    file_output.write(include)
-file_output.write('IGA_NAMESPACE_OPEN\n')
+include_files = ['geometry/push_forward.h',
+                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/mapping_element_accessor.h',
+                 '../../source/geometry/grid_forward_iterator.cpp']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
 output = []
 containers = ['ValueTable', 'ValueVector']
@@ -73,8 +70,6 @@ for row in unique(inst.all_table + inst.extended_table):
 
 
 for s in unique(output):
-    file_output.write(s)
+    f.write(s)
 
 
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()

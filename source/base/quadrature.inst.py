@@ -18,15 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
 
-for dim in data.inst.ref_dom_dims:
-    data.file_output.write('template class Quadrature<%d> ;\n' %dim)
+for dim in inst.ref_dom_dims:
+    f.write('template class Quadrature<%d> ;\n' %dim)
 
-for dim in data.inst.face_ref_dom_dims:
-    data.file_output.write('template Quadrature<%d> extend_face_quad<%d>' % (dim+1, dim) +
-                           '(const Quadrature <%d> &, const int);\n' %(dim))
-
-
-
+for dim in inst.face_ref_dom_dims:
+    f.write('template Quadrature<%d> extend_face_quad<%d>' %(dim+1, dim) +
+            '(const Quadrature <%d> &, const int);\n' %(dim))

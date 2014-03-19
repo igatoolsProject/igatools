@@ -18,33 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-###############################################################################
 
+include_files = ['geometry/mapping_element_accessor.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
-includes = ['#include <igatools/geometry/mapping_element_accessor.h>\n']
-
-for include in includes:
-    file_output.write(include)
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
-
-output = []
- 
-for row in inst.face_table:
-    output.append('template class MappingSlice<%d,%d> ;\n' % (row.dim, row.codim))
-  
-for s in unique(output): # Removing repeated entries.
-    file_output.write(s)
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
-
-
-
-
-
+maps = ['template class MappingSlice<%d,%d> ;\n' %(row.dim, row.codim) 
+        for row in inst.face_table]
+for map in unique(maps): 
+    f.write(map)
