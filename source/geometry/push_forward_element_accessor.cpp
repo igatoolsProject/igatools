@@ -456,7 +456,7 @@ transform_face_gradients(
     auto D1v_iterator     = D1v.begin() ;
     auto D1v_hat_iterator = D1v_hat.cbegin() ;
 
-    const auto &inv_gradients_map = this->get_face_inv_gradients_map(face_id) ;
+    const auto &inv_gradients_map = this->get_inv_gradients_map(FaceTopology(face_id)) ;
 
     for (int i_fn = 0; i_fn < n_func; ++i_fn)
     {
@@ -657,7 +657,7 @@ ValueVector<Real>
 PushForwardElementAccessor<PushForward>::
 transform_face_measure(const Index face_id) const
 {
-    return this->get_face_dets_map(face_id);
+    return this->get_dets_map(FaceTopology(face_id));
 }
 
 

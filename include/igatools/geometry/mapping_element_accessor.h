@@ -206,27 +206,33 @@ public:
      */
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
-    const ValueVector<ValueMap> &get_values_map(const TopologyId &topology_id = ElemTopology()) const;
+    const ValueVector<ValueMap> &
+    get_values_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
-    const ValueVector<GradientMap> &get_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
+    const ValueVector<GradientMap> &
+    get_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the hessian of the map at the dilated quadrature points. */
-    const ValueVector<HessianMap> &get_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
+    const ValueVector<HessianMap> &
+    get_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
-    const ValueVector< Derivatives< space_dim, dim,1,1 > > &get_inv_gradients_map() const;
+    const ValueVector< Derivatives< space_dim, dim,1,1 > > &
+    get_inv_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the inverse of the hessian of the map at the dilated quadrature points. */
-    const ValueVector< Derivatives< space_dim, dim,1,2 > > &get_inv_hessians_map() const;
+    const ValueVector< Derivatives< space_dim, dim,1,2 > > &
+    get_inv_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
-    const ValueVector< Real > &get_dets_map() const;
+    const ValueVector< Real > &
+    get_dets_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
@@ -234,24 +240,6 @@ public:
      * gradient determinant of the map at the dilated quadrature points.
      */
     const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
-
-
-    /**
-     * Returns the inverse of the face gradient of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector< Derivatives< space_dim,dim,1,1 > > &get_face_inv_gradients_map(const Index face_id) const;
-
-    /**
-     * Returns the inverse of the face hessian of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector< Derivatives< space_dim,dim,1,2 > > &get_face_inv_hessians_map(const Index face_id) const;
-
-    /**
-     * Returns the face gradient determinant of the map at the dilated quadrature points.
-     */
-    const ValueVector<Real> &get_face_dets_map(const Index face_id) const;
 
     /**
      * Returns the face normals for every quadrature point for the

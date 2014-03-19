@@ -555,11 +555,12 @@ get_hessians_map(const TopologyId &topology_id) const -> const ValueVector<Hessi
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_inv_gradients_map() const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
+get_inv_gradients_map(const TopologyId &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_->inv_gradients_filled(), ExcMessage("Inverse gradients not filled."));
-    return elem_values_.inv_gradients_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_->inv_gradients_filled(), ExcMessage("Inverse gradients not filled."));
+    return cache.inv_gradients_;
 }
 
 
@@ -567,11 +568,12 @@ get_inv_gradients_map() const -> const ValueVector<Derivatives<space_dim,dim,1,1
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_inv_hessians_map() const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
+get_inv_hessians_map(const TopologyId &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_->inv_hessians_filled(), ExcMessage("Inverse hessians not filled."));
-    return elem_values_.inv_hessians_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_->inv_hessians_filled(), ExcMessage("Inverse hessians not filled."));
+    return cache.inv_hessians_;
 }
 
 
@@ -579,11 +581,12 @@ get_inv_hessians_map() const -> const ValueVector<Derivatives<space_dim,dim,1,2>
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_dets_map() const -> const ValueVector<Real> &
+get_dets_map(const TopologyId &topology_id) const -> const ValueVector<Real> &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_->measures_filled(), ExcMessage("Measures not filled."));
-    return elem_values_.measures_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_->measures_filled(), ExcMessage("Measures not filled."));
+    return cache.measures_;
 }
 
 
@@ -597,48 +600,6 @@ get_w_measures(const TopologyId &topology_id) const -> const ValueVector<Real> &
     Assert(cache.is_filled(), ExcCacheNotFilled());
     Assert(cache.flags_handler_->w_measures_filled(), ExcMessage("W*Measures not filled."));
     return cache.w_measures_;
-}
-
-
-
-
-template< int dim_ref_, int codim_ >
-auto
-MappingElementAccessor<dim_ref_,codim_>::
-get_face_inv_gradients_map(const Index face_id) const ->
-const ValueVector<Derivatives<space_dim,dim,1,1>> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_->inv_gradients_filled(), ExcMessage("Inverse gradients not filled."));
-    return face_values_[face_id].inv_gradients_;
-}
-
-
-
-template< int dim_ref_, int codim_ >
-auto
-MappingElementAccessor<dim_ref_,codim_>::
-get_face_inv_hessians_map(const Index face_id) const ->
-const ValueVector<Derivatives<space_dim,dim,1,2>> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_->inv_hessians_filled(), ExcMessage("Inverse hessians not filled."));
-    return face_values_[face_id].inv_hessians_;
-}
-
-
-
-template< int dim_ref_, int codim_ >
-auto
-MappingElementAccessor<dim_ref_,codim_>::
-get_face_dets_map(const Index face_id) const -> const ValueVector<Real> &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_->measures_filled(), ExcMessage("Measures not filled."));
-    return face_values_[face_id].measures_;
 }
 
 
