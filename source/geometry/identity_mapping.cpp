@@ -142,7 +142,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -160,7 +160,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));

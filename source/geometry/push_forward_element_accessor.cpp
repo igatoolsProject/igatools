@@ -288,7 +288,6 @@ transform_face_values(
     const int num_points = this->get_num_face_points(face_id) ;
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-
     // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
     // if Container is ValueVector, n_func will be equal to 1.
     Assert((D0v_hat.size() % num_points) == 0, ExcMessage("The size of the container must be a multiple of num_points.")) ;
@@ -441,6 +440,7 @@ transform_face_gradients(
     AssertThrow(false, ExcMessage("This function is implemented but is not tested!")) ;
     Assert(face_id < UnitElement<PushForward::dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<PushForward::dim>::faces_per_element));
+
     Assert(D1v_hat.size() >= 0 , ExcEmptyObject()) ;
     Assert(D1v.size() == D1v_hat.size(), ExcDimensionMismatch(D1v.size(), D1v_hat.size())) ;
 
@@ -485,6 +485,7 @@ transform_face_gradients(
     AssertThrow(false, ExcMessage("This function is implemented but is not tested!")) ;
     Assert(face_id < UnitElement<PushForward::dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<PushForward::dim>::faces_per_element));
+
     Assert(D0v_hat.size() >= 0 , ExcEmptyObject()) ;
     Assert(D1v_hat.size() >= 0 , ExcEmptyObject()) ;
     Assert(D0v_hat.size() == D1v_hat.size(), ExcDimensionMismatch(D0v_hat.size(), D1v_hat.size())) ;
@@ -602,6 +603,10 @@ transform_face_hessians(
     Container< PhysDerivative<dim_range, rank, 2> > &D2v,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
+    AssertThrow(false, ExcMessage("This function is implemented but is not tested!")) ;
+    Assert(face_id < UnitElement<PushForward::dim>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<PushForward::dim>::faces_per_element));
+
     const int n_func = D1v_hat.get_num_functions();
     const int num_points = this->get_num_face_points(face_id) ;
     Assert(num_points >= 0, ExcLowerRange(num_points,0));

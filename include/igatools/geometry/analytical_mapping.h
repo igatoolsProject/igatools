@@ -47,8 +47,6 @@ public:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     /** @name Constructor and destructor */

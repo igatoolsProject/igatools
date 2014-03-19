@@ -310,7 +310,7 @@ public :
     const ValueVector< typename Mapping<dim,codim>::GradientType > &
     get_map_gradient_at_points() const;
 
-    const ValueVector< typename Mapping<dim,codim>::GradientFaceType > &
+    const ValueVector< typename Mapping<dim,codim>::GradientType > &
     get_face_map_gradient_at_points(const Index face_id) const;
 
 

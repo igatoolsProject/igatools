@@ -75,7 +75,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false, ExcNotImplemented());
@@ -86,7 +86,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false, ExcNotImplemented());

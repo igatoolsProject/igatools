@@ -891,7 +891,7 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_face_map_gradient_at_points(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::GradientFaceType > &
+const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
     Assert(elem_values_.is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_face_gradients_map(face_id);
