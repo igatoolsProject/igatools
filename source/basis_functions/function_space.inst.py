@@ -18,23 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-###############################################################################
 
-include_files = ['#include <igatools/geometry/cartesian_grid.h>\n']
-
-for include in include_files:
-    file_output.write(include)
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
+include_files = ['geometry/cartesian_grid.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
 for dim in inst.ref_dom_dims:
-    file_output.write("template class FunctionSpaceOnGrid<CartesianGrid<%d>> ;\n" %(dim))
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
-
+    f.write("template class FunctionSpaceOnGrid<CartesianGrid<%d>> ;\n" %(dim))
