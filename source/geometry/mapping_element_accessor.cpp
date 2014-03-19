@@ -643,18 +643,10 @@ transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
 template< int dim_ref_, int codim_ >
 int
 MappingElementAccessor<dim_ref_,codim_>::
-get_num_points() const
+get_num_points(const TopologyId &topology_id) const
 {
-    return elem_values_.num_points_ ;
-}
-
-
-template< int dim_ref_, int codim_ >
-int
-MappingElementAccessor<dim_ref_,codim_>::
-get_num_face_points(const Index face_id) const
-{
-    return face_values_[face_id].num_points_ ;
+    const auto &cache =this->get_values_cache(topology_id);
+    return cache.num_points_ ;
 }
 
 template< int dim_ref_, int codim_ >

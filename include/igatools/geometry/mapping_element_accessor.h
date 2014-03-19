@@ -254,13 +254,7 @@ public:
      * Returns the number of evaluation points currently used
      * in the element cache.
      */
-    Size get_num_points() const;
-
-    /**
-     * Returns the number of evaluation points currently used
-     * in the face cache.
-     */
-    Size get_num_face_points(const Index face_id) const;
+    Size get_num_points(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Prints some internal information.

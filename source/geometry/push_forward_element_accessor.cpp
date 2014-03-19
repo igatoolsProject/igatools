@@ -444,7 +444,7 @@ transform_face_gradients(
     Assert(D1v_hat.size() >= 0 , ExcEmptyObject()) ;
     Assert(D1v.size() == D1v_hat.size(), ExcDimensionMismatch(D1v.size(), D1v_hat.size())) ;
 
-    const int num_points = this->get_num_face_points(face_id) ;
+    const int num_points = this->get_num_points(FaceTopology(face_id)) ;
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
     // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
