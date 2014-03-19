@@ -71,7 +71,7 @@ void run_test(const int num_knots, const int p)
                     out << "Face " << face << endl;
                     elem->fill_face_values(face);
                     out << "values: " << endl;
-                    elem->get_face_basis_values(face).print_info(out);
+                    elem->get_basis_values(FaceTopology(face)).print_info(out);
                     out << endl;
                 }
             }

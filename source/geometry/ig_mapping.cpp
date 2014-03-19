@@ -310,7 +310,7 @@ evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &grad
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    const auto &DF_at_face_pts = element_->evaluate_face_field_gradients(face_id,ctrl_pts_element);
+    const auto &DF_at_face_pts = element_->evaluate_field_gradients(ctrl_pts_element,FaceTopology(face_id));
     const Size n_pts = DF_at_face_pts.size();
 
     Assert(gradients.size() == n_pts,

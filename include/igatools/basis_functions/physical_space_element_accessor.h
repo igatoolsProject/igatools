@@ -200,17 +200,17 @@ public :
     get_basis_value(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
-    ValueTable<Derivative<1> > const &get_basis_gradients() const;
+    ValueTable<Derivative<1> > const &get_basis_gradients(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return the one-dimensional container with the
      * gradients of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<1> >::const_view
-    get_basis_gradients(const Index func) const;
+    get_basis_gradients(const Index func,const TopologyId &topology_id = ElemTopology()) const;
 
     const Derivative<1> &
-    get_basis_gradient(const Index func, const Index qp) const;
+    get_basis_gradient(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
     ValueTable<Derivative<2> > const &get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
@@ -226,20 +226,6 @@ public :
     get_basis_hessian(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     Real get_basis_divergence(const Index func, const Index qp) const;
-
-
-
-    ValueTable<Derivative<1> > const &get_face_basis_gradients(const Index face_id) const;
-
-    /**
-     * \brief Return the one-dimensional container with the
-     * gradients of the i-th basis function at the evaluation points.
-     */
-    typename ValueTable< Derivative<1> >::const_view
-    get_face_basis_gradients(const Index face_id, const Index func) const;
-
-    const Derivative<1> &
-    get_face_basis_gradient(const Index face_id, const Index func, const Index qp) const;
 
     Real get_face_basis_divergence(const Index face_id, const Index func, const Index qp) const;
 
@@ -318,14 +304,10 @@ public :
     evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     ValueVector< Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
+    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     ValueVector< Derivative<2> >
     evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
-
-
-    ValueVector< Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
     ///@}
 
 

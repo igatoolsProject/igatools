@@ -1277,20 +1277,21 @@ get_basis_divergences(const Index i) const -> typename ValueTable<Div>::const_vi
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_gradients() const -> ValueTable<Derivative<1>> const &
+get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivative<1>> const &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.gradients_filled(), ExcCacheNotFilled());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.gradients_filled(), ExcCacheNotFilled());
 
-    return elem_values_.D1phi_hat_;
+    return cache.D1phi_hat_;
 }
 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_gradients(const Index i) const -> typename ValueTable<Derivative<1>>::const_view
+get_basis_gradients(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Derivative<1>>::const_view
 {
-    return this->get_basis_gradients().get_function_view(i);
+    return this->get_basis_gradients(topology_id).get_function_view(i);
 }
 
 
@@ -1342,11 +1343,12 @@ get_basis_divergence(const Index basis, const Index qp) const -> Div const &
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_gradient(const Index basis, const Index qp) const -> Derivative<1> const &
+get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_id) const -> Derivative<1> const &
 {
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_basis_gradients(basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
 template <int dim, int range, int rank>
@@ -1386,29 +1388,6 @@ get_face_basis_divergences(const Index face_id, const Index i) const -> typename
 }
 
 
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_gradients(const Index face_id) const -> ValueTable<Derivative<1>> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.gradients_filled(), ExcCacheNotFilled());
-
-    return face_values_[face_id].D1phi_hat_;
-}
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_gradients(const Index face_id, const Index i) const -> typename ValueTable<Derivative<1>>::const_view
-{
-    return this->get_face_basis_gradients(face_id).get_function_view(i);
-}
-
-
-
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
@@ -1417,18 +1396,6 @@ get_face_basis_divergence(const Index face_id, const Index basis, const Index qp
     Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
            ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
     return this->get_face_basis_divergences(face_id, basis)[qp];
-}
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const -> Derivative<1> const &
-{
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_gradients(face_id, basis)[qp];
 }
 
 
@@ -1457,14 +1424,15 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_i
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<1> >
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<1> >
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.flags_handler_.fill_gradients() == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_gradients() == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D1phi_hat = this->get_basis_gradients() ;
+    const auto &D1phi_hat = this->get_basis_gradients(topology_id) ;
     Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1491,26 +1459,6 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &t
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-
-
-
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<1> >
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].flags_handler_.fill_gradients() == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D1phi_hat = this->get_face_basis_gradients(face_id) ;
-    Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
-}
 
 
 IGA_NAMESPACE_CLOSE
