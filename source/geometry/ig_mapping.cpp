@@ -197,9 +197,7 @@ set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &e
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
     element_->reset_flat_tensor_indices(elem.get_flat_index());
-    std::cout << "going in" << std::endl ;
     element_->fill_face_values(face_id);
-    std::cout << "going out" << std::endl ;
 }
 
 
