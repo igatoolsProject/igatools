@@ -1047,7 +1047,7 @@ get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivativ
     Assert(cache.is_filled(), ExcCacheNotFilled());
     Assert(cache.D1phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return elem_values_.D1phi_hat_ ;
+    return cache.D1phi_hat_ ;
 }
 
 template <int dim, int range, int rank>
