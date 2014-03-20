@@ -612,6 +612,7 @@ private:
 
     template <typename Accessor> friend class GridForwardIterator;
 
+public:
     /**
      * Container for the 1D values on the element.
      * @todo this variable should be private...

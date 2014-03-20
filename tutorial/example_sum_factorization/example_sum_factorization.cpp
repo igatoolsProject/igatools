@@ -659,6 +659,14 @@ public:
 };
 
 
+template <int dim, int k>
+void my_func(
+    const DynamicMultiArray<Real,3> &J_k,
+    const DynamicMultiArray<Real,dim-k+3> & C_k_1,
+    DynamicMultiArray<Real,dim-k+2> & C_k)
+{
+    TensorSize<dim-k+3> tensor_size_C_k_1 = C_k_1.tensor_size();
+}
 
 template<int dim>
 void
@@ -962,25 +970,94 @@ assemble()
 
         IntegratorSumFacMass<dim,dim> integrate;
 
+        Assert(dim==2,ExcNotImplemented());
+        AssertThrow(dim==2,ExcNotImplemented());
+
         loc_mass_matrix_sf.clear();
-        for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
+
+        if (dim == 2)
         {
-            TensorIndex<dim> alpha_tensor_id =
-                MultiArrayUtils<dim>::flat_to_tensor_index(alpha_flat_id,weight_basis);
+            /*
+                        TensorSize<3> tensor_size_KI;
+                        tensor_size_KI(0) = n_bernst_1D_;
+                        tensor_size_KI(1) = n_basis_elem[0];
+                        tensor_size_KI(2) = n_basis_elem[1];
+                        DynamicMultiArray<Real,3> KI(tensor_size_KI);
+                        TensorIndex<3> KI_tensor_id;
+                        TensorIndex<3> I_tensor_id;
+                        TensorIndex<dim> K_tensor_id;
+                        for (int beta = 0 ; beta < n_basis_elem[0] ; ++beta)
+                        {
+                            KI_tensor_id[2] = beta;
+                            I_tensor_id[2] = beta;
+                            for (int alpha = 0 ; alpha < n_basis_elem[0] ; ++alpha)
+                            {
+                                KI_tensor_id[1] = alpha;
+                                I_tensor_id[1] = alpha;
+                                for (int j = 0 ; j < n_bernst_1D_ ; ++j)
+                                {
+                                    KI_tensor_id[0] = j;
+                                    K_tensor_id[1] = j;
+                                    Real sum = 0.0;
+                                    for (int i = 0 ; i < n_bernst_1D_ ; ++i)
+                                    {
+                                        I_tensor_id[0] = i;
+                                        K_tensor_id[0] = i;
+                                        sum += K(K_tensor_id) * I_container[0](I_tensor_id);
+                                    }
+                                    KI(KI_tensor_id) = sum;
+                                }
+                            }
+                        }
 
-            for (int beta_flat_id = alpha_flat_id ; beta_flat_id < n_basis ; ++beta_flat_id)
-            {
-                TensorIndex<dim> beta_tensor_id =
-                    MultiArrayUtils<dim>::flat_to_tensor_index(beta_flat_id,weight_basis);
 
-//              loops_counter = 0;
-//              flops_counter = 0;
-                loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = integrate(K,I_container,alpha_tensor_id,beta_tensor_id);
-//                cout <<"loops counter = " << loops_counter <<endl;
-//                cout <<"flops counter = " << flops_counter <<endl;
+                        TensorIndex<dim> alpha_tensor_id;
+                        TensorIndex<dim>  beta_tensor_id;
+                        for (beta_tensor_id[1] = 0 ; beta_tensor_id[1] < n_basis_elem[1] ; ++beta_tensor_id[1])
+                        {
+                            I_tensor_id[2] = beta_tensor_id[1];
+                            for (alpha_tensor_id[1] = 0 ; alpha_tensor_id[1] < n_basis_elem[1] ; ++alpha_tensor_id[1])
+                            {
+                                I_tensor_id[1] = alpha_tensor_id[1];
+                                for (beta_tensor_id[0] = 0 ; beta_tensor_id[0] < n_basis_elem[0] ; ++beta_tensor_id[0])
+                                {
+                                    KI_tensor_id[2] = beta_tensor_id[0];
 
-            }
+
+                                    for (alpha_tensor_id[0] = 0 ; alpha_tensor_id[0] < n_basis_elem[0] ; ++alpha_tensor_id[0])
+                                    {
+                                        KI_tensor_id[1] = alpha_tensor_id[0];
+
+                                        Real sum = 0.0;
+                                        for (int j = 0 ; j < n_bernst_1D_ ; ++j)
+                                        {
+                                            I_tensor_id[0] = j;
+                                            KI_tensor_id[0] = j;
+                                            sum += KI(KI_tensor_id) * I_container[1](I_tensor_id);
+                                        }
+
+                                        Index alpha_flat_id = MultiArrayUtils<dim>::tensor_to_flat_index(alpha_tensor_id,weight_basis);
+                                        const Index beta_flat_id = MultiArrayUtils<dim>::tensor_to_flat_index(beta_tensor_id,weight_basis);
+
+                                        loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = sum;
+                                    }
+                                }
+                            }
+                        }
+            //*/
+            const int k = 1;
+            const DynamicMultiArray<Real,3> &J_k = I_container[0];  // J1
+            DynamicMultiArray<Real,dim-k+3> C_k_1; // C1
+            DynamicMultiArray<Real,dim-k+2> C_k;
+            my_func<dim,k>(J_k,C_k_1,C_k);
+
         }
+        else if (dim == 3)
+        {
+
+        }
+
+
 
         for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
             for (int beta_flat_id = 0 ; beta_flat_id < alpha_flat_id ; ++beta_flat_id)
@@ -1061,7 +1138,7 @@ do_test()
     string time_mass_orig = "Time mass-matrix orig";
 
     int degree_min = 1;
-    int degree_max = 1;
+    int degree_max = 30;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
