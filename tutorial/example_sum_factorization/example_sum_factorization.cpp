@@ -1363,7 +1363,7 @@ do_test()
 int main()
 {
 
-    do_test<2>();
+    do_test<3>();
 //*/
     return  0;
 }
