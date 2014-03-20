@@ -777,23 +777,6 @@ fill_from_univariate(
     const StaticMultiArray<array<const BasisValues1d *, dim>, range, rank> &univariate_values,
     const BSplineElementAccessor<dim,range,rank> &elem)
 {
-#if 0
-<<<<<<< HEAD
-
-    CartesianGridElementAccessor<dim_domain>::fill_values();
-
-//    StaticMultiArray<array<const BasisValues1d *, dim_domain>, dim_range, rank>
-//    elem_univariate_values;
-
-    if (elem_values_.fill_values_)
-    {
-        evaluate_bspline_derivatives<0>(elem_values_.size_,
-                                        elem_univariate_values_,
-                                        elem_values_.D0phi_hat_);
-        auto phi_hat = elem_values_.phi_hat_.begin();
-        for (auto &D0phi_hat : elem_values_.D0phi_hat_)
-=======
-#endif
     if (flags_handler_.fill_values())
     {
         elem.evaluate_bspline_derivatives<0>(size_,
@@ -801,28 +784,13 @@ fill_from_univariate(
                                              D0phi_hat_);
         auto phi_hat = phi_hat_.begin();
         for (auto &D0phi_hat : D0phi_hat_)
-#if 0
->>>>>>> elem_face_cache
-#endif
         {
             *phi_hat = (D0phi_hat)(0);
             ++phi_hat;
         }
         flags_handler_.set_values_filled(true);
     }
-#if 0
-<<<<<<< HEAD
-    if (elem_values_.fill_gradients_)
-        evaluate_bspline_derivatives<1>(elem_values_.size_,
-                                        elem_univariate_values_,
-                                        elem_values_.D1phi_hat_);
 
-    if (elem_values_.fill_hessians_)
-        evaluate_bspline_derivatives<2>(elem_values_.size_,
-                                        elem_univariate_values_,
-                                        elem_values_.D2phi_hat_);
-=======
-#endif
     if (flags_handler_.fill_gradients())
     {
         elem.template evaluate_bspline_derivatives<1>(size_,
@@ -831,9 +799,7 @@ fill_from_univariate(
 
         flags_handler_.set_gradients_filled(true);
     }
-#if 0
->>>>>>> elem_face_cache
-#endif
+
     if (flags_handler_.fill_hessians())
     {
         elem.template evaluate_bspline_derivatives<2>(size_,

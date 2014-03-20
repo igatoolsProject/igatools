@@ -65,7 +65,7 @@ public:
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
         ValueFlags::point|
-        ValueFlags::ref_elem_measure |
+        ValueFlags::measure |
         ValueFlags::w_measure |
         ValueFlags::face_point |
         ValueFlags::face_w_measure |
@@ -612,14 +612,12 @@ private:
 
     template <typename Accessor> friend class GridForwardIterator;
 
-public:
-
     /**
      * Container for the 1D values on the element.
      * @todo this variable should be private...
      * it is public only to quicky test the sum_factorization technique
      */
-    StaticMultiArray<std::array<const BasisValues1d *,dim_domain>,dim_range,rank>
+    StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>
     elem_univariate_values_;
 
 };

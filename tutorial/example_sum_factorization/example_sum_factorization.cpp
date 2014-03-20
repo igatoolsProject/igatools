@@ -615,7 +615,7 @@ public:
                ExcDimensionMismatch(I.tensor_size()(1),lambda_1.flat_size()));
 
         Assert(I.tensor_size()(2)==lambda_1.flat_size(),
-               ExcDimensionMismatch(tI.tensor_size()(2),lambda_1.flat_size()));
+               ExcDimensionMismatch(I.tensor_size()(2),lambda_1.flat_size()));
 
         TensorIndex<3> tensor_id_I;
         tensor_id_I[1] = alpha_tensor_id[dir];
@@ -708,7 +708,7 @@ assemble()
     const auto elem_end = this->space->end();
     ValueFlags fill_flags = ValueFlags::value |
                             ValueFlags::gradient |
-                            ValueFlags::ref_elem_measure |
+                            ValueFlags::measure |
                             ValueFlags::w_measure |
                             ValueFlags::point;
 
@@ -1061,7 +1061,7 @@ do_test()
     string time_mass_orig = "Time mass-matrix orig";
 
     int degree_min = 1;
-    int degree_max = 30;
+    int degree_max = 1;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;

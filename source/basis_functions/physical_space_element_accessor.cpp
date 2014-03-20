@@ -257,8 +257,8 @@ get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const
     if (fill_face_D2_phi_hat)
         reference_space_accessor_fill_flags |= ValueFlags::face_hessian;
 
-    if (contains(fill_flag , ValueFlags::ref_elem_measure))
-        reference_space_accessor_fill_flags |= ValueFlags::ref_elem_measure;
+    if (contains(fill_flag , ValueFlags::measure))
+        reference_space_accessor_fill_flags |= ValueFlags::measure;
 
 
     return reference_space_accessor_fill_flags;
