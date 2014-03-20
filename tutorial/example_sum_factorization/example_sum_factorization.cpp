@@ -659,7 +659,6 @@ public:
 };
 
 
-template class TensorSizedContainer<4>;
 
 
 template <int dim, int r=dim>
@@ -1364,7 +1363,7 @@ do_test()
 int main()
 {
 
-    do_test<3>();
+    do_test<2>();
 //*/
     return  0;
 }
