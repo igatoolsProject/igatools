@@ -28,8 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-//TODO(pauletti, Mar 3, 2014): should TensorSize be derived from tensor index
-//TODO(pauletti, Mar 3, 2014): why are TensorSize and Index wrapper and not derived from array?
 //TODO(pauletti, Mar 3, 2014):  create a class assertion for the chechink the sizes
 /**
  * @brief Type for the size of a tensor-like container.

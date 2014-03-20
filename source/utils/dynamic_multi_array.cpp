@@ -27,6 +27,13 @@ using std::vector;
 IGA_NAMESPACE_OPEN
 
 
+template<class T, int rank>
+DynamicMultiArray<T,rank>::
+DynamicMultiArray()
+    :
+    DynamicMultiArray<T,rank>(0)
+{}
+
 
 template<class T, int rank>
 DynamicMultiArray<T,rank>::

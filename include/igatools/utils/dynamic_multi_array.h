@@ -50,7 +50,7 @@ public:
     /**
      * Construct an empty multiarray.
      */
-    DynamicMultiArray() = default;
+    DynamicMultiArray();
 
     /**
      * Construct a square multiarray of zeros with @p dim entries in each
