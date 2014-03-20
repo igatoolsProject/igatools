@@ -662,14 +662,19 @@ public:
 template class TensorSizedContainer<4>;
 
 
-template <int dim, int k>
-DynamicMultiArray<Real,3>
-my_func(
-    const TensorSize<dim> &tensor_size_alphabeta,
-    const TensorSize<dim> &tensor_size_theta,
-    const DynamicMultiArray<Real,3> &J_k,
-    const DynamicMultiArray<Real,3> &C_k_1)
+template <int dim, int r=dim>
+class MassMatrixIntegrator
 {
+public:
+	DynamicMultiArray<Real,3>
+	operator()(
+			const TensorSize<dim> &tensor_size_alphabeta,
+			const TensorSize<dim> &tensor_size_theta,
+			const array<DynamicMultiArray<Real,3>,dim> &J,
+			const DynamicMultiArray<Real,3> &C_k_1) const
+{
+		const int k = dim-r+1;
+	/*
     LogStream out;
     out << "---------------------------------------" << endl;
     out << "k="<<k << endl;
@@ -677,7 +682,7 @@ my_func(
     out << "C_[k-1] = ";
     C_k_1.print_info(out);
     out <<endl;
-
+//*/
 
     // (alpha_1,...alpha_{k-1})
     TensorSize<k-1> tensor_size_alphabeta_k_1;
@@ -715,6 +720,7 @@ my_func(
            ExcDimensionMismatch(tensor_size_C_k_1[2],tensor_size_alphabeta_k_1.flat_size()));
 
 
+    const auto &J_k = J[k-1];
     TensorSize<3> tensor_size_J_k = J_k.tensor_size();
     Assert(tensor_size_J_k[0] == tensor_size_theta[k-1],
            ExcDimensionMismatch(tensor_size_J_k[0],tensor_size_theta[k-1]));
@@ -734,19 +740,20 @@ my_func(
     const Size size_flat_alpha_k_1 = tensor_size_alphabeta_k_1.flat_size();
     const Size size_flat_beta_k_1  = size_flat_alpha_k_1;
 
-    const Size size_flat_theta_k = tensor_size_theta_k.flat_size();
+//    const Size size_flat_theta_k = tensor_size_theta_k.flat_size();
+    /*
     out << "size_flat_theta_k = " << size_flat_theta_k << endl;
     out << "size_flat_theta_k_1 = " << size_flat_theta_k_1 << endl;
     out << "size_flat_alpha_k_1 = " << size_flat_alpha_k_1 << endl;
     out << "size_flat_beta_k_1 = " << size_flat_beta_k_1 << endl;
-
+//*/
 
     TensorSize<3> tensor_size_C_k;
     tensor_size_C_k[0] = size_flat_theta_k_1;
     tensor_size_C_k[1] = tensor_size_alphabeta_k.flat_size();
     tensor_size_C_k[2] = tensor_size_alphabeta_k.flat_size();
     DynamicMultiArray<Real,3> C_k(tensor_size_C_k);
-
+/*
     out << "tensor_size_C[k-1] = "
         << tensor_size_C_k_1[0] << ","
         << tensor_size_C_k_1[1] << ","
@@ -756,7 +763,7 @@ my_func(
         << tensor_size_C_k[0] << ","
         << tensor_size_C_k[1] << ","
         << tensor_size_C_k[2] << endl;
-
+//*/
 
     tensor_index_C_k[2] = 0;
     for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < size_flat_beta_k_1 ; ++flat_beta_k_1)
@@ -782,7 +789,7 @@ my_func(
                     {
                         tensor_index_C_k[0] = flat_theta_k_1;
 
-
+/*
                         out << "tensor_index_C_k_1 = "
                             << tensor_index_C_k_1[0] << ","
                             << tensor_index_C_k_1[1] << ","
@@ -794,7 +801,7 @@ my_func(
                             << tensor_index_J_k[1] << ","
                             << tensor_index_J_k[2] << ","
                             << endl;
-
+//*/
                         Real sum = 0.0;
                         for (int theta_k = 0 ; theta_k < tensor_size_theta[k-1] ; ++theta_k)
                         {
@@ -821,13 +828,14 @@ my_func(
                             tensor_index_C_k_1[0]++;
 
                         } // end loop theta_k
-
+/*
                         out << "tensor_index_C_k = "
                             << tensor_index_C_k[0] << ","
                             << tensor_index_C_k[1] << ","
                             << tensor_index_C_k[2] << ","
                             << endl;
                         out <<endl;
+                        //*/
                         C_k(tensor_index_C_k) = sum;
 
                     } //end loop flat_theta_k_1
@@ -840,19 +848,32 @@ my_func(
             tensor_index_C_k[2]++;
         } // end loop beta_k
     } // end loop flat_beta_k_1
-
+/*
     out << "C_[k] = ";
     C_k.print_info(out);
     out << endl;
-
     out << "---------------------------------------" << endl;
     out <<endl;
-
-    return C_k;
+//*/
+    MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
+    return mass_matrix_integrator(tensor_size_alphabeta,tensor_size_theta,J,C_k);
 }
+};
 
 
-
+template <int dim>
+class MassMatrixIntegrator<dim,0>
+{
+public:
+	DynamicMultiArray<Real,3> operator()(
+			const TensorSize<dim> &tensor_size_alphabeta,
+			const TensorSize<dim> &tensor_size_theta,
+			const array<DynamicMultiArray<Real,3>,dim> &J,
+			const DynamicMultiArray<Real,3> &C) const
+	{
+		return C;
+	}
+};
 
 template<int dim>
 void
@@ -1257,10 +1278,18 @@ assemble()
 
 //            const DynamicMultiArray<Real,3> &J_k = ;  // J1
 
-            DynamicMultiArray<Real,3> C_k = my_func<dim,1>(tensor_size_alphabeta,tensor_size_theta,I_container[0],C_k_1);
-            DynamicMultiArray<Real,3> C_kp1 = my_func<dim,2>(tensor_size_alphabeta,tensor_size_theta,I_container[1],C_k);
+            MassMatrixIntegrator<dim> integrate_mass_matrix;
+            DynamicMultiArray<Real,3> C_kp1 = integrate_mass_matrix(tensor_size_alphabeta,tensor_size_theta,I_container,C_k_1);
+//            DynamicMultiArray<Real,3> C_kp1 = my_func<dim,2>(tensor_size_alphabeta,tensor_size_theta,I_container,C_k);
+
+            Assert(C_kp1.tensor_size()(1) == n_basis,ExcDimensionMismatch(C_kp1.tensor_size()(1),n_basis));
+            Assert(C_kp1.tensor_size()(2) == n_basis,ExcDimensionMismatch(C_kp1.tensor_size()(2),n_basis));
 
 
+            Index flat_id = 0 ;
+            for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
+                for (int beta_flat_id = 0 ; beta_flat_id < n_basis ; ++beta_flat_id)
+                    loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = C_kp1(flat_id++);
 
 
         }
@@ -1270,11 +1299,11 @@ assemble()
         }
 
 
-
+/*
         for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
             for (int beta_flat_id = 0 ; beta_flat_id < alpha_flat_id ; ++beta_flat_id)
                 loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = loc_mass_matrix_sf(beta_flat_id,alpha_flat_id);
-
+//*/
         //        out << "Local Mass Matrix = " << local_mass_matrix << endl;
 
         end_assembly_mass_matrix = Clock::now();
@@ -1316,8 +1345,8 @@ assemble()
         //*/
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
-        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+//        out<< "Local mass matrix original=" << loc_mat << endl << endl;
+        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
