@@ -789,53 +789,17 @@ public:
                     {
                         tensor_index_C_k[0] = flat_theta_k_1;
 
-/*
-                        out << "tensor_index_C_k_1 = "
-                            << tensor_index_C_k_1[0] << ","
-                            << tensor_index_C_k_1[1] << ","
-                            << tensor_index_C_k_1[2] << ","
-                            << endl;
-
-                        out << "tensor_index_J_k = "
-                            << "theta,"
-                            << tensor_index_J_k[1] << ","
-                            << tensor_index_J_k[2] << ","
-                            << endl;
-//*/
                         Real sum = 0.0;
                         for (int theta_k = 0 ; theta_k < tensor_size_theta[k-1] ; ++theta_k)
                         {
 
                             tensor_index_J_k[0] = theta_k;
-                            /*
-                            out << "(flat alpha k-1=" << flat_alpha_k_1<< ")  "
-                                << "(flat beta k-1=" << flat_beta_k_1 << ")  "
-                                << "(alpha k=" << alpha_k<< ")  "
-                                << "(beta k=" << beta_k << ")  "
-                                << "(flat theta k-1=" << flat_theta_k_1 << ")  "
-                                << "(theta k=" << theta_k << ")" << endl;
-                            //*/
-                            /*
-                            out << "tensor_index_J_k = "
-                                << tensor_index_J_k[0] << ","
-                                << tensor_index_J_k[1] << ","
-                                << tensor_index_J_k[2] << ","
-                                << endl;
-                            //*/
-//*/
                             sum += C_k_1(tensor_index_C_k_1) * J_k(tensor_index_J_k);
 
                             tensor_index_C_k_1[0]++;
 
                         } // end loop theta_k
-/*
-                        out << "tensor_index_C_k = "
-                            << tensor_index_C_k[0] << ","
-                            << tensor_index_C_k[1] << ","
-                            << tensor_index_C_k[2] << ","
-                            << endl;
-                        out <<endl;
-                        //*/
+
                         C_k(tensor_index_C_k) = sum;
 
                     } //end loop flat_theta_k_1
@@ -848,13 +812,7 @@ public:
             tensor_index_C_k[2]++;
         } // end loop beta_k
     } // end loop flat_beta_k_1
-/*
-    out << "C_[k] = ";
-    C_k.print_info(out);
-    out << endl;
-    out << "---------------------------------------" << endl;
-    out <<endl;
-//*/
+
     MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
     return mass_matrix_integrator(tensor_size_alphabeta,tensor_size_theta,J,C_k);
 }
@@ -1174,16 +1132,14 @@ assemble()
         for (int flat_id = 0 ; flat_id < flat_size ; ++ flat_id)
             K(flat_id) = k_rhs(flat_id) / elem_measure ;
 
-
+/*
         IntegratorSumFacMass<dim,dim> integrate;
 
         Assert(dim==2,ExcNotImplemented());
         AssertThrow(dim==2,ExcNotImplemented());
-
+//*/
         loc_mass_matrix_sf.clear();
 
-        if (dim == 2)
-        {
             /*
                         TensorSize<3> tensor_size_KI;
                         tensor_size_KI(0) = n_bernst_1D_;
@@ -1292,12 +1248,6 @@ assemble()
                     loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = C_kp1(flat_id++);
 
 
-        }
-        else if (dim == 3)
-        {
-
-        }
-
 
 /*
         for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
@@ -1346,7 +1296,7 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
@@ -1378,8 +1328,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 2;
-    int degree_max = 2;
+    int degree_min = 1;
+    int degree_max = 20;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
@@ -1414,7 +1364,7 @@ do_test()
 int main()
 {
 
-    do_test<2>();
+    do_test<3>();
 //*/
     return  0;
 }
