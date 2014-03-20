@@ -301,7 +301,7 @@ init_values(const ValueFlags fill_flag,
             face_value.reset(face_id++, face_flags_handler, quad);
     }
 
-    mapping_->init_element(fill_flag, quad);
+    mapping_->init_element(f_flag, quad);
 }
 
 
