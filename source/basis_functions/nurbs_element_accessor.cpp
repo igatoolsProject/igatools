@@ -317,9 +317,11 @@ evaluate_nurbs_gradients(
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D1_phi_hat.get_num_functions(), this->get_num_basis()));
+    std::cout << "Checking number of function inside evaluate_nurbs_gradient" << endl ;
+    LogStream out ;
+    D1_phi_hat.print_info(out) ;
 
     const int num_points = D1_phi_hat.get_num_points();
-
 
     {
         // here we treat the pure NURBS case
@@ -1045,7 +1047,7 @@ get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivativ
     Assert(cache.is_filled(), ExcCacheNotFilled());
     Assert(cache.D1phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return elem_values_.D1phi_hat_ ;
+    return cache.D1phi_hat_ ;
 }
 
 template <int dim, int range, int rank>
