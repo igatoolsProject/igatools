@@ -203,6 +203,60 @@ is_boundary(const Index face_id) const
 }
 
 
+template <int dim>
+void
+CartesianGridElement<dim>::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+    const std::string tab = "   ";
+
+    out << "CartesianGridElement<" << dim << "> info:" << endl;
+    out.push(tab);
+
+    out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
+
+    out << "Flat id = " << this->get_flat_index() << endl;
+    out << "Tensor id = " << this->get_tensor_index() << endl;
+
+    out << "Box intervals: " << endl;
+    out.push(tab);
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        const auto coord_a = this->vertex(0)[i];
+        const auto coord_b = this->vertex(pow(2,i))[i];
+        out << "Direction["<< i << "] : [ " << coord_a << " , " << coord_b << " ]" << endl;
+    }
+    out.pop();
+
+
+
+    out << "Vertices:" << endl;
+    out.push(tab);
+    for (Size i = 0 ; i < UnitElement<dim>::vertices_per_element ; ++i)
+    {
+        out << "Vertex[" << i << "] = " << this->vertex(i) << endl;
+    }
+    out.pop();
+
+    out << "Center = " << this->center() << endl;
+
+    std::string is_boundary = (this->is_boundary())?"true":"false";
+    out << "On boundary = " << is_boundary << endl;
+
+    if (this->is_boundary())
+    {
+        out << "Faces on boundary =";
+        for (Size i = 0 ; i < UnitElement<dim>::faces_per_element ; ++i)
+            if (this->is_boundary(i))
+                out << " " << i ;
+
+        out << endl;
+    }
+
+    out.pop();
+}
 
 
 

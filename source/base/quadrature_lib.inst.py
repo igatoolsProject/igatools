@@ -19,13 +19,14 @@
 #-+--------------------------------------------------------------------
 ###############################################################################
 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
+data = Instantiation()
+f = data.file_output
+inst = data.inst
 
 for dim in inst.ref_dom_dims:
-    file_output.write('template class QGauss< %d > ;\n' % (dim))
-    file_output.write('template class QGaussLobatto< %d > ;\n' % (dim))
-    file_output.write('template class QUniform< %d > ;\n' % (dim))
-    file_output.write('template class QTrapez< %d > ;\n' % (dim))
-
-file_output.close()
+    f.write('template class QGauss< %d > ;\n' % (dim))
+    f.write('template class QGaussLobatto< %d > ;\n' % (dim))
+    f.write('template class QUniform< %d > ;\n' % (dim))
+    f.write('template class QTrapez< %d > ;\n' % (dim))

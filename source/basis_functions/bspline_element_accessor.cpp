@@ -44,6 +44,11 @@ using std::vector;
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
+
 //#define NOT_OPTIMIZED
 
 namespace
@@ -64,7 +69,6 @@ namespace
  *
  */
 // TODO (pauletti, Nov 1, 2013): Document how this class work and its internals
-//TODO(pauletti, Mar 3, 2014): rename dim_domain to dim and deriv_order to order
 template<int dim, int order>
 class DerivativeSymmetryManager
 {
@@ -275,34 +279,34 @@ private:
 
 
 
-template <int dim_domain, int dim_range, int rank>
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+template <int dim, int range, int rank>
+BSplineElementAccessor<dim, range, rank>::
 BSplineElementAccessor(const Space_t &space, const int index)
     :
-    CartesianGridElementAccessor<dim_domain>(*(space.get_grid()), index),
+    CartesianGridElementAccessor<dim>(*(space.get_grid()), index),
     space_(&space)
 {}
 
 
 
 //TODO: inline this
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 int
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 get_num_basis() const
 {
     return (this->space_->get_num_basis_per_element());
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 int
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 get_component_num_basis(const int i) const
 {
     const auto &degree_comp = this->space_->get_degree()(i);
     int component_num_basis = 1;
-    for (int j = 0; j < dim_domain; ++j)
+    for (int j = 0; j < dim; ++j)
         component_num_basis *= degree_comp[j] + 1;
 
     return component_num_basis;
@@ -310,9 +314,9 @@ get_component_num_basis(const int i) const
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 vector<Index> const &
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 get_local_to_global() const
 {
     return space_->element_global_dofs_[this->get_flat_index()];
@@ -320,36 +324,41 @@ get_local_to_global() const
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 init_values(const ValueFlags fill_flag,
-            const Quadrature<dim_domain> &quad)
+            const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
-           typename CartesianGridElementAccessor<dim_domain>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
+           typename CartesianGridElementAccessor<dim>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
 
     // initalizing the cache of the CartesianGridElementAccessor
     {
         ValueFlags grid_flag = ValueFlags::none;
         if (contains(fill_flag , ValueFlags::point))
             grid_flag |= ValueFlags::point;
-        if (contains(fill_flag , ValueFlags::ref_elem_measure))
-            grid_flag |= ValueFlags::ref_elem_measure;
+        if (contains(fill_flag , ValueFlags::measure))
+            grid_flag |= ValueFlags::measure;
         if (contains(fill_flag , ValueFlags::w_measure))
             grid_flag |= ValueFlags::w_measure;
         if (contains(fill_flag , ValueFlags::face_point))
             grid_flag |= ValueFlags::face_point;
         if (contains(fill_flag , ValueFlags::face_w_measure))
             grid_flag |= ValueFlags::face_w_measure;
-        CartesianGridElementAccessor<dim_domain>::init_values(grid_flag,quad);
+        CartesianGridElementAccessor<dim>::init_values(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
+
     if (contains(f_flag, ValueFlags::divergence))
         f_flag |= ValueFlags::gradient;
 
+    if (contains(f_flag, ValueFlags::face_divergence))
+        f_flag |= ValueFlags::face_gradient;
+
     int max_der_order = -1;
+
     if (contains(f_flag, ValueFlags::value))
         max_der_order=std::max(max_der_order,0);
 
@@ -368,6 +377,7 @@ init_values(const ValueFlags fill_flag,
     if (contains(f_flag, ValueFlags::face_hessian))
         max_der_order=std::max(max_der_order,2);
 
+
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
     reset_univariate_cache(quad, max_der_order);
@@ -376,21 +386,21 @@ init_values(const ValueFlags fill_flag,
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 init_face_values(const Index face_id,
                  const ValueFlags fill_flag,
-                 const Quadrature<dim_domain-1> &quad)
+                 const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented()) ;
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 reset_global_cache()
 {
     values_1d_data_.reset();
@@ -399,10 +409,10 @@ reset_global_cache()
         values_1d_faces_[f].reset();
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-reset_univariate_cache(const Quadrature<dim_domain> &quad, const int max_der)
+BSplineElementAccessor<dim, range, rank>::
+reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
 {
     Assert(values_1d_data_.use_count() < 2,
            ExcMessage("Resetting a shared cache, use force if this is what you Really want."));
@@ -425,54 +435,68 @@ reset_univariate_cache(const Quadrature<dim_domain> &quad, const int max_der)
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 reset_element_cache(const ValueFlags fill_flag,
-                    const Quadrature<dim_domain> &quad)
+                    const Quadrature<dim> &quad)
 {
     //--------------------------------------------------------------------------
-    StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> n_basis_direction;
+    StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction;
     for (int i = 0; i < Space_t::n_components; ++i)
-        for (int j=0; j<dim_domain; ++j)
+        for (int j=0; j<dim; ++j)
             n_basis_direction(i)[j] = space_->degree_(i)[j]+1;
     //--------------------------------------------------------------------------
 
 
-    elem_values_.reset(fill_flag, n_basis_direction, quad);
 
-    Index face_id = 0 ;
-    const auto face_fill_flag = get_face_flags(fill_flag) ;
+    //--------------------------------------------------------------------------
+    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
+    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
 
-//    if ( !contains(face_fill_flag, ValueFlags::none) )
-    if (face_fill_flag != ValueFlags::none)
+
+    Assert(!elem_flags_handler.fill_none() ||
+           !face_flags_handler.fill_none(),
+           ExcMessage("Nothing to reset"));
+
+    if (!elem_flags_handler.fill_none())
+        elem_values_.reset(elem_flags_handler, n_basis_direction, quad);
+
+
+    if (!face_flags_handler.fill_none())
+    {
+        Index face_id = 0 ;
         for (auto& face_value : face_values_)
-            face_value.reset(face_id++, face_fill_flag, n_basis_direction, quad);
+            face_value.reset(face_id++, face_flags_handler, n_basis_direction, quad);
+    }
+    //--------------------------------------------------------------------------
 }
 
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 ElementValuesCache::
-reset(const ValueFlags fill_flag,
-      const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-      const Quadrature<dim_domain> &quad)
+reset(const BasisElemValueFlagsHandler &flags_handler,
+      const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+      const Quadrature<dim> &quad)
 {
-    ValuesCache::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(flags_handler, n_basis_direction,quad.get_num_points_direction());
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 ValuesCache::
-reset(const ValueFlags fill_flag,
-      const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-      const TensorSize<dim_domain> &n_points_direction)
+reset(const BasisElemValueFlagsHandler &flags_handler,
+      const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+      const TensorSize<dim> &n_points_direction)
 {
+    flags_handler_ = flags_handler;
+
     this->size_.reset(n_basis_direction,
                       n_points_direction);
 
@@ -490,21 +514,10 @@ reset(const ValueFlags fill_flag,
     //--------------------------------------------------------------------------
 
 
-//    using std::cout;
-//    using std::endl;
-
     //--------------------------------------------------------------------------
     // resizing the containers for the basis functions
-
-    Assert(contains(fill_flag, ValueFlags::none),
-           ExcMessage("nothing to reset"));
-
-    int max_der_order = -1;
-    if (contains(fill_flag , ValueFlags::value))
+    if (flags_handler_.fill_values())
     {
-//      cout << "BSplineElementAccessor::ValuesData::reset() ---> value" <<endl;
-        fill_values_ = true;
-
         if (D0phi_hat_.get_num_points() != total_n_points ||
             D0phi_hat_.get_num_functions() != total_n_basis)
         {
@@ -518,114 +531,110 @@ reset(const ValueFlags fill_flag,
             phi_hat_.resize(total_n_basis,total_n_points);
             phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,0);
-
     }
     else
     {
-        fill_values_ = false;
         D0phi_hat_.clear();
         phi_hat_.clear();
     }
 
-
-    if (contains(fill_flag , ValueFlags::divergence))
+    if (flags_handler_.fill_gradients())
     {
-        fill_divs_ = true;
-        if (div_phi_hat_.get_num_points() != total_n_points ||
-            div_phi_hat_.get_num_functions() != total_n_basis)
-        {
-            div_phi_hat_.resize(total_n_basis,total_n_points);
-            div_phi_hat_.zero();
-        }
-
-        max_der_order=std::max(max_der_order,1);
-    }
-    else
-    {
-        fill_divs_ = false;
-        D1phi_hat_.clear();
-    }
-
-
-    if (contains(fill_flag , ValueFlags::gradient))
-    {
-//      cout << "BSplineElementAccessor::ValuesData::reset() ---> gradient" <<endl;
-        fill_gradients_ = true;
         if (D1phi_hat_.get_num_points() != total_n_points ||
             D1phi_hat_.get_num_functions() != total_n_basis)
         {
             D1phi_hat_.resize(total_n_basis,total_n_points);
             D1phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,1);
     }
     else
     {
-        fill_gradients_ = false;
         D1phi_hat_.clear();
     }
 
-    if (contains(fill_flag , ValueFlags::hessian))
+
+    if (flags_handler_.fill_divergences())
     {
-        fill_hessians_ = true;
+        Assert(flags_handler_.fill_gradients(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
+        if (div_phi_hat_.get_num_points() != total_n_points ||
+            div_phi_hat_.get_num_functions() != total_n_basis)
+        {
+            div_phi_hat_.resize(total_n_basis,total_n_points);
+            div_phi_hat_.zero();
+        }
+    }
+    else
+    {
+        div_phi_hat_.clear();
+    }
+
+
+
+    if (flags_handler_.fill_hessians())
+    {
         if (D2phi_hat_.get_num_points() != total_n_points ||
             D2phi_hat_.get_num_functions() != total_n_basis)
         {
             D2phi_hat_.resize(total_n_basis,total_n_points);
             D2phi_hat_.zero();
         }
-
-        max_der_order=std::max(max_der_order,2);
     }
     else
     {
-        fill_hessians_ = false;
         D2phi_hat_.clear();
     }
-
-//    Assert((max_der_order>=0), ExcMessage("Not a right ValueFlag"));
     //--------------------------------------------------------------------------
 
 
     this->set_initialized(true);
-//    this->set_filled(false);
 }
 
-
-
-template <int dim_domain, int dim_range, int rank>
-ValueFlags
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_flags(const ValueFlags fill_flag) const
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+ValuesCache::
+get_values() const -> const ValueTable<Value> &
 {
+    return phi_hat_;
+}
 
-    ValueFlags face_fill_flag = ValueFlags::none ;
-
-    if (contains(fill_flag , ValueFlags::face_value))
-        face_fill_flag |= ValueFlags::value ;
-
-    if (contains(fill_flag , ValueFlags::face_divergence))
-        face_fill_flag |= ValueFlags::divergence ;
-
-    if (contains(fill_flag , ValueFlags::face_gradient))
-        face_fill_flag |= ValueFlags::gradient ;
-
-    if (contains(fill_flag , ValueFlags::face_hessian))
-        face_fill_flag |= ValueFlags::hessian ;
-
-    return face_fill_flag ;
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+ValuesCache::
+get_gradients() const -> const ValueTable<Derivative<1>> &
+{
+    return D1phi_hat_;
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+ValuesCache::
+get_hessians() const -> const ValueTable<Derivative<2>> &
+{
+    return D2phi_hat_;
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+ValuesCache::
+get_divergences() const -> const ValueTable<Div> &
+{
+    return div_phi_hat_;
+}
+
+
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 FuncPointSize::
-reset(StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> n_basis_direction,
-      TensorSize<dim_domain> n_points_direction)
+reset(StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction,
+      TensorSize<dim> n_points_direction)
 {
     n_basis_direction_ = n_basis_direction;
     n_points_direction_ = n_points_direction;
@@ -633,9 +642,9 @@ reset(StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> n_basis_directio
     //--------------------------------------------------------------------------
     // creating the objects for fast conversion from flat-to-tensor indexing
     // in practice is an hash-table from flat to tensor indices
-    using Indexer = CartesianProductIndexer<dim_domain>;
+    using Indexer = CartesianProductIndexer<dim>;
 
-    const int n_components = StaticMultiArray<TensorIndex<dim_domain>, dim_range, rank>::n_entries;
+    const int n_components = StaticMultiArray<TensorIndex<dim>, range, rank>::n_entries;
     for (int iComp = 0; iComp < n_components; ++iComp)
         basis_functions_indexer_(iComp) = shared_ptr<Indexer>(new Indexer(n_basis_direction_(iComp)));
 
@@ -645,44 +654,45 @@ reset(StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> n_basis_directio
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 FaceValuesCache::
 reset(const Index face_id,
-      const ValueFlags fill_flag,
-      const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-      const Quadrature<dim_domain> &quad1)
+      const BasisFaceValueFlagsHandler &flags_handler,
+      const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+      const Quadrature<dim> &quad1)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
     const auto quad = quad1.collapse_to_face(face_id);
 
-    ValuesCache::reset(fill_flag, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(flags_handler, n_basis_direction,quad.get_num_points_direction());
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 FaceValuesCache::
 reset(const Index face_id,
-      const ValueFlags fill_flag,
-      const StaticMultiArray<TensorSize<dim_domain>, dim_range, rank> &n_basis_direction,
-      const Quadrature<dim_domain-1> &quad)
+      const BasisFaceValueFlagsHandler &flags_handler,
+      const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
+      const Quadrature<dim-1> &quad)
 {
+    Assert(false,ExcNotImplemented()) ;
     AssertThrow(false,ExcNotImplemented()) ;
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 GlobalFaceCache::
 reset(const Space_t &space,
-      const Quadrature<dim_domain> &quad1,
+      const Quadrature<dim> &quad1,
       const Index face_id,
       int max_der)
 {
@@ -715,7 +725,7 @@ reset(const Space_t &space,
     {
         BasisValues1d &basis = splines1d_cache_data_(iComp);
 
-        const int jDim = UnitElement<dim_domain>::face_constant_direction[face_id];//const_dir;
+        const int jDim = UnitElement<dim>::face_constant_direction[face_id];//const_dir;
         {
             const int degree = degree_(iComp)[ jDim ];
             const std::vector<Real> &pt_coords = eval_points.get_data_direction(jDim);
@@ -759,26 +769,21 @@ reset(const Space_t &space,
 }
 
 
-
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-fill_values()
+BSplineElementAccessor<dim, range, rank>::
+ValuesCache::
+fill_from_univariate(
+    const StaticMultiArray<array<const BasisValues1d *, dim>, range, rank> &univariate_values,
+    const BSplineElementAccessor<dim,range,rank> &elem)
 {
-    Assert(values_1d_data_->is_filled(), ExcNotInitialized());
-    Assert(elem_values_.is_initialized(), ExcNotInitialized());
+#if 0
+<<<<<<< HEAD
 
     CartesianGridElementAccessor<dim_domain>::fill_values();
 
-    const auto  &element_tensor_id = this->get_tensor_index();
 //    StaticMultiArray<array<const BasisValues1d *, dim_domain>, dim_range, rank>
 //    elem_univariate_values;
-    for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
-    {
-        auto &univariate_values = values_1d_data_->splines1d_cache_(iComp);
-        for (int i = 0; i < dim_domain; ++i)
-            elem_univariate_values_(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
-    }
 
     if (elem_values_.fill_values_)
     {
@@ -787,12 +792,26 @@ fill_values()
                                         elem_values_.D0phi_hat_);
         auto phi_hat = elem_values_.phi_hat_.begin();
         for (auto &D0phi_hat : elem_values_.D0phi_hat_)
+=======
+#endif
+    if (flags_handler_.fill_values())
+    {
+        elem.evaluate_bspline_derivatives<0>(size_,
+                                             univariate_values,
+                                             D0phi_hat_);
+        auto phi_hat = phi_hat_.begin();
+        for (auto &D0phi_hat : D0phi_hat_)
+#if 0
+>>>>>>> elem_face_cache
+#endif
         {
             *phi_hat = (D0phi_hat)(0);
             ++phi_hat;
         }
+        flags_handler_.set_values_filled(true);
     }
-
+#if 0
+<<<<<<< HEAD
     if (elem_values_.fill_gradients_)
         evaluate_bspline_derivatives<1>(elem_values_.size_,
                                         elem_univariate_values_,
@@ -802,24 +821,73 @@ fill_values()
         evaluate_bspline_derivatives<2>(elem_values_.size_,
                                         elem_univariate_values_,
                                         elem_values_.D2phi_hat_);
-
-    if (elem_values_.fill_divs_)
+=======
+#endif
+    if (flags_handler_.fill_gradients())
     {
-        auto D1  = elem_values_.D1phi_hat_.begin();
-        auto div = elem_values_.div_phi_hat_.begin();
-        auto end = elem_values_.D1phi_hat_.end();
-        for (; D1 != end; ++D1, ++div)
-            *div = trace(*D1);
+        elem.template evaluate_bspline_derivatives<1>(size_,
+                                                      univariate_values,
+                                                      D1phi_hat_);
+
+        flags_handler_.set_gradients_filled(true);
+    }
+#if 0
+>>>>>>> elem_face_cache
+#endif
+    if (flags_handler_.fill_hessians())
+    {
+        elem.template evaluate_bspline_derivatives<2>(size_,
+                                                      univariate_values,
+                                                      D2phi_hat_);
+
+        flags_handler_.set_hessians_filled(true);
     }
 
-    elem_values_.set_filled(true);
+    if (flags_handler_.fill_divergences())
+    {
+        Assert(flags_handler_.gradients_filled(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
+        auto D1  = D1phi_hat_.begin();
+        auto div = div_phi_hat_.begin();
+        auto end = D1phi_hat_.end();
+        for (; D1 != end; ++D1, ++div)
+            *div = trace(*D1);
+
+        flags_handler_.set_divergences_filled(true);
+    }
+
+    this->set_filled(true);
+}
+
+template <int dim, int range, int rank>
+void
+BSplineElementAccessor<dim, range, rank>::
+fill_values()
+{
+    Assert(values_1d_data_->is_filled(), ExcNotInitialized());
+    Assert(elem_values_.is_initialized(), ExcNotInitialized());
+
+    CartesianGridElementAccessor<dim>::fill_values();
+
+    const auto  &element_tensor_id = this->get_tensor_index();
+//    StaticMultiArray<array<const BasisValues1d *, dim>, range, rank>
+//    elem_univariate_values;
+    for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
+    {
+        auto &univariate_values = values_1d_data_->splines1d_cache_(iComp);
+        for (int i = 0; i < dim; ++i)
+            elem_univariate_values_(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
+    }
+
+    elem_values_.fill_from_univariate(elem_univariate_values_,*this);
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 fill_face_values(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
@@ -828,15 +896,15 @@ fill_face_values(const Index face_id)
 
     Assert(face_value.is_initialized(), ExcNotInitialized());
 
-    CartesianGridElementAccessor<dim_domain>::fill_face_values(face_id);
-    const int const_dir = UnitElement<dim_domain>::face_constant_direction[face_id];
+    CartesianGridElementAccessor<dim>::fill_face_values(face_id);
+    const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
 
     const auto &element_tensor_id = this->get_tensor_index();
-    StaticMultiArray<array<const BasisValues1d *,dim_domain>,dim_range,rank>
+    StaticMultiArray<array<const BasisValues1d *,dim>,range,rank>
     elem_univariate_values;
     for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
     {
-        for (int i = 0; i < int (dim_domain); ++i)
+        for (int i = 0; i < dim; ++i)
         {
             if (i==const_dir)
                 elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
@@ -845,40 +913,18 @@ fill_face_values(const Index face_id)
                     values_1d_data_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
         }
     }
-    if (face_value.fill_values_)
-    {
-        evaluate_bspline_derivatives<0>(face_value.size_,
-                                        elem_univariate_values,
-                                        face_value.D0phi_hat_);
-        auto phi_hat = face_values_[face_id].phi_hat_.begin();
-        for (const auto &D0phi_hat : face_value.D0phi_hat_)
-        {
-            *phi_hat = (D0phi_hat)(0);
-            ++phi_hat;
-        }
-    }
 
-    if (face_value.fill_gradients_)
-        evaluate_bspline_derivatives<1>(face_value.size_,
-                                        elem_univariate_values,
-                                        face_value.D1phi_hat_);
-
-    if (face_value.fill_hessians_)
-        evaluate_bspline_derivatives<2>(face_value.size_,
-                                        elem_univariate_values,
-                                        face_value.D2phi_hat_);
-
-    face_value.set_filled(true);
+    face_value.fill_from_univariate(elem_univariate_values,*this);
 }
 
 
 
-template < int dim_domain, int dim_range, int rank>
+template < int dim, int range, int rank>
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 UniformQuadCache::
 reset(const Space_t &space,
-      const Quadrature<dim_domain> &quad,
+      const Quadrature<dim> &quad,
       const int max_der)
 {
     //------------------------------------------------------------------------------------------
@@ -893,7 +939,7 @@ reset(const Space_t &space,
         Assert(n_elem == space.bezier_op_(iComp).tensor_size(),
                ExcMessage("Not same size"));
         splines1d_cache_data_(iComp).resize(n_elem);
-        for (int i=0; i<dim_domain; ++i)
+        for (int i=0; i<dim; ++i)
             for (int j=0; j<n_elem[i]; ++j)
                 splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
     }
@@ -925,7 +971,7 @@ reset(const Space_t &space,
     BasisValues1d bernstein_values(max_der_plus_one);
     for (int iComp = 0; iComp < n_active_components; ++iComp)
     {
-        for (int jDim = 0; jDim < dim_domain; ++jDim)
+        for (int jDim = 0; jDim < dim; ++jDim)
         {
             const int num_intevals = n_elem[jDim];
             const int degree = degree_(iComp)[ jDim ];
@@ -969,7 +1015,7 @@ reset(const Space_t &space,
 
         const auto n_intervals_multi_d = spline1d_active_data.tensor_size();
 
-        for (int jDim = 0; jDim < dim_domain; jDim++)
+        for (int jDim = 0; jDim < dim; jDim++)
         {
             const Size n_intervals_1d = n_intervals_multi_d[jDim];
 
@@ -987,12 +1033,12 @@ reset(const Space_t &space,
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 template < int deriv_order >
 void
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 evaluate_bspline_derivatives(const FuncPointSize &size,
-                             StaticMultiArray<std::array<const BasisValues1d *, dim_domain>, dim_range, rank> &elem_values,
+                             const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
                              ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const
 {
     Assert(derivatives_phi_hat.size() > 0, ExcEmptyObject());
@@ -1018,13 +1064,13 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     for (int i = 1; i < Space_t::n_components; ++i)
         comp_offset[i]= comp_offset[i-1] + size.n_basis_direction_(i).flat_size();
 
-    typedef Derivatives<dim_domain,dim_range,rank,deriv_order> der_t;
+    typedef Derivatives<dim,range,rank,deriv_order> der_t;
 
-    TensorIndex<dim_domain> deriv_order_tensor_id;
+    TensorIndex<dim> deriv_order_tensor_id;
 
 
 #ifndef NOT_OPTIMIZED
-    typedef DerivativeSymmetryManager<dim_domain,deriv_order> DerSymmMngr_t;
+    typedef DerivativeSymmetryManager<dim,deriv_order> DerSymmMngr_t;
     DerSymmMngr_t derivative_symmetry_manager;
     const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
     const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
@@ -1079,7 +1125,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
                     const auto entry_tensor_id = derivative.flat_to_tensor_index(entry_flat_id);
 
                     // from the entry id we compute the right derivative order
-                    for (int i = 0; i < dim_domain; ++i)
+                    for (int i = 0; i < dim; ++i)
                         deriv_order_tensor_id[i] = 0;
 
                     for (int i = 0; i < deriv_order; ++i)
@@ -1087,7 +1133,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
                     // Main computation
                     Real partial_der = Real(1.0);
-                    for (int i = 0; i < dim_domain; ++i)
+                    for (int i = 0; i < dim; ++i)
                     {
                         const auto &splines1d = *(splines1d_direction[i]);
                         partial_der *= splines1d[deriv_order_tensor_id[i]](func_tensor_id[i],point_tensor_id[i]);
@@ -1123,18 +1169,18 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
                     const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
 
                     // from the entry id we compute the right derivative order
-                    for (int i = 0; i < dim_domain; ++i)
+                    for (int i = 0; i < dim; ++i)
                         deriv_order_tensor_id[i] = 0;
 
                     for (int i = 0; i < deriv_order; ++i)
                         ++(deriv_order_tensor_id[entry_tensor_id[i]]);
 
-                    if (dim_domain != 0)
+                    if (dim != 0)
                     {
                         // Main computation
                         const auto &splines1d = *(splines1d_direction[0]);
                         Real partial_der = splines1d[deriv_order_tensor_id[0]](func_tensor_id[0], point_tensor_id[0]);
-                        for (int i = 1; i < dim_domain; ++i)
+                        for (int i = 1; i < dim; ++i)
                         {
                             const auto &splines1d = *(splines1d_direction[i]);
                             partial_der *= splines1d[deriv_order_tensor_id[i]](func_tensor_id[i], point_tensor_id[i]);
@@ -1189,342 +1235,187 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
+BSplineElementAccessor<dim, range, rank>::
 get_space() const -> const Space_t *
 {
     return (space_);
 }
 
-
-
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_values() const -> ValueTable<Value> const &
+BSplineElementAccessor<dim, range, rank>::
+get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_values_, ExcCacheNotFilled());
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+               ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
 
-    return elem_values_.phi_hat_;
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_basis_values(const TopologyId &topology_id) const -> ValueTable<Value> const &
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
+
+    return cache.phi_hat_;
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_values(const Index i) const -> typename ValueTable<Value>::const_view
+BSplineElementAccessor<dim, range, rank>::
+get_basis_values(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Value>::const_view
 {
-    return this->get_basis_values().get_function_view(i);
+    return this->get_basis_values(topology_id).get_function_view(i);
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_divergences() const -> ValueTable<Div> const &
+BSplineElementAccessor<dim, range, rank>::
+get_basis_divergences(const TopologyId &topology_id) const -> ValueTable<Div> const &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_divs_, ExcCacheNotFilled());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.divergences_filled(), ExcCacheNotFilled());
 
-    return elem_values_.div_phi_hat_;
+    return cache.div_phi_hat_;
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_divergences(const Index i) const -> typename ValueTable<Div>::const_view
+BSplineElementAccessor<dim, range, rank>::
+get_basis_divergences(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Div>::const_view
 {
-    return this->get_basis_divergences().get_function_view(i);
+    return this->get_basis_divergences(topology_id).get_function_view(i);
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradients() const -> ValueTable<Derivative<1>> const &
+BSplineElementAccessor<dim, range, rank>::
+get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivative<1>> const &
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_gradients_, ExcCacheNotFilled());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.gradients_filled(), ExcCacheNotFilled());
 
-    return elem_values_.D1phi_hat_;
+    return cache.D1phi_hat_;
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradients(const Index i) const -> typename ValueTable<Derivative<1>>::const_view
+BSplineElementAccessor<dim, range, rank>::
+get_basis_gradients(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Derivative<1>>::const_view
 {
-    return this->get_basis_gradients().get_function_view(i);
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessians() const -> ValueTable<Derivative<2>> const &
-{
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_hessians_, ExcCacheNotFilled());
-
-    return elem_values_.D2phi_hat_;
+    return this->get_basis_gradients(topology_id).get_function_view(i);
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessians(const Index i) const -> typename ValueTable<Derivative<2>>::const_view
+BSplineElementAccessor<dim, range, rank>::
+get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<Derivative<2>> const &
 {
-    return this->get_basis_hessians().get_function_view(i);
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.hessians_filled(), ExcCacheNotFilled());
+
+    return cache.D2phi_hat_;
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_value(const Index basis, const Index qp) const -> Value const &
+BSplineElementAccessor<dim, range, rank>::
+get_basis_hessians(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Derivative<2>>::const_view
 {
-    /*
-        const auto &data = elem_values_.phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-     //*/
-
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_basis_values(basis)[qp];
+    return this->get_basis_hessians(topology_id).get_function_view(i);
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_divergence(const Index basis, const Index qp) const -> Div const &
+BSplineElementAccessor<dim, range, rank>::
+get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id) const -> Value const &
 {
-    /*
-        const auto &data = elem_values_.phi_hat_;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    return this->get_basis_values(basis,topology_id)[qp];
+}
 
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
 
-        return data.get_function_view(basis)[qp];
-     //*/
-
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_basis_divergence(const Index basis, const Index qp,const TopologyId &topology_id) const -> Div const &
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
     return this->get_basis_divergences(basis)[qp];
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradient(const Index basis, const Index qp) const -> Derivative<1> const &
+BSplineElementAccessor<dim, range, rank>::
+get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_id) const -> Derivative<1> const &
 {
-    /*
-        const auto &data = elem_values_.D1phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-    //*/
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_basis_gradients(basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessian(const Index basis, const Index qp) const -> Derivative<2> const &
+BSplineElementAccessor<dim, range, rank>::
+get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id) const -> Derivative<2> const &
 {
-    /*
-        const auto &data = elem_values_.D2phi_hat_;
-
-        Assert(basis >= 0 && basis < int(data.get_num_functions()),
-               ExcIndexRange(basis,0,int(data.get_num_functions())));
-        Assert(qp >= 0 && qp < int(data.get_num_points()),
-               ExcIndexRange(qp,0,int(data.get_num_points())));
-
-        return data.get_function_view(basis)[qp];
-    //*/
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_basis_hessians(basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_values_, ExcCacheNotFilled());
-
-    return face_values_[face_id].phi_hat_;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_values(const Index face_id, const Index i) const -> typename ValueTable<Value>::const_view
-{
-    return this->get_face_basis_values(face_id).get_function_view(i);
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_divergences(const Index face_id) const -> ValueTable<Div> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_divs_, ExcCacheNotFilled());
-
-    return face_values_[face_id].div_phi_hat_;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_divergences(const Index face_id, const Index i) const -> typename ValueTable<Div>::const_view
-{
-    return this->get_face_basis_divergences(face_id).get_function_view(i);
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_gradients(const Index face_id) const -> ValueTable<Derivative<1>> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_gradients_, ExcCacheNotFilled());
-
-    return face_values_[face_id].D1phi_hat_;
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_gradients(const Index face_id, const Index i) const -> typename ValueTable<Derivative<1>>::const_view
-{
-    return this->get_face_basis_gradients(face_id).get_function_view(i);
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_hessians(const Index face_id) const -> ValueTable<Derivative<2>> const &
-{
-    Assert(face_id >= 0 && face_id < n_faces, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_hessians_, ExcCacheNotFilled());
-
-    return face_values_[face_id].D2phi_hat_;
-}
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_hessians(const Index face_id, const Index i) const -> typename ValueTable<Derivative<2>>::const_view
-{
-    return this->get_face_basis_hessians(face_id).get_function_view(i);
-}
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_value(const Index face_id, const Index basis, const Index qp) const -> Value const &
-{
-
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_values(face_id, basis)[qp];
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_divergence(const Index face_id, const Index basis, const Index qp) const -> Div const &
-{
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_divergences(face_id, basis)[qp];
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const -> Derivative<1> const &
-{
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_gradients(face_id, basis)[qp];
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const -> Derivative<2> const &
-{
-    Assert(qp >= 0 && qp < elem_values_.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,elem_values_.size_.n_points_direction_.flat_size()));
-    return this->get_face_basis_hessians(face_id, basis)[qp];
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field(const std::vector<Real> &local_coefs) const
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const
 -> ValueVector<Value>
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_values_ == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_values() == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D0phi_hat = this->get_basis_values() ;
+    const auto &D0phi_hat = this->get_basis_values(topology_id) ;
     Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1533,102 +1424,63 @@ evaluate_field(const std::vector<Real> &local_coefs) const
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<1> >
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<1> >
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_gradients_ == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_gradients() == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D1phi_hat = this->get_basis_gradients() ;
+    const auto &D1phi_hat = this->get_basis_gradients(topology_id) ;
     Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
 
     return D1phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-
-
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_divergences(
+    const std::vector<Real> &local_coefs,
+    const TopologyId &topology_id) const -> ValueVector<Div>
 {
-    Assert(elem_values_.is_filled() == true, ExcCacheNotFilled());
-    Assert(elem_values_.fill_hessians_ == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_divergences() == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D2phi_hat = this->get_basis_hessians() ;
+    const auto &div_phi_hat = this->get_basis_divergences(topology_id) ;
+    Assert(div_phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(div_phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return div_phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<2> >
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+    Assert(cache.flags_handler_.fill_hessians() == true, ExcInvalidState());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D2phi_hat = this->get_basis_hessians(topology_id) ;
     Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
 
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
--> ValueVector<Value>
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_values_ == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D0phi_hat = this->get_face_basis_values(face_id) ;
-    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<1> >
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_gradients_ == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D1phi_hat = this->get_face_basis_gradients(face_id) ;
-    Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-BSplineElementAccessor<dim_domain, dim_range, rank>::
-evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< Derivative<2> >
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled() == true, ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_hessians_ == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D2phi_hat = this->get_face_basis_hessians(face_id) ;
-    Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
-}
 
 
 IGA_NAMESPACE_CLOSE

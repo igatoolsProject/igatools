@@ -104,26 +104,21 @@ public:
     /** Typedef for the mapping hessian. */
     using HessianType = DerivativeType<2>;
 
-    /** Type of the mapping gradient on the face. */
-    using GradientFaceType = Derivatives<face_dim, space_dim, 1, 1>;
-
-    /** Typedef for the mapping hessian on the face. */
-    using HessianFaceType = Derivatives<face_dim, space_dim, 1, 2>;
-
 public:
     /** @name Constructors and destructor */
     ///@{
     /** Default constructor. Not allowed to be used. */
     Mapping() = delete;
 
-    /** Constructs map over grid */
+    /** Constructs map over grid. */
     Mapping(const std::shared_ptr<GridType> grid);
 
     /** Destructor */
     virtual ~Mapping();
 
     /**
-     * Copy constructor.
+     * Copy constructor. The new object has a deep copy (i.e. a new instance) of the
+     * grid held by the copied object @p map.
      */
     Mapping(const Mapping<dim_,codim_> &map);
     ///@}
@@ -138,7 +133,7 @@ public:
     /**
      * Return a Mapping that is a deep copy of the caller object.
      */
-    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const;
+    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const = 0;
 
 
     /** @name Mapping as a standard function */
@@ -151,28 +146,30 @@ public:
 
     virtual void evaluate_face(const Index face_id, std::vector<ValueType> &values) const;
 
-    virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const;
+    virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const;
 
-    virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const;
+    virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const;
     ///@}
 
     /** @name Virtual user functions to define the map */
     ///@{
     /**
-     * An element based mapping may require some initialization
+     * An element based mapping may require some initialization.
+     *
+     * @warning This function must be reimplemented by in every concrete child class of Mapping.
      */
     virtual void init_element(const ValueFlags flag,
-                              const Quadrature<dim> &quad);
+                              const Quadrature<dim> &quad) = 0;
+
+    virtual void set_element(const CartesianGridElementAccessor<dim> &elem) = 0;
 
     /**
      *
      * @todo evaluate if index should be flat index, tensor index, and
      * or GridElement iterator
      */
-    virtual void set_element(const CartesianGridElementAccessor<dim> &elem);
-
     virtual void set_face_element(const Index face_id,
-                                  const CartesianGridElementAccessor<dim> &elem);
+                                  const CartesianGridElementAccessor<dim> &elem) = 0;
 
 
     virtual std::vector<ValueType> values() const;
@@ -209,6 +206,13 @@ public:
     virtual void print_info(LogStream &out) const;
 
 private:
+
+    /**
+     * This is an interface for a function that compute the @p values of a Mapping at the @p points.
+     * @warning This function must be implemented in any class derived from Mapping.
+     */
+//    virtual void evaluate_impl(std::vector<PointType> &points, std::vector<ValueType> &values) const = 0;
+
 
     /**
      * Return the flag required to evaluate this mapping.

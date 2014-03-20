@@ -931,6 +931,7 @@ DeclException0(ExcArgNotFunctionSpace) ;
  */
 DeclException0(ExcScalarAssignmentOnlyForZeroValue);
 
+
 /**
  * This function requires the BLAS
  * library. Please reconfigure

@@ -18,25 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
+data = Instantiation()
+f = data.file_output
+inst = data.inst
 
-file_output, inst = intialize_instantiation()
+value_vectors=['ValueVector<Real>']
 
-file_output.write('IGA_NAMESPACE_OPEN\n')
+for deriv in inst.derivatives + inst.values:
+    value_vectors.append('ValueVector<%s>' % (deriv))
 
-# instantiating ValueVector
-for row in inst.value_vectors:
-    file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
-
-# Operator *
-for row in inst.value_vectors:
-    file_output.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
-    file_output.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
-
-
+for row in value_vectors:
+    f.write('template class %s; \n' % (row))
+    f.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
+    f.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))

@@ -23,7 +23,9 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
+#include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/topology.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
@@ -62,10 +64,10 @@ public:
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
         ValueFlags::point|
-        ValueFlags::ref_elem_measure |
+        ValueFlags::measure |
         ValueFlags::w_measure |
         ValueFlags::face_point |
-        ValueFlags::ref_elem_face_measure |
+        ValueFlags::face_measure |
         ValueFlags::face_w_measure |
         ValueFlags::face_normal;
 
@@ -174,36 +176,21 @@ public:
      * This is the length for dim_==1,
      * the area for dim_==2 and the volume for dim_==3.
      */
-    Real get_measure() const;
+    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
 
 
-    // TODO (pauletti, Oct 28, 2013): Document this
-    ValueVector<Real> const &get_w_measures() const;
+    /**
+     * Returns the element measure multiplied by the weights of the quadrature scheme
+     * used to initialize the accessor's cache.
+     */
+    ValueVector<Real> const &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points() const;
-
-
-    /**
-     * Return a const reference to the one-dimensional container with the
-     * values of the map at the evaluation points for the specified face.
-     */
-    std::vector<Point<dim>> const get_face_points(const Index face_id) const;
-
-
-    /**
-     * Returns the measure of the element specified face in the
-     * CartesianGrid<dim> object referred by this accessor.
-     * This is the 0 for dim==1, the length for dim==2 and the area for dim==3.
-     */
-    Real get_face_measure(const Index face_id) const;
-
-    // TODO (pauletti, Oct 28, 2013): Document this
-    ValueVector<Real> const &get_face_w_measures(const Index face_id) const;
+    std::vector<Point<dim>> const get_points(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
@@ -218,6 +205,10 @@ public:
     std::array<Real, dim_> get_coordinate_lengths() const;
 
     ///@}
+
+
+
+
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
@@ -276,19 +267,31 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const Quadrature<dim_> &quad);
+        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+
+        /**
+         * Fill the cache member.
+         * @note The @p measure is an input argument because of the different function calls
+         * between element-measure and face-measure.
+         */
+        void fill(const Real measure);
+
+
+        GridElemValueFlagsHandler flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
+        /** Measure of the element in the grid (equal to the product of the element lenghts). */
         Real measure_ = 0.0;
+
+        /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
+
         TensorProductArray<dim_> unit_points_;
+
         ValueVector<Real> unit_weights_;
         ///@}
 
-        bool fill_measure_   = false;
-        bool fill_w_measure_ = false;
-        bool fill_points_    = false;
     };
 
     /**
@@ -300,8 +303,7 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const Quadrature<dim_> &quad);
-
+        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
     };
 
 
@@ -311,14 +313,23 @@ private:
     class FaceValuesCache : public ValuesCache
     {
     public:
-        void reset(const Quadrature<dim_> &quad, const Index face_id);
+        void reset(const GridFaceValueFlagsHandler &flags_handler,
+                   const Quadrature<dim_> &quad,
+                   const Index face_id);
 
-        void reset(const Quadrature<dim_-1> &quad, const Index face_id);
+        void reset(const GridFaceValueFlagsHandler &flags_handler,
+                   const Quadrature<dim_-1> &quad,
+                   const Index face_id);
     };
+
+    /**
+     * @todo Document this function
+     */
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
 
     /** Grid (global) lengths cache */
-    std::shared_ptr<LengthCache> length_cache_;
+    LengthCache length_cache_;
 
     /** Element values cache */
     ElementValuesCache elem_values_;
@@ -336,7 +347,6 @@ protected:
     DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
                    << "The passed ValueFlag " << arg2
                    << " contains a non admissible flag " << (arg1 ^arg2));
-
 };
 
 IGA_NAMESPACE_CLOSE

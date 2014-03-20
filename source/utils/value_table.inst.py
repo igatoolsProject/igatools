@@ -18,19 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
+data = Instantiation()
+f = data.file_output
+inst = data.inst
 
-file_output, inst = intialize_instantiation()
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
-
-# instantiating ValueTable
-for row in inst.value_tables:
-    file_output.write('template class %s; \n' % (row))
-
-file_output.write('\n')
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
+value_tables = [ 'ValueTable<%s>' %deriv for deriv in inst.derivatives + inst.values]
+for row in value_tables:
+    f.write('template class %s; \n' % (row))

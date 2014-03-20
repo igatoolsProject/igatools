@@ -43,8 +43,6 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     using self_t = IgMapping<RefSpace>;
@@ -108,10 +106,10 @@ public:
     (const Index face_id, std::vector<ValueType> &values) const override;
 
     virtual void evaluate_face_gradients
-    (const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+    (const Index face_id, std::vector<GradientType> &gradients) const override;
 
     virtual void evaluate_face_hessians
-    (const Index face_id, std::vector<HessianFaceType> &hessians) const override;
+    (const Index face_id, std::vector<HessianType> &hessians) const override;
 
     ///@}
 

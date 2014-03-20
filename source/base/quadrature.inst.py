@@ -18,21 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-file_output.write('IGA_NAMESPACE_OPEN\n')
+data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
 
 for dim in inst.ref_dom_dims:
-    file_output.write('template class Quadrature<%d> ;\n' % (dim))
- 
+    f.write('template class Quadrature<%d> ;\n' %dim)
+
 for dim in inst.face_ref_dom_dims:
-    file_output.write('template Quadrature<%d> extend_face_quad<%d>' % (dim+1, dim) +
-                      '(const Quadrature <%d> &, const int);\n' %(dim))
- 
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()
-
-
-
+    f.write('template Quadrature<%d> extend_face_quad<%d>' %(dim+1, dim) +
+            '(const Quadrature <%d> &, const int);\n' %(dim))

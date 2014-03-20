@@ -49,7 +49,7 @@ void run_test()
     out << endl ;
 
     auto elem = grid->begin();
-    elem->init_values(ValueFlags::ref_elem_measure|ValueFlags::w_measure, QGauss<dim>(2));
+    elem->init_values(ValueFlags::measure|ValueFlags::w_measure, QGauss<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << elem->get_flat_index() << "   ";

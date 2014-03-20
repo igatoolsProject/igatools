@@ -36,22 +36,22 @@ IGA_NAMESPACE_OPEN
 
 
 
-template< int dim_domain, int dim_range, int rank >
-NURBSElementAccessor< dim_domain, dim_range, rank >::NURBSElementAccessor(
+template< int dim, int range, int rank >
+NURBSElementAccessor< dim, range, rank >::NURBSElementAccessor(
     const Space_t &space,
     const int index)
     :
-    BSplineElementAccessor< dim_domain, dim_range, rank >(space, index),
+    BSplineElementAccessor< dim, range, rank >(space, index),
     space_(&space)
 {}
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 init_values(const ValueFlags fill_flag,
-            const Quadrature<dim_domain> &quad)
+            const Quadrature<dim> &quad)
 {
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("Nothing to reset"));
@@ -64,11 +64,24 @@ init_values(const ValueFlags fill_flag,
         fill_flag_bspline |= ValueFlags::value ;
     }
 
+    if (contains(fill_flag, ValueFlags::face_value))
+    {
+        max_der_order=std::max(max_der_order,0);
+        fill_flag_bspline |= ValueFlags::face_value ;
+    }
+
     if (contains(fill_flag, ValueFlags::gradient))
     {
         max_der_order=std::max(max_der_order,1);
         fill_flag_bspline |= ValueFlags::value |
                              ValueFlags::gradient ;
+    }
+
+    if (contains(fill_flag, ValueFlags::face_gradient))
+    {
+        max_der_order=std::max(max_der_order,1);
+        fill_flag_bspline |= ValueFlags::face_value |
+                             ValueFlags::face_gradient ;
     }
 
     if (contains(fill_flag, ValueFlags::hessian))
@@ -77,6 +90,14 @@ init_values(const ValueFlags fill_flag,
         fill_flag_bspline |= ValueFlags::value |
                              ValueFlags::gradient |
                              ValueFlags::hessian ;
+    }
+
+    if (contains(fill_flag, ValueFlags::face_hessian))
+    {
+        max_der_order=std::max(max_der_order,2);
+        fill_flag_bspline |= ValueFlags::face_value |
+                             ValueFlags::face_gradient |
+                             ValueFlags::face_hessian ;
     }
 
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
@@ -96,21 +117,21 @@ init_values(const ValueFlags fill_flag,
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 init_face_values(const Index face_id,
                  const ValueFlags fill_flag,
-                 const Quadrature<dim_domain-1> &quad)
+                 const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented()) ;
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 ValueFlags
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 get_face_flags(const ValueFlags fill_flag) const
 {
 
@@ -133,12 +154,14 @@ get_face_flags(const ValueFlags fill_flag) const
 
 
 
-template <int dim_domain, int dim_range, int rank  >
+template <int dim, int range, int rank  >
 void
-NURBSElementAccessor< dim_domain, dim_range, rank >::
-evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_hat) const
+NURBSElementAccessor< dim, range, rank >::
+evaluate_nurbs_values(
+    const typename Parent_t::ValuesCache &bspline_cache,
+    ValueTable< Values<dim, range, rank> > &D0_phi_hat) const
 {
-    Assert(elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D0_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -175,7 +198,7 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
         */
 
         //----------------------------------------------------------------------------------------------
-        const auto bspline_values = Parent_t::get_basis_values() ;
+        const auto &bspline_values = bspline_cache.get_values() ;
         //----------------------------------------------------------------------------------------------
 
         if (space_->homogeneous_range_ == false)
@@ -284,12 +307,14 @@ evaluate_nurbs_values(ValueTable< Values<dim_domain, dim_range, rank> > &D0_phi_
 }
 
 
-template <int dim_domain, int dim_range, int rank  >
+template <int dim, int range, int rank  >
 void
-NURBSElementAccessor< dim_domain, dim_range, rank >::
-evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const
+NURBSElementAccessor< dim, range, rank >::
+evaluate_nurbs_gradients(
+    const typename Parent_t::ValuesCache &bspline_cache,
+    ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const
 {
-    Assert(elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D1_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -301,9 +326,8 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
         using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
-        typedef array<Real,dim_domain> GradientRange1_t ;
+        typedef array<Real,dim> GradientRange1_t ;
 
-        typedef DerivativeRef_t<1> Gradient_t ;
 
         const vector< Real > &weights = this->get_weights() ;
 
@@ -311,6 +335,11 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
          * This function evaluates the derivative of the n+1 NURBS basis function R_0,...,R_n
          * from the set of BSpline basis function N_0,...,N_n
          * where the i-th NURBS basis function is defined as
+         *
+         *         P_i
+         * R_i = -------
+         *          Q
+         *
          *
          *          dP_i       P_i * dQ
          * dR_i = -------  -  ------------
@@ -337,8 +366,8 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
          */
 
         //----------------------------------------------------------------------------------------------
-        const auto bspline_values = Parent_t::get_basis_values() ;
-        const ValueTable< Gradient_t > bspline_gradients = Parent_t::get_basis_gradients() ;
+        const auto &bspline_values = bspline_cache.get_values() ;
+        const auto &bspline_gradients = bspline_cache.get_gradients() ;
         //----------------------------------------------------------------------------------------------
 
 
@@ -376,7 +405,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
                         auto &dP_i_iPt = dP_i[iPt] ;
                         auto &dQ_iPt = dQ[iPt] ;
-                        for (int entry_flat_id = 0 ; entry_flat_id < dim_domain ; ++entry_flat_id)
+                        for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
                         {
                             dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(iComp) ;
 
@@ -395,7 +424,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
                     invQ  [iPt] = invQ_tmp ;
                     invQ_2[iPt] = invQ_tmp * invQ_tmp ;
 
-                    for (int j = 0 ; j < dim_domain ; ++j)
+                    for (int j = 0 ; j < dim ; ++j)
                         dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
                 }
 
@@ -416,7 +445,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
                         const auto &dinvQ_tmp = dinvQ[iPt] ;
                         const auto &dP_tmp = dP_i[iPt] ;
 
-                        for (int entry_flat_id = 0 ; entry_flat_id < dim_domain ; ++entry_flat_id)
+                        for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
                         {
                             dR(entry_flat_id)(iComp) = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp ;
                         }
@@ -463,7 +492,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 
                     auto &dP_i_iPt = dP_i[iPt] ;
                     auto &dQ_iPt = dQ[iPt] ;
-                    for (int entry_flat_id = 0 ; entry_flat_id < dim_domain ; ++entry_flat_id)
+                    for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
                     {
                         dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(0) ;
 
@@ -482,7 +511,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
                 invQ  [iPt] = invQ_tmp ;
                 invQ_2[iPt] = invQ_tmp * invQ_tmp ;
 
-                for (int j = 0 ; j < dim_domain ; ++j)
+                for (int j = 0 ; j < dim ; ++j)
                     dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
             }
 
@@ -500,7 +529,7 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
                     const auto &dinvQ_tmp = dinvQ[iPt] ;
                     const auto &dP_tmp = dP_i[iPt] ;
 
-                    for (int entry_flat_id = 0 ; entry_flat_id < dim_domain ; ++entry_flat_id)
+                    for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
                     {
                         const auto dR_tmp = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp ;
 
@@ -520,12 +549,14 @@ evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1
 }
 
 
-template <int dim_domain, int dim_range, int rank  >
+template <int dim, int range, int rank  >
 void
-NURBSElementAccessor< dim_domain, dim_range, rank >::
-evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const
+NURBSElementAccessor< dim, range, rank >::
+evaluate_nurbs_hessians(
+    const typename Parent_t::ValuesCache &bspline_cache,
+    ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const
 {
-    Assert(elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D2_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D2_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -537,11 +568,9 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
         using space_t = ContainerType;
 
         typedef Real ValueRange1_t ;
-        typedef array<Real,dim_domain> GradientRange1_t ;
-        typedef array<array<Real,dim_domain>,dim_domain> HessianRange1_t ;
+        typedef array<Real,dim> GradientRange1_t ;
+        typedef array<array<Real,dim>,dim> HessianRange1_t ;
 
-        typedef DerivativeRef_t<1> Gradient_t ;
-        typedef DerivativeRef_t<2> Hessian_t ;
 
         const vector< Real > &weights = this->get_weights() ;
 
@@ -551,9 +580,19 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
          * from the set of BSpline basis function N_0,...,N_n
          * where the i-th NURBS basis function is defined as
          *
-         *          d2P_i     ( 2 * dP_i * dQ + P_i * d2Q )      2 * P_i * dQ * dQ
-         * dR_i = -------- - ------------------------------- + ---------------------
-         *            Q                    Q*Q                        Q*Q*Q
+         *         P_i
+         * R_i = -------
+         *          Q
+         *
+         *
+         *          dP_i       P_i * dQ
+         * dR_i = -------  -  ------------
+         *           Q            Q*Q
+         *
+         *
+         *           d2P_i     ( 2 * dP_i * dQ + P_i * d2Q )      2 * P_i * dQ * dQ
+         * d2R_i = -------- - ------------------------------- + ---------------------
+         *             Q                    Q*Q                        Q*Q*Q
          *
          * and
          *
@@ -585,9 +624,9 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
          //*/
 
         //----------------------------------------------------------------------------------------------
-        const auto bspline_values = Parent_t::get_basis_values() ;
-        const ValueTable< Gradient_t > bspline_gradients = Parent_t::get_basis_gradients() ;
-        const ValueTable< Hessian_t > bspline_hessians = Parent_t::get_basis_hessians() ;
+        const auto &bspline_values = bspline_cache.get_values() ;
+        const auto &bspline_gradients = bspline_cache.get_gradients() ;
+        const auto &bspline_hessians = bspline_cache.get_hessians() ;
         //----------------------------------------------------------------------------------------------
 
 
@@ -628,13 +667,13 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                         Q[iPt] += P_i[iPt] ;
 
                         int hess_entry_flat_id = 0 ;
-                        for (int j = 0 ; j < dim_domain ; ++j)
+                        for (int j = 0 ; j < dim ; ++j)
                         {
                             dP_i[iPt][j] = w_i * dN_i[iPt](j)(iComp) ;
 
                             dQ[iPt][j] += dP_i[iPt][j] ;
 
-                            for (int k = 0 ; k < dim_domain ; ++k, ++hess_entry_flat_id)
+                            for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
                             {
                                 d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(iComp) ;
 
@@ -657,11 +696,11 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                     invQ_2[iPt] = invQ_tmp * invQ_tmp ;
                     two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp ;
 
-                    for (int j = 0 ; j < dim_domain ; ++j)
+                    for (int j = 0 ; j < dim ; ++j)
                     {
                         dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
 
-                        for (int k = 0 ; k < dim_domain ; ++k)
+                        for (int k = 0 ; k < dim ; ++k)
                         {
                             d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k] ;
                         }
@@ -690,9 +729,9 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                         const auto    &d2P_tmp = d2P_i[iPt] ;
 
                         int hess_entry_flat_id = 0 ;
-                        for (int j = 0 ; j < dim_domain ; ++j)
+                        for (int j = 0 ; j < dim ; ++j)
                         {
-                            for (int k = 0 ; k < dim_domain ; ++k, ++hess_entry_flat_id)
+                            for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
                             {
                                 d2R(hess_entry_flat_id)(iComp) = d2invQ_tmp[j][k] *   P_tmp +
                                                                  dinvQ_tmp[j]     *  dP_tmp[k] +
@@ -746,12 +785,12 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                     Q[iPt] += P_i[iPt] ;
 
                     int hess_entry_flat_id = 0 ;
-                    for (int j = 0 ; j < dim_domain ; ++j)
+                    for (int j = 0 ; j < dim ; ++j)
                     {
                         dP_i[iPt][j] = w_i * dN_i[iPt](j)(0) ;
                         dQ[iPt][j] += dP_i[iPt][j] ;
 
-                        for (int k = 0 ; k < dim_domain ; ++k, ++hess_entry_flat_id)
+                        for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
                         {
                             d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(0) ;
                             d2Q[iPt][j][k] += d2P_i[iPt][j][k] ;
@@ -772,11 +811,11 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                 invQ_2[iPt] = invQ_tmp * invQ_tmp ;
                 two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp ;
 
-                for (int j = 0 ; j < dim_domain ; ++j)
+                for (int j = 0 ; j < dim ; ++j)
                 {
                     dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
 
-                    for (int k = 0 ; k < dim_domain ; ++k)
+                    for (int k = 0 ; k < dim ; ++k)
                     {
                         d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k] ;
                     }
@@ -802,9 +841,9 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
                     const auto    &d2P_tmp = d2P_i[iPt] ;
 
                     int hess_entry_flat_id = 0 ;
-                    for (int j = 0 ; j < dim_domain ; ++j)
+                    for (int j = 0 ; j < dim ; ++j)
                     {
-                        for (int k = 0 ; k < dim_domain ; ++k, ++hess_entry_flat_id)
+                        for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
                         {
                             const auto d2R_tmp = d2invQ_tmp[j][k] *   P_tmp +
                                                  dinvQ_tmp[j]    *  dP_tmp[k] +
@@ -828,25 +867,32 @@ evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 
 
 
 
-template <int dim_domain, int dim_range, int rank >
+template <int dim, int range, int rank >
 void
-NURBSElementAccessor< dim_domain, dim_range, rank >::
+NURBSElementAccessor< dim, range, rank >::
 fill_values()
 {
     Assert(elem_values_.is_initialized(),ExcNotInitialized());
 
     // fills the cache of the BSplineElementAccessor
     static_cast<Parent_t *>(this)->fill_values() ;
+    const auto &bspline_elem_cache = Parent_t::elem_values_;
 
 
     if (this->elem_values_.fill_values_)
-        evaluate_nurbs_values(this->elem_values_.D0phi_hat_) ;
+        evaluate_nurbs_values(
+            bspline_elem_cache,
+            this->elem_values_.D0phi_hat_) ;
 
     if (this->elem_values_.fill_gradients_)
-        evaluate_nurbs_gradients(this->elem_values_.D1phi_hat_) ;
+        evaluate_nurbs_gradients(
+            bspline_elem_cache,
+            this->elem_values_.D1phi_hat_) ;
 
     if (this->elem_values_.fill_hessians_)
-        evaluate_nurbs_hessians(this->elem_values_.D2phi_hat_) ;
+        evaluate_nurbs_hessians(
+            bspline_elem_cache,
+            this->elem_values_.D2phi_hat_) ;
 
 
     elem_values_.set_filled(true);
@@ -854,9 +900,9 @@ fill_values()
 
 
 
-template <int dim_domain, int dim_range, int rank >
+template <int dim, int range, int rank >
 void
-NURBSElementAccessor< dim_domain, dim_range, rank >::
+NURBSElementAccessor< dim, range, rank >::
 fill_face_values(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
@@ -867,36 +913,63 @@ fill_face_values(const Index face_id)
 
     // fills the cache of the BSplineElementAccessor
     static_cast<Parent_t *>(this)->fill_face_values(face_id) ;
+    const auto &bspline_face_cache = Parent_t::face_values_[face_id];
 
 
     if (face_value.fill_values_)
-        evaluate_nurbs_values(face_value.D0phi_hat_) ;
+        evaluate_nurbs_values(
+            bspline_face_cache,
+            face_value.D0phi_hat_) ;
 
     if (face_value.fill_gradients_)
-        evaluate_nurbs_gradients(face_value.D1phi_hat_) ;
+        evaluate_nurbs_gradients(
+            bspline_face_cache,
+            face_value.D1phi_hat_) ;
 
     if (face_value.fill_hessians_)
-        evaluate_nurbs_hessians(face_value.D2phi_hat_) ;
+        evaluate_nurbs_hessians(
+            bspline_face_cache,
+            face_value.D2phi_hat_) ;
 
 
     face_value.set_filled(true);
 }
 
 
-template <int dim_domain, int dim_range, int rank >
+
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor< dim_domain, dim_range, rank >::
+NURBSElementAccessor<dim, range, rank>::
+get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+               ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
+
+template <int dim, int range, int rank >
+auto
+NURBSElementAccessor< dim, range, rank >::
 get_space() const -> const Space_t *
 {
     return (space_) ;
 }
 
-template <int dim_domain, int dim_range, int rank >
+template <int dim, int range, int rank >
 vector<Real>
-NURBSElementAccessor< dim_domain, dim_range, rank >::
+NURBSElementAccessor< dim, range, rank >::
 get_weights() const
 {
-    using space_t = BSplineSpace<dim_domain,dim_range,rank>;
+    using space_t = BSplineSpace<dim,range,rank>;
 
     //---------------------------
     // here we compute the offset of the dofs relative to the components of the space
@@ -943,274 +1016,114 @@ get_weights() const
 }
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_values() const -> ValueTable<ValueRef_t> const &
+NURBSElementAccessor<dim, range, rank>::
+get_basis_values(const TopologyId &topology_id) const -> ValueTable<ValueRef_t> const &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return elem_values_.D0phi_hat_ ;
+    return cache.D0phi_hat_ ;
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_values(const Index basis) const -> typename ValueTable<ValueRef_t>::const_view
+NURBSElementAccessor<dim, range, rank>::
+get_basis_values(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<ValueRef_t>::const_view
 {
-    /*
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return elem_values_.D0phi_hat_.get_function_view(i);
-    //*/
-    return this->get_basis_values().get_function_view(basis);
+    return this->get_basis_values(topology_id).get_function_view(basis);
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradients() const -> ValueTable<DerivativeRef_t<1>> const &
+NURBSElementAccessor<dim, range, rank>::
+get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<DerivativeRef_t<1>> const &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.D1phi_hat_.size() != 0, ExcEmptyObject()) ;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.D1phi_hat_.size() != 0, ExcEmptyObject()) ;
 
     return elem_values_.D1phi_hat_ ;
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradients(const Index basis) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
+NURBSElementAccessor<dim, range, rank>::
+get_basis_gradients(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
 {
-    return this->get_basis_gradients().get_function_view(basis);
+    return this->get_basis_gradients(topology_id).get_function_view(basis);
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessians() const -> ValueTable<DerivativeRef_t<2>> const &
+NURBSElementAccessor<dim, range, rank>::
+get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<DerivativeRef_t<2>> const &
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.D2phi_hat_.size() != 0, ExcEmptyObject()) ;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.D2phi_hat_.size() != 0, ExcEmptyObject()) ;
 
-    return elem_values_.D2phi_hat_ ;
+    return cache.D2phi_hat_ ;
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessians(const Index basis) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
+NURBSElementAccessor<dim, range, rank>::
+get_basis_hessians(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
 {
-    return this->get_basis_hessians().get_function_view(basis);
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_value(const Index basis, const Index qp) const -> ValueRef_t const &
-{
-    /*
-    const auto &data = elem_values_.D0phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < elem_values_.n_points_,
-           ExcIndexRange(qp,0,elem_values_.n_points_));
-    return this->get_basis_values(basis)[qp];
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_gradient(const Index basis, const Index qp) const -> DerivativeRef_t<1> const &
-{
-    /*
-    const auto &data = elem_values_.D1phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < elem_values_.n_points_,
-           ExcIndexRange(qp,0,elem_values_.n_points_));
-    return this->get_basis_gradients(basis)[qp];
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_basis_hessian(const Index basis, const Index qp) const -> DerivativeRef_t<2> const &
-{
-    /*
-    const auto &data = elem_values_.D2phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < elem_values_.n_points_,
-           ExcIndexRange(qp,0,elem_values_.n_points_));
-    return this->get_basis_hessians(basis)[qp];
-}
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_values(const Index face_id) const -> ValueTable<ValueRef_t> const &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].D0phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return face_values_[face_id].D0phi_hat_ ;
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_values(const Index face_id, const Index basis) const -> typename ValueTable<ValueRef_t>::const_view
-{
-    /*
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].D0phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return face_values_[face_id].D0phi_hat_.get_function_view(i);
-    //*/
-    return this->get_face_basis_values(face_id).get_function_view(basis);
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_gradients(const Index face_id) const -> ValueTable<DerivativeRef_t<1>> const &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].D1phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return face_values_[face_id].D1phi_hat_ ;
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_gradients(const Index face_id, const Index basis) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
-{
-    return this->get_face_basis_gradients(face_id).get_function_view(basis);
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_hessians(const Index face_id) const -> ValueTable<DerivativeRef_t<2>> const &
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].D2phi_hat_.size() != 0, ExcEmptyObject()) ;
-
-    return face_values_[face_id].D2phi_hat_ ;
-}
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_hessians(const Index face_id, const Index basis) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
-{
-    return this->get_face_basis_hessians(face_id).get_function_view(basis);
+    return this->get_basis_hessians(topology_id).get_function_view(basis);
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_value(const Index face_id, const Index basis, const Index qp) const -> ValueRef_t const &
+NURBSElementAccessor<dim, range, rank>::
+get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id) const -> ValueRef_t const &
 {
-    /*
-    const auto &data = face_values_[face_id].D0phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
-           ExcIndexRange(qp,0,face_values_[face_id].n_points_));
-    return this->get_face_basis_values(face_id, basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.n_points_,
+           ExcIndexRange(qp,0,cache.n_points_));
+    return this->get_basis_values(basis,topology_id)[qp];
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const -> DerivativeRef_t<1> const &
+NURBSElementAccessor<dim, range, rank>::
+get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_id) const -> DerivativeRef_t<1> const &
 {
-    /*
-    const auto &data = face_values_[face_id].D1phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
-           ExcIndexRange(qp,0,face_values_[face_id].n_points_));
-    return this->get_face_basis_gradients(face_id, basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.n_points_,
+           ExcIndexRange(qp,0,cache.n_points_));
+    return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const -> DerivativeRef_t<2> const &
+NURBSElementAccessor<dim, range, rank>::
+get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id) const -> DerivativeRef_t<2> const &
 {
-    /*
-    const auto &data = face_values_[face_id].D2phi_hat_ ;
-
-    Assert(basis >= 0 && basis < int(data.get_num_functions()),
-           ExcIndexRange(basis,0,int(data.get_num_functions())));
-    Assert(qp >= 0 && qp < int(data.get_num_points()),
-           ExcIndexRange(qp,0,int(data.get_num_points())));
-
-    return data.get_function_view(basis)[qp] ;
-    //*/
-    Assert(qp >= 0 && qp < face_values_[face_id].n_points_,
-           ExcIndexRange(qp,0,face_values_[face_id].n_points_));
-    return this->get_face_basis_hessians(face_id, basis)[qp];
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(qp >= 0 && qp < cache.n_points_,
+           ExcIndexRange(qp,0,cache.n_points_));
+    return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
-
-
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field(const std::vector<Real> &local_coefs) const
+NURBSElementAccessor<dim, range, rank>::
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const
 -> ValueVector<ValueRef_t>
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_values_ == true, ExcInvalidState());
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.fill_values_ == true, ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D0phi_hat = this->get_basis_values() ;
+    const auto &D0phi_hat = this->get_basis_values(topology_id) ;
     Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1219,17 +1132,18 @@ evaluate_field(const std::vector<Real> &local_coefs) const
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVector< DerivativeRef_t<1> >
+NURBSElementAccessor<dim, range, rank>::
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< DerivativeRef_t<1> >
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_gradients_ == true, ExcInvalidState()) ;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.fill_gradients_ == true, ExcInvalidState()) ;
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D1phi_hat = this->get_basis_gradients() ;
+    const auto &D1phi_hat = this->get_basis_gradients(topology_id) ;
     Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1238,17 +1152,18 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs) const -> ValueVec
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVector< DerivativeRef_t<2> >
+NURBSElementAccessor<dim, range, rank>::
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< DerivativeRef_t<2> >
 {
-    Assert(elem_values_.is_filled(), ExcCacheNotFilled());
-    Assert(elem_values_.fill_hessians_ == true, ExcInvalidState()) ;
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_filled(), ExcCacheNotFilled());
+    Assert(cache.fill_hessians_ == true, ExcInvalidState()) ;
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D2phi_hat = this->get_basis_hessians() ;
+    const auto &D2phi_hat = this->get_basis_hessians(topology_id) ;
     Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
 
@@ -1257,74 +1172,13 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs) const -> ValueVect
 
 
 
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
--> ValueVector<ValueRef_t>
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_values_ == true, ExcInvalidState());
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D0phi_hat = this->get_face_basis_values(face_id) ;
-    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< DerivativeRef_t<1> >
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_gradients_ == true, ExcInvalidState()) ;
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D1phi_hat = this->get_face_basis_gradients(face_id) ;
-    Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
-auto
-NURBSElementAccessor<dim_domain, dim_range, rank>::
-evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const -> ValueVector< DerivativeRef_t<2> >
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].fill_hessians_ == true, ExcInvalidState()) ;
-    Assert(this->get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
-
-    const auto &D2phi_hat = this->get_face_basis_hessians(face_id) ;
-    Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
-
-    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 ValuesCache::
 reset(const Space_t &space,
       const ValueFlags fill_flag,
-      const Quadrature<dim_domain> &quad)
+      const Quadrature<dim> &quad)
 {
     n_points_ = quad.get_num_points();
 
@@ -1375,27 +1229,27 @@ reset(const Space_t &space,
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 ElementValuesCache::
 reset(const Space_t &space,
       const ValueFlags fill_flag,
-      const Quadrature<dim_domain> &quad)
+      const Quadrature<dim> &quad)
 {
     ValuesCache::reset(space, fill_flag, quad) ;
 }
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const Space_t &space,
       const ValueFlags fill_flag,
-      const Quadrature<dim_domain> &quad_elem)
+      const Quadrature<dim> &quad_elem)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     const auto quad_face = quad_elem.collapse_to_face(face_id);
@@ -1404,14 +1258,14 @@ reset(const Index face_id,
 
 
 
-template <int dim_domain, int dim_range, int rank>
+template <int dim, int range, int rank>
 void
-NURBSElementAccessor<dim_domain, dim_range, rank>::
+NURBSElementAccessor<dim, range, rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const Space_t &space,
       const ValueFlags fill_flag,
-      const Quadrature<dim_domain-1> &quad1)
+      const Quadrature<dim-1> &quad1)
 {
     AssertThrow(false,ExcNotImplemented()) ;
 }

@@ -18,33 +18,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
+
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-###############################################################################
+include_files = ['basis_functions/bspline_space.h',
+                 'basis_functions/bspline_element_accessor.h',
+                 'basis_functions/nurbs_space.h',
+                 'basis_functions/nurbs_element_accessor.h',
+                 'basis_functions/physical_space.h',
+                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/mapping_element_accessor.h',
+                 'geometry/push_forward_element_accessor.h',
+                 'basis_functions/physical_space_element_accessor.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
-include_files = ['#include <igatools/basis_functions/bspline_space.h>\n',
-                 '#include <igatools/basis_functions/bspline_element_accessor.h>\n',
-                 '#include <igatools/basis_functions/nurbs_space.h>\n',
-                 '#include <igatools/basis_functions/nurbs_element_accessor.h>\n',
-                 '#include <igatools/basis_functions/physical_space.h>\n',
-                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
-                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
-                 '#include <igatools/geometry/push_forward_element_accessor.h>\n',
-                 '#include <igatools/basis_functions/physical_space_element_accessor.h>\n']
-
-for include in include_files:
-    file_output.write(include)
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
 
 master=('template Vector space_tools::projection_l2('
         'const Function<Space::space_dim,Space::dim_range,Space::rank> &f,'
         'std::shared_ptr<const Space> phys_space,'
         'const Quadrature<Space::dim> & );\n')
 for sp in inst.PhysSpaces + inst.RefSpaces:
-    file_output.write(master.replace('Space', sp))
+    f.write(master.replace('Space', sp))
 
 
 master=('template void space_tools::project_boundary_values('
@@ -54,7 +48,7 @@ master=('template void space_tools::project_boundary_values('
         'const std::set<boundary_id>  &,'
         'std::map<Index, Real>  &);\n')
 for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    file_output.write(master.replace('Space', sp))
+    f.write(master.replace('Space', sp))
 
 
 master=('template void space_tools::project_boundary_values('
@@ -64,7 +58,7 @@ master=('template void space_tools::project_boundary_values('
         'const boundary_id ,'
         'std::map<Index, Real>  &);\n')
 for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    file_output.write(master.replace('Space', sp))
+    f.write(master.replace('Space', sp))
 
 
 
@@ -76,15 +70,11 @@ master=('template Real space_tools::integrate_difference('
         'const Vector &,'
         'std::vector< Real > &);\n');
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-    file_output.write(master.replace('Space', sp))
+    f.write(master.replace('Space', sp))
     
 master=('template std::shared_ptr< FaceSpace<SP> >'
         'space_tools::get_face_space(const std::shared_ptr<const SP> ,'
         'const int ,'
         'std::vector<Index> &);\n');
 for sp in inst.UserPhysSpaces + inst.UserFilteredRefSpaces:
-    file_output.write(master.replace('SP', sp))   
-    
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-
-file_output.close()
+    f.write(master.replace('SP', sp))   

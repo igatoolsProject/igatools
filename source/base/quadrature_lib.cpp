@@ -27,7 +27,6 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
-
 namespace
 {
 template <typename number>
@@ -311,13 +310,8 @@ QGauss< dim >::create(const TensorSize<dim> num_points)
     return (std::shared_ptr< QGauss< dim > >(new QGauss< dim >(num_points))) ;
 }
 
-//--------------------------------------------------------------------------------------------------
 
 
-
-
-
-//--------------------------------------------------------------------------------------------------
 template< int dim >
 QGaussLobatto< dim >::QGaussLobatto(const Size num_points, const Real eps_scaling) :
     Quadrature< dim >(num_points)
@@ -383,6 +377,7 @@ QGaussLobatto< dim >::create(const Size num_points, const Real eps_scaling)
 }
 
 
+
 template< int dim >
 std::shared_ptr< QGaussLobatto< dim > >
 QGaussLobatto< dim >::create(const TensorSize<dim> num_points, const Real eps_scaling)
@@ -390,12 +385,8 @@ QGaussLobatto< dim >::create(const TensorSize<dim> num_points, const Real eps_sc
     return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points, eps_scaling))) ;
 }
 
-//--------------------------------------------------------------------------------------------------
 
 
-
-
-//--------------------------------------------------------------------------------------------------
 template< int dim >
 QUniform<dim>::QUniform(const Size num_points)
     :
@@ -431,20 +422,15 @@ QUniform<dim>::QUniform(const TensorSize<dim> num_points)
         this->weights_.copy_data_direction(i,weights);
     }
 }
-//--------------------------------------------------------------------------------------------------
 
 
 
-//--------------------------------------------------------------------------------------------------
 template< int dim >
 QTrapez<dim>::QTrapez()
     :
     QUniform<dim>(2)
 {}
-//--------------------------------------------------------------------------------------------------
-
-
-#include <igatools/base/quadrature_lib.inst>
 
 IGA_NAMESPACE_CLOSE
 
+#include <igatools/base/quadrature_lib.inst>

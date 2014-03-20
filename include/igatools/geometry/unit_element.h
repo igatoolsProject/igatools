@@ -51,6 +51,8 @@ struct UnitElement
      */
     static const int vertex_to_component[vertices_per_element][dim];
 
+    /** Dimension of the face. */
+    static const int face_dim = (dim >= 1)?dim-1:0;
 
     /** Number of faces per element.*/
     static const int faces_per_element = 2 * dim;

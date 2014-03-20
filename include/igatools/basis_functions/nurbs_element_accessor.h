@@ -37,19 +37,19 @@ template < int, int , int > class NURBSSpace ;
  * See module on @ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
  */
-template <int dim_domain, int dim_range, int rank >
+template <int dim, int range, int rank >
 class NURBSElementAccessor :
-    public BSplineElementAccessor< dim_domain, dim_range, rank >
+    public BSplineElementAccessor< dim, range, rank >
 {
 public:
-    using ContainerType = NURBSSpace< dim_domain, dim_range, rank>;
-    typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
+    using ContainerType = NURBSSpace< dim, range, rank>;
+    typedef NURBSSpace< dim, range, rank > Space_t ;
 
-    typedef NURBSElementAccessor<dim_domain,dim_range,rank> Self_t ;
+    typedef NURBSElementAccessor<dim,range,rank> Self_t ;
 
-    typedef BSplineElementAccessor<dim_domain,dim_range,rank> Parent_t ;
+    using Parent_t = BSplineElementAccessor<dim,range,rank>;
 
-    using BSplineElementAccessor< dim_domain, dim_range, rank >::n_faces;
+    using BSplineElementAccessor< dim, range, rank >::n_faces;
 
     /** @name Constructors */
     ///@{
@@ -69,12 +69,12 @@ public:
     /**
      * Copy constructor.
      */
-    NURBSElementAccessor(const NURBSElementAccessor< dim_domain, dim_range, rank > &element) = default;
+    NURBSElementAccessor(const NURBSElementAccessor< dim, range, rank > &element) = default;
 
     /**
      * Move constructor.
      */
-    NURBSElementAccessor(NURBSElementAccessor< dim_domain, dim_range, rank > &&element) = default;
+    NURBSElementAccessor(NURBSElementAccessor< dim, range, rank > &&element) = default;
 
     /** Destructor.*/
     ~NURBSElementAccessor() = default;
@@ -85,16 +85,16 @@ public:
     /**
      * Copy assignment operator.
      */
-    NURBSElementAccessor< dim_domain, dim_range, rank > &
-    operator=(const NURBSElementAccessor< dim_domain, dim_range, rank > &element) = default;
+    NURBSElementAccessor< dim, range, rank > &
+    operator=(const NURBSElementAccessor< dim, range, rank > &element) = default;
 
 
 
     /**
      * Move assignment operator.
      */
-    NURBSElementAccessor< dim_domain, dim_range, rank > &
-    operator=(NURBSElementAccessor< dim_domain, dim_range, rank > &&element) = default;
+    NURBSElementAccessor< dim, range, rank > &
+    operator=(NURBSElementAccessor< dim, range, rank > &&element) = default;
     ///@}
 
 
@@ -118,14 +118,14 @@ public:
      * @note This function should be called before fill_values()
      */
     void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim_domain> &quad);
+                     const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
     void init_face_values(const Index face_id,
                           const ValueFlags fill_flag,
-                          const Quadrature<dim_domain-1> &quad);
+                          const Quadrature<dim-1> &quad);
 
     /**
      * Precomputes the values needed to get the quantities specified by the ValueFlags used as input argument of the reset() function.
@@ -150,39 +150,45 @@ private:
      * \tparam deriv_order - order of the derivative.
      */
     template <int deriv_order>
-    using DerivativeRef_t = Derivatives<dim_domain, dim_range, rank, deriv_order> ;
+    using DerivativeRef_t = Derivatives<dim, range, rank, deriv_order> ;
 
     /**
      * TODO: document me .
      */
-    using ValueRef_t = Values<dim_domain, dim_range, rank>;
+    using ValueRef_t = Values<dim, range, rank>;
 
     /**
-     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points.
+     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
      * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
     void
-    evaluate_nurbs_values(ValueTable<ValueRef_t> &D0_phi_hat) const ;
+    evaluate_nurbs_values(
+        const typename Parent_t::ValuesCache &bspline_cache,
+        ValueTable<ValueRef_t> &D0_phi_hat) const ;
 
     /**
-     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points.
+     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
      * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
     void
-    evaluate_nurbs_gradients(ValueTable< Derivatives< dim_domain, dim_range, rank, 1 > > &D1_phi_hat) const ;
+    evaluate_nurbs_gradients(
+        const typename Parent_t::ValuesCache &bspline_cache,
+        ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const ;
 
     /**
      * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points.
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
      * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
     void
-    evaluate_nurbs_hessians(ValueTable< Derivatives< dim_domain, dim_range, rank, 2 > > &D2_phi_hat) const ;
+    evaluate_nurbs_hessians(
+        const typename Parent_t::ValuesCache &bspline_cache,
+        ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const ;
 
 
 
@@ -191,124 +197,67 @@ public:
      * Reference to a ValueTable with the values of all local basis function
      * at each evaluation point.
      */
-    ValueTable<ValueRef_t> const &get_basis_values() const;
-
-    /**
-     * TODO: document me .
-     */
-    typename ValueTable<ValueRef_t>::const_view get_basis_values(const Index basis) const;
-
-    /**
-     * Reference to a ValueTable with the gradients of all local basis function
-     * evaluated at each evaluation point.
-     */
-    ValueTable<DerivativeRef_t<1> > const &get_basis_gradients() const;
-
-    /**
-     * TODO: document me .
-     */
-//    ConstVectorView<DerivativeRef_t<1> >
-    typename ValueTable<DerivativeRef_t<1>>::const_view
-                                         get_basis_gradients(const Index basis) const;
-
-    /**
-     * Reference to a ValueTable with values of all local basis function
-     * at each evaluation point.
-     */
-    ValueTable<DerivativeRef_t<2>> const &get_basis_hessians() const;
-
-    /**
-     * TODO: document me .
-     */
-//    ConstVectorView<DerivativeRef_t<2>>
-    typename ValueTable<DerivativeRef_t<2>>::const_view
-                                         get_basis_hessians(const Index basis) const;
-
-    /**
-     * Reference to the value of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local id of the basis function.
-     * @param[in] qp Local id of the evaluation point.
-     */
-    ValueRef_t const &get_basis_value(const Index basis, const Index qp) const;
-
-    /**
-     * Reference to the gradient of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local id of the basis function.
-     * @param[in] qp Local id of the evaluation point.
-     */
-    DerivativeRef_t<1> const &get_basis_gradient(const Index basis, const Index qp) const;
-
-    /**
-     * Reference to the hessian of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local id of the basis function.
-     * @param[in] qp Local id of the evaluation point.
-     */
-    DerivativeRef_t<2> const &get_basis_hessian(const Index basis, const Index qp) const;
-
-    /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point at the specified face.
-     */
-    ValueTable<ValueRef_t> const &get_face_basis_values(const Index face_id) const;
+    ValueTable<ValueRef_t> const &
+    get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .
      */
     typename ValueTable<ValueRef_t>::const_view
-    get_face_basis_values(const Index face_id, const Index basis) const;
+    get_basis_values(const Index basis,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to a ValueTable with the gradients of all local basis function
-     * evaluated at each evaluation point at the specified face.
+     * evaluated at each evaluation point.
      */
-    ValueTable<DerivativeRef_t<1> > const &get_face_basis_gradients(const Index face_id) const;
+    ValueTable<DerivativeRef_t<1> > const &
+    get_basis_gradients(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .
      */
-//    ConstVectorView<DerivativeRef_t<1> >
-    typename ValueTable<DerivativeRef_t<1>>::const_view
-                                         get_face_basis_gradients(const Index face_id, const Index basis) const;
+    typename ValueTable<DerivativeRef_t<1> >::const_view
+    get_basis_gradients(const Index basis,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to a ValueTable with values of all local basis function
-     * at each evaluation point at the specified face.
+     * at each evaluation point.
      */
-    ValueTable<DerivativeRef_t<2>> const &get_face_basis_hessians(const Index face_id) const;
+    ValueTable<DerivativeRef_t<2> > const &
+    get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .
      */
-//    ConstVectorView<DerivativeRef_t<2>>
-    typename ValueTable<DerivativeRef_t<2>>::const_view
-                                         get_face_basis_hessians(const Index face_id, const Index basis) const;
+    typename ValueTable<DerivativeRef_t<2> >::const_view
+    get_basis_hessians(const Index basis, const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to the value of a local basis function
-     * at one evaluation point at the specified face.
+     * at one evaluation point.
      * @param[in] basis Local id of the basis function.
      * @param[in] qp Local id of the evaluation point.
      */
-    ValueRef_t const &get_face_basis_value(const Index face_id, const Index basis, const Index qp) const;
+    ValueRef_t const &
+    get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to the gradient of a local basis function
-     * at one evaluation point at the specified face.
+     * at one evaluation point.
      * @param[in] basis Local id of the basis function.
      * @param[in] qp Local id of the evaluation point.
      */
-    DerivativeRef_t<1> const &get_face_basis_gradient(const Index face_id, const Index basis, const Index qp) const;
+    DerivativeRef_t<1> const &
+    get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Reference to the hessian of a local basis function
-     * at one evaluation point at the specified face.
+     * at one evaluation point.
      * @param[in] basis Local id of the basis function.
      * @param[in] qp Local id of the evaluation point.
      */
-    DerivativeRef_t<2> const &get_face_basis_hessian(const Index face_id, const Index basis, const Index qp) const;
+    DerivativeRef_t<2> const &
+    get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
     //Fields related
@@ -316,37 +265,19 @@ public:
      * TODO: document me .
      */
     ValueVector<ValueRef_t >
-    evaluate_field(const std::vector<Real> &local_coefs) const;
+    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .
      */
     ValueVector< DerivativeRef_t<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
+    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * TODO: document me .
      */
     ValueVector< DerivativeRef_t<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
-
-    /**
-     * TODO: document me .
-     */
-    ValueVector<ValueRef_t >
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * TODO: document me .
-     */
-    ValueVector< DerivativeRef_t<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * TODO: document me .
-     */
-    ValueVector< DerivativeRef_t<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
     ///@}
 
 private:
@@ -362,7 +293,7 @@ private:
          */
         void reset(const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain> &quad) ;
+                   const Quadrature<dim> &quad) ;
 
         ValueTable<ValueRef_t> D0phi_hat_;
         ValueTable<DerivativeRef_t<1>> D1phi_hat_;
@@ -388,7 +319,7 @@ private:
          */
         void reset(const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain> &quad) ;
+                   const Quadrature<dim> &quad) ;
     };
 
     /**
@@ -404,7 +335,7 @@ private:
         void reset(const Index face_id,
                    const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain> &quad) ;
+                   const Quadrature<dim> &quad) ;
 
         /**
          * Allocate space for the values and derivatives
@@ -413,7 +344,7 @@ private:
         void reset(const Index face_id,
                    const Space_t &space,
                    const ValueFlags fill_flag,
-                   const Quadrature<dim_domain-1> &quad) ;
+                   const Quadrature<dim-1> &quad) ;
     };
 
     /**
@@ -422,6 +353,8 @@ private:
      * The output flags does not contain the word face.
      */
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
+
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
 
 private:

@@ -23,9 +23,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
+#include <igatools/base/value_flags_handler.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/topology.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 #include <memory>
 
@@ -76,8 +78,6 @@ public:
     using ValueMap        = typename ContainerType::ValueType;
     using GradientMap     = typename ContainerType::GradientType;
     using HessianMap      = typename ContainerType::HessianType;
-    using GradientFaceMap = typename ContainerType::GradientFaceType;
-    using HessianFaceMap  = typename ContainerType::HessianFaceType;
 
 
 public:
@@ -89,6 +89,7 @@ public:
         ValueFlags::face_point |
         ValueFlags::face_measure |
         ValueFlags::face_w_measure |
+        ValueFlags::face_normal |
         ValueFlags::map_value |
         ValueFlags::map_gradient |
         ValueFlags::map_hessian |
@@ -205,80 +206,40 @@ public:
      */
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
-    const ValueVector<ValueMap> &get_values_map() const;
+    const ValueVector<ValueMap> &
+    get_values_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
-    const ValueVector<GradientMap> &get_gradients_map() const;
+    const ValueVector<GradientMap> &
+    get_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the hessian of the map at the dilated quadrature points. */
-    const ValueVector<HessianMap> &get_hessians_map() const;
+    const ValueVector<HessianMap> &
+    get_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
-    const ValueVector< Derivatives< space_dim, dim,1,1 > > &get_inv_gradients_map() const;
+    const ValueVector< Derivatives< space_dim, dim,1,1 > > &
+    get_inv_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the inverse of the hessian of the map at the dilated quadrature points. */
-    const ValueVector< Derivatives< space_dim, dim,1,2 > > &get_inv_hessians_map() const;
+    const ValueVector< Derivatives< space_dim, dim,1,2 > > &
+    get_inv_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
-    const ValueVector< Real > &get_dets_map() const;
+    const ValueVector< Real > &
+    get_dets_map(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector< Real > &get_w_measures() const;
-
-
-    /**
-     * Returns the face value of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector<ValueMap> &get_face_values_map(const Index face_id) const;
-
-
-    /**
-     * Returns the face gradient of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector<GradientFaceMap> &get_face_gradients_map(const Index face_id) const;
-
-
-    /**
-     * Returns the face hessian of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector<HessianFaceMap> &get_face_hessians_map(const Index face_id) const;
-
-
-    /**
-     * Returns the inverse of the face gradient of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector< Derivatives<space_dim,face_dim,1,1> > &get_face_inv_gradients_map(const Index face_id) const;
-
-
-    /**
-     * Returns the inverse of the face hessian of the map at the dilated quadrature points
-     * at the specified face.
-     */
-    const ValueVector< Derivatives<space_dim,face_dim,1,2> > &get_face_inv_hessians_map(const Index face_id) const;
-
-    /**
-     * Returns the face gradient determinant of the map at the dilated quadrature points.
-     */
-    const ValueVector<Real> &get_face_dets_map(const Index face_id) const;
-
-    /**
-     * Returns the quadrature weights multiplied by the
-     * gradient determinant of the face map at the dilated quadrature points.
-     */
-    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
+    const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Returns the face normals for every quadrature point for the
@@ -293,13 +254,7 @@ public:
      * Returns the number of evaluation points currently used
      * in the element cache.
      */
-    Size get_num_points() const;
-
-    /**
-     * Returns the number of evaluation points currently used
-     * in the face cache.
-     */
-    Size get_num_face_points(const Index face_id) const;
+    Size get_num_points(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Prints some internal information.
@@ -315,69 +270,68 @@ public:
 
 private:
 
+
+    class ValuesCache : public CacheStatus
+    {
+    public:
+        void reset(const std::shared_ptr<MappingElemValueFlagsHandler> flags_handler,
+                   const Quadrature<dim> &quad);
+
+        //TODO: the next member variables should be protected
+    public:
+
+        /**
+         * Fills the following cache values in accordance with the
+         * flag specifications used in the reset() function.
+         *
+         * @pre Before invoking this function, values_, gradients_ and hessians_
+         * must be properly filled.
+         */
+        void fill_composite_values();
+
+
+        std::shared_ptr<MappingElemValueFlagsHandler> flags_handler_;
+
+        ValueVector< ValueMap > values_;
+        ValueVector< GradientMap > gradients_;
+        ValueVector< HessianMap > hessians_;
+        ValueVector< Derivatives< space_dim,dim,1,1 > > inv_gradients_;
+        ValueVector< Derivatives< space_dim,dim,1,2 > > inv_hessians_;
+        ValueVector< Real > measures_;
+        ValueVector< Real > w_measures_;
+
+        Size num_points_ = 0;
+        Quadrature<dim> quad_;
+    };
+
     /**
      * Structure to cache mapping information used by the transform_* member
      * functions.
      *
      */
-    struct ElementValuesCache : CacheStatus
+    struct ElementValuesCache : ValuesCache
     {
-        void reset(const ValueFlags fill_flag,
+        void reset(const MappingElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
-        Size num_points_ = 0;
-
-        bool fill_values_ = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_ = false;
-        bool fill_inv_gradients_ = false;
-        bool fill_inv_hessians_ = false;
-        bool fill_dets_ = false;
-        bool fill_w_measures_ = false;
-
-        ValueVector< ValueMap > values_;
-        ValueVector< GradientMap > gradients_;
-        ValueVector< HessianMap > hessians_;
-        ValueVector< Derivatives< space_dim, dim,1,1 > > inv_gradients_;
-        ValueVector< Derivatives< space_dim, dim,1,2 > > inv_hessians_;
-        ValueVector< Real > dets_;
-        ValueVector< Real > w_measures_;
-
-        Quadrature<dim> quad_;
     };
 
-    struct FaceValuesCache : CacheStatus
+    struct FaceValuesCache : ValuesCache
     {
         void reset(const Index face_id,
-                   const ValueFlags fill_flag,
+                   const MappingFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
         void reset(const Index face_id,
-                   const ValueFlags fill_flag,
+                   const MappingFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim-1> &quad);
 
-        Size num_points_ = 0;
-
-        bool fill_values_ = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_ = false;
-        bool fill_inv_gradients_ = false;
-        bool fill_inv_hessians_ = false;
-        bool fill_dets_ = false;
-        bool fill_w_measures_ = false;
-        bool fill_normals_ = false;
-
-        ValueVector< ValueMap > values_;
-        ValueVector< GradientFaceMap > gradients_;
-        ValueVector< HessianFaceMap > hessians_;
-        ValueVector< Derivatives< space_dim, face_dim,1,1 > > inv_gradients_;
-        ValueVector< Derivatives< space_dim, face_dim,1,2 > > inv_hessians_;
-        ValueVector< Real > dets_;
-        ValueVector< Real > w_measures_;
         ValueVector< ValueMap > normals_;
 
-        Quadrature<dim> quad_;
+        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
     };
+
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
     ElementValuesCache elem_values_;
 

@@ -19,15 +19,14 @@
 #-+--------------------------------------------------------------------
 
 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
 
-include_files = [ '#include <igatools/base/tensor.h>\n',
-				  '#include <boost/numeric/ublas/matrix.hpp>\n',
-				  '#include <boost/numeric/ublas/io.hpp>\n' ]
-for file in include_files:
-    file_output.write(file)
-file_output.write('IGA_NAMESPACE_OPEN\n')
+iga_inc_files = ['base/tensor.h']
+other_files   = ['boost/numeric/ublas/matrix.hpp',
+				 'boost/numeric/ublas/io.hpp' ]
+data = Instantiation(iga_inc_files, other_files)
+(f, inst) = (data.file_output, data.inst)
 
 matrix = 'boost::numeric::ublas::matrix<Real>'
 types = (matrix, "const %s *" %matrix, ) + \
@@ -37,12 +36,4 @@ ma_list = ['CartesianProductArray<%s,%d>' %(t,dim)
            for dim in inst.domain_dims for t in types]
 
 for row in ma_list:
-	file_output.write('template class %s; \n' % (row))
-
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()
-
-
- 
- 
+	f.write('template class %s; \n' % (row))

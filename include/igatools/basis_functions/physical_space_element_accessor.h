@@ -175,7 +175,7 @@ public :
                           const ValueFlags fill_flag,
                           const QuadratureFaceType &quad);
 
-    void fill_values();
+    void fill_values(const TopologyId &topology_id = ElemTopology());
 
     void fill_face_values(const Index face_id);
     ///@}
@@ -185,89 +185,48 @@ public :
      * @name Getting the basis functions values, derivatives and hessians
      */
     ///@{
-    //Shape functions related
-
-    ValueTable<Value> const &get_basis_values() const;
-
-    /**
-     * @brief Return the one-dimensional container with the
-     * values of the i-th basis function at the evaluation points.
-     */
-    typename ValueTable<Value>::const_view
-    get_basis_values(const Index func) const;
-
-    const Value &
-    get_basis_value(const Index func, const Index qp) const;
-
-
-    ValueTable<Derivative<1> > const &get_basis_gradients() const;
-
-    /**
-     * \brief Return the one-dimensional container with the
-     * gradients of the i-th basis function at the evaluation points.
-     */
-    typename ValueTable< Derivative<1> >::const_view
-    get_basis_gradients(const Index func) const;
-
-    const Derivative<1> &
-    get_basis_gradient(const Index func, const Index qp) const;
-
-
-    ValueTable<Derivative<2> > const &get_basis_hessians() const;
-
-    /**
-     * \brief Return the one-dimensional container with the
-     * hessians of the i-th basis function at the evaluation points.
-     */
-    typename ValueTable< Derivative<2> >::const_view
-    get_basis_hessians(const Index func) const;
-
-    const Derivative<2> &
-    get_basis_hessian(const Index func, const Index qp) const;
-
-    Real get_basis_divergence(const Index func, const Index qp) const;
-
-
-    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
+    ValueTable<Value> const &
+    get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * @brief Return the one-dimensional container with the
      * values of the i-th basis function at the evaluation points.
      */
     typename ValueTable<Value>::const_view
-    get_face_basis_values(const Index face_id, const Index func) const;
+    get_basis_values(const Index func,const TopologyId &topology_id = ElemTopology()) const;
 
     const Value &
-    get_face_basis_value(const Index face_id, const Index func, const Index qp) const;
+    get_basis_value(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
-    ValueTable<Derivative<1> > const &get_face_basis_gradients(const Index face_id) const;
+    ValueTable<Derivative<1> > const &
+    get_basis_gradients(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return the one-dimensional container with the
      * gradients of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<1> >::const_view
-    get_face_basis_gradients(const Index face_id, const Index func) const;
+    get_basis_gradients(const Index func,const TopologyId &topology_id = ElemTopology()) const;
 
     const Derivative<1> &
-    get_face_basis_gradient(const Index face_id, const Index func, const Index qp) const;
+    get_basis_gradient(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
 
-    ValueTable<Derivative<2> > const &get_face_basis_hessians(const Index face_id) const;
+    ValueTable<Derivative<2> > const &
+    get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return the one-dimensional container with the
      * hessians of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<2> >::const_view
-    get_face_basis_hessians(const Index face_id, const Index func) const;
+    get_basis_hessians(const Index func,const TopologyId &topology_id = ElemTopology()) const;
 
     const Derivative<2> &
-    get_face_basis_hessian(const Index face_id, const Index func, const Index qp) const;
+    get_basis_hessian(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
-    Real get_face_basis_divergence(const Index face_id, const Index func, const Index qp) const;
-
+    Real get_basis_divergence(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
     ///@}
 
 
@@ -275,15 +234,19 @@ public :
      * @name Getting quantities that are geometry-related
      */
     ///@{
+    /**
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of map at the dilated quadrature points.
+     */
+    const ValueVector<Real> &
+    get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
 
-    //Geometry related
 
-    const ValueVector<Real> &get_w_measures() const;
-
-    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
-
-
-    const Point<space_dim> &get_point(const Index qp) const;
+    /**
+     * @todo Document this function
+     */
+    const Point<space_dim> &
+    get_point(const Index qp,const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the values of the map at the evaluation points.
@@ -292,10 +255,7 @@ public :
      * \date 29 Jan 2013
      */
     const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_points() const;
-
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_face_points(const Index face_id) const;
+    get_points(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the gradients of the map (i.e. the Jacobian) at the evaluation points.
@@ -304,10 +264,7 @@ public :
      * \date 03 Jun 2013
      */
     const ValueVector< typename Mapping<dim,codim>::GradientType > &
-    get_map_gradient_at_points() const;
-
-    const ValueVector< typename Mapping<dim,codim>::GradientFaceType > &
-    get_face_map_gradient_at_points(const Index face_id) const;
+    get_map_gradient_at_points(const TopologyId &topology_id = ElemTopology()) const;
 
 
 
@@ -336,22 +293,13 @@ public :
     ///@{
     //Fields related
     ValueVector< Value >
-    evaluate_field(const std::vector<Real> &local_coefs) const;
+    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     ValueVector< Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs) const;
+    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
 
     ValueVector< Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs) const;
-
-    ValueVector< Value >
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    ValueVector< Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    ValueVector< Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
     ///@}
 
 
@@ -382,12 +330,10 @@ protected:
     {
         void reset(const int n_basis_per_element,
                    const QuadratureType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisElemValueFlagsHandler &flags_handler);
 
 
-        bool fill_values_    = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_  = false;
+        BasisElemValueFlagsHandler flags_handler_;
 
         Size n_points_ = 0;
 
@@ -401,7 +347,7 @@ protected:
     {
         void reset(const int n_basis_per_element,
                    const QuadratureType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisElemValueFlagsHandler &flags_handler);
     };
 
 
@@ -410,13 +356,13 @@ protected:
         void reset(const Index face_id,
                    const int n_basis_per_element,
                    const QuadratureType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisFaceValueFlagsHandler &flags_handler);
 
 
         void reset(const Index face_id,
                    const int n_basis_per_element,
                    const QuadratureFaceType &quad,
-                   const ValueFlags fill_flag);
+                   const BasisFaceValueFlagsHandler &flags_handler);
     };
 
     /**
@@ -425,6 +371,11 @@ protected:
      * The output flags does not contain the word face.
      */
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
+
+
+    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+    ValuesCache &get_values_cache(const TopologyId &topology_id);
+
 
     ElementValuesCache elem_values_;
 

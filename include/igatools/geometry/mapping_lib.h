@@ -22,9 +22,11 @@
 #define MAPPING_LIB_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/analytical_mapping.h>
 
 IGA_NAMESPACE_OPEN
+
+
 
 /**
  * @brief Affine mapping from \f$\mathbb{R}^{dim}\f$ to \f$\mathbb{R}^{dim+codim}\f$.
@@ -37,10 +39,10 @@ IGA_NAMESPACE_OPEN
  * @todo Document more. Missing member documentation.
  */
 template<int dim_, int codim_>
-class LinearMapping : public Mapping <dim_, codim_>
+class LinearMapping : public AnalyticalMapping <dim_, codim_>
 {
 private:
-    using base_t = Mapping<dim_, codim_>;
+    using base_t = AnalyticalMapping<dim_, codim_>;
 
     using base_t::dim;
     using base_t::codim;
@@ -50,8 +52,6 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     using self_t = LinearMapping<dim, codim>;
@@ -74,6 +74,8 @@ public:
     create(const std::shared_ptr<GridType> grid,
            const GradientType &A, const ValueType &b);
 
+    virtual std::shared_ptr< Mapping<dim_,codim_> > clone() const override final;
+
     ValueFlags required_flags() const;
 
     void set_element(const CartesianGridElementAccessor<dim> &elem);
@@ -89,9 +91,9 @@ public:
 
     void evaluate_face(const Index face_id,std::vector<ValueType> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id,std::vector<GradientFaceType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id,std::vector<GradientType> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id,std::vector<HessianFaceType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id,std::vector<HessianType> &hessians) const override;
 
 private:
     const GradientType A_;
@@ -115,10 +117,10 @@ private:
  * @todo Missing documentation
  */
 template<int dim_>
-class BallMapping : public Mapping<dim_, 0>
+class BallMapping : public AnalyticalMapping<dim_, 0>
 {
 private:
-    using base_t = Mapping<dim_, 0>;
+    using base_t = AnalyticalMapping<dim_, 0>;
 
     using base_t::dim;
     using base_t::codim;
@@ -128,8 +130,6 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     using self_t = BallMapping<dim>;
@@ -139,6 +139,8 @@ public:
 
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<GridType> grid);
+
+    virtual std::shared_ptr< Mapping<dim_,0> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -154,9 +156,9 @@ public:
 
     void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
 
 private:
     static const int order = 3;
@@ -178,10 +180,10 @@ private:
  * @todo Missing documentation
  */
 template<int dim_>
-class SphereMapping : public Mapping<dim_, 1>
+class SphereMapping : public AnalyticalMapping<dim_, 1>
 {
 private:
-    using base_t = Mapping<dim_, 1>;
+    using base_t = AnalyticalMapping<dim_, 1>;
 
     using base_t::dim;
     using base_t::codim;
@@ -191,8 +193,6 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     using self_t = SphereMapping<dim>;
@@ -201,6 +201,8 @@ public:
     SphereMapping(const std::shared_ptr<GridType> grid, const Real R = 1.);
 
     static std::shared_ptr<base_t> create(const std::shared_ptr<GridType> grid);
+
+    virtual std::shared_ptr< Mapping<dim_,1> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -216,9 +218,9 @@ public:
 
     void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
 
 private:
     static const int order = 3;
@@ -259,10 +261,10 @@ private:
  * \author M.Martinelli
  * \date 31 Jan 2013
  */
-class CylindricalAnnulus : public Mapping<3, 0>
+class CylindricalAnnulus : public AnalyticalMapping<3, 0>
 {
 private:
-    using base_t = Mapping<3, 0>;
+    using base_t = AnalyticalMapping<3, 0>;
 
     using base_t::dim;
     using base_t::codim;
@@ -272,8 +274,6 @@ private:
     using typename base_t::ValueType;
     using typename base_t::GradientType;
     using typename base_t::HessianType;
-    using typename base_t::GradientFaceType;
-    using typename base_t::HessianFaceType;
     using typename base_t::GridType;
 
     using self_t = CylindricalAnnulus;
@@ -293,6 +293,22 @@ public:
         const Real h1,
         const Real theta1);
 
+    CylindricalAnnulus(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h0,
+        const Real h1,
+        const Real theta0,
+        const Real theta1);
+
+    CylindricalAnnulus(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h1,
+        const Real theta1);
+
     /**
      * This function creates a CylindricalAnnulus object
      * and wraps it into a shared_ptr.
@@ -304,6 +320,30 @@ public:
         const Real h1,
         const Real theta0,
         const Real theta1);
+
+    static std::shared_ptr<base_t> create(
+        const Real r0,
+        const Real r1,
+        const Real h1,
+        const Real theta1);
+
+    static std::shared_ptr<base_t> create(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h0,
+        const Real h1,
+        const Real theta0,
+        const Real theta1);
+
+    static std::shared_ptr<base_t> create(
+        const std::shared_ptr<GridType> grid,
+        const Real r0,
+        const Real r1,
+        const Real h1,
+        const Real theta1);
+
+    virtual std::shared_ptr< Mapping<3,0> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -319,9 +359,9 @@ public:
 
     void evaluate_face(const Index face_id, std::vector<PointType> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientFaceType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianFaceType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
 
 private:
     const Real r0_;

@@ -34,6 +34,7 @@ Mapping<dim_, codim_>::
 evaluate(vector<ValueType> &values) const
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -44,6 +45,7 @@ Mapping<dim_,codim_>::
 evaluate_gradients(vector<GradientType> &gradients) const
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -54,6 +56,7 @@ Mapping<dim_,codim_>::
 evaluate_hessians(vector<HessianType> &hessians) const
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -63,7 +66,8 @@ void
 Mapping<dim_, codim_>::
 evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
-    Assert(false, ExcNotImplemented());
+    Assert(false,ExcNotImplemented()) ;
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -71,9 +75,10 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
 {
-    Assert(false, ExcNotImplemented());
+    Assert(false,ExcNotImplemented()) ;
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -81,9 +86,10 @@ evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 {
-    Assert(false, ExcNotImplemented());
+    Assert(false,ExcNotImplemented()) ;
+    AssertThrow(false, ExcNotImplemented());
 }
 
 
@@ -121,7 +127,7 @@ Mapping(const Mapping<dim_,codim_> &map)
 {}
 
 
-
+/*
 template<int dim_, int codim_>
 auto
 Mapping<dim_,codim_>::clone() const -> shared_ptr<Mapping<dim_,codim_>>
@@ -130,35 +136,44 @@ Mapping<dim_,codim_>::clone() const -> shared_ptr<Mapping<dim_,codim_>>
     auto grid = GridType::create();
     return (shared_ptr<Mapping<dim_,codim_>>(new Mapping<dim_,codim_>(grid))) ;
 }
+//*/
 
-
-
+/*
 template<int dim_, int codim_>
 inline
 void
 Mapping<dim_,codim_>::
 set_element(const CartesianGridElementAccessor<dim> &elem)
-{}
+{
+    Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
+}
+//*/
 
-
-
+/*
 template<int dim_, int codim_>
 inline
 void
 Mapping<dim_,codim_>::
 set_face_element(const Index face_id,
                  const CartesianGridElementAccessor<dim> &elem)
-{}
+{
+    Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
+}
+//*/
 
-
-
+/*
 template<int dim_, int codim_>
 inline
 void
 Mapping<dim_,codim_>::
 init_element(const ValueFlags flag, const Quadrature<dim> &quad)
-{}
-
+{
+    Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
+}
+//*/
 
 
 template<int dim_, int codim_>
@@ -177,6 +192,7 @@ Mapping<dim_,codim_>::
 values() const -> vector<ValueType>
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
     return (vector<ValueType>());
 }
 
@@ -188,6 +204,7 @@ Mapping<dim_,codim_>::
 gradients() const -> vector<GradientType>
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
     return (vector<GradientType>());
 }
 
@@ -199,6 +216,7 @@ Mapping<dim_,codim_>::
 hessians() const -> vector<HessianType>
 {
     Assert(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
     return (vector<HessianType>());
 }
 

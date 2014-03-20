@@ -18,38 +18,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-###############################################################################
-# Common header for instantiation files 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-###############################################################################
-
-file_output.write('IGA_NAMESPACE_OPEN\n')
+data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
 
 
-strings = []
-for row in inst.mapping_dims:
-   (dim, codim) = (row.dim, row.space_dim - row.dim)
-   if (dim > 0):
-	   grid = 'std::shared_ptr<CartesianGrid<%d>>' %(dim)
-	   strings.append('template %s get_cartesian_grid_from_xml(const boost::property_tree::ptree &);\n' %grid)
-	   map = 'std::shared_ptr<Mapping<%d,%d>>' %(dim, codim)
-	   strings.append('template %s get_mapping_from_xml(const boost::property_tree::ptree &);\n' %map)
-	   strings.append('template %s get_mapping_from_file(const std::string &);\n' %map)
+grids = ['std::shared_ptr<CartesianGrid<%d>>' %(dim) for dim in inst.user_domain_dims]
+for grid in grids:
+    f.write('template %s get_cartesian_grid_from_xml(const boost::property_tree::ptree &);\n' %grid)
 
+maps = ['std::shared_ptr<Mapping<%d,%d>>' %(row.dim, row.codim) for row in inst.user_mapping_dims]
+for map in maps:
+    f.write('template %s get_mapping_from_xml(const boost::property_tree::ptree &);\n' %map)
+    f.write('template %s get_mapping_from_file(const std::string &);\n' %map)
 
-for x in inst.all_ref_sp_dims:
-   if (x.dim > 0):
-	   bspline_sp = 'std::shared_ptr<BSplineSpace<%d,%d,%d>>' %(x.dim, x.range, x.rank)
-	   strings.append('template %s get_bspline_space_from_xml(const boost::property_tree::ptree &);\n' %bspline_sp)
-	   nurbs_sp = 'std::shared_ptr<NURBSSpace<%d,%d,%d>>' %(x.dim, x.range, x.rank)
-	   strings.append('template %s get_nurbs_space_from_xml(const boost::property_tree::ptree &);\n' %nurbs_sp)
+for x in inst.user_ref_sp_dims:
+    bspline_sp = 'std::shared_ptr<BSplineSpace<%d,%d,%d>>' %(x.dim, x.range, x.rank)
+    f.write('template %s get_bspline_space_from_xml(const boost::property_tree::ptree &);\n' %bspline_sp)
+    nurbs_sp = 'std::shared_ptr<NURBSSpace<%d,%d,%d>>' %(x.dim, x.range, x.rank)
+    f.write('template %s get_nurbs_space_from_xml(const boost::property_tree::ptree &);\n' %nurbs_sp)
  
-
-for s in set(strings): # Removing repeated entries.
-    file_output.write(s)
-
-    
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()
-

@@ -32,10 +32,11 @@ template<int dim, int codim>
 IdentityMapping< dim, codim>::
 IdentityMapping(const std::shared_ptr<GridType> grid)
     :
-    Mapping<dim, codim>(grid)
+    base_t(grid)
 {
     for (int i = 0; i < dim; ++i)
         A_[i][i] = 1.;
+    // TODO: implement face_A
 }
 
 
@@ -44,7 +45,7 @@ template<int dim, int codim>
 IdentityMapping< dim, codim>::
 IdentityMapping(const IdentityMapping<dim,codim> &map)
     :
-    Mapping<dim,codim>::Mapping(map)
+    base_t(map)
 {}
 
 
@@ -141,7 +142,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -151,7 +152,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients
 
 
     for (int i = 0; i<num_points; i++)
-        gradients[i] = face_A_[face_id];
+        gradients[i] = A_;
 }
 
 
@@ -159,7 +160,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientFaceType> &gradients
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_hessians(const Index face_id, vector<HessianFaceType> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -196,7 +197,7 @@ IdentityMapping< dim, codim>::
 set_face_element(const Index face_id,
                  const CartesianGridElementAccessor<dim> &elem)
 {
-    face_points_[face_id] = elem.get_face_points(face_id);
+    face_points_[face_id] = elem.get_points(FaceTopology(face_id));
 }
 
 
@@ -206,7 +207,7 @@ shared_ptr< Mapping< dim, codim> >
 IdentityMapping< dim, codim>::
 clone() const
 {
-    return shared_ptr<self_t>(new self_t(*this));
+    return shared_ptr<Mapping<dim,codim>>(new self_t(*this));
 }
 
 

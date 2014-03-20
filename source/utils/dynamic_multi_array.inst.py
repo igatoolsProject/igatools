@@ -18,14 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
 
-include_files = ['#include <igatools/base/tensor.h>\n']
-for file in include_files:
-    file_output.write(file)
-file_output.write('IGA_NAMESPACE_OPEN\n')
+include_files = ['base/tensor.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
 ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim) 
            for dim in inst.domain_dims]
@@ -35,8 +33,6 @@ ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
            for deriv in inst.derivatives + inst.values]
 
 for row in ma_list:
-    file_output.write('template class %s; \n' % (row))
-    file_output.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
-
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()
+    f.write('template class %s; \n' % (row))
+    f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
+    

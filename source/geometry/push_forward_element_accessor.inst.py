@@ -18,17 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 4, 2014 ):
+# QA (pauletti, Mar 19, 2014): review the transform value how is handle
 from init_instantiation_data import *
-file_output, inst = intialize_instantiation()
-
-include_files = ['#include <igatools/geometry/push_forward.h>\n',
-                 '#include <igatools/geometry/cartesian_grid_element_accessor.h>\n'
-                 '#include <igatools/geometry/mapping_element_accessor.h>\n',
-                 '#include <../source/geometry/grid_forward_iterator.cpp>\n']
-for include in include_files:
-    file_output.write(include)
-file_output.write('IGA_NAMESPACE_OPEN\n')
+include_files = ['geometry/push_forward.h',
+                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/mapping_element_accessor.h',
+                 '../../source/geometry/grid_forward_iterator.cpp']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
 
 output = []
 containers = ['ValueTable', 'ValueVector']
@@ -47,12 +44,7 @@ for row in unique(inst.all_table + inst.extended_table):
         output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
                     'transform_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-                    '(%s, %s, void *) const ;\n' %(v_ref, v_phys)
-                    )
-        output.append(
-                    'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_face_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-                    '(const Index, %s, %s, void *) const ;\n' %(v_ref, v_phys)
+                    '(%s, %s, const TopologyId &, void *) const ;\n' %(v_ref, v_phys)
                     )
         order = 1
         deriv_ref  = ("Derivatives<%d,%d,%d,%d>" %(row.dim, row.range, row.rank, order)) 
@@ -62,19 +54,12 @@ for row in unique(inst.all_table + inst.extended_table):
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
             'transform_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-            '(%s,%s,%s, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
-        )
-        output.append(
-            'template void %s::' %(push_fwd_elem_acc) +
-            'transform_face_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-            '(const Index, %s,%s,%s, void * ) const;\n' %(v_ref, dv_ref, dv_phys)
+            '(%s,%s,%s, const TopologyId &, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
         )
  
 
 
 for s in unique(output):
-    file_output.write(s)
+    f.write(s)
 
 
-file_output.write('IGA_NAMESPACE_CLOSE\n')
-file_output.close()

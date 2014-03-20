@@ -76,12 +76,5 @@ derivative(int k, const int p, const std::vector<Real> &x) ;
 
 IGA_NAMESPACE_CLOSE
 
-// If we are in debug mode we do not inline to gain some compilation speed,
-// but we do in Release mode
-//#ifdef NDEBUG
-// Include the inline definitions
-//#include <igatools/basis_functions/bernstein_basis-inline.h>
-//#endif
-
 
 #endif
