@@ -320,6 +320,18 @@ enum class LinearAlgebraPackage
 };
 
 /**
+ * Bit field flags specifying the verbosity level of the output.
+ */
+enum class VerbosityLevel : int
+{
+	/** Normal level. */
+	normal = 1 << 0,
+
+    /** The output contains information about the memory address of the objects involved. */
+	debug = 1 << 1
+};
+
+/**
  * Generic convert function that can be used to convert any enum class to
  * its underlying integral type.
  *

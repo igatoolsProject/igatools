@@ -188,7 +188,7 @@ public:
      * Prints internal information about the CartesianGridElement.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out, const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
 
 private:

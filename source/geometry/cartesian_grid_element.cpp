@@ -253,7 +253,7 @@ is_boundary(const Index face_id) const
 template <int dim>
 void
 CartesianGridElement<dim>::
-print_info(LogStream &out) const
+print_info(LogStream &out,const VerbosityLevel verbosity) const
 {
     using std::endl;
 
@@ -262,7 +262,8 @@ print_info(LogStream &out) const
     out << "CartesianGridElement<" << dim << "> info:" << endl;
     out.push(tab);
 
-    out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
+    if (contains(verbosity,VerbosityLevel::debug))
+    	out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
 
     out << "Flat id = " << this->get_flat_index() << endl;
     out << "Tensor id = " << this->get_tensor_index() << endl;

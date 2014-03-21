@@ -291,7 +291,7 @@ reset(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_-1> &q
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-print_info(LogStream &out) const
+print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
     using std::endl;
 
@@ -301,16 +301,19 @@ print_info(LogStream &out) const
     out << "CartesianGridElementAccessor<" << dim_ << "> info:" << endl;
     out.push(tab);
 
-    out << "Memory address = " << &(*this) << endl;
+    if (contains(verbosity,VerbosityLevel::debug))
+    	out << "Memory address = " << &(*this) << endl;
 
-    CartesianGridElement<dim_>::print_info(out);
+    CartesianGridElement<dim_>::print_info(out,verbosity);
 
-    out << "Element cache memory address = " << &elem_values_ << endl;
-    elem_values_.print_info(out);
+    if (contains(verbosity,VerbosityLevel::debug))
+    {
+    	out << "Element cache memory address = " << &elem_values_ << endl;
+    	elem_values_.print_info(out);
 
-    for (int i = 0 ; i < n_faces ; ++i)
-        out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
-
+    	for (int i = 0 ; i < n_faces ; ++i)
+    		out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
+    }
     out.pop();
 
 }
