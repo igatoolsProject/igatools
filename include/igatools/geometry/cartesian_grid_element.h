@@ -28,8 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-//TODO(pauletti, Mar 4, 2014): This is used only in one class why is this a
-// different class form the accessor?
 /**
  * @brief This class represents an element within a CartesianGrid.
  *
@@ -105,6 +103,7 @@ public:
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const;
 
+
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
 
@@ -166,7 +165,6 @@ public:
      * Returns measure of j-th face.
      */
     Real get_face_measure(const int j) const;
-
 
 
     /**
