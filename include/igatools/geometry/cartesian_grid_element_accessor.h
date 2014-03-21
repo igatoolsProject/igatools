@@ -167,8 +167,37 @@ public:
     ///@}
 
 
+
     ///@name Query information that requires the use of the cache
     ///@{
+
+    /**
+     * Returns the lengths of the coordinate sides of the cartesian element.
+     * For example in 2 dimensions
+     * \code{.cpp}
+       auto length = elem.coordinate_lenths();
+       // length[0] is the length of the x-side of the element and
+       // length[1] the length of the y-side of the element.
+       \endcode
+     */
+    std::array<Real,dim_> get_coordinate_lengths() const;
+
+
+    /**
+     * Returns measure of the element or of the element-face in the CartesianGrid.
+     * @note The topology for which the measure is computed is specified by the input argument
+     * @p topology_id.
+     */
+    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
+
+
+    /**
+     * Returns measure of j-th face.
+     */
+    Real get_face_measure(const int j) const;
+
+
+
     /**
      * Returns the element measure multiplied by the weights of the quadrature scheme
      * used to initialize the accessor's cache.
@@ -206,6 +235,29 @@ protected:
 
 private:
 
+    /**
+     * @brief Global CartesianGrid cache, storing the interval length in each direction.
+     *
+     * For now only a uniform quad is taken care of.
+     */
+    class LengthCache : public CacheStatus
+    {
+    public:
+        /**
+         * Allocates space for the cache
+         */
+        void reset(const CartesianGrid<dim_> &grid);
+
+        /** pointer to the current entry of of length,
+         *  it could be used for optimization of uniform grid
+         */
+        CartesianProductArray<Real *, dim_> length_;
+
+        /** stores the interval length */
+        CartesianProductArray<Real , dim_> length_data_;
+
+    };
+
 
     /**
      * @brief Base class for cache of CartesianGridElementAccessor.
@@ -230,6 +282,8 @@ private:
 
         ///@name The "cache" properly speaking
         ///@{
+        Real measure_;
+
         /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
 
@@ -279,6 +333,13 @@ private:
      * @todo Document this function
      */
     const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+
+    /**
+     * Grid (global) lengths cache.
+     *
+     * @note The use of the shared_pointer is mandatory for the correct management of the global cache.
+     */
+    std::shared_ptr<LengthCache> length_cache_;
 
 
     /** Element values cache */
