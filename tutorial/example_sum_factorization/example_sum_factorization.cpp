@@ -400,27 +400,6 @@ PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,
 }
 
 
-template<int k>
-MultiArray<Real,k-1> sum_factorization_rhs_step(
-    const MultiArray<Real,k> &Gamma_k,
-    const vector<Real> &omega_B_etai)
-{
-
-    const auto tensor_size = Gamma_k.get_sizes();
-
-#ifndef NDEBUG
-    for (int i = 1 ; i < k ; ++i)
-    {
-        Assert(tensor_size[i] == tensor_size[0],
-               ExcMessage("Gamma_k computed with different number of points along the rank directions."));
-    }
-#endif
-
-    const Size n_pts = omega_B_etai.size();
-//  sum_factorization_rhs_quad<dim,dim-1>(Gamma_k,omega_B_etai)
-//  Gamma_k[][][][][i]
-}
-
 
 template <int dim,int k=0>
 class IntegratorSumFacRHS
@@ -499,166 +478,6 @@ public:
 };
 
 
-#define OPTIMIZED
-
-
-//int loops_counter = 0;
-//int flops_counter = 0;
-
-template <int dim,int k>
-class IntegratorSumFacMass
-{
-public:
-    using ValueTable1D = ValueTable<typename Function<1>::ValueType> ;
-
-    Real
-    operator()(const DynamicMultiArray<Real,k> &lambda_k,
-               const array<DynamicMultiArray<Real,3>,dim> &I_container,
-               const TensorIndex<dim> &alpha_tensor_id,
-               const TensorIndex<dim> &beta_tensor_id)
-    {
-        TensorSize<k> tensor_size_lambda_k = lambda_k.tensor_size();
-
-        TensorSize<k-1> tensor_size_lambda_k_1;
-        for (int i = 0 ; i < k-1 ; ++i)
-            tensor_size_lambda_k_1(i) = tensor_size_lambda_k(i);
-
-        DynamicMultiArray<Real,k-1> lambda_k_1(tensor_size_lambda_k_1);
-
-        const int dir = dim-k;
-
-        const auto &I = I_container[dir];
-
-
-        TensorSize<3> tensor_size_I = I.tensor_size();
-        const Size n_bernst_1D = tensor_size_I(0);
-
-        Assert(tensor_size_I(1)==tensor_size_lambda_k(0),
-               ExcDimensionMismatch(tensor_size_I(1),tensor_size_lambda_k(0)));
-        Assert(tensor_size_I(2)==tensor_size_lambda_k(0),
-               ExcDimensionMismatch(tensor_size_I(2),tensor_size_lambda_k(0)));
-
-
-        TensorIndex<3> tensor_id_I;
-        tensor_id_I[1] = alpha_tensor_id[dir];
-        tensor_id_I[2] =  beta_tensor_id[dir];
-        tensor_id_I[0] = 0;
-
-        Index flat_id_I_begin = I.tensor_to_flat(tensor_id_I);
-
-#ifndef OPTIMIZED
-        Index flat_id_lambda_k = 0;
-        for (auto & value_entry_lambda_k_1 : lambda_k_1)
-        {
-//            Real sum = 0.0;
-            for (int theta = 0 ; theta < n_bernst_1D ; ++theta)
-            {
-                /*
-                tensor_id_I[0] = theta;
-                sum += lambda_k(flat_id_lambda_k) * I(tensor_id_I);
-                //*/
-
-                const Index flat_id_I = flat_id_I_begin+theta;
-                value_entry_lambda_k_1 += lambda_k(flat_id_lambda_k) * I(flat_id_I);
-
-                flat_id_lambda_k++;
-            }
-
-//            value_entry_lambda_k_1 = sum;
-        }
-#else
-
-        const Real *I_ptr_begin = &I.get_data()[flat_id_I_begin];
-        const Real *I_ptr_end = I_ptr_begin + n_bernst_1D;
-
-        const Real *lambda_k_ptr = &lambda_k.get_data()[0];
-
-        Real *lambda_k_1_ptr = const_cast<Real *>(&lambda_k_1.get_data()[0]);
-        const Real *lambda_k_1_ptr_end = lambda_k_1_ptr + lambda_k_1.flat_size();
-
-        for (; lambda_k_1_ptr != lambda_k_1_ptr_end ; ++lambda_k_1_ptr)
-            for (const Real *I_ptr = I_ptr_begin ; I_ptr != I_ptr_end ; ++I_ptr,++lambda_k_ptr)
-            {
-//              flops_counter++;
-                (*lambda_k_1_ptr) += (*lambda_k_ptr) * (*I_ptr);
-            }
-
-//        cout <<"dir=" << dir<< "       flops counter = " << flops_counter <<endl;
-//        loops_counter +=2 ;
-
-#endif
-        IntegratorSumFacMass<dim,k-1> integrate;
-
-        return integrate(lambda_k_1,I_container,alpha_tensor_id,beta_tensor_id);
-    };
-};
-
-template <int dim>
-class IntegratorSumFacMass<dim,1>
-{
-public:
-    using ValueTable1D = ValueTable<typename Function<1>::ValueType> ;
-
-    Real
-    operator()(const DynamicMultiArray<Real,1> &lambda_1,
-               const array<DynamicMultiArray<Real,3>,dim> &I_container,
-               const TensorIndex<dim> &alpha_tensor_id,
-               const TensorIndex<dim> &beta_tensor_id)
-    {
-        const int dir = dim-1;
-
-        const auto &I = I_container[dir];
-
-        const Size n_bernst_1D = I.tensor_size()(0);
-
-        Assert(I.tensor_size()(1)==lambda_1.flat_size(),
-               ExcDimensionMismatch(I.tensor_size()(1),lambda_1.flat_size()));
-
-        Assert(I.tensor_size()(2)==lambda_1.flat_size(),
-               ExcDimensionMismatch(I.tensor_size()(2),lambda_1.flat_size()));
-
-        TensorIndex<3> tensor_id_I;
-        tensor_id_I[1] = alpha_tensor_id[dir];
-        tensor_id_I[2] =  beta_tensor_id[dir];
-
-        Real lambda_0 = 0.0;
-
-#ifndef OPTIMIZED
-        Index theta = 0;
-        for (auto & value_entry_lambda_1 : lambda_1)
-        {
-            tensor_index_I[0] = theta;
-
-            lambda_0 += value_entry_lambda_1 * I(tensor_id_I);
-
-            theta++;
-        }
-#else
-
-        tensor_id_I[0] = 0;
-
-        Index flat_id_I_begin = I.tensor_to_flat(tensor_id_I);
-
-        const Real *I_ptr_begin = &I.get_data()[flat_id_I_begin];
-        const Real *I_ptr_end = I_ptr_begin + n_bernst_1D;
-
-        const Real *lambda_1_ptr = &lambda_1.get_data()[0];
-
-        for (const Real *I_ptr = I_ptr_begin ; I_ptr != I_ptr_end ; ++I_ptr,++lambda_1_ptr)
-        {
-//          flops_counter++;
-            lambda_0 += (*lambda_1_ptr) * (*I_ptr);
-        }
-//      loops_counter += 1 ;
-//        cout <<"dir=" << dir<< "       flops counter = " << flops_counter <<endl;
-
-#endif
-
-        return lambda_0;
-    };
-};
-
-
 
 
 template <int dim, int r=dim>
@@ -671,17 +490,8 @@ public:
 			const TensorSize<dim> &tensor_size_theta,
 			const array<DynamicMultiArray<Real,3>,dim> &J,
 			const DynamicMultiArray<Real,3> &C_k_1) const
-{
-		const int k = dim-r+1;
-	/*
-    LogStream out;
-    out << "---------------------------------------" << endl;
-    out << "k="<<k << endl;
-
-    out << "C_[k-1] = ";
-    C_k_1.print_info(out);
-    out <<endl;
-//*/
+	{
+	const int k = dim-r+1;
 
     // (alpha_1,...alpha_{k-1})
     TensorSize<k-1> tensor_size_alphabeta_k_1;
@@ -731,9 +541,9 @@ public:
 
 
 
-    TensorIndex<3> tensor_index_J_k;
-    TensorIndex<3> tensor_index_C_k_1;
-    TensorIndex<3> tensor_index_C_k;
+    TensorIndex<3> tensor_id_J_k;
+    TensorIndex<3> tensor_id_C_k_1;
+    TensorIndex<3> tensor_id_C_k;
 
     const Size size_flat_theta_k_1 = (dim-k>0)?tensor_size_theta_k_1.flat_size():1;
     const Size size_flat_alpha_k_1 = tensor_size_alphabeta_k_1.flat_size();
@@ -764,53 +574,114 @@ public:
         << tensor_size_C_k[2] << endl;
 //*/
 
-    tensor_index_C_k[2] = 0;
+#define OPTIMIZED
+
+#ifndef OPTIMIZED
+
+    tensor_id_C_k[2] = 0;
     for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < size_flat_beta_k_1 ; ++flat_beta_k_1)
     {
-        tensor_index_C_k_1[2] = flat_beta_k_1;
+        tensor_id_C_k_1[2] = flat_beta_k_1;
 
 
         for (int beta_k = 0 ; beta_k < tensor_size_alphabeta[k-1] ; ++beta_k)
         {
-            tensor_index_J_k[2] = beta_k;
-            tensor_index_C_k[1] = 0 ;
+            tensor_id_J_k[2] = beta_k;
+            tensor_id_C_k[1] = 0 ;
 
             for (Index flat_alpha_k_1 = 0 ; flat_alpha_k_1 < size_flat_alpha_k_1 ; ++flat_alpha_k_1)
             {
-                tensor_index_C_k_1[1] = flat_alpha_k_1;
+                tensor_id_C_k_1[1] = flat_alpha_k_1;
 
                 for (int alpha_k = 0 ; alpha_k < tensor_size_alphabeta[k-1] ; ++alpha_k)
                 {
-                    tensor_index_J_k[1] = alpha_k;
+                    tensor_id_J_k[1] = alpha_k;
 
-                    tensor_index_C_k_1[0] = 0 ;
+                    tensor_id_C_k_1[0] = 0 ;
                     for (Index flat_theta_k_1 = 0 ; flat_theta_k_1 < size_flat_theta_k_1 ; ++flat_theta_k_1)
                     {
-                        tensor_index_C_k[0] = flat_theta_k_1;
+                        tensor_id_C_k[0] = flat_theta_k_1;
 
                         Real sum = 0.0;
                         for (int theta_k = 0 ; theta_k < tensor_size_theta[k-1] ; ++theta_k)
                         {
 
-                            tensor_index_J_k[0] = theta_k;
-                            sum += C_k_1(tensor_index_C_k_1) * J_k(tensor_index_J_k);
+                            tensor_id_J_k[0] = theta_k;
+                            sum += C_k_1(tensor_id_C_k_1) * J_k(tensor_id_J_k);
 
-                            tensor_index_C_k_1[0]++;
+                            tensor_id_C_k_1[0]++;
 
                         } // end loop theta_k
 
-                        C_k(tensor_index_C_k) = sum;
+                        C_k(tensor_id_C_k) = sum;
 
                     } //end loop flat_theta_k_1
 
-                    tensor_index_C_k[1]++;
+                    tensor_id_C_k[1]++;
 
                 } // end loop alpha_k
             } // end loop flat_alpha_k_1
 
-            tensor_index_C_k[2]++;
+            tensor_id_C_k[2]++;
         } // end loop beta_k
     } // end loop flat_beta_k_1
+#else
+    // OPTIMIZED branch
+
+    const Size size_theta_k = tensor_size_theta[k-1];
+
+
+    tensor_id_C_k[2] = 0;
+    for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < size_flat_beta_k_1 ; ++flat_beta_k_1)
+    {
+        tensor_id_C_k_1[2] = flat_beta_k_1;
+
+
+        for (int beta_k = 0 ; beta_k < tensor_size_alphabeta[k-1] ; ++beta_k)
+        {
+            tensor_id_J_k[2] = beta_k;
+            tensor_id_C_k[1] = 0 ;
+
+            for (Index flat_alpha_k_1 = 0 ; flat_alpha_k_1 < size_flat_alpha_k_1 ; ++flat_alpha_k_1)
+            {
+                tensor_id_C_k_1[1] = flat_alpha_k_1;
+
+                for (int alpha_k = 0 ; alpha_k < tensor_size_alphabeta[k-1] ; ++alpha_k)
+                {
+                    tensor_id_J_k[1] = alpha_k;
+
+                    tensor_id_J_k[0] = 0;
+                    const Real * J_begin = & J_k(tensor_id_J_k);
+                    const Real * J_end = J_begin + size_theta_k;
+
+                    tensor_id_C_k_1[0] = 0 ;
+                    const Real * C_ptr = & C_k_1(tensor_id_C_k_1);
+
+                    tensor_id_C_k[0] = 0;
+                    Real * CJ_ptr_begin = &C_k(tensor_id_C_k);
+                    const Real * CJ_ptr_end = CJ_ptr_begin + size_flat_theta_k_1;
+
+                    for (Real *CJ_ptr = CJ_ptr_begin ; CJ_ptr != CJ_ptr_end ; ++CJ_ptr)
+                    {
+                        Real sum = 0.0;
+                        for (const Real * J_ptr = J_begin; J_ptr != J_end ; ++J_ptr, ++C_ptr)
+                        	sum += (*C_ptr) * (*J_ptr);
+
+                        (*CJ_ptr) = sum;
+
+                    } //end loop flat_theta_k_1
+
+                    tensor_id_C_k[1]++;
+
+                } // end loop alpha_k
+            } // end loop flat_alpha_k_1
+
+            tensor_id_C_k[2]++;
+        } // end loop beta_k
+    } // end loop flat_beta_k_1
+
+#endif
+
 
     MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
     return mass_matrix_integrator(tensor_size_alphabeta,tensor_size_theta,J,C_k);
@@ -1221,30 +1092,29 @@ assemble()
             for (int i = k ; i < dim ; ++i)
                 size_flat_theta_k_1 *= n_bernst_1D_;
 
-            TensorSize<3> tensor_size_C_k_1;
-            tensor_size_C_k_1[0] = tensor_size_theta.flat_size(); // theta size
-            tensor_size_C_k_1[1] = 1; // alpha size
-            tensor_size_C_k_1[2] = 1; // beta size
-            DynamicMultiArray<Real,3> C_k_1(tensor_size_C_k_1); // C1
+            TensorSize<3> tensor_size_C_0;
+            tensor_size_C_0[0] = tensor_size_theta.flat_size(); // theta size
+            tensor_size_C_0[1] = 1; // alpha size
+            tensor_size_C_0[2] = 1; // beta size
+            DynamicMultiArray<Real,3> C_0(tensor_size_C_0); // C0
 
 
-            for (Index flat_id = 0 ; flat_id < tensor_size_C_k_1[0] ; ++flat_id)
-                C_k_1(flat_id) = K(flat_id);
+            for (Index flat_id = 0 ; flat_id < tensor_size_C_0[0] ; ++flat_id)
+                C_0(flat_id) = K(flat_id);
 
 //            const DynamicMultiArray<Real,3> &J_k = ;  // J1
 
             MassMatrixIntegrator<dim> integrate_mass_matrix;
-            DynamicMultiArray<Real,3> C_kp1 = integrate_mass_matrix(tensor_size_alphabeta,tensor_size_theta,I_container,C_k_1);
-//            DynamicMultiArray<Real,3> C_kp1 = my_func<dim,2>(tensor_size_alphabeta,tensor_size_theta,I_container,C_k);
+            DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(tensor_size_alphabeta,tensor_size_theta,I_container,C_0);
 
-            Assert(C_kp1.tensor_size()(1) == n_basis,ExcDimensionMismatch(C_kp1.tensor_size()(1),n_basis));
-            Assert(C_kp1.tensor_size()(2) == n_basis,ExcDimensionMismatch(C_kp1.tensor_size()(2),n_basis));
+            Assert(C_ab.tensor_size()(1) == n_basis,ExcDimensionMismatch(C_ab.tensor_size()(1),n_basis));
+            Assert(C_ab.tensor_size()(2) == n_basis,ExcDimensionMismatch(C_ab.tensor_size()(2),n_basis));
 
 
             Index flat_id = 0 ;
             for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
                 for (int beta_flat_id = 0 ; beta_flat_id < n_basis ; ++beta_flat_id)
-                    loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = C_kp1(flat_id++);
+                    loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = C_ab(flat_id++);
 
 
 
@@ -1295,7 +1165,7 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
@@ -1328,7 +1198,7 @@ do_test()
     string time_mass_orig = "Time mass-matrix orig";
 
     int degree_min = 1;
-    int degree_max = 20;
+    int degree_max = 10;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
