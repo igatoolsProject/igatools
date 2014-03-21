@@ -134,6 +134,21 @@ vertex(const int i) const
 };
 
 
+template <int dim>
+array< Real, dim>
+CartesianGridElement<dim>::
+get_coordinate_lengths() const
+{
+    const Point<dim> &p_origin = this->vertex(0);
+    const Point<dim> &p_end = this->vertex(UnitElement<dim>::vertices_per_element-1);
+
+    array<Real,dim> coord_length;
+    for (int d = 0; d < dim ; ++d)
+        coord_length[d] = p_end[d] - p_origin[d];
+
+    return coord_length;
+}
+
 
 template <int dim>
 Point< dim >

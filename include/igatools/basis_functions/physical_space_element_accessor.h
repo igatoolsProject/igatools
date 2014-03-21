@@ -309,7 +309,9 @@ public :
     const PhysSpace *get_physical_space() const;
 
 
-    typedef PushForwardElementAccessor< typename PhysSpace::PushForwardType> push_forward_element_accessor;
+
+
+    using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
 
 private :
 

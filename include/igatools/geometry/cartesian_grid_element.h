@@ -142,6 +142,18 @@ public:
     Point<dim> center() const;
 
     /**
+     * Returns the lengths of the coordinate sides of the cartesian element.
+     * For example in 2 dimensions
+     * \code{.cpp}
+       auto length = elem.coordinate_lenths();
+       // length[0] is the length of the x-side of the element and
+       // length[1] the length of the y-side of the element.
+       \endcode
+     */
+    std::array<Real,dim> get_coordinate_lengths() const;
+
+
+    /**
      * Test if the point is inside the element.
      */
     bool is_point_inside(const Point<dim> &point) const;

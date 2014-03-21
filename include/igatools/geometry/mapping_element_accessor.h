@@ -302,6 +302,7 @@ private:
 
         Size num_points_ = 0;
         Quadrature<dim> quad_;
+
     };
 
     /**

@@ -1447,6 +1447,31 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &t
 
 
 
+template <int dim, int range, int rank>
+void
+BSplineElementAccessor<dim, range, rank>::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+    const std::string tab = "   ";
+
+
+    out << "BSplineElementAccessor<" << dim << "," << range << "," << rank << "> info:" << endl;
+    out.push(tab);
+
+    CartesianGridElementAccessor<dim>::print_info(out);
+
+    out << "Element cache memory address = " << &elem_values_ << endl;
+
+    for (int i = 0 ; i < n_faces ; ++i)
+        out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
+
+    out.pop();
+
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_element_accessor.inst>

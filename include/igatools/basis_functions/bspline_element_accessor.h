@@ -319,6 +319,13 @@ public:
     evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId &topology_id = ElemTopology()) const;
     ///@}
 
+
+    /**
+     * Prints internal information about the BSplineElementAccessor.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
+
 private:
     /**
      * Initilizes (reserves memory) the

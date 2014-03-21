@@ -191,23 +191,15 @@ public:
      * values of the map at the evaluation points.
      */
     std::vector<Point<dim>> const get_points(const TopologyId &topology_id = ElemTopology()) const;
-
-
-    /**
-     * Returns the lengths of the coordinate sides of the cartesian element.
-     * For example in 2 dimensions
-     * \code
-     * length = coordinate_lenths();
-     * length[0] is the length of the x-side of the element and
-     * length[1] the length of the y-side of the element.
-     * \endcode
-     */
-    std::array<Real, dim_> get_coordinate_lengths() const;
-
     ///@}
 
 
 
+    /**
+     * Prints internal information about the CartesianGridElementAccessor.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
 
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
@@ -304,6 +296,13 @@ private:
          * Allocate space for the values at quadrature points
          */
         void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+
+        /**
+         * Prints internal information about the ElementValuesCache.
+         * Its main use is for testing and debugging.
+         */
+        void print_info(LogStream &out) const;
+
     };
 
 

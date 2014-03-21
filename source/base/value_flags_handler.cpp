@@ -234,6 +234,28 @@ set_w_measures_filled(const bool status)
 {
     w_measures_filled_ = status;
 }
+
+void
+GridElemValueFlagsHandler::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+    const std::string tab = "   ";
+
+    out << "GridElemValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
+    out.push(tab);
+
+    out << "    points -->    fill = "
+        << fill_points_ << "    filled = " << points_filled_ << endl;
+    out << "  measures -->    fill = "
+        << fill_measures_ << "    filled = " << measures_filled_ << endl;
+    out << "w_measures -->    fill = "
+        << fill_w_measures_ << "    filled = " << w_measures_filled_ << endl;
+
+    out.pop();
+}
+
 //====================================================
 
 

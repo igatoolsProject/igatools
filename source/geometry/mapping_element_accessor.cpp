@@ -353,6 +353,10 @@ fill_values()
 
     elem_values_.fill_composite_values();
 
+    LogStream out;
+    using std::endl;
+    CartesianGridElementAccessor<dim_ref_>::print_info(out);
+
     if (elem_values_.flags_handler_->fill_measures() || elem_values_.flags_handler_->fill_w_measures())
     {
         Assert(elem_values_.flags_handler_->gradients_filled(),ExcMessage("Gradients not filled."));
@@ -365,6 +369,9 @@ fill_values()
             Assert(elem_values_.flags_handler_->measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = elem_values_.measures_ ;
             const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
+            out << "Weights = " ;
+            weights.print_info(out);
+            out <<endl;
 
             for (Index i = 0; i < elem_values_.num_points_; i++)
                 elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;

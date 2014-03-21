@@ -24,6 +24,7 @@
 #define VALUE_FLAGS_HANDLER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -190,6 +191,13 @@ public:
 
     /** Sets the filled status for w_measures. */
     void set_w_measures_filled(const bool status);
+
+
+    /**
+     * Prints internal information about the ElementValuesCache.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
 
 
 protected:
