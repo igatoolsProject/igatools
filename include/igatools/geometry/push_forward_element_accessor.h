@@ -124,6 +124,7 @@ public:
     transform_values(
         const Container< RefValue<dim_range, rank> > &D0v_hat,
         Container< PhysValue<dim_range, rank> > &D0v,
+        const TopologyId &topology_id = ElemTopology(),
         typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
 
     template < int dim_range, int rank, template<class T> class Container, Transformation ttype=type >
@@ -131,36 +132,16 @@ public:
     transform_values(
         const Container< RefValue<dim_range, rank> > &D0v_hat,
         Container< PhysValue<dim_range, rank> > &D0v,
+        const TopologyId &topology_id = ElemTopology(),
         typename std::enable_if<ttype == Transformation::h_div>::type * = 0) const;
 
-    template < int dim_range, int rank, template<class T> class Container, Transformation ttype=type >
-    void
-    transform_face_values(
-        const Index face_id,
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        Container< PhysValue<dim_range, rank> > &D0v,
-        typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
-
-    template < int dim_range, int rank, template<class T> class Container, Transformation ttype=type >
-    void
-    transform_face_values(
-        const Index face_id,
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        Container< PhysValue<dim_range, rank> > &D0v,
-        typename std::enable_if<ttype == Transformation::h_div>::type * = 0) const;
-
-    /**
-     * Transform first derivatives of scalar, vector or tensor field from
-     * the reference domain to the physical one.
-     * The templates arguments indicate the value type and the container type
-     * of object to be transformed.
-     */
     template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
     void
     transform_gradients(
         const Container< RefValue<dim_range, rank> > &D0v_hat,
         const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
         Container< PhysDerivative<dim_range, rank, 1> > &D1v,
+        const TopologyId &topology_id = ElemTopology(),
         typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
 
     template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
@@ -169,24 +150,7 @@ public:
         const Container< RefValue<dim_range, rank> > &D0v_hat,
         const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
         Container< PhysDerivative<dim_range, rank, 1> > &D1v,
-        typename std::enable_if<ttype == Transformation::h_div>::type * = 0) const;
-
-    template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
-    void
-    transform_face_gradients(
-        const Index face_id,
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-        Container< PhysDerivative<dim_range, rank, 1> > &D1v,
-        typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
-
-    template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
-    void
-    transform_face_gradients(
-        const Index face_id,
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-        Container< PhysDerivative<dim_range, rank, 1> > &D1v,
+        const TopologyId &topology_id = ElemTopology(),
         typename std::enable_if<ttype == Transformation::h_div>::type * = 0) const;
 
     /**
@@ -200,6 +164,7 @@ public:
         const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
         const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
         Container< PhysDerivative<dim_range, rank, 2> > &D2v,
+        const TopologyId &topology_id = ElemTopology(),
         typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
 
     template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
@@ -209,33 +174,14 @@ public:
         const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
         const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
         Container< PhysDerivative<dim_range, rank, 2> > &D2v,
-        typename std::enable_if<ttype == Transformation::h_div>::type * = 0) const;
-
-    template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
-    void
-    transform_face_hessians(
-        const Index face_id,
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-        const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
-        Container< PhysDerivative<dim_range, rank, 2> > &D2v,
-        typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
-
-    template <int dim_range, int rank, template<class T> class Container, Transformation ttype=type>
-    void
-    transform_face_hessians(
-        const Index face_id,
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-        const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
-        Container< PhysDerivative<dim_range, rank, 2> > &D2v,
+        const TopologyId &topology_id = ElemTopology(),
         typename std::enable_if<ttype == Transformation::h_div>::type * = 0) const;
 
     /**
      * Returns det(DF(qp))
      * todo: should this have another name
      */
-    ValueVector<Real> transform_measure() const;
+    ValueVector<Real> transform_measure(const TopologyId &topology_id = ElemTopology()) const;
 
     /**
      * Returns det(DF(qp))

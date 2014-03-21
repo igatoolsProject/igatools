@@ -175,7 +175,7 @@ public :
                           const ValueFlags fill_flag,
                           const QuadratureFaceType &quad);
 
-    void fill_values();
+    void fill_values(const TopologyId &topology_id = ElemTopology());
 
     void fill_face_values(const Index face_id);
     ///@}
@@ -376,6 +376,7 @@ protected:
 
 
     const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+    ValuesCache &get_values_cache(const TopologyId &topology_id);
 
 
     ElementValuesCache elem_values_;

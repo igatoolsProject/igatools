@@ -331,22 +331,35 @@ init_face_values(const Index face_id,
 
 template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
-fill_values()
+fill_values(const TopologyId &topology_id)
 {
-    Assert(elem_values_.is_initialized(), ExcNotInitialized());
+    auto &cache = this->get_values_cache(topology_id);
 
-    PfElemAccessor::fill_values();
-    RefElemAccessor::fill_values();
+    Assert(cache.is_initialized(), ExcNotInitialized());
 
-    if (elem_values_.flags_handler_.fill_values())
+    //TODO: remove this if
+    if (topology_id.is_element())
     {
-        PfElemAccessor::template transform_values<RefSpace::dim_range,RefSpace::rank>
-        (RefElemAccessor::get_basis_values(), elem_values_.D0phi_);
-
-        elem_values_.flags_handler_.set_values_filled(true);
+        PfElemAccessor::fill_values();
+        RefElemAccessor::fill_values();
+    }
+    else
+    {
+        //TODO: implement fill_values in PushForwardElementAccessor
+        // and RefSpaceElementAccessor accepting TopologyId
+        PfElemAccessor::fill_face_values(topology_id.get_id());
+        RefElemAccessor::fill_face_values(topology_id.get_id());
     }
 
-    if (elem_values_.flags_handler_.fill_gradients())
+    if (cache.flags_handler_.fill_values())
+    {
+        PfElemAccessor::template transform_values<RefSpace::dim_range,RefSpace::rank>
+        (RefElemAccessor::get_basis_values(topology_id), cache.D0phi_,topology_id);
+
+        cache.flags_handler_.set_values_filled(true);
+    }
+
+    if (cache.flags_handler_.fill_gradients())
     {
         if (transformation_type == Transformation::h_grad)
         {
@@ -354,33 +367,33 @@ fill_values()
             PfElemAccessor::
             template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
                 dummy,
-                RefElemAccessor::get_basis_gradients(),
-                elem_values_.D1phi_);
+                RefElemAccessor::get_basis_gradients(topology_id),
+                cache.D1phi_,topology_id);
         }
         else
         {
             PfElemAccessor::
             template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
-                RefElemAccessor::get_basis_values(),
-                RefElemAccessor::get_basis_gradients(),
-                elem_values_.D1phi_);
+                RefElemAccessor::get_basis_values(topology_id),
+                RefElemAccessor::get_basis_gradients(topology_id),
+                cache.D1phi_,topology_id);
         }
-        elem_values_.flags_handler_.set_gradients_filled(true);
+        cache.flags_handler_.set_gradients_filled(true);
     }
 
-    if (elem_values_.flags_handler_.fill_hessians())
+    if (cache.flags_handler_.fill_hessians())
     {
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());
     }
 
-    if (elem_values_.flags_handler_.fill_divergences())
+    if (cache.flags_handler_.fill_divergences())
     {
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());
     }
 
-    elem_values_.set_filled(true);
+    cache.set_filled(true);
 }
 
 
@@ -389,58 +402,7 @@ template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
 fill_face_values(const Index face_id)
 {
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    auto &face_value = face_values_[face_id] ;
-    Assert(face_value.is_initialized(), ExcNotInitialized());
-
-    PfElemAccessor::fill_face_values(face_id);
-    RefElemAccessor::fill_face_values(face_id);
-
-    if (face_value.flags_handler_.fill_values())
-    {
-        PfElemAccessor::template transform_face_values<RefSpace::dim_range,RefSpace::rank>
-        (face_id, RefElemAccessor::get_basis_values(FaceTopology(face_id)), face_value.D0phi_);
-
-        face_value.flags_handler_.set_values_filled(true);
-    }
-
-    if (face_value.flags_handler_.fill_gradients())
-    {
-        if (transformation_type == Transformation::h_grad)
-        {
-            ValueTable<typename RefElemAccessor::Value> dummy;
-            PfElemAccessor::
-            template transform_face_gradients<PhysSpace::dim_range,PhysSpace::rank>(
-                face_id,
-                dummy,
-                RefElemAccessor::get_basis_gradients(FaceTopology(face_id)),
-                face_value.D1phi_);
-        }
-        else
-        {
-            PfElemAccessor::
-            template transform_face_gradients<PhysSpace::dim_range,PhysSpace::rank>(
-                face_id,
-                RefElemAccessor::get_basis_values(FaceTopology(face_id)),
-                RefElemAccessor::get_basis_gradients(FaceTopology(face_id)),
-                face_value.D1phi_);
-        }
-        face_value.flags_handler_.set_gradients_filled(true);
-    }
-
-    if (elem_values_.flags_handler_.fill_hessians())
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
-
-    if (elem_values_.flags_handler_.fill_divergences())
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
-
-    face_value.set_filled(true);
+    this->fill_values(FaceTopology(face_id));
 }
 
 
@@ -459,6 +421,26 @@ get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
     {
         Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
                ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
+
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_values_cache(const TopologyId &topology_id) -> ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+    ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+        ExcIndexRange(topology_id.get_id(),0,n_faces));
         return face_values_[topology_id.get_id()];
     }
 }
