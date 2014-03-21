@@ -152,12 +152,7 @@ void
 CartesianGridElementAccessor<dim_>::
 fill_values()
 {
-    using std::cout ;
-    using std::endl;
-
-    cout << "CartesianGridElementAccessor::fill_values()    measure = " << this->measure() << endl;
-
-    elem_values_.fill(this->measure());
+    elem_values_.fill(this->get_measure());
 
     elem_values_.set_filled(true);
 }
@@ -172,25 +167,13 @@ fill_face_values(const Index face_id)
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     auto &face_value = face_values_[face_id] ;
 
-    face_value.fill(this->face_measure(face_id));
+    face_value.fill(this->get_face_measure(face_id));
 
     face_value.set_filled(true);
 }
 
 
 
-
-
-template <int dim_>
-Real
-CartesianGridElementAccessor<dim_>::
-get_measure(const TopologyId &topology_id) const
-{
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcNotInitialized());
-    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
-    return cache.measure_;
-}
 
 template <int dim_>
 ValueVector<Real> const &
@@ -213,7 +196,7 @@ get_points(const TopologyId &topology_id) const -> vector<Point<dim>> const
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = this->vertex(0);
-    auto dilate    = this->coordinate_lengths();
+    auto dilate    = this->get_coordinate_lengths();
 
     auto ref_points = cache.unit_points_;
     ref_points.dilate_translate(dilate, translate);
@@ -261,17 +244,9 @@ CartesianGridElementAccessor<dim_>::
 ValuesCache::
 fill(const Real measure)
 {
-    if (flags_handler_.fill_measures() || flags_handler_.fill_w_measures())
-    {
-        measure_ = measure;
-        flags_handler_.set_measures_filled(true);
-    }
-
     if (flags_handler_.fill_w_measures())
     {
-        Assert(flags_handler_.measures_filled(),
-               ExcCacheNotFilled());
-        w_measure_ = measure_ * unit_weights_;
+        w_measure_ = measure * unit_weights_;
 
         flags_handler_.set_w_measures_filled(true);
     }

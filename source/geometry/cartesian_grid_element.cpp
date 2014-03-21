@@ -137,7 +137,7 @@ vertex(const int i) const
 template <int dim>
 array< Real, dim>
 CartesianGridElement<dim>::
-coordinate_lengths() const
+get_coordinate_lengths() const
 {
     const Point<dim> &p_origin = this->vertex(0);
     const Point<dim> &p_end = this->vertex(UnitElement<dim>::vertices_per_element-1);
@@ -166,20 +166,20 @@ center() const
 template <int dim>
 Real
 CartesianGridElement<dim>::
-measure(const TopologyId &topology_id) const
+get_measure(const TopologyId &topology_id) const
 {
     Real result = 1.;
     if (topology_id.is_element())
     {
         for (int d = 0; d < dim; ++d)
-            result *= this->coordinate_lengths()[d];
+            result *= this->get_coordinate_lengths()[d];
     }
     else
     {
         const auto active_directions =
             UnitElement<dim>::face_active_directions[topology_id.get_id()];
         for (auto d : active_directions)
-            result *= this->coordinate_lengths()[d];
+            result *= this->get_coordinate_lengths()[d];
     }
     return result;
 }
@@ -189,9 +189,9 @@ measure(const TopologyId &topology_id) const
 template <int dim>
 Real
 CartesianGridElement<dim>::
-face_measure(const Index face_id) const
+get_face_measure(const Index face_id) const
 {
-    return this->measure(FaceTopology(face_id));
+    return this->get_measure(FaceTopology(face_id));
 }
 
 

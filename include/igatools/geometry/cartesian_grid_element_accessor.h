@@ -169,16 +169,6 @@ public:
 
     ///@name Query information that requires the use of the cache
     ///@{
-
-    /**
-     * Returns the measure of the element in the CartesianGrid<dim_>
-     * object referred by this accessor.
-     * This is the length for dim_==1,
-     * the area for dim_==2 and the volume for dim_==3.
-     */
-    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
-
-
     /**
      * Returns the element measure multiplied by the weights of the quadrature scheme
      * used to initialize the accessor's cache.
@@ -240,9 +230,6 @@ private:
 
         ///@name The "cache" properly speaking
         ///@{
-        /** Measure of the element in the grid (equal to the product of the element lenghts). */
-        Real measure_ = 0.0;
-
         /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
 

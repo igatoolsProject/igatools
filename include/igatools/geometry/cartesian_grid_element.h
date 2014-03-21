@@ -151,7 +151,7 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-    std::array<Real,dim> coordinate_lengths() const;
+    std::array<Real,dim> get_coordinate_lengths() const;
 
 
     /**
@@ -159,13 +159,13 @@ public:
      * @note The topology for which the measure is computed is specified by the input argument
      * @p topology_id.
      */
-    Real measure(const TopologyId &topology_id = ElemTopology()) const;
+    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
 
 
     /**
      * Returns measure of j-th face.
      */
-    Real face_measure(const int j) const;
+    Real get_face_measure(const int j) const;
 
 
 
