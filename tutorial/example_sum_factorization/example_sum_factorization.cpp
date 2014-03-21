@@ -1165,7 +1165,7 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
