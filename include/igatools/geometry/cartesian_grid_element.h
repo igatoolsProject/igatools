@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/topology.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -150,7 +151,22 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-    std::array<Real,dim> get_coordinate_lengths() const;
+    std::array<Real,dim> coordinate_lengths() const;
+
+
+    /**
+     * Returns measure of the element or of the element-face in the CartesianGrid.
+     * @note The topology for which the measure is computed is specified by the input argument
+     * @p topology_id.
+     */
+    Real measure(const TopologyId &topology_id = ElemTopology()) const;
+
+
+    /**
+     * Returns measure of j-th face.
+     */
+    Real face_measure(const int j) const;
+
 
 
     /**

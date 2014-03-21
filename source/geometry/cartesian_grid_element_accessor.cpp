@@ -114,9 +114,6 @@ init_values(const ValueFlags flag,
     Assert((flag|admisible_flag) == admisible_flag,
            ExcFillFlagNotSupported(admisible_flag, flag));
 
-    length_cache_.reset(*this->get_grid());
-
-    std::cout << "CartesianGridElementAccessor::init_values()    measure = " << this->measure() << std::endl;
 
     GridElemValueFlagsHandler elem_flags_handler(flag);
     GridFaceValueFlagsHandler face_flags_handler(flag);
@@ -134,11 +131,7 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 init_values(const ValueFlags flag)
-{
-    Assert(contains(flag, ValueFlags::ref_elem_coord_length),
-           ExcMessage("Wrong flag passed."));
-    length_cache_.reset(*this->get_grid());
-}
+{}
 
 
 
@@ -186,35 +179,7 @@ fill_face_values(const Index face_id)
 
 
 
-template <int dim_>
-inline Real
-CartesianGridElementAccessor<dim_>::
-measure() const
-{
-    Assert(length_cache_.is_filled(), ExcMessage("Cache not filed."));
 
-    Real result = 1.;
-    for (int d = 0; d < dim_; ++d)
-        result *= this->get_coordinate_lengths()[d];
-
-    return result;
-}
-
-
-template <int dim_>
-inline Real
-CartesianGridElementAccessor<dim_>::
-face_measure(const Index face_id) const
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(length_cache_.is_filled(), ExcMessage("Cache not filed."));
-
-    Real result = 1.;
-    for (auto d : UnitElement<dim_>::face_active_directions[face_id])
-        result *= this->get_coordinate_lengths()[d];
-
-    return result;
-}
 
 template <int dim_>
 Real
@@ -248,7 +213,7 @@ get_points(const TopologyId &topology_id) const -> vector<Point<dim>> const
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = this->vertex(0);
-    auto dilate    = this->get_coordinate_lengths();
+    auto dilate    = this->coordinate_lengths();
 
     auto ref_points = cache.unit_points_;
     ref_points.dilate_translate(dilate, translate);
@@ -257,27 +222,6 @@ get_points(const TopologyId &topology_id) const -> vector<Point<dim>> const
 }
 
 
-
-
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-LengthCache::
-reset(const CartesianGrid<dim_> &grid)
-{
-    length_data_ = grid.get_element_lengths();
-
-    auto const size = length_data_.tensor_size();
-    length_.resize(size);
-    this->set_initialized(true);
-
-
-    for (int i = 0; i < dim_; ++i)
-        for (int j = 0; j < size(i); ++j)
-            length_.entry(i,j) = &length_data_.entry(i,j);
-
-    this->set_filled(true);
-}
 
 template <int dim_>
 void

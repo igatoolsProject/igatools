@@ -172,7 +172,7 @@ enum class ValueFlags : std::int64_t
 //    ref_elem_face_measure  =    1L << 9,
 
     /** reference element coordinate lengths */
-    ref_elem_coord_length  =    1L << 10,
+//    ref_elem_coord_length  =    1L << 10,
 
     /** reference element face outer normal (one single value) */
 //    ref_elem_face_normal   =    1L << 11,

@@ -206,15 +206,6 @@ public:
 
 private:
 
-    /**
-     * helper function to compute the measure of element
-     */
-    Real measure() const;
-
-    /**
-     * helper function to compute the measure of j-th face
-     */
-    Real face_measure(const int j) const;
 
 protected:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
@@ -224,30 +215,6 @@ protected:
     void operator++();
 
 private:
-
-
-    /**
-     * @brief Global CartesianGrid cache, storing the interval length in each direction.
-     *
-     * For now only a uniform quad is taken care of.
-     */
-    class LengthCache : public CacheStatus
-    {
-    public:
-        /**
-         * Allocates space for the cache
-         */
-        void reset(const CartesianGrid<dim_> &grid);
-
-        /** pointer to the current entry of of length,
-         *  it could be used for optimization of uniform grid
-         */
-        CartesianProductArray<Real *, dim_> length_;
-
-        /** stores the interval length */
-        CartesianProductArray<Real , dim_> length_data_;
-
-    };
 
 
     /**
@@ -326,9 +293,6 @@ private:
      */
     const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
 
-
-    /** Grid (global) lengths cache */
-    LengthCache length_cache_;
 
     /** Element values cache */
     ElementValuesCache elem_values_;
