@@ -1030,6 +1030,15 @@ get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<ValueRe
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
+get_face_basis_values(const Index face_id) const -> ValueTable<ValueRef_t> const &
+{
+	return this->get_basis_values(FaceTopology<dim>(face_id));
+}
+
+
+template <int dim, int range, int rank>
+auto
+NURBSElementAccessor<dim, range, rank>::
 get_basis_values(const Index basis,const TopologyId<dim> &topology_id) const -> typename ValueTable<ValueRef_t>::const_view
 {
     return this->get_basis_values(topology_id).get_function_view(basis);

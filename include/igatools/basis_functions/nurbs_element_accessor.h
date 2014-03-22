@@ -201,6 +201,13 @@ public:
     get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<ValueRef_t> const &
+    get_face_basis_values(const Index face_id) const;
+
+    /**
      * TODO: document me .
      */
     typename ValueTable<ValueRef_t>::const_view
