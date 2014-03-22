@@ -1210,7 +1210,7 @@ get_space() const -> const Space_t *
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
@@ -1230,7 +1230,7 @@ get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_values(const TopologyId &topology_id) const -> ValueTable<Value> const &
+get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -1239,12 +1239,19 @@ get_basis_values(const TopologyId &topology_id) const -> ValueTable<Value> const
     return cache.phi_hat_;
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
+{
+	return this->get_basis_values(FaceTopology<dim>(face_id));
+}
 
 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_values(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Value>::const_view
+get_basis_values(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Value>::const_view
 {
     return this->get_basis_values(topology_id).get_function_view(i);
 }
@@ -1254,7 +1261,7 @@ get_basis_values(const Index i,const TopologyId &topology_id) const -> typename 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_divergences(const TopologyId &topology_id) const -> ValueTable<Div> const &
+get_basis_divergences(const TopologyId<dim> &topology_id) const -> ValueTable<Div> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -1268,7 +1275,7 @@ get_basis_divergences(const TopologyId &topology_id) const -> ValueTable<Div> co
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_divergences(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Div>::const_view
+get_basis_divergences(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Div>::const_view
 {
     return this->get_basis_divergences(topology_id).get_function_view(i);
 }
@@ -1278,7 +1285,7 @@ get_basis_divergences(const Index i,const TopologyId &topology_id) const -> type
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivative<1>> const &
+get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<1>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -1290,7 +1297,7 @@ get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivativ
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_gradients(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Derivative<1>>::const_view
+get_basis_gradients(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Derivative<1>>::const_view
 {
     return this->get_basis_gradients(topology_id).get_function_view(i);
 }
@@ -1300,7 +1307,7 @@ get_basis_gradients(const Index i,const TopologyId &topology_id) const -> typena
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<Derivative<2>> const &
+get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<2>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -1313,7 +1320,7 @@ get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<Derivative
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_hessians(const Index i,const TopologyId &topology_id) const -> typename ValueTable<Derivative<2>>::const_view
+get_basis_hessians(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Derivative<2>>::const_view
 {
     return this->get_basis_hessians(topology_id).get_function_view(i);
 }
@@ -1322,7 +1329,7 @@ get_basis_hessians(const Index i,const TopologyId &topology_id) const -> typenam
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id) const -> Value const &
+get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
@@ -1334,7 +1341,7 @@ get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id)
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_divergence(const Index basis, const Index qp,const TopologyId &topology_id) const -> Div const &
+get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Div const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
@@ -1345,7 +1352,7 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId &topolog
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_id) const -> Derivative<1> const &
+get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<1> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
@@ -1356,7 +1363,7 @@ get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id) const -> Derivative<2> const &
+get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<2> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
@@ -1370,7 +1377,7 @@ get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_i
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
     const auto &cache = this->get_values_cache(topology_id);
@@ -1391,7 +1398,7 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_i
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<1> >
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -1411,7 +1418,7 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 evaluate_field_divergences(
     const std::vector<Real> &local_coefs,
-    const TopologyId &topology_id) const -> ValueVector<Div>
+    const TopologyId<dim> &topology_id) const -> ValueVector<Div>
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -1430,7 +1437,7 @@ evaluate_field_divergences(
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());

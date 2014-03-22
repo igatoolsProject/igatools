@@ -939,7 +939,7 @@ fill_face_values(const Index face_id)
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
@@ -1018,7 +1018,7 @@ get_weights() const
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_values(const TopologyId &topology_id) const -> ValueTable<ValueRef_t> const &
+get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<ValueRef_t> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -1030,7 +1030,7 @@ get_basis_values(const TopologyId &topology_id) const -> ValueTable<ValueRef_t> 
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_values(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<ValueRef_t>::const_view
+get_basis_values(const Index basis,const TopologyId<dim> &topology_id) const -> typename ValueTable<ValueRef_t>::const_view
 {
     return this->get_basis_values(topology_id).get_function_view(basis);
 }
@@ -1038,7 +1038,7 @@ get_basis_values(const Index basis,const TopologyId &topology_id) const -> typen
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<DerivativeRef_t<1>> const &
+get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<DerivativeRef_t<1>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -1050,7 +1050,7 @@ get_basis_gradients(const TopologyId &topology_id) const -> ValueTable<Derivativ
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_gradients(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
+get_basis_gradients(const Index basis,const TopologyId<dim> &topology_id) const -> typename ValueTable<DerivativeRef_t<1>>::const_view
 {
     return this->get_basis_gradients(topology_id).get_function_view(basis);
 }
@@ -1058,7 +1058,7 @@ get_basis_gradients(const Index basis,const TopologyId &topology_id) const -> ty
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<DerivativeRef_t<2>> const &
+get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<DerivativeRef_t<2>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -1070,7 +1070,7 @@ get_basis_hessians(const TopologyId &topology_id) const -> ValueTable<Derivative
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_hessians(const Index basis,const TopologyId &topology_id) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
+get_basis_hessians(const Index basis,const TopologyId<dim> &topology_id) const -> typename ValueTable<DerivativeRef_t<2>>::const_view
 {
     return this->get_basis_hessians(topology_id).get_function_view(basis);
 }
@@ -1080,7 +1080,7 @@ get_basis_hessians(const Index basis,const TopologyId &topology_id) const -> typ
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id) const -> ValueRef_t const &
+get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> ValueRef_t const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.n_points_,
@@ -1091,7 +1091,7 @@ get_basis_value(const Index basis, const Index qp,const TopologyId &topology_id)
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_id) const -> DerivativeRef_t<1> const &
+get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> DerivativeRef_t<1> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.n_points_,
@@ -1102,7 +1102,7 @@ get_basis_gradient(const Index basis, const Index qp,const TopologyId &topology_
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_id) const -> DerivativeRef_t<2> const &
+get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> DerivativeRef_t<2> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(qp >= 0 && qp < cache.n_points_,
@@ -1113,7 +1113,7 @@ get_basis_hessian(const Index basis, const Index qp,const TopologyId &topology_i
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<ValueRef_t>
 {
     const auto &cache = this->get_values_cache(topology_id);
@@ -1134,7 +1134,7 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_i
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< DerivativeRef_t<1> >
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< DerivativeRef_t<1> >
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -1154,7 +1154,7 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id) const -> ValueVector< DerivativeRef_t<2> >
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< DerivativeRef_t<2> >
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());

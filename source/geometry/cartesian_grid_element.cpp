@@ -166,21 +166,14 @@ center() const
 template <int dim>
 Real
 CartesianGridElement<dim>::
-get_measure(const TopologyId &topology_id) const
+get_measure(const TopologyId<dim> &topology_id) const
 {
+	const auto active_directions = topology_id.get_active_directions();
+
     Real result = 1.;
-    if (topology_id.is_element())
-    {
-        for (int d = 0; d < dim; ++d)
-            result *= this->get_coordinate_lengths()[d];
-    }
-    else
-    {
-        const auto active_directions =
-            UnitElement<dim>::face_active_directions[topology_id.get_id()];
-        for (auto d : active_directions)
-            result *= this->get_coordinate_lengths()[d];
-    }
+    for (const int &d : active_directions)
+        result *= this->get_coordinate_lengths()[d];
+
     return result;
 }
 
@@ -191,7 +184,7 @@ Real
 CartesianGridElement<dim>::
 get_face_measure(const Index face_id) const
 {
-    return this->get_measure(FaceTopology(face_id));
+    return this->get_measure(FaceTopology<dim>(face_id));
 }
 
 

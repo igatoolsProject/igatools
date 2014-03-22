@@ -48,7 +48,7 @@ MappingElementAccessor(Mapping<dim,codim> &mapping, const int index)
 template<int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
@@ -443,7 +443,7 @@ fill_face_values(const Index face_id)
             Assert(flags_handler->measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = face_value.measures_ ;
             const auto weights =
-                CartesianGridElementAccessor<dim_ref_>::get_w_measures(FaceTopology(face_id));
+                CartesianGridElementAccessor<dim_ref_>::get_w_measures(FaceTopology<dim_ref_>(face_id));
 
             for (Index i = 0; i < face_value.num_points_; i++)
                 face_value.w_measures_[i] = dets_map[i] * weights[i] ;
@@ -467,8 +467,6 @@ fill_face_values(const Index face_id)
         flags_handler->set_normals_filled(true);
     }
 
-
-
     face_value.set_filled(true);
 }
 
@@ -478,7 +476,6 @@ MappingElementAccessor<dim_ref_,codim_>::
 ValuesCache::
 fill_composite_values()
 {
-
     if (flags_handler_->fill_inv_gradients())
     {
         Assert(flags_handler_->gradients_filled(),ExcMessage("Gradients not filled."));
@@ -517,7 +514,7 @@ fill_composite_values()
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_values_map(const TopologyId &topology_id) const -> const ValueVector<ValueMap> &
+get_values_map(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -530,7 +527,7 @@ get_values_map(const TopologyId &topology_id) const -> const ValueVector<ValueMa
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_gradients_map(const TopologyId &topology_id) const -> const ValueVector<GradientMap> &
+get_gradients_map(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -543,7 +540,7 @@ get_gradients_map(const TopologyId &topology_id) const -> const ValueVector<Grad
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_hessians_map(const TopologyId &topology_id) const -> const ValueVector<HessianMap> &
+get_hessians_map(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -556,7 +553,7 @@ get_hessians_map(const TopologyId &topology_id) const -> const ValueVector<Hessi
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_inv_gradients_map(const TopologyId &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
+get_inv_gradients_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -569,7 +566,7 @@ get_inv_gradients_map(const TopologyId &topology_id) const -> const ValueVector<
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_inv_hessians_map(const TopologyId &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
+get_inv_hessians_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -582,7 +579,7 @@ get_inv_hessians_map(const TopologyId &topology_id) const -> const ValueVector<D
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_dets_map(const TopologyId &topology_id) const -> const ValueVector<Real> &
+get_dets_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -595,7 +592,7 @@ get_dets_map(const TopologyId &topology_id) const -> const ValueVector<Real> &
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_w_measures(const TopologyId &topology_id) const -> const ValueVector<Real> &
+get_w_measures(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
 {
     const auto &cache =this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -603,6 +600,13 @@ get_w_measures(const TopologyId &topology_id) const -> const ValueVector<Real> &
     return cache.w_measures_;
 }
 
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+get_face_w_measures(const Index face_id) const -> const ValueVector<Real> &
+{
+    return this->get_w_measures(FaceTopology<dim>(face_id));
+}
 
 
 template< int dim_ref_, int codim_ >
@@ -644,7 +648,7 @@ transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
 template< int dim_ref_, int codim_ >
 int
 MappingElementAccessor<dim_ref_,codim_>::
-get_num_points(const TopologyId &topology_id) const
+get_num_points(const TopologyId<dim> &topology_id) const
 {
     const auto &cache =this->get_values_cache(topology_id);
     return cache.num_points_ ;

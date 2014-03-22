@@ -158,7 +158,7 @@ public:
      * @note The topology for which the measure is computed is specified by the input argument
      * @p topology_id.
      */
-    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
+    Real get_measure(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
     /**

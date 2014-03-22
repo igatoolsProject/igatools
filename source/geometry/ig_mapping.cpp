@@ -292,7 +292,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    values = element_->evaluate_field(ctrl_pts_element,FaceTopology(face_id));
+    values = element_->evaluate_field(ctrl_pts_element,FaceTopology<dim>(face_id));
 }
 
 
@@ -312,7 +312,7 @@ evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradient
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    gradients = element_->evaluate_field_gradients(ctrl_pts_element,FaceTopology(face_id));
+    gradients = element_->evaluate_field_gradients(ctrl_pts_element,FaceTopology<dim>(face_id));
 }
 
 
@@ -331,7 +331,7 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(control_points_[local_id]);
 
-    hessians = element_->evaluate_field_hessians(ctrl_pts_element,FaceTopology(face_id));
+    hessians = element_->evaluate_field_hessians(ctrl_pts_element,FaceTopology<dim>(face_id));
 }
 
 

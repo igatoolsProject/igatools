@@ -188,7 +188,7 @@ public:
      * @note The topology for which the measure is computed is specified by the input argument
      * @p topology_id.
      */
-    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
+    Real get_measure(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
 
 
     /**
@@ -202,14 +202,28 @@ public:
      * Returns the element measure multiplied by the weights of the quadrature scheme
      * used to initialize the accessor's cache.
      */
-    ValueVector<Real> const &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
+    ValueVector<Real> const &get_w_measures(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+
+    /**
+     * Returns the element-face measure multiplied by the weights of the quadrature scheme
+     * used to initialize the accessor's cache.
+     * The face is specified by the input argument @p face_id
+     */
+    ValueVector<Real> const &get_face_w_measures(const Index face_id) const;
 
 
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points(const TopologyId &topology_id = ElemTopology()) const;
+    std::vector<Point<dim>> const get_points(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+
+    /**
+     * Return a const reference to the one-dimensional container with the
+     * values of the map at the evaluation points on the face specified by @p face_id.
+     */
+    std::vector<Point<dim>> const get_face_points(const Index face_id) const;
+
     ///@}
 
 
@@ -332,7 +346,7 @@ private:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id) const;
 
     /**
      * Grid (global) lengths cache.

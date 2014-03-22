@@ -189,7 +189,7 @@ PushForwardElementAccessor<PushForward>::
 transform_values(
     const Container< RefValue<dim_range, rank> > &D0v_hat,
     Container< PhysValue<dim_range, rank> > &D0v,
-    const TopologyId &topology_id,
+    const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     Assert(D0v.size() == D0v_hat.size(),
@@ -213,7 +213,7 @@ PushForwardElementAccessor<PushForward>::
 transform_values(
     const Container< RefValue<dim_range, rank> > &D0v_hat,
     Container< PhysValue<dim_range, rank> > &D0v,
-    const TopologyId &topology_id,
+    const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_div>::type *) const
 {
     AssertThrow(false, ExcMessage("This function is implemented but is not tested!")) ;
@@ -261,7 +261,7 @@ transform_gradients(
     const Container< RefValue<dim_range, rank> > &D0v_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
     Container< PhysDerivative<dim_range, rank, 1> > &D1v,
-    const TopologyId &topology_id,
+    const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     Assert(D1v_hat.size() >= 0 , ExcEmptyObject()) ;
@@ -302,7 +302,7 @@ transform_gradients(
     const Container< RefValue<dim_range, rank> > &D0v_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
     Container< PhysDerivative<dim_range, rank, 1> > &D1v,
-    const TopologyId &topology_id,
+    const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_div>::type *) const
 {
     AssertThrow(false, ExcMessage("This function is implemented but is not tested!")) ;
@@ -374,7 +374,7 @@ transform_hessians(
     const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
     Container< PhysDerivative<dim_range, rank, 2> > &D2v,
-    const TopologyId &topology_id,
+    const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     const int n_func = D1v_hat.get_num_functions();
@@ -415,7 +415,7 @@ transform_hessians(
 template< class PushForward >
 ValueVector<Real>
 PushForwardElementAccessor<PushForward>::
-transform_measure(const TopologyId &topology_id) const
+transform_measure(const TopologyId<dim> &topology_id) const
 {
     return this->get_dets_map(topology_id);
 }
@@ -427,7 +427,7 @@ ValueVector<Real>
 PushForwardElementAccessor<PushForward>::
 transform_face_measure(const Index face_id) const
 {
-    return this->transform_measure(FaceTopology(face_id));
+    return this->transform_measure(FaceTopology<dim>(face_id));
 }
 
 

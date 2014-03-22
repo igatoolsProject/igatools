@@ -24,6 +24,7 @@
 
 #include <igatools/base/config.h>
 
+#include <vector>
 
 IGA_NAMESPACE_OPEN
 
@@ -71,6 +72,7 @@ IGA_NAMESPACE_OPEN
  * @author M. Martinelli
  * @date 19 March 2014
  */
+template< int dim >
 class TopologyId
 {
 public:
@@ -87,10 +89,10 @@ public:
     TopologyId(const Index id);
 
     /** Copy constructor. */
-    TopologyId(const TopologyId &id) = default;
+    TopologyId(const TopologyId<dim> &id) = default;
 
     /** Move constructor. */
-    TopologyId(TopologyId &&id) = default;
+    TopologyId(TopologyId<dim> &&id) = default;
 
     /** Destructor. */
     ~TopologyId() = default;
@@ -99,10 +101,10 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    TopologyId &operator=(const TopologyId &id) = default;
+    TopologyId<dim> &operator=(const TopologyId<dim> &id) = default;
 
     /** Move assignment operator. */
-    TopologyId &operator=(TopologyId &&id) = default;
+    TopologyId<dim> &operator=(TopologyId<dim> &&id) = default;
     ///@}
 
     /** Returns the id. */
@@ -113,6 +115,16 @@ public:
 
     /** Returns true if the object refers to the <b>face</b> topology. */
     bool is_face() const;
+
+    /**
+     * Returns a vector with the indices of the active directions of the topology.
+     * - If the topology is the element, then the vector length is equal to @p dim and contains
+     * all integers from 0 to @p dim - 1 (included).
+     * - If the topology is the face, then the vector length is equal to @p dim -1 and its values
+     * depends on the face index (i.e. the input parameter @p face_id in the constructor
+     * FaceTopology<dim>::FaceTopology(const Index face_id) ).
+     */
+    std::vector<Index> get_active_directions() const;
 
 private:
     Index id_;
@@ -126,7 +138,8 @@ private:
  * @author M. Martinelli
  * @date 19 March 2014
  */
-class ElemTopology : public TopologyId
+template <int dim>
+class ElemTopology : public TopologyId<dim>
 {
 public:
     /** @name Constructors */
@@ -135,10 +148,10 @@ public:
     ElemTopology();
 
     /** Copy constructor. */
-    ElemTopology(const ElemTopology &elem) = default;
+    ElemTopology(const ElemTopology<dim> &elem) = default;
 
     /** Move constructor. */
-    ElemTopology(ElemTopology &&elem) = default;
+    ElemTopology(ElemTopology<dim> &&elem) = default;
 
     /** Destructor. */
     ~ElemTopology() = default;
@@ -148,10 +161,10 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    ElemTopology &operator=(const ElemTopology &id) = default;
+    ElemTopology<dim> &operator=(const ElemTopology<dim> &id) = default;
 
     /** Move assignment operator. */
-    ElemTopology &operator=(ElemTopology &&id) = default;
+    ElemTopology<dim> &operator=(ElemTopology<dim> &&id) = default;
     ///@}
 
 };
@@ -164,7 +177,8 @@ public:
  * @author M. Martinelli
  * @date 19 March 2014
  */
-class FaceTopology : public TopologyId
+template <int dim>
+class FaceTopology : public TopologyId<dim>
 {
 public:
     /** @name Constructors */
@@ -176,10 +190,10 @@ public:
     FaceTopology(const Index face_id);
 
     /** Copy constructor. */
-    FaceTopology(const FaceTopology &face) = default;
+    FaceTopology(const FaceTopology<dim> &face) = default;
 
     /** Move constructor. */
-    FaceTopology(FaceTopology &&face) = default;
+    FaceTopology(FaceTopology<dim> &&face) = default;
 
     /** Destructor. */
     ~FaceTopology() = default;
@@ -188,10 +202,10 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    FaceTopology &operator=(const FaceTopology &id) = default;
+    FaceTopology<dim> &operator=(const FaceTopology<dim> &id) = default;
 
     /** Move assignment operator. */
-    FaceTopology &operator=(FaceTopology &&id) = default;
+    FaceTopology<dim> &operator=(FaceTopology<dim> &&id) = default;
     ///@}
 
 };

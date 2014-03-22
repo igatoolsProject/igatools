@@ -199,33 +199,40 @@ public:
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &
-    get_values_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_values_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
-    get_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &
-    get_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_hessians_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &
-    get_inv_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_inv_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the hessian of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,2 > > &
-    get_inv_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_inv_hessians_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &
-    get_dets_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_dets_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
+    const ValueVector<Real> &get_w_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
 
     /**
      * Returns the face normals for every quadrature point for the
@@ -238,7 +245,7 @@ public:
      * Returns the number of evaluation points currently used
      * in the element cache.
      */
-    Size get_num_points(const TopologyId &topology_id = ElemTopology()) const;
+    Size get_num_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Prints some internal information.
@@ -314,7 +321,7 @@ private:
         std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
     };
 
-    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 
     ElementValuesCache elem_values_;
 

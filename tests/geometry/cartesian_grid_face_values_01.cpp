@@ -59,11 +59,11 @@ void run_test1()
             elem->fill_face_values(face_id);
             out << "face: " << face_id << endl;
             out.push("  ");
-            out << "meas: "<< elem->get_measure(FaceTopology(face_id)) << endl;
+            out << "meas: "<< elem->get_face_measure(face_id) << endl;
             out << "w_meas: "<< endl;
-            elem->get_w_measures(FaceTopology(face_id)).print_info(out);
+            elem->get_face_w_measures(face_id).print_info(out);
             out << endl;
-            out << "points: " << elem->get_points(FaceTopology(face_id)) << endl;
+            out << "points: " << elem->get_face_points(face_id) << endl;
             out.pop();
         }
         out.pop();
@@ -106,11 +106,11 @@ void run_test2()
             elem->fill_face_values(face_id);
             out << "face: " << face_id << endl;
             out.push("  ");
-            out << "meas: "<< elem->get_measure(FaceTopology(face_id)) << endl;
+            out << "meas: "<< elem->get_face_measure(face_id) << endl;
             out << "w_meas: "<< endl;
-            elem->get_w_measures(FaceTopology(face_id)).print_info(out);
+            elem->get_face_w_measures(face_id).print_info(out);
             out << endl;
-            out << "points: " << elem->get_points(FaceTopology(face_id)) << endl;
+            out << "points: " << elem->get_face_points(face_id) << endl;
             out.pop();
         }
         out.pop();

@@ -109,7 +109,7 @@ reset(const CartesianGrid<dim_> &grid)
 template <int dim_>
 auto
 CartesianGridElementAccessor<dim_>::
-get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
+get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
@@ -119,8 +119,6 @@ get_values_cache(const TopologyId &topology_id) const -> const ValuesCache &
     }
     else
     {
-        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
-               ExcIndexRange(topology_id.get_id(),0,n_faces));
         return face_values_[topology_id.get_id()];
     }
 }
@@ -164,7 +162,7 @@ init_values(const ValueFlags flag)
 template <int dim_>
 inline Real
 CartesianGridElementAccessor<dim_>::
-get_measure(const TopologyId &topology_id) const
+get_measure(const TopologyId<dim_> &topology_id) const
 {
 	const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcMessage("Cache not filed."));
@@ -181,7 +179,7 @@ get_face_measure(const Index face_id) const
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    return this->get_measure(FaceTopology(face_id));
+    return this->get_measure(FaceTopology<dim_>(face_id));
 }
 
 
@@ -231,7 +229,7 @@ fill_face_values(const Index face_id)
 template <int dim_>
 ValueVector<Real> const &
 CartesianGridElementAccessor<dim_>::
-get_w_measures(const TopologyId &topology_id) const
+get_w_measures(const TopologyId<dim_> &topology_id) const
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcNotInitialized());
@@ -239,12 +237,19 @@ get_w_measures(const TopologyId &topology_id) const
     return cache.w_measure_;
 }
 
+template <int dim_>
+ValueVector<Real> const &
+CartesianGridElementAccessor<dim_>::
+get_face_w_measures(const Index face_id) const
+{
+	return this->get_w_measures(FaceTopology<dim_>(face_id));
+}
 
 
 template <int dim_>
 auto
 CartesianGridElementAccessor<dim_>::
-get_points(const TopologyId &topology_id) const -> vector<Point<dim>> const
+get_points(const TopologyId<dim_> &topology_id) const -> vector<Point<dim>> const
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
@@ -256,6 +261,16 @@ get_points(const TopologyId &topology_id) const -> vector<Point<dim>> const
 
     return ref_points.get_flat_cartesian_product();
 }
+
+
+template <int dim_>
+auto
+CartesianGridElementAccessor<dim_>::
+get_face_points(const Index face_id) const -> vector<Point<dim>> const
+{
+	return this->get_points(FaceTopology<dim_>(face_id));
+}
+
 
 template <int dim_>
 array< Real, dim_>
