@@ -294,7 +294,12 @@ init_values(const ValueFlags fill_flag,
     {
         Index face_id = 0 ;
         for (auto& face_value : face_values_)
+        {
+        	// TODO: this is temporary and must be removed.
+            if (contains(f_flag , ValueFlags::face_normal))
+                face_value.fill_normals_ = true ;
             face_value.reset(face_id++, face_flags_handler, quad);
+        }
     }
 
     mapping_->init_element(f_flag, quad);
@@ -448,8 +453,8 @@ fill_face_values(const Index face_id)
     if (face_values.fill_normals_)
     {
         Assert(face_values.flags_handler_.inv_gradients_filled(),ExcMessage("Inverse gradients not filled."));
-        Assert(false, ExcMessage("The computation of face normals must be tested before used."));
-        AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
+//        Assert(false, ExcMessage("The computation of face normals must be tested before used."));
+//        AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
         Point<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id] ;
         for (Index i = 0; i < num_points; i++)
