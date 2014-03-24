@@ -156,11 +156,11 @@ public:
      * on the element.
      * For example:
      * \code
-     *  auto loc_to_glob = elem->get_local_to_global();
-     *  // loc_to_glob[0] is the global id of the first element basis function
-     *  // loc_to_glob[1] is the global id of the second element basis function
-     *  // ...
-     * \endcode
+       auto loc_to_glob = elem->get_local_to_global();
+       // loc_to_glob[0] is the global id of the first element basis function
+       // loc_to_glob[1] is the global id of the second element basis function
+       // ...
+      \endcode
      *
      */
     std::vector<Index> const &get_local_to_global() const;

@@ -540,6 +540,13 @@ get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> 
     return cache.D0phi_;
 }
 
+template< class PhysSpace >
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
+{
+    return this->get_basis_values(FaceTopology<dim>(face_id));
+}
 
 
 template< class PhysSpace >
@@ -705,6 +712,21 @@ is_boundary(const Index face) const
     return PfElemAccessor::is_boundary(face);
 }
 
+template< class PhysSpace >
+const std::vector<Index> &
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_local_to_global() const
+{
+    return RefElemAccessor::get_local_to_global();
+}
+
+template< class PhysSpace >
+Size
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_num_basis() const
+{
+    return RefElemAccessor::get_num_basis();
+}
 
 
 template< class PhysSpace >

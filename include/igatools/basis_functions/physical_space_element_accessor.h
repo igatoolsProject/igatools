@@ -73,7 +73,7 @@ template < typename Accessor > class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
-public PhysSpace::RefSpace::ElementAccessor,
+private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
@@ -185,8 +185,19 @@ public :
      * @name Getting the basis functions values, derivatives and hessians
      */
     ///@{
+    /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point.
+     */
     ValueTable<Value> const &
     get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<Value> const &
+    get_face_basis_values(const Index face_id) const;
 
     /**
      * @brief Return the one-dimensional container with the
@@ -308,8 +319,28 @@ public :
      */
     const PhysSpace *get_physical_space() const;
 
+    /** @name Methods from RefSpace::ElemAccessor */
+    //@{
+    /**
+     *  Number of non zero basis functions over the current element.
+     */
+    Size get_num_basis() const;
 
+    /**
+     * Returns the global dofs of the local (non zero) basis functions
+     * on the element.
+     * For example:
+     * \code
+       auto loc_to_glob = elem->get_local_to_global();
+       // loc_to_glob[0] is the global id of the first element basis function
+       // loc_to_glob[1] is the global id of the second element basis function
+       // ...
+      \endcode
+     *
+     */
+    std::vector<Index> const &get_local_to_global() const;
 
+    //@}
 
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
 
