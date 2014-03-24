@@ -134,6 +134,21 @@ vertex(const int i) const
 };
 
 
+template <int dim>
+array< Real, dim>
+CartesianGridElement<dim>::
+get_coordinate_lengths() const
+{
+    const Point<dim> &p_origin = this->vertex(0);
+    const Point<dim> &p_end = this->vertex(UnitElement<dim>::vertices_per_element-1);
+
+    array<Real,dim> coord_length;
+    for (int d = 0; d < dim ; ++d)
+        coord_length[d] = p_end[d] - p_origin[d];
+
+    return coord_length;
+}
+
 
 template <int dim>
 Point< dim >
@@ -145,6 +160,31 @@ center() const
     center *= 0.5;
 
     return (center) ;
+}
+
+
+template <int dim>
+Real
+CartesianGridElement<dim>::
+get_measure(const TopologyId<dim> &topology_id) const
+{
+	const auto active_directions = topology_id.get_active_directions();
+
+    Real result = 1.;
+    for (const int &d : active_directions)
+        result *= this->get_coordinate_lengths()[d];
+
+    return result;
+}
+
+
+
+template <int dim>
+Real
+CartesianGridElement<dim>::
+get_face_measure(const Index face_id) const
+{
+    return this->get_measure(FaceTopology<dim>(face_id));
 }
 
 
@@ -206,7 +246,7 @@ is_boundary(const Index face_id) const
 template <int dim>
 void
 CartesianGridElement<dim>::
-print_info(LogStream &out) const
+print_info(LogStream &out,const VerbosityLevel verbosity) const
 {
     using std::endl;
 
@@ -215,7 +255,8 @@ print_info(LogStream &out) const
     out << "CartesianGridElement<" << dim << "> info:" << endl;
     out.push(tab);
 
-    out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
+    if (contains(verbosity,VerbosityLevel::debug))
+    	out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
 
     out << "Flat id = " << this->get_flat_index() << endl;
     out << "Tensor id = " << this->get_tensor_index() << endl;

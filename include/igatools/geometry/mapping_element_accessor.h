@@ -45,32 +45,31 @@ template<int dim_ref_, int codim_>
 class MappingElementAccessor
     : public CartesianGridElementAccessor<dim_ref_>
 {
-public:
+private:
+    using self_t =  MappingElementAccessor<dim_ref_,codim_>;
 
+public:
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = Mapping<dim_ref_,codim_>;
-
 
     /** Dimension of the reference domain */
     using CartesianGridElementAccessor<dim_ref_>::dim;
 
-
     /** Codimension of the deformed domain */
     static const auto codim = ContainerType::codim;
-
 
     /** Dimension of the deformed domain embedding space. */
     static const auto space_dim = ContainerType::space_dim;
 
-
+    // TODO (pauletti, Mar 21, 2014): why do we need this? should it be private?
     /** Dimension of the face.*/
     static const auto face_dim = ContainerType::face_dim ;
 
+    // TODO (pauletti, Mar 21, 2014): should this be private?
     /**
      * see UnitElement<dim_>::faces_per_element
      */
     static const Size n_faces = UnitElement<dim>::faces_per_element;
-
 
     /**
      * see Mapping<dim, codim>::Value
@@ -79,11 +78,9 @@ public:
     using GradientMap     = typename ContainerType::GradientType;
     using HessianMap      = typename ContainerType::HessianType;
 
-
 public:
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
-        ValueFlags::point|
         ValueFlags::measure |
         ValueFlags::w_measure |
         ValueFlags::face_point |
@@ -120,12 +117,12 @@ public:
      * Performs a deep copy of the MappingElementAccessor object.
      * Its cache is also deeply copied.
      */
-    MappingElementAccessor(const MappingElementAccessor<dim_ref_,codim_> &element) = default;
+    MappingElementAccessor(const self_t &element) = default;
 
     /**
      * Move constructor.
      */
-    MappingElementAccessor(MappingElementAccessor<dim_ref_,codim_> &&element) = default;
+    MappingElementAccessor(self_t &&element) = default;
 
     /**
      * Destructor.
@@ -140,16 +137,13 @@ public:
      * @note Performs a deep copy of the MappingElementAccessor object.
      * Its cache is also deeply copied.
      */
-    MappingElementAccessor<dim_ref_,codim_> &
-    operator=(const MappingElementAccessor<dim_ref_,codim_> &element) = default;
+    self_t &operator=(const self_t &element) = default;
 
     /**
      * Move assignment operator.
      */
-    MappingElementAccessor<dim_ref_,codim_> &
-    operator=(MappingElementAccessor<dim_ref_,codim_> &&element) = default;
+    self_t &operator=(self_t &&element) = default;
     ///@}
-
 
     /**
      * @name Query information that requires the use of the cache
@@ -166,7 +160,6 @@ public:
     void init_values(const ValueFlags fill_flag,
                      const Quadrature<dim> &quadrature);
 
-
     /**
      * Initializes the internal cache for the efficient
      * computation of the values requested in
@@ -180,7 +173,6 @@ public:
                           const ValueFlags fill_flag,
                           const Quadrature<dim-1> &quadrature);
 
-
     /**
      * Fills the cache in accordance with the flag specifications used in the
      * init_values() function.
@@ -189,13 +181,13 @@ public:
      */
     void fill_values();
 
-
     /**
      * Fills the cache in accordance with the flag specifications used in the
      * init_face_values() function.
      * @param face_id Face identifier.
      *
-     * Precondition Before invoking this function, you must call init_face_values().
+     * Precondition Before invoking this function, you must call
+     * init_face_values().
      */
     void fill_face_values(const Index face_id);
     ///@}
@@ -207,60 +199,66 @@ public:
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &
-    get_values_map(const TopologyId &topology_id = ElemTopology()) const;
+    get_values_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the value of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<ValueMap> &
+    get_face_values_map(const Index face_id) const;
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
-    get_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
-
+    get_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &
-    get_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
-
+    get_hessians_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &
-    get_inv_gradients_map(const TopologyId &topology_id = ElemTopology()) const;
-
+    get_inv_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the hessian of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,2 > > &
-    get_inv_hessians_map(const TopologyId &topology_id = ElemTopology()) const;
-
+    get_inv_hessians_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &
-    get_dets_map(const TopologyId &topology_id = ElemTopology()) const;
-
+    get_dets_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector<Real> &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
+    const ValueVector<Real> &get_w_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &get_face_w_measures(const Index face_id) const;
 
     /**
      * Returns the face normals for every quadrature point for the
      * specified face.
      */
     const ValueVector< ValueMap > &get_face_normals(const Index face_id) const;
-
     ///@}
-
 
     /**
      * Returns the number of evaluation points currently used
      * in the element cache.
      */
-    Size get_num_points(const TopologyId &topology_id = ElemTopology()) const;
+    Size get_num_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Prints some internal information.
      * @note Mostly used for testing and debugging.
      */
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
     /**
      * Prints some internal memory information.
@@ -269,17 +267,15 @@ public:
     void print_memory_info(LogStream &out) const;
 
 private:
-
-
+    // TODO (pauletti, Mar 21, 2014): Document this class
     class ValuesCache : public CacheStatus
     {
     public:
-        void reset(const std::shared_ptr<MappingElemValueFlagsHandler> flags_handler,
+        void reset(const MappingElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
         //TODO: the next member variables should be protected
     public:
-
         /**
          * Fills the following cache values in accordance with the
          * flag specifications used in the reset() function.
@@ -289,8 +285,7 @@ private:
          */
         void fill_composite_values();
 
-
-        std::shared_ptr<MappingElemValueFlagsHandler> flags_handler_;
+        MappingElemValueFlagsHandler flags_handler_;
 
         ValueVector< ValueMap > values_;
         ValueVector< GradientMap > gradients_;
@@ -302,6 +297,7 @@ private:
 
         Size num_points_ = 0;
         Quadrature<dim> quad_;
+
     };
 
     /**
@@ -316,6 +312,7 @@ private:
 
     };
 
+    // TODO (pauletti, Mar 21, 2014): Document this class
     struct FaceValuesCache : ValuesCache
     {
         void reset(const Index face_id,
@@ -326,12 +323,15 @@ private:
                    const MappingFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim-1> &quad);
 
-        ValueVector< ValueMap > normals_;
 
-        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
+        ValueVector< ValueMap > normals_;
+        bool fill_normals_ = false;
+        bool normals_filled_ = false;
+
+//        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
     };
 
-    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 
     ElementValuesCache elem_values_;
 
@@ -343,10 +343,8 @@ private:
      * @todo implement this function
      *TODO
      */
-    std::array< ValueVector<ValueMap>, codim> transform_external_normals() const;
+    std::array<ValueVector<ValueMap>, codim> transform_external_normals() const;
 };
-
-
 
 IGA_NAMESPACE_CLOSE
 

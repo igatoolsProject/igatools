@@ -23,13 +23,14 @@
 #define TOPOLOGY_INLINE_H_
 
 #include <igatools/geometry/topology.h>
-
+#include <igatools/geometry/unit_element.h>
 
 IGA_NAMESPACE_OPEN
 
 
+template<int dim>
 inline
-TopologyId::
+TopologyId<dim>::
 TopologyId(const Index id)
     :
     id_(id)
@@ -37,46 +38,86 @@ TopologyId(const Index id)
     Assert(id_>=-1,ExcLowerRange(id_,-1));
 }
 
+template<int dim>
 inline
 Index
-TopologyId::
+TopologyId<dim>::
 get_id() const
 {
     return id_;
 }
 
+template<int dim>
 inline
 bool
-TopologyId::
+TopologyId<dim>::
 is_element() const
 {
     return (id_ == -1)?true:false;
 }
 
+template<int dim>
 inline
 bool
-TopologyId::
+TopologyId<dim>::
 is_face() const
 {
     return (id_ >= 0)?true:false;
 }
 
 
+template<int dim>
 inline
-ElemTopology::
+std::vector<Index>
+TopologyId<dim>::
+get_active_directions() const
+{
+	std::vector<Index> active_directions;
+	if (this->is_element())
+	{
+		for (Index d = 0 ; d < dim ; ++d)
+			active_directions.emplace_back(d);
+
+		Assert(active_directions.size() == dim,ExcDimensionMismatch(active_directions.size(),dim));
+	}
+	else if (this->is_face())
+	{
+		const int face_id = this->get_id();
+		for ( const Index &d : UnitElement<dim>::face_active_directions[face_id])
+			active_directions.emplace_back(d);
+
+		Assert(active_directions.size() == UnitElement<dim>::face_dim,
+				ExcDimensionMismatch(active_directions.size(),UnitElement<dim>::face_dim));
+	}
+	else
+	{
+		Assert(false,ExcInvalidState());
+		AssertThrow(false,ExcInvalidState());
+	}
+
+    return active_directions;
+}
+
+
+
+template<int dim>
+inline
+ElemTopology<dim>::
 ElemTopology()
     :
-    TopologyId(-1)
+    TopologyId<dim>(-1)
 {}
 
 
+template<int dim>
 inline
-FaceTopology::
-FaceTopology(const Index id)
+FaceTopology<dim>::
+FaceTopology(const Index face_id)
     :
-    TopologyId(id)
+    TopologyId<dim>(face_id)
 {
-    Assert(id>=0,ExcMessage("Face ID must be positive."));
+    Assert(face_id >= 0 && face_id < UnitElement<dim>::faces_per_element,
+    		ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
 };
 
 

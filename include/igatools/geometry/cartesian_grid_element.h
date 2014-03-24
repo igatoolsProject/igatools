@@ -24,11 +24,10 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/topology.h>
 
 IGA_NAMESPACE_OPEN
 
-//TODO(pauletti, Mar 4, 2014): This is used only in one class why is this a
-// different class form the accessor?
 /**
  * @brief This class represents an element within a CartesianGrid.
  *
@@ -104,6 +103,7 @@ public:
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const;
 
+
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
 
@@ -142,6 +142,32 @@ public:
     Point<dim> center() const;
 
     /**
+     * Returns the lengths of the coordinate sides of the cartesian element.
+     * For example in 2 dimensions
+     * \code{.cpp}
+       auto length = elem.coordinate_lenths();
+       // length[0] is the length of the x-side of the element and
+       // length[1] the length of the y-side of the element.
+       \endcode
+     */
+    std::array<Real,dim> get_coordinate_lengths() const;
+
+
+    /**
+     * Returns measure of the element or of the element-face in the CartesianGrid.
+     * @note The topology for which the measure is computed is specified by the input argument
+     * @p topology_id.
+     */
+    Real get_measure(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+
+    /**
+     * Returns measure of j-th face.
+     */
+    Real get_face_measure(const int j) const;
+
+
+    /**
      * Test if the point is inside the element.
      */
     bool is_point_inside(const Point<dim> &point) const;
@@ -162,7 +188,7 @@ public:
      * Prints internal information about the CartesianGridElement.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out, const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
 
 private:

@@ -38,13 +38,14 @@ for row in unique(inst.all_table + inst.extended_table):
     output.append('template class GridForwardIterator<%s> ;\n' %(push_fwd_elem_acc) )
     value_ref  = ("Values<%d,%d,%d>" %(row.dim, row.range, row.rank)) 
     value_phys = ("Values<%d,%d,%d>" %(row.space_dim, row.phys_range, row.phys_rank)) 
+    topology_id = ("TopologyId<%d>" %(row.dim))
     for container in containers:
         v_ref  = 'const %s<%s> &' %(container, value_ref)
         v_phys = '%s<%s> &' %(container, value_phys)
         output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
                     'transform_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-                    '(%s, %s, const TopologyId &, void *) const ;\n' %(v_ref, v_phys)
+                    '(%s, %s, const %s &, void *) const ;\n' %(v_ref, v_phys, topology_id)
                     )
         order = 1
         deriv_ref  = ("Derivatives<%d,%d,%d,%d>" %(row.dim, row.range, row.rank, order)) 
@@ -54,7 +55,7 @@ for row in unique(inst.all_table + inst.extended_table):
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
             'transform_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-            '(%s,%s,%s, const TopologyId &, void * ) const;\n' %(v_ref,dv_ref,dv_phys)
+            '(%s,%s,%s, const %s &, void * ) const;\n' %(v_ref,dv_ref,dv_phys,topology_id)
         )
  
 

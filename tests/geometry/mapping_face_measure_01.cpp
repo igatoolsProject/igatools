@@ -56,7 +56,7 @@ void test_evaluate()
                 if (elem->is_boundary(face_id))
                 {
                     elem->fill_face_values(face_id);
-                    auto &w_meas = elem->get_w_measures(FaceTopology(face_id));
+                    auto &w_meas = elem->get_face_w_measures(face_id);
                     for (int q = 0; q < w_meas.size(); ++q)
                         face_area[face_id] += w_meas[q] ;
                 }

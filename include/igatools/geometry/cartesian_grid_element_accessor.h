@@ -167,62 +167,78 @@ public:
     ///@}
 
 
+
     ///@name Query information that requires the use of the cache
     ///@{
 
     /**
-     * Returns the measure of the element in the CartesianGrid<dim_>
-     * object referred by this accessor.
-     * This is the length for dim_==1,
-     * the area for dim_==2 and the volume for dim_==3.
+     * Returns the lengths of the coordinate sides of the cartesian element.
+     * For example in 2 dimensions
+     * \code{.cpp}
+       auto length = elem.coordinate_lenths();
+       // length[0] is the length of the x-side of the element and
+       // length[1] the length of the y-side of the element.
+       \endcode
      */
-    Real get_measure(const TopologyId &topology_id = ElemTopology()) const;
+    std::array<Real,dim_> get_coordinate_lengths() const;
+
+
+    /**
+     * Returns measure of the element or of the element-face in the CartesianGrid.
+     * @note The topology for which the measure is computed is specified by the input argument
+     * @p topology_id.
+     */
+    Real get_measure(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+
+
+    /**
+     * Returns measure of j-th face.
+     */
+    Real get_face_measure(const int j) const;
+
 
 
     /**
      * Returns the element measure multiplied by the weights of the quadrature scheme
      * used to initialize the accessor's cache.
      */
-    ValueVector<Real> const &get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
+    ValueVector<Real> const &get_w_measures(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+
+    /**
+     * Returns the element-face measure multiplied by the weights of the quadrature scheme
+     * used to initialize the accessor's cache.
+     * The face is specified by the input argument @p face_id
+     */
+    ValueVector<Real> const &get_face_w_measures(const Index face_id) const;
 
 
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points(const TopologyId &topology_id = ElemTopology()) const;
-
+    std::vector<Point<dim>> const get_points(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
 
     /**
-     * Returns the lengths of the coordinate sides of the cartesian element.
-     * For example in 2 dimensions
-     * \code
-     * length = coordinate_lenths();
-     * length[0] is the length of the x-side of the element and
-     * length[1] the length of the y-side of the element.
-     * \endcode
+     * Return a const reference to the one-dimensional container with the
+     * values of the map at the evaluation points on the face specified by @p face_id.
      */
-    std::array<Real, dim_> get_coordinate_lengths() const;
+    std::vector<Point<dim>> const get_face_points(const Index face_id) const;
 
     ///@}
 
 
 
+    /**
+     * Prints internal information about the CartesianGridElementAccessor.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out, const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
 private:
 
-    /**
-     * helper function to compute the measure of element
-     */
-    Real measure() const;
-
-    /**
-     * helper function to compute the measure of j-th face
-     */
-    Real face_measure(const int j) const;
 
 protected:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
@@ -232,7 +248,6 @@ protected:
     void operator++();
 
 private:
-
 
     /**
      * @brief Global CartesianGrid cache, storing the interval length in each direction.
@@ -281,8 +296,7 @@ private:
 
         ///@name The "cache" properly speaking
         ///@{
-        /** Measure of the element in the grid (equal to the product of the element lenghts). */
-        Real measure_ = 0.0;
+        Real measure_;
 
         /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
@@ -304,6 +318,13 @@ private:
          * Allocate space for the values at quadrature points
          */
         void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+
+        /**
+         * Prints internal information about the ElementValuesCache.
+         * Its main use is for testing and debugging.
+         */
+        void print_info(LogStream &out) const;
+
     };
 
 
@@ -325,11 +346,15 @@ private:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id) const;
 
+    /**
+     * Grid (global) lengths cache.
+     *
+     * @note The use of the shared_pointer is mandatory for the correct management of the global cache.
+     */
+    std::shared_ptr<LengthCache> length_cache_;
 
-    /** Grid (global) lengths cache */
-    LengthCache length_cache_;
 
     /** Element values cache */
     ElementValuesCache elem_values_;

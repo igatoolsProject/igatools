@@ -73,7 +73,7 @@ template < typename Accessor > class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
-public PhysSpace::RefSpace::ElementAccessor,
+private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
@@ -175,7 +175,7 @@ public :
                           const ValueFlags fill_flag,
                           const QuadratureFaceType &quad);
 
-    void fill_values(const TopologyId &topology_id = ElemTopology());
+    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 
     void fill_face_values(const Index face_id);
     ///@}
@@ -185,48 +185,59 @@ public :
      * @name Getting the basis functions values, derivatives and hessians
      */
     ///@{
+    /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point.
+     */
     ValueTable<Value> const &
-    get_basis_values(const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Reference to a ValueTable with the values of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<Value> const &
+    get_face_basis_values(const Index face_id) const;
 
     /**
      * @brief Return the one-dimensional container with the
      * values of the i-th basis function at the evaluation points.
      */
     typename ValueTable<Value>::const_view
-    get_basis_values(const Index func,const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_values(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     const Value &
-    get_basis_value(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_value(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
     ValueTable<Derivative<1> > const &
-    get_basis_gradients(const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * \brief Return the one-dimensional container with the
      * gradients of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<1> >::const_view
-    get_basis_gradients(const Index func,const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_gradients(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     const Derivative<1> &
-    get_basis_gradient(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_gradient(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
     ValueTable<Derivative<2> > const &
-    get_basis_hessians(const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * \brief Return the one-dimensional container with the
      * hessians of the i-th basis function at the evaluation points.
      */
     typename ValueTable< Derivative<2> >::const_view
-    get_basis_hessians(const Index func,const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_hessians(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     const Derivative<2> &
-    get_basis_hessian(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    get_basis_hessian(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
-    Real get_basis_divergence(const Index func, const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    Real get_basis_divergence(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
     ///@}
 
 
@@ -239,23 +250,36 @@ public :
      * gradient determinant of map at the dilated quadrature points.
      */
     const ValueVector<Real> &
-    get_w_measures(const TopologyId &topology_id = ElemTopology()) const;
+    get_w_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &
+    get_face_w_measures(const Index face_id) const;
 
 
     /**
      * @todo Document this function
      */
     const Point<space_dim> &
-    get_point(const Index qp,const TopologyId &topology_id = ElemTopology()) const;
+    get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * \brief Return a const reference to the one-dimensional container with the values of the map at the evaluation points.
-     * \return The const reference to the one-dimensional container with the values of the map at the evaluation points.
-     * \author M.Martinelli
-     * \date 29 Jan 2013
+     * Returna a const reference to the one-dimensional container with the values
+     * of the map at the evaluation points.
      */
     const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_points(const TopologyId &topology_id = ElemTopology()) const;
+    get_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns a const reference to the one-dimensional container with the values
+     * of the map at the evaluation points on the face specified by @p face_id.
+     */
+    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    get_face_points(const Index face_id) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the gradients of the map (i.e. the Jacobian) at the evaluation points.
@@ -264,7 +288,7 @@ public :
      * \date 03 Jun 2013
      */
     const ValueVector< typename Mapping<dim,codim>::GradientType > &
-    get_map_gradient_at_points(const TopologyId &topology_id = ElemTopology()) const;
+    get_map_gradient_at_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
 
@@ -293,13 +317,13 @@ public :
     ///@{
     //Fields related
     ValueVector< Value >
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
+    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     ValueVector< Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
+    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     ValueVector< Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId &topology_id = ElemTopology()) const;
+    evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
     ///@}
 
 
@@ -308,8 +332,38 @@ public :
      */
     const PhysSpace *get_physical_space() const;
 
+    /** @name Methods from RefSpace::ElemAccessor */
+    //@{
+    /**
+     *  Number of non zero basis functions over the current element.
+     */
+    Size get_num_basis() const;
 
-    typedef PushForwardElementAccessor< typename PhysSpace::PushForwardType> push_forward_element_accessor;
+    /**
+     * Returns the global dofs of the local (non zero) basis functions
+     * on the element.
+     * For example:
+     * \code
+       auto loc_to_glob = elem->get_local_to_global();
+       // loc_to_glob[0] is the global id of the first element basis function
+       // loc_to_glob[1] is the global id of the second element basis function
+       // ...
+      \endcode
+     *
+     */
+    std::vector<Index> const &get_local_to_global() const;
+
+    //@}
+
+    using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
+
+
+    /**
+     * Prints internal information about the BSplineElementAccessor.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
+
 
 private :
 
@@ -373,8 +427,8 @@ protected:
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
 
-    const ValuesCache &get_values_cache(const TopologyId &topology_id) const;
-    ValuesCache &get_values_cache(const TopologyId &topology_id);
+    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
+    ValuesCache &get_values_cache(const TopologyId<dim> &topology_id);
 
 
     ElementValuesCache elem_values_;
