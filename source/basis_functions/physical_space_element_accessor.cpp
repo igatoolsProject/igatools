@@ -453,6 +453,13 @@ get_w_measures(const TopologyId<dim> &topology_id) const
     return PfElemAccessor::get_w_measures(topology_id);
 }
 
+template< class PhysSpace >
+const ValueVector<Real> &
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_face_w_measures(const Index face_id) const
+{
+    return this->get_w_measures(FaceTopology<dim>(face_id));
+}
 
 
 template< class PhysSpace >
@@ -667,6 +674,14 @@ const ValueVector< typename Mapping<dim, codim>::ValueType > &
     return PfElemAccessor::get_values_map(topology_id);
 }
 
+template< class PhysSpace >
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_face_points(const Index face_id) const ->
+const ValueVector< typename Mapping<dim, codim>::ValueType > &
+{
+    return this->get_points(FaceTopology<dim>(face_id));
+}
 
 
 template< class PhysSpace >

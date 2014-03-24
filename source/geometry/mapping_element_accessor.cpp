@@ -522,6 +522,13 @@ get_values_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Va
     return cache.values_;
 }
 
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+get_face_values_map(const Index face_id) const -> const ValueVector<ValueMap> &
+{
+    return this->get_values_map(FaceTopology<dim>(face_id));
+}
 
 
 template< int dim_ref_, int codim_ >

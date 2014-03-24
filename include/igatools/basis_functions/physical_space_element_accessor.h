@@ -252,6 +252,14 @@ public :
     const ValueVector<Real> &
     get_w_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the quadrature weights multiplied by the
+     * gradient determinant of map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &
+    get_face_w_measures(const Index face_id) const;
+
 
     /**
      * @todo Document this function
@@ -260,13 +268,18 @@ public :
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * \brief Return a const reference to the one-dimensional container with the values of the map at the evaluation points.
-     * \return The const reference to the one-dimensional container with the values of the map at the evaluation points.
-     * \author M.Martinelli
-     * \date 29 Jan 2013
+     * Returna a const reference to the one-dimensional container with the values
+     * of the map at the evaluation points.
      */
     const ValueVector< typename Mapping<dim,codim>::ValueType > &
     get_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns a const reference to the one-dimensional container with the values
+     * of the map at the evaluation points on the face specified by @p face_id.
+     */
+    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    get_face_points(const Index face_id) const;
 
     /**
      * \brief Return a const reference to the one-dimensional container with the gradients of the map (i.e. the Jacobian) at the evaluation points.

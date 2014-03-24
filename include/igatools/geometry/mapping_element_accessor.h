@@ -201,6 +201,13 @@ public:
     const ValueVector<ValueMap> &
     get_values_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the value of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<ValueMap> &
+    get_face_values_map(const Index face_id) const;
+
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
     get_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
