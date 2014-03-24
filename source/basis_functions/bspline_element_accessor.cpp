@@ -1244,7 +1244,7 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
 {
-	return this->get_basis_values(FaceTopology<dim>(face_id));
+    return this->get_basis_values(FaceTopology<dim>(face_id));
 }
 
 
@@ -1457,7 +1457,7 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<di
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-print_info(LogStream &out) const
+print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 {
     using std::endl;
 
@@ -1467,12 +1467,19 @@ print_info(LogStream &out) const
     out << "BSplineElementAccessor<" << dim << "," << range << "," << rank << "> info:" << endl;
     out.push(tab);
 
-    CartesianGridElementAccessor<dim>::print_info(out);
+    CartesianGridElementAccessor<dim>::print_info(out,verbosity_level);
 
-    out << "Element cache memory address = " << &elem_values_ << endl;
+    if (contains(verbosity_level,VerbosityLevel::debug))
+    {
+        out << "Element cache memory address = " << &elem_values_ << endl;
+        elem_values_.flags_handler_.print_info(out);
 
-    for (int i = 0 ; i < n_faces ; ++i)
-        out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
+        for (int i = 0 ; i < n_faces ; ++i)
+        {
+            out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
+            face_values_[i].flags_handler_.print_info(out);
+        }
+    }
 
     out.pop();
 

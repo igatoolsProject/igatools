@@ -93,6 +93,12 @@ public:
     void set_hessians_filled(const bool status);
 
 
+    /**
+     * Prints internal information about the ElementValuesCache.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
+
 protected:
     bool fill_values_ = false;
     bool values_filled_ = false;
@@ -376,6 +382,13 @@ public:
     /** Sets the filled status for hessians. */
     void set_inv_hessians_filled(const bool status);
 
+
+    /**
+     * Prints internal information about the ElementValuesCache.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
+
 protected:
     bool fill_inv_gradients_ = false;
 
@@ -547,6 +560,14 @@ public:
 
     /** Sets the filled status for divergences. */
     void set_divergences_filled(const bool status);
+
+
+    /**
+     * Prints internal information about the ElementValuesCache.
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const;
+
 
 protected:
     bool fill_divergences_ = false;

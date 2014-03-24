@@ -435,7 +435,7 @@ transform_face_measure(const Index face_id) const
 template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
-print_info(LogStream &out) const
+print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 {
     using std::endl ;
     out << "PushForwardElementAccessor info" << endl ;

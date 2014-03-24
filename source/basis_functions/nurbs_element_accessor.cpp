@@ -106,13 +106,15 @@ init_values(const ValueFlags fill_flag,
     Parent_t::init_values(fill_flag_bspline,quad) ;
 
 
+    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
+    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
+
     // reset the element values for the cache of the NURBSElementAccessor
-    elem_values_.reset(*space_,fill_flag,quad) ;
+    elem_values_.reset(*space_,elem_flags_handler,quad) ;
 
     Index face_id = 0 ;
-    const auto face_fill_flag = get_face_flags(fill_flag) ;
     for (auto& face_value : face_values_)
-        face_value.reset(face_id++, *space_, face_fill_flag, quad);
+        face_value.reset(face_id++, *space_, face_flags_handler, quad);
 }
 
 
@@ -127,30 +129,6 @@ init_face_values(const Index face_id,
     AssertThrow(false,ExcNotImplemented()) ;
 }
 
-
-
-template <int dim, int range, int rank>
-ValueFlags
-NURBSElementAccessor<dim, range, rank>::
-get_face_flags(const ValueFlags fill_flag) const
-{
-
-    ValueFlags face_fill_flag = ValueFlags::none ;
-
-    if (contains(fill_flag , ValueFlags::face_value))
-        face_fill_flag |= ValueFlags::value ;
-
-    if (contains(fill_flag , ValueFlags::face_divergence))
-        face_fill_flag |= ValueFlags::divergence ;
-
-    if (contains(fill_flag , ValueFlags::face_gradient))
-        face_fill_flag |= ValueFlags::gradient ;
-
-    if (contains(fill_flag , ValueFlags::face_hessian))
-        face_fill_flag |= ValueFlags::hessian ;
-
-    return face_fill_flag ;
-}
 
 
 
@@ -877,22 +855,32 @@ fill_values()
     static_cast<Parent_t *>(this)->fill_values() ;
     const auto &bspline_elem_cache = Parent_t::elem_values_;
 
-
-    if (this->elem_values_.fill_values_)
+    if (this->elem_values_.flags_handler_.fill_values())
+    {
         evaluate_nurbs_values(
             bspline_elem_cache,
             this->elem_values_.D0phi_hat_) ;
 
-    if (this->elem_values_.fill_gradients_)
+        this->elem_values_.flags_handler_.set_values_filled(true);
+    }
+
+    if (this->elem_values_.flags_handler_.fill_gradients())
+    {
         evaluate_nurbs_gradients(
             bspline_elem_cache,
             this->elem_values_.D1phi_hat_) ;
 
-    if (this->elem_values_.fill_hessians_)
+        this->elem_values_.flags_handler_.set_gradients_filled(true);
+    }
+
+    if (this->elem_values_.flags_handler_.fill_hessians())
+    {
         evaluate_nurbs_hessians(
             bspline_elem_cache,
             this->elem_values_.D2phi_hat_) ;
 
+        this->elem_values_.flags_handler_.set_hessians_filled(true);
+    }
 
     elem_values_.set_filled(true);
 }
@@ -915,22 +903,32 @@ fill_face_values(const Index face_id)
     const auto &bspline_face_cache = Parent_t::face_values_[face_id];
 
 
-    if (face_value.fill_values_)
+    if (face_value.flags_handler_.fill_values())
+    {
         evaluate_nurbs_values(
             bspline_face_cache,
             face_value.D0phi_hat_) ;
 
-    if (face_value.fill_gradients_)
+        face_value.flags_handler_.set_values_filled(true);
+    }
+
+    if (face_value.flags_handler_.fill_gradients())
+    {
         evaluate_nurbs_gradients(
             bspline_face_cache,
             face_value.D1phi_hat_) ;
 
-    if (face_value.fill_hessians_)
+        face_value.flags_handler_.set_gradients_filled(true);
+    }
+
+    if (face_value.flags_handler_.fill_hessians())
+    {
         evaluate_nurbs_hessians(
             bspline_face_cache,
             face_value.D2phi_hat_) ;
 
-
+        face_value.flags_handler_.set_hessians_filled(true);
+    }
     face_value.set_filled(true);
 }
 
@@ -1032,7 +1030,7 @@ auto
 NURBSElementAccessor<dim, range, rank>::
 get_face_basis_values(const Index face_id) const -> ValueTable<ValueRef_t> const &
 {
-	return this->get_basis_values(FaceTopology<dim>(face_id));
+    return this->get_basis_values(FaceTopology<dim>(face_id));
 }
 
 
@@ -1127,7 +1125,7 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.fill_values_ == true, ExcInvalidState());
+    Assert(cache.flags_handler_.values_filled(), ExcInvalidState());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1147,7 +1145,7 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.fill_gradients_ == true, ExcInvalidState()) ;
+    Assert(cache.flags_handler_.gradients_filled(), ExcInvalidState()) ;
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1167,7 +1165,7 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<di
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.fill_hessians_ == true, ExcInvalidState()) ;
+    Assert(cache.flags_handler_.hessians_filled(), ExcInvalidState()) ;
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1185,50 +1183,46 @@ void
 NURBSElementAccessor<dim, range, rank>::
 ValuesCache::
 reset(const Space_t &space,
-      const ValueFlags fill_flag,
+      const BasisElemValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
+    flags_handler_ = flags_handler;
+
     n_points_ = quad.get_num_points();
 
     n_basis_  = space.get_num_basis_per_element();
 
-    if (contains(fill_flag , ValueFlags::value))
+    if (flags_handler_.fill_values())
     {
-        fill_values_ = true;
         D0phi_hat_.resize(n_basis_,n_points_);
 
         D0phi_hat_.zero();
     }
     else
     {
-        fill_values_ = false ;
         D0phi_hat_.clear();
     }
 
 
-    if (contains(fill_flag , ValueFlags::gradient))
+    if (flags_handler_.fill_gradients())
     {
-        fill_gradients_ = true;
         D1phi_hat_.resize(n_basis_,n_points_);
 
         D1phi_hat_.zero();
     }
     else
     {
-        fill_gradients_ = false ;
         D1phi_hat_.clear();
     }
 
-    if (contains(fill_flag , ValueFlags::hessian))
+    if (flags_handler_.fill_hessians())
     {
-        fill_hessians_ = true;
         D2phi_hat_.resize(n_basis_,n_points_);
 
         D2phi_hat_.zero();
     }
     else
     {
-        fill_hessians_  = false ;
         D2phi_hat_.clear();
     }
 
@@ -1242,10 +1236,10 @@ void
 NURBSElementAccessor<dim, range, rank>::
 ElementValuesCache::
 reset(const Space_t &space,
-      const ValueFlags fill_flag,
+      const BasisElemValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
-    ValuesCache::reset(space, fill_flag, quad) ;
+    ValuesCache::reset(space, flags_handler, quad) ;
 }
 
 
@@ -1256,12 +1250,12 @@ NURBSElementAccessor<dim, range, rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const Space_t &space,
-      const ValueFlags fill_flag,
+      const BasisFaceValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad_elem)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     const auto quad_face = quad_elem.collapse_to_face(face_id);
-    ValuesCache::reset(space, fill_flag, quad_face) ;
+    ValuesCache::reset(space, flags_handler, quad_face) ;
 }
 
 
@@ -1272,7 +1266,7 @@ NURBSElementAccessor<dim, range, rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const Space_t &space,
-      const ValueFlags fill_flag,
+      const BasisFaceValueFlagsHandler &flags_handler,
       const Quadrature<dim-1> &quad1)
 {
     AssertThrow(false,ExcNotImplemented()) ;

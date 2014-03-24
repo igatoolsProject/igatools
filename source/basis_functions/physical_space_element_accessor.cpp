@@ -269,10 +269,17 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
 {
     const ValueFlags common_flag =
-        ValueFlags::point|ValueFlags::map_value|ValueFlags::map_gradient|ValueFlags::map_hessian|
-        ValueFlags::w_measure|ValueFlags::face_point|ValueFlags::map_face_value|
-        ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
-        ValueFlags::face_w_measure|ValueFlags::face_normal;
+        ValueFlags::point|
+        ValueFlags::map_value|
+        ValueFlags::map_gradient|
+        ValueFlags::map_hessian|
+        ValueFlags::w_measure|
+        ValueFlags::face_point|
+        ValueFlags::map_face_value|
+        ValueFlags::map_face_gradient|
+        ValueFlags::map_face_hessian|
+        ValueFlags::face_w_measure|
+        ValueFlags::face_normal;
 
     ValueFlags pf_flags = fill_flag & common_flag;
 
@@ -305,6 +312,7 @@ init_values(const ValueFlags fill_flag,
 
 
     const Size n_basis = phys_space_->get_reference_space()->get_num_basis_per_element();
+
     BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
     elem_values_.reset(n_basis, quad, elem_flags_handler);
 
@@ -784,6 +792,27 @@ operator!=(const PhysicalSpaceElementAccessor <PhysSpace> &a) const
     return RefElemAccessor::get_flat_index() !=
            static_cast<RefElemAccessor>(a).get_flat_index();
 }
+
+
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+print_info(LogStream &out, const VerbosityLevel verbosity_level) const
+{
+    using std::endl ;
+
+    std::string tab = "   ";
+
+    out << "PhysicalSpaceElementAccessor info:" << endl;
+    out.push(tab);
+
+    RefElemAccessor::print_info(out,verbosity_level);
+    PfElemAccessor::print_info(out,verbosity_level);
+
+    out.pop();
+}
+
 
 IGA_NAMESPACE_CLOSE
 

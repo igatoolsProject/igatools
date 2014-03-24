@@ -299,17 +299,19 @@ private:
          * at quadrature points
          */
         void reset(const Space_t &space,
-                   const ValueFlags fill_flag,
+                   const BasisElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad) ;
+
+        BasisElemValueFlagsHandler flags_handler_;
 
         ValueTable<ValueRef_t> D0phi_hat_;
         ValueTable<DerivativeRef_t<1>> D1phi_hat_;
         ValueTable<DerivativeRef_t<2>> D2phi_hat_;
-
-        bool fill_values_    = false;
-        bool fill_gradients_ = false;
-        bool fill_hessians_  = false;
-
+        /*
+                bool fill_values_    = false;
+                bool fill_gradients_ = false;
+                bool fill_hessians_  = false;
+        //*/
         int n_points_ = 0;
         int n_basis_ = 0;
     };
@@ -325,7 +327,7 @@ private:
          * at quadrature points
          */
         void reset(const Space_t &space,
-                   const ValueFlags fill_flag,
+                   const BasisElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad) ;
     };
 
@@ -341,7 +343,7 @@ private:
          */
         void reset(const Index face_id,
                    const Space_t &space,
-                   const ValueFlags fill_flag,
+                   const BasisFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad) ;
 
         /**
@@ -350,16 +352,10 @@ private:
          */
         void reset(const Index face_id,
                    const Space_t &space,
-                   const ValueFlags fill_flag,
+                   const BasisFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim-1> &quad) ;
     };
 
-    /**
-     * For a given flags input argument identifies the face quantities and
-     * returns a new ValueFlags variable containing only face quantities.
-     * The output flags does not contain the word face.
-     */
-    ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 

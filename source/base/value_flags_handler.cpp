@@ -124,6 +124,29 @@ set_hessians_filled(const bool status)
 {
     hessians_filled_ = status;
 }
+
+
+void
+ValueFlagsHandler::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+    const std::string tab = "   ";
+
+    out << "ValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
+    out.push(tab);
+
+    out << "   values -->    fill = "
+        << fill_values_ << "    filled = " << values_filled_ << endl;
+    out << "gradients -->    fill = "
+        << fill_gradients_ << "    filled = " << gradients_filled_ << endl;
+    out << " hessians -->    fill = "
+        << fill_hessians_ << "    filled = " << hessians_filled_ << endl;
+
+    out.pop();
+}
+
 //====================================================
 
 
@@ -443,6 +466,26 @@ set_inv_hessians_filled(const bool status)
 {
     inv_hessians_filled_ = status;
 }
+
+
+void
+MappingElemValueFlagsHandler::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+    const std::string tab = "   ";
+
+
+    out << "MappingElemValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
+    out.push(tab);
+
+    ValueFlagsHandler::print_info(out);
+    GridElemValueFlagsHandler::print_info(out);
+
+
+    out.pop();
+}
 //====================================================
 
 
@@ -618,6 +661,28 @@ BasisElemValueFlagsHandler::
 set_divergences_filled(const bool status)
 {
     divergences_filled_ = status;
+}
+
+
+void
+BasisElemValueFlagsHandler::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+    const std::string tab = "   ";
+
+    out << "BasisElemValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
+    out.push(tab);
+
+    ValueFlagsHandler::print_info(out);
+
+
+    out << "divergences -->    fill = "
+        << fill_divergences_ << "    filled = " << divergences_filled_ << endl;
+
+    out.pop();
+    out.pop();
 }
 //====================================================
 

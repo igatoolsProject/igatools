@@ -258,7 +258,7 @@ public:
      * Prints some internal information.
      * @note Mostly used for testing and debugging.
      */
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
     /**
      * Prints some internal memory information.
@@ -271,7 +271,7 @@ private:
     class ValuesCache : public CacheStatus
     {
     public:
-        void reset(const std::shared_ptr<MappingElemValueFlagsHandler> flags_handler,
+        void reset(const MappingElemValueFlagsHandler &flags_handler,
                    const Quadrature<dim> &quad);
 
         //TODO: the next member variables should be protected
@@ -285,7 +285,7 @@ private:
          */
         void fill_composite_values();
 
-        std::shared_ptr<MappingElemValueFlagsHandler> flags_handler_;
+        MappingElemValueFlagsHandler flags_handler_;
 
         ValueVector< ValueMap > values_;
         ValueVector< GradientMap > gradients_;
@@ -323,9 +323,12 @@ private:
                    const MappingFaceValueFlagsHandler &flags_handler,
                    const Quadrature<dim-1> &quad);
 
-        ValueVector< ValueMap > normals_;
 
-        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
+        ValueVector< ValueMap > normals_;
+        bool fill_normals_ = false;
+        bool normals_filled_ = false;
+
+//        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
     };
 
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
