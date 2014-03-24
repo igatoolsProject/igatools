@@ -45,9 +45,50 @@ using std::vector;
 IGA_NAMESPACE_OPEN
 
 
+template <int dim>
+class
+BSplineElementScalarEvaluator
+{
+public:
+	/** Type for the one dimensional Bezier operator on a single interval.*/
+	using BezierOperator = const boost::numeric::ublas::matrix<Real> *;
+
+
+	/** @name Constructors */
+	///@{
+	BSplineElementScalarEvaluator() = delete;
+
+	BSplineElementScalarEvaluator(const std::array<BezierOperator,dim> & bz_operator);
+
+	BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
+	BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
+
+	~BSplineElementScalarEvaluator() = default;
+	///@}
 
 
 
+	/** @name Assignment operators */
+	///@{
+	BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
+	BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
+	///@}
+
+
+private:
+
+
+	CartesianProductArray<BezierOperator,dim> bz_operator_;
+};
+
+
+template <int dim>
+inline
+BSplineElementScalarEvaluator<dim>::
+BSplineElementScalarEvaluator(const std::array<BezierOperator,dim> & bz_operator)
+	:
+	bz_operator_(bz_operator)
+{}
 
 //#define NOT_OPTIMIZED
 
