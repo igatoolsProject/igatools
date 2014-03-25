@@ -1374,9 +1374,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
     return this->get_basis_values(basis,topology_id)[qp];
 }
 
@@ -1386,9 +1385,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Div const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
     return this->get_basis_divergences(basis)[qp];
 }
 
@@ -1397,9 +1395,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<1> const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
     return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
@@ -1408,9 +1405,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<2> const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,cache.size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
     return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
@@ -1423,9 +1419,8 @@ BSplineElementAccessor<dim, range, rank>::
 evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled() == true, ExcCacheNotFilled());
-    Assert(cache.flags_handler_.fill_values() == true, ExcInvalidState());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_values() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1443,9 +1438,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled() == true, ExcCacheNotFilled());
-    Assert(cache.flags_handler_.fill_gradients() == true, ExcInvalidState());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_gradients() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1463,9 +1457,8 @@ evaluate_field_divergences(
     const std::vector<Real> &local_coefs,
     const TopologyId<dim> &topology_id) const -> ValueVector<Div>
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled() == true, ExcCacheNotFilled());
-    Assert(cache.flags_handler_.fill_divergences() == true, ExcInvalidState());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_divergences() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1482,9 +1475,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled() == true, ExcCacheNotFilled());
-    Assert(cache.flags_handler_.fill_hessians() == true, ExcInvalidState());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
