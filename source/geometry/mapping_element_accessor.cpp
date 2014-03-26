@@ -267,6 +267,8 @@ init_values(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_point;
         if (contains(fill_flag , ValueFlags::face_w_measure))
             grid_flag |= ValueFlags::face_w_measure;
+        if (contains(fill_flag , ValueFlags::face_normal))
+            grid_flag |= ValueFlags::face_point;
         CartesianGridElementAccessor<dim_ref_>::init_values(grid_flag,quad);
     }
 
@@ -279,6 +281,11 @@ init_values(const ValueFlags fill_flag,
         f_flag |= ValueFlags::face_measure;
     if (contains(f_flag , ValueFlags::face_measure))
         f_flag |= ValueFlags::map_face_gradient;
+    if (contains(f_flag , ValueFlags::face_normal))
+    {
+        f_flag |= ValueFlags::map_face_gradient;
+        f_flag |= ValueFlags::map_face_inv_gradient;
+    }
 
     const MappingElemValueFlagsHandler elem_flags_handler(f_flag);
     const MappingFaceValueFlagsHandler face_flags_handler(f_flag);
