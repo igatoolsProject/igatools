@@ -18,9 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Solve a Poisson-like problem.
- *  author: martinelli
- *  date: 2013-01-18
+ *  Test cylindrical annulus mapping values.
+ *  author: antolin
+ *  date: 2014-03-18
  *
  */
 
