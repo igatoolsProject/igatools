@@ -33,8 +33,7 @@
 #include <igatools/utils/value_table.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/cartesian_product_indexer.h>
-#include <boost/numeric/ublas/matrix.hpp>
-
+#include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 
 IGA_NAMESPACE_OPEN
@@ -60,7 +59,7 @@ public:
     using ContainerType = BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
-    typedef const BSplineSpace<dim, range, rank> Space_t;
+    using Space_t = const BSplineSpace<dim, range, rank> ;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -377,19 +376,12 @@ private:
 
 
     /**
-     * rectangular matrix to store for each
-     * univariate basis function
-     * its values or derivatives at the quadrature points
-     * it is a (p+1) x n_qp matrix
-     */
-    typedef boost::numeric::ublas::matrix<Real> matrix_t;
-
-    /**
      * This type store the values, first second derivatives
      * of a 1D Bspline functions, i.e BasisValues1d[k]
-     * stores the k-th derivative
+     * stores the values of the k-th derivative at the quadrature points.
+     * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
-    typedef std::vector<matrix_t> BasisValues1d;
+    using BasisValues1d = std::vector<DenseMatrix>;
 
 protected:
     /**

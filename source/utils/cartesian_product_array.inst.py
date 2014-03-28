@@ -23,12 +23,15 @@
 from init_instantiation_data import *
 
 iga_inc_files = ['base/tensor.h']
-other_files   = ['boost/numeric/ublas/matrix.hpp',
-				 'boost/numeric/ublas/io.hpp' ]
+other_files   = [
+				#'boost/numeric/ublas/matrix.hpp',
+				#'boost/numeric/ublas/io.hpp'
+				 'igatools/linear_algebra/dense_matrix.h' ]
 data = Instantiation(iga_inc_files, other_files)
 (f, inst) = (data.file_output, data.inst)
 
-matrix = 'boost::numeric::ublas::matrix<Real>'
+#matrix = 'boost::numeric::ublas::matrix<Real>'
+matrix = 'DenseMatrix'
 types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
 types = types + ('Real','Real*', 'Index')

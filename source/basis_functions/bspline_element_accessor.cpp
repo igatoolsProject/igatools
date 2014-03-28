@@ -47,47 +47,47 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 class
-BSplineElementScalarEvaluator
+    BSplineElementScalarEvaluator
 {
 public:
-	/** Type for the one dimensional Bezier operator on a single interval.*/
-	using BezierOperator = const boost::numeric::ublas::matrix<Real> *;
+    /** Type for the one dimensional Bezier operator on a single interval.*/
+    using Values1D = const vector< DenseMatrix *>;
 
 
-	/** @name Constructors */
-	///@{
-	BSplineElementScalarEvaluator() = delete;
+    /** @name Constructors */
+    ///@{
+    BSplineElementScalarEvaluator() = delete;
 
-	BSplineElementScalarEvaluator(const std::array<BezierOperator,dim> & bz_operator);
+    BSplineElementScalarEvaluator(const std::array<Values1D,dim> &values1D);
 
-	BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
-	BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
+    BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
+    BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
 
-	~BSplineElementScalarEvaluator() = default;
-	///@}
+    ~BSplineElementScalarEvaluator() = default;
+    ///@}
 
 
 
-	/** @name Assignment operators */
-	///@{
-	BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
-	BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
-	///@}
+    /** @name Assignment operators */
+    ///@{
+    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
+    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
+    ///@}
 
 
 private:
 
 
-	CartesianProductArray<BezierOperator,dim> bz_operator_;
+    CartesianProductArray<Values1D,dim> values1D_;
 };
 
 
 template <int dim>
 inline
 BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const std::array<BezierOperator,dim> & bz_operator)
-	:
-	bz_operator_(bz_operator)
+BSplineElementScalarEvaluator(const std::array<Values1D,dim> &values1D)
+    :
+    values1D_(values1D)
 {}
 
 //#define NOT_OPTIMIZED
@@ -785,7 +785,7 @@ reset(const Space_t &space,
             // compute the one dimensional B-splines at quad point on the reference interval
             const int interval = 0;
             {
-                const boost::numeric::ublas::matrix<Real> &M = *(bez_iComp_jDim[interval]);
+                const auto &M = *(bez_iComp_jDim[interval]);
                 const Real one_div_size = iga::Real(1.0) / lengths_jDim[interval];
                 for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
                 {
