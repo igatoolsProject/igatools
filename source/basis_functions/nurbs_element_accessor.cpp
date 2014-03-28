@@ -1089,9 +1089,8 @@ auto
 NURBSElementAccessor<dim, range, rank>::
 get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> ValueRef_t const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.n_points_,
-           ExcIndexRange(qp,0,cache.n_points_));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
     return this->get_basis_values(basis,topology_id)[qp];
 }
 
@@ -1100,9 +1099,8 @@ auto
 NURBSElementAccessor<dim, range, rank>::
 get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> DerivativeRef_t<1> const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.n_points_,
-           ExcIndexRange(qp,0,cache.n_points_));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
     return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
@@ -1111,9 +1109,8 @@ auto
 NURBSElementAccessor<dim, range, rank>::
 get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> DerivativeRef_t<2> const &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.n_points_,
-           ExcIndexRange(qp,0,cache.n_points_));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
     return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
@@ -1123,9 +1120,8 @@ NURBSElementAccessor<dim, range, rank>::
 evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<ValueRef_t>
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.flags_handler_.values_filled(), ExcInvalidState());
+    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.values_filled(), ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1143,9 +1139,8 @@ auto
 NURBSElementAccessor<dim, range, rank>::
 evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< DerivativeRef_t<1> >
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.flags_handler_.gradients_filled(), ExcInvalidState()) ;
+    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.gradients_filled(), ExcCacheNotFilled()) ;
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1163,9 +1158,8 @@ auto
 NURBSElementAccessor<dim, range, rank>::
 evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< DerivativeRef_t<2> >
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.flags_handler_.hessians_filled(), ExcInvalidState()) ;
+    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.hessians_filled(), ExcCacheNotFilled()) ;
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
