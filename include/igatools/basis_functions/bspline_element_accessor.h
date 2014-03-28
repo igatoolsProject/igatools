@@ -47,6 +47,57 @@ template <typename Accessor> class GridForwardIterator;
 
 
 
+template <int dim>
+class
+    BSplineElementScalarEvaluator
+{
+public:
+    /** Type for the one dimensional values on a single interval for a single scalar function.*/
+    using Values1D = const typename DenseMatrix::MatrixRowType ;
+
+
+    /** @name Constructors */
+    ///@{
+    BSplineElementScalarEvaluator() = delete;
+
+    BSplineElementScalarEvaluator(const std::vector<std::array<Values1D,dim>> &values1D);
+
+    BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = default;
+    BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = default;
+
+    ~BSplineElementScalarEvaluator() = default;
+    ///@}
+
+
+
+    /** @name Assignment operators */
+    ///@{
+    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
+    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
+    ///@}
+
+
+private:
+
+    /**
+     * values[i][j] are the values at the n_qp evaluation points of the i-th function derivative
+     * along the j-th direction.
+     */
+    std::vector<std::array<Values1D,dim>> values1D_;
+};
+
+
+template <int dim>
+inline
+BSplineElementScalarEvaluator<dim>::
+BSplineElementScalarEvaluator(const std::vector<std::array<Values1D,dim>> &values1D)
+    :
+    values1D_(values1D)
+{
+    Assert(!values1D_.empty(),ExcEmptyObject());
+}
+
+
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
@@ -621,10 +672,14 @@ public:
     /**
      * Container for the 1D values on the element.
      * @todo this variable should be private...
-     * it is public only to quicky test the sum_factorization technique
+     * it is public only to quickly test the sum_factorization technique
      */
     StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>
     elem_univariate_values_;
+
+
+    StaticMultiArray<
+    std::vector<BSplineElementScalarEvaluator<dim>>,range,rank> scalar_evaluators_;
 
 };
 

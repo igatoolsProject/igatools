@@ -45,51 +45,6 @@ using std::vector;
 IGA_NAMESPACE_OPEN
 
 
-template <int dim>
-class
-    BSplineElementScalarEvaluator
-{
-public:
-    /** Type for the one dimensional Bezier operator on a single interval.*/
-    using Values1D = const vector< DenseMatrix *>;
-
-
-    /** @name Constructors */
-    ///@{
-    BSplineElementScalarEvaluator() = delete;
-
-    BSplineElementScalarEvaluator(const std::array<Values1D,dim> &values1D);
-
-    BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
-    BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
-
-    ~BSplineElementScalarEvaluator() = default;
-    ///@}
-
-
-
-    /** @name Assignment operators */
-    ///@{
-    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
-    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
-    ///@}
-
-
-private:
-
-
-    CartesianProductArray<Values1D,dim> values1D_;
-};
-
-
-template <int dim>
-inline
-BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const std::array<Values1D,dim> &values1D)
-    :
-    values1D_(values1D)
-{}
-
 //#define NOT_OPTIMIZED
 
 namespace

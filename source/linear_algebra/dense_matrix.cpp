@@ -20,7 +20,6 @@
 
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/base/exceptions.h>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
 IGA_NAMESPACE_OPEN
