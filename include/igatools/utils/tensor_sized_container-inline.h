@@ -69,6 +69,11 @@ Index
 TensorSizedContainer<rank>::
 tensor_to_flat(const TensorIndex<rank> &tensor_index) const
 {
+#ifndef NDEBUG
+    for (int i = 0 ; i < rank ; ++i)
+        Assert(tensor_index(i) >= 0 && tensor_index(i) < size_(i),
+               ExcIndexRange(tensor_index(i),0,size_(i)));
+#endif
     return MultiArrayUtils<rank>::tensor_to_flat_index(tensor_index, weight_);
 }
 
@@ -79,6 +84,8 @@ TensorIndex<rank>
 TensorSizedContainer<rank>::
 flat_to_tensor(const Index flat_index) const
 {
+    Assert(flat_index >= 0 && flat_index < size_.flat_size(),
+           ExcIndexRange(flat_index,0,size_.flat_size()));
     return MultiArrayUtils<rank>::flat_to_tensor_index(flat_index, weight_);
 }
 

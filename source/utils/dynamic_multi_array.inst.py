@@ -39,7 +39,7 @@ for row in ma_list:
 
       
       
-evaluators = set(['DynamicMultiArray<BSplineElementScalarEvaluator<%d>,%d>' %(x.dim,x.dim)
+evaluators = set(['DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<%d>>,%d>' %(x.dim,x.dim)
               for x in inst.all_ref_sp_dims])
 for eval in evaluators:
    f.write('template class %s ;\n' %eval)

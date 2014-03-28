@@ -414,7 +414,7 @@ reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
            ExcMessage("Resetting a shared cache, use force if this is what you Really want."));
 
     if (values_1d_data_.use_count() == 0)
-        values_1d_data_= make_shared<UniformQuadCache>();
+        values_1d_data_= make_shared<GlobalElemCache>();
 
     values_1d_data_->reset(*space_, quad, max_der);
 
@@ -469,21 +469,62 @@ reset_element_cache(const ValueFlags fill_flag,
 
 
 
-
     //--------------------------------------------------------------------------
-    for (int icomp = 0; icomp < Space_t::n_components; ++icomp)
-    {
-        scalar_evaluators_(icomp).resize(n_basis_direction(icomp));
+    const int max_deriv_order = 2;
+    vector<std::array<Values1DConstView,dim>> values1D(max_deriv_order);
 
-        const Size n_basis = scalar_evaluators_(icomp).flat_size();
+    const auto elem_tensor_id = this->get_tensor_index();
+
+    using MatrixRow = typename DenseMatrix::MatrixRowType;
+
+    Assert(values_1d_data_->is_filled(),ExcCacheNotFilled());
+
+    for (int comp = 0; comp < Space_t::n_components; ++comp)
+    {
+        auto &scalar_evaluator_comp = scalar_evaluators_(comp);
+
+        scalar_evaluator_comp.resize(n_basis_direction(comp));
+
+        const Size n_basis = scalar_evaluator_comp.flat_size();
+
+        /**
+         * univariate B-splines values and derivatives at
+         * quadrature points
+         * univariate_values[dir][interval][order][function][point]
+         */
+        auto &univariate_values = values_1d_data_->splines1d_cache_(comp);
 
         for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
         {
-//          scalar_evaluators_[icomp][flat_basis_id]
-        }
-    }
-    //--------------------------------------------------------------------------
+            const auto tensor_basis_id = scalar_evaluator_comp.flat_to_tensor(flat_basis_id);
 
+            for (int dir = 0 ; dir < dim ; ++dir)
+            {
+                const auto &basis_with_ders = *univariate_values.entry(dir,elem_tensor_id[dir]);
+
+                for (int order = 0 ; order < max_deriv_order ; ++order)
+                {
+
+                    const DenseMatrix &funcs = basis_with_ders[order];
+
+                    const MatrixRow &func_values = funcs.get_row(tensor_basis_id[dir]);
+
+                    values1D[order][dir] = Values1DConstView(func_values.begin(),func_values.end());
+                } //end order loop
+
+            } // end dir loop
+
+
+            scalar_evaluator_comp(flat_basis_id) =
+                shared_ptr<BSplineElementScalarEvaluator<dim>>(
+                    new BSplineElementScalarEvaluator<dim>(values1D)
+                );
+
+//          scalar_evaluators_[icomp][flat_basis_id]
+        } // end flat_basis_id loop
+
+    } // end icomp loop
+    //--------------------------------------------------------------------------
 }
 
 
@@ -902,7 +943,7 @@ fill_face_values(const Index face_id)
 template < int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-UniformQuadCache::
+GlobalElemCache::
 reset(const Space_t &space,
       const Quadrature<dim> &quad,
       const int max_der)

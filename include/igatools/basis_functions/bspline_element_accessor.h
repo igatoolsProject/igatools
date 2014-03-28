@@ -46,6 +46,28 @@ template <typename Accessor> class GridForwardIterator;
 
 
 
+class Values1DConstView
+{
+public:
+    /** Type for the container of one dimensional values on a single interval for a single scalar function.*/
+    using Values1D = typename DenseMatrix::MatrixRowType ;
+
+    using const_iterator = typename Values1D::const_iterator;
+
+    Values1DConstView() = default;
+
+    Values1DConstView(const const_iterator &begin,const const_iterator &end)
+        :
+        begin_(begin),
+        end_(end)
+    {}
+
+private:
+    const_iterator begin_;
+    const_iterator end_;
+};
+
+
 
 template <int dim>
 class
@@ -53,14 +75,14 @@ class
 {
 public:
     /** Type for the one dimensional values on a single interval for a single scalar function.*/
-    using Values1D = std::shared_ptr<std::vector<Real>> ;
+    using Values1D = typename DenseMatrix::MatrixRowType ;
 
 
     /** @name Constructors */
     ///@{
-    BSplineElementScalarEvaluator() = default;
+    BSplineElementScalarEvaluator() = delete;
 
-    BSplineElementScalarEvaluator(const std::vector<std::array<Values1D,dim>> &values1D);
+    BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim>> &values1D);
 
     BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = default;
     BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = default;
@@ -83,14 +105,14 @@ private:
      * values[i][j] are the values at the n_qp evaluation points of the i-th function derivative
      * along the j-th direction.
      */
-    std::vector<std::array<Values1D,dim>> values1D_;
+    std::vector<std::array<Values1DConstView,dim>> values1D_;
 };
 
 
 template <int dim>
 inline
 BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const std::vector<std::array<Values1D,dim>> &values1D)
+BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim>> &values1D)
     :
     values1D_(values1D)
 {
@@ -429,7 +451,8 @@ private:
     /**
      * This type store the values, first second derivatives
      * of a 1D Bspline functions, i.e BasisValues1d[k]
-     * stores the values of the k-th derivative at the quadrature points.
+     * stores the values of the k-th derivative of the (p+1) basis function on a given interval
+     * at the quadrature points.
      * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
     using BasisValues1d = std::vector<DenseMatrix>;
@@ -586,7 +609,7 @@ private:
      * Cache for the efficient use of Bspline basis on a uniform
      * quadrature scheme on all elements.
      */
-    class UniformQuadCache : public CacheStatus
+    class GlobalElemCache : public CacheStatus
     {
     public:
         int max_deriv_order = 2;
@@ -642,7 +665,7 @@ private:
      * one dimensional values of the basis
      * function at the quadrature points
      */
-    std::shared_ptr< UniformQuadCache > values_1d_data_ = nullptr;
+    std::shared_ptr< GlobalElemCache > values_1d_data_ = nullptr;
 
     std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
 
@@ -679,7 +702,7 @@ public:
 
 
     StaticMultiArray<
-    DynamicMultiArray<BSplineElementScalarEvaluator<dim>,dim>,range,rank> scalar_evaluators_;
+    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>,range,rank> scalar_evaluators_;
 
 };
 
