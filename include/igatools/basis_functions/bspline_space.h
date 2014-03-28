@@ -131,10 +131,6 @@ public:
     using DegreeTable = ComponentTable<TensorIndex<dim>>;
 
 private:
-    //TODO(pauletti, Mar 3, 2014):delete this type
-    /** Container indexed by the components and dimensions of the space */
-    template< class T>
-    using ComponentDirectionTable = ComponentTable<std::array<T,dim>>;
 
 
     /** Type for current class. */
@@ -155,7 +151,6 @@ public:
      */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
-    using Multiplicities = ComponentTable<Multiplicity<dim>>;
 
 
 
@@ -200,7 +195,7 @@ public:
      * component.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
+                          const ComponentTable<TensorIndex<dim>> &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -208,7 +203,7 @@ public:
      */
     static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
     create(std::shared_ptr<GridType> knots,
-           const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
+           const ComponentTable<TensorIndex<dim>> &degree);
 
 
     /**
@@ -219,8 +214,8 @@ public:
      * component.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const Multiplicities &mult_vectors,
-                          const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
+                          const ComponentTable<Multiplicity<dim>> &mult_vectors,
+                          const ComponentTable<TensorIndex<dim>> &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -228,8 +223,8 @@ public:
      */
     static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
     create(std::shared_ptr<GridType> knots,
-           const Multiplicities &mult_vectors,
-           const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree);
+           const ComponentTable<Multiplicity<dim>> &mult_vectors,
+           const ComponentTable<TensorIndex<dim>> &degree);
 
     /** Destructor */
     ~BSplineSpace() = default;
@@ -365,7 +360,7 @@ public:
     /**
      * Return the knot multiplicities for each component of the space.
      */
-    const Multiplicities &
+    const ComponentTable<Multiplicity<dim>> &
     get_multiplicities() const;
 
 
@@ -418,7 +413,7 @@ private:
     /**
      * Multiplicities of the knots.
      */
-    Multiplicities mult_;
+    ComponentTable<Multiplicity<dim>> mult_;
 
 
     /**

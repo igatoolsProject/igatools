@@ -405,7 +405,7 @@ create(shared_ptr<GridType> knots,
 template<int dim_, int dim_range_, int rank_>
 BSplineSpace<dim_, dim_range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
-             const Multiplicities &mult_vectors,
+             const ComponentTable<Multiplicity<dim>> &mult_vectors,
              const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree)
     :
     BaseSpace(knots),
@@ -422,7 +422,7 @@ template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const Multiplicities &mult_vectors,
+       const ComponentTable<Multiplicity<dim>> &mult_vectors,
        const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots,mult_vectors,degree));
@@ -837,7 +837,7 @@ tensor_to_flat(const TensorIndex<dim> &tensor_index,
 template<int dim_, int dim_range_, int rank_>
 auto
 BSplineSpace<dim_, dim_range_, rank_>::
-get_multiplicities() const -> const Multiplicities &
+get_multiplicities() const -> const ComponentTable<Multiplicity<dim>> &
 {
     return mult_ ;
 }
