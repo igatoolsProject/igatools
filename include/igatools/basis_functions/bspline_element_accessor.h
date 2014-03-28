@@ -56,17 +56,47 @@ public:
 
     Values1DConstView() = default;
 
-    Values1DConstView(const const_iterator &begin,const const_iterator &end)
+    Values1DConstView(const DenseMatrix &funcs,const Index func_id)
         :
-        begin_(begin),
-        end_(end)
-    {}
+        funcs_(&funcs),
+        func_id_(func_id)
+    {
+        Assert(func_id >= 0 && func_id < Size(funcs_->size1()),
+               ExcIndexRange(func_id,0,Size(funcs_->size1())))
+    }
+
+
+    Values1DConstView(const Values1DConstView &view) = default ;
+    Values1DConstView(Values1DConstView &&view) = default ;
+
+    Values1DConstView &operator=(const Values1DConstView &view) = default;
+    Values1DConstView &operator=(Values1DConstView &&view) = default;
+    /*
+    {
+        std::swap(funcs_,view.funcs_);
+        func_id_ = view.func_id_;
+        return (*this);
+    }
+    //*/
+
+    Real operator()(const Index point_id) const;
 
 private:
-    const_iterator begin_;
-    const_iterator end_;
+    const DenseMatrix *funcs_ = nullptr;
+    Index func_id_;
 };
 
+
+inline
+Real
+Values1DConstView::
+operator()(const Index point_id) const
+{
+    Assert(point_id >= 0 && point_id < Size(funcs_->size2()),
+           ExcIndexRange(point_id,0,Size(funcs_->size2())));
+
+    return (*funcs_)(func_id_,point_id);
+}
 
 
 template <int dim>
@@ -76,6 +106,13 @@ class
 public:
     /** Type for the one dimensional values on a single interval for a single scalar function.*/
     using Values1D = typename DenseMatrix::MatrixRowType ;
+
+    /**
+     * Typedef for specifying the derivatives of the scalar basis function in the
+     * reference domain.
+     */
+    template <int deriv_order>
+    using Derivative = Derivatives<dim,1,1,deriv_order>;
 
 
     /** @name Constructors */
@@ -97,6 +134,12 @@ public:
     BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = default;
     BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = default;
     ///@}
+
+
+
+    Real evaluate_derivative(
+        const TensorIndex<dim> &order_tensor_id,
+        const TensorIndex<dim> &point_tensor_id) const;
 
 
 private:
@@ -458,6 +501,20 @@ private:
     using BasisValues1d = std::vector<DenseMatrix>;
 
 protected:
+
+    /**
+     * For each component gives a product array of the dimension
+     */
+    template<class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
+
+    /**
+     * For each component gives a product array of the dimension
+     */
+    template<class T>
+    using ComponentDirectionTable =
+        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
+
     /**
      * Base class for the cache of the element values and for the cache of the face values.
      */
@@ -489,13 +546,16 @@ protected:
 
         /**
          * Fills the cache (accordingly with the flags_handler status)
-         * from the univariate values (and derivatives).
+         * from the univariate values (and derivatives up to the order
+         * specified by @p max_deriv_order).
+         *
          *
          * @note The BSplineElementAccessor @p elem is needed in order to call the function
          * elem.evaluate_bspline_derivatives<p>()
          * that computes the @p p-th order derivatives of a BSpline from the univariate values.
          */
         void fill_from_univariate(
+            const int max_deriv_order,
             const univariate_values_t &values_1D,
             const BSplineElementAccessor<dim,range,rank> &elem);
 
@@ -518,6 +578,11 @@ protected:
     public:
 
         FuncPointSize size_;
+
+
+        ComponentTable<
+        DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+
     };
 
 
@@ -593,26 +658,26 @@ private:
     template <int deriv_order>
     void evaluate_bspline_derivatives(const FuncPointSize &size,
                                       const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
+                                      const ValuesCache &cache,
                                       ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const;
 
 
-    /**
-     * For each component gives a product array of the dimension
-     */
-    template<class T>
-    using ComponentDirectionTable =
-        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
 
 
+
+    class GlobalCache : public CacheStatus
+    {
+    public:
+        int max_deriv_order_ = 0;
+    };
 
     /**
      * Cache for the efficient use of Bspline basis on a uniform
      * quadrature scheme on all elements.
      */
-    class GlobalElemCache : public CacheStatus
+    class GlobalElemCache : public GlobalCache
     {
     public:
-        int max_deriv_order = 2;
         /**
          * Allocates space for and compute the values and
          * derivatives at quadrature points for one
@@ -632,12 +697,12 @@ private:
         ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
 
         ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+
     };
 
-    class GlobalFaceCache : public CacheStatus
+    class GlobalFaceCache : public GlobalCache
     {
     public:
-        int max_deriv_order = 2;
         /**
          * Allocates space for and compute the values and
          * derivatives at quadrature points for one
@@ -653,10 +718,12 @@ private:
         /**
          * univariate B-splines values and derivatives at
          * quadrature points
-         * splines1d_cache_data_[comp][order][function][point]
+         * splines1d_cache_data_[comp][interval][order][function][point]
          */
-        StaticMultiArray<BasisValues1d ,range,rank> splines1d_cache_data_;
-        StaticMultiArray<BasisValues1d *,range,rank> splines1d_cache_;
+        ComponentTable<BasisValues1d> splines1d_cache_data_;
+
+        ComponentTable<const BasisValues1d *> splines1d_cache_;
+
     };
 
     /**
@@ -665,7 +732,7 @@ private:
      * one dimensional values of the basis
      * function at the quadrature points
      */
-    std::shared_ptr< GlobalElemCache > values_1d_data_ = nullptr;
+    std::shared_ptr< GlobalElemCache > values_1d_elem_ = nullptr;
 
     std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
 
@@ -701,8 +768,6 @@ public:
     elem_univariate_values_;
 
 
-    StaticMultiArray<
-    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>,range,rank> scalar_evaluators_;
 
 };
 
