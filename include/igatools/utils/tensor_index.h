@@ -118,6 +118,14 @@ public:
 };
 
 
+/**
+ * Returns the tensor index with components given by the sum of @p index_a with @p index_b.
+ */
+template <int rank>
+TensorIndex<rank>
+operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b) ;
+
+
 
 /**
  * Output operator for TensorIndex.

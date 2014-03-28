@@ -621,11 +621,14 @@ fill_element_dofs_from_index_space()
 
         for (int comp = 0; comp < n_components; ++comp)
         {
-            auto comp_offset = element_comp_offset(comp);
-            auto origin      = index_space_offset_(comp).
-                               cartesian_product(element.get_tensor_index());
-            auto increment   = element_n_basis(comp);
-            auto comp_dofs = index_space_(comp).get_flat_view(origin, increment);
+            const auto comp_offset = element_comp_offset(comp);
+            const auto origin      = index_space_offset_(comp).
+                                     cartesian_product(element.get_tensor_index());
+            const auto increment = element_n_basis(comp);
+            const auto end = origin + increment;
+
+            const auto comp_dofs = index_space_(comp).get_sub_array(origin,end).get_data();
+
             copy(comp_dofs.begin(),comp_dofs.end(),
                  element_global_dofs_[elem_index].begin()+comp_offset);
 

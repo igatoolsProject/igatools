@@ -81,30 +81,35 @@ resize(const TensorSize<rank> &dim)
 
 
 template<class T, int rank>
-std::vector<T>
+DynamicMultiArray<T,rank>
 DynamicMultiArray<T,rank>::
-get_flat_view(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) const
+get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &end) const
 {
+    TensorIndex<rank> inc;
     TensorSize<rank> loc_size;
     for (int i = 0 ; i < rank ; ++i)
+    {
+        inc[i] = end[i] - start[i];
         loc_size(i) = inc[i];
+    }
 
-    auto loc_weight = MultiArrayUtils<rank>::compute_weight(loc_size);
+    DynamicMultiArray<T,rank> sub_array(loc_size);
+
+//    auto loc_weight = MultiArrayUtils<rank>::compute_weight(loc_size);
     const Size size = loc_size.flat_size();
     Assert(size == MultiArrayUtils<rank>::size(inc),
            ExcDimensionMismatch(size,MultiArrayUtils<rank>::size(inc)));
 
-    std::vector<T> result(size);
     for (int i = 0; i < size; ++i)
     {
-        auto tensor_index = MultiArrayUtils<rank>::flat_to_tensor_index(i,loc_weight);
+        auto tensor_index = sub_array.flat_to_tensor(i);
         tensor_index += start;
-        result[i] = (*this)(tensor_index);
+        sub_array(i) = (*this)(tensor_index);
     }
 
-    return result;
+    return sub_array;
 }
-
+//*/
 
 
 template<class T, int rank>

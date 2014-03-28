@@ -53,12 +53,12 @@ class
 {
 public:
     /** Type for the one dimensional values on a single interval for a single scalar function.*/
-    using Values1D = const typename DenseMatrix::MatrixRowType ;
+    using Values1D = std::shared_ptr<std::vector<Real>> ;
 
 
     /** @name Constructors */
     ///@{
-    BSplineElementScalarEvaluator() = delete;
+    BSplineElementScalarEvaluator() = default;
 
     BSplineElementScalarEvaluator(const std::vector<std::array<Values1D,dim>> &values1D);
 
@@ -72,8 +72,8 @@ public:
 
     /** @name Assignment operators */
     ///@{
-    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = delete;
-    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = delete;
+    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = default;
+    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = default;
     ///@}
 
 
@@ -679,7 +679,7 @@ public:
 
 
     StaticMultiArray<
-    std::vector<BSplineElementScalarEvaluator<dim>>,range,rank> scalar_evaluators_;
+    DynamicMultiArray<BSplineElementScalarEvaluator<dim>,dim>,range,rank> scalar_evaluators_;
 
 };
 

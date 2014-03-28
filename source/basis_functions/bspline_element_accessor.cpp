@@ -466,6 +466,24 @@ reset_element_cache(const ValueFlags fill_flag,
             face_value.reset(face_id++, face_flags_handler, n_basis_direction, quad);
     }
     //--------------------------------------------------------------------------
+
+
+
+
+    //--------------------------------------------------------------------------
+    for (int icomp = 0; icomp < Space_t::n_components; ++icomp)
+    {
+        scalar_evaluators_(icomp).resize(n_basis_direction(icomp));
+
+        const Size n_basis = scalar_evaluators_(icomp).flat_size();
+
+        for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
+        {
+//          scalar_evaluators_[icomp][flat_basis_id]
+        }
+    }
+    //--------------------------------------------------------------------------
+
 }
 
 
@@ -987,6 +1005,7 @@ reset(const Space_t &space,
                 splines1d_cache_(iComp).entry(jDim,i) = &(data[i]);
         }
     }
+
 
     this->set_filled(true);
     //-------------------------------------------------------------------------

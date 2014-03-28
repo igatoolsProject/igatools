@@ -110,9 +110,8 @@ public:
      * as a flat vector.
      * @todo: where do we need this function? (MM 22 Feb 2014)
      */
-    std::vector<T> get_flat_view(const TensorIndex<rank> &start,
-                                 const TensorIndex<rank> &inc) const;
-
+    DynamicMultiArray<T,rank> get_sub_array(const TensorIndex<rank> &start,
+                                            const TensorIndex<rank> &end) const;
 
 
 
