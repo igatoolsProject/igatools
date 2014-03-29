@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef __BSPLINE_ELEMENT_ACCESSOR_H_
-#define __BSPLINE_ELEMENT_ACCESSOR_H_
+#ifndef BSPLINE_ELEMENT_ACCESSOR_H_
+#define BSPLINE_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
@@ -35,6 +35,7 @@
 #include <igatools/utils/cartesian_product_indexer.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
+#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -44,166 +45,6 @@ IGA_NAMESPACE_OPEN
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
-
-/**
- * @brief blabla
- * @todo Document this class
- */
-class Values1DConstView
-{
-public:
-    /** Type for the container of one dimensional values on a single interval for a single scalar function.*/
-    using Values1D = typename DenseMatrix::MatrixRowType ;
-
-    using const_iterator = typename Values1D::const_iterator;
-
-    Values1DConstView() = default;
-
-    Values1DConstView(const DenseMatrix &funcs,const Index func_id)
-        :
-        funcs_(&funcs),
-        func_id_(func_id)
-    {
-        Assert(func_id >= 0 && func_id < Size(funcs_->size1()),
-               ExcIndexRange(func_id,0,Size(funcs_->size1())))
-    }
-
-
-    Values1DConstView(const Values1DConstView &view) = default ;
-    Values1DConstView(Values1DConstView &&view) = default ;
-
-    Values1DConstView &operator=(const Values1DConstView &view) = default;
-    Values1DConstView &operator=(Values1DConstView &&view) = default;
-
-    Real operator()(const Index point_id) const;
-
-    Size get_num_points() const;
-
-private:
-    const DenseMatrix *funcs_ = nullptr;
-    Index func_id_;
-};
-
-inline
-Size
-Values1DConstView::
-get_num_points() const
-{
-	return funcs_->size2();
-}
-
-inline
-Real
-Values1DConstView::
-operator()(const Index point_id) const
-{
-    Assert(point_id >= 0 && point_id < this->get_num_points(),
-           ExcIndexRange(point_id,0,this->get_num_points()));
-
-    return (*funcs_)(func_id_,point_id);
-}
-
-
-/**
- * @brief blabla
- * @todo Document this class
- */
-template <int dim>
-class
-    BSplineElementScalarEvaluator
-{
-public:
-    /** Type for the one dimensional values on a single interval for a single scalar function.*/
-    using Values1D = typename DenseMatrix::MatrixRowType ;
-
-    /**
-     * Typedef for specifying the derivatives of the scalar basis function in the
-     * reference domain.
-     */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim,1,1,deriv_order>;
-
-
-    /** @name Constructors */
-    ///@{
-    BSplineElementScalarEvaluator() = delete;
-
-    BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim>> &values1D);
-
-    BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = default;
-    BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = default;
-
-    ~BSplineElementScalarEvaluator() = default;
-    ///@}
-
-
-
-    /** @name Assignment operators */
-    ///@{
-    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = default;
-    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = default;
-    ///@}
-
-
-    Real evaluate_derivative(
-        const TensorIndex<dim> &order_tensor_id,
-        const TensorIndex<dim> &point_tensor_id) const;
-
-
-    void evaluate_derivative_at_points(
-        const TensorIndex<dim> &order_tensor_id,
-        DynamicMultiArray<Real,dim> & derivatives) const;
-
-
-    /** Returns the number of points in each direction for which the 1D values are associated. */
-    TensorSize<dim> get_num_points() const;
-
-    const std::array<Values1DConstView,dim>& get_derivative_components_view(const int order) const;
-
-    const Values1DConstView & get_values_view(const int order,const int dir) const;
-
-private:
-
-    /**
-     * values[i][j] are the values at the n_qp evaluation points of the i-th derivative
-     * along the j-th direction.
-     */
-    std::vector<std::array<Values1DConstView,dim>> values1D_;
-};
-
-
-template <int dim>
-inline
-BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim>> &values1D)
-    :
-    values1D_(values1D)
-{
-    Assert(!values1D_.empty(),ExcEmptyObject());
-}
-
-
-template <int dim>
-inline
-const std::array<Values1DConstView,dim>&
-BSplineElementScalarEvaluator<dim>::
-get_derivative_components_view(const int order) const
-{
-	Assert(order >= 0 && order< values1D_.size(),
-			ExcIndexRange(order,0,values1D_.size()));
-	return values1D_[order];
-}
-
-template <int dim>
-inline
-const Values1DConstView &
-BSplineElementScalarEvaluator<dim>::
-get_values_view(const int order,const int dir) const
-{
-	Assert(dir >= 0 && dir < dim,
-			ExcIndexRange(dir,0,dim));
-	return get_derivative_components_view(order)[dim];
-}
 
 
 /**
