@@ -1233,6 +1233,27 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 }
 
 
+template <int dim>
+TensorSize<dim>
+BSplineElementScalarEvaluator<dim>::
+get_num_points() const
+{
+	Assert(!values1D_.empty(),ExcEmptyObject());
+
+	TensorSize<dim> n_points;
+	for (int i = 0 ; i < dim ; ++i)
+	{
+		n_points(i) = values1D_[0][i].get_num_points();
+
+#ifndef NDEBUG
+		for (const auto &values : values1D_)
+			Assert(n_points(i) == values[i].get_num_points(),
+					ExcDimensionMismatch(n_points(i),values[i].get_num_points()));
+#endif
+	}
+	return n_points;
+}
+
 
 template <int dim>
 Real
@@ -1269,6 +1290,22 @@ evaluate_derivative(
 {
     return 0.0;
 }
+
+template <int dim>
+void
+BSplineElementScalarEvaluator<dim>::
+evaluate_derivative_at_points(
+    const TensorIndex<dim> &order_tensor_id,
+    DynamicMultiArray<Real,dim> & derivatives) const
+{
+	TensorSize<dim> n_points = this->get_num_points();
+
+
+	Assert(false,ExcNotImplemented());
+	AssertThrow(false,ExcNotImplemented());
+}
+
+
 
 template <int dim, int range, int rank>
 auto

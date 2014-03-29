@@ -74,29 +74,31 @@ public:
 
     Values1DConstView &operator=(const Values1DConstView &view) = default;
     Values1DConstView &operator=(Values1DConstView &&view) = default;
-    /*
-    {
-        std::swap(funcs_,view.funcs_);
-        func_id_ = view.func_id_;
-        return (*this);
-    }
-    //*/
 
     Real operator()(const Index point_id) const;
+
+    Size get_num_points() const;
 
 private:
     const DenseMatrix *funcs_ = nullptr;
     Index func_id_;
 };
 
+inline
+Size
+Values1DConstView::
+get_num_points() const
+{
+	return funcs_->size2();
+}
 
 inline
 Real
 Values1DConstView::
 operator()(const Index point_id) const
 {
-    Assert(point_id >= 0 && point_id < Size(funcs_->size2()),
-           ExcIndexRange(point_id,0,Size(funcs_->size2())));
+    Assert(point_id >= 0 && point_id < this->get_num_points(),
+           ExcIndexRange(point_id,0,this->get_num_points()));
 
     return (*funcs_)(func_id_,point_id);
 }
@@ -143,19 +145,27 @@ public:
     ///@}
 
 
-
     Real evaluate_derivative(
         const TensorIndex<dim> &order_tensor_id,
         const TensorIndex<dim> &point_tensor_id) const;
 
-    const std::array<Values1DConstView,dim>& get_derivative(const int order) const;
+
+    void evaluate_derivative_at_points(
+        const TensorIndex<dim> &order_tensor_id,
+        DynamicMultiArray<Real,dim> & derivatives) const;
+
+
+    /** Returns the number of points in each direction for which the 1D values are associated. */
+    TensorSize<dim> get_num_points() const;
+
+    const std::array<Values1DConstView,dim>& get_derivative_components_view(const int order) const;
 
     const Values1DConstView & get_values_view(const int order,const int dir) const;
 
 private:
 
     /**
-     * values[i][j] are the values at the n_qp evaluation points of the i-th function derivative
+     * values[i][j] are the values at the n_qp evaluation points of the i-th derivative
      * along the j-th direction.
      */
     std::vector<std::array<Values1DConstView,dim>> values1D_;
@@ -177,7 +187,7 @@ template <int dim>
 inline
 const std::array<Values1DConstView,dim>&
 BSplineElementScalarEvaluator<dim>::
-get_derivative(const int order) const
+get_derivative_components_view(const int order) const
 {
 	Assert(order >= 0 && order< values1D_.size(),
 			ExcIndexRange(order,0,values1D_.size()));
@@ -192,7 +202,7 @@ get_values_view(const int order,const int dir) const
 {
 	Assert(dir >= 0 && dir < dim,
 			ExcIndexRange(dir,0,dim));
-	return get_derivative(order)[dim];
+	return get_derivative_components_view(order)[dim];
 }
 
 

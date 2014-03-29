@@ -847,9 +847,6 @@ assemble()
         const Index comp = 0;
         const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
-        // getting the 1D basis functions values
-//        const auto &splines1d_direction = elem->elem_univariate_values_(0);
-
         array< ValueTable<ValueType1D>,dim>  phi_1D;
         array< ValueTable<ValueType1D>,dim> Dphi_1D;
         for (int i = 0 ; i < dim ; ++i)
@@ -864,8 +861,8 @@ assemble()
         	const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
         	const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
 
-            const auto &bspline1D_values = bspline_evaluator->get_derivative(0);
-            const auto &bspline1D_derivatives = bspline_evaluator->get_derivative(1);
+            const auto &bspline1D_values = bspline_evaluator->get_derivative_components_view(0);
+            const auto &bspline1D_derivatives = bspline_evaluator->get_derivative_components_view(1);
 
             for (int i = 0 ; i < dim ; ++i)
             {
