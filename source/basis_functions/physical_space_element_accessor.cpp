@@ -796,7 +796,13 @@ operator!=(const PhysicalSpaceElementAccessor <PhysSpace> &a) const
            static_cast<RefElemAccessor>(a).get_flat_index();
 }
 
-
+template< class PhysSpace >
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_ref_space_accessor() const -> const RefElemAccessor &
+{
+	return static_cast<const RefElemAccessor &>(*this);
+}
 
 template< class PhysSpace >
 void

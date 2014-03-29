@@ -1191,24 +1191,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
                     for (int i = 0; i < deriv_order; ++i)
                         ++(deriv_order_tensor_id[entry_tensor_id[i]]);
-                    /*
-                                        if (dim != 0)
-                                        {
-                                            // Main computation
-                                            const auto &splines1d = *(splines1d_direction[0]);
-                                            Real partial_der = splines1d[deriv_order_tensor_id[0]](func_tensor_id[0], point_tensor_id[0]);
-                                            for (int i = 1; i < dim; ++i)
-                                            {
-                                                const auto &splines1d = *(splines1d_direction[i]);
-                                                partial_der *= splines1d[deriv_order_tensor_id[i]](func_tensor_id[i], point_tensor_id[i]);
-                                            }
-                                            derivative(entry_flat_id)(iComp) = partial_der;
-                                        }
-                                        else
-                                        {
-                                            derivative(entry_flat_id)(iComp) = 1.0;
-                                        }
-                    //*/
+
                     derivative(entry_flat_id)(iComp) =
                         scalar_bspline.evaluate_derivative(deriv_order_tensor_id,point_tensor_id);
                 } // end entry_id loop
@@ -1532,6 +1515,18 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<di
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_scalar_evaluators(const TopologyId<dim> &topology_id) const ->
+const ComponentTable<
+        DynamicMultiArray<
+        	shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> &
+{
+	const auto &cache = this->get_values_cache(topology_id);
+	return cache.scalar_evaluators_;
+}
 
 
 template <int dim, int range, int rank>

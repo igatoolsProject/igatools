@@ -45,7 +45,10 @@ template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
 
-
+/**
+ * @brief blabla
+ * @todo Document this class
+ */
 class Values1DConstView
 {
 public:
@@ -99,6 +102,10 @@ operator()(const Index point_id) const
 }
 
 
+/**
+ * @brief blabla
+ * @todo Document this class
+ */
 template <int dim>
 class
     BSplineElementScalarEvaluator
@@ -141,6 +148,9 @@ public:
         const TensorIndex<dim> &order_tensor_id,
         const TensorIndex<dim> &point_tensor_id) const;
 
+    const std::array<Values1DConstView,dim>& get_derivative(const int order) const;
+
+    const Values1DConstView & get_values_view(const int order,const int dir) const;
 
 private:
 
@@ -163,6 +173,29 @@ BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim
 }
 
 
+template <int dim>
+inline
+const std::array<Values1DConstView,dim>&
+BSplineElementScalarEvaluator<dim>::
+get_derivative(const int order) const
+{
+	Assert(order >= 0 && order< values1D_.size(),
+			ExcIndexRange(order,0,values1D_.size()));
+	return values1D_[order];
+}
+
+template <int dim>
+inline
+const Values1DConstView &
+BSplineElementScalarEvaluator<dim>::
+get_values_view(const int order,const int dir) const
+{
+	Assert(dir >= 0 && dir < dim,
+			ExcIndexRange(dir,0,dim));
+	return get_derivative(order)[dim];
+}
+
+
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
@@ -171,6 +204,9 @@ template <int dim, int range, int rank>
 class BSplineElementAccessor : public CartesianGridElementAccessor<dim>
 {
 public:
+	/** Type for the grid accessor. */
+	using GridAccessor = CartesianGridElementAccessor<dim>;
+
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = BSplineSpace<dim, range, rank> ;
 
@@ -650,7 +686,7 @@ private:
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
      * functions over the current element,
-     * at the evaluation points pre-allocated in the cache.
+     *	 at the evaluation points pre-allocated in the cache.
      *
      * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
@@ -736,6 +772,8 @@ private:
 
     std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
 
+
+
 protected:
     /**
      * Element cache to store the values and derivatives
@@ -758,16 +796,13 @@ private:
 
     template <typename Accessor> friend class GridForwardIterator;
 
+
 public:
-    /**
-     * Container for the 1D values on the element.
-     * @todo this variable should be private...
-     * it is public only to quickly test the sum_factorization technique
-     */
-    StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>
-    elem_univariate_values_;
-
-
+    const ComponentTable<
+            DynamicMultiArray<
+            	std::shared_ptr<
+            		BSplineElementScalarEvaluator<dim>>,dim>> &
+            		get_scalar_evaluators(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 };
 

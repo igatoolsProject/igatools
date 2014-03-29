@@ -358,12 +358,20 @@ public :
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
 
 
+
+
     /**
      * Prints internal information about the BSplineElementAccessor.
      * Its main use is for testing and debugging.
      */
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
+    /**
+     * Return a const reference of this object as would be a reference space element accessor.
+     * This means that the returned object can be queried (but not modified) as the reference space
+     * element accessor that is used as partial inheritanche of the physical space element accessor.
+     */
+    const RefElemAccessor & get_ref_space_accessor() const;
 
 private :
 

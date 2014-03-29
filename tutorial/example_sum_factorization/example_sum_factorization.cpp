@@ -708,7 +708,7 @@ void
 PoissonProblemSumFactorization<dim>::
 assemble()
 {
-    using RefSpaceAccessor = typename base_t::RefSpace::ElementAccessor;
+//    using RefSpaceAccessor = typename base_t::RefSpace::ElementAccessor;
 
     /*
         string filename;
@@ -777,7 +777,8 @@ assemble()
     using ValueType1D = Function<1>::ValueType;
     array<ValueTable<ValueType1D>,dim> w_B_proj_1D;
 
-    array<Real,dim> element_edge_size = elem->RefSpaceAccessor::get_coordinate_lengths();
+    const auto &ref_elem_accessor = elem->get_ref_space_accessor();
+    array<Real,dim> element_edge_size = ref_elem_accessor.get_coordinate_lengths();
 
     for (int i = 0 ; i < dim ; ++i)
     {
@@ -841,27 +842,43 @@ assemble()
 
 
         //--------------------------------------------------------------------------
+        const auto &ref_elem_accessor = elem->get_ref_space_accessor();
+
+        const Index comp = 0;
+        const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+
         // getting the 1D basis functions values
-        const auto &splines1d_direction = elem->elem_univariate_values_(0);
+//        const auto &splines1d_direction = elem->elem_univariate_values_(0);
 
         array< ValueTable<ValueType1D>,dim>  phi_1D;
         array< ValueTable<ValueType1D>,dim> Dphi_1D;
         for (int i = 0 ; i < dim ; ++i)
         {
-            const auto &splines1d = *(splines1d_direction[i]);
-
             phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
             Dphi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
+        }
 
-            for (int ifn = 0 ; ifn < n_basis_elem[i] ; ++ifn)
+        const Size n_basis = n_basis_elem.flat_size();
+        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis ; ++flat_fn_id)
+        {
+        	const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
+        	const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
+
+            const auto &bspline1D_values = bspline_evaluator->get_derivative(0);
+            const auto &bspline1D_derivatives = bspline_evaluator->get_derivative(1);
+
+            for (int i = 0 ; i < dim ; ++i)
             {
-                auto  phi_1D_ifn =  phi_1D[i].get_function_view(ifn);
-                auto Dphi_1D_ifn = Dphi_1D[i].get_function_view(ifn);
+                auto  phi_1D_ifn =  phi_1D[i].get_function_view(tensor_fn_id[i]);
+                auto Dphi_1D_ifn = Dphi_1D[i].get_function_view(tensor_fn_id[i]);
+
+                const auto & bsp_val = bspline1D_values[i];
+                const auto & bsp_der = bspline1D_derivatives[i];
 
                 for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
                 {
-                    phi_1D_ifn[jpt] = splines1d[0](ifn,jpt);
-                    Dphi_1D_ifn[jpt] = splines1d[1](ifn,jpt);
+                     phi_1D_ifn[jpt] = bsp_val(jpt);
+                    Dphi_1D_ifn[jpt] = bsp_der(jpt);
                 }
             }
         }
@@ -879,7 +896,7 @@ assemble()
 
 
 
-        auto elem_measure = elem->RefSpaceAccessor::get_measure();
+        auto elem_measure = ref_elem_accessor.get_measure();
 
         f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
 
@@ -1002,82 +1019,8 @@ assemble()
         for (int flat_id = 0 ; flat_id < flat_size ; ++ flat_id)
             K(flat_id) = k_rhs(flat_id) / elem_measure ;
 
-/*
-        IntegratorSumFacMass<dim,dim> integrate;
-
-        Assert(dim==2,ExcNotImplemented());
-        AssertThrow(dim==2,ExcNotImplemented());
-//*/
         loc_mass_matrix_sf.clear();
 
-            /*
-                        TensorSize<3> tensor_size_KI;
-                        tensor_size_KI(0) = n_bernst_1D_;
-                        tensor_size_KI(1) = n_basis_elem[0];
-                        tensor_size_KI(2) = n_basis_elem[1];
-                        DynamicMultiArray<Real,3> KI(tensor_size_KI);
-                        TensorIndex<3> KI_tensor_id;
-                        TensorIndex<3> I_tensor_id;
-                        TensorIndex<dim> K_tensor_id;
-                        for (int beta = 0 ; beta < n_basis_elem[0] ; ++beta)
-                        {
-                            KI_tensor_id[2] = beta;
-                            I_tensor_id[2] = beta;
-                            for (int alpha = 0 ; alpha < n_basis_elem[0] ; ++alpha)
-                            {
-                                KI_tensor_id[1] = alpha;
-                                I_tensor_id[1] = alpha;
-                                for (int j = 0 ; j < n_bernst_1D_ ; ++j)
-                                {
-                                    KI_tensor_id[0] = j;
-                                    K_tensor_id[1] = j;
-                                    Real sum = 0.0;
-                                    for (int i = 0 ; i < n_bernst_1D_ ; ++i)
-                                    {
-                                        I_tensor_id[0] = i;
-                                        K_tensor_id[0] = i;
-                                        sum += K(K_tensor_id) * I_container[0](I_tensor_id);
-                                    }
-                                    KI(KI_tensor_id) = sum;
-                                }
-                            }
-                        }
-
-
-                        TensorIndex<dim> alpha_tensor_id;
-                        TensorIndex<dim>  beta_tensor_id;
-                        for (beta_tensor_id[1] = 0 ; beta_tensor_id[1] < n_basis_elem[1] ; ++beta_tensor_id[1])
-                        {
-                            I_tensor_id[2] = beta_tensor_id[1];
-                            for (alpha_tensor_id[1] = 0 ; alpha_tensor_id[1] < n_basis_elem[1] ; ++alpha_tensor_id[1])
-                            {
-                                I_tensor_id[1] = alpha_tensor_id[1];
-                                for (beta_tensor_id[0] = 0 ; beta_tensor_id[0] < n_basis_elem[0] ; ++beta_tensor_id[0])
-                                {
-                                    KI_tensor_id[2] = beta_tensor_id[0];
-
-
-                                    for (alpha_tensor_id[0] = 0 ; alpha_tensor_id[0] < n_basis_elem[0] ; ++alpha_tensor_id[0])
-                                    {
-                                        KI_tensor_id[1] = alpha_tensor_id[0];
-
-                                        Real sum = 0.0;
-                                        for (int j = 0 ; j < n_bernst_1D_ ; ++j)
-                                        {
-                                            I_tensor_id[0] = j;
-                                            KI_tensor_id[0] = j;
-                                            sum += KI(KI_tensor_id) * I_container[1](I_tensor_id);
-                                        }
-
-                                        Index alpha_flat_id = MultiArrayUtils<dim>::tensor_to_flat_index(alpha_tensor_id,weight_basis);
-                                        const Index beta_flat_id = MultiArrayUtils<dim>::tensor_to_flat_index(beta_tensor_id,weight_basis);
-
-                                        loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = sum;
-                                    }
-                                }
-                            }
-                        }
-            //*/
             const int k = 1;
             TensorSize<dim> tensor_size_alphabeta;
             TensorSize<dim> tensor_size_theta;
@@ -1197,8 +1140,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 2;
-    int degree_max = 2;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
