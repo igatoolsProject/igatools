@@ -209,123 +209,246 @@ public:
 
 protected:
     /**
+     * Typedef for specifying the value of the basis function in the
+     * reference domain.
+     */
+    using Value = Values<dim, range, rank>;
+
+    /**
      * Typedef for specifying the derivatives of the basis function in the
      * reference domain.
      */
     template <int deriv_order>
     using Derivative = Derivatives<dim, range, rank, deriv_order>;
 
-    using Value = Values<dim, range, rank>;
-
+    /**
+     * Typedef for specifying the divergence of the basis function in the
+     * reference domain.
+     */
     using Div = Values<dim, 1, 1>;
 
 public:
+    /** @name Functions returning the value of the basis functions. */
+    ///@{
     /**
-     * Reference to a ValueTable with the values of all local basis function
+     * Returns the const reference to a ValueTable with the values of all local basis function
      * at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     ValueTable<Value> const &get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
+     * Returns a const view to the values of the <tt>i</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
-    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
-
-    /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     */
-    ValueTable<Div> const &get_basis_divergences(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to a ValueTable with the gradients of all local basis function
-     * evaluated at each evaluation point.
-     */
-    ValueTable<Derivative<1>> const &get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to a ValueTable with hessians of all local basis function
-     * at each evaluation point.
-     */
-    ValueTable<Derivative<2>> const &get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
     typename ValueTable<Value>::const_view
     get_basis_values(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
-
-    typename ValueTable<Div>::const_view
-    get_basis_divergences(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-
-    typename ValueTable<Derivative<1> >::const_view
-    get_basis_gradients(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-
-    typename ValueTable<Derivative<2> >::const_view
-    get_basis_hessians(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-
     /**
-     * Reference to the value of a local basis function
+     * Returns the const reference to the value of a local basis function
      * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     Value const &get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Reference to the divergence of a local basis function
-     * at one evaluation point.
+     * Returns the const reference to a ValueTable with the values of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
      */
-    Div const &get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
+    ///@}
+
+
+    /** @name Functions returning the gradient of the basis functions. */
+    ///@{
+    /**
+     * Returns the const reference to a ValueTable with the gradients of all local basis function
+     * evaluated at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    ValueTable<Derivative<1>> const &get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Reference to the gradient of a local basis function
+     * Returns a const view to the gradients of the <tt>i</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    typename ValueTable<Derivative<1> >::const_view
+    get_basis_gradients(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the const reference to the gradient of a local basis function
      * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     Derivative<1> const &get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Reference to the hessian of a local basis function
+     * Returns the const reference to a ValueTable with the gradients of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<Derivative<1>> const &get_face_basis_gradients(const Index face_id) const;
+    ///@}
+
+    /** @name Functions returning the hessian of the basis functions. */
+    ///@{
+    /**
+     * Returns the const reference to a ValueTable with hessians of all local basis function
+     * at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    ValueTable<Derivative<2>> const &get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns a const view to the hessians of the <tt>i</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    typename ValueTable<Derivative<2> >::const_view
+    get_basis_hessians(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the const reference to the hessian of a local basis function
      * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     Derivative<2> const &get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
-    //Fields related
     /**
-     * Vector with the evaluation of the field @p local_coefs at the evaluation
+     * Returns the const reference to a ValueTable with the hessians of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<Derivative<2>> const &get_face_basis_hessians(const Index face_id) const;
+    ///@}
+
+    /** @name Functions returning the divergence of the basis functions. */
+    ///@{
+    /**
+     * Returns the const reference to a ValueTable with the values of all local basis function
+     * at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    ValueTable<Div> const &get_basis_divergences(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns a const view to the divergences of the <tt>i</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    typename ValueTable<Div>::const_view
+    get_basis_divergences(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the const reference to the divergence of a local basis function
+     * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
+    Div const &get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the const reference to a ValueTable with the divergences of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<Div> const &get_face_basis_divergences(const Index face_id) const;
+    ///@}
+
+
+
+    /** @name Fields related */
+    ///@{
+    /**
+     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
      * points.
      *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      * @see get_local_coefs
      */
     ValueVector<Value>
     evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+
     /**
-     * Vector with the evaluation of the gradient of the field @p local_coefs
+     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Value>
+    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
      * at the evaluation points.
      *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      * @see get_local_coefs
      */
     ValueVector<Derivative<1> >
     evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Vector with the evaluation of the divergences of the field @p local_coefs
+     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Derivative<1> >
+    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
      * at the evaluation points.
      *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    ValueVector<Derivative<2> >
+    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Derivative<2> >
+    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
+     * at the evaluation points.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      * @see get_local_coefs
      */
     ValueVector<Div>
     evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Vector with the evaluation of the hessians of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @see get_local_coefs
+     * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
      */
-    ValueVector<Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    ValueVector<Div>
+    evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const;
     ///@}
 
 

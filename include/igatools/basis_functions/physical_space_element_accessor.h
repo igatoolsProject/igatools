@@ -181,62 +181,111 @@ public :
     ///@}
 
 
-    /**
-     * @name Getting the basis functions values, derivatives and hessians
-     */
+    /** @name Functions returning the value of the basis functions. */
     ///@{
     /**
-     * Reference to a ValueTable with the values of all local basis function
+     * Returns the const reference to a ValueTable with the values of all local basis function
      * at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     ValueTable<Value> const &
     get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Value> const &
-    get_face_basis_values(const Index face_id) const;
-
-    /**
-     * @brief Return the one-dimensional container with the
-     * values of the i-th basis function at the evaluation points.
+     * Returns a const view to the values of the <tt>func</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     typename ValueTable<Value>::const_view
     get_basis_values(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the const reference to the value of a local basis function
+     * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
     const Value &
-    get_basis_value(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the const reference to a ValueTable with the values of all local basis function
+     * at each evaluation point on the face specified by @p face_id.
+     */
+    ValueTable<Value> const &
+    get_face_basis_values(const Index face_id) const;
+    ///@}
 
+    /** @name Functions returning the gradient of the basis functions. */
+    ///@{
+    /**
+     * Returns the const reference to a ValueTable with the gradients of all local basis function
+     * at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
     ValueTable<Derivative<1> > const &
     get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * \brief Return the one-dimensional container with the
-     * gradients of the i-th basis function at the evaluation points.
+     * Returns a const view to the gradients of the <tt>func</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     typename ValueTable< Derivative<1> >::const_view
     get_basis_gradients(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the const reference to the gradient of a local basis function
+     * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
     const Derivative<1> &
-    get_basis_gradient(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    ///@}
 
-
+    /** @name Functions returning the hessian of the basis functions. */
+    ///@{
+    /**
+     * Returns the const reference to a ValueTable with the hessians of all local basis function
+     * at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
     ValueTable<Derivative<2> > const &
     get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * \brief Return the one-dimensional container with the
-     * hessians of the i-th basis function at the evaluation points.
+     * Returns a const view to the hessians of the <tt>func</tt>-th basis function at each evaluation point.
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     typename ValueTable< Derivative<2> >::const_view
     get_basis_hessians(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
+    /**
+     * Returns the const reference to the hessian of a local basis function
+     * at one evaluation point.
+     * @param[in] basis Local basis id.
+     * @param[in] qp Point id.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     */
     const Derivative<2> &
-    get_basis_hessian(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    ///@}
 
+    /** @name Functions returning the difergence of the basis functions. */
+    ///@{
     Real get_basis_divergence(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
     ///@}
 
