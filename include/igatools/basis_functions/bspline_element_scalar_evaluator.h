@@ -25,53 +25,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
-#include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/basis_functions/values1d_const_view.h>
 #include <igatools/utils/dynamic_multi_array.h>
 
 
 IGA_NAMESPACE_OPEN
-
-
-
-/**
- * @brief blabla
- * @todo Document this class
- */
-class Values1DConstView
-{
-public:
-    /** Type for the container of one dimensional values on a single interval for a single scalar function.*/
-    using Values1D = typename DenseMatrix::MatrixRowType ;
-
-    using const_iterator = typename Values1D::const_iterator;
-
-    Values1DConstView() = default;
-
-    Values1DConstView(const DenseMatrix &funcs,const Index func_id)
-        :
-        funcs_(&funcs),
-        func_id_(func_id)
-    {
-        Assert(func_id >= 0 && func_id < Size(funcs_->size1()),
-               ExcIndexRange(func_id,0,Size(funcs_->size1())))
-    }
-
-
-    Values1DConstView(const Values1DConstView &view) = default ;
-    Values1DConstView(Values1DConstView &&view) = default ;
-
-    Values1DConstView &operator=(const Values1DConstView &view) = default;
-    Values1DConstView &operator=(Values1DConstView &&view) = default;
-
-    Real operator()(const Index point_id) const;
-
-    Size get_num_points() const;
-
-private:
-    const DenseMatrix *funcs_ = nullptr;
-    Index func_id_;
-};
-
 
 
 /**
@@ -87,8 +45,7 @@ private:
  * @date 29 Mar 2014
  */
 template <int dim>
-class
-    BSplineElementScalarEvaluator
+class BSplineElementScalarEvaluator
 {
 public:
     /** Type for the one dimensional values on a single interval for a single scalar function.*/

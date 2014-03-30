@@ -24,23 +24,6 @@
 
 IGA_NAMESPACE_OPEN
 
-Size
-Values1DConstView::
-get_num_points() const
-{
-	return funcs_->size2();
-}
-
-Real
-Values1DConstView::
-operator()(const Index point_id) const
-{
-    Assert(point_id >= 0 && point_id < this->get_num_points(),
-           ExcIndexRange(point_id,0,this->get_num_points()));
-
-    return (*funcs_)(func_id_,point_id);
-}
-
 
 template <int dim>
 BSplineElementScalarEvaluator<dim>::

@@ -1111,7 +1111,6 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
     const int num_points = size.n_points_direction_.flat_size();
 
-    const auto &points_indexer = *(size.points_indexer_);
 
 //    LogStream out;
 //    out << &derivatives_phi_hat << std::endl ;
@@ -1125,6 +1124,8 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
 #ifdef NOT_OPTIMIZED
         // NOT_OPTIMIZED branch
+
+        const auto &points_indexer = *(size.points_indexer_);
 
         const int n_partial_ders = der_t::size;
 
