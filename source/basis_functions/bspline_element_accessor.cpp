@@ -1283,6 +1283,29 @@ get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
     return this->get_basis_values(FaceTopology<dim>(face_id));
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_face_basis_gradients(const Index face_id) const -> ValueTable<Derivative<1>> const &
+{
+    return this->get_basis_gradients(FaceTopology<dim>(face_id));
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_face_basis_hessians(const Index face_id) const -> ValueTable<Derivative<2>> const &
+{
+    return this->get_basis_hessians(FaceTopology<dim>(face_id));
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_face_basis_divergences(const Index face_id) const -> ValueTable<Div> const &
+{
+    return this->get_basis_divergences(FaceTopology<dim>(face_id));
+}
 
 template <int dim, int range, int rank>
 auto
@@ -1424,12 +1447,21 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
     return D0phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector<Value>
+{
+	return this->evaluate_field(local_coefs,FaceTopology<dim>(face_id));
+}
 
 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+-> ValueVector< Derivative<1> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_gradients() == true, ExcCacheNotFilled());
@@ -1441,6 +1473,15 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
     ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
 
     return D1phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector< Derivative<1> >
+{
+	return this->evaluate_field_gradients(local_coefs,FaceTopology<dim>(face_id));
 }
 
 template <int dim, int range, int rank>
@@ -1462,6 +1503,14 @@ evaluate_field_divergences(
     return div_phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector<Div>
+{
+	return this->evaluate_field_divergences(local_coefs,FaceTopology<dim>(face_id));
+}
 
 template <int dim, int range, int rank>
 auto
@@ -1480,6 +1529,14 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<di
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector< Derivative<2> >
+{
+	return this->evaluate_field_hessians(local_coefs,FaceTopology<dim>(face_id));
+}
 
 template <int dim, int range, int rank>
 auto
