@@ -1169,32 +1169,38 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 #else
         // OPTIMIZED branch
 
+        DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
+
         for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
         {
             auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
 
             const auto &scalar_bspline = *cache.scalar_evaluators_(iComp)(func_flat_id);
+
+            for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
+            {
+                const int entry_flat_id = derivatives_flat_id_evaluate[entry_id];
+                const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
+
+                // from the entry id we compute the right derivative order
+                for (int i = 0; i < dim; ++i)
+                    deriv_order_tensor_id[i] = 0;
+
+                for (int i = 0; i < deriv_order; ++i)
+                    ++(deriv_order_tensor_id[entry_tensor_id[i]]);
+
+                scalar_bspline.evaluate_derivative_at_points(deriv_order_tensor_id,derivative_scalar_component);
+
+                for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                    derivatives_phi_hat_ifn[point_flat_id](entry_flat_id)(iComp) = derivative_scalar_component(point_flat_id);
+            }
+        }
+        for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
+        {
+            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
             for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
             {
-                const auto &point_tensor_id = points_indexer.get_tensor_index(point_flat_id);
-
                 der_t &derivative = derivatives_phi_hat_ifn[point_flat_id];
-
-                for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
-                {
-                    const int entry_flat_id = derivatives_flat_id_evaluate[entry_id];
-                    const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
-
-                    // from the entry id we compute the right derivative order
-                    for (int i = 0; i < dim; ++i)
-                        deriv_order_tensor_id[i] = 0;
-
-                    for (int i = 0; i < deriv_order; ++i)
-                        ++(deriv_order_tensor_id[entry_tensor_id[i]]);
-
-                    derivative(entry_flat_id)(iComp) =
-                        scalar_bspline.evaluate_derivative(deriv_order_tensor_id,point_tensor_id);
-                } // end entry_id loop
 
                 // here we copy the computed quantities to the symmetric part of the tensor
                 for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
