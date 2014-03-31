@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/values1d_const_view.h>.h>
+#include <igatools/basis_functions/values1d_const_view.h>
 #include <igatools/base/exceptions.h>
 
 
@@ -39,15 +39,15 @@ Size
 Values1DConstView::
 get_num_points() const
 {
-	Assert(funcs_ != nullptr,ExcNullPtr());
-	return funcs_->size2();
+    Assert(funcs_ != nullptr,ExcNullPtr());
+    return funcs_->size2();
 }
 
 Real
 Values1DConstView::
 operator()(const Index point_id) const
 {
-	Assert(funcs_ != nullptr,ExcNullPtr());
+    Assert(funcs_ != nullptr,ExcNullPtr());
     Assert(point_id >= 0 && point_id < this->get_num_points(),
            ExcIndexRange(point_id,0,this->get_num_points()));
 

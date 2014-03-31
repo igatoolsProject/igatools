@@ -39,6 +39,8 @@
 
 #include <boost/math/special_functions/binomial.hpp>
 
+#include <cblas.h>
+
 #include <chrono>
 // [old includes]
 
@@ -520,23 +522,23 @@ public:
 
 
 
-    TensorSize<3> tensor_size_C_k_1 = C_k_1.tensor_size();
-    Assert(tensor_size_C_k_1[0] == tensor_size_theta_k.flat_size(),
-           ExcDimensionMismatch(tensor_size_C_k_1[0],tensor_size_theta_k.flat_size()));
-    Assert(tensor_size_C_k_1[1] == tensor_size_alphabeta_k_1.flat_size(),
-           ExcDimensionMismatch(tensor_size_C_k_1[1],tensor_size_alphabeta_k_1.flat_size()));
-    Assert(tensor_size_C_k_1[2] == tensor_size_alphabeta_k_1.flat_size(),
-           ExcDimensionMismatch(tensor_size_C_k_1[2],tensor_size_alphabeta_k_1.flat_size()));
+//    TensorSize<3> tensor_size_C_k_1 = C_k_1.tensor_size();
+    Assert(C_k_1.tensor_size()[0] == tensor_size_theta_k.flat_size(),
+           ExcDimensionMismatch(C_k_1.tensor_size()[0],tensor_size_theta_k.flat_size()));
+    Assert(C_k_1.tensor_size()[1] == tensor_size_alphabeta_k_1.flat_size(),
+           ExcDimensionMismatch(C_k_1.tensor_size()[1],tensor_size_alphabeta_k_1.flat_size()));
+    Assert(C_k_1.tensor_size()[2] == tensor_size_alphabeta_k_1.flat_size(),
+           ExcDimensionMismatch(C_k_1.tensor_size()[2],tensor_size_alphabeta_k_1.flat_size()));
 
 
     const auto &J_k = J[k-1];
-    TensorSize<3> tensor_size_J_k = J_k.tensor_size();
-    Assert(tensor_size_J_k[0] == tensor_size_theta[k-1],
-           ExcDimensionMismatch(tensor_size_J_k[0],tensor_size_theta[k-1]));
-    Assert(tensor_size_J_k[1] == tensor_size_alphabeta[k-1],
-           ExcDimensionMismatch(tensor_size_J_k[1],tensor_size_alphabeta[k-1]));
-    Assert(tensor_size_J_k[2] == tensor_size_alphabeta[k-1],
-           ExcDimensionMismatch(tensor_size_J_k[2],tensor_size_alphabeta[k-1]));
+//    TensorSize<3> tensor_size_J_k = J_k.tensor_size();
+    Assert(J_k.tensor_size()[0] == tensor_size_theta[k-1],
+           ExcDimensionMismatch(J_k.tensor_size()[0],tensor_size_theta[k-1]));
+    Assert(J_k.tensor_size()[1] == tensor_size_alphabeta[k-1],
+           ExcDimensionMismatch(J_k.tensor_size()[1],tensor_size_alphabeta[k-1]));
+    Assert(J_k.tensor_size()[2] == tensor_size_alphabeta[k-1],
+           ExcDimensionMismatch(J_k.tensor_size()[2],tensor_size_alphabeta[k-1]));
 
 
 
@@ -549,30 +551,13 @@ public:
     const Size size_flat_alpha_k_1 = tensor_size_alphabeta_k_1.flat_size();
     const Size size_flat_beta_k_1  = size_flat_alpha_k_1;
 
-//    const Size size_flat_theta_k = tensor_size_theta_k.flat_size();
-    /*
-    out << "size_flat_theta_k = " << size_flat_theta_k << endl;
-    out << "size_flat_theta_k_1 = " << size_flat_theta_k_1 << endl;
-    out << "size_flat_alpha_k_1 = " << size_flat_alpha_k_1 << endl;
-    out << "size_flat_beta_k_1 = " << size_flat_beta_k_1 << endl;
-//*/
 
     TensorSize<3> tensor_size_C_k;
     tensor_size_C_k[0] = size_flat_theta_k_1;
     tensor_size_C_k[1] = tensor_size_alphabeta_k.flat_size();
     tensor_size_C_k[2] = tensor_size_alphabeta_k.flat_size();
     DynamicMultiArray<Real,3> C_k(tensor_size_C_k);
-/*
-    out << "tensor_size_C[k-1] = "
-        << tensor_size_C_k_1[0] << ","
-        << tensor_size_C_k_1[1] << ","
-        << tensor_size_C_k_1[2] << endl;
 
-    out << "tensor_size_C[k] = "
-        << tensor_size_C_k[0] << ","
-        << tensor_size_C_k[1] << ","
-        << tensor_size_C_k[2] << endl;
-//*/
 
 #define OPTIMIZED
 
@@ -624,12 +609,11 @@ public:
 
             tensor_id_C_k[2]++;
         } // end loop beta_k
+
     } // end loop flat_beta_k_1
+
 #else
     // OPTIMIZED branch
-
-    const Size size_theta_k = tensor_size_theta[k-1];
-
 
     tensor_id_C_k[2] = 0;
     for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < size_flat_beta_k_1 ; ++flat_beta_k_1)
@@ -650,24 +634,28 @@ public:
                 {
                     tensor_id_J_k[1] = alpha_k;
 
-                    tensor_id_J_k[0] = 0;
-                    const Real * J_begin = & J_k(tensor_id_J_k);
-                    const Real * J_end = J_begin + size_theta_k;
-
                     tensor_id_C_k_1[0] = 0 ;
-                    const Real * C_ptr = & C_k_1(tensor_id_C_k_1);
-
-                    tensor_id_C_k[0] = 0;
-                    Real * CJ_ptr_begin = &C_k(tensor_id_C_k);
-                    const Real * CJ_ptr_end = CJ_ptr_begin + size_flat_theta_k_1;
-
-                    for (Real *CJ_ptr = CJ_ptr_begin ; CJ_ptr != CJ_ptr_end ; ++CJ_ptr)
+                    const Real *C_k_1_ptr = &C_k_1(tensor_id_C_k_1);
+                    for (Index flat_theta_k_1 = 0 ; flat_theta_k_1 < size_flat_theta_k_1 ; ++flat_theta_k_1)
                     {
-                        Real sum = 0.0;
-                        for (const Real * J_ptr = J_begin; J_ptr != J_end ; ++J_ptr, ++C_ptr)
-                        	sum += (*C_ptr) * (*J_ptr);
+                        tensor_id_C_k[0] = flat_theta_k_1;
 
-                        (*CJ_ptr) = sum;
+
+                        tensor_id_J_k[0] = 0;
+                        const Real *J_k_ptr = &J_k(tensor_id_J_k);
+                        /*
+                        for ( ; J_k_ptr != J_k_ptr_end ; ++J_k_ptr, ++C_k_1_ptr)
+//                        for (int theta_k = 0 ; theta_k < tensor_size_theta[k-1] ; ++theta_k, ++J_k_ptr)
+                        {
+
+//                            tensor_id_J_k[0] = theta_k;
+                            sum += (*C_k_1_ptr) * (*J_k_ptr);
+
+//                            tensor_id_C_k_1[0]++;
+
+                        } // end loop theta_k
+//*/
+                        C_k(tensor_id_C_k) = cblas_ddot(tensor_size_theta[k-1], C_k_1_ptr, 1, J_k_ptr, 1);
 
                     } //end loop flat_theta_k_1
 
@@ -678,7 +666,9 @@ public:
 
             tensor_id_C_k[2]++;
         } // end loop beta_k
+
     } // end loop flat_beta_k_1
+
 
 #endif
 

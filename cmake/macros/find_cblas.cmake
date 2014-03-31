@@ -17,39 +17,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Find CBLAS library (Required)
+#-------------------------------------------------------------------------------
+macro(find_cblas)
+  set(CBLAS_SEARCH_PATHS /usr/lib)
+  find_library(CBLAS_LIBRARY NAMES cblas PATHS ${CBLAS_SEARCH_PATHS})
+  
+  if (CBLAS_LIBRARY)
+    set(CBLAS_FOUND ON)
+    set(CBLAS_LIBRARY_DIR ${CBLAS_SEARCH_PATHS})
+  endif (CBLAS_LIBRARY)
 
-# Config file for the igatools library, this file is
-# used by the cmake find_package()
-# when used by other cmake projects.
+  if (CBLAS_FOUND)
+    message(STATUS "Found CBLAS in ${CBLAS_LIBRARY}")
+  else (CBLAS_FOUND)
+    message(FATAL_ERROR "Could not find CBLAS libraries.")
+  endif (CBLAS_FOUND)
 
-set(IGA_VERSION "@IGA_VERSION@")
-
-set(IGA_CXX_COMPILER "@CMAKE_CXX_COMPILER@")
-set(IGA_CXX_FLAGS "@CMAKE_CXX_FLAGS@")
-set(IGA_LINKER_FLAGS "@CMAKE_SHARED_LINKER_FLAGS@")
-set(IGA_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
-
-
-# include paths
-set( IGA_INCLUDE_DIRS 
-  @Trilinos_INCLUDE_DIRS@
-  @Boost_INCLUDE_DIRS@
-  @CMAKE_INSTALL_PREFIX@/include
-  )
-
-# library path
-set(IGA_LIBRARY_DIR
-  @Trilinos_LIBRARY_DIRS@
-  @Boost_LIBRARY_DIRS@
-  @CMAKE_INSTALL_PREFIX@/lib
-  @CBLAS_LIBRARY_DIR@
-  )
-
-# libraries
-set(IGA_LIBRARIES 
-  @lib_name@
-  @Boost_LIBRARIES@
-  @Trilinos_LIBRARIES@
-  @Trilinos_TPL_LIBRARIES@
-  @CBLAS_LIBRARY@
-  )
+#  mark_as_advanced(CBLAS_LIBRARY)
+endmacro(find_cblas)

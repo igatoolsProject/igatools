@@ -92,6 +92,7 @@ find_doxygen()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Required libraries
 #
+find_cblas()
 find_trilinos()
 find_boost()
 #
@@ -139,12 +140,13 @@ endforeach()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
                     ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-# the igatools library targent
+# the igatools library target
 add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 
   ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
-  ${Boost_LIBRARIES})
+  ${Boost_LIBRARIES}
+  ${CBLAS_LIBRARY})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGA_VERSION})
 
 
