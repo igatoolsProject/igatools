@@ -32,9 +32,9 @@ IGA_NAMESPACE_OPEN
 
 //TODO(pauletti, Jan 19, 2014): remove the is_bspline from this class
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 create_refinement_connection()
 {
     //----------------------------------
@@ -48,8 +48,8 @@ create_refinement_connection()
 
 
 
-template <int dim_, int dim_range_, int rank_>
-NURBSSpace<dim_, dim_range_, rank_>::
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(shared_ptr< GridType > knots, const int &degree)
     :
     base_t(knots, degree)
@@ -73,9 +73,9 @@ NURBSSpace(shared_ptr< GridType > knots, const int &degree)
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 create(shared_ptr< GridType > knots,
        const int &degree) -> shared_ptr< self_t >
 {
@@ -84,8 +84,8 @@ create(shared_ptr< GridType > knots,
 
 
 
-template <int dim_, int dim_range_, int rank_>
-NURBSSpace<dim_, dim_range_, rank_>::
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(
     shared_ptr<GridType> knots,
     const DegreeTable &degree)
@@ -108,9 +108,9 @@ NURBSSpace(
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
        const DegreeTable &degree)
 -> shared_ptr< self_t >
@@ -120,8 +120,8 @@ create(shared_ptr<GridType> knots,
 
 
 
-template <int dim_, int dim_range_, int rank_>
-NURBSSpace<dim_, dim_range_, rank_>::
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(
     shared_ptr< GridType > knots,
     const MultiplicityTable &mult_vector,
@@ -149,9 +149,9 @@ NURBSSpace(
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 create(shared_ptr< GridType > knots,
        const MultiplicityTable &mult_vector,
        const DegreeTable &degree) -> shared_ptr< self_t >
@@ -161,8 +161,8 @@ create(shared_ptr< GridType > knots,
 
 
 
-template <int dim_, int dim_range_, int rank_>
-NURBSSpace<dim_, dim_range_, rank_>::
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(
     std::shared_ptr< GridType > knots,
     const MultiplicityTable &mult_vector,
@@ -179,9 +179,9 @@ NURBSSpace(
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr< GridType > knots,
        const MultiplicityTable &mult_vector,
        const DegreeTable &degree,
@@ -192,14 +192,14 @@ create(std::shared_ptr< GridType > knots,
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
     //-------------------------------------------
     // check that the number of weights is equal to the number of basis functions in the space
-    using weights_container_t = StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank>;
+    using weights_container_t = StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>;
     Size n_weights = 0;
     for (int comp_id = 0; comp_id < weights_container_t::n_entries; ++comp_id)
         n_weights += weights_(comp_id).flat_size();
@@ -211,9 +211,9 @@ perform_post_construction_checks() const
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
     return ElementIterator(const_cast< self_t & >(*this), 0);
@@ -221,9 +221,9 @@ begin() const -> ElementIterator
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
     return ElementIterator(const_cast<self_t &>(*this),
@@ -232,9 +232,9 @@ last() const -> ElementIterator
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
     return ElementIterator(const_cast<self_t &>(*this),
@@ -243,23 +243,23 @@ end() const -> ElementIterator
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, dim_range_, rank_>::
-get_weights() const -> const StaticMultiArray<DynamicMultiArray<Real,dim>, dim_range, rank >
+NURBSSpace<dim_, range_, rank_>::
+get_weights() const -> const StaticMultiArray<DynamicMultiArray<Real,dim>, range, rank >
 {
     return (weights_);
 }
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, dim_range_, rank_>::
-reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank> &weights)
+NURBSSpace<dim_, range_, rank_>::
+reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> &weights)
 {
     //-------------------------------------------------------------------------
-    for (int i = 0; i < StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank>::n_entries; ++i)
+    for (int i = 0; i < StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>::n_entries; ++i)
     {
         Assert(this->get_component_num_basis(i) == int(weights(i).flat_size()),
                ExcDimensionMismatch(this->get_component_num_basis(i), weights(i).flat_size()));
@@ -270,9 +270,9 @@ reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,dim_range,rank>
 
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 refine_h_weights(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
@@ -385,12 +385,12 @@ refine_h_weights(
 }
 
 
-template <int dim_, int dim_range_, int rank_>
+template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, dim_range_, rank_>::
+NURBSSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-    out << "NURBSSpace<" << dim_ << "," << dim_range_ << ">" << endl;
+    out << "NURBSSpace<" << dim_ << "," << range_ << ">" << endl;
 
     base_t::print_info(out);
 

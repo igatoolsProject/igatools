@@ -54,7 +54,7 @@ using FaceSpace = PhysicalSpace<typename Space::RefFaceSpace,
  * @todo document
  */
 template <class Space>
-using Func = Function<Space::space_dim, Space::dim_range, Space::rank>;
+using Func = Function<Space::space_dim, Space::range, Space::rank>;
 
 /**
  * This namespace collect functions that work on the
@@ -124,7 +124,7 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
  */
 template<class Space>
 Vector projection_l2(
-    const Function<Space::space_dim,Space::dim_range,Space::rank> &func,
+    const Function<Space::space_dim,Space::range,Space::rank> &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim> &quad
 );

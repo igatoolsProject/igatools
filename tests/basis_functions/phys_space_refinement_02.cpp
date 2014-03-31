@@ -44,7 +44,7 @@ template <int dim>
 using PhysSpace = PhysicalSpace< RefSpace<dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, RefSpace<dim>::dim_range, RefSpace<dim>::rank >;
+using ComponentTable = StaticMultiArray<T, RefSpace<dim>::range, RefSpace<dim>::rank >;
 
 template <int dim>
 void test_evaluate()

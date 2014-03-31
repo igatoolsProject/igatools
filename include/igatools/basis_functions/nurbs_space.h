@@ -33,17 +33,17 @@ template < int, int, int > class NURBSElementAccessor;
  * This class represent a function space in which the basis functions are NURBS.
  *
  */
-template <int dim_, int dim_range_ = 1, int rank_ = 1>
-class NURBSSpace : public BSplineSpace<dim_, dim_range_, rank_>
+template <int dim_, int range_ = 1, int rank_ = 1>
+class NURBSSpace : public BSplineSpace<dim_, range_, rank_>
 {
 public:
-    using base_t = BSplineSpace<dim_, dim_range_, rank_>;
+    using base_t = BSplineSpace<dim_, range_, rank_>;
 
     /** Type for the grid. */
     using typename base_t::GridType;
     using base_t::dim;
     using base_t::space_dim;
-    using base_t::dim_range;
+    using base_t::range;
     using base_t::rank;
     using base_t::n_components;
     using typename base_t::DegreeTable;
@@ -53,14 +53,14 @@ public:
     using WeightsTable = typename base_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
 
 private:
-    using self_t = NURBSSpace<dim, dim_range, rank>;
+    using self_t = NURBSSpace<dim, range, rank>;
 
 public:
     static const bool has_weights = true;
     /**
      * Type for element accessor.
      */
-    typedef NURBSElementAccessor<dim, dim_range, rank> ElementAccessor;
+    typedef NURBSElementAccessor<dim, range, rank> ElementAccessor;
 
     /**
      * Type for iterator over the elements.
@@ -71,7 +71,7 @@ public:
      * Type for the face space.
      */
     //TODO rename FaceSpace_t to face_space_t
-    typedef NURBSSpace<dim-1, dim_range, rank> FaceSpace_t;
+    typedef NURBSSpace<dim-1, range, rank> FaceSpace_t;
 
 
 public :
@@ -183,19 +183,19 @@ public :
     /**
      * Get the weights of the NURBSSpace.
      */
-    const StaticMultiArray< DynamicMultiArray<Real,dim>,dim_range,rank>
+    const StaticMultiArray< DynamicMultiArray<Real,dim>,range,rank>
     get_weights() const;
 
     /**
      * Reset the weights of the NURBSSpace.
      */
-    void reset_weights(const StaticMultiArray<DynamicMultiArray<iga::Real,dim>,dim_range,rank> &weights);
+    void reset_weights(const StaticMultiArray<DynamicMultiArray<iga::Real,dim>,range,rank> &weights);
 
 private:
     /**
      * Weights associated to the basis functions.
      */
-    StaticMultiArray<DynamicMultiArray<iga::Real,dim>,dim_range,rank> weights_;
+    StaticMultiArray<DynamicMultiArray<iga::Real,dim>,range,rank> weights_;
 
     /**
      * Refines the NURBSSpace after the uniform refinement of the BSplineSpace.

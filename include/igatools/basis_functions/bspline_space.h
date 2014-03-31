@@ -95,18 +95,18 @@ template<Transformation, int, int> class PushForward;
  * of the grid used top build the space
  *
  */
-template<int dim_domain_, int dim_range_ = 1, int rank_ = 1>
+template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
-    public std::enable_shared_from_this<BSplineSpace<dim_domain_,dim_range_,rank_> >,
-    public FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >
+    public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
+    public FunctionSpaceOnGrid<CartesianGrid<dim_> >
 {
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >;
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
-    using PushForwardType = PushForward<Transformation::h_grad,dim_domain_,0>;
+    using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
 
-    using RefSpace = BSplineSpace<dim_domain_, dim_range_, rank_>;
+    using RefSpace = BSplineSpace<dim_, range_, rank_>;
 
     using GridType = typename PushForwardType::GridType;
 
@@ -116,17 +116,17 @@ public:
 
     static const int space_dim = PushForwardType::space_dim;
 
-    static const int dim_range = dim_range_;
+    static const int range = range_;
 
     static const int rank = rank_;
 
-    static constexpr int n_components = constexpr_pow(dim_range, rank);
+    static constexpr int n_components = constexpr_pow(range, rank);
 
 
 
     /** Container indexed by the components of the space */
     template< class T>
-    using ComponentTable = StaticMultiArray<T,dim_range,rank>;
+    using ComponentTable = StaticMultiArray<T,range,rank>;
 
     using DegreeTable = ComponentTable<TensorIndex<dim>>;
 
@@ -134,17 +134,17 @@ private:
 
 
     /** Type for current class. */
-    using self_t = BSplineSpace<dim,dim_range,rank>;
+    using self_t = BSplineSpace<dim,range,rank>;
 
 public:
     static const bool has_weights = false;
 
     /** Type for the reference face space.*/
-    using RefFaceSpace = BSplineSpace<dim-1,dim_range,rank>;
+    using RefFaceSpace = BSplineSpace<dim-1,range,rank>;
 
 
     /** Type for the element accessor. */
-    using ElementAccessor = BSplineElementAccessor<dim,dim_range,rank>;
+    using ElementAccessor = BSplineElementAccessor<dim,range,rank>;
 
     /**
      * Type for iterator over the elements.
@@ -169,7 +169,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    static std::shared_ptr<BSplineSpace<dim,range,rank> >
     create(std::shared_ptr<GridType> knots,
            int degree);
 
@@ -185,7 +185,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    static std::shared_ptr<BSplineSpace<dim,range,rank> >
     create(std::shared_ptr<GridType> knots,
            const TensorIndex<dim> &degree);
 
@@ -201,7 +201,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    static std::shared_ptr<BSplineSpace<dim,range,rank> >
     create(std::shared_ptr<GridType> knots,
            const ComponentTable<TensorIndex<dim>> &degree);
 
@@ -221,7 +221,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,dim_range,rank> >
+    static std::shared_ptr<BSplineSpace<dim,range,rank> >
     create(std::shared_ptr<GridType> knots,
            const ComponentTable<Multiplicity<dim>> &mult_vectors,
            const ComponentTable<TensorIndex<dim>> &degree);
@@ -235,8 +235,8 @@ public:
     ///@{
 
     /** Copy assignment. Not allowed to be used. */
-    BSplineSpace<dim,dim_range,rank> &
-    operator=(const BSplineSpace<dim,dim_range,rank> &space) = delete;
+    BSplineSpace<dim,range,rank> &
+    operator=(const BSplineSpace<dim,range,rank> &space) = delete;
     ///@}
 
     /** @name Getting information about the space */
@@ -299,7 +299,7 @@ public:
 
 
 
-    std::shared_ptr<const BSplineSpace<dim,dim_range,rank> >
+    std::shared_ptr<const BSplineSpace<dim,range,rank> >
     get_reference_space() const ;
 
 
@@ -361,7 +361,7 @@ public:
      * Return the knot multiplicities for each component of the space.
      */
     const ComponentTable<Multiplicity<dim>> &
-    get_multiplicities() const;
+                                         get_multiplicities() const;
 
 
     /**
@@ -485,13 +485,13 @@ private:
     /**
      * Number of active components of the space.
      * If the space is range-homogeneous the number of active components is 1, otherwise
-     * is n_components = pow(dim_range,rank).
+     * is n_components = pow(range,rank).
      */
     Size num_active_components_;
     ///@}
 
 
-    friend class BSplineElementAccessor<dim, dim_range, rank>;
+    friend class BSplineElementAccessor<dim, range, rank>;
 
 
     /**
