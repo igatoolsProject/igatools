@@ -96,18 +96,18 @@ template<Transformation, int, int> class PushForward;
  * of the grid used top build the space
  *
  */
-template<int dim_domain_, int range_ = 1, int rank_ = 1>
+template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
-    public std::enable_shared_from_this<BSplineSpace<dim_domain_,range_,rank_> >,
-    public FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >
+    public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
+    public FunctionSpaceOnGrid<CartesianGrid<dim_> >
 {
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_domain_> >;
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
-    using PushForwardType = PushForward<Transformation::h_grad,dim_domain_,0>;
+    using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
 
-    using RefSpace = BSplineSpace<dim_domain_, range_, rank_>;
+    using RefSpace = BSplineSpace<dim_, range_, rank_>;
 
     using GridType = typename PushForwardType::GridType;
 
@@ -362,7 +362,7 @@ public:
      * Return the knot multiplicities for each component of the space.
      */
     const ComponentTable<Multiplicity<dim>> &
-    get_multiplicities() const;
+                                         get_multiplicities() const;
 
 
     /**

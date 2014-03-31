@@ -77,7 +77,7 @@ class FunctionSpace
  *  static const int space_dim = PushForwardType::space_dim;
  *
  *  // Dimension of the range.
- *  static const int dim_range = PushForwardType::template PhysRange<RefSpace::dim_range>::value;
+ *  static const int range = PushForwardType::template PhysRange<RefSpace::range>::value;
  *
  *  // Rank of the range.
  *  static const int rank = RefSpace::rank;
@@ -134,9 +134,8 @@ public:
  * @relates FunctionSpace
  *
  */
-//TODO(pauletti, Mar 3, 2014): uncapitalize first letter
 template<class T>
-constexpr bool Is_function_space()
+constexpr bool is_function_space()
 {
     return std::is_base_of<FunctionSpace,T>::value;
 }

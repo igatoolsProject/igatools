@@ -64,8 +64,8 @@ get_xml_tree(const std::string &filename)
  */
 Size
 count_xml_elements_same_tag(
-		const boost::property_tree::ptree &tree,
-		const string &tag_name)
+    const boost::property_tree::ptree &tree,
+    const string &tag_name)
 {
     Size counter = 0;
 
@@ -73,7 +73,7 @@ count_xml_elements_same_tag(
         if (boost::iequals(leaf.first,tag_name))
             counter++;
 
-	return counter;
+    return counter;
 }
 
 /**
@@ -81,10 +81,10 @@ count_xml_elements_same_tag(
  */
 bool
 xml_element_is_present(
-		const boost::property_tree::ptree &tree,
-		const string &tag_name)
+    const boost::property_tree::ptree &tree,
+    const string &tag_name)
 {
-	return ( count_xml_elements_same_tag(tree,tag_name) > 0 ) ? true:false;
+    return (count_xml_elements_same_tag(tree,tag_name) > 0) ? true:false;
 }
 
 /**
@@ -94,13 +94,13 @@ xml_element_is_present(
  */
 bool
 xml_element_is_unique(
-		const boost::property_tree::ptree &tree,
-		const string &tag_name)
+    const boost::property_tree::ptree &tree,
+    const string &tag_name)
 {
-	const Size counter = count_xml_elements_same_tag(tree,tag_name);
+    const Size counter = count_xml_elements_same_tag(tree,tag_name);
 
-	AssertThrow(counter >= 1, ExcLowerRange(counter,1));
-	return ( counter == 1 ) ? true:false;
+    AssertThrow(counter >= 1, ExcLowerRange(counter,1));
+    return (counter == 1) ? true:false;
 }
 
 
@@ -185,7 +185,7 @@ shared_ptr< CartesianGrid<dim> >
 get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"CartesianGrid"),
-    		ExcMessage("The CartesianGrid tag is not unique."));
+                ExcMessage("The CartesianGrid tag is not unique."));
 
     const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
 
@@ -236,7 +236,7 @@ get_xml_input_file_format(const std::string &filename)
         }
         else if (boost::iequals(leaf.first,"Igatools"))
         {
-        	const auto & igatools_attr = get_xml_element_attributes(leaf.second);
+            const auto &igatools_attr = get_xml_element_attributes(leaf.second);
             file_format_version = igatools_attr.get<std::string>("FormatVersion");
         }
         else
@@ -546,7 +546,7 @@ shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
-    		ExcMessage("The NURBSSpace tag is not unique."));
+                ExcMessage("The NURBSSpace tag is not unique."));
 
     const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
 
@@ -651,7 +651,7 @@ shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"NURBSSpace"),
-    		ExcMessage("The NURBSSpace tag is not unique."));
+                ExcMessage("The NURBSSpace tag is not unique."));
 
     const auto &ref_space_tree = get_xml_element(tree,"NURBSSpace");
 
@@ -777,7 +777,7 @@ std::shared_ptr< Mapping<dim,codim> >
 get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
     AssertThrow(xml_element_is_unique(igatools_tree,"IgMapping"),
-    		ExcMessage("The IgMapping tag is not unique."));
+                ExcMessage("The IgMapping tag is not unique."));
 
     const auto &mapping_tree = get_xml_element(igatools_tree,"IgMapping");
 
@@ -852,12 +852,12 @@ get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
     if (xml_element_is_unique(igatools_tree,"IgMapping"))
     {
-    	// use the reader for format version 2.0
-    	map = get_ig_mapping_from_xml<dim,codim>(igatools_tree);
+        // use the reader for format version 2.0
+        map = get_ig_mapping_from_xml<dim,codim>(igatools_tree);
     }
     else
     {
-    	AssertThrow(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
     }
 
     return map;
@@ -882,8 +882,8 @@ get_mapping_from_file(const std::string &filename)
 
         const auto &igatools_tree = get_xml_element(file_tree,"Igatools");
 
-    	// use the format version 2.0
-    	map = get_mapping_from_xml<dim,codim>(igatools_tree);
+        // use the format version 2.0
+        map = get_mapping_from_xml<dim,codim>(igatools_tree);
     }
     else
     {
