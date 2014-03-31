@@ -28,7 +28,7 @@ Size
 Values1DConstView::
 get_num_points() const
 {
-	return funcs_->size2();
+    return funcs_->size2();
 }
 
 Real
@@ -53,13 +53,13 @@ BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim
 
 
 template <int dim>
-const std::array<Values1DConstView,dim>&
+const std::array<Values1DConstView,dim> &
 BSplineElementScalarEvaluator<dim>::
 get_derivative_components_view(const int order) const
 {
-	Assert(order >= 0 && order< values1D_.size(),
-			ExcIndexRange(order,0,values1D_.size()));
-	return values1D_[order];
+    Assert(order >= 0 && order< values1D_.size(),
+           ExcIndexRange(order,0,values1D_.size()));
+    return values1D_[order];
 }
 
 template <int dim>
@@ -67,9 +67,9 @@ const Values1DConstView &
 BSplineElementScalarEvaluator<dim>::
 get_values_view(const int order,const int dir) const
 {
-	Assert(dir >= 0 && dir < dim,
-			ExcIndexRange(dir,0,dim));
-	return get_derivative_components_view(order)[dim];
+    Assert(dir >= 0 && dir < dim,
+           ExcIndexRange(dir,0,dim));
+    return get_derivative_components_view(order)[dim];
 }
 
 
@@ -80,20 +80,20 @@ TensorSize<dim>
 BSplineElementScalarEvaluator<dim>::
 get_num_points() const
 {
-	Assert(!values1D_.empty(),ExcEmptyObject());
+    Assert(!values1D_.empty(),ExcEmptyObject());
 
-	TensorSize<dim> n_points;
-	for (int i = 0 ; i < dim ; ++i)
-	{
-		n_points(i) = values1D_[0][i].get_num_points();
+    TensorSize<dim> n_points;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        n_points(i) = values1D_[0][i].get_num_points();
 
 #ifndef NDEBUG
-		for (const auto &values : values1D_)
-			Assert(n_points(i) == values[i].get_num_points(),
-					ExcDimensionMismatch(n_points(i),values[i].get_num_points()));
+        for (const auto &values : values1D_)
+            Assert(n_points(i) == values[i].get_num_points(),
+                   ExcDimensionMismatch(n_points(i),values[i].get_num_points()));
 #endif
-	}
-	return n_points;
+    }
+    return n_points;
 }
 
 
@@ -138,13 +138,10 @@ void
 BSplineElementScalarEvaluator<dim>::
 evaluate_derivative_at_points(
     const TensorIndex<dim> &order_tensor_id,
-    DynamicMultiArray<Real,dim> & derivatives) const
+    DynamicMultiArray<Real,dim> &derivatives) const
 {
-	TensorSize<dim> n_points = this->get_num_points();
-
-
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
 }
 
 
