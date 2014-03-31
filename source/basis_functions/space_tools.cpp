@@ -46,13 +46,13 @@ namespace
 {
 template <class RefSpace>
 StaticMultiArray< Multiplicity< RefSpace::RefFaceSpace::dim >,
-                  RefSpace::RefFaceSpace::dim_range, RefSpace::RefFaceSpace::rank>
+                  RefSpace::RefFaceSpace::range, RefSpace::RefFaceSpace::rank>
                   get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_mult = ref_space->get_multiplicities();
     StaticMultiArray< Multiplicity < RefSpace::RefFaceSpace::dim >,
-                      RefSpace::RefFaceSpace::dim_range, RefSpace::RefFaceSpace::rank>  f_mult;
+                      RefSpace::RefFaceSpace::range, RefSpace::RefFaceSpace::rank>  f_mult;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)
             f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
@@ -61,12 +61,12 @@ StaticMultiArray< Multiplicity< RefSpace::RefFaceSpace::dim >,
 
 
 template <class RefSpace>
-StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::dim_range, RefSpace::rank>
+StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::range, RefSpace::rank>
 get_face_degree(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_degree = ref_space->get_degree();
-    StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::dim_range, RefSpace::rank>  f_degree;
+    StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::range, RefSpace::rank>  f_degree;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)
             f_degree(comp)[j] = v_degree(comp)[active_dirs[j]];
@@ -321,13 +321,13 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 
 template<class Space>
-Vector projection_l2(const Function<Space::space_dim,Space::dim_range,Space::rank> &func,
+Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
                      shared_ptr<const Space> space,
                      const Quadrature<Space::dim> &quad)
 {
-    static const int dim_domain_domain = Space::space_dim;
-    static const int dim_domain_range = Space::dim_range;
-    static const int phys_rank = Space::rank;
+    static const int space_dim = Space::space_dim;
+    static const int range = Space::range;
+    static const int rank = Space::rank;
 
     const auto sparsity_pattern = dof_tools::get_sparsity_pattern(*space) ;
     Matrix matrix(sparsity_pattern);
@@ -341,8 +341,8 @@ Vector projection_l2(const Function<Space::space_dim,Space::dim_range,Space::ran
     ValueFlags flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure ;
     const int n_qpoints = quad.get_num_points();
 
-    vector< Point<dim_domain_domain> > eval_points(n_qpoints);
-    vector< typename Function<dim_domain_domain,dim_domain_range,phys_rank>::ValueType > func_at_eval_pts(n_qpoints);
+    vector< Point<space_dim> > eval_points(n_qpoints);
+    vector< typename Function<space_dim,range,rank>::ValueType > func_at_eval_pts(n_qpoints);
 
     auto elem = space->begin() ;
     const auto elem_end = space->end() ;
@@ -415,7 +415,7 @@ Vector projection_l2(const Function<Space::space_dim,Space::dim_range,Space::ran
 
 template<class Space>
 void
-project_boundary_values(const Function<Space::space_dim,Space::dim_range,Space::rank> &func,
+project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank> &func,
                         std::shared_ptr<const Space> space,
                         const Quadrature<Space::dim-1> &quad,
                         const std::set<boundary_id>  &boundary_ids,

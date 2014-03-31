@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 template < class RefSpace, class PushForward >
 class PhysicalSpace ;
 
-template< int dim_domain, int dim_range, int rank >
+template< int dim_domain, int range, int rank >
 class NURBSSpace ;
 
 

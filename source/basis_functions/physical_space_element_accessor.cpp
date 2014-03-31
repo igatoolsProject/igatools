@@ -364,7 +364,7 @@ fill_values(const TopologyId<dim> &topology_id)
 
     if (cache.flags_handler_.fill_values())
     {
-        PfElemAccessor::template transform_values<RefSpace::dim_range,RefSpace::rank>
+        PfElemAccessor::template transform_values<RefSpace::range,RefSpace::rank>
         (RefElemAccessor::get_basis_values(topology_id), cache.D0phi_,topology_id);
 
         cache.flags_handler_.set_values_filled(true);
@@ -376,7 +376,7 @@ fill_values(const TopologyId<dim> &topology_id)
         {
             ValueTable<typename RefElemAccessor::Value> dummy;
             PfElemAccessor::
-            template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
+            template transform_gradients<PhysSpace::range,PhysSpace::rank>(
                 dummy,
                 RefElemAccessor::get_basis_gradients(topology_id),
                 cache.D1phi_,topology_id);
@@ -384,7 +384,7 @@ fill_values(const TopologyId<dim> &topology_id)
         else
         {
             PfElemAccessor::
-            template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
+            template transform_gradients<PhysSpace::range,PhysSpace::rank>(
                 RefElemAccessor::get_basis_values(topology_id),
                 RefElemAccessor::get_basis_gradients(topology_id),
                 cache.D1phi_,topology_id);
@@ -497,7 +497,7 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
     ValueVector< Value > field(field_hat.size());
 
     PfElemAccessor::template
-    transform_values<PhysSpace::dim_range,PhysSpace::rank>(field_hat, field);
+    transform_values<PhysSpace::range,PhysSpace::rank>(field_hat, field);
 
     return field;
 }
@@ -522,7 +522,7 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
 
     ValueVector< Derivative<1> > D1field(n_quad_points);
     PfElemAccessor::
-    template transform_gradients<PhysSpace::dim_range,PhysSpace::rank>(
+    template transform_gradients<PhysSpace::range,PhysSpace::rank>(
         D0field_hat, D1field_hat, D1field);
 
     return D1field;

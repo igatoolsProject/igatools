@@ -58,11 +58,11 @@ public:
 
     static const int space_dim = PushForwardType::space_dim;
 
-    static const int dim_range = PushForwardType::template PhysRange<RefSpace::dim_range>::value;
+    static const int range = PushForwardType::template PhysRange<RefSpace::range>::value;
 
     static const int rank = RefSpace::rank;
 
-    static constexpr int n_components = constexpr_pow(dim_range, rank);
+    static constexpr int n_components = constexpr_pow(range, rank);
 
 
 public:

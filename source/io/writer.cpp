@@ -308,14 +308,14 @@ add_field(
     const int n_elements = grid_->get_num_elements();
     const int n_pts_per_elem = quad_plot_.get_num_points();
 
-    static const int dim_phys_range = Space::dim_range;
+    static const int dim_phys_range = Space::range;
 
 
     const int n_values_per_pt =
-        Space::dim_range == 1? 1 : std::pow(3, Space::rank);
+        Space::range == 1? 1 : std::pow(3, Space::rank);
     shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
     auto &data = *data_ptr;
-    if (Space::dim_range==1)
+    if (Space::range==1)
     {
         Assert(n_values_per_pt == 1, ExcDimensionMismatch(n_values_per_pt, 1));
 
