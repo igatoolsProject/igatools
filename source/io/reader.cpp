@@ -589,7 +589,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
 
 
-    typename space_t::Multiplicities multiplicities;
+    typename space_t::template ComponentTable<Multiplicity<dim>> multiplicities;
     typename space_t::DegreeTable degrees;
 
     for (const auto & comp_element : scalar_component_vector)
@@ -695,7 +695,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
 
 
-    typename space_t::Multiplicities multiplicities;
+    typename space_t::template ComponentTable<Multiplicity<dim>> multiplicities;
     typename space_t::DegreeTable degrees;
     StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> weights;
 
