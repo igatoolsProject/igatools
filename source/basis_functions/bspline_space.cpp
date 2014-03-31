@@ -313,16 +313,16 @@ void refine_knot_vector(
 
 
 
-template<int dim_, int dim_range_, int rank_>
-BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> cartesian_grid, const int degree)
     :
     BaseSpace(cartesian_grid),
     degree_(TensorIndex<dim>(degree)),
     homogeneous_range_(true)
 {
-    Assert((rank!=0) || ((rank==0) && (dim_range==1)),
-           ExcScalarRange(dim_range));
+    Assert((rank!=0) || ((rank==0) && (range==1)),
+           ExcScalarRange(range));
     Multiplicity<dim> mult(this->get_grid()->get_num_knots_dim());
     mult.fill_max_regularity(degree);
     mult_.fill(mult) ;
@@ -332,9 +332,9 @@ BSplineSpace(shared_ptr<GridType> cartesian_grid, const int degree)
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr< GridType > knots, int degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots, degree));
@@ -342,8 +342,8 @@ create(shared_ptr< GridType > knots, int degree) -> shared_ptr<self_t>
 
 
 
-template<int dim_, int dim_range_, int rank_>
-BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
     :
     BaseSpace(knots),
@@ -360,9 +360,9 @@ BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
        const TensorIndex<dim> &degree) -> shared_ptr<self_t>
 {
@@ -371,10 +371,10 @@ create(shared_ptr<GridType> knots,
 
 
 
-template<int dim_, int dim_range_, int rank_>
-BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
-             const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree)
+             const StaticMultiArray<TensorIndex<dim>,range,rank> &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -392,22 +392,22 @@ BSplineSpace(shared_ptr<GridType> knots,
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
+       const StaticMultiArray<TensorIndex<dim>,range,rank> &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots, degree));
 }
 
 
 
-template<int dim_, int dim_range_, int rank_>
-BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
              const Multiplicities &mult_vectors,
-             const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree)
+             const StaticMultiArray<TensorIndex<dim>,range,rank> &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -419,20 +419,20 @@ BSplineSpace(shared_ptr<GridType> knots,
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
        const Multiplicities &mult_vectors,
-       const StaticMultiArray<TensorIndex<dim>,dim_range,rank> &degree) -> shared_ptr<self_t>
+       const StaticMultiArray<TensorIndex<dim>,range,rank> &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots,mult_vectors,degree));
 }
 
 
 
-template<int dim_, int dim_range_, int rank_>
-void BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+void BSplineSpace<dim_, range_, rank_>::
 fill_num_dof_per_element()
 {
     num_dofs_per_element_ = 0;
@@ -447,8 +447,8 @@ fill_num_dof_per_element()
 
 
 
-template<int dim_, int dim_range_, int rank_>
-void BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+void BSplineSpace<dim_, range_, rank_>::
 fill_bezier_extraction_operator()
 {
 
@@ -552,8 +552,8 @@ fill_bezier_extraction_operator()
 
 
 
-template<int dim_, int dim_range_, int rank_>
-void BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+void BSplineSpace<dim_, range_, rank_>::
 fill_index_space_standard_policy()
 {
 
@@ -579,8 +579,8 @@ fill_index_space_standard_policy()
 
 }
 
-template<int dim_, int dim_range_, int rank_>
-void BSplineSpace<dim_, dim_range_, rank_>::
+template<int dim_, int range_, int rank_>
+void BSplineSpace<dim_, range_, rank_>::
 fill_element_dofs_from_index_space()
 {
     const Index n_elements = this->get_grid()->get_num_elements();
@@ -636,9 +636,9 @@ fill_element_dofs_from_index_space()
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 init_dofs()
 {
     /*
@@ -660,9 +660,9 @@ init_dofs()
 }
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 init()
 {
     init_dofs();
@@ -678,19 +678,19 @@ init()
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
-get_reference_space() const -> shared_ptr<const BSplineSpace<dim,dim_range,rank>>
+BSplineSpace<dim_, range_, rank_>::
+get_reference_space() const -> shared_ptr<const BSplineSpace<dim,range,rank>>
 {
     return this->shared_from_this();
 }
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_component_num_basis() const -> array<Size,n_components>
 {
     array<Size,n_components> n_basis_components;
@@ -702,9 +702,9 @@ get_component_num_basis() const -> array<Size,n_components>
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 Index
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_component_num_basis(int iComp) const
 {
     //TODO: implement something similar in CartesianProductArray?
@@ -715,9 +715,9 @@ get_component_num_basis(int iComp) const
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 Index
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_component_dir_num_basis(int comp, int dir) const
 {
     return num_dofs_(comp)[dir];
@@ -725,9 +725,9 @@ get_component_dir_num_basis(int comp, int dir) const
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 Index
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_component_num_basis_per_element(int iComp) const
 {
     //TODO: implement something similar in CartesianProductArray?
@@ -745,9 +745,9 @@ get_component_num_basis_per_element(int iComp) const
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 Index
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_num_basis() const
 {
     Index result = 0;
@@ -759,9 +759,9 @@ get_num_basis() const
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 Size
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_num_basis_per_element() const
 {
     return num_dofs_per_element_;
@@ -769,9 +769,9 @@ get_num_basis_per_element() const
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 bool
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 is_range_homogeneous() const
 {
     return homogeneous_range_;
@@ -779,31 +779,31 @@ is_range_homogeneous() const
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::begin() const -> ElementIterator
+BSplineSpace<dim_, range_, rank_>::begin() const -> ElementIterator
 {
     return ElementIterator(
-               const_cast< BSplineSpace< dim, dim_range,rank > & >(*this),
+               const_cast< BSplineSpace< dim, range,rank > & >(*this),
                0) ;
 }
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::last() const -> ElementIterator
+BSplineSpace<dim_, range_, rank_>::last() const -> ElementIterator
 {
     return ElementIterator(
-               const_cast< BSplineSpace< dim, dim_range,rank > & >(*this),
+               const_cast< BSplineSpace< dim, range,rank > & >(*this),
                this->get_grid()->get_num_elements() - 1) ;
 }
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::end() const -> ElementIterator
+BSplineSpace<dim_, range_, rank_>::end() const -> ElementIterator
 {
     return ElementIterator(const_cast<self_t &>(*this),
                            IteratorState::pass_the_end);
@@ -811,9 +811,9 @@ BSplineSpace<dim_, dim_range_, rank_>::end() const -> ElementIterator
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
 {
     return index_space_(comp).flat_to_tensor(index);
@@ -821,9 +821,9 @@ flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 Index
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 tensor_to_flat(const TensorIndex<dim> &tensor_index,
                const Index comp) const
 {
@@ -832,9 +832,9 @@ tensor_to_flat(const TensorIndex<dim> &tensor_index,
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_multiplicities() const -> const Multiplicities &
 {
     return mult_ ;
@@ -842,9 +842,9 @@ get_multiplicities() const -> const Multiplicities &
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_push_forward() -> shared_ptr<PushForwardType>
 {
 
@@ -852,9 +852,9 @@ get_push_forward() -> shared_ptr<PushForwardType>
     PushForwardType::create(IdentityMapping<dim>::create(this->get_grid()));
 }
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_push_forward() const -> shared_ptr<const PushForwardType>
 {
     using PushForwardType1 = PushForward<Transformation::h_grad,dim,0>;
@@ -869,9 +869,9 @@ get_push_forward() const -> shared_ptr<const PushForwardType>
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_degree() const -> const ComponentTable<TensorIndex<dim>> &
 {
     return degree_ ;
@@ -879,9 +879,9 @@ get_degree() const -> const ComponentTable<TensorIndex<dim>> &
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
@@ -956,19 +956,19 @@ refine_h_after_grid_refinement(
 }
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
-get_num_dofs() const -> StaticMultiArray<TensorSize<dim>,dim_range,rank>
+BSplineSpace<dim_, range_, rank_>::
+get_num_dofs() const -> StaticMultiArray<TensorSize<dim>,range,rank>
 {
     return num_dofs_;
 }
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_knots_with_repetitions() const -> const ComponentTable<CartesianProductArray<Real,dim>> &
 {
     return knots_with_repetitions_;
@@ -976,9 +976,9 @@ get_knots_with_repetitions() const -> const ComponentTable<CartesianProductArray
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_index_space() const -> const ComponentTable<DynamicMultiArray<Index,dim>> &
 {
     return index_space_;
@@ -986,12 +986,12 @@ get_index_space() const -> const ComponentTable<DynamicMultiArray<Index,dim>> &
 
 
 
-template<int dim_, int dim_range_, int rank_>
+template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, dim_range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-    out << "BSplineSpace<" << dim_ << "," << dim_range_ << ">" << endl ;
+    out << "BSplineSpace<" << dim_ << "," << range_ << ">" << endl ;
 
     out.push("\t");
 

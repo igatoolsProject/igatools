@@ -98,7 +98,7 @@ public :
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 
-    using Value = typename PfElemAccessor::template PhysValue<RefSpace::dim_range, RefSpace::rank>;
+    using Value = typename PfElemAccessor::template PhysValue<RefSpace::range, RefSpace::rank>;
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 
     /**
@@ -106,7 +106,7 @@ public :
      * \tparam order - order of the derivative.
      */
     template <int order>
-    using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::dim_range, RefSpace::rank, order>;
+    using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
 
     using Div = Values<dim, 1, 1>;
 
@@ -372,7 +372,7 @@ private :
      * \tparam order - order of the derivative.
      */
     template< int order >
-    using DerivativeRef_t = Derivatives<dim,RefSpace::dim_range,RefSpace::rank,order>;
+    using DerivativeRef_t = Derivatives<dim,RefSpace::range,RefSpace::rank,order>;
 
 
 

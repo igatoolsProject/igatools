@@ -30,10 +30,10 @@ IGA_NAMESPACE_OPEN
 
 template <class RefSpace>
 class IgMapping
-    : public Mapping<RefSpace::dim, RefSpace::dim_range - RefSpace::dim>
+    : public Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>
 {
 private:
-    using base_t = Mapping<RefSpace::dim, RefSpace::dim_range - RefSpace::dim>;
+    using base_t = Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>;
 
     using base_t::dim;
     using base_t::codim;

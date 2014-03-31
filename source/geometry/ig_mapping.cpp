@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 template<class RefSpace>
-StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::dim_range,1>
+StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1>
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<RefSpace::has_weights> *hw = 0)
 {
@@ -44,12 +44,12 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 
 
 template<class RefSpace>
-StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::dim_range,1>
+StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1>
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<!RefSpace::has_weights> *hw = 0)
 {
     //in the case of BSplineSpace do nothing
-    StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::dim_range,1> weights;
+    StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1> weights;
     return weights;
 }
 };

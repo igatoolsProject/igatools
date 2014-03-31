@@ -34,7 +34,7 @@ data = Instantiation(include_files)
 
 
 master=('template Vector space_tools::projection_l2('
-        'const Function<Space::space_dim,Space::dim_range,Space::rank> &f,'
+        'const Function<Space::space_dim,Space::range,Space::rank> &f,'
         'std::shared_ptr<const Space> phys_space,'
         'const Quadrature<Space::dim> & );\n')
 for sp in inst.PhysSpaces + inst.RefSpaces:
@@ -42,7 +42,7 @@ for sp in inst.PhysSpaces + inst.RefSpaces:
 
 
 master=('template void space_tools::project_boundary_values('
-        'const Function<Space::space_dim,Space::dim_range,Space::rank> &,'
+        'const Function<Space::space_dim,Space::range,Space::rank> &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
         'const std::set<boundary_id>  &,'
