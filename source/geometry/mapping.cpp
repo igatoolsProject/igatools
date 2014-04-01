@@ -93,15 +93,6 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 }
 
 
-/*
-template<int dim_, int codim_>
-Mapping<dim_,codim_>::
-Mapping()
-    :
-    GridWrapper<GridType>(GridType::create())
-{}
-//*/
-
 
 template<int dim_, int codim_>
 Mapping<dim_,codim_>::
@@ -125,55 +116,6 @@ Mapping(const Mapping<dim_,codim_> &map)
     :
     GridWrapper<GridType>(make_shared<GridType>(GridType(*(map.get_grid()))))
 {}
-
-
-/*
-template<int dim_, int codim_>
-auto
-Mapping<dim_,codim_>::clone() const -> shared_ptr<Mapping<dim_,codim_>>
-{
-    AssertThrow(false,ExcNotImplemented()) ;
-    auto grid = GridType::create();
-    return (shared_ptr<Mapping<dim_,codim_>>(new Mapping<dim_,codim_>(grid))) ;
-}
-//*/
-
-/*
-template<int dim_, int codim_>
-inline
-void
-Mapping<dim_,codim_>::
-set_element(const CartesianGridElementAccessor<dim> &elem)
-{
-    Assert(false, ExcNotImplemented());
-    AssertThrow(false, ExcNotImplemented());
-}
-//*/
-
-/*
-template<int dim_, int codim_>
-inline
-void
-Mapping<dim_,codim_>::
-set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem)
-{
-    Assert(false, ExcNotImplemented());
-    AssertThrow(false, ExcNotImplemented());
-}
-//*/
-
-/*
-template<int dim_, int codim_>
-inline
-void
-Mapping<dim_,codim_>::
-init_element(const ValueFlags flag, const Quadrature<dim> &quad)
-{
-    Assert(false, ExcNotImplemented());
-    AssertThrow(false, ExcNotImplemented());
-}
-//*/
 
 
 template<int dim_, int codim_>

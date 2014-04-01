@@ -63,7 +63,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     :
     base_t::Mapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
-    element_(space->begin())
+    cache_(space->begin())
 {
     Assert(space != nullptr, ExcNullPtr());
     data_->ref_space_ = space;
@@ -139,8 +139,28 @@ IgMapping(const self_t &map)
     :
     Mapping<dim,codim>(map),
     data_(shared_ptr<IgMappingData>(new IgMappingData(*map.data_))),
-    element_(map.element_)
+    cache_(map.cache_)
 {}
+
+template<class RefSpace>
+IgMapping<RefSpace>::
+IgMapping(const std::shared_ptr<IgMappingData> mapping_data)
+    :
+    base_t::Mapping(mapping_data->ref_space_->get_grid()),
+    data_(mapping_data),
+    cache_(mapping_data->ref_space_->begin())
+{
+    Assert(mapping_data != nullptr,ExcNullPtr());
+}
+
+
+template<class RefSpace>
+auto
+IgMapping<RefSpace>::
+get_data() const -> shared_ptr<IgMappingData>
+{
+    return data_;
+}
 
 
 template<class RefSpace>
@@ -181,7 +201,7 @@ init_element(const ValueFlags flag,
         ref_space_flag |= ValueFlags::face_hessian;
     }
 
-    element_->init_values(ref_space_flag, quad);
+    cache_->init_values(ref_space_flag, quad);
 }
 
 
@@ -190,8 +210,8 @@ template<class RefSpace>
 void IgMapping<RefSpace>::
 set_element(const CartesianGridElementAccessor<dim> &elem)
 {
-    element_->reset_flat_tensor_indices(elem.get_flat_index());
-    element_->fill_values();
+    cache_->reset_flat_tensor_indices(elem.get_flat_index());
+    cache_->fill_values();
 }
 
 
@@ -202,8 +222,8 @@ set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &e
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-    element_->reset_flat_tensor_indices(elem.get_flat_index());
-    element_->fill_face_values(face_id);
+    cache_->reset_flat_tensor_indices(elem.get_flat_index());
+    cache_->fill_face_values(face_id);
 }
 
 
@@ -226,7 +246,7 @@ IgMapping<RefSpace>::
 clone() const -> shared_ptr<base_t>
 {
     auto map = shared_ptr<IgMapping<RefSpace>>(new IgMapping<RefSpace>(*this));
-    map->element_->reset_global_cache() ;
+    map->cache_->reset_global_cache() ;
     return map;
 }
 
@@ -237,14 +257,14 @@ void
 IgMapping<RefSpace>::
 evaluate(vector<ValueType> &values) const
 {
-    const auto &local_to_global = element_->get_local_to_global();
+    const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    values = element_->evaluate_field(ctrl_pts_element);
+    values = cache_->evaluate_field(ctrl_pts_element);
 }
 
 
@@ -254,14 +274,14 @@ void
 IgMapping<RefSpace>::
 evaluate_gradients(std::vector<GradientType> &gradients) const
 {
-    const auto &local_to_global = element_->get_local_to_global();
+    const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    gradients = element_->evaluate_field_gradients(ctrl_pts_element);
+    gradients = cache_->evaluate_field_gradients(ctrl_pts_element);
 
 }
 
@@ -271,14 +291,14 @@ void
 IgMapping<RefSpace>::
 evaluate_hessians(std::vector<HessianType> &hessians) const
 {
-    const auto &local_to_global = element_->get_local_to_global();
+    const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    hessians = element_->evaluate_field_hessians(ctrl_pts_element);
+    hessians = cache_->evaluate_field_hessians(ctrl_pts_element);
 }
 
 
@@ -291,14 +311,14 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
 
-    const auto &local_to_global = element_->get_local_to_global();
+    const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    values = element_->evaluate_field(ctrl_pts_element,FaceTopology<dim>(face_id));
+    values = cache_->evaluate_field(ctrl_pts_element,FaceTopology<dim>(face_id));
 }
 
 
@@ -311,14 +331,14 @@ evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradient
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
 
-    const auto &local_to_global = element_->get_local_to_global();
+    const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    gradients = element_->evaluate_field_gradients(ctrl_pts_element,FaceTopology<dim>(face_id));
+    gradients = cache_->evaluate_field_gradients(ctrl_pts_element,FaceTopology<dim>(face_id));
 }
 
 
@@ -330,14 +350,14 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) 
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
 
-    const auto &local_to_global = element_->get_local_to_global();
+    const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
 
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    hessians = element_->evaluate_field_hessians(ctrl_pts_element,FaceTopology<dim>(face_id));
+    hessians = cache_->evaluate_field_hessians(ctrl_pts_element,FaceTopology<dim>(face_id));
 }
 
 
@@ -504,6 +524,47 @@ refine_h_control_mesh(
 }
 
 
+
+
+template<class RefSpace>
+auto
+IgMapping<RefSpace>::
+begin() const -> ElementIterator
+{
+    /*
+    return ElementIterator(
+            const_cast<const Mapping<dim,codim> &>(
+            dynamic_cast<Mapping<dim,codim> &>( self_t( this->get_data() ) )),
+                    0);
+                    //*/
+    return ElementIterator(
+               const_cast<self_t &>(*(new self_t(this->get_data()))),
+               0);
+}
+
+
+
+template<class RefSpace>
+auto
+IgMapping<RefSpace>::
+last() const -> ElementIterator
+{
+    return ElementIterator(
+               const_cast<self_t &>(*(new self_t(this->get_data()))),
+               this->get_grid()->get_num_elements() - 1);
+}
+
+
+
+template<class RefSpace>
+auto
+IgMapping<RefSpace>::
+end() const -> ElementIterator
+{
+    return ElementIterator(
+               const_cast<self_t &>(*(new self_t(this->get_data()))),
+               IteratorState::pass_the_end);
+}
 
 
 

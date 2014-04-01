@@ -47,6 +47,8 @@ private:
 
     using self_t = IgMapping<RefSpace>;
 
+    using ElementIterator = typename base_t::ElementIterator;
+
 public:
     /**
      * Default constructor.
@@ -62,6 +64,7 @@ public:
      */
     IgMapping(const std::shared_ptr<RefSpace> space,
               const std::vector<Real> &control_points);
+
 
     /**
      *
@@ -135,6 +138,26 @@ public:
      */
     void print_info(LogStream &out) const override;
 
+
+    /** @name Dealing with the element-based iterator. */
+    ///@{
+    /**
+     * Returns a element iterator to the first element of the patch.
+     */
+    ElementIterator begin() const override final ;
+
+    /**
+     * Returns a element iterator to the last element of the patch.
+     */
+    ElementIterator last() const override final ;
+
+    /**
+     * Returns a element iterator to one-pass the end of patch.
+     */
+    ElementIterator end() const override final;
+    ///@}
+
+
 private:
 
 
@@ -176,8 +199,27 @@ private:
 
 
 
-    typename RefSpace::ElementIterator element_;
+    typename RefSpace::ElementIterator cache_;
 
+public:
+
+    /**
+     * Returns the pointer wrapping the IgMappingData (i.e. control points, weights, etc.
+     * except the cache.
+     */
+    std::shared_ptr<IgMappingData> get_data() const;
+
+
+    /**
+     * Constructor. Builds an igMapping with new cache, providing the data.
+     * @note This is done in order to have the same mapping data shared between many IgMapping
+     * objects but with different caches in order to be used independently.
+     * The cache is initialized with RefSpace::begin().
+     */
+    IgMapping(const std::shared_ptr<IgMappingData> mapping_data);
+
+
+private:
     /**
      * h-refines the control mesh of the mapping space after a grid uniform refinement.
      *
