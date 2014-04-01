@@ -73,9 +73,10 @@ public:
     create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
 
     /**
-     * Copy constructor.
+     * Copy constructor. Performs a deep copy of the object.
      */
-    IgMapping(const self_t &map) = default;
+    IgMapping(const self_t &map);
+
 
     virtual std::shared_ptr<base_t> clone() const override;
 
@@ -124,7 +125,7 @@ public:
 
     std::shared_ptr<RefSpace> get_iga_space()
     {
-        return ref_space_;
+        return data_->ref_space_;
     }
 
     /**
@@ -134,16 +135,49 @@ public:
      */
     void print_info(LogStream &out) const override;
 
-protected:
-    /** The function space used to represents the mapping.*/
-    std::shared_ptr<RefSpace> ref_space_;
+private:
 
-    /** Coordinates of the control points in the Euclidean space. */
-    std::vector<Real> control_points_;
+
+    template< class T >
+    using ComponentTable = StaticMultiArray<T,base_t::space_dim,1>;
+
+
+    class IgMappingData
+    {
+    public:
+        /** Coordinates of the control points in the Euclidean space. */
+        std::vector<Real> control_points_;
+
+        /**
+         * Weights associated with the control points (if NURBSpace is used).
+         *
+         * @note The weights are necessary in order to perform the h-refinement,
+         * because the control points are in the euclidean space, while the
+         * h-refinement algorithm (based on knot insertion) require them to be in
+         * the projective space.
+         */
+        ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
+
+        /** Knots with repetitions PRE-refinement */
+        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+
+
+        /** Control mesh (the coordinates are in the projective space). */
+        ComponentTable<DynamicMultiArray<Real,dim>> ctrl_mesh_;
+
+
+        /** The function space used to represents the mapping.*/
+        std::shared_ptr<RefSpace> ref_space_;
+    };
+
+
+    std::shared_ptr<IgMappingData> data_;
+
+
+
 
     typename RefSpace::ElementIterator element_;
 
-private:
     /**
      * h-refines the control mesh of the mapping space after a grid uniform refinement.
      *
@@ -163,25 +197,9 @@ private:
         const typename base_t::GridType &grid_old);
 
 
-    template< class T >
-    using ComponentTable = StaticMultiArray<T,base_t::space_dim,1>;
-
-    /**
-     * Weights associated with the control points (if NURBSpace is used).
-     *
-     * @note The weights are necessary in order to perform the h-refinement,
-     * because the control points are in the euclidean space, while the
-     * h-refinement algorithm (based on knot insertion) require them to be in
-     * the projective space.
-     */
-    ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
-
-    /** Knots with repetitions PRE-refinement */
-    ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
 
 
-    /** Control mesh (the coordinates are in the projective space). */
-    ComponentTable<DynamicMultiArray<Real,dim>> ctrl_mesh_;
+
 
 };
 
