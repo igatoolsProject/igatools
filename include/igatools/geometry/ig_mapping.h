@@ -194,11 +194,17 @@ private:
     };
 
 
+    /**
+     * Data that defines the mapping, i.e. control points, weights, knots etc.
+     */
     std::shared_ptr<IgMappingData> data_;
 
-
-
-
+    /**
+     * This variable represents the cache, that for the IgMapping is an element accessor
+     * of the reference space upon which the IgMapping is built upon.
+     * @note This cache should be freshly created every time a MappingElementAccessor is
+     * referring to the IgMapping object.
+     */
     typename RefSpace::ElementIterator cache_;
 
 public:
@@ -239,8 +245,10 @@ private:
         const typename base_t::GridType &grid_old);
 
 
-
-
+    /**
+     * Returns the control points that are active on the element represented by the cache.
+     */
+    std::vector<Real> get_control_points_elem() const;
 
 
 };
