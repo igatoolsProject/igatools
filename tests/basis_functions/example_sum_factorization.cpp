@@ -254,6 +254,9 @@ class PoissonProblemSumFactorization :
     public PoissonProblem< dim, PoissonProblemSumFactorization<dim> >
 {
 public:
+    using RefSpace  = BSplineSpace<dim>;
+    using PushFw    = PushForward<Transformation::h_grad, dim>;
+    using Space     = PhysicalSpace<RefSpace, PushFw>;
 
     /** @name Constructors & destructor. */
     ///@{
@@ -519,9 +522,6 @@ public:
             tensor_size_theta_k[i] = tensor_size_theta[i+k-1];
 
 
-
-
-
 //    TensorSize<3> tensor_size_C_k_1 = C_k_1.tensor_size();
         Assert(C_k_1.tensor_size()[0] == tensor_size_theta_k.flat_size(),
                ExcDimensionMismatch(C_k_1.tensor_size()[0],tensor_size_theta_k.flat_size()));
@@ -681,6 +681,62 @@ public:
         return C;
     }
 };
+
+
+template<class PhysSpace>
+void local_mass_matrix_from_phys_elem_accessor(
+    const typename PhysSpace::ElementAccessor &elem,
+    DenseMatrix &mass_matrix)
+{
+    const int dim = PhysSpace::dim;
+    const int space_dim = PhysSpace::space_dim;
+    const int range = PhysSpace::range;
+    const int rank = PhysSpace::rank;
+
+    Assert(range == 1,ExcDimensionMismatch(range,1));
+    Assert(rank == 1,ExcDimensionMismatch(rank,1));
+
+    //--------------------------------------------------------------------------
+    // here we get the 1D values
+
+    using ValueType1D = Function<1>::ValueType;
+
+    const auto &ref_elem_accessor = elem.get_ref_space_accessor();
+
+    const Index comp = 0;
+    const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+
+    array< ValueTable<ValueType1D>,dim>  phi_1D;
+    for (int i = 0 ; i < dim ; ++i)
+        phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
+
+    const Size n_basis = n_basis_elem.flat_size();
+    for (Index flat_fn_id = 0 ; flat_fn_id < n_basis ; ++flat_fn_id)
+    {
+        const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
+        const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
+
+        const auto &bspline1D_values = bspline_evaluator->get_derivative_components_view(0);
+
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            auto phi_1D_ifn =  phi_1D[i].get_function_view(tensor_fn_id[i]);
+
+            const auto &bsp_val = bspline1D_values[i];
+
+            for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+                phi_1D_ifn[jpt] = bsp_val(jpt);
+        }
+    }
+    //--------------------------------------------------------------------------
+
+
+
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
 
 template<int dim>
 void
@@ -1021,7 +1077,6 @@ assemble()
         for (Index flat_id = 0 ; flat_id < tensor_size_C_0[0] ; ++flat_id)
             C_0(flat_id) = K(flat_id);
 
-//            const DynamicMultiArray<Real,3> &J_k = ;  // J1
 
         MassMatrixIntegrator<dim> integrate_mass_matrix;
         DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(tensor_size_alphabeta,tensor_size_theta,I_container,C_0);
@@ -1048,6 +1103,9 @@ assemble()
 
         elapsed_time_assembly_mass_matrix_ += end_assembly_mass_matrix - start_assembly_mass_matrix;
 
+        local_mass_matrix_from_phys_elem_accessor<Space>(
+            *elem,
+            loc_mass_matrix_sf);
         // Assembly of the local mass matrix using sum-factorization -- end
         //----------------------------------------------------
 
@@ -1075,6 +1133,8 @@ assemble()
 
         end_assembly_mass_matrix_old = Clock::now();
         elapsed_time_assembly_mass_matrix_old_ += end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
+
+
         //*/
         /*
         loc_dofs = elem->get_local_to_global();
@@ -1084,7 +1144,7 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
 
     }
 
@@ -1116,8 +1176,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 8;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
