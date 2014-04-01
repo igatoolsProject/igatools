@@ -24,6 +24,9 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/unit_element.h>
 
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/geometry/ig_mapping.h>
 
 using std::array ;
 using std::vector ;
@@ -39,6 +42,25 @@ MappingElementAccessor(Mapping<dim,codim> &mapping, const int index)
     CartesianGridElementAccessor<dim>(*mapping.get_grid(), index),
     mapping_(&mapping)
 {
+    using BSplineSp = BSplineSpace<dim,dim+codim,1>;
+    using BSplineMapping = IgMapping<BSplineSp>;
+    if (dynamic_cast<BSplineMapping *>(mapping_))
+    {
+        auto ig_mapping = dynamic_cast<BSplineMapping *>(mapping_);
+        mapping_ = new BSplineMapping(ig_mapping->get_data());
+    }
+
+
+
+    using NURBSSp = NURBSSpace<dim,dim+codim,1>;
+    using NURBSMapping = IgMapping<NURBSSp>;
+    if (dynamic_cast<NURBSMapping *>(mapping_))
+    {
+        auto ig_mapping = dynamic_cast<NURBSMapping *>(mapping_);
+        mapping_ = new NURBSMapping(ig_mapping->get_data());
+    }
+
+
     Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
 }
 
@@ -302,7 +324,7 @@ init_values(const ValueFlags fill_flag,
         Index face_id = 0 ;
         for (auto& face_value : face_values_)
         {
-        	// TODO: this is temporary and must be removed.
+            // TODO: this is temporary and must be removed.
             if (contains(f_flag , ValueFlags::face_normal))
                 face_value.fill_normals_ = true ;
             face_value.reset(face_id++, face_flags_handler, quad);

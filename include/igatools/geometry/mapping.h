@@ -107,7 +107,7 @@ public:
 public:
     /** @name Constructors and destructor */
     ///@{
-    /** Default constructor. Not allowed to be used. */
+    /** Default constructor.*/
     Mapping() = delete;
 
     /** Constructs map over grid. */
@@ -184,17 +184,17 @@ public:
     /**
      * Returns a element iterator to the first element of the patch.
      */
-    ElementIterator begin() const;
+    virtual ElementIterator begin() const;
 
     /**
      * Returns a element iterator to the last element of the patch.
      */
-    ElementIterator last() const;
+    virtual ElementIterator last() const;
 
     /**
      * Returns a element iterator to one-pass the end of patch.
      */
-    ElementIterator end() const;
+    virtual ElementIterator end() const;
     ///@}
 
     /**
