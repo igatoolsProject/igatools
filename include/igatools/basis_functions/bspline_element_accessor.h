@@ -55,8 +55,8 @@ template <int dim, int range, int rank>
 class BSplineElementAccessor : public CartesianGridElementAccessor<dim>
 {
 public:
-	/** Type for the grid accessor. */
-	using GridAccessor = CartesianGridElementAccessor<dim>;
+    /** Type for the grid accessor. */
+    using GridAccessor = CartesianGridElementAccessor<dim>;
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = BSplineSpace<dim, range, rank> ;
@@ -453,6 +453,15 @@ public:
 
 
     /**
+     * Get the quadrature points used to initialize the element or a given element-face.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    const Quadrature<dim> &get_quad(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
      * Prints internal information about the BSplineElementAccessor.
      * Its main use is for testing and debugging.
      */
@@ -537,7 +546,7 @@ protected:
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
                    const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
-                   const TensorSize<dim> &n_points_direction);
+                   const Quadrature<dim> &quad);
 
         /** Returns the values. */
         const ValueTable<Value> &get_values() const;
@@ -593,6 +602,7 @@ protected:
         ComponentTable<
         DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
+        Quadrature<dim> quad_;
     };
 
 
@@ -660,7 +670,7 @@ private:
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
      * functions over the current element,
-     *	 at the evaluation points pre-allocated in the cache.
+     *   at the evaluation points pre-allocated in the cache.
      *
      * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
@@ -773,10 +783,10 @@ private:
 
 public:
     const ComponentTable<
-            DynamicMultiArray<
-            	std::shared_ptr<
-            		BSplineElementScalarEvaluator<dim>>,dim>> &
-            		get_scalar_evaluators(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    DynamicMultiArray<
+    std::shared_ptr<
+    BSplineElementScalarEvaluator<dim>>,dim>> &
+                                     get_scalar_evaluators(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 };
 

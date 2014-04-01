@@ -696,6 +696,23 @@ void local_mass_matrix_from_phys_elem_accessor(
     Assert(range == 1,ExcDimensionMismatch(range,1));
     Assert(rank == 1,ExcDimensionMismatch(rank,1));
 
+
+    const Index comp = 0; // only scalar spaces for the moment
+
+    //--------------------------------------------------------------------------
+    // getting the number of basis along each coordinate direction
+    TensorIndex<dim> degree = elem.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorSize<dim> n_basis_tensor;
+    for (int i = 0 ; i < dim ; ++i)
+        n_basis_tensor(i) = degree(i) + 1;
+
+    const Size n_basis_flat = n_basis_tensor.flat_size();
+    Assert(n_basis_tensor.flat_size()==elem.get_num_basis(),
+           ExcDimensionMismatch(n_basis_tensor.flat_size(),elem.get_num_basis()));
+    //--------------------------------------------------------------------------
+
+
+
     //--------------------------------------------------------------------------
     // here we get the 1D values
 
@@ -703,15 +720,13 @@ void local_mass_matrix_from_phys_elem_accessor(
 
     const auto &ref_elem_accessor = elem.get_ref_space_accessor();
 
-    const Index comp = 0;
     const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
     array< ValueTable<ValueType1D>,dim>  phi_1D;
     for (int i = 0 ; i < dim ; ++i)
-        phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
+        phi_1D[i].resize(n_basis_tensor[i],n_quad_points[i]);
 
-    const Size n_basis = n_basis_elem.flat_size();
-    for (Index flat_fn_id = 0 ; flat_fn_id < n_basis ; ++flat_fn_id)
+    for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_flat ; ++flat_fn_id)
     {
         const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
         const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);

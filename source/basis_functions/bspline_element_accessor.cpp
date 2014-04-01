@@ -479,9 +479,19 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
       const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
       const Quadrature<dim> &quad)
 {
-    ValuesCache::reset(flags_handler, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(flags_handler, n_basis_direction,quad);
 }
 
+template <int dim, int range, int rank>
+const Quadrature<dim> &
+BSplineElementAccessor<dim, range, rank>::
+get_quad(const TopologyId<dim> &topology_id) const
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_initialized(), ExcNotInitialized());
+
+    return cache.quad_;
+}
 
 template <int dim, int range, int rank>
 void
@@ -489,8 +499,11 @@ BSplineElementAccessor<dim, range, rank>::
 ValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
       const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-      const TensorSize<dim> &n_points_direction)
+      const Quadrature<dim> &quad)
 {
+    quad_ = quad;
+    const TensorSize<dim> n_points_direction = quad_.get_num_points_direction();
+
     flags_handler_ = flags_handler;
 
     this->size_.reset(n_basis_direction,
@@ -663,7 +676,7 @@ reset(const Index face_id,
 
     const auto quad = quad1.collapse_to_face(face_id);
 
-    ValuesCache::reset(flags_handler, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(flags_handler, n_basis_direction,quad);
 }
 
 
