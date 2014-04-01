@@ -31,7 +31,7 @@ set(IGA_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
 
 
 # include paths
-set( IGA_INCLUDE_DIRS 
+set(IGA_INCLUDE_DIRS 
   @Trilinos_INCLUDE_DIRS@
   @Boost_INCLUDE_DIRS@
   @CMAKE_INSTALL_PREFIX@/include
@@ -42,7 +42,6 @@ set(IGA_LIBRARY_DIR
   @Trilinos_LIBRARY_DIRS@
   @Boost_LIBRARY_DIRS@
   @CMAKE_INSTALL_PREFIX@/lib
-  @CBLAS_LIBRARY_DIR@
   )
 
 # libraries
@@ -51,5 +50,4 @@ set(IGA_LIBRARIES
   @Boost_LIBRARIES@
   @Trilinos_LIBRARIES@
   @Trilinos_TPL_LIBRARIES@
-  @CBLAS_LIBRARY@
   )

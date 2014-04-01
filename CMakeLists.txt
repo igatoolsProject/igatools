@@ -92,7 +92,6 @@ find_doxygen()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Required libraries
 #
-find_cblas()
 find_trilinos()
 find_boost()
 #
@@ -145,8 +144,7 @@ add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 
   ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
-  ${Boost_LIBRARIES}
-  ${CBLAS_LIBRARY})
+  ${Boost_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGA_VERSION})
 
 
