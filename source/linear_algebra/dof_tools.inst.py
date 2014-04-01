@@ -38,3 +38,6 @@ functions = [ ('template SparsityPattern dof_tools::get_sparsity_pattern'
              for space in inst.RefSpaces + inst.PhysSpaces]
 for s in functions: 
     f.write(s)
+
+f.write('template SparsityPattern dof_tools::get_sparsity_pattern'
+               + '(const BSplineSpace<0,0,1> &,void *) ;\n')

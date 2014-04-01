@@ -22,7 +22,9 @@
 # todo use prrper ref to phys dims in <0,0>
 from init_instantiation_data import *
 include_files = ['geometry/mapping.h',
-                 '../../source/geometry/grid_forward_iterator.cpp']
+                 '../../source/geometry/grid_forward_iterator.cpp',
+                 'basis_functions/bspline_element_accessor.h',
+                 'basis_functions/nurbs_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 

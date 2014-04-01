@@ -35,6 +35,11 @@ for sp in spaces:
    f.write('template class GridForwardIterator<%s> ;\n' %sp)
 
 
+#needed by NURBSSpace
+sp = 'NURBSElementAccessor<0, 0, 1>'
+f.write('template class %s ;\n' %sp)
+f.write('template class GridForwardIterator<%s> ;\n' %sp)
+
 
 
 

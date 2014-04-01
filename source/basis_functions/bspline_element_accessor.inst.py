@@ -32,9 +32,16 @@ data = Instantiation(include_files)
 
 spaces = ['BSplineElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank)  
           for x in inst.all_ref_sp_dims ]
+
 for sp in spaces:
    f.write('template class %s ;\n' %sp)
    f.write('template class GridForwardIterator<%s> ;\n' %sp)
+
+#needed by BSplineSpace
+sp = 'BSplineElementAccessor<0, 0, 1>'
+f.write('template class %s ;\n' %sp)
+f.write('template class GridForwardIterator<%s> ;\n' %sp)
+
    
 for i in range(len(spaces)):
    row = inst.all_ref_sp_dims[i]
