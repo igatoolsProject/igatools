@@ -412,7 +412,7 @@ class IntegratorSumFacRHS
 public:
     DynamicMultiArray<Real,k> operator()(
         const DynamicMultiArray<Real,dim> &Gamma,
-        const array<ValueTable<typename Function<1>::ValueType>,dim> &omega_B_1d,
+        const array<ValueTable<Real>,dim> &omega_B_1d,
         const TensorIndex<dim> &bernstein_tensor_id)
     {
 
@@ -439,7 +439,7 @@ public:
         const auto &w_B_k_view = omega_B_1d[k].get_function_view(eta_k1);
         vector<Real> w_B_k;
         for (const auto & w_B_k_value : w_B_k_view)
-            w_B_k.emplace_back(w_B_k_value(0));
+            w_B_k.emplace_back(w_B_k_value);
 
         const Size n_pts = w_B_k.size();
         for (Index flat_id_C = 0 ; flat_id_C < n_entries_C ; ++flat_id_C)
@@ -475,7 +475,7 @@ class IntegratorSumFacRHS<dim,dim>
 public:
     DynamicMultiArray<Real,dim> operator()(
         const DynamicMultiArray<Real,dim> &Gamma,
-        const array<ValueTable<typename Function<1>::ValueType>,dim> &omega_B_1d,
+        const array<ValueTable<Real>,dim> &omega_B_1d,
         const TensorIndex<dim> &bernstein_tensor_id)
     {
         return Gamma;
@@ -683,9 +683,73 @@ public:
 };
 
 
-template<class PhysSpace>
+/**
+ * @brief Performs the L2 projection on a function evaluated on points inside a single
+ * Bezier element, using as projecting space, the Bernsetein polynomials of a certain degree.
+ * @param w_basis_proj_1D Bernstein's basis values along each coordinate direction, multiplied by
+ * the quadrature weight.
+ * @param n_basis_1D Number of one-dimensional Bernstein's polynomial in each coordinate direction
+ * used to build the mass matrix and its inverse @p invM.
+ * @param invM Inverse of the mass-matrix built using the bernstein basis on a Bezier element.
+ * @param quad_projection Quadrature scheme used for the projection.
+ * @param n_points_projection Number of quadrature points (in each coordinate direction) used for
+ * the L2 projection.
+ * @param func_to_proj_at_pts Values of the function to project at the quadrature points.
+ */
+template <int dim>
+DenseVector
+perform_element_l2_projection_bernstein(
+    const array<ValueTable<Real>,dim> w_basis_proj_1D,
+    const TensorSize<dim> n_basis_1D,
+    const DenseMatrix &invM,
+    const Quadrature<dim> &quad_projection,
+    const ValueVector<Real> &func_to_proj_at_pts)
+{
+    Assert(invM.size1()==invM.size2(),ExcDimensionMismatch(invM.size1(),invM.size2()));
+
+    const Size n_bernst_basis = invM.size1();
+    Assert(n_basis_1D.flat_size() == n_bernst_basis,
+           ExcDimensionMismatch(n_basis_1D.flat_size(),n_bernst_basis));
+
+    const TensorIndex<dim> bernst_tensor_wgt =
+        MultiArrayUtils<dim>::compute_weight(n_basis_1D);
+
+    const TensorSize<dim> n_points_projection = quad_projection.get_num_points_direction();
+
+
+
+    const Size n_points = n_points_projection.flat_size();
+    Assert(func_to_proj_at_pts.size() == n_points,
+           ExcDimensionMismatch(func_to_proj_at_pts.size(),n_points));
+
+    DynamicMultiArray<Real,dim> c;
+    c = DynamicMultiArray<Real,dim>(n_points_projection);
+    for (Index i = 0 ; i < n_points ; ++i)
+        c(i) = func_to_proj_at_pts[i] ;
+
+
+    DenseVector integral_rhs(n_bernst_basis);
+
+    IntegratorSumFacRHS<dim> integrate_rhs;
+    for (Index bernst_flat_id = 0 ; bernst_flat_id < n_bernst_basis ; ++bernst_flat_id)
+    {
+        const auto bernst_tensor_id =
+            MultiArrayUtils<dim>::flat_to_tensor_index(bernst_flat_id,bernst_tensor_wgt);
+
+        integral_rhs(bernst_flat_id) =
+            (integrate_rhs(c,w_basis_proj_1D,bernst_tensor_id)).get_data()[0];
+    }
+
+    // coefficient of the L2 projection using the Bersntein basis
+    DenseVector proj_coefs = boost::numeric::ublas::prod(invM, integral_rhs) ;
+
+    return proj_coefs;
+}
+
+template <class PhysSpace>
 void local_mass_matrix_from_phys_elem_accessor(
     const typename PhysSpace::ElementAccessor &elem,
+    const TensorSize<PhysSpace::dim> &n_basis_projection,
     DenseMatrix &mass_matrix)
 {
     const int dim = PhysSpace::dim;
@@ -709,16 +773,20 @@ void local_mass_matrix_from_phys_elem_accessor(
     const Size n_basis_flat = n_basis_tensor.flat_size();
     Assert(n_basis_tensor.flat_size()==elem.get_num_basis(),
            ExcDimensionMismatch(n_basis_tensor.flat_size(),elem.get_num_basis()));
+
+    const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_tensor);
     //--------------------------------------------------------------------------
 
 
 
     //--------------------------------------------------------------------------
     // here we get the 1D values
-
     using ValueType1D = Function<1>::ValueType;
 
     const auto &ref_elem_accessor = elem.get_ref_space_accessor();
+
+    const auto &quad_points = ref_elem_accessor.get_quad_points();
+    const auto n_quad_points = quad_points.get_num_points_direction();
 
     const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
@@ -729,6 +797,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_flat ; ++flat_fn_id)
     {
         const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
+
         const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
 
         const auto &bspline1D_values = bspline_evaluator->get_derivative_components_view(0);
@@ -773,7 +842,7 @@ assemble()
 
     LogStream out;
     //*/
-    using MAUtils = MultiArrayUtils<dim>;
+//    using MAUtils = MultiArrayUtils<dim>;
 
 
     const int n_basis = this->space->get_num_basis_per_element();
@@ -824,8 +893,7 @@ assemble()
     }
 
 
-    using ValueType1D = Function<1>::ValueType;
-    array<ValueTable<ValueType1D>,dim> w_B_proj_1D;
+    array<ValueTable<Real>,dim> w_B_proj_1D;
 
     const auto &ref_elem_accessor = elem->get_ref_space_accessor();
     array<Real,dim> element_edge_size = ref_elem_accessor.get_coordinate_lengths();
@@ -852,7 +920,7 @@ assemble()
 
 
 
-    IntegratorSumFacRHS<dim> integrate_rhs;
+//    IntegratorSumFacRHS<dim> integrate_rhs;
 
     TensorIndex<dim> bernst_tensor_id;
 
@@ -897,6 +965,7 @@ assemble()
         const Index comp = 0;
         const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
+        using ValueType1D = Function<1>::ValueType;
         array< ValueTable<ValueType1D>,dim>  phi_1D;
         array< ValueTable<ValueType1D>,dim> Dphi_1D;
         for (int i = 0 ; i < dim ; ++i)
@@ -947,6 +1016,9 @@ assemble()
 
         f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
 
+        ValueVector<Real> func_to_proj_at_pts;
+        for (const auto & f_val : f_values_proj)
+            func_to_proj_at_pts.emplace_back(f_val(0));
 
 
 
@@ -954,24 +1026,32 @@ assemble()
         //----------------------------------------------------
         // Projection phase -- begin
         start_projection = Clock::now();
-        DynamicMultiArray<Real,dim> c;
-        c = DynamicMultiArray<Real,dim>(TensorSize<dim>(n_quad_proj_1D_));
-        for (Index i = 0 ; i < c.flat_size() ; ++i)
-        {
-            c(i) = f_values_proj[i](0) ;
-        }
 
-        for (Index bernst_flat_id = 0 ; bernst_flat_id < n_basis_proj_ ; ++bernst_flat_id)
-        {
-            bernst_tensor_id = MAUtils::flat_to_tensor_index(bernst_flat_id,bernst_tensor_weight_);
+        k_rhs = perform_element_l2_projection_bernstein<dim>(
+                    w_B_proj_1D,
+                    TensorSize<dim>(n_bernst_1D_),
+                    inv_B_proj_,
+                    quad_proj_,
+                    func_to_proj_at_pts);
+        /*
+                DynamicMultiArray<Real,dim> c;
+                c = DynamicMultiArray<Real,dim>(TensorSize<dim>(n_quad_proj_1D_));
+                for (Index i = 0 ; i < c.flat_size() ; ++i)
+                {
+                    c(i) = f_values_proj[i](0) ;
+                }
 
-            integral_rhs(bernst_flat_id) =
-                (integrate_rhs(c,w_B_proj_1D,bernst_tensor_id)).get_data()[0];
-        }
+                for (Index bernst_flat_id = 0 ; bernst_flat_id < n_basis_proj_ ; ++bernst_flat_id)
+                {
+                    bernst_tensor_id = MAUtils::flat_to_tensor_index(bernst_flat_id,bernst_tensor_weight_);
 
-        // coefficient of the rhs projection with the Bersntein basis
-        k_rhs = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
+                    integral_rhs(bernst_flat_id) =
+                        (integrate_rhs(c,w_B_proj_1D,bernst_tensor_id)).get_data()[0];
+                }
 
+                // coefficient of the rhs projection with the Bersntein basis
+                k_rhs = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
+        //*/
         end_projection = Clock::now();
         elapsed_time_projection_ += end_projection - start_projection;
 
@@ -1031,7 +1111,7 @@ assemble()
 
                         Real sum = 0.0;
                         for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                            sum += w_B_lambda[jpt](0) * phi_mu1_mu2[jpt];
+                            sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
 
                         I(flat_id_I++) = sum;
                     }
@@ -1117,10 +1197,11 @@ assemble()
         end_assembly_mass_matrix = Clock::now();
 
         elapsed_time_assembly_mass_matrix_ += end_assembly_mass_matrix - start_assembly_mass_matrix;
-
-        local_mass_matrix_from_phys_elem_accessor<Space>(
-            *elem,
-            loc_mass_matrix_sf);
+        /*
+                local_mass_matrix_from_phys_elem_accessor<Space>(
+                    *elem,
+                    loc_mass_matrix_sf);
+                    //*/
         // Assembly of the local mass matrix using sum-factorization -- end
         //----------------------------------------------------
 

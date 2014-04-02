@@ -485,7 +485,7 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
 template <int dim, int range, int rank>
 const Quadrature<dim> &
 BSplineElementAccessor<dim, range, rank>::
-get_quad(const TopologyId<dim> &topology_id) const
+get_quad_points(const TopologyId<dim> &topology_id) const
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_initialized(), ExcNotInitialized());

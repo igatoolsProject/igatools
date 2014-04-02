@@ -25,5 +25,6 @@ f = data.file_output
 inst = data.inst
 
 value_tables = [ 'ValueTable<%s>' %deriv for deriv in inst.derivatives + inst.values]
+value_tables = value_tables + [ 'ValueTable<Real>' ]
 for row in value_tables:
     f.write('template class %s; \n' % (row))

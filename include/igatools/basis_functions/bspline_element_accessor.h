@@ -459,7 +459,7 @@ public:
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      * @see get_local_coefs
      */
-    const Quadrature<dim> &get_quad(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    const Quadrature<dim> &get_quad_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Prints internal information about the BSplineElementAccessor.
