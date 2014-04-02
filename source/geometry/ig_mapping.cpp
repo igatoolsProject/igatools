@@ -250,13 +250,12 @@ clone() const -> shared_ptr<base_t>
     return map;
 }
 
-
-
 template<class RefSpace>
-void
+vector<Real>
 IgMapping<RefSpace>::
-evaluate(vector<ValueType> &values) const
+get_control_points_elem() const
 {
+	Assert(data_ != nullptr, ExcNullPtr());
     const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
@@ -264,7 +263,15 @@ evaluate(vector<ValueType> &values) const
     for (const auto &local_id : local_to_global)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
-    values = cache_->evaluate_field(ctrl_pts_element);
+    return ctrl_pts_element;
+}
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate(vector<ValueType> &values) const
+{
+    values = cache_->evaluate_field(this->get_control_points_elem());
 }
 
 
@@ -274,15 +281,7 @@ void
 IgMapping<RefSpace>::
 evaluate_gradients(std::vector<GradientType> &gradients) const
 {
-    const auto &local_to_global = cache_->get_local_to_global();
-
-    vector<Real> ctrl_pts_element;
-
-    for (const auto &local_id : local_to_global)
-        ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
-
-    gradients = cache_->evaluate_field_gradients(ctrl_pts_element);
-
+    gradients = cache_->evaluate_field_gradients(this->get_control_points_elem());
 }
 
 
@@ -291,14 +290,7 @@ void
 IgMapping<RefSpace>::
 evaluate_hessians(std::vector<HessianType> &hessians) const
 {
-    const auto &local_to_global = cache_->get_local_to_global();
-
-    vector<Real> ctrl_pts_element;
-
-    for (const auto &local_id : local_to_global)
-        ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
-
-    hessians = cache_->evaluate_field_hessians(ctrl_pts_element);
+    hessians = cache_->evaluate_field_hessians(this->get_control_points_elem());
 }
 
 
@@ -308,17 +300,7 @@ void
 IgMapping<RefSpace>::
 evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
-    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-
-    const auto &local_to_global = cache_->get_local_to_global();
-
-    vector<Real> ctrl_pts_element;
-
-    for (const auto &local_id : local_to_global)
-        ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
-
-    values = cache_->evaluate_field(ctrl_pts_element,FaceTopology<dim>(face_id));
+    values = cache_->evaluate_field(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
 
 
@@ -328,17 +310,7 @@ void
 IgMapping<RefSpace>::
 evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const
 {
-    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-
-    const auto &local_to_global = cache_->get_local_to_global();
-
-    vector<Real> ctrl_pts_element;
-
-    for (const auto &local_id : local_to_global)
-        ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
-
-    gradients = cache_->evaluate_field_gradients(ctrl_pts_element,FaceTopology<dim>(face_id));
+    gradients = cache_->evaluate_field_gradients(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
 
 
@@ -347,17 +319,7 @@ void
 IgMapping<RefSpace>::
 evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const
 {
-    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-
-    const auto &local_to_global = cache_->get_local_to_global();
-
-    vector<Real> ctrl_pts_element;
-
-    for (const auto &local_id : local_to_global)
-        ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
-
-    hessians = cache_->evaluate_field_hessians(ctrl_pts_element,FaceTopology<dim>(face_id));
+    hessians = cache_->evaluate_field_hessians(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
 
 
