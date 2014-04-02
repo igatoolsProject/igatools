@@ -864,12 +864,13 @@ void local_mass_matrix_from_phys_elem_accessor(
     using Duration = chrono::duration<Real>;
 
     const int dim = PhysSpace::dim;
-    const int space_dim = PhysSpace::space_dim;
-    const int range = PhysSpace::range;
-    const int rank = PhysSpace::rank;
+//    const int space_dim = PhysSpace::space_dim;
+//    const int range = PhysSpace::range;
+//    const int rank = PhysSpace::rank;
 
-    Assert(range == 1,ExcDimensionMismatch(range,1));
-    Assert(rank == 1,ExcDimensionMismatch(rank,1));
+    Assert(PhysSpace::range == 1,ExcDimensionMismatch(PhysSpace::range,1));
+    Assert(PhysSpace::rank == 1,ExcDimensionMismatch(PhysSpace::rank,1));
+
 
     //--------------------------------------------------------------------------
     // getting the number of basis along each coordinate direction for the projection space
@@ -879,10 +880,12 @@ void local_mass_matrix_from_phys_elem_accessor(
     //--------------------------------------------------------------------------
 
 
-    const Index comp = 0; // only scalar spaces for the moment
 
     //--------------------------------------------------------------------------
     // getting the number of basis along each coordinate direction for the test and trial space
+
+    const Index comp = 0; // only scalar spaces for the moment
+
     TensorIndex<dim> degree = elem.get_physical_space()->get_reference_space()->get_degree()(comp);
     TensorSize<dim> n_basis_elem;
     for (int i = 0 ; i < dim ; ++i)
@@ -910,7 +913,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     const auto &quad_points = ref_elem_accessor.get_quad_points();
     const auto n_quad_points = quad_points.get_num_points_direction();
 
-    const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+    const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
     array< ValueTable<ValueType1D>,dim>  phi_1D;
     for (int i = 0 ; i < dim ; ++i)
@@ -920,9 +923,8 @@ void local_mass_matrix_from_phys_elem_accessor(
     {
         const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
 
-        const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
-
-        const auto &bspline1D_values = bspline_evaluator->get_derivative_components_view(0);
+        const auto &bspline1D_values =
+            bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
 
         for (int i = 0 ; i < dim ; ++i)
         {
@@ -938,35 +940,23 @@ void local_mass_matrix_from_phys_elem_accessor(
 
 
 
-
-
-
-
-
-
-
-
     //----------------------------------------------------
     // Projection phase -- begin
     const TimePoint start_projection = Clock::now();
 
     // performs the projection of the function det(DF) using as basis the Bernstein's polynomials
-    const auto det_at_points = elem.get_measure() ;
+    const auto det_DF = elem.get_measures() ;
 
     // measure of the element in the reference domain
     const Real ref_elem_measure = ref_elem_accessor.get_measure();
 
-//    f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
 
-    ValueVector<Real> func_to_proj_at_pts;
-    for (const auto & det : det_at_points)
-        func_to_proj_at_pts.emplace_back(det(0));
-
+    // here we project the determinant Jacobian on a Bernstein polynomials space
     auto K = perform_element_l2_projection_tp_basis<dim>(
                  w_basis_proj_1D,
                  invM_projection,
                  quad_projection,
-                 func_to_proj_at_pts,
+                 det_DF,
                  ref_elem_measure);
 
     const TimePoint end_projection = Clock::now();
@@ -975,10 +965,6 @@ void local_mass_matrix_from_phys_elem_accessor(
     //----------------------------------------------------
 
 
-
-
-    //----------------------------------------------------
-    // Assembly of the local mass matrix using sum-factorization -- begin
 
 
 
@@ -995,16 +981,8 @@ void local_mass_matrix_from_phys_elem_accessor(
 
 
 
-
-    /*
-        TensorSize<dim> tensor_size_alpha;
-        TensorSize<dim> tensor_size_beta;
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            tensor_size_alpha(i) = n_basis_elem(i);
-            tensor_size_beta (i) = n_basis_elem(i);
-        }
-    //*/
+    //----------------------------------------------------
+    // Assembly of the local mass matrix using sum-factorization -- begin
     TensorSize<3> tensor_size_C_0;
     tensor_size_C_0[0] = n_basis_projection.flat_size(); // theta size
     tensor_size_C_0[1] = 1; // alpha size
@@ -1029,11 +1007,8 @@ void local_mass_matrix_from_phys_elem_accessor(
     for (int test_id = 0 ; test_id < n_basis ; ++test_id)
         for (int trial_id = 0 ; trial_id < n_basis ; ++trial_id)
             local_mass_matrix(test_id,trial_id) = C_ab(flat_id++);
-
-
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    // Assembly of the local mass matrix using sum-factorization -- end
+    //----------------------------------------------------
 }
 
 
@@ -1084,7 +1059,7 @@ assemble()
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
     ValueFlags fill_flags = ValueFlags::value |
-                            ValueFlags::gradient |
+//                            ValueFlags::gradient |
                             ValueFlags::measure |
                             ValueFlags::w_measure |
                             ValueFlags::point;
@@ -1165,11 +1140,11 @@ assemble()
 
     for (; elem != elem_end; ++elem)
     {
-
-
         loc_rhs.clear();
-        //*/
+
         elem->fill_values();
+
+        //*/
 
 
         //--------------------------------------------------------------------------
@@ -1184,7 +1159,7 @@ assemble()
         for (int i = 0 ; i < dim ; ++i)
         {
             phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
-            Dphi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
+//            Dphi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
         }
 
         const Size n_basis = n_basis_elem.flat_size();
@@ -1194,20 +1169,20 @@ assemble()
             const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
 
             const auto &bspline1D_values = bspline_evaluator->get_derivative_components_view(0);
-            const auto &bspline1D_derivatives = bspline_evaluator->get_derivative_components_view(1);
+//            const auto &bspline1D_derivatives = bspline_evaluator->get_derivative_components_view(1);
 
             for (int i = 0 ; i < dim ; ++i)
             {
                 auto  phi_1D_ifn =  phi_1D[i].get_function_view(tensor_fn_id[i]);
-                auto Dphi_1D_ifn = Dphi_1D[i].get_function_view(tensor_fn_id[i]);
+//                auto Dphi_1D_ifn = Dphi_1D[i].get_function_view(tensor_fn_id[i]);
 
                 const auto &bsp_val = bspline1D_values[i];
-                const auto &bsp_der = bspline1D_derivatives[i];
+//                const auto &bsp_der = bspline1D_derivatives[i];
 
                 for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
                 {
                     phi_1D_ifn[jpt] = bsp_val(jpt);
-                    Dphi_1D_ifn[jpt] = bsp_der(jpt);
+//                    Dphi_1D_ifn[jpt] = bsp_der(jpt);
                 }
             }
         }
@@ -1218,111 +1193,10 @@ assemble()
 
 
 
-//        auto points  = elem->get_points();
-        auto phi     = elem->get_basis_values();
-//        auto grd_phi = elem->get_basis_gradients();
-        auto w_meas  = elem->get_w_measures();
 
 
-        /*
-                auto ref_elem_measure = ref_elem_accessor.get_measure();
-
-
-
-
-
-                //----------------------------------------------------
-                // Projection phase -- begin
-                start_projection = Clock::now();
-
-                // performs the projection of the function f using as basis the Bernstein's polynomials
-                f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
-
-                ValueVector<Real> func_to_proj_at_pts;
-                for (const auto & f_val : f_values_proj)
-                    func_to_proj_at_pts.emplace_back(f_val(0));
-
-                auto K = perform_element_l2_projection_tp_basis<dim>(
-                            w_B_proj_1D,
-                            inv_B_proj_,
-                            quad_proj_,
-                            func_to_proj_at_pts,
-                            ref_elem_measure);
-
-                end_projection = Clock::now();
-                elapsed_time_projection_ += end_projection - start_projection;
-                // Projection phase -- end
-                //----------------------------------------------------
-
-
-
-
-                //----------------------------------------------------
-                // Assembly of the local mass matrix using sum-factorization -- begin
-                start_assembly_mass_matrix = Clock::now();
-
-
-
-
-                //----------------------------------------------------
-                // precalculation of the I[i](lambda,mu1,mu2) terms (i.e. the moments)
-                const auto start_compute_I = Clock::now();
-
-                const auto moments = evaluate_moments<dim>(w_B_proj_1D,phi_1D,phi_1D);
-
-                const auto end_compute_I = Clock::now();
-                elapsed_time_compute_I_ = end_compute_I - start_compute_I;
-                //----------------------------------------------------
-
-
-
-
-
-
-                TensorSize<dim> tensor_size_alpha;
-                TensorSize<dim> tensor_size_beta;
-                TensorSize<dim> tensor_size_theta;
-                for (int i = 0 ; i < dim ; ++i)
-                {
-                    tensor_size_alpha[i] = n_basis_elem[i];
-                    tensor_size_beta [i] = n_basis_elem[i];
-                    tensor_size_theta[i] = n_bernst_1D_;
-                }
-
-                TensorSize<3> tensor_size_C_0;
-                tensor_size_C_0[0] = tensor_size_theta.flat_size(); // theta size
-                tensor_size_C_0[1] = 1; // alpha size
-                tensor_size_C_0[2] = 1; // beta size
-                K.reshape(tensor_size_C_0);
-
-
-                MassMatrixIntegrator<dim> integrate_mass_matrix;
-                DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(
-                        tensor_size_theta,
-                        tensor_size_alpha,
-                        tensor_size_beta,
-                        moments,K);
-
-                Assert(C_ab.tensor_size()(1) == n_basis,
-                        ExcDimensionMismatch(C_ab.tensor_size()(1),n_basis));
-                Assert(C_ab.tensor_size()(2) == n_basis,
-                        ExcDimensionMismatch(C_ab.tensor_size()(2),n_basis));
-
-
-                Index flat_id = 0 ;
-                for (int test_id = 0 ; test_id < n_basis ; ++test_id)
-                    for (int trial_id = 0 ; trial_id < n_basis ; ++trial_id)
-                        loc_mass_matrix_sf(test_id,trial_id) = C_ab(flat_id++);
-        //*/
-
-
-        /*
-                for (int test_id = 0 ; test_id < n_basis ; ++test_id)
-                    for (int trial_id = 0 ; trial_id < test_id ; ++trial_id)
-                        loc_mass_matrix_sf(test_id,trial_id) = loc_mass_matrix_sf(trial_id,test_id);
-        //*/
-        //        out << "Local Mass Matrix = " << local_mass_matrix << endl;
-
+        //----------------------------------------------------
+        // Assembly of the local mass matrix using sum-factorization -- begin
         start_assembly_mass_matrix = Clock::now();
 
 
@@ -1343,9 +1217,17 @@ assemble()
 
 
 
+        //----------------------------------------------------
+        // Assembly of the local mass matrix using the standard approach -- begin
+        start_assembly_mass_matrix_old = Clock::now();
+
+
+        auto phi     = elem->get_basis_values();
+        auto w_meas  = elem->get_w_measures();
+
+
         const int n_qp = this->elem_quad.get_num_points();
 
-        start_assembly_mass_matrix_old = Clock::now();
         loc_mat.clear();
 
         for (int i = 0; i < n_basis; ++i)
@@ -1364,6 +1246,8 @@ assemble()
 
         end_assembly_mass_matrix_old = Clock::now();
         elapsed_time_assembly_mass_matrix_old_ += end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
+        // Assembly of the local mass matrix using the standard approach -- end
+        //----------------------------------------------------
 
 
         //*/
