@@ -491,24 +491,33 @@ class MassMatrixIntegrator
 public:
     DynamicMultiArray<Real,3>
     operator()(
-        const TensorSize<dim> &tensor_size_alphabeta,
         const TensorSize<dim> &tensor_size_theta,
+        const TensorSize<dim> &tensor_size_alpha,
+        const TensorSize<dim> &tensor_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
         const DynamicMultiArray<Real,3> &C_k_1) const
     {
         const int k = dim-r+1;
 
         // (alpha_1,...alpha_{k-1})
-        TensorSize<k-1> tensor_size_alphabeta_k_1;
+        TensorSize<k-1> tensor_size_alpha_k_1;
+        // (beta_1,...beta_{k-1})
+        TensorSize<k-1> tensor_size_beta_k_1;
         for (int i = 0 ; i < k-1 ; ++i)
-            tensor_size_alphabeta_k_1[i] = tensor_size_alphabeta[i];
-
+        {
+            tensor_size_alpha_k_1[i] = tensor_size_alpha[i];
+            tensor_size_beta_k_1 [i] = tensor_size_beta[i];
+        }
 
         // (alpha_1,...alpha_k)
-        TensorSize<k> tensor_size_alphabeta_k;
+        TensorSize<k> tensor_size_alpha_k;
+        // (beta_1,...beta_k)
+        TensorSize<k> tensor_size_beta_k;
         for (int i = 0 ; i < k ; ++i)
-            tensor_size_alphabeta_k  [i] = tensor_size_alphabeta[i];
-
+        {
+            tensor_size_alpha_k[i] = tensor_size_alpha[i];
+            tensor_size_beta_k [i] = tensor_size_beta[i];
+        }
 
         // (theta_{k+1},...theta_dim)
         TensorSize<dim-k> tensor_size_theta_k_1;
@@ -525,20 +534,20 @@ public:
 //    TensorSize<3> tensor_size_C_k_1 = C_k_1.tensor_size();
         Assert(C_k_1.tensor_size()[0] == tensor_size_theta_k.flat_size(),
                ExcDimensionMismatch(C_k_1.tensor_size()[0],tensor_size_theta_k.flat_size()));
-        Assert(C_k_1.tensor_size()[1] == tensor_size_alphabeta_k_1.flat_size(),
-               ExcDimensionMismatch(C_k_1.tensor_size()[1],tensor_size_alphabeta_k_1.flat_size()));
-        Assert(C_k_1.tensor_size()[2] == tensor_size_alphabeta_k_1.flat_size(),
-               ExcDimensionMismatch(C_k_1.tensor_size()[2],tensor_size_alphabeta_k_1.flat_size()));
+        Assert(C_k_1.tensor_size()[1] == tensor_size_alpha_k_1.flat_size(),
+               ExcDimensionMismatch(C_k_1.tensor_size()[1],tensor_size_alpha_k_1.flat_size()));
+        Assert(C_k_1.tensor_size()[2] == tensor_size_beta_k_1.flat_size(),
+               ExcDimensionMismatch(C_k_1.tensor_size()[2],tensor_size_beta_k_1.flat_size()));
 
 
         const auto &J_k = J[k-1];
 //    TensorSize<3> tensor_size_J_k = J_k.tensor_size();
         Assert(J_k.tensor_size()[0] == tensor_size_theta[k-1],
                ExcDimensionMismatch(J_k.tensor_size()[0],tensor_size_theta[k-1]));
-        Assert(J_k.tensor_size()[1] == tensor_size_alphabeta[k-1],
-               ExcDimensionMismatch(J_k.tensor_size()[1],tensor_size_alphabeta[k-1]));
-        Assert(J_k.tensor_size()[2] == tensor_size_alphabeta[k-1],
-               ExcDimensionMismatch(J_k.tensor_size()[2],tensor_size_alphabeta[k-1]));
+        Assert(J_k.tensor_size()[1] == tensor_size_alpha[k-1],
+               ExcDimensionMismatch(J_k.tensor_size()[1],tensor_size_alpha[k-1]));
+        Assert(J_k.tensor_size()[2] == tensor_size_beta[k-1],
+               ExcDimensionMismatch(J_k.tensor_size()[2],tensor_size_beta[k-1]));
 
 
 
@@ -548,14 +557,14 @@ public:
         TensorIndex<3> tensor_id_C_k;
 
         const Size size_flat_theta_k_1 = (dim-k>0)?tensor_size_theta_k_1.flat_size():1;
-        const Size size_flat_alpha_k_1 = tensor_size_alphabeta_k_1.flat_size();
-        const Size size_flat_beta_k_1  = size_flat_alpha_k_1;
+        const Size size_flat_alpha_k_1 = tensor_size_alpha_k_1.flat_size();
+        const Size size_flat_beta_k_1  = tensor_size_beta_k_1.flat_size();
 
 
         TensorSize<3> tensor_size_C_k;
         tensor_size_C_k[0] = size_flat_theta_k_1;
-        tensor_size_C_k[1] = tensor_size_alphabeta_k.flat_size();
-        tensor_size_C_k[2] = tensor_size_alphabeta_k.flat_size();
+        tensor_size_C_k[1] = tensor_size_alpha_k.flat_size();
+        tensor_size_C_k[2] = tensor_size_beta_k.flat_size();
         DynamicMultiArray<Real,3> C_k(tensor_size_C_k);
 
 
@@ -569,7 +578,7 @@ public:
             tensor_id_C_k_1[2] = flat_beta_k_1;
 
 
-            for (int beta_k = 0 ; beta_k < tensor_size_alphabeta[k-1] ; ++beta_k)
+            for (int beta_k = 0 ; beta_k < tensor_size_beta[k-1] ; ++beta_k)
             {
                 tensor_id_J_k[2] = beta_k;
                 tensor_id_C_k[1] = 0 ;
@@ -578,7 +587,7 @@ public:
                 {
                     tensor_id_C_k_1[1] = flat_alpha_k_1;
 
-                    for (int alpha_k = 0 ; alpha_k < tensor_size_alphabeta[k-1] ; ++alpha_k)
+                    for (int alpha_k = 0 ; alpha_k < tensor_size_alpha[k-1] ; ++alpha_k)
                     {
                         tensor_id_J_k[1] = alpha_k;
 
@@ -626,7 +635,7 @@ public:
         {
             tensor_id_C_k_1[2] = flat_beta_k_1;
 
-            for (int beta_k = 0 ; beta_k < tensor_size_alphabeta[k-1] ; ++beta_k)
+            for (int beta_k = 0 ; beta_k < tensor_size_beta[k-1] ; ++beta_k)
             {
                 tensor_id_J_k[2] = beta_k;
                 tensor_id_C_k[1] = 0 ;
@@ -635,7 +644,7 @@ public:
                 {
                     tensor_id_C_k_1[1] = flat_alpha_k_1;
 
-                    for (int alpha_k = 0 ; alpha_k < tensor_size_alphabeta[k-1] ; ++alpha_k)
+                    for (int alpha_k = 0 ; alpha_k < tensor_size_alpha[k-1] ; ++alpha_k)
                     {
                         tensor_id_J_k[1] = alpha_k;
 
@@ -663,7 +672,11 @@ public:
 
 
         MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
-        return mass_matrix_integrator(tensor_size_alphabeta,tensor_size_theta,J,C_k);
+        return mass_matrix_integrator(
+                   tensor_size_theta,
+                   tensor_size_alpha,
+                   tensor_size_beta,
+                   J,C_k);
     }
 };
 
@@ -673,8 +686,9 @@ class MassMatrixIntegrator<dim,0>
 {
 public:
     DynamicMultiArray<Real,3> operator()(
-        const TensorSize<dim> &tensor_size_alphabeta,
         const TensorSize<dim> &tensor_size_theta,
+        const TensorSize<dim> &tensor_size_alpha,
+        const TensorSize<dim> &tensor_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
         const DynamicMultiArray<Real,3> &C) const
     {
@@ -685,73 +699,170 @@ public:
 
 /**
  * @brief Performs the L2 projection on a function evaluated on points inside a single
- * Bezier element, using as projecting space, the Bernsetein polynomials of a certain degree.
- * @param w_basis_proj_1D Bernstein's basis values along each coordinate direction, multiplied by
+ * Bezier element, using as projecting space, the a basis with tensor-product structure.
+ * @param w_basis_proj_1D Basis values along each coordinate direction, multiplied by
  * the quadrature weight.
- * @param n_basis_1D Number of one-dimensional Bernstein's polynomial in each coordinate direction
+ * @param n_basis_1D Number of one-dimensional basis functions in each coordinate direction
  * used to build the mass matrix and its inverse @p invM.
- * @param invM Inverse of the mass-matrix built using the bernstein basis on a Bezier element.
+ * @param invM Inverse of the mass-matrix built using the tensor-product basis on a Bezier element.
  * @param quad_projection Quadrature scheme used for the projection.
  * @param n_points_projection Number of quadrature points (in each coordinate direction) used for
  * the L2 projection.
  * @param func_to_proj_at_pts Values of the function to project at the quadrature points.
  */
 template <int dim>
-DenseVector
-perform_element_l2_projection_bernstein(
+DynamicMultiArray<Real,dim>
+perform_element_l2_projection_tp_basis(
     const array<ValueTable<Real>,dim> w_basis_proj_1D,
-    const TensorSize<dim> n_basis_1D,
     const DenseMatrix &invM,
     const Quadrature<dim> &quad_projection,
-    const ValueVector<Real> &func_to_proj_at_pts)
+    const ValueVector<Real> &func_to_proj_at_pts,
+    const Real ref_elem_measure)
 {
     Assert(invM.size1()==invM.size2(),ExcDimensionMismatch(invM.size1(),invM.size2()));
 
-    const Size n_bernst_basis = invM.size1();
-    Assert(n_basis_1D.flat_size() == n_bernst_basis,
-           ExcDimensionMismatch(n_basis_1D.flat_size(),n_bernst_basis));
+    const Size n_basis = invM.size1();
 
-    const TensorIndex<dim> bernst_tensor_wgt =
+    TensorSize<dim> n_basis_1D;
+    TensorSize<dim> n_points_1D;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        n_basis_1D(i) = w_basis_proj_1D[i].get_num_functions();
+        n_points_1D(i) = w_basis_proj_1D[i].get_num_points();
+
+        Assert(n_points_1D(i) == quad_projection.get_num_points_direction()(i),
+               ExcDimensionMismatch(n_points_1D(i),quad_projection.get_num_points_direction()(i)));
+    }
+
+    Assert(n_basis_1D.flat_size() == n_basis,
+           ExcDimensionMismatch(n_basis_1D.flat_size(),n_basis));
+
+    const TensorIndex<dim> basis_tensor_wgt =
         MultiArrayUtils<dim>::compute_weight(n_basis_1D);
 
-    const TensorSize<dim> n_points_projection = quad_projection.get_num_points_direction();
-
-
-
-    const Size n_points = n_points_projection.flat_size();
+    const Size n_points = n_points_1D.flat_size();
     Assert(func_to_proj_at_pts.size() == n_points,
            ExcDimensionMismatch(func_to_proj_at_pts.size(),n_points));
 
     DynamicMultiArray<Real,dim> c;
-    c = DynamicMultiArray<Real,dim>(n_points_projection);
+    c = DynamicMultiArray<Real,dim>(n_points_1D);
     for (Index i = 0 ; i < n_points ; ++i)
         c(i) = func_to_proj_at_pts[i] ;
 
 
-    DenseVector integral_rhs(n_bernst_basis);
+    DenseVector integral_rhs(n_basis);
 
     IntegratorSumFacRHS<dim> integrate_rhs;
-    for (Index bernst_flat_id = 0 ; bernst_flat_id < n_bernst_basis ; ++bernst_flat_id)
+    for (Index basis_flat_id = 0 ; basis_flat_id < n_basis ; ++basis_flat_id)
     {
-        const auto bernst_tensor_id =
-            MultiArrayUtils<dim>::flat_to_tensor_index(bernst_flat_id,bernst_tensor_wgt);
+        const auto basis_tensor_id =
+            MultiArrayUtils<dim>::flat_to_tensor_index(basis_flat_id,basis_tensor_wgt);
 
-        integral_rhs(bernst_flat_id) =
-            (integrate_rhs(c,w_basis_proj_1D,bernst_tensor_id)).get_data()[0];
+        integral_rhs(basis_flat_id) =
+            (integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0) / ref_elem_measure;
     }
 
-    // coefficient of the L2 projection using the Bersntein basis
-    DenseVector proj_coefs = boost::numeric::ublas::prod(invM, integral_rhs) ;
+    // coefficient of the L2 projection using the tensor product basis
+    DenseVector proj_coefs_tmp = boost::numeric::ublas::prod(invM, integral_rhs) ;
+
+
+    DynamicMultiArray<Real,dim> proj_coefs(n_basis_1D);
+    for (Index basis_flat_id = 0 ; basis_flat_id < n_basis ; ++basis_flat_id)
+        proj_coefs(basis_flat_id) = proj_coefs_tmp(basis_flat_id);
 
     return proj_coefs;
 }
 
+
+
+
+DynamicMultiArray<Real,3>
+evaluate_moments_1D(
+    const ValueTable<Real> &B_1D_proj_times_w,
+    const ValueTable<Function<1>::ValueType> &phi_1D_trial,
+    const ValueTable<Function<1>::ValueType> &phi_1D_test
+)
+{
+    const Size n_basis_projection = B_1D_proj_times_w.get_num_functions();
+    const Size n_basis_test  = phi_1D_test .get_num_functions();
+    const Size n_basis_trial = phi_1D_trial.get_num_functions();
+
+    TensorSize<3> moments1D_tensor_size;
+    moments1D_tensor_size[0] = n_basis_projection;
+    moments1D_tensor_size[1] = n_basis_test;
+    moments1D_tensor_size[2] = n_basis_trial;
+
+    DynamicMultiArray<Real,3> moments1D(moments1D_tensor_size);
+
+    const Size n_pts = B_1D_proj_times_w.get_num_points();
+    Assert(phi_1D_test.get_num_points() == n_pts,
+           ExcDimensionMismatch(phi_1D_test.get_num_points(),n_pts));
+    Assert(phi_1D_trial.get_num_points() == n_pts,
+           ExcDimensionMismatch(phi_1D_trial.get_num_points(),n_pts));
+
+//            LogStream out ;
+
+    vector<Real> phi_mu1_mu2(n_pts);
+
+    Index flat_id_I = 0 ;
+    for (int mu2 = 0 ; mu2 < n_basis_test ; ++mu2)
+    {
+        const auto phi_1D_mu2 = phi_1D_test.get_function_view(mu2);
+
+        for (int mu1 = 0 ; mu1 < n_basis_trial ; ++mu1)
+        {
+            const auto phi_1D_mu1 = phi_1D_trial.get_function_view(mu1);
+
+            for (int jpt = 0 ; jpt < n_pts ; ++jpt)
+                phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0);
+
+            for (int lambda = 0 ; lambda < n_basis_projection ; ++lambda)
+            {
+                const auto w_B_lambda = B_1D_proj_times_w.get_function_view(lambda);
+
+                Real sum = 0.0;
+                for (int jpt = 0 ; jpt < n_pts ; ++jpt)
+                    sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
+
+                moments1D(flat_id_I++) = sum;
+            }
+        }
+    }
+
+    return moments1D;
+}
+
+
+template <int dim>
+array<DynamicMultiArray<Real,3>,dim>
+evaluate_moments(
+    const array<ValueTable<Real>,dim> &B_1D_proj_times_w,
+    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
+    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test
+)
+{
+    array<DynamicMultiArray<Real,3>,dim> moments;
+
+    for (int dir = 0 ; dir < dim ; ++dir)
+        moments[dir] = evaluate_moments_1D(B_1D_proj_times_w[dir],phi_1D_trial[dir],phi_1D_test[dir]);
+
+    return moments;
+}
+
+
 template <class PhysSpace>
 void local_mass_matrix_from_phys_elem_accessor(
     const typename PhysSpace::ElementAccessor &elem,
-    const TensorSize<PhysSpace::dim> &n_basis_projection,
-    DenseMatrix &mass_matrix)
+    const array<ValueTable<Real>,PhysSpace::dim> w_basis_proj_1D,
+    const DenseMatrix &invM_projection,
+    const Quadrature<PhysSpace::dim> &quad_projection,
+    DenseMatrix &local_mass_matrix)
 {
+
+    using Clock = chrono::high_resolution_clock;
+    using TimePoint = chrono::time_point<Clock>;
+    using Duration = chrono::duration<Real>;
+
     const int dim = PhysSpace::dim;
     const int space_dim = PhysSpace::space_dim;
     const int range = PhysSpace::range;
@@ -760,21 +871,32 @@ void local_mass_matrix_from_phys_elem_accessor(
     Assert(range == 1,ExcDimensionMismatch(range,1));
     Assert(rank == 1,ExcDimensionMismatch(rank,1));
 
+    //--------------------------------------------------------------------------
+    // getting the number of basis along each coordinate direction for the projection space
+    TensorSize<dim> n_basis_projection;
+    for (int i = 0 ; i < dim ; ++i)
+        n_basis_projection(i) = w_basis_proj_1D[i].get_num_functions();
+    //--------------------------------------------------------------------------
+
 
     const Index comp = 0; // only scalar spaces for the moment
 
     //--------------------------------------------------------------------------
-    // getting the number of basis along each coordinate direction
+    // getting the number of basis along each coordinate direction for the test and trial space
     TensorIndex<dim> degree = elem.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_tensor;
+    TensorSize<dim> n_basis_elem;
     for (int i = 0 ; i < dim ; ++i)
-        n_basis_tensor(i) = degree(i) + 1;
+        n_basis_elem(i) = degree(i) + 1;
 
-    const Size n_basis_flat = n_basis_tensor.flat_size();
-    Assert(n_basis_tensor.flat_size()==elem.get_num_basis(),
-           ExcDimensionMismatch(n_basis_tensor.flat_size(),elem.get_num_basis()));
+    const Size n_basis_flat = n_basis_elem.flat_size();
+    Assert(n_basis_elem.flat_size()==elem.get_num_basis(),
+           ExcDimensionMismatch(n_basis_elem.flat_size(),elem.get_num_basis()));
 
-    const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_tensor);
+    const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
+
+    const TensorSize<dim> n_basis_test = n_basis_elem;
+    const TensorSize<dim> n_basis_trial= n_basis_elem;
+    const Size n_basis = n_basis_elem.flat_size();
     //--------------------------------------------------------------------------
 
 
@@ -792,7 +914,7 @@ void local_mass_matrix_from_phys_elem_accessor(
 
     array< ValueTable<ValueType1D>,dim>  phi_1D;
     for (int i = 0 ; i < dim ; ++i)
-        phi_1D[i].resize(n_basis_tensor[i],n_quad_points[i]);
+        phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
 
     for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_flat ; ++flat_fn_id)
     {
@@ -814,6 +936,99 @@ void local_mass_matrix_from_phys_elem_accessor(
     }
     //--------------------------------------------------------------------------
 
+
+
+
+
+
+
+
+
+
+
+    //----------------------------------------------------
+    // Projection phase -- begin
+    const TimePoint start_projection = Clock::now();
+
+    // performs the projection of the function det(DF) using as basis the Bernstein's polynomials
+    const auto det_at_points = elem.get_measure() ;
+
+    // measure of the element in the reference domain
+    const Real ref_elem_measure = ref_elem_accessor.get_measure();
+
+//    f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
+
+    ValueVector<Real> func_to_proj_at_pts;
+    for (const auto & det : det_at_points)
+        func_to_proj_at_pts.emplace_back(det(0));
+
+    auto K = perform_element_l2_projection_tp_basis<dim>(
+                 w_basis_proj_1D,
+                 invM_projection,
+                 quad_projection,
+                 func_to_proj_at_pts,
+                 ref_elem_measure);
+
+    const TimePoint end_projection = Clock::now();
+    const Duration elapsed_time_projection = end_projection - start_projection;
+    // Projection phase -- end
+    //----------------------------------------------------
+
+
+
+
+    //----------------------------------------------------
+    // Assembly of the local mass matrix using sum-factorization -- begin
+
+
+
+    //----------------------------------------------------
+    // precalculation of the I[i](lambda,mu1,mu2) terms (i.e. the moments)
+    const auto start_compute_I = Clock::now();
+
+    const auto moments = evaluate_moments<dim>(w_basis_proj_1D,phi_1D,phi_1D);
+
+    const auto end_compute_I = Clock::now();
+    Duration elapsed_time_compute_I = end_compute_I - start_compute_I;
+    //----------------------------------------------------
+
+
+
+
+
+    /*
+        TensorSize<dim> tensor_size_alpha;
+        TensorSize<dim> tensor_size_beta;
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            tensor_size_alpha(i) = n_basis_elem(i);
+            tensor_size_beta (i) = n_basis_elem(i);
+        }
+    //*/
+    TensorSize<3> tensor_size_C_0;
+    tensor_size_C_0[0] = n_basis_projection.flat_size(); // theta size
+    tensor_size_C_0[1] = 1; // alpha size
+    tensor_size_C_0[2] = 1; // beta size
+    K.reshape(tensor_size_C_0);
+
+
+    MassMatrixIntegrator<dim> integrate_mass_matrix;
+    DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(
+                                         n_basis_projection,
+                                         n_basis_trial,
+                                         n_basis_test,
+                                         moments,K);
+
+    Assert(C_ab.tensor_size()(1) == n_basis,
+           ExcDimensionMismatch(C_ab.tensor_size()(1),n_basis));
+    Assert(C_ab.tensor_size()(2) == n_basis,
+           ExcDimensionMismatch(C_ab.tensor_size()(2),n_basis));
+
+
+    Index flat_id = 0 ;
+    for (int test_id = 0 ; test_id < n_basis ; ++test_id)
+        for (int trial_id = 0 ; trial_id < n_basis ; ++trial_id)
+            local_mass_matrix(test_id,trial_id) = C_ab(flat_id++);
 
 
 
@@ -920,8 +1135,6 @@ assemble()
 
 
 
-//    IntegratorSumFacRHS<dim> integrate_rhs;
-
     TensorIndex<dim> bernst_tensor_id;
 
     DenseVector integral_rhs(n_basis_proj_);
@@ -1011,197 +1224,119 @@ assemble()
         auto w_meas  = elem->get_w_measures();
 
 
-
-        auto elem_measure = ref_elem_accessor.get_measure();
-
-        f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
-
-        ValueVector<Real> func_to_proj_at_pts;
-        for (const auto & f_val : f_values_proj)
-            func_to_proj_at_pts.emplace_back(f_val(0));
-
-
-
-
-        //----------------------------------------------------
-        // Projection phase -- begin
-        start_projection = Clock::now();
-
-        k_rhs = perform_element_l2_projection_bernstein<dim>(
-                    w_B_proj_1D,
-                    TensorSize<dim>(n_bernst_1D_),
-                    inv_B_proj_,
-                    quad_proj_,
-                    func_to_proj_at_pts);
         /*
-                DynamicMultiArray<Real,dim> c;
-                c = DynamicMultiArray<Real,dim>(TensorSize<dim>(n_quad_proj_1D_));
-                for (Index i = 0 ; i < c.flat_size() ; ++i)
+                auto ref_elem_measure = ref_elem_accessor.get_measure();
+
+
+
+
+
+                //----------------------------------------------------
+                // Projection phase -- begin
+                start_projection = Clock::now();
+
+                // performs the projection of the function f using as basis the Bernstein's polynomials
+                f.evaluate(quad_proj_.get_points().get_flat_cartesian_product(), f_values_proj);
+
+                ValueVector<Real> func_to_proj_at_pts;
+                for (const auto & f_val : f_values_proj)
+                    func_to_proj_at_pts.emplace_back(f_val(0));
+
+                auto K = perform_element_l2_projection_tp_basis<dim>(
+                            w_B_proj_1D,
+                            inv_B_proj_,
+                            quad_proj_,
+                            func_to_proj_at_pts,
+                            ref_elem_measure);
+
+                end_projection = Clock::now();
+                elapsed_time_projection_ += end_projection - start_projection;
+                // Projection phase -- end
+                //----------------------------------------------------
+
+
+
+
+                //----------------------------------------------------
+                // Assembly of the local mass matrix using sum-factorization -- begin
+                start_assembly_mass_matrix = Clock::now();
+
+
+
+
+                //----------------------------------------------------
+                // precalculation of the I[i](lambda,mu1,mu2) terms (i.e. the moments)
+                const auto start_compute_I = Clock::now();
+
+                const auto moments = evaluate_moments<dim>(w_B_proj_1D,phi_1D,phi_1D);
+
+                const auto end_compute_I = Clock::now();
+                elapsed_time_compute_I_ = end_compute_I - start_compute_I;
+                //----------------------------------------------------
+
+
+
+
+
+
+                TensorSize<dim> tensor_size_alpha;
+                TensorSize<dim> tensor_size_beta;
+                TensorSize<dim> tensor_size_theta;
+                for (int i = 0 ; i < dim ; ++i)
                 {
-                    c(i) = f_values_proj[i](0) ;
+                    tensor_size_alpha[i] = n_basis_elem[i];
+                    tensor_size_beta [i] = n_basis_elem[i];
+                    tensor_size_theta[i] = n_bernst_1D_;
                 }
 
-                for (Index bernst_flat_id = 0 ; bernst_flat_id < n_basis_proj_ ; ++bernst_flat_id)
-                {
-                    bernst_tensor_id = MAUtils::flat_to_tensor_index(bernst_flat_id,bernst_tensor_weight_);
+                TensorSize<3> tensor_size_C_0;
+                tensor_size_C_0[0] = tensor_size_theta.flat_size(); // theta size
+                tensor_size_C_0[1] = 1; // alpha size
+                tensor_size_C_0[2] = 1; // beta size
+                K.reshape(tensor_size_C_0);
 
-                    integral_rhs(bernst_flat_id) =
-                        (integrate_rhs(c,w_B_proj_1D,bernst_tensor_id)).get_data()[0];
-                }
 
-                // coefficient of the rhs projection with the Bersntein basis
-                k_rhs = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
+                MassMatrixIntegrator<dim> integrate_mass_matrix;
+                DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(
+                        tensor_size_theta,
+                        tensor_size_alpha,
+                        tensor_size_beta,
+                        moments,K);
+
+                Assert(C_ab.tensor_size()(1) == n_basis,
+                        ExcDimensionMismatch(C_ab.tensor_size()(1),n_basis));
+                Assert(C_ab.tensor_size()(2) == n_basis,
+                        ExcDimensionMismatch(C_ab.tensor_size()(2),n_basis));
+
+
+                Index flat_id = 0 ;
+                for (int test_id = 0 ; test_id < n_basis ; ++test_id)
+                    for (int trial_id = 0 ; trial_id < n_basis ; ++trial_id)
+                        loc_mass_matrix_sf(test_id,trial_id) = C_ab(flat_id++);
         //*/
-        end_projection = Clock::now();
-        elapsed_time_projection_ += end_projection - start_projection;
-
-        // Projection phase -- end
-        //----------------------------------------------------
 
 
+        /*
+                for (int test_id = 0 ; test_id < n_basis ; ++test_id)
+                    for (int trial_id = 0 ; trial_id < test_id ; ++trial_id)
+                        loc_mass_matrix_sf(test_id,trial_id) = loc_mass_matrix_sf(trial_id,test_id);
+        //*/
+        //        out << "Local Mass Matrix = " << local_mass_matrix << endl;
 
-
-        //----------------------------------------------------
-        // Assembly of the local mass matrix using sum-factorization -- begin
         start_assembly_mass_matrix = Clock::now();
 
 
-
-
-        //----------------------------------------------------
-        // precalculation of the I[i](lambda,mu1,mu2) terms
-        const auto start_compute_I = Clock::now();
-
-        array<DynamicMultiArray<Real,3>,dim> I_container;
-        for (int dir = 0 ; dir < dim ; ++dir)
-        {
-            TensorSize<3> tensor_size_I;
-            tensor_size_I[0] = n_bernst_1D_;
-            tensor_size_I[1] = n_basis_elem[dir];
-            tensor_size_I[2] = n_basis_elem[dir];
-
-            I_container[dir].resize(tensor_size_I);
-
-            auto &I = I_container[dir];
-
-            const auto &phi_dir = phi_1D[dir];
-
-            const auto &w_B_dir = w_B_proj_1D[dir];
-
-            const Size n_pts = n_quad_points[dir];
-//            LogStream out ;
-
-            vector<Real> phi_mu1_mu2(n_pts);
-
-            Index flat_id_I = 0 ;
-            for (int mu2 = 0 ; mu2 < n_basis_elem[dir] ; ++mu2)
-            {
-                const auto phi_1D_mu2 = phi_dir.get_function_view(mu2);
-
-                for (int mu1 = 0 ; mu1 < n_basis_elem[dir] ; ++mu1)
-                {
-                    const auto phi_1D_mu1 = phi_dir.get_function_view(mu1);
-
-                    for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                        phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0);
-
-                    for (int lambda = 0 ; lambda < n_bernst_1D_ ; ++lambda)
-                    {
-                        const auto w_B_lambda = w_B_dir.get_function_view(lambda);
-
-                        Real sum = 0.0;
-                        for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                            sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
-
-                        I(flat_id_I++) = sum;
-                    }
-                }
-            }
-            /*
-                        out << "w_B[" << dir << "]=" << endl;
-                        w_B_proj_1D[dir].print_info(out);
-
-                        out << "phi[" << dir << "]=" << endl;
-                        phi_1D[dir].print_info(out);
-
-                        //*/
-        }
-        const auto end_compute_I = Clock::now();
-        elapsed_time_compute_I_ = end_compute_I - start_compute_I;
-        //----------------------------------------------------
-
-
-
-
-
-        TensorSize<dim> k_tensor_size;
-        for (int i = 0 ; i <dim ; ++i)
-            k_tensor_size[i] = n_bernst_1D_;
-
-        DynamicMultiArray<Real,dim> K(k_tensor_size);
-        AssertThrow(K.flat_size() == k_rhs.size(),
-                    ExcDimensionMismatch(K.flat_size(),k_rhs.size()));
-
-        const Size flat_size = K.flat_size();
-        for (int flat_id = 0 ; flat_id < flat_size ; ++ flat_id)
-            K(flat_id) = k_rhs(flat_id) / elem_measure ;
-
-        loc_mass_matrix_sf.clear();
-
-        const int k = 1;
-        TensorSize<dim> tensor_size_alphabeta;
-        TensorSize<dim> tensor_size_theta;
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            tensor_size_alphabeta[i] = n_basis_elem[i];
-            tensor_size_theta[i] = n_bernst_1D_;
-        }
-
-
-        Size size_flat_theta_k_1 = 1;
-        for (int i = k ; i < dim ; ++i)
-            size_flat_theta_k_1 *= n_bernst_1D_;
-
-        TensorSize<3> tensor_size_C_0;
-        tensor_size_C_0[0] = tensor_size_theta.flat_size(); // theta size
-        tensor_size_C_0[1] = 1; // alpha size
-        tensor_size_C_0[2] = 1; // beta size
-        DynamicMultiArray<Real,3> C_0(tensor_size_C_0); // C0
-
-
-        for (Index flat_id = 0 ; flat_id < tensor_size_C_0[0] ; ++flat_id)
-            C_0(flat_id) = K(flat_id);
-
-
-        MassMatrixIntegrator<dim> integrate_mass_matrix;
-        DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(tensor_size_alphabeta,tensor_size_theta,I_container,C_0);
-
-        Assert(C_ab.tensor_size()(1) == n_basis,ExcDimensionMismatch(C_ab.tensor_size()(1),n_basis));
-        Assert(C_ab.tensor_size()(2) == n_basis,ExcDimensionMismatch(C_ab.tensor_size()(2),n_basis));
-
-
-        Index flat_id = 0 ;
-        for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
-            for (int beta_flat_id = 0 ; beta_flat_id < n_basis ; ++beta_flat_id)
-                loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = C_ab(flat_id++);
-
-
-
-        /*
-                for (int alpha_flat_id = 0 ; alpha_flat_id < n_basis ; ++alpha_flat_id)
-                    for (int beta_flat_id = 0 ; beta_flat_id < alpha_flat_id ; ++beta_flat_id)
-                        loc_mass_matrix_sf(alpha_flat_id,beta_flat_id) = loc_mass_matrix_sf(beta_flat_id,alpha_flat_id);
+        local_mass_matrix_from_phys_elem_accessor<Space>(
+            *elem,
+            w_B_proj_1D,
+            inv_B_proj_,
+            quad_proj_,
+            loc_mass_matrix_sf);
         //*/
-        //        out << "Local Mass Matrix = " << local_mass_matrix << endl;
 
         end_assembly_mass_matrix = Clock::now();
 
         elapsed_time_assembly_mass_matrix_ += end_assembly_mass_matrix - start_assembly_mass_matrix;
-        /*
-                local_mass_matrix_from_phys_elem_accessor<Space>(
-                    *elem,
-                    loc_mass_matrix_sf);
-                    //*/
         // Assembly of the local mass matrix using sum-factorization -- end
         //----------------------------------------------------
 

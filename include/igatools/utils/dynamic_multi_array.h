@@ -85,7 +85,7 @@ public:
     ///@}
 
 
-    /** @name Functions for changing the size of the dynamic multiarray */
+    /** @name Functions for changing the size or the shape of the dynamic multiarray */
     ///@{
 
     /**
@@ -100,7 +100,20 @@ public:
      * in the i-th array dimension.
      */
     void resize(const TensorSize<rank> &dim);
+
+
+    /**
+     * Reshape the multiarray, i.e. change the size along each coordinate direction without
+     * changing the global size and without any entry reordering.
+     * @warning The @p new_sizes argument specifies the new size along each coordinate direction:
+     * the total size must be equal to the original one because the memory for the data is not modified.
+     * This condition is checked in DEBUG mode (an assertion will be raised if this condition is
+     * not verified).
+     */
+    void reshape(const TensorSize<rank> &new_sizes);
     ///@}
+
+
 
 
 

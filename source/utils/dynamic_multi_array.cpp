@@ -75,6 +75,15 @@ resize(const TensorSize<rank> &dim)
 }
 
 
+template<class T, int rank>
+void
+DynamicMultiArray<T,rank>::
+reshape(const TensorSize<rank> &new_sizes)
+{
+    Assert(new_sizes.flat_size() == this->flat_size(),
+           ExcDimensionMismatch(new_sizes.flat_size(),this->flat_size()));
+    TensorSizedContainer<rank>::reset_size(new_sizes);
+}
 
 
 
