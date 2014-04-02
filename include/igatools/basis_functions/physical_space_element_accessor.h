@@ -294,6 +294,21 @@ public :
      * @name Getting quantities that are geometry-related
      */
     ///@{
+
+    /**
+     * Returns the gradient determinant of the map at the dilated quadrature points.
+     */
+    const ValueVector< Real > &
+    get_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the gradient determinant of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector< Real > &
+    get_face_measures(const Index face_id) const;
+
+
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points.

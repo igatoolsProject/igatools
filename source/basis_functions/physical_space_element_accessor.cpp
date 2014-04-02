@@ -276,6 +276,7 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
         ValueFlags::map_value|
         ValueFlags::map_gradient|
         ValueFlags::map_hessian|
+        ValueFlags::measure|
         ValueFlags::w_measure|
         ValueFlags::face_point|
         ValueFlags::map_face_value|
@@ -455,6 +456,24 @@ get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
         return face_values_[topology_id.get_id()];
     }
 }
+
+
+template< class PhysSpace >
+const ValueVector<Real> &
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_measures(const TopologyId<dim> &topology_id) const
+{
+    return PfElemAccessor::get_dets_map(topology_id);
+}
+
+template< class PhysSpace >
+const ValueVector<Real> &
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_face_measures(const Index face_id) const
+{
+    return this->get_measures(FaceTopology<dim>(face_id));
+}
+
 
 template< class PhysSpace >
 const ValueVector<Real> &
