@@ -625,7 +625,7 @@ public:
         } // end if(!is_symmetric)
         else
         {
-        	/*
+            /*
             LogStream out;
 
             for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < size_flat_beta_k_1 ; ++flat_beta_k_1)
@@ -670,48 +670,48 @@ public:
                 } // end loop beta_k
             } // end loop flat_beta_k_1
 
-//*/
+            //*/
 
-        	using MAUtils_k = MultiArrayUtils<k>;
-        	using MAUtils_k_1 = MultiArrayUtils<k-1>;
+            using MAUtils_k = MultiArrayUtils<k>;
+            using MAUtils_k_1 = MultiArrayUtils<k-1>;
 
-        	const Size flat_size_alpha_k = tensor_size_alpha_k.flat_size();
-        	const TensorIndex<k> wgt_alpha_k = MAUtils_k::compute_weight(tensor_size_alpha_k);
-        	const TensorIndex<k-1> wgt_alpha_k_1 = MAUtils_k_1::compute_weight(tensor_size_alpha_k_1);
+            const Size flat_size_alpha_k = tensor_size_alpha_k.flat_size();
+            const TensorIndex<k> wgt_alpha_k = MAUtils_k::compute_weight(tensor_size_alpha_k);
+            const TensorIndex<k-1> wgt_alpha_k_1 = MAUtils_k_1::compute_weight(tensor_size_alpha_k_1);
 
-        	const Size flat_size_beta_k = tensor_size_beta_k.flat_size();
-        	const TensorIndex<k> wgt_beta_k = MAUtils_k::compute_weight(tensor_size_beta_k);
-        	const TensorIndex<k-1> wgt_beta_k_1 = MAUtils_k_1::compute_weight(tensor_size_beta_k_1);
+            const Size flat_size_beta_k = tensor_size_beta_k.flat_size();
+            const TensorIndex<k> wgt_beta_k = MAUtils_k::compute_weight(tensor_size_beta_k);
+            const TensorIndex<k-1> wgt_beta_k_1 = MAUtils_k_1::compute_weight(tensor_size_beta_k_1);
 
-        	TensorIndex<k-1> tensor_id_alpha_k_1;
-        	TensorIndex<k-1> tensor_id_beta_k_1;
-        	for (Index flat_id_beta_k = 0 ; flat_id_beta_k < flat_size_beta_k ; ++flat_id_beta_k)
-        	{
-        		const TensorIndex<k> tensor_id_beta_k = MAUtils_k::flat_to_tensor_index(flat_id_beta_k,wgt_alpha_k);
-        		for (int i = 0 ; i < k-1 ;++i)
-        			tensor_id_beta_k_1(i) = tensor_id_beta_k(i);
+            TensorIndex<k-1> tensor_id_alpha_k_1;
+            TensorIndex<k-1> tensor_id_beta_k_1;
+            for (Index flat_id_beta_k = 0 ; flat_id_beta_k < flat_size_beta_k ; ++flat_id_beta_k)
+            {
+                const TensorIndex<k> tensor_id_beta_k = MAUtils_k::flat_to_tensor_index(flat_id_beta_k,wgt_alpha_k);
+                for (int i = 0 ; i < k-1 ; ++i)
+                    tensor_id_beta_k_1(i) = tensor_id_beta_k(i);
 
-        		const Index beta_k = tensor_id_beta_k(k-1);
+                const Index beta_k = tensor_id_beta_k(k-1);
 
-        		const Index flat_id_beta_k_1 = (k>1)?MAUtils_k_1::tensor_to_flat_index(tensor_id_beta_k_1,wgt_beta_k_1):0;
+                const Index flat_id_beta_k_1 = (k>1)?MAUtils_k_1::tensor_to_flat_index(tensor_id_beta_k_1,wgt_beta_k_1):0;
 
-    			tensor_id_C_k_1[2] = flat_id_beta_k_1;
-				tensor_id_C_k[2] = flat_id_beta_k ;
-				tensor_id_J_k[2] = beta_k;
+                tensor_id_C_k_1[2] = flat_id_beta_k_1;
+                tensor_id_C_k  [2] = flat_id_beta_k ;
+                tensor_id_J_k  [2] = beta_k;
 
-        		for (Index flat_id_alpha_k = 0 ; flat_id_alpha_k < flat_size_alpha_k ; ++flat_id_alpha_k)
-        		{
-        			const TensorIndex<k> tensor_id_alpha_k = MAUtils_k::flat_to_tensor_index(flat_id_alpha_k,wgt_beta_k);
-        			for (int i = 0 ; i < k-1 ;++i)
-        				tensor_id_alpha_k_1(i) = tensor_id_alpha_k(i);
+                for (Index flat_id_alpha_k = 0 ; flat_id_alpha_k < flat_size_alpha_k ; ++flat_id_alpha_k)
+                {
+                    const TensorIndex<k> tensor_id_alpha_k = MAUtils_k::flat_to_tensor_index(flat_id_alpha_k,wgt_beta_k);
+                    for (int i = 0 ; i < k-1 ; ++i)
+                        tensor_id_alpha_k_1(i) = tensor_id_alpha_k(i);
 
-        			const Index alpha_k = tensor_id_alpha_k(k-1);
+                    const Index alpha_k = tensor_id_alpha_k(k-1);
 
-        			const Index flat_id_alpha_k_1 = (k>1)?MAUtils_k_1::tensor_to_flat_index(tensor_id_alpha_k_1,wgt_alpha_k_1):0;
+                    const Index flat_id_alpha_k_1 = (k>1)?MAUtils_k_1::tensor_to_flat_index(tensor_id_alpha_k_1,wgt_alpha_k_1):0;
 
                     tensor_id_C_k_1[1] = flat_id_alpha_k_1;
-                    tensor_id_C_k[1] = flat_id_alpha_k;
-                    tensor_id_J_k[1] = alpha_k;
+                    tensor_id_C_k  [1] = flat_id_alpha_k;
+                    tensor_id_J_k  [1] = alpha_k;
 
 
 //                    tensor_id_C_k_1[0] = 0;
@@ -722,10 +722,10 @@ public:
                         Real sum = 0.0;
                         for (int theta_k = 0 ; theta_k < tensor_size_theta[k-1] ; ++theta_k)
                         {
-                             tensor_id_C_k_1[0] = flat_theta_k_1*tensor_size_theta[k-1] + theta_k ;
-                             tensor_id_J_k  [0] = theta_k;
+                            tensor_id_C_k_1[0] = flat_theta_k_1*tensor_size_theta[k-1] + theta_k ;
+                            tensor_id_J_k  [0] = theta_k;
 
-                             sum += C_k_1(tensor_id_C_k_1) * J_k(tensor_id_J_k);
+                            sum += C_k_1(tensor_id_C_k_1) * J_k(tensor_id_J_k);
 //                             ++tensor_id_C_k_1[0];
                         } // end loop theta_k
 
@@ -734,9 +734,9 @@ public:
 
                     } //end loop flat_theta_k_1
 
-        		}// end loop flat_id_alpha_k
+                }// end loop flat_id_alpha_k
 
-        	} // end loop flat_id_beta_k
+            } // end loop flat_id_beta_k
         } // end if (symmetric)
 
 
@@ -1072,11 +1072,11 @@ void local_mass_matrix_from_phys_elem_accessor(
 
     // here we project the determinant Jacobian on a Bernstein polynomials space
     const auto K = perform_element_l2_projection_tp_basis<dim>(
-                 w_basis_proj_1D,
-                 invM_projection,
-                 quad_projection,
-                 det_DF,
-                 ref_elem_measure);
+                       w_basis_proj_1D,
+                       invM_projection,
+                       quad_projection,
+                       det_DF,
+                       ref_elem_measure);
 
     const TimePoint end_projection = Clock::now();
     const Duration elapsed_time_projection = end_projection - start_projection;
@@ -1112,7 +1112,7 @@ void local_mass_matrix_from_phys_elem_accessor(
 
     Assert(n_entries == K.flat_size(),ExcDimensionMismatch(n_entries,K.flat_size()));
     for (int entry_id = 0 ; entry_id < n_entries ; ++entry_id)
-    	C_0(entry_id) = K(entry_id);
+        C_0(entry_id) = K(entry_id);
 
     const bool is_symmetric = true;
 
