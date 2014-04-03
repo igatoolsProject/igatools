@@ -821,6 +821,14 @@ get_ref_space_accessor() const -> const RefElemAccessor &
 }
 
 template< class PhysSpace >
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_push_forward_accessor() const -> const PfElemAccessor &
+{
+    return static_cast<const PfElemAccessor &>(*this);
+}
+
+template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
 print_info(LogStream &out, const VerbosityLevel verbosity_level) const
