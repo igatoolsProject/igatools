@@ -121,17 +121,16 @@ IgMapping(const std::shared_ptr<RefSpace> space,
                 ctrl_mesh_comp(loc_id) = data_->control_points_[glob_id];
 
         }
-//        out << "ctrl_mesh_["<<comp_id<<"]= " << ctrl_mesh_[comp_id] << endl;
     }
 
-    // create a signal and a connection for the control-mesh refinement
     this->connect_refinement_h_function(
         std::bind(
             &IgMapping<RefSpace>::refine_h_control_mesh,
             this,
             std::placeholders::_1,std::placeholders::_2));
-    //----------------------------------
 }
+
+
 
 template<class RefSpace>
 IgMapping<RefSpace>::
@@ -154,6 +153,7 @@ IgMapping(const std::shared_ptr<IgMappingData> mapping_data)
 }
 
 
+
 template<class RefSpace>
 auto
 IgMapping<RefSpace>::
@@ -161,6 +161,7 @@ get_data() const -> shared_ptr<IgMappingData>
 {
     return data_;
 }
+
 
 
 template<class RefSpace>
@@ -239,16 +240,6 @@ IgMapping<RefSpace>::create(
 }
 
 
-
-template<class RefSpace>
-auto
-IgMapping<RefSpace>::
-clone() const -> shared_ptr<base_t>
-{
-    auto map = shared_ptr<IgMapping<RefSpace>>(new IgMapping<RefSpace>(*this));
-    map->cache_->reset_global_cache() ;
-    return map;
-}
 
 template<class RefSpace>
 vector<Real>
@@ -556,8 +547,6 @@ print_info(LogStream &out) const
     for (const auto &ctrl_pt : data_->control_points_)
         out << ctrl_pt << " ";
     out << endl;
-//    control_points_.print(out);
-
     out.pop();
 }
 

@@ -70,14 +70,6 @@ create(const std::shared_ptr<const SupMap> map,
     return shared_ptr<base_t>(new self_t(map, face_id, grid, elem_map));
 }
 
-template<int dim_, int codim_>
-shared_ptr<Mapping<dim_,codim_> >
-MappingSlice<dim_, codim_>::
-clone() const
-{
-    return shared_ptr< Mapping<dim_,codim_> >(
-               new MappingSlice<dim_, codim_>(*this));
-}
 
 
 template<int dim_, int codim_>
