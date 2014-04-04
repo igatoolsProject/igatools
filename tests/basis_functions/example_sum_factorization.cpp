@@ -573,6 +573,11 @@ public:
 #ifndef OPTIMIZED
         if (!is_symmetric)
         {
+        	vector<Real *> Cpost_ptrs;
+        	vector<const Real *> Cpre_ptrs_begin;
+        	vector<const Real *> J_ptrs_begin;
+        	vector<const Real *> J_ptrs_end;
+
             tid_Cpost[2] = 0;
             tid_J_k[0] = 0;
             for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < f_size_beta_1_km1 ; ++flat_beta_k_1)
@@ -604,27 +609,10 @@ public:
                                  fid_theta_kp1_d < f_size_theta_kp1_d ;
                                  ++fid_theta_kp1_d, Cpre_ptr += t_size_theta[k-1], ++Cpost_ptr)
                             {
-                                /*
-                                                                tid_Cpost[0] = fid_theta_kp1_d;
-
-                                                                Real sum = 0.0;
-                                                                for (int theta_k = 0 ; theta_k < t_size_theta[k-1] ; ++theta_k)
-                                                                {
-
-                                                                    tid_J_k[0] = theta_k;
-                                                                    sum += Cpre(tid_Cpre) * J_k(tid_J_k);
-
-                                                                    tid_Cpre[0]++;
-
-                                                                } // end loop theta_k
-                                                                Cpost(tid_Cpost) = sum;
-                                //*/
-                                (*Cpost_ptr) = std::inner_product(
-                                                   J_ptr,
-                                                   J_ptr + t_size_theta[k-1],
-                                                   Cpre_ptr,
-                                                   0.0);
-
+                            	Cpost_ptrs.push_back(Cpost_ptr);
+                            	Cpre_ptrs_begin.push_back(Cpre_ptr);
+                            	J_ptrs_begin.push_back(J_ptr);
+                            	J_ptrs_end.push_back(J_ptr + t_size_theta[k-1]);
                             } //end loop flat_theta_k_1
 
                             tid_Cpost[1]++;
@@ -637,6 +625,19 @@ public:
 
             } // end loop flat_beta_k_1
 
+            const Size n_entries = Cpost_ptrs.size();
+            for (Index i = 0 ; i < n_entries ; ++i)
+            {
+            	Real *Cpost_ptr = Cpost_ptrs[i];
+            	const Real *Cpre_ptr_begin = Cpre_ptrs_begin[i];
+            	const Real *J_ptr_begin = J_ptrs_begin[i];
+            	const Real *J_ptr_end = J_ptrs_end[i];
+                (*Cpost_ptr) = std::inner_product(
+                                  J_ptr_begin,
+                                  J_ptr_end,
+                                  Cpre_ptr_begin,
+                                  0.0);
+            }
 #else
         // OPTIMIZED branch
 
@@ -868,7 +869,7 @@ public:
 };
 
 
-#define SPECIALIZED
+//#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
@@ -1619,7 +1620,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     for (int entry_id = 0 ; entry_id < n_entries ; ++entry_id)
         C_0(entry_id) = K(entry_id);
 
-    const bool is_symmetric = true;
+    const bool is_symmetric = false;
 
     MassMatrixIntegrator<dim> integrate_mass_matrix;
     DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(
@@ -1947,8 +1948,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 8;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
@@ -1986,7 +1987,7 @@ int main()
 
     do_test<2>();
 
-    do_test<3>();
+//    do_test<3>();
 //*/
     return  0;
 }
