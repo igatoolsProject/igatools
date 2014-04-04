@@ -203,16 +203,6 @@ set_face_element(const Index face_id,
 
 
 template<int dim, int codim>
-shared_ptr< Mapping< dim, codim> >
-IdentityMapping< dim, codim>::
-clone() const
-{
-    return shared_ptr<Mapping<dim,codim>>(new self_t(*this));
-}
-
-
-
-template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
 print_info(LogStream &out) const

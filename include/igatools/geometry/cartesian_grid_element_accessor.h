@@ -30,10 +30,7 @@
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
 
-
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  * @brief Element accessor for the CartesianGrid.
@@ -41,7 +38,7 @@ IGA_NAMESPACE_OPEN
  * The element can be queried for informations
  * that can be generated on-the-fly
  * (i.e. without the use of a cache) and for informations
- * that are obtained throuch a cache mechanism
+ * that are obtained through a cache mechanism
  *
  *
  * See module on \ref accessors_iterators for a general overview.
@@ -250,7 +247,8 @@ protected:
 private:
 
     /**
-     * @brief Global CartesianGrid cache, storing the interval length in each direction.
+     * @brief Global CartesianGrid cache, storing the interval length
+     * in each direction.
      *
      * For now only a uniform quad is taken care of.
      */
@@ -372,6 +370,11 @@ protected:
     DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
                    << "The passed ValueFlag " << arg2
                    << " contains a non admissible flag " << (arg1 ^arg2));
+
+
+    DeclException1(ExcCacheInUse, int,
+                       << "The global cache is being used by " << arg1
+                       << " iterator. Changing its value not allowed.");
 };
 
 IGA_NAMESPACE_CLOSE

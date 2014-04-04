@@ -76,7 +76,7 @@ Writer< dim_ref, dim_phys, T >::
 Writer(const shared_ptr< const Mapping< dim_ref, codim > > map,
        const Index n_points_direction = 2)
     :
-    Writer(map->clone(),
+    Writer(map,
            shared_ptr< QUniform<dim_ref> >(new QUniform<dim_ref>(n_points_direction)))
 {
 }
@@ -88,7 +88,7 @@ Writer(const shared_ptr<const Mapping<dim_ref,codim> > map,
        const shared_ptr<const Quadrature<dim_ref> > quadrature)
     :
     grid_(map->get_grid()),
-    map_(map->clone()),
+    map_(map),
     quad_plot_(*quadrature),
     num_points_direction_(quad_plot_.get_num_points_direction()),
     n_iga_elements_(grid_->get_num_elements()),
