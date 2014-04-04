@@ -1842,8 +1842,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 3;
-    int degree_max = 3;
+    int degree_min = 1;
+    int degree_max = 8;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
@@ -1877,11 +1877,11 @@ do_test()
 
 int main()
 {
-//    do_test<1>();
+    do_test<1>();
 
     do_test<2>();
 
-//    do_test<3>();
+    do_test<3>();
 //*/
     return  0;
 }
