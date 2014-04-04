@@ -573,10 +573,10 @@ public:
 #ifndef OPTIMIZED
         if (!is_symmetric)
         {
-        	tid_Cpost[2] = 0;
+            tid_Cpost[2] = 0;
             for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < f_size_beta_1_km1 ; ++flat_beta_k_1)
             {
-            	tid_Cpre[2] = flat_beta_k_1;
+                tid_Cpre[2] = flat_beta_k_1;
 
 
                 for (int beta_k = 0 ; beta_k < t_size_beta[k-1] ; ++beta_k)
@@ -586,7 +586,7 @@ public:
 
                     for (Index flat_alpha_k_1 = 0 ; flat_alpha_k_1 < f_size_alpha_1_km1 ; ++flat_alpha_k_1)
                     {
-                    	tid_Cpre[1] = flat_alpha_k_1;
+                        tid_Cpre[1] = flat_alpha_k_1;
 
                         for (int alpha_k = 0 ; alpha_k < t_size_alpha[k-1] ; ++alpha_k)
                         {
@@ -595,7 +595,7 @@ public:
                             tid_Cpre[0] = 0 ;
                             for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
                             {
-                            	tid_Cpost[0] = fid_theta_kp1_d;
+                                tid_Cpost[0] = fid_theta_kp1_d;
 
                                 Real sum = 0.0;
                                 for (int theta_k = 0 ; theta_k < t_size_theta[k-1] ; ++theta_k)
@@ -720,30 +720,30 @@ public:
                         (k>1)?MAUtils_k_1::tensor_to_flat_index(tid_alpha_1_km1,wgt_alpha_1_km1):0;
 
 
-                    if ( fid_alpha_1_km1 >= fid_beta_1_km1 )
+                    if (fid_alpha_1_km1 >= fid_beta_1_km1)
                     {
-                    	tid_Cpre [2] = fid_beta_1_km1;
-                    	tid_Cpre [1] = fid_alpha_1_km1;
+                        tid_Cpre [2] = fid_beta_1_km1;
+                        tid_Cpre [1] = fid_alpha_1_km1;
                     }
                     else
                     {
-                    	tid_Cpre [2] = fid_alpha_1_km1;
-                    	tid_Cpre [1] = fid_beta_1_km1;
+                        tid_Cpre [2] = fid_alpha_1_km1;
+                        tid_Cpre [1] = fid_beta_1_km1;
                     }
 
-                    if ( alpha_k >= beta_k )
+                    if (alpha_k >= beta_k)
                     {
-                    	tid_J_k[2] = beta_k;
-                    	tid_J_k[1] = alpha_k;
+                        tid_J_k[2] = beta_k;
+                        tid_J_k[1] = alpha_k;
                     }
                     else
                     {
-                    	tid_J_k[2] = alpha_k;
-                    	tid_J_k[1] = beta_k;
+                        tid_J_k[2] = alpha_k;
+                        tid_J_k[1] = beta_k;
                     }
 
-                	tid_Cpost[2] = fid_beta_1_k ;
-                	tid_Cpost[1] = fid_alpha_1_k;
+                    tid_Cpost[2] = fid_beta_1_k ;
+                    tid_Cpost[1] = fid_alpha_1_k;
 
                     tid_Cpre [0] = 0;
                     tid_Cpost[0] = 0;
@@ -764,7 +764,7 @@ public:
 
                     } //end loop flat_theta_k_1
 
-        		}// end loop fid_alpha_1_k
+                }// end loop fid_alpha_1_k
 
             } // end loop fid_beta_1_k
             //*/
@@ -775,11 +775,11 @@ public:
 //            const Size f_size_alpha_1_k = t_size_alpha_1_k.flat_size();
             const TensorIndex<k> wgt_alpha_1_k = MAUtils_k::compute_weight(t_size_alpha_1_k);
             const TensorIndex<k-1> wgt_alpha_1_km1 = MAUtils_km1::compute_weight(t_size_alpha_1_km1);
-        	tid_Cpost[2] = 0;
-        	Index fid_beta_1_k = 0;
+            tid_Cpost[2] = 0;
+            Index fid_beta_1_k = 0;
             for (Index fid_beta_1_km1 = 0 ; fid_beta_1_km1 < f_size_beta_1_km1 ; ++fid_beta_1_km1)
             {
-            	tid_Cpre[2] = fid_beta_1_km1;
+                tid_Cpre[2] = fid_beta_1_km1;
 
                 for (int beta_k = 0 ; beta_k < t_size_beta[k-1] ; ++beta_k)
                 {
@@ -790,32 +790,32 @@ public:
 
                     for (Index fid_alpha_1_km1 = fid_beta_1_km1 ; fid_alpha_1_km1 < f_size_alpha_1_km1 ; ++fid_alpha_1_km1)
                     {
-                    	const auto tid_alpha_1_km1 = MAUtils_km1::flat_to_tensor_index(fid_alpha_1_km1,wgt_alpha_1_km1);
+                        const auto tid_alpha_1_km1 = MAUtils_km1::flat_to_tensor_index(fid_alpha_1_km1,wgt_alpha_1_km1);
 
                         for (int alpha_k = beta_k ; alpha_k < t_size_alpha[k-1] ; ++alpha_k)
                         {
-                        	TensorIndex<k> tid_alpha_1_k;
-                        	for (int i=0 ; i < k-1 ; ++i)
-                        		tid_alpha_1_k(i) = tid_alpha_1_km1(i);
-                        	tid_alpha_1_k(k-1) = alpha_k;
+                            TensorIndex<k> tid_alpha_1_k;
+                            for (int i=0 ; i < k-1 ; ++i)
+                                tid_alpha_1_k(i) = tid_alpha_1_km1(i);
+                            tid_alpha_1_k(k-1) = alpha_k;
 
-                        	Index fid_alpha_1_k = MAUtils_k::tensor_to_flat_index(tid_alpha_1_k,wgt_alpha_1_k);
+                            Index fid_alpha_1_k = MAUtils_k::tensor_to_flat_index(tid_alpha_1_k,wgt_alpha_1_k);
 
-                        	if (fid_alpha_1_k >= fid_beta_1_k)
+                            if (fid_alpha_1_k >= fid_beta_1_k)
                                 tid_Cpost[1] = fid_alpha_1_k;
-                        	else
-                        	{
+                            else
+                            {
                                 tid_Cpost[1] = fid_beta_1_k;
                                 tid_Cpost[2] = fid_alpha_1_k;
-                        	}
+                            }
 
                             tid_J_k[1] = alpha_k;
-                    		tid_Cpre[1] = fid_alpha_1_km1;
+                            tid_Cpre[1] = fid_alpha_1_km1;
 
                             tid_Cpre[0] = 0 ;
                             for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
                             {
-                            	tid_Cpost[0] = fid_theta_kp1_d;
+                                tid_Cpost[0] = fid_theta_kp1_d;
 
                                 Real sum = 0.0;
                                 for (int theta_k = 0 ; theta_k < t_size_theta[k-1] ; ++theta_k)
@@ -868,6 +868,332 @@ public:
         return C;
     }
 };
+
+
+
+template <>
+class MassMatrixIntegrator<1,1>
+{
+public:
+    DynamicMultiArray<Real,3> operator()(
+        const TensorSize<1> &t_size_theta,
+        const TensorSize<1> &t_size_alpha,
+        const TensorSize<1> &t_size_beta,
+        const array<DynamicMultiArray<Real,3>,1> &J,
+        const DynamicMultiArray<Real,3> &C,
+        const bool is_symmetric = true) const
+    {
+        TensorIndex<3> t_id_J;
+        TensorIndex<3> t_id_C;
+
+
+        //--------------------------------------------------------------
+        TensorIndex<3> t_id_C1;
+        TensorSize<3> t_size_C1;
+        t_size_C1[0] = 1;
+        t_size_C1[1] = t_size_alpha[0];
+        t_size_C1[2] = t_size_beta[0];
+        DynamicMultiArray<Real,3> C1(t_size_C1);
+
+        t_id_C[1] = 0;
+        t_id_C[2] = 0;
+        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+        {
+            t_id_J[2] = beta_0;
+            for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+            {
+                t_id_J[1] = alpha_0;
+                Real sum = 0.0;
+                for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
+                {
+                    t_id_J[0] = theta_0;
+                    t_id_C[0] = theta_0;
+                    sum += C(t_id_C) * J[0](t_id_J);
+                }
+
+                t_id_C1[0] = 0;
+                t_id_C1[1] = alpha_0;
+                t_id_C1[2] = beta_0;
+                C1(t_id_C1) = sum;
+            }
+        }
+        //--------------------------------------------------------------
+
+        return C1;
+    }
+};
+
+template <>
+class MassMatrixIntegrator<2,2>
+{
+public:
+    DynamicMultiArray<Real,3> operator()(
+        const TensorSize<2> &t_size_theta,
+        const TensorSize<2> &t_size_alpha,
+        const TensorSize<2> &t_size_beta,
+        const array<DynamicMultiArray<Real,3>,2> &J,
+        const DynamicMultiArray<Real,3> &C,
+        const bool is_symmetric = true) const
+    {
+        TensorIndex<3> t_id_J;
+        TensorIndex<3> t_id_C;
+
+
+        //--------------------------------------------------------------
+        TensorIndex<3> t_id_C1;
+        TensorSize<3> t_size_C1;
+        t_size_C1[0] = t_size_theta[1];
+        t_size_C1[1] = t_size_alpha[0];
+        t_size_C1[2] = t_size_beta[0];
+        DynamicMultiArray<Real,3> C1(t_size_C1);
+
+        t_id_C[1] = 0;
+        t_id_C[2] = 0;
+        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+        {
+            t_id_J[2] = beta_0;
+            for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+            {
+                t_id_J[1] = alpha_0;
+                Index theta = 0;
+                for (Index theta_1 = 0; theta_1 < t_size_theta[1] ; ++theta_1)
+                {
+                    Real sum = 0.0;
+                    for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0,++theta)
+                    {
+                        t_id_J[0] = theta_0;
+                        t_id_C[0] = theta;
+                        sum += C(t_id_C) * J[0](t_id_J);
+                    }
+
+                    t_id_C1[0] = theta_1;
+                    t_id_C1[1] = alpha_0;
+                    t_id_C1[2] = beta_0;
+                    C1(t_id_C1) = sum;
+                }
+            }
+        }
+        //--------------------------------------------------------------
+
+
+        //--------------------------------------------------------------
+        TensorIndex<3> t_id_C2;
+        TensorSize<3> t_size_C2;
+        t_size_C2[0] = 1;
+        t_size_C2[1] = t_size_alpha[0] * t_size_alpha[1];
+        t_size_C2[2] = t_size_beta [0] * t_size_beta [1];
+        DynamicMultiArray<Real,3> C2(t_size_C2);
+        Index beta = 0;
+        Index alpha = 0;
+        for (Index beta_1 = 0 ; beta_1 < t_size_beta[1] ; ++beta_1)
+        {
+            t_id_J[2] = beta_1;
+            for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+            {
+                beta = beta_1*t_size_beta[0] + beta_0;
+
+                t_id_C1[2] = beta_0;
+
+                for (Index alpha_1 = 0 ; alpha_1 < t_size_alpha[1] ; ++alpha_1)
+                {
+                    t_id_J[1] = alpha_1;
+                    for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+                    {
+                        alpha = alpha_1*t_size_alpha[0] + alpha_0;
+
+                        t_id_C1[1] = alpha_0;
+
+                        Real sum = 0.0;
+                        for (Index theta_1 = 0; theta_1 < t_size_theta[1] ; ++theta_1)
+                        {
+                            t_id_J [0] = theta_1;
+                            t_id_C1[0] = theta_1;
+                            sum += C1(t_id_C1) * J[1](t_id_J);
+                        } // end loop theta_1
+
+                        t_id_C2[0] = 0;
+                        t_id_C2[1] = alpha;
+                        t_id_C2[2] = beta;
+                        C2(t_id_C2) = sum;
+                    } //end loop alpha_0
+                } //end loop alpha_1
+            } // end loop beta_0
+        } // end loop beta_1
+        //--------------------------------------------------------------
+
+        return C2;
+    }
+};
+
+
+template <>
+class MassMatrixIntegrator<3,3>
+{
+public:
+    DynamicMultiArray<Real,3> operator()(
+        const TensorSize<3> &t_size_theta,
+        const TensorSize<3> &t_size_alpha,
+        const TensorSize<3> &t_size_beta,
+        const array<DynamicMultiArray<Real,3>,3> &J,
+        const DynamicMultiArray<Real,3> &C,
+        const bool is_symmetric = true) const
+    {
+        TensorIndex<3> t_id_J;
+        TensorIndex<3> t_id_C;
+
+
+        //--------------------------------------------------------------
+        TensorIndex<3> t_id_C1;
+        TensorSize<3> t_size_C1;
+        t_size_C1[0] = t_size_theta[1] * t_size_theta[2];
+        t_size_C1[1] = t_size_alpha[0];
+        t_size_C1[2] = t_size_beta[0];
+        DynamicMultiArray<Real,3> C1(t_size_C1);
+        t_id_C[1] = 0;
+        t_id_C[2] = 0;
+        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+        {
+            t_id_J[2] = beta_0;
+            for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+            {
+                t_id_J[1] = alpha_0;
+                Index theta = 0;
+                for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
+                {
+                    for (Index theta_1 = 0; theta_1 < t_size_theta[1] ; ++theta_1,++theta)
+                    {
+                        Real sum = 0.0;
+                        for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
+                        {
+                            t_id_J[0] = theta_0;
+                            t_id_C[0] = theta+theta_0;
+                            sum += C(t_id_C) * J[0](t_id_J);
+                        }
+
+                        t_id_C1[0] = theta;
+                        t_id_C1[1] = alpha_0;
+                        t_id_C1[2] = beta_0;
+                        C1(t_id_C1) = sum;
+                    } // end loop theta_1
+                } // end loop theta_2
+            } // end loop alpha_0
+        } // end loop beta_0
+        //--------------------------------------------------------------
+
+        std::cout << "Point A" << std::endl;
+
+        //--------------------------------------------------------------
+        TensorIndex<3> t_id_C2;
+        TensorSize<3> t_size_C2;
+        t_size_C2[0] = t_size_theta[2];
+        t_size_C2[1] = t_size_alpha[0] * t_size_alpha[1];
+        t_size_C2[2] = t_size_beta [0] * t_size_beta [1];
+        DynamicMultiArray<Real,3> C2(t_size_C2);
+        Index beta = 0;
+        Index alpha = 0;
+        for (Index beta_1 = 0 ; beta_1 < t_size_beta[1] ; ++beta_1)
+        {
+            t_id_J[2] = beta_1;
+            for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+            {
+                beta = beta_1*t_size_beta[0] + beta_0;
+
+                t_id_C1[2] = beta_0;
+
+                for (Index alpha_1 = 0 ; alpha_1 < t_size_alpha[1] ; ++alpha_1)
+                {
+                    t_id_J[1] = alpha_1;
+                    for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+                    {
+                        alpha = alpha_1*t_size_alpha[0] + alpha_0;
+
+                        t_id_C1[1] = alpha_0;
+
+                        for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
+                        {
+                            Real sum = 0.0;
+                            for (Index theta_1 = 0; theta_1 < t_size_theta[1] ; ++theta_1)
+                            {
+                                t_id_J [0] = theta_1;
+                                t_id_C1[0] = theta_1;
+                                sum += C1(t_id_C1) * J[1](t_id_J);
+                            } // end loop theta_1
+
+                            t_id_C2[0] = theta_2;
+                            t_id_C2[1] = alpha;
+                            t_id_C2[2] = beta;
+                            C2(t_id_C2) = sum;
+                        } // end loop theta_2
+                    } //end loop alpha_0
+                } //end loop alpha_1
+            } // end loop beta_0
+        } // end loop beta_1
+        //--------------------------------------------------------------
+
+
+        std::cout << "Point B" << std::endl;
+
+        //--------------------------------------------------------------
+        TensorIndex<3> t_id_C3;
+        TensorSize<3> t_size_C3;
+        t_size_C3[0] = 0;
+        t_size_C3[1] = t_size_alpha[0] * t_size_alpha[1] * t_size_alpha[2];
+        t_size_C3[2] = t_size_beta [0] * t_size_beta [1] * t_size_beta [2];
+        DynamicMultiArray<Real,3> C3(t_size_C3);
+        for (Index beta_2 = 0 ; beta_2 < t_size_beta[2] ; ++beta_2)
+        {
+            t_id_J[2] = beta_2;
+            for (Index beta_1 = 0 ; beta_1 < t_size_beta[1] ; ++beta_1)
+            {
+                for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+                {
+                    beta = (beta_2*t_size_beta[1] + beta_1) * t_size_beta[0] + beta_0 ;
+
+                    t_id_C2[2] = beta_1 * t_size_beta[0] + beta_0 ;
+
+                    for (Index alpha_2 = 0 ; alpha_2 < t_size_alpha[2] ; ++alpha_2)
+                    {
+                        t_id_J[1] = alpha_2;
+                        for (Index alpha_1 = 0 ; alpha_1 < t_size_alpha[1] ; ++alpha_1)
+                        {
+                            for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+                            {
+                                alpha = (alpha_2*t_size_alpha[1] + alpha_1) * t_size_alpha[0] + alpha_0 ;
+
+                                t_id_C2[1] = alpha_1 * t_size_alpha[0] + alpha_0 ;
+
+                                Real sum = 0.0;
+                                for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
+                                {
+                                    t_id_J [0] = theta_2;
+                                    t_id_C2[0] = theta_2;
+                                    sum += C2(t_id_C1) * J[2](t_id_J);
+                                } // end loop theta_1
+
+                                t_id_C3[0] = 0;
+                                t_id_C3[1] = alpha;
+                                t_id_C3[2] = beta;
+                                C3(t_id_C3) = sum;
+
+                            } // end loop alpha_0
+
+                        } // end loop alpha_1
+
+                    } // end loop alpha_2
+
+                } // end loop beta_0
+
+            } // end loop beta_1
+
+        } // end loop beta_2
+
+        //--------------------------------------------------------------
+
+        return C3;
+
+    }
+};
+
 
 
 /**
@@ -1198,7 +1524,7 @@ void local_mass_matrix_from_phys_elem_accessor(
         Index fid_entry = 0;
         for (int test_id = 0 ; test_id < n_basis ; ++test_id)
         {
-        	fid_entry += test_id; // now we are on the diagonal
+            fid_entry += test_id; // now we are on the diagonal
 
             for (int trial_id = test_id ; trial_id < n_basis ; ++trial_id, ++fid_entry)
                 local_mass_matrix(test_id,trial_id) = C_ab(fid_entry);
@@ -1475,8 +1801,11 @@ assemble()
 
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
-        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
-
+//        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
+        const DenseMatrix m_diff = loc_mat - loc_mass_matrix_sf;
+        out << "Frobenius norm of the difference="
+            << m_diff.norm_frobenius() << endl;
+//            << m_diff.norm_frobenius()/(m_diff.get_num_rows()*m_diff.get_num_cols()) << endl;
     }
 
     this->matrix->fill_complete();
@@ -1507,8 +1836,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 2;
-    int degree_max = 2;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
@@ -1543,7 +1872,7 @@ do_test()
 int main()
 {
 
-    do_test<2>();
+    do_test<3>();
 //*/
     return  0;
 }
