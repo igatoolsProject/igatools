@@ -68,5 +68,38 @@ inverse()
     return inv_A;
 }
 
+Size
+DenseMatrix::
+get_num_rows() const
+{
+    return this->size1();
+}
+
+Size
+DenseMatrix::
+get_num_cols() const
+{
+    return this->size2();
+}
+
+Real
+DenseMatrix::
+norm_frobenius() const
+{
+    const Size n_rows = this->get_num_rows();
+    const Size n_cols = this->get_num_cols();
+
+    Real norm = 0.0;
+    for (Index row = 0 ; row < n_rows ; ++row)
+        for (Index col = 0 ; col < n_cols ; ++col)
+        {
+            const Real value = (*this)(row,col);
+            norm += value * value;
+        }
+
+    return sqrt(norm);
+}
+
+
 IGA_NAMESPACE_CLOSE
 

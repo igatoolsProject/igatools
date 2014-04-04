@@ -80,6 +80,18 @@ public:
      */
     DenseMatrix inverse();
 
+
+    /**
+     * Returns the Frobenius norm of the matrix.
+     */
+    Real norm_frobenius() const;
+
+
+    /** Returns the number of rows of the matrix. */
+    Size get_num_rows() const;
+
+    /** Returns the number of columns of the matrix. */
+    Size get_num_cols() const;
 };
 
 /**@}*/
