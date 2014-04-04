@@ -89,12 +89,6 @@ public:
     void set_face_element(const Index face_id,
                           const CartesianGridElementAccessor<dim> &elem) override;
 
-//    /**
-//     * Return a Mapping that is a deep copy of the caller object.
-//     */
-//    std::shared_ptr<Mapping<dim_,codim_>> clone() const override ;
-
-
     /**
      * Prints internal information about the mapping.
      * @note Mostly used for debugging and testing.
