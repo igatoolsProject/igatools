@@ -819,140 +819,6 @@ public:
         t_size_Cpost[2] = t_size_beta_1_k.flat_size();
         DynamicMultiArray<Real,3> Cpost(t_size_Cpost);
 
-#if 0
-    	vector<Index> offsets_Cpost;
-    	vector<Index> offsets_Cpre;
-    	vector<Index> offsets_Jk_begin;
-    	vector<Index> offsets_Jk_end;
-
-        if (!is_symmetric)
-        {
-
-            tid_Cpost[2] = 0;
-            tid_Jk[0] = 0;
-            for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < f_size_beta_1_km1 ; ++flat_beta_k_1)
-            {
-                tid_Cpre[2] = flat_beta_k_1;
-
-
-                for (int beta_k = 0 ; beta_k < t_size_beta[k-1] ; ++beta_k)
-                {
-                    tid_Jk[2] = beta_k;
-                    tid_Cpost[1] = 0 ;
-
-                    for (Index flat_alpha_k_1 = 0 ; flat_alpha_k_1 < f_size_alpha_1_km1 ; ++flat_alpha_k_1)
-                    {
-                        tid_Cpre[1] = flat_alpha_k_1;
-
-                        for (int alpha_k = 0 ; alpha_k < t_size_alpha[k-1] ; ++alpha_k)
-                        {
-                            tid_Jk[1] = alpha_k;
-                            tid_Cpre[0] = 0 ;
-                            tid_Cpost[0] = 0 ;
-                            for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
-                            {
-                            	const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
-                            	offsets_Cpost.push_back(f_id_Cpost);
-
-                            	const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
-                            	offsets_Cpre.push_back(f_id_Cpre);
-
-                            	const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
-                            	offsets_Jk_begin.push_back(f_id_Jk);
-                            	offsets_Jk_end  .push_back(f_id_Jk + t_size_theta[k-1]);
-
-                            	tid_Cpost[0]++;
-                            	tid_Cpre [0] += t_size_theta[k-1];
-                            } //end loop flat_theta_k_1
-
-                            tid_Cpost[1]++;
-
-                        } // end loop alpha_k
-                    } // end loop flat_alpha_k_1
-
-                    tid_Cpost[2]++;
-                } // end loop beta_k
-
-            } // end loop flat_beta_k_1
-
-
-        } // end if(!is_symmetric)
-        else
-        {
-            using MAUtils_k = MultiArrayUtils<k>;
-            using MAUtils_km1 = MultiArrayUtils<k-1>;
-
-            const Size f_size_alpha_1_k = t_size_alpha_1_k.flat_size();
-            const TensorIndex<k> wgt_alpha_1_k = MAUtils_k::compute_weight(t_size_alpha_1_k);
-            const TensorIndex<k-1> wgt_alpha_1_km1 = MAUtils_km1::compute_weight(t_size_alpha_1_km1);
-
-            const Size f_size_beta_1_k = t_size_beta_1_k.flat_size();
-            const TensorIndex<k> wgt_beta_1_k = MAUtils_k::compute_weight(t_size_beta_1_k);
-            const TensorIndex<k-1> wgt_beta_1_km1 = MAUtils_km1::compute_weight(t_size_beta_1_km1);
-
-            TensorIndex<k-1> tid_alpha_1_km1;
-            TensorIndex<k-1> tid_beta_1_km1;
-            for (Index fid_beta_1_k = 0 ; fid_beta_1_k < f_size_beta_1_k ; ++fid_beta_1_k)
-            {
-                const TensorIndex<k> tid_beta_1_k =
-                    MAUtils_k::flat_to_tensor_index(fid_beta_1_k,wgt_beta_1_k);
-
-                for (int i = 0 ; i < k-1 ; ++i)
-                    tid_beta_1_km1(i) = tid_beta_1_k(i);
-
-                const Index beta_k = tid_beta_1_k(k-1);
-
-                const Index fid_beta_1_km1 =
-                    (k>1)?MAUtils_km1::tensor_to_flat_index(tid_beta_1_km1,wgt_beta_1_km1):0;
-
-
-                for (Index fid_alpha_1_k = fid_beta_1_k ; fid_alpha_1_k < f_size_alpha_1_k ; ++fid_alpha_1_k)
-                {
-                    const TensorIndex<k> tid_alpha_1_k =
-                        MAUtils_k::flat_to_tensor_index(fid_alpha_1_k,wgt_alpha_1_k);
-                    for (int i = 0 ; i < k-1 ; ++i)
-                        tid_alpha_1_km1(i) = tid_alpha_1_k(i);
-
-                    const Index alpha_k = tid_alpha_1_k(k-1);
-
-                    const Index fid_alpha_1_km1 =
-                        (k>1)?MAUtils_km1::tensor_to_flat_index(tid_alpha_1_km1,wgt_alpha_1_km1):0;
-
-                    tid_Cpre[1] = max(fid_alpha_1_km1,fid_beta_1_km1);
-                    tid_Cpre[2] = min(fid_alpha_1_km1,fid_beta_1_km1);
-
-                    tid_Jk[1] = max(alpha_k,beta_k);
-                    tid_Jk[2] = min(alpha_k,beta_k);
-
-                    tid_Cpost[2] = fid_beta_1_k ;
-                    tid_Cpost[1] = fid_alpha_1_k;
-
-                    tid_Cpre [0] = 0;
-                    tid_Cpost[0] = 0;
-                    for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
-                    {
-                    	const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
-                    	offsets_Cpost.push_back(f_id_Cpost);
-
-                    	const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
-                    	offsets_Cpre.push_back(f_id_Cpre);
-
-                    	const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
-                    	offsets_Jk_begin.push_back(f_id_Jk);
-                    	offsets_Jk_end  .push_back(f_id_Jk + t_size_theta[k-1]);
-
-                    	tid_Cpost[0]++;
-                    	tid_Cpre [0] += t_size_theta[k-1];
-                    } //end loop flat_theta_k_1
-
-                }// end loop fid_alpha_1_k
-
-            } // end loop fid_beta_1_k
-            //*/
-
-        } // end if (symmetric)
-#endif
-
 
     	const vector<Index> &offsets_Cpost = offsets_Cpost_dim[k-1];
     	const vector<Index> &offsets_Cpre = offsets_Cpre_dim[k-1];
@@ -1062,7 +928,7 @@ public:
     }
 };
 
-#define SPECIALIZED
+//#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
