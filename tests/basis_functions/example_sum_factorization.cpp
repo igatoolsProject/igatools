@@ -484,21 +484,20 @@ public:
 
 
 
-template <int dim, int r=dim>
-class MassMatrixIntegratorMemoryLayout
-{
-    public:
 
-	void
+template <int dim, int r=dim>
+class MassMatrixIntegrator
+{
+public:
+    void
     operator()(
-    	const bool is_symmetric,
+        const bool is_symmetric,
         const TensorSize<dim> &t_size_theta,
         const TensorSize<dim> &t_size_alpha,
         const TensorSize<dim> &t_size_beta,
-        array<vector<Index>,dim> &offsets_Cpost_dim,
-    	array<vector<Index>,dim> &offsets_Cpre_dim,
-    	array<vector<Index>,dim> &offsets_Jk_begin_dim,
-    	array<vector<Index>,dim> &offsets_Jk_end_dim) const
+        const array<DynamicMultiArray<Real,3>,dim> &J,
+        const DynamicMultiArray<Real,3> &Cpre,
+    	DenseMatrix &local_mass_matrix) const
     {
         const int k = dim-r+1;
 
@@ -539,10 +538,21 @@ class MassMatrixIntegratorMemoryLayout
         const Size f_size_beta_1_km1  = t_size_beta_1_km1.flat_size();
 
 
-        TensorSize<3> t_size_Cpre;
-        t_size_Cpre(0) = t_size_theta_k_d.flat_size();
-        t_size_Cpre(1) = t_size_alpha_1_km1.flat_size();
-        t_size_Cpre(2) = t_size_beta_1_km1.flat_size();
+        const auto & Jk = J[k-1];
+        TensorSize<3> t_size_Jk = Jk.tensor_size();
+        Assert(t_size_Jk(0) == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk(0),t_size_theta[k-1]));
+        Assert(t_size_Jk(1) == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk(1),t_size_alpha[k-1]));
+        Assert(t_size_Jk(2) == t_size_beta [k-1],ExcDimensionMismatch(t_size_Jk(2),t_size_beta [k-1]));
+        TensorIndex<3> t_wgt_Jk = MultiArrayUtils<3>::compute_weight(t_size_Jk);
+
+
+        const TensorSize<3> t_size_Cpre = Cpre.tensor_size();
+        Assert(t_size_Cpre(0) == t_size_theta_k_d.flat_size(),
+        		ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
+        Assert(t_size_Cpre(1) == t_size_alpha_1_km1.flat_size(),
+        		ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
+        Assert(t_size_Cpre(2) == t_size_beta_1_km1.flat_size(),
+        		ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
         TensorIndex<3> t_wgt_Cpre = MultiArrayUtils<3>::compute_weight(t_size_Cpre);
 
 
@@ -551,30 +561,13 @@ class MassMatrixIntegratorMemoryLayout
         t_size_Cpost[1] = t_size_alpha_1_k.flat_size();
         t_size_Cpost[2] = t_size_beta_1_k.flat_size();
         TensorIndex<3> t_wgt_Cpost = MultiArrayUtils<3>::compute_weight(t_size_Cpost);
-
-
-        TensorSize<3> t_size_Jk;
-        t_size_Jk(0) = t_size_theta[k-1];
-        t_size_Jk(1) = t_size_alpha[k-1];
-        t_size_Jk(2) = t_size_beta[k-1];
-        TensorIndex<3> t_wgt_Jk = MultiArrayUtils<3>::compute_weight(t_size_Jk);
-
+        DynamicMultiArray<Real,3> Cpost(t_size_Cpost);
 
 
         TensorIndex<3> tid_Jk;
         TensorIndex<3> tid_Cpre;
         TensorIndex<3> tid_Cpost;
 
-
-    	vector<Index> &offsets_Cpost = offsets_Cpost_dim[k-1];
-    	vector<Index> &offsets_Cpre = offsets_Cpre_dim[k-1];
-    	vector<Index> &offsets_Jk_begin = offsets_Jk_begin_dim[k-1];
-    	vector<Index> &offsets_Jk_end = offsets_Jk_end_dim[k-1];
-
-    	offsets_Cpost.clear();
-    	offsets_Cpre.clear();
-    	offsets_Jk_begin.clear();
-    	offsets_Jk_end.clear();
         if (!is_symmetric)
         {
 
@@ -583,7 +576,6 @@ class MassMatrixIntegratorMemoryLayout
             for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < f_size_beta_1_km1 ; ++flat_beta_k_1)
             {
                 tid_Cpre[2] = flat_beta_k_1;
-
 
                 for (int beta_k = 0 ; beta_k < t_size_beta[k-1] ; ++beta_k)
                 {
@@ -602,14 +594,16 @@ class MassMatrixIntegratorMemoryLayout
                             for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
                             {
                             	const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
-                            	offsets_Cpost.push_back(f_id_Cpost);
 
                             	const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
-                            	offsets_Cpre.push_back(f_id_Cpre);
 
                             	const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
-                            	offsets_Jk_begin.push_back(f_id_Jk);
-                            	offsets_Jk_end  .push_back(f_id_Jk + t_size_theta[k-1]);
+
+                                Cpost(f_id_Cpost) = std::inner_product(
+                                                  &Jk(f_id_Jk),
+                                                  &Jk(f_id_Jk)+t_size_theta[k-1],
+                                                  &Cpre(f_id_Cpre),
+                                                  0.0);
 
                             	tid_Cpost[0]++;
                             	tid_Cpre [0] += t_size_theta[k-1];
@@ -682,14 +676,17 @@ class MassMatrixIntegratorMemoryLayout
                     for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
                     {
                     	const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
-                    	offsets_Cpost.push_back(f_id_Cpost);
 
                     	const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
-                    	offsets_Cpre.push_back(f_id_Cpre);
 
                     	const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
-                    	offsets_Jk_begin.push_back(f_id_Jk);
-                    	offsets_Jk_end  .push_back(f_id_Jk + t_size_theta[k-1]);
+
+                        Cpost(f_id_Cpost) = std::inner_product(
+                                          &Jk(f_id_Jk),
+                                          &Jk(f_id_Jk)+t_size_theta[k-1],
+                                          &Cpre(f_id_Cpre),
+                                          0.0);
+
 
                     	tid_Cpost[0]++;
                     	tid_Cpre [0] += t_size_theta[k-1];
@@ -702,59 +699,32 @@ class MassMatrixIntegratorMemoryLayout
 
         } // end if (symmetric)
 
-
-    	MassMatrixIntegratorMemoryLayout<dim,r-1> get_memory_layout;
-    	get_memory_layout(is_symmetric,
-    			t_size_theta,t_size_alpha,t_size_beta,
-    	        offsets_Cpost_dim,
-    	    	offsets_Cpre_dim,
-    	    	offsets_Jk_begin_dim,
-    	    	offsets_Jk_end_dim);
-
+        MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
+        mass_matrix_integrator(
+        		   is_symmetric,
+                   t_size_theta,
+                   t_size_alpha,
+                   t_size_beta,
+                   J,Cpost,
+                   local_mass_matrix);
     }
-
 };
-
 
 
 template <int dim>
-class MassMatrixIntegratorMemoryLayout<dim,0>
-{
-    public:
-
-	void
-    operator()(
-    	const bool is_symmetric,
-        const TensorSize<dim> &t_size_theta,
-        const TensorSize<dim> &t_size_alpha,
-        const TensorSize<dim> &t_size_beta,
-        array<vector<Index>,dim> &offsets_Cpost_dim,
-    	array<vector<Index>,dim> &offsets_Cpre_dim,
-    	array<vector<Index>,dim> &offsets_Jk_begin_dim,
-    	array<vector<Index>,dim> &offsets_Jk_end_dim) const
-    {}
-};
-
-
-template <int dim, int r=dim>
-class MassMatrixIntegrator
+class MassMatrixIntegrator<dim,1>
 {
 public:
-    void
-    operator()(
+    void operator()(
         const bool is_symmetric,
         const TensorSize<dim> &t_size_theta,
         const TensorSize<dim> &t_size_alpha,
         const TensorSize<dim> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
         const DynamicMultiArray<Real,3> &Cpre,
-        const array<vector<Index>,dim> &offsets_Cpost_dim,
-    	const array<vector<Index>,dim> &offsets_Cpre_dim,
-    	const array<vector<Index>,dim> &offsets_Jk_begin_dim,
-    	const array<vector<Index>,dim> &offsets_Jk_end_dim,
-    	DenseMatrix &local_mass_matrix) const
+    	DenseMatrix & local_mass_matrix) const
     {
-        const int k = dim-r+1;
+        const int k = dim;
 
         // (alpha_1,...alpha_{k-1})
         TensorSize<k-1> t_size_alpha_1_km1;
@@ -788,114 +758,160 @@ public:
             t_size_theta_k_d[i] = t_size_theta[i+k-1];
 
 
-        Assert(Cpre.tensor_size()[0] == t_size_theta_k_d.flat_size(),
-               ExcDimensionMismatch(Cpre.tensor_size()[0],t_size_theta_k_d.flat_size()));
-        Assert(Cpre.tensor_size()[1] == t_size_alpha_1_km1.flat_size(),
-               ExcDimensionMismatch(Cpre.tensor_size()[1],t_size_alpha_1_km1.flat_size()));
-        Assert(Cpre.tensor_size()[2] == t_size_beta_1_km1.flat_size(),
-               ExcDimensionMismatch(Cpre.tensor_size()[2],t_size_beta_1_km1.flat_size()));
+        const Size f_size_alpha_1_km1 = t_size_alpha_1_km1.flat_size();
+        const Size f_size_beta_1_km1  = t_size_beta_1_km1.flat_size();
 
 
-        const auto &Jk = J[k-1];
-        Assert(Jk.tensor_size()[0] == t_size_theta[k-1],
-               ExcDimensionMismatch(Jk.tensor_size()[0],t_size_theta[k-1]));
-        Assert(Jk.tensor_size()[1] == t_size_alpha[k-1],
-               ExcDimensionMismatch(Jk.tensor_size()[1],t_size_alpha[k-1]));
-        Assert(Jk.tensor_size()[2] == t_size_beta[k-1],
-               ExcDimensionMismatch(Jk.tensor_size()[2],t_size_beta[k-1]));
+        const auto & Jk = J[k-1];
+        TensorSize<3> t_size_Jk = Jk.tensor_size();
+        Assert(t_size_Jk(0) == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk(0),t_size_theta[k-1]));
+        Assert(t_size_Jk(1) == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk(1),t_size_alpha[k-1]));
+        Assert(t_size_Jk(2) == t_size_beta [k-1],ExcDimensionMismatch(t_size_Jk(2),t_size_beta [k-1]));
+        TensorIndex<3> t_wgt_Jk = MultiArrayUtils<3>::compute_weight(t_size_Jk);
 
 
+        const TensorSize<3> t_size_Cpre = Cpre.tensor_size();
+        Assert(t_size_Cpre(0) == t_size_theta_k_d.flat_size(),
+        		ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
+        Assert(t_size_Cpre(1) == t_size_alpha_1_km1.flat_size(),
+        		ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
+        Assert(t_size_Cpre(2) == t_size_beta_1_km1.flat_size(),
+        		ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
+        TensorIndex<3> t_wgt_Cpre = MultiArrayUtils<3>::compute_weight(t_size_Cpre);
 
 
         TensorIndex<3> tid_Jk;
         TensorIndex<3> tid_Cpre;
         TensorIndex<3> tid_Cpost;
 
-        const Size f_size_theta_kp1_d = (dim-k>0)?t_size_theta_kp1_d.flat_size():1;
 
-        TensorSize<3> t_size_Cpost;
-        t_size_Cpost[0] = f_size_theta_kp1_d;
-        t_size_Cpost[1] = t_size_alpha_1_k.flat_size();
-        t_size_Cpost[2] = t_size_beta_1_k.flat_size();
-        DynamicMultiArray<Real,3> Cpost(t_size_Cpost);
+        const Size f_size_alpha_1_k = t_size_alpha_1_k.flat_size();
+        const Size f_size_beta_1_k = t_size_beta_1_k.flat_size();
 
+        Assert(local_mass_matrix.get_num_rows() == f_size_beta_1_k,
+        		ExcDimensionMismatch(local_mass_matrix.get_num_rows(),f_size_beta_1_k));
+        Assert(local_mass_matrix.get_num_cols() == f_size_alpha_1_k,
+        		ExcDimensionMismatch(local_mass_matrix.get_num_cols(),f_size_alpha_1_k));
 
-    	const vector<Index> &offsets_Cpost = offsets_Cpost_dim[k-1];
-    	const vector<Index> &offsets_Cpre = offsets_Cpre_dim[k-1];
-    	const vector<Index> &offsets_Jk_begin = offsets_Jk_begin_dim[k-1];
-    	const vector<Index> &offsets_Jk_end = offsets_Jk_end_dim[k-1];
-
-
-        Assert(offsets_Cpost.size() > 0,ExcEmptyObject());
-        const Size n_entries = offsets_Cpost.size();
-
-        Assert(offsets_Cpre.size() == n_entries,ExcDimensionMismatch(offsets_Cpre.size(),n_entries));
-        Assert(offsets_Jk_begin.size() == n_entries,ExcDimensionMismatch(offsets_Jk_begin.size(),n_entries));
-        Assert(offsets_Jk_end.size() == n_entries,ExcDimensionMismatch(offsets_Jk_end.size(),n_entries));
-
-        Assert(Cpost.flat_size() > 0,ExcEmptyObject());
-        Assert(Cpost.flat_size() >= n_entries,ExcOutOfMemory());
-
-        Real * Cpost_ptr = const_cast<Real *>(Cpost.get_data().data());
-        const Real * Cpre_ptr = Cpre.get_data().data();
-        const Real * J_ptr = Jk.get_data().data();
-        for (Index i = 0 ; i < n_entries ; ++i)
+        if (!is_symmetric)
         {
-        	const Index Cpost_offset = offsets_Cpost[i];
-        	const Index Cpre_offset = offsets_Cpre[i];
-        	const Index Jk_begin_offset = offsets_Jk_begin[i];
-        	const Index Jk_end_offset = offsets_Jk_end[i];
 
-        	Assert(Cpost_offset < Cpost.flat_size(),ExcOutOfMemory());
-        	Assert(Cpre_offset < Cpre.flat_size(),ExcOutOfMemory());
-        	Assert(Jk_begin_offset >= 0 && Jk_begin_offset < Jk.flat_size(),ExcOutOfMemory());
-        	Assert(Jk_end_offset >= 0 && Jk_end_offset <= Jk.flat_size(),ExcOutOfMemory());
+            tid_Jk[0] = 0;
+            tid_Cpre[0] = 0 ;
+            for (Index flat_beta_k_1 = 0 ; flat_beta_k_1 < f_size_beta_1_km1 ; ++flat_beta_k_1)
+            {
+                tid_Cpre[2] = flat_beta_k_1;
 
-            *(Cpost_ptr + Cpost_offset) = std::inner_product(
-                              J_ptr + Jk_begin_offset ,
-                              J_ptr + Jk_end_offset,
-                              Cpre_ptr + Cpre_offset,
-                              0.0);
-        }
+                for (int beta_k = 0 ; beta_k < t_size_beta[k-1] ; ++beta_k)
+                {
+                    tid_Jk[2] = beta_k;
+
+                    const Index f_id_test = flat_beta_k_1 + beta_k;
+
+                    for (Index flat_alpha_k_1 = 0 ; flat_alpha_k_1 < f_size_alpha_1_km1 ; ++flat_alpha_k_1)
+                    {
+                        tid_Cpre[1] = flat_alpha_k_1;
+
+                        for (int alpha_k = 0 ; alpha_k < t_size_alpha[k-1] ; ++alpha_k)
+                        {
+                            tid_Jk[1] = alpha_k;
+
+                            const Index f_id_trial = flat_alpha_k_1 + alpha_k;
+
+                            const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
+
+                            const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
+
+                            local_mass_matrix(f_id_test,f_id_trial) =
+                            		std::inner_product(
+                                              &Jk(f_id_Jk),
+                                              &Jk(f_id_Jk)+t_size_theta[k-1],
+                                              &Cpre(f_id_Cpre),
+                                              0.0);
+                        } // end loop alpha_k
+                    } // end loop flat_alpha_k_1
+
+                } // end loop beta_k
+
+            } // end loop flat_beta_k_1
 
 
-        MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
-        mass_matrix_integrator(
-        		   is_symmetric,
-                   t_size_theta,
-                   t_size_alpha,
-                   t_size_beta,
-                   J,Cpost,
-                   offsets_Cpost_dim,
-                   offsets_Cpre_dim,
-                   offsets_Jk_begin_dim,
-                   offsets_Jk_end_dim,
-                   local_mass_matrix);
-    }
-};
+        } // end if(!is_symmetric)
+        else
+        {
+            using MAUtils_k = MultiArrayUtils<k>;
+            using MAUtils_km1 = MultiArrayUtils<k-1>;
+
+            const TensorIndex<k> wgt_alpha_1_k = MAUtils_k::compute_weight(t_size_alpha_1_k);
+            const TensorIndex<k-1> wgt_alpha_1_km1 = MAUtils_km1::compute_weight(t_size_alpha_1_km1);
+
+            const TensorIndex<k> wgt_beta_1_k = MAUtils_k::compute_weight(t_size_beta_1_k);
+            const TensorIndex<k-1> wgt_beta_1_km1 = MAUtils_km1::compute_weight(t_size_beta_1_km1);
+
+            TensorIndex<k-1> tid_alpha_1_km1;
+            TensorIndex<k-1> tid_beta_1_km1;
+            tid_Cpre [0] = 0;
+            for (Index fid_beta_1_k = 0 ; fid_beta_1_k < f_size_beta_1_k ; ++fid_beta_1_k)
+            {
+                const TensorIndex<k> tid_beta_1_k =
+                    MAUtils_k::flat_to_tensor_index(fid_beta_1_k,wgt_beta_1_k);
+
+                for (int i = 0 ; i < k-1 ; ++i)
+                    tid_beta_1_km1(i) = tid_beta_1_k(i);
+
+                const Index beta_k = tid_beta_1_k(k-1);
+
+                const Index fid_beta_1_km1 =
+                    (k>1)?MAUtils_km1::tensor_to_flat_index(tid_beta_1_km1,wgt_beta_1_km1):0;
 
 
-template <int dim>
-class MassMatrixIntegrator<dim,0>
-{
-public:
-    void operator()(
-        const bool is_symmetric,
-        const TensorSize<dim> &tensor_size_theta,
-        const TensorSize<dim> &tensor_size_alpha,
-        const TensorSize<dim> &tensor_size_beta,
-        const array<DynamicMultiArray<Real,3>,dim> &J,
-        const DynamicMultiArray<Real,3> &C,
-        const array<vector<Index>,dim> &offsets_Cpost_dim,
-    	const array<vector<Index>,dim> &offsets_Cpre_dim,
-    	const array<vector<Index>,dim> &offsets_Jk_begin_dim,
-    	const array<vector<Index>,dim> &offsets_Jk_end_dim,
-    	DenseMatrix & local_mass_matrix) const
-    {
+                for (Index fid_alpha_1_k = fid_beta_1_k ; fid_alpha_1_k < f_size_alpha_1_k ; ++fid_alpha_1_k)
+                {
+                    const TensorIndex<k> tid_alpha_1_k =
+                        MAUtils_k::flat_to_tensor_index(fid_alpha_1_k,wgt_alpha_1_k);
+                    for (int i = 0 ; i < k-1 ; ++i)
+                        tid_alpha_1_km1(i) = tid_alpha_1_k(i);
 
-    	const Size n_basis_test = local_mass_matrix.get_num_rows();
-    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+                    const Index alpha_k = tid_alpha_1_k(k-1);
 
+                    const Index fid_alpha_1_km1 =
+                        (k>1)?MAUtils_km1::tensor_to_flat_index(tid_alpha_1_km1,wgt_alpha_1_km1):0;
+
+                    tid_Cpre[1] = max(fid_alpha_1_km1,fid_beta_1_km1);
+                    tid_Cpre[2] = min(fid_alpha_1_km1,fid_beta_1_km1);
+
+                    tid_Jk[1] = max(alpha_k,beta_k);
+                    tid_Jk[2] = min(alpha_k,beta_k);
+
+                    const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
+
+                    const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
+
+                    local_mass_matrix(fid_beta_1_k,fid_alpha_1_k) =
+                    		std::inner_product(
+                                          &Jk(f_id_Jk),
+                                          &Jk(f_id_Jk)+t_size_theta[k-1],
+                                          &Cpre(f_id_Cpre),
+                                          0.0);
+
+                }// end loop fid_alpha_1_k
+
+            } // end loop fid_beta_1_k
+            //*/
+
+            // here we copy the upper triangular part of the matrix on the lower triangular part
+            for (int test_id = 0 ; test_id < f_size_beta_1_k ; ++test_id)
+                for (int trial_id = 0; trial_id < test_id ; ++trial_id)
+                    local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
+
+        } // end if (symmetric)
+
+
+
+
+
+#if 0
+    	//-----------------------------------
         Assert(C.tensor_size()(1) == n_basis_trial,
                ExcDimensionMismatch(C.tensor_size()(1),n_basis_trial));
         Assert(C.tensor_size()(2) == n_basis_test,
@@ -924,11 +940,12 @@ public:
                 for (int trial_id = 0; trial_id < test_id ; ++trial_id)
                     local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
         }
+#endif
 
     }
 };
 
-#define SPECIALIZED
+//#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
@@ -941,10 +958,6 @@ public:
         const TensorSize<1> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,1> &J,
         const DynamicMultiArray<Real,3> &C,
-        const array<vector<Index>,1> &offsets_Cpost_dim,
-    	const array<vector<Index>,1> &offsets_Cpre_dim,
-    	const array<vector<Index>,1> &offsets_Jk_begin_dim,
-    	const array<vector<Index>,1> &offsets_Jk_end_dim,
     	DenseMatrix & local_mass_matrix) const
     {
     	const Size n_basis_test = local_mass_matrix.get_num_rows();
@@ -1031,10 +1044,6 @@ public:
         const TensorSize<2> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,2> &J,
         const DynamicMultiArray<Real,3> &C,
-        const array<vector<Index>,2> &offsets_Cpost_dim,
-    	const array<vector<Index>,2> &offsets_Cpre_dim,
-    	const array<vector<Index>,2> &offsets_Jk_begin_dim,
-    	const array<vector<Index>,2> &offsets_Jk_end_dim,
     	DenseMatrix & local_mass_matrix) const
     {
     	const Size n_basis_test = local_mass_matrix.get_num_rows();
@@ -1185,10 +1194,6 @@ public:
         const TensorSize<3> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,3> &J,
         const DynamicMultiArray<Real,3> &C,
-        const array<vector<Index>,3> &offsets_Cpost_dim,
-        const array<vector<Index>,3> &offsets_Cpre_dim,
-        const array<vector<Index>,3> &offsets_Jk_begin_dim,
-        const array<vector<Index>,3> &offsets_Jk_end_dim,
         DenseMatrix & local_mass_matrix) const
     {
     	const Size n_basis_test = local_mass_matrix.get_num_rows();
@@ -1573,10 +1578,6 @@ void local_mass_matrix_from_phys_elem_accessor(
     const array<ValueTable<Real>,PhysSpace::dim> w_basis_proj_1D,
     const DenseMatrix &invM_projection,
     const Quadrature<PhysSpace::dim> &quad_projection,
-    const array<vector<Index>,PhysSpace::dim> &offsets_Cpost_dim,
-	const array<vector<Index>,PhysSpace::dim> &offsets_Cpre_dim,
-	const array<vector<Index>,PhysSpace::dim> &offsets_Jk_begin_dim,
-	const array<vector<Index>,PhysSpace::dim> &offsets_Jk_end_dim,
 	DenseMatrix &local_mass_matrix)
 {
 
@@ -1740,10 +1741,6 @@ void local_mass_matrix_from_phys_elem_accessor(
                           n_basis_test,
                           moments,
                           C_0,
-                          offsets_Cpost_dim,
-                          offsets_Cpre_dim,
-                          offsets_Jk_begin_dim,
-                          offsets_Jk_end_dim,
                           local_mass_matrix);
 
 
@@ -1890,13 +1887,11 @@ assemble()
     const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
 
 
-    const bool is_symmetric = true;
-
-
+/*
     using Clock = chrono::high_resolution_clock;
     using TimePoint = chrono::time_point<Clock>;
     using Duration = chrono::duration<Real>;
-
+//*/
 
     for (; elem != elem_end; ++elem)
     {
@@ -1962,36 +1957,12 @@ assemble()
 
         //--------------------------------------------------------------------------
         // getting the number of basis along each coordinate direction for the test and trial space
-        const TensorSize<dim> n_basis_test = n_basis_elem;
-        const TensorSize<dim> n_basis_trial= n_basis_elem;
+//        const TensorSize<dim> n_basis_test = n_basis_elem;
+//        const TensorSize<dim> n_basis_trial= n_basis_elem;
 //        const Size n_basis = n_basis_elem.flat_size();
         //--------------------------------------------------------------------------
 
 
-
-
-        //--------------------------------------------------------------------------
-        // Getting the memory layout - begin
-        const TimePoint start_mem_layout = Clock::now();
-        array<vector<Index>,dim> offsets_Cpost_dim;
-        array<vector<Index>,dim> offsets_Cpre_dim;
-        array<vector<Index>,dim> offsets_Jk_begin_dim;
-        array<vector<Index>,dim> offsets_Jk_end_dim;
-        MassMatrixIntegratorMemoryLayout<dim> get_memory_layout;
-        get_memory_layout(
-        		is_symmetric,
-        		n_basis_projection,
-        		n_basis_trial,
-        		n_basis_test,
-        		offsets_Cpost_dim,
-        		offsets_Cpre_dim,
-        		offsets_Jk_begin_dim,
-        		offsets_Jk_end_dim);
-        const TimePoint end_mem_layout = Clock::now();
-        const Duration elapsed_time_mem_layout = end_mem_layout - start_mem_layout;
-        std::cout << "Elapsed_seconds memory_layout = " << elapsed_time_mem_layout.count() << std::endl;
-        // Getting the memory layout - end
-        //----------------------------------------------------
 
 
 
@@ -2007,10 +1978,6 @@ assemble()
             w_B_proj_1D,
             inv_B_proj_,
             quad_proj_,
-            offsets_Cpost_dim,
-            offsets_Cpre_dim,
-            offsets_Jk_begin_dim,
-            offsets_Jk_end_dim,
             loc_mass_matrix_sf);
         //*/
 
@@ -2100,8 +2067,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 8;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
