@@ -1093,30 +1093,64 @@ public:
         TensorIndex<3> t_id_J;
         TensorIndex<3> t_id_C;
 
-
-        //--------------------------------------------------------------
-        t_id_C[1] = 0;
-        t_id_C[2] = 0;
-
-        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+        if (!is_symmetric)
         {
-            t_id_J[2] = beta_0;
-            for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+            //--------------------------------------------------------------
+            t_id_C[1] = 0;
+            t_id_C[2] = 0;
+
+            for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
             {
-                t_id_J[1] = alpha_0;
-
-                Real sum = 0.0;
-                for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
+                t_id_J[2] = beta_0;
+                for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
                 {
-                    t_id_J[0] = theta_0;
-                    t_id_C[0] = theta_0;
-                    sum += C(t_id_C) * J[0](t_id_J);
-                }
+                    t_id_J[1] = alpha_0;
 
-                local_mass_matrix(beta_0,alpha_0) = sum;
+                    Real sum = 0.0;
+                    for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
+                    {
+                        t_id_J[0] = theta_0;
+                        t_id_C[0] = theta_0;
+                        sum += C(t_id_C) * J[0](t_id_J);
+                    }
+
+                    local_mass_matrix(beta_0,alpha_0) = sum;
+                }
             }
-        }
-        //--------------------------------------------------------------
+            //--------------------------------------------------------------
+        } // end if (!is_symmetric)
+        else
+        {
+            //--------------------------------------------------------------
+            t_id_C[1] = 0;
+            t_id_C[2] = 0;
+            for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+            {
+                t_id_J[2] = beta_0;
+                for (Index alpha_0 = beta_0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+                {
+                    t_id_J[1] = alpha_0;
+
+                    Real sum = 0.0;
+                    for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
+                    {
+                        t_id_J[0] = theta_0;
+                        t_id_C[0] = theta_0;
+                        sum += C(t_id_C) * J[0](t_id_J);
+                    }
+
+                    local_mass_matrix(beta_0,alpha_0) = sum;
+                }
+            }
+
+            // here we copy the upper triangular part of the matrix on the lower triangular part
+            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
+                for (int trial_id = 0; trial_id < test_id ; ++trial_id)
+                    local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
+
+            //--------------------------------------------------------------
+
+        } // end if (is_symmetric)
     }
 };
 
@@ -2200,8 +2234,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 3;
-    int degree_max = 3;
+    int degree_min = 1;
+    int degree_max = 8;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
