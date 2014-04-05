@@ -905,47 +905,10 @@ public:
                     local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
 
         } // end if (symmetric)
-
-
-
-
-
-#if 0
-    	//-----------------------------------
-        Assert(C.tensor_size()(1) == n_basis_trial,
-               ExcDimensionMismatch(C.tensor_size()(1),n_basis_trial));
-        Assert(C.tensor_size()(2) == n_basis_test,
-               ExcDimensionMismatch(C.tensor_size()(2),n_basis_test));
-
-        if (!is_symmetric)
-        {
-            Index flat_id = 0 ;
-            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
-                for (int trial_id = 0 ; trial_id < n_basis_trial ; ++trial_id)
-                    local_mass_matrix(test_id,trial_id) = C(flat_id++);
-        }
-        else
-        {
-            Index fid_entry = 0;
-            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
-            {
-                fid_entry += test_id; // now we are on the diagonal
-
-                for (int trial_id = test_id ; trial_id < n_basis_trial ; ++trial_id, ++fid_entry)
-                    local_mass_matrix(test_id,trial_id) = C(fid_entry);
-            }
-
-            // here we copy the upper triangular part of the matrix on the lower triangular part
-            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
-                for (int trial_id = 0; trial_id < test_id ; ++trial_id)
-                    local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
-        }
-#endif
-
     }
 };
 
-//#define SPECIALIZED
+#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
@@ -2067,8 +2030,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 10;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
