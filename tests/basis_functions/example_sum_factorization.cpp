@@ -1535,12 +1535,13 @@ evaluate_moments(
 }
 
 
-template <class PhysSpace>
+template <class PhysSpaceTest,class PhysSpaceTrial = PhysSpaceTest>
 void local_mass_matrix_from_phys_elem_accessor(
-    const typename PhysSpace::ElementAccessor &elem,
-    const array<ValueTable<Real>,PhysSpace::dim> w_basis_proj_1D,
+    const typename PhysSpaceTest::ElementAccessor &elem_test,
+    const typename PhysSpaceTrial::ElementAccessor &elem_trial,
+    const array<ValueTable<Real>,PhysSpaceTest::dim> w_basis_proj_1D,
     const DenseMatrix &invM_projection,
-    const Quadrature<PhysSpace::dim> &quad_projection,
+    const Quadrature<PhysSpaceTest::dim> &quad_projection,
 	DenseMatrix &local_mass_matrix)
 {
 
@@ -1548,17 +1549,35 @@ void local_mass_matrix_from_phys_elem_accessor(
     using TimePoint = chrono::time_point<Clock>;
     using Duration = chrono::duration<Real>;
 
-    const int dim = PhysSpace::dim;
+
+    Assert(PhysSpaceTest::dim == PhysSpaceTrial::dim,
+    		ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
+    Assert(PhysSpaceTest::space_dim == PhysSpaceTrial::space_dim,
+    		ExcDimensionMismatch(PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim));
+    Assert(PhysSpaceTest::range == PhysSpaceTrial::range,
+    		ExcDimensionMismatch(PhysSpaceTest::range,PhysSpaceTrial::range));
+    Assert(PhysSpaceTest::rank == PhysSpaceTrial::rank,
+    		ExcDimensionMismatch(PhysSpaceTest::rank,PhysSpaceTrial::rank));
+
+    const int dim = PhysSpaceTest::dim;
 //    const int space_dim = PhysSpace::space_dim;
 //    const int range = PhysSpace::range;
 //    const int rank = PhysSpace::rank;
 
-    Assert(PhysSpace::range == 1,ExcDimensionMismatch(PhysSpace::range,1));
-    Assert(PhysSpace::rank == 1,ExcDimensionMismatch(PhysSpace::rank,1));
+    Assert(PhysSpaceTest::range == 1,ExcDimensionMismatch(PhysSpaceTest::range,1));
+    Assert(PhysSpaceTest::rank == 1,ExcDimensionMismatch(PhysSpaceTest::rank,1));
 
     const auto start_local_mass_matrix = Clock::now();
 
-    const bool is_symmetric = true;
+
+
+    //--------------------------------------------------------------------------
+    bool is_symmetric = true;
+    if (&elem_test != &elem_trial)
+    	is_symmetric = false;
+    //--------------------------------------------------------------------------
+
+
 
 
     //--------------------------------------------------------------------------
@@ -1578,56 +1597,115 @@ void local_mass_matrix_from_phys_elem_accessor(
 
     const Index comp = 0; // only scalar spaces for the moment
 
-    TensorIndex<dim> degree = elem.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem;
+    // test space -- begin
+    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorSize<dim> n_basis_elem_test;
     for (int i = 0 ; i < dim ; ++i)
-        n_basis_elem(i) = degree(i) + 1;
+        n_basis_elem_test(i) = degree_test(i) + 1;
 
-    const Size n_basis_flat = n_basis_elem.flat_size();
-    Assert(n_basis_elem.flat_size()==elem.get_num_basis(),
-           ExcDimensionMismatch(n_basis_elem.flat_size(),elem.get_num_basis()));
+    const Size n_basis_test_flat = n_basis_elem_test.flat_size();
+    Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
+           ExcDimensionMismatch(n_basis_elem_test.flat_size(),elem_test.get_num_basis()));
 
-    const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
+    const auto weight_basis_test = MultiArrayUtils<dim>::compute_weight(n_basis_elem_test);
 
-    const TensorSize<dim> n_basis_test = n_basis_elem;
-    const TensorSize<dim> n_basis_trial= n_basis_elem;
+    const TensorSize<dim> n_basis_test = n_basis_elem_test;
+    // test space -- end
+
+
+    // trial space -- begin
+    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorSize<dim> n_basis_elem_trial;
+    for (int i = 0 ; i < dim ; ++i)
+        n_basis_elem_trial(i) = degree_trial(i) + 1;
+
+    const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
+    Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
+           ExcDimensionMismatch(n_basis_elem_trial.flat_size(),elem_trial.get_num_basis()));
+
+    const auto weight_basis_trial = MultiArrayUtils<dim>::compute_weight(n_basis_elem_trial);
+
+    const TensorSize<dim> n_basis_trial = n_basis_elem_trial;
+    // trial space -- end
+
 //    const Size n_basis = n_basis_elem.flat_size();
     //--------------------------------------------------------------------------
 
 
-
-    //--------------------------------------------------------------------------
-    // here we get the 1D values
     using ValueType1D = Function<1>::ValueType;
 
-    const auto &ref_elem_accessor = elem.get_ref_space_accessor();
-
-    const auto &quad_points = ref_elem_accessor.get_quad_points();
-    const auto n_quad_points = quad_points.get_num_points_direction();
-
-    const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
-
-    array< ValueTable<ValueType1D>,dim>  phi_1D;
-    for (int i = 0 ; i < dim ; ++i)
-        phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
-
-    for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_flat ; ++flat_fn_id)
+    //--------------------------------------------------------------------------
+    // getting the 1D values for the test space -- begin
+    array< ValueTable<ValueType1D>,dim> phi_1D_test;
     {
-        const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
+    	const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
 
-        const auto &bspline1D_values =
-            bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+    	const auto &quad_points = ref_elem_accessor.get_quad_points();
+    	const auto n_quad_points = quad_points.get_num_points_direction();
 
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            auto phi_1D_ifn =  phi_1D[i].get_function_view(tensor_fn_id[i]);
+    	const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
-            const auto &bsp_val = bspline1D_values[i];
+    	for (int i = 0 ; i < dim ; ++i)
+    		phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
 
-            for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-                phi_1D_ifn[jpt] = bsp_val(jpt);
-        }
+    	for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_test_flat ; ++flat_fn_id)
+    	{
+    		const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_test);
+
+    		const auto &bspline1D_values =
+    				bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+
+    		for (int i = 0 ; i < dim ; ++i)
+    		{
+    			auto phi_1D_ifn = phi_1D_test[i].get_function_view(tensor_fn_id[i]);
+
+    			const auto &bsp_val = bspline1D_values[i];
+
+    			for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+    				phi_1D_ifn[jpt] = bsp_val(jpt);
+    		}
+    	}
     }
+    // getting the 1D values for the test space -- end
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    // getting the 1D values for the trial space -- begin
+    array< ValueTable<ValueType1D>,dim> phi_1D_trial;
+    {
+    	const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
+
+    	const auto &quad_points = ref_elem_accessor.get_quad_points();
+    	const auto n_quad_points = quad_points.get_num_points_direction();
+
+    	const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+
+    	for (int i = 0 ; i < dim ; ++i)
+    		phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
+
+    	for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_trial_flat ; ++flat_fn_id)
+    	{
+    		const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_trial);
+
+    		const auto &bspline1D_values =
+    				bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+
+    		for (int i = 0 ; i < dim ; ++i)
+    		{
+    			auto phi_1D_ifn =  phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
+
+    			const auto &bsp_val = bspline1D_values[i];
+
+    			for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+    				phi_1D_ifn[jpt] = bsp_val(jpt);
+    		}
+    	}
+    }
+    // getting the 1D values for the trial space -- end
+    //--------------------------------------------------------------------------
+
+
     const auto end_initialization = Clock::now();
     const Duration elapsed_time_initialization = end_initialization - start_initialization;
     std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
@@ -1642,11 +1720,17 @@ void local_mass_matrix_from_phys_elem_accessor(
     // Projection phase -- begin
     const TimePoint start_projection = Clock::now();
 
+//    const auto & push_fws_test = elem_test.get_physical_space()->get_push_forward();
+//    const auto & push_fws_trial = elem_trial.get_physical_space()->get_push_forward();
+    Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
+    		elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+    		ExcMessage("Test and trial spaces must have the same mapping!"));
+
     // performs the projection of the function det(DF) using as basis the Bernstein's polynomials
-    const auto det_DF = elem.get_measures() ;
+    const auto det_DF = elem_test.get_measures() ;
 
     // measure of the element in the reference domain
-    const Real ref_elem_measure = ref_elem_accessor.get_measure();
+    const Real ref_elem_measure = elem_test.get_ref_space_accessor().get_measure();
 
 
     // here we project the determinant Jacobian on a Bernstein polynomials space
@@ -1671,7 +1755,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     // precalculation of the I[i](lambda,mu1,mu2) terms (i.e. the moments)
     const auto start_compute_moments = Clock::now();
 
-    const auto moments = evaluate_moments<dim>(w_basis_proj_1D,phi_1D,phi_1D);
+    const auto moments = evaluate_moments<dim>(w_basis_proj_1D,phi_1D_trial,phi_1D_test);
 
     const auto end_compute_moments = Clock::now();
     Duration elapsed_time_compute_moments = end_compute_moments - start_compute_moments;
@@ -1937,6 +2021,7 @@ assemble()
 
 
         local_mass_matrix_from_phys_elem_accessor<Space>(
+            *elem,
             *elem,
             w_B_proj_1D,
             inv_B_proj_,
