@@ -1652,9 +1652,13 @@ void local_mass_matrix_from_phys_elem_accessor(
     Assert(PhysSpace::range == 1,ExcDimensionMismatch(PhysSpace::range,1));
     Assert(PhysSpace::rank == 1,ExcDimensionMismatch(PhysSpace::rank,1));
 
+    const auto start_local_mass_matrix = Clock::now();
 
     const bool is_symmetric = true;
 
+
+    //--------------------------------------------------------------------------
+    const auto start_initialization = Clock::now();
 
     //--------------------------------------------------------------------------
     // getting the number of basis along each coordinate direction for the projection space
@@ -1720,6 +1724,9 @@ void local_mass_matrix_from_phys_elem_accessor(
                 phi_1D_ifn[jpt] = bsp_val(jpt);
         }
     }
+    const auto end_initialization = Clock::now();
+    const Duration elapsed_time_initialization = end_initialization - start_initialization;
+    std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
     //--------------------------------------------------------------------------
 
 
@@ -1857,9 +1864,13 @@ void local_mass_matrix_from_phys_elem_accessor(
     // Assembly of the local mass matrix using sum-factorization -- end
     //----------------------------------------------------
 
-    Duration elapsed_time_assemble = elapsed_time_sum_factorization + elapsed_time_compute_moments + elapsed_time_projection;
+    Duration elapsed_time_assemble = elapsed_time_sum_factorization +
+    		elapsed_time_compute_moments + elapsed_time_projection + elapsed_time_initialization ;
     std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
 
+    const auto end_local_mass_matrix = Clock::now();
+    Duration elapsed_time_local_mass_matrix = end_local_mass_matrix - start_local_mass_matrix;
+    std::cout << "Elapsed seconds local mass matrix = " << elapsed_time_local_mass_matrix.count() << std::endl;
 }
 
 
