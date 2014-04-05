@@ -57,6 +57,96 @@ using numbers::PI;
 // [unqualified names]
 
 
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+class EllipticOperators
+{
+public:
+	/** Type for the element accessor of the <em>test</em> physical space. */
+	using ElemTest = typename PhysSpaceTest::ElementAccessor;
+
+	/** Type for the element accessor of the <em>trial</em> physical space. */
+	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+
+
+	virtual void eval_operator_u_v(
+			const ElemTest &elem_test,
+			const ElemTrial &elem_trial,
+			const ValueVector<Real> &c,
+			DenseMatrix &operator_u_v) const = 0;
+};
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+class EllipticOperatorsSumFactorizationIntegration :
+		public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
+{
+public:
+	/** Type for the element accessor of the <em>test</em> physical space. */
+	using ElemTest = typename PhysSpaceTest::ElementAccessor;
+
+	/** Type for the element accessor of the <em>trial</em> physical space. */
+	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+
+	static const int dim = PhysSpaceTest::dim;
+
+    using Clock = chrono::high_resolution_clock;
+    using TimePoint = chrono::time_point<Clock>;
+    using Duration = chrono::duration<Real>;
+
+	virtual void eval_operator_u_v(
+			const ElemTest &elem_test,
+			const ElemTrial &elem_trial,
+			const ValueVector<Real> &c,
+			DenseMatrix &operator_u_v) const;
+
+private:
+
+	/**
+	 * One-dimensional quadrature weights multiplied by the one-dimensional
+	 * Bernstein's basis values used to build the projection matrix B_proj_.
+	 */
+    array<ValueTable<Real>,dim> w_times_B_proj_1D_;
+
+    /** Quadrature scheme used in the projection phase to built the projection matrix B_proj_. */
+    Quadrature<dim> quad_proj_;
+
+    /** Mass matrix of the Bernstein's polynomials used in the projection, in [0,1]^dim.*/
+    DenseMatrix B_proj_;
+
+    /** Inverse of the mass matrix of the Bernstein polynomials used in the projection, in [0,1]^dim.*/
+    DenseMatrix inv_B_proj_;
+
+
+	Duration elapsed_time_operator_u_v_;
+};
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+class EllipticOperatorsStandardIntegration :
+		public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
+{
+public:
+	/** Type for the element accessor of the <em>test</em> physical space. */
+	using ElemTest = typename PhysSpaceTest::ElementAccessor;
+
+	/** Type for the element accessor of the <em>trial</em> physical space. */
+	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+
+	virtual void eval_operator_u_v(
+			const ElemTest &elem_test,
+			const ElemTrial &elem_trial,
+			const ValueVector<Real> &c,
+			DenseMatrix &operator_u_v) const
+	{
+		Assert(false,ExcNotImplemented());
+		AssertThrow(false,ExcNotImplemented());
+	}
+};
+
+
+
+
 // [Problem class]
 template<int dim,class DerivedClass>
 class PoissonProblem
@@ -1807,6 +1897,43 @@ void local_mass_matrix_from_phys_elem_accessor(
 }
 
 
+
+
+template<class PhysSpaceTest, class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_u_v(
+		const ElemTest &elem_test,
+		const ElemTrial &elem_trial,
+		const ValueVector<Real> &c,
+		DenseMatrix &operator_u_v) const
+{
+
+    //----------------------------------------------------
+    // Assembly of the local mass matrix using sum-factorization -- begin
+    const TimePoint start_assembly_mass_matrix = Clock::now();
+
+
+    local_mass_matrix_from_phys_elem_accessor<PhysSpaceTest,PhysSpaceTrial>(
+        elem_test,
+        elem_trial,
+        w_times_B_proj_1D_,
+        inv_B_proj_,
+        quad_proj_,
+        operator_u_v);
+
+    const TimePoint end_assembly_mass_matrix = Clock::now();
+
+    const_cast<Duration &>(elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
+    // Assembly of the local mass matrix using sum-factorization -- end
+    //----------------------------------------------------
+
+	Assert(false,ExcNotImplemented());
+	AssertThrow(false,ExcNotImplemented());
+}
+
+
 template<int dim>
 void
 PoissonProblemSumFactorization<dim>::
@@ -1940,6 +2067,10 @@ assemble()
     using Duration = chrono::duration<Real>;
 //*/
 
+    using SpaceTest = Space;
+    using SpaceTrial = Space;
+    EllipticOperatorsSumFactorizationIntegration<SpaceTest,SpaceTrial> elliptic_operators_sf;
+
     for (; elem != elem_end; ++elem)
     {
         loc_rhs.clear();
@@ -2011,7 +2142,12 @@ assemble()
 
 
 
-
+        //----------------------------------------------------
+        // multiplicative coefficients of the mass matrix term.
+        ValueVector<Real> c_mass(n_quad_points.flat_size());
+        for ( auto & c : c_mass)
+        	c = 1.0;
+        //----------------------------------------------------
 
 
 
@@ -2029,6 +2165,10 @@ assemble()
             loc_mass_matrix_sf);
         //*/
 
+
+
+//        elliptic_operators_sf.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_sf);
+
         end_assembly_mass_matrix = Clock::now();
 
         elapsed_time_assembly_mass_matrix_ += end_assembly_mass_matrix - start_assembly_mass_matrix;
@@ -2043,9 +2183,9 @@ assemble()
         start_assembly_mass_matrix_old = Clock::now();
 
 
-        auto phi     = elem->get_basis_values();
+        const auto &phi_test  = elem->get_basis_values();
+        const auto &phi_trial = elem->get_basis_values();
         auto w_meas  = elem->get_w_measures();
-
 
         const int n_qp = this->elem_quad.get_num_points();
 
@@ -2053,10 +2193,10 @@ assemble()
 
         for (int i = 0; i < n_basis; ++i)
         {
-            const auto phi_i = phi.get_function_view(i);
+            const auto phi_i = phi_test.get_function_view(i);
             for (int j = i; j < n_basis; ++j)
             {
-                const auto phi_j = phi.get_function_view(j);
+                const auto phi_j = phi_trial.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) += phi_i[qp](0) * phi_j[qp](0) * w_meas[qp];
             }
