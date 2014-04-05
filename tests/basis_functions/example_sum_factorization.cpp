@@ -740,8 +740,9 @@ template <int dim, int r=dim>
 class MassMatrixIntegrator
 {
 public:
-    DynamicMultiArray<Real,3>
+    void
     operator()(
+        const bool is_symmetric,
         const TensorSize<dim> &t_size_theta,
         const TensorSize<dim> &t_size_alpha,
         const TensorSize<dim> &t_size_beta,
@@ -750,7 +751,8 @@ public:
         const array<vector<Index>,dim> &offsets_Cpost_dim,
     	const array<vector<Index>,dim> &offsets_Cpre_dim,
     	const array<vector<Index>,dim> &offsets_Jk_begin_dim,
-    	const array<vector<Index>,dim> &offsets_Jk_end_dim) const
+    	const array<vector<Index>,dim> &offsets_Jk_end_dim,
+    	DenseMatrix &local_mass_matrix) const
     {
         const int k = dim-r+1;
 
@@ -992,7 +994,8 @@ public:
 
 
         MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
-        return mass_matrix_integrator(
+        mass_matrix_integrator(
+        		   is_symmetric,
                    t_size_theta,
                    t_size_alpha,
                    t_size_beta,
@@ -1000,7 +1003,8 @@ public:
                    offsets_Cpost_dim,
                    offsets_Cpre_dim,
                    offsets_Jk_begin_dim,
-                   offsets_Jk_end_dim);
+                   offsets_Jk_end_dim,
+                   local_mass_matrix);
     }
 };
 
@@ -1009,7 +1013,8 @@ template <int dim>
 class MassMatrixIntegrator<dim,0>
 {
 public:
-    DynamicMultiArray<Real,3> operator()(
+    void operator()(
+        const bool is_symmetric,
         const TensorSize<dim> &tensor_size_theta,
         const TensorSize<dim> &tensor_size_alpha,
         const TensorSize<dim> &tensor_size_beta,
@@ -1018,51 +1023,87 @@ public:
         const array<vector<Index>,dim> &offsets_Cpost_dim,
     	const array<vector<Index>,dim> &offsets_Cpre_dim,
     	const array<vector<Index>,dim> &offsets_Jk_begin_dim,
-    	const array<vector<Index>,dim> &offsets_Jk_end_dim) const
+    	const array<vector<Index>,dim> &offsets_Jk_end_dim,
+    	DenseMatrix & local_mass_matrix) const
     {
-        return C;
+
+    	const Size n_basis_test = local_mass_matrix.get_num_rows();
+    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+
+        Assert(C.tensor_size()(1) == n_basis_trial,
+               ExcDimensionMismatch(C.tensor_size()(1),n_basis_trial));
+        Assert(C.tensor_size()(2) == n_basis_test,
+               ExcDimensionMismatch(C.tensor_size()(2),n_basis_test));
+
+        if (!is_symmetric)
+        {
+            Index flat_id = 0 ;
+            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
+                for (int trial_id = 0 ; trial_id < n_basis_trial ; ++trial_id)
+                    local_mass_matrix(test_id,trial_id) = C(flat_id++);
+        }
+        else
+        {
+            Index fid_entry = 0;
+            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
+            {
+                fid_entry += test_id; // now we are on the diagonal
+
+                for (int trial_id = test_id ; trial_id < n_basis_trial ; ++trial_id, ++fid_entry)
+                    local_mass_matrix(test_id,trial_id) = C(fid_entry);
+            }
+
+            // here we copy the upper triangular part of the matrix on the lower triangular part
+            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
+                for (int trial_id = 0; trial_id < test_id ; ++trial_id)
+                    local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
+        }
+
     }
 };
 
-
-//#define SPECIALIZED
+#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
 {
 public:
-    DynamicMultiArray<Real,3> operator()(
+    void operator()(
+    	const bool is_symmetric,
         const TensorSize<1> &t_size_theta,
         const TensorSize<1> &t_size_alpha,
         const TensorSize<1> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,1> &J,
         const DynamicMultiArray<Real,3> &C,
-        const bool is_symmetric = false) const
+        const array<vector<Index>,1> &offsets_Cpost_dim,
+    	const array<vector<Index>,1> &offsets_Cpre_dim,
+    	const array<vector<Index>,1> &offsets_Jk_begin_dim,
+    	const array<vector<Index>,1> &offsets_Jk_end_dim,
+    	DenseMatrix & local_mass_matrix) const
     {
+    	const Size n_basis_test = local_mass_matrix.get_num_rows();
+    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+
+        Assert(t_size_alpha.flat_size() == n_basis_trial,
+               ExcDimensionMismatch(t_size_alpha.flat_size(),n_basis_trial));
+        Assert(t_size_beta.flat_size() == n_basis_test,
+               ExcDimensionMismatch(t_size_beta.flat_size(),n_basis_test));
+
+
         TensorIndex<3> t_id_J;
         TensorIndex<3> t_id_C;
 
 
         //--------------------------------------------------------------
-        TensorIndex<3> t_id_C1;
-        TensorSize<3> t_size_C1;
-        t_size_C1[0] = 1;
-        t_size_C1[1] = t_size_alpha[0];
-        t_size_C1[2] = t_size_beta[0];
-        DynamicMultiArray<Real,3> C1(t_size_C1);
-
         t_id_C[1] = 0;
         t_id_C[2] = 0;
 
-        t_id_C1[0] = 0;
         for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
         {
             t_id_J[2] = beta_0;
-            t_id_C1[2] = beta_0;
             for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
             {
                 t_id_J[1] = alpha_0;
-                t_id_C1[1] = alpha_0;
 
                 Real sum = 0.0;
                 for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
@@ -1072,12 +1113,10 @@ public:
                     sum += C(t_id_C) * J[0](t_id_J);
                 }
 
-                C1(t_id_C1) = sum;
+                local_mass_matrix(beta_0,alpha_0) = sum;
             }
         }
         //--------------------------------------------------------------
-
-        return C1;
     }
 };
 
@@ -1085,14 +1124,28 @@ template <>
 class MassMatrixIntegrator<2,2>
 {
 public:
-    DynamicMultiArray<Real,3> operator()(
+    void operator()(
+        const bool is_symmetric,
         const TensorSize<2> &t_size_theta,
         const TensorSize<2> &t_size_alpha,
         const TensorSize<2> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,2> &J,
         const DynamicMultiArray<Real,3> &C,
-        const bool is_symmetric = false) const
+        const array<vector<Index>,2> &offsets_Cpost_dim,
+    	const array<vector<Index>,2> &offsets_Cpre_dim,
+    	const array<vector<Index>,2> &offsets_Jk_begin_dim,
+    	const array<vector<Index>,2> &offsets_Jk_end_dim,
+    	DenseMatrix & local_mass_matrix) const
     {
+    	const Size n_basis_test = local_mass_matrix.get_num_rows();
+    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+
+        Assert(t_size_alpha.flat_size() == n_basis_trial,
+               ExcDimensionMismatch(t_size_alpha.flat_size(),n_basis_trial));
+        Assert(t_size_beta.flat_size() == n_basis_test,
+               ExcDimensionMismatch(t_size_beta.flat_size(),n_basis_test));
+
+
         TensorIndex<3> t_id_J;
         TensorIndex<3> t_id_C;
 
@@ -1179,7 +1232,8 @@ public:
                                 sum += C1(t_id_C1) * J[1](t_id_J);
                             } // end loop theta_1
 
-                            C2(t_id_C2) = sum;
+//                            C2(t_id_C2) = sum;
+                            local_mass_matrix(beta_0_1,alpha_0_1) = sum;
                         } //end loop alpha_0
                     } //end loop alpha_1
                 } // end loop beta_0
@@ -1218,15 +1272,20 @@ public:
                                 sum += C1(t_id_C1) * J[1](t_id_J);
                             } // end loop theta_1
 
-                            C2(t_id_C2) = sum;
+                            local_mass_matrix(beta_0_1,alpha_0_1) = sum;
                         } //end loop alpha_0
                     } //end loop alpha_1
                 } // end loop beta_0
             } // end loop beta_1
+
+
+            // here we copy the upper triangular part of the matrix on the lower triangular part
+            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
+                for (int trial_id = 0; trial_id < test_id ; ++trial_id)
+                    local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
+
             //--------------------------------------------------------------
         }//end if (is_symmetric)
-
-        return C2;
     }
 };
 
@@ -1235,14 +1294,29 @@ template <>
 class MassMatrixIntegrator<3,3>
 {
 public:
-    DynamicMultiArray<Real,3> operator()(
+    void operator()(
+        const bool is_symmetric,
         const TensorSize<3> &t_size_theta,
         const TensorSize<3> &t_size_alpha,
         const TensorSize<3> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,3> &J,
         const DynamicMultiArray<Real,3> &C,
-        const bool is_symmetric = false) const
+        const array<vector<Index>,3> &offsets_Cpost_dim,
+        const array<vector<Index>,3> &offsets_Cpre_dim,
+        const array<vector<Index>,3> &offsets_Jk_begin_dim,
+        const array<vector<Index>,3> &offsets_Jk_end_dim,
+        DenseMatrix & local_mass_matrix) const
     {
+    	const Size n_basis_test = local_mass_matrix.get_num_rows();
+    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+
+        Assert(t_size_alpha.flat_size() == n_basis_trial,
+               ExcDimensionMismatch(t_size_alpha.flat_size(),n_basis_trial));
+        Assert(t_size_beta.flat_size() == n_basis_test,
+               ExcDimensionMismatch(t_size_beta.flat_size(),n_basis_test));
+
+
+
         TensorIndex<3> t_id_J;
         TensorIndex<3> t_id_C;
 
@@ -1393,7 +1467,9 @@ public:
                                     } // end loop theta_1
 
                                     t_id_C3[0] = 0;
-                                    C3(t_id_C3) = sum;
+//                                    C3(t_id_C3) = sum;
+                                    local_mass_matrix(beta_0_1_2,alpha_0_1_2) = sum;
+
                                 } // end loop alpha_0
                             } // end loop alpha_1
                         } // end loop alpha_2
@@ -1452,27 +1528,23 @@ public:
 
                                         sum += C2(t_id_C2) * J[2](t_id_J);
                                     } // end loop theta_1
-                                    C3(t_id_C3) = sum;
-//*/
-                                    /*
-                                    C3(t_id_C3) = std::inner_product(
-                                            &C2(t_id_C2),
-                                            &C2(t_id_C2)+t_size_theta[2],
-                                            &J[2](t_id_J),
-                                            0.0);
-                                            //*/
+//                                    C3(t_id_C3) = sum;
+
+                                    local_mass_matrix(beta_0_1_2,alpha_0_1_2) = sum;
                                 } // end loop alpha_0
                             } // end loop alpha_1
                         } // end loop alpha_2
                     } // end loop beta_0
                 } // end loop beta_1
             } // end loop beta_2
+
+            // here we copy the upper triangular part of the matrix on the lower triangular part
+            for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
+                for (int trial_id = 0; trial_id < test_id ; ++trial_id)
+                    local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
+
             //--------------------------------------------------------------
-        }
-
-
-        return C3;
-
+        } // end if (is_symmetric)
     }
 };
 #endif
@@ -1691,7 +1763,7 @@ void local_mass_matrix_from_phys_elem_accessor(
 
     const TensorSize<dim> n_basis_test = n_basis_elem;
     const TensorSize<dim> n_basis_trial= n_basis_elem;
-    const Size n_basis = n_basis_elem.flat_size();
+//    const Size n_basis = n_basis_elem.flat_size();
     //--------------------------------------------------------------------------
 
 
@@ -1798,47 +1870,18 @@ void local_mass_matrix_from_phys_elem_accessor(
 
 
     MassMatrixIntegrator<dim> integrate_mass_matrix;
-    DynamicMultiArray<Real,3> C_ab = integrate_mass_matrix(
-                                         n_basis_projection,
-                                         n_basis_trial,
-                                         n_basis_test,
-                                         moments,
-                                         C_0,
-                                         offsets_Cpost_dim,
-                                         offsets_Cpre_dim,
-                                         offsets_Jk_begin_dim,
-                                         offsets_Jk_end_dim);
+    integrate_mass_matrix(is_symmetric,
+    					  n_basis_projection,
+                          n_basis_trial,
+                          n_basis_test,
+                          moments,
+                          C_0,
+                          offsets_Cpost_dim,
+                          offsets_Cpre_dim,
+                          offsets_Jk_begin_dim,
+                          offsets_Jk_end_dim,
+                          local_mass_matrix);
 
-    Assert(C_ab.tensor_size()(1) == n_basis,
-           ExcDimensionMismatch(C_ab.tensor_size()(1),n_basis));
-    Assert(C_ab.tensor_size()(2) == n_basis,
-           ExcDimensionMismatch(C_ab.tensor_size()(2),n_basis));
-
-
-    if (!is_symmetric)
-//    if (true)
-    {
-        Index flat_id = 0 ;
-        for (int test_id = 0 ; test_id < n_basis ; ++test_id)
-            for (int trial_id = 0 ; trial_id < n_basis ; ++trial_id)
-                local_mass_matrix(test_id,trial_id) = C_ab(flat_id++);
-    }
-    else
-    {
-        Index fid_entry = 0;
-        for (int test_id = 0 ; test_id < n_basis ; ++test_id)
-        {
-            fid_entry += test_id; // now we are on the diagonal
-
-            for (int trial_id = test_id ; trial_id < n_basis ; ++trial_id, ++fid_entry)
-                local_mass_matrix(test_id,trial_id) = C_ab(fid_entry);
-        }
-
-        // here we copy the upper triangular part of the matrix on the lower triangular part
-        for (int test_id = 0 ; test_id < n_basis ; ++test_id)
-            for (int trial_id = 0; trial_id < test_id ; ++trial_id)
-                local_mass_matrix(test_id,trial_id) = local_mass_matrix(trial_id,test_id);
-    }
 
     const auto end_sum_factorization = Clock::now();
     Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
@@ -2055,12 +2098,6 @@ assemble()
 
         //--------------------------------------------------------------------------
         // getting the number of basis along each coordinate direction for the test and trial space
-        const Size n_basis_flat = n_basis_elem.flat_size();
-        Assert(n_basis_elem.flat_size()==elem->get_num_basis(),
-               ExcDimensionMismatch(n_basis_elem.flat_size(),elem->get_num_basis()));
-
-        const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
-
         const TensorSize<dim> n_basis_test = n_basis_elem;
         const TensorSize<dim> n_basis_trial= n_basis_elem;
 //        const Size n_basis = n_basis_elem.flat_size();
@@ -2199,8 +2236,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 8;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
@@ -2234,9 +2271,9 @@ do_test()
 
 int main()
 {
-//    do_test<1>();
+    do_test<1>();
 
-//    do_test<2>();
+    do_test<2>();
 
     do_test<3>();
 //*/
