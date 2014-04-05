@@ -556,7 +556,7 @@ public:
         const auto &w_B_k_view = omega_B_1d[k].get_function_view(eta_k1);
         vector<Real> w_B_k;
         for (const auto & w_B_k_value : w_B_k_view)
-            w_B_k.emplace_back(w_B_k_value);
+            w_B_k.emplace_back( w_B_k_value );
 
         const Size n_pts = w_B_k.size();
         for (Index flat_id_C = 0 ; flat_id_C < n_entries_C ; ++flat_id_C)
@@ -1561,8 +1561,8 @@ perform_element_l2_projection_tp_basis(
             MultiArrayUtils<dim>::flat_to_tensor_index(basis_flat_id,basis_tensor_wgt);
 
         integral_rhs(basis_flat_id) =
-            (integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0) / ref_elem_measure;
-//        		(integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0);
+//            (integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0) / ref_elem_measure;
+        		(integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0);
     }
 
     // coefficient of the L2 projection using the tensor product basis
@@ -1583,8 +1583,8 @@ DynamicMultiArray<Real,3>
 evaluate_moments_1D(
     const ValueTable<Real> &B_1D_proj_times_w,
     const ValueTable<Function<1>::ValueType> &phi_1D_trial,
-    const ValueTable<Function<1>::ValueType> &phi_1D_test
-)
+    const ValueTable<Function<1>::ValueType> &phi_1D_test,
+    const Real length_element_edge)
 {
     const Size n_basis_projection = B_1D_proj_times_w.get_num_functions();
     const Size n_basis_test  = phi_1D_test .get_num_functions();
@@ -1627,7 +1627,7 @@ evaluate_moments_1D(
                 for (int jpt = 0 ; jpt < n_pts ; ++jpt)
                     sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
 
-                moments1D(flat_id_I++) = sum;
+                moments1D(flat_id_I++) = (sum*length_element_edge);
             }
         }
     }
@@ -1641,13 +1641,18 @@ array<DynamicMultiArray<Real,3>,dim>
 evaluate_moments(
     const array<ValueTable<Real>,dim> &B_1D_proj_times_w,
     const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
-    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test
+    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
+    const array<Real,dim> &length_element_edge
 )
 {
     array<DynamicMultiArray<Real,3>,dim> moments;
 
     for (int dir = 0 ; dir < dim ; ++dir)
-        moments[dir] = evaluate_moments_1D(B_1D_proj_times_w[dir],phi_1D_trial[dir],phi_1D_test[dir]);
+        moments[dir] = evaluate_moments_1D(
+        		B_1D_proj_times_w[dir],
+        		phi_1D_trial[dir],
+        		phi_1D_test[dir],
+        		length_element_edge[dir]);
 
     return moments;
 }
@@ -1660,6 +1665,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     const array<ValueTable<Real>,PhysSpaceTest::dim> w_basis_proj_1D,
     const DenseMatrix &invM_projection,
     const Quadrature<PhysSpaceTest::dim> &quad_projection,
+    const ValueVector<Real> &coeff,
 	DenseMatrix &local_mass_matrix)
 {
 
@@ -1853,8 +1859,16 @@ void local_mass_matrix_from_phys_elem_accessor(
     //--------------------------------------------------------------------------
 
 
-    // performs the projection of the function det(DF) using as basis the Bernstein's polynomials
+    // performs the projection of the function coef*det(DF) using as basis the Bernstein's polynomials
     const auto det_DF = elem_test.get_measures() ;
+
+    Assert(det_DF.size() == coeff.size(),
+    		ExcDimensionMismatch(det_DF.size(), coeff.size()));
+    Size n_points = det_DF.size();
+
+    ValueVector<Real> c_times_detDF(n_points);
+    for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+    	c_times_detDF[ipt] = coeff[ipt] * det_DF[ipt];
 
     // measure of the element in the reference domain
     const Real ref_elem_measure = elem_test.get_ref_space_accessor().get_measure();
@@ -1865,7 +1879,7 @@ void local_mass_matrix_from_phys_elem_accessor(
                        w_basis_proj_1D,
                        invM_projection,
                        quad_projection,
-                       det_DF,
+                       c_times_detDF,
                        ref_elem_measure);
 
     const TimePoint end_projection = Clock::now();
@@ -1882,7 +1896,11 @@ void local_mass_matrix_from_phys_elem_accessor(
     // precalculation of the I[i](lambda,mu1,mu2) terms (i.e. the moments)
     const auto start_compute_moments = Clock::now();
 
-    const auto moments = evaluate_moments<dim>(w_basis_proj_1D,phi_1D_trial,phi_1D_test);
+    const array<Real,dim> length_element_edge =
+    		elem_test.get_ref_space_accessor().get_coordinate_lengths();
+
+    const auto moments = evaluate_moments<dim>(
+    		w_basis_proj_1D,phi_1D_trial,phi_1D_test,length_element_edge);
 
     const auto end_compute_moments = Clock::now();
     Duration elapsed_time_compute_moments = end_compute_moments - start_compute_moments;
@@ -2057,7 +2075,7 @@ EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
 eval_operator_u_v(
 		const ElemTest &elem_test,
 		const ElemTrial &elem_trial,
-		const ValueVector<Real> &c,
+		const ValueVector<Real> &coeffs,
 		DenseMatrix &operator_u_v) const
 {
 
@@ -2072,6 +2090,7 @@ eval_operator_u_v(
         w_times_B_proj_1D_,
         inv_B_proj_,
         proj_quad_,
+        coeffs,
         operator_u_v);
 
     const TimePoint end_assembly_mass_matrix = Clock::now();
@@ -2079,9 +2098,6 @@ eval_operator_u_v(
     const_cast<Duration &>(elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
     // Assembly of the local mass matrix using sum-factorization -- end
     //----------------------------------------------------
-
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
 }
 
 
@@ -2090,22 +2106,8 @@ void
 PoissonProblemSumFactorization<dim>::
 assemble()
 {
-//    using RefSpaceAccessor = typename base_t::RefSpace::ElementAccessor;
-
-    /*
-        string filename;
-    #ifndef OPTIMIZED
-        filename = "matrix_diff_orig.txt";
-    #else
-        filename = "matrix_diff_optim.txt";
-    #endif
-
-        ofstream out(filename);
-        //*/
 
     LogStream out;
-    //*/
-//    using MAUtils = MultiArrayUtils<dim>;
 
 
     const int n_basis = this->space->get_num_basis_per_element();
@@ -2138,47 +2140,6 @@ assemble()
                             ValueFlags::point;
 
     elem->init_values(fill_flags, this->elem_quad);
-
-
-
-    //-----------------------------------------------------------------
-    std::array<DenseMatrix,dim> B_proj_1D;
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        // values of the one-dimensional Bernstein basis at the projection pts
-        B_proj_1D[i] = BernsteinBasis::evaluate(
-                           proj_deg_,
-                           quad_proj_.get_points().get_data_direction(i));
-        Assert(n_bernst_1D_ == B_proj_1D[i].size1(),
-               ExcDimensionMismatch(n_bernst_1D_, B_proj_1D[i].size1()));
-        Assert(quad_proj_.get_num_points_direction()[i] == B_proj_1D[i].size2(),
-               ExcDimensionMismatch(quad_proj_.get_num_points_direction()[i], B_proj_1D[i].size2()));
-    }
-
-
-    array<ValueTable<Real>,dim> w_B_proj_1D;
-
-    const auto &ref_elem_accessor = elem->get_ref_space_accessor();
-    array<Real,dim> element_edge_size = ref_elem_accessor.get_coordinate_lengths();
-
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        const Size n_pts = quad_proj_.get_num_points_direction()[i];
-        w_B_proj_1D[i].resize(n_bernst_1D_,n_pts);
-
-        const auto &B_i = B_proj_1D[i];
-
-        const vector<Real> w_i = quad_proj_.get_weights().get_data_direction(i);
-
-        for (Index ifn = 0 ; ifn < n_bernst_1D_ ; ++ifn)
-        {
-            auto w_B_ifn = w_B_proj_1D[i].get_function_view(ifn);
-
-            for (Index jpt = 0 ; jpt < n_pts ; ++jpt)
-                w_B_ifn[jpt] = w_i[jpt] * B_i(ifn,jpt) * element_edge_size[i];
-        }
-    }
-    //-----------------------------------------------------------------
 
 
 
@@ -2216,9 +2177,6 @@ assemble()
         elem->fill_values();
 
 
-
-
-
         //----------------------------------------------------
         // multiplicative coefficients of the mass matrix term.
         ValueVector<Real> c_mass(n_quad_points.flat_size());
@@ -2233,18 +2191,7 @@ assemble()
         start_assembly_mass_matrix = Clock::now();
 
 
-        local_mass_matrix_from_phys_elem_accessor<Space>(
-            *elem,
-            *elem,
-            w_B_proj_1D,
-            inv_B_proj_,
-            quad_proj_,
-            loc_mass_matrix_sf);
-        //*/
-
-
-
-//        elliptic_operators_sf.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_sf);
+        elliptic_operators_sf.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_sf);
 
         end_assembly_mass_matrix = Clock::now();
 
