@@ -423,23 +423,7 @@ private:
     int space_deg_ = 0;
     int proj_deg_ = 0;
 
-    /** Number of one-dimensional Bernstein's polynomials used in the projection */
-    Size n_bernst_1D_ = 0 ;
-
-    /** Number of d-dimensional Bernstein's polynomials used in the projection */
-    Size n_basis_proj_ = 0;
-
-    /** Number of points for the one-dimensional quadrature scheme used for projection. */
-    Size n_quad_proj_1D_ = 0;
-
-
-    /** Index weight used to convert tensor-to-flat id (and viceversa) for the Bernstein polynomials.*/
-    TensorIndex<dim> bernst_tensor_weight_;
-
-    /** Quadrature scheme used in the projection phase. */
-    QGauss<dim> quad_proj_;
-
-
+    Quadrature<dim> quad_proj_;
 
     chrono::duration<Real> elapsed_time_projection_;
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_;
@@ -448,12 +432,6 @@ private:
     chrono::duration<Real> elapsed_time_compute_I_;
 
     DenseMatrix eval_matrix_proj() const;
-
-    /** Mass matrix of the Bernstein polynomials used in the projection, in [0,1]^dim.*/
-    DenseMatrix B_proj_;
-
-    /** Inverse of the mass matrix of the Bernstein polynomials used in the projection, in [0,1]^dim.*/
-    DenseMatrix inv_B_proj_;
 
 };
 
@@ -465,61 +443,8 @@ PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,
     base_t(n_knots,space_deg),
     space_deg_(space_deg),
     proj_deg_(proj_deg),
-    n_bernst_1D_(proj_deg_+1),
-    n_basis_proj_(pow(n_bernst_1D_,dim)),
-    n_quad_proj_1D_(proj_deg_+1),
-    bernst_tensor_weight_(MultiArrayUtils<dim>::compute_weight(TensorSize<dim>(n_bernst_1D_))),
-    quad_proj_(QGauss<dim>(TensorSize<dim>(n_bernst_1D_)))
-{
-    using boost::math::binomial_coefficient;
-
-    //------------------------------------
-    // evaluation of the Bernstein's mass matrix
-    DenseMatrix B_proj_1D(n_bernst_1D_,n_bernst_1D_);
-
-    const int q = proj_deg_;
-    for (int i = 0 ; i < n_bernst_1D_ ; ++i)
-    {
-        const Real tmp = binomial_coefficient<double>(q,i) / (2.0 * q + 1.0);
-
-        for (int j = 0 ; j < n_bernst_1D_ ; ++j)
-        {
-            B_proj_1D(i,j) =
-                tmp / binomial_coefficient<double>(2*q,i+j) * binomial_coefficient<double>(q,j) ;
-        }
-    }
-
-
-    using MAUtils = MultiArrayUtils<dim>;
-    B_proj_.resize(n_basis_proj_,n_basis_proj_);
-
-
-    for (Size row = 0 ; row < n_basis_proj_ ; ++row)
-    {
-        const auto row_tensor_id = MAUtils::flat_to_tensor_index(row,bernst_tensor_weight_);
-
-        for (Size col = 0 ; col < n_basis_proj_ ; ++col)
-        {
-            const auto col_tensor_id = MAUtils::flat_to_tensor_index(col,bernst_tensor_weight_);
-
-            Real tmp = 1.0;
-            for (int k = 0 ; k < dim ; ++k)
-                tmp *= B_proj_1D(row_tensor_id[k],col_tensor_id[k]);
-
-            B_proj_(row,col) = tmp;
-        }
-    }
-
-
-    inv_B_proj_ = B_proj_.inverse();
-    //------------------------------------
-
-    /*
-    LogStream out;
-    out << "Bernstein "<< dim <<"D mass matrix = " << B_proj_ << endl;
-    out << "inverse of Bernstein "<< dim <<"D mass matrix = " << inv_B_proj_ << endl;
-    //*/
-}
+    quad_proj_(QGauss<dim>(TensorSize<dim>(proj_deg_+1)))
+{}
 
 
 
@@ -2143,24 +2068,12 @@ assemble()
 
 
 
-
-    TensorIndex<dim> bernst_tensor_id;
-
-    // number of points along each directin for the quadrature scheme.
+    // number of points along each direction for the quadrature scheme.
     TensorSize<dim> n_quad_points = this->elem_quad.get_num_points_direction();
-
-    TensorSize<dim> n_basis_elem(space_deg_+1);
-
-
 
     using Clock = chrono::high_resolution_clock;
     using TimePoint = chrono::time_point<Clock>;
 
-    TimePoint start_assembly_mass_matrix;
-    TimePoint   end_assembly_mass_matrix;
-
-    TimePoint start_assembly_mass_matrix_old;
-    TimePoint   end_assembly_mass_matrix_old;
 
     DenseMatrix loc_mass_matrix_sf(n_basis,n_basis);
 
@@ -2188,12 +2101,12 @@ assemble()
 
         //----------------------------------------------------
         // Assembly of the local mass matrix using sum-factorization -- begin
-        start_assembly_mass_matrix = Clock::now();
+        const TimePoint start_assembly_mass_matrix = Clock::now();
 
 
         elliptic_operators_sf.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_sf);
 
-        end_assembly_mass_matrix = Clock::now();
+        const TimePoint end_assembly_mass_matrix = Clock::now();
 
         elapsed_time_assembly_mass_matrix_ += end_assembly_mass_matrix - start_assembly_mass_matrix;
         // Assembly of the local mass matrix using sum-factorization -- end
@@ -2204,7 +2117,7 @@ assemble()
 
         //----------------------------------------------------
         // Assembly of the local mass matrix using the standard approach -- begin
-        start_assembly_mass_matrix_old = Clock::now();
+        const TimePoint start_assembly_mass_matrix_old = Clock::now();
 
 
         const auto &phi_test  = elem->get_basis_values();
@@ -2229,7 +2142,7 @@ assemble()
             for (int j = 0; j < i; ++j)
                 loc_mat(i,j) = loc_mat(j,i);
 
-        end_assembly_mass_matrix_old = Clock::now();
+        const TimePoint end_assembly_mass_matrix_old = Clock::now();
         elapsed_time_assembly_mass_matrix_old_ += end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
         // Assembly of the local mass matrix using the standard approach -- end
         //----------------------------------------------------
