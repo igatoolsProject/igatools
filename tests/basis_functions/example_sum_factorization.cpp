@@ -94,6 +94,13 @@ public:
     using TimePoint = chrono::time_point<Clock>;
     using Duration = chrono::duration<Real>;
 
+
+    EllipticOperatorsSumFactorizationIntegration(
+    		const TensorSize<dim> &projection_degree,
+    		const Quadrature<dim> &projection_quadrature);
+
+
+
 	virtual void eval_operator_u_v(
 			const ElemTest &elem_test,
 			const ElemTrial &elem_trial,
@@ -102,14 +109,34 @@ public:
 
 private:
 
-	/**
-	 * One-dimensional quadrature weights multiplied by the one-dimensional
-	 * Bernstein's basis values used to build the projection matrix B_proj_.
-	 */
-    array<ValueTable<Real>,dim> w_times_B_proj_1D_;
+    /**
+     * Degree (along each coordinate direction) of the Bernstein's polynomial used
+     * for the construction of the projection matrix B_proj_.
+     */
+    TensorSize<dim> proj_degree_;
 
     /** Quadrature scheme used in the projection phase to built the projection matrix B_proj_. */
-    Quadrature<dim> quad_proj_;
+    Quadrature<dim> proj_quad_;
+
+
+    /**
+     * Number of one-dimensional Bernstein's polynomials (along each coordinate direction)
+     * used to build the projection matrix B_proj_.
+     */
+    TensorSize<dim> n_bernst_1D_;
+
+    /**
+     * Number of multi-dimensional Bernstein's polynomial used to define the basis of the projection space.
+     */
+    Size n_basis_proj_;
+
+
+	/**
+	 * One-dimensional quadrature weights multiplied by the one-dimensional
+	 * Bernstein's basis values used to build the rhs term in the projection.
+	 * @note All the quantities refers to the unitary hypercube [0,1]^{dim}.
+	 */
+    array<ValueTable<Real>,dim> w_times_B_proj_1D_;
 
     /** Mass matrix of the Bernstein's polynomials used in the projection, in [0,1]^dim.*/
     DenseMatrix B_proj_;
@@ -1535,6 +1562,7 @@ perform_element_l2_projection_tp_basis(
 
         integral_rhs(basis_flat_id) =
             (integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0) / ref_elem_measure;
+//        		(integrate_rhs(c,w_basis_proj_1D,basis_tensor_id))(0);
     }
 
     // coefficient of the L2 projection using the tensor product basis
@@ -1640,6 +1668,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     using Duration = chrono::duration<Real>;
 
 
+
     Assert(PhysSpaceTest::dim == PhysSpaceTrial::dim,
     		ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
     Assert(PhysSpaceTest::space_dim == PhysSpaceTrial::space_dim,
@@ -1658,6 +1687,7 @@ void local_mass_matrix_from_phys_elem_accessor(
     Assert(PhysSpaceTest::rank == 1,ExcDimensionMismatch(PhysSpaceTest::rank,1));
 
     const auto start_local_mass_matrix = Clock::now();
+
 
 
 
@@ -1816,6 +1846,13 @@ void local_mass_matrix_from_phys_elem_accessor(
     		elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
     		ExcMessage("Test and trial spaces must have the same mapping!"));
 
+
+    //--------------------------------------------------------------------------
+    // TODO:: checks that the elements on the grid are the same
+
+    //--------------------------------------------------------------------------
+
+
     // performs the projection of the function det(DF) using as basis the Bernstein's polynomials
     const auto det_DF = elem_test.get_measures() ;
 
@@ -1897,6 +1934,120 @@ void local_mass_matrix_from_phys_elem_accessor(
 }
 
 
+template<class PhysSpaceTest, class PhysSpaceTrial>
+inline
+EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsSumFactorizationIntegration(
+		const TensorSize<dim> &projection_degree,
+		const Quadrature<dim> &projection_quadrature)
+		:
+		proj_degree_(projection_degree),
+		proj_quad_(projection_quadrature)
+{
+    //-----------------------------------------------------------------
+    std::array<DenseMatrix,dim> B_proj_1D;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+    	n_bernst_1D_[i] = proj_degree_[i]+1;
+
+        // values of the one-dimensional Bernstein basis at the projection pts
+        B_proj_1D[i] = BernsteinBasis::evaluate(
+        				   proj_degree_[i],
+                           proj_quad_.get_points().get_data_direction(i));
+
+        Assert(n_bernst_1D_[i] == B_proj_1D[i].size1(),
+               ExcDimensionMismatch(n_bernst_1D_[i], B_proj_1D[i].size1()));
+
+        Assert(proj_quad_.get_num_points_direction()[i] == B_proj_1D[i].size2(),
+               ExcDimensionMismatch(proj_quad_.get_num_points_direction()[i], B_proj_1D[i].size2()));
+    }
+    n_basis_proj_ = n_bernst_1D_.flat_size();
+    //-----------------------------------------------------------------
+
+
+    //-----------------------------------------------------------------
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        const Size n_pts = proj_quad_.get_num_points_direction()[i];
+        w_times_B_proj_1D_[i].resize(n_bernst_1D_[i],n_pts);
+
+        const auto &B_i = B_proj_1D[i];
+
+        auto &w_B_i = w_times_B_proj_1D_[i];
+
+        const vector<Real> w_i = proj_quad_.get_weights().get_data_direction(i);
+
+        for (Index ifn = 0 ; ifn < n_bernst_1D_[i] ; ++ifn)
+        {
+            auto w_B_ifn = w_B_i.get_function_view(ifn);
+
+            for (Index jpt = 0 ; jpt < n_pts ; ++jpt)
+                w_B_ifn[jpt] = w_i[jpt] * B_i(ifn,jpt);
+        }
+    }
+    //-----------------------------------------------------------------
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------
+    // evaluation of the Bernstein's mass matrix -- begin
+
+    using boost::math::binomial_coefficient;
+
+    B_proj_.resize(n_basis_proj_,n_basis_proj_);
+
+    for (int dir = 0 ; dir < dim ; ++dir)
+    {
+    	B_proj_1D[dir].resize(n_bernst_1D_[dir],n_bernst_1D_[dir]);
+
+    	const int q = proj_degree_[dir];
+    	for (int i = 0 ; i < n_bernst_1D_[dir] ; ++i)
+    	{
+    		const Real tmp = binomial_coefficient<double>(q,i) / (2.0 * q + 1.0);
+
+    		for (int j = 0 ; j < n_bernst_1D_[dir] ; ++j)
+    		{
+    			B_proj_1D[dir](i,j) =
+    					tmp / binomial_coefficient<double>(2*q,i+j) * binomial_coefficient<double>(q,j) ;
+    		}
+    	}
+    } // end loop dir
+
+
+    using MAUtils = MultiArrayUtils<dim>;
+
+
+    TensorIndex<dim> wgt_B_proj = MAUtils::compute_weight(n_bernst_1D_);
+    for (Size row = 0 ; row < n_basis_proj_ ; ++row)
+    {
+    	const auto row_tensor_id = MAUtils::flat_to_tensor_index(row,wgt_B_proj);
+
+    	for (Size col = 0 ; col < n_basis_proj_ ; ++col)
+    	{
+    		const auto col_tensor_id = MAUtils::flat_to_tensor_index(col,wgt_B_proj);
+
+   			Real tmp = 1.0;
+   			for (int k = 0 ; k < dim ; ++k)
+   				tmp *= B_proj_1D[k](row_tensor_id[k],col_tensor_id[k]);
+
+    		B_proj_(row,col) = tmp;
+    	} //end loop col
+    } //end loop row
+    // evaluation of the Bernstein's mass matrix -- end
+    //-----------------------------------------------------------------
+
+
+
+    //-----------------------------------------------------------------
+    // evaluation of the Bernstein's mass matrix inverse -- begin
+    inv_B_proj_ = B_proj_.inverse();
+    // evaluation of the Bernstein's mass matrix inverse -- end
+    //-----------------------------------------------------------------
+}
 
 
 template<class PhysSpaceTest, class PhysSpaceTrial>
@@ -1920,7 +2071,7 @@ eval_operator_u_v(
         elem_trial,
         w_times_B_proj_1D_,
         inv_B_proj_,
-        quad_proj_,
+        proj_quad_,
         operator_u_v);
 
     const TimePoint end_assembly_mass_matrix = Clock::now();
@@ -2034,9 +2185,6 @@ assemble()
 
     TensorIndex<dim> bernst_tensor_id;
 
-    DenseVector integral_rhs(n_basis_proj_);
-    DenseVector k_rhs(n_basis_proj_);
-
     // number of points along each directin for the quadrature scheme.
     TensorSize<dim> n_quad_points = this->elem_quad.get_num_points_direction();
 
@@ -2047,9 +2195,6 @@ assemble()
     using Clock = chrono::high_resolution_clock;
     using TimePoint = chrono::time_point<Clock>;
 
-    TimePoint start_projection;
-    TimePoint   end_projection;
-
     TimePoint start_assembly_mass_matrix;
     TimePoint   end_assembly_mass_matrix;
 
@@ -2058,18 +2203,11 @@ assemble()
 
     DenseMatrix loc_mass_matrix_sf(n_basis,n_basis);
 
-    const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
-
-
-/*
-    using Clock = chrono::high_resolution_clock;
-    using TimePoint = chrono::time_point<Clock>;
-    using Duration = chrono::duration<Real>;
-//*/
 
     using SpaceTest = Space;
     using SpaceTrial = Space;
-    EllipticOperatorsSumFactorizationIntegration<SpaceTest,SpaceTrial> elliptic_operators_sf;
+    EllipticOperatorsSumFactorizationIntegration<SpaceTest,SpaceTrial>
+    	elliptic_operators_sf(TensorSize<dim>(proj_deg_),quad_proj_);
 
     for (; elem != elem_end; ++elem)
     {
@@ -2077,68 +2215,7 @@ assemble()
 
         elem->fill_values();
 
-        //*/
 
-
-        //--------------------------------------------------------------------------
-        const auto &ref_elem_accessor = elem->get_ref_space_accessor();
-
-        const Index comp = 0;
-        const auto &scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
-
-        using ValueType1D = Function<1>::ValueType;
-        array< ValueTable<ValueType1D>,dim>  phi_1D;
-        array< ValueTable<ValueType1D>,dim> Dphi_1D;
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            phi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
-//            Dphi_1D[i].resize(n_basis_elem[i],n_quad_points[i]);
-        }
-
-        const Size n_basis = n_basis_elem.flat_size();
-        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis ; ++flat_fn_id)
-        {
-            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis);
-            const auto bspline_evaluator = scalar_evaluators(tensor_fn_id);
-
-            const auto &bspline1D_values = bspline_evaluator->get_derivative_components_view(0);
-//            const auto &bspline1D_derivatives = bspline_evaluator->get_derivative_components_view(1);
-
-            for (int i = 0 ; i < dim ; ++i)
-            {
-                auto  phi_1D_ifn =  phi_1D[i].get_function_view(tensor_fn_id[i]);
-//                auto Dphi_1D_ifn = Dphi_1D[i].get_function_view(tensor_fn_id[i]);
-
-                const auto &bsp_val = bspline1D_values[i];
-//                const auto &bsp_der = bspline1D_derivatives[i];
-
-                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-                {
-                    phi_1D_ifn[jpt] = bsp_val(jpt);
-//                    Dphi_1D_ifn[jpt] = bsp_der(jpt);
-                }
-            }
-        }
-        //--------------------------------------------------------------------------
-
-
-
-
-        //--------------------------------------------------------------------------
-        // getting the number of basis along each coordinate direction for the projection space
-        TensorSize<dim> n_basis_projection;
-        for (int i = 0 ; i < dim ; ++i)
-            n_basis_projection(i) = w_B_proj_1D[i].get_num_functions();
-        //--------------------------------------------------------------------------
-
-
-
-        //--------------------------------------------------------------------------
-        // getting the number of basis along each coordinate direction for the test and trial space
-//        const TensorSize<dim> n_basis_test = n_basis_elem;
-//        const TensorSize<dim> n_basis_trial= n_basis_elem;
-//        const Size n_basis = n_basis_elem.flat_size();
-        //--------------------------------------------------------------------------
 
 
 
