@@ -928,7 +928,7 @@ public:
     }
 };
 
-//#define SPECIALIZED
+#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
@@ -1484,8 +1484,8 @@ perform_element_l2_projection_tp_basis(
 
 
     DynamicMultiArray<Real,dim> proj_coefs(n_basis_1D);
-    for (Index basis_flat_id = 0 ; basis_flat_id < n_basis ; ++basis_flat_id)
-        proj_coefs(basis_flat_id) = proj_coefs_tmp(basis_flat_id);
+    for (Index f_id_test = 0 ; f_id_test < n_basis ; ++f_id_test)
+        proj_coefs(f_id_test) = proj_coefs_tmp(f_id_test);
 
     return proj_coefs;
 }
