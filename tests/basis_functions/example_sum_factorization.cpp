@@ -1637,7 +1637,11 @@ void local_mass_matrix_from_phys_elem_accessor(
     const array<ValueTable<Real>,PhysSpace::dim> w_basis_proj_1D,
     const DenseMatrix &invM_projection,
     const Quadrature<PhysSpace::dim> &quad_projection,
-    DenseMatrix &local_mass_matrix)
+    const array<vector<Index>,PhysSpace::dim> &offsets_Cpost_dim,
+	const array<vector<Index>,PhysSpace::dim> &offsets_Cpre_dim,
+	const array<vector<Index>,PhysSpace::dim> &offsets_Jk_begin_dim,
+	const array<vector<Index>,PhysSpace::dim> &offsets_Jk_end_dim,
+	DenseMatrix &local_mass_matrix)
 {
 
     using Clock = chrono::high_resolution_clock;
@@ -1731,28 +1735,6 @@ void local_mass_matrix_from_phys_elem_accessor(
 
 
 
-    //--------------------------------------------------------------------------
-    // Getting the memory layout - begin
-    const TimePoint start_mem_layout = Clock::now();
-    array<vector<Index>,dim> offsets_Cpost_dim;
-    array<vector<Index>,dim> offsets_Cpre_dim;
-    array<vector<Index>,dim> offsets_Jk_begin_dim;
-    array<vector<Index>,dim> offsets_Jk_end_dim;
-    MassMatrixIntegratorMemoryLayout<dim> get_memory_layout;
-    get_memory_layout(
-    		is_symmetric,
-    		n_basis_projection,
-    		n_basis_trial,
-    		n_basis_test,
-    		offsets_Cpost_dim,
-    		offsets_Cpre_dim,
-    		offsets_Jk_begin_dim,
-    		offsets_Jk_end_dim);
-    const TimePoint end_mem_layout = Clock::now();
-    const Duration elapsed_time_mem_layout = end_mem_layout - start_mem_layout;
-    std::cout << "Elapsed_seconds memory_layout = " << elapsed_time_mem_layout.count() << std::endl;
-    // Getting the memory layout - end
-    //----------------------------------------------------
 
 
 
@@ -2000,6 +1982,15 @@ assemble()
 
     const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
 
+
+    const bool is_symmetric = true;
+
+
+    using Clock = chrono::high_resolution_clock;
+    using TimePoint = chrono::time_point<Clock>;
+    using Duration = chrono::duration<Real>;
+
+
     for (; elem != elem_end; ++elem)
     {
         loc_rhs.clear();
@@ -2053,6 +2044,54 @@ assemble()
 
 
 
+        //--------------------------------------------------------------------------
+        // getting the number of basis along each coordinate direction for the projection space
+        TensorSize<dim> n_basis_projection;
+        for (int i = 0 ; i < dim ; ++i)
+            n_basis_projection(i) = w_B_proj_1D[i].get_num_functions();
+        //--------------------------------------------------------------------------
+
+
+
+        //--------------------------------------------------------------------------
+        // getting the number of basis along each coordinate direction for the test and trial space
+        const Size n_basis_flat = n_basis_elem.flat_size();
+        Assert(n_basis_elem.flat_size()==elem->get_num_basis(),
+               ExcDimensionMismatch(n_basis_elem.flat_size(),elem->get_num_basis()));
+
+        const auto weight_basis = MultiArrayUtils<dim>::compute_weight(n_basis_elem);
+
+        const TensorSize<dim> n_basis_test = n_basis_elem;
+        const TensorSize<dim> n_basis_trial= n_basis_elem;
+//        const Size n_basis = n_basis_elem.flat_size();
+        //--------------------------------------------------------------------------
+
+
+
+
+        //--------------------------------------------------------------------------
+        // Getting the memory layout - begin
+        const TimePoint start_mem_layout = Clock::now();
+        array<vector<Index>,dim> offsets_Cpost_dim;
+        array<vector<Index>,dim> offsets_Cpre_dim;
+        array<vector<Index>,dim> offsets_Jk_begin_dim;
+        array<vector<Index>,dim> offsets_Jk_end_dim;
+        MassMatrixIntegratorMemoryLayout<dim> get_memory_layout;
+        get_memory_layout(
+        		is_symmetric,
+        		n_basis_projection,
+        		n_basis_trial,
+        		n_basis_test,
+        		offsets_Cpost_dim,
+        		offsets_Cpre_dim,
+        		offsets_Jk_begin_dim,
+        		offsets_Jk_end_dim);
+        const TimePoint end_mem_layout = Clock::now();
+        const Duration elapsed_time_mem_layout = end_mem_layout - start_mem_layout;
+        std::cout << "Elapsed_seconds memory_layout = " << elapsed_time_mem_layout.count() << std::endl;
+        // Getting the memory layout - end
+        //----------------------------------------------------
+
 
 
 
@@ -2067,6 +2106,10 @@ assemble()
             w_B_proj_1D,
             inv_B_proj_,
             quad_proj_,
+            offsets_Cpost_dim,
+            offsets_Cpre_dim,
+            offsets_Jk_begin_dim,
+            offsets_Jk_end_dim,
             loc_mass_matrix_sf);
         //*/
 
