@@ -516,9 +516,6 @@ protected:
 
     void operator++();
 
-    bool operator==(const PhysicalSpaceElementAccessor <PhysSpace> &a) const;
-
-    bool operator!=(const PhysicalSpaceElementAccessor <PhysSpace> &a) const;
 
     /**
      * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
@@ -536,6 +533,26 @@ protected:
 
 
 public :
+
+    /** @name Comparison operators */
+    ///@{
+    /**
+     * Returns true if the the PhysicalSpaceElementAccessor @p a has the same flat index of the calling object.
+     * @note The calling object and the PhysicalSpaceElementAccessor @p a must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
+    bool operator==(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
+
+    /**
+     * Returns true if the the PhysicalSpaceElementAccessor @p a has a different flat index w.r.t.
+     * the calling object.
+     * @note The calling object and the PhysicalSpaceElementAccessor @p a must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
+    bool operator!=(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
+    ///@}
+
+
     template <typename Accessor> friend class GridForwardIterator;
 
 };

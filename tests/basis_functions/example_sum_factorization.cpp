@@ -68,13 +68,78 @@ public:
 	/** Type for the element accessor of the <em>trial</em> physical space. */
 	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
 
+	static const int dim = PhysSpaceTest::dim;
+
+	/**
+	 * Default constructor.
+	 * In Debug mode, it checks if the template arguments are consistent.
+	 */
+	EllipticOperators();
 
 	virtual void eval_operator_u_v(
 			const ElemTest &elem_test,
 			const ElemTrial &elem_trial,
 			const ValueVector<Real> &c,
 			DenseMatrix &operator_u_v) const = 0;
+
+
+	/** Returns true if the space for the test functions and the trial functions is the same. */
+	bool test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const ;
 };
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+EllipticOperators<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperators()
+{
+    //-----------------------------------------------------------------
+    Assert(PhysSpaceTest::dim == PhysSpaceTrial::dim,
+    		ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
+    Assert(PhysSpaceTest::space_dim == PhysSpaceTrial::space_dim,
+    		ExcDimensionMismatch(PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim));
+    Assert(PhysSpaceTest::range == PhysSpaceTrial::range,
+    		ExcDimensionMismatch(PhysSpaceTest::range,PhysSpaceTrial::range));
+    Assert(PhysSpaceTest::rank == PhysSpaceTrial::rank,
+    		ExcDimensionMismatch(PhysSpaceTest::rank,PhysSpaceTrial::rank));
+
+//    const int dim = PhysSpaceTest::dim;
+//    const int space_dim = PhysSpace::space_dim;
+//    const int range = PhysSpace::range;
+//    const int rank = PhysSpace::rank;
+
+    Assert(PhysSpaceTest::range == 1,ExcDimensionMismatch(PhysSpaceTest::range,1));
+    Assert(PhysSpaceTest::rank == 1,ExcDimensionMismatch(PhysSpaceTest::rank,1));
+    //-----------------------------------------------------------------
+}
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+bool
+EllipticOperators<PhysSpaceTest,PhysSpaceTrial>::
+test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
+{
+    //--------------------------------------------------------------------------
+    // checks that the mapping used in the test space and in the trial space is the same
+    Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
+    		elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+    		ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    // checks that the elements on the grid are the same
+    using GridElem = CartesianGridElementAccessor<dim>;
+    Assert(static_cast<const GridElem &>(elem_test.get_ref_space_accessor()) ==
+    	   static_cast<const GridElem &>(elem_trial.get_ref_space_accessor()),
+    	   ExcMessage("Different elements for test space and trial space."));
+    //--------------------------------------------------------------------------
+
+    // the test is true only if the element accessors reference the same memory location
+    //TODO(MM 08 apr 2014): this is a really crude/raw test. Maybe abetter test would be
+    // a comparison of iterator index, grid, knots values and multiplicities of the underlying
+    // reference space and also push-forwardand mapping.
+    return (&elem_test==&elem_trial)?true:false;
+}
 
 
 template <class PhysSpaceTest,class PhysSpaceTrial>
@@ -112,7 +177,7 @@ public:
 			const ElemTest &elem_test,
 			const ElemTrial &elem_trial,
 			const ValueVector<Real> &c,
-			DenseMatrix &operator_u_v) const;
+			DenseMatrix &operator_u_v) const override;
 
 private:
 
@@ -189,18 +254,97 @@ public:
 	/** Type for the element accessor of the <em>trial</em> physical space. */
 	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
 
+
+	EllipticOperatorsStandardIntegration();
+
 	virtual void eval_operator_u_v(
 			const ElemTest &elem_test,
 			const ElemTrial &elem_trial,
 			const ValueVector<Real> &c,
-			DenseMatrix &operator_u_v) const
-	{
-		Assert(false,ExcNotImplemented());
-		AssertThrow(false,ExcNotImplemented());
-	}
+			DenseMatrix &operator_u_v) const override;
 };
 
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+EllipticOperatorsStandardIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsStandardIntegration()
+:
+EllipticOperators<PhysSpaceTest,PhysSpaceTrial>()
+{}
 
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsStandardIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_u_v(
+		const ElemTest &elem_test,
+		const ElemTrial &elem_trial,
+		const ValueVector<Real> &coeffs,
+		DenseMatrix &operator_u_v) const
+{
+	//TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
+	// the physical space iterators have the same grid, map, reference space, index, etc.
+	Assert(&elem_test == &elem_trial,ExcNotImplemented());
+
+	const bool is_symmetric = this->test_same_space(elem_test,elem_trial);
+
+	const Size n_basis_test  = elem_test .get_num_basis();
+	const Size n_basis_trial = elem_trial.get_num_basis();
+
+    const auto &phi_test  = elem_test.get_basis_values();
+    const auto &phi_trial = elem_trial.get_basis_values();
+    const auto &w_meas  = elem_test.get_w_measures();
+
+
+    Assert(operator_u_v.get_num_rows() == n_basis_test,
+    		ExcDimensionMismatch(operator_u_v.get_num_rows(),n_basis_test));
+    Assert(operator_u_v.get_num_cols() == n_basis_trial,
+    		ExcDimensionMismatch(operator_u_v.get_num_cols(),n_basis_trial));
+
+
+    const Size n_qp = coeffs.size();
+    Assert(n_qp == phi_test.get_num_points(),ExcDimensionMismatch(n_qp,phi_test.get_num_points()));
+    Assert(n_qp == phi_trial.get_num_points(),ExcDimensionMismatch(n_qp,phi_trial.get_num_points()));
+
+    vector<Real> coeffs_times_w_meas(n_qp);
+	for (int qp = 0; qp < n_qp; ++qp)
+		coeffs_times_w_meas[qp] = coeffs[qp] * w_meas[qp];
+
+
+    operator_u_v.clear();
+
+    if (!is_symmetric)
+    {
+    	for (int i = 0; i < n_basis_test; ++i)
+    	{
+    		const auto phi_i = phi_test.get_function_view(i);
+    		for (int j = 0; j < n_basis_trial; ++j)
+    		{
+    			const auto phi_j = phi_trial.get_function_view(j);
+    			for (int qp = 0; qp < n_qp; ++qp)
+    				operator_u_v(i,j) += phi_j[qp](0) * ( phi_i[qp](0) * coeffs_times_w_meas[qp] );
+    		}
+    	}
+
+    } // end if (!is_symmetric)
+    else
+    {
+    	for (int i = 0; i < n_basis_test; ++i)
+    	{
+    		const auto phi_i = phi_test.get_function_view(i);
+    		for (int j = i; j < n_basis_trial; ++j)
+    		{
+    			const auto phi_j = phi_trial.get_function_view(j);
+    			for (int qp = 0; qp < n_qp; ++qp)
+    				operator_u_v(i,j) += phi_j[qp](0) * ( phi_i[qp](0) * coeffs_times_w_meas[qp] );
+    		}
+    	}
+    	for (int i = 0; i < n_basis_test; ++i)
+    		for (int j = 0; j < i; ++j)
+    			operator_u_v(i,j) = operator_u_v(j,i);
+    } // end if (is_symmetric)
+}
 
 
 // [Problem class]
@@ -1517,78 +1661,22 @@ projection_l2_bernstein_basis(
 
 
 
-DynamicMultiArray<Real,3>
-evaluate_moments_1D(
-    const ValueTable<Real> &B_1D_proj_times_w,
-    const ValueTable<Function<1>::ValueType> &phi_1D_trial,
-    const ValueTable<Function<1>::ValueType> &phi_1D_test,
-    const Real length_element_edge)
-{
-    const Size n_basis_projection = B_1D_proj_times_w.get_num_functions();
-    const Size n_basis_test  = phi_1D_test .get_num_functions();
-    const Size n_basis_trial = phi_1D_trial.get_num_functions();
-
-    TensorSize<3> moments1D_tensor_size;
-    moments1D_tensor_size[0] = n_basis_projection;
-    moments1D_tensor_size[1] = n_basis_test;
-    moments1D_tensor_size[2] = n_basis_trial;
-
-    DynamicMultiArray<Real,3> moments1D(moments1D_tensor_size);
-
-    const Size n_pts = B_1D_proj_times_w.get_num_points();
-    Assert(phi_1D_test.get_num_points() == n_pts,
-           ExcDimensionMismatch(phi_1D_test.get_num_points(),n_pts));
-    Assert(phi_1D_trial.get_num_points() == n_pts,
-           ExcDimensionMismatch(phi_1D_trial.get_num_points(),n_pts));
-
-//            LogStream out ;
-
-    vector<Real> phi_mu1_mu2(n_pts);
-
-    Index flat_id_I = 0 ;
-    for (int mu2 = 0 ; mu2 < n_basis_test ; ++mu2)
-    {
-        const auto phi_1D_mu2 = phi_1D_test.get_function_view(mu2);
-
-        for (int mu1 = 0 ; mu1 < n_basis_trial ; ++mu1)
-        {
-            const auto phi_1D_mu1 = phi_1D_trial.get_function_view(mu1);
-
-            for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0);
-
-            for (int lambda = 0 ; lambda < n_basis_projection ; ++lambda)
-            {
-                const auto w_B_lambda = B_1D_proj_times_w.get_function_view(lambda);
-
-                Real sum = 0.0;
-                for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                    sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
-
-                moments1D(flat_id_I++) = (sum*length_element_edge);
-            }
-        }
-    }
-
-    return moments1D;
-}
-
 
 template<class PhysSpaceTest, class PhysSpaceTrial>
 inline
 auto
 EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
 evaluate_moments_op_u_v(
-    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
     const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
+    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
     const array<Real,dim> &length_element_edge
 ) const -> array<DynamicMultiArray<Real,3>,dim>
 {
     array<DynamicMultiArray<Real,3>,dim> moments;
-/*
+
     for (int dir = 0 ; dir < dim ; ++dir)
     {
-    	const auto & w_times_bernst = B_1D_proj_times_w[dir];
+    	const auto & w_times_bernst = w_times_B_proj_1D_[dir];
     	const auto & phi_test  = phi_1D_test [dir];
     	const auto & phi_trial = phi_1D_trial[dir];
 
@@ -1612,7 +1700,7 @@ evaluate_moments_op_u_v(
 
         vector<Real> phi_mu1_mu2(n_pts);
 
-        const Real edge_length = length_element_edge[dim];
+        const Real edge_length = length_element_edge[dir];
 
         Index flat_id_I = 0 ;
         for (int mu2 = 0 ; mu2 < n_basis_test ; ++mu2)
@@ -1624,31 +1712,20 @@ evaluate_moments_op_u_v(
                 const auto phi_1D_mu1 = phi_trial.get_function_view(mu1);
 
                 for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                    phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0);
+                    phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0) * edge_length;
 
                 for (int lambda = 0 ; lambda < n_basis_projection ; ++lambda)
                 {
                     const auto w_B_lambda = w_times_bernst.get_function_view(lambda);
-
                     Real sum = 0.0;
                     for (int jpt = 0 ; jpt < n_pts ; ++jpt)
                         sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
-
-                    moments1D(flat_id_I++) = (sum*edge_length);
+                    moments1D(flat_id_I++) = sum;
                 } // end loop lambda
             } // end loop mu1
         } // end loop mu2
+    } // end loop dir
 
-    }
-    //*/
-
-    for (int dir = 0 ; dir < dim ; ++dir)
-        moments[dir] = evaluate_moments_1D(
-        		w_times_B_proj_1D_[dir],
-        		phi_1D_trial[dir],
-        		phi_1D_test[dir],
-        		length_element_edge[dir]);
-//*/
     return moments;
 }
 
@@ -1660,30 +1737,10 @@ EllipticOperatorsSumFactorizationIntegration(
 		const TensorSize<dim> &projection_degree,
 		const Quadrature<dim> &projection_quadrature)
 		:
+		EllipticOperators<PhysSpaceTest,PhysSpaceTrial>(),
 		proj_degree_(projection_degree),
 		proj_quad_(projection_quadrature)
 {
-    //-----------------------------------------------------------------
-    Assert(PhysSpaceTest::dim == PhysSpaceTrial::dim,
-    		ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
-    Assert(PhysSpaceTest::space_dim == PhysSpaceTrial::space_dim,
-    		ExcDimensionMismatch(PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim));
-    Assert(PhysSpaceTest::range == PhysSpaceTrial::range,
-    		ExcDimensionMismatch(PhysSpaceTest::range,PhysSpaceTrial::range));
-    Assert(PhysSpaceTest::rank == PhysSpaceTrial::rank,
-    		ExcDimensionMismatch(PhysSpaceTest::rank,PhysSpaceTrial::rank));
-
-    const int dim = PhysSpaceTest::dim;
-//    const int space_dim = PhysSpace::space_dim;
-//    const int range = PhysSpace::range;
-//    const int rank = PhysSpace::rank;
-
-    Assert(PhysSpaceTest::range == 1,ExcDimensionMismatch(PhysSpaceTest::range,1));
-    Assert(PhysSpaceTest::rank == 1,ExcDimensionMismatch(PhysSpaceTest::rank,1));
-    //-----------------------------------------------------------------
-
-
-
     //-----------------------------------------------------------------
     std::array<DenseMatrix,dim> B_proj_1D;
     for (int i = 0 ; i < dim ; ++i)
@@ -1805,9 +1862,7 @@ eval_operator_u_v(
 
 
     //--------------------------------------------------------------------------
-    bool is_symmetric = true;
-    if (&elem_test != &elem_trial)
-    	is_symmetric = false;
+    bool is_symmetric = this->test_same_space(elem_test,elem_trial);
     //--------------------------------------------------------------------------
 
 
@@ -2110,6 +2165,7 @@ assemble()
     EllipticOperatorsSumFactorizationIntegration<SpaceTest,SpaceTrial>
     	elliptic_operators_sf(TensorSize<dim>(proj_deg_),quad_proj_);
 
+    EllipticOperatorsStandardIntegration<SpaceTest,SpaceTrial> elliptic_operators_std;
     for (; elem != elem_end; ++elem)
     {
         loc_rhs.clear();
@@ -2130,7 +2186,6 @@ assemble()
         // Assembly of the local mass matrix using sum-factorization -- begin
         const TimePoint start_assembly_mass_matrix = Clock::now();
 
-
         elliptic_operators_sf.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_sf);
 
         const TimePoint end_assembly_mass_matrix = Clock::now();
@@ -2146,28 +2201,7 @@ assemble()
         // Assembly of the local mass matrix using the standard approach -- begin
         const TimePoint start_assembly_mass_matrix_old = Clock::now();
 
-
-        const auto &phi_test  = elem->get_basis_values();
-        const auto &phi_trial = elem->get_basis_values();
-        auto w_meas  = elem->get_w_measures();
-
-        const int n_qp = this->elem_quad.get_num_points();
-
-        loc_mat.clear();
-
-        for (int i = 0; i < n_basis; ++i)
-        {
-            const auto phi_i = phi_test.get_function_view(i);
-            for (int j = i; j < n_basis; ++j)
-            {
-                const auto phi_j = phi_trial.get_function_view(j);
-                for (int qp = 0; qp < n_qp; ++qp)
-                    loc_mat(i,j) += phi_i[qp](0) * phi_j[qp](0) * w_meas[qp];
-            }
-        }
-        for (int i = 0; i < n_basis; ++i)
-            for (int j = 0; j < i; ++j)
-                loc_mat(i,j) = loc_mat(j,i);
+        elliptic_operators_std.eval_operator_u_v(*elem,*elem,c_mass,loc_mat);
 
         const TimePoint end_assembly_mass_matrix_old = Clock::now();
         elapsed_time_assembly_mass_matrix_old_ += end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;

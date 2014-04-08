@@ -797,8 +797,7 @@ bool
 PhysicalSpaceElementAccessor<PhysSpace>::
 operator==(const PhysicalSpaceElementAccessor <PhysSpace> &a) const
 {
-    return RefElemAccessor::get_flat_index() ==
-           static_cast<RefElemAccessor>(a).get_flat_index();
+    return static_cast<RefElemAccessor>(*this) == static_cast<RefElemAccessor>(a);
 }
 
 
@@ -808,8 +807,7 @@ bool
 PhysicalSpaceElementAccessor<PhysSpace>::
 operator!=(const PhysicalSpaceElementAccessor <PhysSpace> &a) const
 {
-    return RefElemAccessor::get_flat_index() !=
-           static_cast<RefElemAccessor>(a).get_flat_index();
+    return static_cast<RefElemAccessor>(*this) != static_cast<RefElemAccessor>(a);
 }
 
 template< class PhysSpace >
