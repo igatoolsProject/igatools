@@ -234,13 +234,25 @@ public:
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
-private:
-
-
-protected:
+    /** @name Comparison operators */
+    ///@{
+    /**
+     * Returns true if the the CartesianGridIterator @p a has the same flat index of the calling object.
+     * @note The calling object and the CartesianGridIterator @p a must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
 
+    /**
+     * Returns true if the the CartesianGridIterator @p a has a different flat index w.r.t.
+     * the calling object.
+     * @note The calling object and the CartesianGridIterator @p a must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
     bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
+    ///@}
+
+protected:
 
     void operator++();
 
