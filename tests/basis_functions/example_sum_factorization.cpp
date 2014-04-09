@@ -1937,6 +1937,7 @@ EllipticOperatorsSumFactorizationIntegration(
 
     //-----------------------------------------------------------------
     // evaluation of the Bernstein's mass matrix -- begin
+    const auto start_bernstein_mass_matrix = Clock::now();
 
     using boost::math::binomial_coefficient;
 
@@ -1979,6 +1980,12 @@ EllipticOperatorsSumFactorizationIntegration(
     		B_proj_(row,col) = tmp;
     	} //end loop col
     } //end loop row
+
+    const auto end_bernstein_mass_matrix = Clock::now();
+    const Duration elapsed_time_bernstein_mass_matrix = end_bernstein_mass_matrix - start_bernstein_mass_matrix;
+    std::cout << "Elapsed_seconds Bernstein mass matrix = " << elapsed_time_bernstein_mass_matrix.count() << std::endl;
+    //--------------------------------------------------------------------------
+
     // evaluation of the Bernstein's mass matrix -- end
     //-----------------------------------------------------------------
 
@@ -1986,7 +1993,13 @@ EllipticOperatorsSumFactorizationIntegration(
 
     //-----------------------------------------------------------------
     // evaluation of the Bernstein's mass matrix inverse -- begin
+    const auto start_inverse_bernstein_mass_matrix = Clock::now();
+
     inv_B_proj_ = B_proj_.inverse();
+
+    const auto end_inverse_bernstein_mass_matrix = Clock::now();
+    const Duration elapsed_time_inverse_bernstein_mass_matrix = end_inverse_bernstein_mass_matrix - start_inverse_bernstein_mass_matrix;
+    std::cout << "Elapsed_seconds inverse Bernstein mass matrix = " << elapsed_time_inverse_bernstein_mass_matrix.count() << std::endl;
     // evaluation of the Bernstein's mass matrix inverse -- end
     //-----------------------------------------------------------------
 }
@@ -2248,6 +2261,7 @@ eval_operator_u_v(
     // Assembly of the local mass matrix using sum-factorization -- end
     //----------------------------------------------------
 
+
     Duration elapsed_time_assemble = elapsed_time_sum_factorization +
     		elapsed_time_compute_moments + elapsed_time_projection + elapsed_time_initialization ;
     std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
@@ -2384,7 +2398,6 @@ assemble()
 
     out << "Dim=" << dim << "         space_deg=" << space_deg_ << "         proj_deg=" << proj_deg_ << endl;
     out << "Elapsed seconds projection           = " << elapsed_time_projection_.count() << endl;
-    out << "Elapsed seconds I computation        = " << elapsed_time_compute_I_.count() << endl;
     out << "Elapsed seconds assembly mass matrix = " << elapsed_time_assembly_mass_matrix_.count() << endl;
     out << "Elapsed seconds assembly mass matrix old = " << elapsed_time_assembly_mass_matrix_old_.count() << endl;
     out << endl;
