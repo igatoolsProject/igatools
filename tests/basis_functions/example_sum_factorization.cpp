@@ -697,6 +697,168 @@ public:
     }
 };
 
+
+
+
+
+template <int dim,int k=dim>
+class IntegratorSumFacRHS_ver3
+{
+public:
+    void operator()(
+        const DynamicMultiArray<Real,dim> &Cpre,
+        const array<ValueTable<Real>,dim> &omega_B_1d,
+        DenseVector &integral_rhs)
+    {
+#ifndef NDEBUG
+    	int n_basis = 1;
+    	for (int i = 0 ; i < dim ; ++i)
+    		n_basis *= omega_B_1d[i].get_num_functions();
+    	Assert(integral_rhs.size() == n_basis,
+    			ExcDimensionMismatch(integral_rhs.size(),n_basis));
+#endif
+
+    	using std::cout;
+    	using std::endl;
+
+    	const int dir = dim-k;
+
+    	const TensorSize<dim> t_size_Cpre = Cpre.tensor_size();
+    	TensorSize<dim> t_size_Cpost;
+
+    	TensorSize<dim-k+1> t_size_alpha_post;
+    	TensorSize<k-1> t_size_theta_post;
+    	for (Index i = 0 ; i < dim-k ; ++i)
+    	{
+    		t_size_alpha_post(i) = t_size_Cpre(i);
+    		t_size_Cpost(i) = t_size_alpha_post(i);
+    	}
+    	t_size_alpha_post(dim-k) = omega_B_1d[dim-k].get_num_functions();
+		t_size_Cpost(dim-k) = t_size_alpha_post(dim-k);
+
+    	for (Index i = dim-k+1 ; i < dim ; ++i)
+    	{
+    		t_size_theta_post(i-dim+k-1) = t_size_Cpre(i);
+    		t_size_Cpost(i) = t_size_Cpre(i);
+    	}
+    	DynamicMultiArray<Real,dim> Cpost(t_size_Cpost);
+
+    	const TensorIndex<dim-k+1> wgt_alpha_post = MultiArrayUtils<dim-k+1>::compute_weight(t_size_alpha_post);
+    	const TensorIndex<k-1> wgt_theta_post = MultiArrayUtils<k-1>::compute_weight(t_size_theta_post);
+
+    	const Size f_size_theta_post = t_size_theta_post.flat_size();
+    	const Size f_size_alpha_post = t_size_alpha_post.flat_size();
+		TensorIndex<dim> t_id_Cpre;
+
+		const Index n_quad_pts = t_size_Cpre(dir);
+    	const auto & w_times_B = omega_B_1d[dir];
+
+    	Index f_id_Cpost = 0;
+    	for (Index f_id_theta_post = 0 ; f_id_theta_post < f_size_theta_post ; ++f_id_theta_post)
+    	{
+    		const TensorIndex<k-1> t_id_theta_post =
+    				MultiArrayUtils<k-1>::flat_to_tensor_index(f_id_theta_post,wgt_theta_post);
+
+        	for (Index f_id_alpha_post = 0 ; f_id_alpha_post < f_size_alpha_post ; ++f_id_alpha_post)
+        	{
+        		const TensorIndex<dim-k+1> t_id_alpha_post =
+        				MultiArrayUtils<dim-k+1>::flat_to_tensor_index(f_id_alpha_post,wgt_alpha_post);
+
+        		const Index alpha = t_id_alpha_post(dim-k);
+        		const auto w_times_B_alpha = w_times_B.get_function_view(alpha);
+
+
+        		for (int i = 0 ; i < dir ;++ i)
+        			t_id_Cpre(i) = t_id_alpha_post(i);
+        		for (int i = dir+1 ; i < dim ;++ i)
+        			t_id_Cpre(i) = t_id_theta_post(i-dir-1);
+
+        		Real sum = 0.0;
+        		for (int pt = 0 ; pt < n_quad_pts ; ++pt)
+        		{
+        			t_id_Cpre(dir) = pt;
+        			sum += w_times_B_alpha[pt] * Cpre(t_id_Cpre);
+        		}
+        		Cpost(f_id_Cpost) = sum;
+        		f_id_Cpost++;
+        	} // end loop f_id_alpha_post
+
+    	} // end loop f_id_theta_post
+
+        IntegratorSumFacRHS_ver3<dim,k-1> integrate_rhs;
+        integrate_rhs(Cpost,omega_B_1d,integral_rhs);
+    }
+};
+
+
+
+template <int dim>
+class IntegratorSumFacRHS_ver3<dim,1>
+{
+public:
+    void operator()(
+        const DynamicMultiArray<Real,dim> &Cpre,
+        const array<ValueTable<Real>,dim> &omega_B_1d,
+        DenseVector &integral_rhs)
+    {
+#ifndef NDEBUG
+    	int n_basis = 1;
+    	for (int i = 0 ; i < dim ; ++i)
+    		n_basis *= omega_B_1d[i].get_num_functions();
+    	Assert(integral_rhs.size() == n_basis,
+    			ExcDimensionMismatch(integral_rhs.size(),n_basis));
+#endif
+    	const int dir = dim-1;
+
+    	const TensorSize<dim> t_size_Cpre = Cpre.tensor_size();
+    	TensorSize<dim> t_size_Cpost;
+
+    	TensorSize<dim> t_size_alpha_post;
+    	for (Index i = 0 ; i < dim-1 ; ++i)
+    	{
+    		t_size_alpha_post(i) = t_size_Cpre(i);
+    		t_size_Cpost(i) = t_size_alpha_post(i);
+    	}
+    	t_size_alpha_post(dim-1) = omega_B_1d[dim-1].get_num_functions();
+		t_size_Cpost(dim-1) = t_size_alpha_post(dim-1);
+
+
+    	const TensorIndex<dim> wgt_alpha_post = MultiArrayUtils<dim>::compute_weight(t_size_alpha_post);
+
+    	const Size f_size_alpha_post = t_size_alpha_post.flat_size();
+		TensorIndex<dim> t_id_Cpre;
+
+		const Index n_quad_pts = t_size_Cpre(dir);
+    	const auto & w_times_B = omega_B_1d[dir];
+
+    	Index f_id_Cpost = 0;
+        for (Index f_id_alpha_post = 0 ; f_id_alpha_post < f_size_alpha_post ; ++f_id_alpha_post)
+        {
+        	const TensorIndex<dim> t_id_alpha_post =
+        			MultiArrayUtils<dim>::flat_to_tensor_index(f_id_alpha_post,wgt_alpha_post);
+
+        	const Index alpha = t_id_alpha_post(dim-1);
+        	const auto w_times_B_alpha = w_times_B.get_function_view(alpha);
+
+
+        	for (int i = 0 ; i < dir ;++ i)
+        		t_id_Cpre(i) = t_id_alpha_post(i);
+
+        	Real sum = 0.0;
+        	for (int pt = 0 ; pt < n_quad_pts ; ++pt)
+        	{
+        		t_id_Cpre(dir) = pt;
+        		sum += w_times_B_alpha[pt] * Cpre(t_id_Cpre);
+        	}
+        	integral_rhs(f_id_Cpost) = sum;
+        	f_id_Cpost++;
+        } // end loop f_id_alpha_post
+
+    }
+};
+
+
+
 template <int dim, int r=dim>
 class MassMatrixIntegrator
 {
@@ -1620,8 +1782,8 @@ projection_l2_bernstein_basis(
     Assert(n_basis_1D.flat_size() == n_basis,
            ExcDimensionMismatch(n_basis_1D.flat_size(),n_basis));
 
-    const TensorIndex<dim> basis_tensor_wgt =
-        MultiArrayUtils<dim>::compute_weight(n_basis_1D);
+//    const TensorIndex<dim> basis_tensor_wgt =
+//        MultiArrayUtils<dim>::compute_weight(n_basis_1D);
 
     const Size n_points = n_points_1D.flat_size();
     Assert(func_to_proj_at_pts.size() == n_points,
@@ -1633,7 +1795,7 @@ projection_l2_bernstein_basis(
 
 
     DenseVector integral_rhs(n_basis);
-
+/*
     IntegratorSumFacRHS_ver2<dim> integrate_rhs;
     for (Index basis_flat_id = 0 ; basis_flat_id < n_basis ; ++basis_flat_id)
     {
@@ -1643,6 +1805,10 @@ projection_l2_bernstein_basis(
         integral_rhs(basis_flat_id) =
         		integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,basis_tensor_id);
     }
+//*/
+    IntegratorSumFacRHS_ver3<dim> integrate_rhs;
+    integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,integral_rhs);
+
 
     // coefficient of the L2 projection using the tensor product basis
     DenseVector proj_coefs_tmp = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
