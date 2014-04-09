@@ -702,7 +702,7 @@ public:
 
 
 template <int dim,int k=dim>
-class IntegratorSumFacRHS_ver3
+class IntegratorSumFacRHS
 {
 public:
     void operator()(
@@ -785,7 +785,7 @@ public:
 
     	} // end loop f_id_theta_post
 
-        IntegratorSumFacRHS_ver3<dim,k-1> integrate_rhs;
+        IntegratorSumFacRHS<dim,k-1> integrate_rhs;
         integrate_rhs(Cpost,omega_B_1d,integral_rhs);
     }
 };
@@ -793,7 +793,7 @@ public:
 
 
 template <int dim>
-class IntegratorSumFacRHS_ver3<dim,1>
+class IntegratorSumFacRHS<dim,1>
 {
 public:
     void operator()(
@@ -1782,8 +1782,6 @@ projection_l2_bernstein_basis(
     Assert(n_basis_1D.flat_size() == n_basis,
            ExcDimensionMismatch(n_basis_1D.flat_size(),n_basis));
 
-//    const TensorIndex<dim> basis_tensor_wgt =
-//        MultiArrayUtils<dim>::compute_weight(n_basis_1D);
 
     const Size n_points = n_points_1D.flat_size();
     Assert(func_to_proj_at_pts.size() == n_points,
@@ -1795,18 +1793,7 @@ projection_l2_bernstein_basis(
 
 
     DenseVector integral_rhs(n_basis);
-/*
-    IntegratorSumFacRHS_ver2<dim> integrate_rhs;
-    for (Index basis_flat_id = 0 ; basis_flat_id < n_basis ; ++basis_flat_id)
-    {
-        const auto basis_tensor_id =
-            MultiArrayUtils<dim>::flat_to_tensor_index(basis_flat_id,basis_tensor_wgt);
-
-        integral_rhs(basis_flat_id) =
-        		integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,basis_tensor_id);
-    }
-//*/
-    IntegratorSumFacRHS_ver3<dim> integrate_rhs;
+    IntegratorSumFacRHS<dim> integrate_rhs;
     integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,integral_rhs);
 
 
@@ -2420,8 +2407,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 3;
-    int degree_max = 3;
+    int degree_min = 1;
+    int degree_max = 5;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
