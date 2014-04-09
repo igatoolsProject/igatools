@@ -620,85 +620,82 @@ PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,
 {}
 
 
-
-template <int dim,int k=0>
-class IntegratorSumFacRHS
+template <int dim,int k=dim>
+class IntegratorSumFacRHS_ver2
 {
 public:
-    DynamicMultiArray<Real,k> operator()(
-        const DynamicMultiArray<Real,dim> &Gamma,
+    Real operator()(
+        const DynamicMultiArray<Real,k> &Cpre,
         const array<ValueTable<Real>,dim> &omega_B_1d,
-        const TensorIndex<dim> &bernstein_tensor_id)
+        const TensorIndex<dim> &t_id_bernst)
     {
+    	const int dir = dim-k;
+    	const auto & w_times_B = omega_B_1d[dir];
 
-        IntegratorSumFacRHS<dim,k+1> integrate ;
-        DynamicMultiArray<Real,k+1> C1 = integrate(Gamma,omega_B_1d,bernstein_tensor_id);
-        const auto tensor_size_C1 = C1.tensor_size();
+    	const TensorSize<k> t_size_Cpre = Cpre.tensor_size();
+    	for ( int i = 0 ; i < k ; ++i)
+    	{
+    		Assert(t_size_Cpre(i)==omega_B_1d[dim-k+i].get_num_points(),
+    				ExcDimensionMismatch(t_size_Cpre(i),omega_B_1d[dim-k+i].get_num_points()));
+    	}
 
-        TensorSize<k> tensor_size_C;
-        for (int i = 0 ; i < k ; ++i)
+    	TensorSize<k-1> t_size_Cpost;
+    	for ( int i = 0 ; i < k-1 ; ++i)
+    	{
+    		t_size_Cpost(i) = t_size_Cpre(i+1);
+    	}
+        DynamicMultiArray<Real,k-1> Cpost(t_size_Cpost);
+
+        const Size n_quad_pts = t_size_Cpre(0);
+        const Size f_size_Cpost = t_size_Cpost.flat_size();
+
+        Index fn_id = t_id_bernst(dir);
+        const auto w_times_B_fn = w_times_B.get_function_view(fn_id);
+        Index f_id_Cpre = 0;
+        for (Index f_id_Cpost = 0 ; f_id_Cpost < f_size_Cpost ; f_id_Cpost++)
         {
-            Assert(tensor_size_C1[i] == tensor_size_C1[i+1],
-                   ExcDimensionMismatch(tensor_size_C1[i],tensor_size_C1[i+1]));
-            tensor_size_C[i] = tensor_size_C1[i];
+        	Real sum = 0.0;
+        	for (Index pt = 0 ; pt < n_quad_pts ; ++pt)
+        	{
+        		sum += w_times_B_fn[pt] * Cpre(f_id_Cpre);
+        		++f_id_Cpre;
+        	}
+        	Cpost(f_id_Cpost) = sum;
         }
 
-        DynamicMultiArray<Real,k> C(tensor_size_C) ;
-
-        TensorIndex<k+1> tensor_id_C1;
-
-        const Size n_entries_C = C.flat_size();
-
-        const Index eta_k1 = bernstein_tensor_id[k] ;
-
-        const auto &w_B_k_view = omega_B_1d[k].get_function_view(eta_k1);
-        vector<Real> w_B_k;
-        for (const auto & w_B_k_value : w_B_k_view)
-            w_B_k.emplace_back( w_B_k_value );
-
-        const Size n_pts = w_B_k.size();
-        for (Index flat_id_C = 0 ; flat_id_C < n_entries_C ; ++flat_id_C)
-        {
-            TensorIndex<k> tensor_id_C = C.flat_to_tensor(flat_id_C);
-
-            for (int i = 0 ; i < k ; ++i)
-                tensor_id_C1[i] = tensor_id_C[i];
-
-            Real sum = 0.0;
-            for (int ipt = 0 ; ipt < n_pts ; ++ipt) // quadrature along the last tensor index
-            {
-                tensor_id_C1[k] = ipt ;
-                sum += C1(tensor_id_C1) * w_B_k[ipt];
-            }
-            C(tensor_id_C) = sum;
-
-//          cout << "sum=" << sum << endl;
-        }
-
-        /*
-        LogStream out ;
-        out << "C="<< C << endl;
-        cout << "foo<"<<k<<">" << endl;
-        //*/
-        return C;
+        IntegratorSumFacRHS_ver2<dim,k-1> integrate_rhs;
+        return integrate_rhs(Cpost,omega_B_1d,t_id_bernst);
     }
 };
+
 
 template <int dim>
-class IntegratorSumFacRHS<dim,dim>
+class IntegratorSumFacRHS_ver2<dim,1>
 {
 public:
-    DynamicMultiArray<Real,dim> operator()(
-        const DynamicMultiArray<Real,dim> &Gamma,
+    Real operator()(
+        const DynamicMultiArray<Real,1> &Cpre,
         const array<ValueTable<Real>,dim> &omega_B_1d,
-        const TensorIndex<dim> &bernstein_tensor_id)
+        const TensorIndex<dim> &t_id_bernst)
     {
-        return Gamma;
+    	const auto & w_times_B = omega_B_1d[dim-1];
+
+    	const Size f_size_Cpre = Cpre.flat_size();
+    	Assert(f_size_Cpre == omega_B_1d[dim-1].get_num_points(),
+    			ExcDimensionMismatch(f_size_Cpre,omega_B_1d[dim-1].get_num_points()));
+
+        const Size n_quad_pts = f_size_Cpre;
+
+        const Index fn_id = t_id_bernst(dim-1);
+        const auto w_times_B_fn = w_times_B.get_function_view(fn_id);
+
+        Real Cpost = 0.0;
+        for (Index pt = 0 ; pt < n_quad_pts ; ++pt)
+        	Cpost += w_times_B_fn[pt] * Cpre(pt);
+
+    	return Cpost;
     }
 };
-
-
-
 
 template <int dim, int r=dim>
 class MassMatrixIntegrator
@@ -1637,14 +1634,14 @@ projection_l2_bernstein_basis(
 
     DenseVector integral_rhs(n_basis);
 
-    IntegratorSumFacRHS<dim> integrate_rhs;
+    IntegratorSumFacRHS_ver2<dim> integrate_rhs;
     for (Index basis_flat_id = 0 ; basis_flat_id < n_basis ; ++basis_flat_id)
     {
         const auto basis_tensor_id =
             MultiArrayUtils<dim>::flat_to_tensor_index(basis_flat_id,basis_tensor_wgt);
 
         integral_rhs(basis_flat_id) =
-        		(integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,basis_tensor_id))(0);
+        		integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,basis_tensor_id);
     }
 
     // coefficient of the L2 projection using the tensor product basis
@@ -1669,8 +1666,7 @@ EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
 evaluate_moments_op_u_v(
     const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
     const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
-    const array<Real,dim> &length_element_edge
-) const -> array<DynamicMultiArray<Real,3>,dim>
+    const array<Real,dim> &length_element_edge) const -> array<DynamicMultiArray<Real,3>,dim>
 {
     array<DynamicMultiArray<Real,3>,dim> moments;
 
@@ -1853,6 +1849,11 @@ eval_operator_u_v(
 		const ValueVector<Real> &coeffs,
 		DenseMatrix &operator_u_v) const
 {
+	//TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
+	// the physical space iterators have the same grid, map, reference space, index, etc.
+	Assert(&elem_test == &elem_trial,ExcNotImplemented());
+
+
 
     //----------------------------------------------------
     // Assembly of the local mass matrix using sum-factorization -- begin
