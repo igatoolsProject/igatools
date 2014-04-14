@@ -22,7 +22,7 @@
 # and automatically determine whether the detected version is suitable 
 # if the client-project requested a minimum (or even exact) version.
 
-set(PACKAGE_VERSION "@IGA_VERSION@")
+set(PACKAGE_VERSION "@IGATOOLS_VERSION@")
 
 # Check whether the requested PACKAGE_FIND_VERSION is compatible
 if("${PACKAGE_VERSION}" VERSION_LESS "${PACKAGE_FIND_VERSION}")

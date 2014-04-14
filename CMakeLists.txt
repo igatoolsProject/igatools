@@ -50,11 +50,11 @@ macro_ensure_out_of_build_install()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # If the prefix is not provided by the user but the
-# enviroment variable IGA_PREFIX exists the we use it
+# enviroment variable IGATOOLS_PREFIX exists the we use it
 # instead of the default prefix
-if((DEFINED ENV{IGA_PREFIX}) AND (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT))
+if((DEFINED ENV{IGATOOLS_PREFIX}) AND (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT))
 set(CMAKE_INSTALL_PREFIX 
-   $ENV{IGA_PREFIX} CACHE PATH "Installation prefix" FORCE)
+   $ENV{IGATOOLS_PREFIX} CACHE PATH "Installation prefix" FORCE)
 endif()
 #
 #-------------------------------------------------------------------------------
@@ -63,11 +63,11 @@ endif()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Set the igatools version 
 #
-set(IGA_MAJOR_VERSION 0)
-set(IGA_MINOR_VERSION 3)
-set(IGA_PATCH_VERSION 0)
-set(IGA_VERSION
-  ${IGA_MAJOR_VERSION}.${IGA_MINOR_VERSION}.${IGA_PATCH_VERSION})
+set(IGATOOLS_MAJOR_VERSION 0)
+set(IGATOOLS_MINOR_VERSION 3)
+set(IGATOOLS_PATCH_VERSION 0)
+set(IGATOOLS_VERSION
+  ${IGATOOLS_MAJOR_VERSION}.${IGATOOLS_MINOR_VERSION}.${IGATOOLS_PATCH_VERSION})
 #
 #-------------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ target_link_libraries(${lib_name}
   ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
   ${Boost_LIBRARIES})
-set_property(TARGET ${lib_name} PROPERTY VERSION ${IGA_VERSION})
+set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
