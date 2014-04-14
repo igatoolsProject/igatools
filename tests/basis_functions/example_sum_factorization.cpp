@@ -2388,9 +2388,8 @@ assemble()
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
 //        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
         const DenseMatrix m_diff = loc_mat - loc_mass_matrix_sf;
-        out << "Frobenius norm of the difference="
-            << m_diff.norm_frobenius() << endl;
-//            << m_diff.norm_frobenius()/(m_diff.get_num_rows()*m_diff.get_num_cols()) << endl;
+        out << "Maximum norm of the difference="
+            << m_diff.norm_max() << endl;
     }
 
     this->matrix->fill_complete();
@@ -2420,8 +2419,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 10;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
