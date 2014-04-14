@@ -62,29 +62,29 @@ template <class PhysSpaceTest,class PhysSpaceTrial>
 class EllipticOperators
 {
 public:
-	/** Type for the element accessor of the <em>test</em> physical space. */
-	using ElemTest = typename PhysSpaceTest::ElementAccessor;
+    /** Type for the element accessor of the <em>test</em> physical space. */
+    using ElemTest = typename PhysSpaceTest::ElementAccessor;
 
-	/** Type for the element accessor of the <em>trial</em> physical space. */
-	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+    /** Type for the element accessor of the <em>trial</em> physical space. */
+    using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
 
-	static const int dim = PhysSpaceTest::dim;
+    static const int dim = PhysSpaceTest::dim;
 
-	/**
-	 * Default constructor.
-	 * In Debug mode, it checks if the template arguments are consistent.
-	 */
-	EllipticOperators();
+    /**
+     * Default constructor.
+     * In Debug mode, it checks if the template arguments are consistent.
+     */
+    EllipticOperators();
 
-	virtual void eval_operator_u_v(
-			const ElemTest &elem_test,
-			const ElemTrial &elem_trial,
-			const ValueVector<Real> &c,
-			DenseMatrix &operator_u_v) const = 0;
+    virtual void eval_operator_u_v(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const ValueVector<Real> &c,
+        DenseMatrix &operator_u_v) const = 0;
 
 
-	/** Returns true if the space for the test functions and the trial functions is the same. */
-	bool test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const ;
+    /** Returns true if the space for the test functions and the trial functions is the same. */
+    bool test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const ;
 };
 
 template <class PhysSpaceTest,class PhysSpaceTrial>
@@ -94,13 +94,13 @@ EllipticOperators()
 {
     //-----------------------------------------------------------------
     Assert(PhysSpaceTest::dim == PhysSpaceTrial::dim,
-    		ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
+           ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
     Assert(PhysSpaceTest::space_dim == PhysSpaceTrial::space_dim,
-    		ExcDimensionMismatch(PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim));
+           ExcDimensionMismatch(PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim));
     Assert(PhysSpaceTest::range == PhysSpaceTrial::range,
-    		ExcDimensionMismatch(PhysSpaceTest::range,PhysSpaceTrial::range));
+           ExcDimensionMismatch(PhysSpaceTest::range,PhysSpaceTrial::range));
     Assert(PhysSpaceTest::rank == PhysSpaceTrial::rank,
-    		ExcDimensionMismatch(PhysSpaceTest::rank,PhysSpaceTrial::rank));
+           ExcDimensionMismatch(PhysSpaceTest::rank,PhysSpaceTrial::rank));
 
 //    const int dim = PhysSpaceTest::dim;
 //    const int space_dim = PhysSpace::space_dim;
@@ -121,8 +121,8 @@ test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
     //--------------------------------------------------------------------------
     // checks that the mapping used in the test space and in the trial space is the same
     Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
-    		elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
-    		ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
+           elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+           ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
     //--------------------------------------------------------------------------
 
 
@@ -130,8 +130,8 @@ test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
     // checks that the elements on the grid are the same
     using GridElem = CartesianGridElementAccessor<dim>;
     Assert(static_cast<const GridElem &>(elem_test.get_ref_space_accessor()) ==
-    	   static_cast<const GridElem &>(elem_trial.get_ref_space_accessor()),
-    	   ExcMessage("Different elements for test space and trial space."));
+           static_cast<const GridElem &>(elem_trial.get_ref_space_accessor()),
+           ExcMessage("Different elements for test space and trial space."));
     //--------------------------------------------------------------------------
 
     // the test is true only if the element accessors reference the same memory location
@@ -144,16 +144,16 @@ test_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
 
 template <class PhysSpaceTest,class PhysSpaceTrial>
 class EllipticOperatorsSumFactorizationIntegration :
-		public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
+    public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
 {
 public:
-	/** Type for the element accessor of the <em>test</em> physical space. */
-	using ElemTest = typename PhysSpaceTest::ElementAccessor;
+    /** Type for the element accessor of the <em>test</em> physical space. */
+    using ElemTest = typename PhysSpaceTest::ElementAccessor;
 
-	/** Type for the element accessor of the <em>trial</em> physical space. */
-	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+    /** Type for the element accessor of the <em>trial</em> physical space. */
+    using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
 
-	static const int dim = PhysSpaceTest::dim;
+    static const int dim = PhysSpaceTest::dim;
 
     using Clock = chrono::high_resolution_clock;
     using TimePoint = chrono::time_point<Clock>;
@@ -168,39 +168,39 @@ public:
      * operator, using the Bernstein's basis.
      */
     EllipticOperatorsSumFactorizationIntegration(
-    		const TensorSize<dim> &projection_degree,
-    		const Quadrature<dim> &projection_quadrature);
+        const TensorSize<dim> &projection_degree,
+        const Quadrature<dim> &projection_quadrature);
 
 
 
-	virtual void eval_operator_u_v(
-			const ElemTest &elem_test,
-			const ElemTrial &elem_trial,
-			const ValueVector<Real> &c,
-			DenseMatrix &operator_u_v) const override;
+    virtual void eval_operator_u_v(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const ValueVector<Real> &c,
+        DenseMatrix &operator_u_v) const override;
 
 private:
 
-	/**
-	 * @brief Performs the L2 projection on a function evaluated on points inside a single
-	 * Bezier element, using as basis of the projection space the Benrstein's polynomials.
-	 * @param func_to_proj_at_pts Values of the function to project at the quadrature points.
-	 */
-	DynamicMultiArray<Real,dim>
-	projection_l2_bernstein_basis(const ValueVector<Real> &func_to_proj_at_pts) const;
+    /**
+     * @brief Performs the L2 projection on a function evaluated on points inside a single
+     * Bezier element, using as basis of the projection space the Benrstein's polynomials.
+     * @param func_to_proj_at_pts Values of the function to project at the quadrature points.
+     */
+    DynamicMultiArray<Real,dim>
+    projection_l2_bernstein_basis(const ValueVector<Real> &func_to_proj_at_pts) const;
 
-	/**
-	 * @brief Returns the moments for the mass matrix, as needed by the integration using the
-	 * sum factorization technique.
-	 * \f$ m_{i,\theta_i,\alpha_i,\beta_i} =
-	   \int_{I_i} B_{\theta_i}(x_i) u_{\beta_i}(x_i) v_{\alpha_i}(x_i) \; dx_i \, .\f$
-	 *
-	 */
-	array<DynamicMultiArray<Real,3>,dim>
-	evaluate_moments_op_u_v(
-		const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
-	    const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
-	    const array<Real,dim> &length_element_edge) const;
+    /**
+     * @brief Returns the moments for the mass matrix, as needed by the integration using the
+     * sum factorization technique.
+     * \f$ m_{i,\theta_i,\alpha_i,\beta_i} =
+       \int_{I_i} B_{\theta_i}(x_i) u_{\beta_i}(x_i) v_{\alpha_i}(x_i) \; dx_i \, .\f$
+     *
+     */
+    array<DynamicMultiArray<Real,3>,dim>
+    evaluate_moments_op_u_v(
+        const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
+        const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
+        const array<Real,dim> &length_element_edge) const;
 
 
     /**
@@ -225,11 +225,11 @@ private:
     Size n_basis_proj_;
 
 
-	/**
-	 * One-dimensional quadrature weights multiplied by the one-dimensional
-	 * Bernstein's basis values used to build the rhs term in the projection.
-	 * @note All the quantities refers to the unitary hypercube [0,1]^{dim}.
-	 */
+    /**
+     * One-dimensional quadrature weights multiplied by the one-dimensional
+     * Bernstein's basis values used to build the rhs term in the projection.
+     * @note All the quantities refers to the unitary hypercube [0,1]^{dim}.
+     */
     array<ValueTable<Real>,dim> w_times_B_proj_1D_;
 
     /** Mass matrix of the Bernstein's polynomials used in the projection, in [0,1]^dim.*/
@@ -239,37 +239,37 @@ private:
     DenseMatrix inv_B_proj_;
 
 
-	Duration elapsed_time_operator_u_v_;
+    Duration elapsed_time_operator_u_v_;
 };
 
 
 template <class PhysSpaceTest,class PhysSpaceTrial>
 class EllipticOperatorsStandardIntegration :
-		public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
+    public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
 {
 public:
-	/** Type for the element accessor of the <em>test</em> physical space. */
-	using ElemTest = typename PhysSpaceTest::ElementAccessor;
+    /** Type for the element accessor of the <em>test</em> physical space. */
+    using ElemTest = typename PhysSpaceTest::ElementAccessor;
 
-	/** Type for the element accessor of the <em>trial</em> physical space. */
-	using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+    /** Type for the element accessor of the <em>trial</em> physical space. */
+    using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
 
 
-	EllipticOperatorsStandardIntegration();
+    EllipticOperatorsStandardIntegration();
 
-	virtual void eval_operator_u_v(
-			const ElemTest &elem_test,
-			const ElemTrial &elem_trial,
-			const ValueVector<Real> &c,
-			DenseMatrix &operator_u_v) const override;
+    virtual void eval_operator_u_v(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const ValueVector<Real> &c,
+        DenseMatrix &operator_u_v) const override;
 };
 
 template <class PhysSpaceTest,class PhysSpaceTrial>
 inline
 EllipticOperatorsStandardIntegration<PhysSpaceTest,PhysSpaceTrial>::
 EllipticOperatorsStandardIntegration()
-:
-EllipticOperators<PhysSpaceTest,PhysSpaceTrial>()
+    :
+    EllipticOperators<PhysSpaceTest,PhysSpaceTrial>()
 {}
 
 
@@ -278,19 +278,19 @@ inline
 void
 EllipticOperatorsStandardIntegration<PhysSpaceTest,PhysSpaceTrial>::
 eval_operator_u_v(
-		const ElemTest &elem_test,
-		const ElemTrial &elem_trial,
-		const ValueVector<Real> &coeffs,
-		DenseMatrix &operator_u_v) const
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const ValueVector<Real> &coeffs,
+    DenseMatrix &operator_u_v) const
 {
-	//TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
-	// the physical space iterators have the same grid, map, reference space, index, etc.
-	Assert(&elem_test == &elem_trial,ExcNotImplemented());
+    //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
+    // the physical space iterators have the same grid, map, reference space, index, etc.
+    Assert(&elem_test == &elem_trial,ExcNotImplemented());
 
-	const bool is_symmetric = this->test_same_space(elem_test,elem_trial);
+    const bool is_symmetric = this->test_same_space(elem_test,elem_trial);
 
-	const Size n_basis_test  = elem_test .get_num_basis();
-	const Size n_basis_trial = elem_trial.get_num_basis();
+    const Size n_basis_test  = elem_test .get_num_basis();
+    const Size n_basis_trial = elem_trial.get_num_basis();
 
     const auto &phi_test  = elem_test.get_basis_values();
     const auto &phi_trial = elem_trial.get_basis_values();
@@ -298,9 +298,9 @@ eval_operator_u_v(
 
 
     Assert(operator_u_v.get_num_rows() == n_basis_test,
-    		ExcDimensionMismatch(operator_u_v.get_num_rows(),n_basis_test));
+           ExcDimensionMismatch(operator_u_v.get_num_rows(),n_basis_test));
     Assert(operator_u_v.get_num_cols() == n_basis_trial,
-    		ExcDimensionMismatch(operator_u_v.get_num_cols(),n_basis_trial));
+           ExcDimensionMismatch(operator_u_v.get_num_cols(),n_basis_trial));
 
 
     const Size n_qp = coeffs.size();
@@ -308,41 +308,41 @@ eval_operator_u_v(
     Assert(n_qp == phi_trial.get_num_points(),ExcDimensionMismatch(n_qp,phi_trial.get_num_points()));
 
     vector<Real> coeffs_times_w_meas(n_qp);
-	for (int qp = 0; qp < n_qp; ++qp)
-		coeffs_times_w_meas[qp] = coeffs[qp] * w_meas[qp];
+    for (int qp = 0; qp < n_qp; ++qp)
+        coeffs_times_w_meas[qp] = coeffs[qp] * w_meas[qp];
 
 
     operator_u_v.clear();
 
     if (!is_symmetric)
     {
-    	for (int i = 0; i < n_basis_test; ++i)
-    	{
-    		const auto phi_i = phi_test.get_function_view(i);
-    		for (int j = 0; j < n_basis_trial; ++j)
-    		{
-    			const auto phi_j = phi_trial.get_function_view(j);
-    			for (int qp = 0; qp < n_qp; ++qp)
-    				operator_u_v(i,j) += phi_j[qp](0) * ( phi_i[qp](0) * coeffs_times_w_meas[qp] );
-    		}
-    	}
+        for (int i = 0; i < n_basis_test; ++i)
+        {
+            const auto phi_i = phi_test.get_function_view(i);
+            for (int j = 0; j < n_basis_trial; ++j)
+            {
+                const auto phi_j = phi_trial.get_function_view(j);
+                for (int qp = 0; qp < n_qp; ++qp)
+                    operator_u_v(i,j) += phi_j[qp](0) * (phi_i[qp](0) * coeffs_times_w_meas[qp]);
+            }
+        }
 
     } // end if (!is_symmetric)
     else
     {
-    	for (int i = 0; i < n_basis_test; ++i)
-    	{
-    		const auto phi_i = phi_test.get_function_view(i);
-    		for (int j = i; j < n_basis_trial; ++j)
-    		{
-    			const auto phi_j = phi_trial.get_function_view(j);
-    			for (int qp = 0; qp < n_qp; ++qp)
-    				operator_u_v(i,j) += phi_j[qp](0) * ( phi_i[qp](0) * coeffs_times_w_meas[qp] );
-    		}
-    	}
-    	for (int i = 0; i < n_basis_test; ++i)
-    		for (int j = 0; j < i; ++j)
-    			operator_u_v(i,j) = operator_u_v(j,i);
+        for (int i = 0; i < n_basis_test; ++i)
+        {
+            const auto phi_i = phi_test.get_function_view(i);
+            for (int j = i; j < n_basis_trial; ++j)
+            {
+                const auto phi_j = phi_trial.get_function_view(j);
+                for (int qp = 0; qp < n_qp; ++qp)
+                    operator_u_v(i,j) += phi_j[qp](0) * (phi_i[qp](0) * coeffs_times_w_meas[qp]);
+            }
+        }
+        for (int i = 0; i < n_basis_test; ++i)
+            for (int j = 0; j < i; ++j)
+                operator_u_v(i,j) = operator_u_v(j,i);
     } // end if (is_symmetric)
 }
 
@@ -629,21 +629,21 @@ public:
         const array<ValueTable<Real>,dim> &omega_B_1d,
         const TensorIndex<dim> &t_id_bernst)
     {
-    	const int dir = dim-k;
-    	const auto & w_times_B = omega_B_1d[dir];
+        const int dir = dim-k;
+        const auto &w_times_B = omega_B_1d[dir];
 
-    	const TensorSize<k> t_size_Cpre = Cpre.tensor_size();
-    	for ( int i = 0 ; i < k ; ++i)
-    	{
-    		Assert(t_size_Cpre(i)==omega_B_1d[dim-k+i].get_num_points(),
-    				ExcDimensionMismatch(t_size_Cpre(i),omega_B_1d[dim-k+i].get_num_points()));
-    	}
+        const TensorSize<k> t_size_Cpre = Cpre.tensor_size();
+        for (int i = 0 ; i < k ; ++i)
+        {
+            Assert(t_size_Cpre(i)==omega_B_1d[dim-k+i].get_num_points(),
+                   ExcDimensionMismatch(t_size_Cpre(i),omega_B_1d[dim-k+i].get_num_points()));
+        }
 
-    	TensorSize<k-1> t_size_Cpost;
-    	for ( int i = 0 ; i < k-1 ; ++i)
-    	{
-    		t_size_Cpost(i) = t_size_Cpre(i+1);
-    	}
+        TensorSize<k-1> t_size_Cpost;
+        for (int i = 0 ; i < k-1 ; ++i)
+        {
+            t_size_Cpost(i) = t_size_Cpre(i+1);
+        }
         DynamicMultiArray<Real,k-1> Cpost(t_size_Cpost);
 
         const Size n_quad_pts = t_size_Cpre(0);
@@ -654,13 +654,13 @@ public:
         Index f_id_Cpre = 0;
         for (Index f_id_Cpost = 0 ; f_id_Cpost < f_size_Cpost ; f_id_Cpost++)
         {
-        	Real sum = 0.0;
-        	for (Index pt = 0 ; pt < n_quad_pts ; ++pt)
-        	{
-        		sum += w_times_B_fn[pt] * Cpre(f_id_Cpre);
-        		++f_id_Cpre;
-        	}
-        	Cpost(f_id_Cpost) = sum;
+            Real sum = 0.0;
+            for (Index pt = 0 ; pt < n_quad_pts ; ++pt)
+            {
+                sum += w_times_B_fn[pt] * Cpre(f_id_Cpre);
+                ++f_id_Cpre;
+            }
+            Cpost(f_id_Cpost) = sum;
         }
 
         IntegratorSumFacRHS_ver2<dim,k-1> integrate_rhs;
@@ -678,11 +678,11 @@ public:
         const array<ValueTable<Real>,dim> &omega_B_1d,
         const TensorIndex<dim> &t_id_bernst)
     {
-    	const auto & w_times_B = omega_B_1d[dim-1];
+        const auto &w_times_B = omega_B_1d[dim-1];
 
-    	const Size f_size_Cpre = Cpre.flat_size();
-    	Assert(f_size_Cpre == omega_B_1d[dim-1].get_num_points(),
-    			ExcDimensionMismatch(f_size_Cpre,omega_B_1d[dim-1].get_num_points()));
+        const Size f_size_Cpre = Cpre.flat_size();
+        Assert(f_size_Cpre == omega_B_1d[dim-1].get_num_points(),
+               ExcDimensionMismatch(f_size_Cpre,omega_B_1d[dim-1].get_num_points()));
 
         const Size n_quad_pts = f_size_Cpre;
 
@@ -691,9 +691,9 @@ public:
 
         Real Cpost = 0.0;
         for (Index pt = 0 ; pt < n_quad_pts ; ++pt)
-        	Cpost += w_times_B_fn[pt] * Cpre(pt);
+            Cpost += w_times_B_fn[pt] * Cpre(pt);
 
-    	return Cpost;
+        return Cpost;
     }
 };
 
@@ -711,79 +711,79 @@ public:
         DenseVector &integral_rhs)
     {
 #ifndef NDEBUG
-    	int n_basis = 1;
-    	for (int i = 0 ; i < dim ; ++i)
-    		n_basis *= omega_B_1d[i].get_num_functions();
-    	Assert(integral_rhs.size() == n_basis,
-    			ExcDimensionMismatch(integral_rhs.size(),n_basis));
+        int n_basis = 1;
+        for (int i = 0 ; i < dim ; ++i)
+            n_basis *= omega_B_1d[i].get_num_functions();
+        Assert(integral_rhs.size() == n_basis,
+               ExcDimensionMismatch(integral_rhs.size(),n_basis));
 #endif
 
-    	using std::cout;
-    	using std::endl;
+        using std::cout;
+        using std::endl;
 
-    	const int dir = dim-k;
+        const int dir = dim-k;
 
-    	const TensorSize<dim> t_size_Cpre = Cpre.tensor_size();
-    	TensorSize<dim> t_size_Cpost;
+        const TensorSize<dim> t_size_Cpre = Cpre.tensor_size();
+        TensorSize<dim> t_size_Cpost;
 
-    	TensorSize<dim-k+1> t_size_alpha_post;
-    	TensorSize<k-1> t_size_theta_post;
-    	for (Index i = 0 ; i < dim-k ; ++i)
-    	{
-    		t_size_alpha_post(i) = t_size_Cpre(i);
-    		t_size_Cpost(i) = t_size_alpha_post(i);
-    	}
-    	t_size_alpha_post(dim-k) = omega_B_1d[dim-k].get_num_functions();
-		t_size_Cpost(dim-k) = t_size_alpha_post(dim-k);
+        TensorSize<dim-k+1> t_size_alpha_post;
+        TensorSize<k-1> t_size_theta_post;
+        for (Index i = 0 ; i < dim-k ; ++i)
+        {
+            t_size_alpha_post(i) = t_size_Cpre(i);
+            t_size_Cpost(i) = t_size_alpha_post(i);
+        }
+        t_size_alpha_post(dim-k) = omega_B_1d[dim-k].get_num_functions();
+        t_size_Cpost(dim-k) = t_size_alpha_post(dim-k);
 
-    	for (Index i = dim-k+1 ; i < dim ; ++i)
-    	{
-    		t_size_theta_post(i-dim+k-1) = t_size_Cpre(i);
-    		t_size_Cpost(i) = t_size_Cpre(i);
-    	}
-    	DynamicMultiArray<Real,dim> Cpost(t_size_Cpost);
+        for (Index i = dim-k+1 ; i < dim ; ++i)
+        {
+            t_size_theta_post(i-dim+k-1) = t_size_Cpre(i);
+            t_size_Cpost(i) = t_size_Cpre(i);
+        }
+        DynamicMultiArray<Real,dim> Cpost(t_size_Cpost);
 
-    	const TensorIndex<dim-k+1> wgt_alpha_post = MultiArrayUtils<dim-k+1>::compute_weight(t_size_alpha_post);
-    	const TensorIndex<k-1> wgt_theta_post = MultiArrayUtils<k-1>::compute_weight(t_size_theta_post);
+        const TensorIndex<dim-k+1> wgt_alpha_post = MultiArrayUtils<dim-k+1>::compute_weight(t_size_alpha_post);
+        const TensorIndex<k-1> wgt_theta_post = MultiArrayUtils<k-1>::compute_weight(t_size_theta_post);
 
-    	const Size f_size_theta_post = t_size_theta_post.flat_size();
-    	const Size f_size_alpha_post = t_size_alpha_post.flat_size();
-		TensorIndex<dim> t_id_Cpre;
+        const Size f_size_theta_post = t_size_theta_post.flat_size();
+        const Size f_size_alpha_post = t_size_alpha_post.flat_size();
+        TensorIndex<dim> t_id_Cpre;
 
-		const Index n_quad_pts = t_size_Cpre(dir);
-    	const auto & w_times_B = omega_B_1d[dir];
+        const Index n_quad_pts = t_size_Cpre(dir);
+        const auto &w_times_B = omega_B_1d[dir];
 
-    	Index f_id_Cpost = 0;
-    	for (Index f_id_theta_post = 0 ; f_id_theta_post < f_size_theta_post ; ++f_id_theta_post)
-    	{
-    		const TensorIndex<k-1> t_id_theta_post =
-    				MultiArrayUtils<k-1>::flat_to_tensor_index(f_id_theta_post,wgt_theta_post);
+        Index f_id_Cpost = 0;
+        for (Index f_id_theta_post = 0 ; f_id_theta_post < f_size_theta_post ; ++f_id_theta_post)
+        {
+            const TensorIndex<k-1> t_id_theta_post =
+                MultiArrayUtils<k-1>::flat_to_tensor_index(f_id_theta_post,wgt_theta_post);
 
-        	for (Index f_id_alpha_post = 0 ; f_id_alpha_post < f_size_alpha_post ; ++f_id_alpha_post)
-        	{
-        		const TensorIndex<dim-k+1> t_id_alpha_post =
-        				MultiArrayUtils<dim-k+1>::flat_to_tensor_index(f_id_alpha_post,wgt_alpha_post);
+            for (Index f_id_alpha_post = 0 ; f_id_alpha_post < f_size_alpha_post ; ++f_id_alpha_post)
+            {
+                const TensorIndex<dim-k+1> t_id_alpha_post =
+                    MultiArrayUtils<dim-k+1>::flat_to_tensor_index(f_id_alpha_post,wgt_alpha_post);
 
-        		const Index alpha = t_id_alpha_post(dim-k);
-        		const auto w_times_B_alpha = w_times_B.get_function_view(alpha);
+                const Index alpha = t_id_alpha_post(dim-k);
+                const auto w_times_B_alpha = w_times_B.get_function_view(alpha);
 
 
-        		for (int i = 0 ; i < dir ;++ i)
-        			t_id_Cpre(i) = t_id_alpha_post(i);
-        		for (int i = dir+1 ; i < dim ;++ i)
-        			t_id_Cpre(i) = t_id_theta_post(i-dir-1);
+                for (int i = 0 ; i < dir ; ++ i)
+                    t_id_Cpre(i) = t_id_alpha_post(i);
+                for (int i = dir+1 ; i < dim ; ++ i)
+                    t_id_Cpre(i) = t_id_theta_post(i-dir-1);
 
-        		Real sum = 0.0;
-        		for (int pt = 0 ; pt < n_quad_pts ; ++pt)
-        		{
-        			t_id_Cpre(dir) = pt;
-        			sum += w_times_B_alpha[pt] * Cpre(t_id_Cpre);
-        		}
-        		Cpost(f_id_Cpost) = sum;
-        		f_id_Cpost++;
-        	} // end loop f_id_alpha_post
+                Real sum = 0.0;
+                for (int pt = 0 ; pt < n_quad_pts ; ++pt)
+                {
+                    t_id_Cpre(dir) = pt;
+                    sum += w_times_B_alpha[pt] * Cpre(t_id_Cpre);
+                }
+                Cpost(f_id_Cpost) = sum;
+                f_id_Cpost++;
+            } // end loop f_id_alpha_post
 
-    	} // end loop f_id_theta_post
+        } // end loop f_id_theta_post
 
         IntegratorSumFacRHS<dim,k-1> integrate_rhs;
         integrate_rhs(Cpost,omega_B_1d,integral_rhs);
@@ -802,56 +802,56 @@ public:
         DenseVector &integral_rhs)
     {
 #ifndef NDEBUG
-    	int n_basis = 1;
-    	for (int i = 0 ; i < dim ; ++i)
-    		n_basis *= omega_B_1d[i].get_num_functions();
-    	Assert(integral_rhs.size() == n_basis,
-    			ExcDimensionMismatch(integral_rhs.size(),n_basis));
+        int n_basis = 1;
+        for (int i = 0 ; i < dim ; ++i)
+            n_basis *= omega_B_1d[i].get_num_functions();
+        Assert(integral_rhs.size() == n_basis,
+               ExcDimensionMismatch(integral_rhs.size(),n_basis));
 #endif
-    	const int dir = dim-1;
+        const int dir = dim-1;
 
-    	const TensorSize<dim> t_size_Cpre = Cpre.tensor_size();
-    	TensorSize<dim> t_size_Cpost;
+        const TensorSize<dim> t_size_Cpre = Cpre.tensor_size();
+        TensorSize<dim> t_size_Cpost;
 
-    	TensorSize<dim> t_size_alpha_post;
-    	for (Index i = 0 ; i < dim-1 ; ++i)
-    	{
-    		t_size_alpha_post(i) = t_size_Cpre(i);
-    		t_size_Cpost(i) = t_size_alpha_post(i);
-    	}
-    	t_size_alpha_post(dim-1) = omega_B_1d[dim-1].get_num_functions();
-		t_size_Cpost(dim-1) = t_size_alpha_post(dim-1);
+        TensorSize<dim> t_size_alpha_post;
+        for (Index i = 0 ; i < dim-1 ; ++i)
+        {
+            t_size_alpha_post(i) = t_size_Cpre(i);
+            t_size_Cpost(i) = t_size_alpha_post(i);
+        }
+        t_size_alpha_post(dim-1) = omega_B_1d[dim-1].get_num_functions();
+        t_size_Cpost(dim-1) = t_size_alpha_post(dim-1);
 
 
-    	const TensorIndex<dim> wgt_alpha_post = MultiArrayUtils<dim>::compute_weight(t_size_alpha_post);
+        const TensorIndex<dim> wgt_alpha_post = MultiArrayUtils<dim>::compute_weight(t_size_alpha_post);
 
-    	const Size f_size_alpha_post = t_size_alpha_post.flat_size();
-		TensorIndex<dim> t_id_Cpre;
+        const Size f_size_alpha_post = t_size_alpha_post.flat_size();
+        TensorIndex<dim> t_id_Cpre;
 
-		const Index n_quad_pts = t_size_Cpre(dir);
-    	const auto & w_times_B = omega_B_1d[dir];
+        const Index n_quad_pts = t_size_Cpre(dir);
+        const auto &w_times_B = omega_B_1d[dir];
 
-    	Index f_id_Cpost = 0;
+        Index f_id_Cpost = 0;
         for (Index f_id_alpha_post = 0 ; f_id_alpha_post < f_size_alpha_post ; ++f_id_alpha_post)
         {
-        	const TensorIndex<dim> t_id_alpha_post =
-        			MultiArrayUtils<dim>::flat_to_tensor_index(f_id_alpha_post,wgt_alpha_post);
+            const TensorIndex<dim> t_id_alpha_post =
+                MultiArrayUtils<dim>::flat_to_tensor_index(f_id_alpha_post,wgt_alpha_post);
 
-        	const Index alpha = t_id_alpha_post(dim-1);
-        	const auto w_times_B_alpha = w_times_B.get_function_view(alpha);
+            const Index alpha = t_id_alpha_post(dim-1);
+            const auto w_times_B_alpha = w_times_B.get_function_view(alpha);
 
 
-        	for (int i = 0 ; i < dir ;++ i)
-        		t_id_Cpre(i) = t_id_alpha_post(i);
+            for (int i = 0 ; i < dir ; ++ i)
+                t_id_Cpre(i) = t_id_alpha_post(i);
 
-        	Real sum = 0.0;
-        	for (int pt = 0 ; pt < n_quad_pts ; ++pt)
-        	{
-        		t_id_Cpre(dir) = pt;
-        		sum += w_times_B_alpha[pt] * Cpre(t_id_Cpre);
-        	}
-        	integral_rhs(f_id_Cpost) = sum;
-        	f_id_Cpost++;
+            Real sum = 0.0;
+            for (int pt = 0 ; pt < n_quad_pts ; ++pt)
+            {
+                t_id_Cpre(dir) = pt;
+                sum += w_times_B_alpha[pt] * Cpre(t_id_Cpre);
+            }
+            integral_rhs(f_id_Cpost) = sum;
+            f_id_Cpost++;
         } // end loop f_id_alpha_post
 
     }
@@ -871,7 +871,7 @@ public:
         const TensorSize<dim> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
         const DynamicMultiArray<Real,3> &Cpre,
-    	DenseMatrix &local_mass_matrix) const
+        DenseMatrix &local_mass_matrix) const
     {
         const int k = dim-r+1;
 
@@ -912,7 +912,7 @@ public:
         const Size f_size_beta_1_km1  = t_size_beta_1_km1.flat_size();
 
 
-        const auto & Jk = J[k-1];
+        const auto &Jk = J[k-1];
         TensorSize<3> t_size_Jk = Jk.tensor_size();
         Assert(t_size_Jk(0) == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk(0),t_size_theta[k-1]));
         Assert(t_size_Jk(1) == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk(1),t_size_alpha[k-1]));
@@ -922,11 +922,11 @@ public:
 
         const TensorSize<3> t_size_Cpre = Cpre.tensor_size();
         Assert(t_size_Cpre(0) == t_size_theta_k_d.flat_size(),
-        		ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
+               ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
         Assert(t_size_Cpre(1) == t_size_alpha_1_km1.flat_size(),
-        		ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
+               ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
         Assert(t_size_Cpre(2) == t_size_beta_1_km1.flat_size(),
-        		ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
+               ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
         TensorIndex<3> t_wgt_Cpre = MultiArrayUtils<3>::compute_weight(t_size_Cpre);
 
 
@@ -967,20 +967,20 @@ public:
                             tid_Cpost[0] = 0 ;
                             for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
                             {
-                            	const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
+                                const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
 
-                            	const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
+                                const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
 
-                            	const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
+                                const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
 
                                 Cpost(f_id_Cpost) = std::inner_product(
-                                                  &Jk(f_id_Jk),
-                                                  &Jk(f_id_Jk)+t_size_theta[k-1],
-                                                  &Cpre(f_id_Cpre),
-                                                  0.0);
+                                                        &Jk(f_id_Jk),
+                                                        &Jk(f_id_Jk)+t_size_theta[k-1],
+                                                        &Cpre(f_id_Cpre),
+                                                        0.0);
 
-                            	tid_Cpost[0]++;
-                            	tid_Cpre [0] += t_size_theta[k-1];
+                                tid_Cpost[0]++;
+                                tid_Cpre [0] += t_size_theta[k-1];
                             } //end loop flat_theta_k_1
 
                             tid_Cpost[1]++;
@@ -1049,21 +1049,21 @@ public:
                     tid_Cpost[0] = 0;
                     for (Index fid_theta_kp1_d = 0 ; fid_theta_kp1_d < f_size_theta_kp1_d ; ++fid_theta_kp1_d)
                     {
-                    	const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
+                        const Index f_id_Cpost = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpost,t_wgt_Cpost);
 
-                    	const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
+                        const Index f_id_Cpre = MultiArrayUtils<3>::tensor_to_flat_index(tid_Cpre,t_wgt_Cpre);
 
-                    	const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
+                        const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
 
                         Cpost(f_id_Cpost) = std::inner_product(
-                                          &Jk(f_id_Jk),
-                                          &Jk(f_id_Jk)+t_size_theta[k-1],
-                                          &Cpre(f_id_Cpre),
-                                          0.0);
+                                                &Jk(f_id_Jk),
+                                                &Jk(f_id_Jk)+t_size_theta[k-1],
+                                                &Cpre(f_id_Cpre),
+                                                0.0);
 
 
-                    	tid_Cpost[0]++;
-                    	tid_Cpre [0] += t_size_theta[k-1];
+                        tid_Cpost[0]++;
+                        tid_Cpre [0] += t_size_theta[k-1];
                     } //end loop flat_theta_k_1
 
                 }// end loop fid_alpha_1_k
@@ -1075,12 +1075,12 @@ public:
 
         MassMatrixIntegrator<dim,r-1> mass_matrix_integrator;
         mass_matrix_integrator(
-        		   is_symmetric,
-                   t_size_theta,
-                   t_size_alpha,
-                   t_size_beta,
-                   J,Cpost,
-                   local_mass_matrix);
+            is_symmetric,
+            t_size_theta,
+            t_size_alpha,
+            t_size_beta,
+            J,Cpost,
+            local_mass_matrix);
     }
 };
 
@@ -1096,7 +1096,7 @@ public:
         const TensorSize<dim> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
         const DynamicMultiArray<Real,3> &Cpre,
-    	DenseMatrix & local_mass_matrix) const
+        DenseMatrix &local_mass_matrix) const
     {
         const int k = dim;
 
@@ -1136,7 +1136,7 @@ public:
         const Size f_size_beta_1_km1  = t_size_beta_1_km1.flat_size();
 
 
-        const auto & Jk = J[k-1];
+        const auto &Jk = J[k-1];
         TensorSize<3> t_size_Jk = Jk.tensor_size();
         Assert(t_size_Jk(0) == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk(0),t_size_theta[k-1]));
         Assert(t_size_Jk(1) == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk(1),t_size_alpha[k-1]));
@@ -1146,11 +1146,11 @@ public:
 
         const TensorSize<3> t_size_Cpre = Cpre.tensor_size();
         Assert(t_size_Cpre(0) == t_size_theta_k_d.flat_size(),
-        		ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
+               ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
         Assert(t_size_Cpre(1) == t_size_alpha_1_km1.flat_size(),
-        		ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
+               ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
         Assert(t_size_Cpre(2) == t_size_beta_1_km1.flat_size(),
-        		ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
+               ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
         TensorIndex<3> t_wgt_Cpre = MultiArrayUtils<3>::compute_weight(t_size_Cpre);
 
 
@@ -1163,9 +1163,9 @@ public:
         const Size f_size_beta_1_k = t_size_beta_1_k.flat_size();
 
         Assert(local_mass_matrix.get_num_rows() == f_size_beta_1_k,
-        		ExcDimensionMismatch(local_mass_matrix.get_num_rows(),f_size_beta_1_k));
+               ExcDimensionMismatch(local_mass_matrix.get_num_rows(),f_size_beta_1_k));
         Assert(local_mass_matrix.get_num_cols() == f_size_alpha_1_k,
-        		ExcDimensionMismatch(local_mass_matrix.get_num_cols(),f_size_alpha_1_k));
+               ExcDimensionMismatch(local_mass_matrix.get_num_cols(),f_size_alpha_1_k));
 
         if (!is_symmetric)
         {
@@ -1197,11 +1197,11 @@ public:
                             const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
 
                             local_mass_matrix(f_id_test,f_id_trial) =
-                            		std::inner_product(
-                                              &Jk(f_id_Jk),
-                                              &Jk(f_id_Jk)+t_size_theta[k-1],
-                                              &Cpre(f_id_Cpre),
-                                              0.0);
+                                std::inner_product(
+                                    &Jk(f_id_Jk),
+                                    &Jk(f_id_Jk)+t_size_theta[k-1],
+                                    &Cpre(f_id_Cpre),
+                                    0.0);
                         } // end loop alpha_k
                     } // end loop flat_alpha_k_1
 
@@ -1262,11 +1262,11 @@ public:
                     const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
 
                     local_mass_matrix(fid_beta_1_k,fid_alpha_1_k) =
-                    		std::inner_product(
-                                          &Jk(f_id_Jk),
-                                          &Jk(f_id_Jk)+t_size_theta[k-1],
-                                          &Cpre(f_id_Cpre),
-                                          0.0);
+                        std::inner_product(
+                            &Jk(f_id_Jk),
+                            &Jk(f_id_Jk)+t_size_theta[k-1],
+                            &Cpre(f_id_Cpre),
+                            0.0);
 
                 }// end loop fid_alpha_1_k
 
@@ -1289,16 +1289,16 @@ class MassMatrixIntegrator<1,1>
 {
 public:
     void operator()(
-    	const bool is_symmetric,
+        const bool is_symmetric,
         const TensorSize<1> &t_size_theta,
         const TensorSize<1> &t_size_alpha,
         const TensorSize<1> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,1> &J,
         const DynamicMultiArray<Real,3> &C,
-    	DenseMatrix & local_mass_matrix) const
+        DenseMatrix &local_mass_matrix) const
     {
-    	const Size n_basis_test = local_mass_matrix.get_num_rows();
-    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+        const Size n_basis_test = local_mass_matrix.get_num_rows();
+        const Size n_basis_trial = local_mass_matrix.get_num_cols();
 
         Assert(t_size_alpha.flat_size() == n_basis_trial,
                ExcDimensionMismatch(t_size_alpha.flat_size(),n_basis_trial));
@@ -1381,10 +1381,10 @@ public:
         const TensorSize<2> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,2> &J,
         const DynamicMultiArray<Real,3> &C,
-    	DenseMatrix & local_mass_matrix) const
+        DenseMatrix &local_mass_matrix) const
     {
-    	const Size n_basis_test = local_mass_matrix.get_num_rows();
-    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+        const Size n_basis_test = local_mass_matrix.get_num_rows();
+        const Size n_basis_trial = local_mass_matrix.get_num_cols();
 
         Assert(t_size_alpha.flat_size() == n_basis_trial,
                ExcDimensionMismatch(t_size_alpha.flat_size(),n_basis_trial));
@@ -1531,10 +1531,10 @@ public:
         const TensorSize<3> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,3> &J,
         const DynamicMultiArray<Real,3> &C,
-        DenseMatrix & local_mass_matrix) const
+        DenseMatrix &local_mass_matrix) const
     {
-    	const Size n_basis_test = local_mass_matrix.get_num_rows();
-    	const Size n_basis_trial = local_mass_matrix.get_num_cols();
+        const Size n_basis_test = local_mass_matrix.get_num_rows();
+        const Size n_basis_trial = local_mass_matrix.get_num_cols();
 
         Assert(t_size_alpha.flat_size() == n_basis_trial,
                ExcDimensionMismatch(t_size_alpha.flat_size(),n_basis_trial));
@@ -1764,7 +1764,7 @@ projection_l2_bernstein_basis(
     const ValueVector<Real> &func_to_proj_at_pts) const -> DynamicMultiArray<Real,dim>
 {
     Assert(inv_B_proj_.get_num_rows() == inv_B_proj_.get_num_cols(),
-    		ExcDimensionMismatch(inv_B_proj_.get_num_rows(),inv_B_proj_.get_num_cols()));
+    ExcDimensionMismatch(inv_B_proj_.get_num_rows(),inv_B_proj_.get_num_cols()));
 
     const Size n_basis = inv_B_proj_.get_num_rows();
 
@@ -1776,20 +1776,20 @@ projection_l2_bernstein_basis(
         n_points_1D(i) = w_times_B_proj_1D_[i].get_num_points();
 
         Assert(n_points_1D(i) == proj_quad_.get_num_points_direction()(i),
-               ExcDimensionMismatch(n_points_1D(i),proj_quad_.get_num_points_direction()(i)));
+        ExcDimensionMismatch(n_points_1D(i),proj_quad_.get_num_points_direction()(i)));
     }
 
     Assert(n_basis_1D.flat_size() == n_basis,
-           ExcDimensionMismatch(n_basis_1D.flat_size(),n_basis));
+    ExcDimensionMismatch(n_basis_1D.flat_size(),n_basis));
 
 
     const Size n_points = n_points_1D.flat_size();
     Assert(func_to_proj_at_pts.size() == n_points,
-           ExcDimensionMismatch(func_to_proj_at_pts.size(),n_points));
+    ExcDimensionMismatch(func_to_proj_at_pts.size(),n_points));
 
     DynamicMultiArray<Real,dim> coeffs_to_project(n_points_1D);
     for (Index i = 0 ; i < n_points ; ++i)
-    	coeffs_to_project(i) = func_to_proj_at_pts[i] ;
+        coeffs_to_project(i) = func_to_proj_at_pts[i] ;
 
 
     DenseVector integral_rhs(n_basis);
@@ -1825,9 +1825,9 @@ evaluate_moments_op_u_v(
 
     for (int dir = 0 ; dir < dim ; ++dir)
     {
-    	const auto & w_times_bernst = w_times_B_proj_1D_[dir];
-    	const auto & phi_test  = phi_1D_test [dir];
-    	const auto & phi_trial = phi_1D_trial[dir];
+        const auto &w_times_bernst = w_times_B_proj_1D_[dir];
+        const auto &phi_test  = phi_1D_test [dir];
+        const auto &phi_trial = phi_1D_trial[dir];
 
         const Size n_basis_projection = w_times_bernst.get_num_functions();
         const Size n_basis_test  = phi_test.get_num_functions();
@@ -1838,14 +1838,14 @@ evaluate_moments_op_u_v(
         moments1D_tensor_size[1] = n_basis_test;
         moments1D_tensor_size[2] = n_basis_trial;
 
-        auto & moments1D = moments[dir];
+        auto &moments1D = moments[dir];
         moments1D.resize(moments1D_tensor_size);
 
         const Size n_pts = w_times_bernst.get_num_points();
         Assert(phi_test.get_num_points() == n_pts,
-               ExcDimensionMismatch(phi_test.get_num_points(),n_pts));
+        ExcDimensionMismatch(phi_test.get_num_points(),n_pts));
         Assert(phi_trial.get_num_points() == n_pts,
-               ExcDimensionMismatch(phi_trial.get_num_points(),n_pts));
+        ExcDimensionMismatch(phi_trial.get_num_points(),n_pts));
 
         vector<Real> phi_mu1_mu2(n_pts);
 
@@ -1883,22 +1883,22 @@ template<class PhysSpaceTest, class PhysSpaceTrial>
 inline
 EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
 EllipticOperatorsSumFactorizationIntegration(
-		const TensorSize<dim> &projection_degree,
-		const Quadrature<dim> &projection_quadrature)
-		:
-		EllipticOperators<PhysSpaceTest,PhysSpaceTrial>(),
-		proj_degree_(projection_degree),
-		proj_quad_(projection_quadrature)
+    const TensorSize<dim> &projection_degree,
+    const Quadrature<dim> &projection_quadrature)
+    :
+    EllipticOperators<PhysSpaceTest,PhysSpaceTrial>(),
+    proj_degree_(projection_degree),
+    proj_quad_(projection_quadrature)
 {
     //-----------------------------------------------------------------
     std::array<DenseMatrix,dim> B_proj_1D;
     for (int i = 0 ; i < dim ; ++i)
     {
-    	n_bernst_1D_[i] = proj_degree_[i]+1;
+        n_bernst_1D_[i] = proj_degree_[i]+1;
 
         // values of the one-dimensional Bernstein basis at the projection pts
         B_proj_1D[i] = BernsteinBasis::evaluate(
-        				   proj_degree_[i],
+                           proj_degree_[i],
                            proj_quad_.get_points().get_data_direction(i));
 
         Assert(n_bernst_1D_[i] == B_proj_1D[i].size1(),
@@ -1945,19 +1945,19 @@ EllipticOperatorsSumFactorizationIntegration(
 
     for (int dir = 0 ; dir < dim ; ++dir)
     {
-    	B_proj_1D[dir].resize(n_bernst_1D_[dir],n_bernst_1D_[dir]);
+        B_proj_1D[dir].resize(n_bernst_1D_[dir],n_bernst_1D_[dir]);
 
-    	const int q = proj_degree_[dir];
-    	for (int i = 0 ; i < n_bernst_1D_[dir] ; ++i)
-    	{
-    		const Real tmp = binomial_coefficient<double>(q,i) / (2.0 * q + 1.0);
+        const int q = proj_degree_[dir];
+        for (int i = 0 ; i < n_bernst_1D_[dir] ; ++i)
+        {
+            const Real tmp = binomial_coefficient<double>(q,i) / (2.0 * q + 1.0);
 
-    		for (int j = 0 ; j < n_bernst_1D_[dir] ; ++j)
-    		{
-    			B_proj_1D[dir](i,j) =
-    					tmp / binomial_coefficient<double>(2*q,i+j) * binomial_coefficient<double>(q,j) ;
-    		}
-    	}
+            for (int j = 0 ; j < n_bernst_1D_[dir] ; ++j)
+            {
+                B_proj_1D[dir](i,j) =
+                    tmp / binomial_coefficient<double>(2*q,i+j) * binomial_coefficient<double>(q,j) ;
+            }
+        }
     } // end loop dir
 
 
@@ -1967,18 +1967,18 @@ EllipticOperatorsSumFactorizationIntegration(
     TensorIndex<dim> wgt_B_proj = MAUtils::compute_weight(n_bernst_1D_);
     for (Size row = 0 ; row < n_basis_proj_ ; ++row)
     {
-    	const auto row_tensor_id = MAUtils::flat_to_tensor_index(row,wgt_B_proj);
+        const auto row_tensor_id = MAUtils::flat_to_tensor_index(row,wgt_B_proj);
 
-    	for (Size col = 0 ; col < n_basis_proj_ ; ++col)
-    	{
-    		const auto col_tensor_id = MAUtils::flat_to_tensor_index(col,wgt_B_proj);
+        for (Size col = 0 ; col < n_basis_proj_ ; ++col)
+        {
+            const auto col_tensor_id = MAUtils::flat_to_tensor_index(col,wgt_B_proj);
 
-   			Real tmp = 1.0;
-   			for (int k = 0 ; k < dim ; ++k)
-   				tmp *= B_proj_1D[k](row_tensor_id[k],col_tensor_id[k]);
+            Real tmp = 1.0;
+            for (int k = 0 ; k < dim ; ++k)
+                tmp *= B_proj_1D[k](row_tensor_id[k],col_tensor_id[k]);
 
-    		B_proj_(row,col) = tmp;
-    	} //end loop col
+            B_proj_(row,col) = tmp;
+        } //end loop col
     } //end loop row
 
     const auto end_bernstein_mass_matrix = Clock::now();
@@ -2010,14 +2010,14 @@ inline
 void
 EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
 eval_operator_u_v(
-		const ElemTest &elem_test,
-		const ElemTrial &elem_trial,
-		const ValueVector<Real> &coeffs,
-		DenseMatrix &operator_u_v) const
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const ValueVector<Real> &coeffs,
+    DenseMatrix &operator_u_v) const
 {
-	//TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
-	// the physical space iterators have the same grid, map, reference space, index, etc.
-	Assert(&elem_test == &elem_trial,ExcNotImplemented());
+    //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
+    // the physical space iterators have the same grid, map, reference space, index, etc.
+    Assert(&elem_test == &elem_trial,ExcNotImplemented());
 
 
 
@@ -2093,33 +2093,33 @@ eval_operator_u_v(
     // getting the 1D values for the test space -- begin
     array< ValueTable<ValueType1D>,dim> phi_1D_test;
     {
-    	const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
+        const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
 
-    	const auto &quad_points = ref_elem_accessor.get_quad_points();
-    	const auto n_quad_points = quad_points.get_num_points_direction();
+        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto n_quad_points = quad_points.get_num_points_direction();
 
-    	const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
-    	for (int i = 0 ; i < dim ; ++i)
-    		phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
+        for (int i = 0 ; i < dim ; ++i)
+            phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
 
-    	for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_test_flat ; ++flat_fn_id)
-    	{
-    		const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_test);
+        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_test_flat ; ++flat_fn_id)
+        {
+            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_test);
 
-    		const auto &bspline1D_values =
-    				bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+            const auto &bspline1D_values =
+                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
 
-    		for (int i = 0 ; i < dim ; ++i)
-    		{
-    			auto phi_1D_ifn = phi_1D_test[i].get_function_view(tensor_fn_id[i]);
+            for (int i = 0 ; i < dim ; ++i)
+            {
+                auto phi_1D_ifn = phi_1D_test[i].get_function_view(tensor_fn_id[i]);
 
-    			const auto &bsp_val = bspline1D_values[i];
+                const auto &bsp_val = bspline1D_values[i];
 
-    			for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-    				phi_1D_ifn[jpt] = bsp_val(jpt);
-    		}
-    	}
+                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+                    phi_1D_ifn[jpt] = bsp_val(jpt);
+            }
+        }
     }
     // getting the 1D values for the test space -- end
     //--------------------------------------------------------------------------
@@ -2129,33 +2129,33 @@ eval_operator_u_v(
     // getting the 1D values for the trial space -- begin
     array< ValueTable<ValueType1D>,dim> phi_1D_trial;
     {
-    	const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
+        const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
 
-    	const auto &quad_points = ref_elem_accessor.get_quad_points();
-    	const auto n_quad_points = quad_points.get_num_points_direction();
+        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto n_quad_points = quad_points.get_num_points_direction();
 
-    	const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
 
-    	for (int i = 0 ; i < dim ; ++i)
-    		phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
+        for (int i = 0 ; i < dim ; ++i)
+            phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
 
-    	for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_trial_flat ; ++flat_fn_id)
-    	{
-    		const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_trial);
+        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_trial_flat ; ++flat_fn_id)
+        {
+            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_trial);
 
-    		const auto &bspline1D_values =
-    				bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+            const auto &bspline1D_values =
+                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
 
-    		for (int i = 0 ; i < dim ; ++i)
-    		{
-    			auto phi_1D_ifn =  phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
+            for (int i = 0 ; i < dim ; ++i)
+            {
+                auto phi_1D_ifn =  phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
 
-    			const auto &bsp_val = bspline1D_values[i];
+                const auto &bsp_val = bspline1D_values[i];
 
-    			for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-    				phi_1D_ifn[jpt] = bsp_val(jpt);
-    		}
-    	}
+                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+                    phi_1D_ifn[jpt] = bsp_val(jpt);
+            }
+        }
     }
     // getting the 1D values for the trial space -- end
     //--------------------------------------------------------------------------
@@ -2175,16 +2175,16 @@ eval_operator_u_v(
 
     // checks that the mapping used in the test space and in the trial space is the same
     Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
-    		elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
-    		ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
+           elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+           ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
 
 
     //--------------------------------------------------------------------------
     // checks that the elements on the grid are the same
     using GridElem = CartesianGridElementAccessor<dim>;
     Assert(static_cast<const GridElem &>(elem_test.get_ref_space_accessor()) ==
-    	   static_cast<const GridElem &>(elem_trial.get_ref_space_accessor()),
-    	   ExcMessage("Different elements for test space and trial space."));
+           static_cast<const GridElem &>(elem_trial.get_ref_space_accessor()),
+           ExcMessage("Different elements for test space and trial space."));
     //--------------------------------------------------------------------------
 
 
@@ -2192,12 +2192,12 @@ eval_operator_u_v(
     const auto det_DF = elem_test.get_measures() ;
 
     Assert(det_DF.size() == coeffs.size(),
-    		ExcDimensionMismatch(det_DF.size(), coeffs.size()));
+           ExcDimensionMismatch(det_DF.size(), coeffs.size()));
     Size n_points = det_DF.size();
 
     ValueVector<Real> c_times_detDF(n_points);
     for (Index ipt = 0 ; ipt < n_points ; ++ipt)
-    	c_times_detDF[ipt] = coeffs[ipt] * det_DF[ipt];
+        c_times_detDF[ipt] = coeffs[ipt] * det_DF[ipt];
 
     // here we project the determinant Jacobian on a Bernstein polynomials space
     const auto K = projection_l2_bernstein_basis(c_times_detDF);
@@ -2217,7 +2217,7 @@ eval_operator_u_v(
     const auto start_compute_moments = Clock::now();
 
     const array<Real,dim> length_element_edge =
-    		elem_test.get_ref_space_accessor().get_coordinate_lengths();
+        elem_test.get_ref_space_accessor().get_coordinate_lengths();
 
     const auto moments = evaluate_moments_op_u_v(phi_1D_test,phi_1D_trial,length_element_edge);
 
@@ -2247,7 +2247,7 @@ eval_operator_u_v(
 
     MassMatrixIntegrator<dim> integrate_mass_matrix;
     integrate_mass_matrix(is_symmetric,
-    					  n_basis_projection,
+                          n_basis_projection,
                           n_basis_trial,
                           n_basis_test,
                           moments,
@@ -2263,7 +2263,7 @@ eval_operator_u_v(
 
 
     Duration elapsed_time_assemble = elapsed_time_sum_factorization +
-    		elapsed_time_compute_moments + elapsed_time_projection + elapsed_time_initialization ;
+                                     elapsed_time_compute_moments + elapsed_time_projection + elapsed_time_initialization ;
     std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
 
 
@@ -2331,7 +2331,7 @@ assemble()
     using SpaceTest = Space;
     using SpaceTrial = Space;
     EllipticOperatorsSumFactorizationIntegration<SpaceTest,SpaceTrial>
-    	elliptic_operators_sf(TensorSize<dim>(proj_deg_),quad_proj_);
+    elliptic_operators_sf(TensorSize<dim>(proj_deg_),quad_proj_);
 
     EllipticOperatorsStandardIntegration<SpaceTest,SpaceTrial> elliptic_operators_std;
     for (; elem != elem_end; ++elem)
@@ -2344,8 +2344,8 @@ assemble()
         //----------------------------------------------------
         // multiplicative coefficients of the mass matrix term.
         ValueVector<Real> c_mass(n_quad_points.flat_size());
-        for ( auto & c : c_mass)
-        	c = 1.0;
+        for (auto & c : c_mass)
+            c = 1.0;
         //----------------------------------------------------
 
 
@@ -2421,7 +2421,7 @@ do_test()
     string time_mass_orig = "Time mass-matrix orig";
 
     int degree_min = 1;
-    int degree_max = 5;
+    int degree_max = 10;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
