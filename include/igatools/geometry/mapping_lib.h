@@ -74,8 +74,6 @@ public:
     create(const std::shared_ptr<GridType> grid,
            const GradientType &A, const ValueType &b);
 
-    virtual std::shared_ptr< Mapping<dim_,codim_> > clone() const override final;
-
     ValueFlags required_flags() const;
 
     void set_element(const CartesianGridElementAccessor<dim> &elem);
@@ -140,8 +138,6 @@ public:
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<GridType> grid);
 
-    virtual std::shared_ptr< Mapping<dim_,0> > clone() const override final;
-
     ValueFlags required_flags() const;
 
     void set_element(const CartesianGridElementAccessor<dim> &elem);
@@ -201,8 +197,6 @@ public:
     SphereMapping(const std::shared_ptr<GridType> grid, const Real R = 1.);
 
     static std::shared_ptr<base_t> create(const std::shared_ptr<GridType> grid);
-
-    virtual std::shared_ptr< Mapping<dim_,1> > clone() const override final;
 
     ValueFlags required_flags() const;
 
@@ -342,8 +336,6 @@ public:
         const Real r1,
         const Real h1,
         const Real theta1);
-
-    virtual std::shared_ptr< Mapping<3,0> > clone() const override final;
 
     ValueFlags required_flags() const;
 

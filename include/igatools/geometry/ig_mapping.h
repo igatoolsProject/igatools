@@ -80,9 +80,6 @@ public:
      */
     IgMapping(const self_t &map);
 
-
-    virtual std::shared_ptr<base_t> clone() const override;
-
     /**
      * Copy assignment operator.
      */

@@ -133,19 +133,22 @@ init_values(const ValueFlags flag,
 {
     Assert((flag|admisible_flag) == admisible_flag,
            ExcFillFlagNotSupported(admisible_flag, flag));
+    Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()) );
+
 
     length_cache_->reset(*this->get_grid());
-
 
     GridElemValueFlagsHandler elem_flags_handler(flag);
     GridFaceValueFlagsHandler face_flags_handler(flag);
 
-    elem_values_.reset(elem_flags_handler,quad);
+    elem_values_.reset(elem_flags_handler, quad);
 
     Index face_id = 0 ;
     for (auto& face_value : face_values_)
         face_value.reset(face_flags_handler, quad, face_id++);
 }
+
+
 
 template <int dim_>
 void

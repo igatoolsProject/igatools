@@ -81,11 +81,6 @@ public:
     void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
 
     /**
-     * Return a Mapping that is a deep copy of the caller object.
-     */
-    virtual std::shared_ptr<Mapping<dim, codim>> clone() const;
-
-    /**
      * Prints internal information about the mapping.
      * @note Mostly used for debugging and testing.
      */

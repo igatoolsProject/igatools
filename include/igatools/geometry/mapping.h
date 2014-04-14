@@ -117,8 +117,8 @@ public:
     virtual ~Mapping();
 
     /**
-     * Copy constructor. The new object has a deep copy (i.e. a new instance) of the
-     * grid held by the copied object @p map.
+     * Copy constructor. The new object has a deep copy (i.e. a new instance)
+     * of the grid held by the copied object @p map.
      */
     Mapping(const Mapping<dim_,codim_> &map);
     ///@}
@@ -129,12 +129,6 @@ public:
     /** Copy assignment operator. Not allowed to be used. */
     Mapping<dim_,codim_> &operator=(const Mapping<dim_,codim_> &map) = delete;
     ///@}
-
-    /**
-     * Return a Mapping that is a deep copy of the caller object.
-     */
-    virtual std::shared_ptr<Mapping<dim_,codim_>> clone() const = 0;
-
 
     /** @name Mapping as a standard function */
     ///@{
