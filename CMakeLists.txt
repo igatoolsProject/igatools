@@ -50,7 +50,7 @@ macro_ensure_out_of_build_install()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # If the prefix is not provided by the user but the
-# enviroment variable IGATOOLS_PREFIX exists the we use it
+# enviroment variable IGATOOLS_PREFIX exists then we use it
 # instead of the default prefix
 if((DEFINED ENV{IGATOOLS_PREFIX}) AND (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT))
 set(CMAKE_INSTALL_PREFIX 
