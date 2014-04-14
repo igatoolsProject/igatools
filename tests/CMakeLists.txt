@@ -31,8 +31,9 @@ message("Configuring unit tests")
 set(CMAKE_PREFIX_PATH ${iga_BINARY_DIR} ${CMAKE_PREFIX_PATH})
 
 find_package(igatools REQUIRED)
-include_directories(${IGA_INCLUDE_DIRS})
-link_directories(${IGA_LIBRARY_DIR})
+
+include_directories(${IGATOOLS_INCLUDE_DIRS})
+link_directories(${IGATOOLS_LIBRARY_DIR})
 
 
 #--------------------------------------------------------------
@@ -48,7 +49,7 @@ foreach(dir ${test_dirs})
     get_filename_component(name ${filename} NAME_WE)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${dir}/${name})
     add_executable(${dir}/${name}.exe EXCLUDE_FROM_ALL ${dir}/${name}.cpp)
-    target_link_libraries (${dir}/${name}.exe  ${IGA_LIBRARIES} )
+    target_link_libraries (${dir}/${name}.exe  ${IGATOOLS_LIBRARIES} )
   endforeach()
 endforeach()
 #--------------------------------------------------------------
