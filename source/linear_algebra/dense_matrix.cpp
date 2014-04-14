@@ -22,6 +22,8 @@
 #include <igatools/base/exceptions.h>
 #include <boost/numeric/ublas/lu.hpp>
 
+#include <algorithm>
+
 IGA_NAMESPACE_OPEN
 
 DenseMatrix &
@@ -98,6 +100,66 @@ norm_frobenius() const
         }
 
     return sqrt(norm);
+}
+
+Real
+DenseMatrix::
+norm_max() const
+{
+    const Size n_rows = this->get_num_rows();
+    const Size n_cols = this->get_num_cols();
+
+    Real norm = 0.0;
+    for (Index row = 0 ; row < n_rows ; ++row)
+        for (Index col = 0 ; col < n_cols ; ++col)
+        {
+            const Real value = (*this)(row,col);
+            norm = std::max(std::abs(value),norm);
+        }
+
+    return norm;
+}
+
+Real
+DenseMatrix::
+norm_infinity() const
+{
+    const Size n_rows = this->get_num_rows();
+    const Size n_cols = this->get_num_cols();
+
+    Real norm = 0.0;
+    for (Index row = 0 ; row < n_rows ; ++row)
+    {
+        Real sum = 0.0;
+        for (Index col = 0 ; col < n_cols ; ++col)
+        {
+            const Real value = (*this)(row,col);
+            sum += std::abs(value);
+        }
+        norm = std::max(sum,norm);
+    }
+    return norm;
+}
+
+Real
+DenseMatrix::
+norm_one() const
+{
+    const Size n_rows = this->get_num_rows();
+    const Size n_cols = this->get_num_cols();
+
+    Real norm = 0.0;
+    for (Index col = 0 ; col < n_cols ; ++col)
+    {
+        Real sum = 0.0;
+        for (Index row = 0 ; row < n_rows ; ++row)
+        {
+            const Real value = (*this)(row,col);
+            sum += std::abs(value);
+        }
+        norm = std::max(sum,norm);
+    }
+    return norm;
 }
 
 
