@@ -870,6 +870,8 @@ public:
         const TensorSize<dim> &t_size_alpha,
         const TensorSize<dim> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
+        const array< ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
+        const array< ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
         const DynamicMultiArray<Real,3> &Cpre,
         DenseMatrix &local_mass_matrix) const
     {
@@ -1079,7 +1081,10 @@ public:
             t_size_theta,
             t_size_alpha,
             t_size_beta,
-            J,Cpost,
+            J,
+            phi_1D_test,
+            phi_1D_trial,
+            Cpost,
             local_mass_matrix);
     }
 };
@@ -1095,6 +1100,8 @@ public:
         const TensorSize<dim> &t_size_alpha,
         const TensorSize<dim> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,dim> &J,
+        const array< ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
+        const array< ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
         const DynamicMultiArray<Real,3> &Cpre,
         DenseMatrix &local_mass_matrix) const
     {
@@ -1282,7 +1289,7 @@ public:
     }
 };
 
-#define SPECIALIZED
+//#define SPECIALIZED
 #ifdef SPECIALIZED
 template <>
 class MassMatrixIntegrator<1,1>
@@ -1294,6 +1301,8 @@ public:
         const TensorSize<1> &t_size_alpha,
         const TensorSize<1> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,1> &J,
+        const array< ValueTable<Function<1>::ValueType>,1> &phi_1D_test,
+        const array< ValueTable<Function<1>::ValueType>,1> &phi_1D_trial,
         const DynamicMultiArray<Real,3> &C,
         DenseMatrix &local_mass_matrix) const
     {
@@ -1380,6 +1389,8 @@ public:
         const TensorSize<2> &t_size_alpha,
         const TensorSize<2> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,2> &J,
+        const array< ValueTable<Function<1>::ValueType>,2> &phi_1D_test,
+        const array< ValueTable<Function<1>::ValueType>,2> &phi_1D_trial,
         const DynamicMultiArray<Real,3> &C,
         DenseMatrix &local_mass_matrix) const
     {
@@ -1530,6 +1541,8 @@ public:
         const TensorSize<3> &t_size_alpha,
         const TensorSize<3> &t_size_beta,
         const array<DynamicMultiArray<Real,3>,3> &J,
+        const array< ValueTable<Function<1>::ValueType>,3> &phi_1D_test,
+        const array< ValueTable<Function<1>::ValueType>,3> &phi_1D_trial,
         const DynamicMultiArray<Real,3> &C,
         DenseMatrix &local_mass_matrix) const
     {
@@ -2251,6 +2264,8 @@ eval_operator_u_v(
                           n_basis_trial,
                           n_basis_test,
                           moments,
+                          phi_1D_test,
+                          phi_1D_trial,
                           C_0,
                           operator_u_v);
 
