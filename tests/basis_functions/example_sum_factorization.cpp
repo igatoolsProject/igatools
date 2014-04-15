@@ -167,10 +167,13 @@ public:
     using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
 
     static const int dim = PhysSpaceTest::dim;
+    static const int space_dim = PhysSpaceTest::space_dim;
 
     using Clock = chrono::high_resolution_clock;
     using TimePoint = chrono::time_point<Clock>;
     using Duration = chrono::duration<Real>;
+
+
 
     /**
      * Constructor. Builds an object that implements the method for computing several
@@ -1863,7 +1866,7 @@ eval_operator_u_v(
     const TimePoint end_coefficient_evaluation = Clock::now();
     const Duration elapsed_time_coefficient_evaluation =
         end_coefficient_evaluation - start_coefficient_evaluation;
-    std::cout << "Elapsed seconds coefficient evaluation = "
+    std::cout << "Elapsed seconds coefficient evaluation mass= "
               << elapsed_time_coefficient_evaluation.count() << std::endl;
     // Coefficient evaluation phase -- end
     //----------------------------------------------------
@@ -1958,8 +1961,364 @@ eval_operator_gradu_gradv(
     const vector<TMatrix<PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim>> &coeffs,
     DenseMatrix &operator_gradu_gradv) const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+
+    //----------------------------------------------------
+    // Assembly of the local stiffness matrix using sum-factorization -- begin
+    const TimePoint start_assembly_stiffness_matrix = Clock::now();
+
+    //--------------------------------------------------------------------------
+    const auto start_initialization = Clock::now();
+
+
+
+
+    //--------------------------------------------------------------------------
+    // getting the number of basis along each coordinate direction for the test and trial space
+
+    const Index comp = 0; // only scalar spaces for the moment
+
+    // test space -- begin
+    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorSize<dim> n_basis_elem_test;
+    for (int i = 0 ; i < dim ; ++i)
+        n_basis_elem_test(i) = degree_test(i) + 1;
+
+    const Size n_basis_test_flat = n_basis_elem_test.flat_size();
+    Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
+           ExcDimensionMismatch(n_basis_elem_test.flat_size(),elem_test.get_num_basis()));
+
+    const auto weight_basis_test = MultiArrayUtils<dim>::compute_weight(n_basis_elem_test);
+
+    const TensorSize<dim> n_basis_test = n_basis_elem_test;
+    // test space -- end
+
+
+    // trial space -- begin
+    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorSize<dim> n_basis_elem_trial;
+    for (int i = 0 ; i < dim ; ++i)
+        n_basis_elem_trial(i) = degree_trial(i) + 1;
+
+    const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
+    Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
+           ExcDimensionMismatch(n_basis_elem_trial.flat_size(),elem_trial.get_num_basis()));
+
+    const auto weight_basis_trial = MultiArrayUtils<dim>::compute_weight(n_basis_elem_trial);
+
+    const TensorSize<dim> n_basis_trial = n_basis_elem_trial;
+    // trial space -- end
+
+//    const Size n_basis = n_basis_elem.flat_size();
+    //--------------------------------------------------------------------------
+
+
+    using ValueType1D = Function<1>::ValueType;
+    using GradientType1D = Function<1>::GradientType;
+
+    //--------------------------------------------------------------------------
+    // getting the 1D values for the test space -- begin
+    array< ValueTable<ValueType1D>,dim> phi_1D_test;
+    array< ValueTable<ValueType1D>,dim> grad_phi_1D_test;
+    {
+        const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
+
+        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto n_quad_points = quad_points.get_num_points_direction();
+
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
+            grad_phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
+        }
+
+        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_test_flat ; ++flat_fn_id)
+        {
+            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_test);
+
+            const auto &bspline1D_values =
+                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+            const auto &bspline1D_gradients =
+                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(1);
+
+            for (int i = 0 ; i < dim ; ++i)
+            {
+                auto      phi_1D_ifn =      phi_1D_test[i].get_function_view(tensor_fn_id[i]);
+                auto grad_phi_1D_ifn = grad_phi_1D_test[i].get_function_view(tensor_fn_id[i]);
+
+                const auto &bsp_val  = bspline1D_values[i];
+                const auto &bsp_grad = bspline1D_gradients[i];
+
+                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+                {
+                    phi_1D_ifn[jpt] = bsp_val(jpt);
+                    grad_phi_1D_ifn[jpt] = bsp_grad(jpt);
+                }
+            }
+        }
+    }
+    // getting the 1D values for the test space -- end
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    // getting the 1D values for the trial space -- begin
+    array< ValueTable<ValueType1D>,dim> phi_1D_trial;
+    array< ValueTable<ValueType1D>,dim> grad_phi_1D_trial;
+    {
+        const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
+
+        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto n_quad_points = quad_points.get_num_points_direction();
+
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
+            grad_phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
+        }
+
+        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_trial_flat ; ++flat_fn_id)
+        {
+            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_trial);
+
+            const auto &bspline1D_values =
+                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
+            const auto &bspline1D_gradients =
+                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(1);
+
+            for (int i = 0 ; i < dim ; ++i)
+            {
+                auto      phi_1D_ifn =      phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
+                auto grad_phi_1D_ifn = grad_phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
+
+                const auto &bsp_val  = bspline1D_values[i];
+                const auto &bsp_grad = bspline1D_gradients[i];
+
+                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
+                {
+                    phi_1D_ifn[jpt] = bsp_val(jpt);
+                    grad_phi_1D_ifn[jpt] = bsp_grad(jpt);
+                }
+            }
+        }
+    }
+    // getting the 1D values for the trial space -- end
+    //--------------------------------------------------------------------------
+
+
+    const auto end_initialization = Clock::now();
+    const Duration elapsed_time_initialization = end_initialization - start_initialization;
+    std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
+    //--------------------------------------------------------------------------
+
+
+
+
+
+
+    //----------------------------------------------------
+    // Coefficient evaluation phase -- begin
+    const TimePoint start_coefficient_evaluation = Clock::now();
+
+
+    // checks that the mapping used in the test space and in the trial space is the same
+    Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
+           elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+           ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
+
+
+    // checks that the elements on the grid are the same
+    Assert(static_cast<const CartesianGridElementAccessor<dim> &>(elem_test.get_ref_space_accessor()) ==
+           static_cast<const CartesianGridElementAccessor<dim> &>(elem_trial.get_ref_space_accessor()),
+           ExcMessage("Different elements for test space and trial space."));
+
+
+    // performs the evaluation of the function DF^{-1} * C * DF^{-T} * det(DF) at the quadrature points
+    const auto &det_DF = elem_test.get_measures() ;
+
+    const auto &invDF = elem_test.get_push_forward_accessor().get_inv_gradients_map();
+
+    Size n_points = coeffs.size();
+    Assert(det_DF.size() == n_points,
+           ExcDimensionMismatch(det_DF.size(), n_points));
+    Assert(invDF.size() == n_points,
+           ExcDimensionMismatch(invDF.size(), n_points));
+
+
+    TensorSize<dim> n_points_1D = elem_test.get_ref_space_accessor().get_quad_points().get_num_points_direction();
+    Assert(n_points_1D.flat_size() == n_points,
+           ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
+
+//    LogStream out;
+    vector<TMatrix<dim,dim>> C_hat(n_points);
+    for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+    {
+        TMatrix<dim,dim> &C_hat_ipt = C_hat[ipt];
+
+        const TMatrix<space_dim,space_dim> C_ipt = coeffs[ipt] * det_DF[ipt];
+        const auto &invDF_ipt = invDF[ipt];
+//        out << "C at point " << ipt << "= " << C_ipt << endl;
+
+        for (Index r = 0 ; r < dim ; ++r)
+            for (Index s = 0 ; s < dim ; ++s)
+                for (Index k = 0 ; k < space_dim ; ++k)
+                    for (Index l = 0 ; l < space_dim ; ++l)
+                        C_hat_ipt[r][s] += invDF_ipt[k][r](0) * C_ipt[k][l] * invDF_ipt[l][s](0);
+
+
+//        out << "C_hat at point " << ipt << "= " << C_hat_ipt << endl;
+    }
+
+
+    const TimePoint end_coefficient_evaluation = Clock::now();
+    const Duration elapsed_time_coefficient_evaluation =
+        end_coefficient_evaluation - start_coefficient_evaluation;
+    std::cout << "Elapsed seconds coefficient evaluation stiffness = "
+              << elapsed_time_coefficient_evaluation.count() << std::endl;
+    // Coefficient evaluation phase -- end
+    //----------------------------------------------------
+
+
+
+
+
+
+    //----------------------------------------------------
+    // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
+    // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
+    const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
+
+    const array<Real,dim> length_element_edge =
+        elem_test.get_ref_space_accessor().get_coordinate_lengths();
+
+    const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
+                                            phi_1D_test,
+                                            phi_1D_trial,
+                                            elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                                            length_element_edge);
+
+    const auto w_gradphi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
+                                                phi_1D_test,
+                                                grad_phi_1D_trial,
+                                                elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                                                length_element_edge);
+
+    const auto w_phi1Dtrial_gradphi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
+                                                grad_phi_1D_test,
+                                                phi_1D_trial,
+                                                elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                                                length_element_edge);
+
+    const auto w_gradphi1Dtrial_gradphi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
+                                                    grad_phi_1D_test,
+                                                    grad_phi_1D_trial,
+                                                    elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                                                    length_element_edge);
+
+    const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
+    Duration elapsed_time_compute_phi1Dtest_phi1Dtrial =
+        end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
+    std::cout << "Elapsed seconds w * trial * test = "
+              << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
+    //----------------------------------------------------
+
+
+
+
+    //----------------------------------------------------
+    // Assembly of the local stiffness matrix using sum-factorization -- begin
+    const auto start_sum_factorization = Clock::now();
+    TensorSize<3> tensor_size_C0;
+    tensor_size_C0[0] = n_points_1D.flat_size(); // theta size
+    tensor_size_C0[1] = 1; // alpha size
+    tensor_size_C0[2] = 1; // beta size
+
+    DynamicMultiArray<Real,3> C0(tensor_size_C0);
+    const Size n_entries = tensor_size_C0.flat_size();
+
+    DenseMatrix operator_gradu_gradv_tmp(n_basis_test.flat_size(),n_basis_trial.flat_size());
+
+    array<DynamicMultiArray<Real,3>,dim> J;
+
+    for (Index k = 0 ; k < dim ; ++k)
+    {
+        for (Index l = 0 ; l < dim ; ++l)
+        {
+            for (Index i = 0 ; i < dim ; ++i)
+            {
+                if (i == k && i == l)
+                {
+                    J[i] = w_phi1Dtrial_phi1Dtest[i];
+                }
+                else if (i == k && i != l)
+                {
+                    J[i] = w_gradphi1Dtrial_phi1Dtest[i];
+                }
+                else if (i != k && i == l)
+                {
+                    J[i] = w_phi1Dtrial_gradphi1Dtest[i];
+                }
+                else if (i != k && i != l)
+                {
+                    J[i] = w_gradphi1Dtrial_gradphi1Dtest[i];
+                }
+            } // end loop i
+
+
+            Assert(n_entries == C_hat.size(),
+                   ExcDimensionMismatch(n_entries,C_hat.size()));
+            for (Index entry_id = 0 ; entry_id < n_entries ; ++entry_id)
+                C0(entry_id) = C_hat[entry_id][k][l];
+
+            operator_gradu_gradv_tmp.clear();
+
+
+            MassMatrixIntegrator<dim> integrate_mass_matrix;
+            integrate_mass_matrix(false, //non symmetric
+                                  n_points_1D,
+                                  n_basis_trial,
+                                  n_basis_test,
+                                  J,
+                                  C0,
+                                  operator_gradu_gradv_tmp);
+
+            operator_gradu_gradv += operator_gradu_gradv_tmp;
+
+        }
+
+    }
+
+
+
+    const auto end_sum_factorization = Clock::now();
+    Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
+    std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
+    // Assembly of the local stiffness matrix using sum-factorization -- end
+    //----------------------------------------------------
+
+
+    const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
+                                           elapsed_time_compute_phi1Dtest_phi1Dtrial +
+                                           elapsed_time_coefficient_evaluation +
+                                           elapsed_time_initialization ;
+    std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
+
+
+    const TimePoint end_assembly_stiffness_matrix = Clock::now();
+
+    const_cast<Duration &>(this->elapsed_time_operator_gradu_gradv_)
+        = end_assembly_stiffness_matrix - start_assembly_stiffness_matrix;
+    std::cout << "Elapsed seconds operator gradu_gradv sum-factorization= "
+              << this->elapsed_time_operator_gradu_gradv_.count() << std::endl;
+    // Assembly of the local stiffness matrix using sum-factorization -- end
+    //----------------------------------------------------
+
+
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
 template<int dim>

@@ -746,8 +746,8 @@ compose(const T1 &S, const T2 &T)
  *
  */
 template < class T >
-EnableIf<T::is_tensor,Transpose<T>>
-                                 transpose(const T &A)
+EnableIf<T::is_tensor,Transpose<T> >
+transpose(const T &A)
 {
     Transpose<T> B;
 
