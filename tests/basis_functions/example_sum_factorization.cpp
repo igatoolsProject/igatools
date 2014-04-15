@@ -187,6 +187,13 @@ public:
         const ValueVector<Real> &c,
         DenseMatrix &operator_u_v) const;
 
+
+    void eval_operator_gradu_gradv(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const vector<TMatrix<PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim>> &coeffs,
+        DenseMatrix &operator_gradu_gradv) const;
+
 private:
 
     /**
@@ -205,6 +212,7 @@ private:
         const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
         const TensorProductArray<dim> &quad_weights,
         const array<Real,dim> &length_element_edge) const;
+
 
 };
 
@@ -360,8 +368,6 @@ eval_operator_gradu_gradv(
 
 
 
-
-    const bool is_symmetric = this->test_same_space(elem_test,elem_trial);
 
     const Size n_basis_test  = elem_test .get_num_basis();
     const Size n_basis_trial = elem_trial.get_num_basis();
@@ -663,14 +669,14 @@ public:
 
 
 
-    Real get_elapsed_time_assembly_mass_matrix() const
+    Real get_elapsed_time_assembly_mass_matrix_sf() const
     {
-        return elapsed_time_assembly_mass_matrix_.count();
+        return elapsed_time_assembly_mass_matrix_sf_.count();
     }
 
-    Real get_elapsed_time_assembly_mass_matrix_old() const
+    Real get_elapsed_time_assembly_mass_matrix_std() const
     {
-        return elapsed_time_assembly_mass_matrix_old_.count();
+        return elapsed_time_assembly_mass_matrix_std_.count();
     }
 
 
@@ -681,11 +687,13 @@ private:
 
     int space_deg_;
 
-    chrono::duration<Real> elapsed_time_assembly_mass_matrix_;
+    chrono::duration<Real> elapsed_time_assembly_mass_matrix_sf_;
 
-    chrono::duration<Real> elapsed_time_assembly_mass_matrix_old_;
+    chrono::duration<Real> elapsed_time_assembly_mass_matrix_std_;
 
-    chrono::duration<Real> elapsed_time_assembly_stiffness_matrix_old_;
+    chrono::duration<Real> elapsed_time_assembly_stiffness_matrix_std_;
+
+    chrono::duration<Real> elapsed_time_assembly_stiffness_matrix_sf_;
 
 //    chrono::duration<Real> elapsed_time_compute_I_;
 
@@ -1939,6 +1947,21 @@ eval_operator_u_v(
 }
 
 
+
+template<class PhysSpaceTest, class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_gradu_gradv(
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const vector<TMatrix<PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim>> &coeffs,
+    DenseMatrix &operator_gradu_gradv) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
 template<int dim>
 void
 PoissonProblemSumFactorization<dim>::
@@ -1991,6 +2014,7 @@ assemble()
     DenseMatrix loc_mass_matrix_sf(n_basis,n_basis);
 
     DenseMatrix loc_stiffness_matrix_std(n_basis, n_basis);
+    DenseMatrix loc_stiffness_matrix_sf(n_basis, n_basis);
 
 
     using SpaceTest = Space;
@@ -2017,13 +2041,14 @@ assemble()
 
         //----------------------------------------------------
         // Assembly of the local mass matrix using sum-factorization -- begin
-        const TimePoint start_assembly_mass_matrix = Clock::now();
+        const TimePoint start_assembly_mass_matrix_sf = Clock::now();
 
         elliptic_operators_sf.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_sf);
 
-        const TimePoint end_assembly_mass_matrix = Clock::now();
+        const TimePoint end_assembly_mass_matrix_sf = Clock::now();
 
-        elapsed_time_assembly_mass_matrix_ = end_assembly_mass_matrix - start_assembly_mass_matrix;
+        elapsed_time_assembly_mass_matrix_sf_ =
+            end_assembly_mass_matrix_sf - start_assembly_mass_matrix_sf;
         // Assembly of the local mass matrix using sum-factorization -- end
         //----------------------------------------------------
 
@@ -2032,13 +2057,13 @@ assemble()
 
         //----------------------------------------------------
         // Assembly of the local mass matrix using the standard approach -- begin
-        const TimePoint start_assembly_mass_matrix_old = Clock::now();
+        const TimePoint start_assembly_mass_matrix_std = Clock::now();
 
         elliptic_operators_std.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_std);
 
-        const TimePoint end_assembly_mass_matrix_old = Clock::now();
-        elapsed_time_assembly_mass_matrix_old_ =
-            end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
+        const TimePoint end_assembly_mass_matrix_std = Clock::now();
+        elapsed_time_assembly_mass_matrix_std_ =
+            end_assembly_mass_matrix_std - start_assembly_mass_matrix_std;
         // Assembly of the local mass matrix using the standard approach -- end
         //----------------------------------------------------
 
@@ -2054,15 +2079,30 @@ assemble()
 
 
         //----------------------------------------------------
+        // Assembly of the local stiffness matrix using the sum-factorization approach -- begin
+        const TimePoint start_assembly_stiffness_matrix_sf = Clock::now();
+
+        elliptic_operators_sf.eval_operator_gradu_gradv(
+            *elem,*elem,c_stiffness,loc_stiffness_matrix_sf);
+
+        const TimePoint end_assembly_stiffness_matrix_sf = Clock::now();
+        elapsed_time_assembly_stiffness_matrix_sf_ =
+            end_assembly_stiffness_matrix_sf - start_assembly_stiffness_matrix_sf;
+        // Assembly of the local stiffness matrix using the sum-factorization approach -- end
+        //----------------------------------------------------
+
+
+
+        //----------------------------------------------------
         // Assembly of the local stiffness matrix using the standard approach -- begin
-        const TimePoint start_assembly_stiffness_matrix_old = Clock::now();
+        const TimePoint start_assembly_stiffness_matrix_std = Clock::now();
 
         elliptic_operators_std.eval_operator_gradu_gradv(
             *elem,*elem,c_stiffness,loc_stiffness_matrix_std);
 
-        const TimePoint end_assembly_stiffness_matrix_old = Clock::now();
-        elapsed_time_assembly_stiffness_matrix_old_ =
-            end_assembly_stiffness_matrix_old - start_assembly_stiffness_matrix_old;
+        const TimePoint end_assembly_stiffness_matrix_std = Clock::now();
+        elapsed_time_assembly_stiffness_matrix_std_ =
+            end_assembly_stiffness_matrix_std - start_assembly_stiffness_matrix_std;
         // Assembly of the local stiffness matrix using the standard approach -- end
         //----------------------------------------------------
 
@@ -2077,12 +2117,15 @@ assemble()
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
 //        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
-        const DenseMatrix m_diff = loc_mass_matrix_std - loc_mass_matrix_sf;
-        out << "Maximum norm of the difference="
-            << m_diff.norm_max() << endl;
+        const DenseMatrix mass_matrix_diff = loc_mass_matrix_std - loc_mass_matrix_sf;
+        out << "Mass-matrix: maximum norm of the difference="
+            << mass_matrix_diff.norm_max() << endl;
 
 
 //        out<< "Local stiffness matrix standard=" << loc_stiffness_matrix_std << endl << endl;
+        const DenseMatrix stiffness_matrix_diff = loc_stiffness_matrix_std - loc_stiffness_matrix_sf;
+        out << "Siffness-matrix: maximum norm of the difference="
+            << stiffness_matrix_diff.norm_max() << endl;
 
     }
 
@@ -2091,9 +2134,9 @@ assemble()
 
     out << "Dim=" << dim << "         space_deg=" << space_deg_ << endl;
     out << "Elapsed seconds assembly mass matrix sum-factorization = "
-        << elapsed_time_assembly_mass_matrix_.count() << endl;
+        << elapsed_time_assembly_mass_matrix_sf_.count() << endl;
     out << "Elapsed seconds assembly mass matrix standard quadrature = "
-        << elapsed_time_assembly_mass_matrix_old_.count() << endl;
+        << elapsed_time_assembly_mass_matrix_std_.count() << endl;
     out << endl;
 
 
@@ -2120,8 +2163,8 @@ do_test()
         poisson_sf.run();
         //*/
         elapsed_time_table.add_value("Degree",degree);
-        elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_assembly_mass_matrix());
-        elapsed_time_table.add_value(time_mass_orig,poisson_sf.get_elapsed_time_assembly_mass_matrix_old());
+        elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_assembly_mass_matrix_sf());
+        elapsed_time_table.add_value(time_mass_orig,poisson_sf.get_elapsed_time_assembly_mass_matrix_std());
 
     }
 
@@ -2141,9 +2184,9 @@ int main()
 {
 //    do_test<1>();
 
-    do_test<2>();
+//    do_test<2>();
 
-//    do_test<3>();
+    do_test<3>();
 //*/
     return  0;
 }
