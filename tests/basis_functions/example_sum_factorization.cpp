@@ -682,6 +682,15 @@ public:
         return elapsed_time_assembly_mass_matrix_std_.count();
     }
 
+    Real get_elapsed_time_assembly_stiffness_matrix_sf() const
+    {
+        return elapsed_time_assembly_stiffness_matrix_sf_.count();
+    }
+
+    Real get_elapsed_time_assembly_stiffness_matrix_std() const
+    {
+        return elapsed_time_assembly_stiffness_matrix_std_.count();
+    }
 
     void assemble();
 
@@ -2187,49 +2196,9 @@ eval_operator_gradu_gradv(
 
 
     //----------------------------------------------------
-    // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
-    // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
-    const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
-
-    const array<Real,dim> length_element_edge =
-        elem_test.get_ref_space_accessor().get_coordinate_lengths();
-
-    const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
-                                            phi_1D_test,
-                                            phi_1D_trial,
-                                            elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
-                                            length_element_edge);
-
-    const auto w_gradphi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
-                                                phi_1D_test,
-                                                grad_phi_1D_trial,
-                                                elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
-                                                length_element_edge);
-
-    const auto w_phi1Dtrial_gradphi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
-                                                grad_phi_1D_test,
-                                                phi_1D_trial,
-                                                elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
-                                                length_element_edge);
-
-    const auto w_gradphi1Dtrial_gradphi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
-                                                    grad_phi_1D_test,
-                                                    grad_phi_1D_trial,
-                                                    elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
-                                                    length_element_edge);
-
-    const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
-    Duration elapsed_time_compute_phi1Dtest_phi1Dtrial =
-        end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
-    std::cout << "Elapsed seconds w * trial * test = "
-              << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
-    //----------------------------------------------------
-
-
-
-
-    //----------------------------------------------------
     // Assembly of the local stiffness matrix using sum-factorization -- begin
+    Duration elapsed_time_compute_phi1Dtest_phi1Dtrial;
+
     const auto start_sum_factorization = Clock::now();
     TensorSize<3> tensor_size_C0;
     tensor_size_C0[0] = n_points_1D.flat_size(); // theta size
@@ -2243,6 +2212,8 @@ eval_operator_gradu_gradv(
 
     array<DynamicMultiArray<Real,3>,dim> J;
 
+    array< ValueTable<ValueType1D>,dim> trial_1D;
+    array< ValueTable<ValueType1D>,dim> test_1D;
     for (Index k = 0 ; k < dim ; ++k)
     {
         for (Index l = 0 ; l < dim ; ++l)
@@ -2251,21 +2222,46 @@ eval_operator_gradu_gradv(
             {
                 if (i == k && i == l)
                 {
-                    J[i] = w_phi1Dtrial_phi1Dtest[i];
+                    trial_1D[i] = grad_phi_1D_trial[i];
+                    test_1D [i] = grad_phi_1D_test [i];
                 }
                 else if (i == k && i != l)
                 {
-                    J[i] = w_gradphi1Dtrial_phi1Dtest[i];
+                    trial_1D[i] = grad_phi_1D_trial[i];
+                    test_1D [i] =      phi_1D_test [i];
                 }
                 else if (i != k && i == l)
                 {
-                    J[i] = w_phi1Dtrial_gradphi1Dtest[i];
+                    trial_1D[i] =      phi_1D_trial[i];
+                    test_1D [i] = grad_phi_1D_test [i];
                 }
                 else if (i != k && i != l)
                 {
-                    J[i] = w_gradphi1Dtrial_gradphi1Dtest[i];
+                    trial_1D[i] = phi_1D_trial[i];
+                    test_1D [i] = phi_1D_test [i];
                 }
             } // end loop i
+
+
+            //----------------------------------------------------
+            // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
+            // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
+            const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
+
+            const array<Real,dim> length_element_edge =
+                elem_test.get_ref_space_accessor().get_coordinate_lengths();
+
+            const auto J = evaluate_w_phi1Dtrial_phi1Dtest_op_u_v(
+                               test_1D,
+                               trial_1D,
+                               elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                               length_element_edge);
+
+            const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
+            elapsed_time_compute_phi1Dtest_phi1Dtrial +=
+                end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
+            //----------------------------------------------------
+
 
 
             Assert(n_entries == C_hat.size(),
@@ -2294,6 +2290,10 @@ eval_operator_gradu_gradv(
 
 
     const auto end_sum_factorization = Clock::now();
+
+    std::cout << "Elapsed seconds w * trial * test = "
+              << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
+
     Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
     std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
     // Assembly of the local stiffness matrix using sum-factorization -- end
@@ -2301,7 +2301,6 @@ eval_operator_gradu_gradv(
 
 
     const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
-                                           elapsed_time_compute_phi1Dtest_phi1Dtrial +
                                            elapsed_time_coefficient_evaluation +
                                            elapsed_time_initialization ;
     std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
@@ -2514,8 +2513,11 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 3;
-    int degree_max = 3;
+    string time_stiff_sum_fac = "Time stiff-matrix sum_fac";
+    string time_stiff_orig = "Time stiff-matrix orig";
+
+    int degree_min = 1;
+    int degree_max = 25;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         PoissonProblemSumFactorization<dim> poisson_sf(TensorSize<dim>(n_knots),degree);
@@ -2524,6 +2526,8 @@ do_test()
         elapsed_time_table.add_value("Degree",degree);
         elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_assembly_mass_matrix_sf());
         elapsed_time_table.add_value(time_mass_orig,poisson_sf.get_elapsed_time_assembly_mass_matrix_std());
+        elapsed_time_table.add_value(time_stiff_sum_fac,poisson_sf.get_elapsed_time_assembly_stiffness_matrix_sf());
+        elapsed_time_table.add_value(time_stiff_orig,poisson_sf.get_elapsed_time_assembly_stiffness_matrix_std());
 
     }
 
@@ -2533,6 +2537,12 @@ do_test()
     elapsed_time_table.set_precision(time_mass_orig,10);
     elapsed_time_table.set_scientific(time_mass_orig,true);
 
+    elapsed_time_table.set_precision(time_stiff_sum_fac,10);
+    elapsed_time_table.set_scientific(time_stiff_sum_fac,true);
+
+    elapsed_time_table.set_precision(time_stiff_orig,10);
+    elapsed_time_table.set_scientific(time_stiff_orig,true);
+
     ofstream elapsed_time_file("sum_factorization_time_"+to_string(dim)+"D.txt");
     elapsed_time_table.write_text(elapsed_time_file);
 
@@ -2541,9 +2551,9 @@ do_test()
 
 int main()
 {
-//    do_test<1>();
+    do_test<1>();
 
-//    do_test<2>();
+    do_test<2>();
 
     do_test<3>();
 //*/
