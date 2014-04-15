@@ -1105,7 +1105,7 @@ operator<<(LogStream &out, const Tdouble &tensor)
 
 
 /**
- * The <tt>TMatrix</tt> class provides for a statically allocated \p m x \p n matrix.
+ * @brief The <tt>TMatrix</tt> class provides for a statically allocated \p m x \p n matrix.
  *
  * @note technically  <tt>TMatrix</tt> is not a class but
  * a template alias (or templated typedef).

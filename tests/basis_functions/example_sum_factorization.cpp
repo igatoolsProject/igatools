@@ -97,6 +97,7 @@ public:
 protected:
 
     Duration elapsed_time_operator_u_v_;
+    Duration elapsed_time_operator_gradu_gradv_;
 
 };
 
@@ -230,6 +231,13 @@ public:
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
         DenseMatrix &operator_u_v) const;
+
+    void eval_operator_gradu_gradv(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const vector<TMatrix<PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim>> &coeffs,
+        DenseMatrix &operator_gradu_gradv) const;
+
 };
 
 template <class PhysSpaceTest,class PhysSpaceTrial>
@@ -323,7 +331,7 @@ eval_operator_u_v(
 
 
     const TimePoint end_assembly_mass_matrix = Clock::now();
-    const_cast<Duration &>(this->elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
+    const_cast<Duration &>(this->elapsed_time_operator_u_v_) = end_assembly_mass_matrix - start_assembly_mass_matrix;
     std::cout << "Elapsed seconds operator u_v standard quadrature= "
               << this->elapsed_time_operator_u_v_.count() << std::endl;
 
@@ -332,6 +340,104 @@ eval_operator_u_v(
 
 }
 
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsStandardIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_gradu_gradv(
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const vector<TMatrix<PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim>> &coeffs,
+    DenseMatrix &operator_gradu_gradv) const
+{
+    //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
+    // the physical space iterators have the same grid, map, reference space, index, etc.
+    Assert(&elem_test == &elem_trial,ExcNotImplemented());
+    //----------------------------------------------------
+    // Assembly of the local stiffness matrix using the standard quadrature -- begin
+    const TimePoint start_assembly_stiffness_matrix = Clock::now();
+
+
+
+
+    const bool is_symmetric = this->test_same_space(elem_test,elem_trial);
+
+    const Size n_basis_test  = elem_test .get_num_basis();
+    const Size n_basis_trial = elem_trial.get_num_basis();
+
+    const auto &grad_phi_test  = elem_test.get_basis_gradients();
+    const auto &grad_phi_trial = elem_trial.get_basis_gradients();
+    const auto &w_meas  = elem_test.get_w_measures();
+
+
+    Assert(operator_gradu_gradv.get_num_rows() == n_basis_test,
+           ExcDimensionMismatch(operator_gradu_gradv.get_num_rows(),n_basis_test));
+    Assert(operator_gradu_gradv.get_num_cols() == n_basis_trial,
+           ExcDimensionMismatch(operator_gradu_gradv.get_num_cols(),n_basis_trial));
+
+
+    const Size n_qp = coeffs.size();
+    Assert(n_qp == grad_phi_test.get_num_points(),
+           ExcDimensionMismatch(n_qp,grad_phi_test.get_num_points()));
+    Assert(n_qp == grad_phi_trial.get_num_points(),
+           ExcDimensionMismatch(n_qp,grad_phi_trial.get_num_points()));
+
+
+    LogStream out;
+    vector<TMatrix<PhysSpaceTest::space_dim,PhysSpaceTrial::space_dim>> coeffs_times_w_meas(n_qp);
+    for (Index qp = 0; qp < n_qp; ++qp)
+    {
+        for (Index i = 0 ; i < PhysSpaceTest::space_dim ; ++i)
+            for (Index j = 0 ; j < PhysSpaceTrial::space_dim ; ++j)
+                coeffs_times_w_meas[qp][i][j] = coeffs[qp][i][j] * w_meas[qp];
+
+//        out << "Coeffs at point " << qp <<"=   " << coeffs_times_w_meas[qp] <<endl;
+    }
+
+    // type of the gradients of the basis functions in the test space
+    using grad_test_t = Derivatives<PhysSpaceTest::space_dim,PhysSpaceTest::range,PhysSpaceTest::rank,1>;
+
+    operator_gradu_gradv.clear();
+    for (Index i = 0; i < n_basis_test; ++i)
+    {
+        const auto grad_phi_i = grad_phi_test.get_function_view(i);
+
+        vector<grad_test_t> coeffs_times_grad_phi_i(n_qp);
+        for (Index qp = 0; qp < n_qp; ++qp)
+        {
+            const auto &C = coeffs_times_w_meas[qp];
+            auto &C_grad_phi_test = coeffs_times_grad_phi_i[qp];
+            for (Index i = 0 ; i < PhysSpaceTest::space_dim; ++i)
+            {
+                C_grad_phi_test[i] = 0.0;
+                for (Index j = 0 ; j < PhysSpaceTest::space_dim; ++j)
+                {
+                    //TODO: check if C[i][j] or C[j][i]
+                    C_grad_phi_test[i] += C[i][j] * grad_phi_i[qp][j];
+                }
+            }
+        }
+
+        for (Index j = 0; j < n_basis_trial; ++j)
+        {
+            const auto grad_phi_j = grad_phi_trial.get_function_view(j);
+            for (Index qp = 0; qp < n_qp; ++qp)
+                operator_gradu_gradv(i,j) += scalar_product(coeffs_times_grad_phi_i[qp],grad_phi_j[qp]);
+        }
+    }
+
+
+
+    const TimePoint end_assembly_stiffness_matrix = Clock::now();
+    const_cast<Duration &>(this->elapsed_time_operator_gradu_gradv_)
+        = end_assembly_stiffness_matrix - start_assembly_stiffness_matrix;
+    std::cout << "Elapsed seconds operator gradu_gradv standard quadrature= "
+              << this->elapsed_time_operator_gradu_gradv_.count() << std::endl;
+
+    // Assembly of the local mass matrix using the standard quadrature -- begin
+    //----------------------------------------------------
+}
 
 // [Problem class]
 template<int dim,class DerivedClass>
@@ -578,7 +684,10 @@ private:
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_;
 
     chrono::duration<Real> elapsed_time_assembly_mass_matrix_old_;
-    chrono::duration<Real> elapsed_time_compute_I_;
+
+    chrono::duration<Real> elapsed_time_assembly_stiffness_matrix_old_;
+
+//    chrono::duration<Real> elapsed_time_compute_I_;
 
     DenseMatrix eval_matrix_proj() const;
 
@@ -1840,7 +1949,6 @@ assemble()
 
 
     const int n_basis = this->space->get_num_basis_per_element();
-    DenseMatrix loc_mat(n_basis, n_basis);
     DenseVector loc_rhs(n_basis);
     vector<Index> loc_dofs(n_basis);
 
@@ -1863,7 +1971,7 @@ assemble()
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
     ValueFlags fill_flags = ValueFlags::value |
-//                            ValueFlags::gradient |
+                            ValueFlags::gradient |
                             ValueFlags::measure |
                             ValueFlags::w_measure |
                             ValueFlags::point;
@@ -1879,7 +1987,10 @@ assemble()
     using TimePoint = chrono::time_point<Clock>;
 
 
+    DenseMatrix loc_mass_matrix_std(n_basis, n_basis);
     DenseMatrix loc_mass_matrix_sf(n_basis,n_basis);
+
+    DenseMatrix loc_stiffness_matrix_std(n_basis, n_basis);
 
 
     using SpaceTest = Space;
@@ -1923,11 +2034,36 @@ assemble()
         // Assembly of the local mass matrix using the standard approach -- begin
         const TimePoint start_assembly_mass_matrix_old = Clock::now();
 
-        elliptic_operators_std.eval_operator_u_v(*elem,*elem,c_mass,loc_mat);
+        elliptic_operators_std.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix_std);
 
         const TimePoint end_assembly_mass_matrix_old = Clock::now();
-        elapsed_time_assembly_mass_matrix_old_ = end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
+        elapsed_time_assembly_mass_matrix_old_ =
+            end_assembly_mass_matrix_old - start_assembly_mass_matrix_old;
         // Assembly of the local mass matrix using the standard approach -- end
+        //----------------------------------------------------
+
+
+
+        //----------------------------------------------------
+        // multiplicative coefficients of the stiffness matrix term.
+        vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
+        for (auto & c : c_stiffness)
+            for (Index i = 0 ; i < dim ; ++i)
+                c[i][i] = 1.0;
+        //----------------------------------------------------
+
+
+        //----------------------------------------------------
+        // Assembly of the local stiffness matrix using the standard approach -- begin
+        const TimePoint start_assembly_stiffness_matrix_old = Clock::now();
+
+        elliptic_operators_std.eval_operator_gradu_gradv(
+            *elem,*elem,c_stiffness,loc_stiffness_matrix_std);
+
+        const TimePoint end_assembly_stiffness_matrix_old = Clock::now();
+        elapsed_time_assembly_stiffness_matrix_old_ =
+            end_assembly_stiffness_matrix_old - start_assembly_stiffness_matrix_old;
+        // Assembly of the local stiffness matrix using the standard approach -- end
         //----------------------------------------------------
 
 
@@ -1941,9 +2077,13 @@ assemble()
 //        out<< "Local mass matrix sum-factorization=" << loc_mass_matrix_sf << endl << endl;
 //        out<< "Local mass matrix original=" << loc_mat << endl << endl;
 //        out<< "mass matrix difference=" << loc_mat - loc_mass_matrix_sf << endl << endl;
-        const DenseMatrix m_diff = loc_mat - loc_mass_matrix_sf;
+        const DenseMatrix m_diff = loc_mass_matrix_std - loc_mass_matrix_sf;
         out << "Maximum norm of the difference="
             << m_diff.norm_max() << endl;
+
+
+//        out<< "Local stiffness matrix standard=" << loc_stiffness_matrix_std << endl << endl;
+
     }
 
     this->matrix->fill_complete();
@@ -1972,8 +2112,8 @@ do_test()
     string time_mass_sum_fac = "Time mass-matrix sum_fac";
     string time_mass_orig = "Time mass-matrix orig";
 
-    int degree_min = 1;
-    int degree_max = 10;
+    int degree_min = 3;
+    int degree_max = 3;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         PoissonProblemSumFactorization<dim> poisson_sf(TensorSize<dim>(n_knots),degree);
@@ -1999,11 +2139,11 @@ do_test()
 
 int main()
 {
-    do_test<1>();
+//    do_test<1>();
 
     do_test<2>();
 
-    do_test<3>();
+//    do_test<3>();
 //*/
     return  0;
 }
