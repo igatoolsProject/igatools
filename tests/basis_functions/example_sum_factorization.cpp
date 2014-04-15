@@ -193,13 +193,16 @@ private:
      * @brief Returns the moments for the mass matrix, as needed by the integration using the
      * sum factorization technique.
      * \f$ m_{i,\theta_i,\alpha_i,\beta_i} =
-       \int_{I_i} B_{\theta_i}(x_i) u_{\beta_i}(x_i) v_{\alpha_i}(x_i) \; dx_i \, .\f$
-     *
+       w_i(x_{\theta_i}) u_{\beta_i}(x_{\theta_i}) v_{\alpha_i}(x_{\theta_i}) .\f$
+     * where \f$ w_i(x_{\theta_i}) \f$ is the quadrature weight
+     * relative to the the point \f$x_{\theta_i}\f$
+     * along the \f$i\f$-th direction.
      */
     array<DynamicMultiArray<Real,3>,dim>
     evaluate_moments_op_u_v(
         const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
         const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
+        const TensorProductArray<dim> &quad_weights,
         const array<Real,dim> &length_element_edge) const;
 
 
@@ -1804,21 +1807,21 @@ projection_l2_bernstein_basis(
     for (Index i = 0 ; i < n_points ; ++i)
         coeffs_to_project(i) = func_to_proj_at_pts[i] ;
 
-
-    DenseVector integral_rhs(n_basis);
-    IntegratorSumFacRHS<dim> integrate_rhs;
-    integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,integral_rhs);
-
-
-    // coefficient of the L2 projection using the tensor product basis
-    DenseVector proj_coefs_tmp = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
+    /*
+        DenseVector integral_rhs(n_basis);
+        IntegratorSumFacRHS<dim> integrate_rhs;
+        integrate_rhs(coeffs_to_project,w_times_B_proj_1D_,integral_rhs);
 
 
-    DynamicMultiArray<Real,dim> proj_coefs(n_basis_1D);
-    for (Index f_id_test = 0 ; f_id_test < n_basis ; ++f_id_test)
-        proj_coefs(f_id_test) = proj_coefs_tmp(f_id_test);
+        // coefficient of the L2 projection using the tensor product basis
+        DenseVector proj_coefs_tmp = boost::numeric::ublas::prod(inv_B_proj_, integral_rhs) ;
 
-    return proj_coefs;
+
+        DynamicMultiArray<Real,dim> proj_coefs(n_basis_1D);
+        for (Index f_id_test = 0 ; f_id_test < n_basis ; ++f_id_test)
+            proj_coefs(f_id_test) = proj_coefs_tmp(f_id_test);
+    //*/
+    return coeffs_to_project;
 }
 
 
@@ -1832,58 +1835,53 @@ EllipticOperatorsSumFactorizationIntegration<PhysSpaceTest,PhysSpaceTrial>::
 evaluate_moments_op_u_v(
     const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
     const array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
+    const TensorProductArray<dim> &quad_weights,
     const array<Real,dim> &length_element_edge) const -> array<DynamicMultiArray<Real,3>,dim>
 {
     array<DynamicMultiArray<Real,3>,dim> moments;
 
     for (int dir = 0 ; dir < dim ; ++dir)
     {
-        const auto &w_times_bernst = w_times_B_proj_1D_[dir];
         const auto &phi_test  = phi_1D_test [dir];
         const auto &phi_trial = phi_1D_trial[dir];
+        const auto &w = quad_weights.get_data_direction(dir);
 
-        const Size n_basis_projection = w_times_bernst.get_num_functions();
         const Size n_basis_test  = phi_test.get_num_functions();
         const Size n_basis_trial = phi_trial.get_num_functions();
+        const Size n_pts = w.size();
 
         TensorSize<3> moments1D_tensor_size;
-        moments1D_tensor_size[0] = n_basis_projection;
-        moments1D_tensor_size[1] = n_basis_test;
-        moments1D_tensor_size[2] = n_basis_trial;
+        moments1D_tensor_size[0] = n_pts;
+        moments1D_tensor_size[1] = n_basis_trial;
+        moments1D_tensor_size[2] = n_basis_test;
 
         auto &moments1D = moments[dir];
         moments1D.resize(moments1D_tensor_size);
 
-        const Size n_pts = w_times_bernst.get_num_points();
         Assert(phi_test.get_num_points() == n_pts,
         ExcDimensionMismatch(phi_test.get_num_points(),n_pts));
         Assert(phi_trial.get_num_points() == n_pts,
         ExcDimensionMismatch(phi_trial.get_num_points(),n_pts));
 
-        vector<Real> phi_mu1_mu2(n_pts);
+
+        vector<Real> w_times_edge_length(n_pts);
 
         const Real edge_length = length_element_edge[dir];
+        for (int jpt = 0 ; jpt < n_pts ; ++jpt)
+            w_times_edge_length[jpt] = w[jpt] * edge_length;
+
 
         Index flat_id_I = 0 ;
-        for (int mu2 = 0 ; mu2 < n_basis_test ; ++mu2)
+        for (Index f_id_test = 0 ; f_id_test < n_basis_test ; ++f_id_test)
         {
-            const auto phi_1D_mu2 = phi_test.get_function_view(mu2);
+            const auto phi_1D_test = phi_test.get_function_view(f_id_test);
 
-            for (int mu1 = 0 ; mu1 < n_basis_trial ; ++mu1)
+            for (Index f_id_trial = 0 ; f_id_trial < n_basis_trial ; ++f_id_trial)
             {
-                const auto phi_1D_mu1 = phi_trial.get_function_view(mu1);
+                const auto phi_1D_trial = phi_trial.get_function_view(f_id_trial);
 
                 for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                    phi_mu1_mu2[jpt] = phi_1D_mu2[jpt](0) * phi_1D_mu1[jpt](0) * edge_length;
-
-                for (int lambda = 0 ; lambda < n_basis_projection ; ++lambda)
-                {
-                    const auto w_B_lambda = w_times_bernst.get_function_view(lambda);
-                    Real sum = 0.0;
-                    for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                        sum += w_B_lambda[jpt] * phi_mu1_mu2[jpt];
-                    moments1D(flat_id_I++) = sum;
-                } // end loop lambda
+                    moments1D(flat_id_I++) = w_times_edge_length[jpt] * phi_1D_test[jpt](0) * phi_1D_trial[jpt](0);
             } // end loop mu1
         } // end loop mu2
     } // end loop dir
@@ -2226,13 +2224,17 @@ eval_operator_u_v(
 
 
     //----------------------------------------------------
-    // precalculation of the I[i](lambda,mu1,mu2) terms (i.e. the moments)
+    // precalculation of the I[i](theta_i,lambda_i,beta_i) terms (i.e. the moments)
     const auto start_compute_moments = Clock::now();
 
     const array<Real,dim> length_element_edge =
         elem_test.get_ref_space_accessor().get_coordinate_lengths();
 
-    const auto moments = evaluate_moments_op_u_v(phi_1D_test,phi_1D_trial,length_element_edge);
+    const auto moments = evaluate_moments_op_u_v(
+                             phi_1D_test,
+                             phi_1D_trial,
+                             elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                             length_element_edge);
 
     const auto end_compute_moments = Clock::now();
     Duration elapsed_time_compute_moments = end_compute_moments - start_compute_moments;
@@ -2435,7 +2437,7 @@ do_test()
     string time_mass_orig = "Time mass-matrix orig";
 
     int degree_min = 3;
-    int degree_max = 3;
+    int degree_max = 6;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         const int space_deg = degree;
