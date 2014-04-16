@@ -130,8 +130,8 @@ private:
      */
     std::array<DynamicMultiArray<Real,3>,dim>
     evaluate_w_phi1Dtrial_phi1Dtest(
-        const std::array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
-        const std::array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
+        const std::array<ValueTable<Real>,dim> &phi_1D_test,
+        const std::array<ValueTable<Real>,dim> &phi_1D_trial,
         const TensorProductArray<dim> &quad_weights,
         const std::array<Real,dim> &length_element_edge) const;
 };
@@ -1041,8 +1041,8 @@ inline
 auto
 EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
 evaluate_w_phi1Dtrial_phi1Dtest(
-    const std::array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_test,
-    const std::array<ValueTable<Function<1>::ValueType>,dim> &phi_1D_trial,
+    const std::array<ValueTable<Real>,dim> &phi_1D_test,
+    const std::array<ValueTable<Real>,dim> &phi_1D_trial,
     const TensorProductArray<dim> &quad_weights,
     const std::array<Real,dim> &length_element_edge) const -> std::array<DynamicMultiArray<Real,3>,dim>
 {
@@ -1089,7 +1089,8 @@ evaluate_w_phi1Dtrial_phi1Dtest(
                 const auto phi_1D_trial = phi_trial.get_function_view(f_id_trial);
 
                 for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                    moments1D(flat_id_I++) = w_times_edge_length[jpt] * phi_1D_test[jpt](0) * phi_1D_trial[jpt](0);
+                    moments1D(flat_id_I++) =
+                    w_times_edge_length[jpt] * phi_1D_test[jpt] * phi_1D_trial[jpt];
             } // end loop mu1
         } // end loop mu2
     } // end loop dir
@@ -1174,11 +1175,9 @@ eval_operator_u_v(
     //--------------------------------------------------------------------------
 
 
-    using ValueType1D = Function<1>::ValueType;
-
     //--------------------------------------------------------------------------
     // getting the 1D values for the test space -- begin
-    std::array< ValueTable<ValueType1D>,dim> phi_1D_test;
+    std::array< ValueTable<Real>,dim> phi_1D_test;
     {
         const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
 
@@ -1214,7 +1213,7 @@ eval_operator_u_v(
 
     //--------------------------------------------------------------------------
     // getting the 1D values for the trial space -- begin
-    std::array< ValueTable<ValueType1D>,dim> phi_1D_trial;
+    std::array< ValueTable<Real>,dim> phi_1D_trial;
     {
         const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
 
@@ -1438,12 +1437,10 @@ eval_operator_gradu_gradv(
     //--------------------------------------------------------------------------
 
 
-    using ValueType1D = Function<1>::ValueType;
-
     //--------------------------------------------------------------------------
     // getting the 1D values for the test space -- begin
-    std::array< ValueTable<ValueType1D>,dim> phi_1D_test;
-    std::array< ValueTable<ValueType1D>,dim> grad_phi_1D_test;
+    std::array< ValueTable<Real>,dim> phi_1D_test;
+    std::array< ValueTable<Real>,dim> grad_phi_1D_test;
     {
         const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
 
@@ -1489,8 +1486,8 @@ eval_operator_gradu_gradv(
 
     //--------------------------------------------------------------------------
     // getting the 1D values for the trial space -- begin
-    std::array< ValueTable<ValueType1D>,dim> phi_1D_trial;
-    std::array< ValueTable<ValueType1D>,dim> grad_phi_1D_trial;
+    std::array< ValueTable<Real>,dim> phi_1D_trial;
+    std::array< ValueTable<Real>,dim> grad_phi_1D_trial;
     {
         const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
 
@@ -1628,8 +1625,8 @@ eval_operator_gradu_gradv(
 
     std::array<DynamicMultiArray<Real,3>,dim> J;
 
-    std::array< ValueTable<ValueType1D>,dim> trial_1D;
-    std::array< ValueTable<ValueType1D>,dim> test_1D;
+    std::array< ValueTable<Real>,dim> trial_1D;
+    std::array< ValueTable<Real>,dim> test_1D;
     for (Index k = 0 ; k < dim ; ++k)
     {
         for (Index l = 0 ; l < dim ; ++l)
