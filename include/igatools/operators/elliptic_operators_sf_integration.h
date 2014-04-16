@@ -119,9 +119,12 @@ private:
      * Returns the quadrature weights multiplied by the one-dimensional basis
      * for test and trial space, as needed by the integration using the
      * sum factorization technique.
-     * \f$ m_{i,\theta_i,\alpha_i,\beta_i} =
-       w_i(x_{\theta_i}) u_{\beta_i}(x_{\theta_i}) v_{\alpha_i}(x_{\theta_i}) .\f$
-     * where \f$ w_i(x_{\theta_i}) \f$ is the quadrature weight
+     * \f[ J[i]_{\theta_i,\alpha_i,\beta_i} =
+       w_{i,\theta_i}
+       \phi^{\text{test}}_{\beta_i}(x_{\theta_i})
+       \phi^{\text{trial}}_{\alpha_i}(x_{\theta_i})
+       \f]
+     * where \f$ w_{i,\theta_i} \f$ is the quadrature weight
      * relative to the the point \f$x_{\theta_i}\f$
      * along the \f$i\f$-th direction.
      */
@@ -1341,12 +1344,12 @@ eval_operator_u_v(
 
     SumFactorizationIntegrator<dim> integrate_sf;
     integrate_sf(is_symmetric,
-                          n_points_1D,
-                          n_basis_trial,
-                          n_basis_test,
-                          w_phi1Dtrial_phi1Dtest,
-                          C0,
-                          operator_u_v);
+                 n_points_1D,
+                 n_basis_trial,
+                 n_basis_test,
+                 w_phi1Dtrial_phi1Dtest,
+                 C0,
+                 operator_u_v);
 
 
     const auto end_sum_factorization = Clock::now();
@@ -1687,12 +1690,12 @@ eval_operator_gradu_gradv(
 
             SumFactorizationIntegrator<dim> integrate_sf;
             integrate_sf(false, //non symmetric
-                                  n_points_1D,
-                                  n_basis_trial,
-                                  n_basis_test,
-                                  J,
-                                  C0,
-                                  operator_gradu_gradv_tmp);
+                         n_points_1D,
+                         n_basis_trial,
+                         n_basis_test,
+                         J,
+                         C0,
+                         operator_gradu_gradv_tmp);
 
             operator_gradu_gradv += operator_gradu_gradv_tmp;
 

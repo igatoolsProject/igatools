@@ -33,8 +33,8 @@
 #include <igatools/linear_algebra/linear_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/io/writer.h>
-#include <igatools/utils/value_table.h>
-#include <igatools/utils/multi_array_utils.h>
+//#include <igatools/utils/value_table.h>
+//#include <igatools/utils/multi_array_utils.h>
 #include <igatools/contrib/table_handler.h>
 
 #include <igatools/operators/elliptic_operators_std_integration.h>

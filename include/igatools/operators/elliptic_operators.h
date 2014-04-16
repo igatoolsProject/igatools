@@ -18,14 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+
 #ifndef ELLIPTIC_OPERATORS_H_
 #define ELLIPTIC_OPERATORS_H_
 
 #include <igatools/base/config.h>
+#include <igatools/linear_algebra/dense_matrix.h>
+
 
 #include <chrono>
 
 IGA_NAMESPACE_OPEN
+
+//TODO: move the definitions of the class memeber in the .cpp and provide the instantiations
 
 
 /**
@@ -186,7 +191,7 @@ test_if_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
     //--------------------------------------------------------------------------
 
     // the test is true only if the element accessors reference the same memory location
-    //TODO(MM 08 apr 2014): this is a really crude/raw test. Maybe abetter test would be
+    //TODO(MM 08 apr 2014): this is a really crude/raw test. Maybe a better test would be
     // a comparison of iterator index, grid, knots values and multiplicities of the underlying
     // reference space and also push-forward and mapping.
     return (&elem_test==&elem_trial)?true:false;
