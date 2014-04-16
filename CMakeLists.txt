@@ -129,7 +129,7 @@ set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
 set(lib_name igatools)
 
 # igatools source files
-set (source_dirs base utils geometry basis_functions linear_algebra io contrib)
+set (source_dirs base utils geometry basis_functions linear_algebra io contrib operators)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})
