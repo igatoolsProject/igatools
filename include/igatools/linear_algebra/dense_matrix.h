@@ -81,9 +81,45 @@ public:
 
 
     /**
-     * Returns the Frobenius norm of the matrix.
+     * Returns the <em>Frobenius norm</em> of the matrix, i.e.
+     * \f[
+       || A ||_F = \biggl( \sum_{i,j} |a_{ij}|^2 \biggr)^{1/2}
+       \f]
+     * where \f$ a_{ij} \f$ is the
+     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
      */
     Real norm_frobenius() const;
+
+
+    /**
+     * Returns the <em>max-norm</em> (or <em>uniform norm</em>) of the matrix, i.e.
+     * \f[
+       || A ||_{\text{max}} = \max_{i,j} |a_{ij}|
+       \f]
+     * where \f$ a_{ij} \f$ is the
+     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+     */
+    Real norm_max() const;
+
+    /**
+     * Returns the <em>one-norm</em> of the matrix, i.e.
+     * \f[
+       || A ||_1 = \max_{j} \sum_{i} |a_{ij}|
+       \f]
+     * where \f$ a_{ij} \f$ is the
+     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+     */
+    Real norm_one() const;
+
+    /**
+     * Returns the <em>infinity-norm</em> of the matrix, i.e.
+     * \f[
+       || A ||_{\infty} = \max_{i} \sum_{j} |a_{ij}|
+       \f]
+     * where \f$ a_{ij} \f$ is the
+     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+     */
+    Real norm_infinity() const;
 
 
     /** Returns the number of rows of the matrix. */
