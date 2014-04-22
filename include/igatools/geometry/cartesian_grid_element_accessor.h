@@ -57,7 +57,6 @@ public:
     /** Dimension of the grid like container */
     static const auto dim = ContainerType::dim;
 
-
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
         ValueFlags::point|
