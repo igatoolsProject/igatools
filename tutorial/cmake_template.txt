@@ -49,17 +49,17 @@ set (name @example_name@ )
 
 project(${name})
 
-set( CMAKE_PREFIX_PATH ${iga_BINARY_DIR} ${CMAKE_PREFIX_PATH} )
+set( CMAKE_PREFIX_PATH ${igatools_BINARY_DIR} ${CMAKE_PREFIX_PATH} )
 find_package( igatools REQUIRED)
 
-include_directories(${IGA_INCLUDE_DIRS})
-link_directories(${IGA_LIBRARY_DIR})
+include_directories(${IGATOOLS_INCLUDE_DIRS})
+link_directories(${IGATOOLS_LIBRARY_DIR})
 
 add_executable(${name} EXCLUDE_FROM_ALL ${name}.cpp )
 
 # todo: I would like to make this depend on the library install but it does not work
 add_dependencies(${name} ${lib_name})
-target_link_libraries (${name} ${IGA_LIBRARIES})
+target_link_libraries (${name} ${IGATOOLS_LIBRARIES})
 
 # add the make run target
 add_custom_target(run-${name} ./${name} DEPENDS ${name}
