@@ -31,11 +31,12 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief This class represents an element within a CartesianGrid.
  *
- * The element can be queried for informations
- * that can be generated on-the-fly
+ * The element can be queried for information
+ * that is generated on-the-fly
  * (i.e. without the use of a cache).
  *
- * It is used as base class for CartesianGridElementAccessor.
+ * It is used as base class for CartesianGridElementAccessor which
+ * generate the element information using caches techniques.
  *
  * @tparam dim Dimensionality of the grid.
  *
@@ -92,21 +93,16 @@ public:
     &operator=(CartesianGridElement<dim> &&elem) = default;
     ///@}
 
-
-
     /** Return the cartesian grid from which the element belongs.*/
     const CartesianGrid<dim> *get_grid() const;
-
 
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const;
 
-
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
-
 
     /**
      * Sets the index of the element using the flatten representation.
@@ -117,7 +113,6 @@ public:
      */
     void reset_flat_tensor_indices(const Index flat_index);
 
-
     /**
      * Sets the index of the element using the tensor representation.
      * @note This function also updates the index for the flatten representation.
@@ -127,7 +122,6 @@ public:
      */
     void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
     ///@}
-
 
     /** @name Query geometrical/topological information without use of cache */
     ///@{
@@ -152,20 +146,18 @@ public:
      */
     std::array<Real,dim> get_coordinate_lengths() const;
 
-
     /**
-     * Returns measure of the element or of the element-face in the CartesianGrid.
-     * @note The topology for which the measure is computed is specified by the input argument
-     * @p topology_id.
+     * Returns measure of the element or of the element-face in the
+     * CartesianGrid.
+     * @note The topology for which the measure is computed is specified by
+     * the input argument @p topology_id.
      */
     Real get_measure(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
 
     /**
      * Returns measure of j-th face.
      */
     Real get_face_measure(const int j) const;
-
 
     /**
      * Test if the point is inside the element.
@@ -188,11 +180,10 @@ public:
      * Prints internal information about the CartesianGridElement.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out, const VerbosityLevel verbosity = VerbosityLevel::normal) const;
-
+    void print_info(LogStream &out,
+                    const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
 private:
-
     /** Cartesian grid from which the element belongs.*/
     const CartesianGrid<dim> *grid_;
 
@@ -201,9 +192,7 @@ private:
 
     /** Tensor product indices of the current struct index @p flat_index_. */
     TensorIndex<dim> tensor_index_;
-
 };
-
 
 IGA_NAMESPACE_CLOSE
 
