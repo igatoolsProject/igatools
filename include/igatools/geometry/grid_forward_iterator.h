@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 
 #include <iterator>
-
+#include <memory>
 IGA_NAMESPACE_OPEN
 
 
@@ -153,7 +153,7 @@ public:
     using AccessorType = Accessor;
 
     /** Type of the grid-like container . */
-    using ContainerType = typename Accessor::ContainerType;
+    using ContainerType = const typename Accessor::ContainerType;
 
     /** @name Constructors & destructor */
     ///@{
@@ -168,7 +168,7 @@ public:
      * like type pointed to by patch and the index of the
      * object pointed to by the iterator.
      */
-    GridForwardIterator(ContainerType &patch,
+    GridForwardIterator(std::shared_ptr<ContainerType> patch,
                         const Index index);
 
 

@@ -34,18 +34,17 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 CartesianGridElement<dim>::
-CartesianGridElement(
-    const CartesianGrid<dim> &grid,
-    const Index index)
+CartesianGridElement(const std::shared_ptr<const CartesianGrid<dim>> grid,
+                     const Index index)
     :
-    grid_(&grid)
+    grid_(grid)
 {
     this->reset_flat_tensor_indices(index);
 }
 
 
 template <int dim>
-const CartesianGrid<dim> *
+const std::shared_ptr<const CartesianGrid<dim> >
 CartesianGridElement<dim>::
 get_grid() const
 {

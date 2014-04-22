@@ -79,7 +79,7 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElementAccessor(const CartesianGrid<dim_> &grid,
+    CartesianGridElementAccessor(const std::shared_ptr<CartesianGrid<dim>> grid,
                                  const Index elem_index);
 
     /**

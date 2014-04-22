@@ -25,11 +25,10 @@ IGA_NAMESPACE_OPEN
 template <typename Accessor>
 inline
 GridForwardIterator<Accessor>::
-GridForwardIterator(
-    ContainerType &patch,
-    const Index index)
-    :
-    accessor_(patch, index)
+GridForwardIterator(std::shared_ptr<ContainerType> patch,
+                    const Index index)
+                    :
+                    accessor_(patch, index)
 {}
 
 

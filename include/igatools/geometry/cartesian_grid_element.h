@@ -57,7 +57,7 @@ public:
      * Construct an object pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElement(const CartesianGrid<dim> &grid,
+    CartesianGridElement(const std::shared_ptr<const CartesianGrid<dim>> grid,
                          const Index elem_index);
 
     /**
@@ -94,7 +94,7 @@ public:
     ///@}
 
     /** Return the cartesian grid from which the element belongs.*/
-    const CartesianGrid<dim> *get_grid() const;
+    const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
 
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
@@ -185,7 +185,7 @@ public:
 
 private:
     /** Cartesian grid from which the element belongs.*/
-    const CartesianGrid<dim> *grid_;
+    const std::shared_ptr<const CartesianGrid<dim> > grid_;
 
     /** Flat (linear) index assigned to the current (sub)-element. */
     Index flat_index_;
