@@ -236,7 +236,7 @@ public:
      * Its main use is for testing and debugging.
      */
     void print_info(LogStream &out, const VerbosityLevel verbosity =
-            VerbosityLevel::normal) const;
+                        VerbosityLevel::normal) const;
 
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
@@ -352,7 +352,8 @@ private:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id)
+    const;
 
     /**
      * Grid (global) lengths cache.
@@ -380,8 +381,8 @@ protected:
                    << " contains a non admissible flag " << (arg1 ^arg2));
 
     DeclException1(ExcCacheInUse, int,
-                       << "The global cache is being used by " << arg1
-                       << " iterator. Changing its value not allowed.");
+                   << "The global cache is being used by " << arg1
+                   << " iterator. Changing its value not allowed.");
 };
 
 IGA_NAMESPACE_CLOSE

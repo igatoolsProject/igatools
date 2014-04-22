@@ -168,7 +168,7 @@ Real
 CartesianGridElement<dim>::
 get_measure(const TopologyId<dim> &topology_id) const
 {
-	const auto active_directions = topology_id.get_active_directions();
+    const auto active_directions = topology_id.get_active_directions();
 
     Real result = 1.;
     for (const int &d : active_directions)
@@ -256,7 +256,7 @@ print_info(LogStream &out,const VerbosityLevel verbosity) const
     out.push(tab);
 
     if (contains(verbosity,VerbosityLevel::debug))
-    	out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
+        out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
 
     out << "Flat id = " << this->get_flat_index() << endl;
     out << "Tensor id = " << this->get_tensor_index() << endl;

@@ -246,7 +246,7 @@ vector<Real>
 IgMapping<RefSpace>::
 get_control_points_elem() const
 {
-	Assert(data_ != nullptr, ExcNullPtr());
+    Assert(data_ != nullptr, ExcNullPtr());
     const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;

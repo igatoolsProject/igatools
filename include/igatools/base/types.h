@@ -324,11 +324,11 @@ enum class LinearAlgebraPackage
  */
 enum class VerbosityLevel : int
 {
-	/** Normal level. */
-	normal = 1 << 0,
+    /** Normal level. */
+    normal = 1 << 0,
 
     /** The output contains information about the memory address of the objects involved. */
-	debug = 1 << 1
+    debug = 1 << 1
 };
 
 /**
