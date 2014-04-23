@@ -480,6 +480,36 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> shared_pt
 
 
 template <int dim_>
+Index
+CartesianGrid<dim_>::
+get_element_flat_id_from_point(const Point<dim> &point) const
+{
+	TensorIndex<dim> elem_t_id;
+	for (int i = 0 ; i < dim ; ++i)
+	{
+        const auto &knots_i = knot_coordinates_.get_data_direction(i);
+
+
+        const Size n_intervals = knots_i.size() - 1;
+
+        if ( point[i] >= knots_i[0] && point[i] <= knots_i[1] )
+        	elem_t_id[i] = 0;
+        for (int j = 1 ; j < n_intervals ; ++j)
+        {
+            if ( point[i] > knots_i[j] && point[i] <= knots_i[j+1] )
+            {
+            	elem_t_id[i] = j;
+            	break;
+            }
+        }
+	}
+
+
+	return knot_coordinates_.tensor_to_flat(elem_t_id);
+}
+
+
+template <int dim_>
 const int
 CartesianGrid<dim_>::dim ;
 
