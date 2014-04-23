@@ -35,11 +35,11 @@ IGA_NAMESPACE_OPEN
 
 template< class PushForward >
 PushForwardElementAccessor<PushForward>::
-PushForwardElementAccessor(PushForward &push_forward,
+PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
                            const int index)
     :
-    MappingElementAccessor<dim, codim>(*push_forward.map_, index),
-    push_forward_(&push_forward)
+    MappingElementAccessor<dim, codim>(push_forward->map_, index),
+    push_forward_(push_forward)
 {}
 
 

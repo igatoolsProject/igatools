@@ -77,7 +77,8 @@ private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using ContainerType = PhysSpace;
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const PhysSpace;
 
     using RefSpace = typename PhysSpace::RefSpace;
     using PushForwardType = typename PhysSpace::PushForwardType;
@@ -453,9 +454,9 @@ private :
     using DerivativeRef_t = Derivatives<dim,RefSpace::range,RefSpace::rank,order>;
 
 
-
+// TODO (pauletti, Apr 23, 2014): why not private?
 protected:
-    const PhysSpace *phys_space_;
+    std::shared_ptr<ContainerType> phys_space_ = nullptr;
 
 
     struct ValuesCache : CacheStatus
@@ -533,7 +534,7 @@ protected:
      */
     ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
 
-
+    // TODO (pauletti, Apr 23, 2014): why not private?
 public :
     template <typename Accessor> friend class GridForwardIterator;
 

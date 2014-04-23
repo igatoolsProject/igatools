@@ -216,7 +216,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(const_cast< self_t & >(*this), 0);
+   // return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(), 0);
 }
 
 
@@ -226,8 +226,8 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t &>(*this),
-                           this->get_grid()->get_num_elements() - 1);
+   // return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
+   //                        this->get_grid()->get_num_elements() - 1);
 }
 
 
@@ -237,8 +237,8 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t &>(*this),
-                           IteratorState::pass_the_end);
+   // return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
+                      //     IteratorState::pass_the_end);
 }
 
 

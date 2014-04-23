@@ -29,7 +29,7 @@ using std::vector ;
 using std::accumulate ;
 
 using std::make_shared ;
-
+using std::dynamic_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 
@@ -37,12 +37,12 @@ IGA_NAMESPACE_OPEN
 
 
 template< int dim, int range, int rank >
-NURBSElementAccessor< dim, range, rank >::NURBSElementAccessor(
-    const Space_t &space,
-    const int index)
+NURBSElementAccessor< dim, range, rank >::
+NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
+                     const int elem_index)
     :
-    BSplineElementAccessor< dim, range, rank >(space, index),
-    space_(&space)
+    BSplineElementAccessor<dim, range, rank>(dynamic_pointer_cast<const BSplineSpace<dim,range,rank>>(space), elem_index),
+    space_(space)
 {}
 
 
@@ -956,10 +956,12 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
 template <int dim, int range, int rank >
 auto
 NURBSElementAccessor< dim, range, rank >::
-get_space() const -> const Space_t *
+get_space() const -> std::shared_ptr<const Space_t>
 {
-    return (space_) ;
+    return space_ ;
 }
+
+
 
 template <int dim, int range, int rank >
 vector<Real>

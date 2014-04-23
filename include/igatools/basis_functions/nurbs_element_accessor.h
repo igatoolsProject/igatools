@@ -42,8 +42,8 @@ class NURBSElementAccessor :
     public BSplineElementAccessor< dim, range, rank >
 {
 public:
-    using ContainerType = NURBSSpace< dim, range, rank>;
-    typedef NURBSSpace< dim, range, rank > Space_t ;
+    using ContainerType = const NURBSSpace< dim, range, rank>;
+    using Space_t = NURBSSpace< dim, range, rank >;
 
     typedef NURBSElementAccessor<dim,range,rank> Self_t ;
 
@@ -62,9 +62,8 @@ public:
      * \brief Constructor.
      * \todo Missing documentation.
      */
-    NURBSElementAccessor(
-        const Space_t &space,
-        const int index) ;
+    NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
+                         const int elem_index);
 
     /**
      * Copy constructor.
@@ -102,7 +101,7 @@ public:
     /**
      * Get the space for which the BSplineElementAccessor belongs to.
      */
-    const Space_t *get_space() const ;
+    std::shared_ptr<const Space_t> get_space() const ;
 
 
 
@@ -361,8 +360,7 @@ private:
 
 
 private:
-
-    const Space_t *space_ ;
+    std::shared_ptr<ContainerType> space_ = nullptr;
 
     /**
      * Element cache to store the values and derivatives

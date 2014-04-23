@@ -34,7 +34,9 @@ template < int, int, int > class NURBSElementAccessor;
  *
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
-class NURBSSpace : public BSplineSpace<dim_, range_, rank_>
+class NURBSSpace :
+     //   public std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_> >,
+        public BSplineSpace<dim_, range_, rank_>
 {
 public:
     using base_t = BSplineSpace<dim_, range_, rank_>;

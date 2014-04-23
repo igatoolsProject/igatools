@@ -783,9 +783,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::begin() const -> ElementIterator
 {
-    return ElementIterator(
-               const_cast< BSplineSpace< dim, range,rank > & >(*this),
-               0) ;
+    return ElementIterator(this->shared_from_this(), 0);
 }
 
 
@@ -794,9 +792,8 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::last() const -> ElementIterator
 {
-    return ElementIterator(
-               const_cast< BSplineSpace< dim, range,rank > & >(*this),
-               this->get_grid()->get_num_elements() - 1) ;
+    return ElementIterator(this->shared_from_this(),
+                           this->get_grid()->get_num_elements() - 1);
 }
 
 
@@ -805,7 +802,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::end() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t &>(*this),
+    return ElementIterator(this->shared_from_this(),
                            IteratorState::pass_the_end);
 }
 

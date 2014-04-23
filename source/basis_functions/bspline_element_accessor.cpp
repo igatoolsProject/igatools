@@ -281,10 +281,11 @@ private:
 
 template <int dim, int range, int rank>
 BSplineElementAccessor<dim, range, rank>::
-BSplineElementAccessor(const Space_t &space, const int index)
+BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
+                       const int index)
     :
-    CartesianGridElementAccessor<dim>(*(space.get_grid()), index),
-    space_(&space)
+    CartesianGridElementAccessor<dim>(space->get_grid(), index),
+    space_(space)
 {}
 
 
@@ -1202,10 +1203,13 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_space() const -> const Space_t *
+get_space() const -> shared_ptr<const Space_t>
 {
-    return (space_);
+    return space_;
 }
+
+
+
 
 template <int dim, int range, int rank>
 auto

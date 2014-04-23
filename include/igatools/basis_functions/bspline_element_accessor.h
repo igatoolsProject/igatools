@@ -39,14 +39,8 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
-
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
-
-
-
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -57,10 +51,10 @@ class BSplineElementAccessor : public CartesianGridElementAccessor<dim>
 {
 public:
     /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = BSplineSpace<dim, range, rank> ;
+    using ContainerType = const BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
-    typedef const BSplineSpace<dim, range, rank> Space_t;
+    using  Space_t = BSplineSpace<dim, range, rank> ;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -91,7 +85,8 @@ public:
      * Constructs an accessor to element number index of a
      * BsplineSpace space.
      */
-    BSplineElementAccessor(const Space_t &space, const int elem_index);
+    BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
+                           const int elem_index);
 
     /**
      * Copy constructor.
@@ -168,7 +163,7 @@ public:
     /**
      * Pointer to the BsplineSpace the accessor is iterating on.
      */
-    const Space_t *get_space() const;
+    std::shared_ptr<const Space_t> get_space() const;
 
     ///@}
 
@@ -742,7 +737,7 @@ private:
     /**
      * Space for which the BSplineElementAccessor refers to.
      */
-    const Space_t *space_ = nullptr;
+    std::shared_ptr<ContainerType> space_ = nullptr;
 
 
     template <typename Accessor> friend class GridForwardIterator;

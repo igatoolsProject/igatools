@@ -39,7 +39,7 @@ class PushForwardElementAccessor
     : public MappingElementAccessor<PushForward_::dim, PushForward_::codim>
 {
 public:
-    using ContainerType =  PushForward_;
+    using ContainerType =  const PushForward_;
     using base_t = MappingElementAccessor<PushForward_::dim, PushForward_::codim>;
     using base_t::dim;
     using base_t::codim;
@@ -67,7 +67,7 @@ public:
      */
     PushForwardElementAccessor() = delete ;
 
-    explicit PushForwardElementAccessor(PushForward_ &push_forward,
+    explicit PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
                                         const int index) ;
 
     /**
@@ -200,7 +200,7 @@ public:
 
 private:
 
-    PushForward_ *push_forward_ ;
+    std::shared_ptr<ContainerType> push_forward_ ;
 
 
 
