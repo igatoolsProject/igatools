@@ -773,9 +773,9 @@ get_num_basis() const
 
 
 template< class PhysSpace >
-const PhysSpace *
+auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_physical_space() const
+get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
     return phys_space_;
 }

@@ -120,7 +120,7 @@ public :
      */
     PhysicalSpaceElementAccessor() = delete;
 
-    PhysicalSpaceElementAccessor(const PhysSpace &phys_space,
+    PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
                                  const Index index);
 
     /**
@@ -395,7 +395,7 @@ public :
     /**
      * Return a pointer to the physical space on which the element is defined.
      */
-    const PhysSpace *get_physical_space() const;
+    std::shared_ptr<const PhysSpace>get_physical_space() const;
 
     /** @name Methods from RefSpace::ElemAccessor */
     //@{
