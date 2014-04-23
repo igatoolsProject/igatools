@@ -42,10 +42,16 @@ IGA_NAMESPACE_OPEN
  *
  * @author M.Martinelli, 2014
  */
-template <int dim>
+template <int dim_>
 class CartesianGridElement
 {
 public:
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const CartesianGrid<dim_>;
+
+    /** Dimension of the grid like container */
+    static const auto dim = ContainerType::dim;
+
     /** @name Constructors */
     ///@{
     /**
@@ -57,19 +63,19 @@ public:
      * Construct an object pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElement(const std::shared_ptr<const CartesianGrid<dim>> grid,
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index);
 
     /**
      * Copy constructor.
      */
-    CartesianGridElement(const CartesianGridElement<dim> &elem)
+    CartesianGridElement(const CartesianGridElement<dim_> &elem)
         = default;
 
     /**
      * Move constructor.
      */
-    CartesianGridElement(CartesianGridElement<dim> &&elem)
+    CartesianGridElement(CartesianGridElement<dim_> &&elem)
         = default;
 
     /**
@@ -84,17 +90,17 @@ public:
      * Copy assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(const CartesianGridElement<dim> &elem) = default;
+    &operator=(const CartesianGridElement<dim_> &elem) = default;
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(CartesianGridElement<dim> &&elem) = default;
+    &operator=(CartesianGridElement<dim_> &&elem) = default;
     ///@}
 
     /** Return the cartesian grid from which the element belongs.*/
-    const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
+    const std::shared_ptr<ContainerType> get_grid() const;
 
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
@@ -185,7 +191,7 @@ public:
 
 private:
     /** Cartesian grid from which the element belongs.*/
-    const std::shared_ptr<const CartesianGrid<dim> > grid_;
+    const std::shared_ptr<ContainerType> grid_;
 
     /** Flat (linear) index assigned to the current (sub)-element. */
     Index flat_index_;

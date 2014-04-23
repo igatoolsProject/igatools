@@ -153,7 +153,7 @@ public:
     using AccessorType = Accessor;
 
     /** Type of the grid-like container . */
-    using ContainerType = const typename Accessor::ContainerType;
+    using ContainerType = typename Accessor::ContainerType;
 
     /** @name Constructors & destructor */
     ///@{

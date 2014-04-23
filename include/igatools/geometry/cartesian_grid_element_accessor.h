@@ -50,12 +50,11 @@ IGA_NAMESPACE_OPEN
 template <int dim_>
 class CartesianGridElementAccessor : public CartesianGridElement<dim_>
 {
+private:
+    using parent_t = CartesianGridElement<dim_>;
 public:
-    /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = CartesianGrid<dim_>;
-
-    /** Dimension of the grid like container */
-    static const auto dim = ContainerType::dim;
+    using typename parent_t::ContainerType;
+    using parent_t::dim;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -79,7 +78,7 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElementAccessor(const std::shared_ptr<CartesianGrid<dim>> grid,
+    CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                                  const Index elem_index);
 
     /**

@@ -26,7 +26,9 @@
 using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::endl;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
@@ -168,7 +170,7 @@ template<class RefSpace>
 void
 IgMapping<RefSpace>::
 init_element(const ValueFlags flag,
-             const Quadrature<dim> &quad)
+             const Quadrature<dim> &quad)  const
 {
     ValueFlags ref_space_flag = ValueFlags::none;
 
@@ -209,7 +211,7 @@ init_element(const ValueFlags flag,
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_element(const CartesianGridElementAccessor<dim> &elem)
+set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
     cache_->reset_flat_tensor_indices(elem.get_flat_index());
     cache_->fill_values();
@@ -219,7 +221,7 @@ set_element(const CartesianGridElementAccessor<dim> &elem)
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem)
+set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -484,15 +486,10 @@ auto
 IgMapping<RefSpace>::
 begin() const -> ElementIterator
 {
-    /*
+    // TODO (pauletti, Apr 23, 2014): why not use this->shared_from_this()?
+    //       is this a bug?
     return ElementIterator(
-            const_cast<const Mapping<dim,codim> &>(
-            dynamic_cast<Mapping<dim,codim> &>( self_t( this->get_data() ) )),
-                    0);
-                    //*/
-    return ElementIterator(
-               const_cast<self_t &>(*(new self_t(this->get_data()))),
-               0);
+               const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),0);
 }
 
 
@@ -502,9 +499,12 @@ auto
 IgMapping<RefSpace>::
 last() const -> ElementIterator
 {
+//    return ElementIterator(
+//               const_cast<self_t &>(*(new self_t(this->get_data()))),
+//               this->get_grid()->get_num_elements() - 1);
     return ElementIterator(
-               const_cast<self_t &>(*(new self_t(this->get_data()))),
-               this->get_grid()->get_num_elements() - 1);
+                   const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
+                   this->get_grid()->get_num_elements() - 1);
 }
 
 
@@ -514,9 +514,12 @@ auto
 IgMapping<RefSpace>::
 end() const -> ElementIterator
 {
+//    return ElementIterator(
+//               const_cast<self_t &>(*(new self_t(this->get_data()))),
+//               IteratorState::pass_the_end);
     return ElementIterator(
-               const_cast<self_t &>(*(new self_t(this->get_data()))),
-               IteratorState::pass_the_end);
+            const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
+            IteratorState::pass_the_end);
 }
 
 

@@ -32,9 +32,9 @@ IGA_NAMESPACE_OPEN
 
 //TODO: inline the appropriate method and put in separate file
 
-template <int dim>
-CartesianGridElement<dim>::
-CartesianGridElement(const std::shared_ptr<const CartesianGrid<dim>> grid,
+template <int dim_>
+CartesianGridElement<dim_>::
+CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                      const Index index)
     :
     grid_(grid)
@@ -43,29 +43,29 @@ CartesianGridElement(const std::shared_ptr<const CartesianGrid<dim>> grid,
 }
 
 
-template <int dim>
-const std::shared_ptr<const CartesianGrid<dim> >
-CartesianGridElement<dim>::
-get_grid() const
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+get_grid() const -> const std::shared_ptr<ContainerType>
 {
     return grid_;
 }
 
 
-template <int dim>
+template <int dim_>
 inline
 auto
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 get_flat_index() const -> Index
 {
     return flat_index_ ;
 }
 
 
-template <int dim>
+template <int dim_>
 inline
 auto
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 get_tensor_index() const -> TensorIndex<dim>
 {
     return tensor_index_ ;
@@ -73,9 +73,9 @@ get_tensor_index() const -> TensorIndex<dim>
 
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 reset_flat_tensor_indices(const Index flat_index)
 {
     Assert((flat_index == IteratorState::pass_the_end) ||
@@ -96,9 +96,11 @@ reset_flat_tensor_indices(const Index flat_index)
         tensor_index_.fill(IteratorState::pass_the_end);
 }
 
-template <int dim>
+
+
+template <int dim_>
 void
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
 {
     tensor_index_= tensor_index;
@@ -115,10 +117,10 @@ reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
 
 
 
-template <int dim>
-Point<dim>
-CartesianGridElement<dim>::
-vertex(const int i) const
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+vertex(const int i) const -> Point<dim>
 {
     Assert(i < UnitElement<dim>::vertices_per_element,
            ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
@@ -133,10 +135,10 @@ vertex(const int i) const
 };
 
 
-template <int dim>
-array< Real, dim>
-CartesianGridElement<dim>::
-get_coordinate_lengths() const
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+get_coordinate_lengths() const -> array< Real, dim>
 {
     const Point<dim> &p_origin = this->vertex(0);
     const Point<dim> &p_end = this->vertex(UnitElement<dim>::vertices_per_element-1);
@@ -149,10 +151,10 @@ get_coordinate_lengths() const
 }
 
 
-template <int dim>
-Point< dim >
-CartesianGridElement<dim>::
-center() const
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+center() const -> Point< dim >
 {
     Point<dim> center(vertex(0));
     center += vertex(UnitElement<dim>::opposite_vertex[0]);
@@ -162,9 +164,9 @@ center() const
 }
 
 
-template <int dim>
+template <int dim_>
 Real
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 get_measure(const TopologyId<dim> &topology_id) const
 {
     const auto active_directions = topology_id.get_active_directions();
@@ -178,18 +180,18 @@ get_measure(const TopologyId<dim> &topology_id) const
 
 
 
-template <int dim>
+template <int dim_>
 Real
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 get_face_measure(const Index face_id) const
 {
     return this->get_measure(FaceTopology<dim>(face_id));
 }
 
 
-template <int dim>
+template <int dim_>
 bool
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 is_point_inside(const Point< dim > &point) const
 {
     const auto &knots_directions = this->get_grid()->get_knot_coordinates();
@@ -209,8 +211,8 @@ is_point_inside(const Point< dim > &point) const
 
 
 
-template <int dim>
-bool CartesianGridElement<dim>::
+template <int dim_>
+bool CartesianGridElement<dim_>::
 is_boundary() const
 {
     const auto num_elements_dim = this->get_grid()->get_num_elements_dim();
@@ -227,9 +229,9 @@ is_boundary() const
 }
 
 
-template <int dim>
+template <int dim_>
 bool
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 is_boundary(const Index face_id) const
 {
     const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
@@ -242,9 +244,9 @@ is_boundary(const Index face_id) const
 }
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGridElement<dim>::
+CartesianGridElement<dim_>::
 print_info(LogStream &out,const VerbosityLevel verbosity) const
 {
     using std::endl;

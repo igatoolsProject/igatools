@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 CartesianGridElementAccessor<dim_>::
-CartesianGridElementAccessor(const std::shared_ptr<CartesianGrid<dim>> grid,
+CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                              const Index index)
     :
     CartesianGridElement<dim>(grid, index),

@@ -82,12 +82,12 @@ public:
 
     void evaluate_gradients(std::vector<GradientType> &gradients) const override;
 
-    void init_element(const ValueFlags flag, const Quadrature<dim> &quad) override;
+    void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) override ;
+    void set_element(const CartesianGridElementAccessor<dim> &elem) const override ;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) override;
+                          const CartesianGridElementAccessor<dim> &elem) const override;
 
     /**
      * Prints internal information about the mapping.
@@ -104,7 +104,9 @@ private:
     const std::shared_ptr<const SupMap> map_;
     const int direction_;
     const int value_;
-    typename SupMap::ElementIterator element;
+
+    // the cache
+    mutable typename SupMap::ElementIterator element;
 
     const std::shared_ptr<std::map<int,int> > elem_map_;
 
