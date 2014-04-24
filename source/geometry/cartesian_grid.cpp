@@ -21,6 +21,7 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/utils/vector_tools.h>
+#include <igatools/utils/multi_array_utils.h>
 #include <algorithm>
 
 using std::endl;
@@ -114,6 +115,9 @@ CartesianGrid(const BBox<dim> &end_points,
 
         knot_coordinates_.copy_data_direction(i,knots_1d);
     }
+
+
+    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
 }
 
 
@@ -156,6 +160,9 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates)
 
     }
 #endif
+
+
+    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
 }
 
 
@@ -175,7 +182,8 @@ CartesianGrid(const CartesianGrid<dim_> &grid)
     :
     kind_ {grid.kind_},
       boundary_id_(grid.boundary_id_),
-      knot_coordinates_(grid.knot_coordinates_)
+      knot_coordinates_(grid.knot_coordinates_),
+      weight_elem_id_(grid.weight_elem_id_)
 {}
 
 //TODO: inline this function
@@ -405,6 +413,8 @@ refine_knots_direction(const int direction_id,
     knots_new[n_knots_new-1] = knots_old[n_knots_old-1];
 
     knot_coordinates_.copy_data_direction(direction_id,knots_new);
+
+    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
 }
 
 
@@ -478,35 +488,73 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> shared_pt
 }
 
 
+template <int dim_>
+auto
+CartesianGrid<dim_>::
+get_bounding_box() const -> BBox<dim>
+{
+    BBox<dim> bounding_box;
+
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        bounding_box[i][0] = knot_coordinates_.get_data_direction(i).front();
+        bounding_box[i][1] = knot_coordinates_.get_data_direction(i).back();
+    }
+
+    return bounding_box;
+}
+
+
+template <int dim_>
+Index
+CartesianGrid<dim_>::
+tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const
+{
+    return MultiArrayUtils<dim>::tensor_to_flat_index(tensor_id,weight_elem_id_);
+}
+
+template <int dim_>
+auto
+CartesianGrid<dim_>::
+flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
+{
+    return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
+}
+
 
 template <int dim_>
 Index
 CartesianGrid<dim_>::
 get_element_flat_id_from_point(const Point<dim> &point) const
 {
-	TensorIndex<dim> elem_t_id;
-	for (int i = 0 ; i < dim ; ++i)
-	{
-        const auto &knots_i = knot_coordinates_.get_data_direction(i);
+    const auto bounding_box = this->get_bounding_box();
+
+    TensorIndex<dim> elem_t_id;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        Assert(point[i] >= bounding_box[i][0] && point[i] <= bounding_box[i][1],
+               ExcMessage("Point " +
+                          std::to_string(point[i]) +
+                          " outside the domain [" +
+                          std::to_string(bounding_box[i][0]) + "," +
+                          std::to_string(bounding_box[i][1])+
+                          "]"));
+
+        const auto &knots = knot_coordinates_.get_data_direction(i);
+
+        //find the index j in the knots for which knots[j] <= point[i]
+        const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
+        const Index j = low - knots.begin();
+
+        elem_t_id[i] = (j>0) ? j-1 : 0;
+    }
 
 
-        const Size n_intervals = knots_i.size() - 1;
-
-        if ( point[i] >= knots_i[0] && point[i] <= knots_i[1] )
-        	elem_t_id[i] = 0;
-        for (int j = 1 ; j < n_intervals ; ++j)
-        {
-            if ( point[i] > knots_i[j] && point[i] <= knots_i[j+1] )
-            {
-            	elem_t_id[i] = j;
-            	break;
-            }
-        }
-	}
-
-
-	return knot_coordinates_.tensor_to_flat(elem_t_id);
+    return this->tensor_to_flat_element_index(elem_t_id);
 }
+
+
+
 
 
 template <int dim_>
