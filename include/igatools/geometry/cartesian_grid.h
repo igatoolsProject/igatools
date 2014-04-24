@@ -293,6 +293,13 @@ public:
 
 
     /**
+     * Returns the flat id of the element that contains the <tt>point</tt>.
+     * @note If the points belongs to the boundaries of two elements, then the owner will be the
+     * element with smaller id.
+     */
+    Index get_element_flat_id_from_point(const Point<dim> &point) const;
+
+    /**
      * Prints the CartesianGrid on a LogStream.
      */
     void print_info(LogStream &out) const;
