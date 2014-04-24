@@ -250,6 +250,12 @@ public:
      * Returns the knot coordinates along the direction @p i.
      */
     CartesianProductArray<Real, dim> get_element_lengths() const ;
+
+    /**
+     * Returns the smallest <tt>dim</tt>-dimensional bounding box enclosing the domain represented
+     * by the CartesianGrid object.
+     */
+    BBox<dim> get_bounding_box() const;
     ///@}
 
 
@@ -296,8 +302,24 @@ public:
      * Returns the flat id of the element that contains the <tt>point</tt>.
      * @note If the points belongs to the boundaries of two elements, then the owner will be the
      * element with smaller id.
+     * @note If the point does not belong to the domain represented by the CartesianGrid object,
+     * then an assertion will be raised (in Debug mode).
      */
     Index get_element_flat_id_from_point(const Point<dim> &point) const;
+
+
+    /**
+     * Returns the flat representation of an element index from its tensor-like representation.
+     * @note In Debug mode, the element index is checked for its validity in the CartesianGrid.
+     */
+    Index tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const;
+
+    /**
+     * Returns the tensor-like representation of an element index from its flat representation.
+     * @note In Debug mode, the element index is checked for its validity in the CartesianGrid.
+     */
+    TensorIndex<dim> flat_to_tensor_element_index(const Index flat_id) const;
+
 
     /**
      * Prints the CartesianGrid on a LogStream.
@@ -390,6 +412,13 @@ private:
      * Signals for the h-refinement. It can be viewed as a FIFO list of function pointers.
      */
     signal_refine_t refine_signals_;
+
+
+    /**
+     * Weights used for fast conversion of element index (flat-to-tensor and tensor-to-flat);
+     */
+    TensorIndex<dim> weight_elem_id_;
+
 
     friend class CartesianGridElementAccessor< dim >;
 };
