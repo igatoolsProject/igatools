@@ -48,7 +48,8 @@ IGA_NAMESPACE_OPEN
  * @author M.Martinelli, 2013, 2014
  */
 template <int dim_>
-class CartesianGridElementAccessor : public CartesianGridElement<dim_>
+class CartesianGridElementAccessor :
+        public CartesianGridElement<dim_>
 {
 private:
     using parent_t = CartesianGridElement<dim_>;

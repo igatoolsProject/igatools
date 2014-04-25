@@ -19,11 +19,11 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test iterators and accessors on a CartesianGrid
- *  pauletti 2012-11-18
+ *  Test the CartesianGrid accessor and the forward iterator for that accessor.
+ *  author: pauletti
+ *  date:  2012-11-18 (Updated 2014-04-24)
  *
  */
-
 
 #include "../tests.h"
 
@@ -34,48 +34,42 @@
 #include <igatools/geometry/unit_element.h>
 
 
-using namespace std ;
+using namespace std;
 
 
-// Default constructor
+// Accessor constructor
 template <int dim>
 void test_accessor1()
 {
-    CartesianGrid< dim > cartesian_grid ;
-    GridForwardIterator<CartesianGridElementAccessor<dim> > element(cartesian_grid, 0);
+    auto grid = CartesianGrid<dim>::create();
+    GridForwardIterator<CartesianGridElementAccessor<dim> > element(grid, 0);
 
     for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
-    {
         out << element->vertex(i) << endl;
-    }
 }
 
 
-// Default constructor using begin and end
+
+// Iterator for default grid
 template <int dim>
 void test_accessor2()
 {
-    CartesianGrid< dim > cartesian_grid ;
-
-
-
-    typename CartesianGrid<dim>::ElementIterator element = cartesian_grid.begin();
-    typename CartesianGrid<dim>::ElementIterator end_element = cartesian_grid.end();
-    for (; element != end_element; ++element)
+    auto grid    = CartesianGrid<dim>::create();
+    auto element = grid->begin();
+    auto end     = grid->end();
+    for (; element != end; ++element)
         for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
             out<<element->vertex(i) << endl;
 }
 
 
 
-
+// Iterator for user coords grid
 template <int dim>
 void test_accessor3()
 {
-    CartesianProductArray< Real, dim > coords;
-
+    CartesianProductArray<Real, dim> coords;
     const int n_knots = 4;
-
     for (int i = 0; i < dim; ++i)
     {
         vector<Real> tmp_coord;
@@ -83,11 +77,12 @@ void test_accessor3()
             tmp_coord.push_back(j);
         coords.copy_data_direction(i,tmp_coord);
     }
-    CartesianGrid< dim > cartesian_grid(coords) ;
 
-    GridForwardIterator<CartesianGridElementAccessor<dim> > element(cartesian_grid, 0);
+    auto grid = CartesianGrid<dim>::create(coords);
 
-    const int n_elements = cartesian_grid.get_num_elements();
+    GridForwardIterator<CartesianGridElementAccessor<dim> > element(grid, 0);
+
+    const int n_elements = grid->get_num_elements();
     for (int j = 0; j < n_elements; ++j, ++element)
     {
         out << "Element: " << j << endl;
@@ -103,14 +98,12 @@ void test_accessor3()
 
 
 
-
 template <int dim>
 void test_accessor4()
 {
-    CartesianProductArray< Real, dim> coords;
 
+    CartesianProductArray<Real, dim> coords;
     const int n_knots = 4;
-
     for (int i = 0; i < dim; ++i)
     {
         vector<Real> tmp_coord;
@@ -119,24 +112,19 @@ void test_accessor4()
         coords.copy_data_direction(i,tmp_coord);
     }
 
+    auto grid = CartesianGrid<dim>::create(coords);
 
-    CartesianGrid< dim > cartesian_grid(coords) ;
-
-    typename CartesianGrid<dim>::ElementIterator element = cartesian_grid.begin();
-    typename CartesianGrid<dim>::ElementIterator end_element = cartesian_grid.end();
-    for (; element != end_element; ++element)
-    {
-        //element->indices();
+    auto element = grid->begin();
+    auto end     = grid->end();
+    for (; element != end; ++element)
         for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
             out<<element->vertex(i) << endl;
-    }
 }
 
 
 
-int main(int argc, char *argv[])
+int main()
 {
-
 
     test_accessor1<1>();
     test_accessor1<2>();
@@ -147,7 +135,6 @@ int main(int argc, char *argv[])
     test_accessor2<2>();
     test_accessor2<3>();
 
-
     test_accessor3<1>();
     test_accessor3<2>();
     test_accessor3<3>();
@@ -157,5 +144,4 @@ int main(int argc, char *argv[])
     test_accessor4<3>();
 
     return 0;
-
 }

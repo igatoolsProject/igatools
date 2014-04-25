@@ -244,27 +244,28 @@ is_boundary(const Index face_id) const
 }
 
 
+
 template <int dim_>
 void
 CartesianGridElement<dim_>::
-print_info(LogStream &out,const VerbosityLevel verbosity) const
+print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
     using std::endl;
 
     const std::string tab = "   ";
 
-    out << "CartesianGridElement<" << dim << "> info:" << endl;
+    out << "CartesianGridElement<" << dim_ << "> info:" << endl;
     out.push(tab);
 
     if (contains(verbosity,VerbosityLevel::debug))
-        out << "CartesianGrid<" << dim << "> memory address = " << grid_ << endl;
+        out << "CartesianGrid<" << dim_ << "> memory address = " << grid_ << endl;
 
     out << "Flat id = " << this->get_flat_index() << endl;
     out << "Tensor id = " << this->get_tensor_index() << endl;
 
     out << "Box intervals: " << endl;
     out.push(tab);
-    for (int i = 0 ; i < dim ; ++i)
+    for (int i = 0 ; i < dim_ ; ++i)
     {
         const auto coord_a = this->vertex(0)[i];
         const auto coord_b = this->vertex(pow(2,i))[i];
@@ -272,11 +273,9 @@ print_info(LogStream &out,const VerbosityLevel verbosity) const
     }
     out.pop();
 
-
-
     out << "Vertices:" << endl;
     out.push(tab);
-    for (Size i = 0 ; i < UnitElement<dim>::vertices_per_element ; ++i)
+    for (Size i = 0 ; i < UnitElement<dim_>::vertices_per_element ; ++i)
     {
         out << "Vertex[" << i << "] = " << this->vertex(i) << endl;
     }
@@ -290,7 +289,7 @@ print_info(LogStream &out,const VerbosityLevel verbosity) const
     if (this->is_boundary())
     {
         out << "Faces on boundary =";
-        for (Size i = 0 ; i < UnitElement<dim>::faces_per_element ; ++i)
+        for (Size i = 0 ; i < UnitElement<dim_>::faces_per_element ; ++i)
             if (this->is_boundary(i))
                 out << " " << i ;
 
@@ -299,8 +298,6 @@ print_info(LogStream &out,const VerbosityLevel verbosity) const
 
     out.pop();
 }
-
-
 
 IGA_NAMESPACE_CLOSE
 
