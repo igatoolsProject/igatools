@@ -42,6 +42,7 @@ template<int dim_, int codim_>
 class LinearMapping : public AnalyticalMapping <dim_, codim_>
 {
 private:
+	//TODO(pauletti, Apr 26, 2014): base_t should be mapping
     using base_t = AnalyticalMapping<dim_, codim_>;
 
     using base_t::dim;

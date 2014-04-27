@@ -44,10 +44,9 @@ private:
     using typename base_t::GradientType;
     using typename base_t::HessianType;
     using typename base_t::GridType;
+    using typename base_t::ElementIterator;
 
     using self_t = IgMapping<RefSpace>;
-
-    using ElementIterator = typename base_t::ElementIterator;
 
 public:
     /**

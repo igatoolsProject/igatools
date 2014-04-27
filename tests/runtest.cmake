@@ -59,7 +59,7 @@ execute_process(
   COMMAND         make ${EXE_TARGET} 
   RESULT_VARIABLE compile_error)
 
-
+set(runtime_error "Not run")
 if(NOT compile_error)
   set(level 2)
   message ("** Executing test program.")

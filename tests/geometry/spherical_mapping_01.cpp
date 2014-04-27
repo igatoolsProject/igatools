@@ -59,9 +59,8 @@ void test_evaluate()
 
     string filename = "spherical_map-" + to_string(dim) + "d";
     Writer<dim> writer(map, 4);
-#if 0
     writer.save(filename);
-#endif
+
 }
 
 int main()
