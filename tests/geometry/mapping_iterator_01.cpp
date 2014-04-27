@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
  *  Test for the linear mapping class iterator
  *  author: pauletti
@@ -28,7 +29,6 @@
 
 #include <igatools/geometry/mapping_lib.h>
 #include <igatools/base/quadrature_lib.h>
-
 #include <igatools/geometry/mapping_element_accessor.h>
 
 template <int dim, int codim>
@@ -45,7 +45,7 @@ void test_iterator()
     for (int i=0; i<dim; ++i)
         b[i] = i+1;
 
-    LinearMapping<dim,codim> map(A,b);
+    auto map = LinearMapping<dim,codim>::create(A,b);
 
     out << "Linear mapping" << "<" << dim << "," << space_dim << ">" << endl;
     out << "A =" << endl << A << endl;
@@ -53,7 +53,7 @@ void test_iterator()
 
     QTrapez<dim> quad;
 
-    auto elem = map.begin();
+    auto elem = map->begin();
 
     ValueFlags flag = ValueFlags::point;
     flag |= ValueFlags::measure| ValueFlags::w_measure|ValueFlags::map_gradient|ValueFlags::map_hessian;
