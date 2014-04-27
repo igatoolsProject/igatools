@@ -46,8 +46,6 @@ void test_accessor1()
 
     for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
         out << element->vertex(i) << endl;
-
-    GridForwardIterator<CartesianGridElement<dim> > el1(grid, 0);
 }
 
 

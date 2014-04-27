@@ -35,11 +35,11 @@
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
 template <int dim>
-shared_ptr<BSplineSpace<dim,dim,1>>
+shared_ptr<BSplineSpace<dim,dim,1> >
                                  create_space(const int num_knots) ;
 
 template <>
-shared_ptr<BSplineSpace<2,2,1>>
+shared_ptr<BSplineSpace<2,2,1> >
                              create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
@@ -52,7 +52,7 @@ shared_ptr<BSplineSpace<2,2,1>>
 }
 
 template <>
-shared_ptr<BSplineSpace<3,3,1>>
+shared_ptr<BSplineSpace<3,3,1> >
                              create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
@@ -90,7 +90,8 @@ void do_test()
         elem->get_basis_values().print_info(out);
     }
 
-    elem = space->begin();
+    {
+    auto elem = space->begin();
     elem->init_values(ValueFlags::gradient, quad) ;
 
     for (; elem != space->end(); ++elem)
@@ -99,8 +100,10 @@ void do_test()
         out << "Gradients:" << endl ;
         elem->get_basis_gradients().print_info(out);
     }
+    }
 
-    elem = space->begin();
+    {
+        auto elem = space->begin();
     elem->init_values(ValueFlags::hessian, quad) ;
 
     for (; elem != space->end(); ++elem)
@@ -109,7 +112,7 @@ void do_test()
         out << "Hessians:" << endl ;
         elem->get_basis_hessians().print_info(out);
     }
-
+    }
 }
 
 

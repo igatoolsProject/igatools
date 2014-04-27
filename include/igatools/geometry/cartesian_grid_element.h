@@ -90,13 +90,13 @@ public:
      * Copy assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(const CartesianGridElement<dim_> &elem) = default;
+    &operator=(const CartesianGridElement<dim_> &elem) = delete;
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(CartesianGridElement<dim_> &&elem) = default;
+    &operator=(CartesianGridElement<dim_> &&elem) = delete;
     ///@}
 
     /** Return the cartesian grid from which the element belongs.*/

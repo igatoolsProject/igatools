@@ -329,7 +329,7 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
     static const int range = Space::range;
     static const int rank = Space::rank;
 
-    const auto sparsity_pattern = dof_tools::get_sparsity_pattern(*space) ;
+    const auto sparsity_pattern = dof_tools::get_sparsity_pattern(space) ;
     Matrix matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs() ;

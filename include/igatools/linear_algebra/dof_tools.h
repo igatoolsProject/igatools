@@ -49,7 +49,7 @@ namespace dof_tools
  */
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space,
+get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
                      EnableIf<is_function_space<SpaceType>()> *fs = nullptr);
 
 
@@ -60,10 +60,11 @@ get_sparsity_pattern(const SpaceType &space,
  */
 template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const SpaceType &space, EnableIf<!is_function_space<SpaceType>()> * = nullptr)
+get_sparsity_pattern(const SpaceType &space,
+		EnableIf<!is_function_space<SpaceType>()> * = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
-    SparsityPattern graph;
+    SparsityPattern graph(space);
     return graph;
 }
 
@@ -127,8 +128,8 @@ get_dofs(const SpaceType &space,
 template < class Space1, class Space2 >
 inline
 SparsityPattern
-get_sparsity_pattern(const Space1 &space_rows,
-                     const Space2 &space_cols,
+get_sparsity_pattern(std::shared_ptr<const Space1> space_rows,
+		std::shared_ptr<const Space2>space_cols,
                      EnableIf<
                      is_function_space<Space1>()  &&is_function_space<Space2>() > *fs= nullptr)
 {
@@ -143,9 +144,9 @@ get_sparsity_pattern(const Space1 &space_rows,
     for (const auto &dof : row_dofs)
         sparsity_pattern.insert(std::pair<Index, set_t>(dof, empty));
 
-    auto element_rows     = space_rows.begin() ;
-    const auto element_rows_end = space_rows.end() ;
-    auto element_cols     = space_cols.begin() ;
+    auto element_rows     = space_rows->begin() ;
+    const auto element_rows_end = space_rows->end() ;
+    auto element_cols     = space_cols->begin() ;
 
     for (; element_rows != element_rows_end ; ++element_rows, ++element_cols)
     {

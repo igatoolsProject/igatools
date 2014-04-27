@@ -111,13 +111,13 @@ public:
      * the one dimensional length cache with the copied element.
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(const CartesianGridElementAccessor<dim_> &elem) = default;
+    &operator=(const CartesianGridElementAccessor<dim_> &elem) = delete;
 
     /**
      * Move assignment operator.
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(CartesianGridElementAccessor<dim_> &&elem) = default;
+    &operator=(CartesianGridElementAccessor<dim_> &&elem) = delete;
     ///@}
 
     /** @name Functions for the cache initialization and filling. */

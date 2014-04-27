@@ -1083,9 +1083,10 @@ print_info(LogStream &out) const
     out << "Num dofs: " << num_dofs << endl ;
 
     //TODO: Do we need to call external functions from this output operator?
-    out << "Dofs: " << dof_tools::get_dofs(*this)  << endl ;
+    out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl ;
 
-    const SparsityPattern &sparsity_pattern = dof_tools::get_sparsity_pattern(*this) ;
+    const SparsityPattern &sparsity_pattern =
+    		dof_tools::get_sparsity_pattern(this->shared_from_this()) ;
     out << "Num overlapping funcs: " << sparsity_pattern.get_num_overlapping_funcs() << endl ;
 
     out.pop();
