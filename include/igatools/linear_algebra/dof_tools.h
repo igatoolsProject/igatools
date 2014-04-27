@@ -33,7 +33,6 @@ IGA_NAMESPACE_OPEN
 class Vector;
 class Matrix;
 
-
 /**
  * Collection of routines to handle the relation
  * between the linear algebra and the degrees of freedom of
@@ -41,7 +40,6 @@ class Matrix;
  */
 namespace dof_tools
 {
-
 /**
  * Construct the sparsity pattern associated with the degrees
  * of freedom of the space.
@@ -51,7 +49,6 @@ template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
                      EnableIf<is_function_space<SpaceType>()> *fs = nullptr);
-
 
 /**
  * Construct the sparsity pattern associated with the degrees

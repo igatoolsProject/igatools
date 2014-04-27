@@ -100,7 +100,7 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
     space     = Space::create(ref_space, PushFw::create(map));
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix::create(get_sparsity_pattern(*space));
+    matrix   = Matrix::create(get_sparsity_pattern<Space>(space));
     rhs      = Vector::create(n_basis);
     solution = Vector::create(n_basis);
 }

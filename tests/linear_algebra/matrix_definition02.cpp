@@ -114,7 +114,6 @@ int main(int argc, char *argv[])
 
 
     // c = A . b
-//    A_epetra->Multiply(false, *b_epetra, *c_epetra);
     A.multiply_by_right_vector(b,c,1.0,0.0);
 
     out << "c = A . b" << endl;
@@ -124,6 +123,6 @@ int main(int argc, char *argv[])
 
 
 
-    return (EXIT_SUCCESS);
+    return 0;
 
 }
