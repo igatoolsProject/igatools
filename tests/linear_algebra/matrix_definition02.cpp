@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    Matrix A(dof_tools::get_sparsity_pattern(bspline_space_rows, bspline_space_cols));
+    Matrix A(dof_tools::get_sparsity_pattern<BSplineSpace< dim_domain, dim_range, rank  >,BSplineSpace< dim_domain, dim_range, rank  >>(bspline_space_rows, bspline_space_cols));
 
 
     const auto num_rows = n_basis_sp_rows ;
