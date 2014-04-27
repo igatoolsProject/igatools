@@ -57,7 +57,7 @@ init_values(const ValueFlags fill_flag,
            ExcMessage("Nothing to reset"));
 
     int max_der_order = -1;
-    ValueFlags fill_flag_bspline = ValueFlags::none ;
+    ValueFlags fill_flag_bspline = fill_flag ;
     if (contains(fill_flag, ValueFlags::value))
     {
         max_der_order=std::max(max_der_order,0);
