@@ -214,10 +214,10 @@ get_sparsity_pattern(
 
 template < class SpaceType >
 vector<Index>
-get_dofs(const SpaceType &space, EnableIf<is_function_space<SpaceType>()> *)
+get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType>()> *)
 {
-    auto element = space.begin();
-    const auto element_end = space.end();
+    auto element = space->begin();
+    const auto element_end = space->end();
 
     set<Index> dofs_set;
 
@@ -228,10 +228,9 @@ get_dofs(const SpaceType &space, EnableIf<is_function_space<SpaceType>()> *)
             dofs_set.insert(dof);
     }
 
-
     vector<Index> space_dofs(dofs_set.begin(), dofs_set.end());
 
-    return (space_dofs);
+    return space_dofs;
 }
 
 

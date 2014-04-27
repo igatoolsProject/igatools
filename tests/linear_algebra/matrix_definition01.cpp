@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     out << "Number of dofs: " << bspline_space->get_num_basis() << std::endl;
 
 
-    Matrix matrix(dof_tools::get_sparsity_pattern(bspline_space));
+    Matrix matrix(dof_tools::get_sparsity_pattern<BSplineSpace< dim_domain, dim_range, rank>>(bspline_space));
 
 
     const Index num_rows = matrix.get_num_rows() ;

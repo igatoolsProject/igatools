@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  > (knots, p_r) ;
-    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  > (knots, p_c) ;
+    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create (knots, p_r) ;
+    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create (knots, p_c) ;
 
     const auto n_basis_sp_rows = bspline_space_rows->get_num_basis();
     const auto n_basis_sp_cols = bspline_space_cols->get_num_basis();
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    Vector b(bspline_space_cols.get_num_basis());
+    Vector b(bspline_space_cols->get_num_basis());
     for (Index i = 0; i < num_cols ; i++)
         b.add_entry(i,i + 1.0);
 
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     b.print(out);
     out << endl;
 
-    Vector c(bspline_space_rows.get_num_basis());
+    Vector c(bspline_space_rows->get_num_basis());
 
 
     // c = A . b
