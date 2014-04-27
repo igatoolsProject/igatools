@@ -222,8 +222,8 @@ void test_evaluate()
     elem->init_values(ValueFlags::point|ValueFlags::map_gradient, quad);
     elem->fill_values();
 
-    auto values = elem->get_values_map();
-    auto gradients = elem->get_gradients_map();
+    auto values = elem->get_values();
+    auto gradients = elem->get_gradients();
 
     values.print_info(out);
     gradients.print_info(out);

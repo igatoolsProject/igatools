@@ -94,7 +94,7 @@ void
 MappingSlice<dim_, codim_>::
 evaluate(std::vector<ValueType> &values) const
 {
-    values = element->get_values_map();
+    values = element->get_values();
 }
 
 
@@ -104,7 +104,7 @@ void
 MappingSlice<dim_, codim_>::
 evaluate_gradients(std::vector<GradientType> &gradients) const
 {
-    auto grad = element->get_gradients_map();
+    auto grad = element->get_gradients();
 
     const auto active_dir = UnitElement<dim+1>::active_directions[direction_];
 

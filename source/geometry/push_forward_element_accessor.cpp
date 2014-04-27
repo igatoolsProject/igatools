@@ -234,8 +234,8 @@ transform_values(
     auto D0v_iterator     = D0v.begin() ;
     auto D0v_hat_iterator = D0v_hat.cbegin() ;
 
-    const auto &gradients_map = this->get_gradients_map(topology_id) ;
-    const auto &dets_map = this->get_dets_map(topology_id) ;
+    const auto &gradients_map = this->get_gradients(topology_id) ;
+    const auto &dets_map = this->get_dets(topology_id) ;
 
     for (int i = 0; i < n_func; ++i)
         for (Index j_pt = 0; j_pt < num_points; ++j_pt)
@@ -279,7 +279,7 @@ transform_gradients(
     auto D1v_iterator     = D1v.begin() ;
     auto D1v_hat_iterator = D1v_hat.cbegin() ;
 
-    const auto &inv_gradients_map = this->get_inv_gradients_map(topology_id) ;
+    const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
 
     for (int i_fn = 0; i_fn < n_func; ++i_fn)
     {
@@ -320,10 +320,10 @@ transform_gradients(
            ExcMessage("The size of the container must be a multiple of num_points.")) ;
     const int n_func = D1v_hat.size() / num_points ;
 
-    const auto &gradients_map = this->get_gradients_map(topology_id) ;
-    const auto &inv_gradients_map = this->get_inv_gradients_map(topology_id) ;
-    const auto &hessians_map = this->get_hessians_map(topology_id) ;
-    const auto &dets_map = this->get_dets_map(topology_id) ;
+    const auto &gradients_map = this->get_gradients(topology_id) ;
+    const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
+    const auto &hessians_map = this->get_hessians(topology_id) ;
+    const auto &dets_map = this->get_dets(topology_id) ;
 
     auto Dv_iterator     = D1v.begin() ;
     auto Dv_hat_iterator = D1v_hat.cbegin() ;
@@ -392,8 +392,8 @@ transform_hessians(
     Assert(num_points == D2v.get_num_points(),
            ExcDimensionMismatch(num_points,D2v.get_num_points()));
 
-    const auto &inv_gradients_map = this->get_inv_gradients_map(topology_id) ;
-    const auto &inv_hessians_map = this->get_inv_hessians_map(topology_id) ;
+    const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
+    const auto &inv_hessians_map = this->get_inv_hessians(topology_id) ;
 
     for (int i = 0; i < n_func; ++i)
         for (int j = 0; j < num_points; ++j)
@@ -417,7 +417,7 @@ ValueVector<Real>
 PushForwardElementAccessor<PushForward>::
 transform_measure(const TopologyId<dim> &topology_id) const
 {
-    return this->get_dets_map(topology_id);
+    return this->get_dets(topology_id);
 }
 
 

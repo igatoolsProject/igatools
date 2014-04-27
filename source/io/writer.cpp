@@ -447,7 +447,7 @@ get_subelements(
            ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-    auto element_vertices_tmp = elem->get_values_map();
+    auto element_vertices_tmp = elem->get_values();
 
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)

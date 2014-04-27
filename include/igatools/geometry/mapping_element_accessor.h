@@ -199,34 +199,34 @@ public:
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &
-    get_values_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the value of the map at the dilated quadrature points
      * on the face specified by @p face_id.
      */
     const ValueVector<ValueMap> &
-    get_face_values_map(const Index face_id) const;
+    get_face_values(const Index face_id) const;
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
-    get_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &
-    get_hessians_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &
-    get_inv_gradients_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_inv_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the hessian of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,2 > > &
-    get_inv_hessians_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_inv_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &
-    get_dets_map(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_dets(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the quadrature weights multiplied by the

@@ -75,7 +75,7 @@ void test_evaluate()
     {
         elem->fill_values() ;
         elem->get_basis_values().print_info(out) ;
-        elem_pf.get_gradients_map().print_info(out) ;
+        elem_pf.get_gradients().print_info(out) ;
         elem_rs.get_basis_values().print_info(out) ;
     }
     out << std::endl << std::endl ;

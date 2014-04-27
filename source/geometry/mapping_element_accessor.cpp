@@ -542,7 +542,7 @@ fill_composite_values()
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_values_map(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
+get_values(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -553,16 +553,16 @@ get_values_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Va
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_face_values_map(const Index face_id) const -> const ValueVector<ValueMap> &
+get_face_values(const Index face_id) const -> const ValueVector<ValueMap> &
 {
-    return this->get_values_map(FaceTopology<dim>(face_id));
+    return this->get_values(FaceTopology<dim>(face_id));
 }
 
 
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_gradients_map(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
+get_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -575,7 +575,7 @@ get_gradients_map(const TopologyId<dim> &topology_id) const -> const ValueVector
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_hessians_map(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
+get_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -588,7 +588,7 @@ get_hessians_map(const TopologyId<dim> &topology_id) const -> const ValueVector<
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_inv_gradients_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
+get_inv_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,1>> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -601,7 +601,7 @@ get_inv_gradients_map(const TopologyId<dim> &topology_id) const -> const ValueVe
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_inv_hessians_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
+get_inv_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<Derivatives<space_dim,dim,1,2>> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -614,7 +614,7 @@ get_inv_hessians_map(const TopologyId<dim> &topology_id) const -> const ValueVec
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_dets_map(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
+get_dets(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());

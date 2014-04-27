@@ -59,8 +59,8 @@ void run_test()
     elem->init_values(ValueFlags::point|ValueFlags::map_gradient, quad);
 
     elem->fill_values();
-    elem->get_values_map().print_info(out);
-    elem->get_gradients_map().print_info(out);
+    elem->get_values().print_info(out);
+    elem->get_gradients().print_info(out);
 
 
     for (int face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
@@ -76,8 +76,8 @@ void run_test()
         face_elem->init_values(ValueFlags::point|ValueFlags::map_gradient, face_quad);
 
         face_elem->fill_values();
-        face_elem->get_values_map().print_info(out);
-        face_elem->get_gradients_map().print_info(out);
+        face_elem->get_values().print_info(out);
+        face_elem->get_gradients().print_info(out);
     }
 }
 

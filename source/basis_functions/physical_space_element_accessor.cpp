@@ -460,7 +460,7 @@ const ValueVector<Real> &
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_measures(const TopologyId<dim> &topology_id) const
 {
-    return PfElemAccessor::get_dets_map(topology_id);
+    return PfElemAccessor::get_dets(topology_id);
 }
 
 template< class PhysSpace >
@@ -495,7 +495,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point<space_dim> &
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return (PfElemAccessor::get_values_map(topology_id))[qp];
+    return (PfElemAccessor::get_values(topology_id))[qp];
 }
 
 
@@ -698,7 +698,7 @@ get_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_values_map(topology_id);
+    return PfElemAccessor::get_values(topology_id);
 }
 
 template< class PhysSpace >
@@ -718,7 +718,7 @@ get_map_gradient_at_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_gradients_map(topology_id);
+    return PfElemAccessor::get_gradients(topology_id);
 }
 
 
