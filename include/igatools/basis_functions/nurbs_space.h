@@ -76,12 +76,6 @@ public:
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
-    /**
-     * Type for the face space.
-     */
-    //TODO rename FaceSpace_t to face_space_t
-    typedef NURBSSpace<dim-1, range, rank> FaceSpace_t;
-
 public:
     using DegreeTable = typename spline_space_t::DegreeTable;
 
@@ -113,9 +107,7 @@ public :
      * @p knots for the given @p degree for each direction and for each component.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    NURBSSpace(
-        std::shared_ptr<GridType> knots,
-        const DegreeTable &degree);
+    NURBSSpace(std::shared_ptr<GridType> knots, const DegreeTable &degree);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -123,8 +115,7 @@ public :
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
     static std::shared_ptr< self_t >
-    create(std::shared_ptr<GridType> knots,
-           const DegreeTable &degree);
+    create(std::shared_ptr<GridType> knots, const DegreeTable &degree);
 
     /**
      * Construct a NURBSSpace over the CartesianGrid @p knots with
@@ -132,10 +123,9 @@ public :
      * and for the given @p degree for each direction and for each component.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    NURBSSpace(
-        std::shared_ptr< GridType > knots,
-        const MultiplicityTable &mult_vector,
-        const DegreeTable &degree);
+    NURBSSpace(std::shared_ptr< GridType > knots,
+               const MultiplicityTable &mult_vector,
+               const DegreeTable &degree);
 
     /**
      * Returns shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
@@ -153,11 +143,10 @@ public :
      * the given multiplicity vector @p mult_vector for each component
      * and for the given @p degree for each direction and for each component.
      */
-    NURBSSpace(
-        std::shared_ptr< GridType > knots,
-        const MultiplicityTable &mult_vector,
-        const DegreeTable &degree,
-        const WeightsTable &weights);
+    NURBSSpace(std::shared_ptr< GridType > knots,
+               const MultiplicityTable &mult_vector,
+               const DegreeTable &degree,
+               const WeightsTable &weights);
 
     /**
      * Returns a shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
@@ -175,6 +164,11 @@ public :
 
     ///@}
 
+    /**
+     * Returns true if all component belong to the same scalar valued
+     * space.
+     */
+   // bool is_range_homogeneous() const;
 
     /** @name Getting information about the space */
     ///@{
@@ -195,24 +189,18 @@ public :
         return sp_space_->get_num_basis();
     }
 
-    /** Return the total number of dofs in each space component. */
-    std::array<Size,n_components> get_component_num_basis() const
-    {
-        return sp_space_->get_component_num_basis();
-    }
-
     /** Return the total number of dofs for the i-th space component. */
-    Size get_component_num_basis(int i) const
+    Size get_num_basis(const int i) const
     {
-        return sp_space_->get_component_num_basis(i);
+        return sp_space_->get_num_basis(i);
     }
     /**
      *  Return the total number of dofs for the i-th space component
      *  and the j-th direction.
      */
-    Size get_component_dir_num_basis(int comp, int dir) const
+    Size get_num_basis(const int comp, const int dir) const
     {
-        return sp_space_->get_component_dir_num_basis(comp, dir);
+        return sp_space_->get_num_basis(comp, dir);
     }
     /**
      * Returns the number of dofs per element.
@@ -224,9 +212,9 @@ public :
     /**
      *  Return the number of dofs per element for the i-th space component.
      */
-    Size get_component_num_basis_per_element(int i) const
+    Size get_num_basis_per_element(int i) const
     {
-        return sp_space_->get_component_num_basis_per_element(i);
+        return sp_space_->get_num_basis_per_element(i);
     }
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
@@ -308,16 +296,16 @@ public :
     /**
      * Return the knot multiplicities for each component of the space.
      */
-    const typename spline_space_t::template ComponentTable<Multiplicity<dim> > &
+    const MultiplicityTable &
     get_multiplicities() const
     {
         return sp_space_->get_multiplicities();
     }
 
 
-    typename spline_space_t::template ComponentTable<TensorSize<dim>> get_num_dofs() const
+    DegreeTable get_num_basis_table() const
     {
-        return sp_space_->get_num_dofs();
+        return sp_space_->get_num_basis_table();
     }
 
     /**

@@ -59,7 +59,7 @@ void test_evaluate()
 
     TensorSize<dim> n_weights_comp;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_comp(dir_id) = ref_space->get_component_dir_num_basis(0,dir_id);
+        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
 
     DynamicMultiArray<Real,dim> weights_comp(n_weights_comp);
 

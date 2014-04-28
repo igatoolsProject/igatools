@@ -175,12 +175,12 @@ get_face_space(std::shared_ptr<const Space> space,
     int offset=0;
     for (int comp = 0; comp < Space::RefFaceSpace::n_components; ++comp)
     {
-        const int face_n_basis = face_ref_sp->get_component_num_basis(comp);
+        const int face_n_basis = face_ref_sp->get_num_basis(comp);
         for (Index i = 0; i < face_n_basis; ++i, ++k)
         {
             const auto f_tensor_idx = face_ref_sp->flat_to_tensor(i,comp);
             const int fixed_idx =
-                face_side * (ref_space->get_component_dir_num_basis(comp,const_dir) - 1);
+                face_side * (ref_space->get_num_basis(comp,const_dir) - 1);
             for (int j = 0; j < Space::dim-1; ++j)
                 tensor_index[active_dirs[j]] =  f_tensor_idx[j];
             tensor_index[const_dir] = fixed_idx;
@@ -189,7 +189,7 @@ get_face_space(std::shared_ptr<const Space> space,
 
             face_to_element_dofs[k] = offset + dof;
         }
-        offset += ref_space->get_component_num_basis(comp);
+        offset += ref_space->get_num_basis(comp);
     }
 
     return face_space;

@@ -104,7 +104,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
         ctrl_mesh_comp.resize(index_space_comp.tensor_size());
 
-        const Size n_dofs_comp = data_->ref_space_->get_component_num_basis(comp_id);
+        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 //        out << "n_dofs_comp["<<comp_id<<"]= " << n_dofs_comp << endl ;
 
         const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_(comp_id);
@@ -387,9 +387,9 @@ refine_h_control_mesh(
                 auto new_sizes = old_sizes;
                 new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
                 Assert(new_sizes[direction_id] ==
-                       data_->ref_space_->get_component_dir_num_basis(comp_id,direction_id),
+                       data_->ref_space_->get_num_basis(comp_id,direction_id),
                        ExcDimensionMismatch(new_sizes[direction_id],
-                                            data_->ref_space_->get_component_dir_num_basis(comp_id,direction_id)));
+                                            data_->ref_space_->get_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);
 
@@ -461,7 +461,7 @@ refine_h_control_mesh(
         const auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
         const auto &weights_after_refinement_comp = weights_after_refinement(comp_id);
 
-        const Size n_dofs_comp = data_->ref_space_->get_component_num_basis(comp_id);
+        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
         {
             if (RefSpace::has_weights)

@@ -57,7 +57,7 @@ NURBSSpace(shared_ptr< GridType > knots, const int &degree)
 {
     // initialize all the weights to 1.0 (then this space will have the same
     // mathematical structure of a BSpline space)
-    const auto n_dofs = sp_space_->get_num_dofs();
+    const auto n_dofs = sp_space_->get_num_basis_table();
     for (int comp_id = 0; comp_id < n_components; ++comp_id)
     {
         const auto n_dofs_component = n_dofs(comp_id);
@@ -94,7 +94,7 @@ NURBSSpace(
     sp_space_(spline_space_t::create(knots, degree))
 {
 
-    const auto n_dofs = sp_space_->get_num_dofs();
+    const auto n_dofs = sp_space_->get_num_basis_table();
     for (int comp_id = 0; comp_id < n_components; ++comp_id)
     {
         const auto n_dofs_component = n_dofs(comp_id);
@@ -133,7 +133,7 @@ NURBSSpace(
 {
     // initialize all the weights to 1.0 (then this space will have the
     // same mathematical structure of a BSpline space)
-    const auto n_dofs = sp_space_->get_num_dofs();
+    const auto n_dofs = sp_space_->get_num_basis_table();
     for (int comp_id = 0; comp_id < n_components; ++comp_id)
     {
         const auto n_dofs_component = n_dofs(comp_id);
@@ -261,8 +261,8 @@ reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> &we
     //-------------------------------------------------------------------------
     for (int i = 0; i < StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>::n_entries; ++i)
     {
-        Assert(sp_space_->get_component_num_basis(i) == int(weights(i).flat_size()),
-               ExcDimensionMismatch(sp_space_->get_component_num_basis(i), weights(i).flat_size()));
+        Assert(sp_space_->get_num_basis(i) == int(weights(i).flat_size()),
+               ExcDimensionMismatch(sp_space_->get_num_basis(i), weights(i).flat_size()));
     }
     //-------------------------------------------------------------------------
     weights_ = weights;
@@ -324,9 +324,9 @@ refine_h_weights(
                 auto new_sizes = old_sizes;
                 new_sizes(direction_id) += r+1; // r+1 new weights in the refinement direction
                 Assert(new_sizes(direction_id) ==
-                       sp_space_->get_component_dir_num_basis(comp_id,direction_id),
+                       sp_space_->get_num_basis(comp_id,direction_id),
                        ExcDimensionMismatch(new_sizes(direction_id),
-                                            sp_space_->get_component_dir_num_basis(comp_id,direction_id)));
+                                            sp_space_->get_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);
 

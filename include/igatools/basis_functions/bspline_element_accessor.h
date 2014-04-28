@@ -144,7 +144,7 @@ public:
      * is only allowed to be of the cartesian product type
      * V = V1 x V2 x ... X Vn.
      */
-    int get_component_num_basis(const int i) const;
+    int get_num_basis(const int i) const;
 
     /**
      * Returns the global dofs of the local (non zero) basis functions

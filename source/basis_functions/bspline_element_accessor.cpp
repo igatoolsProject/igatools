@@ -303,7 +303,7 @@ get_num_basis() const
 template <int dim, int range, int rank>
 int
 BSplineElementAccessor<dim, range, rank>::
-get_component_num_basis(const int i) const
+get_num_basis(const int i) const
 {
     const auto &degree_comp = this->space_->get_degree()(i);
     int component_num_basis = 1;
@@ -1060,7 +1060,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
         const auto &splines1d_direction = elem_values(iComp);
 
 
-        const int n_basis = get_component_num_basis(iComp);
+        const int n_basis = get_num_basis(iComp);
         Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
         const auto &functions_indexer = *(size.basis_functions_indexer_(iComp));
@@ -1173,7 +1173,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     if (space_->homogeneous_range_)
     {
         const int n_ders = Derivative<deriv_order>::size;
-        const auto n_basis = space_->get_component_num_basis_per_element(0);
+        const auto n_basis = space_->get_num_basis_per_element(0);
         for (int iComp = 1; iComp < Space_t::n_components; ++iComp)
         {
             const int offset = comp_offset[iComp];

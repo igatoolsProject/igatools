@@ -45,7 +45,7 @@ void do_test()
 
 
     // defining and assigning some weights (different from 1.0) to the NURBSSpace
-    const auto n_dofs = space->get_num_dofs() ;
+    const auto n_dofs = space->get_num_basis_table() ;
 
     const auto n_dofs_component = n_dofs(0);
     DynamicMultiArray<iga::Real,dim_domain> weights_component(n_dofs_component) ;

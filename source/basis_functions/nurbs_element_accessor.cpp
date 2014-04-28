@@ -182,7 +182,7 @@ evaluate_nurbs_values(
             int dof_offset = 0;
             for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                const int num_basis_comp = this->get_component_num_basis(iComp);
+                const int num_basis_comp = this->get_num_basis(iComp);
 
                 vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points));
 
@@ -229,12 +229,12 @@ evaluate_nurbs_values(
         else // space_->homogeneous_range_ == true
         {
             //------------------------------------------------------------------------------------------
-            const int num_basis_comp = this->get_component_num_basis(0);
+            const int num_basis_comp = this->get_num_basis(0);
 
             for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                Assert(this->get_component_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_component_num_basis(iComp), num_basis_comp));
+                Assert(this->get_num_basis(iComp) == num_basis_comp,
+                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
             }
 
             vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points));
@@ -351,7 +351,7 @@ evaluate_nurbs_gradients(
             int dof_offset = 0;
             for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                const int num_basis_comp = this->get_component_num_basis(iComp);
+                const int num_basis_comp = this->get_num_basis(iComp);
 
                 vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points));
                 vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points));
@@ -434,12 +434,12 @@ evaluate_nurbs_gradients(
         else // space_->homogeneous_range_ == true
         {
             //------------------------------------------------------------------------------------------
-            const int num_basis_comp = this->get_component_num_basis(0);
+            const int num_basis_comp = this->get_num_basis(0);
 
             for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                Assert(this->get_component_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_component_num_basis(iComp), num_basis_comp));
+                Assert(this->get_num_basis(iComp) == num_basis_comp,
+                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
             }
 
             vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points));
@@ -610,7 +610,7 @@ evaluate_nurbs_hessians(
             int dof_offset = 0;
             for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                const int num_basis_comp = this->get_component_num_basis(iComp);
+                const int num_basis_comp = this->get_num_basis(iComp);
 
                 vector< vector< ValueRange1_t > >     P(num_basis_comp, vector< ValueRange1_t >(num_points));
                 vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points));
@@ -723,12 +723,12 @@ evaluate_nurbs_hessians(
         } // space_->homogeneous_range_ == false
         else // space_->homogeneous_range_ == true
         {
-            const int num_basis_comp = this->get_component_num_basis(0);
+            const int num_basis_comp = this->get_num_basis(0);
 
             for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                Assert(this->get_component_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_component_num_basis(iComp), num_basis_comp));
+                Assert(this->get_num_basis(iComp) == num_basis_comp,
+                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
             }
 
             //------------------------------------------------------------------------------------------
@@ -971,11 +971,11 @@ get_weights() const
 
     //---------------------------
     // here we compute the offset of the dofs relative to the components of the space
-    const auto n_dofs_space_comp = space_->get_component_num_basis();
     array<Size,space_t::n_components+1> dofs_offset_comp;
     dofs_offset_comp[0] = 0;
     for (int comp = 0; comp < space_t::n_components; ++comp)
-        dofs_offset_comp[comp+1] = dofs_offset_comp[comp] + n_dofs_space_comp[comp];
+        dofs_offset_comp[comp+1] = dofs_offset_comp[comp] +
+        space_->get_num_basis(comp);
     //---------------------------
 
 
@@ -995,12 +995,9 @@ get_weights() const
                 break;
             }
         }
-//      out << "global_id="<< global_id << "    comp_id=" << comp_id << "   dof_id="<<dof_id<<endl;
 
         weights_element.emplace_back(space_->weights_(comp_id)(dof_id));
     }
-//    for (uint global_id : local_to_global)
-//        weights_element.emplace_back(space_->weights_global_[global_id]);
 
     return weights_element;
 }

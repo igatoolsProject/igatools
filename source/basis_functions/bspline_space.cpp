@@ -335,7 +335,7 @@ BSplineSpace(shared_ptr<GridType> cartesian_grid, const int degree)
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots, int degree) -> shared_ptr<self_t>
+create(shared_ptr< GridType > knots, const int degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots, degree));
 }
@@ -374,7 +374,7 @@ create(shared_ptr<GridType> knots,
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
-             const ComponentTable<TensorIndex<dim>> &degree)
+             const DegreeTable &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -396,7 +396,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const ComponentTable<TensorIndex<dim>> &degree) -> shared_ptr<self_t>
+       const DegreeTable &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots, degree));
 }
@@ -405,9 +405,9 @@ create(shared_ptr<GridType> knots,
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(shared_ptr<GridType> knots,
-             const ComponentTable<Multiplicity<dim>> &mult_vectors,
-             const ComponentTable<TensorIndex<dim>> &degree)
+BSplineSpace(shared_ptr<GridType>    knots,
+             const MultiplicityTable &mult_vectors,
+             const DegreeTable       &degree)
     :
     BaseSpace(knots),
     degree_(degree),
@@ -423,8 +423,8 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const ComponentTable<Multiplicity<dim>> &mult_vectors,
-       const ComponentTable<TensorIndex<dim>> &degree) -> shared_ptr<self_t>
+       const MultiplicityTable &mult_vectors,
+       const DegreeTable       &degree) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots,mult_vectors,degree));
 }
@@ -660,6 +660,7 @@ init_dofs()
 }
 
 
+
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
@@ -667,13 +668,10 @@ init()
 {
     init_dofs();
 
-    //----------------------------------
-    // create a signal and a connection for the grid refinement
+     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
-        std::bind(&self_t::refine_h_after_grid_refinement,
-                  this,
+        std::bind(&self_t::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
-    //----------------------------------
 }
 
 
@@ -681,23 +679,63 @@ init()
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_reference_space() const -> shared_ptr<const BSplineSpace<dim,range,rank>>
+get_reference_space() const -> shared_ptr<const self_t>
 {
     return this->shared_from_this();
 }
 
 
+#if 0
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_num_basis() const -> array<Size,n_components>
+{
+    array<Size,n_components> n_basis_components;
+    for (uint comp_id = 0; comp_id < n_components; ++comp_id)
+        n_basis_components[comp_id] = this->get_num_basis(comp_id);
+
+    return n_basis_components;
+}
+#endif
+
+
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_component_num_basis() const -> array<Size,n_components>
+get_num_basis_table() const -> DegreeTable
 {
-    array<Size,n_components> n_basis_components;
-    for (uint comp_id = 0; comp_id < n_components; ++comp_id)
-        n_basis_components[comp_id] = this->get_component_num_basis(comp_id);
+    return num_dofs_;
+}
 
-    return n_basis_components;
+
+
+template<int dim_, int range_, int rank_>
+Size
+BSplineSpace<dim_, range_, rank_>::
+get_num_basis() const
+{
+    Index result = 0;
+    for (int iComp = 0 ; iComp < n_components ; ++iComp)
+        result += get_num_basis(iComp);
+
+    return  result;
+}
+
+
+
+template<int dim_, int range_, int rank_>
+Size
+BSplineSpace<dim_, range_, rank_>::
+get_num_basis(const int comp) const
+{
+    AssertIndexRange(comp, n_components);
+    int res=1;
+    for (auto x : num_dofs_(comp))
+        res *= x;
+
+    return res;
 }
 
 
@@ -705,20 +743,7 @@ get_component_num_basis() const -> array<Size,n_components>
 template<int dim_, int range_, int rank_>
 Index
 BSplineSpace<dim_, range_, rank_>::
-get_component_num_basis(int iComp) const
-{
-    //TODO: implement something similar in CartesianProductArray?
-    Assert(iComp >= 0 && iComp < n_components, ExcIndexRange(iComp, 0, n_components)) ;
-
-    return index_space_(iComp).flat_size();
-}
-
-
-
-template<int dim_, int range_, int rank_>
-Index
-BSplineSpace<dim_, range_, rank_>::
-get_component_dir_num_basis(int comp, int dir) const
+get_num_basis(const int comp, const int dir) const
 {
     return num_dofs_(comp)[dir];
 }
@@ -728,7 +753,7 @@ get_component_dir_num_basis(int comp, int dir) const
 template<int dim_, int range_, int rank_>
 Index
 BSplineSpace<dim_, range_, rank_>::
-get_component_num_basis_per_element(int iComp) const
+get_num_basis_per_element(int iComp) const
 {
     //TODO: implement something similar in CartesianProductArray?
     Assert(iComp >= 0 && iComp < n_components, ExcIndexRange(iComp, 0, n_components)) ;
@@ -741,20 +766,6 @@ get_component_num_basis_per_element(int iComp) const
         num_dofs_per_element_component *= (p + 1) ;
 
     return (num_dofs_per_element_component) ;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-Index
-BSplineSpace<dim_, range_, rank_>::
-get_num_basis() const
-{
-    Index result = 0;
-    for (int iComp = 0 ; iComp < n_components ; iComp++)
-        result += get_component_num_basis(iComp) ;
-
-    return  result;
 }
 
 
@@ -951,16 +962,6 @@ refine_h_after_grid_refinement(
 
     init_dofs();
 }
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_num_dofs() const -> StaticMultiArray<TensorSize<dim>,range,rank>
-{
-    return num_dofs_;
-}
-
 
 
 template<int dim_, int range_, int rank_>

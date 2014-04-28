@@ -152,16 +152,14 @@ public:
      * @p knots for the given @p degree in all directions and homogeneous
      * in all components.
      */
-    explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const int degree);
+    explicit BSplineSpace(std::shared_ptr<GridType> knots, const int degree);
 
     /**
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<GridType> knots,
-           int degree);
+    create(std::shared_ptr<GridType> knots, const int degree);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -184,7 +182,7 @@ public:
      * component.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const ComponentTable<TensorIndex<dim>> &degree);
+                          const DegreeTable &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -192,7 +190,7 @@ public:
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<GridType> knots,
-           const ComponentTable<TensorIndex<dim>> &degree);
+           const DegreeTable &degree);
 
 
     /**
@@ -203,8 +201,8 @@ public:
      * component.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const ComponentTable<Multiplicity<dim>> &mult_vectors,
-                          const ComponentTable<TensorIndex<dim>> &degree);
+                          const MultiplicityTable &mult_vectors,
+                          const DegreeTable &degree);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -212,8 +210,8 @@ public:
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<GridType> knots,
-           const ComponentTable<Multiplicity<dim>> &mult_vectors,
-           const ComponentTable<TensorIndex<dim>> &degree);
+           const MultiplicityTable &mult_vectors,
+           const DegreeTable &degree);
 
     /** Destructor */
     ~BSplineSpace() = default;
@@ -224,8 +222,8 @@ public:
     ///@{
 
     /** Copy assignment. Not allowed to be used. */
-    BSplineSpace<dim,range,rank> &
-    operator=(const BSplineSpace<dim,range,rank> &space) = delete;
+    self_t &
+    operator=(const self_t &space) = delete;
     ///@}
 
     /** @name Getting information about the space */
@@ -237,22 +235,28 @@ public:
     bool is_range_homogeneous() const;
 
     /**
-     * Total number of dofs (i.e number of basis functions aka dimensionality)
+     * Total number of basis functions. This is the dimensionality
      * of the space.
      */
     Size get_num_basis() const;
 
-    /** Return the total number of dofs in each space component. */
-    std::array<Size,n_components> get_component_num_basis() const;
-
-    /** Return the total number of dofs for the i-th space component. */
-    Size get_component_num_basis(int i) const;
+    /**
+     * Total number of basis functions
+     * for the comp space component.
+     */
+    Size get_num_basis(const int comp) const;
 
     /**
-     *  Return the total number of dofs for the i-th space component
-     *  and the j-th direction.
+     *  Total number of basis functions for the comp space component
+     *  and the dir direction.
      */
-    Size get_component_dir_num_basis(int comp, int dir) const ;
+    Size get_num_basis(const int comp, const int dir) const;
+
+    /**
+     * Component-direction indexed table with the number of basis functions
+     * in each direction and component
+     */
+    DegreeTable get_num_basis_table() const;
 
     /**
      * Returns the number of dofs per element.
@@ -262,7 +266,9 @@ public:
     /**
      *  Return the number of dofs per element for the i-th space component.
      */
-    Size get_component_num_basis_per_element(int i) const;
+    Size get_num_basis_per_element(int i) const;
+
+
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
@@ -281,7 +287,7 @@ public:
     const ComponentTable<CartesianProductArray<Real,dim> > &
     get_knots_with_repetitions() const;
 
-    std::shared_ptr<const BSplineSpace<dim,range,rank> >
+    std::shared_ptr<const self_t >
     get_reference_space() const;
 
     /**
@@ -342,15 +348,7 @@ public:
     get_multiplicities() const;
 
 
-    /**
-     * Returns the number of one-dimensional basis function in each component and in
-     * each direction of the space.
-     * @code
-     * num_dofs = ref_space.get_num_dofs();
-     * // num_dofs[comp][dir] is the number of 1D basis functions for the component comp and direction dir
-     * @endcode
-     */
-    ComponentTable<TensorSize<dim>> get_num_dofs() const ;
+
 
 
     /** Return the push forward (non-const version). */
@@ -423,7 +421,7 @@ private:
      * each direction.
      * num_dofs_[comp][dir]
      */
-    ComponentTable<TensorSize<dim>> num_dofs_;
+    DegreeTable num_dofs_;
 
 
     /** @name Bezier extraction operator. */
