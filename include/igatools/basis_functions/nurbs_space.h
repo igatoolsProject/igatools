@@ -314,8 +314,15 @@ public :
     const typename base_t::template ComponentTable<Multiplicity<dim> > &
     get_multiplicities() const
     {
-        return this->get_multiplicities();
+        return sp_space_->get_multiplicities();
     }
+
+
+    typename base_t::template ComponentTable<TensorSize<dim>> get_num_dofs() const
+	{
+    	return sp_space_->get_num_dofs();
+	}
+
     /**
     * Returns a element iterator to the first element of the patch
     */
