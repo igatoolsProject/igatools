@@ -31,20 +31,27 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief This class represents an element within a CartesianGrid.
  *
- * The element can be queried for informations
- * that can be generated on-the-fly
+ * The element can be queried for information
+ * that is generated on-the-fly
  * (i.e. without the use of a cache).
  *
- * It is used as base class for CartesianGridElementAccessor.
+ * It is used as base class for CartesianGridElementAccessor which
+ * generate the element information using caches techniques.
  *
  * @tparam dim Dimensionality of the grid.
  *
  * @author M.Martinelli, 2014
  */
-template <int dim>
+template <int dim_>
 class CartesianGridElement
 {
 public:
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const CartesianGrid<dim_>;
+
+    /** Dimension of the grid like container */
+    static const auto dim = ContainerType::dim;
+
     /** @name Constructors */
     ///@{
     /**
@@ -56,19 +63,19 @@ public:
      * Construct an object pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElement(const CartesianGrid<dim> &grid,
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index);
 
     /**
      * Copy constructor.
      */
-    CartesianGridElement(const CartesianGridElement<dim> &elem)
+    CartesianGridElement(const CartesianGridElement<dim_> &elem)
         = default;
 
     /**
      * Move constructor.
      */
-    CartesianGridElement(CartesianGridElement<dim> &&elem)
+    CartesianGridElement(CartesianGridElement<dim_> &&elem)
         = default;
 
     /**
@@ -83,30 +90,25 @@ public:
      * Copy assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(const CartesianGridElement<dim> &elem) = default;
+    &operator=(const CartesianGridElement<dim_> &elem) = delete;
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(CartesianGridElement<dim> &&elem) = default;
+    &operator=(CartesianGridElement<dim_> &&elem) = delete;
     ///@}
 
-
-
     /** Return the cartesian grid from which the element belongs.*/
-    const CartesianGrid<dim> *get_grid() const;
-
+    const std::shared_ptr<ContainerType> get_grid() const;
 
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const;
 
-
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
-
 
     /**
      * Sets the index of the element using the flatten representation.
@@ -117,7 +119,6 @@ public:
      */
     void reset_flat_tensor_indices(const Index flat_index);
 
-
     /**
      * Sets the index of the element using the tensor representation.
      * @note This function also updates the index for the flatten representation.
@@ -127,7 +128,6 @@ public:
      */
     void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
     ///@}
-
 
     /** @name Query geometrical/topological information without use of cache */
     ///@{
@@ -152,20 +152,18 @@ public:
      */
     std::array<Real,dim> get_coordinate_lengths() const;
 
-
     /**
-     * Returns measure of the element or of the element-face in the CartesianGrid.
-     * @note The topology for which the measure is computed is specified by the input argument
-     * @p topology_id.
+     * Returns measure of the element or of the element-face in the
+     * CartesianGrid.
+     * @note The topology for which the measure is computed is specified by
+     * the input argument @p topology_id.
      */
     Real get_measure(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
 
     /**
      * Returns measure of j-th face.
      */
     Real get_face_measure(const int j) const;
-
 
     /**
      * Test if the point is inside the element.
@@ -188,22 +186,19 @@ public:
      * Prints internal information about the CartesianGridElement.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out, const VerbosityLevel verbosity = VerbosityLevel::normal) const;
-
+    void print_info(LogStream &out,
+                    const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
 private:
-
     /** Cartesian grid from which the element belongs.*/
-    const CartesianGrid<dim> *grid_;
+    const std::shared_ptr<ContainerType> grid_;
 
     /** Flat (linear) index assigned to the current (sub)-element. */
     Index flat_index_;
 
     /** Tensor product indices of the current struct index @p flat_index_. */
     TensorIndex<dim> tensor_index_;
-
 };
-
 
 IGA_NAMESPACE_CLOSE
 

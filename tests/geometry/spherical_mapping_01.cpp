@@ -39,7 +39,9 @@ void test_evaluate()
     auto map = BallMapping<dim>::create(grid);
 
     QUniform<dim> quad(3);
+
     auto elem = map->begin();
+
     ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
     elem->init_values(flag, quad);
     elem->fill_values();
@@ -58,6 +60,7 @@ void test_evaluate()
     string filename = "spherical_map-" + to_string(dim) + "d";
     Writer<dim> writer(map, 4);
     writer.save(filename);
+
 }
 
 int main()

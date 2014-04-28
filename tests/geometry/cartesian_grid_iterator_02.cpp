@@ -45,9 +45,8 @@ void run_test()
 
     el1->init_values(ValueFlags::w_measure, QGauss<dim>(1));
 
-    auto el2 = el1;
-
-    //el1->init_values(ValueFlags::w_measure, QGauss<dim>(1));
+    auto el2 = grid->begin();
+    el2->init_values(ValueFlags::w_measure, QGauss<dim>(1));
 }
 
 int main()

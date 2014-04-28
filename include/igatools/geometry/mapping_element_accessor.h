@@ -50,7 +50,7 @@ private:
 
 public:
     /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = Mapping<dim_ref_,codim_>;
+    using ContainerType = const Mapping<dim_ref_,codim_>;
 
     /** Dimension of the reference domain */
     using CartesianGridElementAccessor<dim_ref_>::dim;
@@ -96,7 +96,7 @@ public:
         ValueFlags::map_face_gradient |
         ValueFlags::map_face_hessian |
         ValueFlags::map_face_inv_gradient |
-        ValueFlags::map_face_inv_hessian ;
+        ValueFlags::map_face_inv_hessian;
 
     /** @name Constructors */
     ///@{
@@ -109,7 +109,7 @@ public:
      * Constructs an accessor to element number @p index of a
      * Mapping.
      */
-    MappingElementAccessor(Mapping<dim,codim> &mapping,
+    MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
                            const int index);
 
     /**
@@ -194,7 +194,8 @@ public:
 
     /**
      * @name Getting the mapping-related values stored in the cache.
-     * @note In order to use these functions, the cache of the MappingElementAccessor must be properly filled.
+     * @note In order to use these functions, the cache of the
+     * MappingElementAccessor must be properly filled.
      */
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
@@ -327,8 +328,6 @@ private:
         ValueVector< ValueMap > normals_;
         bool fill_normals_ = false;
         bool normals_filled_ = false;
-
-//        std::shared_ptr<MappingFaceValueFlagsHandler> get_flags_handler() const;
     };
 
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
@@ -337,7 +336,7 @@ private:
 
     std::array<FaceValuesCache, n_faces> face_values_;
 
-    Mapping<dim, codim> *mapping_;
+    std::shared_ptr<ContainerType> mapping_;
 
     /**
      * @todo implement this function

@@ -72,28 +72,28 @@ std::vector<Index>
 TopologyId<dim>::
 get_active_directions() const
 {
-	std::vector<Index> active_directions;
-	if (this->is_element())
-	{
-		for (Index d = 0 ; d < dim ; ++d)
-			active_directions.emplace_back(d);
+    std::vector<Index> active_directions;
+    if (this->is_element())
+    {
+        for (Index d = 0 ; d < dim ; ++d)
+            active_directions.emplace_back(d);
 
-		Assert(active_directions.size() == dim,ExcDimensionMismatch(active_directions.size(),dim));
-	}
-	else if (this->is_face())
-	{
-		const int face_id = this->get_id();
-		for ( const Index &d : UnitElement<dim>::face_active_directions[face_id])
-			active_directions.emplace_back(d);
+        Assert(active_directions.size() == dim,ExcDimensionMismatch(active_directions.size(),dim));
+    }
+    else if (this->is_face())
+    {
+        const int face_id = this->get_id();
+        for (const Index &d : UnitElement<dim>::face_active_directions[face_id])
+            active_directions.emplace_back(d);
 
-		Assert(active_directions.size() == UnitElement<dim>::face_dim,
-				ExcDimensionMismatch(active_directions.size(),UnitElement<dim>::face_dim));
-	}
-	else
-	{
-		Assert(false,ExcInvalidState());
-		AssertThrow(false,ExcInvalidState());
-	}
+        Assert(active_directions.size() == UnitElement<dim>::face_dim,
+               ExcDimensionMismatch(active_directions.size(),UnitElement<dim>::face_dim));
+    }
+    else
+    {
+        Assert(false,ExcInvalidState());
+        AssertThrow(false,ExcInvalidState());
+    }
 
     return active_directions;
 }
@@ -117,7 +117,7 @@ FaceTopology(const Index face_id)
     TopologyId<dim>(face_id)
 {
     Assert(face_id >= 0 && face_id < UnitElement<dim>::faces_per_element,
-    		ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
 };
 
 

@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 
 #include <iterator>
-
+#include <memory>
 IGA_NAMESPACE_OPEN
 
 
@@ -36,8 +36,9 @@ IGA_NAMESPACE_OPEN
  * See the C++ documentation for further
  * details of iterator specification and usage.
  *
- * The object pointed to the GridForwardIterator is called <em>accessor</em> and
- * its type is passed as template argument <tt>Accessor</tt> of the GridForwardIterator.
+ * The object pointed to the GridForwardIterator is called <em>accessor</em>
+ * and its type is passed as template argument <tt>Accessor</tt>
+ * of the GridForwardIterator.
  *
  * The <em>accessor</em> is an object that can fetch and use data stored in objects that have
  * a "grid-like" structure. The type of the object with this "grid-like" structure,
@@ -162,35 +163,29 @@ public:
      */
     GridForwardIterator() = delete;
 
-
     /**
      * Construct a forward iterator on a cartesian grid container
      * like type pointed to by patch and the index of the
      * object pointed to by the iterator.
      */
-    GridForwardIterator(ContainerType &patch,
+    GridForwardIterator(std::shared_ptr<ContainerType> patch,
                         const Index index);
-
 
     /** Copy constructor. */
     GridForwardIterator(const GridForwardIterator<Accessor> &it) = default;
 
-
     /** Move constructor. */
     GridForwardIterator(GridForwardIterator<Accessor> &&it) = default;
-
 
     /** Destructor */
     ~GridForwardIterator() = default ;
     ///@}
-
 
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
     GridForwardIterator<Accessor> &
     operator=(const GridForwardIterator<Accessor> &) = default;
-
 
     /** Move assignment operator. */
     GridForwardIterator<Accessor> &
@@ -205,13 +200,11 @@ public:
      */
     const Accessor &operator*() const;
 
-
     /**
      *  Dereferencing operator, returns a
      *  reference to the accessor.
      */
     Accessor &operator*();
-
 
     /**
      *  Dereferencing operator, returns a
@@ -219,14 +212,12 @@ public:
      */
     const Accessor *operator->() const;
 
-
     /**
      *  Dereferencing operator, returns a
      *  pointer to the accessor.
      */
     Accessor *operator->();
     ///@}
-
 
     /** @name Comparison operators */
     ///@{
@@ -248,16 +239,11 @@ public:
     GridForwardIterator<Accessor> &operator++();
     ///@}
 
-
 protected:
     /** Object holding the Real data. */
     Accessor accessor_ ;
-
 };
 
-
-
 IGA_NAMESPACE_CLOSE
-
 
 #endif /* PATCH_ITERATORS_H_ */

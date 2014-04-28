@@ -29,11 +29,12 @@ IGA_NAMESPACE_OPEN
 
 template< class PhysSpace >
 PhysicalSpaceElementAccessor<PhysSpace>::
-PhysicalSpaceElementAccessor(const PhysSpace &phys_space, const Index index)
+PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
+                             const Index index)
     :
-    RefElemAccessor(*phys_space.get_reference_space(), index),
-    PfElemAccessor(*phys_space.push_forward_, index),
-    phys_space_(&phys_space)
+    RefElemAccessor(phys_space->get_reference_space(), index),
+    PfElemAccessor(phys_space->get_push_forward(), index),
+    phys_space_(phys_space)
 {
     Assert(phys_space_ != nullptr, ExcNullPtr());
 }
@@ -772,9 +773,9 @@ get_num_basis() const
 
 
 template< class PhysSpace >
-const PhysSpace *
+auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_physical_space() const
+get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
     return phys_space_;
 }

@@ -22,27 +22,24 @@
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
-using std::endl ;
+using std::endl;
 
-using std::array ;
-using std::vector ;
-using std::accumulate ;
+using std::array;
+using std::vector;
+using std::accumulate;
 
-using std::make_shared ;
-
+using std::make_shared;
+using std::dynamic_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 
-
-
-
 template< int dim, int range, int rank >
-NURBSElementAccessor< dim, range, rank >::NURBSElementAccessor(
-    const Space_t &space,
-    const int index)
+NURBSElementAccessor< dim, range, rank >::
+NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
+                     const int elem_index)
     :
-    BSplineElementAccessor< dim, range, rank >(space, index),
-    space_(&space)
+    BSplineElementAccessor<dim, range, rank>(space->get_spline_space(), elem_index),
+    space_(space)
 {}
 
 
@@ -57,31 +54,31 @@ init_values(const ValueFlags fill_flag,
            ExcMessage("Nothing to reset"));
 
     int max_der_order = -1;
-    ValueFlags fill_flag_bspline = fill_flag ;
+    ValueFlags fill_flag_bspline = fill_flag;
     if (contains(fill_flag, ValueFlags::value))
     {
         max_der_order=std::max(max_der_order,0);
-        fill_flag_bspline |= ValueFlags::value ;
+        fill_flag_bspline |= ValueFlags::value;
     }
 
     if (contains(fill_flag, ValueFlags::face_value))
     {
         max_der_order=std::max(max_der_order,0);
-        fill_flag_bspline |= ValueFlags::face_value ;
+        fill_flag_bspline |= ValueFlags::face_value;
     }
 
     if (contains(fill_flag, ValueFlags::gradient))
     {
         max_der_order=std::max(max_der_order,1);
         fill_flag_bspline |= ValueFlags::value |
-                             ValueFlags::gradient ;
+                             ValueFlags::gradient;
     }
 
     if (contains(fill_flag, ValueFlags::face_gradient))
     {
         max_der_order=std::max(max_der_order,1);
         fill_flag_bspline |= ValueFlags::face_value |
-                             ValueFlags::face_gradient ;
+                             ValueFlags::face_gradient;
     }
 
     if (contains(fill_flag, ValueFlags::hessian))
@@ -89,7 +86,7 @@ init_values(const ValueFlags fill_flag,
         max_der_order=std::max(max_der_order,2);
         fill_flag_bspline |= ValueFlags::value |
                              ValueFlags::gradient |
-                             ValueFlags::hessian ;
+                             ValueFlags::hessian;
     }
 
     if (contains(fill_flag, ValueFlags::face_hessian))
@@ -97,22 +94,22 @@ init_values(const ValueFlags fill_flag,
         max_der_order=std::max(max_der_order,2);
         fill_flag_bspline |= ValueFlags::face_value |
                              ValueFlags::face_gradient |
-                             ValueFlags::face_hessian ;
+                             ValueFlags::face_hessian;
     }
 
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
     // init the element values for the cache of the BSplineElementAccessor
-    Parent_t::init_values(fill_flag_bspline,quad) ;
+    Parent_t::init_values(fill_flag_bspline,quad);
 
 
     BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
     BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
 
     // reset the element values for the cache of the NURBSElementAccessor
-    elem_values_.reset(*space_,elem_flags_handler,quad) ;
+    elem_values_.reset(*space_,elem_flags_handler,quad);
 
-    Index face_id = 0 ;
+    Index face_id = 0;
     for (auto& face_value : face_values_)
         face_value.reset(face_id++, *space_, face_flags_handler, quad);
 }
@@ -126,7 +123,7 @@ init_face_values(const Index face_id,
                  const ValueFlags fill_flag,
                  const Quadrature<dim-1> &quad)
 {
-    AssertThrow(false,ExcNotImplemented()) ;
+    AssertThrow(false,ExcNotImplemented());
 }
 
 
@@ -149,9 +146,9 @@ evaluate_nurbs_values(
         // here we treat the pure NURBS case
         using space_t = ContainerType;
 
-        typedef Real ValueRange1_t ;
+        typedef Real ValueRange1_t;
 
-        const vector< Real > &weights = this->get_weights() ;
+        const vector< Real > &weights = this->get_weights();
 
         /*
         * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
@@ -176,55 +173,55 @@ evaluate_nurbs_values(
         */
 
         //----------------------------------------------------------------------------------------------
-        const auto &bspline_values = bspline_cache.get_values() ;
+        const auto &bspline_values = bspline_cache.get_values();
         //----------------------------------------------------------------------------------------------
 
-        if (space_->homogeneous_range_ == false)
+        if (space_->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
-            int dof_offset = 0 ;
-            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+            int dof_offset = 0;
+            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                const int num_basis_comp = this->get_component_num_basis(iComp) ;
+                const int num_basis_comp = this->get_num_basis(iComp);
 
-                vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points)) ;
+                vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points));
 
-                vector< ValueRange1_t > Q(num_points) ;
-                for (int i = 0 ; i < num_basis_comp ; ++i)
+                vector< ValueRange1_t > Q(num_points);
+                for (int i = 0; i < num_basis_comp; ++i)
                 {
-                    const int basis_flat_id = dof_offset + i ;
+                    const int basis_flat_id = dof_offset + i;
 
-                    const auto &N_i = bspline_values.get_function_view(basis_flat_id) ;
-                    const Real w_i = weights[basis_flat_id] ;
+                    const auto &N_i = bspline_values.get_function_view(basis_flat_id);
+                    const Real w_i = weights[basis_flat_id];
 
-                    auto &P_i = P[i] ;
+                    auto &P_i = P[i];
 
-                    for (int iPt = 0 ; iPt < num_points ; iPt++)
+                    for (int iPt = 0; iPt < num_points; iPt++)
                     {
-                        P_i[iPt] = w_i * N_i[iPt](iComp) ;
+                        P_i[iPt] = w_i * N_i[iPt](iComp);
 
                         Q[iPt] += P_i[iPt];
                     }
                 }
 
-                vector< ValueRange1_t >  invQ(num_points) ;
-                for (int iPt = 0 ; iPt < num_points ; ++iPt)
-                    invQ[iPt] = 1.0 / Q[iPt] ;
+                vector< ValueRange1_t >  invQ(num_points);
+                for (int iPt = 0; iPt < num_points; ++iPt)
+                    invQ[iPt] = 1.0 / Q[iPt];
 
-                for (int i = 0 ; i < num_basis_comp ; i++)
+                for (int i = 0; i < num_basis_comp; i++)
                 {
-                    const int basis_flat_id = dof_offset + i ;
+                    const int basis_flat_id = dof_offset + i;
 
-                    const auto &P_i = P[i] ;
+                    const auto &P_i = P[i];
 
-                    for (int iPt = 0 ; iPt < num_points ; ++iPt)
+                    for (int iPt = 0; iPt < num_points; ++iPt)
                     {
-                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt] ;
+                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt];
 
-                        R(iComp) = invQ[iPt] * P_i[iPt] ;
+                        R(iComp) = invQ[iPt] * P_i[iPt];
                     }
                 }
-                dof_offset += num_basis_comp ;
+                dof_offset += num_basis_comp;
 
             } // end iComp loop
             //------------------------------------------------------------------------------------------
@@ -232,51 +229,51 @@ evaluate_nurbs_values(
         else // space_->homogeneous_range_ == true
         {
             //------------------------------------------------------------------------------------------
-            const int num_basis_comp = this->get_component_num_basis(0) ;
+            const int num_basis_comp = this->get_num_basis(0);
 
-            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                Assert(this->get_component_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_component_num_basis(iComp), num_basis_comp));
+                Assert(this->get_num_basis(iComp) == num_basis_comp,
+                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
             }
 
-            vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points)) ;
-            vector< ValueRange1_t > Q(num_points) ;
+            vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points));
+            vector< ValueRange1_t > Q(num_points);
 
-            for (int i = 0 ; i < num_basis_comp ; ++i)
+            for (int i = 0; i < num_basis_comp; ++i)
             {
-                const auto &N_i = bspline_values.get_function_view(i) ;
-                const Real w_i = weights[i] ;
+                const auto &N_i = bspline_values.get_function_view(i);
+                const Real w_i = weights[i];
 
-                auto &P_i = P[i] ;
+                auto &P_i = P[i];
 
-                for (int iPt = 0 ; iPt < num_points ; iPt++)
+                for (int iPt = 0; iPt < num_points; iPt++)
                 {
-                    P_i[iPt] = w_i * N_i[iPt](0) ;
+                    P_i[iPt] = w_i * N_i[iPt](0);
 
                     Q[iPt] += P_i[iPt];
                 }
             }
 
-            vector< ValueRange1_t > invQ(num_points) ;
-            for (int iPt = 0 ; iPt < num_points ; ++iPt)
-                invQ[iPt] = 1.0 / Q[iPt] ;
+            vector< ValueRange1_t > invQ(num_points);
+            for (int iPt = 0; iPt < num_points; ++iPt)
+                invQ[iPt] = 1.0 / Q[iPt];
 
 
-            for (int i = 0 ; i < num_basis_comp ; i++)
+            for (int i = 0; i < num_basis_comp; i++)
             {
-                const auto &P_i = P[i] ;
+                const auto &P_i = P[i];
 
-                for (int iPt = 0 ; iPt < num_points ; ++iPt)
+                for (int iPt = 0; iPt < num_points; ++iPt)
                 {
-                    const ValueRange1_t tmp_R = invQ[iPt] * P_i[iPt] ;
+                    const ValueRange1_t tmp_R = invQ[iPt] * P_i[iPt];
 
-                    for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+                    for (int iComp = 0; iComp < space_t::n_components; ++iComp)
                     {
-                        const int basis_flat_id = i + iComp * num_basis_comp ;
+                        const int basis_flat_id = i + iComp * num_basis_comp;
 
-                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt] ;
-                        R(iComp) = tmp_R ;
+                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt];
+                        R(iComp) = tmp_R;
                     }
                 }
             }
@@ -302,11 +299,11 @@ evaluate_nurbs_gradients(
         // here we treat the pure NURBS case
         using space_t = ContainerType;
 
-        typedef Real ValueRange1_t ;
-        typedef array<Real,dim> GradientRange1_t ;
+        typedef Real ValueRange1_t;
+        typedef array<Real,dim> GradientRange1_t;
 
 
-        const vector< Real > &weights = this->get_weights() ;
+        const vector< Real > &weights = this->get_weights();
 
         /*
          * This function evaluates the derivative of the n+1 NURBS basis function R_0,...,R_n
@@ -343,93 +340,93 @@ evaluate_nurbs_gradients(
          */
 
         //----------------------------------------------------------------------------------------------
-        const auto &bspline_values = bspline_cache.get_values() ;
-        const auto &bspline_gradients = bspline_cache.get_gradients() ;
+        const auto &bspline_values = bspline_cache.get_values();
+        const auto &bspline_gradients = bspline_cache.get_gradients();
         //----------------------------------------------------------------------------------------------
 
 
-        if (space_->homogeneous_range_ == false)
+        if (space_->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
-            int dof_offset = 0 ;
-            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+            int dof_offset = 0;
+            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                const int num_basis_comp = this->get_component_num_basis(iComp) ;
+                const int num_basis_comp = this->get_num_basis(iComp);
 
-                vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points)) ;
-                vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points)) ;
+                vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points));
+                vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points));
 
-                vector<    ValueRange1_t >  Q(num_points) ;
-                vector< GradientRange1_t > dQ(num_points) ;
+                vector<    ValueRange1_t >  Q(num_points);
+                vector< GradientRange1_t > dQ(num_points);
 
-                for (int i = 0 ; i < num_basis_comp ; ++i)
+                for (int i = 0; i < num_basis_comp; ++i)
                 {
-                    const int basis_flat_id = dof_offset + i ;
+                    const int basis_flat_id = dof_offset + i;
 
-                    const auto  &N_i =    bspline_values.get_function_view(basis_flat_id) ;
-                    const auto &dN_i = bspline_gradients.get_function_view(basis_flat_id) ;
+                    const auto  &N_i =    bspline_values.get_function_view(basis_flat_id);
+                    const auto &dN_i = bspline_gradients.get_function_view(basis_flat_id);
 
-                    const Real w_i = weights[basis_flat_id] ;
+                    const Real w_i = weights[basis_flat_id];
 
-                    auto &P_i =  P[i] ;
-                    auto &dP_i = dP[i] ;
+                    auto &P_i =  P[i];
+                    auto &dP_i = dP[i];
 
-                    for (int iPt = 0 ; iPt < num_points ; iPt++)
+                    for (int iPt = 0; iPt < num_points; iPt++)
                     {
-                        P_i[iPt] = w_i * N_i[iPt](iComp) ;
+                        P_i[iPt] = w_i * N_i[iPt](iComp);
 
-                        Q[iPt] += P_i[iPt] ;
+                        Q[iPt] += P_i[iPt];
 
-                        auto &dP_i_iPt = dP_i[iPt] ;
-                        auto &dQ_iPt = dQ[iPt] ;
-                        for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
+                        auto &dP_i_iPt = dP_i[iPt];
+                        auto &dQ_iPt = dQ[iPt];
+                        for (int entry_flat_id = 0; entry_flat_id < dim; ++entry_flat_id)
                         {
-                            dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(iComp) ;
+                            dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(iComp);
 
-                            dQ_iPt[entry_flat_id] += dP_i_iPt[entry_flat_id] ;
+                            dQ_iPt[entry_flat_id] += dP_i_iPt[entry_flat_id];
                         }
 
                     }
                 }
 
-                vector<    ValueRange1_t >   invQ(num_points) ;
-                vector<    ValueRange1_t > invQ_2(num_points) ;
-                vector< GradientRange1_t >  dinvQ(num_points) ;
-                for (int iPt = 0 ; iPt < num_points ; ++iPt)
+                vector<    ValueRange1_t >   invQ(num_points);
+                vector<    ValueRange1_t > invQ_2(num_points);
+                vector< GradientRange1_t >  dinvQ(num_points);
+                for (int iPt = 0; iPt < num_points; ++iPt)
                 {
-                    const Real invQ_tmp = 1.0 / Q[iPt] ;
-                    invQ  [iPt] = invQ_tmp ;
-                    invQ_2[iPt] = invQ_tmp * invQ_tmp ;
+                    const Real invQ_tmp = 1.0 / Q[iPt];
+                    invQ  [iPt] = invQ_tmp;
+                    invQ_2[iPt] = invQ_tmp * invQ_tmp;
 
-                    for (int j = 0 ; j < dim ; ++j)
-                        dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
+                    for (int j = 0; j < dim; ++j)
+                        dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j];
                 }
 
-                for (int i = 0 ; i < num_basis_comp ; i++)
+                for (int i = 0; i < num_basis_comp; i++)
                 {
-                    const int basis_flat_id = dof_offset + i ;
+                    const int basis_flat_id = dof_offset + i;
 
-                    const auto &P_i =  P[i] ;
-                    const auto &dP_i = dP[i] ;
+                    const auto &P_i =  P[i];
+                    const auto &dP_i = dP[i];
 
-                    for (int iPt = 0 ; iPt < num_points ; iPt++)
+                    for (int iPt = 0; iPt < num_points; iPt++)
                     {
-                        auto &dR = D1_phi_hat.get_function_view(basis_flat_id)[iPt] ;
+                        auto &dR = D1_phi_hat.get_function_view(basis_flat_id)[iPt];
 
-                        const Real invQ_tmp = invQ[iPt] ;
-                        const Real    P_tmp = P_i[iPt] ;
+                        const Real invQ_tmp = invQ[iPt];
+                        const Real    P_tmp = P_i[iPt];
 
-                        const auto &dinvQ_tmp = dinvQ[iPt] ;
-                        const auto &dP_tmp = dP_i[iPt] ;
+                        const auto &dinvQ_tmp = dinvQ[iPt];
+                        const auto &dP_tmp = dP_i[iPt];
 
-                        for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
+                        for (int entry_flat_id = 0; entry_flat_id < dim; ++entry_flat_id)
                         {
-                            dR(entry_flat_id)(iComp) = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp ;
+                            dR(entry_flat_id)(iComp) = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp;
                         }
                     }
                 }
 
-                dof_offset += num_basis_comp ;
+                dof_offset += num_basis_comp;
 
             } // end iComp loop
             //------------------------------------------------------------------------------------------
@@ -437,83 +434,83 @@ evaluate_nurbs_gradients(
         else // space_->homogeneous_range_ == true
         {
             //------------------------------------------------------------------------------------------
-            const int num_basis_comp = this->get_component_num_basis(0) ;
+            const int num_basis_comp = this->get_num_basis(0);
 
-            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                Assert(this->get_component_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_component_num_basis(iComp), num_basis_comp));
+                Assert(this->get_num_basis(iComp) == num_basis_comp,
+                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
             }
 
-            vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points)) ;
-            vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points)) ;
+            vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points));
+            vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points));
 
-            vector<    ValueRange1_t >  Q(num_points) ;
-            vector< GradientRange1_t > dQ(num_points) ;
+            vector<    ValueRange1_t >  Q(num_points);
+            vector< GradientRange1_t > dQ(num_points);
 
-            for (int i = 0 ; i < num_basis_comp ; ++i)
+            for (int i = 0; i < num_basis_comp; ++i)
             {
-                const auto  &N_i =    bspline_values.get_function_view(i) ;
-                const auto &dN_i = bspline_gradients.get_function_view(i) ;
+                const auto  &N_i =    bspline_values.get_function_view(i);
+                const auto &dN_i = bspline_gradients.get_function_view(i);
 
-                const Real w_i = weights[i] ;
+                const Real w_i = weights[i];
 
-                auto &P_i =  P[i] ;
-                auto &dP_i = dP[i] ;
+                auto &P_i =  P[i];
+                auto &dP_i = dP[i];
 
-                for (int iPt = 0 ; iPt < num_points ; iPt++)
+                for (int iPt = 0; iPt < num_points; iPt++)
                 {
-                    P_i[iPt] = w_i * N_i[iPt](0) ;
+                    P_i[iPt] = w_i * N_i[iPt](0);
 
-                    Q[iPt] += P_i[iPt] ;
+                    Q[iPt] += P_i[iPt];
 
-                    auto &dP_i_iPt = dP_i[iPt] ;
-                    auto &dQ_iPt = dQ[iPt] ;
-                    for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
+                    auto &dP_i_iPt = dP_i[iPt];
+                    auto &dQ_iPt = dQ[iPt];
+                    for (int entry_flat_id = 0; entry_flat_id < dim; ++entry_flat_id)
                     {
-                        dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(0) ;
+                        dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(0);
 
-                        dQ_iPt[entry_flat_id] += dP_i_iPt[entry_flat_id] ;
+                        dQ_iPt[entry_flat_id] += dP_i_iPt[entry_flat_id];
                     }
 
                 }
             }
 
-            vector<    ValueRange1_t >   invQ(num_points) ;
-            vector<    ValueRange1_t > invQ_2(num_points) ;
-            vector< GradientRange1_t >  dinvQ(num_points) ;
-            for (int iPt = 0 ; iPt < num_points ; ++iPt)
+            vector<    ValueRange1_t >   invQ(num_points);
+            vector<    ValueRange1_t > invQ_2(num_points);
+            vector< GradientRange1_t >  dinvQ(num_points);
+            for (int iPt = 0; iPt < num_points; ++iPt)
             {
-                const Real invQ_tmp = 1.0 / Q[iPt] ;
-                invQ  [iPt] = invQ_tmp ;
-                invQ_2[iPt] = invQ_tmp * invQ_tmp ;
+                const Real invQ_tmp = 1.0 / Q[iPt];
+                invQ  [iPt] = invQ_tmp;
+                invQ_2[iPt] = invQ_tmp * invQ_tmp;
 
-                for (int j = 0 ; j < dim ; ++j)
-                    dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
+                for (int j = 0; j < dim; ++j)
+                    dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j];
             }
 
 
-            for (int i = 0 ; i < num_basis_comp ; i++)
+            for (int i = 0; i < num_basis_comp; i++)
             {
-                const auto &P_i =  P[i] ;
-                const auto &dP_i = dP[i] ;
+                const auto &P_i =  P[i];
+                const auto &dP_i = dP[i];
 
-                for (int iPt = 0 ; iPt < num_points ; iPt++)
+                for (int iPt = 0; iPt < num_points; iPt++)
                 {
-                    const Real invQ_tmp = invQ[iPt] ;
-                    const Real    P_tmp = P_i[iPt] ;
+                    const Real invQ_tmp = invQ[iPt];
+                    const Real    P_tmp = P_i[iPt];
 
-                    const auto &dinvQ_tmp = dinvQ[iPt] ;
-                    const auto &dP_tmp = dP_i[iPt] ;
+                    const auto &dinvQ_tmp = dinvQ[iPt];
+                    const auto &dP_tmp = dP_i[iPt];
 
-                    for (int entry_flat_id = 0 ; entry_flat_id < dim ; ++entry_flat_id)
+                    for (int entry_flat_id = 0; entry_flat_id < dim; ++entry_flat_id)
                     {
-                        const auto dR_tmp = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp ;
+                        const auto dR_tmp = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp;
 
-                        for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+                        for (int iComp = 0; iComp < space_t::n_components; ++iComp)
                         {
-                            auto &dR = D1_phi_hat.get_function_view(num_basis_comp * iComp + i)[iPt] ;
-                            dR(entry_flat_id)(iComp) = dR_tmp ;
+                            auto &dR = D1_phi_hat.get_function_view(num_basis_comp * iComp + i)[iPt];
+                            dR(entry_flat_id)(iComp) = dR_tmp;
                         } // end iComp loop
                     }
                 }
@@ -544,12 +541,12 @@ evaluate_nurbs_hessians(
 
         using space_t = ContainerType;
 
-        typedef Real ValueRange1_t ;
-        typedef array<Real,dim> GradientRange1_t ;
-        typedef array<array<Real,dim>,dim> HessianRange1_t ;
+        typedef Real ValueRange1_t;
+        typedef array<Real,dim> GradientRange1_t;
+        typedef array<array<Real,dim>,dim> HessianRange1_t;
 
 
-        const vector< Real > &weights = this->get_weights() ;
+        const vector< Real > &weights = this->get_weights();
 
 
         /*
@@ -601,236 +598,236 @@ evaluate_nurbs_hessians(
          //*/
 
         //----------------------------------------------------------------------------------------------
-        const auto &bspline_values = bspline_cache.get_values() ;
-        const auto &bspline_gradients = bspline_cache.get_gradients() ;
-        const auto &bspline_hessians = bspline_cache.get_hessians() ;
+        const auto &bspline_values = bspline_cache.get_values();
+        const auto &bspline_gradients = bspline_cache.get_gradients();
+        const auto &bspline_hessians = bspline_cache.get_hessians();
         //----------------------------------------------------------------------------------------------
 
 
-        if (space_->homogeneous_range_ == false)
+        if (space_->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
-            int dof_offset = 0 ;
-            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+            int dof_offset = 0;
+            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                const int num_basis_comp = this->get_component_num_basis(iComp) ;
+                const int num_basis_comp = this->get_num_basis(iComp);
 
-                vector< vector< ValueRange1_t > >     P(num_basis_comp, vector< ValueRange1_t >(num_points)) ;
-                vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points)) ;
-                vector< vector< HessianRange1_t > > d2P(num_basis_comp, vector< HessianRange1_t >(num_points)) ;
+                vector< vector< ValueRange1_t > >     P(num_basis_comp, vector< ValueRange1_t >(num_points));
+                vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points));
+                vector< vector< HessianRange1_t > > d2P(num_basis_comp, vector< HessianRange1_t >(num_points));
 
-                vector<    ValueRange1_t >  Q(num_points) ;
-                vector< GradientRange1_t > dQ(num_points) ;
-                vector< HessianRange1_t > d2Q(num_points) ;
+                vector<    ValueRange1_t >  Q(num_points);
+                vector< GradientRange1_t > dQ(num_points);
+                vector< HessianRange1_t > d2Q(num_points);
 
-                for (int iFn = 0 ; iFn < num_basis_comp ; ++iFn)
+                for (int iFn = 0; iFn < num_basis_comp; ++iFn)
                 {
-                    const int basis_flat_id = dof_offset + iFn ;
+                    const int basis_flat_id = dof_offset + iFn;
 
-                    const auto   &N_i =    bspline_values.get_function_view(basis_flat_id) ;
-                    const auto  &dN_i = bspline_gradients.get_function_view(basis_flat_id) ;
-                    const auto &d2N_i =  bspline_hessians.get_function_view(basis_flat_id) ;
+                    const auto   &N_i =    bspline_values.get_function_view(basis_flat_id);
+                    const auto  &dN_i = bspline_gradients.get_function_view(basis_flat_id);
+                    const auto &d2N_i =  bspline_hessians.get_function_view(basis_flat_id);
 
-                    const Real w_i = weights[basis_flat_id] ;
+                    const Real w_i = weights[basis_flat_id];
 
-                    auto   &P_i =   P[iFn] ;
-                    auto  &dP_i =  dP[iFn] ;
-                    auto &d2P_i = d2P[iFn] ;
+                    auto   &P_i =   P[iFn];
+                    auto  &dP_i =  dP[iFn];
+                    auto &d2P_i = d2P[iFn];
 
-                    for (int iPt = 0 ; iPt < num_points ; iPt++)
+                    for (int iPt = 0; iPt < num_points; iPt++)
                     {
-                        P_i[iPt] = w_i * N_i[iPt](iComp) ;
+                        P_i[iPt] = w_i * N_i[iPt](iComp);
 
-                        Q[iPt] += P_i[iPt] ;
+                        Q[iPt] += P_i[iPt];
 
-                        int hess_entry_flat_id = 0 ;
-                        for (int j = 0 ; j < dim ; ++j)
+                        int hess_entry_flat_id = 0;
+                        for (int j = 0; j < dim; ++j)
                         {
-                            dP_i[iPt][j] = w_i * dN_i[iPt](j)(iComp) ;
+                            dP_i[iPt][j] = w_i * dN_i[iPt](j)(iComp);
 
-                            dQ[iPt][j] += dP_i[iPt][j] ;
+                            dQ[iPt][j] += dP_i[iPt][j];
 
-                            for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
+                            for (int k = 0; k < dim; ++k, ++hess_entry_flat_id)
                             {
-                                d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(iComp) ;
+                                d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(iComp);
 
-                                d2Q[iPt][j][k] += d2P_i[iPt][j][k] ;
+                                d2Q[iPt][j][k] += d2P_i[iPt][j][k];
                             }
                         }
 
                     }
                 }
 
-                vector<    ValueRange1_t >   invQ(num_points) ;
-                vector<    ValueRange1_t > invQ_2(num_points) ;
-                vector<    ValueRange1_t > two_invQ_3(num_points) ;
-                vector< GradientRange1_t >  dinvQ(num_points) ;
-                vector<  HessianRange1_t > d2invQ(num_points) ;
-                for (int iPt = 0 ; iPt < num_points ; ++iPt)
+                vector<    ValueRange1_t >   invQ(num_points);
+                vector<    ValueRange1_t > invQ_2(num_points);
+                vector<    ValueRange1_t > two_invQ_3(num_points);
+                vector< GradientRange1_t >  dinvQ(num_points);
+                vector<  HessianRange1_t > d2invQ(num_points);
+                for (int iPt = 0; iPt < num_points; ++iPt)
                 {
-                    const Real invQ_tmp = 1.0 / Q[iPt] ;
-                    invQ  [iPt] = invQ_tmp ;
-                    invQ_2[iPt] = invQ_tmp * invQ_tmp ;
-                    two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp ;
+                    const Real invQ_tmp = 1.0 / Q[iPt];
+                    invQ  [iPt] = invQ_tmp;
+                    invQ_2[iPt] = invQ_tmp * invQ_tmp;
+                    two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp;
 
-                    for (int j = 0 ; j < dim ; ++j)
+                    for (int j = 0; j < dim; ++j)
                     {
-                        dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
+                        dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j];
 
-                        for (int k = 0 ; k < dim ; ++k)
+                        for (int k = 0; k < dim; ++k)
                         {
-                            d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k] ;
+                            d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k];
                         }
                     }
                 }
 
-                for (int iFn = 0 ; iFn < num_basis_comp ; ++iFn)
+                for (int iFn = 0; iFn < num_basis_comp; ++iFn)
                 {
-                    const int basis_flat_id = dof_offset + iFn ;
+                    const int basis_flat_id = dof_offset + iFn;
 
-                    const auto   &P_i =   P[iFn] ;
-                    const auto  &dP_i =  dP[iFn] ;
-                    const auto &d2P_i = d2P[iFn] ;
+                    const auto   &P_i =   P[iFn];
+                    const auto  &dP_i =  dP[iFn];
+                    const auto &d2P_i = d2P[iFn];
 
-                    for (int iPt = 0 ; iPt < num_points ; iPt++)
+                    for (int iPt = 0; iPt < num_points; iPt++)
                     {
-                        auto &d2R = D2_phi_hat.get_function_view(basis_flat_id)[iPt] ;
+                        auto &d2R = D2_phi_hat.get_function_view(basis_flat_id)[iPt];
 
-                        const Real invQ_tmp = invQ[iPt] ;
-                        const Real    P_tmp = P_i[iPt] ;
+                        const Real invQ_tmp = invQ[iPt];
+                        const Real    P_tmp = P_i[iPt];
 
-                        const auto &dinvQ_tmp = dinvQ[iPt] ;
-                        const auto    &dP_tmp = dP_i[iPt] ;
+                        const auto &dinvQ_tmp = dinvQ[iPt];
+                        const auto    &dP_tmp = dP_i[iPt];
 
-                        const auto &d2invQ_tmp = d2invQ[iPt] ;
-                        const auto    &d2P_tmp = d2P_i[iPt] ;
+                        const auto &d2invQ_tmp = d2invQ[iPt];
+                        const auto    &d2P_tmp = d2P_i[iPt];
 
-                        int hess_entry_flat_id = 0 ;
-                        for (int j = 0 ; j < dim ; ++j)
+                        int hess_entry_flat_id = 0;
+                        for (int j = 0; j < dim; ++j)
                         {
-                            for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
+                            for (int k = 0; k < dim; ++k, ++hess_entry_flat_id)
                             {
                                 d2R(hess_entry_flat_id)(iComp) = d2invQ_tmp[j][k] *   P_tmp +
                                                                  dinvQ_tmp[j]     *  dP_tmp[k] +
                                                                  dinvQ_tmp[k]     *  dP_tmp[j] +
-                                                                 invQ_tmp         * d2P_tmp[j][k] ;
+                                                                 invQ_tmp         * d2P_tmp[j][k];
                             }
                         }
                     }
                 }
 
-                dof_offset += num_basis_comp ;
+                dof_offset += num_basis_comp;
 
             } // end iComp loop
             //------------------------------------------------------------------------------------------
         } // space_->homogeneous_range_ == false
         else // space_->homogeneous_range_ == true
         {
-            const int num_basis_comp = this->get_component_num_basis(0) ;
+            const int num_basis_comp = this->get_num_basis(0);
 
-            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
             {
-                Assert(this->get_component_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_component_num_basis(iComp), num_basis_comp));
+                Assert(this->get_num_basis(iComp) == num_basis_comp,
+                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
             }
 
             //------------------------------------------------------------------------------------------
 
-            vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points)) ;
-            vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points)) ;
-            vector< vector< HessianRange1_t > > d2P(num_basis_comp, vector< HessianRange1_t >(num_points)) ;
+            vector< vector< ValueRange1_t > > P(num_basis_comp, vector< ValueRange1_t >(num_points));
+            vector< vector< GradientRange1_t > > dP(num_basis_comp, vector< GradientRange1_t >(num_points));
+            vector< vector< HessianRange1_t > > d2P(num_basis_comp, vector< HessianRange1_t >(num_points));
 
-            vector<    ValueRange1_t >  Q(num_points) ;
-            vector< GradientRange1_t > dQ(num_points) ;
-            vector< HessianRange1_t > d2Q(num_points) ;
+            vector<    ValueRange1_t >  Q(num_points);
+            vector< GradientRange1_t > dQ(num_points);
+            vector< HessianRange1_t > d2Q(num_points);
 
-            for (int iFn = 0 ; iFn < num_basis_comp ; ++iFn)
+            for (int iFn = 0; iFn < num_basis_comp; ++iFn)
             {
-                const auto   &N_i =    bspline_values.get_function_view(iFn) ;
-                const auto  &dN_i = bspline_gradients.get_function_view(iFn) ;
-                const auto &d2N_i =  bspline_hessians.get_function_view(iFn) ;
+                const auto   &N_i =    bspline_values.get_function_view(iFn);
+                const auto  &dN_i = bspline_gradients.get_function_view(iFn);
+                const auto &d2N_i =  bspline_hessians.get_function_view(iFn);
 
-                const Real w_i = weights[iFn] ;
+                const Real w_i = weights[iFn];
 
-                auto   &P_i =   P[iFn] ;
-                auto  &dP_i =  dP[iFn] ;
-                auto &d2P_i = d2P[iFn] ;
+                auto   &P_i =   P[iFn];
+                auto  &dP_i =  dP[iFn];
+                auto &d2P_i = d2P[iFn];
 
-                for (int iPt = 0 ; iPt < num_points ; iPt++)
+                for (int iPt = 0; iPt < num_points; iPt++)
                 {
-                    P_i[iPt] = w_i * N_i[iPt](0) ;
-                    Q[iPt] += P_i[iPt] ;
+                    P_i[iPt] = w_i * N_i[iPt](0);
+                    Q[iPt] += P_i[iPt];
 
-                    int hess_entry_flat_id = 0 ;
-                    for (int j = 0 ; j < dim ; ++j)
+                    int hess_entry_flat_id = 0;
+                    for (int j = 0; j < dim; ++j)
                     {
-                        dP_i[iPt][j] = w_i * dN_i[iPt](j)(0) ;
-                        dQ[iPt][j] += dP_i[iPt][j] ;
+                        dP_i[iPt][j] = w_i * dN_i[iPt](j)(0);
+                        dQ[iPt][j] += dP_i[iPt][j];
 
-                        for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
+                        for (int k = 0; k < dim; ++k, ++hess_entry_flat_id)
                         {
-                            d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(0) ;
-                            d2Q[iPt][j][k] += d2P_i[iPt][j][k] ;
+                            d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(0);
+                            d2Q[iPt][j][k] += d2P_i[iPt][j][k];
                         }
                     }
                 } // end loop iPt
             } // end loop i
 
-            vector<    ValueRange1_t >   invQ(num_points) ;
-            vector<    ValueRange1_t > invQ_2(num_points) ;
-            vector<    ValueRange1_t > two_invQ_3(num_points) ;
-            vector< GradientRange1_t >  dinvQ(num_points) ;
-            vector<  HessianRange1_t > d2invQ(num_points) ;
-            for (int iPt = 0 ; iPt < num_points ; ++iPt)
+            vector<    ValueRange1_t >   invQ(num_points);
+            vector<    ValueRange1_t > invQ_2(num_points);
+            vector<    ValueRange1_t > two_invQ_3(num_points);
+            vector< GradientRange1_t >  dinvQ(num_points);
+            vector<  HessianRange1_t > d2invQ(num_points);
+            for (int iPt = 0; iPt < num_points; ++iPt)
             {
-                const Real invQ_tmp = 1.0 / Q[iPt] ;
-                invQ  [iPt] = invQ_tmp ;
-                invQ_2[iPt] = invQ_tmp * invQ_tmp ;
-                two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp ;
+                const Real invQ_tmp = 1.0 / Q[iPt];
+                invQ  [iPt] = invQ_tmp;
+                invQ_2[iPt] = invQ_tmp * invQ_tmp;
+                two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp;
 
-                for (int j = 0 ; j < dim ; ++j)
+                for (int j = 0; j < dim; ++j)
                 {
-                    dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j] ;
+                    dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j];
 
-                    for (int k = 0 ; k < dim ; ++k)
+                    for (int k = 0; k < dim; ++k)
                     {
-                        d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k] ;
+                        d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k];
                     }
                 }
             }
 
-            for (int iFn = 0 ; iFn < num_basis_comp ; ++iFn)
+            for (int iFn = 0; iFn < num_basis_comp; ++iFn)
             {
-                const auto   &P_i =   P[iFn] ;
-                const auto  &dP_i =  dP[iFn] ;
-                const auto &d2P_i = d2P[iFn] ;
+                const auto   &P_i =   P[iFn];
+                const auto  &dP_i =  dP[iFn];
+                const auto &d2P_i = d2P[iFn];
 
-                for (int iPt = 0 ; iPt < num_points ; iPt++)
+                for (int iPt = 0; iPt < num_points; iPt++)
                 {
 
-                    const Real invQ_tmp = invQ[iPt] ;
-                    const Real    P_tmp = P_i[iPt] ;
+                    const Real invQ_tmp = invQ[iPt];
+                    const Real    P_tmp = P_i[iPt];
 
-                    const auto &dinvQ_tmp = dinvQ[iPt] ;
-                    const auto    &dP_tmp = dP_i[iPt] ;
+                    const auto &dinvQ_tmp = dinvQ[iPt];
+                    const auto    &dP_tmp = dP_i[iPt];
 
-                    const auto &d2invQ_tmp = d2invQ[iPt] ;
-                    const auto    &d2P_tmp = d2P_i[iPt] ;
+                    const auto &d2invQ_tmp = d2invQ[iPt];
+                    const auto    &d2P_tmp = d2P_i[iPt];
 
-                    int hess_entry_flat_id = 0 ;
-                    for (int j = 0 ; j < dim ; ++j)
+                    int hess_entry_flat_id = 0;
+                    for (int j = 0; j < dim; ++j)
                     {
-                        for (int k = 0 ; k < dim ; ++k, ++hess_entry_flat_id)
+                        for (int k = 0; k < dim; ++k, ++hess_entry_flat_id)
                         {
                             const auto d2R_tmp = d2invQ_tmp[j][k] *   P_tmp +
                                                  dinvQ_tmp[j]    *  dP_tmp[k] +
                                                  dinvQ_tmp[k]    *  dP_tmp[j] +
-                                                 invQ_tmp        * d2P_tmp[j][k] ;
+                                                 invQ_tmp        * d2P_tmp[j][k];
 
-                            for (int iComp = 0 ; iComp < space_t::n_components ; ++iComp)
+                            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
                             {
-                                auto &d2R = D2_phi_hat.get_function_view(iFn + iComp*num_basis_comp)[iPt] ;
-                                d2R(hess_entry_flat_id)(iComp) = d2R_tmp ;
+                                auto &d2R = D2_phi_hat.get_function_view(iFn + iComp*num_basis_comp)[iPt];
+                                d2R(hess_entry_flat_id)(iComp) = d2R_tmp;
                             } // end iComp loop
 
                         }
@@ -852,14 +849,14 @@ fill_values()
     Assert(elem_values_.is_initialized(),ExcNotInitialized());
 
     // fills the cache of the BSplineElementAccessor
-    static_cast<Parent_t *>(this)->fill_values() ;
+    static_cast<Parent_t *>(this)->fill_values();
     const auto &bspline_elem_cache = Parent_t::elem_values_;
 
     if (this->elem_values_.flags_handler_.fill_values())
     {
         evaluate_nurbs_values(
             bspline_elem_cache,
-            this->elem_values_.D0phi_hat_) ;
+            this->elem_values_.D0phi_hat_);
 
         this->elem_values_.flags_handler_.set_values_filled(true);
     }
@@ -868,7 +865,7 @@ fill_values()
     {
         evaluate_nurbs_gradients(
             bspline_elem_cache,
-            this->elem_values_.D1phi_hat_) ;
+            this->elem_values_.D1phi_hat_);
 
         this->elem_values_.flags_handler_.set_gradients_filled(true);
     }
@@ -877,7 +874,7 @@ fill_values()
     {
         evaluate_nurbs_hessians(
             bspline_elem_cache,
-            this->elem_values_.D2phi_hat_) ;
+            this->elem_values_.D2phi_hat_);
 
         this->elem_values_.flags_handler_.set_hessians_filled(true);
     }
@@ -894,12 +891,12 @@ fill_face_values(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    auto &face_value = face_values_[face_id] ;
+    auto &face_value = face_values_[face_id];
 
     Assert(face_value.is_initialized(),ExcNotInitialized());
 
     // fills the cache of the BSplineElementAccessor
-    static_cast<Parent_t *>(this)->fill_face_values(face_id) ;
+    static_cast<Parent_t *>(this)->fill_face_values(face_id);
     const auto &bspline_face_cache = Parent_t::face_values_[face_id];
 
 
@@ -907,7 +904,7 @@ fill_face_values(const Index face_id)
     {
         evaluate_nurbs_values(
             bspline_face_cache,
-            face_value.D0phi_hat_) ;
+            face_value.D0phi_hat_);
 
         face_value.flags_handler_.set_values_filled(true);
     }
@@ -916,7 +913,7 @@ fill_face_values(const Index face_id)
     {
         evaluate_nurbs_gradients(
             bspline_face_cache,
-            face_value.D1phi_hat_) ;
+            face_value.D1phi_hat_);
 
         face_value.flags_handler_.set_gradients_filled(true);
     }
@@ -925,7 +922,7 @@ fill_face_values(const Index face_id)
     {
         evaluate_nurbs_hessians(
             bspline_face_cache,
-            face_value.D2phi_hat_) ;
+            face_value.D2phi_hat_);
 
         face_value.flags_handler_.set_hessians_filled(true);
     }
@@ -953,13 +950,17 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
     }
 }
 
+
+
 template <int dim, int range, int rank >
 auto
 NURBSElementAccessor< dim, range, rank >::
-get_space() const -> const Space_t *
+get_space() const -> std::shared_ptr<const Space_t>
 {
-    return (space_) ;
+    return space_;
 }
+
+
 
 template <int dim, int range, int rank >
 vector<Real>
@@ -970,31 +971,23 @@ get_weights() const
 
     //---------------------------
     // here we compute the offset of the dofs relative to the components of the space
-    const auto n_dofs_space_comp = space_->get_component_num_basis();
     array<Size,space_t::n_components+1> dofs_offset_comp;
     dofs_offset_comp[0] = 0;
-    for (int comp = 0 ; comp < space_t::n_components ; ++comp)
-        dofs_offset_comp[comp+1] = dofs_offset_comp[comp] + n_dofs_space_comp[comp];
+    for (int comp = 0; comp < space_t::n_components; ++comp)
+        dofs_offset_comp[comp+1] = dofs_offset_comp[comp] +
+                                   space_->get_num_basis(comp);
     //---------------------------
 
-    /*
-        LogStream out;
-        out << "n_dofs_space_comp=" << n_dofs_space_comp << std::endl;
 
-        out << "n_dofs_comp_cumul=" ;
-        for (int comp = 0 ; comp < space_t::n_components+1 ; ++comp )
-            out <<n_dofs_comp_cumul[comp] << " ";
-        out << endl;
-    //*/
-    vector<Real> weights_element ;
+    vector<Real> weights_element;
 
-    const auto local_to_global = this->get_local_to_global() ;
+    const auto local_to_global = this->get_local_to_global();
 
     for (uint global_id : local_to_global)
     {
         Index comp_id = 0; // component id of the global index
         Index  dof_id = 0; // flat index of the global index relative to the component
-        for (comp_id = 0 ; comp_id < space_t::n_components ; ++comp_id)
+        for (comp_id = 0; comp_id < space_t::n_components; ++comp_id)
         {
             if (global_id < dofs_offset_comp[comp_id+1])
             {
@@ -1002,14 +995,11 @@ get_weights() const
                 break;
             }
         }
-//      out << "global_id="<< global_id << "    comp_id=" << comp_id << "   dof_id="<<dof_id<<endl;
 
         weights_element.emplace_back(space_->weights_(comp_id)(dof_id));
     }
-//    for (uint global_id : local_to_global)
-//        weights_element.emplace_back(space_->weights_global_[global_id]) ;
 
-    return weights_element ;
+    return weights_element;
 }
 
 
@@ -1020,9 +1010,9 @@ get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<ValueRe
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.D0phi_hat_.size() != 0, ExcEmptyObject()) ;
+    Assert(cache.D0phi_hat_.size() != 0, ExcEmptyObject());
 
-    return cache.D0phi_hat_ ;
+    return cache.D0phi_hat_;
 }
 
 template <int dim, int range, int rank>
@@ -1049,9 +1039,9 @@ get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Deri
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.D1phi_hat_.size() != 0, ExcEmptyObject()) ;
+    Assert(cache.D1phi_hat_.size() != 0, ExcEmptyObject());
 
-    return cache.D1phi_hat_ ;
+    return cache.D1phi_hat_;
 }
 
 template <int dim, int range, int rank>
@@ -1069,9 +1059,9 @@ get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Deriv
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.D2phi_hat_.size() != 0, ExcEmptyObject()) ;
+    Assert(cache.D2phi_hat_.size() != 0, ExcEmptyObject());
 
-    return cache.D2phi_hat_ ;
+    return cache.D2phi_hat_;
 }
 
 template <int dim, int range, int rank>
@@ -1125,11 +1115,11 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D0phi_hat = this->get_basis_values(topology_id) ;
+    const auto &D0phi_hat = this->get_basis_values(topology_id);
     Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
+    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis()));
 
-    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
+    return D0phi_hat.evaluate_linear_combination(local_coefs);
 }
 
 
@@ -1140,15 +1130,15 @@ NURBSElementAccessor<dim, range, rank>::
 evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< DerivativeRef_t<1> >
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    Assert(this->get_values_cache(topology_id).flags_handler_.gradients_filled(), ExcCacheNotFilled()) ;
+    Assert(this->get_values_cache(topology_id).flags_handler_.gradients_filled(), ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D1phi_hat = this->get_basis_gradients(topology_id) ;
+    const auto &D1phi_hat = this->get_basis_gradients(topology_id);
     Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
+    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis()));
 
-    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
+    return D1phi_hat.evaluate_linear_combination(local_coefs);
 }
 
 
@@ -1159,15 +1149,15 @@ NURBSElementAccessor<dim, range, rank>::
 evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< DerivativeRef_t<2> >
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    Assert(this->get_values_cache(topology_id).flags_handler_.hessians_filled(), ExcCacheNotFilled()) ;
+    Assert(this->get_values_cache(topology_id).flags_handler_.hessians_filled(), ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto &D2phi_hat = this->get_basis_hessians(topology_id) ;
+    const auto &D2phi_hat = this->get_basis_hessians(topology_id);
     Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
-    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
+    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis()));
 
-    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
+    return D2phi_hat.evaluate_linear_combination(local_coefs);
 }
 
 
@@ -1233,7 +1223,7 @@ reset(const Space_t &space,
       const BasisElemValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
-    ValuesCache::reset(space, flags_handler, quad) ;
+    ValuesCache::reset(space, flags_handler, quad);
 }
 
 
@@ -1249,7 +1239,7 @@ reset(const Index face_id,
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     const auto quad_face = quad_elem.collapse_to_face(face_id);
-    ValuesCache::reset(space, flags_handler, quad_face) ;
+    ValuesCache::reset(space, flags_handler, quad_face);
 }
 
 
@@ -1263,7 +1253,7 @@ reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
       const Quadrature<dim-1> &quad1)
 {
-    AssertThrow(false,ExcNotImplemented()) ;
+    AssertThrow(false,ExcNotImplemented());
 }
 
 IGA_NAMESPACE_CLOSE

@@ -141,12 +141,12 @@ void test_evaluate()
     // push_forward->print_info(out) ;
 
     auto ref_space1 = RefSpace_t<dim>::create(knots, p);
-    PhysicalSpace_t<dim> physical_space(ref_space1, push_forward) ;
+    auto physical_space = PhysicalSpace_t<dim>::create(ref_space1, push_forward) ;
     //physical_space.print_info(out) ;
 
 
-    auto element = physical_space.begin() ;
-    const auto element_end = physical_space.end() ;
+    auto element = physical_space->begin() ;
+    const auto element_end = physical_space->end() ;
 
     QGauss<dim> quad(3);
     const int n_qpoints = quad.get_num_points();
@@ -184,11 +184,7 @@ void test_evaluate()
             out << element->get_w_measures()[jpt] << endl ;
         }
         out << endl ;
-
-
     }
-
-
 }
 
 int main()

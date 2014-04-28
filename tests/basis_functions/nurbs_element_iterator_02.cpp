@@ -41,10 +41,12 @@ void do_test()
 
 
     typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
-    Space_t space(knots, 2) ;
+    auto space = Space_t::create(knots, 2) ;
+
 
     // defining and assigning some weights (different from 1.0) to the NURBSSpace
-    const auto n_dofs = space.get_num_dofs() ;
+    const auto n_dofs = space->get_num_basis_table() ;
+
     const auto n_dofs_component = n_dofs(0);
     DynamicMultiArray<iga::Real,dim_domain> weights_component(n_dofs_component) ;
     const int n_entries_component = weights_component.flat_size();
@@ -52,9 +54,10 @@ void do_test()
         weights_component(i) = (i+1) * (1.0 / n_entries_component) ;
 
     StaticMultiArray<DynamicMultiArray<iga::Real,dim_domain>,dim_range,rank> weights(weights_component) ;
-    space.reset_weights(weights) ;
 
-    space.print_info(out) ;
+    space->reset_weights(weights) ;
+
+    space->print_info(out) ;
     out << endl;
     //----------------------------------------------------------------------------------------------
 
@@ -72,8 +75,8 @@ void do_test()
 
 
     //----------------------------------------------------------------------------------------------
-    auto element     = space.begin();
-    auto end_element = space.end();
+    auto element     = space->begin();
+    auto end_element = space->end();
 
     element->init_values(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
                          quad_scheme) ;
@@ -139,10 +142,11 @@ void do_test()
 
 
     out << endl ;
+
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
     do_test< 1, 1 >() ;
     do_test< 1, 2 >() ;

@@ -23,6 +23,8 @@
  *  date: 2013-01-18
  *
  */
+//TODO(pauletti, Apr 27, 2014): header comment is wront
+//TODO(pauletti, Apr 27, 2014): seem the same as cylindrical anulus test
 
 #include "../tests.h"
 
@@ -67,7 +69,7 @@ int main()
 
     //----------------------------------------------------------------------------------------------
     typedef PushForward<Transformation::h_grad,3,0> push_fwd_t ;
-    push_fwd_t push_forward(map) ;
+    auto push_forward = push_fwd_t::create(map);
 
     PushForwardElementAccessor<push_fwd_t> push_fwd_accessor(push_forward, 0) ;
 

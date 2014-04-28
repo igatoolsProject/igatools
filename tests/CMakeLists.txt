@@ -71,7 +71,8 @@ foreach(dir ${test_dirs})
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${name}
       DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${dir}/
       FILES_MATCHING PATTERN "*.xml")
-    add_test(NAME ${dir}-${name}
+    add_test(
+      NAME ${dir}-${name}
       COMMAND ${CMAKE_COMMAND}
       -DEXE_TARGET=${dir}/${name}.exe
       -DTEST_PROG=${CMAKE_CURRENT_BINARY_DIR}/${dir}/${name}.exe

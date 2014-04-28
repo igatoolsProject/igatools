@@ -120,7 +120,7 @@ evaluate_gradients(std::vector<GradientType> &gradients) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-init_element(const ValueFlags flag, const Quadrature<dim> &quad)
+init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 {
     element->init_values(flag, build_extended_quadrature(quad));
 }
@@ -130,7 +130,7 @@ init_element(const ValueFlags flag, const Quadrature<dim> &quad)
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-set_element(const CartesianGridElementAccessor<dim> &elem)
+set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
     element->reset_flat_tensor_indices((*elem_map_)[elem.get_flat_index()]);
     element->fill_values();
@@ -141,7 +141,7 @@ template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem)
+                 const CartesianGridElementAccessor<dim> &elem) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());

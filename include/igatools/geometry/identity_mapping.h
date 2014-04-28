@@ -63,10 +63,10 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem);
+    void set_element(const CartesianGridElementAccessor<dim> &elem) const;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem);
+                          const CartesianGridElementAccessor<dim> &elem) const;
 
     void evaluate(std::vector<ValueType> &values) const override;
 
@@ -89,8 +89,10 @@ public:
 private:
     GradientType A_;
     std::array<GradientType, UnitElement<dim>::faces_per_element> face_A_;
-    std::vector<PointType> points_;
-    std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
+
+    //The cache
+    mutable std::vector<PointType> points_;
+    mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

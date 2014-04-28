@@ -26,7 +26,9 @@
 using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::endl;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
@@ -102,7 +104,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
         ctrl_mesh_comp.resize(index_space_comp.tensor_size());
 
-        const Size n_dofs_comp = data_->ref_space_->get_component_num_basis(comp_id);
+        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 //        out << "n_dofs_comp["<<comp_id<<"]= " << n_dofs_comp << endl ;
 
         const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_(comp_id);
@@ -168,7 +170,7 @@ template<class RefSpace>
 void
 IgMapping<RefSpace>::
 init_element(const ValueFlags flag,
-             const Quadrature<dim> &quad)
+             const Quadrature<dim> &quad)  const
 {
     ValueFlags ref_space_flag = ValueFlags::none;
 
@@ -209,7 +211,7 @@ init_element(const ValueFlags flag,
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_element(const CartesianGridElementAccessor<dim> &elem)
+set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
     cache_->reset_flat_tensor_indices(elem.get_flat_index());
     cache_->fill_values();
@@ -219,7 +221,7 @@ set_element(const CartesianGridElementAccessor<dim> &elem)
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem)
+set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -246,7 +248,7 @@ vector<Real>
 IgMapping<RefSpace>::
 get_control_points_elem() const
 {
-	Assert(data_ != nullptr, ExcNullPtr());
+    Assert(data_ != nullptr, ExcNullPtr());
     const auto &local_to_global = cache_->get_local_to_global();
 
     vector<Real> ctrl_pts_element;
@@ -385,9 +387,9 @@ refine_h_control_mesh(
                 auto new_sizes = old_sizes;
                 new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
                 Assert(new_sizes[direction_id] ==
-                       data_->ref_space_->get_component_dir_num_basis(comp_id,direction_id),
+                       data_->ref_space_->get_num_basis(comp_id,direction_id),
                        ExcDimensionMismatch(new_sizes[direction_id],
-                                            data_->ref_space_->get_component_dir_num_basis(comp_id,direction_id)));
+                                            data_->ref_space_->get_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);
 
@@ -459,7 +461,7 @@ refine_h_control_mesh(
         const auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
         const auto &weights_after_refinement_comp = weights_after_refinement(comp_id);
 
-        const Size n_dofs_comp = data_->ref_space_->get_component_num_basis(comp_id);
+        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
         {
             if (RefSpace::has_weights)
@@ -484,15 +486,10 @@ auto
 IgMapping<RefSpace>::
 begin() const -> ElementIterator
 {
-    /*
+    // TODO (pauletti, Apr 23, 2014): why not use this->shared_from_this()?
+    //       is this a bug?
     return ElementIterator(
-            const_cast<const Mapping<dim,codim> &>(
-            dynamic_cast<Mapping<dim,codim> &>( self_t( this->get_data() ) )),
-                    0);
-                    //*/
-    return ElementIterator(
-               const_cast<self_t &>(*(new self_t(this->get_data()))),
-               0);
+               const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),0);
 }
 
 
@@ -502,8 +499,11 @@ auto
 IgMapping<RefSpace>::
 last() const -> ElementIterator
 {
+//    return ElementIterator(
+//               const_cast<self_t &>(*(new self_t(this->get_data()))),
+//               this->get_grid()->get_num_elements() - 1);
     return ElementIterator(
-               const_cast<self_t &>(*(new self_t(this->get_data()))),
+               const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
                this->get_grid()->get_num_elements() - 1);
 }
 
@@ -514,8 +514,11 @@ auto
 IgMapping<RefSpace>::
 end() const -> ElementIterator
 {
+//    return ElementIterator(
+//               const_cast<self_t &>(*(new self_t(this->get_data()))),
+//               IteratorState::pass_the_end);
     return ElementIterator(
-               const_cast<self_t &>(*(new self_t(this->get_data()))),
+               const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
                IteratorState::pass_the_end);
 }
 

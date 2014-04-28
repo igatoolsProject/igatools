@@ -83,7 +83,7 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t &>(*this), 0);
+    return ElementIterator(this->shared_from_this(), 0);
 }
 
 
@@ -93,9 +93,8 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(
-               const_cast<self_t &>(*this),
-               ref_space_->get_grid()->get_num_elements() - 1);
+    return ElementIterator(this->shared_from_this(),
+                           ref_space_->get_grid()->get_num_elements() - 1);
 }
 
 
@@ -105,7 +104,7 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(const_cast<self_t & >(*this),
+    return ElementIterator(this->shared_from_this(),
                            IteratorState::pass_the_end);
 }
 

@@ -28,38 +28,38 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/geometry/ig_mapping.h>
 
-using std::array ;
-using std::vector ;
-using std::shared_ptr ;
-using std::static_pointer_cast ;
-
+using std::array;
+using std::vector;
+using std::shared_ptr;
+using std::static_pointer_cast;
+using std::dynamic_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 template<int dim_ref_, int codim_ >
 MappingElementAccessor<dim_ref_,codim_>::
-MappingElementAccessor(Mapping<dim,codim> &mapping, const int index)
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const int index)
     :
-    CartesianGridElementAccessor<dim>(*mapping.get_grid(), index),
-    mapping_(&mapping)
+    CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
+    mapping_(mapping)
 {
     using BSplineSp = BSplineSpace<dim,dim+codim,1>;
     using BSplineMapping = IgMapping<BSplineSp>;
-    if (dynamic_cast<BSplineMapping *>(mapping_))
+    if (dynamic_pointer_cast<const BSplineMapping>(mapping_))
     {
-        auto ig_mapping = dynamic_cast<BSplineMapping *>(mapping_);
-        mapping_ = new BSplineMapping(ig_mapping->get_data());
+        auto ig_mapping = dynamic_pointer_cast<const BSplineMapping>(mapping_);
+        mapping_.reset(new BSplineMapping(ig_mapping->get_data()));
     }
 
 
 
     using NURBSSp = NURBSSpace<dim,dim+codim,1>;
     using NURBSMapping = IgMapping<NURBSSp>;
-    if (dynamic_cast<NURBSMapping *>(mapping_))
+    if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
     {
-        auto ig_mapping = dynamic_cast<NURBSMapping *>(mapping_);
-        mapping_ = new NURBSMapping(ig_mapping->get_data());
+        auto ig_mapping = dynamic_pointer_cast<const NURBSMapping>(mapping_);
+        mapping_ .reset(new NURBSMapping(ig_mapping->get_data()));
     }
-
 
     Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
 }
@@ -321,12 +321,12 @@ init_values(const ValueFlags fill_flag,
 
     if (!face_flags_handler.fill_none())
     {
-        Index face_id = 0 ;
+        Index face_id = 0;
         for (auto& face_value : face_values_)
         {
             // TODO: this is temporary and must be removed.
             if (contains(f_flag , ValueFlags::face_normal))
-                face_value.fill_normals_ = true ;
+                face_value.fill_normals_ = true;
             face_value.reset(face_id++, face_flags_handler, quad);
         }
     }
@@ -355,7 +355,7 @@ fill_values()
     CartesianGridElementAccessor<dim_ref_>::fill_values();
     mapping_->set_element(*this);
 
-    Assert(elem_values_.is_initialized(), ExcNotInitialized()) ;
+    Assert(elem_values_.is_initialized(), ExcNotInitialized());
 
     Assert(elem_values_.num_points_ ==
            elem_values_.quad_.get_points().flat_size(),
@@ -393,11 +393,11 @@ fill_values()
         if (elem_values_.flags_handler_.fill_w_measures())
         {
             Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
-            const ValueVector<Real> &dets_map = elem_values_.measures_ ;
+            const ValueVector<Real> &dets_map = elem_values_.measures_;
             const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
             for (Index i = 0; i < elem_values_.num_points_; i++)
-                elem_values_.w_measures_[i] = dets_map[i] * weights[i] ;
+                elem_values_.w_measures_[i] = dets_map[i] * weights[i];
             elem_values_.flags_handler_.set_w_measures_filled(true);
         }
     }
@@ -417,11 +417,11 @@ fill_face_values(const Index face_id)
     CartesianGridElementAccessor<dim_ref_>::fill_face_values(face_id);
     mapping_->set_face_element(face_id, *this);
 
-    auto &face_values = face_values_[face_id] ;
+    auto &face_values = face_values_[face_id];
 
-    const auto &num_points = face_values.num_points_ ;
+    const auto &num_points = face_values.num_points_;
 
-    Assert(face_values.is_initialized(), ExcNotInitialized()) ;
+    Assert(face_values.is_initialized(), ExcNotInitialized());
 
     Assert(num_points ==
            face_values.quad_.get_points().flat_size(),
@@ -453,14 +453,14 @@ fill_face_values(const Index face_id)
     {
         Assert(face_values.flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
 
-        const auto active_directions = UnitElement<dim>::face_active_directions[face_id] ;
-        const auto face_dim = UnitElement<dim>::face_dim ;
+        const auto active_directions = UnitElement<dim>::face_active_directions[face_id];
+        const auto face_dim = UnitElement<dim>::face_dim;
         Derivatives<face_dim, space_dim, 1, 1> face_gradient;
         for (Index i = 0; i < face_values.num_points_; i++)
         {
-            auto &gradient = face_values.gradients_[i] ;
+            auto &gradient = face_values.gradients_[i];
             for (int dir = 0; dir < face_dim; ++dir)
-                face_gradient[dir] = gradient[active_directions[dir]] ;
+                face_gradient[dir] = gradient[active_directions[dir]];
 
             face_values.measures_[i] = determinant<face_dim,space_dim>(face_gradient);
         }
@@ -469,12 +469,12 @@ fill_face_values(const Index face_id)
         if (face_values.flags_handler_.fill_w_measures())
         {
             Assert(face_values.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
-            const ValueVector<Real> &dets_map = face_values.measures_ ;
+            const ValueVector<Real> &dets_map = face_values.measures_;
             const auto weights =
                 CartesianGridElementAccessor<dim_ref_>::get_w_measures(FaceTopology<dim_ref_>(face_id));
 
             for (Index i = 0; i < face_values.num_points_; i++)
-                face_values.w_measures_[i] = dets_map[i] * weights[i] ;
+                face_values.w_measures_[i] = dets_map[i] * weights[i];
             face_values.flags_handler_.set_w_measures_filled(true);
         }
     }
@@ -485,10 +485,10 @@ fill_face_values(const Index face_id)
 //        Assert(false, ExcMessage("The computation of face normals must be tested before used."));
 //        AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
-        Point<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id] ;
+        Point<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id];
         for (Index i = 0; i < num_points; i++)
         {
-            const auto DF_inv_t = co_tensor(transpose(face_values.inv_gradients_[i])) ;
+            const auto DF_inv_t = co_tensor(transpose(face_values.inv_gradients_[i]));
             face_values.normals_[i] = action(DF_inv_t, n_hat);
             face_values.normals_[i] /= face_values.normals_[i].norm();
         }
@@ -665,7 +665,7 @@ transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
     Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
     Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());
 
-    array<ValueVector<ValueMap>, codim> normals ;
+    array<ValueVector<ValueMap>, codim> normals;
     normals.fill(ValueVector<Point<space_dim>>(elem_values_.num_points_));
 
 
@@ -686,7 +686,7 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_num_points(const TopologyId<dim> &topology_id) const
 {
     const auto &cache =this->get_values_cache(topology_id);
-    return cache.num_points_ ;
+    return cache.num_points_;
 }
 
 template< int dim_ref_, int codim_ >
@@ -694,25 +694,25 @@ void
 MappingElementAccessor<dim_ref_,codim_>::
 print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 {
-    using std::endl ;
-    out << "MappingElementAccessor info" << endl ;
+    using std::endl;
+    out << "MappingElementAccessor info" << endl;
 
-    out.push("\t") ;
-    out << "num. points = " << elem_values_.num_points_ << endl ;
+    out.push("\t");
+    out << "num. points = " << elem_values_.num_points_ << endl;
 
 
     if (contains(verbosity_level,VerbosityLevel::debug))
     {
         elem_values_.flags_handler_.print_info(out);
 
-        for (int face_id = 0 ; face_id < n_faces ; ++face_id)
+        for (int face_id = 0; face_id < n_faces; ++face_id)
         {
             face_values_[face_id].flags_handler_.print_info(out);
         }
     }
 
 
-    out.pop() ;
+    out.pop();
 }
 
 
@@ -721,14 +721,14 @@ void
 MappingElementAccessor<dim_ref_,codim_>::
 print_memory_info(LogStream &out) const
 {
-    using std::endl ;
-    out << "MappingElementAccessor memory info" << endl ;
+    using std::endl;
+    out << "MappingElementAccessor memory info" << endl;
     out << "this address = " << this << endl;
 
-    out.push("\t") ;
-    out << "mapping_ address = " << &mapping_ << endl ;
-    out << "data_ memory address = " << &elem_values_ << endl ;
-    out.pop() ;
+    out.push("\t");
+    out << "mapping_ address = " << &mapping_ << endl;
+    out << "data_ memory address = " << &elem_values_ << endl;
+    out.pop();
 }
 
 IGA_NAMESPACE_CLOSE

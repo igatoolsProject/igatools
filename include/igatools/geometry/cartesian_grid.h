@@ -38,7 +38,6 @@ IGA_NAMESPACE_OPEN
 
 template <int> class CartesianGridElementAccessor;
 
-
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
@@ -70,7 +69,8 @@ template <int> class CartesianGridElementAccessor;
  * @todo document more
  */
 template< int dim_ >
-class CartesianGrid
+class CartesianGrid :
+    public std::enable_shared_from_this<CartesianGrid<dim_> >
 {
 public:
     /** Dimensionality of the grid. */

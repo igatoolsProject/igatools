@@ -139,9 +139,10 @@ StokesProblem(const int deg, const int n_knots)
                      StaticMultiArray<Multiplicity<dim>,dim,1>(vel_mult),
                      StaticMultiArray<TensorIndex<dim>,dim,1>(TensorIndex<dim>(deg+1)));
 
-    const auto sparsity_pattern = dof_tools::get_sparsity_pattern(
-                                      *(vel_space_->get_reference_space()),
-                                      *(pre_space_->get_reference_space()));
+    const auto sparsity_pattern =
+    		dof_tools::get_sparsity_pattern<VelSpace, PreSpace>(
+                                      vel_space_->get_reference_space(),
+                                      pre_space_->get_reference_space());
 
     Bt_ = Matrix::create(sparsity_pattern);
 }
