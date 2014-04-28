@@ -35,27 +35,44 @@ template < int, int, int > class NURBSElementAccessor;
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBSSpace :
-     //   public std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_> >,
-        public BSplineSpace<dim_, range_, rank_>
-{
-public:
-    using base_t = BSplineSpace<dim_, range_, rank_>;
+		public std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_> >,
+	    public FunctionSpaceOnGrid<CartesianGrid<dim_> >
 
-    /** Type for the grid. */
-    using typename base_t::GridType;
-    using base_t::dim;
-    using base_t::space_dim;
-    using base_t::range;
-    using base_t::rank;
-    using base_t::n_components;
-    using typename base_t::DegreeTable;
+{
+private:
+	using self_t = NURBSSpace<dim_, range_, rank_>;
+    using base_t = BSplineSpace<dim_, range_, rank_>;
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
+
+public:
+    /** see documentation in \ref FunctionSpaceOnGrid */
+    using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
+
+    using RefSpace = NURBSSpace<dim_, range_, rank_>;
+
+    using GridType = typename PushForwardType::GridType;
+
+    static const int dim = PushForwardType::dim;
+
+    static const int codim = PushForwardType::codim;
+
+    static const int space_dim = PushForwardType::space_dim;
+
+    static const int range = range_;
+
+    static const int rank = rank_;
+
+    static constexpr int n_components = constexpr_pow(range, rank);
+
+    /** Type for the reference face space.*/
+    using RefFaceSpace = NURBSSpace<dim-1,range,rank>;
+
+    using DegreeTable = typename base_t::DegreeTable;
 
     using MultiplicityTable = typename base_t::template ComponentTable<Multiplicity<dim> >;
 
     using WeightsTable = typename base_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
 
-private:
-    using self_t = NURBSSpace<dim, range, rank>;
 
 public:
     static const bool has_weights = true;
@@ -161,7 +178,94 @@ public :
 
     ///@}
 
-    /**
+
+    /** @name Getting information about the space */
+       ///@{
+       /**
+        * Returns true if all component belong to the same scalar valued
+        * space.
+        */
+       bool is_range_homogeneous() const
+       {return sp_space_->is_range_homogeneous();}
+       /**
+        * Total number of dofs (i.e number of basis functions aka dimensionality)
+        * of the space.
+        */
+       Size get_num_basis() const
+       {return sp_space_->get_num_basis();}
+
+       /** Return the total number of dofs in each space component. */
+       std::array<Size,n_components> get_component_num_basis() const
+       {return sp_space_->get_component_num_basis();}
+
+       /** Return the total number of dofs for the i-th space component. */
+       Size get_component_num_basis(int i) const
+       {return sp_space_->get_component_num_basis(i);}
+       /**
+        *  Return the total number of dofs for the i-th space component
+        *  and the j-th direction.
+        */
+       Size get_component_dir_num_basis(int comp, int dir) const
+       {return sp_space_->get_component_dir_num_basis(comp, dir);}
+       /**
+        * Returns the number of dofs per element.
+        */
+       Size get_num_basis_per_element() const
+       {return sp_space_->get_num_basis_per_element();}
+       /**
+        *  Return the number of dofs per element for the i-th space component.
+        */
+       Size get_component_num_basis_per_element(int i) const
+       {return sp_space_->get_component_num_basis_per_element(i);}
+       /**
+        * Returns the degree of the BSpline space for each component and for each coordinate direction.
+        * \return The degree of the BSpline space for each component and for each coordinate direction.
+        * The first index of the returned object is the component id, the second index is the direction id.
+        */
+       const DegreeTable &get_degree() const
+       {return sp_space_->get_degree();}
+       ///@}
+
+       /** @name Getting the space data */
+       ///@{
+       /**
+        * Return the knots with repetitions, in each direction, for each component of the space.
+        */
+       const typename base_t::template ComponentTable<CartesianProductArray<Real,dim> > &
+       get_knots_with_repetitions() const
+       {return sp_space_->get_knots_with_repetitions();}
+       ///@}
+
+
+       const std::shared_ptr<base_t> get_spline_space() const
+		{
+    	   return sp_space_;
+		}
+
+       /**
+        * Returns a reference to the dense multi array storing the global dofs.
+        * Each element has a statically defined zone to read their dofs from,
+        * independent of the distribution policy in use.
+        */
+       const typename base_t::template ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const
+       {return sp_space_->get_index_space();}
+
+       /**
+        * Transforms basis flat index of the component comp to a basis
+        * tensor index.
+        */
+       TensorIndex<dim>
+       flat_to_tensor(const Index index, const Index comp = 0) const
+       {return sp_space_->flat_to_tensor(index, comp);}
+       /**
+        * Transforms a basis tensor index of the component comp to the
+        * corresponding basis flat index.
+        */
+       Index
+       tensor_to_flat(const TensorIndex<dim> &tensor_index,
+    		   const Index comp = 0) const
+       {return sp_space_->tensor_to_flat(tensor_index, comp);}
+       /**
      * Returns a element iterator to the first element of the patch
      */
     ElementIterator begin() const;
@@ -194,6 +298,7 @@ public :
     void reset_weights(const StaticMultiArray<DynamicMultiArray<iga::Real,dim>,range,rank> &weights);
 
 private:
+    std::shared_ptr<BSplineSpace<dim_, range_, rank_> > sp_space_;
     /**
      * Weights associated to the basis functions.
      */
@@ -212,9 +317,8 @@ private:
      *
      * @ingroup h_refinement
      */
-    void refine_h_weights(
-        const std::array<bool,dim> &refinement_directions,
-        const GridType &grid_old);
+    void refine_h_weights(const std::array<bool,dim> &refinement_directions,
+    		const GridType &grid_old);
 
     /**
      * Create a signal and a connection for the refinement.

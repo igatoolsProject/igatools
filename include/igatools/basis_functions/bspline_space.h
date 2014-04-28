@@ -276,17 +276,12 @@ public:
      */
     Size get_component_num_basis_per_element(int i) const;
 
-
-
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
     const ComponentTable<TensorIndex<dim>> &get_degree() const;
-
-
-
 
     ///@}
 
@@ -298,12 +293,8 @@ public:
     const ComponentTable<CartesianProductArray<Real,dim> > &
     get_knots_with_repetitions() const;
 
-
-
     std::shared_ptr<const BSplineSpace<dim,range,rank> >
     get_reference_space() const ;
-
-
 
     /**
      * Returns a reference to the dense multi array storing the global dofs.
@@ -311,8 +302,6 @@ public:
      * independent of the distribution policy in use.
      */
     const ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const;
-
-
     ///@}
 
     /** @name Functions involving the element iterator */
@@ -472,7 +461,8 @@ protected:
      */
     const bool homogeneous_range_;
 
-
+    //TODO(pauletti, Apr 27, 2014): make this private w/getter
+public:
     /**
      * Knots (with repetitions) along each direction of each space component.
      */
@@ -516,11 +506,10 @@ private:
         const GridType &grid_old) ;
 
 
-protected:
-
+    //TODO(pauletti, Apr 27, 2014): make this private and use a getter
+public:
     /** Knots with repetitions before refinement */
     ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
-
 
 public:
     DeclException1(ExcScalarRange, int,
