@@ -53,7 +53,7 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(shared_ptr< GridType > knots, const int &degree)
     :
     BaseSpace(knots),
-    sp_space_(base_t::create(knots, degree))
+    sp_space_(spline_space_t::create(knots, degree))
 {
     // initialize all the weights to 1.0 (then this space will have the same
     // mathematical structure of a BSpline space)
@@ -91,7 +91,7 @@ NURBSSpace(
     const DegreeTable &degree)
     :
     BaseSpace(knots),
-    sp_space_(base_t::create(knots, degree))
+    sp_space_(spline_space_t::create(knots, degree))
 {
 
     const auto n_dofs = sp_space_->get_num_dofs();
@@ -129,7 +129,7 @@ NURBSSpace(
     const DegreeTable &degree)
     :
     BaseSpace(knots),
-    sp_space_(base_t::create(knots, mult_vector, degree))
+    sp_space_(spline_space_t::create(knots, mult_vector, degree))
 {
     // initialize all the weights to 1.0 (then this space will have the
     // same mathematical structure of a BSpline space)
@@ -171,7 +171,7 @@ NURBSSpace(
     const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(base_t::create(knots, mult_vector, degree)),
+    sp_space_(spline_space_t::create(knots, mult_vector, degree)),
     weights_(weights)
 {
 

@@ -38,9 +38,6 @@ IGA_NAMESPACE_OPEN
 //Forward declaration to avoid including the header
 template < int, int, int> class BSplineElementAccessor;
 
-//Forward declaration to avoid including the header
-template<Transformation, int, int> class PushForward;
-
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
  * valued B-spline space.
@@ -101,13 +98,17 @@ class BSplineSpace :
     public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
     public FunctionSpaceOnGrid<CartesianGrid<dim_> >
 {
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
+private:
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
+
+    /** Type for current class. */
+    using self_t = BSplineSpace<dim_,range_,rank_>;
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
 
-    using RefSpace = BSplineSpace<dim_, range_, rank_>;
+    using RefSpace = self_t;
 
     using GridType = typename PushForwardType::GridType;
 
@@ -123,38 +124,26 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+    static const bool has_weights = false;
 
+public:
+    /** Type for the reference face space.*/
+    using RefFaceSpace = BSplineSpace<dim-1,range,rank>;
 
+    /** Type for the element accessor. */
+    using ElementAccessor = BSplineElementAccessor<dim,range,rank>;
+
+    /** Type for iterator over the elements.  */
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
+
+public:
     /** Container indexed by the components of the space */
     template< class T>
     using ComponentTable = StaticMultiArray<T,range,rank>;
 
     using DegreeTable = ComponentTable<TensorIndex<dim>>;
+
     using MultiplicityTable = ComponentTable<Multiplicity<dim> >;
-private:
-
-
-    /** Type for current class. */
-    using self_t = BSplineSpace<dim,range,rank>;
-
-public:
-    static const bool has_weights = false;
-
-    /** Type for the reference face space.*/
-    using RefFaceSpace = BSplineSpace<dim-1,range,rank>;
-
-
-    /** Type for the element accessor. */
-    using ElementAccessor = BSplineElementAccessor<dim,range,rank>;
-
-    /**
-     * Type for iterator over the elements.
-     */
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
-
-
-
-
 
     /** @name Constructor and destructor */
     ///@{
@@ -170,7 +159,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,range,rank> >
+    static std::shared_ptr<self_t>
     create(std::shared_ptr<GridType> knots,
            int degree);
 
@@ -186,9 +175,8 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,range,rank> >
-    create(std::shared_ptr<GridType> knots,
-           const TensorIndex<dim> &degree);
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<GridType> knots, const TensorIndex<dim> &degree);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -202,7 +190,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,range,rank> >
+    static std::shared_ptr<self_t>
     create(std::shared_ptr<GridType> knots,
            const ComponentTable<TensorIndex<dim>> &degree);
 
@@ -222,7 +210,7 @@ public:
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr<BSplineSpace<dim,range,rank> >
+    static std::shared_ptr<self_t>
     create(std::shared_ptr<GridType> knots,
            const ComponentTable<Multiplicity<dim>> &mult_vectors,
            const ComponentTable<TensorIndex<dim>> &degree);

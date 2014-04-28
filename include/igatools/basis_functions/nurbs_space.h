@@ -40,15 +40,15 @@ class NURBSSpace :
 
 {
 private:
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
     using self_t = NURBSSpace<dim_, range_, rank_>;
-    using base_t = BSplineSpace<dim_, range_, rank_>;
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
+    using spline_space_t = BSplineSpace<dim_, range_, rank_>;
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
 
-    using RefSpace = NURBSSpace<dim_, range_, rank_>;
+    using RefSpace = self_t;
 
     using GridType = typename PushForwardType::GridType;
 
@@ -58,39 +58,36 @@ public:
 
     static const int space_dim = PushForwardType::space_dim;
 
-    static const int range = range_;
+    static const int range = spline_space_t::range;
 
-    static const int rank = rank_;
+    static const int rank = spline_space_t::rank;
 
-    static constexpr int n_components = constexpr_pow(range, rank);
+    static constexpr int n_components = spline_space_t::n_components;
 
-    /** Type for the reference face space.*/
-    using RefFaceSpace = NURBSSpace<dim-1,range,rank>;
-
-    using DegreeTable = typename base_t::DegreeTable;
-
-    using MultiplicityTable = typename base_t::MultiplicityTable;
-
-    using WeightsTable = typename base_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
-
+    static const bool has_weights = true;
 
 public:
-    static const bool has_weights = true;
-    /**
-     * Type for element accessor.
-     */
-    typedef NURBSElementAccessor<dim, range, rank> ElementAccessor;
+    /** Type for the reference face space.*/
+    using RefFaceSpace = NURBSSpace<dim-1, range, rank>;
 
-    /**
-     * Type for iterator over the elements.
-     */
-    typedef GridForwardIterator<ElementAccessor> ElementIterator;
+    /** Type for the element accessor. */
+    using ElementAccessor = NURBSElementAccessor<dim, range, rank> ;
+
+    /** Type for iterator over the elements.  */
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
     /**
      * Type for the face space.
      */
     //TODO rename FaceSpace_t to face_space_t
     typedef NURBSSpace<dim-1, range, rank> FaceSpace_t;
+
+public:
+    using DegreeTable = typename spline_space_t::DegreeTable;
+
+    using MultiplicityTable = typename spline_space_t::MultiplicityTable;
+
+    using WeightsTable = typename spline_space_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
 
 
 public :
@@ -247,7 +244,7 @@ public :
     /**
      * Return the knots with repetitions, in each direction, for each component of the space.
      */
-    const typename base_t::template ComponentTable<CartesianProductArray<Real,dim> > &
+    const typename spline_space_t::template ComponentTable<CartesianProductArray<Real,dim> > &
     get_knots_with_repetitions() const
     {
         return sp_space_->get_knots_with_repetitions();
@@ -255,7 +252,7 @@ public :
     ///@}
 
 
-    const std::shared_ptr<base_t> get_spline_space() const
+    const std::shared_ptr<spline_space_t> get_spline_space() const
     {
         return sp_space_;
     }
@@ -265,7 +262,7 @@ public :
      * Each element has a statically defined zone to read their dofs from,
      * independent of the distribution policy in use.
      */
-    const typename base_t::template ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const
+    const typename spline_space_t::template ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const
     {
         return sp_space_->get_index_space();
     }
@@ -311,17 +308,17 @@ public :
     /**
      * Return the knot multiplicities for each component of the space.
      */
-    const typename base_t::template ComponentTable<Multiplicity<dim> > &
+    const typename spline_space_t::template ComponentTable<Multiplicity<dim> > &
     get_multiplicities() const
     {
         return sp_space_->get_multiplicities();
     }
 
 
-    typename base_t::template ComponentTable<TensorSize<dim>> get_num_dofs() const
-	{
-    	return sp_space_->get_num_dofs();
-	}
+    typename spline_space_t::template ComponentTable<TensorSize<dim>> get_num_dofs() const
+    {
+        return sp_space_->get_num_dofs();
+    }
 
     /**
     * Returns a element iterator to the first element of the patch
