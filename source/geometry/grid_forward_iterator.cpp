@@ -27,8 +27,8 @@ inline
 GridForwardIterator<Accessor>::
 GridForwardIterator(std::shared_ptr<ContainerType> patch,
                     const Index index)
-                    :
-                    accessor_(patch, index)
+    :
+    accessor_(patch, index)
 {}
 
 

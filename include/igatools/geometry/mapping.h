@@ -56,7 +56,7 @@ template <int, int> class MappingElementAccessor;
 template<int dim_, int codim_ = 0>
 class Mapping
     :  public std::enable_shared_from_this<Mapping<dim_, codim_> >,
-       public GridWrapper<CartesianGrid<dim_>>
+   public GridWrapper<CartesianGrid<dim_>>
 {
 public:
     /** Dimension of the reference domain */

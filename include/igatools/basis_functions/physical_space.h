@@ -39,8 +39,8 @@ template < class > class PhysicalSpaceElementAccessor;
  */
 template <class RefSpace_, class PushForward_>
 class PhysicalSpace :
-        public std::enable_shared_from_this<PhysicalSpace<RefSpace_, PushForward_>>,
-        public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
+    public std::enable_shared_from_this<PhysicalSpace<RefSpace_, PushForward_>>,
+            public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
 {
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >;

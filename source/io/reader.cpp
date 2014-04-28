@@ -25,9 +25,7 @@
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
-
 #include <boost/algorithm/string.hpp>
-//#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <string>
@@ -126,6 +124,8 @@ get_xml_element_vector(
     return element;
 }
 
+
+
 /**
  * Extracts from the XML @tree, the unique subtree corresponding to the tag @p tag_name.
  * @note The must be only one element in the @p tree with the given @p tag_name,
@@ -180,6 +180,8 @@ get_vector_data_from_xml(const boost::property_tree::ptree &tree)
 
 };
 
+
+
 template <int dim>
 shared_ptr< CartesianGrid<dim> >
 get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
@@ -221,6 +223,8 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
     return CartesianGrid<dim>::create(CartesianProductArray<Real,dim>(knots));
 }
 
+
+
 string
 get_xml_input_file_format(const std::string &filename)
 {
@@ -253,9 +257,6 @@ get_xml_input_file_format(const std::string &filename)
 
 namespace
 {
-
-
-
 template <int dim>
 Multiplicity<dim>
 get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
@@ -288,8 +289,6 @@ get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
                     ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
     }
     //-------------------------------------------------------------------------
-
-
     Multiplicity<dim> mult(mlt_data);
 
     return mult;
@@ -297,7 +296,6 @@ get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
 
 
 };
-
 
 
 
@@ -309,12 +307,10 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
     const auto &xml_tree = get_xml_tree(filename);
 
-
     LogStream out ;
     TensorIndex<dim> degree;
     CartesianProductArray<Real,dim> knots_unique_values;
     Multiplicity<dim> multiplicities;
-
 
     TensorSize<dim> n_ctrl_points_dim;
     array<vector<Real>,dim_phys> control_pts_coords;
@@ -695,7 +691,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
 
 
-    typename space_t::template ComponentTable<Multiplicity<dim>> multiplicities;
+    typename space_t::MultiplicityTable multiplicities;
     typename space_t::DegreeTable degrees;
     StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> weights;
 
@@ -894,9 +890,6 @@ get_mapping_from_file(const std::string &filename)
     return map;
 }
 
-
 IGA_NAMESPACE_CLOSE
 
-
 #include <igatools/io/reader.inst>
-

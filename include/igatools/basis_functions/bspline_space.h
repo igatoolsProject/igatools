@@ -130,7 +130,7 @@ public:
     using ComponentTable = StaticMultiArray<T,range,rank>;
 
     using DegreeTable = ComponentTable<TensorIndex<dim>>;
-
+    using MultiplicityTable = ComponentTable<Multiplicity<dim> >;
 private:
 
 
@@ -294,7 +294,7 @@ public:
     get_knots_with_repetitions() const;
 
     std::shared_ptr<const BSplineSpace<dim,range,rank> >
-    get_reference_space() const ;
+    get_reference_space() const;
 
     /**
      * Returns a reference to the dense multi array storing the global dofs.
@@ -350,8 +350,8 @@ public:
     /**
      * Return the knot multiplicities for each component of the space.
      */
-    const ComponentTable<Multiplicity<dim>> &
-                                         get_multiplicities() const;
+    const ComponentTable<Multiplicity<dim> > &
+    get_multiplicities() const;
 
 
     /**

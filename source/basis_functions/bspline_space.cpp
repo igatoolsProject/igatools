@@ -1086,7 +1086,7 @@ print_info(LogStream &out) const
     out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl ;
 
     const SparsityPattern &sparsity_pattern =
-    		dof_tools::get_sparsity_pattern(this->shared_from_this()) ;
+        dof_tools::get_sparsity_pattern(this->shared_from_this()) ;
     out << "Num overlapping funcs: " << sparsity_pattern.get_num_overlapping_funcs() << endl ;
 
     out.pop();

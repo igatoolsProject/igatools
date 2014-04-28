@@ -42,7 +42,7 @@ template<int dim_, int codim_>
 class LinearMapping : public AnalyticalMapping <dim_, codim_>
 {
 private:
-	//TODO(pauletti, Apr 26, 2014): base_t should be mapping
+    //TODO(pauletti, Apr 26, 2014): base_t should be mapping
     using base_t = AnalyticalMapping<dim_, codim_>;
 
     using base_t::dim;
@@ -168,9 +168,9 @@ private:
     mutable std::array<std::vector<std::array<double, dim> >, order> cos_val;
     mutable std::array<std::vector<std::array<double, dim> >, order> sin_val;
     mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_cos_val;
+            UnitElement<dim>::faces_per_element> face_cos_val;
     mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_sin_val;
+            UnitElement<dim>::faces_per_element> face_sin_val;
 
 };
 
@@ -228,9 +228,9 @@ private:
     mutable std::array<std::vector<std::array<double, space_dim> >, order> cos_val;
     mutable std::array<std::vector<std::array<double, space_dim> >, order> sin_val;
     mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_cos_val;
+            UnitElement<dim>::faces_per_element> face_cos_val;
     mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_sin_val;
+            UnitElement<dim>::faces_per_element> face_sin_val;
     const double R = 1.;
 };
 

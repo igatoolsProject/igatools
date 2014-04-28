@@ -459,8 +459,8 @@ project_boundary_values(const Func<Space> &func,
                         std::map<Index,Real>  &boundary_values)
 {
     project_boundary_values(func, space, quad,
-    std::set<boundary_id>({{bdry_id}}),
-    boundary_values);
+    std::set<boundary_id>( {{bdry_id}}),
+                            boundary_values);
 }
 
 

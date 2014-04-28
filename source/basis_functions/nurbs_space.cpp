@@ -51,12 +51,12 @@ create_refinement_connection()
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(shared_ptr< GridType > knots, const int &degree)
-:
-BaseSpace(knots),
-sp_space_(base_t::create(knots, degree))
+    :
+    BaseSpace(knots),
+    sp_space_(base_t::create(knots, degree))
 {
-	// initialize all the weights to 1.0 (then this space will have the same
-	// mathematical structure of a BSpline space)
+    // initialize all the weights to 1.0 (then this space will have the same
+    // mathematical structure of a BSpline space)
     const auto n_dofs = sp_space_->get_num_dofs();
     for (int comp_id = 0; comp_id < n_components; ++comp_id)
     {
@@ -131,8 +131,8 @@ NURBSSpace(
     BaseSpace(knots),
     sp_space_(base_t::create(knots, mult_vector, degree))
 {
-	// initialize all the weights to 1.0 (then this space will have the
-	// same mathematical structure of a BSpline space)
+    // initialize all the weights to 1.0 (then this space will have the
+    // same mathematical structure of a BSpline space)
     const auto n_dofs = sp_space_->get_num_dofs();
     for (int comp_id = 0; comp_id < n_components; ++comp_id)
     {
@@ -199,7 +199,7 @@ void
 NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
-	// check that the number of weights is equal to the number of basis functions in the space
+    // check that the number of weights is equal to the number of basis functions in the space
     using weights_container_t = StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>;
     Size n_weights = 0;
     for (int comp_id = 0; comp_id < weights_container_t::n_entries; ++comp_id)
@@ -216,7 +216,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-	return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(), 0);
+    return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(), 0);
 }
 
 
@@ -226,8 +226,8 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-	return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
-			this->get_grid()->get_num_elements() - 1);
+    return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
+                           this->get_grid()->get_num_elements() - 1);
 }
 
 
@@ -237,8 +237,8 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-	return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
-			IteratorState::pass_the_end);
+    return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
+                           IteratorState::pass_the_end);
 }
 
 
@@ -303,7 +303,7 @@ refine_h_weights(
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
 
                 const auto &U =
-                		sp_space_->knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
+                    sp_space_->knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
                 const auto &Ubar = sp_space_->knots_with_repetitions_(comp_id).get_data_direction(direction_id);
 
@@ -326,7 +326,7 @@ refine_h_weights(
                 Assert(new_sizes(direction_id) ==
                        sp_space_->get_component_dir_num_basis(comp_id,direction_id),
                        ExcDimensionMismatch(new_sizes(direction_id),
-                    		   sp_space_->get_component_dir_num_basis(comp_id,direction_id)));
+                                            sp_space_->get_component_dir_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);
 

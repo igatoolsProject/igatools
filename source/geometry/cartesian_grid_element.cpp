@@ -123,7 +123,7 @@ CartesianGridElement<dim_>::
 vertex(const int i) const -> Point<dim>
 {
     Assert(i < UnitElement<dim>::vertices_per_element,
-           ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
+    ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
 
     TensorIndex<dim> index = this->get_tensor_index();
 

@@ -70,7 +70,7 @@ template <int> class CartesianGridElementAccessor;
  */
 template< int dim_ >
 class CartesianGrid :
-        public std::enable_shared_from_this<CartesianGrid<dim_> >
+    public std::enable_shared_from_this<CartesianGrid<dim_> >
 {
 public:
     /** Dimensionality of the grid. */

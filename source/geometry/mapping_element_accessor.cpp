@@ -48,7 +48,7 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
     if (dynamic_pointer_cast<const BSplineMapping>(mapping_))
     {
         auto ig_mapping = dynamic_pointer_cast<const BSplineMapping>(mapping_);
-        mapping_.reset(new BSplineMapping( ig_mapping->get_data() ));
+        mapping_.reset(new BSplineMapping(ig_mapping->get_data()));
     }
 
 

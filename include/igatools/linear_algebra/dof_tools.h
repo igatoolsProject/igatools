@@ -58,7 +58,7 @@ get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
-		EnableIf<!is_function_space<SpaceType>()> * = nullptr)
+                     EnableIf<!is_function_space<SpaceType>()> * = nullptr)
 {
     AssertThrow(false,ExcMessage("The function argument is not a function space."));
     SparsityPattern graph(std::vector< Index >(),std::vector< Index >());
@@ -126,7 +126,7 @@ template < class Space1, class Space2 >
 inline
 SparsityPattern
 get_sparsity_pattern(std::shared_ptr<const Space1> space_rows,
-		std::shared_ptr<const Space2>space_cols,
+                     std::shared_ptr<const Space2>space_cols,
                      EnableIf<
                      is_function_space<Space1>()  &&is_function_space<Space2>() > *fs= nullptr)
 {

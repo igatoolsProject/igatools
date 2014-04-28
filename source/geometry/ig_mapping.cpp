@@ -503,8 +503,8 @@ last() const -> ElementIterator
 //               const_cast<self_t &>(*(new self_t(this->get_data()))),
 //               this->get_grid()->get_num_elements() - 1);
     return ElementIterator(
-                   const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
-                   this->get_grid()->get_num_elements() - 1);
+               const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
+               this->get_grid()->get_num_elements() - 1);
 }
 
 
@@ -518,8 +518,8 @@ end() const -> ElementIterator
 //               const_cast<self_t &>(*(new self_t(this->get_data()))),
 //               IteratorState::pass_the_end);
     return ElementIterator(
-            const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
-            IteratorState::pass_the_end);
+               const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
+               IteratorState::pass_the_end);
 }
 
 

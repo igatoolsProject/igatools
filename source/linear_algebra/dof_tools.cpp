@@ -37,9 +37,9 @@ namespace dof_tools
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
-		EnableIf<is_function_space<SpaceType>() > *)
+                     EnableIf<is_function_space<SpaceType>() > *)
 {
-	// build the dofs graph
+    // build the dofs graph
     const vector< Index > &dofs = get_dofs(space);
 
     SparsityPattern sparsity_pattern(dofs, dofs);
@@ -240,7 +240,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector      &rhs,
                            Vector      &solution)
 {
-	std::vector<Index> constrained_rows;
+    std::vector<Index> constrained_rows;
 
     auto dof = boundary_values.begin();
     const auto dof_end = boundary_values.end();
@@ -273,11 +273,11 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 std::vector<Real>
 get_local_coefs(const Vector &global_coefs, const std::vector<Index> &local_to_global_ids)
 {
-	vector<Real> local_coefs;
-	for (const auto &global_id : local_to_global_ids)
-		local_coefs.emplace_back(global_coefs(global_id));
+    vector<Real> local_coefs;
+    for (const auto &global_id : local_to_global_ids)
+        local_coefs.emplace_back(global_coefs(global_id));
 
-	return local_coefs;
+    return local_coefs;
 }
 
 };
