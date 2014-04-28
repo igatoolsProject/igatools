@@ -975,7 +975,7 @@ get_weights() const
     dofs_offset_comp[0] = 0;
     for (int comp = 0; comp < space_t::n_components; ++comp)
         dofs_offset_comp[comp+1] = dofs_offset_comp[comp] +
-        space_->get_num_basis(comp);
+                                   space_->get_num_basis(comp);
     //---------------------------
 
 

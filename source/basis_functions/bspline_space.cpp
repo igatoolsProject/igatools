@@ -668,7 +668,7 @@ init()
 {
     init_dofs();
 
-     // create a signal and a connection for the grid refinement
+    // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));

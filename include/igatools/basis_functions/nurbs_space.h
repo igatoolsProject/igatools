@@ -168,7 +168,7 @@ public :
      * Returns true if all component belong to the same scalar valued
      * space.
      */
-   // bool is_range_homogeneous() const;
+    // bool is_range_homogeneous() const;
 
     /** @name Getting information about the space */
     ///@{
