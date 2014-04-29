@@ -26,6 +26,16 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
+//template <int dim>
+//Multiplicity<dim>::
+//Multiplicity(std::shared_ptr<const Grid> knots,
+//             Degrees &deg,
+//             bool max_reg)
+//:
+//parent_t::CartesianProductArray(knots->get_num_knots_dim())
+//{
+//    fill_max_regularity(deg);
+//}
 
 template <int dim>
 Multiplicity<dim>

@@ -145,6 +145,7 @@ public:
 
     using MultiplicityTable = ComponentTable<Multiplicity<dim> >;
 
+public:
     /** @name Constructor and destructor */
     ///@{
     /**
@@ -182,7 +183,8 @@ public:
      * component.
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const DegreeTable &degree);
+                          const DegreeTable &degree,
+                          const bool homogeneous_range = false);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -202,7 +204,8 @@ public:
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
                           const MultiplicityTable &mult_vectors,
-                          const DegreeTable &degree);
+                          const DegreeTable &degree,
+                          const bool homogeneous_range = false);
 
     /**
      * Smart pointer create construction technique, see more detail
@@ -275,7 +278,7 @@ public:
      * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
-    const ComponentTable<TensorIndex<dim>> &get_degree() const;
+    const DegreeTable &get_degree() const;
 
     ///@}
 

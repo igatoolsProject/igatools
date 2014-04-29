@@ -27,6 +27,9 @@ using std::array;
 using std::vector;
 using std::endl;
 using std::shared_ptr;
+using std::bind;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 IGA_NAMESPACE_OPEN
 
@@ -37,20 +40,16 @@ void
 NURBSSpace<dim_, range_, rank_>::
 create_refinement_connection()
 {
-    //----------------------------------
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
-        std::bind(&self_t::refine_h_weights,
-                  this,
-                  std::placeholders::_1,std::placeholders::_2));
-    //----------------------------------
+            bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(shared_ptr< GridType > knots, const int &degree)
+NURBSSpace(shared_ptr< GridType > knots, const int degree)
     :
     BaseSpace(knots),
     sp_space_(spline_space_t::create(knots, degree))
@@ -76,19 +75,16 @@ NURBSSpace(shared_ptr< GridType > knots, const int &degree)
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots,
-       const int &degree) -> shared_ptr< self_t >
+create(shared_ptr< GridType > knots, const int degree) -> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(knots, degree));
 }
 
 
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(
-    shared_ptr<GridType> knots,
-    const DegreeTable &degree)
+NURBSSpace(shared_ptr<GridType> knots, const DegreeTable &degree)
     :
     BaseSpace(knots),
     sp_space_(spline_space_t::create(knots, degree))
@@ -112,11 +108,10 @@ NURBSSpace(
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr<GridType> knots,
-       const DegreeTable &degree)
--> shared_ptr< self_t >
+create(shared_ptr<GridType> knots, const DegreeTable &degree)
+-> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(knots, degree));
 }
 
 
@@ -155,9 +150,9 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 create(shared_ptr< GridType > knots,
        const MultiplicityTable &mult_vector,
-       const DegreeTable &degree) -> shared_ptr< self_t >
+       const DegreeTable &degree) -> shared_ptr<self_t>
 {
-    return (shared_ptr< self_t >(new self_t(knots, mult_vector, degree)));
+    return (shared_ptr<self_t>(new self_t(knots, mult_vector, degree)));
 }
 
 
@@ -187,9 +182,9 @@ NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr< GridType > knots,
        const MultiplicityTable &mult_vector,
        const DegreeTable &degree,
-       const WeightsTable &weights) -> shared_ptr< self_t >
+       const WeightsTable &weights) -> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knots, mult_vector, degree, weights));
+    return shared_ptr<self_t>(new self_t(knots, mult_vector, degree, weights));
 }
 
 

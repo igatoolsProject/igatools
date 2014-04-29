@@ -23,24 +23,36 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/cartesian_product_array.h>
+#include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Multiplicity of knot vectors.
+ * @brief Multiplicity of knot vectors without repetition.
  *
- * It is used in conjunction with the knot vectors
- * to initiate a BSpline space.
- *
+  *
  * @author pauletti, 2013
  *
  */
 template<int dim>
-class Multiplicity : public CartesianProductArray<Size,dim>
+class Multiplicity : public CartesianProductArray<Size, dim>
 {
+private:
+    using Grid     = CartesianGrid<dim>;
+    using Degrees  = TensorIndex<dim>;
+    using parent_t =  CartesianProductArray<Size, dim>;
+
 public:
     /** We use the father's constructors. */
-    using CartesianProductArray<Size,dim>::CartesianProductArray;
+    using parent_t::CartesianProductArray;
+
+    /**
+     * Maximun regularity multiplicity vectors associated with
+     * the grid and degrees
+     */
+//    explicit Multiplicity(std::shared_ptr<const Grid> knots,
+//                          Degrees &deg,
+//                          bool max_reg);
 
     /**
      * Fill the multiplicy for the maximum possible regularity

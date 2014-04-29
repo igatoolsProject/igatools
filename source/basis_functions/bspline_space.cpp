@@ -29,6 +29,7 @@ using std::vector;
 using std::shared_ptr;
 using std::make_shared;
 using boost::numeric::ublas::matrix;
+using boost::numeric::ublas::identity_matrix;
 
 IGA_NAMESPACE_OPEN
 
@@ -47,39 +48,40 @@ void evaluate_extraction_operators(
     vector< matrix<Real> >  &extraction_operators_data
 )
 {
-    Assert(! knot_values.empty(), ExcEmptyObject()) ;
-    Assert(! knot_multiplicities.empty(), ExcEmptyObject()) ;
+    Assert(! knot_values.empty(), ExcEmptyObject());
+    Assert(! knot_multiplicities.empty(), ExcEmptyObject());
     Assert(knot_values.size() == knot_multiplicities.size(),
-           ExcDimensionMismatch(knot_values.size(), knot_multiplicities.size())) ;
+           ExcDimensionMismatch(knot_values.size(), knot_multiplicities.size()));
 
-    const int num_elements = knot_values.size() - 1 ;
-    const int num_funcs = degree + 1 ;
-
-
-    //----------------------------------------------------------------------------------------------
-    // resizing the container for the extraction operators and initialization of the coefficient for
-    // the Bernstein's basis
-    extraction_operators_data.resize(num_elements) ;
-
-    matrix<Real> identity_matrix = boost::numeric::ublas::identity_matrix<Real>(num_funcs);
-
-    fill(extraction_operators_data.begin(), extraction_operators_data.end(), identity_matrix) ;
-    //----------------------------------------------------------------------------------------------
+    const int num_elements = knot_values.size() - 1;
+    const int num_funcs = degree + 1;
 
 
+    //--------------------------------------------------------------------------
+    // resizing the container for the extraction operators and initialization
+    // of the coefficient for the Bernstein's basis
+    extraction_operators_data.resize(num_elements);
 
-    //----------------------------------------------------------------------------------------------
-    vector< Real > U ;
+    auto id_matrix = identity_matrix<Real>(num_funcs);
 
-    const int num_unique_values = knot_values.size() ;
-    for (int iValue = 0 ; iValue < num_unique_values ; iValue++)
+    fill(extraction_operators_data.begin(), extraction_operators_data.end(),
+         id_matrix);
+    //--------------------------------------------------------------------------
+
+
+
+    //--------------------------------------------------------------------------
+    vector< Real > U;
+
+    const int num_unique_values = knot_values.size();
+    for (int iValue = 0; iValue < num_unique_values; iValue++)
     {
-        const int multiplicity = knot_multiplicities[ iValue ] ;
-        const Real value = knot_values[ iValue ] ;
+        const int multiplicity = knot_multiplicities[ iValue ];
+        const Real value = knot_values[ iValue ];
 
-        for (int iMult = 0 ; iMult < multiplicity ; iMult++)
+        for (int iMult = 0; iMult < multiplicity; iMult++)
         {
-            U.push_back(value) ;
+            U.push_back(value);
         }
     }
     //----------------------------------------------------------------------------------------------
@@ -89,93 +91,94 @@ void evaluate_extraction_operators(
 
     //----------------------------------------------------------------------------------------------
     // compute a vector containing the partial sum of the multiplicities
-    vector< int > partial_sum_multiplicities(num_unique_values) ;
-    partial_sum(knot_multiplicities.begin(), knot_multiplicities.end(), partial_sum_multiplicities.begin()) ;
+    vector< int > partial_sum_multiplicities(num_unique_values);
+    partial_sum(knot_multiplicities.begin(), knot_multiplicities.end(),
+                partial_sum_multiplicities.begin());
     //----------------------------------------------------------------------------------------------
 
 
 
 
     //----------------------------------------------------------------------------------------------
-    const int p = degree ;
-    int k, j ;
+    const int p = degree;
+    int k, j;
 
-    vector< Real > alphas(p) ;
-
-
-    const int m = U.size() - 1 ;
+    vector< Real > alphas(p);
 
 
-    int iElement = 0 ;
+    const int m = U.size() - 1;
+
+
+    int iElement = 0;
     while (iElement < num_elements)
     {
-        matrix<Real> &M = extraction_operators_data[ iElement ] ;
+        matrix<Real> &M = extraction_operators_data[ iElement ];
 
 
         // Count multiplicity of the knot at location b
-        int mul_b = knot_multiplicities[ iElement + 1 ] ;
-        int idx_b = partial_sum_multiplicities[ iElement + 1 ] - 1 ;
+        int mul_b = knot_multiplicities[ iElement + 1 ];
+        int idx_b = partial_sum_multiplicities[ iElement + 1 ] - 1;
 
 
         if (mul_b < p)
         {
-            const Real u_a = knot_values[ iElement ] ;
-            const Real u_b = knot_values[ iElement + 1 ] ;
+            const Real u_a = knot_values[ iElement ];
+            const Real u_b = knot_values[ iElement + 1 ];
 
-            Real numer = u_b - u_a ;
+            Real numer = u_b - u_a;
 
 
-            for (j = p - mul_b ; j > 0 ; j--)
+            for (j = p - mul_b; j > 0; j--)
             {
-                Real u_j = 0.0 ;
+                Real u_j = 0.0;
 
-                for (int idx_j = iElement + 2 ; idx_j <= num_elements ; idx_j++)
+                for (int idx_j = iElement + 2; idx_j <= num_elements; idx_j++)
                 {
                     //TODO: check the correctness of this if condition!
                     if (j < partial_sum_multiplicities[ idx_j ] - idx_b)
                         //  if ( j <= partial_sum_multiplicities[ idx_j ] -  partial_sum_multiplicities[ iElement + 1 ] )
                     {
-                        u_j = knot_values[ idx_j ] ;
-                        Assert(u_j == U[ idx_b + j ], ExcMessage("Wrong knot value.")) ;
-                        break ;
+                        u_j = knot_values[ idx_j ];
+                        Assert(u_j == U[ idx_b + j ], ExcMessage("Wrong knot value."));
+                        break;
                     }
                 }
                 //*/
 
-                alphas[ j - 1 ] = numer / (u_j - u_a) ;
+                alphas[ j - 1 ] = numer / (u_j - u_a);
             }
 
-            int r = p - mul_b ; // Insert knot r times
+            int r = p - mul_b; // Insert knot r times
 
             // Update the matrix coefficients for r new knots
-            for (j = 1 ; j <= r ; j++)
+            for (j = 1; j <= r; j++)
             {
 
-                int save = r - j ;
-                int    s = mul_b + j ; // This many new points
-                for (k = p ; k >= s ; k--)
+                int save = r - j;
+                int    s = mul_b + j; // This many new points
+                for (k = p; k >= s; k--)
                 {
-                    Real alpha = alphas[ k - s ] ;
+                    Real alpha = alphas[ k - s ];
 
-                    for (int row = 0 ; row <= p ; row++)
+                    for (int row = 0; row <= p; row++)
                     {
-                        M(row, k) = alpha * M(row, k) + (1.0 - alpha) * M(row, k - 1) ;
+                        M(row, k) = alpha * M(row, k) + (1.0 - alpha) * M(row, k - 1);
                     }
                 }
 
                 if (idx_b < m)
                 {
-                    matrix<Real> &M_next = extraction_operators_data[ iElement+1 ] ;
+                    matrix<Real> &M_next = extraction_operators_data[ iElement+1 ];
 
-                    for (k = 0 ; k <= j ; k++)
+                    for (k = 0; k <= j; k++)
                     {
-                        M_next(save + k, save) = M(p - j + k, p) ;
+                        M_next(save + k, save) = M(p - j + k, p);
                     }
                 }
             }
         } // end if ( mul < p )
 
-        iElement++ ; // Finished with the current operator
+        iElement++; // Finished with the current operator
     }
 }
 
@@ -247,7 +250,7 @@ void refine_knot_vector(
     const int a = find_span(p,X[0],U);
     const int b = find_span(p,X[r],U)+1;
 
-//  LogStream out ;
+//  LogStream out;
 //    out << a << "  " << b << endl;
 
 
@@ -256,20 +259,20 @@ void refine_knot_vector(
     Assert(Qw.size() == n+r+2, ExcDimensionMismatch(Qw.size(),n+r+2));
 
 
-    for (int j = 0 ; j <= a-p ; ++j)
+    for (int j = 0; j <= a-p; ++j)
         Qw[j] = Pw[j];
 
-    for (int j = b-1 ; j <= n ; ++j)
+    for (int j = b-1; j <= n; ++j)
         Qw[j+r+1] = Pw[j];
     //*/
 
 
     Ubar.resize(m+r+2);
 
-    for (int j = 0 ; j <= a ; ++j)
+    for (int j = 0; j <= a; ++j)
         Ubar[j] = U[j];
 
-    for (int j = b+p; j <= m ; ++j)
+    for (int j = b+p; j <= m; ++j)
         Ubar[j+r+1] = U[j];
 
     int i = b + p - 1;
@@ -277,7 +280,7 @@ void refine_knot_vector(
 
 //  alfa = vector<vector<Real>>(r+1,vector<Real>(p));
 //    Assert(int(alfa.size()) == r+1, ExcDimensionMismatch(alfa.size(),r+1));
-    for (int j = r ; j >= 0 ; --j)
+    for (int j = r; j >= 0; --j)
     {
         while (X[j] <= U[i] && i > a)
         {
@@ -289,7 +292,7 @@ void refine_knot_vector(
         Qw[k-p-1] = Qw[k-p];
 
 //        Assert(int(alfa[j].size()) == p, ExcDimensionMismatch(alfa[j].size(),p));
-        for (int l = 1 ; l <= p ; ++l)
+        for (int l = 1; l <= p; ++l)
         {
             int ind = k-p+1;
 
@@ -315,20 +318,10 @@ void refine_knot_vector(
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(shared_ptr<GridType> cartesian_grid, const int degree)
+BSplineSpace(shared_ptr<GridType> grid, const int degree)
     :
-    BaseSpace(cartesian_grid),
-    degree_(TensorIndex<dim>(degree)),
-    homogeneous_range_(true)
-{
-    Assert((rank!=0) || ((rank==0) && (range==1)),
-           ExcScalarRange(range));
-    Multiplicity<dim> mult(this->get_grid()->get_num_knots_dim());
-    mult.fill_max_regularity(degree);
-    mult_.fill(mult) ;
-
-    init() ;
-}
+BSplineSpace(grid, TensorIndex<dim>(degree))
+{}
 
 
 
@@ -346,17 +339,8 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
     :
-    BaseSpace(knots),
-    degree_(degree),
-    homogeneous_range_(true)
-{
-    Multiplicity<dim> mult(this->get_grid()->get_num_knots_dim());
-    mult.fill_max_regularity(degree);
-    for (int i = 0 ; i < n_components ; ++i)
-        mult_(i) = mult;
-
-    init() ;
-}
+BSplineSpace(knots, DegreeTable(degree), true)
+{}
 
 
 
@@ -374,21 +358,14 @@ create(shared_ptr<GridType> knots,
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots,
-             const DegreeTable &degree)
+             const DegreeTable &degree,
+             const bool homogeneous_range)
     :
-    BaseSpace(knots),
-    degree_(degree),
-    homogeneous_range_(false)
-{
-    Multiplicity<dim> mult(this->get_grid()->get_num_knots_dim());
-    for (int i = 0 ; i < n_components ; ++i)
-    {
-        mult.fill_max_regularity(degree(i));
-        mult_(i) = mult;
-    }
-
-    init() ;
-}
+    BSplineSpace(knots,
+                 MultiplicityTable( Multiplicity<dim> (knots->get_num_knots_dim())),
+                 degree,
+                 homogeneous_range)
+{}
 
 
 
@@ -407,14 +384,15 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType>    knots,
              const MultiplicityTable &mult_vectors,
-             const DegreeTable       &degree)
+             const DegreeTable       &degree,
+             const bool homogeneous_range)
     :
     BaseSpace(knots),
     degree_(degree),
     mult_(mult_vectors),
-    homogeneous_range_(false)
+    homogeneous_range_(homogeneous_range)
 {
-    init() ;
+    init();
 }
 
 
@@ -436,12 +414,12 @@ void BSplineSpace<dim_, range_, rank_>::
 fill_num_dof_per_element()
 {
     num_dofs_per_element_ = 0;
-    for (int i = 0 ; i < n_components ; ++i)
+    for (int i = 0; i < n_components; ++i)
     {
-        int num_dofs_comp = 1 ;
-        for (int j = 0 ; j < dim ; ++j)
-            num_dofs_comp *= (degree_(i)[j] + 1) ;
-        num_dofs_per_element_ += num_dofs_comp ;
+        int num_dofs_comp = 1;
+        for (int j = 0; j < dim; ++j)
+            num_dofs_comp *= (degree_(i)[j] + 1);
+        num_dofs_per_element_ += num_dofs_comp;
     }
 }
 
@@ -454,23 +432,23 @@ fill_bezier_extraction_operator()
 
     if (homogeneous_range_)
     {
-        map_component_to_active_data_.fill(0) ;
+        map_component_to_active_data_.fill(0);
         num_active_components_ = 1;
     }
     else
     {
-        for (int i = 0 ; i < n_components ; i++)
-            map_component_to_active_data_(i) = i ;
+        for (int i = 0; i < n_components; i++)
+            map_component_to_active_data_(i) = i;
 
         num_active_components_ = n_components;
     }
 
     // build the knots with repetitions
-    for (int iComp = 0 ; iComp < n_components ; ++iComp)
+    for (int iComp = 0; iComp < n_components; ++iComp)
     {
-        for (int jDim = 0 ; jDim < dim ; ++jDim)
+        for (int jDim = 0; jDim < dim; ++jDim)
         {
-            const vector<Real> &knot_values = this->get_grid()->get_knot_coordinates(jDim) ;
+            const vector<Real> &knot_values = this->get_grid()->get_knot_coordinates(jDim);
             const vector<Index> &knot_multiplicities = mult_(iComp).get_data_direction(jDim);
 
             Assert(knot_values.size() == knot_multiplicities.size(),
@@ -479,17 +457,17 @@ fill_bezier_extraction_operator()
             //--------------------------------------------------------------------------------------
             // filling the knots with repetitions
 
-            const int num_unique_values = knot_values.size() ;
+            const int num_unique_values = knot_values.size();
 
             vector<Real> knt_with_reps;
 
-            for (int iValue = 0 ; iValue < num_unique_values ; iValue++)
+            for (int iValue = 0; iValue < num_unique_values; iValue++)
             {
-                const int multiplicity = knot_multiplicities[ iValue ] ;
-                const Real value = knot_values[ iValue ] ;
+                const int multiplicity = knot_multiplicities[ iValue ];
+                const Real value = knot_values[ iValue ];
 
-                for (int iMult = 0 ; iMult < multiplicity ; ++iMult)
-                    knt_with_reps.push_back(value) ;
+                for (int iMult = 0; iMult < multiplicity; ++iMult)
+                    knt_with_reps.push_back(value);
 
             } // end loop iValue
             //--------------------------------------------------------------------------------------
@@ -502,12 +480,12 @@ fill_bezier_extraction_operator()
 
     //--------------------------------------------------------------------------
     // build the Bezier operator data
-    for (int iComp = 0 ; iComp < num_active_components_ ; ++iComp)
+    for (int iComp = 0; iComp < num_active_components_; ++iComp)
     {
-        for (int jDim = 0 ; jDim < dim ; ++jDim)
+        for (int jDim = 0; jDim < dim; ++jDim)
         {
 
-            const int degree = degree_(iComp)[ jDim ] ;
+            const int degree = degree_(iComp)[ jDim ];
             const vector<Real> &knot_values = this->get_grid()->get_knot_coordinates(jDim);
             const vector<Index> &knot_multiplicities = mult_(iComp).get_data_direction(jDim);
 
@@ -521,7 +499,7 @@ fill_bezier_extraction_operator()
             vector<bz_operator_t> bezier_op;
 
             evaluate_extraction_operators(
-                degree, knot_values, knot_multiplicities, bezier_op) ;
+                degree, knot_values, knot_multiplicities, bezier_op);
             bezier_op_data_(iComp).copy_data_direction(jDim,bezier_op);
 
         }
@@ -530,20 +508,20 @@ fill_bezier_extraction_operator()
     //--------------------------------------------------------------------------
     // assign the Bezier operators data to the proper component/interval through
     // their memory address
-    for (int iComp = 0 ; iComp < n_components ; iComp++)
+    for (int iComp = 0; iComp < n_components; iComp++)
     {
-        const int component_data_id = map_component_to_active_data_(iComp) ;
+        const int component_data_id = map_component_to_active_data_(iComp);
 
-        for (int jDim = 0 ; jDim < dim ; jDim++)
+        for (int jDim = 0; jDim < dim; jDim++)
         {
             const auto &B_data_vec = bezier_op_data_(component_data_id).get_data_direction(jDim);
-            const int num_operators = B_data_vec.size() ;
+            const int num_operators = B_data_vec.size();
 
             vector< const bz_operator_t * > B_vec(num_operators);
 
             //TODO: avoid this temporary copy
-            for (int iOp = 0 ; iOp < num_operators ; iOp++)
-                B_vec[iOp] = &B_data_vec[iOp] ;
+            for (int iOp = 0; iOp < num_operators; iOp++)
+                B_vec[iOp] = &B_data_vec[iOp];
 
             bezier_op_(iComp).copy_data_direction(jDim,B_vec);
         }
@@ -557,12 +535,12 @@ void BSplineSpace<dim_, range_, rank_>::
 fill_index_space_standard_policy()
 {
 
-    for (int iComp = 0 ; iComp < n_components ; iComp++)
+    for (int iComp = 0; iComp < n_components; iComp++)
     {
         index_space_offset_(iComp) =
             mult_(iComp).compute_index_space_offset(degree_(iComp));
         TensorSize<dim> index_space_size;
-        for (int jDim = 0 ; jDim < dim ; ++jDim)
+        for (int jDim = 0; jDim < dim; ++jDim)
             index_space_size(jDim) = index_space_offset_(iComp).get_data_direction(jDim).back();
         index_space_(iComp).resize(index_space_size);
 
@@ -570,11 +548,11 @@ fill_index_space_standard_policy()
 
     ComponentTable<Index> dof_offset_;
     dof_offset_(0) = 0;
-    for (int i = 0 ; i < n_components-1 ; ++i)
+    for (int i = 0; i < n_components-1; ++i)
         dof_offset_(i+1) = dof_offset_(i) + index_space_(i).flat_size();
 
     // Fill with the standard dof distribution policy
-    for (int i = 0 ; i < n_components ; ++i)
+    for (int i = 0; i < n_components; ++i)
         index_space_(i).fill_progression(dof_offset_(i));
 
 }
@@ -585,13 +563,9 @@ fill_element_dofs_from_index_space()
 {
     const Index n_elements = this->get_grid()->get_num_elements();
 
-    ComponentTable<TensorIndex<dim>> element_n_basis(degree_);
+    DegreeTable element_n_basis(degree_);
     for (auto &comp : element_n_basis)
         comp += 1;
-
-//    for (int comp = 0; comp<n_components; ++comp)
-//        for (int dir = 0; dir <dim; ++dir)
-//            element_n_basis(comp)[dir] = degree_(comp)[dir] + 1;
 
 
     ComponentTable<int> element_n_basis_comp;
@@ -651,9 +625,9 @@ init_dofs()
     fill_element_dofs_from_index_space();
 
     // Quantities required for flat to tensor
-    for (int iComp = 0 ; iComp < n_components ; iComp++)
+    for (int iComp = 0; iComp < n_components; iComp++)
     {
-        for (int jDim = 0 ; jDim < dim ; ++jDim)
+        for (int jDim = 0; jDim < dim; ++jDim)
             num_dofs_(iComp)[jDim] =
                 index_space_offset_(iComp).get_data_direction(jDim).back();
     }
@@ -717,7 +691,7 @@ BSplineSpace<dim_, range_, rank_>::
 get_num_basis() const
 {
     Index result = 0;
-    for (int iComp = 0 ; iComp < n_components ; ++iComp)
+    for (int iComp = 0; iComp < n_components; ++iComp)
         result += get_num_basis(iComp);
 
     return  result;
@@ -756,16 +730,16 @@ BSplineSpace<dim_, range_, rank_>::
 get_num_basis_per_element(int iComp) const
 {
     //TODO: implement something similar in CartesianProductArray?
-    Assert(iComp >= 0 && iComp < n_components, ExcIndexRange(iComp, 0, n_components)) ;
+    Assert(iComp >= 0 && iComp < n_components, ExcIndexRange(iComp, 0, n_components));
 
 
-    const auto &degree_component = degree_(iComp) ;
+    const auto &degree_component = degree_(iComp);
 
-    Index num_dofs_per_element_component = 1 ;
+    Index num_dofs_per_element_component = 1;
     for (const auto & p : degree_component)
-        num_dofs_per_element_component *= (p + 1) ;
+        num_dofs_per_element_component *= (p + 1);
 
-    return (num_dofs_per_element_component) ;
+    return (num_dofs_per_element_component);
 }
 
 
@@ -843,9 +817,9 @@ tensor_to_flat(const TensorIndex<dim> &tensor_index,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_multiplicities() const -> const ComponentTable<Multiplicity<dim>> &
+get_multiplicities() const -> const MultiplicityTable &
 {
-    return mult_ ;
+    return mult_;
 }
 
 
@@ -866,7 +840,7 @@ BSplineSpace<dim_, range_, rank_>::
 get_push_forward() const -> shared_ptr<const PushForwardType>
 {
     using PushForwardType1 = PushForward<Transformation::h_grad,dim,0>;
-    auto grid = this->get_grid() ;
+    auto grid = this->get_grid();
     auto push_fwd =
     PushForwardType1::create(
         IdentityMapping<dim>::create(
@@ -880,9 +854,9 @@ get_push_forward() const -> shared_ptr<const PushForwardType>
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_degree() const -> const ComponentTable<TensorIndex<dim>> &
+get_degree() const -> const DegreeTable &
 {
-    return degree_ ;
+    return degree_;
 }
 
 
@@ -897,7 +871,7 @@ refine_h_after_grid_refinement(
     // keeping the original knots (with repetitions) before the h-refinement
     knots_with_repetitions_pre_refinement_ = knots_with_repetitions_;
 
-    for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
+    for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
         if (refinement_directions[direction_id])
         {
@@ -919,7 +893,7 @@ refine_h_after_grid_refinement(
 
 
 
-            for (int comp_id = 0 ; comp_id < self_t::n_components ; ++comp_id)
+            for (int comp_id = 0; comp_id < self_t::n_components; ++comp_id)
             {
                 //--------------------------------------------------------
                 // creating the new multiplicity
@@ -930,7 +904,7 @@ refine_h_after_grid_refinement(
                 const int n_mult_new = n_mult_old + n_mult_to_add;
 
                 vector<int> mult_new(n_mult_new);
-                for (int i = 0 ; i < n_mult_to_add ; ++i)
+                for (int i = 0; i < n_mult_to_add; ++i)
                 {
                     mult_new[2*i  ] = mult_old[i];
                     mult_new[2*i+1] = 1;
@@ -989,106 +963,107 @@ void
 BSplineSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-    out << "BSplineSpace<" << dim_ << "," << range_ << ">" << endl ;
+    out << "BSplineSpace<" << dim_ << "," << range_ << ">" << endl;
 
     out.push("\t");
 
     //----------------------------------------------------------------------------------------------
-    out << "Reference Patch: " ;
-    this->get_grid()->print_info(out) ;
-    out << endl ;
+    out << "Reference Patch: ";
+    this->get_grid()->print_info(out);
+    out << endl;
     //----------------------------------------------------------------------------------------------
 
     //----------------------------------------------------------------------------------------------
-    for (int iComp = 0 ; iComp < n_components ; iComp++)
+    for (int iComp = 0; iComp < n_components; iComp++)
     {
-        out.push("\t") ;
+        out.push("\t");
 
-        out << "Space component[" << iComp << "]: " << endl ;
+        out << "Space component[" << iComp << "]: " << endl;
 
 
         //----------------------------------------------------------------------------------------------
-        out.push("\t") ;
-        for (int jDim = 0 ; jDim < dim ; jDim++)
+        out.push("\t");
+        for (int jDim = 0; jDim < dim; jDim++)
         {
-            out << "Direction[" << jDim << "]:" << endl ;
+            out << "Direction[" << jDim << "]:" << endl;
 
-            out.push("\t") ;
+            out.push("\t");
 
 
-            out << "Degree = " << degree_(iComp)[jDim] << endl ;
+            out << "Degree = " << degree_(iComp)[jDim] << endl;
 
 
             //------------------------------------------------------------------------------------------
-            out << "Knot multiplicities: [ " ;
+            out << "Knot multiplicities: [ ";
             const auto &mult_iComp_jDim = mult_(iComp).get_data_direction(jDim);
             for (const int & m : mult_iComp_jDim)
             {
-                out << m << " " ;
+                out << m << " ";
             }
-            out << "]" << endl ;
+            out << "]" << endl;
             //------------------------------------------------------------------------------------------
 
             //------------------------------------------------------------------------------------------
-            out << "Knots vectors (with repetitions): [ " ;
+            out << "Knots vectors (with repetitions): [ ";
             const auto &knots_iComp_jDim = knots_with_repetitions_(iComp).get_data_direction(jDim);
             for (const Real & knt : knots_iComp_jDim)
             {
                 out << knt << " ";
             }
-            out << "]" << endl ;
+            out << "]" << endl;
             //------------------------------------------------------------------------------------------
 
 
-            const int num_intervals = bezier_op_data_(iComp).get_data_direction(jDim).size() ;
+            const int num_intervals = bezier_op_data_(iComp).get_data_direction(jDim).size();
 
             const auto &bezier_iComp_jDim = bezier_op_(iComp).get_data_direction(jDim);
-            for (int iInterv = 0 ; iInterv < num_intervals ; iInterv++)
+            for (int iInterv = 0; iInterv < num_intervals; iInterv++)
             {
-                out << "Interval[" << iInterv << "]" << endl ;
+                out << "Interval[" << iInterv << "]" << endl;
 
-                out.push("\t") ;
+                out.push("\t");
 
 
-                out << "Bezier extraction operator:" << endl ;
+                out << "Bezier extraction operator:" << endl;
 
-                out.push("\t") ;
+                out.push("\t");
 
-                auto M = *bezier_iComp_jDim[iInterv] ;
+                auto M = *bezier_iComp_jDim[iInterv];
 
-                const int num_rows = M.size1() ;
-                const int num_cols = M.size2() ;
+                const int num_rows = M.size1();
+                const int num_cols = M.size2();
 
-                for (int row = 0 ; row < num_rows ; row++)
+                for (int row = 0; row < num_rows; row++)
                 {
-                    for (int col = 0 ; col < num_cols ; col++)
+                    for (int col = 0; col < num_cols; col++)
                     {
-                        out << M(row, col) << " " ;
+                        out << M(row, col) << " ";
                     }
-                    out << endl ;
+                    out << endl;
                 }
-                out.pop() ;
+                out.pop();
 
-                out.pop() ;
+                out.pop();
             } // end loop iInterv
 
-            out.pop() ;
+            out.pop();
         } // end loop iDim
-        out.pop() ;
-        //----------------------------------------------------------------------------------------------
+        out.pop();
+        //----------------------------------------------------------------------
         out.pop();
     } // end loop iComp
 
 
-    const int num_dofs = get_num_basis() ;
-    out << "Num dofs: " << num_dofs << endl ;
+    const int num_dofs = get_num_basis();
+    out << "Num dofs: " << num_dofs << endl;
 
     //TODO: Do we need to call external functions from this output operator?
-    out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl ;
+    out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl;
 
     const SparsityPattern &sparsity_pattern =
-        dof_tools::get_sparsity_pattern(this->shared_from_this()) ;
-    out << "Num overlapping funcs: " << sparsity_pattern.get_num_overlapping_funcs() << endl ;
+        dof_tools::get_sparsity_pattern(this->shared_from_this());
+    out << "Num overlapping funcs: ";
+    out << sparsity_pattern.get_num_overlapping_funcs() << endl;
 
     out.pop();
 

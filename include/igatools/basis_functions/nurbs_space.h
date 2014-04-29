@@ -83,8 +83,7 @@ public:
 
     using WeightsTable = typename spline_space_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
 
-
-public :
+public:
     /** @name Constructor and destructor */
     ///@{
     /**
@@ -92,7 +91,7 @@ public :
      * @p knots for the given @p degree in all directions and homogeneous in all components.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    NURBSSpace(std::shared_ptr<GridType> knots, const int &degree);
+    explicit NURBSSpace(std::shared_ptr<GridType> knots, const int degree);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -100,14 +99,15 @@ public :
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
     static std::shared_ptr< self_t >
-    create(std::shared_ptr< GridType > knots, const int &degree);
+    create(std::shared_ptr< GridType > knots, const int degree);
 
     /**
      * Constructs a maximum regularity NURBSSpace over CartesianGrid
      * @p knots for the given @p degree for each direction and for each component.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    NURBSSpace(std::shared_ptr<GridType> knots, const DegreeTable &degree);
+    explicit NURBSSpace(std::shared_ptr<GridType> knots,
+                        const DegreeTable &degree);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -123,9 +123,9 @@ public :
      * and for the given @p degree for each direction and for each component.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    NURBSSpace(std::shared_ptr< GridType > knots,
-               const MultiplicityTable &mult_vector,
-               const DegreeTable &degree);
+    explicit NURBSSpace(std::shared_ptr< GridType > knots,
+                        const MultiplicityTable &mult_vector,
+                        const DegreeTable &degree);
 
     /**
      * Returns shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
@@ -143,10 +143,10 @@ public :
      * the given multiplicity vector @p mult_vector for each component
      * and for the given @p degree for each direction and for each component.
      */
-    NURBSSpace(std::shared_ptr< GridType > knots,
-               const MultiplicityTable &mult_vector,
-               const DegreeTable &degree,
-               const WeightsTable &weights);
+    explicit NURBSSpace(std::shared_ptr< GridType > knots,
+                        const MultiplicityTable &mult_vector,
+                        const DegreeTable &degree,
+                        const WeightsTable &weights);
 
     /**
      * Returns a shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
