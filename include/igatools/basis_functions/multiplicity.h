@@ -42,10 +42,11 @@ class Multiplicity :
 private:
     using Grid     = CartesianGrid<dim>;
 
-    using T =  CartesianProductArray<Size, dim>;
+
 
 
 public:
+    using T =  CartesianProductArray<Size, dim>;
     using Degrees  = TensorIndex<dim>;
     using DegreeTable = StaticMultiArray<Degrees, range, rank>;
 

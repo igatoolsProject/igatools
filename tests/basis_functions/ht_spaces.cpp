@@ -49,12 +49,14 @@ void do_test()
         deg_vector[i]=deg;
     }
 
-    auto mesh = CartesianGrid<dim_ref>::create(n_knots);
+    typename prex_space_ref_t::DegreeTable degree(deg_vector);
+    typename prex_space_ref_t::MultiplicityTable::T aux00(mult_vector);
+    typename prex_space_ref_t::MultiplicityTable::parent_t aux(aux00);
 
-    prex_space.reset(new prex_space_ref_t(
-                         mesh,
-                         typename prex_space_ref_t::MultiplicityTable(Multiplicity<dim_ref>(mult_vector)),
-                         StaticMultiArray< TensorIndex<dim_ref>,1,1>(deg_vector))) ;
+    auto mesh = CartesianGrid<dim_ref>::create(n_knots);
+    typename prex_space_ref_t::MultiplicityTable p_mult(aux, degree);
+
+    prex_space.reset(new prex_space_ref_t(mesh,p_mult)) ;
 
     out << "prex #dofs = " << prex_space->get_num_basis() << endl;
 
@@ -63,10 +65,14 @@ void do_test()
             mult_vector[i][j] += 1;
     deg_vector.fill(deg+1);
 
+
+    typename vel_space_ref_t::DegreeTable degree1(deg_vector);
+    typename vel_space_ref_t::MultiplicityTable::T aux11(mult_vector);
+    typename vel_space_ref_t::MultiplicityTable::parent_t aux1(aux11);
+
     vel_space.reset(new vel_space_ref_t(
                         mesh,
-                        StaticMultiArray< Multiplicity<dim_ref>,dim_range,rank>(Multiplicity<dim_ref>(mult_vector)),
-                        StaticMultiArray< TensorIndex<dim_ref>,dim_range,rank>(deg_vector))) ;
+                        typename vel_space_ref_t::MultiplicityTable(aux1, degree1))) ;
 
     out << "vel  #dofs = " << vel_space->get_num_basis() << endl;
 
