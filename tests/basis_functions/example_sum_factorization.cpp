@@ -73,6 +73,7 @@ public:
     Real get_elapsed_time_eval_basis() const;
     Real get_elapsed_time_eval_mass_matrix() const;
     Real get_elapsed_time_eval_stiffness_matrix() const;
+    Real get_elapsed_time_eval_rhs() const;
     Real get_elapsed_time_assemble_stiffness_matrix() const;
     Real get_elapsed_time_solve_linear_system() const;
     Real get_elapsed_time_fill_complete() const;
@@ -119,6 +120,8 @@ protected:
 
     Duration elapsed_time_eval_stiffness_matrix_;
 
+    Duration elapsed_time_eval_rhs_;
+
     Duration elapsed_time_assemble_stiffness_matrix_;
 
     Duration elapsed_time_fill_complete_;
@@ -150,6 +153,14 @@ PoissonProblem<dim,DerivedClass>::
 get_elapsed_time_eval_stiffness_matrix() const
 {
     return elapsed_time_eval_stiffness_matrix_.count();
+}
+
+template<int dim,class DerivedClass>
+Real
+PoissonProblem<dim,DerivedClass>::
+get_elapsed_time_eval_rhs() const
+{
+    return elapsed_time_eval_rhs_.count();
 }
 
 template<int dim,class DerivedClass>
@@ -333,12 +344,15 @@ assemble()
 
         //----------------------------------------------------
         // Assemblying the right hand side -- begin
+        const TimePoint start_eval_rhs = Clock::now();
         for (int i = 0; i < n_basis; ++i)
         {
             auto phi_i = phi.get_function_view(i);
             for (int qp = 0; qp < n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp]) * w_meas[qp];
         }
+        const TimePoint end_eval_rhs = Clock::now();
+        this->elapsed_time_eval_rhs_ += end_eval_rhs - start_eval_rhs;
         // Assemblying the right hand side -- end
         //----------------------------------------------------
 
@@ -544,6 +558,8 @@ do_test()
 
     string time_eval_basis = "Eval basis";
 
+    string time_eval_rhs = "Eval rhs";
+
     string time_mass_sum_fac = "Eval mass sum_fac";
     string time_mass_orig = "Eval mass orig";
 
@@ -582,6 +598,8 @@ do_test()
         elapsed_time_table.add_value("Degree",degree);
         elapsed_time_table.add_value(time_eval_basis,poisson_sf.get_elapsed_time_eval_basis());
 
+        elapsed_time_table.add_value(time_eval_rhs,poisson_sf.get_elapsed_time_eval_rhs());
+
         elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_eval_mass_matrix());
         elapsed_time_table.add_value(time_mass_orig,poisson_std.get_elapsed_time_eval_mass_matrix());
         elapsed_time_table.add_value(time_stiff_sum_fac,poisson_sf.get_elapsed_time_eval_stiffness_matrix());
@@ -594,6 +612,9 @@ do_test()
     }
     elapsed_time_table.set_precision(time_eval_basis,10);
     elapsed_time_table.set_scientific(time_eval_basis,true);
+
+    elapsed_time_table.set_precision(time_eval_rhs,10);
+    elapsed_time_table.set_scientific(time_eval_rhs,true);
 
     elapsed_time_table.set_precision(time_mass_sum_fac,10);
     elapsed_time_table.set_scientific(time_mass_sum_fac,true);
