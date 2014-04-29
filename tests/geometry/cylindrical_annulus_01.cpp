@@ -47,9 +47,9 @@ int main()
     elem->init_values(flag, quad);
     elem->fill_values();
 
-    auto values = elem->get_values_map();
-    auto gradients = elem->get_gradients_map();
-    auto hessians = elem->get_hessians_map();
+    auto values = elem->get_values();
+    auto gradients = elem->get_gradients();
+    auto hessians = elem->get_hessians();
 
     out << "Points:" << endl;
     out << quad.get_points().get_flat_cartesian_product() << endl;
@@ -63,11 +63,11 @@ int main()
     writer.save(filename);
 
 
-
+//TODO(pauletti, Apr 27, 2014): the code below do NOT match the expected test
 
     //----------------------------------------------------------------------------------------------
     typedef PushForward<Transformation::h_grad,3,0> push_fwd_t ;
-    push_fwd_t push_forward(map) ;
+    auto push_forward = push_fwd_t::create(map);
 
     PushForwardElementAccessor<push_fwd_t> push_fwd_accessor(push_forward, 0) ;
 

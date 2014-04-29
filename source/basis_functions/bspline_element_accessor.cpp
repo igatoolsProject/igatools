@@ -277,10 +277,11 @@ private:
 
 template <int dim, int range, int rank>
 BSplineElementAccessor<dim, range, rank>::
-BSplineElementAccessor(const Space_t &space, const int index)
+BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
+                       const int index)
     :
-    CartesianGridElementAccessor<dim>(*(space.get_grid()), index),
-    space_(&space)
+    CartesianGridElementAccessor<dim>(space->get_grid(), index),
+    space_(space)
 {}
 
 
@@ -298,7 +299,7 @@ get_num_basis() const
 template <int dim, int range, int rank>
 int
 BSplineElementAccessor<dim, range, rank>::
-get_component_num_basis(const int i) const
+get_num_basis(const int i) const
 {
     const auto &degree_comp = this->space_->get_degree()(i);
     int component_num_basis = 1;
@@ -1122,7 +1123,10 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
     for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
     {
-        const Size n_basis = get_component_num_basis(iComp);
+//        const auto &splines1d_direction = elem_values(iComp);
+
+
+        const int n_basis = get_num_basis(iComp);
         Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
         const Size comp_offset_i = comp_offset[iComp];
@@ -1182,7 +1186,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     if (space_->homogeneous_range_)
     {
         const Size n_ders = Derivative<deriv_order>::size;
-        const Size n_basis = space_->get_component_num_basis_per_element(0);
+        const auto n_basis = space_->get_num_basis_per_element(0);
         for (int comp = 1; comp < Space_t::n_components; ++comp)
         {
             const Size offset = comp_offset[comp];
@@ -1209,10 +1213,13 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_space() const -> const Space_t *
+get_space() const -> shared_ptr<const Space_t>
 {
-    return (space_);
+    return space_;
 }
+
+
+
 
 template <int dim, int range, int rank>
 auto

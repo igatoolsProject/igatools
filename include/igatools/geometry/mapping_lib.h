@@ -42,6 +42,7 @@ template<int dim_, int codim_>
 class LinearMapping : public AnalyticalMapping <dim_, codim_>
 {
 private:
+    //TODO(pauletti, Apr 26, 2014): base_t should be mapping
     using base_t = AnalyticalMapping<dim_, codim_>;
 
     using base_t::dim;
@@ -76,10 +77,10 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem);
+    void set_element(const CartesianGridElementAccessor<dim> &elem) const;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem);
+                          const CartesianGridElementAccessor<dim> &elem) const;
 
     void evaluate(std::vector<ValueType> &values) const override;
 
@@ -96,8 +97,11 @@ public:
 private:
     const GradientType A_;
     const ValueType b_;
-    std::vector<PointType> points_;
-    std::array<std::vector<PointType>, UnitElement<dim_>::faces_per_element> face_points_;
+
+
+    // TODO (pauletti, Apr 23, 2014): why not have this in the base class?
+    mutable std::vector<PointType> points_;
+    mutable std::array<std::vector<PointType>, UnitElement<dim_>::faces_per_element> face_points_;
 };
 
 
@@ -140,9 +144,9 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem);
+    void set_element(const CartesianGridElementAccessor<dim> &elem)  const;
 
-    void set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem);
+    void set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const;
 
     void evaluate(std::vector<ValueType> &values) const override;
 
@@ -158,14 +162,15 @@ public:
 
 private:
     static const int order = 3;
-    std::vector<Point<dim>> points_;
-    std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
-    std::array<std::vector<std::array<double, dim> >, order> cos_val;
-    std::array<std::vector<std::array<double, dim> >, order> sin_val;
-    std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_cos_val;
-    std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_sin_val;
+
+    mutable std::vector<Point<dim>> points_;
+    mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<std::vector<std::array<double, dim> >, order> cos_val;
+    mutable std::array<std::vector<std::array<double, dim> >, order> sin_val;
+    mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
+            UnitElement<dim>::faces_per_element> face_cos_val;
+    mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
+            UnitElement<dim>::faces_per_element> face_sin_val;
 
 };
 
@@ -200,9 +205,9 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem);
+    void set_element(const CartesianGridElementAccessor<dim> &elem)  const;
 
-    void set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem);
+    void set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const;
 
     void evaluate(std::vector<ValueType> &values) const override;
 
@@ -218,14 +223,14 @@ public:
 
 private:
     static const int order = 3;
-    std::vector<Point<dim>> points_;
-    std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
-    std::array<std::vector<std::array<double, space_dim> >, order> cos_val;
-    std::array<std::vector<std::array<double, space_dim> >, order> sin_val;
-    std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_cos_val;
-    std::array<std::array<std::vector<std::array<double, dim> >, order>,
-        UnitElement<dim>::faces_per_element> face_sin_val;
+    mutable std::vector<Point<dim>> points_;
+    mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<std::vector<std::array<double, space_dim> >, order> cos_val;
+    mutable std::array<std::vector<std::array<double, space_dim> >, order> sin_val;
+    mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
+            UnitElement<dim>::faces_per_element> face_cos_val;
+    mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
+            UnitElement<dim>::faces_per_element> face_sin_val;
     const double R = 1.;
 };
 
@@ -339,9 +344,9 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<3> &elem);
+    void set_element(const CartesianGridElementAccessor<3> &elem) const;
 
-    void set_face_element(const Index face_id, const CartesianGridElementAccessor<3> &elem);
+    void set_face_element(const Index face_id, const CartesianGridElementAccessor<3> &elem) const;
 
     void evaluate(std::vector<PointType> &values) const override;
 
@@ -366,8 +371,8 @@ private:
     const Real dR_;
     const Real dT_;
     const Real dH_;
-    std::vector<PointType> points_;
-    std::array<std::vector<PointType>, UnitElement<3>::faces_per_element> face_points_;
+    mutable std::vector<PointType> points_;
+    mutable std::array<std::vector<PointType>, UnitElement<3>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

@@ -117,8 +117,8 @@ void run_test()
     elem->init_values(flag, quad);
     elem->fill_values();
 
-    auto values = elem->get_values_map();
-    auto gradients = elem->get_gradients_map();
+    auto values = elem->get_values();
+    auto gradients = elem->get_gradients();
 
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;
@@ -139,7 +139,7 @@ void run_test()
 //    elem1->fill_values();
 //    //elem1->fill_values();
 //
-////    auto values1 = elem1->get_values_map();
+////    auto values1 = elem1->get_values();
 ////    values1.print_info(out);
 ////    out << endl;
 //
@@ -147,7 +147,7 @@ void run_test()
 //    auto elem2 = map->begin();
 //    elem2->init_values(flag, quad2);
 //    elem2->fill_values();
-//    auto values2 = elem2->get_values_map();
+//    auto values2 = elem2->get_values();
 //    values2.print_info(out);
 //    out << endl;
 

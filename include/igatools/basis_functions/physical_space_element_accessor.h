@@ -77,7 +77,8 @@ private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using ContainerType = PhysSpace;
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const PhysSpace;
 
     using RefSpace = typename PhysSpace::RefSpace;
     using PushForwardType = typename PhysSpace::PushForwardType;
@@ -119,7 +120,7 @@ public :
      */
     PhysicalSpaceElementAccessor() = delete;
 
-    PhysicalSpaceElementAccessor(const PhysSpace &phys_space,
+    PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
                                  const Index index);
 
     /**
@@ -394,7 +395,7 @@ public :
     /**
      * Return a pointer to the physical space on which the element is defined.
      */
-    const PhysSpace *get_physical_space() const;
+    std::shared_ptr<const PhysSpace>get_physical_space() const;
 
     /** @name Methods from RefSpace::ElemAccessor */
     //@{
@@ -454,9 +455,9 @@ private :
     using DerivativeRef_t = Derivatives<dim,RefSpace::range,RefSpace::rank,order>;
 
 
-
+// TODO (pauletti, Apr 23, 2014): why not private?
 protected:
-    const PhysSpace *phys_space_;
+    std::shared_ptr<ContainerType> phys_space_ = nullptr;
 
 
     struct ValuesCache : CacheStatus
@@ -531,7 +532,7 @@ protected:
      */
     ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
 
-
+    // TODO (pauletti, Apr 23, 2014): why not private?
 public :
 
     /** @name Comparison operators */

@@ -48,15 +48,14 @@ IGA_NAMESPACE_OPEN
  * @author M.Martinelli, 2013, 2014
  */
 template <int dim_>
-class CartesianGridElementAccessor : public CartesianGridElement<dim_>
+class CartesianGridElementAccessor :
+    public CartesianGridElement<dim_>
 {
+private:
+    using parent_t = CartesianGridElement<dim_>;
 public:
-    /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = CartesianGrid<dim_>;
-
-    /** Dimension of the grid like container */
-    static const auto dim = ContainerType::dim;
-
+    using typename parent_t::ContainerType;
+    using parent_t::dim;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -80,7 +79,7 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElementAccessor(const CartesianGrid<dim_> &grid,
+    CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                                  const Index elem_index);
 
     /**
@@ -112,13 +111,13 @@ public:
      * the one dimensional length cache with the copied element.
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(const CartesianGridElementAccessor<dim_> &elem) = default;
+    &operator=(const CartesianGridElementAccessor<dim_> &elem) = delete;
 
     /**
      * Move assignment operator.
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(CartesianGridElementAccessor<dim_> &&elem) = default;
+    &operator=(CartesianGridElementAccessor<dim_> &&elem) = delete;
     ///@}
 
     /** @name Functions for the cache initialization and filling. */
@@ -181,11 +180,13 @@ public:
 
 
     /**
-     * Returns measure of the element or of the element-face in the CartesianGrid.
-     * @note The topology for which the measure is computed is specified by the input argument
-     * @p topology_id.
+     * Returns measure of the element or of the element-face in the
+     * CartesianGrid.
+     * @note The topology for which the measure is computed is specified by
+     * the input argument @p topology_id.
      */
-    Real get_measure(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+    Real get_measure(const TopologyId<dim_> &topology_id
+                     = ElemTopology<dim_>()) const;
 
 
     /**
@@ -196,13 +197,15 @@ public:
 
 
     /**
-     * Returns the element measure multiplied by the weights of the quadrature scheme
-     * used to initialize the accessor's cache.
+     * Returns the element measure multiplied by the weights of the quadrature
+     * scheme used to initialize the accessor's cache.
      */
-    ValueVector<Real> const &get_w_measures(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+    ValueVector<Real> const &get_w_measures(const TopologyId<dim_> &topology_id
+                                            = ElemTopology<dim_>()) const;
 
     /**
-     * Returns the element-face measure multiplied by the weights of the quadrature scheme
+     * Returns the element-face measure multiplied by the weights of the
+     * quadrature scheme
      * used to initialize the accessor's cache.
      * The face is specified by the input argument @p face_id
      */
@@ -213,11 +216,13 @@ public:
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points(const TopologyId<dim_> &topology_id = ElemTopology<dim_>()) const;
+    std::vector<Point<dim>> const get_points(const TopologyId<dim_> &topology_id
+                                             = ElemTopology<dim_>()) const;
 
     /**
      * Return a const reference to the one-dimensional container with the
-     * values of the map at the evaluation points on the face specified by @p face_id.
+     * values of the map at the evaluation points on the face specified
+     * by @p face_id.
      */
     std::vector<Point<dim>> const get_face_points(const Index face_id) const;
 
@@ -229,7 +234,8 @@ public:
      * Prints internal information about the CartesianGridElementAccessor.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out, const VerbosityLevel verbosity = VerbosityLevel::normal) const;
+    void print_info(LogStream &out, const VerbosityLevel verbosity =
+                        VerbosityLevel::normal) const;
 
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
@@ -292,11 +298,13 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+        void reset(const GridElemValueFlagsHandler &flags_handler,
+                   const Quadrature<dim_> &quad);
 
         /**
          * Fill the cache member.
-         * @note The @p measure is an input argument because of the different function calls
+         * @note The @p measure is an input argument because of the different
+         * function calls
          * between element-measure and face-measure.
          */
         void fill(const Real measure);
@@ -327,16 +335,15 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad);
+        void reset(const GridElemValueFlagsHandler &flags_handler,
+                   const Quadrature<dim_> &quad);
 
         /**
          * Prints internal information about the ElementValuesCache.
          * Its main use is for testing and debugging.
          */
         void print_info(LogStream &out) const;
-
     };
-
 
     /**
      * @brief Cache for the face values at quadrature points
@@ -356,15 +363,16 @@ private:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id)
+    const;
 
     /**
      * Grid (global) lengths cache.
      *
-     * @note The use of the shared_pointer is mandatory for the correct management of the global cache.
+     * @note The use of the shared_pointer is mandatory for the correct
+     * management of the global cache.
      */
     std::shared_ptr<LengthCache> length_cache_;
-
 
     /** Element values cache */
     ElementValuesCache elem_values_;
@@ -383,10 +391,9 @@ protected:
                    << "The passed ValueFlag " << arg2
                    << " contains a non admissible flag " << (arg1 ^arg2));
 
-
     DeclException1(ExcCacheInUse, int,
-                       << "The global cache is being used by " << arg1
-                       << " iterator. Changing its value not allowed.");
+                   << "The global cache is being used by " << arg1
+                   << " iterator. Changing its value not allowed.");
 };
 
 IGA_NAMESPACE_CLOSE

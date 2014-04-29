@@ -47,11 +47,11 @@ void do_test(const int p)
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    BSplineSpace< dim_domain, dim_range, rank > bspline_space(knots, p) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create (knots, p) ;
 
 
     typename BSplineSpace< dim_domain, dim_range, rank >::ElementIterator
-    element = bspline_space.begin(), endc = bspline_space.end();
+    element = bspline_space->begin(), endc = bspline_space->end();
     for (; element != endc; ++element)
     {
         out << "Element index: " << element->get_flat_index() << endl;

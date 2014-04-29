@@ -61,7 +61,7 @@ public:
      * the pure virtual function Mapping::init_element().
      */
     void init_element(const ValueFlags flag,
-                      const Quadrature<dim> &quad) override final {} ;
+                      const Quadrature<dim> &quad) const override final {} ;
 };
 
 

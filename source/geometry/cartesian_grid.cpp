@@ -235,9 +235,7 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::begin() const -> ElementIterator
 {
-    return ElementIterator(
-               const_cast<CartesianGrid<dim_>&>(*this),
-               0);
+    return ElementIterator(this->shared_from_this(), 0);
 }
 
 
@@ -247,7 +245,7 @@ auto
 CartesianGrid<dim_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(const_cast<CartesianGrid<dim_>&>(*this),
+    return ElementIterator(this->shared_from_this(),
                            IteratorState::pass_the_end);
 }
 

@@ -35,11 +35,10 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 CartesianGridElementAccessor<dim_>::
-CartesianGridElementAccessor(
-    const CartesianGrid<dim_> &patch,
-    const Index index)
+CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
+                             const Index index)
     :
-    CartesianGridElement<dim>(patch,index),
+    CartesianGridElement<dim>(grid, index),
     length_cache_ {new LengthCache}
 {}
 
@@ -133,7 +132,7 @@ init_values(const ValueFlags flag,
 {
     Assert((flag|admisible_flag) == admisible_flag,
            ExcFillFlagNotSupported(admisible_flag, flag));
-    Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()) );
+    Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()));
 
 
     length_cache_->reset(*this->get_grid());
@@ -167,7 +166,7 @@ inline Real
 CartesianGridElementAccessor<dim_>::
 get_measure(const TopologyId<dim_> &topology_id) const
 {
-	const auto &cache = this->get_values_cache(topology_id);
+    const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcMessage("Cache not filed."));
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
 
@@ -245,7 +244,7 @@ ValueVector<Real> const &
 CartesianGridElementAccessor<dim_>::
 get_face_w_measures(const Index face_id) const
 {
-	return this->get_w_measures(FaceTopology<dim_>(face_id));
+    return this->get_w_measures(FaceTopology<dim_>(face_id));
 }
 
 
@@ -271,7 +270,7 @@ auto
 CartesianGridElementAccessor<dim_>::
 get_face_points(const Index face_id) const -> vector<Point<dim>> const
 {
-	return this->get_points(FaceTopology<dim_>(face_id));
+    return this->get_points(FaceTopology<dim_>(face_id));
 }
 
 
@@ -334,14 +333,14 @@ fill(const Real measure)
 {
     if (flags_handler_.fill_measures())
     {
-    	this->measure_ = measure;
+        this->measure_ = measure;
 
         flags_handler_.set_measures_filled(true);
     }
 
     if (flags_handler_.fill_w_measures())
     {
-    	Assert(flags_handler_.measures_filled(),ExcCacheNotFilled());
+        Assert(flags_handler_.measures_filled(),ExcCacheNotFilled());
 
         w_measure_ = measure_ * unit_weights_;
 
@@ -399,17 +398,17 @@ print_info(LogStream &out, const VerbosityLevel verbosity) const
     out.push(tab);
 
     if (contains(verbosity,VerbosityLevel::debug))
-    	out << "Memory address = " << &(*this) << endl;
+        out << "Memory address = " << &(*this) << endl;
 
     CartesianGridElement<dim_>::print_info(out,verbosity);
 
     if (contains(verbosity,VerbosityLevel::debug))
     {
-    	out << "Element cache memory address = " << &elem_values_ << endl;
-    	elem_values_.print_info(out);
+        out << "Element cache memory address = " << &elem_values_ << endl;
+        elem_values_.print_info(out);
 
-    	for (int i = 0 ; i < n_faces ; ++i)
-    		out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
+        for (int i = 0 ; i < n_faces ; ++i)
+            out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
     }
     out.pop();
 

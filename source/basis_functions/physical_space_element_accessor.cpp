@@ -29,11 +29,12 @@ IGA_NAMESPACE_OPEN
 
 template< class PhysSpace >
 PhysicalSpaceElementAccessor<PhysSpace>::
-PhysicalSpaceElementAccessor(const PhysSpace &phys_space, const Index index)
+PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
+                             const Index index)
     :
-    RefElemAccessor(*phys_space.get_reference_space(), index),
-    PfElemAccessor(*phys_space.push_forward_, index),
-    phys_space_(&phys_space)
+    RefElemAccessor(phys_space->get_reference_space(), index),
+    PfElemAccessor(phys_space->get_push_forward(), index),
+    phys_space_(phys_space)
 {
     Assert(phys_space_ != nullptr, ExcNullPtr());
 }
@@ -463,7 +464,7 @@ const ValueVector<Real> &
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_measures(const TopologyId<dim> &topology_id) const
 {
-    return PfElemAccessor::get_dets_map(topology_id);
+    return PfElemAccessor::get_dets(topology_id);
 }
 
 template< class PhysSpace >
@@ -498,7 +499,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point<space_dim> &
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return (PfElemAccessor::get_values_map(topology_id))[qp];
+    return (PfElemAccessor::get_values(topology_id))[qp];
 }
 
 
@@ -698,7 +699,7 @@ get_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_values_map(topology_id);
+    return PfElemAccessor::get_values(topology_id);
 }
 
 template< class PhysSpace >
@@ -718,7 +719,7 @@ get_map_gradient_at_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_gradients_map(topology_id);
+    return PfElemAccessor::get_gradients(topology_id);
 }
 
 
@@ -772,9 +773,9 @@ get_num_basis() const
 
 
 template< class PhysSpace >
-const PhysSpace *
+auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_physical_space() const
+get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
     return phys_space_;
 }

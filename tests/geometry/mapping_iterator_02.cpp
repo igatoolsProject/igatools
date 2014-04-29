@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
  *  Test for the linear mapping class iterator, geometrical quantities
  *  author: pauletti
@@ -45,7 +46,7 @@ void test_iterator()
     for (int i=0; i<dim; ++i)
         b[i] = 1;
 
-    LinearMapping<dim,codim> map(grid,A,b);
+    auto map = LinearMapping<dim,codim>::create(grid,A,b);
 
     out << "Linear mapping" << "<" << dim << "," << space_dim << ">" << endl;
     out << "A =" << endl << A << endl;
@@ -53,7 +54,7 @@ void test_iterator()
 
     QTrapez<dim> quad;
 
-    auto elem = map.begin();
+    auto elem = map->begin();
 
     ValueFlags flag = ValueFlags::w_measure;
     flag |= ValueFlags::measure| ValueFlags::map_gradient;
@@ -62,10 +63,10 @@ void test_iterator()
     elem->fill_values();
 
 //   auto values = elem->get_normals();
-//    auto dets = elem->get_dets_map();
+//    auto dets = elem->get_dets();
     auto wdets = elem->get_w_measures();
-//    auto gradients = elem->get_gradients_map();
-//    auto hessians = elem->get_hessians_map();
+//    auto gradients = elem->get_gradients();
+//    auto hessians = elem->get_hessians();
 //
 //    out << "x = " << endl << quad.get_points().get_flat_cartesian_product() << endl;
 //    out << "F(x)     = " << endl;

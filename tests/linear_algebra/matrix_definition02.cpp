@@ -65,24 +65,24 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    BSplineSpace< dim_domain, dim_range, rank  > bspline_space_rows(knots, p_r) ;
-    BSplineSpace< dim_domain, dim_range, rank  > bspline_space_cols(knots, p_c) ;
+    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create (knots, p_r) ;
+    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create (knots, p_c) ;
 
-    const auto n_basis_sp_rows = bspline_space_rows.get_num_basis();
-    const auto n_basis_sp_cols = bspline_space_cols.get_num_basis();
+    const auto n_basis_sp_rows = bspline_space_rows->get_num_basis();
+    const auto n_basis_sp_cols = bspline_space_cols->get_num_basis();
     out << endl;
     out << "Rows space:" << endl;
-    bspline_space_rows.print_info(out);
+    bspline_space_rows->print_info(out);
     out << endl;
     out << "Columns space:" << endl;
-    bspline_space_cols.print_info(out);
+    bspline_space_cols->print_info(out);
     out << endl;
     out << "Number of dofs of rows space: " << n_basis_sp_rows << std::endl;
     out << "Number of dofs of columns space: " << n_basis_sp_cols << std::endl;
     out << endl;
 
 
-    Matrix A(dof_tools::get_sparsity_pattern(bspline_space_rows, bspline_space_cols));
+    Matrix A(dof_tools::get_sparsity_pattern<BSplineSpace< dim_domain, dim_range, rank  >,BSplineSpace< dim_domain, dim_range, rank  >>(bspline_space_rows, bspline_space_cols));
 
 
     const auto num_rows = n_basis_sp_rows ;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    Vector b(bspline_space_cols.get_num_basis());
+    Vector b(bspline_space_cols->get_num_basis());
     for (Index i = 0; i < num_cols ; i++)
         b.add_entry(i,i + 1.0);
 
@@ -110,11 +110,10 @@ int main(int argc, char *argv[])
     b.print(out);
     out << endl;
 
-    Vector c(bspline_space_rows.get_num_basis());
+    Vector c(bspline_space_rows->get_num_basis());
 
 
     // c = A . b
-//    A_epetra->Multiply(false, *b_epetra, *c_epetra);
     A.multiply_by_right_vector(b,c,1.0,0.0);
 
     out << "c = A . b" << endl;
@@ -124,6 +123,6 @@ int main(int argc, char *argv[])
 
 
 
-    return (EXIT_SUCCESS);
+    return 0;
 
 }

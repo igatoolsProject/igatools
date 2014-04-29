@@ -44,10 +44,9 @@ private:
     using typename base_t::GradientType;
     using typename base_t::HessianType;
     using typename base_t::GridType;
+    using typename base_t::ElementIterator;
 
     using self_t = IgMapping<RefSpace>;
-
-    using ElementIterator = typename base_t::ElementIterator;
 
 public:
     /**
@@ -86,12 +85,12 @@ public:
     self_t &operator=(const self_t &map) = delete;
 
     void init_element(const ValueFlags flag,
-                      const Quadrature<dim> &quad) override;
+                      const Quadrature<dim> &quad) const override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) override;
+    void set_element(const CartesianGridElementAccessor<dim> &elem) const override;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) override;
+                          const CartesianGridElementAccessor<dim> &elem) const override;
 
     /** @name Mapping as a standard function */
     ///@{
@@ -202,7 +201,7 @@ private:
      * @note This cache should be freshly created every time a MappingElementAccessor is
      * referring to the IgMapping object.
      */
-    typename RefSpace::ElementIterator cache_;
+    mutable typename RefSpace::ElementIterator cache_;
 
 public:
 

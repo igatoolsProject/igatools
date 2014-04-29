@@ -447,7 +447,7 @@ get_subelements(
            ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-    auto element_vertices_tmp = elem->get_values_map();
+    auto element_vertices_tmp = elem->get_values();
 
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
@@ -529,9 +529,10 @@ get_subelements(
 
     //----------------------------------------------------------------------------------------------
     // grid defining the vtk elements inside the iga element
-    const CartesianGrid<dim_ref> vtk_elements_grid(num_points_direction_);
-    auto vtk_elem = vtk_elements_grid.begin();
-    const auto vtk_elem_end = vtk_elements_grid.end();
+
+    const auto  vtk_elements_grid = CartesianGrid<dim_ref>::create(num_points_direction_);
+    auto vtk_elem = vtk_elements_grid->begin();
+    const auto vtk_elem_end = vtk_elements_grid->end();
 
     int vtk_vertex_id_offset = n_points_per_iga_element_ * iga_element_id;
     for (; vtk_elem != vtk_elem_end; ++vtk_elem)

@@ -169,7 +169,7 @@ auto
 Mapping<dim_,codim_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(const_cast<Mapping<dim_,codim_> &>(*this), 0);
+    return ElementIterator(this->shared_from_this(), 0);
 }
 
 
@@ -179,7 +179,7 @@ auto
 Mapping<dim_,codim_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(const_cast<Mapping<dim_,codim_> & >(*this),
+    return ElementIterator(this->shared_from_this(),
                            this->get_grid()->get_num_elements() - 1);
 }
 
@@ -190,7 +190,7 @@ auto
 Mapping<dim_,codim_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(const_cast<Mapping<dim_,codim_> &>(*this),
+    return ElementIterator(this->shared_from_this(),
                            IteratorState::pass_the_end);
 }
 
