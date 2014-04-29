@@ -47,7 +47,7 @@ void do_test(const int p)
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create (knots, p) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(knots, p) ;
 
 
     typename BSplineSpace< dim_domain, dim_range, rank >::ElementIterator

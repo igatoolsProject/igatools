@@ -36,11 +36,11 @@
 
 template <int dim>
 shared_ptr<BSplineSpace<dim,dim,1> >
-                                 create_space(const int num_knots) ;
+create_space(const int num_knots) ;
 
 template <>
 shared_ptr<BSplineSpace<2,2,1> >
-                             create_space<2>(const int num_knots)
+create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
 
@@ -53,7 +53,7 @@ shared_ptr<BSplineSpace<2,2,1> >
 
 template <>
 shared_ptr<BSplineSpace<3,3,1> >
-                             create_space<3>(const int num_knots)
+create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
 
@@ -91,27 +91,27 @@ void do_test()
     }
 
     {
-    auto elem = space->begin();
-    elem->init_values(ValueFlags::gradient, quad) ;
+        auto elem = space->begin();
+        elem->init_values(ValueFlags::gradient, quad) ;
 
-    for (; elem != space->end(); ++elem)
-    {
-        elem->fill_values();
-        out << "Gradients:" << endl ;
-        elem->get_basis_gradients().print_info(out);
-    }
+        for (; elem != space->end(); ++elem)
+        {
+            elem->fill_values();
+            out << "Gradients:" << endl ;
+            elem->get_basis_gradients().print_info(out);
+        }
     }
 
     {
         auto elem = space->begin();
-    elem->init_values(ValueFlags::hessian, quad) ;
+        elem->init_values(ValueFlags::hessian, quad) ;
 
-    for (; elem != space->end(); ++elem)
-    {
-        elem->fill_values();
-        out << "Hessians:" << endl ;
-        elem->get_basis_hessians().print_info(out);
-    }
+        for (; elem != space->end(); ++elem)
+        {
+            elem->fill_values();
+            out << "Hessians:" << endl ;
+            elem->get_basis_hessians().print_info(out);
+        }
     }
 }
 

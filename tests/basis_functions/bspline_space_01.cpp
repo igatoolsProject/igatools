@@ -91,7 +91,7 @@ void do_test()
     auto  knots = CartesianGrid<dim_domain>::create(coord) ;
     StaticMultiArray<TensorIndex<dim_domain>,dim_range,rank> deg;
     deg.fill(TensorIndex<dim_domain>(degree));
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create (knots, deg) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create(knots, deg) ;
     bspline_space->print_info(out);
     out << endl;
     // end : testing the constructor

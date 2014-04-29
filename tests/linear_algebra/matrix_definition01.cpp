@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create (knots, p) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(knots, p) ;
     bspline_space->print_info(out);
     out << endl;
     out << "Number of dofs: " << bspline_space->get_num_basis() << std::endl;
