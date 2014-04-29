@@ -30,7 +30,10 @@
 
 IGA_NAMESPACE_OPEN
 
-//TODO: move the definitions of the class memeber in the .cpp and provide the instantiations
+//TODO: move the definitions of the class member in the .cpp and provide the instantiations
+
+
+//#define TIME_PROFILING
 
 
 /**
@@ -177,8 +180,8 @@ test_if_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
 
     //--------------------------------------------------------------------------
     // checks that the grid used in the test space and in the trial space is the same
-    Assert(elem_test.get_physical_space()->get_ref_space()->get_grid() ==
-           elem_trial.get_physical_space()->get_ref_space()->get_grid(),
+    Assert(elem_test.get_physical_space()->get_reference_space()->get_grid() ==
+           elem_trial.get_physical_space()->get_reference_space()->get_grid(),
            ExcMessage("Test and trial spaces must have the same grid!"));
     //--------------------------------------------------------------------------
 

@@ -129,8 +129,9 @@ eval_operator_u_v(
 
     //----------------------------------------------------
     // Assembly of the local mass matrix using the standard quadrature -- begin
+#ifdef TIME_PROFILING
     const auto start_assembly_mass_matrix = Clock::now();
-
+#endif // #ifdef TIME_PROFILING
 
 
 
@@ -194,10 +195,12 @@ eval_operator_u_v(
 
 
 
+#ifdef TIME_PROFILING
     const auto end_assembly_mass_matrix = Clock::now();
     const_cast<Duration &>(this->elapsed_time_operator_u_v_) = end_assembly_mass_matrix - start_assembly_mass_matrix;
     std::cout << "Elapsed seconds operator u_v standard quadrature= "
               << this->elapsed_time_operator_u_v_.count() << std::endl;
+#endif // #ifdef TIME_PROFILING
 
     // Assembly of the local mass matrix using the standard quadrature -- begin
     //----------------------------------------------------
@@ -218,9 +221,12 @@ eval_operator_gradu_gradv(
     //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
     // the physical space iterators have the same grid, map, reference space, index, etc.
     Assert(&elem_test == &elem_trial,ExcNotImplemented());
+
     //----------------------------------------------------
     // Assembly of the local stiffness matrix using the standard quadrature -- begin
+#ifdef TIME_PROFILING
     const TimePoint start_assembly_stiffness_matrix = Clock::now();
+#endif // #ifdef TIME_PROFILING
 
 
 
@@ -291,11 +297,13 @@ eval_operator_gradu_gradv(
 
 
 
+#ifdef TIME_PROFILING
     const TimePoint end_assembly_stiffness_matrix = Clock::now();
     const_cast<Duration &>(this->elapsed_time_operator_gradu_gradv_)
         = end_assembly_stiffness_matrix - start_assembly_stiffness_matrix;
     std::cout << "Elapsed seconds operator gradu_gradv standard quadrature= "
               << this->elapsed_time_operator_gradu_gradv_.count() << std::endl;
+#endif // #ifdef TIME_PROFILING
 
     // Assembly of the local mass matrix using the standard quadrature -- begin
     //----------------------------------------------------

@@ -23,10 +23,13 @@
 
 #include <igatools/base/config.h>
 #include <igatools/operators/elliptic_operators.h>
+#include <igatools/utils/multi_array_utils.h>
 
 #include <vector>
 
 IGA_NAMESPACE_OPEN
+
+
 
 
 /**
@@ -1117,7 +1120,9 @@ eval_operator_u_v(
 
     //----------------------------------------------------
     // Assembly of the local mass matrix using sum-factorization -- begin
+#ifdef TIME_PROFILING
     const TimePoint start_assembly_mass_matrix = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
 
 
@@ -1130,7 +1135,9 @@ eval_operator_u_v(
 
 
     //--------------------------------------------------------------------------
+#ifdef TIME_PROFILING
     const auto start_initialization = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
 
 
@@ -1247,16 +1254,20 @@ eval_operator_u_v(
     //--------------------------------------------------------------------------
 
 
+#ifdef TIME_PROFILING
     const auto end_initialization = Clock::now();
     const Duration elapsed_time_initialization = end_initialization - start_initialization;
     std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     //--------------------------------------------------------------------------
 
 
 
     //----------------------------------------------------
     // Coefficient evaluation phase -- begin
+#ifdef TIME_PROFILING
     const TimePoint start_coefficient_evaluation = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
 
     // checks that the mapping used in the test space and in the trial space is the same
@@ -1288,11 +1299,13 @@ eval_operator_u_v(
         c_times_detDF(ipt) = coeffs[ipt] * det_DF[ipt];
 
 
+#ifdef TIME_PROFILING
     const TimePoint end_coefficient_evaluation = Clock::now();
     const Duration elapsed_time_coefficient_evaluation =
         end_coefficient_evaluation - start_coefficient_evaluation;
     std::cout << "Elapsed seconds coefficient evaluation mass= "
               << elapsed_time_coefficient_evaluation.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     // Coefficient evaluation phase -- end
     //----------------------------------------------------
 
@@ -1303,7 +1316,9 @@ eval_operator_u_v(
     //----------------------------------------------------
     // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
     // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
+#ifdef TIME_PROFILING
     const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
     const std::array<Real,dim> length_element_edge =
         elem_test.get_ref_space_accessor().get_coordinate_lengths();
@@ -1314,11 +1329,13 @@ eval_operator_u_v(
                                             elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
                                             length_element_edge);
 
+#ifdef TIME_PROFILING
     const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
     Duration elapsed_time_compute_phi1Dtest_phi1Dtrial =
         end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
     std::cout << "Elapsed seconds w * phi1d_trial * phi1d_test = "
               << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     //----------------------------------------------------
 
 
@@ -1326,7 +1343,10 @@ eval_operator_u_v(
 
     //----------------------------------------------------
     // Assembly of the local mass matrix using sum-factorization -- begin
+#ifdef TIME_PROFILING
     const auto start_sum_factorization = Clock::now();
+#endif //#ifdef TIME_PROFILING
+
     TensorSize<3> tensor_size_C0;
     tensor_size_C0[0] = n_points_1D.flat_size(); // theta size
     tensor_size_C0[1] = 1; // alpha size
@@ -1351,13 +1371,16 @@ eval_operator_u_v(
                  operator_u_v);
 
 
+#ifdef TIME_PROFILING
     const auto end_sum_factorization = Clock::now();
     Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
     std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     // Assembly of the local mass matrix using sum-factorization -- end
     //----------------------------------------------------
 
 
+#ifdef TIME_PROFILING
     const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
                                            elapsed_time_compute_phi1Dtest_phi1Dtrial +
                                            elapsed_time_coefficient_evaluation +
@@ -1370,6 +1393,7 @@ eval_operator_u_v(
     const_cast<Duration &>(this->elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
     std::cout << "Elapsed seconds operator u_v sum-factorization= "
               << this->elapsed_time_operator_u_v_.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     // Assembly of the local mass matrix using sum-factorization -- end
     //----------------------------------------------------
 }
@@ -1389,10 +1413,12 @@ eval_operator_gradu_gradv(
 
     //----------------------------------------------------
     // Assembly of the local stiffness matrix using sum-factorization -- begin
+#ifdef TIME_PROFILING
     const TimePoint start_assembly_stiffness_matrix = Clock::now();
 
     //--------------------------------------------------------------------------
     const auto start_initialization = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
 
 
@@ -1530,10 +1556,11 @@ eval_operator_gradu_gradv(
     // getting the 1D values for the trial space -- end
     //--------------------------------------------------------------------------
 
-
+#ifdef TIME_PROFILING
     const auto end_initialization = Clock::now();
     const Duration elapsed_time_initialization = end_initialization - start_initialization;
     std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     //--------------------------------------------------------------------------
 
 
@@ -1543,7 +1570,9 @@ eval_operator_gradu_gradv(
 
     //----------------------------------------------------
     // Coefficient evaluation phase -- begin
+#ifdef TIME_PROFILING
     const TimePoint start_coefficient_evaluation = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
 
     // checks that the mapping used in the test space and in the trial space is the same
@@ -1561,7 +1590,7 @@ eval_operator_gradu_gradv(
     // performs the evaluation of the function DF^{-1} * C * DF^{-T} * det(DF) at the quadrature points
     const auto &det_DF = elem_test.get_measures() ;
 
-    const auto &invDF = elem_test.get_push_forward_accessor().get_inv_gradients_map();
+    const auto &invDF = elem_test.get_push_forward_accessor().get_inv_gradients();
 
     Size n_points = coeffs.size();
     Assert(det_DF.size() == n_points,
@@ -1595,11 +1624,13 @@ eval_operator_gradu_gradv(
     }
 
 
+#ifdef TIME_PROFILING
     const TimePoint end_coefficient_evaluation = Clock::now();
     const Duration elapsed_time_coefficient_evaluation =
         end_coefficient_evaluation - start_coefficient_evaluation;
     std::cout << "Elapsed seconds coefficient evaluation stiffness = "
               << elapsed_time_coefficient_evaluation.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     // Coefficient evaluation phase -- end
     //----------------------------------------------------
 
@@ -1610,9 +1641,12 @@ eval_operator_gradu_gradv(
 
     //----------------------------------------------------
     // Assembly of the local stiffness matrix using sum-factorization -- begin
+#ifdef TIME_PROFILING
     Duration elapsed_time_compute_phi1Dtest_phi1Dtrial;
 
     const auto start_sum_factorization = Clock::now();
+#endif //#ifdef TIME_PROFILING
+
     TensorSize<3> tensor_size_C0;
     tensor_size_C0[0] = n_points_1D.flat_size(); // theta size
     tensor_size_C0[1] = 1; // alpha size
@@ -1622,6 +1656,7 @@ eval_operator_gradu_gradv(
     const Size n_entries = tensor_size_C0.flat_size();
 
     DenseMatrix operator_gradu_gradv_tmp(n_basis_test.flat_size(),n_basis_trial.flat_size());
+    operator_gradu_gradv.clear();
 
     std::array<DynamicMultiArray<Real,3>,dim> J;
 
@@ -1659,7 +1694,9 @@ eval_operator_gradu_gradv(
             //----------------------------------------------------
             // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
             // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
+#ifdef TIME_PROFILING
             const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
+#endif //#ifdef TIME_PROFILING
 
             const std::array<Real,dim> length_element_edge =
                 elem_test.get_ref_space_accessor().get_coordinate_lengths();
@@ -1670,9 +1707,11 @@ eval_operator_gradu_gradv(
                                elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
                                length_element_edge);
 
+#ifdef TIME_PROFILING
             const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
             elapsed_time_compute_phi1Dtest_phi1Dtrial +=
                 end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
+#endif //#ifdef TIME_PROFILING
             //----------------------------------------------------
 
 
@@ -1702,6 +1741,7 @@ eval_operator_gradu_gradv(
 
 
 
+#ifdef TIME_PROFILING
     const auto end_sum_factorization = Clock::now();
 
     std::cout << "Elapsed seconds w * trial * test = "
@@ -1725,6 +1765,7 @@ eval_operator_gradu_gradv(
         = end_assembly_stiffness_matrix - start_assembly_stiffness_matrix;
     std::cout << "Elapsed seconds operator gradu_gradv sum-factorization= "
               << this->elapsed_time_operator_gradu_gradv_.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
     // Assembly of the local stiffness matrix using sum-factorization -- end
     //----------------------------------------------------
 
