@@ -781,7 +781,7 @@ public:
     const ComponentTable<
     DynamicMultiArray<
     std::shared_ptr<
-    BSplineElementScalarEvaluator<dim>>,dim>> &
+    BSplineElementScalarEvaluator<dim>>,dim> > &
                                      get_scalar_evaluators(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 };
