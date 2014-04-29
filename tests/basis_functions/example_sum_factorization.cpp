@@ -70,6 +70,7 @@ public:
     void run();
 
 
+    Real get_elapsed_time_eval_basis() const;
     Real get_elapsed_time_eval_mass_matrix() const;
     Real get_elapsed_time_eval_stiffness_matrix() const;
     Real get_elapsed_time_assemble_stiffness_matrix() const;
@@ -112,6 +113,7 @@ protected:
     std::shared_ptr<Vector> rhs;
     std::shared_ptr<Vector> solution;
 
+    Duration elapsed_time_eval_basis_;
 
     Duration elapsed_time_eval_mass_matrix_;
 
@@ -125,6 +127,14 @@ protected:
 
     std::string filename_;
 };
+
+template<int dim,class DerivedClass>
+Real
+PoissonProblem<dim,DerivedClass>::
+get_elapsed_time_eval_basis() const
+{
+    return elapsed_time_eval_basis_.count();
+}
 
 template<int dim,class DerivedClass>
 Real
@@ -258,14 +268,22 @@ assemble()
     {
         loc_rhs.clear();
 
+        //----------------------------------------------------
+        const TimePoint start_eval_basis = Clock::now();
         elem->fill_values();
+        const TimePoint end_eval_basis = Clock::now();
+        this->elapsed_time_eval_basis_ += end_eval_basis - start_eval_basis;
 
         auto points  = elem->get_points();
         auto phi     = elem->get_basis_values();
         auto grd_phi = elem->get_basis_gradients();
         auto w_meas  = elem->get_w_measures();
+        //----------------------------------------------------
 
+
+        //----------------------------------------------------
         f.evaluate(points, f_values);
+        //----------------------------------------------------
 
 
         //----------------------------------------------------
@@ -368,7 +386,7 @@ PoissonProblem<dim,DerivedClass>::
 solve()
 {
     const Real tol = 1.0e-10;
-    const Size max_iters = 1000000;
+    const Size max_iters = 10000000;
     LinearSolver solver(LinearSolver::Type::CG,tol,max_iters);
 
     const TimePoint start_solve_linear_system = Clock::now();
@@ -524,6 +542,8 @@ do_test()
 
     TableHandler elapsed_time_table;
 
+    string time_eval_basis = "Eval basis";
+
     string time_mass_sum_fac = "Eval mass sum_fac";
     string time_mass_orig = "Eval mass orig";
 
@@ -560,6 +580,8 @@ do_test()
 
         //*/
         elapsed_time_table.add_value("Degree",degree);
+        elapsed_time_table.add_value(time_eval_basis,poisson_sf.get_elapsed_time_eval_basis());
+
         elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_eval_mass_matrix());
         elapsed_time_table.add_value(time_mass_orig,poisson_std.get_elapsed_time_eval_mass_matrix());
         elapsed_time_table.add_value(time_stiff_sum_fac,poisson_sf.get_elapsed_time_eval_stiffness_matrix());
@@ -570,6 +592,8 @@ do_test()
         elapsed_time_table.add_value(time_solve_lin_system,poisson_sf.get_elapsed_time_solve_linear_system());
 
     }
+    elapsed_time_table.set_precision(time_eval_basis,10);
+    elapsed_time_table.set_scientific(time_eval_basis,true);
 
     elapsed_time_table.set_precision(time_mass_sum_fac,10);
     elapsed_time_table.set_scientific(time_mass_sum_fac,true);
