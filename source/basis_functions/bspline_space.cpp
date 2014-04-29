@@ -362,7 +362,7 @@ BSplineSpace(shared_ptr<GridType> knots,
              const bool homogeneous_range)
     :
     BSplineSpace(knots,
-                 MultiplicityTable( Multiplicity<dim> (knots->get_num_knots_dim())),
+                 MultiplicityTable(knots, degree, true),
                  degree,
                  homogeneous_range)
 {}
@@ -535,10 +535,12 @@ void BSplineSpace<dim_, range_, rank_>::
 fill_index_space_standard_policy()
 {
 
+    index_space_offset_ = mult_.compute_index_space_offset();
+
     for (int iComp = 0; iComp < n_components; iComp++)
     {
-        index_space_offset_(iComp) =
-            mult_(iComp).compute_index_space_offset(degree_(iComp));
+//        index_space_offset_(iComp) =
+//            mult_(iComp).compute_index_space_offset(degree_(iComp));
         TensorSize<dim> index_space_size;
         for (int jDim = 0; jDim < dim; ++jDim)
             index_space_size(jDim) = index_space_offset_(iComp).get_data_direction(jDim).back();

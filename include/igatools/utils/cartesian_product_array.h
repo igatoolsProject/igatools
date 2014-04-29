@@ -75,6 +75,7 @@ template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
+    using EntryType = T;
     /**
      * Type for the <tt>rank-1</tt> CartesianProductArray
      */

@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/cartesian_product_array.h>
+#include <igatools/utils/static_multi_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN
@@ -31,54 +32,81 @@ IGA_NAMESPACE_OPEN
  * @brief Multiplicity of knot vectors without repetition.
  *
   *
- * @author pauletti, 2013
+ * @author pauletti, 2013-2014
  *
  */
-template<int dim>
-class Multiplicity : public CartesianProductArray<Size, dim>
+template<int dim, int range, int rank>
+class Multiplicity :
+        public StaticMultiArray<CartesianProductArray<Size, dim>,range,rank>
 {
 private:
     using Grid     = CartesianGrid<dim>;
-    using Degrees  = TensorIndex<dim>;
-    using parent_t =  CartesianProductArray<Size, dim>;
+
+    using T =  CartesianProductArray<Size, dim>;
+
 
 public:
-    /** We use the father's constructors. */
-    using parent_t::CartesianProductArray;
+    using Degrees  = TensorIndex<dim>;
+    using DegreeTable = StaticMultiArray<Degrees, range, rank>;
+
+
+    using parent_t = StaticMultiArray<CartesianProductArray<Size, dim>,range,rank>;
+
+
+public:
+    using parent_t::StaticMultiArray;
 
     /**
      * Maximun regularity multiplicity vectors associated with
      * the grid and degrees
      */
-//    explicit Multiplicity(std::shared_ptr<const Grid> knots,
-//                          Degrees &deg,
-//                          bool max_reg);
+    explicit Multiplicity(parent_t &mult, const DegreeTable &deg)
+    :
+      parent_t::StaticMultiArray(mult),
+      deg_(deg)
+    {}
 
+    /**
+     * Maximun regularity multiplicity vectors associated with
+     * the grid and degrees
+     */
+    explicit Multiplicity(std::shared_ptr<const Grid> knots,
+                          const DegreeTable &deg,
+                          const bool max_reg);
+
+private:
     /**
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    void fill_max_regularity(const int degree);
-
-    /**
-     * Fill the multiplicy for the maximum possible regularity
-     *  of the given number of knots
-     */
-    void fill_max_regularity(const int_array<dim> degree);
-
-    /**
-     * Computes the cumulative multiplicity
-     */
-    Multiplicity<dim> accumulate() ;
-
+    void fill_max_regularity();
+//
+//    /**
+//     * Fill the multiplicy for the maximum possible regularity
+//     *  of the given number of knots
+//     */
+//    void fill_max_regularity(const int_array<dim> degree);
+//
+//    /**
+//     * Computes the cumulative multiplicity
+//     */
+//    parent_t accumulate() ;
+public:
     /**
       * @todo (Nov 9 2013, antolin): document.
      */
-    Multiplicity<dim> compute_index_space_offset(const std::array<int,dim> &degree) ;
+    parent_t compute_index_space_offset() ;
 
+private:
+    DegreeTable deg_;
 };
 
+
+
 IGA_NAMESPACE_CLOSE
+
+
+
 
 
 #endif // #ifndef MULTIPLICITY_H_

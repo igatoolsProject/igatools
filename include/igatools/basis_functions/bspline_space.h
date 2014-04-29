@@ -141,9 +141,10 @@ public:
     template< class T>
     using ComponentTable = StaticMultiArray<T,range,rank>;
 
-    using DegreeTable = ComponentTable<TensorIndex<dim>>;
 
-    using MultiplicityTable = ComponentTable<Multiplicity<dim> >;
+
+    using MultiplicityTable = Multiplicity<dim, range, rank>;
+    using DegreeTable = typename Multiplicity<dim, range, rank>::DegreeTable;
 
 public:
     /** @name Constructor and destructor */
@@ -347,8 +348,7 @@ public:
     /**
      * Return the knot multiplicities for each component of the space.
      */
-    const ComponentTable<Multiplicity<dim> > &
-    get_multiplicities() const;
+    const MultiplicityTable &get_multiplicities() const;
 
 
 
@@ -392,7 +392,7 @@ private:
     /**
      * Multiplicities of the knots.
      */
-    ComponentTable<Multiplicity<dim>> mult_;
+    MultiplicityTable mult_;
 
 
     /**
@@ -404,7 +404,7 @@ private:
 
 
     /** Where to read the global dofs of a given element */
-    ComponentTable<Multiplicity<dim> > index_space_offset_;
+    ComponentTable<CartesianProductArray<Size, dim>> index_space_offset_;
 
 
     /**

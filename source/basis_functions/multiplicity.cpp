@@ -26,79 +26,100 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
+template<int dim, int range, int rank>
+Multiplicity<dim, range, rank>::
+Multiplicity(std::shared_ptr<const Grid> knots,
+             const DegreeTable &deg,
+             const bool max_reg)
+:
+parent_t::StaticMultiArray(T(knots->get_num_knots_dim())),
+deg_(deg)
+{
+    fill_max_regularity();
+}
+
 //template <int dim>
+//auto
 //Multiplicity<dim>::
-//Multiplicity(std::shared_ptr<const Grid> knots,
-//             Degrees &deg,
-//             bool max_reg)
-//:
-//parent_t::CartesianProductArray(knots->get_num_knots_dim())
+//accumulate() -> parent_t
 //{
-//    fill_max_regularity(deg);
+//    const TensorSize<dim> size = this->tensor_size();
+//    parent_t result(size);
+//
+//    for (int i = 0; i < dim; ++i)
+//    {
+//        result.entry(i, 0) =  this->data_[i][0];
+//
+//        const Size size_i = size(i);
+//        for (int k = 1 ; k < size_i ; ++k)
+//            result.entry(i, k) = result.entry(i, k-1) + this->data_[i][k];
+//    }
+//
+//    return result;
 //}
+//
 
-template <int dim>
-Multiplicity<dim>
-Multiplicity<dim>::
-accumulate()
+
+
+template<int dim, int range, int rank>
+auto Multiplicity<dim, range, rank>::
+compute_index_space_offset() -> parent_t
 {
-    const TensorSize<dim> size = this->tensor_size();
-    Multiplicity<dim> result(size);
-
-    for (int i = 0; i < dim; ++i)
+    parent_t res;
+    auto res_it = res.begin();
+    auto mult_it = this->begin();
+    auto end = this->end();
+    for (;mult_it != end; ++mult_it, ++res_it)
     {
-        result.data_[i][0] =  this->data_[i][0];
-
-        const Size size_i = size(i);
-        for (int k = 1 ; k < size_i ; ++k)
-            result.data_[i][k] = result.data_[i][k-1] + this->data_[i][k];
+        auto size =mult_it->tensor_size();
+        T comp(size);
+        for (int i = 0; i < dim; ++i)
+        {
+            comp.entry(i, 0) =  0;
+            const Size size_i = size(i);
+            for (int k=1; k < size_i ; ++k)
+                comp.entry(i, k) = comp.entry(i, k-1) + mult_it->entry(i,k);
+        }
+        *(res_it) = comp;
     }
 
-    return result;
+    return res;
+//    const TensorSize<dim> size = this->tensor_size();
+//    parent_t result(size);
+//
+//    for (int i = 0; i < dim; ++i)
+//    {
+//        result.entry(i, 0) =  this->data_[i][0] - degree[i] - 1;
+//
+//        const Size size_i = size(i);
+//        for (int k=1; k < size_i ; ++k)
+//            result.entry(i, k) = result.entry(i, k-1) + this->data_[i][k];
+//    }
+//
+//    return result;
 }
 
-template <int dim>
-Multiplicity<dim>
-Multiplicity<dim>::
-compute_index_space_offset(const std::array<int,dim> &degree)
-{
-    const TensorSize<dim> size = this->tensor_size();
-    Multiplicity<dim> result(size);
 
-    for (int i = 0; i < dim; ++i)
+
+
+template<int dim, int range, int rank>
+void Multiplicity<dim, range, rank>::
+fill_max_regularity()
+{
+    auto deg_it  = deg_.begin();
+    auto end     = deg_.end();
+    auto mult_it = this->begin();
+
+    for (;deg_it != end; ++deg_it, ++mult_it)
     {
-        result.data_[i][0] =  this->data_[i][0] - degree[i] - 1;
-
-        const Size size_i = size(i);
-        for (int k=1; k < size_i ; ++k)
-            result.data_[i][k] = result.data_[i][k-1] + this->data_[i][k];
-    }
-
-    return result;
-}
-
-
-
-template <int dim>
-void Multiplicity<dim>::
-fill_max_regularity(const int degree)
-{
-    int_array<dim> deg;
-    deg.fill(degree);
-    fill_max_regularity(deg);
-}
-
-
-
-template <int dim>
-void  Multiplicity<dim>::fill_max_regularity(const int_array<dim> degree)
-{
-    for (int i = 0; i < dim; ++i)
-    {
-        auto &vector = this->data_[i];
-        fill(vector.begin(), vector.end(),1);
-        vector.front() += degree[i];
-        vector.back()  += degree[i];
+        for (int i = 0; i < dim; ++i)
+        {
+            std::vector<Size> vec(mult_it->get_data_direction(i));
+            fill(vec.begin(), vec.end(),1);
+            vec.front() += (*deg_it)[i];
+            vec.back()  += (*deg_it)[i];
+            mult_it->copy_data_direction(i, vec);
+        }
     }
 }
 

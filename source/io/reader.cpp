@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
@@ -258,7 +258,7 @@ get_xml_input_file_format(const std::string &filename)
 namespace
 {
 template <int dim>
-Multiplicity<dim>
+CartesianProductArray<Size, dim>
 get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
 {
     //-------------------------------------------------------------------------
@@ -289,7 +289,7 @@ get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
                     ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
     }
     //-------------------------------------------------------------------------
-    Multiplicity<dim> mult(mlt_data);
+    CartesianProductArray<Size, dim> mult(mlt_data);
 
     return mult;
 }
@@ -310,7 +310,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
     LogStream out ;
     TensorIndex<dim> degree;
     CartesianProductArray<Real,dim> knots_unique_values;
-    Multiplicity<dim> multiplicities;
+    CartesianProductArray<Size, dim> multiplicities;
 
     TensorSize<dim> n_ctrl_points_dim;
     array<vector<Real>,dim_phys> control_pts_coords;
@@ -585,7 +585,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
 
 
-    typename space_t::template ComponentTable<Multiplicity<dim>> multiplicities;
+    typename space_t::MultiplicityTable multiplicities;
     typename space_t::DegreeTable degrees;
 
     for (const auto & comp_element : scalar_component_vector)
@@ -893,3 +893,4 @@ get_mapping_from_file(const std::string &filename)
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/reader.inst>
+#endif

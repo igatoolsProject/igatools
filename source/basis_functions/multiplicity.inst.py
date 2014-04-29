@@ -23,7 +23,9 @@ from init_instantiation_data import *
 data = Instantiation()
 f = data.file_output
 inst = data.inst
+              
+for x in inst.all_ref_sp_dims:
+    f.write('template class Multiplicity<%d, %d, %d> ;\n' 
+            %(x.dim, x.range, x.rank))
 
-for dim in inst.ref_dom_dims:
-    f.write('template class Multiplicity<%d> ;\n' % (dim))
  

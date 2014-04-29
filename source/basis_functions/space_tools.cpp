@@ -45,33 +45,40 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 template <class RefSpace>
-StaticMultiArray< Multiplicity< RefSpace::RefFaceSpace::dim >,
-                  RefSpace::RefFaceSpace::range, RefSpace::RefFaceSpace::rank>
-                  get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
+typename RefSpace::RefFaceSpace::MultiplicityTable
+get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_mult = ref_space->get_multiplicities();
-    StaticMultiArray< Multiplicity < RefSpace::RefFaceSpace::dim >,
-                      RefSpace::RefFaceSpace::range, RefSpace::RefFaceSpace::rank>  f_mult;
+
+    auto v_degree = ref_space->get_degree();
+    typename RefSpace::RefFaceSpace::DegreeTable f_degree;
+    for (int comp=0; comp<RefSpace::n_components; ++comp)
+        for (int j=0; j<RefSpace::dim-1; ++j)
+            f_degree(comp)[j] = v_degree(comp)[active_dirs[j]];
+
+    typename RefSpace::RefFaceSpace::MultiplicityTable::parent_t f_mult;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)
             f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
-    return f_mult;
+    return typename RefSpace::RefFaceSpace::MultiplicityTable(f_mult, f_degree);
 }
 
 
+
 template <class RefSpace>
-StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::range, RefSpace::rank>
+typename RefSpace::RefFaceSpace::DegreeTable
 get_face_degree(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_degree = ref_space->get_degree();
-    StaticMultiArray<TensorIndex<RefSpace::dim-1>, RefSpace::range, RefSpace::rank>  f_degree;
+    typename RefSpace::RefFaceSpace::DegreeTable f_degree;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)
             f_degree(comp)[j] = v_degree(comp)[active_dirs[j]];
     return f_degree;
 }
+
 
 
 template <typename RefSpace>
