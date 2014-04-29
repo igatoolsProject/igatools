@@ -363,7 +363,6 @@ BSplineSpace(shared_ptr<GridType> knots,
     :
     BSplineSpace(knots,
                  MultiplicityTable(knots, degree, true),
-                 degree,
                  homogeneous_range)
 {}
 
@@ -384,11 +383,10 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType>    knots,
              const MultiplicityTable &mult_vectors,
-             const DegreeTable       &degree,
              const bool homogeneous_range)
     :
     BaseSpace(knots),
-    degree_(degree),
+    degree_(mult_vectors.get_degree()),
     mult_(mult_vectors),
     homogeneous_range_(homogeneous_range)
 {
@@ -401,10 +399,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
-       const MultiplicityTable &mult_vectors,
-       const DegreeTable       &degree) -> shared_ptr<self_t>
+       const MultiplicityTable &mult_vectors)
+       -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots,mult_vectors,degree));
+    return shared_ptr<self_t>(new self_t(knots,mult_vectors));
 }
 
 

@@ -124,7 +124,7 @@ NURBSSpace(
     const DegreeTable &degree)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, mult_vector, degree))
+    sp_space_(spline_space_t::create(knots, mult_vector))
 {
     // initialize all the weights to 1.0 (then this space will have the
     // same mathematical structure of a BSpline space)
@@ -166,7 +166,7 @@ NURBSSpace(
     const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, mult_vector, degree)),
+    sp_space_(spline_space_t::create(knots, mult_vector)),
     weights_(weights)
 {
 

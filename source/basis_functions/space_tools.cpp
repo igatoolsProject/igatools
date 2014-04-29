@@ -92,7 +92,7 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
     auto f_mult = get_face_mult<RefSpace> (ref_space, face_id);
 
     auto f_degree = get_face_degree<RefSpace> (ref_space, face_id);
-    return RefSpace::RefFaceSpace::create(face_grid, f_mult, f_degree);
+    return RefSpace::RefFaceSpace::create(face_grid, f_mult);
 }
 
 

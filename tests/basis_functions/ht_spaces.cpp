@@ -53,7 +53,7 @@ void do_test()
 
     prex_space.reset(new prex_space_ref_t(
                          mesh,
-                         StaticMultiArray< Multiplicity<dim_ref>,1,1>(Multiplicity<dim_ref>(mult_vector)),
+                         typename prex_space_ref_t::MultiplicityTable(Multiplicity<dim_ref>(mult_vector)),
                          StaticMultiArray< TensorIndex<dim_ref>,1,1>(deg_vector))) ;
 
     out << "prex #dofs = " << prex_space->get_num_basis() << endl;

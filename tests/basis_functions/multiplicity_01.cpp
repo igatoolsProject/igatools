@@ -29,21 +29,26 @@
 
 
 //Test the different constructors
-template<int dim>
+template<int dim, int range = 1, int rank = 1>
 void do_test()
 {
-    Multiplicity<dim> mult1;
-    mult1.print_info(out);
-    out << endl;
+    using MultTable = Multiplicity<dim, range, rank>;
+    using DegreeTable = typename MultTable::DegreeTable;
+//    Multiplicity<dim, range, rank> mult1;
+//    mult1.print_info(out);
+//    out << endl;
 
     const int n_knots = 3;
     const int deg     = 2;
-    Multiplicity<dim> mult2(n_knots);
-    mult2.fill_max_regularity(deg);
-    mult2.print_info(out);
+    CartesianProductArray<Size, dim> cp(n_knots);
+    typename MultTable::parent_t data2(cp);
+
+    MultTable mult2(data2, DegreeTable(TensorIndex<dim>(deg)));
+
+//    mult2.print_info(out);
     out << endl;
-
-
+}
+#if 0
     array<vector<int>,dim> mult_vector;
     for (int i = 0; i < dim; ++i)
     {
@@ -86,6 +91,7 @@ void do_test1()
     cumul.print_info(out);
     out << endl;
 }
+#endif
 
 int main()
 {
@@ -95,8 +101,8 @@ int main()
     do_test<3>();
 
 
-    do_test1<1>();
-    do_test1<2>();
-    do_test1<3>();
+//    do_test1<1>();
+//    do_test1<2>();
+//    do_test1<3>();
     return 0;
 }

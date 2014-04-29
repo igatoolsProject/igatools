@@ -74,6 +74,9 @@ public:
                           const DegreeTable &deg,
                           const bool max_reg);
 
+    const DegreeTable &get_degree() const
+    {return deg_;}
+
 private:
     /**
      * Fill the multiplicy for the maximum possible regularity

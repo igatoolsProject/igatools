@@ -195,7 +195,6 @@ public:
     create(std::shared_ptr<GridType> knots,
            const DegreeTable &degree);
 
-
     /**
      * Constructs a BSpline space over the CartesianGrid
      * @p knots with the given multiplicity vector @p mult_vectors
@@ -205,7 +204,6 @@ public:
      */
     explicit BSplineSpace(std::shared_ptr<GridType> knots,
                           const MultiplicityTable &mult_vectors,
-                          const DegreeTable &degree,
                           const bool homogeneous_range = false);
 
     /**
@@ -214,8 +212,7 @@ public:
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<GridType> knots,
-           const MultiplicityTable &mult_vectors,
-           const DegreeTable &degree);
+           const MultiplicityTable &mult_vectors);
 
     /** Destructor */
     ~BSplineSpace() = default;
