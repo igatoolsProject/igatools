@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create (knots, p_r) ;
-    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create (knots, p_c) ;
+    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(knots, p_r) ;
+    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(knots, p_c) ;
 
     const auto n_basis_sp_rows = bspline_space_rows->get_num_basis();
     const auto n_basis_sp_cols = bspline_space_cols->get_num_basis();
@@ -82,7 +82,9 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    Matrix A(dof_tools::get_sparsity_pattern<BSplineSpace< dim_domain, dim_range, rank  >,BSplineSpace< dim_domain, dim_range, rank  >>(bspline_space_rows, bspline_space_cols));
+    Matrix<LinearAlgebraPackage::trilinos> A(
+        dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>,
+        BSplineSpace<dim_domain,dim_range,rank>>(bspline_space_rows, bspline_space_cols));
 
 
     const auto num_rows = n_basis_sp_rows ;

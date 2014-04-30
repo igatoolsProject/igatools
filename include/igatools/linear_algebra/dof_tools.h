@@ -26,11 +26,14 @@
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/basis_functions/function_space.h>
 
+
 #include <memory>
 
 IGA_NAMESPACE_OPEN
 
 class Vector;
+
+template <LinearAlgebraPackage linear_algebra_package>
 class Matrix;
 
 /**
@@ -220,7 +223,7 @@ SparsityPattern get_sparsity_pattern(
  * todo: document more.
  */
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix      &matrix,
+                           Matrix<LinearAlgebraPackage::trilinos> &matrix,
                            Vector      &rhs,
                            Vector      &solution);
 

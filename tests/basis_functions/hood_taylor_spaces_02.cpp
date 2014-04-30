@@ -45,7 +45,7 @@ private:
 
     const Quadrature<dim> elem_quad_;
 
-    shared_ptr<Matrix> Bt_;
+    shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> Bt_;
 };
 
 template <int dim>
@@ -140,11 +140,11 @@ StokesProblem(const int deg, const int n_knots)
                      StaticMultiArray<TensorIndex<dim>,dim,1>(TensorIndex<dim>(deg+1)));
 
     const auto sparsity_pattern =
-    		dof_tools::get_sparsity_pattern<VelSpace, PreSpace>(
-                                      vel_space_->get_reference_space(),
-                                      pre_space_->get_reference_space());
+        dof_tools::get_sparsity_pattern<VelSpace, PreSpace>(
+            vel_space_->get_reference_space(),
+            pre_space_->get_reference_space());
 
-    Bt_ = Matrix::create(sparsity_pattern);
+    Bt_ = Matrix<LinearAlgebraPackage::trilinos>::create(sparsity_pattern);
 }
 
 

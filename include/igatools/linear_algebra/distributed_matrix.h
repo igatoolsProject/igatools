@@ -32,6 +32,13 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+template < LinearAlgebraPackage linear_algebra_package>
+class Matrix;
+
+
+
 /**
  * @todo Missing documentation
  *
@@ -39,13 +46,17 @@ IGA_NAMESPACE_OPEN
  * (Trilinos, PETSc,etc.)
  *
  */
-class Matrix
+template <>
+class Matrix<LinearAlgebraPackage::trilinos>
 {
 public:
     /** Typedef for the matrix type */
     using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
+    using self_t = Matrix<LinearAlgebraPackage::trilinos>;
+
 public:
+
 
     /**@name Constructor and destructor */
     ///@{
@@ -62,13 +73,13 @@ public:
     /**
      * Copy constructor. Not allowed to be used.
      */
-    Matrix(const Matrix &matrix) = delete;
+    Matrix(const self_t &matrix) = delete;
 
 
     /**
      * Move constructor.
      */
-    Matrix(Matrix &&matrix) = default;
+    Matrix(self_t &&matrix) = default;
 
 
 
@@ -86,7 +97,7 @@ public:
      * Create a distributed matrix with the dof dostribution for its rows and column
      * specified by the SparsityPattern @p sparsity_pattern.
      */
-    static std::shared_ptr<Matrix> create(const SparsityPattern &sparsity_pattern);
+    static std::shared_ptr<self_t> create(const SparsityPattern &sparsity_pattern);
     ///@}
 
     /** @name Assignment operators */
@@ -95,12 +106,12 @@ public:
     /**
      * Copy assignment operator. Not allowed to be used.
      */
-    Matrix &operator=(const Matrix &matrix) = delete;
+    Matrix &operator=(const self_t &matrix) = delete;
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
-    Matrix &operator=(Matrix &&matrix) = delete;
+    Matrix &operator=(self_t &&matrix) = delete;
 
     ///@}
 

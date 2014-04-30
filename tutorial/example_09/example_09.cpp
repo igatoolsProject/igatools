@@ -75,7 +75,7 @@ private:
 
     const boundary_id dir_id = 0;
 
-    std::shared_ptr<Matrix> matrix;
+    std::shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> matrix;
     std::shared_ptr<Vector> rhs;
     std::shared_ptr<Vector> solution;
 };
@@ -100,7 +100,7 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
     space     = Space::create(ref_space, PushFw::create(map));
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix::create(get_sparsity_pattern<Space>(space));
+    matrix   = Matrix<LinearAlgebraPackage::trilinos>::create(get_sparsity_pattern<Space>(space));
     rhs      = Vector::create(n_basis);
     solution = Vector::create(n_basis);
 }

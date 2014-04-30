@@ -330,7 +330,7 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
     static const int rank = Space::rank;
 
     const auto sparsity_pattern = dof_tools::get_sparsity_pattern(space) ;
-    Matrix matrix(sparsity_pattern);
+    Matrix<LinearAlgebraPackage::trilinos> matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs() ;
     Vector rhs(space_dofs) ;
@@ -403,8 +403,8 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
 
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
-    using lin_solver_t = LinearSolver<LinearAlgebraPackage::trilinos>;
-    lin_solver_t solver(lin_solver_t::Type::CG,tolerance,max_num_iter) ;
+    using LinSolver = LinearSolver<LinearAlgebraPackage::trilinos>;
+    LinSolver solver(LinSolver::Type::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
     return sol;

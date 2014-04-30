@@ -182,7 +182,7 @@ set_tolerance(const Real tolerance)
 
 void
 LinearSolver<LinearAlgebraPackage::trilinos>::
-solve(Matrix &A, Vector &b, Vector &x)
+solve(Matrix<LinearAlgebraPackage::trilinos> &A, Vector &b, Vector &x)
 {
     // Create a LinearProblem struct with the problem to solve.
     // A, X, B, and M are passed by (smart) pointer, not copied.

@@ -106,7 +106,7 @@ public:
      *
      * @note A and b should be const but Belos expects non const
      */
-    void solve(Matrix &A, Vector &b, Vector &x);
+    void solve(Matrix<LinearAlgebraPackage::trilinos> &A, Vector &b, Vector &x);
 
 
     /** Return the tolerance achieved by the last solve() invocation. */

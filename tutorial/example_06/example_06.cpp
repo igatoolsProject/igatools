@@ -77,7 +77,7 @@ private:
     // [members]
 
     // [la members]
-    shared_ptr<Matrix> matrix;
+    shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> matrix;
     shared_ptr<Vector> rhs;
     shared_ptr<Vector> solution;
 };
@@ -93,7 +93,7 @@ PoissonProblem(const int n_knots, const int deg)
     face_quad(QGauss<dim-1>(deg+1))
 {
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix::create(get_sparsity_pattern<Space>(space));
+    matrix   = Matrix<LinearAlgebraPackage::trilinos>::create(get_sparsity_pattern<Space>(space));
     rhs      = Vector::create(n_basis);
     solution = Vector::create(n_basis);
 }

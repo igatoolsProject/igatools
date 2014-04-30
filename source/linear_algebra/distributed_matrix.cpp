@@ -29,14 +29,16 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 Matrix(const SparsityPattern &sparsity_pattern)
 {
     init(sparsity_pattern) ;
 };
 
 
-void Matrix::init(const SparsityPattern &sparsity_pattern)
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+init(const SparsityPattern &sparsity_pattern)
 {
     //-------------------------------------------------------------------------------------
     row_space_map_.reset(new dofs_map_t(sparsity_pattern.get_num_row_dofs(),
@@ -80,14 +82,16 @@ void Matrix::init(const SparsityPattern &sparsity_pattern)
 //*/
 
 
-shared_ptr<Matrix>
-Matrix::
-create(const SparsityPattern &sparsity_pattern)
+shared_ptr<Matrix<LinearAlgebraPackage::trilinos>>
+                                                Matrix<LinearAlgebraPackage::trilinos>::
+                                                create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<Matrix>(Matrix(sparsity_pattern));
 }
 
-void Matrix::add_entry(const Index row_id, const Index column_id, const Real value)
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+add_entry(const Index row_id, const Index column_id, const Real value)
 {
     Teuchos::Array<Index> columns_id(1,column_id) ;
     Teuchos::Array<Real> values(1,value) ;
@@ -98,7 +102,7 @@ void Matrix::add_entry(const Index row_id, const Index column_id, const Real val
 
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 add_block(
     const vector<Index> &rows_id,
     const vector<Index> &cols_id,
@@ -129,14 +133,14 @@ add_block(
 
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 fill_complete()
 {
     matrix_->fillComplete();
 };
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 resume_fill()
 {
     matrix_->resumeFill();
@@ -144,14 +148,14 @@ resume_fill()
 
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_trilinos_matrix() -> Teuchos::RCP<WrappedMatrixType>
 {
     return matrix_;
 };
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
 {
     return matrix_;
@@ -159,7 +163,7 @@ get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
 
 
 Real
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 operator()(const Index row, const Index col) const
 {
     const auto graph = matrix_->getGraph();
@@ -201,7 +205,9 @@ operator()(const Index row, const Index col) const
 }
 
 
-void Matrix::clear_row(const Index row)
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+clear_row(const Index row)
 {
     const auto graph = matrix_->getGraph();
 
@@ -226,7 +232,9 @@ void Matrix::clear_row(const Index row)
 
 
 
-void Matrix::print(LogStream &out) const
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+print(LogStream &out) const
 {
     using std::endl;
 
@@ -261,14 +269,14 @@ void Matrix::print(LogStream &out) const
 
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_num_rows() const -> Index
 {
     return matrix_->getGlobalNumRows() ;
 }
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_num_columns() const -> Index
 {
     return matrix_->getGlobalNumCols() ;
@@ -276,7 +284,7 @@ get_num_columns() const -> Index
 
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
@@ -285,7 +293,7 @@ multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real b
 }
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 multiply_by_left_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),

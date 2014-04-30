@@ -236,7 +236,7 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
 
 
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix      &matrix,
+                           Matrix<LinearAlgebraPackage::trilinos> &matrix,
                            Vector      &rhs,
                            Vector      &solution)
 {
