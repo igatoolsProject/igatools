@@ -22,9 +22,9 @@
 #include <igatools/linear_algebra/linear_solver.h>
 
 
+#ifdef USE_TRILINOS
 #include <BelosTpetraAdapter.hpp>
 #include <BelosSolverFactory.hpp>
-
 
 
 #ifdef REAL_IS_LONG_DOUBLE
@@ -109,14 +109,19 @@ EnhancedNumberTraits<iga::Real>::defaultPrecision()
 }
 
 };
-#endif
-
-
+#endif // #ifdef REAL_IS_LONG_DOUBLE
 
 using namespace Teuchos ;
 
+#endif // #ifdef USE_TRILINOS
+
+
+
+
 IGA_NAMESPACE_OPEN
 
+
+#ifdef USE_TRILINOS
 
 LinearSolver<LinearAlgebraPackage::trilinos>::
 LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
@@ -220,6 +225,7 @@ get_num_iterations() const
     return solver_->getNumIters() ;
 }
 
+#endif // #ifdef USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

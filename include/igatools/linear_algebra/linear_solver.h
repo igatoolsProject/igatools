@@ -26,8 +26,9 @@
 
 #include <igatools/linear_algebra/distributed_matrix.h>
 
+#ifdef USE_TRILINOS
 #include <BelosSolverManager.hpp>
-
+#endif
 
 IGA_NAMESPACE_OPEN
 
@@ -37,6 +38,7 @@ class LinearSolver;
 
 
 
+#ifdef USE_TRILINOS
 
 /**
  * Simple interface linear solver.
@@ -146,6 +148,7 @@ private:
     Teuchos::RCP<Belos::SolverManager<Real,vector_t,matrix_t> > solver_;
 };
 
+#endif //#ifdef USE_TRILINOS
 
 
 IGA_NAMESPACE_CLOSE

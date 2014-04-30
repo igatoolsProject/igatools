@@ -29,6 +29,11 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+
+
+#ifdef USE_TRILINOS
+
+
 Matrix<LinearAlgebraPackage::trilinos>::
 Matrix(const SparsityPattern &sparsity_pattern)
 {
@@ -301,6 +306,7 @@ multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Rea
                    Teuchos::TRANS,alpha,beta);
 }
 
+#endif //#ifdef USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

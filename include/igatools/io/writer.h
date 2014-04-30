@@ -132,10 +132,10 @@ public:
      * \note The number of coefficients must be equal to the number of basis functions specified
      * by the space, otherwise an exception will be raised.
      */
-    template<class Space>
+    template<class Space, LinearAlgebraPackage linear_algebra_package>
     void add_field(
         std::shared_ptr<Space> space,
-        const Vector<LinearAlgebraPackage::trilinos> &coefs,
+        const Vector<linear_algebra_package> &coefs,
         const std::string &name) ;
 
 

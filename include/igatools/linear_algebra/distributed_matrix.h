@@ -26,9 +26,11 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/distributed_vector.h>
-//#include <igatools/linear_algebra/dof_tools.h>
 
+#ifdef USE_TRILINOS
 #include <Tpetra_CrsMatrix.hpp>
+#endif
+
 
 IGA_NAMESPACE_OPEN
 
@@ -39,11 +41,10 @@ class Matrix;
 
 
 
+#ifdef USE_TRILINOS
 /**
  * @todo Missing documentation
  *
- * @todo (MM, Feb 2014) Re-design in order to be used with different linear algebra package
- * (Trilinos, PETSc,etc.)
  *
  */
 template <>
@@ -260,6 +261,9 @@ private:
     DeclException0(ExcNotQuadratic);
 
 };
+#endif // #ifdef USE_TRILINOS
+
+
 
 IGA_NAMESPACE_CLOSE
 

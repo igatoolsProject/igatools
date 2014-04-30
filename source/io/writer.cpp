@@ -275,12 +275,12 @@ add_point_data(const int n_iga_elements,
 
 
 template< int dim_ref, int dim_phys, class T >
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void
 Writer< dim_ref, dim_phys, T >::
 add_field(
     shared_ptr<Space> space_,
-    const Vector<LinearAlgebraPackage::trilinos> &coefs,
+    const Vector<linear_algebra_package> &coefs,
     const string &name)
 {
     // Compromise to keep type safe but avoid the user for writing

@@ -22,10 +22,14 @@
 #include <igatools/base/exceptions.h>
 
 using std::make_shared;
+
+#ifdef USE_TRILINOS
 using Teuchos::rcp;
+#endif
 
 IGA_NAMESPACE_OPEN
 
+#ifdef USE_TRILINOS
 
 Vector<LinearAlgebraPackage::trilinos>::
 Vector(const Index num_global_dofs)
@@ -194,6 +198,7 @@ print(LogStream &out) const
     out << "-----------------------------" << endl;
 }
 
+#endif // #ifdef USE_TRILINOS
 
 
 IGA_NAMESPACE_CLOSE
