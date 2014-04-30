@@ -235,10 +235,11 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
 
 
 
+template <LinearAlgebraPackage linear_algebra_package>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<LinearAlgebraPackage::trilinos> &matrix,
-                           Vector<LinearAlgebraPackage::trilinos> &rhs,
-                           Vector<LinearAlgebraPackage::trilinos> &solution)
+                           Matrix<linear_algebra_package> &matrix,
+                           Vector<linear_algebra_package> &rhs,
+                           Vector<linear_algebra_package> &solution)
 {
     std::vector<Index> constrained_rows;
 

@@ -223,10 +223,11 @@ SparsityPattern get_sparsity_pattern(
  * to impose dirichlet constraints on the dofs.
  * todo: document more.
  */
+template <LinearAlgebraPackage linear_algebra_package>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<LinearAlgebraPackage::trilinos> &matrix,
-                           Vector<LinearAlgebraPackage::trilinos> &rhs,
-                           Vector<LinearAlgebraPackage::trilinos> &solution);
+                           Matrix<linear_algebra_package> &matrix,
+                           Vector<linear_algebra_package> &rhs,
+                           Vector<linear_algebra_package> &solution);
 
 
 } // end of namespace dof_tools
