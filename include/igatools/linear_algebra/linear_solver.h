@@ -32,6 +32,11 @@
 IGA_NAMESPACE_OPEN
 
 
+template < LinearAlgebraPackage linear_algebra_package>
+class LinearSolver;
+
+
+
 
 /**
  * Simple interface linear solver.
@@ -50,7 +55,8 @@ IGA_NAMESPACE_OPEN
  * @todo (MM, Feb 2014) Re-design in order to be used with different linear algebra package
  * (Trilinos, PETSc,etc.)
  */
-class LinearSolver
+template<>
+class LinearSolver<LinearAlgebraPackage::trilinos>
 {
 public:
     /**

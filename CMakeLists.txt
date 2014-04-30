@@ -61,6 +61,13 @@ endif()
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Choose the package for the linear algebra
+option(USE_TRILINOS "Use the Trilinos packages" ON)
+
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Set the igatools version 
 #
 set(IGATOOLS_MAJOR_VERSION 0)

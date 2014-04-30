@@ -118,7 +118,7 @@ using namespace Teuchos ;
 IGA_NAMESPACE_OPEN
 
 
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
     :
     solver_params_(parameterList())
@@ -153,7 +153,7 @@ LinearSolver(const Type solver_type, const Real tolerance, const int max_num_ite
 
 
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 {
     solver_params_ = solver_params;
@@ -161,7 +161,7 @@ set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 }
 
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 set_max_num_iterations(const int max_num_iter)
 {
     solver_params_->set("Maximum Iterations", max_num_iter);
@@ -172,7 +172,7 @@ set_max_num_iterations(const int max_num_iter)
  * Set the level that residual norms must reach to decide convergence.
  */
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 set_tolerance(const Real tolerance)
 {
     solver_params_->set("Convergence Tolerance", tolerance);
@@ -181,7 +181,7 @@ set_tolerance(const Real tolerance)
 
 
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 solve(Matrix &A, Vector &b, Vector &x)
 {
     // Create a LinearProblem struct with the problem to solve.
@@ -205,14 +205,14 @@ solve(Matrix &A, Vector &b, Vector &x)
 
 
 Real
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 get_achieved_tolerance() const
 {
     return solver_->achievedTol() ;
 }
 
 int
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 get_num_iterations() const
 {
     return solver_->getNumIters() ;

@@ -403,7 +403,8 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
 
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
-    LinearSolver solver(LinearSolver::Type::CG,tolerance,max_num_iter) ;
+    using lin_solver_t = LinearSolver<LinearAlgebraPackage::trilinos>;
+    lin_solver_t solver(lin_solver_t::Type::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
     return sol;

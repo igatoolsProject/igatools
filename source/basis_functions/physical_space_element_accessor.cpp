@@ -599,9 +599,8 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_value(const Index func, const Index qp,const TopologyId<dim> &topology_id) const -> const Value &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.n_points_,
-           ExcIndexRange(qp,0,cache.n_points_));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
 
     return this->get_basis_values(func,topology_id)[qp];
 }
@@ -636,9 +635,8 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_gradient(const Index func, const Index qp,const TopologyId<dim> &topology_id) const -> const Derivative<1> &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.n_points_,
-    ExcIndexRange(qp,0,cache.n_points_));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
+    ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
 
     return this->get_basis_gradients(func,topology_id)[qp];
 }
@@ -673,9 +671,8 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_basis_hessian(const Index func, const Index qp,const TopologyId<dim> &topology_id) const -> const Derivative<2> &
 {
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(qp >= 0 && qp < cache.n_points_,
-    ExcIndexRange(qp,0,cache.n_points_));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
+    ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
 
     return this->get_basis_hessians(func,topology_id)[qp];
 }

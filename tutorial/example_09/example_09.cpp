@@ -176,7 +176,8 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    LinearSolver solver(LinearSolver::Type::CG);
+    using LinSolver = LinearSolver<LinearAlgebraPackage::trilinos>;
+    LinSolver solver(LinSolver::Type::CG);
     solver.solve(*matrix, *rhs, *solution);
 }
 
