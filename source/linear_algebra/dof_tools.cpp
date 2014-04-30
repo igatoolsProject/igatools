@@ -237,8 +237,8 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
 
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Matrix<LinearAlgebraPackage::trilinos> &matrix,
-                           Vector      &rhs,
-                           Vector      &solution)
+                           Vector<LinearAlgebraPackage::trilinos> &rhs,
+                           Vector<LinearAlgebraPackage::trilinos> &solution)
 {
     std::vector<Index> constrained_rows;
 
@@ -271,7 +271,8 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
 
 std::vector<Real>
-get_local_coefs(const Vector &global_coefs, const std::vector<Index> &local_to_global_ids)
+get_local_coefs(const Vector<LinearAlgebraPackage::trilinos> &global_coefs,
+                const std::vector<Index> &local_to_global_ids)
 {
     vector<Real> local_coefs;
     for (const auto &global_id : local_to_global_ids)

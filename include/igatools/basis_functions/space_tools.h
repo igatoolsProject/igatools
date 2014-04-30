@@ -25,7 +25,6 @@
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid.h>
-//#include <igatools/geometry/grid_utils.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_slice.h>
@@ -109,7 +108,7 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
                           std::shared_ptr<const Space> space,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
-                          const Vector &solution_coefs,
+                          const Vector<LinearAlgebraPackage::trilinos> &solution_coefs,
                           std::vector< Real > &element_error);
 
 
@@ -123,7 +122,8 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
  *  the projected function)
  */
 template<class Space>
-Vector projection_l2(
+Vector<LinearAlgebraPackage::trilinos>
+projection_l2(
     const Function<Space::space_dim,Space::range,Space::rank> &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim> &quad

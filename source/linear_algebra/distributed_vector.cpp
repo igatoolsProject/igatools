@@ -27,7 +27,7 @@ using Teuchos::rcp;
 IGA_NAMESPACE_OPEN
 
 
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 Vector(const Index num_global_dofs)
     :
     comm_(Teuchos::createSerialComm<int>()),
@@ -40,7 +40,7 @@ Vector(const Index num_global_dofs)
 
 
 
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 Vector(const std::vector<Index> &dofs_id)
     :
     comm_(Teuchos::createSerialComm<int>()),
@@ -52,24 +52,24 @@ Vector(const std::vector<Index> &dofs_id)
 {}
 
 
-std::shared_ptr<Vector>
-Vector::
-create(const Index size)
+auto
+Vector<LinearAlgebraPackage::trilinos>::
+create(const Index size) -> std::shared_ptr<self_t>
 {
-    return make_shared<Vector>(Vector(size));
+    return make_shared<self_t>(self_t(size));
 }
 
-std::shared_ptr<Vector>
-Vector::
-create(const std::vector<Index> &dof_ids)
+auto
+Vector<LinearAlgebraPackage::trilinos>::
+create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
-    return make_shared<Vector>(Vector(dof_ids));
+    return make_shared<self_t>(self_t(dof_ids));
 }
 
 
 
 void
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 add_entry(const Index i, const Real value)
 {
     Assert(!std::isnan(value),ExcNotANumber());
@@ -80,7 +80,7 @@ add_entry(const Index i, const Real value)
 
 
 const Real &
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 operator()(const Index global_id) const
 {
     Assert(global_id < Index(vector_->getGlobalLength()),
@@ -101,7 +101,7 @@ operator()(const Index global_id) const
 
 
 Real &
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 operator()(const Index global_id)
 {
     Assert(global_id < Index(vector_->getGlobalLength()),
@@ -120,26 +120,30 @@ operator()(const Index global_id)
 }
 
 
-Index Vector::size() const
+Index
+Vector<LinearAlgebraPackage::trilinos>::
+size() const
 {
     return vector_->getGlobalLength() ;
 }
 
 auto
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 get_trilinos_vector() const -> Teuchos::RCP<const WrappedVectorType>
 {
     return vector_ ;
 }
 
 auto
-Vector::
+Vector<LinearAlgebraPackage::trilinos>::
 get_trilinos_vector() -> Teuchos::RCP<WrappedVectorType>
 {
     return vector_ ;
 }
 
-void Vector::add_block(
+void
+Vector<LinearAlgebraPackage::trilinos>::
+add_block(
     const std::vector< Index > &local_to_global,
     const DenseVector &local_vector)
 {
@@ -159,7 +163,9 @@ void Vector::add_block(
 
 
 
-void Vector::print(LogStream &out) const
+void
+Vector<LinearAlgebraPackage::trilinos>::
+print(LogStream &out) const
 {
     using std::endl;
 

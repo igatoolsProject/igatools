@@ -45,7 +45,7 @@ void do_test()
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
     auto space = Space_t::create(grid, degree);
 
-    Vector u(space->get_num_basis());
+    Vector<LinearAlgebraPackage::trilinos> u(space->get_num_basis());
 
     {
         int id = 0 ;

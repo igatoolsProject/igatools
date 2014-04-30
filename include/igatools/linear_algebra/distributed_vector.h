@@ -35,6 +35,11 @@
 
 IGA_NAMESPACE_OPEN
 
+template < LinearAlgebraPackage linear_algebra_package>
+class Vector;
+
+
+
 /**
  * Numerical distributed Vector.
  * It's a wrapper to a Trilinos distributed vector.
@@ -46,9 +51,12 @@ IGA_NAMESPACE_OPEN
  * @todo (MM, Feb 2014) Re-design in order to be used with different linear algebra package
  * (Trilinos, PETSc,etc.)
  */
-class Vector
+template <>
+class Vector<LinearAlgebraPackage::trilinos>
 {
 public:
+    using self_t = Vector<LinearAlgebraPackage::trilinos>;
+
 
     /** @name Constructor and destructor */
     ///@{
@@ -74,10 +82,10 @@ public:
 
     /** Copy constructor. Performs a shallow copy of the object (i.e.)
      * only the smart pointers are copied, not the pointed objects. */
-    Vector(const Vector &v) = default;
+    Vector(const self_t &v) = default;
 
     /** Move constructor. */
-    Vector(Vector &&v) = default;
+    Vector(self_t &&v) = default;
 
 
     /** Destructor */
@@ -90,10 +98,10 @@ public:
     ///@{
 
     /** Copy assignment operator */
-    Vector &operator=(const Vector &v) = default;
+    self_t &operator=(const self_t &v) = default;
 
     /** Move assignment operator */
-    Vector &operator=(Vector &&v) = default;
+    self_t &operator=(self_t &&v) = default;
 
     ///@}
 
@@ -110,7 +118,7 @@ public:
      * for @p dof_ids degrees of freedom.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<Vector> create(const Index size);
+    static std::shared_ptr<self_t> create(const Index size);
 
     /**
      * Create a vector that gets an non consecutive indexing
@@ -118,7 +126,7 @@ public:
      * dof numbering provided from some external library, IRIT as an example.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<Vector> create(const std::vector<Index> &dof_ids);
+    static std::shared_ptr<self_t> create(const std::vector<Index> &dof_ids);
 
 
     /**
@@ -126,7 +134,7 @@ public:
      * specified by the Space @p space.
      */
     template<class Space>
-    static inline std::shared_ptr<Vector> create(const Space &space);
+    static inline std::shared_ptr<self_t> create(const Space &space);
     ///@}
 
 

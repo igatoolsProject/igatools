@@ -135,7 +135,7 @@ public:
     template<class Space>
     void add_field(
         std::shared_ptr<Space> space,
-        const Vector &coefs,
+        const Vector<LinearAlgebraPackage::trilinos> &coefs,
         const std::string &name) ;
 
 

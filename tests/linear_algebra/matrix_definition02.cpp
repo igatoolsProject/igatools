@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    Vector b(bspline_space_cols->get_num_basis());
+    Vector<LinearAlgebraPackage::trilinos> b(bspline_space_cols->get_num_basis());
     for (Index i = 0; i < num_cols ; i++)
         b.add_entry(i,i + 1.0);
 
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     b.print(out);
     out << endl;
 
-    Vector c(bspline_space_rows->get_num_basis());
+    Vector<LinearAlgebraPackage::trilinos> c(bspline_space_rows->get_num_basis());
 
 
     // c = A . b

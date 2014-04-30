@@ -78,8 +78,8 @@ private:
 
     // [la members]
     shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> matrix;
-    shared_ptr<Vector> rhs;
-    shared_ptr<Vector> solution;
+    shared_ptr<Vector<LinearAlgebraPackage::trilinos>> rhs;
+    shared_ptr<Vector<LinearAlgebraPackage::trilinos>> solution;
 };
 // [la members]
 
@@ -94,8 +94,8 @@ PoissonProblem(const int n_knots, const int deg)
 {
     const auto n_basis = space->get_num_basis();
     matrix   = Matrix<LinearAlgebraPackage::trilinos>::create(get_sparsity_pattern<Space>(space));
-    rhs      = Vector::create(n_basis);
-    solution = Vector::create(n_basis);
+    rhs      = Vector<LinearAlgebraPackage::trilinos>::create(n_basis);
+    solution = Vector<LinearAlgebraPackage::trilinos>::create(n_basis);
 }
 
 

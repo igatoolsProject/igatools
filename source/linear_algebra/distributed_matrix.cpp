@@ -82,9 +82,9 @@ init(const SparsityPattern &sparsity_pattern)
 //*/
 
 
-shared_ptr<Matrix<LinearAlgebraPackage::trilinos>>
-                                                Matrix<LinearAlgebraPackage::trilinos>::
-                                                create(const SparsityPattern &sparsity_pattern)
+shared_ptr<Matrix<LinearAlgebraPackage::trilinos> >
+Matrix<LinearAlgebraPackage::trilinos>::
+create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<Matrix>(Matrix(sparsity_pattern));
 }
@@ -285,7 +285,7 @@ get_num_columns() const -> Index
 
 void
 Matrix<LinearAlgebraPackage::trilinos>::
-multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const
+multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
                    *y.get_trilinos_vector(),
@@ -294,7 +294,7 @@ multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real b
 
 void
 Matrix<LinearAlgebraPackage::trilinos>::
-multiply_by_left_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const
+multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
                    *y.get_trilinos_vector(),

@@ -198,12 +198,13 @@ get_face_space(std::shared_ptr<const Space> space,
 
 
 template<class Space>
-Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
-                          std::shared_ptr<const Space> space,
-                          const Quadrature< Space::dim > &quad,
-                          const Norm &norm_flag,
-                          const Vector &solution_coefs,
-                          std::vector< Real > &element_error)
+Real
+integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
+                     std::shared_ptr<const Space> space,
+                     const Quadrature< Space::dim > &quad,
+                     const Norm &norm_flag,
+                     const Vector<LinearAlgebraPackage::trilinos> &solution_coefs,
+                     std::vector< Real > &element_error)
 {
     bool is_L2_norm     = contains(norm_flag, Norm::L2) ;
     bool is_H1_norm     = contains(norm_flag, Norm::H1) ;
@@ -321,9 +322,10 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 
 template<class Space>
-Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
-                     shared_ptr<const Space> space,
-                     const Quadrature<Space::dim> &quad)
+Vector<LinearAlgebraPackage::trilinos>
+projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
+              shared_ptr<const Space> space,
+              const Quadrature<Space::dim> &quad)
 {
     static const int space_dim = Space::space_dim;
     static const int range = Space::range;
@@ -333,8 +335,8 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
     Matrix<LinearAlgebraPackage::trilinos> matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs() ;
-    Vector rhs(space_dofs) ;
-    Vector sol(space_dofs) ;
+    Vector<LinearAlgebraPackage::trilinos> rhs(space_dofs) ;
+    Vector<LinearAlgebraPackage::trilinos> sol(space_dofs) ;
 
 
 
@@ -441,7 +443,7 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
         vector<Index> dof_map;
         auto face_space = get_face_space(space, face_id, dof_map);
 
-        Vector proj_on_face =
+        Vector<LinearAlgebraPackage::trilinos> proj_on_face =
             projection_l2<FaceSpace<Space> >(func, face_space, quad);
 
         const int face_n_dofs = dof_map.size() ;

@@ -31,6 +31,7 @@
 
 IGA_NAMESPACE_OPEN
 
+template <LinearAlgebraPackage linear_algebra_package>
 class Vector;
 
 template <LinearAlgebraPackage linear_algebra_package>
@@ -224,8 +225,8 @@ SparsityPattern get_sparsity_pattern(
  */
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Matrix<LinearAlgebraPackage::trilinos> &matrix,
-                           Vector      &rhs,
-                           Vector      &solution);
+                           Vector<LinearAlgebraPackage::trilinos> &rhs,
+                           Vector<LinearAlgebraPackage::trilinos> &solution);
 
 
 
@@ -235,7 +236,9 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
  *
  */
 std::vector<Real>
-get_local_coefs(const Vector &global_coefs, const std::vector<Index> &local_to_global_ids);
+get_local_coefs(
+    const Vector<LinearAlgebraPackage::trilinos> &global_coefs,
+    const std::vector<Index> &local_to_global_ids);
 
 
 } // end of namespace dof_tools

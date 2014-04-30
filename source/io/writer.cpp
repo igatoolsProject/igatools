@@ -280,7 +280,7 @@ void
 Writer< dim_ref, dim_phys, T >::
 add_field(
     shared_ptr<Space> space_,
-    const Vector &coefs,
+    const Vector<LinearAlgebraPackage::trilinos> &coefs,
     const string &name)
 {
     // Compromise to keep type safe but avoid the user for writing

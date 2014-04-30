@@ -33,7 +33,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-master=('template Vector space_tools::projection_l2('
+master=('template Vector<LinearAlgebraPackage::trilinos> space_tools::projection_l2('
         'const Function<Space::space_dim,Space::range,Space::rank> &f,'
         'std::shared_ptr<const Space> phys_space,'
         'const Quadrature<Space::dim> & );\n')
@@ -67,7 +67,7 @@ master=('template Real space_tools::integrate_difference('
         'std::shared_ptr<const Space> ,'
         'const Quadrature< Space::dim > &,'
         'const Norm &,'
-        'const Vector &,'
+        'const Vector<LinearAlgebraPackage::trilinos> &,'
         'std::vector< Real > &);\n');
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
     f.write(master.replace('Space', sp))

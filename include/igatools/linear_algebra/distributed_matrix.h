@@ -54,6 +54,7 @@ public:
     using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
     using self_t = Matrix<LinearAlgebraPackage::trilinos>;
+    using vector_t = Vector<LinearAlgebraPackage::trilinos>;
 
 public:
 
@@ -193,7 +194,7 @@ public:
      * and y will be overwritten with the result of the multiplication, even if it contains NaN
      * (not-a-number) floating-point entries.
      */
-    void multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const;
+    void multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const;
 
     /**
      * Compute a sparse matrix-MultiVector multiply.
@@ -203,7 +204,7 @@ public:
      * and y will be overwritten with the result of the multiplication, even if it contains NaN
      * (not-a-number) floating-point entries.
      */
-    void multiply_by_left_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const;
+    void multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const;
     ///@}
 
 

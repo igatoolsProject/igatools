@@ -32,11 +32,11 @@
 
 void run_test()
 {
-    Vector v0(0);
+    Vector<LinearAlgebraPackage::trilinos> v0(0);
     v0.print(out);
     out << endl;
 
-    Vector v1(10);
+    Vector<LinearAlgebraPackage::trilinos> v1(10);
     v1.print(out);
     out << endl;
 

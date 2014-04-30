@@ -86,14 +86,14 @@ int main(int argc, char *argv[])
     matrix.print(out);
     out << std::endl;
 
-    Vector b(bspline_space->get_num_basis());
+    Vector<LinearAlgebraPackage::trilinos> b(bspline_space->get_num_basis());
     for (Index i = 0; i<b.size() ; i++)
         b.add_entry(i,i*1.0);
 
     b.print(out);
     out << endl;
 
-    Vector x(bspline_space->get_num_basis());
+    Vector<LinearAlgebraPackage::trilinos> x(bspline_space->get_num_basis());
 
     using LinSolverType = LinearSolver<LinearAlgebraPackage::trilinos>;
     LinSolverType solver(LinSolverType::Type::GMRES);
