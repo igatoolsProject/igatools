@@ -43,9 +43,12 @@ f.write('template SparsityPattern dof_tools::get_sparsity_pattern'
                + '(std::shared_ptr<const BSplineSpace<0,0,1> > ,void *) ;\n')
 
 
+
+f.write('#ifdef USE_TRILINOS\n')
 f.write('template void dof_tools::apply_boundary_values('
                + 'const std::map<Index,Real> &boundary_values,'
                + 'Matrix<LinearAlgebraPackage::trilinos> &matrix,'
                + 'Vector<LinearAlgebraPackage::trilinos> &rhs,'
                + 'Vector<LinearAlgebraPackage::trilinos> &solution) ;\n')
+f.write('#endif\n')
 

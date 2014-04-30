@@ -103,12 +103,12 @@ get_face_space(std::shared_ptr<const Space> space,
  * @note mostly use to compute the convergence rates when the exact solution is known.
  * @todo document a little more
  */
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
                           std::shared_ptr<const Space> space,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
-                          const Vector<LinearAlgebraPackage::trilinos> &solution_coefs,
+                          const Vector<linear_algebra_package> &solution_coefs,
                           std::vector< Real > &element_error);
 
 
