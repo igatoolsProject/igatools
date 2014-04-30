@@ -272,8 +272,8 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
         const auto &map_at_points = elem->get_points() ;
 
-        vector<Real> solution_coefs_elem = dof_tools::get_local_coefs(
-                                               solution_coefs,elem->get_local_to_global());
+        vector<Real> solution_coefs_elem =
+            solution_coefs.get_local_coefs(elem->get_local_to_global());
 
         if (is_L2_norm)
         {

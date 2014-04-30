@@ -270,16 +270,6 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 }
 
 
-std::vector<Real>
-get_local_coefs(const Vector<LinearAlgebraPackage::trilinos> &global_coefs,
-                const std::vector<Index> &local_to_global_ids)
-{
-    vector<Real> local_coefs;
-    for (const auto &global_id : local_to_global_ids)
-        local_coefs.emplace_back(global_coefs(global_id));
-
-    return local_coefs;
-}
 
 };
 

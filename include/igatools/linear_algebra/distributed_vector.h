@@ -139,7 +139,7 @@ public:
 
 
 
-    /** @name Methods for getting and/or modifying the matrix entries */
+    /** @name Methods for getting and/or modifying the vector entries */
     ///@{
 
     /**
@@ -181,6 +181,16 @@ public:
     Index size() const;
 
     ///@}
+
+
+
+    /**
+     * Returns the local coefficients of the distributed vector,
+     * from the vector of local-to-global indices.
+     */
+    std::vector<Real>
+    get_local_coefs(const std::vector<Index> &local_to_global_ids) const;
+
 
     /**
      * Print the content of the vector, mostly for debug purposes.

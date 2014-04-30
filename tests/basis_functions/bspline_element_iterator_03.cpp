@@ -69,8 +69,7 @@ void do_test()
                           quad_scheme1);
     element1->fill_values() ;
 
-    auto u_values = element1->evaluate_field(
-                        dof_tools::get_local_coefs(u,element1->get_local_to_global()));
+    auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
     auto values1    = element1->get_basis_values();
     values1.print_info(out);
@@ -83,8 +82,7 @@ void do_test()
     auto values2    = element1->get_basis_values();
     values2.print_info(out);
 
-    u_values = element1->evaluate_field(
-                   dof_tools::get_local_coefs(u,element1->get_local_to_global()));
+    u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
 
 

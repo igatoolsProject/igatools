@@ -162,6 +162,17 @@ add_block(
 }
 
 
+std::vector<Real>
+Vector<LinearAlgebraPackage::trilinos>::
+get_local_coefs(const std::vector<Index> &local_to_global_ids) const
+{
+    std::vector<Real> local_coefs;
+    for (const auto &global_id : local_to_global_ids)
+        local_coefs.emplace_back((*this)(global_id));
+
+    return local_coefs;
+}
+
 
 void
 Vector<LinearAlgebraPackage::trilinos>::
