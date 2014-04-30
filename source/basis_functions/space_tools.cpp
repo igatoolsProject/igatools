@@ -321,8 +321,8 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 
 
-template<class Space>
-Vector<LinearAlgebraPackage::trilinos>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
+Vector<linear_algebra_package>
 projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
               shared_ptr<const Space> space,
               const Quadrature<Space::dim> &quad)
@@ -332,11 +332,11 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
     static const int rank = Space::rank;
 
     const auto sparsity_pattern = dof_tools::get_sparsity_pattern(space) ;
-    Matrix<LinearAlgebraPackage::trilinos> matrix(sparsity_pattern);
+    Matrix<linear_algebra_package> matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs() ;
-    Vector<LinearAlgebraPackage::trilinos> rhs(space_dofs) ;
-    Vector<LinearAlgebraPackage::trilinos> sol(space_dofs) ;
+    Vector<linear_algebra_package> rhs(space_dofs) ;
+    Vector<linear_algebra_package> sol(space_dofs) ;
 
 
 
@@ -405,7 +405,7 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
 
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
-    using LinSolver = LinearSolver<LinearAlgebraPackage::trilinos>;
+    using LinSolver = LinearSolver<linear_algebra_package>;
     LinSolver solver(LinSolver::Type::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
@@ -416,7 +416,7 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
 
 
 
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void
 project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank> &func,
                         std::shared_ptr<const Space> space,
@@ -443,8 +443,8 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
         vector<Index> dof_map;
         auto face_space = get_face_space(space, face_id, dof_map);
 
-        Vector<LinearAlgebraPackage::trilinos> proj_on_face =
-            projection_l2<FaceSpace<Space> >(func, face_space, quad);
+        Vector<linear_algebra_package> proj_on_face =
+            projection_l2<FaceSpace<Space>,linear_algebra_package>(func, face_space, quad);
 
         const int face_n_dofs = dof_map.size() ;
         for (Index i = 0 ; i< face_n_dofs ; ++i)
@@ -453,7 +453,7 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
 }
 
 
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void
 project_boundary_values(const Func<Space> &func,
                         std::shared_ptr<const Space> space,
@@ -461,9 +461,8 @@ project_boundary_values(const Func<Space> &func,
                         const boundary_id bdry_id,
                         std::map<Index,Real>  &boundary_values)
 {
-    project_boundary_values(func, space, quad,
-    std::set<boundary_id>({{bdry_id}}),
-    boundary_values);
+    project_boundary_values<Space,linear_algebra_package>(
+    func, space, quad,std::set<boundary_id>({{bdry_id}}),boundary_values);
 }
 
 

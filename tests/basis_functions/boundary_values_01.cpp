@@ -94,7 +94,7 @@ void do_test(const int p)
     face_id.insert(1);
 
     std::map<Index,iga::Real> boundary_values;
-    space_tools::project_boundary_values<space_phys_t>(
+    space_tools::project_boundary_values<space_phys_t,LinearAlgebraPackage::trilinos>(
         bc,
         phys_space,
         quad,

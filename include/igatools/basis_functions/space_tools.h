@@ -121,8 +121,8 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
  *  The projection is a numerical vector (the coefficients of
  *  the projected function)
  */
-template<class Space>
-Vector<LinearAlgebraPackage::trilinos>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
+Vector<linear_algebra_package>
 projection_l2(
     const Function<Space::space_dim,Space::range,Space::rank> &func,
     std::shared_ptr<const Space> space,
@@ -140,7 +140,7 @@ projection_l2(
  * for this degree of freedom.
  *
  */
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void project_boundary_values(
     const Func<Space> &func,
     std::shared_ptr<const Space> space,
@@ -151,7 +151,7 @@ void project_boundary_values(
 /**
  * See documentation above.
  */
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void project_boundary_values(
     const Func<Space> &func,
     std::shared_ptr<const Space> space,

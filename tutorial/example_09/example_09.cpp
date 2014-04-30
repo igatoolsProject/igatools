@@ -166,7 +166,7 @@ void PoissonProblem<dim>::assemble()
     // [dirichlet constraint]
     ConstantFunction<dim> g({0.0});
     std::map<Index, Real> values;
-    project_boundary_values<Space>(g, space, face_quad, dir_id, values);
+    project_boundary_values<Space,LinearAlgebraPackage::trilinos>(g,space,face_quad,dir_id,values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
 }

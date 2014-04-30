@@ -47,8 +47,9 @@ void test_proj(const int p)
 
     functions::ConstantFunction<dim> f({iga::Real(3.)});
 
-    auto proj_values = space_tools::projection_l2(f,
-                                                  const_pointer_cast<const space_ref_t>(space),quad);
+    auto proj_values = space_tools::projection_l2
+                       <space_ref_t,LinearAlgebraPackage::trilinos>
+                       (f,const_pointer_cast<const space_ref_t>(space),quad);
 
     proj_values.print(out);
 

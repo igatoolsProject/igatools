@@ -87,7 +87,7 @@ void do_test(const int p)
     face_id.insert(dirichlet);
 
     std::map<Index,iga::Real> boundary_values;
-    space_tools::project_boundary_values<space_ref_t>(
+    space_tools::project_boundary_values<space_ref_t,LinearAlgebraPackage::trilinos>(
         f, const_pointer_cast<const space_ref_t>(space), quad, face_id,
         boundary_values);
 

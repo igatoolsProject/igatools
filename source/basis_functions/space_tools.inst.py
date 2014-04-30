@@ -33,7 +33,9 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-master=('template Vector<LinearAlgebraPackage::trilinos> space_tools::projection_l2('
+f.write('#ifdef USE_TRILINOS\n')
+master=('template Vector<LinearAlgebraPackage::trilinos> '
+        'space_tools::projection_l2<Space,LinearAlgebraPackage::trilinos>('
         'const Function<Space::space_dim,Space::range,Space::rank> &f,'
         'std::shared_ptr<const Space> phys_space,'
         'const Quadrature<Space::dim> & );\n')
@@ -41,7 +43,7 @@ for sp in inst.PhysSpaces + inst.RefSpaces:
     f.write(master.replace('Space', sp))
 
 
-master=('template void space_tools::project_boundary_values('
+master=('template void space_tools::project_boundary_values<Space,LinearAlgebraPackage::trilinos>('
         'const Function<Space::space_dim,Space::range,Space::rank> &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
@@ -51,7 +53,7 @@ for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
     f.write(master.replace('Space', sp))
 
 
-master=('template void space_tools::project_boundary_values('
+master=('template void space_tools::project_boundary_values<Space,LinearAlgebraPackage::trilinos>('
         'const Func<Space> &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
@@ -59,8 +61,6 @@ master=('template void space_tools::project_boundary_values('
         'std::map<Index, Real>  &);\n')
 for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
     f.write(master.replace('Space', sp))
-
-
 
 master=('template Real space_tools::integrate_difference('
         'std::shared_ptr<const Func<Space> > ,'
@@ -71,7 +71,9 @@ master=('template Real space_tools::integrate_difference('
         'std::vector< Real > &);\n');
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
     f.write(master.replace('Space', sp))
-    
+f.write('#endif\n')
+
+
 master=('template std::shared_ptr< FaceSpace<SP> >'
         'space_tools::get_face_space(const std::shared_ptr<const SP> ,'
         'const int ,'
