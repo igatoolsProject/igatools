@@ -29,9 +29,10 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Multiplicity of knot vectors without repetition.
+ * @brief Spline space multiplicity class
  *
-  *
+ * It contains the degree
+ *
  * @author pauletti, 2013-2014
  *
  */
@@ -41,9 +42,6 @@ class Multiplicity :
 {
 private:
     using Grid     = CartesianGrid<dim>;
-
-
-
 
 public:
     using T =  CartesianProductArray<Size, dim>;
@@ -55,8 +53,6 @@ public:
 
 
 public:
-    using parent_t::StaticMultiArray;
-
     /**
      * Maximun regularity multiplicity vectors associated with
      * the grid and degrees
