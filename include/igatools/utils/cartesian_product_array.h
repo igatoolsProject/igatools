@@ -174,6 +174,8 @@ public:
      */
     T &entry(const int i, const int j) ;
 
+    T const &entry(const int i, const int j) const;
+
     /**
      * Copy input @p data to the data relative to the @p i-th direction.
      * @note The CartesianProductArray object will be internally resized (if needed)

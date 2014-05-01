@@ -114,6 +114,20 @@ entry(const int i, const int j)
     return data_[i][j];
 }
 
+
+
+template< class T, int rank>
+T const &
+CartesianProductArray<T,rank>::
+entry(const int i, const int j) const
+{
+    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
+    Assert(j >= 0 && j < this->tensor_size()(i),
+           ExcIndexRange(j,0,this->tensor_size()(i)));
+
+    return data_[i][j];
+}
+
 template< class T, int rank>
 void
 CartesianProductArray<T,rank>::
