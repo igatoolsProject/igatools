@@ -55,102 +55,42 @@ public:
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
 
+    // For the boundary kntos types
+    // end-points interpolatory (open knot)
+    // periodic
+    enum class EndBehaviour {interpolatory, periodic};
+
+    // For the interior multiplicities
+    // maximum regularity
+    // minimul regularity discontinous
+    enum class InteriorReg {maximum, minimun};
+
 public:
-//    explicit SpaceSpec(parent_t &mult, const DegreeTable &deg)
-//    :
-//          (mult),
-//          deg_(deg)
-//        {}
     /**
      * Most general constructor
      */
     explicit SpaceSpec(std::shared_ptr<const Grid> knots,
-    		MultiplicityTable &interior_mult,
+    		std::shared_ptr<const MultiplicityTable> interior_mult,
     		BoundaryKnotsTable &boundary_knots,
-    		const DegreeTable &deg)
-    :
-	  grid_(knots),
-	  interior_mult_(interior_mult),
-	  boundary_knots_(boundary_knots),
-      deg_(deg)
-    {
-    	auto const knots_size = grid_->get_num_knots_dim();
+    		const DegreeTable &deg);
 
-    	for (int iComp = 0; iComp < n_components; ++iComp)
-    	{
-    		for (int j = 0; j < dim; ++j)
-    		{
-    			const auto deg = deg_(iComp)[j];
-    			const auto order = deg + 1;
-    			const auto &knots = grid_->get_knot_coordinates(j);
-    			for(int side=0; side<2; ++side)
-    			{
-    				Assert(boundary_knots_(iComp)[j].get_data_direction(side).size()
-    						== order,
-    						ExcMessage("Wrong number of boundary knots"));
-    			}
-    			const auto a = knots.front();
-    			const auto b = knots.back();
-    			Assert(a >= boundary_knots_(iComp)[j].get_data_direction(0).back(),
-    					ExcMessage("Boundary knots should be smaller or equal a") );
-    			Assert(b <= boundary_knots_(iComp)[j].get_data_direction(1).front(),
-    					ExcMessage("Boundary knots should be greater or equal b") );
-
-    			//Interior multiplicity check
-    			const auto &mult = interior_mult_(iComp).get_data_direction(j);
-    			Assert(mult.size() == knots_size[j]-2,
-    					ExcMessage("Interior multiplicity size does not match the grid") );
-    			auto result = std::minmax_element(mult.begin(), mult.end());
-    			Assert( (*result.first > 0) && (*result.second <= order),
-    					ExcMessage("multiplicity values not between 0 and p+1") );
-    		}
-    	}
-
-    	//--------------------------------------------------------------------------------------
-    	// filling the knots with repetitions
-
-    	for (int iComp = 0; iComp < n_components; ++iComp)
-    	{
-    		for (int j = 0; j < dim; ++j)
-    		{
-    			const auto deg = deg_(iComp)[j];
-    			const auto order = deg + 1;
-    			const auto &knots = grid_->get_knot_coordinates(j);
-    			const auto &mult  = interior_mult_(iComp).get_data_direction(j);
-    			const auto &left_knts = boundary_knots_(iComp)[j].get_data_direction(0);
-    			const auto &right_knts = boundary_knots_(iComp)[j].get_data_direction(1);
-
-    			int size = 2 * order;
-    			for (auto &n: mult)
-    				size += n;
-
-    			std::vector<Real> rep_knots;
-    			rep_knots.reserve(size);
-    			rep_knots.insert(rep_knots.end(), left_knts.begin(), left_knts.end());
-    			auto m_it = mult.begin();
-    			auto k_it = ++knots.begin();
-    			auto end = mult.end();
-    			for (;m_it !=end; ++m_it, ++k_it)
-    			{
-    				for (int iMult = 0; iMult < *m_it; ++iMult)
-    					rep_knots.push_back(*k_it);
-    			}
-    			rep_knots.insert(rep_knots.end(), right_knts.begin(), right_knts.end());
-
-    			rep_knots_(iComp).copy_data_direction(j,rep_knots);
-    		}
-
-
-    	}
-    }
-
-    /**
-     * Maximun regularity multiplicity vectors associated with
-     * the grid and degrees
-     */
 //    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
-//                          const DegreeTable &deg,
-//                          const bool max_reg);
+//    		MultiplicityTable &interior_mult,
+//    		const EndBehaviour boundary_knots,
+//    		const DegreeTable &deg);
+
+    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
+        		const InteriorReg interior_mult,
+        		BoundaryKnotsTable &boundary_knots,
+        		const DegreeTable &deg)
+    :SpaceSpec(knots, fill_max_regularity(knots) ,boundary_knots, deg)
+    {}
+
+//    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
+//            		const InteriorReg interior_mult,
+//            		const EndBehaviour boundary_knots,
+//            		const DegreeTable &deg);
+
 
     const DegreeTable &get_degree() const
     {return deg_;}
@@ -160,8 +100,7 @@ private:
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    void fill_max_regularity();
-//
+    std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const Grid> grid);
 //    /**
 //     * Fill the multiplicy for the maximum possible regularity
 //     *  of the given number of knots
@@ -184,7 +123,7 @@ public:
     	for(const auto &v : rep_knots_)
     		v.print_info(out);
     	out << "Interior multiplicities:\n";
-    	for(const auto &v : interior_mult_)
+    	for(const auto &v : *interior_mult_)
     		v.print_info(out);
     	out << "Boundary knots:\n";
     	for(const auto &v : boundary_knots_)
@@ -198,7 +137,7 @@ public:
 private:
     std::shared_ptr<const Grid> grid_;
     ComponentContainer<CartesianProductArray<Real, dim>> rep_knots_;
-    MultiplicityTable interior_mult_;
+    std::shared_ptr<const MultiplicityTable> interior_mult_;
     MultiplicityTable accumulated_mult_;
     BoundaryKnotsTable boundary_knots_;
     DegreeTable deg_;
