@@ -18,95 +18,111 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the multiplicity class
+ *  Test for the SpaceSpec class
  *  author: pauletti
- *  date: Feb 19, 2013
+ *  date:
  *
  */
 
 #include "../tests.h"
-#include <igatools/basis_functions/multiplicity.h>
+#include <igatools/basis_functions/space_spec.h>
 
 
 //Test the different constructors
 template<int dim, int range = 1, int rank = 1>
-void do_test()
+void test1()
 {
-    using MultTable = Multiplicity<dim, range, rank>;
-    using DegreeTable = typename MultTable::DegreeTable;
+    using SpaceSpec = SpaceSpec<dim, range, rank>;
+
+
     auto grid = CartesianGrid<dim>::create();
+    typename SpaceSpec::BoundaryKnotsTable bdry_knots;
+    typename SpaceSpec::MultiplicityTable int_mult;
+    typename SpaceSpec::DegreeTable deg;
 
-    MultTable mul(data2, DegreeTable(TensorIndex<dim>(deg)));
+    SpaceSpec sp_spec(grid, int_mult, bdry_knots, deg);
 
-//    Multiplicity<dim, range, rank> mult1;
-//    mult1.print_info(out);
-//    out << endl;
-
-    const int n_knots = 3;
-    const int deg     = 2;
-    CartesianProductArray<Size, dim> cp(n_knots);
-    typename MultTable::parent_t data2(cp);
-
-    MultTable mult2(data2, DegreeTable(TensorIndex<dim>(deg)));
-
-//    mult2.print_info(out);
-    out << endl;
-}
-#if 0
-    array<vector<int>,dim> mult_vector;
-    for (int i = 0; i < dim; ++i)
-    {
-        mult_vector[i].resize(n_knots);
-        for (int j = 0; j < n_knots; ++j)
-            mult_vector[i][j] = i+j;
-    }
-    Multiplicity<dim> mult3(mult_vector);
-    mult3.print_info(out);
-    out << endl;
-
-
-    TensorSize<dim> n_knots1;
-    int_array<dim> deg1;
-    for (int i = 0; i < dim; ++i)
-    {
-        n_knots1(i) = i+4;
-        deg1[i] = i;
-    }
-    Multiplicity<dim> mult4(n_knots1);
-    mult4.fill_max_regularity(deg1);
-    mult4.print_info(out);
-    out << endl;
+    sp_spec.print_info(out);
 }
 
 
-
-template<int dim>
-void do_test1()
+void test_1d()
 {
-    const int n_knots = 3;
-    const int deg     = 2;
-    Multiplicity<dim> mult2(n_knots);
-    mult2.fill_max_regularity(deg);
-    mult2.print_info(out);
-    out << endl;
+	const int dim=1;
+	using SpaceSpec = SpaceSpec<dim>;
+	auto grid = CartesianGrid<dim>::create(4);
+	typename SpaceSpec::DegreeTable deg{{2}};
+	CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bn_x} };
+	typename SpaceSpec::MultiplicityTable int_mult{{{1,3}}};
 
-    auto cumul = mult2.accumulate();
-
-    cumul.print_info(out);
-    out << endl;
+	SpaceSpec sp_spec(grid, int_mult, bdry_knots, deg);
+	sp_spec.print_info(out);
 }
-#endif
+
+void test_2d()
+{
+	const int dim=2;
+	using SpaceSpec = SpaceSpec<dim>;
+	auto grid = CartesianGrid<dim>::create({3,5});
+	typename SpaceSpec::DegreeTable deg{{1,3}};
+	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
+	iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
+	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y} };
+	typename SpaceSpec::MultiplicityTable int_mult{ {{1}, {1,3,1}} };
+
+	SpaceSpec sp_spec(grid, int_mult, bdry_knots, deg);
+	sp_spec.print_info(out);
+}
+
+
+void test_3d()
+{
+	const int dim=3;
+	using SpaceSpec = SpaceSpec<dim>;
+	auto grid = CartesianGrid<dim>::create({3,4,5});
+	typename SpaceSpec::DegreeTable deg{{1,3,0}};
+	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
+	iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+	iga::CartesianProductArray<double, 2> bk_z{{-0.6}, {1.6}};
+
+	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y, bk_z} };
+	typename SpaceSpec::MultiplicityTable int_mult{ {{1}, {1,3}, {1,1,1}} };
+
+	SpaceSpec sp_spec(grid, int_mult, bdry_knots, deg);
+	sp_spec.print_info(out);
+}
+
+
+void test_3d_2()
+{
+	const int dim=3;
+	const int range=2;
+	using SpaceSpec = SpaceSpec<dim, range, 1>;
+	auto grid = CartesianGrid<dim>::create({3,4,5});
+	typename SpaceSpec::DegreeTable deg{{1,3,0},{0,3,1}};
+	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
+	iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+	iga::CartesianProductArray<double, 2> bk_z{{-0.6}, {1.6}};
+
+	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y, bk_z}, {bk_z, bk_y, bk_x} };
+	typename SpaceSpec::MultiplicityTable int_mult{ {{1}, {1,3}, {1,1,1}},
+		{{1}, {1,3},{1,2,2} }};
+
+	SpaceSpec sp_spec(grid, int_mult, bdry_knots, deg);
+	sp_spec.print_info(out);
+}
+
 
 int main()
 {
     out.depth_console(10);
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
 
+    test_1d();
+    test_2d();
+    test_3d();
 
-//    do_test1<1>();
-//    do_test1<2>();
-//    do_test1<3>();
+    test_3d_2();
+
     return 0;
 }

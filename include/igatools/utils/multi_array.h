@@ -221,7 +221,6 @@ protected:
 };
 
 
-
 IGA_NAMESPACE_CLOSE
 
 
