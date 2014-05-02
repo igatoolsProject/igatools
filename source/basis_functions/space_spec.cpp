@@ -194,11 +194,11 @@ fill_max_regularity(std::shared_ptr<const Grid> grid) -> std::shared_ptr<Multipl
 	auto  res = std::make_shared<MultiplicityTable>();
 
 	auto const knots_size = grid->get_num_knots_dim();
-
 	for (int iComp = 0; iComp < n_components; ++iComp)
 		for (int j = 0; j < dim; ++j)
+		{
 			(*res)(iComp).copy_data_direction(j, vector<Size>(knots_size[j]-2, 1));
-
+		}
 	return res;
 }
 

@@ -1,0 +1,89 @@
+Knots without repetition:
+CartesianGrid<1>
+	Knot coordinates:
+		Direction[0] = [ 0 0.333333 0.666667 1.00000 ]
+	Num elements: 3
+		Direction[0] = 3
+Repeated knots:
+[ -0.500000 0 0 0.333333 0.666667 1.10000 1.20000 1.30000 ]
+Interior multiplicities:
+[ 1 1 ]
+Boundary knots:
+[ -0.500000 0 0 ]
+[ 1.10000 1.20000 1.30000 ]
+Degrees:
+[2] Knots without repetition:
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
+	Num elements: 8
+		Direction[0] = 2
+		Direction[1] = 4
+Repeated knots:
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+[ -0.600000 0 0 0 0.250000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
+Interior multiplicities:
+[ 1 ]
+[ 1 1 1 ]
+Boundary knots:
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.10000 1.60000 1.60000 ]
+Degrees:
+[1,3] Knots without repetition:
+CartesianGrid<3>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.333333 0.666667 1.00000 ]
+		Direction[2] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
+	Num elements: 24
+		Direction[0] = 2
+		Direction[1] = 3
+		Direction[2] = 4
+Repeated knots:
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+[ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
+Interior multiplicities:
+[ 1 ]
+[ 1 1 ]
+[ 1 1 1 ]
+Boundary knots:
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 ]
+[ 1.60000 ]
+Degrees:
+[1,3,0] Knots without repetition:
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.333333 0.666667 1.00000 ]
+	Num elements: 6
+		Direction[0] = 2
+		Direction[1] = 3
+Repeated knots:
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+[ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]
+Interior multiplicities:
+[ 1 ]
+[ 1 1 ]
+[ 1 ]
+[ 1 1 ]
+Boundary knots:
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+Degrees:
+[1,3] [3,1] 

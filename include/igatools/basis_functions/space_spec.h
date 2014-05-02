@@ -42,7 +42,7 @@ class SpaceSpec
 	template<class T>
 	using ComponentContainer = StaticMultiArray<T,range,rank>;
 
-	const int n_components = ComponentContainer<int>::n_entries;
+	static const int n_components = ComponentContainer<int>::n_entries;
 private:
     using Grid = CartesianGrid<dim>;
 
