@@ -29,6 +29,18 @@ using Teuchos::rcp;
 
 IGA_NAMESPACE_OPEN
 
+namespace
+{
+DeclException3(ExcVectorAccessToNonLocalElement,
+               Index, Index, Index,
+               << "You tried to access element (" << arg1 << ")"
+               << " of a distributed vector, but only rows "
+               << arg2 << " through " << arg2
+               << " are stored locally and can be accessed.");
+
+};
+
+
 #ifdef USE_TRILINOS
 
 Vector<LinearAlgebraPackage::trilinos>::
@@ -200,6 +212,197 @@ print(LogStream &out) const
 
 #endif // #ifdef USE_TRILINOS
 
+
+
+#ifdef USE_PETSC
+
+Vector<LinearAlgebraPackage::petsc>::
+Vector(const Index num_global_dofs)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+
+Vector<LinearAlgebraPackage::petsc>::
+Vector(const std::vector<Index> &dofs_id)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+auto
+Vector<LinearAlgebraPackage::petsc>::
+create(const Index size) -> std::shared_ptr<self_t>
+{
+    return make_shared<self_t>(self_t(size));
+}
+
+auto
+Vector<LinearAlgebraPackage::petsc>::
+create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
+{
+    return make_shared<self_t>(self_t(dof_ids));
+}
+
+
+
+void
+Vector<LinearAlgebraPackage::petsc>::
+add_entry(const Index i, const Real value)
+{
+    Assert(!std::isnan(value),ExcNotANumber());
+    Assert(!std::isinf(value),ExcNumberNotFinite());
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+};
+
+
+const Real &
+Vector<LinearAlgebraPackage::petsc>::
+operator()(const Index global_id) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+        Assert(global_id < Index(vector_->getGlobalLength()),
+               ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
+
+        const auto map = vector_->getMap();
+        const auto local_id = map->getLocalElement(global_id) ;
+
+        Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
+               ExcVectorAccessToNonLocalElement(
+                   global_id,
+                   map->getMinGlobalIndex(),
+                   map->getMaxGlobalIndex()));
+
+        return (vector_->get2dView()[0][local_id]) ;
+        //*/
+    return real_tmp_;
+}
+
+
+
+Real &
+Vector<LinearAlgebraPackage::petsc>::
+operator()(const Index global_id)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    Assert(global_id < Index(vector_->getGlobalLength()),
+           ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
+
+    const auto map = vector_->getMap();
+    const auto local_id = map->getLocalElement(global_id) ;
+
+    Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
+           ExcVectorAccessToNonLocalElement(
+               global_id,
+               map->getMinGlobalIndex(),
+               map->getMaxGlobalIndex()));
+
+    return (vector_->get2dViewNonConst()[0][local_id]) ;
+    //*/
+    return real_tmp_;
+}
+
+
+Index
+Vector<LinearAlgebraPackage::petsc>::
+size() const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+//    return vector_->getGlobalLength() ;
+    return 0;
+}
+
+/*
+auto
+Vector<LinearAlgebraPackage::petsc>::
+get_petsc_vector() const -> Teuchos::RCP<const WrappedVectorType>
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+//    return vector_ ;
+}
+
+auto
+Vector<LinearAlgebraPackage::petsc>::
+get_petsc_vector() -> Teuchos::RCP<WrappedVectorType>
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+//    return vector_ ;
+}
+//*/
+
+void
+Vector<LinearAlgebraPackage::petsc>::
+add_block(
+    const std::vector< Index > &local_to_global,
+    const DenseVector &local_vector)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    Assert(!local_to_global.empty(), ExcEmptyObject()) ;
+    const Index num_dofs = local_to_global.size() ;
+
+    Assert(Index(local_vector.size()) == num_dofs,
+           ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
+
+    for (Index i = 0 ; i < num_dofs ; ++i)
+    {
+        Assert(!std::isnan(local_vector(i)),ExcNotANumber());
+        Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
+//        vector_->sumIntoGlobalValue(local_to_global[i],0,local_vector(i)) ;
+    }
+}
+
+
+std::vector<Real>
+Vector<LinearAlgebraPackage::petsc>::
+get_local_coefs(const std::vector<Index> &local_to_global_ids) const
+{
+    std::vector<Real> local_coefs;
+    for (const auto &global_id : local_to_global_ids)
+        local_coefs.emplace_back((*this)(global_id));
+
+    return local_coefs;
+}
+
+
+void
+Vector<LinearAlgebraPackage::petsc>::
+print(LogStream &out) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+        using std::endl;
+
+        out << "-----------------------------" << endl;
+        // Commented as different petsc version show different information here
+        // out << *vector_ << endl;
+
+        Teuchos::ArrayRCP<const Real> vec = vector_->getData(0) ;
+
+        const Index n_entries = vec.size();
+
+        out << "Global_ID        Value" << std::endl;
+        for (Index i = 0 ; i < n_entries ; ++i)
+            out << i << "        " << vec[i] << endl ;
+        out << "-----------------------------" << endl;
+        //*/
+}
+
+#endif // #ifdef USE_PETSC
 
 IGA_NAMESPACE_CLOSE
 

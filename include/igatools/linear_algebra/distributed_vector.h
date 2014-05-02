@@ -82,7 +82,7 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const std::vector< Index > &dof_ids);
+    Vector(const std::vector<Index> &dof_ids);
 
     /**
      * Copy constructor. Performs a shallow copy of the object (i.e.)
@@ -236,20 +236,21 @@ private:
      */
     Teuchos::RCP<WrappedVectorType> vector_;
 
-
-    DeclException3(ExcVectorAccessToNonLocalElement,
-                   Index, Index, Index,
-                   << "You tried to access element (" << arg1 << ")"
-                   << " of a distributed vector, but only rows "
-                   << arg2 << " through " << arg2
-                   << " are stored locally and can be accessed.");
-
+    /*
+        DeclException3(ExcVectorAccessToNonLocalElement,
+                       Index, Index, Index,
+                       << "You tried to access element (" << arg1 << ")"
+                       << " of a distributed vector, but only rows "
+                       << arg2 << " through " << arg2
+                       << " are stored locally and can be accessed.");
+    //*/
 };
 
 #endif //#ifdef USE_TRILINOS
 
 
 
+#ifdef USE_PETSC
 
 /**
  * Numerical distributed Vector.
@@ -433,17 +434,11 @@ public:
 
 private:
 
-
-    DeclException3(ExcVectorAccessToNonLocalElement,
-                   Index, Index, Index,
-                   << "You tried to access element (" << arg1 << ")"
-                   << " of a distributed vector, but only rows "
-                   << arg2 << " through " << arg2
-                   << " are stored locally and can be accessed.");
-
+    Real real_tmp_;
 };
 
 
+#endif //#ifdef USE_PETSC
 
 
 
