@@ -27,14 +27,17 @@
 #include "../tests.h"
 #include <igatools/basis_functions/space_spec.h>
 
+
 void test_1d()
 {
 	const int dim=1;
 	using SpaceSpec = SpaceSpec<dim>;
+	using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
 
 	auto grid = CartesianGrid<dim>::create(4);
 	typename SpaceSpec::DegreeTable deg{{2}};
-	SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
+	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
+	SpaceSpec sp_spec(grid, int_mult, deg);
 	sp_spec.print_info(out);
 
 	CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
@@ -48,37 +51,45 @@ void test_1d()
 	for(const auto &v : rep_knots)
 		v.print_info(out);
 
-	auto rep_knots1 = sp_spec.compute_knots_with_repetition(SpaceSpec::EndBehaviour::interpolatory);
-	out << "Interpolatory Boundary knots:\n";
-	out << "Repeated knots:\n";
-	for(const auto &v : rep_knots1)
+	out << "Elements start basis index\n";
+	auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+	for(const auto &v : element_index_mark)
 		v.print_info(out);
+
 }
+
 
 
 void test_2d()
 {
 	const int dim=2;
 	using SpaceSpec = SpaceSpec<dim>;
-
+	using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
 	auto grid = CartesianGrid<dim>::create({3,5});
 	typename SpaceSpec::DegreeTable deg{{1,3}};
 
+	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3,1}} }));
 
-	SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
+	SpaceSpec sp_spec(grid, int_mult, deg);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
-	iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
-	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y} };
+		iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
+		typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y} };
 	auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-	out << "Boundary knots:\n";
-	for(const auto &v : bdry_knots)
-		for(const auto &w : v)
-			w.print_info(out);
-	out << "Repeated knots:\n";
-	for(const auto &v : rep_knots)
-		v.print_info(out);
+		out << "Boundary knots:\n";
+		for(const auto &v : bdry_knots)
+			for(const auto &w : v)
+				w.print_info(out);
+		out << "Repeated knots:\n";
+		for(const auto &v : rep_knots)
+			v.print_info(out);
+
+
+		out << "Elements start basis index\n";
+			auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+			for(const auto &v : element_index_mark)
+				v.print_info(out);
 }
 
 
@@ -86,12 +97,16 @@ void test_3d()
 {
 	const int dim=3;
 	using SpaceSpec = SpaceSpec<dim>;
-
+	using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
 	auto grid = CartesianGrid<dim>::create({3,4,5});
 	typename SpaceSpec::DegreeTable deg{{1,3,0}};
-	SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
-	sp_spec.print_info(out);
+	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}, {1,1,1}} }));
 
+
+
+
+	SpaceSpec sp_spec(grid, int_mult, deg);
+	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
 	iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1,1.6, 1.6}};
@@ -99,13 +114,18 @@ void test_3d()
 	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y, bk_z} };
 
 	auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-	out << "Boundary knots:\n";
-	for(const auto &v : bdry_knots)
-		for(const auto &w : v)
-			w.print_info(out);
-	out << "Repeated knots:\n";
-	for(const auto &v : rep_knots)
-		v.print_info(out);
+		out << "Boundary knots:\n";
+		for(const auto &v : bdry_knots)
+			for(const auto &w : v)
+				w.print_info(out);
+		out << "Repeated knots:\n";
+		for(const auto &v : rep_knots)
+			v.print_info(out);
+
+		out << "Elements start basis index\n";
+			auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+			for(const auto &v : element_index_mark)
+				v.print_info(out);
 }
 
 
@@ -114,38 +134,44 @@ void test_2d_2()
 	const int dim=2;
 	const int range=2;
 	using SpaceSpec = SpaceSpec<dim, range, 1>;
-
+	using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
 	auto grid = CartesianGrid<dim>::create({3,4});
 	typename SpaceSpec::DegreeTable deg{{1,3},{3,1}};
-	SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
+
+	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}}));
+
+	SpaceSpec sp_spec(grid, int_mult, deg);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
-	iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+		iga::CartesianProductArray<double, 2> bk_y{{-0.6,0,0,0}, {1,1,1.6, 1.6}};
 
-	typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y}, {bk_y, bk_x} };
-
-
+		typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bk_x, bk_y}, {bk_y, bk_x} };
 	auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-	out << "Boundary knots:\n";
-	for(const auto &v : bdry_knots)
-		for(const auto &w : v)
-			w.print_info(out);
-	out << "Repeated knots:\n";
-	for(const auto &v : rep_knots)
-		v.print_info(out);
+		out << "Boundary knots:\n";
+		for(const auto &v : bdry_knots)
+			for(const auto &w : v)
+				w.print_info(out);
+		out << "Repeated knots:\n";
+		for(const auto &v : rep_knots)
+			v.print_info(out);
+
+		out << "Elements start basis index\n";
+			auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+			for(const auto &v : element_index_mark)
+				v.print_info(out);
 }
 
 
 int main()
 {
-	out.depth_console(10);
+    out.depth_console(10);
 
-	test_1d();
-	test_2d();
-	test_3d();
+    test_1d();
+    test_2d();
+    test_3d();
 
-	test_2d_2();
+    test_2d_2();
 
-	return 0;
+    return 0;
 }

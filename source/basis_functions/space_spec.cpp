@@ -56,8 +56,21 @@ SpaceSpec(std::shared_ptr<const Grid> knots,
 		}
 	}
 #endif
-    }
 
+	for (int iComp = 0; iComp < n_components; ++iComp)
+	{
+		for (int j = 0; j < dim; ++j)
+		{
+			const auto deg = deg_(iComp)[j];
+			const auto order = deg + 1;
+			const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
+			int size = order;
+			for (auto &n: mult)
+				size += n;
+			space_dim_(iComp)[j] = size;
+		}
+	}
+}
 
 
 template<int dim, int range, int rank>
@@ -136,21 +149,6 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 	return result;
 }
 
-template<int dim, int range, int rank>
-void
-SpaceSpec<dim, range, rank>::
-print_info(LogStream &out)
-   {
-   	out << "Knots without repetition:\n";
-   	grid_->print_info(out);
-   	out << "Degrees:\n";
-   	deg_.print_info(out);
-   	out << std::endl;
-   	out << "Interior multiplicities:\n";
-   	for(const auto &v : *interior_mult_)
-   		v.print_info(out);
-   }
-
 //template<int dim, int range, int rank>
 //SpaceSpec<dim, range, rank>::
 //SpaceSpec(std::shared_ptr<const Grid> knots,
@@ -185,49 +183,37 @@ print_info(LogStream &out)
 //}
 //
 
+template<int dim, int range, int rank>
+auto SpaceSpec<dim, range, rank>::
+compute_elements_index_space_mark() const -> MultiplicityTable
+{
+	MultiplicityTable result;
+	for (int iComp = 0; iComp < n_components; ++iComp)
+	{
+		Assert(!periodic_(iComp), ExcMessage("periodic needs to be implemented"))
+		for (int j = 0; j < dim; ++j)
+		{
+			const auto deg = deg_(iComp)[j];
+			const auto order = deg + 1;
+			const auto &mult  = (*interior_mult_)(iComp).get_data_direction(j);
+			std::vector<Size> accum_mult;
+			const int size = mult.size();
+			accum_mult.reserve(size + 1);
+			accum_mult.push_back(0);
+			accum_mult.push_back(order);
+			for (int i = 0; i < size-1; ++i)
+				accum_mult.push_back(accum_mult[i+1] + mult[i]);
+
+			result(iComp).copy_data_direction(j, accum_mult);
+
+			//TODO(pauletti, May 3, 2014): write some post assertions
+		}
+	}
+	return result;
+}
 
 
-//template<int dim, int range, int rank>
-//auto SpaceSpec<dim, range, rank>::
-//compute_index_space_offset() const -> parent_t
-//{
-//    parent_t res;
-//    auto res_it = res.begin();
-//    auto mult_it = this->begin();
-//    auto end = this->end();
-//    for (;mult_it != end; ++mult_it, ++res_it)
-//    {
-//        auto size =mult_it->tensor_size();
-//        T comp(size);
-//        for (int i = 0; i < dim; ++i)
-//        {
-//            comp.entry(i, 0) =  0;
-//            const Size size_i = size(i);
-//            for (int k=1; k < size_i ; ++k)
-//                comp.entry(i, k) = comp.entry(i, k-1) + mult_it->entry(i,k);
-//        }
-//        *(res_it) = comp;
-//    }
-//
-//    return res;
-////    const TensorSize<dim> size = this->tensor_size();
-////    parent_t result(size);
-////
-////    for (int i = 0; i < dim; ++i)
-////    {
-////        result.entry(i, 0) =  this->data_[i][0] - degree[i] - 1;
-////
-////        const Size size_i = size(i);
-////        for (int k=1; k < size_i ; ++k)
-////            result.entry(i, k) = result.entry(i, k-1) + this->data_[i][k];
-////    }
-////
-////    return result;
-//}
-//
-//
-//
-//
+
 template<int dim, int range, int rank>
 auto
 SpaceSpec<dim, range, rank>::
@@ -242,6 +228,52 @@ fill_max_regularity(std::shared_ptr<const Grid> grid) -> std::shared_ptr<Multipl
 			(*res)(iComp).copy_data_direction(j, vector<Size>(knots_size[j]-2, 1));
 		}
 	return res;
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+SpaceSpec<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
+{
+	BoundaryKnotsTable result;
+	for (int iComp = 0; iComp < n_components; ++iComp)
+	{
+		BoundaryKnots bdry_knots;
+		for (int j = 0; j < dim; ++j)
+		{
+			const auto deg = deg_(iComp)[j];
+			const auto order = deg + 1;
+			const Real a = 0;
+			const Real b = 1;
+			std::vector<Real> vec_left(order, a);
+			std::vector<Real> vec_right(order, b);
+			bdry_knots[j].copy_data_direction(0, vec_left);
+			bdry_knots[j].copy_data_direction(1, vec_right);
+		}
+		result(iComp) = bdry_knots;
+	}
+	return result;
+}
+
+
+
+template<int dim, int range, int rank>
+void
+SpaceSpec<dim, range, rank>::
+print_info(LogStream &out)
+{
+	out << "Knots without repetition:\n";
+	grid_->print_info(out);
+	out << "Degrees:\n";
+	deg_.print_info(out);
+	out << std::endl;
+	out << "Interior multiplicities:\n";
+	for(const auto &v : *interior_mult_)
+		v.print_info(out);
+	out << "Dimensionality:\n";
+	space_dim_.print_info(out);
+	out << std::endl;
 }
 
 IGA_NAMESPACE_CLOSE

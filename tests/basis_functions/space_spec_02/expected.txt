@@ -8,11 +8,16 @@ Degrees:
 [2] 
 Interior multiplicities:
 [ 1 1 ]
+Dimensionality:
+[5] 
 Boundary knots:
 [ -0.500000 0 0 ]
 [ 1.10000 1.20000 1.30000 ]
 Repeated knots:
 [ -0.500000 0 0 0.333333 0.666667 1.10000 1.20000 1.30000 ]
+Interpolatory Boundary knots:
+Repeated knots:
+[ 0 0 0 0.333333 0.666667 1.00000 1.00000 1.00000 ]
 Knots without repetition:
 CartesianGrid<2>
 	Knot coordinates:
@@ -26,6 +31,8 @@ Degrees:
 Interior multiplicities:
 [ 1 ]
 [ 1 1 1 ]
+Dimensionality:
+[3,7] 
 Boundary knots:
 [ -0.500000 0 ]
 [ 1.20000 1.30000 ]
@@ -50,6 +57,8 @@ Interior multiplicities:
 [ 1 ]
 [ 1 1 ]
 [ 1 1 1 ]
+Dimensionality:
+[3,6,4] 
 Boundary knots:
 [ -0.500000 0 ]
 [ 1.20000 1.30000 ]
@@ -76,6 +85,8 @@ Interior multiplicities:
 [ 1 1 ]
 [ 1 ]
 [ 1 1 ]
+Dimensionality:
+[3,6] [5,4] 
 Boundary knots:
 [ -0.500000 0 ]
 [ 1.20000 1.30000 ]

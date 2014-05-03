@@ -29,8 +29,16 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Spline space specification class
+ * @brief Tensor product spline space specification class
  *
+ * A polynomial spline space is determined by:
+ * - the interval
+ * - the order
+ * - a partition (interior knots without repetition)
+ * - the interior knots multiplicity (or smoothness a the knots)
+ *
+ * This is independent of the basis function one may wish to use
+ * for the given space.
  *
  * @author pauletti, 2013-2014
  *
@@ -38,7 +46,6 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range = 1, int rank = 1>
 class SpaceSpec
 {
-
 	template<class T>
 	using ComponentContainer = StaticMultiArray<T,range,rank>;
 
@@ -59,8 +66,7 @@ public:
     using PeriodicTable = ComponentContainer<bool>;
 
     // For the boundary kntos types
-    // end-points interpolatory (open knot)
-    // periodic
+    // interpolatory (open knot)
     enum class EndBehaviour {interpolatory};
 
     // For the interior multiplicities
@@ -91,6 +97,7 @@ public:
     	return compute_knots_with_repetition(interpolatory_end_knots());
     }
 
+
     const DegreeTable &get_degree() const
     {return deg_;}
 
@@ -101,30 +108,15 @@ private:
      */
     std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const Grid> grid);
 
-    BoundaryKnotsTable interpolatory_end_knots()
-    {
-    	BoundaryKnotsTable result;
-    	for (int iComp = 0; iComp < n_components; ++iComp)
-    	{
-    		BoundaryKnots bdry_knots;
-    		for (int j = 0; j < dim; ++j)
-    		{
-    			const auto deg = deg_(iComp)[j];
-    			const auto order = deg + 1;
-    			const Real a = 0;
-    			const Real b = 1;
-    			std::vector<Real> vec_left(order, a);
-    			std::vector<Real> vec_right(order, b);
-    			bdry_knots[j].copy_data_direction(0, vec_left);
-    			bdry_knots[j].copy_data_direction(1, vec_right);
-    		}
-    		result(iComp) = bdry_knots;
-    	}
-    	return result;
-    }
+    BoundaryKnotsTable interpolatory_end_knots();
 
 public:
-    MultiplicityTable compute_index_space_offset() const;
+    /**
+     * For each element and for each component there is an initial
+     * tensor index in the Index space from where all non-zero basis
+     * function can be determined.
+     */
+    MultiplicityTable compute_elements_index_space_mark() const;
 
     void print_info(LogStream &out);
 
@@ -132,6 +124,8 @@ private:
     std::shared_ptr<const Grid> grid_;
     std::shared_ptr<const MultiplicityTable> interior_mult_;
     DegreeTable deg_;
+    /** Table with the dimensionality of the space in each component and direction */
+    DegreeTable space_dim_;
     PeriodicTable periodic_;
 };
 
