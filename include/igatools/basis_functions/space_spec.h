@@ -47,6 +47,7 @@ private:
     using Grid = CartesianGrid<dim>;
 
 public:
+    using Knots = CartesianProductArray<Real, dim>;
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
@@ -54,6 +55,7 @@ public:
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
+    using KnotsTable = ComponentContainer<Knots>;
 
     // For the boundary kntos types
     // end-points interpolatory (open knot)
@@ -71,26 +73,17 @@ public:
      */
     explicit SpaceSpec(std::shared_ptr<const Grid> knots,
     		std::shared_ptr<const MultiplicityTable> interior_mult,
-    		BoundaryKnotsTable &boundary_knots,
     		const DegreeTable &deg);
-
-//    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
-//    		MultiplicityTable &interior_mult,
-//    		const EndBehaviour boundary_knots,
-//    		const DegreeTable &deg);
 
     explicit SpaceSpec(std::shared_ptr<const Grid> knots,
         		const InteriorReg interior_mult,
-        		BoundaryKnotsTable &boundary_knots,
         		const DegreeTable &deg)
-    :SpaceSpec(knots, fill_max_regularity(knots) ,boundary_knots, deg)
+    :SpaceSpec(knots, fill_max_regularity(knots), deg)
     {}
 
-//    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
-//            		const InteriorReg interior_mult,
-//            		const EndBehaviour boundary_knots,
-//            		const DegreeTable &deg);
+    KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);
 
+    KnotsTable compute_knots_with_repetition(const EndBehaviour type);
 
     const DegreeTable &get_degree() const
     {return deg_;}
@@ -101,46 +94,38 @@ private:
      *  of the given number of knots
      */
     std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const Grid> grid);
-//    /**
-//     * Fill the multiplicy for the maximum possible regularity
-//     *  of the given number of knots
-//     */
-//    void fill_max_regularity(const int_array<dim> degree);
-//
-//    /**
-//     * Computes the cumulative multiplicity
-//     */
-//    parent_t accumulate() ;
-public:
 
+public:
     MultiplicityTable compute_index_space_offset() const;
 
     void print_info(LogStream &out)
     {
     	out << "Knots without repetition:\n";
     	grid_->print_info(out);
-    	out << "Repeated knots:\n";
-    	for(const auto &v : rep_knots_)
-    		v.print_info(out);
+    	out << "Degrees:\n";
+    	deg_.print_info(out);
+    	out << std::endl;
     	out << "Interior multiplicities:\n";
     	for(const auto &v : *interior_mult_)
     		v.print_info(out);
-    	out << "Boundary knots:\n";
-    	for(const auto &v : boundary_knots_)
-    		for(const auto &w : v)
-    			w.print_info(out);
 
-    	out << "Degrees:\n";
-    	deg_.print_info(out);
+//    	out << "Boundary knots:\n";
+//    	for(const auto &v : boundary_knots_)
+//    		for(const auto &w : v)
+//    			w.print_info(out);
+//    	out << "Repeated knots:\n";
+//    	    	for(const auto &v : rep_knots_)
+//    	    		v.print_info(out);
     }
 
 private:
     std::shared_ptr<const Grid> grid_;
-    ComponentContainer<CartesianProductArray<Real, dim>> rep_knots_;
     std::shared_ptr<const MultiplicityTable> interior_mult_;
-    MultiplicityTable accumulated_mult_;
-    BoundaryKnotsTable boundary_knots_;
     DegreeTable deg_;
+
+    //ComponentContainer<CartesianProductArray<Real, dim>> rep_knots_;
+    //BoundaryKnotsTable boundary_knots_;
+
 };
 
 IGA_NAMESPACE_CLOSE
