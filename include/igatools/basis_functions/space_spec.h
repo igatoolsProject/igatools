@@ -56,11 +56,12 @@ public:
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<Knots>;
+    using PeriodicTable = ComponentContainer<bool>;
 
     // For the boundary kntos types
     // end-points interpolatory (open knot)
     // periodic
-    enum class EndBehaviour {interpolatory, periodic};
+    enum class EndBehaviour {interpolatory};
 
     // For the interior multiplicities
     // maximum regularity
@@ -73,17 +74,22 @@ public:
      */
     explicit SpaceSpec(std::shared_ptr<const Grid> knots,
     		std::shared_ptr<const MultiplicityTable> interior_mult,
-    		const DegreeTable &deg);
+    		const DegreeTable &deg,
+    		const PeriodicTable periodic = PeriodicTable(false));
 
     explicit SpaceSpec(std::shared_ptr<const Grid> knots,
         		const InteriorReg interior_mult,
-        		const DegreeTable &deg)
-    :SpaceSpec(knots, fill_max_regularity(knots), deg)
+        		const DegreeTable &deg,
+        		const PeriodicTable periodic = PeriodicTable(false))
+    :SpaceSpec(knots, fill_max_regularity(knots), deg, periodic)
     {}
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviour type);
+    KnotsTable compute_knots_with_repetition(const EndBehaviour type)
+    {
+    	return compute_knots_with_repetition(interpolatory_end_knots());
+    }
 
     const DegreeTable &get_degree() const
     {return deg_;}
@@ -95,37 +101,38 @@ private:
      */
     std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const Grid> grid);
 
+    BoundaryKnotsTable interpolatory_end_knots()
+    {
+    	BoundaryKnotsTable result;
+    	for (int iComp = 0; iComp < n_components; ++iComp)
+    	{
+    		BoundaryKnots bdry_knots;
+    		for (int j = 0; j < dim; ++j)
+    		{
+    			const auto deg = deg_(iComp)[j];
+    			const auto order = deg + 1;
+    			const Real a = 0;
+    			const Real b = 1;
+    			std::vector<Real> vec_left(order, a);
+    			std::vector<Real> vec_right(order, b);
+    			bdry_knots[j].copy_data_direction(0, vec_left);
+    			bdry_knots[j].copy_data_direction(1, vec_right);
+    		}
+    		result(iComp) = bdry_knots;
+    	}
+    	return result;
+    }
+
 public:
     MultiplicityTable compute_index_space_offset() const;
 
-    void print_info(LogStream &out)
-    {
-    	out << "Knots without repetition:\n";
-    	grid_->print_info(out);
-    	out << "Degrees:\n";
-    	deg_.print_info(out);
-    	out << std::endl;
-    	out << "Interior multiplicities:\n";
-    	for(const auto &v : *interior_mult_)
-    		v.print_info(out);
-
-//    	out << "Boundary knots:\n";
-//    	for(const auto &v : boundary_knots_)
-//    		for(const auto &w : v)
-//    			w.print_info(out);
-//    	out << "Repeated knots:\n";
-//    	    	for(const auto &v : rep_knots_)
-//    	    		v.print_info(out);
-    }
+    void print_info(LogStream &out);
 
 private:
     std::shared_ptr<const Grid> grid_;
     std::shared_ptr<const MultiplicityTable> interior_mult_;
     DegreeTable deg_;
-
-    //ComponentContainer<CartesianProductArray<Real, dim>> rep_knots_;
-    //BoundaryKnotsTable boundary_knots_;
-
+    PeriodicTable periodic_;
 };
 
 IGA_NAMESPACE_CLOSE

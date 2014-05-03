@@ -31,11 +31,13 @@ template<int dim, int range, int rank>
 SpaceSpec<dim, range, rank>::
 SpaceSpec(std::shared_ptr<const Grid> knots,
 		shared_ptr<const MultiplicityTable> interior_mult,
-		const DegreeTable &deg)
+		const DegreeTable &deg,
+		const PeriodicTable periodic)
     :
 	  grid_(knots),
 	  interior_mult_(interior_mult),
-	  deg_(deg)
+	  deg_(deg),
+	  periodic_(periodic)
     {
 #ifndef NDEBUG
 	auto const knots_size = grid_->get_num_knots_dim();
@@ -75,16 +77,24 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 			const auto &left_knts = boundary_knots(iComp)[j].get_data_direction(0);
 			const auto &right_knts = boundary_knots(iComp)[j].get_data_direction(1);
 
-			Assert((left_knts.size() == order) && (right_knts.size() == order),
-					ExcMessage("Wrong number of boundary knots"));
-			Assert(knots.front() >= left_knts.back(),
-					ExcMessage("Boundary knots should be smaller or equal a") );
-			Assert(knots.back() <= right_knts.front(),
-	    					ExcMessage("Boundary knots should be greater or equal b") );
-			Assert(std::is_sorted(left_knts.begin(), left_knts.end()),
-					ExcMessage("Boundary knots is not sorted") );
-			Assert(std::is_sorted(right_knts.begin(), right_knts.end()),
-					ExcMessage("Boundary knots is not sorted") );
+			if (periodic_(iComp))
+			{
+				Assert((left_knts.size()==0) && (right_knts.size()==0),
+						ExcMessage("Periodic component has non zero size"));
+			}
+			else
+			{
+				Assert((left_knts.size() == order) && (right_knts.size() == order),
+						ExcMessage("Wrong number of boundary knots"));
+				Assert(knots.front() >= left_knts.back(),
+						ExcMessage("Boundary knots should be smaller or equal a") );
+				Assert(knots.back() <= right_knts.front(),
+						ExcMessage("Boundary knots should be greater or equal b") );
+				Assert(std::is_sorted(left_knts.begin(), left_knts.end()),
+						ExcMessage("Boundary knots is not sorted") );
+				Assert(std::is_sorted(right_knts.begin(), right_knts.end()),
+						ExcMessage("Boundary knots is not sorted") );
+			}
 		}
 	}
 #endif
@@ -126,8 +136,20 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 	return result;
 }
 
-
-
+template<int dim, int range, int rank>
+void
+SpaceSpec<dim, range, rank>::
+print_info(LogStream &out)
+   {
+   	out << "Knots without repetition:\n";
+   	grid_->print_info(out);
+   	out << "Degrees:\n";
+   	deg_.print_info(out);
+   	out << std::endl;
+   	out << "Interior multiplicities:\n";
+   	for(const auto &v : *interior_mult_)
+   		v.print_info(out);
+   }
 
 //template<int dim, int range, int rank>
 //SpaceSpec<dim, range, rank>::
