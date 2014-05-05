@@ -110,7 +110,7 @@ endif()
 
 if (USE_PETSC)
   message("Using the linear algebra packages provided by PETSc")
-#  find_petsc()
+  find_petsc()
 endif()
 #-------------------------------------------------------------------------------
 
@@ -162,6 +162,7 @@ add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 
   ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
+  ${Petsc_LIBRARIES} 
   ${Boost_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 

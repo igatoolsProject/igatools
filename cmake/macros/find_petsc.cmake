@@ -21,23 +21,17 @@
 # Find PETSc library (Optional)
 #-------------------------------------------------------------------------------
 macro(find_petsc)
-  set(Petsc_PREFIX $ENV{PETSC_PREFIX} CACHE LOCATION 
-    "Location where PETSc library is installed")
-  find_package(PETSc 11 REQUIRED PATHS ${Petsc_PREFIX})
-#  message(STATUS "Found PETSc:  version ${Petsc_VERSION}.")
-#  if (NOT (Petsc_VERSION VERSION_GREATER 11.6))
-#    message(FATAL_ERROR "Petsc 11.6.1 or greater is required.")
-#  endif()
+  set(Petsc_INCLUDE_DIRS $ENV{PETSC_INCLUDE_DIRS} CACHE LOCATION 
+    "Location where PETSc headers are installed")
 
-  # add the location of PETSc headers to the include directories
-  include_directories( ${Petsc_INCLUDE_DIRS} )
+  set(Petsc_LIBRARY_DIRS $ENV{PETSC_LIBRARY_DIRS} CACHE LOCATION 
+    "Location where PETSc libraries are installed")
+   
+  include_directories(${Petsc_INCLUDE_DIRS})
+  link_directories(${Petsc_LIBRARY_DIRS})
 
-  # Check that individual required PETSc packages are available
-#  set(tri_required_packages Tpetra Belos)
-#  foreach(package ${tri_required_packages})
-#    list(FIND Petsc_PACKAGE_LIST  ${package} package_index)
-#    if (package_index EQUAL -1)
-#      message(FATAL_ERROR "Petsc ${package} package not found.")
-#    endif()
-#  endforeach(package)
+  set(Petsc_LIBRARIES libpetsc.so)
+    
+  message("-- Found PETSc library in ${Petsc_LIBRARY_DIRS}")
+    
 endmacro(find_petsc)
