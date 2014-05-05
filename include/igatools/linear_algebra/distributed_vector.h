@@ -32,6 +32,10 @@
 #include <Tpetra_Vector.hpp>
 #endif
 
+#ifdef USE_PETSC
+#include <petscsnes.h>
+#endif
+
 
 #include <memory>
 
@@ -433,6 +437,8 @@ public:
     ///@}
 
 private:
+    MPI_Comm comm_;
+    Vec vector_;
 
     Real real_tmp_;
 };

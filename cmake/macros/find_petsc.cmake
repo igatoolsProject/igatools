@@ -27,7 +27,7 @@ macro(find_petsc)
   set(Petsc_LIBRARY_DIRS $ENV{PETSC_LIBRARY_DIRS} CACHE LOCATION 
     "Location where PETSc libraries are installed")
    
-  include_directories(${Petsc_INCLUDE_DIRS})
+  include_directories(${Petsc_INCLUDE_DIRS} ${Petsc_INCLUDE_DIRS}/$ENV{PETSC_ARCH}/include)
   link_directories(${Petsc_LIBRARY_DIRS})
 
   set(Petsc_LIBRARIES libpetsc.so)

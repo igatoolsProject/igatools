@@ -27,8 +27,9 @@
 
 cmake_minimum_required(VERSION 2.8.10)
 
-project(iga CXX)
+project(iga CXX C)
 
+list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Include all local macros
 file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake)
