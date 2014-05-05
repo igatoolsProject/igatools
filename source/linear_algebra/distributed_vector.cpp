@@ -225,7 +225,7 @@ Vector(const Index num_global_dofs)
 {
     PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
-    ierr = VecCreate (comm_, &vector_); // CHKERRQ(ierr);
+    ierr = VecCreate(comm_, &vector_);  // CHKERRQ(ierr);
     ierr = VecSetSizes(vector_, PETSC_DECIDE, num_global_dofs); // CHKERRQ(ierr);
 }
 
