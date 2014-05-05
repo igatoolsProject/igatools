@@ -324,9 +324,10 @@ Vector<LinearAlgebraPackage::petsc>::
 size() const
 {
     PetscErrorCode ierr;
-	PetscInt vector_size;
-	ierr = VecGetSize(vector_, &vector_size); CHKERRQ(ierr);
-	return vector_size;
+    PetscInt vector_size;
+    ierr = VecGetSize(vector_, &vector_size);
+    CHKERRQ(ierr);
+    return vector_size;
 }
 
 /*
@@ -388,7 +389,9 @@ get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 
     VecGetValues(vector_, num_local_dofs, local_to_global_ids.data(), values);
 
-    local_coefs.assign (*values, *values+num_local_dofs);
+    local_coefs.assign(values, values+num_local_dofs);
+
+
     return local_coefs;
 
 }

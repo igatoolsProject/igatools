@@ -40,20 +40,25 @@ void run_test()
     using VectorType = Vector<linear_algebra_package>;
 
 
-
-    VectorType v0(0);
-    v0.print(out);
-    out << endl;
-
+    /*
+        VectorType v0(0);
+        v0.print(out);
+        out << endl;
+    //*/
     VectorType v1(10);
+
+    vector<Index> loc_dofs= {0,1,2};
+    out << "local_coefs=" <<  v1.get_local_coefs(loc_dofs) << endl;
     v1.print(out);
     out << endl;
 
 }
 
-int main()
+int main(int argc,char **argv)
 {
     out.depth_console(10);
+
+    PetscInitialize(&argc,&argv,(char *)0,"test");
 
     run_test();
 
