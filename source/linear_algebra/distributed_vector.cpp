@@ -27,6 +27,10 @@ using std::make_shared;
 using Teuchos::rcp;
 #endif
 
+#ifdef USE_PETSC
+#include <petscsnes.h>
+#endif
+
 IGA_NAMESPACE_OPEN
 
 namespace
@@ -219,8 +223,10 @@ print(LogStream &out) const
 Vector<LinearAlgebraPackage::petsc>::
 Vector(const Index num_global_dofs)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
+    ierr = VecCreate (comm_, &vector_); // CHKERRQ(ierr);
+    ierr = VecSetSizes(vector_, PETSC_DECIDE, num_global_dofs); // CHKERRQ(ierr);
 }
 
 

@@ -23,7 +23,7 @@
 macro(find_petsc)
   set(Petsc_PREFIX $ENV{PETSC_PREFIX} CACHE LOCATION 
     "Location where PETSc library is installed")
-  find_package(PETSc 11 REQUIRED PATHS ${Petsc_PREFIX})
+  find_package(PETSc 11 REQUIRED PATHS ${PETSC_PREFIX})
 #  message(STATUS "Found PETSc:  version ${Petsc_VERSION}.")
 #  if (NOT (Petsc_VERSION VERSION_GREATER 11.6))
 #    message(FATAL_ERROR "Petsc 11.6.1 or greater is required.")

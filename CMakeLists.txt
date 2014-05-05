@@ -27,8 +27,9 @@
 
 cmake_minimum_required(VERSION 2.8.10)
 
-project(iga CXX)
+project(iga CXX C)
 
+list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Include all local macros
 file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake)
@@ -110,6 +111,9 @@ endif()
 
 if (USE_PETSC)
   message("Using the linear algebra packages provided by PETSc")
+  find_package (PETSc REQUIRED)
+  include_directories(${PETSC_INCLUDES})
+  add_definitions (${PETSC_DEFINITIONS})
 #  find_petsc()
 endif()
 #-------------------------------------------------------------------------------
@@ -162,7 +166,8 @@ add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 
   ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
-  ${Boost_LIBRARIES})
+  ${Boost_LIBRARIES}
+  ${PETSC_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 
 
