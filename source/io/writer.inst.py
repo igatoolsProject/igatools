@@ -54,12 +54,28 @@ for row in inst.user_table:
             space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
             PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
             space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinearAlgebraPackage::trilinos> &, const string & )' % (space_phys,space_phys)
+            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_phys,space_phys)
             strings.append('template void %s::%s ;\n' % (writer,func))
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinearAlgebraPackage::trilinos> &, const string & )' % (space_ref,space_ref)
+            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_ref,space_ref)
             strings.append('template void %s::%s ;\n' % (writer,func))
+
+
+############################################
+# TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
 for s in unique(strings): # Removing repeated entries.
-    f.write(s)
+    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
 f.write('#endif\n')
+# TRILINOS specific instantiations -- end
+############################################
+
+
+############################################
+# PETSC specific instantiations -- begin
+f.write('#ifdef USE_TRILINOS\n')
+for s in unique(strings): # Removing repeated entries.
+    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+f.write('#endif\n')
+# PETSC specific instantiations -- end
+############################################
 
