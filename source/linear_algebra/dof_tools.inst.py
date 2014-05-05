@@ -43,7 +43,8 @@ f.write('template SparsityPattern dof_tools::get_sparsity_pattern'
                + '(std::shared_ptr<const BSplineSpace<0,0,1> > ,void *) ;\n')
 
 
-
+############################################
+# TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
 f.write('template void dof_tools::apply_boundary_values('
                + 'const std::map<Index,Real> &boundary_values,'
@@ -51,4 +52,18 @@ f.write('template void dof_tools::apply_boundary_values('
                + 'Vector<LinearAlgebraPackage::trilinos> &rhs,'
                + 'Vector<LinearAlgebraPackage::trilinos> &solution) ;\n')
 f.write('#endif\n')
+# TRILINOS' specific instantiations -- end
+############################################
 
+
+############################################
+# PETSc specific instantiations -- begin
+f.write('#ifdef USE_PETSC\n')
+f.write('template void dof_tools::apply_boundary_values('
+               + 'const std::map<Index,Real> &boundary_values,'
+               + 'Matrix<LinearAlgebraPackage::petsc> &matrix,'
+               + 'Vector<LinearAlgebraPackage::petsc> &rhs,'
+               + 'Vector<LinearAlgebraPackage::petsc> &solution) ;\n')
+f.write('#endif\n')
+# PETSc specific instantiations -- end
+############################################
