@@ -49,7 +49,7 @@ class LinearSolver;
  * features is recommended to interact directly with
  * the solvers offer by Trilinos.
  *
- * We provide this wrapper for simple problem for begginers
+ * We provide this wrapper for simple problem for beginners
  * that have enough headaches learning igatools and postpone
  * learning Trilinos.
  *
@@ -150,6 +150,109 @@ private:
 
 #endif //#ifdef USE_TRILINOS
 
+
+
+
+
+#ifdef USE_PETSC
+
+/**
+ * Simple interface linear solver.
+ *
+ * It's basically a wrapper to a PETSC::????????.
+ *
+ * For an experiece user as well as for using advanced solver
+ * features is recommended to interact directly with
+ * the solvers offer by PETSc.
+ *
+ * We provide this wrapper for simple problem for beginners
+ * that have enough headaches learning igatools and postpone
+ * learning PETSc.
+ *
+ *
+ * @todo (MM, May 2014) fill the missing implementations complete the documentation
+ */
+template<>
+class LinearSolver<LinearAlgebraPackage::petsc>
+{
+public:
+    /**
+     * Enum class used to specify the linear solver
+     *
+     * @note See the PETSC::??????? package for their meaning.
+     */
+    enum class Type : int
+    {
+        GMRES = 0,
+        CG = 1,
+
+        /** This entry tells how many elements we have in the current enum class */
+        ENUM_SIZE = 2
+    };
+
+    /**
+     * Constructor with a solver type.
+     *
+     * @param[in] solver_type Type of solver. Valid values are:
+     * - SolverType::GMRES (default type)
+     * - SolverType::CG
+     *
+     * @param[in] tolerance The level that residual norms must reach to decide convergence.
+     * Default is 1.0e-9.
+     *
+     * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
+     */
+    LinearSolver(const Type solver_type = Type::GMRES,
+                 const Real tolerance = 1.0e-9,
+                 const int max_num_iter = 1000);
+
+    /**
+     * Solves the linear system.
+     */
+    void solve(Matrix<LinearAlgebraPackage::petsc> &A,
+               Vector<LinearAlgebraPackage::petsc> &b,
+               Vector<LinearAlgebraPackage::petsc> &x);
+
+
+    /** Return the tolerance achieved by the last solve() invocation. */
+    Real get_achieved_tolerance() const ;
+
+    /** Return Get the iteration count for the most recent call to solve(). */
+    int get_num_iterations() const ;
+
+    /**
+     * Set the maximum number of iterations allowed.
+     */
+    void set_max_num_iterations(const int max_iter) ;
+
+    /**
+     * Set the level that residual norms must reach to decide convergence.
+     */
+    void set_tolerance(const Real tolerance) ;
+
+
+    /**
+     * Set the parameters for the solver.
+     * @note The user is responsible to pass the parameter properly for the solver that is used.
+     */
+    /*
+    void set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params);
+    //*/
+
+private:
+//    using matrix_t = Tpetra::Operator<Real,Index,Index> ;
+//    using vector_t = Tpetra::MultiVector<Real,Index,Index> ;
+
+
+    std::array<std::string,get_enum_size<Type>()> solver_type_enum_to_alias_ ;
+
+    /** LinearSolver parameters */
+//    Teuchos::RCP<Teuchos::ParameterList> solver_params_;
+
+//    Teuchos::RCP<Belos::SolverManager<Real,vector_t,matrix_t> > solver_;
+};
+
+#endif //#ifdef USE_PETSC
 
 IGA_NAMESPACE_CLOSE
 

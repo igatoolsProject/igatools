@@ -227,6 +227,140 @@ get_num_iterations() const
 
 #endif // #ifdef USE_TRILINOS
 
+
+
+
+
+
+
+#ifdef USE_PETSC
+
+LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    // map the SolverType enum elements to the name aliases used by PETSC::????????
+    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "GMRES";
+    solver_type_enum_to_alias_[to_integral(Type::CG)] = "CG";
+
+
+    const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
+
+    Belos::SolverFactory<Real,vector_t,matrix_t> factory;
+    //
+    // "Num Blocks" = Maximum number of Krylov vectors to store.  This
+    // is also the restart length.  "Block" here refers to the ability
+    // of this particular solver (and many other Belos solvers) to solve
+    // multiple linear systems at a time, even though we are only solving
+    // one linear system in this example.
+    solver_params_->set("Num Blocks", 40);
+    solver_params_->set("Maximum Iterations", max_num_iter);
+    solver_params_->set("Convergence Tolerance", tolerance);
+
+    // Create the solver.
+    solver_ = factory.create(solver_name,solver_params_);
+       //*/
+}
+
+/*
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
+{
+    solver_params_ = solver_params;
+    solver_->setParameters(solver_params_);
+}
+//*/
+
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+set_max_num_iterations(const int max_num_iter)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    solver_params_->set("Maximum Iterations", max_num_iter);
+    solver_->setParameters(solver_params_);
+    //*/
+}
+
+/**
+ * Set the level that residual norms must reach to decide convergence.
+ */
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+set_tolerance(const Real tolerance)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    solver_params_->set("Convergence Tolerance", tolerance);
+    solver_->setParameters(solver_params_);
+    //*/
+}
+
+
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+solve(Matrix<LinearAlgebraPackage::petsc> &A,
+      Vector<LinearAlgebraPackage::petsc> &b,
+      Vector<LinearAlgebraPackage::petsc> &x)
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    // Create a LinearProblem struct with the problem to solve.
+    // A, X, B, and M are passed by (smart) pointer, not copied.
+    auto linear_system = rcp(
+                             new Belos::LinearProblem<Real,vector_t,matrix_t>(
+                                 A.get_petsc_matrix(),
+                                 x.get_petsc_vector(),
+                                 b.get_petsc_vector()));
+    linear_system->setProblem() ;
+
+    solver_->setProblem(linear_system);
+
+    // Attempt to solve the linear system.  result == Belos::Converged
+    // means that it was solved to the desired tolerance.  This call
+    // overwrites X with the computed approximate solution.
+    Belos::ReturnType result = solver_->solve();
+
+    AssertThrow(result == Belos::ReturnType::Converged, ExcMessage("No convergence."));
+    //*/
+}
+
+
+Real
+LinearSolver<LinearAlgebraPackage::petsc>::
+get_achieved_tolerance() const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    return solver_->achievedTol() ;
+    //*/
+
+    return 0.0;
+}
+
+int
+LinearSolver<LinearAlgebraPackage::petsc>::
+get_num_iterations() const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+    return solver_->getNumIters() ;
+    //*/
+
+    return 0;
+}
+
+#endif // #ifdef USE_PETSC
+
+
 IGA_NAMESPACE_CLOSE
 
 
