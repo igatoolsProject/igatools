@@ -383,16 +383,15 @@ std::vector<Real>
 Vector<LinearAlgebraPackage::petsc>::
 get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    PetscErrorCode ierr;
-
     std::vector<Real> local_coefs;
+    PetscScalar values;
     int num_local_dofs = local_to_global_ids.size();
 
-    ierr = VecGetValues(vector_, num_local_dofs, local_to_global_ids, local_coefs); CHKERRQ(ierr);
+    VecGetValues(vector_, num_local_dofs, local_to_global_ids.data(), &values);
 
+    local_coefs.assign (values, values+num_local_dofs);
     return local_coefs;
+
 }
 
 
