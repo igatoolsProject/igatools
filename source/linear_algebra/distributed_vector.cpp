@@ -17,7 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/base/exceptions.h>
 
@@ -384,12 +383,12 @@ Vector<LinearAlgebraPackage::petsc>::
 get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 {
     std::vector<Real> local_coefs;
-    PetscScalar values;
+    PetscScalar *values;
     int num_local_dofs = local_to_global_ids.size();
 
-    VecGetValues(vector_, num_local_dofs, local_to_global_ids.data(), &values);
+    VecGetValues(vector_, num_local_dofs, local_to_global_ids.data(), values);
 
-    local_coefs.assign (values, values+num_local_dofs);
+    local_coefs.assign (*values, *values+num_local_dofs);
     return local_coefs;
 
 }
