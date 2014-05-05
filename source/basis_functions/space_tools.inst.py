@@ -41,47 +41,53 @@ for sp in inst.UserPhysSpaces + inst.UserFilteredRefSpaces:
     f.write(master.replace('SP', sp))   
 
 
-############################################
-# TRILINOS specific instantiations -- begin
-f.write('#ifdef USE_TRILINOS\n')
-master=('template Vector<LinearAlgebraPackage::trilinos> '
-        'space_tools::projection_l2<Space,LinearAlgebraPackage::trilinos>('
+projection_l2=('template Vector<LinAlgebra> '
+        'space_tools::projection_l2<Space,LinAlgebra>('
         'const Function<Space::space_dim,Space::range,Space::rank> &f,'
         'std::shared_ptr<const Space> phys_space,'
         'const Quadrature<Space::dim> & );\n')
-for sp in inst.PhysSpaces + inst.RefSpaces:
-    f.write(master.replace('Space', sp))
 
-
-master=('template void space_tools::project_boundary_values<Space,LinearAlgebraPackage::trilinos>('
+project_boundary_values_1=('template void space_tools::project_boundary_values<Space,LinAlgebra>('
         'const Function<Space::space_dim,Space::range,Space::rank> &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
         'const std::set<boundary_id>  &,'
         'std::map<Index, Real>  &);\n')
-for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(master.replace('Space', sp))
 
-
-master=('template void space_tools::project_boundary_values<Space,LinearAlgebraPackage::trilinos>('
+project_boundary_values_2=('template void space_tools::project_boundary_values<Space,LinAlgebra>('
         'const Func<Space> &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
         'const boundary_id ,'
         'std::map<Index, Real>  &);\n')
-for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(master.replace('Space', sp))
 
-
-master=('template Real space_tools::integrate_difference('
+integrate_difference=('template Real space_tools::integrate_difference('
         'std::shared_ptr<const Func<Space> > ,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature< Space::dim > &,'
         'const Norm &,'
-        'const Vector<LinearAlgebraPackage::trilinos> &,'
+        'const Vector<LinAlgebra> &,'
         'std::vector< Real > &);\n');
+
+
+
+############################################
+# TRILINOS specific instantiations -- begin
+f.write('#ifdef USE_TRILINOS\n')
+for sp in inst.PhysSpaces + inst.RefSpaces:
+    f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+
+
+for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+    f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+
+
+for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+    f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+
+
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-    f.write(master.replace('Space', sp))
+    f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
 f.write('#endif\n')
 # TRILINOS specific instantiations -- end
 ############################################
@@ -91,44 +97,20 @@ f.write('#endif\n')
 ############################################
 # PETSC specific instantiations -- begin
 f.write('#ifdef USE_PETSC\n')
-master=('template Vector<LinearAlgebraPackage::petsc> '
-        'space_tools::projection_l2<Space,LinearAlgebraPackage::petsc>('
-        'const Function<Space::space_dim,Space::range,Space::rank> &f,'
-        'std::shared_ptr<const Space> phys_space,'
-        'const Quadrature<Space::dim> & );\n')
 for sp in inst.PhysSpaces + inst.RefSpaces:
-    f.write(master.replace('Space', sp))
+    f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 
 
-master=('template void space_tools::project_boundary_values<Space,LinearAlgebraPackage::petsc>('
-        'const Function<Space::space_dim,Space::range,Space::rank> &,'
-        'std::shared_ptr<const Space> ,'
-        'const Quadrature<Space::dim-1> &,'
-        'const std::set<boundary_id>  &,'
-        'std::map<Index, Real>  &);\n')
 for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(master.replace('Space', sp))
+    f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 
 
-master=('template void space_tools::project_boundary_values<Space,LinearAlgebraPackage::petsc>('
-        'const Func<Space> &,'
-        'std::shared_ptr<const Space> ,'
-        'const Quadrature<Space::dim-1> &,'
-        'const boundary_id ,'
-        'std::map<Index, Real>  &);\n')
 for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(master.replace('Space', sp))
+    f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 
 
-master=('template Real space_tools::integrate_difference('
-        'std::shared_ptr<const Func<Space> > ,'
-        'std::shared_ptr<const Space> ,'
-        'const Quadrature< Space::dim > &,'
-        'const Norm &,'
-        'const Vector<LinearAlgebraPackage::petsc> &,'
-        'std::vector< Real > &);\n');
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-    f.write(master.replace('Space', sp))
+    f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 f.write('#endif\n')
 # PETSC specific instantiations -- end
 ############################################
