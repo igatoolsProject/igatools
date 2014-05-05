@@ -74,14 +74,14 @@ public:
     Vector() = delete;
 
     /**
-     * Construct a vector that gets an consecutive indexing
+     * Construct a vector that gets a consecutive indexing
      * for @p dof_ids degrees of freedom.
      * All entries are set to zero.
      */
     Vector(const Index size);
 
     /**
-     * Construct a vector that gets an non consecutive indexing
+     * Construct a vector that gets a non consecutive indexing
      * for @p dof_ids degrees of freedom. An example could be the usage of
      * dof numbering provided from some external library.
      * All entries are set to zero.

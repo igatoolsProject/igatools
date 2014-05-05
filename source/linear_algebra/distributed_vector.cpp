@@ -227,6 +227,8 @@ Vector(const Index num_global_dofs)
     comm_ = PETSC_COMM_WORLD;
     ierr = VecCreate(comm_, &vector_);  // CHKERRQ(ierr);
     ierr = VecSetSizes(vector_, PETSC_DECIDE, num_global_dofs); // CHKERRQ(ierr);
+    ierr = VecSetFromOptions(vector_); // CHKERRQ(ierr);
+    ierr = VecZeroEntries(vector_); // CHKERRQ(ierr);
 }
 
 
@@ -262,8 +264,8 @@ add_entry(const Index i, const Real value)
     Assert(!std::isnan(value),ExcNotANumber());
     Assert(!std::isinf(value),ExcNumberNotFinite());
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    PetscErrorCode ierr;
+    ierr = VecSetValue(vector_, i, value, ADD_VALUES); // CHKERRQ(ierr);
 };
 
 
@@ -322,10 +324,10 @@ Index
 Vector<LinearAlgebraPackage::petsc>::
 size() const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-//    return vector_->getGlobalLength() ;
-    return 0;
+    PetscErrorCode ierr;
+	PetscInt vector_size;
+	ierr = VecGetSize(vector_, &vector_size); CHKERRQ(ierr);
+	return vector_size;
 }
 
 /*
@@ -354,8 +356,7 @@ add_block(
     const std::vector< Index > &local_to_global,
     const DenseVector &local_vector)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    PetscErrorCode ierr;
 
     Assert(!local_to_global.empty(), ExcEmptyObject()) ;
     const Index num_dofs = local_to_global.size() ;
@@ -363,12 +364,18 @@ add_block(
     Assert(Index(local_vector.size()) == num_dofs,
            ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
 
+    PetscScalar value;
+
     for (Index i = 0 ; i < num_dofs ; ++i)
     {
         Assert(!std::isnan(local_vector(i)),ExcNotANumber());
         Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
-//        vector_->sumIntoGlobalValue(local_to_global[i],0,local_vector(i)) ;
+        value = local_vector(i);
+        ierr = VecSetValue(vector_, local_to_global[i], value, ADD_VALUES); //CHKERRQ(ierr);
     }
+
+
+
 }
 
 
@@ -376,9 +383,14 @@ std::vector<Real>
 Vector<LinearAlgebraPackage::petsc>::
 get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 {
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    PetscErrorCode ierr;
+
     std::vector<Real> local_coefs;
-    for (const auto &global_id : local_to_global_ids)
-        local_coefs.emplace_back((*this)(global_id));
+    int num_local_dofs = local_to_global_ids.size();
+
+    ierr = VecGetValues(vector_, num_local_dofs, local_to_global_ids, local_coefs); CHKERRQ(ierr);
 
     return local_coefs;
 }
