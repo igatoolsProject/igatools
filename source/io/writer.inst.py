@@ -72,7 +72,7 @@ f.write('#endif\n')
 
 ############################################
 # PETSC specific instantiations -- begin
-f.write('#ifdef USE_TRILINOS\n')
+f.write('#ifdef USE_PETSC\n')
 for s in unique(strings): # Removing repeated entries.
     f.write(s.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 f.write('#endif\n')
