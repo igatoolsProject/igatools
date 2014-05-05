@@ -388,7 +388,6 @@ get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 
     VecGetValues(vector_, num_local_dofs, local_to_global_ids.data(), values);
 
-    cout << values << endl;
     local_coefs.assign (*values, *values+num_local_dofs);
     return local_coefs;
 
