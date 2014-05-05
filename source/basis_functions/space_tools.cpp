@@ -302,7 +302,7 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
                 element_err_semiH1_pow2 += grad_err.norm_square() * elem->get_w_measures()[iPt] ;
             }
-            element_error[ elem_id ] = element_err_semiH1_pow2 ;
+            element_error[ elem_id ] += element_err_semiH1_pow2 ;
         }
 
         element_error[ elem_id ] = sqrt(element_error[ elem_id ]) ;
