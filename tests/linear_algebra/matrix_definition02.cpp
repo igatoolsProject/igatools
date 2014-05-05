@@ -81,8 +81,16 @@ int main(int argc, char *argv[])
     out << "Number of dofs of columns space: " << n_basis_sp_cols << std::endl;
     out << endl;
 
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+    using VectorType = Vector<linear_algebra_package>;
+    using MatrixType = Matrix<linear_algebra_package>;
 
-    Matrix<LinearAlgebraPackage::trilinos> A(
+
+    MatrixType A(
         dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>,
         BSplineSpace<dim_domain,dim_range,rank>>(bspline_space_rows, bspline_space_cols));
 
@@ -104,7 +112,7 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    Vector<LinearAlgebraPackage::trilinos> b(bspline_space_cols->get_num_basis());
+    VectorType b(bspline_space_cols->get_num_basis());
     for (Index i = 0; i < num_cols ; i++)
         b.add_entry(i,i + 1.0);
 
@@ -112,7 +120,7 @@ int main(int argc, char *argv[])
     b.print(out);
     out << endl;
 
-    Vector<LinearAlgebraPackage::trilinos> c(bspline_space_rows->get_num_basis());
+    VectorType c(bspline_space_rows->get_num_basis());
 
 
     // c = A . b

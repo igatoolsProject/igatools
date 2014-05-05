@@ -33,7 +33,7 @@
 #endif
 
 #ifdef USE_PETSC
-#include <petscsnes.h>
+#include <petscvec.h>
 #endif
 
 

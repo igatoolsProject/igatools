@@ -45,7 +45,13 @@ private:
 
     const Quadrature<dim> elem_quad_;
 
-    shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> Bt_;
+#if defined(USE_TRILINOS)
+    const static auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const static auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+
+    shared_ptr<Matrix<linear_algebra_package>> Bt_;
 };
 
 template <int dim>
@@ -144,7 +150,13 @@ StokesProblem(const int deg, const int n_knots)
             vel_space_->get_reference_space(),
             pre_space_->get_reference_space());
 
-    Bt_ = Matrix<LinearAlgebraPackage::trilinos>::create(sparsity_pattern);
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+
+    Bt_ = Matrix<linear_algebra_package>::create(sparsity_pattern);
 }
 
 

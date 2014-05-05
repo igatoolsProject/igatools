@@ -47,8 +47,14 @@ void test_proj(const int p)
 
     functions::ConstantFunction<dim> f({iga::Real(3.)});
 
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+
     auto proj_values = space_tools::projection_l2
-                       <space_ref_t,LinearAlgebraPackage::trilinos>
+                       <space_ref_t,linear_algebra_package>
                        (f,const_pointer_cast<const space_ref_t>(space),quad);
 
     proj_values.print(out);
