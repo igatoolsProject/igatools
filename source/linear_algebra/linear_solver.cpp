@@ -239,6 +239,7 @@ LinearSolver<LinearAlgebraPackage::petsc>::
 LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
 {
 	PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
 
     // map the SolverType enum elements to the name aliases used by PETSc
     solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "gmres";
