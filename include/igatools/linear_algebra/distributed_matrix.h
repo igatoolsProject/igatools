@@ -31,6 +31,10 @@
 #include <Tpetra_CrsMatrix.hpp>
 #endif
 
+#ifdef USE_PETSC
+#include <petscmat.h>
+#endif
+
 
 IGA_NAMESPACE_OPEN
 
@@ -460,6 +464,9 @@ public:
     ///@}
 
 private:
+    MPI_Comm comm_;
+    Mat matrix_;
+
     /** The real Trilinos::TPetra matrix */
 //    Teuchos::RCP<WrappedMatrixType> matrix_ ;
 

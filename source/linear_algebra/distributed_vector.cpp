@@ -27,7 +27,7 @@ using Teuchos::rcp;
 #endif
 
 #ifdef USE_PETSC
-#include <petscsnes.h>
+#include <petscvec.h>
 #endif
 
 IGA_NAMESPACE_OPEN
@@ -364,16 +364,15 @@ add_block(
     Assert(Index(local_vector.size()) == num_dofs,
            ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
 
-    PetscScalar value;
+    PetscScalar values[num_dofs];
 
     for (Index i = 0 ; i < num_dofs ; ++i)
     {
         Assert(!std::isnan(local_vector(i)),ExcNotANumber());
         Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
-        value = local_vector(i);
-        ierr = VecSetValue(vector_, local_to_global[i], value, ADD_VALUES); //CHKERRQ(ierr);
+        values[i] = local_vector(i);
     }
-
+    ierr = VecSetValues(vector_, num_dofs, local_to_global.data(), values, ADD_VALUES); //CHKERRQ(ierr);
 
 
 }
@@ -384,13 +383,13 @@ Vector<LinearAlgebraPackage::petsc>::
 get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 {
     std::vector<Real> local_coefs;
-    PetscScalar *values;
+
     int num_local_dofs = local_to_global_ids.size();
+    PetscScalar values[num_local_dofs];
 
     VecGetValues(vector_, num_local_dofs, local_to_global_ids.data(), values);
 
     local_coefs.assign(values, values+num_local_dofs);
-
 
     return local_coefs;
 

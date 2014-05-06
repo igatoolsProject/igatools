@@ -345,33 +345,20 @@ void
 Matrix<LinearAlgebraPackage::petsc>::
 init(const SparsityPattern &sparsity_pattern)
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
+    PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
 
-/*
-    //-------------------------------------------------------------------------------------
-    row_space_map_.reset(new dofs_map_t(sparsity_pattern.get_num_row_dofs(),
-                                        sparsity_pattern.get_row_dofs(),
-                                        0,comm_));
+    int n_rows = sparsity_pattern.get_num_row_dofs();
+    int n_cols = sparsity_pattern.get_num_col_dofs();
+    int nnz[n_rows];
 
-    column_space_map_.reset(new dofs_map_t(sparsity_pattern.get_num_col_dofs(),
-                                           sparsity_pattern.get_col_dofs(),
-                                           0,comm_));
-    Teuchos::ArrayRCP<const long unsigned int> n_overlapping_funcs_per_row =
-        Teuchos::arcp(
-            Teuchos::RCP< const vector<long unsigned int> >(
-                new vector<long unsigned int>(sparsity_pattern.get_num_overlapping_funcs()))) ;
+    ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
+    ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_,
+                       PETSC_DECIDE,PETSC_DECIDE,
+                       n_rows, n_cols);
+    ierr = MatSetType(matrix_,MATAIJ);
 
-    matrix_.reset(new WrappedMatrixType(row_space_map_,
-                                        column_space_map_,
-                                        n_overlapping_funcs_per_row));
-    //-------------------------------------------------------------------------------------
-
-
-
-    //-------------------------------------------------------------------------------------
-    // allocating the entries (to 0.0) in the matrix corresponding to the sparsitiy pattern
-    // (this step is required by the Tpetra matrix, in order to use sumIntoGlobalValues()
     auto row     = sparsity_pattern.cbegin() ;
     auto row_end = sparsity_pattern.cend() ;
     for (; row != row_end ; ++row)
@@ -380,15 +367,14 @@ init(const SparsityPattern &sparsity_pattern)
 
         const vector<Index> columns_id(row->second.begin(),row->second.end()) ;
 
-        const auto num_columns = columns_id.size() ;
-
-        vector<Real> values(num_columns, 0.0) ;
-
-        matrix_->insertGlobalValues(row_id, columns_id, values) ;
+        nnz[row_id] = columns_id.size();
     }
-    //-------------------------------------------------------------------------------------
 
-//*/
+    ierr = MatSeqAIJSetPreallocation(matrix_, 0, nnz);
+    ierr = MatSetOption(matrix_, MAT_KEEP_NONZERO_PATTERN, PETSC_TRUE); //CHKERRQ(ierr);
+    ierr = MatSetUp(matrix_); //CHKERRQ(ierr);
+    ierr = MatZeroEntries(matrix_); //CHKERRQ(ierr);
+
 };
 
 
@@ -403,14 +389,9 @@ void
 Matrix<LinearAlgebraPackage::petsc>::
 add_entry(const Index row_id, const Index column_id, const Real value)
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    Teuchos::Array<Index> columns_id(1,column_id) ;
-    Teuchos::Array<Real> values(1,value) ;
-
-    matrix_->sumIntoGlobalValues(row_id,columns_id,values);
-   //*/
+    PetscErrorCode ierr;
+    ierr = MatSetValues(matrix_,1,&row_id,1,&column_id,
+    		&value,ADD_VALUES); //CHKERRQ(ierr);
 };
 
 
@@ -433,19 +414,19 @@ add_block(
     Assert(n_cols == Index(local_matrix.size2()),
            ExcDimensionMismatch(n_cols,Index(local_matrix.size2()))) ;
 
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    vector<Real> row_values(n_cols) ;
+    vector<Real> row_values ;
     for (int i = 0 ; i < n_rows ; ++i)
     {
         const auto row_local_matrix = local_matrix.get_row(i) ;
         for (int j = 0 ; j < n_cols ; ++j)
-            row_values[j] = row_local_matrix(j) ;
-
-        matrix_->sumIntoGlobalValues(rows_id[i],cols_id,row_values);
+//            row_values.push_back(row_local_matrix(j)) ;
+        	row_values.push_back(local_matrix(i,j)) ;
     }
-//*/
+
+    PetscErrorCode ierr;
+    ierr = MatSetValues(matrix_,n_rows,rows_id.data(),n_cols,cols_id.data(),
+    		row_values.data(),ADD_VALUES); //CHKERRQ(ierr);
+
 };
 
 
@@ -454,11 +435,9 @@ void
 Matrix<LinearAlgebraPackage::petsc>::
 fill_complete()
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    matrix_->fillComplete();
-    //*/
+    PetscErrorCode ierr;
+    ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY); // CHKERRQ(ierr);
+    ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY); // CHKERRQ(ierr);
 };
 
 void
