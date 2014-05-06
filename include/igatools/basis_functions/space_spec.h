@@ -24,8 +24,10 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
+#include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <algorithm>
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -37,7 +39,7 @@ IGA_NAMESPACE_OPEN
  * - a partition (interior knots without repetition)
  * - the interior knots multiplicity (or smoothness a the knots)
  *
- * This is independent of the basis function one may wish to use
+ * This is independent of the basis functions one may wish to use
  * for the given space.
  *
  * @author pauletti, 2013-2014
@@ -50,6 +52,8 @@ class SpaceSpec
 	using ComponentContainer = StaticMultiArray<T,range,rank>;
 
 	static const int n_components = ComponentContainer<int>::n_entries;
+
+
 private:
     using Grid = CartesianGrid<dim>;
 
@@ -65,6 +69,14 @@ public:
     using KnotsTable = ComponentContainer<Knots>;
     using PeriodicTable = ComponentContainer<bool>;
 
+    using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
+
+    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
+    {
+    public:
+        ComponentContainer<Size> comp_dimension;
+        Size total_dimension;
+    };
     // For the boundary kntos types
     // interpolatory (open knot)
     enum class EndBehaviour {interpolatory};
@@ -101,6 +113,17 @@ public:
     const DegreeTable &get_degree() const
     {return deg_;}
 
+    /**
+     * For each element and for each component there is an initial
+     * tensor index in the Index space from where all non-zero basis
+     * function can be determined.
+     */
+    MultiplicityTable compute_elements_index_space_mark() const;
+
+
+
+    void print_info(LogStream &out);
+
 private:
     /**
      * Fill the multiplicy for the maximum possible regularity
@@ -110,22 +133,14 @@ private:
 
     BoundaryKnotsTable interpolatory_end_knots();
 
-public:
-    /**
-     * For each element and for each component there is an initial
-     * tensor index in the Index space from where all non-zero basis
-     * function can be determined.
-     */
-    MultiplicityTable compute_elements_index_space_mark() const;
 
-    void print_info(LogStream &out);
 
 private:
     std::shared_ptr<const Grid> grid_;
     std::shared_ptr<const MultiplicityTable> interior_mult_;
     DegreeTable deg_;
     /** Table with the dimensionality of the space in each component and direction */
-    DegreeTable space_dim_;
+    SpaceDimensionTable space_dim_;
     PeriodicTable periodic_;
 };
 

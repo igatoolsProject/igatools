@@ -56,20 +56,23 @@ SpaceSpec(std::shared_ptr<const Grid> knots,
 		}
 	}
 #endif
-
+	int total_dim = 0;
 	for (int iComp = 0; iComp < n_components; ++iComp)
 	{
-		for (int j = 0; j < dim; ++j)
+	    for (int j = 0; j < dim; ++j)
 		{
 			const auto deg = deg_(iComp)[j];
-			const auto order = deg + 1;
 			const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
-			int size = order;
+
+			int size = periodic_(iComp)? 0 : deg + 1;
 			for (auto &n: mult)
 				size += n;
 			space_dim_(iComp)[j] = size;
 		}
+		space_dim_.comp_dimension(iComp) = space_dim_(iComp).flat_size();
+		total_dim += space_dim_.comp_dimension(iComp);
 	}
+	space_dim_.total_dimension = total_dim;
 }
 
 
@@ -271,8 +274,14 @@ print_info(LogStream &out)
 	out << "Interior multiplicities:\n";
 	for(const auto &v : *interior_mult_)
 		v.print_info(out);
-	out << "Dimensionality:\n";
+	out << "Dimensionality Table:\n";
 	space_dim_.print_info(out);
+	out << std::endl;
+	out << "Component Dimension:\n";
+	space_dim_.comp_dimension.print_info(out);
+	out << std::endl;
+	out << "Total Dimension: ";
+	out << space_dim_.total_dimension << std::endl;
 	out << std::endl;
 }
 

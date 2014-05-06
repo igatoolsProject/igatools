@@ -8,8 +8,12 @@ Degrees:
 [2] 
 Interior multiplicities:
 [ 1 1 ]
-Dimensionality:
-[5] 
+Dimensionality Table:
+[ 5 ] 
+Component Dimension:
+5 
+Total Dimension: 5
+
 Boundary knots:
 [ -0.500000 0 0 ]
 [ 1.10000 1.20000 1.30000 ]
@@ -31,8 +35,12 @@ Degrees:
 Interior multiplicities:
 [ 1 ]
 [ 1 1 1 ]
-Dimensionality:
-[3,7] 
+Dimensionality Table:
+[ 3 7 ] 
+Component Dimension:
+21 
+Total Dimension: 21
+
 Boundary knots:
 [ -0.500000 0 ]
 [ 1.20000 1.30000 ]
@@ -57,8 +65,12 @@ Interior multiplicities:
 [ 1 ]
 [ 1 1 ]
 [ 1 1 1 ]
-Dimensionality:
-[3,6,4] 
+Dimensionality Table:
+[ 3 6 4 ] 
+Component Dimension:
+72 
+Total Dimension: 72
+
 Boundary knots:
 [ -0.500000 0 ]
 [ 1.20000 1.30000 ]
@@ -85,8 +97,12 @@ Interior multiplicities:
 [ 1 1 ]
 [ 1 ]
 [ 1 1 ]
-Dimensionality:
-[3,6] [5,4] 
+Dimensionality Table:
+[ 3 6 ] [ 5 4 ] 
+Component Dimension:
+18 20 
+Total Dimension: 38
+
 Boundary knots:
 [ -0.500000 0 ]
 [ 1.20000 1.30000 ]
