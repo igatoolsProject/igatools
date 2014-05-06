@@ -272,6 +272,16 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
 
 
+template <>
+void apply_boundary_values(const std::map<Index,Real> &boundary_values,
+                           Matrix<LinearAlgebraPackage::petsc> &matrix,
+                           Vector<LinearAlgebraPackage::petsc> &rhs,
+                           Vector<LinearAlgebraPackage::petsc> &solution)
+{
+	Assert(false,ExcNotImplemented());
+}
+
+
 };
 
 IGA_NAMESPACE_CLOSE
