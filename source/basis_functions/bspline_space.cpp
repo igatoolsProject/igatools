@@ -28,7 +28,6 @@ using std::array;
 using std::vector;
 using std::shared_ptr;
 using std::make_shared;
-using boost::numeric::ublas::matrix;
 
 IGA_NAMESPACE_OPEN
 
@@ -44,7 +43,7 @@ void evaluate_extraction_operators(
     const int degree,
     const vector< Real >    &knot_values,
     const vector< Index > &knot_multiplicities,
-    vector< matrix<Real> >  &extraction_operators_data
+    vector< DenseMatrix >  &extraction_operators_data
 )
 {
     Assert(! knot_values.empty(), ExcEmptyObject()) ;
@@ -61,7 +60,7 @@ void evaluate_extraction_operators(
     // the Bernstein's basis
     extraction_operators_data.resize(num_elements) ;
 
-    matrix<Real> identity_matrix = boost::numeric::ublas::identity_matrix<Real>(num_funcs);
+    DenseMatrix identity_matrix = boost::numeric::ublas::identity_matrix<Real>(num_funcs);
 
     fill(extraction_operators_data.begin(), extraction_operators_data.end(), identity_matrix) ;
     //----------------------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ void evaluate_extraction_operators(
     int iElement = 0 ;
     while (iElement < num_elements)
     {
-        matrix<Real> &M = extraction_operators_data[ iElement ] ;
+        DenseMatrix &M = extraction_operators_data[ iElement ] ;
 
 
         // Count multiplicity of the knot at location b
@@ -165,7 +164,7 @@ void evaluate_extraction_operators(
 
                 if (idx_b < m)
                 {
-                    matrix<Real> &M_next = extraction_operators_data[ iElement+1 ] ;
+                    DenseMatrix &M_next = extraction_operators_data[ iElement+1 ] ;
 
                     for (k = 0 ; k <= j ; k++)
                     {
@@ -518,7 +517,7 @@ fill_bezier_extraction_operator()
             //TODO: this vector should be size here and not resize inside
             //evaluate_extraction_operator
             //TODO: we also have to think of a better way not to copy
-            vector<bz_operator_t> bezier_op;
+            vector<DenseMatrix> bezier_op;
 
             evaluate_extraction_operators(
                 degree, knot_values, knot_multiplicities, bezier_op) ;
@@ -539,7 +538,7 @@ fill_bezier_extraction_operator()
             const auto &B_data_vec = bezier_op_data_(component_data_id).get_data_direction(jDim);
             const int num_operators = B_data_vec.size() ;
 
-            vector< const bz_operator_t * > B_vec(num_operators);
+            vector< const DenseMatrix * > B_vec(num_operators);
 
             //TODO: avoid this temporary copy
             for (int iOp = 0 ; iOp < num_operators ; iOp++)
@@ -622,11 +621,14 @@ fill_element_dofs_from_index_space()
 
         for (int comp = 0; comp < n_components; ++comp)
         {
-            auto comp_offset = element_comp_offset(comp);
-            auto origin      = index_space_offset_(comp).
-                               cartesian_product(element.get_tensor_index());
-            auto increment   = element_n_basis(comp);
-            auto comp_dofs = index_space_(comp).get_flat_view(origin, increment);
+            const auto comp_offset = element_comp_offset(comp);
+            const auto origin      = index_space_offset_(comp).
+                                     cartesian_product(element.get_tensor_index());
+            const auto increment = element_n_basis(comp);
+            const auto end = origin + increment;
+
+            const auto comp_dofs = index_space_(comp).get_sub_array(origin,end).get_data();
+
             copy(comp_dofs.begin(),comp_dofs.end(),
                  element_global_dofs_[elem_index].begin()+comp_offset);
 

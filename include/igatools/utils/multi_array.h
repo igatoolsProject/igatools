@@ -95,7 +95,7 @@ public:
     /**
      * Construct an empty multiarray.
      */
-    MultiArray() = default;
+    MultiArray();
 
     /**
      * Construct a square multiarray of zeros with @p dim entries in each array dimension.

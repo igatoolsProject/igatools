@@ -45,10 +45,6 @@ using std::vector;
 IGA_NAMESPACE_OPEN
 
 
-
-
-
-
 //#define NOT_OPTIMIZED
 
 namespace
@@ -339,6 +335,8 @@ init_values(const ValueFlags fill_flag,
         ValueFlags grid_flag = ValueFlags::none;
         if (contains(fill_flag , ValueFlags::point))
             grid_flag |= ValueFlags::point;
+        if (contains(fill_flag , ValueFlags::measure))
+            grid_flag |= ValueFlags::measure;
         if (contains(fill_flag , ValueFlags::w_measure))
             grid_flag |= ValueFlags::w_measure;
         if (contains(fill_flag , ValueFlags::face_point))
@@ -402,7 +400,7 @@ void
 BSplineElementAccessor<dim, range, rank>::
 reset_global_cache()
 {
-    values_1d_data_.reset();
+    values_1d_elem_.reset();
 
     for (int f = 0; f < n_faces; ++f)
         values_1d_faces_[f].reset();
@@ -413,13 +411,13 @@ void
 BSplineElementAccessor<dim, range, rank>::
 reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
 {
-    Assert(values_1d_data_.use_count() < 2,
+    Assert(values_1d_elem_.use_count() < 2,
            ExcMessage("Resetting a shared cache, use force if this is what you Really want."));
 
-    if (values_1d_data_.use_count() == 0)
-        values_1d_data_= make_shared<UniformQuadCache>();
+    if (values_1d_elem_.use_count() == 0)
+        values_1d_elem_= make_shared<GlobalElemCache>();
 
-    values_1d_data_->reset(*space_, quad, max_der);
+    values_1d_elem_->reset(*space_, quad, max_der);
 
     for (int f = 0; f < n_faces; ++f)
     {
@@ -482,9 +480,19 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
       const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
       const Quadrature<dim> &quad)
 {
-    ValuesCache::reset(flags_handler, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(flags_handler, n_basis_direction,quad);
 }
 
+template <int dim, int range, int rank>
+const Quadrature<dim> &
+BSplineElementAccessor<dim, range, rank>::
+get_quad_points(const TopologyId<dim> &topology_id) const
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_initialized(), ExcNotInitialized());
+
+    return cache.quad_;
+}
 
 template <int dim, int range, int rank>
 void
@@ -492,8 +500,11 @@ BSplineElementAccessor<dim, range, rank>::
 ValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
       const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-      const TensorSize<dim> &n_points_direction)
+      const Quadrature<dim> &quad)
 {
+    quad_ = quad;
+    const TensorSize<dim> n_points_direction = quad_.get_num_points_direction();
+
     flags_handler_ = flags_handler;
 
     this->size_.reset(n_basis_direction,
@@ -666,7 +677,7 @@ reset(const Index face_id,
 
     const auto quad = quad1.collapse_to_face(face_id);
 
-    ValuesCache::reset(flags_handler, n_basis_direction,quad.get_num_points_direction());
+    ValuesCache::reset(flags_handler, n_basis_direction,quad);
 }
 
 
@@ -696,14 +707,14 @@ reset(const Space_t &space,
       int max_der)
 {
     const auto quad = quad1.collapse_to_face(face_id);
-    max_deriv_order = max_der;
+    this->max_deriv_order_ = max_der;
     // resizing the structures for the one dimensional splines
     const int n_active_components = space.num_active_components_;
-    const int max_der_plus_one = max_deriv_order + 1;
+    const int max_der_plus_one = this->max_deriv_order_ + 1;
 
     for (int iComp = 0; iComp < n_active_components; ++iComp)
     {
-        splines1d_cache_data_(iComp).resize(max_der_plus_one);
+        this->splines1d_cache_data_(iComp).resize(max_der_plus_one);
     }
     this->set_initialized(true);
 
@@ -722,7 +733,7 @@ reset(const Space_t &space,
     BasisValues1d bernstein_values(max_der_plus_one);
     for (int iComp = 0; iComp < n_active_components; ++iComp)
     {
-        BasisValues1d &basis = splines1d_cache_data_(iComp);
+        BasisValues1d &basis = this->splines1d_cache_data_(iComp);
 
         const int jDim = UnitElement<dim>::face_constant_direction[face_id];//const_dir;
         {
@@ -743,7 +754,7 @@ reset(const Space_t &space,
             // compute the one dimensional B-splines at quad point on the reference interval
             const int interval = 0;
             {
-                const boost::numeric::ublas::matrix<Real> &M = *(bez_iComp_jDim[interval]);
+                const auto &M = *(bez_iComp_jDim[interval]);
                 const Real one_div_size = iga::Real(1.0) / lengths_jDim[interval];
                 for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
                 {
@@ -761,7 +772,7 @@ reset(const Space_t &space,
     for (int iComp = 0; iComp < Space_t::n_components; iComp++)
     {
         const int active_comp = space.map_component_to_active_data_(iComp);
-        splines1d_cache_(iComp) = &(splines1d_cache_data_(active_comp));
+        this->splines1d_cache_(iComp) = &(this->splines1d_cache_data_(active_comp));
     }
 
     this->set_filled(true);
@@ -773,13 +784,71 @@ void
 BSplineElementAccessor<dim, range, rank>::
 ValuesCache::
 fill_from_univariate(
-    const StaticMultiArray<array<const BasisValues1d *, dim>, range, rank> &univariate_values,
+    const int max_deriv_order,
+    const ComponentTable<array<const BasisValues1d *, dim>> &univariate_values,
     const BSplineElementAccessor<dim,range,rank> &elem)
 {
+    //--------------------------------------------------------------------------
+    vector<std::array<Values1DConstView,dim>> values1D(max_deriv_order+1);
+
+    TensorSize<dim> n_basis_direction;
+
+    const auto &degree = elem.get_space()->get_degree();
+
+    for (int comp = 0; comp < Space_t::n_components; ++comp)
+    {
+        for (int i = 0; i < dim ; ++i)
+            n_basis_direction(i) = degree(comp)[i]+1;
+
+
+        auto &scalar_evaluator_comp = this->scalar_evaluators_(comp);
+
+        scalar_evaluator_comp.resize(n_basis_direction);
+
+        const auto &univariate_values_comp = univariate_values(comp);
+
+        const Size n_basis = scalar_evaluator_comp.flat_size();
+
+        for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
+        {
+            const auto tensor_basis_id = scalar_evaluator_comp.flat_to_tensor(flat_basis_id);
+
+            for (int dir = 0 ; dir < dim ; ++dir)
+            {
+                const auto &basis_with_ders = univariate_values_comp[dir];
+
+                Assert(values1D.size() == basis_with_ders->size(),
+                       ExcDimensionMismatch(values1D.size(),basis_with_ders->size()));
+
+                for (int order = 0 ; order <= max_deriv_order ; ++order)
+                {
+                    const DenseMatrix &funcs = (*basis_with_ders)[order];
+                    values1D[order][dir] = Values1DConstView(funcs,tensor_basis_id[dir]);
+                } //end order loop
+
+            } // end dir loop
+
+
+            scalar_evaluator_comp(flat_basis_id) =
+                shared_ptr<BSplineElementScalarEvaluator<dim>>(
+                    new BSplineElementScalarEvaluator<dim>(values1D));
+
+        } // end flat_basis_id loop
+
+    } // end icomp loop
+    //--------------------------------------------------------------------------
+
+
+
+
+
+
+    //--------------------------------------------------------------------------
     if (flags_handler_.fill_values())
     {
         elem.evaluate_bspline_derivatives<0>(size_,
                                              univariate_values,
+                                             *this,
                                              D0phi_hat_);
         auto phi_hat = phi_hat_.begin();
         for (auto &D0phi_hat : D0phi_hat_)
@@ -794,6 +863,7 @@ fill_from_univariate(
     {
         elem.template evaluate_bspline_derivatives<1>(size_,
                                                       univariate_values,
+                                                      *this,
                                                       D1phi_hat_);
 
         flags_handler_.set_gradients_filled(true);
@@ -803,6 +873,7 @@ fill_from_univariate(
     {
         elem.template evaluate_bspline_derivatives<2>(size_,
                                                       univariate_values,
+                                                      *this,
                                                       D2phi_hat_);
 
         flags_handler_.set_hessians_filled(true);
@@ -821,6 +892,7 @@ fill_from_univariate(
 
         flags_handler_.set_divergences_filled(true);
     }
+    //--------------------------------------------------------------------------
 
     this->set_filled(true);
 }
@@ -830,22 +902,21 @@ void
 BSplineElementAccessor<dim, range, rank>::
 fill_values()
 {
-    Assert(values_1d_data_->is_filled(), ExcNotInitialized());
+    Assert(values_1d_elem_->is_filled(), ExcNotInitialized());
     Assert(elem_values_.is_initialized(), ExcNotInitialized());
 
     CartesianGridElementAccessor<dim>::fill_values();
 
-    const auto  &element_tensor_id = this->get_tensor_index();
-    StaticMultiArray<array<const BasisValues1d *, dim>, range, rank>
-    elem_univariate_values;
-    for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
+    const auto &element_tensor_id = this->get_tensor_index();
+    ComponentTable<array<const BasisValues1d *, dim>> elem_univariate_values;
+    for (int iComp=0; iComp< Space_t::n_components; ++iComp)
     {
-        auto &univariate_values = values_1d_data_->splines1d_cache_(iComp);
+        const auto &univariate_values = values_1d_elem_->splines1d_cache_(iComp);
         for (int i = 0; i < dim; ++i)
             elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
     }
 
-    elem_values_.fill_from_univariate(elem_univariate_values,*this);
+    elem_values_.fill_from_univariate(values_1d_elem_->max_deriv_order_,elem_univariate_values,*this);
 }
 
 
@@ -867,7 +938,7 @@ fill_face_values(const Index face_id)
     const auto &element_tensor_id = this->get_tensor_index();
     StaticMultiArray<array<const BasisValues1d *,dim>,range,rank>
     elem_univariate_values;
-    for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
+    for (int iComp=0; iComp < Space_t::n_components ; ++iComp)
     {
         for (int i = 0; i < dim; ++i)
         {
@@ -875,11 +946,13 @@ fill_face_values(const Index face_id)
                 elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
             else
                 elem_univariate_values(iComp)[i] =
-                    values_1d_data_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
+                    values_1d_elem_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
         }
     }
 
-    face_value.fill_from_univariate(elem_univariate_values,*this);
+    Assert(values_1d_elem_->max_deriv_order_ == values_1d_faces_[face_id]->max_deriv_order_,
+           ExcDimensionMismatch(values_1d_elem_->max_deriv_order_,values_1d_faces_[face_id]->max_deriv_order_));
+    face_value.fill_from_univariate(values_1d_elem_->max_deriv_order_,elem_univariate_values,*this);
 }
 
 
@@ -887,34 +960,34 @@ fill_face_values(const Index face_id)
 template < int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-UniformQuadCache::
+GlobalElemCache::
 reset(const Space_t &space,
       const Quadrature<dim> &quad,
       const int max_der)
 {
     //------------------------------------------------------------------------------------------
-    max_deriv_order = max_der;
+    this->max_deriv_order_ = max_der;
     // resizing the structures for the one dimensional splines
     const int n_active_components = space.num_active_components_;
     const auto &n_elem = space.get_grid()->get_num_elements_dim();
-    const int max_der_plus_one = max_deriv_order + 1;
+    const int max_der_plus_one = this->max_deriv_order_ + 1;
 
     for (int iComp = 0; iComp < n_active_components; ++iComp)
     {
         Assert(n_elem == space.bezier_op_(iComp).tensor_size(),
                ExcMessage("Not same size"));
-        splines1d_cache_data_(iComp).resize(n_elem);
+        this->splines1d_cache_data_(iComp).resize(n_elem);
         for (int i=0; i<dim; ++i)
             for (int j=0; j<n_elem[i]; ++j)
-                splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
+                this->splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
     }
 
 
     for (int iComp = 0; iComp < Space_t::n_components; ++iComp)
     {
-        Assert(n_elem == splines1d_cache_data_(space.map_component_to_active_data_(iComp)).tensor_size(),
+        Assert(n_elem == this->splines1d_cache_data_(space.map_component_to_active_data_(iComp)).tensor_size(),
                ExcMessage("Not same size"));
-        splines1d_cache_(iComp).resize(n_elem);
+        this->splines1d_cache_(iComp).resize(n_elem);
     }
     this->set_initialized(true);
     //------------------------------------------------------------------------------------------
@@ -957,7 +1030,7 @@ reset(const Space_t &space,
             {
                 const auto &M = *(bez_iComp_jDim[interval]);
                 const Real one_div_size = 1.0 / lengths_jDim[interval];
-                BasisValues1d &basis = splines1d_cache_data_(iComp).entry(jDim,interval);
+                BasisValues1d &basis = this->splines1d_cache_data_(iComp).entry(jDim,interval);
 
                 for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
                 {
@@ -976,7 +1049,7 @@ reset(const Space_t &space,
     {
         const int active_comp = space.map_component_to_active_data_(iComp);
 
-        const auto &spline1d_active_data = splines1d_cache_data_(active_comp);
+        const auto &spline1d_active_data = this->splines1d_cache_data_(active_comp);
 
         const auto n_intervals_multi_d = spline1d_active_data.tensor_size();
 
@@ -987,12 +1060,13 @@ reset(const Space_t &space,
             const auto &data = spline1d_active_data.get_data_direction(jDim);
 
             for (Size i = 0; i < n_intervals_1d; ++i)
-                splines1d_cache_(iComp).entry(jDim,i) = &(data[i]);
+                this->splines1d_cache_(iComp).entry(jDim,i) = &(data[i]);
         }
     }
+    //-------------------------------------------------------------------------
+
 
     this->set_filled(true);
-    //-------------------------------------------------------------------------
 
 }
 
@@ -1004,6 +1078,7 @@ void
 BSplineElementAccessor<dim, range, rank>::
 evaluate_bspline_derivatives(const FuncPointSize &size,
                              const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
+                             const ValuesCache &cache,
                              ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const
 {
     Assert(derivatives_phi_hat.size() > 0, ExcEmptyObject());
@@ -1029,13 +1104,11 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     for (int i = 1; i < Space_t::n_components; ++i)
         comp_offset[i]= comp_offset[i-1] + size.n_basis_direction_(i).flat_size();
 
-    typedef Derivatives<dim,range,rank,deriv_order> der_t;
-
-    TensorIndex<dim> deriv_order_tensor_id;
+    using der_t = Derivatives<dim,range,rank,deriv_order>;
 
 
-#ifndef NOT_OPTIMIZED
-    typedef DerivativeSymmetryManager<dim,deriv_order> DerSymmMngr_t;
+
+    using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
     DerSymmMngr_t derivative_symmetry_manager;
     const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
     const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
@@ -1043,141 +1116,81 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
     const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
 
-    const int n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
-    const int n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
-#endif
+    const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
+    const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
 
+    const Size num_points = size.n_points_direction_.flat_size();
 
-    const int num_points = size.n_points_direction_.flat_size();
-
-    const auto &points_indexer = *(size.points_indexer_);
-
-//    LogStream out;
-//    out << &derivatives_phi_hat << std::endl ;
-//    derivatives_phi_hat.print_info(out) ;
-    for (int iComp=0; iComp < space_->num_active_components_; ++iComp)
+    for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
     {
-        const auto &splines1d_direction = elem_values(iComp);
+//        const auto &splines1d_direction = elem_values(iComp);
 
 
         const int n_basis = get_num_basis(iComp);
         Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
-        const auto &functions_indexer = *(size.basis_functions_indexer_(iComp));
+        const Size comp_offset_i = comp_offset[iComp];
 
-        const int comp_offset_i = comp_offset[iComp];
+        DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
+        for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
+        {
+            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
 
-#ifdef NOT_OPTIMIZED
-        // NOT_OPTIMIZED branch
+            const auto &scalar_bspline = *cache.scalar_evaluators_(iComp)(func_flat_id);
 
-        const int n_partial_ders = der_t::size;
+            for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
+            {
+                const int entry_flat_id = derivatives_flat_id_evaluate[entry_id];
+                const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
+
+                // from the entry_tensor_id we get the right derivative order
+                TensorIndex<dim> deriv_order_tensor_id;
+                for (int i = 0; i < deriv_order; ++i)
+                    ++(deriv_order_tensor_id[entry_tensor_id[i]]);
+
+                //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
+                if (dim > 0)
+                {
+                    scalar_bspline.evaluate_derivative_at_points(deriv_order_tensor_id,derivative_scalar_component);
+
+                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                        derivatives_phi_hat_ifn[point_flat_id](entry_flat_id)(iComp) = derivative_scalar_component(point_flat_id);
+                }
+                else
+                {
+                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                        derivatives_phi_hat_ifn[point_flat_id](entry_flat_id)(iComp) = 1.0;
+                }
+
+            } // end entry_id loop
+
+        } // end func_flat_id loop
 
         for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
         {
-            const auto func_tensor_id = functions_indexer.get_tensor_index(func_flat_id);
-
             auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
-
             for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
             {
-
-                const auto &point_tensor_id = points_indexer.get_tensor_index(point_flat_id);
-
                 der_t &derivative = derivatives_phi_hat_ifn[point_flat_id];
-
-                for (int entry_flat_id = 0; entry_flat_id < n_partial_ders; ++entry_flat_id)
-                {
-                    const auto entry_tensor_id = derivative.flat_to_tensor_index(entry_flat_id);
-
-                    // from the entry id we compute the right derivative order
-                    for (int i = 0; i < dim; ++i)
-                        deriv_order_tensor_id[i] = 0;
-
-                    for (int i = 0; i < deriv_order; ++i)
-                        ++(deriv_order_tensor_id[entry_tensor_id[i]]);
-
-                    // Main computation
-                    Real partial_der = Real(1.0);
-                    for (int i = 0; i < dim; ++i)
-                    {
-                        const auto &splines1d = *(splines1d_direction[i]);
-                        partial_der *= splines1d[deriv_order_tensor_id[i]](func_tensor_id[i],point_tensor_id[i]);
-                    }
-                    derivative(entry_flat_id)(iComp) = partial_der;
-
-                } // end entry_flat_id loop
-            } // end point_flat_id loop
-        } //end func_flat_id loop
-
-        // end NOT_OPTIMIZED branch
-#else
-        // OPTIMIZED branch
-
-        for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
-        {
-            const auto func_tensor_id = functions_indexer.get_tensor_index(func_flat_id);
-
-//            out << "comp_offset_i=" << comp_offset_i
-//                << "  func_flat_id=" << func_flat_id
-//                << "  func_id=" << comp_offset_i+func_flat_id<<std::endl;
-            auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
-
-            for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-            {
-                const auto &point_tensor_id = points_indexer.get_tensor_index(point_flat_id);
-
-                der_t &derivative = derivatives_phi_hat_ifn[point_flat_id];
-
-                for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
-                {
-                    const int entry_flat_id = derivatives_flat_id_evaluate[entry_id];
-                    const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
-
-                    // from the entry id we compute the right derivative order
-                    for (int i = 0; i < dim; ++i)
-                        deriv_order_tensor_id[i] = 0;
-
-                    for (int i = 0; i < deriv_order; ++i)
-                        ++(deriv_order_tensor_id[entry_tensor_id[i]]);
-
-                    if (dim != 0)
-                    {
-                        // Main computation
-                        const auto &splines1d = *(splines1d_direction[0]);
-                        Real partial_der = splines1d[deriv_order_tensor_id[0]](func_tensor_id[0], point_tensor_id[0]);
-                        for (int i = 1; i < dim; ++i)
-                        {
-                            const auto &splines1d = *(splines1d_direction[i]);
-                            partial_der *= splines1d[deriv_order_tensor_id[i]](func_tensor_id[i], point_tensor_id[i]);
-                        }
-                        derivative(entry_flat_id)(iComp) = partial_der;
-                    }
-                    else
-                    {
-                        derivative(entry_flat_id)(iComp) = 1.0;
-                    }
-
-                } // end entry_id loop
 
                 // here we copy the computed quantities to the symmetric part of the tensor
                 for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
-                    derivative(derivatives_flat_id_copy_to[entry_id])(iComp) = derivative(derivatives_flat_id_copy_from[entry_id])(iComp);
+                    derivative(derivatives_flat_id_copy_to[entry_id])(iComp) =
+                        derivative(derivatives_flat_id_copy_from[entry_id])(iComp);
 
             } // end point_flat_id loop
         } //end func_flat_id loop
 
-        //end OPTIMIZED branch
-#endif
     } // end iComp loop
 
     if (space_->homogeneous_range_)
     {
-        const int n_ders = Derivative<deriv_order>::size;
+        const Size n_ders = Derivative<deriv_order>::size;
         const auto n_basis = space_->get_num_basis_per_element(0);
-        for (int iComp = 1; iComp < Space_t::n_components; ++iComp)
+        for (int comp = 1; comp < Space_t::n_components; ++comp)
         {
-            const int offset = comp_offset[iComp];
-            for (int basis_i = 0; basis_i < n_basis;  ++basis_i)
+            const Size offset = comp_offset[comp];
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
                 const auto derivatives_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
                 auto derivatives_phi_hat_copy_to = derivatives_phi_hat.get_function_view(offset+basis_i);
@@ -1185,17 +1198,14 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
                 {
                     const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
                     der_t &values = derivatives_phi_hat_copy_to[qp];
-                    for (int j = 0; j < n_ders; ++j)
-                    {
-                        values(j)(iComp) = values_0(j)(0);
-                    }
+
+                    for (int der = 0; der < n_ders; ++der)
+                        values(der)(comp) = values_0(der)(0);
                 }
-            }
-        } // end loop iComp
+            } //end loop basis_i
+        } // end loop comp
     } // end if (space_->homogeneous_range_)
 }
-
-
 
 
 
@@ -1504,6 +1514,18 @@ evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local
 -> ValueVector< Derivative<2> >
 {
     return this->evaluate_field_hessians(local_coefs,FaceTopology<dim>(face_id));
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_scalar_evaluators(const TopologyId<dim> &topology_id) const ->
+const ComponentTable<
+DynamicMultiArray<
+shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> &
+{
+    const auto &cache = this->get_values_cache(topology_id);
+    return cache.scalar_evaluators_;
 }
 
 

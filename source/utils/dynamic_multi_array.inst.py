@@ -21,7 +21,7 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['base/tensor.h']
+include_files = ['base/tensor.h','basis_functions/bspline_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -36,3 +36,10 @@ for row in ma_list:
     f.write('template class %s; \n' % (row))
     f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
     
+
+      
+      
+evaluators = set(['DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<%d>>,%d>' %(x.dim,x.dim)
+              for x in inst.all_ref_sp_dims])
+for eval in evaluators:
+   f.write('template class %s ;\n' %eval)

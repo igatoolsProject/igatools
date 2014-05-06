@@ -28,8 +28,7 @@
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/basis_functions/function_space.h>
-#include <boost/numeric/ublas/matrix.hpp>
-
+#include <igatools/linear_algebra/dense_matrix.h>
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
 
@@ -426,15 +425,11 @@ private:
 
     /** @name Bezier extraction operator. */
     ///@{
-
-    /** Type for the one dimensional Bezier operator on a single interval.*/
-    using bz_operator_t = boost::numeric::ublas::matrix<Real>;
-
     template<class T>
     using comp_p_array_table_t = ComponentTable<CartesianProductArray<T,dim>>;
 
-    comp_p_array_table_t<bz_operator_t>         bezier_op_data_;
-    comp_p_array_table_t<const bz_operator_t *> bezier_op_;
+    comp_p_array_table_t<DenseMatrix>         bezier_op_data_;
+    comp_p_array_table_t<const DenseMatrix *> bezier_op_;
     ///@}
 
 

@@ -50,7 +50,7 @@ public:
     /**
      * Construct an empty multiarray.
      */
-    DynamicMultiArray() = default;
+    DynamicMultiArray();
 
     /**
      * Construct a square multiarray of zeros with @p dim entries in each
@@ -85,7 +85,7 @@ public:
     ///@}
 
 
-    /** @name Functions for changing the size of the dynamic multiarray */
+    /** @name Functions for changing the size or the shape of the dynamic multiarray */
     ///@{
 
     /**
@@ -100,7 +100,20 @@ public:
      * in the i-th array dimension.
      */
     void resize(const TensorSize<rank> &dim);
+
+
+    /**
+     * Reshape the multiarray, i.e. change the size along each coordinate direction without
+     * changing the global size and without any entry reordering.
+     * @warning The @p new_sizes argument specifies the new size along each coordinate direction:
+     * the total size must be equal to the original one because the memory for the data is not modified.
+     * This condition is checked in DEBUG mode (an assertion will be raised if this condition is
+     * not verified).
+     */
+    void reshape(const TensorSize<rank> &new_sizes);
     ///@}
+
+
 
 
 
@@ -110,9 +123,8 @@ public:
      * as a flat vector.
      * @todo: where do we need this function? (MM 22 Feb 2014)
      */
-    std::vector<T> get_flat_view(const TensorIndex<rank> &start,
-                                 const TensorIndex<rank> &inc) const;
-
+    DynamicMultiArray<T,rank> get_sub_array(const TensorIndex<rank> &start,
+                                            const TensorIndex<rank> &end) const;
 
 
 
