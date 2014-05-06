@@ -238,30 +238,22 @@ get_num_iterations() const
 LinearSolver<LinearAlgebraPackage::petsc>::
 LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    /*
-    // map the SolverType enum elements to the name aliases used by PETSC::????????
-    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::CG)] = "CG";
+	PetscErrorCode ierr;
 
+    // map the SolverType enum elements to the name aliases used by PETSc
+    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "gmres";
+    solver_type_enum_to_alias_[to_integral(Type::CG)] = "cg";
+    solver_type_enum_to_alias_[to_integral(Type::LU)] = "preonly";
 
     const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
 
-    Belos::SolverFactory<Real,vector_t,matrix_t> factory;
-    //
-    // "Num Blocks" = Maximum number of Krylov vectors to store.  This
-    // is also the restart length.  "Block" here refers to the ability
-    // of this particular solver (and many other Belos solvers) to solve
-    // multiple linear systems at a time, even though we are only solving
-    // one linear system in this example.
-    solver_params_->set("Num Blocks", 40);
-    solver_params_->set("Maximum Iterations", max_num_iter);
-    solver_params_->set("Convergence Tolerance", tolerance);
+	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPGetPC(ksp_,&pc_);
 
-    // Create the solver.
-    solver_ = factory.create(solver_name,solver_params_);
-       //*/
+    ierr = PCSetType(pc_,PCLU);
+    ierr = KSPSetType(ksp_,solver_name.c_str());
+
+    ierr = KSPSetTolerances(ksp_,tolerance,PETSC_DEFAULT,PETSC_DEFAULT,max_num_iter);
 }
 
 /*
@@ -278,12 +270,12 @@ void
 LinearSolver<LinearAlgebraPackage::petsc>::
 set_max_num_iterations(const int max_num_iter)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    /*
-    solver_params_->set("Maximum Iterations", max_num_iter);
-    solver_->setParameters(solver_params_);
-    //*/
+	PetscErrorCode ierr;
+	PetscReal rtol, abstol, dtol;
+	PetscInt maxits;
+	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+	ierr = KSPSetTolerances(ksp_, rtol, abstol, dtol, max_num_iter);
+
 }
 
 /**
@@ -293,12 +285,11 @@ void
 LinearSolver<LinearAlgebraPackage::petsc>::
 set_tolerance(const Real tolerance)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    /*
-    solver_params_->set("Convergence Tolerance", tolerance);
-    solver_->setParameters(solver_params_);
-    //*/
+	PetscErrorCode ierr;
+	PetscReal rtol, abstol, dtol;
+	PetscInt maxits;
+	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+	ierr = KSPSetTolerances(ksp_, tolerance, abstol, dtol, maxits);
 }
 
 
@@ -308,27 +299,9 @@ solve(Matrix<LinearAlgebraPackage::petsc> &A,
       Vector<LinearAlgebraPackage::petsc> &b,
       Vector<LinearAlgebraPackage::petsc> &x)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    /*
-    // Create a LinearProblem struct with the problem to solve.
-    // A, X, B, and M are passed by (smart) pointer, not copied.
-    auto linear_system = rcp(
-                             new Belos::LinearProblem<Real,vector_t,matrix_t>(
-                                 A.get_petsc_matrix(),
-                                 x.get_petsc_vector(),
-                                 b.get_petsc_vector()));
-    linear_system->setProblem() ;
-
-    solver_->setProblem(linear_system);
-
-    // Attempt to solve the linear system.  result == Belos::Converged
-    // means that it was solved to the desired tolerance.  This call
-    // overwrites X with the computed approximate solution.
-    Belos::ReturnType result = solver_->solve();
-
-    AssertThrow(result == Belos::ReturnType::Converged, ExcMessage("No convergence."));
-    //*/
+	PetscErrorCode ierr;
+	ierr = KSPSetOperators(ksp_,A.get_petsc_matrix(),A.get_petsc_matrix(),SAME_NONZERO_PATTERN);
+    ierr = KSPSolve(ksp_,b.get_petsc_vector(),x.get_petsc_vector());
 }
 
 
@@ -336,26 +309,22 @@ Real
 LinearSolver<LinearAlgebraPackage::petsc>::
 get_achieved_tolerance() const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    /*
-    return solver_->achievedTol() ;
-    //*/
+	PetscErrorCode ierr;
+	PetscReal achieved_tol;
+	ierr = KSPGetResidualNorm(ksp_, &achieved_tol);
 
-    return 0.0;
+    return achieved_tol;
 }
 
 int
 LinearSolver<LinearAlgebraPackage::petsc>::
 get_num_iterations() const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-    /*
-    return solver_->getNumIters() ;
-    //*/
+	PetscErrorCode ierr;
+	int num_iters;
+	ierr = KSPGetIterationNumber(ksp_, &num_iters);
 
-    return 0;
+	return num_iters;
 }
 
 #endif // #ifdef USE_PETSC

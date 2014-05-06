@@ -31,7 +31,7 @@
 #endif
 
 #ifdef USE_PETSC
-#include <petscsnes.h>
+#include <petscksp.h>
 #endif
 
 IGA_NAMESPACE_OPEN
@@ -187,11 +187,12 @@ public:
      */
     enum class Type : int
     {
-        GMRES = 0,
-        CG = 1,
+    	LU = 0,
+		CG=1,
+		GMRES=2,
 
         /** This entry tells how many elements we have in the current enum class */
-        ENUM_SIZE = 2
+        ENUM_SIZE = 3
     };
 
     /**
@@ -206,8 +207,8 @@ public:
      *
      * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
      */
-    LinearSolver(const Type solver_type = Type::GMRES,
-                 const Real tolerance = 1.0e-9,
+    LinearSolver(const Type solver_type = Type::LU,
+                 const Real tolerance = 1.0e-15,
                  const int max_num_iter = 1000);
 
     /**
@@ -244,11 +245,16 @@ public:
     //*/
 
 private:
+    MPI_Comm comm_;
+    KSP ksp_;
+    PC pc_;
+
 //    using matrix_t = Tpetra::Operator<Real,Index,Index> ;
 //    using vector_t = Tpetra::MultiVector<Real,Index,Index> ;
 
 
     std::array<std::string,get_enum_size<Type>()> solver_type_enum_to_alias_ ;
+    std::array<std::string,get_enum_size<Type>()> solver_type_pc_to_alias_ ;
 
     /** LinearSolver parameters */
 //    Teuchos::RCP<Teuchos::ParameterList> solver_params_;
