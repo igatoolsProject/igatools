@@ -573,7 +573,7 @@ do_test()
     string time_solve_lin_system = "Time solve lin.system";
 
     int degree_min = 1;
-    int degree_max = 10;
+    int degree_max = 1;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         cout << "-----------------------------------" << endl;
