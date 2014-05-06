@@ -330,23 +330,22 @@ size() const
     return vector_size;
 }
 
-/*
 auto
 Vector<LinearAlgebraPackage::petsc>::
-get_petsc_vector() const -> Teuchos::RCP<const WrappedVectorType>
+get_petsc_vector() const -> Vec
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-//    return vector_ ;
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
+    return vector_ ;
 }
 
 auto
 Vector<LinearAlgebraPackage::petsc>::
-get_petsc_vector() -> Teuchos::RCP<WrappedVectorType>
+get_petsc_vector() -> Vec
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-//    return vector_ ;
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
+    return vector_ ;
 }
 //*/
 

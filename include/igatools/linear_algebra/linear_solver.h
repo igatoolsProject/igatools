@@ -30,6 +30,10 @@
 #include <BelosSolverManager.hpp>
 #endif
 
+#ifdef USE_PETSC
+#include <petscsnes.h>
+#endif
+
 IGA_NAMESPACE_OPEN
 
 
@@ -45,9 +49,9 @@ class LinearSolver;
  *
  * It's basically a wrapper to a Trilinos::Belos solver.
  *
- * For an experiece user as well as for using advanced solver
+ * For an experienced user as well as for using advanced solver
  * features is recommended to interact directly with
- * the solvers offer by Trilinos.
+ * the solvers offered by Trilinos.
  *
  * We provide this wrapper for simple problem for beginners
  * that have enough headaches learning igatools and postpone
@@ -161,9 +165,9 @@ private:
  *
  * It's basically a wrapper to a PETSC::????????.
  *
- * For an experiece user as well as for using advanced solver
+ * For an experienced user as well as for using advanced solver
  * features is recommended to interact directly with
- * the solvers offer by PETSc.
+ * the solvers offered by PETSc.
  *
  * We provide this wrapper for simple problem for beginners
  * that have enough headaches learning igatools and postpone

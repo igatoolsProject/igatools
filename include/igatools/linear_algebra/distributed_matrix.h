@@ -388,19 +388,17 @@ public:
     void clear_row(const Index row);
     ///@}
 
-    /** @name Methods for retrieving the Trilinos objects wrapped by this class */
+    /** @name Methods for retrieving the PETSc objects wrapped by this class */
     ///@{
     /**
-     * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
-     * concrete Trilinos distributed matrix. Const version.
+     * todo: add documentation
      */
-//    Teuchos::RCP<const WrappedMatrixType> get_trilinos_matrix() const ;
+    Mat get_petsc_matrix() const ;
 
     /**
-     * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
-     * concrete Trilinos distributed matrix. Non-const version.
+     * todo: add documentation
      */
-//    Teuchos::RCP<WrappedMatrixType> get_trilinos_matrix() ;
+    Mat get_petsc_matrix() ;
     ///@}
 
 

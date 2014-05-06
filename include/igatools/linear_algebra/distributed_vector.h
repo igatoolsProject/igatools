@@ -424,16 +424,14 @@ public:
     /** @name Methods for retrieving the PETSc objects wrapped by this class */
     ///@{
     /**
-     * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
-     * concrete Trilinos distributed Vector. Const version.
+     * todo: add documentation
      */
-//    Teuchos::RCP<const WrappedVectorType> get_petsc_vector() const;
+    Vec get_petsc_vector() const;
 
     /**
-     * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
-     * concrete Trilinos distributed Vector. Non-const version.
+     * todo: add documentation
      */
-//    Teuchos::RCP<WrappedVectorType> get_petsc_vector();
+    Vec get_petsc_vector();
     ///@}
 
 private:

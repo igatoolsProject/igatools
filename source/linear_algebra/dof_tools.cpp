@@ -278,7 +278,23 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<LinearAlgebraPackage::petsc> &rhs,
                            Vector<LinearAlgebraPackage::petsc> &solution)
 {
-	Assert(false,ExcNotImplemented());
+    PetscErrorCode ierr;
+    int num_rows = boundary_values.size();
+
+    vector<Index> rows;
+    vector<Real> values;
+    Real* my_pointer;
+
+    for (const auto &iter:boundary_values){
+        rows.push_back(iter.first);
+    	values.push_back(iter.second);
+    }
+
+    my_pointer = values.data();
+
+    ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(),
+    		num_rows,rows.data(),*my_pointer,
+    		solution.get_petsc_vector(),rhs.get_petsc_vector()); //CHKERRQ(ierr);
 }
 
 

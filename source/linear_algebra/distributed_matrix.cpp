@@ -448,21 +448,21 @@ resume_fill()
 //*/
 };
 
-/*
+
 auto
 Matrix<LinearAlgebraPackage::petsc>::
-get_petsc_matrix() -> Teuchos::RCP<WrappedMatrixType>
+get_petsc_matrix() -> Mat
 {
     return matrix_;
 };
 
 auto
 Matrix<LinearAlgebraPackage::petsc>::
-get_petsc_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
+get_petsc_matrix() const -> Mat
 {
     return matrix_;
 };
-//*/
+
 
 Real
 Matrix<LinearAlgebraPackage::petsc>::
