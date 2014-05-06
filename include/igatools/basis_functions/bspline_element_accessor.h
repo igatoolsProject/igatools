@@ -224,6 +224,30 @@ protected:
     using Div = Values<dim, 1, 1>;
 
 public:
+
+    /**
+     * Returns a ValueTable with the <tt>order</tt>-th derivatives of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <int order>
+    ValueTable<Derivative<order>> eval_basis_derivatives_at_points(const Point<dim> &points) const;
+
+    /**
+     * Returns a ValueTable with the values of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueTable<Value> eval_basis_values_at_points(const Point<dim> &points) const;
+
+
+
     /** @name Functions returning the value of the basis functions. */
     ///@{
     /**

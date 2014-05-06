@@ -1530,6 +1530,34 @@ shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> &
 
 
 template <int dim, int range, int rank>
+template<int order>
+auto
+BSplineElementAccessor<dim, range, rank>::
+eval_basis_derivatives_at_points(const Point<dim> &points) const -> ValueTable<Derivative<order>>
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    ValueTable<Derivative<order>> values;
+
+    return values;
+}
+
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+eval_basis_values_at_points(const Point<dim> &points) const -> ValueTable<Value>
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    ValueTable<Value> values;
+
+    return values;
+}
+
+template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
 print_info(LogStream &out,const VerbosityLevel verbosity_level) const
