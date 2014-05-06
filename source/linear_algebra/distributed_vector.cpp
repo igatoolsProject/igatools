@@ -27,7 +27,7 @@ using Teuchos::rcp;
 #endif
 
 #ifdef USE_PETSC
-#include <petscsnes.h>
+#include <petscvec.h>
 #endif
 
 IGA_NAMESPACE_OPEN
