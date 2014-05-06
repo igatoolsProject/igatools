@@ -364,16 +364,15 @@ add_block(
     Assert(Index(local_vector.size()) == num_dofs,
            ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
 
-    PetscScalar values[num_dofs];
+    std::vector<PetscScalar> values;
 
     for (Index i = 0 ; i < num_dofs ; ++i)
     {
         Assert(!std::isnan(local_vector(i)),ExcNotANumber());
         Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
-        values[i] = local_vector(i);
+        values.push_back(local_vector(i));
     }
-    ierr = VecSetValues(vector_, num_dofs, local_to_global.data(), values, ADD_VALUES); //CHKERRQ(ierr);
-
+    ierr = VecSetValues(vector_, num_dofs, local_to_global.data(), values.data(), ADD_VALUES); //CHKERRQ(ierr);
 
 }
 

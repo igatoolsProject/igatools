@@ -350,7 +350,7 @@ init(const SparsityPattern &sparsity_pattern)
 
     int n_rows = sparsity_pattern.get_num_row_dofs();
     int n_cols = sparsity_pattern.get_num_col_dofs();
-    int nnz[n_rows];
+    std::vector<PetscInt> nnz;
 
     ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
     ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
@@ -363,14 +363,11 @@ init(const SparsityPattern &sparsity_pattern)
     auto row_end = sparsity_pattern.cend() ;
     for (; row != row_end ; ++row)
     {
-        const Index row_id = row->first ;
-
         const vector<Index> columns_id(row->second.begin(),row->second.end()) ;
-
-        nnz[row_id] = columns_id.size();
+        nnz.push_back(columns_id.size());
     }
 
-    ierr = MatSeqAIJSetPreallocation(matrix_, 0, nnz);
+    ierr = MatSeqAIJSetPreallocation(matrix_, 0, nnz.data());
     ierr = MatSetOption(matrix_, MAT_KEEP_NONZERO_PATTERN, PETSC_TRUE); //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_); //CHKERRQ(ierr);
     ierr = MatZeroEntries(matrix_); //CHKERRQ(ierr);
