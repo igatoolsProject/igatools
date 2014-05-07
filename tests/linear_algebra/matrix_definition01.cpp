@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
     VectorType x(bspline_space->get_num_basis());
 
-    LinSolverType solver(LinSolverType::Type::GMRES);
+    LinSolverType solver(LinSolverType::SolverType::GMRES);
     solver.solve(matrix,b,x);
 
     x.print(out);

@@ -22,7 +22,6 @@
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
-#include "/home/vazquez/local/src/igatools/tests/tests.h"
 
 using std::vector;
 using std::map;
@@ -297,9 +296,9 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         ierr = VecSetValue(solution.get_petsc_vector(), row_id, bc_value, INSERT_VALUES);
 
         ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), 1, &row_id, mat_value,
-    			solution.get_petsc_vector(),rhs.get_petsc_vector());
+                                  solution.get_petsc_vector(),rhs.get_petsc_vector());
 
-    	// I am not sure whether this is necessary in PETSc
+        // I am not sure whether this is necessary in PETSc
         matrix.fill_complete();
     }
 
@@ -312,14 +311,14 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
     for (const auto &iter:boundary_values){
         rows.push_back(iter.first);
-    	values.push_back(iter.second);
+        values.push_back(iter.second);
     }
 
     my_pointer = values.data();
 
     ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(),
-    		num_rows,rows.data(),*my_pointer,
-    		solution.get_petsc_vector(),rhs.get_petsc_vector()); //CHKERRQ(ierr);
+            num_rows,rows.data(),*my_pointer,
+            solution.get_petsc_vector(),rhs.get_petsc_vector()); //CHKERRQ(ierr);
      */
 }
 
