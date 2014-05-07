@@ -271,6 +271,9 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 }
 
 
+
+#ifdef USE_PETSC
+
 template <>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Matrix<LinearAlgebraPackage::petsc> &matrix,
@@ -321,6 +324,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
             solution.get_petsc_vector(),rhs.get_petsc_vector()); //CHKERRQ(ierr);
      */
 }
+#endif //#ifdef USE_PETSC
 
 };
 
