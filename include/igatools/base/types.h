@@ -84,6 +84,8 @@ std::array<T,dim> filled_array(const T v)
     return res;
 }
 
+
+
 /**
  * Bounding Box, a dim-dimensional rectangular
  * box described by the intervals.

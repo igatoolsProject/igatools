@@ -30,6 +30,25 @@
 
 IGA_NAMESPACE_OPEN
 
+template <class T, int dim>
+inline
+std::array<T,dim>
+iota_array(const int init=0)
+{
+    std::array<T,dim> res;
+    std::iota(res.begin(), res.end(), init);
+    return res;
+}
+
+template <class T, int dim>
+inline
+std::vector<T>
+unique_container(std::array <T, dim> a)
+{
+    std::unique(a.begin(), a.end());
+    return std::vector<T>(a.begin(), a.end());
+}
+
 /**
  * @brief Tensor product spline space specification class
  *
@@ -48,8 +67,80 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range = 1, int rank = 1>
 class SpaceSpec
 {
+//    template<class T>
+//    using ComponentContainer = StaticMultiArray<T,range,rank>;
+
 	template<class T>
-	using ComponentContainer = StaticMultiArray<T,range,rank>;
+	class ComponentContainer : public StaticMultiArray<T,range,rank>
+	{
+	    using base_t = StaticMultiArray<T,range,rank>;
+	 //   using StaticMultiArray<T,range,rank>::StaticMultiArray;
+	public:
+	    using base_t::n_entries;
+	    using  ComponentMap = std::array <Index, n_entries>;
+
+	    ComponentContainer(const ComponentMap &comp_map = iota_array<Index, n_entries>())
+	    :
+	        base_t(),
+	        comp_map_(comp_map),
+	        active_components_(unique_container<Index, n_entries>(comp_map))
+	    {
+//	        std::unique_copy (comp_map_.begin(), comp_map_.end(),
+//	                          active_components_.begin());
+//	        active_components_.resize(n_entries);
+//	        for (int i=0; i<n_entries; ++i)
+//	        {
+//	            active_components_[i]=i;
+//	            comp_map_[i]=i;
+//	        }
+	    }
+
+	    ComponentContainer(const T &val)
+	        :
+	        base_t(val)
+	    {
+	        active_components_.resize(n_entries);
+	        for (int i=0; i<n_entries; ++i)
+	        {
+	            active_components_[i]=i;
+	            comp_map_[i]=i;
+	        }
+	    }
+
+	    ComponentContainer(std::initializer_list<T> list)
+	    :
+	        base_t(list)
+	    {
+	                active_components_.resize(n_entries);
+	                for (int i=0; i<n_entries; ++i)
+	                {
+	                    active_components_[i]=i;
+	                    comp_map_[i]=i;
+	                }
+	            }
+
+
+
+	    /**
+	     *  Flat index access operator (non-const version).
+	     */
+	    T &operator()(const Index i)
+	    {
+	        return base_t::operator()(i);
+	    }
+	       /**
+	        *  Flat index access operator (const version).
+	        */
+	       const T &operator()(const Index i) const
+	       {
+	           return base_t::operator()(i);
+	       }
+
+	private:
+	       std::array <Index, n_entries> comp_map_;
+	       std::vector<Index> active_components_;
+
+	};
 
 	static const int n_components = ComponentContainer<int>::n_entries;
 
@@ -77,6 +168,7 @@ public:
         ComponentContainer<Size> comp_dimension;
         Size total_dimension;
     };
+
     // For the boundary kntos types
     // interpolatory (open knot)
     enum class EndBehaviour {interpolatory};
@@ -102,16 +194,16 @@ public:
     :SpaceSpec(knots, fill_max_regularity(knots), deg, periodic)
     {}
 
+    const DegreeTable &get_degree() const
+    {return deg_;}
+
+
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);
 
     KnotsTable compute_knots_with_repetition(const EndBehaviour type)
     {
     	return compute_knots_with_repetition(interpolatory_end_knots());
     }
-
-
-    const DegreeTable &get_degree() const
-    {return deg_;}
 
     /**
      * For each element and for each component there is an initial
@@ -142,6 +234,7 @@ private:
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
     PeriodicTable periodic_;
+
 };
 
 IGA_NAMESPACE_CLOSE
