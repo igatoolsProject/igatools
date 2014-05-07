@@ -387,8 +387,7 @@ Matrix<LinearAlgebraPackage::petsc>::
 add_entry(const Index row_id, const Index column_id, const Real value)
 {
     PetscErrorCode ierr;
-    ierr = MatSetValues(matrix_,1,&row_id,1,&column_id,
-    		&value,ADD_VALUES); //CHKERRQ(ierr);
+    ierr = MatSetValue(matrix_,row_id,column_id,value,ADD_VALUES); //CHKERRQ(ierr);
 };
 
 
