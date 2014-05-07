@@ -441,11 +441,7 @@ void
 Matrix<LinearAlgebraPackage::petsc>::
 resume_fill()
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    matrix_->resumeFill();
-//*/
+/* todo:I think this is not necessary in PETSc. Must check in parallel computations */
 };
 
 
@@ -468,47 +464,20 @@ Real
 Matrix<LinearAlgebraPackage::petsc>::
 operator()(const Index row, const Index col) const
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    const auto graph = matrix_->getGraph();
+    PetscErrorCode ierr;
+    PetscScalar value;
 
-    const auto row_map = graph->getRowMap();
-    const auto col_map = graph->getColMap();
+    /* todo: the assert should work with a distributed matrix */
+    AssertIndexRange(row, this->get_num_rows());
+    AssertIndexRange(col, this->get_num_columns());
 
-    const auto local_row = row_map->getLocalElement(row);
-    const auto local_col = col_map->getLocalElement(col);
-//    std::cout << "Global=("<<row<<","<<col<<")   Local=("<<local_row<<","<<local_col<<")"<<std::endl;
+    /* todo: the function returns zero if the entry is not in the sparsity
+     pattern, instead it should give an error. I have not found a function in
+     Petsc to check whether the entry is in the spartsity pattern or not. */
 
-    // If the data is not on the present processor, we throw an exception.
-    // This is one of the two tiny differences to the el(i,j) call,
-    //which does not throw any assertions, but returns 0.0.
-    Assert(local_row != Teuchos::OrdinalTraits<Index>::invalid(),
-           ExcAccessToNonLocalElement(row,col,
-                                      row_map->getMinGlobalIndex(),
-                                      row_map->getMaxGlobalIndex()+1));
+    ierr = MatGetValues(matrix_,1,&row,1,&col,&value);
 
-    Teuchos::ArrayView<const Index> local_col_ids ;
-    Teuchos::ArrayView<const Real> values ;
-    matrix_->getLocalRowView(local_row,local_col_ids,values) ;
-
-//    std::cout << local_col_ids <<std::endl ;
-//    std::cout << "local_col=" << local_col << std::endl;
-    // Search the index where we look for the value, and then finally get it.
-    const Index *col_find = std::find(local_col_ids.begin(),local_col_ids.end(),local_col);
-
-
-    // This is actually the only difference to the el(i,j) function,
-    // which means that we throw an exception in this case instead of just
-    // returning zero for an element that is not present in the sparsity pattern.
-    Assert(col_find != local_col_ids.end(), ExcInvalidIndex(row,col));
-
-    const Index id_find = static_cast<Index>(col_find-local_col_ids.begin());
-//    std::cout << "id_find="<<id_find<<std::endl;
-
-    return values[id_find];
-    //*/
-	return 0.0;
+    return value;
 }
 
 
@@ -516,6 +485,8 @@ void
 Matrix<LinearAlgebraPackage::petsc>::
 clear_row(const Index row)
 {
+	PetscErrorCode ierr;
+
 	Assert(false,ExcNotImplemented());
 	AssertThrow(false,ExcNotImplemented());
 /*
@@ -586,24 +557,24 @@ auto
 Matrix<LinearAlgebraPackage::petsc>::
 get_num_rows() const -> Index
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    return matrix_->getGlobalNumRows() ;
-    //*/
-	return 0;
+	PetscErrorCode ierr;
+	PetscInt n_rows, n_cols;
+
+	ierr = MatGetSize(matrix_, &n_rows, &n_cols);
+
+	return n_rows;
 }
 
 auto
 Matrix<LinearAlgebraPackage::petsc>::
 get_num_columns() const -> Index
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-	/*
-    return matrix_->getGlobalNumCols() ;
-    //*/
-	return 0;
+	PetscErrorCode ierr;
+	PetscInt n_rows, n_cols;
+
+	ierr = MatGetSize(matrix_, &n_rows, &n_cols);
+
+	return n_cols;
 }
 
 

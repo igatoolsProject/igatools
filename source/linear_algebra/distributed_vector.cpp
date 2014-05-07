@@ -274,22 +274,6 @@ operator()(const Index global_id) const
 {
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
-    /*
-        Assert(global_id < Index(vector_->getGlobalLength()),
-               ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
-
-        const auto map = vector_->getMap();
-        const auto local_id = map->getLocalElement(global_id) ;
-
-        Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
-               ExcVectorAccessToNonLocalElement(
-                   global_id,
-                   map->getMinGlobalIndex(),
-                   map->getMaxGlobalIndex()));
-
-        return (vector_->get2dView()[0][local_id]) ;
-        //*/
-    return real_tmp_;
 }
 
 
@@ -300,22 +284,6 @@ operator()(const Index global_id)
 {
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
-    /*
-    Assert(global_id < Index(vector_->getGlobalLength()),
-           ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
-
-    const auto map = vector_->getMap();
-    const auto local_id = map->getLocalElement(global_id) ;
-
-    Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
-           ExcVectorAccessToNonLocalElement(
-               global_id,
-               map->getMinGlobalIndex(),
-               map->getMaxGlobalIndex()));
-
-    return (vector_->get2dViewNonConst()[0][local_id]) ;
-    //*/
-    return real_tmp_;
 }
 
 

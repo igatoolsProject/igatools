@@ -188,8 +188,18 @@ public:
     enum class Type : int
     {
     	LU = 0,
-		CG=1,
-		GMRES=2,
+		CG = 1,
+		GMRES = 2,
+
+        /** This entry tells how many elements we have in the current enum class */
+        ENUM_SIZE = 3
+    };
+
+    enum class PreconditionerType : int
+    {
+    	NONE = 0,
+		JACOBI = 1,
+		ILU = 2,
 
         /** This entry tells how many elements we have in the current enum class */
         ENUM_SIZE = 3
@@ -201,13 +211,37 @@ public:
      * @param[in] solver_type Type of solver. Valid values are:
      * - SolverType::GMRES (default type)
      * - SolverType::CG
+     * - SolverType::LU
      *
      * @param[in] tolerance The level that residual norms must reach to decide convergence.
      * Default is 1.0e-9.
      *
      * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
      */
-    LinearSolver(const Type solver_type = Type::LU,
+    LinearSolver(const Type solver_type = Type::GMRES,
+                 const Real tolerance = 1.0e-15,
+                 const int max_num_iter = 1000);
+
+    /**
+     * Constructor with a solver and a preconditioner type.
+     *
+     * @param[in] solver_type Type of solver. Valid values are:
+     * - SolverType::GMRES (default type)
+     * - SolverType::CG
+     * - SolverType::LU
+     *
+     * @param[in] prec_type Type of solver. Valid values are:
+     * - PreconditionerType::ILU (default type)
+     * - PreconditionerType::JACOBI
+     * - PreconditionerType::NONE
+     *
+     * @param[in] tolerance The level that residual norms must reach to decide convergence.
+     * Default is 1.0e-9.
+     *
+     * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
+     */
+    LinearSolver(const Type solver_type = Type::GMRES,
+                 const PreconditionerType prec_type = PreconditionerType::ILU,
                  const Real tolerance = 1.0e-15,
                  const int max_num_iter = 1000);
 
@@ -254,7 +288,7 @@ private:
 
 
     std::array<std::string,get_enum_size<Type>()> solver_type_enum_to_alias_ ;
-    std::array<std::string,get_enum_size<Type>()> solver_type_pc_to_alias_ ;
+    std::array<std::string,get_enum_size<PreconditionerType>()> prec_type_enum_to_alias_ ;
 
     /** LinearSolver parameters */
 //    Teuchos::RCP<Teuchos::ParameterList> solver_params_;

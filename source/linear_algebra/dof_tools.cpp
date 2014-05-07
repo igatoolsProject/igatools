@@ -22,6 +22,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
+#include "/home/vazquez/local/src/igatools/tests/tests.h"
 
 using std::vector;
 using std::map;
@@ -271,7 +272,6 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 }
 
 
-
 template <>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Matrix<LinearAlgebraPackage::petsc> &matrix,
@@ -279,6 +279,31 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<LinearAlgebraPackage::petsc> &solution)
 {
     PetscErrorCode ierr;
+
+    // todo: try to make a unified version for PETSc and trilinos
+    auto dof = boundary_values.begin();
+    const auto dof_end = boundary_values.end();
+    for (; dof != dof_end; ++dof)
+    {
+        Index row_id = dof->first;
+        const Real bc_value  = dof->second;
+        const Real mat_value = matrix(row_id,row_id);
+
+        // set the matrix in write mode
+        matrix.resume_fill();
+
+        // set the diagonal element corresponding to the entry
+        // (row_id,row_id) to mat_value
+        ierr = VecSetValue(solution.get_petsc_vector(), row_id, bc_value, INSERT_VALUES);
+
+        ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), 1, &row_id, mat_value,
+    			solution.get_petsc_vector(),rhs.get_petsc_vector());
+
+    	// I am not sure whether this is necessary in PETSc
+        matrix.fill_complete();
+    }
+
+    /*
     int num_rows = boundary_values.size();
 
     vector<Index> rows;
@@ -295,8 +320,8 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
     ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(),
     		num_rows,rows.data(),*my_pointer,
     		solution.get_petsc_vector(),rhs.get_petsc_vector()); //CHKERRQ(ierr);
+     */
 }
-
 
 };
 

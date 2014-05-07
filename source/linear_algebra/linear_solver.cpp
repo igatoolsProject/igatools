@@ -240,6 +240,7 @@ LinearSolver(const Type solver_type, const Real tolerance, const int max_num_ite
 {
 	PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
+    std::string prec_name;
 
     // map the SolverType enum elements to the name aliases used by PETSc
     solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "gmres";
@@ -248,10 +249,48 @@ LinearSolver(const Type solver_type, const Real tolerance, const int max_num_ite
 
     const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
 
+
+    if (solver_type == Type::LU)
+        prec_name = "lu" ;
+    else
+        prec_name = "none" ;
+
 	ierr = KSPCreate(comm_, &ksp_);
     ierr = KSPGetPC(ksp_,&pc_);
 
-    ierr = PCSetType(pc_,PCLU);
+    ierr = PCSetType(pc_,prec_name.c_str());
+    ierr = KSPSetType(ksp_,solver_name.c_str());
+
+    ierr = KSPSetTolerances(ksp_,tolerance,PETSC_DEFAULT,PETSC_DEFAULT,max_num_iter);
+}
+
+LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver(const Type solver_type, const PreconditionerType prec_type,
+             const Real tolerance, const int max_num_iter)
+{
+	PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
+
+    // map the SolverType enum elements to the name aliases used by PETSc
+    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "gmres";
+    solver_type_enum_to_alias_[to_integral(Type::CG)] = "cg";
+    solver_type_enum_to_alias_[to_integral(Type::LU)] = "preonly";
+
+    // map the PreconditionerType enum elements to the name aliases used by PETSc
+    prec_type_enum_to_alias_[to_integral(PreconditionerType::NONE)] = "none";
+    prec_type_enum_to_alias_[to_integral(PreconditionerType::ILU)] = "ilu";
+    prec_type_enum_to_alias_[to_integral(PreconditionerType::JACOBI)] = "jacobi";
+
+    const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
+    std::string prec_name = prec_type_enum_to_alias_[to_integral(prec_type)] ;
+
+    if (solver_type == Type::LU)
+        prec_name = "lu" ;
+
+	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPGetPC(ksp_,&pc_);
+
+    ierr = PCSetType(pc_,prec_name.c_str());
     ierr = KSPSetType(ksp_,solver_name.c_str());
 
     ierr = KSPSetTolerances(ksp_,tolerance,PETSC_DEFAULT,PETSC_DEFAULT,max_num_iter);
