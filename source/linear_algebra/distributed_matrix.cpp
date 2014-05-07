@@ -411,13 +411,13 @@ add_block(
     Assert(n_cols == Index(local_matrix.size2()),
            ExcDimensionMismatch(n_cols,Index(local_matrix.size2()))) ;
 
-    vector<Real> row_values ;
+    vector<PetscScalar> row_values ;
     for (int i = 0 ; i < n_rows ; ++i)
     {
         const auto row_local_matrix = local_matrix.get_row(i) ;
         for (int j = 0 ; j < n_cols ; ++j)
 //            row_values.push_back(row_local_matrix(j)) ;
-        	row_values.push_back(local_matrix(i,j)) ;
+        	row_values.push_back(PetscScalar(local_matrix(i,j))) ;
     }
 
     PetscErrorCode ierr;
