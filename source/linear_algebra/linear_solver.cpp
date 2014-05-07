@@ -124,19 +124,19 @@ IGA_NAMESPACE_OPEN
 #ifdef USE_TRILINOS
 
 LinearSolver<LinearAlgebraPackage::trilinos>::
-LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
+LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
     :
     solver_params_(parameterList())
 {
     // map the SolverType enum elements to the name aliases used by Belos
-    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::FlexibleGMRES)] = "Flexible GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::CG)] = "CG";
-    solver_type_enum_to_alias_[to_integral(Type::StochasticCG)] = "Stochastic CG";
-    solver_type_enum_to_alias_[to_integral(Type::RecyclingCG)] = "Recycling CG";
-    solver_type_enum_to_alias_[to_integral(Type::RecyclingGMRES)] = "Recycling GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::PseudoBlockGMRES)] = "Pseudo Block GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::PseudoBlockCG)] = "Pseudo Block CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::GMRES)] = "GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::FlexibleGMRES)] = "Flexible GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::CG)] = "CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::StochasticCG)] = "Stochastic CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::RecyclingCG)] = "Recycling CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::RecyclingGMRES)] = "Recycling GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::PseudoBlockGMRES)] = "Pseudo Block GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::PseudoBlockCG)] = "Pseudo Block CG";
 
 
     const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
@@ -236,21 +236,21 @@ get_num_iterations() const
 #ifdef USE_PETSC
 
 LinearSolver<LinearAlgebraPackage::petsc>::
-LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
+LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
 {
 	PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
     std::string prec_name;
 
     // map the SolverType enum elements to the name aliases used by PETSc
-    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "gmres";
-    solver_type_enum_to_alias_[to_integral(Type::CG)] = "cg";
-    solver_type_enum_to_alias_[to_integral(Type::LU)] = "preonly";
+    solver_type_enum_to_alias_[to_integral(SolverType::GMRES)] = "gmres";
+    solver_type_enum_to_alias_[to_integral(SolverType::CG)] = "cg";
+    solver_type_enum_to_alias_[to_integral(SolverType::LU)] = "preonly";
 
     const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
 
 
-    if (solver_type == Type::LU)
+    if (solver_type == SolverType::LU)
         prec_name = "lu" ;
     else
         prec_name = "none" ;
@@ -265,16 +265,16 @@ LinearSolver(const Type solver_type, const Real tolerance, const int max_num_ite
 }
 
 LinearSolver<LinearAlgebraPackage::petsc>::
-LinearSolver(const Type solver_type, const PreconditionerType prec_type,
+LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
              const Real tolerance, const int max_num_iter)
 {
 	PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
 
     // map the SolverType enum elements to the name aliases used by PETSc
-    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "gmres";
-    solver_type_enum_to_alias_[to_integral(Type::CG)] = "cg";
-    solver_type_enum_to_alias_[to_integral(Type::LU)] = "preonly";
+    solver_type_enum_to_alias_[to_integral(SolverType::GMRES)] = "gmres";
+    solver_type_enum_to_alias_[to_integral(SolverType::CG)] = "cg";
+    solver_type_enum_to_alias_[to_integral(SolverType::LU)] = "preonly";
 
     // map the PreconditionerType enum elements to the name aliases used by PETSc
     prec_type_enum_to_alias_[to_integral(PreconditionerType::NONE)] = "none";
@@ -284,7 +284,7 @@ LinearSolver(const Type solver_type, const PreconditionerType prec_type,
     const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
     std::string prec_name = prec_type_enum_to_alias_[to_integral(prec_type)] ;
 
-    if (solver_type == Type::LU)
+    if (solver_type == SolverType::LU)
         prec_name = "lu" ;
 
 	ierr = KSPCreate(comm_, &ksp_);

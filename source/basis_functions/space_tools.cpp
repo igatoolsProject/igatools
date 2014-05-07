@@ -406,7 +406,7 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
     using LinSolver = LinearSolver<linear_algebra_package>;
-    LinSolver solver(LinSolver::Type::CG,tolerance,max_num_iter) ;
+    LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
     return sol;
