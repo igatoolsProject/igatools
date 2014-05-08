@@ -528,13 +528,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     // resizing the containers for the basis functions
     if (flags_handler_.fill_values())
     {
-        if (D0phi_hat_.get_num_points() != total_n_points ||
-            D0phi_hat_.get_num_functions() != total_n_basis)
-        {
-            D0phi_hat_.resize(total_n_basis,total_n_points);
-            D0phi_hat_.zero();
-        }
-
         if (phi_hat_.get_num_points() != total_n_points ||
             phi_hat_.get_num_functions() != total_n_basis)
         {
@@ -544,7 +537,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     }
     else
     {
-        D0phi_hat_.clear();
         phi_hat_.clear();
     }
 
@@ -849,14 +841,8 @@ fill_from_univariate(
         elem.evaluate_bspline_derivatives<0>(size_,
                                              univariate_values,
                                              *this,
-                                             D0phi_hat_);
-        auto phi_hat = phi_hat_.begin();
-        for (auto &D0phi_hat : D0phi_hat_)
-        {
-//            *phi_hat = (D0phi_hat)(0);
-            *phi_hat = D0phi_hat;
-            ++phi_hat;
-        }
+                                             phi_hat_);
+
         flags_handler_.set_values_filled(true);
     }
 
@@ -1106,31 +1092,83 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     for (int i = 1; i < Space_t::n_components; ++i)
         comp_offset[i]= comp_offset[i-1] + size.n_basis_direction_(i).flat_size();
 
-    using der_t = Conditional<deriv_order==0,Values<dim,range,rank>,Derivatives<dim,range,rank,deriv_order>>;
-
-
-
-    using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
-    DerSymmMngr_t derivative_symmetry_manager;
-    const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
-    const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
-    const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
-
-    const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
-
-    const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
-    const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
 
     const Size num_points = size.n_points_direction_.flat_size();
 
-    if (deriv_order > 0)
+    if (deriv_order == 0)
     {
+        TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
+        for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+        {
+            const int n_basis = get_num_basis(iComp);
+            Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
+
+            const Size comp_offset_i = comp_offset[iComp];
+
+            DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
+            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
+            {
+                auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
+
+                const auto &scalar_bspline = *cache.scalar_evaluators_(iComp)(func_flat_id);
+
+                //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
+                if (dim > 0)
+                {
+                    scalar_bspline.evaluate_derivative_at_points(zero_tensor_id,derivative_scalar_component);
+
+                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                        derivatives_phi_hat_ifn[point_flat_id](iComp) = derivative_scalar_component(point_flat_id);
+                }
+                else
+                {
+                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                        derivatives_phi_hat_ifn[point_flat_id](iComp) = 1.0;
+                }
+
+            } // end func_flat_id loop
+
+        } // end iComp loop
+
+
+        if (space_->homogeneous_range_)
+        {
+            const auto n_basis = space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            {
+                const Size offset = comp_offset[comp];
+                for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+                {
+                    const auto values_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
+                    auto values_phi_hat_copy_to = derivatives_phi_hat.get_function_view(offset+basis_i);
+
+                    for (int qp = 0; qp < num_points; ++qp)
+                        values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](0);
+
+                } //end loop basis_i
+            } // end loop comp
+        } // end if (space_->homogeneous_range_)
+
+    } // end if (deriv_order == 0)
+    else // if (deriv_order != 0)
+    {
+        Assert(deriv_order >= 1, ExcLowerRange(deriv_order,1));
+
+        using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
+        DerSymmMngr_t derivative_symmetry_manager;
+        const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
+        const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
+        const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
+
+        const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
+
+        const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
+        const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
+
+        using der_t = Conditional<deriv_order==0,Values<dim,range,rank>,Derivatives<dim,range,rank,deriv_order>>;
 
         for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
         {
-//        const auto &splines1d_direction = elem_values(iComp);
-
-
             const int n_basis = get_num_basis(iComp);
             Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
@@ -1149,7 +1187,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
                     const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
 
                     // from the entry_tensor_id we get the right derivative order
-                    TensorIndex<dim> deriv_order_tensor_id;
+                    TensorIndex<dim> deriv_order_tensor_id; // [0,0,..,0] tensor index
                     for (int i = 0; i < deriv_order; ++i)
                         ++(deriv_order_tensor_id[entry_tensor_id[i]]);
 
@@ -1203,116 +1241,14 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
                         const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
                         der_t &values = derivatives_phi_hat_copy_to[qp];
 
-                        if (deriv_order > 0)
-                        {
-                            for (int der = 0; der < n_ders; ++der)
-                                values(der)(comp) = values_0(der)(0);
-                        }
-                        else
-                        {
-                            values(comp) = values_0(0);
-                        }
+                        for (int der = 0; der < n_ders; ++der)
+                            values(der)(comp) = values_0(der)(0);
                     }
                 } //end loop basis_i
             } // end loop comp
         } // end if (space_->homogeneous_range_)
 
     } // end if (deriv_order > 0)
-    else
-    {
-        for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
-        {
-            //        const auto &splines1d_direction = elem_values(iComp);
-
-
-            const int n_basis = get_num_basis(iComp);
-            Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
-
-            const Size comp_offset_i = comp_offset[iComp];
-
-            DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
-            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
-            {
-                auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
-
-                const auto &scalar_bspline = *cache.scalar_evaluators_(iComp)(func_flat_id);
-
-                for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
-                {
-                    const int entry_flat_id = derivatives_flat_id_evaluate[entry_id];
-                    const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
-
-                    // from the entry_tensor_id we get the right derivative order
-                    TensorIndex<dim> deriv_order_tensor_id;
-                    for (int i = 0; i < deriv_order; ++i)
-                        ++(deriv_order_tensor_id[entry_tensor_id[i]]);
-
-                    //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
-                    if (dim > 0)
-                    {
-                        scalar_bspline.evaluate_derivative_at_points(deriv_order_tensor_id,derivative_scalar_component);
-
-                        for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                            derivatives_phi_hat_ifn[point_flat_id](iComp) = derivative_scalar_component(point_flat_id);
-                    }
-                    else
-                    {
-                        for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                            derivatives_phi_hat_ifn[point_flat_id](iComp) = 1.0;
-                    }
-
-                } // end entry_id loop
-
-            } // end func_flat_id loop
-
-            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
-            {
-                auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
-                for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                {
-                    der_t &derivative = derivatives_phi_hat_ifn[point_flat_id];
-
-                    // here we copy the computed quantities to the symmetric part of the tensor
-                    for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
-                        derivative(derivatives_flat_id_copy_to[entry_id])(iComp) =
-                            derivative(derivatives_flat_id_copy_from[entry_id])(iComp);
-                } // end point_flat_id loop
-            } //end func_flat_id loop
-
-        } // end iComp loop
-
-
-        if (space_->homogeneous_range_)
-        {
-            const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = space_->get_num_basis_per_element(0);
-            for (int comp = 1; comp < Space_t::n_components; ++comp)
-            {
-                const Size offset = comp_offset[comp];
-                for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-                {
-                    const auto derivatives_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
-                    auto derivatives_phi_hat_copy_to = derivatives_phi_hat.get_function_view(offset+basis_i);
-                    for (int qp = 0; qp < num_points; ++qp)
-                    {
-                        const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
-                        der_t &values = derivatives_phi_hat_copy_to[qp];
-
-                        if (deriv_order > 0)
-                        {
-                            for (int der = 0; der < n_ders; ++der)
-                                values(der)(comp) = values_0(der)(0);
-                        }
-                        else
-                        {
-                            values(comp) = values_0(0);
-                        }
-                    }
-                } //end loop basis_i
-            } // end loop comp
-        } // end if (space_->homogeneous_range_)
-
-    } // end if (deriv_order == 0)
 
 }
 

@@ -606,9 +606,6 @@ protected:
 
 
         ValueTable<Value> phi_hat_;
-
-        //TODO (Sep 16, 2013, pauletti): D0phi_hat_ must be removed
-        ValueTable<Value> D0phi_hat_;
         ValueTable<Derivative<1>> D1phi_hat_;
         ValueTable<Derivative<2>> D2phi_hat_;
 
