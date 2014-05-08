@@ -30,16 +30,6 @@
 
 IGA_NAMESPACE_OPEN
 
-/**
- * @brief Evaluate the <t>k</tt>-th order derivative of the Bernstein's polynomials
- * of order <tt>p</tt> at point <tt>x</tt>.
- *
- * @warning The point <tt>x</tt> must belong to the unit interval [0,1], otherwise an
- * assertion will be raised in Debug mode.
- */
-std::vector<Real>
-evaluate_bernstein_polynomials_derivatives(const int k, const int p,const Real &x);
-
 
 /**
  * The Bernstein polynomial basis of degree p.
@@ -58,13 +48,14 @@ evaluate_bernstein_polynomials_derivatives(const int k, const int p,const Real &
  * \endcode
  *
  * @author pauletti 2013
+ * @author M. Martinelli 2014
  *
  */
 namespace BernsteinBasis
 {
 /**
  * Compute the values of all the p+1 Bernstein basis
- * of degree @p p at the given points x.
+ * of degree @p p at the given points \f$ x \f$.
  *
  * The values are returned in a matrix B, where
  *  B[i][j] is \f$ B^p_i(x_j) \f$.
@@ -73,14 +64,39 @@ boost::numeric::ublas::matrix<Real>
 evaluate(const int p,  const std::vector<Real> &x) ;
 
 /**
+ * Compute the values of all the p+1 Bernstein basis
+ * of degree @p p at the given point \f$ x \f$.
+ *
+ * The values are returned in a vector B, where
+ *  B[i] is \f$ B^p_i(x) \f$.
+ *
+ * @warning The point \f$ x \f$ must belong to the unit interval [0,1], otherwise an
+ * assertion will be raised in Debug mode.
+ */
+std::vector<Real>
+evaluate(const int p, const Real x) ;
+
+/**
  * Computes the derivatives of order k of the Berstein basis
- * at the given points x.
+ * at the given points \f$ x \f$.
  * The values are returned in a matrix DkB, where
  *  DkB[i][j] is \f$ \frac{d^k B^p_i(x_j)}{dx^k} \f$.
  *
  */
 boost::numeric::ublas::matrix<Real>
 derivative(int k, const int p, const std::vector<Real> &x) ;
+
+/**
+ * Computes the derivatives of order k of the Berstein basis
+ * at the given point \f$ x \f$.
+ * The values are returned in a vector DkB, where
+ *  DkB[i] is \f$ \frac{d^k B^p_i(x)}{dx^k} \f$.
+ *
+ * @warning The point \f$ x \f$ must belong to the unit interval [0,1], otherwise an
+ * assertion will be raised in Debug mode.
+ */
+std::vector<Real>
+derivative(int k, const int p, const Real x) ;
 
 };
 

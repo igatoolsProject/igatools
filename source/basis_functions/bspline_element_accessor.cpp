@@ -1628,8 +1628,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     const int polynomial_order = n_basis_1D - 1 ;
 
                     value_scalar_bernstein[dir] =
-                    evaluate_bernstein_polynomials_derivatives(
-                        0,polynomial_order,point[dir]);
+                    BernsteinBasis::derivative(0,polynomial_order,point[dir]);
 
                 }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
