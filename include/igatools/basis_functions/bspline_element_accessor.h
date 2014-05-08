@@ -225,16 +225,19 @@ protected:
 
 public:
 
+    /** @name Functions for the basis and field evaluations without the use of the cache */
+    ///@{
+
     /**
-     * Returns a ValueTable with the <tt>order</tt>-th derivatives of all local basis function
+     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
      * needing to pre-call init_values()/fill_values().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
-    template <int order>
-    ValueTable< Conditional< order==0,Value,Derivative<order> > >
+    template <int deriv_order>
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
 
     /**
@@ -250,15 +253,15 @@ public:
 
 
     /**
-     * Returns a ValueVector with the <tt>order</tt>-th derivatives of the field
+     * Returns a ValueVector with the <tt>deriv_order</tt>-th derivatives of the field
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
      * needing to pre-call init_values()/fill_values().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
-    template <int order>
-    ValueVector< Conditional< order==0,Value,Derivative<order> > >
+    template <int deriv_order>
+    ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
         const std::vector<Real> &local_coefs,
         const std::vector<Point<dim>> &points) const;
@@ -277,7 +280,7 @@ public:
         const std::vector<Real> &local_coefs,
         const std::vector<Point<dim>> &points) const;
 
-
+    ///@}
 
     /** @name Functions returning the value of the basis functions. */
     ///@{
@@ -551,7 +554,7 @@ private:
         void reset(StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction,
                    TensorSize<dim> n_points_direction);
 
-        StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
+//        StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
 
         TensorSize<dim> n_points_direction_;
 
@@ -829,6 +832,10 @@ private:
 
 
     template <typename Accessor> friend class GridForwardIterator;
+
+
+    /** Number of scalar basis functions along each direction, for all space components. */
+    StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
 
 
 public:

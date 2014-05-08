@@ -282,7 +282,15 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
     :
     CartesianGridElementAccessor<dim>(space->get_grid(), index),
     space_(space)
-{}
+{
+    //--------------------------------------------------------------------------
+//    StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction;
+    for (int i = 0; i < Space_t::n_components; ++i)
+        for (int j=0; j<dim; ++j)
+            n_basis_direction_(i)[j] = space_->degree_(i)[j]+1;
+    //--------------------------------------------------------------------------
+
+}
 
 
 
@@ -439,15 +447,6 @@ reset_element_cache(const ValueFlags fill_flag,
                     const Quadrature<dim> &quad)
 {
     //--------------------------------------------------------------------------
-    StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction;
-    for (int i = 0; i < Space_t::n_components; ++i)
-        for (int j=0; j<dim; ++j)
-            n_basis_direction(i)[j] = space_->degree_(i)[j]+1;
-    //--------------------------------------------------------------------------
-
-
-
-    //--------------------------------------------------------------------------
     BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
     BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
 
@@ -457,14 +456,14 @@ reset_element_cache(const ValueFlags fill_flag,
            ExcMessage("Nothing to reset"));
 
     if (!elem_flags_handler.fill_none())
-        elem_values_.reset(elem_flags_handler, n_basis_direction, quad);
+        elem_values_.reset(elem_flags_handler, n_basis_direction_, quad);
 
 
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0 ;
         for (auto& face_value : face_values_)
-            face_value.reset(face_id++, face_flags_handler, n_basis_direction, quad);
+            face_value.reset(face_id++, face_flags_handler, n_basis_direction_, quad);
     }
     //--------------------------------------------------------------------------
 }
@@ -517,7 +516,7 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
 
     int total_n_basis = 0;
     for (int i = 0; i < Space_t::n_components; ++i)
-        total_n_basis += this->size_.n_basis_direction_(i).flat_size();
+        total_n_basis += n_basis_direction(i).flat_size();
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
@@ -638,7 +637,7 @@ FuncPointSize::
 reset(StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction,
       TensorSize<dim> n_points_direction)
 {
-    n_basis_direction_ = n_basis_direction;
+//    n_basis_direction_ = n_basis_direction;
     n_points_direction_ = n_points_direction;
 
     //--------------------------------------------------------------------------
@@ -648,7 +647,7 @@ reset(StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction,
 
     const int n_components = StaticMultiArray<TensorIndex<dim>, range, rank>::n_entries;
     for (int iComp = 0; iComp < n_components; ++iComp)
-        basis_functions_indexer_(iComp) = shared_ptr<Indexer>(new Indexer(n_basis_direction_(iComp)));
+        basis_functions_indexer_(iComp) = shared_ptr<Indexer>(new Indexer(n_basis_direction(iComp)));
 
     points_indexer_ = shared_ptr<Indexer>(new Indexer(n_points_direction_));
     //--------------------------------------------------------------------------
@@ -1090,7 +1089,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     array<int, Space_t::n_components> comp_offset;
     comp_offset[0] = 0;
     for (int i = 1; i < Space_t::n_components; ++i)
-        comp_offset[i]= comp_offset[i-1] + size.n_basis_direction_(i).flat_size();
+        comp_offset[i]= comp_offset[i-1] + n_basis_direction_(i).flat_size();
 
 
     const Size num_points = size.n_points_direction_.flat_size();
@@ -1101,7 +1100,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
         for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
         {
             const int n_basis = get_num_basis(iComp);
-            Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
+            Assert(n_basis == n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
             const Size comp_offset_i = comp_offset[iComp];
 
@@ -1170,7 +1169,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
         for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
         {
             const int n_basis = get_num_basis(iComp);
-            Assert(n_basis == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
+            Assert(n_basis == n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
             const Size comp_offset_i = comp_offset[iComp];
 
@@ -1575,19 +1574,105 @@ shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> &
 
 
 template <int dim, int range, int rank>
-template<int order>
+template<int deriv_order>
 auto
 BSplineElementAccessor<dim, range, rank>::
 evaluate_basis_derivatives_at_points(const vector<Point<dim>> &points) const ->
-ValueTable< Conditional< order==0,Value,Derivative<order> > >
+ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
-    using return_t = ValueTable< Conditional< order==0,Value,Derivative<order> > >;
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    using return_t = ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >;
 
-    return_t values;
+    const Size n_basis  = this->get_num_basis();
+    const Size n_points = points.size();
 
-    return values;
+    return_t derivatives_phi_hat(n_basis,n_points);
+
+    array<int, Space_t::n_components> comp_offset;
+    comp_offset[0] = 0;
+    for (int iComp = 1; iComp < Space_t::n_components; ++iComp)
+        comp_offset[iComp]= comp_offset[iComp-1] + this->get_num_basis(iComp);
+
+
+    if (deriv_order == 0)
+    {
+        for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
+        {
+            const Point<dim> point = points[pt_id];
+#ifndef NDEBUG
+            for (int dir = 0 ; dir < dim ; ++dir)
+                Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
+                ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
+#endif
+
+
+            TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
+            for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+            {
+//            const int n_basis_comp = get_num_basis(iComp);
+//            Assert(n_basis_comp == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
+
+                const Size comp_offset_i = comp_offset[iComp];
+
+                for (Size basis_fid = 0 ; basis_fid < n_basis ; ++basis_fid)
+                {
+
+                }
+
+                /*
+                            DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
+                            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
+                            {
+                                auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
+
+                                const auto &scalar_bspline = *cache.scalar_evaluators_(iComp)(func_flat_id);
+
+                                //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
+                                if (dim > 0)
+                                {
+                                    scalar_bspline.evaluate_derivative_at_points(zero_tensor_id,derivative_scalar_component);
+
+                                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                                        derivatives_phi_hat_ifn[point_flat_id](iComp) = derivative_scalar_component(point_flat_id);
+                                }
+                                else
+                                {
+                                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
+                                        derivatives_phi_hat_ifn[point_flat_id](iComp) = 1.0;
+                                }
+
+                            } // end func_flat_id loop
+                //*/
+            } // end iComp loop
+
+        } // end pt_id loop
+
+        if (space_->homogeneous_range_)
+        {
+            const auto n_basis = space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            {
+                const Size offset = comp_offset[comp];
+                for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+                {
+                    const auto values_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
+                    auto values_phi_hat_copy_to = derivatives_phi_hat.get_function_view(offset+basis_i);
+
+                    for (int qp = 0; qp < n_points; ++qp)
+                        values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](0);
+
+                } //end loop basis_i
+            } // end loop comp
+        } // end if (space_->homogeneous_range_)
+
+    } // end if (deriv_order == 0)
+
+
+
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
+
+
+    return derivatives_phi_hat;
 }
 
 template <int dim, int range, int rank>
@@ -1601,18 +1686,18 @@ ValueTable<Value>
 
 
 template <int dim, int range, int rank>
-template<int order>
+template<int deriv_order>
 auto
 BSplineElementAccessor<dim, range, rank>::
 evaluate_field_derivatives_at_points(
     const std::vector<Real> &local_coefs,
     const vector<Point<dim>> &points) const ->
-ValueVector< Conditional< order==0,Value,Derivative<order> > >
+ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
-    const auto derivatives_phi_hat = this->evaluate_basis_derivatives_at_points<order>(points);
+    const auto derivatives_phi_hat = this->evaluate_basis_derivatives_at_points<deriv_order>(points);
     Assert(derivatives_phi_hat.get_num_functions() == this->get_num_basis(),
     ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), this->get_num_basis())) ;
 
