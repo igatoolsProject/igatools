@@ -234,7 +234,8 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     template <int order>
-    ValueTable<Derivative<order>> eval_basis_derivatives_at_points(const Point<dim> &points) const;
+    ValueTable< Conditional< order==0,Value,Derivative<order> > >
+    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
 
     /**
      * Returns a ValueTable with the values of all local basis function
@@ -244,7 +245,37 @@ public:
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
-    ValueTable<Value> eval_basis_values_at_points(const Point<dim> &points) const;
+    ValueTable<Value>
+    evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const;
+
+
+    /**
+     * Returns a ValueVector with the <tt>order</tt>-th derivatives of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <int order>
+    ValueVector< Conditional< order==0,Value,Derivative<order> > >
+    evaluate_field_derivatives_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const;
+
+
+    /**
+     * Returns a ValueVector with the values of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector<Value>
+    evaluate_field_values_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const;
 
 
 

@@ -1578,28 +1578,57 @@ template <int dim, int range, int rank>
 template<int order>
 auto
 BSplineElementAccessor<dim, range, rank>::
-eval_basis_derivatives_at_points(const Point<dim> &points) const -> ValueTable<Derivative<order>>
+evaluate_basis_derivatives_at_points(const vector<Point<dim>> &points) const ->
+ValueTable< Conditional< order==0,Value,Derivative<order> > >
 {
+    using return_t = ValueTable< Conditional< order==0,Value,Derivative<order> > >;
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
 
-    ValueTable<Derivative<order>> values;
+    return_t values;
 
     return values;
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_basis_values_at_points(const vector<Point<dim>> &points) const ->
+ValueTable<Value>
+{
+    return this->evaluate_basis_derivatives_at_points<0>(points);
+}
+
+
+template <int dim, int range, int rank>
+template<int order>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_derivatives_at_points(
+    const std::vector<Real> &local_coefs,
+    const vector<Point<dim>> &points) const ->
+ValueVector< Conditional< order==0,Value,Derivative<order> > >
+{
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto derivatives_phi_hat = this->evaluate_basis_derivatives_at_points<order>(points);
+    Assert(derivatives_phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return derivatives_phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
 
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-eval_basis_values_at_points(const Point<dim> &points) const -> ValueTable<Value>
+evaluate_field_values_at_points(
+    const std::vector<Real> &local_coefs,
+    const vector<Point<dim>> &points) const ->
+ValueVector<Value>
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-
-    ValueTable<Value> values;
-
-    return values;
+    return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
 }
 
 template <int dim, int range, int rank>
