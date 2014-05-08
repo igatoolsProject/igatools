@@ -31,6 +31,17 @@
 IGA_NAMESPACE_OPEN
 
 /**
+ * @brief Evaluate the <t>k</tt>-th order derivative of the Bernstein's polynomials
+ * of order <tt>p</tt> at point <tt>x</tt>.
+ *
+ * @warning The point <tt>x</tt> must belong to the unit interval [0,1], otherwise an
+ * assertion will be raised in Debug mode.
+ */
+std::vector<Real>
+evaluate_bernstein_polynomials_derivatives(const int k, const int p,const Real &x);
+
+
+/**
  * The Bernstein polynomial basis of degree p.
  * The i-th (0<=i<=p) Bernstein polynomial
  * is defined as: \f$ B^p_i(x) = {p \choose i } x^i (1-x)^{n-i} \f$.

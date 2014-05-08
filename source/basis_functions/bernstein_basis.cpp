@@ -31,6 +31,60 @@ using std::vector;
 
 IGA_NAMESPACE_OPEN
 
+std::vector<Real>
+evaluate_bernstein_polynomials_derivatives(const int order, const int p,const Real &x)
+{
+    Assert(order >= 0, ExcLowerRange(order,0));
+
+    const int n_poly = p + 1 ;
+
+    if (order > 0)
+    {
+        /*
+         * To compute derivatives we use the recusion formula
+         * dB^k = p* ( dB^{k-1}_{i-1} - dB^{k-1}_{i}).
+         * To stop the recusion we specialize to the function evaluation in
+         * derivative<0>.
+         */
+        if (p==0)
+            return vector<Real>(n_poly,0.0);
+
+        vector<Real> dB(n_poly);
+        vector<Real> B = evaluate_bernstein_polynomials_derivatives(order-1,p-1,x);
+
+        dB[0] = - B[0];
+        dB[p] =   B[p-1];
+        for (int i = 1 ; i < p ; ++i)
+            dB[i] = p * (B[i-1] - B[i]);
+
+        return dB;
+    } // end if (order > 0)
+    else
+    {
+        vector<Real> B(n_poly);
+
+        vector<Real> ones(n_poly,1.0);
+        vector<Real> t(ones);
+        vector<Real> one_t(ones);
+
+        for (int k = 1 ; k < n_poly ; ++k)
+            for (int i = k ; i < n_poly ; ++i)
+            {
+                t[i]     *= x;
+                one_t[i] *= 1.-x;
+            }
+
+        for (int i = 0 ; i < n_poly ; ++i)
+        {
+            Real C = binomial_coefficient<Real>(p, i);
+            B[i] = C * t[i] * one_t[p-i] ;
+        }
+
+        return B;
+
+    } // end if (order == 0)
+}
+
 
 matrix<Real>
 BernsteinBasis::evaluate(const int p,  const std::vector< Real > &points)

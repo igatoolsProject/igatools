@@ -284,12 +284,18 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
     space_(space)
 {
     //--------------------------------------------------------------------------
-//    StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction;
-    for (int i = 0; i < Space_t::n_components; ++i)
-        for (int j=0; j<dim; ++j)
-            n_basis_direction_(i)[j] = space_->degree_(i)[j]+1;
-    //--------------------------------------------------------------------------
+    using Indexer = CartesianProductIndexer<dim>;
 
+    for (int comp_id = 0; comp_id < Space_t::n_components; ++comp_id)
+    {
+        for (int j=0; j<dim; ++j)
+            n_basis_direction_(comp_id)[j] = space_->degree_(comp_id)[j]+1;
+
+        // creating the objects for fast conversion from flat-to-tensor indexing
+        // (in practice it is an hash-table from flat to tensor indices)
+        basis_functions_indexer_(comp_id) = shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
+    }
+    //--------------------------------------------------------------------------
 }
 
 
@@ -645,9 +651,9 @@ reset(StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction,
     // in practice is an hash-table from flat to tensor indices
     using Indexer = CartesianProductIndexer<dim>;
 
-    const int n_components = StaticMultiArray<TensorIndex<dim>, range, rank>::n_entries;
-    for (int iComp = 0; iComp < n_components; ++iComp)
-        basis_functions_indexer_(iComp) = shared_ptr<Indexer>(new Indexer(n_basis_direction(iComp)));
+//    const int n_components = StaticMultiArray<TensorIndex<dim>, range, rank>::n_entries;
+//    for (int iComp = 0; iComp < n_components; ++iComp)
+//        basis_functions_indexer_(iComp) = shared_ptr<Indexer>(new Indexer(n_basis_direction(iComp)));
 
     points_indexer_ = shared_ptr<Indexer>(new Indexer(n_points_direction_));
     //--------------------------------------------------------------------------
@@ -1598,6 +1604,9 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
         {
             const Point<dim> point = points[pt_id];
+
+            auto derivatives_phi_hat_ipt = derivatives_phi_hat.get_point_view(pt_id);
+
 #ifndef NDEBUG
             for (int dir = 0 ; dir < dim ; ++dir)
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
@@ -1605,45 +1614,41 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 #endif
 
 
-            TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
             for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
             {
-//            const int n_basis_comp = get_num_basis(iComp);
-//            Assert(n_basis_comp == size.n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
-
                 const Size comp_offset_i = comp_offset[iComp];
 
-                for (Size basis_fid = 0 ; basis_fid < n_basis ; ++basis_fid)
+                //------------------------------------------------------------------------------
+                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
+                array<vector<Real>,dim> value_scalar_bernstein;
+                const TensorSize<dim> basis_component_t_size = n_basis_direction_(iComp);
+                for (int dir = 0 ; dir < dim ; ++dir)
                 {
+                    const int n_basis_1D = basis_component_t_size(dir);
+                    const int polynomial_order = n_basis_1D - 1 ;
+
+                    value_scalar_bernstein[dir] =
+                    evaluate_bernstein_polynomials_derivatives(
+                        0,polynomial_order,point[dir]);
 
                 }
+                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
+                //------------------------------------------------------------------------------
 
-                /*
-                            DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
-                            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
-                            {
-                                auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
 
-                                const auto &scalar_bspline = *cache.scalar_evaluators_(iComp)(func_flat_id);
+                const auto &basis_flat_to_tensor = *basis_functions_indexer_(iComp);
+                const int n_basis_component = basis_component_t_size.flat_size();
+                for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
+                {
+                    const TensorIndex<dim> basis_tid = basis_flat_to_tensor(basis_fid);
 
-                                //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
-                                if (dim > 0)
-                                {
-                                    scalar_bspline.evaluate_derivative_at_points(zero_tensor_id,derivative_scalar_component);
+                    Real value = 1.0;
+                    for (int dir = 0 ; dir < dim ; ++dir)
+                        value *= value_scalar_bernstein[dir][basis_tid[dir]];
 
-                                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                                        derivatives_phi_hat_ifn[point_flat_id](iComp) = derivative_scalar_component(point_flat_id);
-                                }
-                                else
-                                {
-                                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                                        derivatives_phi_hat_ifn[point_flat_id](iComp) = 1.0;
-                                }
-
-                            } // end func_flat_id loop
-                //*/
+                    derivatives_phi_hat_ipt[basis_fid+comp_offset_i](iComp) = value;
+                }
             } // end iComp loop
-
         } // end pt_id loop
 
         if (space_->homogeneous_range_)
@@ -1665,11 +1670,16 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         } // end if (space_->homogeneous_range_)
 
     } // end if (deriv_order == 0)
+    else
+    {
+
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+
+    } // end if (deriv_order != 0)
 
 
 
-//    Assert(false,ExcNotImplemented());
-//    AssertThrow(false,ExcNotImplemented());
 
 
     return derivatives_phi_hat;

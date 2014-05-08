@@ -560,7 +560,7 @@ private:
 
         std::shared_ptr<CartesianProductIndexer<dim>> points_indexer_;
 
-        StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
+//        StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
     };
 
 
@@ -837,6 +837,8 @@ private:
     /** Number of scalar basis functions along each direction, for all space components. */
     StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
 
+
+    StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
 
 public:
     const ComponentTable<
