@@ -77,6 +77,10 @@ public:
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
 public:
+    /** Container indexed by the components of the space */
+    template< class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
+
     using DegreeTable = typename spline_space_t::DegreeTable;
 
     using MultiplicityTable = typename spline_space_t::MultiplicityTable;
