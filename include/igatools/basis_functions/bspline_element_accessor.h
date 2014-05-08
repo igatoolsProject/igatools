@@ -608,7 +608,7 @@ protected:
         ValueTable<Value> phi_hat_;
 
         //TODO (Sep 16, 2013, pauletti): D0phi_hat_ must be removed
-        ValueTable<Derivative<0>> D0phi_hat_;
+        ValueTable<Value> D0phi_hat_;
         ValueTable<Derivative<1>> D1phi_hat_;
         ValueTable<Derivative<2>> D2phi_hat_;
 
@@ -699,7 +699,9 @@ private:
     void evaluate_bspline_derivatives(const FuncPointSize &size,
                                       const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
                                       const ValuesCache &cache,
-                                      ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const;
+                                      ValueTable<
+                                      Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
+                                      > &derivatives_phi_hat) const;
 
 
 
