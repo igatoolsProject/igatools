@@ -637,6 +637,28 @@ get_divergences() const -> const ValueTable<Div> &
 
 
 template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+get_bezier_extraction_operator() const -> ComponentTable< std::array< const DenseMatrix *,dim> >
+{
+    ComponentTable< std::array< const DenseMatrix *,dim> > bezier_op;
+
+    const int n_components = bezier_op.flat_size();
+
+    TensorIndex<dim> element_tid = this->get_tensor_index();
+
+    for (int comp_id = 0 ; comp_id < n_components ; ++comp_id)
+    {
+        for (int dir = 0 ; dir < dim ; ++dir)
+            bezier_op(comp_id)[dir] = space_->bezier_op_(comp_id).get_data_direction(dir)[element_tid[dir]];
+    }
+
+    return bezier_op;
+
+}
+
+
+template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
 FuncPointSize::
@@ -650,10 +672,6 @@ reset(StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction,
     // creating the objects for fast conversion from flat-to-tensor indexing
     // in practice is an hash-table from flat to tensor indices
     using Indexer = CartesianProductIndexer<dim>;
-
-//    const int n_components = StaticMultiArray<TensorIndex<dim>, range, rank>::n_entries;
-//    for (int iComp = 0; iComp < n_components; ++iComp)
-//        basis_functions_indexer_(iComp) = shared_ptr<Indexer>(new Indexer(n_basis_direction(iComp)));
 
     points_indexer_ = shared_ptr<Indexer>(new Indexer(n_points_direction_));
     //--------------------------------------------------------------------------
@@ -1599,6 +1617,9 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         comp_offset[iComp]= comp_offset[iComp-1] + this->get_num_basis(iComp);
 
 
+
+    const auto bezier_op = this->get_bezier_extraction_operator();
+
     if (deriv_order == 0)
     {
         for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
@@ -1616,25 +1637,49 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
             for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
             {
-                const Size comp_offset_i = comp_offset[iComp];
-
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
-                array<vector<Real>,dim> value_scalar_bernstein;
+                array<vector<Real>,dim> bernstein_values;
                 const TensorSize<dim> basis_component_t_size = n_basis_direction_(iComp);
                 for (int dir = 0 ; dir < dim ; ++dir)
                 {
                     const int n_basis_1D = basis_component_t_size(dir);
                     const int polynomial_order = n_basis_1D - 1 ;
-
-                    value_scalar_bernstein[dir] =
+                    bernstein_values[dir] =
                     BernsteinBasis::derivative(0,polynomial_order,point[dir]);
-
                 }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
                 //------------------------------------------------------------------------------
 
 
+
+                const Size comp_offset_i = comp_offset[iComp];
+
+                //--------------------------------------------------------------------------------
+                // apply the Bezier extraction operator for the functions on this element -- begin
+                const auto &bezier_op_comp = bezier_op(iComp);
+
+                array<vector<Real>,dim> bspline_basis;
+                for (int dir = 0 ; dir < dim ; ++dir)
+                {
+                    const int n_basis_1D = basis_component_t_size(dir);
+                    bspline_basis[dir].resize(n_basis_1D);
+
+                    const auto &M = *(bezier_op_comp[dir]);
+
+                    for (int row = 0 ; row < n_basis_1D ; ++row)
+                    {
+                        bspline_basis[dir][row] = 0.0;
+                        for (int col = 0 ; col < n_basis_1D ; ++col)
+                            bspline_basis[dir][row] += M(row,col) * bernstein_values[dir][col];
+                    }
+                }
+                // apply the Bezier extraction operator for the functions on this element -- end
+                //--------------------------------------------------------------------------------
+
+
+                //--------------------------------------------------------------------------------
+                // multiply the spline 1D in order to have the multi-d value -- begin
                 const auto &basis_flat_to_tensor = *basis_functions_indexer_(iComp);
                 const int n_basis_component = basis_component_t_size.flat_size();
                 for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
@@ -1643,10 +1688,13 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
                     Real value = 1.0;
                     for (int dir = 0 ; dir < dim ; ++dir)
-                        value *= value_scalar_bernstein[dir][basis_tid[dir]];
+                        value *= bspline_basis[dir][basis_tid[dir]];
 
                     derivatives_phi_hat_ipt[basis_fid+comp_offset_i](iComp) = value;
                 }
+                // multiply the spline 1D in order to have the multi-d value -- end
+                //--------------------------------------------------------------------------------
+
             } // end iComp loop
         } // end pt_id loop
 

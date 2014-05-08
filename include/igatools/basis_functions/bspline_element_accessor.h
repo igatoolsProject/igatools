@@ -824,6 +824,11 @@ protected:
      */
     std::array<FaceValuesCache, n_faces> face_values_;
 
+
+    /** Returns the Bezier extraction operator relative to the current element. */
+    ComponentTable< std::array< const DenseMatrix *,dim> > get_bezier_extraction_operator() const;
+
+
 private:
     /**
      * Space for which the BSplineElementAccessor refers to.
