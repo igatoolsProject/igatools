@@ -33,44 +33,6 @@ IGA_NAMESPACE_OPEN
 
 
 
-matrix<Real>
-BernsteinBasis::evaluate(const int p,  const std::vector< Real > &points)
-{
-    /*
-     * First we compute 2 table where each colum we store
-     * 1 1 1, t t t, t^2 t^2 t^2, ...
-     * 1 1 1, 1-t 1-t 1-t, (1-t)^2 (1-t)^2 (1-t)^2, ...
-     *
-     */
-    const int n_points = points.size() ;
-    const int n_basis  = p + 1 ;
-
-    matrix<Real> B(n_basis, n_points);
-
-    boost::numeric::ublas::scalar_matrix<Real> ones(n_basis, n_points,1.);
-    matrix<Real> t(ones);
-    matrix<Real> one_t(ones);
-
-
-    for (int k = 1 ; k < n_basis ; ++k)
-        for (int i = k ; i < n_basis ; ++i)
-            for (int j = 0 ; j < n_points ; ++j)
-            {
-                t(i,j)   *= points[j];
-                one_t(i,j) *= 1.-points[j];
-            }
-
-
-    for (int i = 0 ; i < n_basis ; ++i)
-    {
-        Real C = binomial_coefficient<Real>(p, i);
-        for (int j = 0 ; j < n_points ; ++j)
-            B(i,j) = C * t(i,j) * one_t(p-i,j) ;
-    }
-
-    return (B);
-}
-
 vector<Real>
 BernsteinBasis::evaluate(const int p, const Real x)
 {
@@ -145,6 +107,52 @@ BernsteinBasis::derivative(
     } // end if (order == 0)
 }
 
+
+
+matrix<Real>
+BernsteinBasis::evaluate(const int p,  const std::vector< Real > &points)
+{
+    /*
+     * First we compute 2 table where each colum we store
+     * 1 1 1, t t t, t^2 t^2 t^2, ...
+     * 1 1 1, 1-t 1-t 1-t, (1-t)^2 (1-t)^2 (1-t)^2, ...
+     *
+     */
+    const int n_points = points.size() ;
+    const int n_basis  = p + 1 ;
+
+#ifndef NDEBUG
+    for (int i = 0 ; i < n_points ; ++i)
+        Assert(points[i] >= 0.0 && points[i] <= 1.0,
+               ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
+#endif
+
+    matrix<Real> B(n_basis, n_points);
+
+    boost::numeric::ublas::scalar_matrix<Real> ones(n_basis, n_points,1.);
+    matrix<Real> t(ones);
+    matrix<Real> one_t(ones);
+
+
+    for (int k = 1 ; k < n_basis ; ++k)
+        for (int i = k ; i < n_basis ; ++i)
+            for (int j = 0 ; j < n_points ; ++j)
+            {
+                t(i,j)   *= points[j];
+                one_t(i,j) *= 1.-points[j];
+            }
+
+
+    for (int i = 0 ; i < n_basis ; ++i)
+    {
+        Real C = binomial_coefficient<Real>(p, i);
+        for (int j = 0 ; j < n_points ; ++j)
+            B(i,j) = C * t(i,j) * one_t(p-i,j) ;
+    }
+
+    return (B);
+}
+
 matrix<Real>
 BernsteinBasis::derivative(
     const int order,
@@ -160,6 +168,12 @@ BernsteinBasis::derivative(
          * derivative<0>.
          */
         const int n_points = points.size() ;
+
+#ifndef NDEBUG
+        for (int i = 0 ; i < n_points ; ++i)
+            Assert(points[i] >= 0.0 && points[i] <= 1.0,
+                   ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
+#endif
 
         if (p==0)
             return (boost::numeric::ublas::zero_matrix<Real>(p+1, n_points));

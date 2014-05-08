@@ -55,16 +55,6 @@ namespace BernsteinBasis
 {
 /**
  * Compute the values of all the p+1 Bernstein basis
- * of degree @p p at the given points \f$ x \f$.
- *
- * The values are returned in a matrix B, where
- *  B[i][j] is \f$ B^p_i(x_j) \f$.
- */
-boost::numeric::ublas::matrix<Real>
-evaluate(const int p,  const std::vector<Real> &x) ;
-
-/**
- * Compute the values of all the p+1 Bernstein basis
  * of degree @p p at the given point \f$ x \f$.
  *
  * The values are returned in a vector B, where
@@ -77,14 +67,19 @@ std::vector<Real>
 evaluate(const int p, const Real x) ;
 
 /**
- * Computes the derivatives of order k of the Berstein basis
- * at the given points \f$ x \f$.
- * The values are returned in a matrix DkB, where
- *  DkB[i][j] is \f$ \frac{d^k B^p_i(x_j)}{dx^k} \f$.
+ * Compute the values of all the p+1 Bernstein basis
+ * of degree @p p at the given points \f$ x \f$.
+ *
+ * The values are returned in a matrix B, where
+ *  B[i][j] is \f$ B^p_i(x_j) \f$.
+ *
+ * @warning The points \f$ x \f$ must belong to the unit interval [0,1], otherwise an
+ * assertion will be raised in Debug mode.
  *
  */
 boost::numeric::ublas::matrix<Real>
-derivative(int k, const int p, const std::vector<Real> &x) ;
+evaluate(const int p,  const std::vector<Real> &x) ;
+
 
 /**
  * Computes the derivatives of order k of the Berstein basis
@@ -97,6 +92,20 @@ derivative(int k, const int p, const std::vector<Real> &x) ;
  */
 std::vector<Real>
 derivative(int k, const int p, const Real x) ;
+
+/**
+ * Computes the derivatives of order k of the Berstein basis
+ * at the given points \f$ x \f$.
+ * The values are returned in a matrix DkB, where
+ *  DkB[i][j] is \f$ \frac{d^k B^p_i(x_j)}{dx^k} \f$.
+ *
+ * @warning The points \f$ x \f$ must belong to the unit interval [0,1], otherwise an
+ * assertion will be raised in Debug mode.
+ *
+ */
+boost::numeric::ublas::matrix<Real>
+derivative(int k, const int p, const std::vector<Real> &x) ;
+
 
 };
 
