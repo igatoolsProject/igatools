@@ -45,8 +45,12 @@ void do_test()
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
     auto space = Space_t::create(grid, degree);
 
-    Vector u(space->get_num_basis());
-
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+    Vector<linear_algebra_package> u(space->get_num_basis());
     {
         int id = 0 ;
         u(id++) = 0.0 ;
@@ -68,7 +72,7 @@ void do_test()
     auto element1 = space->begin();
 
     auto u_values = element1->evaluate_field_values_at_points(
-                        dof_tools::get_local_coefs(u,element1->get_local_to_global()),
+                        u.get_local_coefs(element1->get_local_to_global()),
                         eval_points_1);
     u_values.print_info(out);
     auto values1    = element1->evaluate_basis_values_at_points(eval_points_1);
@@ -85,7 +89,7 @@ void do_test()
     gradients2.print_info(out);
 
     u_values = element1->evaluate_field_values_at_points(
-                   dof_tools::get_local_coefs(u,element1->get_local_to_global()),
+                   u.get_local_coefs(element1->get_local_to_global()),
                    eval_points_2);
     u_values.print_info(out);
 
