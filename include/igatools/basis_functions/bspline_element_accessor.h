@@ -600,21 +600,6 @@ private:
      * cache of the face values
      */
     ///@{
-    class FuncPointSize
-    {
-    public:
-        void reset(StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction,
-                   TensorSize<dim> n_points_direction);
-
-//        StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
-
-        TensorSize<dim> n_points_direction_;
-
-        std::shared_ptr<CartesianProductIndexer<dim>> points_indexer_;
-
-//        StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
-    };
-
 
     /**
      * This type store the values, first second derivatives
@@ -698,10 +683,6 @@ protected:
         ValueTable<Div> div_phi_hat_;
 
     public:
-
-        FuncPointSize size_;
-
-
         ComponentTable<
         DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
@@ -779,8 +760,7 @@ private:
      * an exception will be raised.
      */
     template <int deriv_order>
-    void evaluate_bspline_derivatives(const FuncPointSize &size,
-                                      const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
+    void evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
                                       const ValuesCache &cache,
                                       ValueTable<
                                       Conditional<(deriv_order==0),Value,Derivative<deriv_order> >

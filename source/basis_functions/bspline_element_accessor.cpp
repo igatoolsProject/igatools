@@ -521,13 +521,9 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
 
     flags_handler_ = flags_handler;
 
-    this->size_.reset(n_basis_direction,
-                      n_points_direction);
-
-
     //--------------------------------------------------------------------------
     // computing the total number of basis functions and the number of evaluation points
-    const int total_n_points = this->size_.n_points_direction_.flat_size();
+    const int total_n_points = n_points_direction.flat_size();
 
     int total_n_basis = 0;
     for (int i = 0; i < Space_t::n_components; ++i)
@@ -665,27 +661,6 @@ get_bezier_extraction_operator() const -> ComponentTable< std::array< const Dens
     return bezier_op;
 
 }
-
-
-template <int dim, int range, int rank>
-void
-BSplineElementAccessor<dim, range, rank>::
-FuncPointSize::
-reset(StaticMultiArray<TensorSize<dim>, range, rank> n_basis_direction,
-      TensorSize<dim> n_points_direction)
-{
-//    n_basis_direction_ = n_basis_direction;
-    n_points_direction_ = n_points_direction;
-
-    //--------------------------------------------------------------------------
-    // creating the objects for fast conversion from flat-to-tensor indexing
-    // in practice is an hash-table from flat to tensor indices
-    using Indexer = CartesianProductIndexer<dim>;
-
-    points_indexer_ = shared_ptr<Indexer>(new Indexer(n_points_direction_));
-    //--------------------------------------------------------------------------
-}
-
 
 
 template <int dim, int range, int rank>
@@ -870,8 +845,7 @@ fill_from_univariate(
     //--------------------------------------------------------------------------
     if (flags_handler_.fill_values())
     {
-        elem.evaluate_bspline_derivatives<0>(size_,
-                                             univariate_values,
+        elem.evaluate_bspline_derivatives<0>(univariate_values,
                                              *this,
                                              phi_hat_);
 
@@ -880,8 +854,7 @@ fill_from_univariate(
 
     if (flags_handler_.fill_gradients())
     {
-        elem.template evaluate_bspline_derivatives<1>(size_,
-                                                      univariate_values,
+        elem.template evaluate_bspline_derivatives<1>(univariate_values,
                                                       *this,
                                                       D1phi_hat_);
 
@@ -890,8 +863,7 @@ fill_from_univariate(
 
     if (flags_handler_.fill_hessians())
     {
-        elem.template evaluate_bspline_derivatives<2>(size_,
-                                                      univariate_values,
+        elem.template evaluate_bspline_derivatives<2>(univariate_values,
                                                       *this,
                                                       D2phi_hat_);
 
@@ -1095,8 +1067,7 @@ template <int dim, int range, int rank>
 template < int deriv_order >
 void
 BSplineElementAccessor<dim, range, rank>::
-evaluate_bspline_derivatives(const FuncPointSize &size,
-                             const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
+evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
                              const ValuesCache &cache,
                              ValueTable< Conditional<(deriv_order==0),Value,Derivative<deriv_order> > >
                              &derivatives_phi_hat) const
@@ -1104,10 +1075,11 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
     Assert(derivatives_phi_hat.size() > 0, ExcEmptyObject());
     Assert(derivatives_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(),this->get_num_basis()));
-    Assert(derivatives_phi_hat.get_num_points() ==
-           size.n_points_direction_.flat_size(),
-           ExcDimensionMismatch(derivatives_phi_hat.get_num_points(),
-                                size.n_points_direction_.flat_size()));
+
+    const TensorSize<dim> n_points_direction = cache.quad_.get_num_points_direction();
+    const Size num_points = n_points_direction.flat_size();
+    Assert(derivatives_phi_hat.get_num_points() == num_points,
+           ExcDimensionMismatch(derivatives_phi_hat.get_num_points(),num_points));
 
     /*
      * This code computes any order of derivatives for a multivariate
@@ -1119,7 +1091,8 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
     Assert(rank < 2, ExcMessage("For rank> 1 the basis function are not implemented/tested."));
 
-    const Size num_points = size.n_points_direction_.flat_size();
+
+
 
     if (deriv_order == 0)
     {
@@ -1131,7 +1104,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
             const Size comp_offset_i = comp_offset_(iComp);
 
-            DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
+            DynamicMultiArray<Real,dim> derivative_scalar_component(n_points_direction);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
             {
                 auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
@@ -1200,7 +1173,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
             const Size comp_offset_i = comp_offset_(iComp);
 
-            DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
+            DynamicMultiArray<Real,dim> derivative_scalar_component(n_points_direction);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
             {
                 auto derivatives_phi_hat_ifn = derivatives_phi_hat.get_function_view(comp_offset_i+func_flat_id);
@@ -1439,8 +1412,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
 {
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_values(basis,topology_id)[qp];
 }
 
@@ -1450,8 +1423,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Div const &
 {
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_divergences(basis)[qp];
 }
 
@@ -1460,8 +1433,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<1> const &
 {
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
@@ -1470,8 +1443,8 @@ auto
 BSplineElementAccessor<dim, range, rank>::
 get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<2> const &
 {
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).size_.n_points_direction_.flat_size(),
-           ExcIndexRange(qp,0,this->get_values_cache(topology_id).size_.n_points_direction_.flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
@@ -1614,11 +1587,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
     return_t derivatives_phi_hat(n_basis,n_points);
 
-
-
-    LogStream out;
-    using std::endl;
-
     const auto bezier_op = this->get_bezier_extraction_operator();
 
     if (deriv_order == 0)
@@ -1649,8 +1617,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
                 //------------------------------------------------------------------------------
-
-
 
 
                 //--------------------------------------------------------------------------------
@@ -1728,15 +1694,8 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
         const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
 
-
-
         const array<Real,dim> elem_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
-        /*
-        out << "elem_lengths= [ ";
-        for ( const double ln : elem_lengths)
-            out << ln << " ";
-        out << "]" <<endl;
-        //*/
+
         for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
         {
             const Point<dim> point = points[pt_id];
@@ -1748,8 +1707,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-
-            out << "Point["<<pt_id<<"] = " << point << endl;
 
             for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
             {
@@ -1768,10 +1725,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                         const int degree = n_basis_1D - 1 ;
                         bernstein_values[order][dir] =
                         scaling_coef * BernsteinBasis::derivative(order,degree,point[dir]);
-                        /*
-                                                out << "scaling_coef=" << scaling_coef << endl;
-                                                out << "bernstein_values["<<order<<"]["<<dir<<"]=" << bernstein_values[order][dir] << endl;
-                                                //*/
                     }
                 }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
@@ -1827,22 +1780,11 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                         //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
                         if (dim > 0)
                         {
-                            Real value = 1.0;
-                            for (int dir = 0 ; dir < dim ; ++dir)
-                            {
-                                const int deriv = deriv_order_tid[dir];
-                                const int fn = basis_tid[dir];
+                            Real value = bspline_basis[deriv_order_tid[0]][0][basis_tid[0]];
+                            for (int dir = 1 ; dir < dim ; ++dir)
+                                value *= bspline_basis[deriv_order_tid[dir]][dir][basis_tid[dir]];
 
-                                value *= bspline_basis[deriv][dir][fn];
-                            }
                             deriv(entry_eval_fid)(iComp) = value;
-                            /*
-                                                        out << "entry_eval_fid=" << entry_eval_fid << "   "
-                                                            << "entry_eval_tid=" << entry_eval_tid << "   "
-                                                            << "deriv_order_tid=" << deriv_order_tid << "   "
-                                                            << "basis_tid=" << basis_tid << "   "
-                                                            << "value=" << value << "   " << endl;
-                                                            //*/
                         }
                         else
                         {
@@ -1860,16 +1802,13 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                             deriv(derivatives_flat_id_copy_from[entry_id])(iComp);
                     //--------------------------------------------------------------------------------
 
-                }
+                } // end basis_fid loop
                 // multiply the spline 1D in order to have the multi-d value -- end
                 //--------------------------------------------------------------------------------
 
             } // end iComp loop
 
         } // end pt_id loop
-//        Assert(false,ExcNotImplemented());
-//        derivatives_phi_hat.print_info(out);
-//        Assert(false,ExcNotImplemented());
 
         if (space_->homogeneous_range_)
         {
@@ -1889,20 +1828,13 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
                         for (int der = 0; der < n_ders; ++der)
                             values(der)(comp) = values_0(der)(0);
-                    }
+                    } // end loop qp
                 } //end loop basis_i
             } // end loop comp
 
         } // end if (space_->homogeneous_range_)
 
-//        Assert(false,ExcNotImplemented());
-//        AssertThrow(false,ExcNotImplemented());
-
     } // end if (deriv_order != 0)
-
-
-
-
 
     return derivatives_phi_hat;
 }
