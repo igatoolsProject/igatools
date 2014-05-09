@@ -102,7 +102,7 @@ find_boost()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Choose and find the package for the linear algebra
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
-option(USE_PETSC "Use the linear algebra packages from PETSc" ON)
+option(USE_PETSC "Use the linear algebra packages from PETSc" OFF)
 
 if (USE_TRILINOS)
   message("Using the linear algebra packages provided by Trilinos")
