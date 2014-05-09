@@ -42,7 +42,7 @@ create_refinement_connection()
 {
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
-            bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
+        bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 

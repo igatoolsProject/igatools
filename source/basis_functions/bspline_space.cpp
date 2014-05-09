@@ -320,7 +320,7 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> grid, const int degree)
     :
-BSplineSpace(grid, TensorIndex<dim>(degree))
+    BSplineSpace(grid, TensorIndex<dim>(degree))
 {}
 
 
@@ -339,7 +339,7 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
     :
-BSplineSpace(knots, DegreeTable(degree), true)
+    BSplineSpace(knots, DegreeTable(degree), true)
 {}
 
 
@@ -400,7 +400,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 create(shared_ptr<GridType> knots,
        const MultiplicityTable &mult_vectors)
-       -> shared_ptr<self_t>
+-> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knots,mult_vectors));
 }

@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range, int rank>
 class Multiplicity :
-        public StaticMultiArray<CartesianProductArray<Size, dim>,range,rank>
+    public StaticMultiArray<CartesianProductArray<Size, dim>,range,rank>
 {
 private:
     using Grid     = CartesianGrid<dim>;
@@ -58,9 +58,9 @@ public:
      * the grid and degrees
      */
     explicit Multiplicity(parent_t &mult, const DegreeTable &deg)
-    :
-      parent_t::StaticMultiArray(mult),
-      deg_(deg)
+        :
+        parent_t::StaticMultiArray(mult),
+        deg_(deg)
     {}
 
     /**
@@ -72,7 +72,9 @@ public:
                           const bool max_reg);
 
     const DegreeTable &get_degree() const
-    {return deg_;}
+    {
+        return deg_;
+    }
 
 private:
     /**

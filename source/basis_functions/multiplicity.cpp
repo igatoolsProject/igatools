@@ -31,9 +31,9 @@ Multiplicity<dim, range, rank>::
 Multiplicity(std::shared_ptr<const Grid> knots,
              const DegreeTable &deg,
              const bool max_reg)
-:
-parent_t::StaticMultiArray(T(knots->get_num_knots_dim())),
-deg_(deg)
+    :
+    parent_t::StaticMultiArray(T(knots->get_num_knots_dim())),
+    deg_(deg)
 {
     fill_max_regularity();
 }
@@ -69,7 +69,7 @@ compute_index_space_offset() -> parent_t
     auto res_it = res.begin();
     auto mult_it = this->begin();
     auto end = this->end();
-    for (;mult_it != end; ++mult_it, ++res_it)
+    for (; mult_it != end; ++mult_it, ++res_it)
     {
         auto size =mult_it->tensor_size();
         T comp(size);
@@ -110,7 +110,7 @@ fill_max_regularity()
     auto end     = deg_.end();
     auto mult_it = this->begin();
 
-    for (;deg_it != end; ++deg_it, ++mult_it)
+    for (; deg_it != end; ++deg_it, ++mult_it)
     {
         for (int i = 0; i < dim; ++i)
         {
