@@ -77,9 +77,9 @@ private:
     // [members]
 
     // [la members]
-    shared_ptr<Matrix> matrix;
-    shared_ptr<Vector> rhs;
-    shared_ptr<Vector> solution;
+    shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> matrix;
+    shared_ptr<Vector<LinearAlgebraPackage::trilinos>> rhs;
+    shared_ptr<Vector<LinearAlgebraPackage::trilinos>> solution;
 };
 // [la members]
 
@@ -93,9 +93,9 @@ PoissonProblem(const int n_knots, const int deg)
     face_quad(QGauss<dim-1>(deg+1))
 {
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix::create(get_sparsity_pattern<Space>(space));
-    rhs      = Vector::create(n_basis);
-    solution = Vector::create(n_basis);
+    matrix   = Matrix<LinearAlgebraPackage::trilinos>::create(get_sparsity_pattern<Space>(space));
+    rhs      = Vector<LinearAlgebraPackage::trilinos>::create(n_basis);
+    solution = Vector<LinearAlgebraPackage::trilinos>::create(n_basis);
 }
 
 
@@ -161,7 +161,7 @@ void PoissonProblem<dim>::assemble()
     ConstantFunction<dim> g({0.0});
     const boundary_id dir_id = 0;
     std::map<Index, Real> values;
-    project_boundary_values<Space>(g, space, face_quad, dir_id, values);
+    project_boundary_values<Space,LinearAlgebraPackage::trilinos>(g, space, face_quad, dir_id, values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
 }
@@ -170,7 +170,8 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    LinearSolver solver(LinearSolver::Type::CG);
+    using LinSolver = LinearSolver<LinearAlgebraPackage::trilinos>;
+    LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 }
 

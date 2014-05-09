@@ -20,10 +20,11 @@
 /*
  *  Test for BSplineBasis using a non range-homogeneous space
  *  Evaluates values gradients and derivatives at two quad point
- *  on each element
+ *  on each element without the use of the cache.
+ *  This test computes the same quantities of bspline_element_iterator_04.cpp
  *
  *  author: martinelli
- *  date: Oct 04, 2013
+ *  date: May 08, 2014
  *
  */
 
@@ -79,40 +80,37 @@ void do_test()
 
     const int n_points = 2;
     QGauss< dim_domain > quad(n_points) ;
+    vector<Point<dim_domain>> eval_points = quad.get_points().get_flat_cartesian_product();
 
     auto elem = space->begin();
-    elem->init_values(ValueFlags::value, quad);
-
     for (; elem != space->end(); ++elem)
     {
-        elem->fill_values();
+        const auto values = elem->evaluate_basis_values_at_points(eval_points);
         out << "Values:" << endl ;
-        elem->get_basis_values().print_info(out);
+        values.print_info(out);
     }
 
     {
         auto elem = space->begin();
-        elem->init_values(ValueFlags::gradient, quad) ;
-
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_values();
+            const auto gradients = elem->evaluate_basis_gradients_at_points(eval_points);
             out << "Gradients:" << endl ;
-            elem->get_basis_gradients().print_info(out);
+            gradients.print_info(out);
         }
     }
+    //*/
 
     {
         auto elem = space->begin();
-        elem->init_values(ValueFlags::hessian, quad) ;
-
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_values();
+            const auto hessians = elem->evaluate_basis_hessians_at_points(eval_points);
             out << "Hessians:" << endl ;
-            elem->get_basis_hessians().print_info(out);
+            hessians.print_info(out);
         }
     }
+    //*/
 }
 
 

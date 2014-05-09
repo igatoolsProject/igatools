@@ -22,9 +22,9 @@
 #include <igatools/linear_algebra/linear_solver.h>
 
 
+#ifdef USE_TRILINOS
 #include <BelosTpetraAdapter.hpp>
 #include <BelosSolverFactory.hpp>
-
 
 
 #ifdef REAL_IS_LONG_DOUBLE
@@ -109,29 +109,34 @@ EnhancedNumberTraits<iga::Real>::defaultPrecision()
 }
 
 };
-#endif
-
-
+#endif // #ifdef REAL_IS_LONG_DOUBLE
 
 using namespace Teuchos ;
+
+#endif // #ifdef USE_TRILINOS
+
+
+
 
 IGA_NAMESPACE_OPEN
 
 
-LinearSolver::
-LinearSolver(const Type solver_type, const Real tolerance, const int max_num_iter)
+#ifdef USE_TRILINOS
+
+LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
     :
     solver_params_(parameterList())
 {
     // map the SolverType enum elements to the name aliases used by Belos
-    solver_type_enum_to_alias_[to_integral(Type::GMRES)] = "GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::FlexibleGMRES)] = "Flexible GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::CG)] = "CG";
-    solver_type_enum_to_alias_[to_integral(Type::StochasticCG)] = "Stochastic CG";
-    solver_type_enum_to_alias_[to_integral(Type::RecyclingCG)] = "Recycling CG";
-    solver_type_enum_to_alias_[to_integral(Type::RecyclingGMRES)] = "Recycling GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::PseudoBlockGMRES)] = "Pseudo Block GMRES";
-    solver_type_enum_to_alias_[to_integral(Type::PseudoBlockCG)] = "Pseudo Block CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::GMRES)] = "GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::FlexibleGMRES)] = "Flexible GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::CG)] = "CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::StochasticCG)] = "Stochastic CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::RecyclingCG)] = "Recycling CG";
+    solver_type_enum_to_alias_[to_integral(SolverType::RecyclingGMRES)] = "Recycling GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::PseudoBlockGMRES)] = "Pseudo Block GMRES";
+    solver_type_enum_to_alias_[to_integral(SolverType::PseudoBlockCG)] = "Pseudo Block CG";
 
 
     const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
@@ -153,7 +158,7 @@ LinearSolver(const Type solver_type, const Real tolerance, const int max_num_ite
 
 
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 {
     solver_params_ = solver_params;
@@ -161,7 +166,7 @@ set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 }
 
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 set_max_num_iterations(const int max_num_iter)
 {
     solver_params_->set("Maximum Iterations", max_num_iter);
@@ -172,7 +177,7 @@ set_max_num_iterations(const int max_num_iter)
  * Set the level that residual norms must reach to decide convergence.
  */
 void
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 set_tolerance(const Real tolerance)
 {
     solver_params_->set("Convergence Tolerance", tolerance);
@@ -181,8 +186,10 @@ set_tolerance(const Real tolerance)
 
 
 void
-LinearSolver::
-solve(Matrix &A, Vector &b, Vector &x)
+LinearSolver<LinearAlgebraPackage::trilinos>::
+solve(Matrix<LinearAlgebraPackage::trilinos> &A,
+      Vector<LinearAlgebraPackage::trilinos> &b,
+      Vector<LinearAlgebraPackage::trilinos> &x)
 {
     // Create a LinearProblem struct with the problem to solve.
     // A, X, B, and M are passed by (smart) pointer, not copied.
@@ -205,18 +212,162 @@ solve(Matrix &A, Vector &b, Vector &x)
 
 
 Real
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 get_achieved_tolerance() const
 {
     return solver_->achievedTol() ;
 }
 
 int
-LinearSolver::
+LinearSolver<LinearAlgebraPackage::trilinos>::
 get_num_iterations() const
 {
     return solver_->getNumIters() ;
 }
+
+#endif // #ifdef USE_TRILINOS
+
+
+
+
+
+
+
+#ifdef USE_PETSC
+
+LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
+{
+	PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
+    std::string prec_name;
+
+    // map the SolverType enum elements to the name aliases used by PETSc
+    solver_type_enum_to_alias_[to_integral(SolverType::GMRES)] = "gmres";
+    solver_type_enum_to_alias_[to_integral(SolverType::CG)] = "cg";
+    solver_type_enum_to_alias_[to_integral(SolverType::LU)] = "preonly";
+
+    const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
+
+
+    if (solver_type == SolverType::LU)
+        prec_name = "lu" ;
+    else
+        prec_name = "none" ;
+
+	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPGetPC(ksp_,&pc_);
+
+    ierr = PCSetType(pc_,prec_name.c_str());
+    ierr = KSPSetType(ksp_,solver_name.c_str());
+
+    ierr = KSPSetTolerances(ksp_,tolerance,PETSC_DEFAULT,PETSC_DEFAULT,max_num_iter);
+}
+
+LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
+             const Real tolerance, const int max_num_iter)
+{
+	PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
+
+    // map the SolverType enum elements to the name aliases used by PETSc
+    solver_type_enum_to_alias_[to_integral(SolverType::GMRES)] = "gmres";
+    solver_type_enum_to_alias_[to_integral(SolverType::CG)] = "cg";
+    solver_type_enum_to_alias_[to_integral(SolverType::LU)] = "preonly";
+
+    // map the PreconditionerType enum elements to the name aliases used by PETSc
+    prec_type_enum_to_alias_[to_integral(PreconditionerType::NONE)] = "none";
+    prec_type_enum_to_alias_[to_integral(PreconditionerType::ILU)] = "ilu";
+    prec_type_enum_to_alias_[to_integral(PreconditionerType::JACOBI)] = "jacobi";
+
+    const std::string solver_name = solver_type_enum_to_alias_[to_integral(solver_type)] ;
+    std::string prec_name = prec_type_enum_to_alias_[to_integral(prec_type)] ;
+
+    if (solver_type == SolverType::LU)
+        prec_name = "lu" ;
+
+	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPGetPC(ksp_,&pc_);
+
+    ierr = PCSetType(pc_,prec_name.c_str());
+    ierr = KSPSetType(ksp_,solver_name.c_str());
+
+    ierr = KSPSetTolerances(ksp_,tolerance,PETSC_DEFAULT,PETSC_DEFAULT,max_num_iter);
+}
+
+/*
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
+{
+    solver_params_ = solver_params;
+    solver_->setParameters(solver_params_);
+}
+//*/
+
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+set_max_num_iterations(const int max_num_iter)
+{
+	PetscErrorCode ierr;
+	PetscReal rtol, abstol, dtol;
+	PetscInt maxits;
+	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+	ierr = KSPSetTolerances(ksp_, rtol, abstol, dtol, max_num_iter);
+
+}
+
+/**
+ * Set the level that residual norms must reach to decide convergence.
+ */
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+set_tolerance(const Real tolerance)
+{
+	PetscErrorCode ierr;
+	PetscReal rtol, abstol, dtol;
+	PetscInt maxits;
+	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+	ierr = KSPSetTolerances(ksp_, tolerance, abstol, dtol, maxits);
+}
+
+
+void
+LinearSolver<LinearAlgebraPackage::petsc>::
+solve(Matrix<LinearAlgebraPackage::petsc> &A,
+      Vector<LinearAlgebraPackage::petsc> &b,
+      Vector<LinearAlgebraPackage::petsc> &x)
+{
+	PetscErrorCode ierr;
+	ierr = KSPSetOperators(ksp_,A.get_petsc_matrix(),A.get_petsc_matrix(),SAME_NONZERO_PATTERN);
+    ierr = KSPSolve(ksp_,b.get_petsc_vector(),x.get_petsc_vector());
+}
+
+
+Real
+LinearSolver<LinearAlgebraPackage::petsc>::
+get_achieved_tolerance() const
+{
+	PetscErrorCode ierr;
+	PetscReal achieved_tol;
+	ierr = KSPGetResidualNorm(ksp_, &achieved_tol);
+
+    return achieved_tol;
+}
+
+int
+LinearSolver<LinearAlgebraPackage::petsc>::
+get_num_iterations() const
+{
+	PetscErrorCode ierr;
+	int num_iters;
+	ierr = KSPGetIterationNumber(ksp_, &num_iters);
+
+	return num_iters;
+}
+
+#endif // #ifdef USE_PETSC
 
 
 IGA_NAMESPACE_CLOSE

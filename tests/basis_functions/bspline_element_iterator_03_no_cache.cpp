@@ -19,11 +19,11 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the bspline element iterator
- *  Computes values and derivatives of the basis functions
- *  This test was added to trace a bug due to bad cleaning of the cache
+ *  Computes values and derivatives of the basis functions without the use of the cache.
+ *  This test computes the same quantities of bspline_element_iterator_03.cpp
  *
- *  author: pauletti
- *  date: Aug 28, 2013
+ *  author: martinelli
+ *  date: May 08, 2013
  *
  */
 
@@ -51,7 +51,6 @@ void do_test()
     const auto linear_algebra_package = LinearAlgebraPackage::petsc;
 #endif
     Vector<linear_algebra_package> u(space->get_num_basis());
-
     {
         int id = 0 ;
         u(id++) = 0.0 ;
@@ -67,31 +66,31 @@ void do_test()
         u(id++) = 1.0 ;
     }
 
-    QGauss< dim_domain > quad_scheme1(2) ;
+    QGauss< dim_domain > quad_scheme_1(2) ;
+    std::vector<Point<dim_domain>> eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
 
     auto element1 = space->begin();
-    element1->init_values(ValueFlags::value | ValueFlags::gradient,
-                          quad_scheme1);
-    element1->fill_values() ;
 
-    auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
+    auto u_values = element1->evaluate_field_values_at_points(
+                        u.get_local_coefs(element1->get_local_to_global()),
+                        eval_points_1);
     u_values.print_info(out);
-    auto values1    = element1->get_basis_values();
+    auto values1    = element1->evaluate_basis_values_at_points(eval_points_1);
     values1.print_info(out);
-    auto gradients1    = element1->get_basis_gradients();
+    auto gradients1    = element1->evaluate_basis_gradients_at_points(eval_points_1);
     gradients1.print_info(out);
 
-    QUniform< dim_domain > quad_scheme2(3) ;
-    element1->init_values(ValueFlags::value | ValueFlags::gradient,
-                          quad_scheme2);
-    element1->fill_values() ;
+    QUniform< dim_domain > quad_scheme_2(3) ;
+    std::vector<Point<dim_domain>> eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
 
-    auto values2    = element1->get_basis_values();
+    auto values2    = element1->evaluate_basis_values_at_points(eval_points_2);
     values2.print_info(out);
-    auto gradients2    = element1->get_basis_gradients();
+    auto gradients2    = element1->evaluate_basis_gradients_at_points(eval_points_2);
     gradients2.print_info(out);
 
-    u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
+    u_values = element1->evaluate_field_values_at_points(
+                   u.get_local_coefs(element1->get_local_to_global()),
+                   eval_points_2);
     u_values.print_info(out);
 
 

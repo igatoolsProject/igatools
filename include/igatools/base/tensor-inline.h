@@ -249,6 +249,8 @@ Tensor<dim_, rank_, tensor_type, value_type> &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(const value_type &entry_val)
 {
+    Assert(dim_ == 1 && rank_ == 1,
+           ExcMessage("Assignment is allowed only if dim_==1 and rank_==1")) ;
     for (int i = 0; i < dim_; ++i)
         tensor_[i] = entry_val;
     return *this;
@@ -335,7 +337,7 @@ inline
 Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(const Real value)
 {
-    Assert(value==0.0 || dim_ == 1 || rank_ == 1,
+    Assert(value==0.0 || (dim_ == 1 && rank_ == 1),
            ExcMessage("Assignment with non-zero value is allowed only if dim_==1 and rank_==1")) ;
 
     Assert(!std::isnan(value),ExcNotANumber());

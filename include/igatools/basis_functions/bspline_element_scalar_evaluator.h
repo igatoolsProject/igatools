@@ -109,7 +109,7 @@ public:
      */
     void evaluate_derivative_at_points(
         const TensorIndex<dim> &order_tensor_id,
-        DynamicMultiArray<Real,dim> & derivative) const;
+        DynamicMultiArray<Real,dim> &derivative) const;
 
 
     /** Returns the number of points in each direction for which the 1D values are associated. */
@@ -119,21 +119,21 @@ public:
      * Returns a const view to the one-dimensional derivatives of given @p order,
      * along all coordinate directions.
      */
-    const std::array<Values1DConstView,dim>& get_derivative_components_view(const int order) const;
+    const std::array<Values1DConstView,dim> &get_derivative_components_view(const int order) const;
 
     /**
      * Returns a const view to the one-dimensional derivative of given @p order,
      * along the coordinate direction @p dir.
      */
-    const Values1DConstView & get_values_view(const int order,const int dir) const;
+    const Values1DConstView &get_values_view(const int order,const int dir) const;
 
 private:
-/*
-    template <int k>
-    void recursive_multiplication(
-    	const TensorIndex<dim> &order_tensor_id,
-        DynamicMultiArray<Real,dim> & derivative) const;
-//*/
+    /*
+        template <int k>
+        void recursive_multiplication(
+            const TensorIndex<dim> &order_tensor_id,
+            DynamicMultiArray<Real,dim> & derivative) const;
+    //*/
     /**
      * values[i][j] are the values at the n_qp evaluation points of the i-th derivative
      * along the j-th direction.

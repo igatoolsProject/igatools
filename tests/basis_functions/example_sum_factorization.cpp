@@ -110,9 +110,19 @@ protected:
 
     const boundary_id dir_id = 0;
 
-    std::shared_ptr<Matrix> matrix;
-    std::shared_ptr<Vector> rhs;
-    std::shared_ptr<Vector> solution;
+#if defined(USE_TRILINOS)
+    const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+    using MatrixType = Matrix<linear_algebra_package>;
+    using VectorType = Vector<linear_algebra_package>;
+    using LinearSolverType = LinearSolver<linear_algebra_package>;
+
+
+    std::shared_ptr<MatrixType> matrix;
+    std::shared_ptr<VectorType> rhs;
+    std::shared_ptr<VectorType> solution;
 
     Duration elapsed_time_eval_basis_;
 
@@ -211,9 +221,9 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
     space     = Space::create(ref_space, PushFw::create(map));
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix::create(get_sparsity_pattern(const_pointer_cast<const Space>(space)));
-    rhs      = Vector::create(n_basis);
-    solution = Vector::create(n_basis);
+    matrix   = MatrixType::create(get_sparsity_pattern(const_pointer_cast<const Space>(space)));
+    rhs      = VectorType::create(n_basis);
+    solution = VectorType::create(n_basis);
 }
 
 
@@ -378,7 +388,7 @@ assemble()
     ConstantFunction<dim> g({0.0});
     std::map<Index, Real> values;
     const int dir_id = 0 ;
-    project_boundary_values<Space>(g, this->space, this->face_quad, dir_id, values);
+    project_boundary_values<Space,linear_algebra_package>(g, this->space, this->face_quad, dir_id, values);
     apply_boundary_values(values, *this->matrix, *this->rhs, *this->solution);
 //*/
 
@@ -401,7 +411,8 @@ solve()
 {
     const Real tol = 1.0e-10;
     const Size max_iters = 10000000;
-    LinearSolver solver(LinearSolver::Type::CG,tol,max_iters);
+    LinearSolverType solver(LinearSolverType::SolverType::CG,tol,max_iters);
+//    LinearSolverType solver(LinearSolverType::SolverType::LU,tol,max_iters);
 
     const TimePoint start_solve_linear_system = Clock::now();
 
@@ -643,13 +654,24 @@ do_test()
 }
 
 
-int main()
+int main(int argc,char **args)
+
 {
+#if defined(USE_TRILINOS)
+#elif defined(USE_PETSC)
+	PetscInitialize(&argc,&args,(char*)0,"Sum factorization example");
+#endif
+
     do_test<1>();
 
     do_test<2>();
 
     do_test<3>();
 //*/
+#if defined(USE_TRILINOS)
+#elif defined(USE_PETSC)
+    auto ierr = PetscFinalize();
+#endif
+
     return  0;
 }

@@ -27,8 +27,9 @@
 
 cmake_minimum_required(VERSION 2.8.10)
 
-project(iga CXX)
+project(iga CXX C)
 
+list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Include all local macros
 file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake)
@@ -58,6 +59,7 @@ set(CMAKE_INSTALL_PREFIX
 endif()
 #
 #-------------------------------------------------------------------------------
+
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -92,10 +94,27 @@ find_doxygen()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Required libraries
 #
-find_trilinos()
 find_boost()
 #
 #-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Choose and find the package for the linear algebra
+option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
+option(USE_PETSC "Use the linear algebra packages from PETSc" OFF)
+
+if (USE_TRILINOS)
+  message("Using the linear algebra packages provided by Trilinos")
+  find_trilinos()
+endif()
+
+if (USE_PETSC)
+  message("Using the linear algebra packages provided by PETSc")
+  find_petsc()
+endif()
+#-------------------------------------------------------------------------------
+
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -144,6 +163,7 @@ add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 
   ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
+  ${Petsc_LIBRARIES} 
   ${Boost_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 

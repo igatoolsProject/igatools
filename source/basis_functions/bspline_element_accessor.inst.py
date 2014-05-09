@@ -46,10 +46,9 @@ f.write('template class GridForwardIterator<%s> ;\n' %sp)
 for i in range(len(spaces)):
    row = inst.all_ref_sp_dims[i]
    function = ('template  void ' + spaces[i] + '::evaluate_bspline_derivatives<deriv_order>' +
-               '(const FuncPointSize &,' +
-               'const StaticMultiArray<std::array<const BasisValues1d*, dim_domain>, dim_range, rank> &,'+
+               '(const StaticMultiArray<std::array<const BasisValues1d*, dim_domain>, dim_range, rank> &,'+
                'const ' + spaces[i] + '::ValuesCache &,'+
-               'ValueTable< Derivative<deriv_order> > &) const; \n')
+               'ValueTable< Conditional<deriv_order==0,Value,Derivative<deriv_order> > > &) const; \n')
    f1 = function.replace('dim_domain', str(row.dim) ).replace('dim_range', str(row.range) ).replace('rank', str(row.rank) );
    fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
    for s in fun_list:

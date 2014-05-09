@@ -29,14 +29,37 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-Matrix::
+namespace
+{
+DeclException2(ExcInvalidIndex,
+               int, int,
+               << "The entry with index <" << arg1 << ',' << arg2
+               << "> does not exist.");
+
+DeclException4(ExcAccessToNonLocalElement,
+               int, int, int, int,
+               << "You tried to access element (" << arg1
+               << "/" << arg2 << ")"
+               << " of a distributed matrix, but only rows "
+               << arg3 << " through " << arg4
+               << " are stored locally and can be accessed.");
+
+DeclException0(ExcNotQuadratic);
+};
+
+#ifdef USE_TRILINOS
+
+
+Matrix<LinearAlgebraPackage::trilinos>::
 Matrix(const SparsityPattern &sparsity_pattern)
 {
     init(sparsity_pattern) ;
 };
 
 
-void Matrix::init(const SparsityPattern &sparsity_pattern)
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+init(const SparsityPattern &sparsity_pattern)
 {
     //-------------------------------------------------------------------------------------
     row_space_map_.reset(new dofs_map_t(sparsity_pattern.get_num_row_dofs(),
@@ -80,14 +103,16 @@ void Matrix::init(const SparsityPattern &sparsity_pattern)
 //*/
 
 
-shared_ptr<Matrix>
-Matrix::
+shared_ptr<Matrix<LinearAlgebraPackage::trilinos> >
+Matrix<LinearAlgebraPackage::trilinos>::
 create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<Matrix>(Matrix(sparsity_pattern));
 }
 
-void Matrix::add_entry(const Index row_id, const Index column_id, const Real value)
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+add_entry(const Index row_id, const Index column_id, const Real value)
 {
     Teuchos::Array<Index> columns_id(1,column_id) ;
     Teuchos::Array<Real> values(1,value) ;
@@ -98,7 +123,7 @@ void Matrix::add_entry(const Index row_id, const Index column_id, const Real val
 
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 add_block(
     const vector<Index> &rows_id,
     const vector<Index> &cols_id,
@@ -129,14 +154,14 @@ add_block(
 
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 fill_complete()
 {
     matrix_->fillComplete();
 };
 
 void
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 resume_fill()
 {
     matrix_->resumeFill();
@@ -144,14 +169,14 @@ resume_fill()
 
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_trilinos_matrix() -> Teuchos::RCP<WrappedMatrixType>
 {
     return matrix_;
 };
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
 {
     return matrix_;
@@ -159,7 +184,7 @@ get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
 
 
 Real
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 operator()(const Index row, const Index col) const
 {
     const auto graph = matrix_->getGraph();
@@ -201,7 +226,9 @@ operator()(const Index row, const Index col) const
 }
 
 
-void Matrix::clear_row(const Index row)
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+clear_row(const Index row)
 {
     const auto graph = matrix_->getGraph();
 
@@ -226,7 +253,9 @@ void Matrix::clear_row(const Index row)
 
 
 
-void Matrix::print(LogStream &out) const
+void
+Matrix<LinearAlgebraPackage::trilinos>::
+print(LogStream &out) const
 {
     using std::endl;
 
@@ -261,14 +290,14 @@ void Matrix::print(LogStream &out) const
 
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_num_rows() const -> Index
 {
     return matrix_->getGlobalNumRows() ;
 }
 
 auto
-Matrix::
+Matrix<LinearAlgebraPackage::trilinos>::
 get_num_columns() const -> Index
 {
     return matrix_->getGlobalNumCols() ;
@@ -276,8 +305,8 @@ get_num_columns() const -> Index
 
 
 void
-Matrix::
-multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const
+Matrix<LinearAlgebraPackage::trilinos>::
+multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
                    *y.get_trilinos_vector(),
@@ -285,13 +314,297 @@ multiply_by_right_vector(const Vector &x,Vector &y,const Real alpha,const Real b
 }
 
 void
-Matrix::
-multiply_by_left_vector(const Vector &x,Vector &y,const Real alpha,const Real beta) const
+Matrix<LinearAlgebraPackage::trilinos>::
+multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
                    *y.get_trilinos_vector(),
                    Teuchos::TRANS,alpha,beta);
 }
+
+#endif //#ifdef USE_TRILINOS
+
+
+
+
+
+
+
+
+#ifdef USE_PETSC
+
+
+Matrix<LinearAlgebraPackage::petsc>::
+Matrix(const SparsityPattern &sparsity_pattern)
+{
+    init(sparsity_pattern) ;
+};
+
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+init(const SparsityPattern &sparsity_pattern)
+{
+    PetscErrorCode ierr;
+    comm_ = PETSC_COMM_WORLD;
+
+    int n_rows = sparsity_pattern.get_num_row_dofs();
+    int n_cols = sparsity_pattern.get_num_col_dofs();
+    std::vector<PetscInt> nnz;
+
+    ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
+    ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_,
+                       PETSC_DECIDE,PETSC_DECIDE,
+                       n_rows, n_cols);
+    ierr = MatSetType(matrix_,MATAIJ);
+
+    auto row     = sparsity_pattern.cbegin() ;
+    auto row_end = sparsity_pattern.cend() ;
+    for (; row != row_end ; ++row)
+    {
+        const vector<Index> columns_id(row->second.begin(),row->second.end()) ;
+        nnz.push_back(columns_id.size());
+    }
+
+    ierr = MatSeqAIJSetPreallocation(matrix_, 0, nnz.data());
+    ierr = MatSetOption(matrix_, MAT_KEEP_NONZERO_PATTERN, PETSC_TRUE); //CHKERRQ(ierr);
+    ierr = MatSetUp(matrix_); //CHKERRQ(ierr);
+    ierr = MatZeroEntries(matrix_); //CHKERRQ(ierr);
+
+};
+
+
+shared_ptr<Matrix<LinearAlgebraPackage::petsc> >
+Matrix<LinearAlgebraPackage::petsc>::
+create(const SparsityPattern &sparsity_pattern)
+{
+    return std::make_shared<self_t>(self_t(sparsity_pattern));
+}
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+add_entry(const Index row_id, const Index column_id, const Real value)
+{
+    PetscErrorCode ierr;
+    ierr = MatSetValue(matrix_,row_id,column_id,value,ADD_VALUES); //CHKERRQ(ierr);
+};
+
+
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+add_block(
+    const vector<Index> &rows_id,
+    const vector<Index> &cols_id,
+    const DenseMatrix &local_matrix)
+{
+    Assert(!rows_id.empty(), ExcEmptyObject()) ;
+    Assert(!cols_id.empty(), ExcEmptyObject()) ;
+
+    const Index n_rows = rows_id.size();
+    const Index n_cols = cols_id.size();
+
+    Assert(n_rows == Index(local_matrix.size1()),
+           ExcDimensionMismatch(n_rows,Index(local_matrix.size1()))) ;
+    Assert(n_cols == Index(local_matrix.size2()),
+           ExcDimensionMismatch(n_cols,Index(local_matrix.size2()))) ;
+
+    vector<PetscScalar> row_values ;
+    for (int i = 0 ; i < n_rows ; ++i)
+    {
+        const auto row_local_matrix = local_matrix.get_row(i) ;
+        for (int j = 0 ; j < n_cols ; ++j)
+//            row_values.push_back(row_local_matrix(j)) ;
+        	row_values.push_back(PetscScalar(local_matrix(i,j))) ;
+    }
+
+    PetscErrorCode ierr;
+    ierr = MatSetValues(matrix_,n_rows,rows_id.data(),n_cols,cols_id.data(),
+    		row_values.data(),ADD_VALUES); //CHKERRQ(ierr);
+
+};
+
+
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+fill_complete()
+{
+    PetscErrorCode ierr;
+    ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY); // CHKERRQ(ierr);
+    ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY); // CHKERRQ(ierr);
+};
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+resume_fill()
+{
+/* todo:I think this is not necessary in PETSc. Must check in parallel computations */
+};
+
+
+auto
+Matrix<LinearAlgebraPackage::petsc>::
+get_petsc_matrix() -> Mat
+{
+    return matrix_;
+};
+
+auto
+Matrix<LinearAlgebraPackage::petsc>::
+get_petsc_matrix() const -> Mat
+{
+    return matrix_;
+};
+
+
+Real
+Matrix<LinearAlgebraPackage::petsc>::
+operator()(const Index row, const Index col) const
+{
+    PetscErrorCode ierr;
+    PetscScalar value;
+
+    /* todo: the assert should work with a distributed matrix */
+    AssertIndexRange(row, this->get_num_rows());
+    AssertIndexRange(col, this->get_num_columns());
+
+    /* todo: the function returns zero if the entry is not in the sparsity
+     pattern, instead it should give an error. I have not found a function in
+     Petsc to check whether the entry is in the spartsity pattern or not. */
+
+    ierr = MatGetValues(matrix_,1,&row,1,&col,&value);
+
+    return value;
+}
+
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+clear_row(const Index row)
+{
+	PetscErrorCode ierr;
+
+	Assert(false,ExcNotImplemented());
+	AssertThrow(false,ExcNotImplemented());
+/*
+	const auto graph = matrix_->getGraph();
+
+    const auto row_map = graph->getRowMap();
+    const auto local_row = row_map->getLocalElement(row);
+
+    // Only do this on the rows owned locally on this processor.
+    if (local_row != Teuchos::OrdinalTraits<Index>::invalid())
+    {
+        auto n_entries_row = graph->getNumEntriesInLocalRow(local_row);
+
+        vector<Index> local_col_ids(n_entries_row);
+
+        graph->getLocalRowCopy(local_row,local_col_ids,n_entries_row);
+        Assert(n_entries_row == graph->getNumEntriesInLocalRow(local_row),
+               ExcDimensionMismatch(n_entries_row,graph->getNumEntriesInLocalRow(local_row)));
+
+        vector<Real> zeros(n_entries_row,0.0);
+        matrix_->replaceLocalValues(local_row,local_col_ids,zeros);
+    }
+ //*/
+}
+
+
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+print(LogStream &out) const
+{
+	Assert(false,ExcNotImplemented());
+	AssertThrow(false,ExcNotImplemented());
+/*
+    using std::endl;
+
+    const auto n_global_rows = this->get_num_rows();
+
+    out << "-----------------------------" << endl;
+    // Commented as different petsc version show different information here
+    //   out << *matrix_ ;
+
+    out << "Row Index        Col Index        Value" << endl;
+    for (Index row_id = 0 ; row_id < n_global_rows ; ++row_id)
+    {
+        auto n_entries_row = matrix_->getNumEntriesInGlobalRow(row_id);
+
+        vector<Index> columns_id(n_entries_row);
+
+        vector<Real> values(n_entries_row) ;
+
+        matrix_->getGlobalRowCopy(row_id,columns_id,values,n_entries_row);
+
+        for (uint row_entry = 0 ; row_entry < n_entries_row ; ++row_entry)
+            out << row_id << "       " <<
+                columns_id[row_entry] << "        " <<
+                values[row_entry] << endl;
+    }
+    out << "-----------------------------" << endl;
+//*/
+}
+
+
+
+
+
+auto
+Matrix<LinearAlgebraPackage::petsc>::
+get_num_rows() const -> Index
+{
+	PetscErrorCode ierr;
+	PetscInt n_rows, n_cols;
+
+	ierr = MatGetSize(matrix_, &n_rows, &n_cols);
+
+	return n_rows;
+}
+
+auto
+Matrix<LinearAlgebraPackage::petsc>::
+get_num_columns() const -> Index
+{
+	PetscErrorCode ierr;
+	PetscInt n_rows, n_cols;
+
+	ierr = MatGetSize(matrix_, &n_rows, &n_cols);
+
+	return n_cols;
+}
+
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
+{
+	Assert(false,ExcNotImplemented());
+	AssertThrow(false,ExcNotImplemented());
+/*
+    matrix_->apply(*x.get_petsc_vector(),
+                   *y.get_petsc_vector(),
+                   Teuchos::NO_TRANS,alpha,beta);
+                   //*/
+}
+
+void
+Matrix<LinearAlgebraPackage::petsc>::
+multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
+{
+	Assert(false,ExcNotImplemented());
+	AssertThrow(false,ExcNotImplemented());
+/*
+    matrix_->apply(*x.get_petsc_vector(),
+                   *y.get_petsc_vector(),
+                   Teuchos::TRANS,alpha,beta);
+                   //*/
+}
+
+#endif //#ifdef USE_PETSC
+
 
 
 IGA_NAMESPACE_CLOSE

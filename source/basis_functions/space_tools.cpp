@@ -197,13 +197,14 @@ get_face_space(std::shared_ptr<const Space> space,
 
 
 
-template<class Space>
-Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
-                          std::shared_ptr<const Space> space,
-                          const Quadrature< Space::dim > &quad,
-                          const Norm &norm_flag,
-                          const Vector &solution_coefs,
-                          std::vector< Real > &element_error)
+template<class Space, LinearAlgebraPackage linear_algebra_package>
+Real
+integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
+                     std::shared_ptr<const Space> space,
+                     const Quadrature< Space::dim > &quad,
+                     const Norm &norm_flag,
+                     const Vector<linear_algebra_package> &solution_coefs,
+                     std::vector< Real > &element_error)
 {
     bool is_L2_norm     = contains(norm_flag, Norm::L2) ;
     bool is_H1_norm     = contains(norm_flag, Norm::H1) ;
@@ -271,8 +272,8 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
         const auto &map_at_points = elem->get_points() ;
 
-        vector<Real> solution_coefs_elem = dof_tools::get_local_coefs(
-                                               solution_coefs,elem->get_local_to_global());
+        vector<Real> solution_coefs_elem =
+            solution_coefs.get_local_coefs(elem->get_local_to_global());
 
         if (is_L2_norm)
         {
@@ -320,21 +321,22 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 
 
-template<class Space>
-Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
-                     shared_ptr<const Space> space,
-                     const Quadrature<Space::dim> &quad)
+template<class Space, LinearAlgebraPackage linear_algebra_package>
+Vector<linear_algebra_package>
+projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
+              shared_ptr<const Space> space,
+              const Quadrature<Space::dim> &quad)
 {
     static const int space_dim = Space::space_dim;
     static const int range = Space::range;
     static const int rank = Space::rank;
 
     const auto sparsity_pattern = dof_tools::get_sparsity_pattern(space) ;
-    Matrix matrix(sparsity_pattern);
+    Matrix<linear_algebra_package> matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs() ;
-    Vector rhs(space_dofs) ;
-    Vector sol(space_dofs) ;
+    Vector<linear_algebra_package> rhs(space_dofs) ;
+    Vector<linear_algebra_package> sol(space_dofs) ;
 
 
 
@@ -403,7 +405,8 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
 
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
-    LinearSolver solver(LinearSolver::Type::CG,tolerance,max_num_iter) ;
+    using LinSolver = LinearSolver<linear_algebra_package>;
+    LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
     return sol;
@@ -413,7 +416,7 @@ Vector projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &
 
 
 
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void
 project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank> &func,
                         std::shared_ptr<const Space> space,
@@ -440,8 +443,8 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
         vector<Index> dof_map;
         auto face_space = get_face_space(space, face_id, dof_map);
 
-        Vector proj_on_face =
-            projection_l2<FaceSpace<Space> >(func, face_space, quad);
+        Vector<linear_algebra_package> proj_on_face =
+            projection_l2<FaceSpace<Space>,linear_algebra_package>(func, face_space, quad);
 
         const int face_n_dofs = dof_map.size() ;
         for (Index i = 0 ; i< face_n_dofs ; ++i)
@@ -450,7 +453,7 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
 }
 
 
-template<class Space>
+template<class Space, LinearAlgebraPackage linear_algebra_package>
 void
 project_boundary_values(const Func<Space> &func,
                         std::shared_ptr<const Space> space,
@@ -458,9 +461,8 @@ project_boundary_values(const Func<Space> &func,
                         const boundary_id bdry_id,
                         std::map<Index,Real>  &boundary_values)
 {
-    project_boundary_values(func, space, quad,
-    std::set<boundary_id>({{bdry_id}}),
-    boundary_values);
+    project_boundary_values<Space,linear_algebra_package>(
+    func, space, quad,std::set<boundary_id>({{bdry_id}}),boundary_values);
 }
 
 
