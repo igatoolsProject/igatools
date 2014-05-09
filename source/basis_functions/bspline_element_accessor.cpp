@@ -776,7 +776,7 @@ reset(const Space_t &space,
                     const Real scaling_coef =
                         std::pow(one_div_size, deriv_order);
                     basis[ deriv_order ] = scaling_coef *
-                                           prod(M, bernstein_values[ deriv_order ]);
+                                           prec_prod(M, bernstein_values[ deriv_order ]);
                 }
             }
         } // end loop jDim
@@ -1045,7 +1045,7 @@ reset(const Space_t &space,
                 for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
                 {
                     const Real scaling_coef = std::pow(one_div_size, deriv_order);
-                    basis[ deriv_order ] = scaling_coef * prod(M, bernstein_values[ deriv_order ]);
+                    basis[ deriv_order ] = scaling_coef * prec_prod(M, bernstein_values[ deriv_order ]);
                 }
             }
         } // end loop jDim
@@ -1639,7 +1639,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
-                array<vector<Real>,dim> bernstein_values;
+                array<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
                 const TensorSize<dim> basis_component_t_size = n_basis_direction_(iComp);
                 for (int dir = 0 ; dir < dim ; ++dir)
                 {
@@ -1659,20 +1659,12 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 // apply the Bezier extraction operator for the functions on this element -- begin
                 const auto &bezier_op_comp = bezier_op(iComp);
 
-                array<vector<Real>,dim> bspline_basis;
+                array<boost::numeric::ublas::vector<Real>,dim> bspline_basis;
                 for (int dir = 0 ; dir < dim ; ++dir)
                 {
-                    const int n_basis_1D = basis_component_t_size(dir);
-                    bspline_basis[dir].resize(n_basis_1D);
-
                     const auto &M = *(bezier_op_comp[dir]);
 
-                    for (int row = 0 ; row < n_basis_1D ; ++row)
-                    {
-                        bspline_basis[dir][row] = 0.0;
-                        for (int col = 0 ; col < n_basis_1D ; ++col)
-                            bspline_basis[dir][row] += M(row,col) * bernstein_values[dir][col];
-                    }
+                    bspline_basis[dir] = prec_prod(M, bernstein_values[dir]);
                 }
                 // apply the Bezier extraction operator for the functions on this element -- end
                 //--------------------------------------------------------------------------------

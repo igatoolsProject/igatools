@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-vector<Real>
+boost::numeric::ublas::vector<Real>
 BernsteinBasis::evaluate(const int p, const Real x)
 {
     Assert(x >= 0.0 && x <= 1.0,
@@ -42,11 +42,11 @@ BernsteinBasis::evaluate(const int p, const Real x)
 
     const int n_basis = p + 1 ;
 
-    vector<Real> B(n_basis);
+    boost::numeric::ublas::vector<Real> B(n_basis);
 
-    vector<Real> ones(n_basis,1.0);
-    vector<Real> t(ones);
-    vector<Real> one_t(ones);
+    boost::numeric::ublas::scalar_vector<Real> ones(n_basis,1.0);
+    boost::numeric::ublas::vector<Real> t(ones);
+    boost::numeric::ublas::vector<Real> one_t(ones);
 
     for (int k = 1 ; k < n_basis ; ++k)
         for (int i = k ; i < n_basis ; ++i)
@@ -64,7 +64,7 @@ BernsteinBasis::evaluate(const int p, const Real x)
     return B;
 }
 
-vector<Real>
+boost::numeric::ublas::vector<Real>
 BernsteinBasis::derivative(
     const int order,
     const int p,
@@ -89,10 +89,10 @@ BernsteinBasis::derivative(
          * derivative<0>.
          */
         if (p==0)
-            return vector<Real>(n_basis,0.0);
+            return boost::numeric::ublas::zero_vector<Real>(n_basis);
 
-        vector<Real> dB(n_basis);
-        vector<Real> B = BernsteinBasis::derivative(order-1,p-1,x);
+        boost::numeric::ublas::vector<Real> dB(n_basis);
+        boost::numeric::ublas::vector<Real> B = BernsteinBasis::derivative(order-1,p-1,x);
 
         dB[0] = - B[0];
         dB[p] =   B[p-1];

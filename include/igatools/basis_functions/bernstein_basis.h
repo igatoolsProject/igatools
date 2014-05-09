@@ -63,7 +63,7 @@ namespace BernsteinBasis
  * @warning The point \f$ x \f$ must belong to the unit interval [0,1], otherwise an
  * assertion will be raised in Debug mode.
  */
-std::vector<Real>
+boost::numeric::ublas::vector<Real>
 evaluate(const int p, const Real x) ;
 
 /**
@@ -78,7 +78,7 @@ evaluate(const int p, const Real x) ;
  *
  */
 boost::numeric::ublas::matrix<Real>
-evaluate(const int p,  const std::vector<Real> &x) ;
+evaluate(const int p, const std::vector<Real> &x) ;
 
 
 /**
@@ -90,7 +90,7 @@ evaluate(const int p,  const std::vector<Real> &x) ;
  * @warning The point \f$ x \f$ must belong to the unit interval [0,1], otherwise an
  * assertion will be raised in Debug mode.
  */
-std::vector<Real>
+boost::numeric::ublas::vector<Real>
 derivative(int k, const int p, const Real x) ;
 
 /**
