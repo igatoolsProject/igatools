@@ -840,10 +840,12 @@ private:
 
 
     /** Number of scalar basis functions along each direction, for all space components. */
-    StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
+    ComponentTable< TensorSize<dim> > n_basis_direction_;
 
+    ComponentTable<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
 
-    StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
+    /** Basis function ID offset between the different components. */
+    ComponentTable<int> comp_offset_;
 
 public:
     const ComponentTable<

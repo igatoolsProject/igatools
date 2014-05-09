@@ -296,6 +296,15 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
         basis_functions_indexer_(comp_id) = shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
     }
     //--------------------------------------------------------------------------
+
+
+
+    //--------------------------------------------------------------------------
+    comp_offset_(0) = 0;
+    for (int comp_id = 1; comp_id < Space_t::n_components; ++comp_id)
+        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
+    //--------------------------------------------------------------------------
+
 }
 
 
@@ -1610,12 +1619,12 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     const Size n_points = points.size();
 
     return_t derivatives_phi_hat(n_basis,n_points);
-
-    array<int, Space_t::n_components> comp_offset;
-    comp_offset[0] = 0;
-    for (int iComp = 1; iComp < Space_t::n_components; ++iComp)
-        comp_offset[iComp]= comp_offset[iComp-1] + this->get_num_basis(iComp);
-
+    /*
+        array<int, Space_t::n_components> comp_offset;
+        comp_offset[0] = 0;
+        for (int iComp = 1; iComp < Space_t::n_components; ++iComp)
+            comp_offset[iComp]= comp_offset[iComp-1] + this->get_num_basis(iComp);
+    //*/
 
 
     const auto bezier_op = this->get_bezier_extraction_operator();
@@ -1645,15 +1654,13 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 {
                     const int n_basis_1D = basis_component_t_size(dir);
                     const int polynomial_order = n_basis_1D - 1 ;
-                    bernstein_values[dir] =
-                    BernsteinBasis::derivative(0,polynomial_order,point[dir]);
+                    bernstein_values[dir] = BernsteinBasis::derivative(0,polynomial_order,point[dir]);
                 }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
                 //------------------------------------------------------------------------------
 
 
 
-                const Size comp_offset_i = comp_offset[iComp];
 
                 //--------------------------------------------------------------------------------
                 // apply the Bezier extraction operator for the functions on this element -- begin
@@ -1672,8 +1679,13 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
                 //--------------------------------------------------------------------------------
                 // multiply the spline 1D in order to have the multi-d value -- begin
+
+                const Size comp_offset_i = comp_offset_(iComp);
+
                 const auto &basis_flat_to_tensor = *basis_functions_indexer_(iComp);
+
                 const int n_basis_component = basis_component_t_size.flat_size();
+
                 for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
                 {
                     const TensorIndex<dim> basis_tid = basis_flat_to_tensor(basis_fid);
@@ -1695,7 +1707,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             const auto n_basis = space_->get_num_basis_per_element(0);
             for (int comp = 1; comp < Space_t::n_components; ++comp)
             {
-                const Size offset = comp_offset[comp];
+                const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
                 {
                     const auto values_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
