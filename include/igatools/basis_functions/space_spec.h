@@ -25,6 +25,7 @@
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/basis_functions/function_space.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <algorithm>
 
@@ -58,52 +59,15 @@ iota_array(const int init=0)
  *
  */
 template<int dim, int range = 1, int rank = 1>
-class SpaceSpec
+class SpaceSpec :
+        public FunctionSpaceOnGrid<CartesianGrid<dim> >
 {
 
-    /**
-     *  Class to manage the component quantities with the knolwge of
-     * uniform range spaces
-     */
-    template<class T>
-    class ComponentContainer : public StaticMultiArray<T,range,rank>
-    {
-        using base_t = StaticMultiArray<T,range,rank>;
-
-    public:
-        using base_t::n_entries;
-
-        using  ComponentMap = std::array <Index, n_entries>;
-
-        ComponentContainer(const ComponentMap &comp_map =
-                               iota_array<Index, n_entries>());
-
-        ComponentContainer(const T &val);
-
-        ComponentContainer(std::initializer_list<T> list);
-
-        /**
-         *  Flat index access operator (non-const version).
-         */
-        T &operator()(const Index i);
-
-        /**
-         *  Flat index access operator (const version).
-         */
-        const T &operator()(const Index i) const;
-
-    private:
-        /** For each component return de index of the active component */
-        std::array <Index, n_entries> comp_map_;
-
-        /** list of the active components */
-        std::vector<Index> active_components_;
-    };
-
-    static const int n_components = ComponentContainer<int>::n_entries;
-
 private:
-    using Grid = CartesianGrid<dim>;
+    using GridType  = CartesianGrid<dim>;
+    using GridSpace = FunctionSpaceOnGrid<GridType>;
+    template<class> class ComponentContainer;
+    static const int n_components = ComponentContainer<int>::n_entries;
 
 public:
     using Knots = CartesianProductArray<Real, dim>;
@@ -145,12 +109,12 @@ public:
     /**
      * Most general constructor
      */
-    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
+    explicit SpaceSpec(std::shared_ptr<GridType> knots,
                        std::shared_ptr<const MultiplicityTable> interior_mult,
                        const DegreeTable &deg,
                        const PeriodicTable periodic = PeriodicTable(false));
 
-    explicit SpaceSpec(std::shared_ptr<const Grid> knots,
+    explicit SpaceSpec(std::shared_ptr<GridType> knots,
                        const InteriorReg interior_mult,
                        const DegreeTable &deg,
                        const PeriodicTable periodic = PeriodicTable(false))
@@ -186,19 +150,61 @@ private:
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const Grid> grid);
+    std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const GridType> grid);
 
     BoundaryKnotsTable interpolatory_end_knots();
 
 
 
 private:
-    std::shared_ptr<const Grid> grid_;
     std::shared_ptr<const MultiplicityTable> interior_mult_;
+
     DegreeTable deg_;
+
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
+
     PeriodicTable periodic_;
+
+private:
+    /**
+     *  Class to manage the component quantities with the knolwge of
+     * uniform range spaces
+     */
+    template<class T>
+    class ComponentContainer : public StaticMultiArray<T,range,rank>
+    {
+        using base_t = StaticMultiArray<T,range,rank>;
+
+    public:
+        using base_t::n_entries;
+
+        using  ComponentMap = std::array <Index, n_entries>;
+
+        ComponentContainer(const ComponentMap &comp_map =
+                iota_array<Index, n_entries>());
+
+        ComponentContainer(const T &val);
+
+        ComponentContainer(std::initializer_list<T> list);
+
+        /**
+         *  Flat index access operator (non-const version).
+         */
+        T &operator()(const Index i);
+
+        /**
+         *  Flat index access operator (const version).
+         */
+        const T &operator()(const Index i) const;
+
+    private:
+        /** For each component return de index of the active component */
+        std::array <Index, n_entries> comp_map_;
+
+        /** list of the active components */
+        std::vector<Index> active_components_;
+    };
 
 };
 

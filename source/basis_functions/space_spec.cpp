@@ -29,18 +29,18 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
 SpaceSpec<dim, range, rank>::
-SpaceSpec(std::shared_ptr<const Grid> knots,
+SpaceSpec(std::shared_ptr<GridType> knots,
           shared_ptr<const MultiplicityTable> interior_mult,
           const DegreeTable &deg,
           const PeriodicTable periodic)
     :
-    grid_(knots),
+    GridSpace(knots),
     interior_mult_(interior_mult),
     deg_(deg),
     periodic_(periodic)
 {
 #ifndef NDEBUG
-    auto const knots_size = grid_->get_num_knots_dim();
+    auto const knots_size = this->get_grid()->get_num_knots_dim();
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
         for (int j = 0; j < dim; ++j)
@@ -76,6 +76,7 @@ SpaceSpec(std::shared_ptr<const Grid> knots,
 }
 
 
+
 template<int dim, int range, int rank>
 auto
 SpaceSpec<dim, range, rank>::
@@ -89,7 +90,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
         {
             const auto deg = deg_(iComp)[j];
             const auto order = deg + 1;
-            const auto &knots = grid_->get_knot_coordinates(j);
+            const auto &knots = this->get_grid()->get_knot_coordinates(j);
             const auto &left_knts = boundary_knots(iComp)[j].get_data_direction(0);
             const auto &right_knts = boundary_knots(iComp)[j].get_data_direction(1);
 
@@ -123,7 +124,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
         {
             const auto deg = deg_(iComp)[j];
             const auto order = deg + 1;
-            const auto &knots = grid_->get_knot_coordinates(j);
+            const auto &knots = this->get_grid()->get_knot_coordinates(j);
             const auto &mult  = (*interior_mult_)(iComp).get_data_direction(j);
             const auto &left_knts = boundary_knots(iComp)[j].get_data_direction(0);
             const auto &right_knts = boundary_knots(iComp)[j].get_data_direction(1);
@@ -220,7 +221,7 @@ compute_elements_index_space_mark() const -> MultiplicityTable
 template<int dim, int range, int rank>
 auto
 SpaceSpec<dim, range, rank>::
-fill_max_regularity(std::shared_ptr<const Grid> grid) -> std::shared_ptr<MultiplicityTable>
+fill_max_regularity(std::shared_ptr<const GridType> grid) -> std::shared_ptr<MultiplicityTable>
 {
     auto  res = std::make_shared<MultiplicityTable>();
 
@@ -267,7 +268,7 @@ SpaceSpec<dim, range, rank>::
 print_info(LogStream &out)
 {
     out << "Knots without repetition:\n";
-    grid_->print_info(out);
+    this->get_grid()->print_info(out);
     out << "Degrees:\n";
     deg_.print_info(out);
     out << std::endl;

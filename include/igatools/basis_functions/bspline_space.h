@@ -96,7 +96,7 @@ template < int, int, int> class BSplineElementAccessor;
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
     public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
-    public FunctionSpaceOnGrid<CartesianGrid<dim_> >
+    public FunctionSpaceOnGrid<CartesianGrid<dim_> > //public SpaceSpec<dim, range, rank>
 {
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
