@@ -18,26 +18,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Trilinos library (Optional)
+# Find PETSc library (Optional)
 #-------------------------------------------------------------------------------
-macro(find_trilinos)
-  set(Trilinos_PREFIX $ENV{TRILINOS_PREFIX} CACHE LOCATION 
-    "Location where Trilinos library is installed")
-  find_package(Trilinos 11 REQUIRED PATHS ${Trilinos_PREFIX})
-  message(STATUS "Found Trilinos:  version ${Trilinos_VERSION}.")
-  if (NOT (Trilinos_VERSION VERSION_GREATER 11.6))
-    message(FATAL_ERROR "Trilinos 11.6.1 or greater is required.")
-  endif()
+macro(find_petsc)
+  set(Petsc_INCLUDE_DIRS $ENV{PETSC_INCLUDE_DIRS} CACHE LOCATION 
+    "Location where PETSc headers are installed")
 
-  # add the location of Trilinos headers to the include directories
-  include_directories( ${Trilinos_INCLUDE_DIRS} )
+  set(Petsc_LIBRARY_DIRS $ENV{PETSC_LIBRARY_DIRS} CACHE LOCATION 
+    "Location where PETSc libraries are installed")
+   
+  include_directories(${Petsc_INCLUDE_DIRS} ${Petsc_INCLUDE_DIRS}/$ENV{PETSC_ARCH}/include $ENV{PETSC_DIR}/$ENV{PETSC_ARCH}/include)
+  link_directories(${Petsc_LIBRARY_DIRS})
 
-  # Check that individual required Trilinos packages are available
-  set(tri_required_packages Tpetra Belos)
-  foreach(package ${tri_required_packages})
-    list(FIND Trilinos_PACKAGE_LIST  ${package} package_index)
-    if (package_index EQUAL -1)
-      message(FATAL_ERROR "Trilinos ${package} package not found.")
-    endif()
-  endforeach(package)
-endmacro(find_trilinos)
+  set(Petsc_LIBRARIES libpetsc.so)
+    
+  message("-- Found PETSc library in ${Petsc_LIBRARY_DIRS}")
+    
+endmacro(find_petsc)
