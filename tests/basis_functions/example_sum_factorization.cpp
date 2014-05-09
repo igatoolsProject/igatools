@@ -659,7 +659,7 @@ int main(int argc,char **args)
 {
 #if defined(USE_TRILINOS)
 #elif defined(USE_PETSC)
-	PetscInitialize(&argc,&args,(char*)0,"Sum factorization example");
+    PetscInitialize(&argc,&args,(char *)0,"Sum factorization example");
 #endif
 
     do_test<1>();
