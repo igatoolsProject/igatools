@@ -253,6 +253,30 @@ public:
 
 
     /**
+     * Returns a ValueTable with the gradients of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueTable< Derivative<1> >
+    evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const;
+
+
+    /**
+     * Returns a ValueTable with the hessians of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueTable< Derivative<2> >
+    evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const;
+
+
+    /**
      * Returns a ValueVector with the <tt>deriv_order</tt>-th derivatives of the field
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
@@ -277,6 +301,34 @@ public:
      */
     ValueVector<Value>
     evaluate_field_values_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const;
+
+
+    /**
+     * Returns a ValueVector with the gradients of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< Derivative<1> >
+    evaluate_field_gradients_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const;
+
+
+    /**
+     * Returns a ValueVector with the hessians of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< Derivative<2> >
+    evaluate_field_hessians_at_points(
         const std::vector<Real> &local_coefs,
         const std::vector<Point<dim>> &points) const;
 

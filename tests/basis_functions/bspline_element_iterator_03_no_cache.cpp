@@ -73,12 +73,16 @@ void do_test()
     u_values.print_info(out);
     auto values1    = element1->evaluate_basis_values_at_points(eval_points_1);
     values1.print_info(out);
+    auto gradients1    = element1->evaluate_basis_gradients_at_points(eval_points_1);
+    gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme_2(3) ;
     std::vector<Point<dim_domain>> eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
 
     auto values2    = element1->evaluate_basis_values_at_points(eval_points_2);
     values2.print_info(out);
+    auto gradients2    = element1->evaluate_basis_gradients_at_points(eval_points_2);
+    gradients2.print_info(out);
 
     u_values = element1->evaluate_field_values_at_points(
                    dof_tools::get_local_coefs(u,element1->get_local_to_global()),

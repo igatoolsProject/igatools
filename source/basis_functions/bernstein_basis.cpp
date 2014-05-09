@@ -51,14 +51,14 @@ BernsteinBasis::evaluate(const int p, const Real x)
     for (int k = 1 ; k < n_basis ; ++k)
         for (int i = k ; i < n_basis ; ++i)
         {
-            t[i]     *= x;
-            one_t[i] *= 1.-x;
+            t(i)     *= x;
+            one_t(i) *= 1.-x;
         }
 
     for (int i = 0 ; i < n_basis ; ++i)
     {
         Real C = binomial_coefficient<Real>(p, i);
-        B[i] = C * t[i] * one_t[p-i] ;
+        B(i) = C * t(i) * one_t(p-i) ;
     }
 
     return B;
@@ -94,10 +94,12 @@ BernsteinBasis::derivative(
         boost::numeric::ublas::vector<Real> dB(n_basis);
         boost::numeric::ublas::vector<Real> B = BernsteinBasis::derivative(order-1,p-1,x);
 
-        dB[0] = - B[0];
-        dB[p] =   B[p-1];
+        dB(0) = - B(0);
+        dB(p) =   B(p-1);
         for (int i = 1 ; i < p ; ++i)
-            dB[i] = p * (B[i-1] - B[i]);
+            dB(i) = B(i-1) - B(i);
+
+        dB *= p;
 
         return dB;
     } // end if (order > 0)
@@ -129,7 +131,7 @@ BernsteinBasis::evaluate(const int p,  const std::vector< Real > &points)
 
     matrix<Real> B(n_basis, n_points);
 
-    boost::numeric::ublas::scalar_matrix<Real> ones(n_basis, n_points,1.);
+    boost::numeric::ublas::scalar_matrix<Real> ones(n_basis,n_points,1.);
     matrix<Real> t(ones);
     matrix<Real> one_t(ones);
 
@@ -176,7 +178,7 @@ BernsteinBasis::derivative(
 #endif
 
         if (p==0)
-            return (boost::numeric::ublas::zero_matrix<Real>(p+1, n_points));
+            return (boost::numeric::ublas::zero_matrix<Real>(p+1,n_points));
 
         matrix<Real> dB(p+1, n_points);
         matrix<Real> B(p, n_points);

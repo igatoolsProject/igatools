@@ -89,27 +89,27 @@ void do_test()
         out << "Values:" << endl ;
         values.print_info(out);
     }
-    /*
+
+    {
+        auto elem = space->begin();
+        for (; elem != space->end(); ++elem)
         {
-            auto elem = space->begin();
-            for (; elem != space->end(); ++elem)
-            {
-                const auto gradients = elem->evaluate_basis_gradients_at_points(eval_points);
-                out << "Gradients:" << endl ;
-                gradients.print_info(out);
-            }
+            const auto gradients = elem->evaluate_basis_gradients_at_points(eval_points);
+            out << "Gradients:" << endl ;
+            gradients.print_info(out);
         }
+    }
     //*/
-    /*
+
+    {
+        auto elem = space->begin();
+        for (; elem != space->end(); ++elem)
         {
-            auto elem = space->begin();
-            for (; elem != space->end(); ++elem)
-            {
-                const auto gradients = elem->evaluate_basis_hessians_at_points(eval_points);
-                out << "Hessians:" << endl ;
-                hessians.print_info(out);
-            }
+            const auto hessians = elem->evaluate_basis_hessians_at_points(eval_points);
+            out << "Hessians:" << endl ;
+            hessians.print_info(out);
         }
+    }
     //*/
 }
 
@@ -119,7 +119,7 @@ int main()
     out.depth_console(10); //to be removed after test finished
 
     do_test<2>() ;
-//    do_test<3>() ;
+    do_test<3>() ;
 
     return 0;
 }

@@ -1615,6 +1615,10 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     return_t derivatives_phi_hat(n_basis,n_points);
 
 
+
+    LogStream out;
+    using std::endl;
+
     const auto bezier_op = this->get_bezier_extraction_operator();
 
     if (deriv_order == 0)
@@ -1631,7 +1635,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 
-
             for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
             {
                 //------------------------------------------------------------------------------
@@ -1641,8 +1644,8 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 for (int dir = 0 ; dir < dim ; ++dir)
                 {
                     const int n_basis_1D = basis_component_t_size(dir);
-                    const int polynomial_order = n_basis_1D - 1 ;
-                    bernstein_values[dir] = BernsteinBasis::derivative(0,polynomial_order,point[dir]);
+                    const int degree = n_basis_1D - 1 ;
+                    bernstein_values[dir] = BernsteinBasis::derivative(0,degree,point[dir]);
                 }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
                 //------------------------------------------------------------------------------
@@ -1712,8 +1715,188 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     else
     {
 
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+        Assert(deriv_order >= 1, ExcLowerRange(deriv_order,1));
+
+        using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
+        DerSymmMngr_t derivative_symmetry_manager;
+        const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
+        const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
+        const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
+
+        const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
+
+        const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
+        const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
+
+
+
+        const array<Real,dim> elem_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
+        /*
+        out << "elem_lengths= [ ";
+        for ( const double ln : elem_lengths)
+            out << ln << " ";
+        out << "]" <<endl;
+        //*/
+        for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
+        {
+            const Point<dim> point = points[pt_id];
+
+            auto derivatives_phi_hat_ipt = derivatives_phi_hat.get_point_view(pt_id);
+
+#ifndef NDEBUG
+            for (int dir = 0 ; dir < dim ; ++dir)
+                Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
+                ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
+#endif
+
+            out << "Point["<<pt_id<<"] = " << point << endl;
+
+            for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+            {
+                //------------------------------------------------------------------------------
+                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
+                array<array<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bernstein_values;
+                const TensorSize<dim> basis_component_t_size = n_basis_direction_(iComp);
+
+                for (int order = 0 ; order <= deriv_order ; ++order)
+                {
+                    for (int dir = 0 ; dir < dim ; ++dir)
+                    {
+                        const Real scaling_coef = pow(1.0/elem_lengths[dir],order);
+
+                        const int n_basis_1D = basis_component_t_size(dir);
+                        const int degree = n_basis_1D - 1 ;
+                        bernstein_values[order][dir] =
+                        scaling_coef * BernsteinBasis::derivative(order,degree,point[dir]);
+                        /*
+                                                out << "scaling_coef=" << scaling_coef << endl;
+                                                out << "bernstein_values["<<order<<"]["<<dir<<"]=" << bernstein_values[order][dir] << endl;
+                                                //*/
+                    }
+                }
+                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
+                //------------------------------------------------------------------------------
+
+
+
+                //--------------------------------------------------------------------------------
+                // apply the Bezier extraction operator for the functions on this element -- begin
+                const auto &bezier_op_comp = bezier_op(iComp);
+
+                array<array<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bspline_basis;
+                for (int order = 0 ; order <= deriv_order ; ++order)
+                {
+                    for (int dir = 0 ; dir < dim ; ++dir)
+                    {
+                        const auto &M = *(bezier_op_comp[dir]);
+
+                        bspline_basis[order][dir] = prec_prod(M, bernstein_values[order][dir]);
+                    }
+                }
+                // apply the Bezier extraction operator for the functions on this element -- end
+                //--------------------------------------------------------------------------------
+
+
+
+                //--------------------------------------------------------------------------------
+                // multiply the spline 1D in order to have the multi-d value -- begin
+                const Size comp_offset_i = comp_offset_(iComp);
+
+                const auto &basis_flat_to_tensor = *basis_functions_indexer_(iComp);
+
+                const int n_basis_component = basis_component_t_size.flat_size();
+
+                for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
+                {
+
+                    const TensorIndex<dim> basis_tid = basis_flat_to_tensor(basis_fid);
+
+                    auto &deriv = derivatives_phi_hat_ipt[basis_fid+comp_offset_i];
+
+                    //--------------------------------------------------------------------------------
+                    for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
+                    {
+                        const auto entry_eval_fid = derivatives_flat_id_evaluate[entry_id];
+                        const auto entry_eval_tid = derivatives_tensor_id[entry_eval_fid];
+
+                        // from the entry_tid we get the right derivative order
+                        TensorIndex<dim> deriv_order_tid; // [0,0,..,0] tensor index
+                        for (int i = 0; i < deriv_order; ++i)
+                            ++(deriv_order_tid[entry_eval_tid[i]]);
+
+                        //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
+                        if (dim > 0)
+                        {
+                            Real value = 1.0;
+                            for (int dir = 0 ; dir < dim ; ++dir)
+                            {
+                                const int deriv = deriv_order_tid[dir];
+                                const int fn = basis_tid[dir];
+
+                                value *= bspline_basis[deriv][dir][fn];
+                            }
+                            deriv(entry_eval_fid)(iComp) = value;
+                            /*
+                                                        out << "entry_eval_fid=" << entry_eval_fid << "   "
+                                                            << "entry_eval_tid=" << entry_eval_tid << "   "
+                                                            << "deriv_order_tid=" << deriv_order_tid << "   "
+                                                            << "basis_tid=" << basis_tid << "   "
+                                                            << "value=" << value << "   " << endl;
+                                                            //*/
+                        }
+                        else
+                        {
+                            deriv(entry_eval_fid)(iComp) = 1.0;
+                        }
+
+                    } // end entry_id loop
+                    //--------------------------------------------------------------------------------
+
+
+                    //--------------------------------------------------------------------------------
+                    // here we copy the computed quantities to the symmetric part of the tensor
+                    for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
+                        deriv(derivatives_flat_id_copy_to[entry_id])(iComp) =
+                            deriv(derivatives_flat_id_copy_from[entry_id])(iComp);
+                    //--------------------------------------------------------------------------------
+
+                }
+                // multiply the spline 1D in order to have the multi-d value -- end
+                //--------------------------------------------------------------------------------
+
+            } // end iComp loop
+
+        } // end pt_id loop
+//        Assert(false,ExcNotImplemented());
+//        derivatives_phi_hat.print_info(out);
+//        Assert(false,ExcNotImplemented());
+
+        if (space_->homogeneous_range_)
+        {
+            const Size n_ders = Derivative<deriv_order>::size;
+            const auto n_basis = space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            {
+                const Size offset = comp_offset_(comp);
+                for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+                {
+                    const auto derivatives_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
+                    auto derivatives_phi_hat_copy_to = derivatives_phi_hat.get_function_view(offset+basis_i);
+                    for (int qp = 0; qp < n_points; ++qp)
+                    {
+                        const auto &values_0 = derivatives_phi_hat_copy_from[qp];
+                        auto &values = derivatives_phi_hat_copy_to[qp];
+
+                        for (int der = 0; der < n_ders; ++der)
+                            values(der)(comp) = values_0(der)(0);
+                    }
+                } //end loop basis_i
+            } // end loop comp
+
+        } // end if (space_->homogeneous_range_)
+
+//        Assert(false,ExcNotImplemented());
+//        AssertThrow(false,ExcNotImplemented());
 
     } // end if (deriv_order != 0)
 
@@ -1731,6 +1914,26 @@ evaluate_basis_values_at_points(const vector<Point<dim>> &points) const ->
 ValueTable<Value>
 {
     return this->evaluate_basis_derivatives_at_points<0>(points);
+}
+
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_basis_gradients_at_points(const vector<Point<dim>> &points) const ->
+ValueTable<Derivative<1> >
+{
+    return this->evaluate_basis_derivatives_at_points<1>(points);
+}
+
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_basis_hessians_at_points(const vector<Point<dim>> &points) const ->
+ValueTable<Derivative<2> >
+{
+    return this->evaluate_basis_derivatives_at_points<2>(points);
 }
 
 
@@ -1763,6 +1966,29 @@ evaluate_field_values_at_points(
 ValueVector<Value>
 {
     return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_gradients_at_points(
+    const std::vector<Real> &local_coefs,
+    const vector<Point<dim>> &points) const ->
+ValueVector<Derivative<1> >
+{
+    return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
+}
+
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_field_hessians_at_points(
+    const std::vector<Real> &local_coefs,
+    const vector<Point<dim>> &points) const ->
+ValueVector<Derivative<2> >
+{
+    return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
 }
 
 template <int dim, int range, int rank>
