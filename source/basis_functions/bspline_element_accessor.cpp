@@ -1119,12 +1119,6 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
 
     Assert(rank < 2, ExcMessage("For rank> 1 the basis function are not implemented/tested."));
 
-    array<int, Space_t::n_components> comp_offset;
-    comp_offset[0] = 0;
-    for (int i = 1; i < Space_t::n_components; ++i)
-        comp_offset[i]= comp_offset[i-1] + n_basis_direction_(i).flat_size();
-
-
     const Size num_points = size.n_points_direction_.flat_size();
 
     if (deriv_order == 0)
@@ -1135,7 +1129,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
             const int n_basis = get_num_basis(iComp);
             Assert(n_basis == n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
-            const Size comp_offset_i = comp_offset[iComp];
+            const Size comp_offset_i = comp_offset_(iComp);
 
             DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
@@ -1168,7 +1162,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
             const auto n_basis = space_->get_num_basis_per_element(0);
             for (int comp = 1; comp < Space_t::n_components; ++comp)
             {
-                const Size offset = comp_offset[comp];
+                const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
                 {
                     const auto values_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
@@ -1204,7 +1198,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
             const int n_basis = get_num_basis(iComp);
             Assert(n_basis == n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
-            const Size comp_offset_i = comp_offset[iComp];
+            const Size comp_offset_i = comp_offset_(iComp);
 
             DynamicMultiArray<Real,dim> derivative_scalar_component(size.n_points_direction_);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
@@ -1263,7 +1257,7 @@ evaluate_bspline_derivatives(const FuncPointSize &size,
             const auto n_basis = space_->get_num_basis_per_element(0);
             for (int comp = 1; comp < Space_t::n_components; ++comp)
             {
-                const Size offset = comp_offset[comp];
+                const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
                 {
                     const auto derivatives_phi_hat_copy_from = derivatives_phi_hat.get_function_view(basis_i);
@@ -1619,12 +1613,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     const Size n_points = points.size();
 
     return_t derivatives_phi_hat(n_basis,n_points);
-    /*
-        array<int, Space_t::n_components> comp_offset;
-        comp_offset[0] = 0;
-        for (int iComp = 1; iComp < Space_t::n_components; ++iComp)
-            comp_offset[iComp]= comp_offset[iComp-1] + this->get_num_basis(iComp);
-    //*/
 
 
     const auto bezier_op = this->get_bezier_extraction_operator();
