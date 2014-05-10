@@ -285,42 +285,6 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
 {}
 
 
-/*
-//TODO: inline this
-template <int dim, int range, int rank>
-int
-BSplineElementAccessor<dim, range, rank>::
-get_num_basis() const
-{
-    return (this->space_->get_num_basis_per_element());
-}
-//*/
-
-/*
-template <int dim, int range, int rank>
-int
-BSplineElementAccessor<dim, range, rank>::
-get_num_basis(const int i) const
-{
-    const auto &degree_comp = this->space_->get_degree()(i);
-    int component_num_basis = 1;
-    for (int j = 0; j < dim; ++j)
-        component_num_basis *= degree_comp[j] + 1;
-
-    return component_num_basis;
-}
-//*/
-
-/*
-template <int dim, int range, int rank>
-vector<Index> const &
-BSplineElementAccessor<dim, range, rank>::
-get_local_to_global() const
-{
-    return space_->element_global_dofs_[this->get_flat_index()];
-}
-//*/
-
 
 template <int dim, int range, int rank>
 void
@@ -473,17 +437,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
       const Quadrature<dim> &quad)
 {
     ValuesCache::reset(flags_handler, n_basis_direction,quad);
-}
-
-template <int dim, int range, int rank>
-const Quadrature<dim> &
-BSplineElementAccessor<dim, range, rank>::
-get_quad_points(const TopologyId<dim> &topology_id) const
-{
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_initialized(), ExcNotInitialized());
-
-    return cache.quad_;
 }
 
 template <int dim, int range, int rank>

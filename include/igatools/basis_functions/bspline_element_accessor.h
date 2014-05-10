@@ -482,8 +482,22 @@ public:
      * Pointer to the BsplineSpace the accessor is iterating on.
      */
     std::shared_ptr<const Space> get_space() const;
-
     ///@}
+
+
+
+    /**
+     * Get the quadrature points used to initialize the element or a given element-face.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    const Quadrature<dim> &
+    get_quad_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+
+
 protected:
     /**
      * Space for which the SpaceElementAccessor refers to.
@@ -998,17 +1012,19 @@ get_space() const -> std::shared_ptr<const Space>
     return space_;
 }
 
-/*
+
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-get_values_cache(const TopologyId<dim> &topology_id) const ->
-const typename DerivedElementAccessor::ValuesCache &
+get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<dim> &
 {
-	return this->as_derived_element_accessor().get_values_cache(topology_id);
+    const auto &cache = this->as_derived_element_accessor().get_values_cache(topology_id);
+    Assert(cache.is_initialized(), ExcNotInitialized());
+
+    return cache.quad_;
 }
-//*/
+
 
 
 /**
@@ -1183,19 +1199,6 @@ public:
     evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
 
     ///@}
-
-
-
-
-
-    /**
-     * Get the quadrature points used to initialize the element or a given element-face.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    const Quadrature<dim> &get_quad_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Prints internal information about the BSplineElementAccessor.
