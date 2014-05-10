@@ -50,7 +50,9 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
 {
 public:
-    /**
+	/** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
+	///@{
+	/**
      * Typedef for specifying the value of the basis function.
      */
     using Value = Values<dim+codim, range, rank>;
@@ -66,6 +68,13 @@ public:
      */
     using Div = Values<dim+codim, 1, 1>;
 
+
+    /**
+     * For each component gives a product array of the dimension
+     */
+    template<class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
+    ///@}
 
     /** @name Constructors */
     ///@{
@@ -359,6 +368,86 @@ public:
     ///@}
 
 
+
+
+    /** @name Fields related */
+    ///@{
+    /**
+     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
+     * points.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    ValueVector<Value>
+    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+
+    /**
+     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Value>
+    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
+     * at the evaluation points.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    ValueVector<Derivative<1> >
+    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Derivative<1> >
+    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
+     * at the evaluation points.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    ValueVector<Derivative<2> >
+    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Derivative<2> >
+    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
+     * at the evaluation points.
+     *
+     * @note The @p topology_id parameter can be used to select values on the element
+     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * @see get_local_coefs
+     */
+    ValueVector<Div>
+    evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
+     * points on the face specified by @p face_id.
+     */
+    ValueVector<Div>
+    evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const;
+    ///@}
+
+
+
     /** @name Query information without use of cache */
     ///@{
     /**
@@ -401,6 +490,17 @@ protected:
      */
     std::shared_ptr<const Space> space_ = nullptr;
 
+
+    /** Number of scalar basis functions along each direction, for all space components. */
+    ComponentTable< TensorSize<dim> > n_basis_direction_;
+
+    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
+    ComponentTable<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
+
+    /** Basis function ID offset between the different components. */
+    ComponentTable<int> comp_offset_;
+
+
 /*
 private:
     const typename DerivedElementAccessor::ValuesCache &
@@ -416,7 +516,29 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
 :
 	CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
 	space_(space)
-{};
+{
+    //--------------------------------------------------------------------------
+    using Indexer = CartesianProductIndexer<dim>;
+
+    for (int comp_id = 0; comp_id < Space::n_components; ++comp_id)
+    {
+        for (int j=0; j<dim; ++j)
+            n_basis_direction_(comp_id)[j] = this->space_->get_degree()(comp_id)[j]+1;
+
+        // creating the objects for fast conversion from flat-to-tensor indexing
+        // (in practice it is an hash-table from flat to tensor indices)
+        basis_functions_indexer_(comp_id) = std::shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
+    }
+    //--------------------------------------------------------------------------
+
+
+
+    //--------------------------------------------------------------------------
+    comp_offset_(0) = 0;
+    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
+        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
+    //--------------------------------------------------------------------------
+};
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 inline
@@ -710,6 +832,128 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &to
 
 
 
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+-> ValueVector<Value>
+{
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_values() == true, ExcCacheNotFilled());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D0phi_hat = this->get_basis_values(topology_id) ;
+    Assert(D0phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D0phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return D0phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector<Value>
+{
+    return this->evaluate_field(local_coefs,FaceTopology<dim>(face_id));
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+-> ValueVector< Derivative<1> >
+{
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_gradients() == true, ExcCacheNotFilled());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D1phi_hat = this->get_basis_gradients(topology_id) ;
+    Assert(D1phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D1phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return D1phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector< Derivative<1> >
+{
+    return this->evaluate_field_gradients(local_coefs,FaceTopology<dim>(face_id));
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_divergences(
+    const std::vector<Real> &local_coefs,
+    const TopologyId<dim> &topology_id) const -> ValueVector<Div>
+{
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_divergences() == true, ExcCacheNotFilled());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &div_phi_hat = this->get_basis_divergences(topology_id) ;
+    Assert(div_phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(div_phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return div_phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector<Div>
+{
+    return this->evaluate_field_divergences(local_coefs,FaceTopology<dim>(face_id));
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
+{
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
+    Assert(this->get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
+
+    const auto &D2phi_hat = this->get_basis_hessians(topology_id) ;
+    Assert(D2phi_hat.get_num_functions() == this->get_num_basis(),
+    ExcDimensionMismatch(D2phi_hat.get_num_functions(), this->get_num_basis())) ;
+
+    return D2phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const
+-> ValueVector< Derivative<2> >
+{
+    return this->evaluate_field_hessians(local_coefs,FaceTopology<dim>(face_id));
+}
+
+
+
+
+
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 inline
 Size
@@ -942,84 +1186,6 @@ public:
 
 
 
-
-
-
-    /** @name Fields related */
-    ///@{
-    /**
-     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
-     * points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Value>
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-
-    /**
-     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Value>
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Div>
-    evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Div>
-    evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const;
-    ///@}
 
 
     /**
@@ -1337,14 +1503,6 @@ private:
 
 
 
-
-    /** Number of scalar basis functions along each direction, for all space components. */
-    ComponentTable< TensorSize<dim> > n_basis_direction_;
-
-    ComponentTable<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
-
-    /** Basis function ID offset between the different components. */
-    ComponentTable<int> comp_offset_;
 
 public:
     const ComponentTable<
