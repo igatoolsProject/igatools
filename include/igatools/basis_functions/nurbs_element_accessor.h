@@ -20,8 +20,8 @@
 
 
 
-#ifndef __NURBS_ELEMENT_ACCESSOR_H_
-#define __NURBS_ELEMENT_ACCESSOR_H_
+#ifndef NURBS_ELEMENT_ACCESSOR_H_
+#define NURBS_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
@@ -141,7 +141,6 @@ public:
      */
     std::vector<Real> get_weights() const ;
 
-private:
 
 
     /**
@@ -154,7 +153,10 @@ private:
     /**
      * TODO: document me .
      */
-    using ValueRef_t = Values<dim, range, rank>;
+    using Value = Values<dim, range, rank>;
+
+
+private:
 
     /**
      * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
@@ -165,7 +167,7 @@ private:
     void
     evaluate_nurbs_values(
         const typename Parent_t::ValuesCache &bspline_cache,
-        ValueTable<ValueRef_t> &D0_phi_hat) const ;
+        ValueTable<Value> &D0_phi_hat) const ;
 
     /**
      * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
@@ -196,20 +198,20 @@ public:
      * Reference to a ValueTable with the values of all local basis function
      * at each evaluation point.
      */
-    ValueTable<ValueRef_t> const &
+    ValueTable<Value> const &
     get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Reference to a ValueTable with the values of all local basis function
      * at each evaluation point on the face specified by @p face_id.
      */
-    ValueTable<ValueRef_t> const &
+    ValueTable<Value> const &
     get_face_basis_values(const Index face_id) const;
 
     /**
      * TODO: document me .
      */
-    typename ValueTable<ValueRef_t>::const_view
+    typename ValueTable<Value>::const_view
     get_basis_values(const Index basis,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
@@ -244,7 +246,7 @@ public:
      * @param[in] basis Local id of the basis function.
      * @param[in] qp Local id of the evaluation point.
      */
-    ValueRef_t const &
+    Value const &
     get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
@@ -270,7 +272,7 @@ public:
     /**
      * TODO: document me .
      */
-    ValueVector<ValueRef_t >
+    ValueVector<Value >
     evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
@@ -303,7 +305,7 @@ private:
 
         BasisElemValueFlagsHandler flags_handler_;
 
-        ValueTable<ValueRef_t> D0phi_hat_;
+        ValueTable<Value> D0phi_hat_;
         ValueTable<DerivativeRef_t<1>> D1phi_hat_;
         ValueTable<DerivativeRef_t<2>> D2phi_hat_;
         /*
@@ -379,6 +381,6 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#endif /* __NURBS_ELEMENT_ACCESSOR_H_ */
+#endif /* NURBS_ELEMENT_ACCESSOR_H_ */
 
 

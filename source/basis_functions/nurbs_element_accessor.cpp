@@ -1006,7 +1006,7 @@ get_weights() const
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<ValueRef_t> const &
+get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -1018,7 +1018,7 @@ get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<ValueRe
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_face_basis_values(const Index face_id) const -> ValueTable<ValueRef_t> const &
+get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
 {
     return this->get_basis_values(FaceTopology<dim>(face_id));
 }
@@ -1027,7 +1027,7 @@ get_face_basis_values(const Index face_id) const -> ValueTable<ValueRef_t> const
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_values(const Index basis,const TopologyId<dim> &topology_id) const -> typename ValueTable<ValueRef_t>::const_view
+get_basis_values(const Index basis,const TopologyId<dim> &topology_id) const -> typename ValueTable<Value>::const_view
 {
     return this->get_basis_values(topology_id).get_function_view(basis);
 }
@@ -1077,7 +1077,7 @@ get_basis_hessians(const Index basis,const TopologyId<dim> &topology_id) const -
 template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
-get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> ValueRef_t const &
+get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
            ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
@@ -1108,7 +1108,7 @@ template <int dim, int range, int rank>
 auto
 NURBSElementAccessor<dim, range, rank>::
 evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
--> ValueVector<ValueRef_t>
+-> ValueVector<Value>
 {
     Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.values_filled(), ExcCacheNotFilled());

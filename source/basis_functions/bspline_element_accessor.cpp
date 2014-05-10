@@ -280,16 +280,16 @@ BSplineElementAccessor<dim, range, rank>::
 BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                        const int index)
     :
-    CartesianGridElementAccessor<dim>(space->get_grid(), index),
-    space_(space)
+    SpaceElementAccessor<
+        BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>(space,index)
 {
     //--------------------------------------------------------------------------
     using Indexer = CartesianProductIndexer<dim>;
 
-    for (int comp_id = 0; comp_id < Space_t::n_components; ++comp_id)
+    for (int comp_id = 0; comp_id < Space::n_components; ++comp_id)
     {
         for (int j=0; j<dim; ++j)
-            n_basis_direction_(comp_id)[j] = space_->degree_(comp_id)[j]+1;
+            n_basis_direction_(comp_id)[j] = this->space_->degree_(comp_id)[j]+1;
 
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
@@ -301,14 +301,14 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
 
     //--------------------------------------------------------------------------
     comp_offset_(0) = 0;
-    for (int comp_id = 1; comp_id < Space_t::n_components; ++comp_id)
+    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
         comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
     //--------------------------------------------------------------------------
 
 }
 
 
-
+/*
 //TODO: inline this
 template <int dim, int range, int rank>
 int
@@ -317,8 +317,9 @@ get_num_basis() const
 {
     return (this->space_->get_num_basis_per_element());
 }
+//*/
 
-
+/*
 template <int dim, int range, int rank>
 int
 BSplineElementAccessor<dim, range, rank>::
@@ -331,9 +332,9 @@ get_num_basis(const int i) const
 
     return component_num_basis;
 }
+//*/
 
-
-
+/*
 template <int dim, int range, int rank>
 vector<Index> const &
 BSplineElementAccessor<dim, range, rank>::
@@ -341,7 +342,7 @@ get_local_to_global() const
 {
     return space_->element_global_dofs_[this->get_flat_index()];
 }
-
+//*/
 
 
 template <int dim, int range, int rank>
@@ -440,7 +441,7 @@ reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
     if (values_1d_elem_.use_count() == 0)
         values_1d_elem_= make_shared<GlobalElemCache>();
 
-    values_1d_elem_->reset(*space_, quad, max_der);
+    values_1d_elem_->reset(*(this->space_), quad, max_der);
 
     for (int f = 0; f < n_faces; ++f)
     {
@@ -449,7 +450,7 @@ reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
 
         if (values_1d_faces_[f].use_count() == 0)
             values_1d_faces_[f]= make_shared<GlobalFaceCache>();
-        values_1d_faces_[f]->reset(*space_, quad, f, max_der);
+        values_1d_faces_[f]->reset(*(this->space_), quad, f, max_der);
     }
 }
 
@@ -526,7 +527,7 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     const int total_n_points = n_points_direction.flat_size();
 
     int total_n_basis = 0;
-    for (int i = 0; i < Space_t::n_components; ++i)
+    for (int i = 0; i < Space::n_components; ++i)
         total_n_basis += n_basis_direction(i).flat_size();
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
@@ -655,7 +656,7 @@ get_bezier_extraction_operator() const -> ComponentTable< std::array< const Dens
     for (int comp_id = 0 ; comp_id < n_components ; ++comp_id)
     {
         for (int dir = 0 ; dir < dim ; ++dir)
-            bezier_op(comp_id)[dir] = space_->bezier_op_(comp_id).get_data_direction(dir)[element_tid[dir]];
+            bezier_op(comp_id)[dir] = this->space_->bezier_op_(comp_id).get_data_direction(dir)[element_tid[dir]];
     }
 
     return bezier_op;
@@ -700,7 +701,7 @@ template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
 GlobalFaceCache::
-reset(const Space_t &space,
+reset(const Space &space,
       const Quadrature<dim> &quad1,
       const Index face_id,
       int max_der)
@@ -768,7 +769,7 @@ reset(const Space_t &space,
 
 
     // assign the basis1D data to the proper component/interval through their memory address
-    for (int iComp = 0; iComp < Space_t::n_components; iComp++)
+    for (int iComp = 0; iComp < Space::n_components; iComp++)
     {
         const int active_comp = space.map_component_to_active_data_(iComp);
         this->splines1d_cache_(iComp) = &(this->splines1d_cache_data_(active_comp));
@@ -794,7 +795,7 @@ fill_from_univariate(
 
     const auto &degree = elem.get_space()->get_degree();
 
-    for (int comp = 0; comp < Space_t::n_components; ++comp)
+    for (int comp = 0; comp < Space::n_components; ++comp)
     {
         for (int i = 0; i < dim ; ++i)
             n_basis_direction(i) = degree(comp)[i]+1;
@@ -900,7 +901,7 @@ fill_values()
 
     const auto &element_tensor_id = this->get_tensor_index();
     ComponentTable<array<const BasisValues1d *, dim>> elem_univariate_values;
-    for (int iComp=0; iComp< Space_t::n_components; ++iComp)
+    for (int iComp=0; iComp< Space::n_components; ++iComp)
     {
         const auto &univariate_values = values_1d_elem_->splines1d_cache_(iComp);
         for (int i = 0; i < dim; ++i)
@@ -929,7 +930,7 @@ fill_face_values(const Index face_id)
     const auto &element_tensor_id = this->get_tensor_index();
     StaticMultiArray<array<const BasisValues1d *,dim>,range,rank>
     elem_univariate_values;
-    for (int iComp=0; iComp < Space_t::n_components ; ++iComp)
+    for (int iComp=0; iComp < Space::n_components ; ++iComp)
     {
         for (int i = 0; i < dim; ++i)
         {
@@ -952,7 +953,7 @@ template < int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
 GlobalElemCache::
-reset(const Space_t &space,
+reset(const Space &space,
       const Quadrature<dim> &quad,
       const int max_der)
 {
@@ -974,7 +975,7 @@ reset(const Space_t &space,
     }
 
 
-    for (int iComp = 0; iComp < Space_t::n_components; ++iComp)
+    for (int iComp = 0; iComp < Space::n_components; ++iComp)
     {
         Assert(n_elem == this->splines1d_cache_data_(space.map_component_to_active_data_(iComp)).tensor_size(),
                ExcMessage("Not same size"));
@@ -1036,7 +1037,7 @@ reset(const Space_t &space,
 
     //------------------------------------------------------------------------------------------
     // assign the basis1D data to the proper component/interval through their memory address
-    for (int iComp = 0; iComp < Space_t::n_components; iComp++)
+    for (int iComp = 0; iComp < Space::n_components; iComp++)
     {
         const int active_comp = space.map_component_to_active_data_(iComp);
 
@@ -1097,9 +1098,9 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
     if (deriv_order == 0)
     {
         TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
-        for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+        for (int iComp = 0; iComp < this->space_->num_active_components_; ++iComp)
         {
-            const int n_basis = get_num_basis(iComp);
+            const int n_basis = this->get_num_basis(iComp);
             Assert(n_basis == n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
             const Size comp_offset_i = comp_offset_(iComp);
@@ -1130,10 +1131,10 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
         } // end iComp loop
 
 
-        if (space_->homogeneous_range_)
+        if (this->space_->homogeneous_range_)
         {
-            const auto n_basis = space_->get_num_basis_per_element(0);
-            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            const auto n_basis = this->space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space::n_components; ++comp)
             {
                 const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -1166,9 +1167,9 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
 
         using der_t = Conditional<deriv_order==0,Values<dim,range,rank>,Derivatives<dim,range,rank,deriv_order>>;
 
-        for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+        for (int iComp = 0; iComp < this->space_->num_active_components_; ++iComp)
         {
-            const int n_basis = get_num_basis(iComp);
+            const int n_basis = this->get_num_basis(iComp);
             Assert(n_basis == n_basis_direction_(iComp).flat_size(), ExcMessage("different sizes"));
 
             const Size comp_offset_i = comp_offset_(iComp);
@@ -1224,11 +1225,11 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
 
         } // end iComp loop
 
-        if (space_->homogeneous_range_)
+        if (this->space_->homogeneous_range_)
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = space_->get_num_basis_per_element(0);
-            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            const auto n_basis = this->space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space::n_components; ++comp)
             {
                 const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -1253,15 +1254,15 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
 
 
 
-
+/*
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_space() const -> shared_ptr<const Space_t>
+get_space() const -> shared_ptr<const Space>
 {
     return space_;
 }
-
+//*/
 
 
 
@@ -1603,7 +1604,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 
-            for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+            for (int iComp = 0; iComp < this->space_->num_active_components_; ++iComp)
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
@@ -1659,10 +1660,10 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             } // end iComp loop
         } // end pt_id loop
 
-        if (space_->homogeneous_range_)
+        if (this->space_->homogeneous_range_)
         {
-            const auto n_basis = space_->get_num_basis_per_element(0);
-            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            const auto n_basis = this->space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space::n_components; ++comp)
             {
                 const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -1708,7 +1709,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 
-            for (int iComp = 0; iComp < space_->num_active_components_; ++iComp)
+            for (int iComp = 0; iComp < this->space_->num_active_components_; ++iComp)
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
@@ -1810,11 +1811,11 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
         } // end pt_id loop
 
-        if (space_->homogeneous_range_)
+        if (this->space_->homogeneous_range_)
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = space_->get_num_basis_per_element(0);
-            for (int comp = 1; comp < Space_t::n_components; ++comp)
+            const auto n_basis = this->space_->get_num_basis_per_element(0);
+            for (int comp = 1; comp < Space::n_components; ++comp)
             {
                 const Size offset = comp_offset_(comp);
                 for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -1839,6 +1840,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     return derivatives_phi_hat;
 }
 
+/*
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
@@ -1847,8 +1849,8 @@ ValueTable<Value>
 {
     return this->evaluate_basis_derivatives_at_points<0>(points);
 }
-
-
+//*/
+/*
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
@@ -1857,8 +1859,8 @@ ValueTable<Derivative<1> >
 {
     return this->evaluate_basis_derivatives_at_points<1>(points);
 }
-
-
+//*/
+/*
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
@@ -1867,8 +1869,8 @@ ValueTable<Derivative<2> >
 {
     return this->evaluate_basis_derivatives_at_points<2>(points);
 }
-
-
+//*/
+/*
 template <int dim, int range, int rank>
 template<int deriv_order>
 auto
@@ -1922,7 +1924,7 @@ ValueVector<Derivative<2> >
 {
     return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
 }
-
+//*/
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::

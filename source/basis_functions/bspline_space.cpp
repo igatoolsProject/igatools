@@ -984,7 +984,13 @@ get_index_space() const -> const ComponentTable<DynamicMultiArray<Index,dim>> &
     return index_space_;
 }
 
-
+template<int dim_, int range_, int rank_>
+const std::vector<std::vector<Index>> &
+BSplineSpace<dim_, range_, rank_>::
+get_element_global_dofs() const
+{
+	return element_global_dofs_;
+}
 
 template<int dim_, int range_, int rank_>
 void

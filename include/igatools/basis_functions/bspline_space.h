@@ -295,6 +295,12 @@ public:
      * independent of the distribution policy in use.
      */
     const ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const;
+
+
+    /**
+     * @todo Missing documentation
+     */
+    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
     ///@}
 
     /** @name Functions involving the element iterator */

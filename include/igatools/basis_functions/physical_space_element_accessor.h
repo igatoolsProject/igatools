@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef __PHYSICALSPACEELEMENTACCESSOR_H
-#define __PHYSICALSPACEELEMENTACCESSOR_H
+#ifndef PHYSICAL_SPACE_ELEMENT_ACCESSOR_H
+#define PHYSICAL_SPACE_ELEMENT_ACCESSOR_H
 
 #include <igatools/base/config.h>
 
@@ -543,4 +543,4 @@ public :
 
 IGA_NAMESPACE_CLOSE
 
-#endif // __PHYSICALSPACEELEMENTACCESSOR_H
+#endif // PHYSICAL_SPACE_ELEMENT_ACCESSOR_H

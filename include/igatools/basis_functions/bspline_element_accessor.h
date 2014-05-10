@@ -42,14 +42,284 @@ IGA_NAMESPACE_OPEN
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
+
+/**
+ * @todo Missing documentation
+ */
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
+{
+public:
+    /**
+     * Typedef for specifying the value of the basis function.
+     */
+    using Value = Values<dim+codim, range, rank>;
+
+    /**
+     * Typedef for specifying the derivatives of the basis function.
+     */
+    template <int deriv_order>
+    using Derivative = Derivatives<dim+codim, range, rank, deriv_order>;
+
+    /**
+     * Typedef for specifying the divergence of the basis function.
+     */
+    using Div = Values<dim+codim, 1, 1>;
+
+
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    SpaceElementAccessor() = delete;
+
+    /**
+     * Constructs an accessor to element number index of a
+     * BsplineSpace space.
+     */
+    SpaceElementAccessor(const std::shared_ptr<const Space> space,
+                         const int elem_index)
+    :
+    	CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
+    	space_(space)
+    {};
+
+
+    /**
+     * Copy constructor.
+     * @note For the constructed object it
+     * creates a new element cache, but it shares
+     * the one dimensional cache with the copied element.
+     */
+    SpaceElementAccessor(const SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank> &elem)
+        = default;
+
+    /**
+     * Move constructor.
+     */
+    SpaceElementAccessor(SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank> &&elem)
+        = default;
+
+    /**
+     * Destructor.
+     */
+    ~SpaceElementAccessor() = default;
+    ///@}
+
+
+    /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
+    DerivedElementAccessor & as_derived_element_accessor()
+    {
+    	return static_cast<DerivedElementAccessor &>(*this);
+    }
+
+
+
+    /** @name Functions for the basis and field evaluations without the use of the cache */
+    ///@{
+
+    /**
+     * Returns a ValueTable with the values of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueTable<Value>
+    evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const
+    {
+    	return this->as_derived_element_accessor().evaluate_basis_derivatives_at_points<0>(points);
+    }
+
+
+    /**
+     * Returns a ValueTable with the gradients of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueTable< Derivative<1> >
+    evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const
+    {
+    	return this->as_derived_element_accessor().evaluate_basis_derivatives_at_points<1>(points);
+    }
+
+
+    /**
+     * Returns a ValueTable with the hessians of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueTable< Derivative<2> >
+    evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const
+    {
+    	return this->as_derived_element_accessor().evaluate_basis_derivatives_at_points<2>(points);
+    }
+
+
+    /**
+     * Returns a ValueVector with the <tt>deriv_order</tt>-th derivatives of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <int deriv_order>
+    ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+    evaluate_field_derivatives_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const
+    {
+    	const auto & derived_element_accessor = this->as_derived_element_accessor();
+        Assert(derived_element_accessor.get_num_basis() == local_coefs.size(),
+        ExcDimensionMismatch(derived_element_accessor.get_num_basis(),local_coefs.size()));
+
+        const auto derivatives_phi_hat = derived_element_accessor.evaluate_basis_derivatives_at_points<deriv_order>(points);
+        Assert(derivatives_phi_hat.get_num_functions() == derived_element_accessor.get_num_basis(),
+        ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), derived_element_accessor.get_num_basis())) ;
+
+        return derivatives_phi_hat.evaluate_linear_combination(local_coefs) ;
+    }
+
+
+    /**
+     * Returns a ValueVector with the values of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector<Value>
+    evaluate_field_values_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const
+    {
+     	return this->evaluate_field_derivatives_at_points<0>(points);
+    }
+
+
+    /**
+     * Returns a ValueVector with the gradients of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< Derivative<1> >
+    evaluate_field_gradients_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const
+    {
+     	return this->evaluate_field_derivatives_at_points<1>(points);
+    }
+
+
+    /**
+     * Returns a ValueVector with the hessians of the field
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< Derivative<2> >
+    evaluate_field_hessians_at_points(
+        const std::vector<Real> &local_coefs,
+        const std::vector<Point<dim>> &points) const
+    {
+     	return this->evaluate_field_derivatives_at_points<2>(points);
+    }
+    ///*}
+
+
+
+    /** @name Query information without use of cache */
+    ///@{
+    /**
+     *  Number of non zero basis functions over the current element.
+     */
+    Size get_num_basis() const
+    {
+        return this->space_->get_num_basis_per_element();
+    }
+
+    /**
+     * Number of non-zero scalar basis functions associated
+     * with the i-th space component on the element.
+     * This makes sense as a reference B-spline space
+     * is only allowed to be of the cartesian product type
+     * V = V1 x V2 x ... X Vn.
+     */
+    int get_num_basis(const int i) const
+    {
+        const auto &degree_comp = this->space_->get_degree()(i);
+        int component_num_basis = 1;
+        for (int j = 0; j < dim; ++j)
+            component_num_basis *= degree_comp[j] + 1;
+
+        return component_num_basis;
+    }
+
+    /**
+     * Returns the global dofs of the local (non zero) basis functions
+     * on the element.
+     * For example:
+     * \code
+       auto loc_to_glob = elem->get_local_to_global();
+       // loc_to_glob[0] is the global id of the first element basis function
+       // loc_to_glob[1] is the global id of the second element basis function
+       // ...
+      \endcode
+     *
+     */
+    std::vector<Index> const &get_local_to_global() const
+	{
+	    return space_->get_element_global_dofs()[this->get_flat_index()];
+	}
+
+    /**
+     * Pointer to the BsplineSpace the accessor is iterating on.
+     */
+    std::shared_ptr<const Space> get_space() const
+    {
+        return space_;
+    }
+
+    ///@}
+protected:
+    /**
+     * Space for which the SpaceElementAccessor refers to.
+     */
+    std::shared_ptr<const Space> space_ = nullptr;
+
+};
+
+
+
+
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors_iterators
  */
 template <int dim, int range, int rank>
-class BSplineElementAccessor : public CartesianGridElementAccessor<dim>
+class BSplineElementAccessor :
+		public SpaceElementAccessor<
+			BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>
 {
 public:
+//	using parent_t = SpaceElementAccessor<
+//			BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>;
+
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElementAccessor<dim>;
 
@@ -57,7 +327,7 @@ public:
     using ContainerType = const BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
-    using  Space_t = BSplineSpace<dim, range, rank> ;
+    using Space = BSplineSpace<dim, range, rank> ;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -134,6 +404,7 @@ public:
         = default;
     ///@}
 
+#if 0
     /** @name Query information without use of cache */
     ///@{
     /**
@@ -167,9 +438,10 @@ public:
     /**
      * Pointer to the BsplineSpace the accessor is iterating on.
      */
-    std::shared_ptr<const Space_t> get_space() const;
+    std::shared_ptr<const Space> get_space() const;
 
     ///@}
+#endif
 
     /** @name Query information that requires the use of the cache */
     ///@{
@@ -203,7 +475,6 @@ public:
     /** Reset the global cache */
     void reset_global_cache();
 
-protected:
     /**
      * Typedef for specifying the value of the basis function in the
      * reference domain.
@@ -223,6 +494,8 @@ protected:
      */
     using Div = Values<dim, 1, 1>;
 
+protected:
+
 public:
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
@@ -239,98 +512,6 @@ public:
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
-
-    /**
-     * Returns a ValueTable with the values of all local basis function
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueTable<Value>
-    evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const;
-
-
-    /**
-     * Returns a ValueTable with the gradients of all local basis function
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const;
-
-
-    /**
-     * Returns a ValueTable with the hessians of all local basis function
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const;
-
-
-    /**
-     * Returns a ValueVector with the <tt>deriv_order</tt>-th derivatives of the field
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <int deriv_order>
-    ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_field_derivatives_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
-
-
-    /**
-     * Returns a ValueVector with the values of the field
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueVector<Value>
-    evaluate_field_values_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
-
-
-    /**
-     * Returns a ValueVector with the gradients of the field
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueVector< Derivative<1> >
-    evaluate_field_gradients_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
-
-
-    /**
-     * Returns a ValueVector with the hessians of the field
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueVector< Derivative<2> >
-    evaluate_field_hessians_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
 
     ///@}
 
@@ -790,7 +971,7 @@ private:
          * and each direction of a component and each interval
          * of a direction.
          */
-        void reset(const Space_t &space,
+        void reset(const Space &space,
                    const Quadrature<dim> &quad,
                    const int max_der);
 
@@ -815,7 +996,7 @@ private:
          * and each direction of a component and each interval
          * of a direction.
          */
-        void reset(const Space_t &space,
+        void reset(const Space &space,
                    const Quadrature<dim> &quad1,
                    const Index face_id,
                    const int max_der);
@@ -865,7 +1046,7 @@ private:
     /**
      * Space for which the BSplineElementAccessor refers to.
      */
-    std::shared_ptr<ContainerType> space_ = nullptr;
+//    std::shared_ptr<ContainerType> space_ = nullptr;
 
 
     template <typename Accessor> friend class GridForwardIterator;
@@ -887,6 +1068,9 @@ public:
                                      get_scalar_evaluators(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 };
+
+
+
 
 IGA_NAMESPACE_CLOSE
 
