@@ -54,3 +54,17 @@ for i in range(len(spaces)):
    for s in fun_list:
       f.write(s)
 
+
+for i in range(len(spaces)):
+   row = inst.all_ref_sp_dims[i]
+   function = ('template  ValueTable< Conditional< deriv_order==0,'+
+               spaces[i] + '::Value,' +
+               spaces[i] + '::Derivative<deriv_order> > > ' + 
+               spaces[i] + 
+               '::evaluate_basis_derivatives_at_points<deriv_order>' +
+               '(const vector<Point<dim_domain>>&) const; \n')
+   f1 = function.replace('dim_domain', str(row.dim) );
+   fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
+   for s in fun_list:
+      f.write(s)
+

@@ -79,11 +79,7 @@ public:
      * BsplineSpace space.
      */
     SpaceElementAccessor(const std::shared_ptr<const Space> space,
-                         const int elem_index)
-    :
-    	CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
-    	space_(space)
-    {};
+                         const int elem_index);
 
 
     /**
@@ -109,11 +105,10 @@ public:
 
 
     /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
-    DerivedElementAccessor & as_derived_element_accessor()
-    {
-    	return static_cast<DerivedElementAccessor &>(*this);
-    }
+    DerivedElementAccessor & as_derived_element_accessor();
 
+    /** Return a const-reference to "*this" as being an object of type DerivedElementAccessor.*/
+    const DerivedElementAccessor & as_derived_element_accessor() const;
 
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
@@ -128,10 +123,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable<Value>
-    evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const
-    {
-    	return this->as_derived_element_accessor().evaluate_basis_derivatives_at_points<0>(points);
-    }
+    evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const;
 
 
     /**
@@ -143,10 +135,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const
-    {
-    	return this->as_derived_element_accessor().evaluate_basis_derivatives_at_points<1>(points);
-    }
+    evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const;
 
 
     /**
@@ -158,10 +147,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const
-    {
-    	return this->as_derived_element_accessor().evaluate_basis_derivatives_at_points<2>(points);
-    }
+    evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const;
 
 
     /**
@@ -176,18 +162,7 @@ public:
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const
-    {
-    	const auto & derived_element_accessor = this->as_derived_element_accessor();
-        Assert(derived_element_accessor.get_num_basis() == local_coefs.size(),
-        ExcDimensionMismatch(derived_element_accessor.get_num_basis(),local_coefs.size()));
-
-        const auto derivatives_phi_hat = derived_element_accessor.evaluate_basis_derivatives_at_points<deriv_order>(points);
-        Assert(derivatives_phi_hat.get_num_functions() == derived_element_accessor.get_num_basis(),
-        ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), derived_element_accessor.get_num_basis())) ;
-
-        return derivatives_phi_hat.evaluate_linear_combination(local_coefs) ;
-    }
+        const std::vector<Point<dim>> &points) const;
 
 
     /**
@@ -201,10 +176,7 @@ public:
     ValueVector<Value>
     evaluate_field_values_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const
-    {
-     	return this->evaluate_field_derivatives_at_points<0>(points);
-    }
+        const std::vector<Point<dim>> &points) const;
 
 
     /**
@@ -218,10 +190,7 @@ public:
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const
-    {
-     	return this->evaluate_field_derivatives_at_points<1>(points);
-    }
+        const std::vector<Point<dim>> &points) const;
 
 
     /**
@@ -235,10 +204,7 @@ public:
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const
-    {
-     	return this->evaluate_field_derivatives_at_points<2>(points);
-    }
+        const std::vector<Point<dim>> &points) const;
     ///*}
 
 
@@ -248,10 +214,7 @@ public:
     /**
      *  Number of non zero basis functions over the current element.
      */
-    Size get_num_basis() const
-    {
-        return this->space_->get_num_basis_per_element();
-    }
+    Size get_num_basis() const;
 
     /**
      * Number of non-zero scalar basis functions associated
@@ -260,15 +223,7 @@ public:
      * is only allowed to be of the cartesian product type
      * V = V1 x V2 x ... X Vn.
      */
-    int get_num_basis(const int i) const
-    {
-        const auto &degree_comp = this->space_->get_degree()(i);
-        int component_num_basis = 1;
-        for (int j = 0; j < dim; ++j)
-            component_num_basis *= degree_comp[j] + 1;
-
-        return component_num_basis;
-    }
+    int get_num_basis(const int i) const;
 
     /**
      * Returns the global dofs of the local (non zero) basis functions
@@ -282,18 +237,12 @@ public:
       \endcode
      *
      */
-    std::vector<Index> const &get_local_to_global() const
-	{
-	    return space_->get_element_global_dofs()[this->get_flat_index()];
-	}
+    std::vector<Index> const &get_local_to_global() const;
 
     /**
      * Pointer to the BsplineSpace the accessor is iterating on.
      */
-    std::shared_ptr<const Space> get_space() const
-    {
-        return space_;
-    }
+    std::shared_ptr<const Space> get_space() const;
 
     ///@}
 protected:
@@ -303,6 +252,164 @@ protected:
     std::shared_ptr<const Space> space_ = nullptr;
 
 };
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+SpaceElementAccessor(const std::shared_ptr<const Space> space,
+                     const int elem_index)
+:
+	CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
+	space_(space)
+{};
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+DerivedElementAccessor &
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+as_derived_element_accessor()
+{
+	return static_cast<DerivedElementAccessor &>(*this);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+const DerivedElementAccessor &
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+as_derived_element_accessor() const
+{
+	return static_cast<const DerivedElementAccessor &>(*this);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Value>
+{
+	return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Derivative<1> >
+{
+	return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Derivative<2> >
+{
+	return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
+}
+
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+template <int deriv_order>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_derivatives_at_points(
+    const std::vector<Real> &local_coefs,
+    const std::vector<Point<dim>> &points) const ->
+    ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+{
+	const auto & derived_element_accessor = this->as_derived_element_accessor();
+    Assert(derived_element_accessor.get_num_basis() == local_coefs.size(),
+    ExcDimensionMismatch(derived_element_accessor.get_num_basis(),local_coefs.size()));
+
+    const auto derivatives_phi_hat =
+    		derived_element_accessor.template evaluate_basis_derivatives_at_points<deriv_order>(points);
+    Assert(derivatives_phi_hat.get_num_functions() == derived_element_accessor.get_num_basis(),
+    ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), derived_element_accessor.get_num_basis())) ;
+
+    return derivatives_phi_hat.evaluate_linear_combination(local_coefs) ;
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_values_at_points(
+    const std::vector<Real> &local_coefs,
+    const std::vector<Point<dim>> &points) const -> ValueVector<Value>
+{
+ 	return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_gradients_at_points(
+    const std::vector<Real> &local_coefs,
+    const std::vector<Point<dim>> &points) const -> ValueVector<Derivative<1> >
+{
+ 	return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+evaluate_field_hessians_at_points(
+    const std::vector<Real> &local_coefs,
+    const std::vector<Point<dim>> &points) const -> ValueVector<Derivative<2> >
+{
+ 	return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+Size
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_num_basis() const
+{
+    return this->space_->get_num_basis_per_element();
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+int
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_num_basis(const int i) const
+{
+    const auto &degree_comp = this->space_->get_degree()(i);
+    int component_num_basis = 1;
+    for (int j = 0; j < dim; ++j)
+        component_num_basis *= degree_comp[j] + 1;
+
+    return component_num_basis;
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_local_to_global() const -> std::vector<Index> const &
+{
+    return space_->get_element_global_dofs()[this->get_flat_index()];
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_space() const -> std::shared_ptr<const Space>
+{
+    return space_;
+}
 
 
 
