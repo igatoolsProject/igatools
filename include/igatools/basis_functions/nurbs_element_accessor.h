@@ -165,6 +165,14 @@ public:
     using Value = Values<dim, range, rank>;
 
 
+
+protected:
+    bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
+
+    bool operator!=(const NURBSElementAccessor<dim,range,rank> &a) const;
+
+    void operator++();
+
 private:
 
     /**
@@ -202,181 +210,7 @@ private:
 
 
 
-public:
-    /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     */
-    ValueTable<Value> const &
-    get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
-    /**
-     * Reference to a ValueTable with the values of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Value> const &
-    get_face_basis_values(const Index face_id) const;
-
-    /**
-     * TODO: document me .
-     */
-    typename ValueTable<Value>::const_view
-    get_basis_values(const Index basis,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to a ValueTable with the gradients of all local basis function
-     * evaluated at each evaluation point.
-     */
-    ValueTable<DerivativeRef_t<1> > const &
-    get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * TODO: document me .
-     */
-    typename ValueTable<DerivativeRef_t<1> >::const_view
-    get_basis_gradients(const Index basis,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to a ValueTable with values of all local basis function
-     * at each evaluation point.
-     */
-    ValueTable<DerivativeRef_t<2> > const &
-    get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * TODO: document me .
-     */
-    typename ValueTable<DerivativeRef_t<2> >::const_view
-    get_basis_hessians(const Index basis, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to the value of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local id of the basis function.
-     * @param[in] qp Local id of the evaluation point.
-     */
-    Value const &
-    get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to the gradient of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local id of the basis function.
-     * @param[in] qp Local id of the evaluation point.
-     */
-    DerivativeRef_t<1> const &
-    get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Reference to the hessian of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local id of the basis function.
-     * @param[in] qp Local id of the evaluation point.
-     */
-    DerivativeRef_t<2> const &
-    get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-
-    //Fields related
-    /**
-     * TODO: document me .
-     */
-    ValueVector<Value >
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * TODO: document me .
-     */
-    ValueVector< DerivativeRef_t<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * TODO: document me .
-     */
-    ValueVector< DerivativeRef_t<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-    ///@}
-
-private:
-    /**
-     * Parent cache for the element and face values at quadrature points
-     */
-    class ValuesCache : public CacheStatus
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const Space_t &space,
-                   const BasisElemValueFlagsHandler &flags_handler,
-                   const Quadrature<dim> &quad) ;
-
-        BasisElemValueFlagsHandler flags_handler_;
-
-        ValueTable<Value> D0phi_hat_;
-        ValueTable<DerivativeRef_t<1>> D1phi_hat_;
-        ValueTable<DerivativeRef_t<2>> D2phi_hat_;
-        /*
-                bool fill_values_    = false;
-                bool fill_gradients_ = false;
-                bool fill_hessians_  = false;
-        //*/
-        int n_points_ = 0;
-        int n_basis_ = 0;
-    };
-
-    /**
-     * Cache for the element values at quadrature points
-     */
-    class ElementValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const Space_t &space,
-                   const BasisElemValueFlagsHandler &flags_handler,
-                   const Quadrature<dim> &quad) ;
-    };
-
-    /**
-     * Cache for the face values at quadrature points
-     */
-    class FaceValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const Index face_id,
-                   const Space_t &space,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const Quadrature<dim> &quad) ;
-
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points for a given face quadrature
-         */
-        void reset(const Index face_id,
-                   const Space_t &space,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const Quadrature<dim-1> &quad) ;
-    };
-
-
-    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
-
-protected:
-    bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
-
-    bool operator!=(const NURBSElementAccessor<dim,range,rank> &a) const;
-
-    void operator++();
-
-private:
 
     /**
      * Element accessor used to compute the BSpline basis functions (and derivatives)
@@ -384,12 +218,6 @@ private:
      */
     BSplineElementAccessor<dim,range,rank> bspline_element_accessor_;
 
-    /**
-     * Element cache to store the values and derivatives
-     * of the basis functions
-     */
-    ElementValuesCache elem_values_;
-    std::array<FaceValuesCache, n_faces> face_values_;
 
     template <typename Accessor> friend class GridForwardIterator ;
 } ;

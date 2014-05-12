@@ -81,6 +81,23 @@ public:
 
 
 
+    /** Fill flags supported by this iterator */
+    static const ValueFlags admisible_flag =
+        ValueFlags::point|
+        ValueFlags::measure |
+        ValueFlags::w_measure |
+        ValueFlags::face_point |
+        ValueFlags::face_w_measure |
+        ValueFlags::value |
+        ValueFlags::gradient |
+        ValueFlags::hessian |
+        ValueFlags::divergence |
+        ValueFlags::face_value |
+        ValueFlags::face_gradient |
+        ValueFlags::face_hessian |
+        ValueFlags::face_divergence;
+
+
     /** @name Constructors */
     ///@{
     /**
@@ -1403,21 +1420,7 @@ public:
     using ValuesCache = typename parent_t::ValuesCache;
 
 
-    /** Fill flags supported by this iterator */
-    static const ValueFlags admisible_flag =
-        ValueFlags::point|
-        ValueFlags::measure |
-        ValueFlags::w_measure |
-        ValueFlags::face_point |
-        ValueFlags::face_w_measure |
-        ValueFlags::value |
-        ValueFlags::gradient |
-        ValueFlags::hessian |
-        ValueFlags::divergence |
-        ValueFlags::face_value |
-        ValueFlags::face_gradient |
-        ValueFlags::face_hessian |
-        ValueFlags::face_divergence;
+    using parent_t::admisible_flag;
 
 
 public:
