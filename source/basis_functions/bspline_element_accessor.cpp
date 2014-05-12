@@ -714,7 +714,6 @@ void
 BSplineElementAccessor<dim, range, rank>::
 fill_values_cache_from_univariate(const int max_deriv_order,
                                   const univariate_values_t &univariate_values,
-                                  const BSplineElementAccessor<dim,range,rank> &elem,
                                   ValuesCache &cache) const
 {
     //--------------------------------------------------------------------------
@@ -722,7 +721,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
 
     TensorSize<dim> n_basis_direction;
 
-    const auto &degree = elem.get_space()->get_degree();
+    const auto &degree = this->get_space()->get_degree();
 
     for (int comp = 0; comp < Space::n_components; ++comp)
     {
@@ -775,27 +774,27 @@ fill_values_cache_from_univariate(const int max_deriv_order,
     //--------------------------------------------------------------------------
     if (cache.flags_handler_.fill_values())
     {
-        elem.template evaluate_bspline_derivatives<0>(univariate_values,
-                                                      cache,
-                                                      cache.phi_hat_);
+        evaluate_bspline_derivatives<0>(univariate_values,
+                                        cache,
+                                        cache.phi_hat_);
 
         cache.flags_handler_.set_values_filled(true);
     }
 
     if (cache.flags_handler_.fill_gradients())
     {
-        elem.template evaluate_bspline_derivatives<1>(univariate_values,
-                                                      cache,
-                                                      cache.D1phi_hat_);
+        evaluate_bspline_derivatives<1>(univariate_values,
+                                        cache,
+                                        cache.D1phi_hat_);
 
         cache.flags_handler_.set_gradients_filled(true);
     }
 
     if (cache.flags_handler_.fill_hessians())
     {
-        elem.template evaluate_bspline_derivatives<2>(univariate_values,
-                                                      cache,
-                                                      cache.D2phi_hat_);
+        evaluate_bspline_derivatives<2>(univariate_values,
+                                        cache,
+                                        cache.D2phi_hat_);
 
         cache.flags_handler_.set_hessians_filled(true);
     }
@@ -819,115 +818,6 @@ fill_values_cache_from_univariate(const int max_deriv_order,
 }
 
 
-template <int dim, int range, int rank>
-void
-BSplineElementAccessor<dim, range, rank>::
-ValuesCache::
-fill_from_univariate(
-    const int max_deriv_order,
-    const ComponentTable<array<const BasisValues1d *, dim>> &univariate_values,
-    const BSplineElementAccessor<dim,range,rank> &elem)
-{
-    //--------------------------------------------------------------------------
-    vector<std::array<Values1DConstView,dim>> values1D(max_deriv_order+1);
-
-    TensorSize<dim> n_basis_direction;
-
-    const auto &degree = elem.get_space()->get_degree();
-
-    for (int comp = 0; comp < Space::n_components; ++comp)
-    {
-        for (int i = 0; i < dim ; ++i)
-            n_basis_direction(i) = degree(comp)[i]+1;
-
-
-        auto &scalar_evaluator_comp = this->scalar_evaluators_(comp);
-
-        scalar_evaluator_comp.resize(n_basis_direction);
-
-        const auto &univariate_values_comp = univariate_values(comp);
-
-        const Size n_basis = scalar_evaluator_comp.flat_size();
-
-        for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
-        {
-            const auto tensor_basis_id = scalar_evaluator_comp.flat_to_tensor(flat_basis_id);
-
-            for (int dir = 0 ; dir < dim ; ++dir)
-            {
-                const auto &basis_with_ders = univariate_values_comp[dir];
-
-                Assert(values1D.size() == basis_with_ders->size(),
-                       ExcDimensionMismatch(values1D.size(),basis_with_ders->size()));
-
-                for (int order = 0 ; order <= max_deriv_order ; ++order)
-                {
-                    const DenseMatrix &funcs = (*basis_with_ders)[order];
-                    values1D[order][dir] = Values1DConstView(funcs,tensor_basis_id[dir]);
-                } //end order loop
-
-            } // end dir loop
-
-
-            scalar_evaluator_comp(flat_basis_id) =
-                shared_ptr<BSplineElementScalarEvaluator<dim>>(
-                    new BSplineElementScalarEvaluator<dim>(values1D));
-
-        } // end flat_basis_id loop
-
-    } // end icomp loop
-    //--------------------------------------------------------------------------
-
-
-
-
-
-
-    //--------------------------------------------------------------------------
-    if (flags_handler_.fill_values())
-    {
-        elem.evaluate_bspline_derivatives<0>(univariate_values,
-                                             *this,
-                                             phi_hat_);
-
-        flags_handler_.set_values_filled(true);
-    }
-
-    if (flags_handler_.fill_gradients())
-    {
-        elem.template evaluate_bspline_derivatives<1>(univariate_values,
-                                                      *this,
-                                                      D1phi_hat_);
-
-        flags_handler_.set_gradients_filled(true);
-    }
-
-    if (flags_handler_.fill_hessians())
-    {
-        elem.template evaluate_bspline_derivatives<2>(univariate_values,
-                                                      *this,
-                                                      D2phi_hat_);
-
-        flags_handler_.set_hessians_filled(true);
-    }
-
-    if (flags_handler_.fill_divergences())
-    {
-        Assert(flags_handler_.gradients_filled(),
-               ExcMessage("Divergence requires gradient to be filled."));
-
-        auto D1  = D1phi_hat_.begin();
-        auto div = div_phi_hat_.begin();
-        auto end = D1phi_hat_.end();
-        for (; D1 != end; ++D1, ++div)
-            *div = trace(*D1);
-
-        flags_handler_.set_divergences_filled(true);
-    }
-    //--------------------------------------------------------------------------
-
-    this->set_filled(true);
-}
 
 template <int dim, int range, int rank>
 void
@@ -948,11 +838,9 @@ fill_values()
             elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
     }
 
-//    elem_values_.fill_from_univariate(values_1d_elem_->max_deriv_order_,elem_univariate_values,*this);
-    fill_values_cache_from_univariate(
+    this->fill_values_cache_from_univariate(
         values_1d_elem_->max_deriv_order_,
         elem_univariate_values,
-        *this,
         elem_values_);
 }
 
@@ -989,11 +877,9 @@ fill_face_values(const Index face_id)
 
     Assert(values_1d_elem_->max_deriv_order_ == values_1d_faces_[face_id]->max_deriv_order_,
            ExcDimensionMismatch(values_1d_elem_->max_deriv_order_,values_1d_faces_[face_id]->max_deriv_order_));
-//    face_value.fill_from_univariate(values_1d_elem_->max_deriv_order_,elem_univariate_values,*this);
-    fill_values_cache_from_univariate(
+    this->fill_values_cache_from_univariate(
         values_1d_elem_->max_deriv_order_,
         elem_univariate_values,
-        *this,
         face_value);
 
 }

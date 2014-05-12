@@ -1320,24 +1320,6 @@ public:
         const ValueTable<Div> &get_divergences() const;
 
 
-        using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
-
-        /**
-         * Fills the cache (accordingly with the flags_handler status)
-         * from the univariate values (and derivatives up to the order
-         * specified by @p max_deriv_order).
-         *
-         *
-         * @note The BSplineElementAccessor @p elem is needed in order to call the function
-         * elem.evaluate_bspline_derivatives<p>()
-         * that computes the @p p-th order derivatives of a BSpline from the univariate values.
-         */
-        void fill_from_univariate(
-            const int max_deriv_order,
-            const univariate_values_t &values_1D,
-            const BSplineElementAccessor<dim,range,rank> &elem);
-
-
         //TODO: the member variables should be private
     public:
 
@@ -1350,7 +1332,6 @@ public:
 
         ValueTable<Div> div_phi_hat_;
 
-    public:
         ComponentTable<
         DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
@@ -1373,7 +1354,6 @@ private:
      */
     void fill_values_cache_from_univariate(const int max_deriv_order,
                                            const univariate_values_t &values_1D,
-                                           const BSplineElementAccessor<dim,range,rank> &elem,
                                            ValuesCache &cache) const;
 
 
