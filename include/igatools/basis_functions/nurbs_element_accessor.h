@@ -377,7 +377,6 @@ protected:
     void operator++();
 
 private:
-//    std::shared_ptr<ContainerType> space_ = nullptr;
 
     /**
      * Element accessor used to compute the BSpline basis functions (and derivatives)

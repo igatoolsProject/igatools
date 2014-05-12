@@ -1320,7 +1320,7 @@ public:
         const ValueTable<Div> &get_divergences() const;
 
 
-        using univariate_values_t = StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>;
+        using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
 
         /**
          * Fills the cache (accordingly with the flags_handler status)
@@ -1357,7 +1357,27 @@ public:
         Quadrature<dim> quad_;
     };
 
+private:
 
+    using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
+
+    /**
+     * Fills the cache (accordingly with the flags_handler status)
+     * from the univariate values (and derivatives up to the order
+     * specified by @p max_deriv_order).
+     *
+     *
+     * @note The BSplineElementAccessor @p elem is needed in order to call the function
+     * elem.evaluate_bspline_derivatives<p>()
+     * that computes the @p p-th order derivatives of a BSpline from the univariate values.
+     */
+    void fill_values_cache_from_univariate(const int max_deriv_order,
+                                           const univariate_values_t &values_1D,
+                                           const BSplineElementAccessor<dim,range,rank> &elem,
+                                           ValuesCache &cache) const;
+
+
+public:
     /**
      * Cache for the element values at quadrature points
      */
