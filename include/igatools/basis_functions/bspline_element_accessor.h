@@ -135,20 +135,6 @@ public:
     ///@}
 
 
-    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor();
-
-
-    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    const CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor() const;
-
-
-    /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
-    DerivedElementAccessor &as_derived_element_accessor();
-
-    /** Return a const-reference to "*this" as being an object of type DerivedElementAccessor.*/
-    const DerivedElementAccessor &as_derived_element_accessor() const;
-
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
     ///@{
@@ -652,11 +638,21 @@ public:
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
-    /*
-    private:
-        const typename DerivedElementAccessor::ValuesCache &
-        get_values_cache(const TopologyId<dim> &topology_id) const;
-    //*/
+    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
+    CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor();
+
+
+    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
+    const CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor() const;
+
+private:
+
+    /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
+    DerivedElementAccessor &as_derived_element_accessor();
+
+    /** Return a const-reference to "*this" as being an object of type DerivedElementAccessor.*/
+    const DerivedElementAccessor &as_derived_element_accessor() const;
+
 };
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
