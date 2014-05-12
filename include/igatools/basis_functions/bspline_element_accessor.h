@@ -1638,14 +1638,6 @@ private:
 
     ///@}
 
-public:
-    /**
-     * For a given flags input argument identifies the face quantities and
-     * returns a new ValueFlags variable containing only face quantities.
-     * The output flags does not contain the word face.
-     */
-    ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
-
 
 private:
 
