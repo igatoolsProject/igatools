@@ -528,6 +528,113 @@ protected:
     ComponentTable<int> comp_offset_;
 
 
+
+    /**
+     * Base class for the cache of the element values and for the cache of the face values.
+     */
+    class ValuesCache : public CacheStatus
+    {
+    public:
+        /**
+         * Allocate space for the values and derivatives
+         * at quadrature points
+         */
+        void reset(const BasisElemValueFlagsHandler &flags_handler,
+                   const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
+                   const Quadrature<dim> &quad);
+
+        /** Returns the values. */
+        const ValueTable<Value> &get_values() const;
+
+        /** Returns the gradients. */
+        const ValueTable<Derivative<1>> &get_gradients() const;
+
+        /** Returns the hessians. */
+        const ValueTable<Derivative<2>> &get_hessians() const;
+
+        /** Returns the divergences. */
+        const ValueTable<Div> &get_divergences() const;
+
+
+        //TODO: the member variables should be private
+    public:
+
+        BasisElemValueFlagsHandler flags_handler_;
+
+
+        ValueTable<Value> phi_hat_;
+        ValueTable<Derivative<1>> D1phi_hat_;
+        ValueTable<Derivative<2>> D2phi_hat_;
+
+        ValueTable<Div> div_phi_hat_;
+
+        Quadrature<dim> quad_;
+    };
+
+
+    /**
+     * Cache for the element values at quadrature points
+     */
+    class ElementValuesCache : public ValuesCache
+    {
+    public:
+        /**
+         * Allocate space for the values and derivatives
+         * at quadrature points
+         */
+        void reset(const BasisElemValueFlagsHandler &flags_handler,
+                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const Quadrature<dim> &quad);
+
+    };
+
+
+    /**
+     * Cache for the face values at quadrature points
+     */
+    class FaceValuesCache : public ValuesCache
+    {
+    public:
+        /**
+         * Allocate space for the values and derivatives
+         * at quadrature points
+         */
+        void reset(const Index face_id,
+                   const BasisFaceValueFlagsHandler &flags_handler,
+                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const Quadrature<dim> &quad);
+
+        /**
+         * Allocate space for the values and derivatives
+         * at quadrature points for a specified face.
+         */
+        void reset(const Index face_id,
+                   const BasisFaceValueFlagsHandler &flags_handler,
+                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const Quadrature<dim-1> &quad);
+
+    };
+
+
+    /**
+     * Element cache to store the values and derivatives
+     * of the basis functions on the element
+     */
+    ElementValuesCache elem_values_;
+
+    /**
+     * Face cache to store the values and derivatives
+     * of the basis functions on the faces of the element
+     */
+    std::array<FaceValuesCache, n_faces> face_values_;
+
+public:
+    /**
+     * @todo Document this function
+     */
+    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+
     /*
     private:
         const typename DerivedElementAccessor::ValuesCache &
@@ -697,7 +804,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> const &
 {
-    const auto &cache = this->as_derived_element_accessor().get_values_cache(topology_id);
+    const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
 
@@ -730,8 +837,8 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
 {
-    Assert(qp >= 0 && qp < this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
-           ExcIndexRange(qp,0,this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_values(basis,topology_id)[qp];
 }
 
@@ -744,7 +851,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<1>> const &
 {
-    const auto &cache = this->as_derived_element_accessor().get_values_cache(topology_id);
+    const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.gradients_filled(), ExcCacheNotFilled());
 
@@ -777,8 +884,8 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<1> const &
 {
-    Assert(qp >= 0 && qp < this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
-           ExcIndexRange(qp,0,this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_gradients(basis,topology_id)[qp];
 }
 
@@ -792,7 +899,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<2>> const &
 {
-    const auto &cache = this->as_derived_element_accessor().get_values_cache(topology_id);
+    const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.hessians_filled(), ExcCacheNotFilled());
 
@@ -825,8 +932,8 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<2> const &
 {
-    Assert(qp >= 0 && qp < this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
-           ExcIndexRange(qp,0,this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_hessians(basis,topology_id)[qp];
 }
 
@@ -839,7 +946,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_divergences(const TopologyId<dim> &topology_id) const -> ValueTable<Div> const &
 {
-    const auto &cache = this->as_derived_element_accessor().get_values_cache(topology_id);
+    const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.divergences_filled(), ExcCacheNotFilled());
 
@@ -872,12 +979,219 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Div const &
 {
-    Assert(qp >= 0 && qp < this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
-           ExcIndexRange(qp,0,this->as_derived_element_accessor().get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
+    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
+           ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
     return this->get_basis_divergences(basis,topology_id)[qp];
 }
 
 
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+               ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
+
+
+
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+void
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+ValuesCache::
+reset(const BasisElemValueFlagsHandler &flags_handler,
+      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const Quadrature<dim> &quad)
+{
+    quad_ = quad;
+    const TensorSize<dim> n_points_direction = quad_.get_num_points_direction();
+
+    flags_handler_ = flags_handler;
+
+    //--------------------------------------------------------------------------
+    // computing the total number of basis functions and the number of evaluation points
+    const int total_n_points = n_points_direction.flat_size();
+
+    int total_n_basis = 0;
+    for (int i = 0; i < Space::n_components; ++i)
+        total_n_basis += n_basis_direction(i).flat_size();
+
+    Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
+    Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    // resizing the containers for the basis functions
+    if (flags_handler_.fill_values())
+    {
+        if (phi_hat_.get_num_points() != total_n_points ||
+            phi_hat_.get_num_functions() != total_n_basis)
+        {
+            phi_hat_.resize(total_n_basis,total_n_points);
+            phi_hat_.zero();
+        }
+    }
+    else
+    {
+        phi_hat_.clear();
+    }
+
+    if (flags_handler_.fill_gradients())
+    {
+        if (D1phi_hat_.get_num_points() != total_n_points ||
+            D1phi_hat_.get_num_functions() != total_n_basis)
+        {
+            D1phi_hat_.resize(total_n_basis,total_n_points);
+            D1phi_hat_.zero();
+        }
+    }
+    else
+    {
+        D1phi_hat_.clear();
+    }
+
+
+    if (flags_handler_.fill_divergences())
+    {
+        Assert(flags_handler_.fill_gradients(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
+        if (div_phi_hat_.get_num_points() != total_n_points ||
+            div_phi_hat_.get_num_functions() != total_n_basis)
+        {
+            div_phi_hat_.resize(total_n_basis,total_n_points);
+            div_phi_hat_.zero();
+        }
+    }
+    else
+    {
+        div_phi_hat_.clear();
+    }
+
+
+
+    if (flags_handler_.fill_hessians())
+    {
+        if (D2phi_hat_.get_num_points() != total_n_points ||
+            D2phi_hat_.get_num_functions() != total_n_basis)
+        {
+            D2phi_hat_.resize(total_n_basis,total_n_points);
+            D2phi_hat_.zero();
+        }
+    }
+    else
+    {
+        D2phi_hat_.clear();
+    }
+    //--------------------------------------------------------------------------
+
+
+    this->set_initialized(true);
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+void
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+ElementValuesCache::
+reset(const BasisElemValueFlagsHandler &flags_handler,
+      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const Quadrature<dim> &quad)
+{
+    ValuesCache::reset(flags_handler, n_basis_direction,quad);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+void
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+FaceValuesCache::
+reset(const Index face_id,
+      const BasisFaceValueFlagsHandler &flags_handler,
+      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const Quadrature<dim> &quad1)
+{
+    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+
+    const auto quad = quad1.collapse_to_face(face_id);
+
+    ValuesCache::reset(flags_handler, n_basis_direction,quad);
+}
+
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+void
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+FaceValuesCache::
+reset(const Index face_id,
+      const BasisFaceValueFlagsHandler &flags_handler,
+      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const Quadrature<dim-1> &quad)
+{
+    Assert(false,ExcNotImplemented()) ;
+    AssertThrow(false,ExcNotImplemented()) ;
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+ValuesCache::
+get_values() const -> const ValueTable<Value> &
+{
+    return phi_hat_;
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+ValuesCache::
+get_gradients() const -> const ValueTable<Derivative<1>> &
+{
+    return D1phi_hat_;
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+ValuesCache::
+get_hessians() const -> const ValueTable<Derivative<2>> &
+{
+    return D2phi_hat_;
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+ValuesCache::
+get_divergences() const -> const ValueTable<Div> &
+{
+    return div_phi_hat_;
+}
 
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -887,8 +1201,8 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_values() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_values() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -917,8 +1231,8 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector< Derivative<1> >
 {
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_gradients() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_gradients() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -947,8 +1261,8 @@ evaluate_field_divergences(
     const std::vector<Real> &local_coefs,
     const TopologyId<dim> &topology_id) const -> ValueVector<Div>
 {
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_divergences() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_divergences() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -975,8 +1289,8 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
-    Assert(this->as_derived_element_accessor().get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
+    Assert(this->get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(),local_coefs.size()));
 
@@ -1052,7 +1366,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<dim> &
 {
-    const auto &cache = this->as_derived_element_accessor().get_values_cache(topology_id);
+    const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_initialized(), ExcNotInitialized());
 
     return cache.quad_;
@@ -1084,6 +1398,10 @@ public:
 
     /** Number of faces of the element. */
     using parent_t::n_faces;
+
+
+    using ValuesCache = typename parent_t::ValuesCache;
+
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -1291,54 +1609,14 @@ protected:
     using ComponentDirectionTable =
         StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
 
-public:
-
-    /**
-     * Base class for the cache of the element values and for the cache of the face values.
-     */
-    class ValuesCache : public CacheStatus
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
-                   const Quadrature<dim> &quad);
-
-        /** Returns the values. */
-        const ValueTable<Value> &get_values() const;
-
-        /** Returns the gradients. */
-        const ValueTable<Derivative<1>> &get_gradients() const;
-
-        /** Returns the hessians. */
-        const ValueTable<Derivative<2>> &get_hessians() const;
-
-        /** Returns the divergences. */
-        const ValueTable<Div> &get_divergences() const;
 
 
-        //TODO: the member variables should be private
-    public:
-
-        BasisElemValueFlagsHandler flags_handler_;
-
-
-        ValueTable<Value> phi_hat_;
-        ValueTable<Derivative<1>> D1phi_hat_;
-        ValueTable<Derivative<2>> D2phi_hat_;
-
-        ValueTable<Div> div_phi_hat_;
-
-        ComponentTable<
-        DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
-
-        Quadrature<dim> quad_;
-    };
 
 private:
+
+    ComponentTable<
+    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+
 
     using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
 
@@ -1354,56 +1632,9 @@ private:
      */
     void fill_values_cache_from_univariate(const int max_deriv_order,
                                            const univariate_values_t &values_1D,
-                                           ValuesCache &cache) const;
+                                           ValuesCache &cache);
 
 
-public:
-    /**
-     * Cache for the element values at quadrature points
-     */
-    class ElementValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-                   const Quadrature<dim> &quad);
-
-    };
-
-
-    /**
-     * Cache for the face values at quadrature points
-     */
-    class FaceValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const Index face_id,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-                   const Quadrature<dim> &quad);
-
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points for a specified face.
-         */
-        void reset(const Index face_id,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-                   const Quadrature<dim-1> &quad);
-
-    };
-    /**
-     * @todo Document this function
-     */
-    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
     ///@}
@@ -1512,17 +1743,6 @@ private:
 
 
 protected:
-    /**
-     * Element cache to store the values and derivatives
-     * of the B-spline basis functions
-     */
-    ElementValuesCache elem_values_;
-
-    /**
-     * Face cache to store the values and derivatives
-     * of the B-spline basis functions on the faces of the element
-     */
-    std::array<FaceValuesCache, n_faces> face_values_;
 
 
     /** Returns the Bezier extraction operator relative to the current element. */
@@ -1530,10 +1750,6 @@ protected:
 
 
 private:
-    /**
-     * Space for which the BSplineElementAccessor refers to.
-     */
-//    std::shared_ptr<ContainerType> space_ = nullptr;
 
 
     template <typename Accessor> friend class GridForwardIterator;
@@ -1545,8 +1761,7 @@ public:
     const ComponentTable<
     DynamicMultiArray<
     std::shared_ptr<
-    BSplineElementScalarEvaluator<dim>>,dim> > &
-                                     get_scalar_evaluators(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    BSplineElementScalarEvaluator<dim>>,dim> > &get_scalar_evaluators() const;
 
 };
 
