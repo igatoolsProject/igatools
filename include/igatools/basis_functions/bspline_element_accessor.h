@@ -50,9 +50,9 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
 {
 public:
-	/** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
-	///@{
-	/**
+    /** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
+    ///@{
+    /**
      * Typedef for specifying the value of the basis function.
      */
     using Value = Values<dim+codim, range, rank>;
@@ -75,6 +75,11 @@ public:
     template<class T>
     using ComponentTable = StaticMultiArray<T,range,rank>;
     ///@}
+
+
+    static const Size n_faces = UnitElement<dim>::faces_per_element;
+
+
 
     /** @name Constructors */
     ///@{
@@ -113,11 +118,19 @@ public:
     ///@}
 
 
+    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
+    CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor();
+
+
+    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
+    const CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor() const;
+
+
     /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
-    DerivedElementAccessor & as_derived_element_accessor();
+    DerivedElementAccessor &as_derived_element_accessor();
 
     /** Return a const-reference to "*this" as being an object of type DerivedElementAccessor.*/
-    const DerivedElementAccessor & as_derived_element_accessor() const;
+    const DerivedElementAccessor &as_derived_element_accessor() const;
 
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
@@ -515,11 +528,11 @@ protected:
     ComponentTable<int> comp_offset_;
 
 
-/*
-private:
-    const typename DerivedElementAccessor::ValuesCache &
-    get_values_cache(const TopologyId<dim> &topology_id) const;
-//*/
+    /*
+    private:
+        const typename DerivedElementAccessor::ValuesCache &
+        get_values_cache(const TopologyId<dim> &topology_id) const;
+    //*/
 };
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -527,9 +540,9 @@ inline
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 SpaceElementAccessor(const std::shared_ptr<const Space> space,
                      const int elem_index)
-:
-	CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
-	space_(space)
+    :
+    CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
+    space_(space)
 {
     //--------------------------------------------------------------------------
     using Indexer = CartesianProductIndexer<dim>;
@@ -554,13 +567,33 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     //--------------------------------------------------------------------------
 };
 
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+CartesianGridElementAccessor<dim> &
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+as_cartesian_grid_element_accessor()
+{
+    return static_cast<CartesianGridElementAccessor<dim> &>(*this);
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+const CartesianGridElementAccessor<dim> &
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+as_cartesian_grid_element_accessor() const
+{
+    return static_cast<const CartesianGridElementAccessor<dim> &>(*this);
+}
+
+
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 inline
 DerivedElementAccessor &
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 as_derived_element_accessor()
 {
-	return static_cast<DerivedElementAccessor &>(*this);
+    return static_cast<DerivedElementAccessor &>(*this);
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -569,7 +602,7 @@ const DerivedElementAccessor &
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 as_derived_element_accessor() const
 {
-	return static_cast<const DerivedElementAccessor &>(*this);
+    return static_cast<const DerivedElementAccessor &>(*this);
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -578,7 +611,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Value>
 {
-	return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
+    return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -587,7 +620,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Derivative<1> >
 {
-	return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
+    return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -596,7 +629,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Derivative<2> >
 {
-	return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
+    return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
 }
 
 
@@ -609,14 +642,14 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_derivatives_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point<dim>> &points) const ->
-    ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
-	const auto & derived_element_accessor = this->as_derived_element_accessor();
+    const auto &derived_element_accessor = this->as_derived_element_accessor();
     Assert(derived_element_accessor.get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(derived_element_accessor.get_num_basis(),local_coefs.size()));
 
     const auto derivatives_phi_hat =
-    		derived_element_accessor.template evaluate_basis_derivatives_at_points<deriv_order>(points);
+    derived_element_accessor.template evaluate_basis_derivatives_at_points<deriv_order>(points);
     Assert(derivatives_phi_hat.get_num_functions() == derived_element_accessor.get_num_basis(),
     ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), derived_element_accessor.get_num_basis())) ;
 
@@ -632,7 +665,7 @@ evaluate_field_values_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point<dim>> &points) const -> ValueVector<Value>
 {
- 	return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
+    return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -643,7 +676,7 @@ evaluate_field_gradients_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point<dim>> &points) const -> ValueVector<Derivative<1> >
 {
- 	return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
+    return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -654,7 +687,7 @@ evaluate_field_hessians_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point<dim>> &points) const -> ValueVector<Derivative<2> >
 {
- 	return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
+    return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
 }
 
 
@@ -1033,12 +1066,12 @@ get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<di
  */
 template <int dim, int range, int rank>
 class BSplineElementAccessor :
-		public SpaceElementAccessor<
-			BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>
+    public SpaceElementAccessor<
+    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim,range,rank>,dim,0,range,rank>
 {
 public:
-//	using parent_t = SpaceElementAccessor<
-//			BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>;
+    using parent_t = SpaceElementAccessor<
+                     BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>;
 
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElementAccessor<dim>;
@@ -1049,7 +1082,8 @@ public:
     /** Type required for the generic algorithm on the spaces (plots??) */
     using Space = BSplineSpace<dim, range, rank> ;
 
-
+    /** Number of faces of the element. */
+    using parent_t::n_faces;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -1067,7 +1101,6 @@ public:
         ValueFlags::face_hessian |
         ValueFlags::face_divergence;
 
-    static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 public:
     /** @name Constructors */
@@ -1370,7 +1403,8 @@ public:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
+    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
 
     ///@}
 

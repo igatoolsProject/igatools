@@ -312,6 +312,16 @@ public :
         return sp_space_->get_num_basis_table();
     }
 
+
+    /**
+     * @todo Missing documentation
+     */
+    const std::vector<std::vector<Index>> &get_element_global_dofs() const
+    {
+        return sp_space_->get_element_global_dofs();
+    }
+
+
     /**
     * Returns a element iterator to the first element of the patch
     */

@@ -39,9 +39,16 @@ template < int, int , int > class NURBSSpace ;
  */
 template <int dim, int range, int rank >
 class NURBSElementAccessor :
-    public BSplineElementAccessor< dim, range, rank >
+//    public BSplineElementAccessor< dim, range, rank >
+public SpaceElementAccessor<
+    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
 {
 public:
+
+
+    using parent_t = SpaceElementAccessor<
+                     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
+
     using ContainerType = const NURBSSpace< dim, range, rank>;
     using Space_t = NURBSSpace< dim, range, rank >;
 
@@ -49,7 +56,14 @@ public:
 
     using Parent_t = BSplineElementAccessor<dim,range,rank>;
 
-    using BSplineElementAccessor< dim, range, rank >::n_faces;
+//    using BSplineElementAccessor< dim, range, rank >::n_faces;
+
+
+
+    /** Number of faces of the element. */
+    using parent_t::n_faces;
+
+
 
     /** @name Constructors */
     ///@{
@@ -97,11 +111,6 @@ public:
     ///@}
 
 
-
-    /**
-     * Get the space for which the BSplineElementAccessor belongs to.
-     */
-    std::shared_ptr<const Space_t> get_space() const ;
 
 
 
@@ -360,9 +369,21 @@ private:
 
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 
+protected:
+    bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
+
+    bool operator!=(const NURBSElementAccessor<dim,range,rank> &a) const;
+
+    void operator++();
 
 private:
-    std::shared_ptr<ContainerType> space_ = nullptr;
+//    std::shared_ptr<ContainerType> space_ = nullptr;
+
+    /**
+     * Element accessor used to compute the BSpline basis functions (and derivatives)
+     * needed to evaluate ne NURBS basis functions (and derivatives).
+     */
+    BSplineElementAccessor<dim,range,rank> bspline_element_accessor_;
 
     /**
      * Element cache to store the values and derivatives
@@ -371,7 +392,7 @@ private:
     ElementValuesCache elem_values_;
     std::array<FaceValuesCache, n_faces> face_values_;
 
-    template <typename Accessor> friend class PatchIterator ;
+    template <typename Accessor> friend class GridForwardIterator ;
 } ;
 
 

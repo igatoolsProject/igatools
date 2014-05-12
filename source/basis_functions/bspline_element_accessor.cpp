@@ -281,7 +281,7 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                        const int index)
     :
     SpaceElementAccessor<
-        BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>(space,index)
+    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>(space,index)
 {}
 
 
@@ -1214,9 +1214,6 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
         return face_values_[topology_id.get_id()];
     }
 }
-
-
-
 
 
 

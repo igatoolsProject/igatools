@@ -38,8 +38,9 @@ NURBSElementAccessor< dim, range, rank >::
 NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
                      const int elem_index)
     :
-    BSplineElementAccessor<dim, range, rank>(space->get_spline_space(), elem_index),
-    space_(space)
+    SpaceElementAccessor<
+    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>(space,elem_index),
+    bspline_element_accessor_(space->get_spline_space(), elem_index)
 {}
 
 
@@ -100,18 +101,18 @@ init_values(const ValueFlags fill_flag,
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
     // init the element values for the cache of the BSplineElementAccessor
-    Parent_t::init_values(fill_flag_bspline,quad);
+    bspline_element_accessor_.init_values(fill_flag_bspline,quad);
 
 
     BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
     BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
 
     // reset the element values for the cache of the NURBSElementAccessor
-    elem_values_.reset(*space_,elem_flags_handler,quad);
+    elem_values_.reset(*(this->space_),elem_flags_handler,quad);
 
     Index face_id = 0;
     for (auto& face_value : face_values_)
-        face_value.reset(face_id++, *space_, face_flags_handler, quad);
+        face_value.reset(face_id++, *(this->space_), face_flags_handler, quad);
 }
 
 
@@ -176,7 +177,7 @@ evaluate_nurbs_values(
         const auto &bspline_values = bspline_cache.get_values();
         //----------------------------------------------------------------------------------------------
 
-        if (space_->is_range_homogeneous() == false)
+        if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -345,7 +346,7 @@ evaluate_nurbs_gradients(
         //----------------------------------------------------------------------------------------------
 
 
-        if (space_->is_range_homogeneous() == false)
+        if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -604,7 +605,7 @@ evaluate_nurbs_hessians(
         //----------------------------------------------------------------------------------------------
 
 
-        if (space_->is_range_homogeneous() == false)
+        if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -849,8 +850,8 @@ fill_values()
     Assert(elem_values_.is_initialized(),ExcNotInitialized());
 
     // fills the cache of the BSplineElementAccessor
-    static_cast<Parent_t *>(this)->fill_values();
-    const auto &bspline_elem_cache = Parent_t::elem_values_;
+    bspline_element_accessor_.fill_values();
+    const auto &bspline_elem_cache = bspline_element_accessor_.get_values_cache();
 
     if (this->elem_values_.flags_handler_.fill_values())
     {
@@ -896,8 +897,9 @@ fill_face_values(const Index face_id)
     Assert(face_value.is_initialized(),ExcNotInitialized());
 
     // fills the cache of the BSplineElementAccessor
-    static_cast<Parent_t *>(this)->fill_face_values(face_id);
-    const auto &bspline_face_cache = Parent_t::face_values_[face_id];
+    bspline_element_accessor_.fill_face_values(face_id);
+    const auto &bspline_face_cache =
+        bspline_element_accessor_.get_values_cache(FaceTopology<dim>(face_id));
 
 
     if (face_value.flags_handler_.fill_values())
@@ -952,15 +954,6 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
 
 
 
-template <int dim, int range, int rank >
-auto
-NURBSElementAccessor< dim, range, rank >::
-get_space() const -> std::shared_ptr<const Space_t>
-{
-    return space_;
-}
-
-
 
 template <int dim, int range, int rank >
 vector<Real>
@@ -975,7 +968,7 @@ get_weights() const
     dofs_offset_comp[0] = 0;
     for (int comp = 0; comp < space_t::n_components; ++comp)
         dofs_offset_comp[comp+1] = dofs_offset_comp[comp] +
-                                   space_->get_num_basis(comp);
+                                   (this->space_)->get_num_basis(comp);
     //---------------------------
 
 
@@ -996,7 +989,7 @@ get_weights() const
             }
         }
 
-        weights_element.emplace_back(space_->weights_(comp_id)(dof_id));
+        weights_element.emplace_back((this->space_)->weights_(comp_id)(dof_id));
     }
 
     return weights_element;
@@ -1255,6 +1248,40 @@ reset(const Index face_id,
 {
     AssertThrow(false,ExcNotImplemented());
 }
+
+
+
+template <int dim, int range, int rank>
+bool
+NURBSElementAccessor<dim, range, rank>::
+operator==(const NURBSElementAccessor<dim,range,rank> &a) const
+{
+    const bool is_same_grid_element_accessor =
+        (this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor());
+    const bool is_same_bspline_element_accessor =
+        (this->bspline_element_accessor_ == a.bspline_element_accessor_);
+    return (is_same_grid_element_accessor && is_same_bspline_element_accessor);
+}
+
+template <int dim, int range, int rank>
+bool
+NURBSElementAccessor<dim, range, rank>::
+operator!=(const NURBSElementAccessor<dim,range,rank> &a) const
+{
+    return !((*this) == a);
+}
+
+template <int dim, int range, int rank>
+void
+NURBSElementAccessor<dim, range, rank>::
+operator++()
+{
+    CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
+    ++grid_element_accessor;
+    ++bspline_element_accessor_;
+}
+
+
 
 IGA_NAMESPACE_CLOSE
 

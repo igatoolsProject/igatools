@@ -240,7 +240,7 @@ public:
 
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
-protected:
+public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
 
     bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
