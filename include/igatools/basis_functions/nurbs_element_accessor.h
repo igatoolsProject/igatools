@@ -147,19 +147,19 @@ public:
                           const Quadrature<dim-1> &quad);
 
     /**
-     * Precomputes the values needed to get the quantities specified by the ValueFlags used as input argument of the reset() function.
-     * The computed quantities are evaluated at the quadrature point specified by the Quadrature used as input argument of the reset() function.
-     * \note This function must always be invoked if you want to get values related to basis functions.
+     * Fills the element values cache according to the evaluation points
+     * and fill flags specifies in init_values.
+     *
+     * @note The topology for which the measure is computed is specified by
+     * the input argument @p topology_id.
      */
-    void fill_values();
-
-    void fill_face_values(const Index face_id);
+    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 
 
     /**
      * Get the NURBS weights associated to the element.
      */
-    std::vector<Real> get_weights() const ;
+    std::vector<Real> get_local_weights() const ;
 
 
 

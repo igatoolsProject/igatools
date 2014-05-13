@@ -151,7 +151,7 @@ evaluate_nurbs_values(
 
         typedef Real ValueRange1_t;
 
-        const vector< Real > &weights = this->get_weights();
+        const vector< Real > &weights = this->get_local_weights();
 
         /*
         * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
@@ -306,7 +306,7 @@ evaluate_nurbs_gradients(
         typedef array<Real,dim> GradientRange1_t;
 
 
-        const vector< Real > &weights = this->get_weights();
+        const vector< Real > &weights = this->get_local_weights();
 
         /*
          * This function evaluates the derivative of the n+1 NURBS basis function R_0,...,R_n
@@ -549,7 +549,7 @@ evaluate_nurbs_hessians(
         typedef array<array<Real,dim>,dim> HessianRange1_t;
 
 
-        const vector< Real > &weights = this->get_weights();
+        const vector< Real > &weights = this->get_local_weights();
 
 
         /*
@@ -847,99 +847,49 @@ evaluate_nurbs_hessians(
 template <int dim, int range, int rank >
 void
 NURBSElementAccessor< dim, range, rank >::
-fill_values()
+fill_values(const TopologyId<dim> &topology_id)
 {
-    Assert(this->elem_values_.is_initialized(),ExcNotInitialized());
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+
+    auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_initialized(), ExcNotInitialized());
+
 
     // fills the cache of the BSplineElementAccessor
-    bspline_element_accessor_.fill_values();
-    const auto &bspline_elem_cache = bspline_element_accessor_.get_values_cache();
+    bspline_element_accessor_.fill_values(topology_id);
+    const auto &bspline_cache = bspline_element_accessor_.get_values_cache(topology_id);
 
-    if (this->elem_values_.flags_handler_.fill_values())
+    if (cache.flags_handler_.fill_values())
     {
-        evaluate_nurbs_values(
-            bspline_elem_cache,
-            this->elem_values_.phi_);
+        evaluate_nurbs_values(bspline_cache, cache.phi_);
 
-        this->elem_values_.flags_handler_.set_values_filled(true);
+        cache.flags_handler_.set_values_filled(true);
     }
 
-    if (this->elem_values_.flags_handler_.fill_gradients())
+    if (cache.flags_handler_.fill_gradients())
     {
-        evaluate_nurbs_gradients(
-            bspline_elem_cache,
-            this->elem_values_.D1phi_);
+        evaluate_nurbs_gradients(bspline_cache, cache.D1phi_);
 
-        this->elem_values_.flags_handler_.set_gradients_filled(true);
+        cache.flags_handler_.set_gradients_filled(true);
     }
 
-    if (this->elem_values_.flags_handler_.fill_hessians())
+    if (cache.flags_handler_.fill_hessians())
     {
-        evaluate_nurbs_hessians(
-            bspline_elem_cache,
-            this->elem_values_.D2phi_);
+        evaluate_nurbs_hessians(bspline_cache, cache.D2phi_);
 
-        this->elem_values_.flags_handler_.set_hessians_filled(true);
+        cache.flags_handler_.set_hessians_filled(true);
     }
 
-    this->elem_values_.set_filled(true);
+    cache.set_filled(true);
 }
-
-
-
-template <int dim, int range, int rank >
-void
-NURBSElementAccessor< dim, range, rank >::
-fill_face_values(const Index face_id)
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-
-    auto &face_value = this->face_values_[face_id];
-
-    Assert(face_value.is_initialized(),ExcNotInitialized());
-
-    // fills the cache of the BSplineElementAccessor
-    bspline_element_accessor_.fill_face_values(face_id);
-    const auto &bspline_face_cache =
-        bspline_element_accessor_.get_values_cache(FaceTopology<dim>(face_id));
-
-
-    if (face_value.flags_handler_.fill_values())
-    {
-        evaluate_nurbs_values(
-            bspline_face_cache,
-            face_value.phi_);
-
-        face_value.flags_handler_.set_values_filled(true);
-    }
-
-    if (face_value.flags_handler_.fill_gradients())
-    {
-        evaluate_nurbs_gradients(
-            bspline_face_cache,
-            face_value.D1phi_);
-
-        face_value.flags_handler_.set_gradients_filled(true);
-    }
-
-    if (face_value.flags_handler_.fill_hessians())
-    {
-        evaluate_nurbs_hessians(
-            bspline_face_cache,
-            face_value.D2phi_);
-
-        face_value.flags_handler_.set_hessians_filled(true);
-    }
-    face_value.set_filled(true);
-}
-
 
 
 
 template <int dim, int range, int rank >
 vector<Real>
 NURBSElementAccessor< dim, range, rank >::
-get_weights() const
+get_local_weights() const
 {
     using space_t = BSplineSpace<dim,range,rank>;
 
@@ -951,7 +901,7 @@ get_weights() const
         dofs_offset_comp[comp+1] = dofs_offset_comp[comp] +
                                    (this->space_)->get_num_basis(comp);
     //---------------------------
-
+//*/
 
     vector<Real> weights_element;
 

@@ -708,13 +708,6 @@ fill_values(const TopologyId<dim> &topology_id)
 
 
 
-template <int dim, int range, int rank>
-void
-BSplineElementAccessor<dim, range, rank>::
-fill_face_values(const Index face_id)
-{
-    this->fill_values(FaceTopology<dim>(face_id));
-}
 
 
 

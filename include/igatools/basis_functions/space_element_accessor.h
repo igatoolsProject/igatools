@@ -645,6 +645,14 @@ protected:
     std::array<FaceValuesCache, n_faces> face_values_;
 
 public:
+
+    /**
+     * Fills the values cache of the <tt>face_id</tt>-th face, according to the evaluation points
+     * and fill flags specifies in init_values.
+     */
+    void fill_face_values(const Index face_id);
+
+
     /**
      * @todo Document this function
      */

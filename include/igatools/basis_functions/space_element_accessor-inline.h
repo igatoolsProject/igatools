@@ -377,6 +377,16 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &to
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 inline
+void
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+fill_face_values(const Index face_id)
+{
+    this->as_derived_element_accessor().fill_values(FaceTopology<dim>(face_id));
+}
+
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &

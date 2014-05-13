@@ -154,10 +154,12 @@ public:
     /**
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
+     *
+     * @note The topology for which the measure is computed is specified by
+     * the input argument @p topology_id.
      */
     void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 
-    void fill_face_values(const Index face_id);
 
     /** Reset the global cache */
     void reset_global_cache();
