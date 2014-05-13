@@ -125,7 +125,7 @@ public:
 
 
 
-    /**@name Getting values at points */
+    /**@name Cache initialization and filling. */
     ///@{
 
     /**
@@ -154,7 +154,7 @@ public:
      * the input argument @p topology_id.
      */
     void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
-
+    ///@}
 
     /**
      * Get the NURBS weights associated to the element.

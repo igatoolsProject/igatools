@@ -644,6 +644,16 @@ protected:
      */
     std::array<FaceValuesCache, n_faces> face_values_;
 
+
+    /**
+     * Initializes the element and faces cache according to
+     * the quadrature number of point and the fill_flag.
+     */
+    void reset_element_and_faces_cache(
+        const ValueFlags fill_flag,
+        const Quadrature<dim> &quad);
+
+
 public:
 
     /**

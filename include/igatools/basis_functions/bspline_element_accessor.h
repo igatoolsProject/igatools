@@ -130,7 +130,7 @@ public:
 
 
 
-    /** @name Query information that requires the use of the cache */
+    /** @name Cache initialization and filling */
     ///@{
 
     /**
@@ -159,10 +159,8 @@ public:
      * the input argument @p topology_id.
      */
     void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    ///@}
 
-
-    /** Reset the global cache */
-    void reset_global_cache();
 
     /**
      * Typedef for specifying the value of the basis function in the
@@ -205,24 +203,7 @@ public:
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
-    /**
-     * Initilizes (reserves memory) the
-     * univariate basis values
-     * and derivatives at quadrature points cache
-     * for efficient use of computations.
-     * This function implies a uniform quadrature schemes
-     * (the same for each element).
-     * The fill_flag provides what information to compute.
-     */
-    void reset_univariate_cache(const Quadrature<dim> &quad,
-                                const int max_der);
 
-    /**
-     * Initializes the element cache according to
-     * the quadrature number of point and the fill_flag.
-     */
-    void reset_element_cache(const ValueFlags fill_flag,
-                             const Quadrature<dim> &quad);
 
 
 
@@ -287,7 +268,6 @@ private:
     ///@}
 
 
-private:
 
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
@@ -369,6 +349,24 @@ private:
 
     };
 
+
+
+    /** Reset the global cache */
+    void reset_global_cache();
+
+    /**
+     * Initilizes (reserves memory) the
+     * univariate basis values
+     * and derivatives at quadrature points cache
+     * for efficient use of computations.
+     * This function implies a uniform quadrature schemes
+     * (the same for each element).
+     * The fill_flag provides what information to compute.
+     */
+    void reset_univariate_cache(const Quadrature<dim> &quad,
+                                const int max_der);
+
+
     /**
      * Tensor product style space sized cache for
      * storing the values and derivatives of the
@@ -396,7 +394,7 @@ private:
 
 
 
-public:
+protected:
     const ComponentTable<
     DynamicMultiArray<
     std::shared_ptr<

@@ -203,23 +203,7 @@ init_values(const ValueFlags fill_flag,
     PfElemAccessor::init_values(pf_flag, quad);
 
 
-
-    //--------------------------------------------------------------------------
-    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
-    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
-
-
-    if (!elem_flags_handler.fill_none())
-        parent_t::elem_values_.reset(elem_flags_handler,this->n_basis_direction_,quad);
-
-
-    if (!face_flags_handler.fill_none())
-    {
-        Index face_id = 0 ;
-        for (auto& face_value : parent_t::face_values_)
-            face_value.reset(face_id++, face_flags_handler,this->n_basis_direction_,quad);
-    }
-    //--------------------------------------------------------------------------
+    this->reset_element_and_faces_cache(fill_flag, quad);
 }
 
 

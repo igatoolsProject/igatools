@@ -570,6 +570,38 @@ reset(const Index face_id,
 }
 
 
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+void
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+reset_element_and_faces_cache(const ValueFlags fill_flag,
+                              const Quadrature<dim> &quad)
+{
+    //--------------------------------------------------------------------------
+    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
+    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
+
+
+    Assert(!elem_flags_handler.fill_none() ||
+           !face_flags_handler.fill_none(),
+           ExcMessage("Nothing to reset"));
+
+    if (!elem_flags_handler.fill_none())
+        this->elem_values_.reset(elem_flags_handler, this->n_basis_direction_, quad);
+
+
+    if (!face_flags_handler.fill_none())
+    {
+        Index face_id = 0 ;
+        for (auto& face_value : this->face_values_)
+            face_value.reset(face_id++, face_flags_handler, this->n_basis_direction_, quad);
+    }
+    //--------------------------------------------------------------------------
+}
+
+
+
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 inline
 auto

@@ -104,17 +104,7 @@ init_values(const ValueFlags fill_flag,
     bspline_element_accessor_.init_values(fill_flag_bspline,quad);
 
 
-    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
-    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
-
-    // reset the element values for the cache of the NURBSElementAccessor
-    this->elem_values_.reset(elem_flags_handler, this->n_basis_direction_, quad);
-//    this->elem_values_.reset(*(this->space_),elem_flags_handler,quad);
-
-    Index face_id = 0;
-    for (auto& face_value : this->face_values_)
-        face_value.reset(face_id++, face_flags_handler, this->n_basis_direction_, quad);
-//      face_value.reset(face_id++, *(this->space_), face_flags_handler, quad);
+    this->reset_element_and_faces_cache(fill_flag, quad);
 }
 
 

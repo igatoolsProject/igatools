@@ -343,7 +343,8 @@ init_values(const ValueFlags fill_flag,
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
     reset_univariate_cache(quad, max_der_order);
-    reset_element_cache(f_flag, quad);
+
+    this->reset_element_and_faces_cache(f_flag, quad);
 }
 
 
@@ -396,34 +397,6 @@ reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
 }
 
 
-
-template <int dim, int range, int rank>
-void
-BSplineElementAccessor<dim, range, rank>::
-reset_element_cache(const ValueFlags fill_flag,
-                    const Quadrature<dim> &quad)
-{
-    //--------------------------------------------------------------------------
-    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
-    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
-
-
-    Assert(!elem_flags_handler.fill_none() ||
-           !face_flags_handler.fill_none(),
-           ExcMessage("Nothing to reset"));
-
-    if (!elem_flags_handler.fill_none())
-        this->elem_values_.reset(elem_flags_handler, this->n_basis_direction_, quad);
-
-
-    if (!face_flags_handler.fill_none())
-    {
-        Index face_id = 0 ;
-        for (auto& face_value : this->face_values_)
-            face_value.reset(face_id++, face_flags_handler, this->n_basis_direction_, quad);
-    }
-    //--------------------------------------------------------------------------
-}
 
 
 
