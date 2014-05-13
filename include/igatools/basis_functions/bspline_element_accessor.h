@@ -155,7 +155,7 @@ public:
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_values();
+    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 
     void fill_face_values(const Index face_id);
 

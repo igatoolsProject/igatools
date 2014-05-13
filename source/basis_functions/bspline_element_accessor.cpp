@@ -649,26 +649,61 @@ fill_values_cache_from_univariate(const int max_deriv_order,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-fill_values()
+fill_values(const TopologyId<dim> &topology_id)
 {
-    Assert(values_1d_elem_->is_filled(), ExcNotInitialized());
-    Assert(this->elem_values_.is_initialized(), ExcNotInitialized());
+    auto &cache = this->get_values_cache(topology_id);
+    Assert(cache.is_initialized(), ExcNotInitialized());
 
-    CartesianGridElementAccessor<dim>::fill_values();
 
     const auto &element_tensor_id = this->get_tensor_index();
     ComponentTable<array<const BasisValues1d *, dim>> elem_univariate_values;
-    for (int iComp=0; iComp< Space::n_components; ++iComp)
+
+    Assert(values_1d_elem_->is_filled(), ExcCacheNotFilled());
+
+    if (topology_id.is_element())
     {
-        const auto &univariate_values = values_1d_elem_->splines1d_cache_(iComp);
-        for (int i = 0; i < dim; ++i)
-            elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
+        CartesianGridElementAccessor<dim>::fill_values();
+
+        for (int iComp=0; iComp< Space::n_components; ++iComp)
+        {
+            const auto &univariate_values = values_1d_elem_->splines1d_cache_(iComp);
+            for (int i = 0; i < dim; ++i)
+                elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
+        }
     }
+    else if (topology_id.is_face())
+    {
+        const int face_id = topology_id.get_id();
+
+        CartesianGridElementAccessor<dim>::fill_face_values(face_id);
+        const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
+
+        for (int iComp=0; iComp < Space::n_components ; ++iComp)
+        {
+            for (int i = 0; i < dim; ++i)
+            {
+                if (i==const_dir)
+                    elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
+                else
+                    elem_univariate_values(iComp)[i] =
+                        values_1d_elem_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
+            }
+        }
+
+        Assert(values_1d_elem_->max_deriv_order_ == values_1d_faces_[face_id]->max_deriv_order_,
+               ExcDimensionMismatch(values_1d_elem_->max_deriv_order_,values_1d_faces_[face_id]->max_deriv_order_));
+    }
+    else
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
 
     this->fill_values_cache_from_univariate(
         values_1d_elem_->max_deriv_order_,
         elem_univariate_values,
-        this->elem_values_);
+        cache);
 }
 
 
@@ -678,37 +713,7 @@ void
 BSplineElementAccessor<dim, range, rank>::
 fill_face_values(const Index face_id)
 {
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-
-    auto &face_value = this->face_values_[face_id] ;
-
-    Assert(face_value.is_initialized(), ExcNotInitialized());
-
-    CartesianGridElementAccessor<dim>::fill_face_values(face_id);
-    const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
-
-    const auto &element_tensor_id = this->get_tensor_index();
-    StaticMultiArray<array<const BasisValues1d *,dim>,range,rank>
-    elem_univariate_values;
-    for (int iComp=0; iComp < Space::n_components ; ++iComp)
-    {
-        for (int i = 0; i < dim; ++i)
-        {
-            if (i==const_dir)
-                elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
-            else
-                elem_univariate_values(iComp)[i] =
-                    values_1d_elem_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
-        }
-    }
-
-    Assert(values_1d_elem_->max_deriv_order_ == values_1d_faces_[face_id]->max_deriv_order_,
-           ExcDimensionMismatch(values_1d_elem_->max_deriv_order_,values_1d_faces_[face_id]->max_deriv_order_));
-    this->fill_values_cache_from_univariate(
-        values_1d_elem_->max_deriv_order_,
-        elem_univariate_values,
-        face_value);
-
+    this->fill_values(FaceTopology<dim>(face_id));
 }
 
 
@@ -1017,16 +1022,6 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
 }
 
 
-
-/*
-template <int dim, int range, int rank>
-auto
-BSplineElementAccessor<dim, range, rank>::
-get_space() const -> shared_ptr<const Space>
-{
-    return space_;
-}
-//*/
 
 
 

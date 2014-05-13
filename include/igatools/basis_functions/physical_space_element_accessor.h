@@ -36,7 +36,6 @@ IGA_NAMESPACE_OPEN
 template < typename Accessor > class GridForwardIterator;
 
 //TODO: trilinos_vector.h should be called vector.h
-//TODO: inline at least all the getters
 //TODO: document this class
 
 /**
@@ -79,7 +78,6 @@ public SpaceElementAccessor<
     PhysSpace::PushForwardType::codim,
     PhysSpace::RefSpace::range,
     PhysSpace::RefSpace::rank>,
-//private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
@@ -238,7 +236,7 @@ public :
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Returna a const reference to the one-dimensional container with the values
+     * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points.
      */
     const ValueVector< typename Mapping<dim,codim>::ValueType > &
@@ -332,7 +330,6 @@ public :
 
 
 
-// TODO (pauletti, Apr 23, 2014): why not private?
 protected:
 
 
@@ -365,10 +362,11 @@ protected:
 
     // TODO (pauletti, Apr 23, 2014): why not private?
 public :
-    template <typename Accessor> friend class GridForwardIterator;
 
 
 private:
+    template <typename Accessor> friend class GridForwardIterator;
+
     RefElemAccessor ref_space_element_accessor_;
 };
 
