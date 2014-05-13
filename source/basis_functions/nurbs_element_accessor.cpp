@@ -859,7 +859,7 @@ fill_values()
     {
         evaluate_nurbs_values(
             bspline_elem_cache,
-            this->elem_values_.phi_hat_);
+            this->elem_values_.phi_);
 
         this->elem_values_.flags_handler_.set_values_filled(true);
     }
@@ -868,7 +868,7 @@ fill_values()
     {
         evaluate_nurbs_gradients(
             bspline_elem_cache,
-            this->elem_values_.D1phi_hat_);
+            this->elem_values_.D1phi_);
 
         this->elem_values_.flags_handler_.set_gradients_filled(true);
     }
@@ -877,7 +877,7 @@ fill_values()
     {
         evaluate_nurbs_hessians(
             bspline_elem_cache,
-            this->elem_values_.D2phi_hat_);
+            this->elem_values_.D2phi_);
 
         this->elem_values_.flags_handler_.set_hessians_filled(true);
     }
@@ -908,7 +908,7 @@ fill_face_values(const Index face_id)
     {
         evaluate_nurbs_values(
             bspline_face_cache,
-            face_value.phi_hat_);
+            face_value.phi_);
 
         face_value.flags_handler_.set_values_filled(true);
     }
@@ -917,7 +917,7 @@ fill_face_values(const Index face_id)
     {
         evaluate_nurbs_gradients(
             bspline_face_cache,
-            face_value.D1phi_hat_);
+            face_value.D1phi_);
 
         face_value.flags_handler_.set_gradients_filled(true);
     }
@@ -926,7 +926,7 @@ fill_face_values(const Index face_id)
     {
         evaluate_nurbs_hessians(
             bspline_face_cache,
-            face_value.D2phi_hat_);
+            face_value.D2phi_);
 
         face_value.flags_handler_.set_hessians_filled(true);
     }

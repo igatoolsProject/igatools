@@ -578,11 +578,11 @@ protected:
         BasisElemValueFlagsHandler flags_handler_;
 
 
-        ValueTable<Value> phi_hat_;
-        ValueTable<Derivative<1>> D1phi_hat_;
-        ValueTable<Derivative<2>> D2phi_hat_;
+        ValueTable<Value> phi_;
+        ValueTable<Derivative<1>> D1phi_;
+        ValueTable<Derivative<2>> D2phi_;
 
-        ValueTable<Div> div_phi_hat_;
+        ValueTable<Div> div_phi_;
 
         Quadrature<dim> quad_;
     };
@@ -649,6 +649,11 @@ public:
      * @todo Document this function
      */
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * @todo Document this function
+     */
+    ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 
 
     /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/

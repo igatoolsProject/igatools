@@ -157,6 +157,14 @@ get_degree() const -> const ComponentTable<TensorIndex<dim>> &
 }
 
 
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
+{
+    return ref_space_->get_element_global_dofs();
+}
+
 
 template <class RefSpace_, class PushForward_>
 void

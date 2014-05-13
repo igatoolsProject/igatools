@@ -79,10 +79,18 @@ public SpaceElementAccessor<
     PhysSpace::PushForwardType::codim,
     PhysSpace::RefSpace::range,
     PhysSpace::RefSpace::rank>,
-private PhysSpace::RefSpace::ElementAccessor,
+//private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
+    using parent_t = SpaceElementAccessor<
+                     PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
+                     PhysSpace::RefSpace::dim,
+                     PhysSpace::PushForwardType::codim,
+                     PhysSpace::RefSpace::range,
+                     PhysSpace::RefSpace::rank>;
+
+
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const PhysSpace;
 
@@ -91,7 +99,7 @@ public :
     using PfElemAccessor = typename PushForwardType::ElementAccessor;
     using RefElemAccessor = typename RefSpace::ElementAccessor;
 
-    using RefElemAccessor::dim;
+    using PfElemAccessor::dim;
     using PfElemAccessor::space_dim;
     using PfElemAccessor::codim;
     using PfElemAccessor::transformation_type;
@@ -168,7 +176,6 @@ public :
 
     ///@}
 
-    int get_flat_index() const;
 
 
     /**
@@ -187,114 +194,6 @@ public :
     void fill_face_values(const Index face_id);
     ///@}
 
-
-    /** @name Functions returning the value of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Value> const &
-    get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns a const view to the values of the <tt>func</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Value>::const_view
-    get_basis_values(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the value of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    const Value &
-    get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Value> const &
-    get_face_basis_values(const Index face_id) const;
-    ///@}
-
-    /** @name Functions returning the gradient of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the gradients of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Derivative<1> > const &
-    get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns a const view to the gradients of the <tt>func</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable< Derivative<1> >::const_view
-    get_basis_gradients(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the gradient of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    const Derivative<1> &
-    get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-    ///@}
-
-    /** @name Functions returning the hessian of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the hessians of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Derivative<2> > const &
-    get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns a const view to the hessians of the <tt>func</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable< Derivative<2> >::const_view
-    get_basis_hessians(const Index func,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the hessian of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    const Derivative<2> &
-    get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-    ///@}
-
-    /** @name Functions returning the difergence of the basis functions. */
-    ///@{
-    Real get_basis_divergence(const Index func, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-    ///@}
 
 
     /**
@@ -403,28 +302,6 @@ public :
      */
     std::shared_ptr<const PhysSpace>get_physical_space() const;
 
-    /** @name Methods from RefSpace::ElemAccessor */
-    //@{
-    /**
-     *  Number of non zero basis functions over the current element.
-     */
-    Size get_num_basis() const;
-
-    /**
-     * Returns the global dofs of the local (non zero) basis functions
-     * on the element.
-     * For example:
-     * \code
-       auto loc_to_glob = elem->get_local_to_global();
-       // loc_to_glob[0] is the global id of the first element basis function
-       // loc_to_glob[1] is the global id of the second element basis function
-       // ...
-      \endcode
-     *
-     */
-    std::vector<Index> const &get_local_to_global() const;
-
-    //@}
 
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
 
@@ -450,59 +327,14 @@ public :
     const PfElemAccessor &get_push_forward_accessor() const;
 
 
-private :
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const ;
 
-    /**
-     * Typedef for specifying the derivatives of the basis function in the reference domain.
-     * \tparam order - order of the derivative.
-     */
-    template< int order >
-    using DerivativeRef_t = Derivatives<dim,RefSpace::range,RefSpace::rank,order>;
 
 
 // TODO (pauletti, Apr 23, 2014): why not private?
 protected:
-    std::shared_ptr<ContainerType> phys_space_ = nullptr;
 
-
-    struct ValuesCache : CacheStatus
-    {
-        void reset(const int n_basis_per_element,
-                   const QuadratureType &quad,
-                   const BasisElemValueFlagsHandler &flags_handler);
-
-
-        BasisElemValueFlagsHandler flags_handler_;
-
-        Size n_points_ = 0;
-
-        ValueTable<Value>         D0phi_;
-        ValueTable<Derivative<1>> D1phi_;
-        ValueTable<Derivative<2>> D2phi_;
-    };
-
-
-    struct ElementValuesCache : ValuesCache
-    {
-        void reset(const int n_basis_per_element,
-                   const QuadratureType &quad,
-                   const BasisElemValueFlagsHandler &flags_handler);
-    };
-
-
-    struct FaceValuesCache : ValuesCache
-    {
-        void reset(const Index face_id,
-                   const int n_basis_per_element,
-                   const QuadratureType &quad,
-                   const BasisFaceValueFlagsHandler &flags_handler);
-
-
-        void reset(const Index face_id,
-                   const int n_basis_per_element,
-                   const QuadratureFaceType &quad,
-                   const BasisFaceValueFlagsHandler &flags_handler);
-    };
 
     /**
      * For a given flags input argument identifies the face quantities and
@@ -510,15 +342,6 @@ protected:
      * The output flags does not contain the word face.
      */
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
-
-
-    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
-    ValuesCache &get_values_cache(const TopologyId<dim> &topology_id);
-
-
-    ElementValuesCache elem_values_;
-
-    std::array<FaceValuesCache, n_faces> face_values_;
 
     void operator++();
 
@@ -544,6 +367,9 @@ protected:
 public :
     template <typename Accessor> friend class GridForwardIterator;
 
+
+private:
+    RefElemAccessor ref_space_element_accessor_;
 };
 
 

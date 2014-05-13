@@ -137,6 +137,12 @@ public:
      */
     const ComponentTable<TensorIndex<dim>> &get_degree() const;
 
+
+    /**
+     * @todo Missing documentation
+     */
+    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
+
 private:
     std::shared_ptr<RefSpace> ref_space_;
 

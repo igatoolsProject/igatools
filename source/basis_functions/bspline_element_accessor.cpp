@@ -603,7 +603,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
     {
         evaluate_bspline_derivatives<0>(univariate_values,
                                         cache,
-                                        cache.phi_hat_);
+                                        cache.phi_);
 
         cache.flags_handler_.set_values_filled(true);
     }
@@ -612,7 +612,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
     {
         evaluate_bspline_derivatives<1>(univariate_values,
                                         cache,
-                                        cache.D1phi_hat_);
+                                        cache.D1phi_);
 
         cache.flags_handler_.set_gradients_filled(true);
     }
@@ -621,7 +621,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
     {
         evaluate_bspline_derivatives<2>(univariate_values,
                                         cache,
-                                        cache.D2phi_hat_);
+                                        cache.D2phi_);
 
         cache.flags_handler_.set_hessians_filled(true);
     }
@@ -631,9 +631,9 @@ fill_values_cache_from_univariate(const int max_deriv_order,
         Assert(cache.flags_handler_.gradients_filled(),
                ExcMessage("Divergence requires gradient to be filled."));
 
-        auto D1  = cache.D1phi_hat_.begin();
-        auto div = cache.div_phi_hat_.begin();
-        auto end = cache.D1phi_hat_.end();
+        auto D1  = cache.D1phi_.begin();
+        auto div = cache.div_phi_.begin();
+        auto end = cache.D1phi_.end();
         for (; D1 != end; ++D1, ++div)
             *div = trace(*D1);
 

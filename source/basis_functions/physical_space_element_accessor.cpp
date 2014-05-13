@@ -39,130 +39,13 @@ PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
     PhysSpace::PushForwardType::codim,
     PhysSpace::RefSpace::range,
     PhysSpace::RefSpace::rank>(phys_space,index),
-    RefElemAccessor(phys_space->get_reference_space(), index),
     PfElemAccessor(phys_space->get_push_forward(), index),
-    phys_space_(phys_space)
-{
-    Assert(phys_space_ != nullptr, ExcNullPtr());
-}
+    ref_space_element_accessor_(phys_space->get_reference_space(),index)
+{}
 
 
 
-template< class PhysSpace >
-int
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_flat_index() const
-{
-    return RefElemAccessor::get_flat_index();
-}
 
-
-
-template< class PhysSpace >
-void
-PhysicalSpaceElementAccessor<PhysSpace>::
-ValuesCache::
-reset(const int n_basis_per_element,
-      const QuadratureType &quad,
-      const BasisElemValueFlagsHandler &flags_handler)
-{
-
-    n_points_ = quad.get_num_points();
-
-    flags_handler_ = flags_handler;
-
-    if (flags_handler_.fill_values())
-    {
-        if (D0phi_.get_num_points() != n_points_ ||
-            D0phi_.get_num_functions() != n_basis_per_element)
-            D0phi_.resize(n_basis_per_element,n_points_);
-
-        D0phi_.zero();
-    }
-    else
-    {
-        D0phi_.clear();
-    }
-
-    if (flags_handler_.fill_gradients())
-    {
-        if (D1phi_.get_num_points() != n_points_ ||
-            D1phi_.get_num_functions() != n_basis_per_element)
-            D1phi_.resize(n_basis_per_element,n_points_);
-
-        D1phi_.zero();
-    }
-    else
-    {
-        D1phi_.clear();
-    }
-
-    if (flags_handler_.fill_hessians())
-    {
-        if (D2phi_.get_num_points() != n_points_ ||
-            D2phi_.get_num_functions() != n_basis_per_element)
-            D2phi_.resize(n_basis_per_element,n_points_);
-
-        D2phi_.zero();
-    }
-    else
-    {
-        D2phi_.clear();
-    }
-
-
-    if (flags_handler_.fill_divergences())
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
-
-
-    this->set_initialized(true);
-}
-
-
-
-template< class PhysSpace >
-void
-PhysicalSpaceElementAccessor<PhysSpace>::
-ElementValuesCache::
-reset(const int n_basis_per_element,
-      const QuadratureType &quad,
-      const BasisElemValueFlagsHandler &flags_handler)
-{
-    ValuesCache::reset(n_basis_per_element, quad, flags_handler);
-}
-
-
-
-template< class PhysSpace >
-void
-PhysicalSpaceElementAccessor<PhysSpace>::
-FaceValuesCache::
-reset(const Index face_id,
-      const int n_basis_per_element,
-      const QuadratureType &quad_elem,
-      const BasisFaceValueFlagsHandler &flags_handler)
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    const auto quad_face = quad_elem.collapse_to_face(face_id);
-    ValuesCache::reset(n_basis_per_element, quad_face, flags_handler);
-}
-
-
-
-template< class PhysSpace >
-void
-PhysicalSpaceElementAccessor<PhysSpace>::
-FaceValuesCache::
-reset(const Index face_id,
-      const int n_basis_per_element,
-      const QuadratureFaceType &quad,
-      const BasisFaceValueFlagsHandler &flags_handler)
-{
-    AssertThrow(false,ExcNotImplemented());
-}
 
 
 
@@ -314,22 +197,29 @@ init_values(const ValueFlags fill_flag,
 {
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
-    RefElemAccessor::init_values(ref_sp_flag, quad);
+    ref_space_element_accessor_.init_values(ref_sp_flag, quad);
 
     const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
     PfElemAccessor::init_values(pf_flag, quad);
 
 
-    const Size n_basis = phys_space_->get_reference_space()->get_num_basis_per_element();
 
+    //--------------------------------------------------------------------------
     BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
-    elem_values_.reset(n_basis, quad, elem_flags_handler);
-
-    Index face_id = 0 ;
-//    const auto face_fill_flag = get_face_flags(fill_flag) ;
     BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
-    for (auto& face_value : face_values_)
-        face_value.reset(face_id++, n_basis, quad, face_flags_handler);
+
+
+    if (!elem_flags_handler.fill_none())
+        parent_t::elem_values_.reset(elem_flags_handler,this->n_basis_direction_,quad);
+
+
+    if (!face_flags_handler.fill_none())
+    {
+        Index face_id = 0 ;
+        for (auto& face_value : parent_t::face_values_)
+            face_value.reset(face_id++, face_flags_handler,this->n_basis_direction_,quad);
+    }
+    //--------------------------------------------------------------------------
 }
 
 
@@ -350,7 +240,7 @@ template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
 fill_values(const TopologyId<dim> &topology_id)
 {
-    auto &cache = this->get_values_cache(topology_id);
+    auto &cache = parent_t::get_values_cache(topology_id);
 
     Assert(cache.is_initialized(), ExcNotInitialized());
 
@@ -358,20 +248,23 @@ fill_values(const TopologyId<dim> &topology_id)
     if (topology_id.is_element())
     {
         PfElemAccessor::fill_values();
-        RefElemAccessor::fill_values();
+        ref_space_element_accessor_.fill_values();
     }
     else
     {
         //TODO: implement fill_values in PushForwardElementAccessor
         // and RefSpaceElementAccessor accepting TopologyId
         PfElemAccessor::fill_face_values(topology_id.get_id());
-        RefElemAccessor::fill_face_values(topology_id.get_id());
+        ref_space_element_accessor_.fill_face_values(topology_id.get_id());
     }
 
     if (cache.flags_handler_.fill_values())
     {
-        PfElemAccessor::template transform_values<RefSpace::range,RefSpace::rank>
-        (RefElemAccessor::get_basis_values(topology_id), cache.D0phi_,topology_id);
+        PfElemAccessor::
+        template transform_values<RefSpace::range,RefSpace::rank>(
+            ref_space_element_accessor_.get_basis_values(topology_id),
+            cache.phi_,
+            topology_id);
 
         cache.flags_handler_.set_values_filled(true);
     }
@@ -384,16 +277,18 @@ fill_values(const TopologyId<dim> &topology_id)
             PfElemAccessor::
             template transform_gradients<PhysSpace::range,PhysSpace::rank>(
                 dummy,
-                RefElemAccessor::get_basis_gradients(topology_id),
-                cache.D1phi_,topology_id);
+                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                cache.D1phi_,
+                topology_id);
         }
         else
         {
             PfElemAccessor::
             template transform_gradients<PhysSpace::range,PhysSpace::rank>(
-                RefElemAccessor::get_basis_values(topology_id),
-                RefElemAccessor::get_basis_gradients(topology_id),
-                cache.D1phi_,topology_id);
+                ref_space_element_accessor_.get_basis_values(topology_id),
+                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                cache.D1phi_,
+                topology_id);
         }
         cache.flags_handler_.set_gradients_filled(true);
     }
@@ -420,46 +315,6 @@ void PhysicalSpaceElementAccessor<PhysSpace>::
 fill_face_values(const Index face_id)
 {
     this->fill_values(FaceTopology<dim>(face_id));
-}
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-           ExcMessage("Only element or face topology is allowed."));
-    if (topology_id.is_element())
-    {
-        return elem_values_;
-    }
-    else
-    {
-        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
-               ExcIndexRange(topology_id.get_id(),0,n_faces));
-        return face_values_[topology_id.get_id()];
-    }
-}
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-    ExcMessage("Only element or face topology is allowed."));
-    if (topology_id.is_element())
-    {
-        return elem_values_;
-    }
-    else
-    {
-        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
-        ExcIndexRange(topology_id.get_id(),0,n_faces));
-        return face_values_[topology_id.get_id()];
-    }
 }
 
 
@@ -502,7 +357,7 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point<space_dim> &
 {
-    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+//    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return (PfElemAccessor::get_values(topology_id))[qp];
 }
 
@@ -516,9 +371,9 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto field_hat = RefElemAccessor::evaluate_field(local_coefs,topology_id);
+    auto field_hat = ref_space_element_accessor_.evaluate_field(local_coefs,topology_id);
 
-    ValueVector< Value > field(field_hat.size());
+    ValueVector<Value> field(field_hat.size());
 
     PfElemAccessor::template
     transform_values<PhysSpace::range,PhysSpace::rank>(field_hat, field);
@@ -536,13 +391,13 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto D1field_hat = RefElemAccessor::evaluate_field_gradients(local_coefs,topology_id);
+    auto D1field_hat = ref_space_element_accessor_.evaluate_field_gradients(local_coefs,topology_id);
 
     const auto n_quad_points = D1field_hat.size();
 
     ValueVector< typename RefElemAccessor::Value > D0field_hat(n_quad_points);
     if (transformation_type != Transformation::h_grad)
-        D0field_hat = RefElemAccessor::evaluate_field(local_coefs,topology_id);
+        D0field_hat = ref_space_element_accessor_.evaluate_field(local_coefs,topology_id);
 
     ValueVector< Derivative<1> > D1field(n_quad_points);
     PfElemAccessor::
@@ -571,129 +426,6 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<di
 
 
 
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> const &
-{
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
-    return cache.D0phi_;
-}
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
-{
-    return this->get_basis_values(FaceTopology<dim>(face_id));
-}
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_values(const Index func,const TopologyId<dim> &topology_id) const -> typename ValueTable<Value>::const_view
-{
-    return this->get_basis_values(topology_id).get_function_view(func);
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_value(const Index func, const Index qp,const TopologyId<dim> &topology_id) const -> const Value &
-{
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
-           ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
-
-    return this->get_basis_values(func,topology_id)[qp];
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable< Derivative<1> > const &
-{
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.flags_handler_.gradients_filled(), ExcCacheNotFilled());
-    return cache.D1phi_;
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_gradients(const Index func,const TopologyId<dim> &topology_id) const -> typename ValueTable< Derivative<1> >::const_view
-{
-    return this->get_basis_gradients(topology_id).get_function_view(func);
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_gradient(const Index func, const Index qp,const TopologyId<dim> &topology_id) const -> const Derivative<1> &
-{
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
-    ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
-
-    return this->get_basis_gradients(func,topology_id)[qp];
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable< Derivative<2> > const &
-{
-    const auto &cache = this->get_values_cache(topology_id);
-    Assert(cache.is_filled(), ExcCacheNotFilled());
-    Assert(cache.flags_handler_.hessians_filled(), ExcCacheNotFilled());
-    return cache.D2phi_;
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessians(const Index func,const TopologyId<dim> &topology_id) const -> typename ValueTable< Derivative<2> >::const_view
-{
-    return this->get_basis_hessians(topology_id).get_function_view(func);
-}
-
-
-
-template< class PhysSpace >
-auto
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_hessian(const Index func, const Index qp,const TopologyId<dim> &topology_id) const -> const Derivative<2> &
-{
-    Assert(qp >= 0 && qp < this->get_values_cache(topology_id).n_points_,
-    ExcIndexRange(qp,0,this->get_values_cache(topology_id).n_points_));
-
-    return this->get_basis_hessians(func,topology_id)[qp];
-}
-
-
-
-template< class PhysSpace >
-Real
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_basis_divergence(const Index func, const Index qp,const TopologyId<dim> &topology_id) const
-{
-    return (trace(this->get_basis_gradient(func,qp,topology_id)));
-}
-
 
 
 template< class PhysSpace >
@@ -702,7 +434,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
-    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+//    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_values(topology_id);
 }
 
@@ -722,7 +454,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_map_gradient_at_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
-    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
+//    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_gradients(topology_id);
 }
 
@@ -736,7 +468,7 @@ get_face_normals(const Index face_id) const ->
 const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
+//    Assert(this->face_values_[face_id].is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_face_normals(face_id);
 }
 
@@ -759,20 +491,13 @@ is_boundary(const Index face) const
     return PfElemAccessor::is_boundary(face);
 }
 
-template< class PhysSpace >
-const std::vector<Index> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_local_to_global() const
-{
-    return RefElemAccessor::get_local_to_global();
-}
 
 template< class PhysSpace >
-Size
+Index
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_num_basis() const
+get_flat_index() const
 {
-    return RefElemAccessor::get_num_basis();
+    return parent_t::get_flat_index();
 }
 
 
@@ -781,7 +506,7 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
-    return phys_space_;
+    return this->space_;
 }
 
 
@@ -791,8 +516,9 @@ void
 PhysicalSpaceElementAccessor<PhysSpace>::
 operator++()
 {
-    RefElemAccessor::operator++();
+    parent_t::operator++();
     PfElemAccessor::operator++();
+    ++ref_space_element_accessor_;
 }
 
 
@@ -802,8 +528,7 @@ bool
 PhysicalSpaceElementAccessor<PhysSpace>::
 operator==(const PhysicalSpaceElementAccessor <PhysSpace> &a) const
 {
-    return RefElemAccessor::get_flat_index() ==
-           static_cast<RefElemAccessor>(a).get_flat_index();
+    return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
 }
 
 
@@ -813,8 +538,7 @@ bool
 PhysicalSpaceElementAccessor<PhysSpace>::
 operator!=(const PhysicalSpaceElementAccessor <PhysSpace> &a) const
 {
-    return RefElemAccessor::get_flat_index() !=
-           static_cast<RefElemAccessor>(a).get_flat_index();
+    return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
 }
 
 template< class PhysSpace >
@@ -822,7 +546,7 @@ auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_ref_space_accessor() const -> const RefElemAccessor &
 {
-    return static_cast<const RefElemAccessor &>(*this);
+    return ref_space_element_accessor_;
 }
 
 template< class PhysSpace >
@@ -847,7 +571,7 @@ print_info(LogStream &out, const VerbosityLevel verbosity_level) const
     out << "PhysicalSpaceElementAccessor info:" << endl;
     out.push(tab);
 
-    RefElemAccessor::print_info(out,verbosity_level);
+    ref_space_element_accessor_.print_info(out,verbosity_level);
     PfElemAccessor::print_info(out,verbosity_level);
 
     out.pop();

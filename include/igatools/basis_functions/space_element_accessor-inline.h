@@ -38,6 +38,9 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
     space_(space)
 {
+    Assert(space_ != nullptr, ExcNullPtr());
+
+
     //--------------------------------------------------------------------------
     using Indexer = CartesianProductIndexer<dim>;
 
@@ -195,7 +198,7 @@ get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> 
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
 
-    return cache.phi_hat_;
+    return cache.phi_;
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -242,7 +245,7 @@ get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Deri
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.gradients_filled(), ExcCacheNotFilled());
 
-    return cache.D1phi_hat_;
+    return cache.D1phi_;
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -290,7 +293,7 @@ get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Deriv
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.hessians_filled(), ExcCacheNotFilled());
 
-    return cache.D2phi_hat_;
+    return cache.D2phi_;
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -337,7 +340,7 @@ get_basis_divergences(const TopologyId<dim> &topology_id) const -> ValueTable<Di
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
     Assert(cache.flags_handler_.divergences_filled(), ExcCacheNotFilled());
 
-    return cache.div_phi_hat_;
+    return cache.div_phi_;
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -393,7 +396,25 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
 }
 
 
-
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+    ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+        ExcIndexRange(topology_id.get_id(),0,n_faces));
+        return face_values_[topology_id.get_id()];
+    }
+}
 
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -427,30 +448,30 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     // resizing the containers for the basis functions
     if (flags_handler_.fill_values())
     {
-        if (phi_hat_.get_num_points() != total_n_points ||
-            phi_hat_.get_num_functions() != total_n_basis)
+        if (phi_.get_num_points() != total_n_points ||
+            phi_.get_num_functions() != total_n_basis)
         {
-            phi_hat_.resize(total_n_basis,total_n_points);
-            phi_hat_.zero();
+            phi_.resize(total_n_basis,total_n_points);
+            phi_.zero();
         }
     }
     else
     {
-        phi_hat_.clear();
+        phi_.clear();
     }
 
     if (flags_handler_.fill_gradients())
     {
-        if (D1phi_hat_.get_num_points() != total_n_points ||
-            D1phi_hat_.get_num_functions() != total_n_basis)
+        if (D1phi_.get_num_points() != total_n_points ||
+            D1phi_.get_num_functions() != total_n_basis)
         {
-            D1phi_hat_.resize(total_n_basis,total_n_points);
-            D1phi_hat_.zero();
+            D1phi_.resize(total_n_basis,total_n_points);
+            D1phi_.zero();
         }
     }
     else
     {
-        D1phi_hat_.clear();
+        D1phi_.clear();
     }
 
 
@@ -459,32 +480,32 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
         Assert(flags_handler_.fill_gradients(),
                ExcMessage("Divergence requires gradient to be filled."));
 
-        if (div_phi_hat_.get_num_points() != total_n_points ||
-            div_phi_hat_.get_num_functions() != total_n_basis)
+        if (div_phi_.get_num_points() != total_n_points ||
+            div_phi_.get_num_functions() != total_n_basis)
         {
-            div_phi_hat_.resize(total_n_basis,total_n_points);
-            div_phi_hat_.zero();
+            div_phi_.resize(total_n_basis,total_n_points);
+            div_phi_.zero();
         }
     }
     else
     {
-        div_phi_hat_.clear();
+        div_phi_.clear();
     }
 
 
 
     if (flags_handler_.fill_hessians())
     {
-        if (D2phi_hat_.get_num_points() != total_n_points ||
-            D2phi_hat_.get_num_functions() != total_n_basis)
+        if (D2phi_.get_num_points() != total_n_points ||
+            D2phi_.get_num_functions() != total_n_basis)
         {
-            D2phi_hat_.resize(total_n_basis,total_n_points);
-            D2phi_hat_.zero();
+            D2phi_.resize(total_n_basis,total_n_points);
+            D2phi_.zero();
         }
     }
     else
     {
-        D2phi_hat_.clear();
+        D2phi_.clear();
     }
     //--------------------------------------------------------------------------
 
@@ -546,7 +567,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ValuesCache::
 get_values() const -> const ValueTable<Value> &
 {
-    return phi_hat_;
+    return phi_;
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -556,7 +577,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ValuesCache::
 get_gradients() const -> const ValueTable<Derivative<1>> &
 {
-    return D1phi_hat_;
+    return D1phi_;
 }
 
 
@@ -567,7 +588,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ValuesCache::
 get_hessians() const -> const ValueTable<Derivative<2>> &
 {
-    return D2phi_hat_;
+    return D2phi_;
 }
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -577,7 +598,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ValuesCache::
 get_divergences() const -> const ValueTable<Div> &
 {
-    return div_phi_hat_;
+    return div_phi_;
 }
 
 

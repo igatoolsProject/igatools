@@ -164,7 +164,6 @@ public:
 
 
 
-protected:
     bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
 
     bool operator!=(const NURBSElementAccessor<dim,range,rank> &a) const;
