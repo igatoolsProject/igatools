@@ -651,18 +651,22 @@ void
 BSplineElementAccessor<dim, range, rank>::
 fill_values(const TopologyId<dim> &topology_id)
 {
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+
     auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_initialized(), ExcNotInitialized());
-
 
     const auto &element_tensor_id = this->get_tensor_index();
     ComponentTable<array<const BasisValues1d *, dim>> elem_univariate_values;
 
     Assert(values_1d_elem_->is_filled(), ExcCacheNotFilled());
 
+
+    CartesianGridElementAccessor<dim>::fill_values(topology_id);
+
     if (topology_id.is_element())
     {
-        CartesianGridElementAccessor<dim>::fill_values();
 
         for (int iComp=0; iComp< Space::n_components; ++iComp)
         {
@@ -671,19 +675,20 @@ fill_values(const TopologyId<dim> &topology_id)
                 elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
         }
     }
-    else if (topology_id.is_face())
+    else // if (topology_id.is_face())
     {
         const int face_id = topology_id.get_id();
 
-        CartesianGridElementAccessor<dim>::fill_face_values(face_id);
         const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
-
         for (int iComp=0; iComp < Space::n_components ; ++iComp)
         {
             for (int i = 0; i < dim; ++i)
             {
                 if (i==const_dir)
+                {
+                    Assert(values_1d_faces_[face_id]->is_filled(), ExcCacheNotFilled());
                     elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
+                }
                 else
                     elem_univariate_values(iComp)[i] =
                         values_1d_elem_->splines1d_cache_(iComp).get_data_direction(i)[element_tensor_id[i]];
@@ -692,11 +697,6 @@ fill_values(const TopologyId<dim> &topology_id)
 
         Assert(values_1d_elem_->max_deriv_order_ == values_1d_faces_[face_id]->max_deriv_order_,
                ExcDimensionMismatch(values_1d_elem_->max_deriv_order_,values_1d_faces_[face_id]->max_deriv_order_));
-    }
-    else
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
     }
 
 

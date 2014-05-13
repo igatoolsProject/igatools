@@ -153,7 +153,7 @@ public:
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_values();
+    void fill_values(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Fills the i-th face values cache according to the evaluation points
@@ -348,8 +348,13 @@ private:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id)
+    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>())
     const;
+
+    /**
+     * @todo Document this function
+     */
+    ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Grid (global) lengths cache.
