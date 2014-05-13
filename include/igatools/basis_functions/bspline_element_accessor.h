@@ -1523,12 +1523,6 @@ public:
     template <int deriv_order>
     using Derivative = Derivatives<dim, range, rank, deriv_order>;
 
-    /**
-     * Typedef for specifying the divergence of the basis function in the
-     * reference domain.
-     */
-    using Div = Values<dim, 1, 1>;
-
 protected:
 
 public:

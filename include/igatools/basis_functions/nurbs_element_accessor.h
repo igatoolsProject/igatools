@@ -39,8 +39,7 @@ template < int, int , int > class NURBSSpace ;
  */
 template <int dim, int range, int rank >
 class NURBSElementAccessor :
-//    public BSplineElementAccessor< dim, range, rank >
-public SpaceElementAccessor<
+    public SpaceElementAccessor<
     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
 {
 public:
@@ -50,13 +49,25 @@ public:
                      NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
 
     using ContainerType = const NURBSSpace< dim, range, rank>;
-    using Space_t = NURBSSpace< dim, range, rank >;
 
-    typedef NURBSElementAccessor<dim,range,rank> Self_t ;
 
-    using Parent_t = BSplineElementAccessor<dim,range,rank>;
+    using Space = NURBSSpace<dim,range,rank>;
 
-//    using BSplineElementAccessor< dim, range, rank >::n_faces;
+
+    /**
+     * Typedef for specifying the value of the basis function in the
+     * reference domain.
+     */
+    using Value = Values<dim, range, rank>;
+
+    /**
+     * Typedef for specifying the derivatives of the basis function in the
+     * reference domain.
+     */
+    template <int deriv_order>
+    using Derivative = Derivatives<dim, range, rank, deriv_order>;
+
+
 
 
 
@@ -76,18 +87,18 @@ public:
      * \brief Constructor.
      * \todo Missing documentation.
      */
-    NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
+    NURBSElementAccessor(const std::shared_ptr<const Space> space,
                          const int elem_index);
 
     /**
      * Copy constructor.
      */
-    NURBSElementAccessor(const NURBSElementAccessor< dim, range, rank > &element) = default;
+    NURBSElementAccessor(const NURBSElementAccessor<dim,range,rank > &element) = default;
 
     /**
      * Move constructor.
      */
-    NURBSElementAccessor(NURBSElementAccessor< dim, range, rank > &&element) = default;
+    NURBSElementAccessor(NURBSElementAccessor<dim,range,rank> &&element) = default;
 
     /** Destructor.*/
     ~NURBSElementAccessor() = default;
@@ -98,16 +109,16 @@ public:
     /**
      * Copy assignment operator.
      */
-    NURBSElementAccessor< dim, range, rank > &
-    operator=(const NURBSElementAccessor< dim, range, rank > &element) = default;
+    NURBSElementAccessor<dim,range,rank> &
+    operator=(const NURBSElementAccessor<dim,range,rank> &element) = default;
 
 
 
     /**
      * Move assignment operator.
      */
-    NURBSElementAccessor< dim, range, rank > &
-    operator=(NURBSElementAccessor< dim, range, rank > &&element) = default;
+    NURBSElementAccessor<dim,range,rank> &
+    operator=(NURBSElementAccessor<dim,range,rank> &&element) = default;
     ///@}
 
 
@@ -152,19 +163,6 @@ public:
 
 
 
-    /**
-     * Typedef for specifying the derivatives of the basis function in the reference domain.
-     * \tparam deriv_order - order of the derivative.
-     */
-    template <int deriv_order>
-    using DerivativeRef_t = Derivatives<dim, range, rank, deriv_order> ;
-
-    /**
-     * TODO: document me .
-     */
-    using Value = Values<dim, range, rank>;
-
-
 
 protected:
     bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
@@ -175,6 +173,8 @@ protected:
 
 private:
 
+
+
     /**
      * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
      * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
@@ -183,7 +183,7 @@ private:
      */
     void
     evaluate_nurbs_values(
-        const typename Parent_t::ValuesCache &bspline_cache,
+        const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
         ValueTable<Value> &D0_phi_hat) const ;
 
     /**
@@ -194,8 +194,8 @@ private:
      */
     void
     evaluate_nurbs_gradients(
-        const typename Parent_t::ValuesCache &bspline_cache,
-        ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const ;
+        const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
+        ValueTable< Derivative<1> > &D1_phi_hat) const ;
 
     /**
      * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
@@ -205,8 +205,8 @@ private:
      */
     void
     evaluate_nurbs_hessians(
-        const typename Parent_t::ValuesCache &bspline_cache,
-        ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const ;
+        const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
+        ValueTable< Derivative<2> > &D2_phi_hat) const ;
 
 
 

@@ -134,10 +134,10 @@ init_face_values(const Index face_id,
 
 template <int dim, int range, int rank  >
 void
-NURBSElementAccessor< dim, range, rank >::
+NURBSElementAccessor<dim, range, rank>::
 evaluate_nurbs_values(
-    const typename Parent_t::ValuesCache &bspline_cache,
-    ValueTable< Values<dim, range, rank> > &D0_phi_hat) const
+    const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
+    ValueTable<Value> &D0_phi_hat) const
 {
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
@@ -289,7 +289,7 @@ template <int dim, int range, int rank  >
 void
 NURBSElementAccessor< dim, range, rank >::
 evaluate_nurbs_gradients(
-    const typename Parent_t::ValuesCache &bspline_cache,
+    const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const
 {
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
@@ -530,7 +530,7 @@ template <int dim, int range, int rank  >
 void
 NURBSElementAccessor< dim, range, rank >::
 evaluate_nurbs_hessians(
-    const typename Parent_t::ValuesCache &bspline_cache,
+    const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const
 {
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
