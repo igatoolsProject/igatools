@@ -73,6 +73,12 @@ template < typename Accessor > class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
+public SpaceElementAccessor<
+    PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
+    PhysSpace::RefSpace::dim,
+    PhysSpace::PushForwardType::codim,
+    PhysSpace::RefSpace::range,
+    PhysSpace::RefSpace::rank>,
 private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {

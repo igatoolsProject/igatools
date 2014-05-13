@@ -26,6 +26,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -65,6 +66,10 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+
+    /** Container indexed by the components of the space */
+    template< class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
 
 public:
     /** Type for the reference space on the face. */
@@ -124,6 +129,13 @@ public:
     void print_info(LogStream &out) const;
 
     void print_memory_info(LogStream &out) const;
+
+
+    /**
+     * Returns the degree of the BSpline space for each component and for each coordinate direction.
+     * The first index of the returned object is the component id, the second index is the direction id.
+     */
+    const ComponentTable<TensorIndex<dim>> &get_degree() const;
 
 private:
     std::shared_ptr<RefSpace> ref_space_;

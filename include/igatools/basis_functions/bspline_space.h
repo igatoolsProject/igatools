@@ -271,7 +271,6 @@ public:
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
     const ComponentTable<TensorIndex<dim>> &get_degree() const;
