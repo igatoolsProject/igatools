@@ -124,7 +124,7 @@ public:
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided.
+     * direction is provided as CartesianProductArray object.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -133,6 +133,19 @@ public:
      */
     explicit
     CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates);
+
+
+    /**
+     * Construct a cartesian grid where the knot coordinate in each
+     * direction is provided as std::array of std::vector<Real>.
+     *
+     * The knot coordinate in each direction must be sorted and without
+     * repetition.
+     * @note In Debug mode, a check for this precondition (up to machine precision)
+     * is perform and if not satistified an exception is raised.
+     */
+    explicit
+    CartesianGrid(const std::array<std::vector<Real>,dim> &knot_coordinates);
 
 
     /**
@@ -175,7 +188,7 @@ public:
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided.
+     * direction is provided as CartesianProductArray object.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -184,6 +197,18 @@ public:
      */
     static std::shared_ptr< CartesianGrid<dim_> >
     create(const CartesianProductArray<Real,dim> &knot_coordinates) ;
+
+    /**
+     * Construct a cartesian grid where the knot coordinate in each
+     * direction is provided as std::array of std::vector<Real>.
+     *
+     * The knot coordinate in each direction must be sorted and without
+     * repetition.
+     * @note In Debug mode, a check for this precondition (up to machine precision)
+     * is perform and if not satistified an exception is raised.
+     */
+    static std::shared_ptr< CartesianGrid<dim_> >
+    create(const std::array<std::vector<Real>,dim> &knot_coordinates) ;
 
 
     static std::shared_ptr< CartesianGrid<dim_> >
@@ -422,6 +447,57 @@ private:
 
     friend class CartesianGridElementAccessor< dim >;
 };
+
+
+
+/**
+ * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
+ * this function builds and returns the one-to-one mapping between the elements on the
+ * fine and the elements on the coarse.
+ * @code{.cpp}
+   fine_to_coarse_elements = build_map_elements_between_cartesian_grids(grid_fine,grid_coarse);
+   // fine_to_coarse_elements[i] is the flat id of the element on the coarse grid that fully contains the
+   // element on the fine grid with flat_id equal to i.
+   @endcode
+ *
+ * @warning The grid must be defined on the same domain and each element on the fine grid must be
+ * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
+ * (in Debug mode).
+ *
+ * @relates CartesianGrid
+ */
+template <int dim>
+std::vector<Index>
+build_map_elements_between_cartesian_grids(
+    const CartesianGrid<dim> &grid_fine,
+    const CartesianGrid<dim> &grid_coarse);
+
+
+/**
+ * Given two grids <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
+ * this function returns the grid that contains both. Moreover, this function gives back
+ * the one-to-one mapping between the flat id of the elements in the CartesianGrid union with the
+ * elements in the two starting grids.
+ *
+ * @param[in] grid_1 First grid.
+ * @param[in] grid_2 Second grid.
+ * @param[out] map_elem_grid_union_to_elem_grid_1 One-to-one mapping between the elements in the
+ * CartesianGrid union and the elements in the first grid.
+ * @param[out] map_elem_grid_union_to_elem_grid_2 One-to-one mapping between the elements in the
+ * CartesianGrid union and the elements in the second grid.
+ * @return The CartesianGrid that contains the all the knots from <tt>grid_1</tt> and <tt>grid_2</tt>.
+ *
+ * @warning In Debug mode an assertion will be raised if
+ * the two grids <tt>grid_1</tt> and <tt>grid_2</tt> are not defined on the same domain.
+ *
+ * @relates CartesianGrid
+ */
+template <int dim>
+CartesianGrid<dim> build_cartesian_grid_union(
+    const CartesianGrid<dim> &grid_1,
+    const CartesianGrid<dim> &grid_2,
+    std::vector<Index> &map_elem_grid_union_to_elem_grid_1,
+    std::vector<Index> &map_elem_grid_union_to_elem_grid_2);
 
 
 IGA_NAMESPACE_CLOSE
