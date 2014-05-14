@@ -250,9 +250,6 @@ public:
      * CartesianGrid, otherwise an exception will be raised (in Debug mode).
      */
     bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
-    ///@}
-
-protected:
 
     void operator++();
 

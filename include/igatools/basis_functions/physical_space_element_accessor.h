@@ -344,6 +344,9 @@ protected:
 
     void operator++();
 
+    bool operator==(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
+    bool operator!=(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
+
 
     /**
      * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
