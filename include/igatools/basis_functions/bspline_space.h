@@ -271,7 +271,6 @@ public:
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
     const ComponentTable<TensorIndex<dim>> &get_degree() const;
@@ -295,6 +294,12 @@ public:
      * independent of the distribution policy in use.
      */
     const ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const;
+
+
+    /**
+     * @todo Missing documentation
+     */
+    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
     ///@}
 
     /** @name Functions involving the element iterator */

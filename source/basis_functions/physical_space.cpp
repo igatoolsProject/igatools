@@ -148,6 +148,22 @@ get_reference_space() const -> shared_ptr<const RefSpace>
     return shared_ptr<const RefSpace>(ref_space_);
 }
 
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_degree() const -> const ComponentTable<TensorIndex<dim>> &
+{
+    return ref_space_->get_degree();
+}
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
+{
+    return ref_space_->get_element_global_dofs();
+}
 
 
 template <class RefSpace_, class PushForward_>
