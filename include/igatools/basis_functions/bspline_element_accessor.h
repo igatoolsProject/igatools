@@ -393,7 +393,7 @@ private:
 
 
 
-protected:
+public:
     const ComponentTable<
     DynamicMultiArray<
     std::shared_ptr<

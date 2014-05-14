@@ -67,6 +67,8 @@ class PoissonProblem
 {
 public:
     PoissonProblem(const TensorSize<dim> &n_knots, const int deg);
+
+
     void run();
 
 
@@ -77,6 +79,11 @@ public:
     Real get_elapsed_time_assemble_stiffness_matrix() const;
     Real get_elapsed_time_solve_linear_system() const;
     Real get_elapsed_time_fill_complete() const;
+    Real get_elapsed_time_total() const;
+
+    int get_num_dofs() const;
+    int get_num_iters() const;
+    Real get_achieved_tol() const;
 
 private:
     void assemble();
@@ -99,6 +106,8 @@ protected:
 //    using Value     = typename Function<dim>::Value;
     // [type aliases]
 
+    TimePoint start_poisson_;
+    TimePoint   end_poisson_;
 
     const int deg_;
 
@@ -110,10 +119,10 @@ protected:
 
     const boundary_id dir_id = 0;
 
-#if defined(USE_TRILINOS)
-    const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::trilinos;
-#elif defined(USE_PETSC)
+#if defined(USE_PETSC)
     const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::petsc;
+#elif defined(USE_TRILINOS)
+    const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::trilinos;
 #endif
     using MatrixType = Matrix<linear_algebra_package>;
     using VectorType = Vector<linear_algebra_package>;
@@ -123,6 +132,9 @@ protected:
     std::shared_ptr<MatrixType> matrix;
     std::shared_ptr<VectorType> rhs;
     std::shared_ptr<VectorType> solution;
+
+
+    Duration elapsed_time_total_;
 
     Duration elapsed_time_eval_basis_;
 
@@ -138,8 +150,31 @@ protected:
 
     Duration elapsed_time_solve_linear_system_;
 
+    int num_dofs_;
+
+    int num_iters_;
+
+    Real achieved_tol_;
+
     std::string filename_;
 };
+
+
+template<int dim,class DerivedClass>
+Real
+PoissonProblem<dim,DerivedClass>::
+get_achieved_tol() const
+{
+    return achieved_tol_;
+}
+
+template<int dim,class DerivedClass>
+Real
+PoissonProblem<dim,DerivedClass>::
+get_elapsed_time_total() const
+{
+    return elapsed_time_total_.count();
+}
 
 template<int dim,class DerivedClass>
 Real
@@ -198,14 +233,34 @@ get_elapsed_time_fill_complete() const
 }
 
 template<int dim,class DerivedClass>
+int
+PoissonProblem<dim,DerivedClass>::
+get_num_dofs() const
+{
+    return num_dofs_;
+}
+
+template<int dim,class DerivedClass>
+int
+PoissonProblem<dim,DerivedClass>::
+get_num_iters() const
+{
+    return num_iters_;
+}
+
+template<int dim,class DerivedClass>
 PoissonProblem<dim,DerivedClass>::
 PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
     :
+    start_poisson_(Clock::now()),
     deg_(deg),
     elem_quad(QGauss<dim>(deg+1)),
     face_quad(QGauss<dim-1>(deg+1)),
     filename_("poisson_problem-" + to_string(dim) + "d")
 {
+    LogStream out;
+    out << "PoissonProblem constructor -- begin" << endl;
+
     BBox<dim> box;
     for (int i=0 ; i < dim ; ++i)
     {
@@ -220,12 +275,13 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
 //    map       = IdentityMapping<dim,0>::create(grid);
     space     = Space::create(ref_space, PushFw::create(map));
 
-    const auto n_basis = space->get_num_basis();
+    num_dofs_ = space->get_num_basis();
     matrix   = MatrixType::create(get_sparsity_pattern(const_pointer_cast<const Space>(space)));
-    rhs      = VectorType::create(n_basis);
-    solution = VectorType::create(n_basis);
-}
+    rhs      = VectorType::create(num_dofs_);
+    solution = VectorType::create(num_dofs_);
+    out << "PoissonProblem constructor -- end" << endl;
 
+}
 
 
 
@@ -237,6 +293,9 @@ assemble()
 {
 
     LogStream out;
+
+    Duration elapsed_time_assemble;
+    TimePoint start_assemble = Clock::now();
 
 
     const Size n_basis = this->space->get_num_basis_per_element();
@@ -285,8 +344,10 @@ assemble()
     const auto &elliptic_operators = static_cast<const DerivedClass &>(*this).get_elliptic_operators();
 
 //    EllipticOperatorsStdIntegration<SpaceTest,SpaceTrial> elliptic_operators_std;
+
     for (; elem != elem_end; ++elem)
     {
+
         loc_rhs.clear();
 
         //----------------------------------------------------
@@ -377,6 +438,7 @@ assemble()
 
 
         this->rhs->add_block(loc_dofs, loc_rhs);
+
     }
 
     const TimePoint start_fill_complete = Clock::now();
@@ -385,18 +447,30 @@ assemble()
     this->elapsed_time_fill_complete_ = end_fill_complete - start_fill_complete;
 
 
+    TimePoint start_boundary_conditions = Clock::now();
     ConstantFunction<dim> g({0.0});
     std::map<Index, Real> values;
     const int dir_id = 0 ;
     project_boundary_values<Space,linear_algebra_package>(g, this->space, this->face_quad, dir_id, values);
     apply_boundary_values(values, *this->matrix, *this->rhs, *this->solution);
+    TimePoint end_boundary_conditions = Clock::now();
+    Duration elapsed_time_boundary_conditions = end_boundary_conditions - start_boundary_conditions;
+
 //*/
+
+    TimePoint end_assemble = Clock::now();
+
+    elapsed_time_assemble += end_assemble - start_assemble;
 
     out << "Dim=" << dim << "         space_deg=" << this->deg_ << endl;
     out << "Elapsed seconds eval mass matrix = "
         << this->elapsed_time_eval_mass_matrix_.count() << endl;
     out << "Elapsed seconds eval stiffness matrix = "
         << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
+    out << "Elapsed seconds boundary conditions = "
+        << elapsed_time_boundary_conditions.count() << endl;
+    out << "Elapsed seconds assemble() function = "
+        << elapsed_time_assemble.count() << endl;
     out << endl;
 
 
@@ -418,9 +492,14 @@ solve()
 
     solver.solve(*matrix, *rhs, *solution);
 
+    num_iters_ = solver.get_num_iterations();
+    achieved_tol_ = solver.get_achieved_tolerance();
+
     const TimePoint end_solve_linear_system = Clock::now();
     this->elapsed_time_solve_linear_system_ =
         end_solve_linear_system - start_solve_linear_system;
+
+
 }
 
 
@@ -447,7 +526,12 @@ run()
 {
     static_cast<DerivedClass &>(*this).assemble();
     solve();
-    output();
+    end_poisson_ = Clock::now();
+
+//    output();
+
+
+    elapsed_time_total_ = end_poisson_ - start_poisson_;
 }
 
 
@@ -563,7 +647,7 @@ do_test()
     using std::cout;
     using std::endl;
 
-    const int n_knots = 11;
+    const int n_knots = 31;
 
     TableHandler elapsed_time_table;
 
@@ -582,6 +666,11 @@ do_test()
     string time_fill_complete = "Time fill_complete";
 
     string time_solve_lin_system = "Time solve lin.system";
+
+    string time_total_sum_fac = "Time total sum_fac";
+    string time_total_orig = "Time total orig";
+
+    string achieved_tol = "Tol";
 
     int degree_min = 1;
     int degree_max = 1;
@@ -620,6 +709,13 @@ do_test()
         elapsed_time_table.add_value(time_fill_complete,poisson_sf.get_elapsed_time_fill_complete());
         elapsed_time_table.add_value(time_solve_lin_system,poisson_sf.get_elapsed_time_solve_linear_system());
 
+        elapsed_time_table.add_value(time_total_sum_fac,poisson_sf.get_elapsed_time_total());
+        elapsed_time_table.add_value(time_total_orig,   poisson_std.get_elapsed_time_total());
+
+        elapsed_time_table.add_value("Num dofs",poisson_sf.get_num_dofs());
+        elapsed_time_table.add_value("Num iters",poisson_sf.get_num_iters());
+        elapsed_time_table.add_value(achieved_tol,poisson_sf.get_achieved_tol());
+
     }
     elapsed_time_table.set_precision(time_eval_basis,10);
     elapsed_time_table.set_scientific(time_eval_basis,true);
@@ -648,7 +744,16 @@ do_test()
     elapsed_time_table.set_precision(time_solve_lin_system,10);
     elapsed_time_table.set_scientific(time_solve_lin_system,true);
 
-    ofstream elapsed_time_file("sum_factorization_time_"+to_string(dim)+"D.txt");
+    elapsed_time_table.set_precision(time_total_sum_fac,10);
+    elapsed_time_table.set_scientific(time_total_sum_fac,true);
+
+    elapsed_time_table.set_precision(time_total_orig,10);
+    elapsed_time_table.set_scientific(time_total_orig,true);
+
+    elapsed_time_table.set_precision(achieved_tol,10);
+    elapsed_time_table.set_scientific(achieved_tol,true);
+
+    ofstream elapsed_time_file("poisson_time_"+to_string(dim)+"D.txt");
     elapsed_time_table.write_text(elapsed_time_file);
 
 }
@@ -657,19 +762,17 @@ do_test()
 int main(int argc,char **args)
 
 {
-#if defined(USE_TRILINOS)
-#elif defined(USE_PETSC)
+#if defined(USE_PETSC)
     PetscInitialize(&argc,&args,(char *)0,"Sum factorization example");
 #endif
 
-    do_test<1>();
+//    do_test<1>();
 
-    do_test<2>();
+//    do_test<2>();
 
     do_test<3>();
 //*/
-#if defined(USE_TRILINOS)
-#elif defined(USE_PETSC)
+#if defined(USE_PETSC)
     auto ierr = PetscFinalize();
 #endif
 
