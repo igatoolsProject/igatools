@@ -67,7 +67,7 @@ template<int dim,class DerivedClass>
 class PoissonProblem
 {
 public:
-    PoissonProblem(const TensorSize<dim> &n_knots, const int deg);
+    PoissonProblem(const int n_knots, const int deg);
 
 
     void run();
@@ -85,6 +85,8 @@ public:
     int get_num_dofs() const;
     int get_num_iters() const;
     Real get_achieved_tol() const;
+
+    static std::string get_filename();
 
 private:
     void assemble();
@@ -156,9 +158,8 @@ protected:
     int num_iters_;
 
     Real achieved_tol_;
-
-    std::string filename_;
 };
+
 
 
 template<int dim,class DerivedClass>
@@ -250,14 +251,22 @@ get_num_iters() const
 }
 
 template<int dim,class DerivedClass>
+std::string
 PoissonProblem<dim,DerivedClass>::
-PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
+get_filename()
+{
+    return "poisson_problem-" + to_string(dim) + "D";
+}
+
+
+template<int dim,class DerivedClass>
+PoissonProblem<dim,DerivedClass>::
+PoissonProblem(const int n_knots, const int deg)
     :
     start_poisson_(Clock::now()),
     deg_(deg),
     elem_quad(QGauss<dim>(deg+1)),
-    face_quad(QGauss<dim-1>(deg+1)),
-    filename_("poisson_problem-" + to_string(dim) + "d")
+    face_quad(QGauss<dim-1>(deg+1))
 {
     LogStream out;
     out << "PoissonProblem constructor -- begin" << endl;
@@ -270,7 +279,7 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
     }
     box[0][1] = 0.5;
 
-    auto grid = CartesianGrid<dim>::create(box,n_knots);
+    auto grid = CartesianGrid<dim>::create(box,TensorSize<dim>(n_knots));
     auto ref_space = RefSpace::create(grid, deg);
     map       = BallMapping<dim>::create(grid);
 //    map       = IdentityMapping<dim,0>::create(grid);
@@ -496,7 +505,11 @@ solve()
 {
     const Real tol = 1.0e-10;
     const Size max_iters = 10000000;
-    LinearSolverType solver(LinearSolverType::SolverType::CG,tol,max_iters);
+    LinearSolverType solver(
+        LinearSolverType::SolverType::CG,
+        LinearSolverType::PreconditionerType::ILU,
+        tol,
+        max_iters);
 //    LinearSolverType solver(LinearSolverType::SolverType::LU,tol,max_iters);
 
     const TimePoint start_solve_linear_system = Clock::now();
@@ -525,7 +538,7 @@ output()
 
     writer.add_field(space, *solution, "solution");
 //    string filename = "poisson_problem-" + to_string(dim) + "d" ;
-    writer.save(filename_,"appended");
+    writer.save(PoissonProblem<dim,DerivedClass>::get_filename(),"appended");
 }
 
 
@@ -539,7 +552,7 @@ run()
     solve();
     end_poisson_ = Clock::now();
 
-    output();
+//    output();
 
 
     elapsed_time_total_ = end_poisson_ - start_poisson_;
@@ -553,6 +566,7 @@ class PoissonProblemStandardIntegration :
 {
 public:
     using base_t = PoissonProblem< dim, PoissonProblemStandardIntegration<dim> >;
+    using base_t::base_t;
     using typename base_t::Space;
     using typename base_t::SpaceTest;
     using typename base_t::SpaceTrial;
@@ -563,21 +577,28 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
+    static std::string get_filename();
+
 private:
 
     EllipticOperatorsType elliptic_operators_std_;
 
 };
-
+/*
 template<int dim>
 PoissonProblemStandardIntegration<dim>::
 PoissonProblemStandardIntegration(const TensorSize<dim> &n_knots,const int space_deg)
     :
     base_t(n_knots,space_deg)
+{}
+//*/
+template<int dim>
+std::string
+PoissonProblemStandardIntegration<dim>::
+get_filename()
 {
-    this->filename_ += "-std";
+    return base_t::get_filename() + "-std";
 }
-
 
 
 template<int dim>
@@ -596,6 +617,7 @@ class PoissonProblemSumFactorization :
 {
 public:
     using base_t = PoissonProblem< dim, PoissonProblemSumFactorization<dim> >;
+    using base_t::base_t;
     using typename base_t::Space;
     using typename base_t::SpaceTest;
     using typename base_t::SpaceTrial;
@@ -626,18 +648,26 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
+    static std::string get_filename();
+
 private:
     EllipticOperatorsSFIntegration<SpaceTest,SpaceTrial>
     elliptic_operators_sf_;
 };
-
+/*
 template<int dim>
 PoissonProblemSumFactorization<dim>::
 PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,const int space_deg)
     :
     base_t(n_knots,space_deg)
+{}
+//*/
+template<int dim>
+std::string
+PoissonProblemSumFactorization<dim>::
+get_filename()
 {
-    this->filename_ += "-sf";
+    return base_t::get_filename() + "-sf";
 }
 
 
@@ -651,121 +681,98 @@ get_elliptic_operators() const -> const EllipticOperatorsType &
 }
 
 
-template <int dim>
+template <class PoissonProblemSolver >
 void
-do_test()
+do_test(const int degree_min, const int degree_max,const int n_elems_per_direction)
 {
     using std::cout;
     using std::endl;
 
-    const int n_knots = 31;
+    const int n_knots = n_elems_per_direction+1;
 
-    TableHandler elapsed_time_table;
+    TableHandler time_table;
 
-    string time_eval_basis = "Eval basis";
+    string time_eval_basis = "Basis";
 
-    string time_eval_rhs = "Eval rhs";
+    string time_eval_rhs = "RHS";
 
-    string time_mass_sum_fac = "Eval mass sum_fac";
-    string time_mass_orig = "Eval mass orig";
+    string time_mass = "Mass";
 
-    string time_stiff_sum_fac = "Eval stiffness sum_fac";
-    string time_stiff_orig = "Eval stiffness orig";
+    string time_stiff = "Stiffness";
 
-    string time_assemble = "Time assemble";
+    string time_assemble = "Loc-to-glob assemble";
 
-    string time_fill_complete = "Time fill_complete";
+    string time_fill_complete = "Fill-complete";
 
-    string time_solve_lin_system = "Time solve lin.system";
+    string time_solve_lin_system = "Solve lin.system";
 
-    string time_total_sum_fac = "Time total sum_fac";
-    string time_total_orig = "Time total orig";
+    string time_total = "Total";
 
     string achieved_tol = "Tol";
 
-    int degree_min = 1;
-    int degree_max = 1;
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
-        cout << "-----------------------------------" << endl;
-        cout << "Sum-Factorization -- begin" << endl;
-        PoissonProblemSumFactorization<dim> poisson_sf(TensorSize<dim>(n_knots),degree);
-        poisson_sf.run();
-        cout << "Sum-Factorization -- end" << endl;
-        cout << "-----------------------------------" << endl;
+        PoissonProblemSolver poisson(n_knots,degree);
+        poisson.run();
 
-        cout << endl;
-
-        cout << "-----------------------------------" << endl;
-        cout << "Standard Quadrature -- begin" << endl;
-        PoissonProblemStandardIntegration<dim> poisson_std(TensorSize<dim>(n_knots),degree);
-        poisson_std.run();
-        cout << "Standard Quadrature -- end" << endl;
-        cout << "-----------------------------------" << endl;
-
-        cout << endl;
 
         //*/
-        elapsed_time_table.add_value("Degree",degree);
-        elapsed_time_table.add_value(time_eval_basis,poisson_sf.get_elapsed_time_eval_basis());
+        time_table.add_value("Degree",degree);
+        time_table.add_value(time_eval_basis,poisson.get_elapsed_time_eval_basis());
 
-        elapsed_time_table.add_value(time_eval_rhs,poisson_sf.get_elapsed_time_eval_rhs());
+        time_table.add_value(time_eval_rhs,poisson.get_elapsed_time_eval_rhs());
 
-        elapsed_time_table.add_value(time_mass_sum_fac,poisson_sf.get_elapsed_time_eval_mass_matrix());
-        elapsed_time_table.add_value(time_mass_orig,poisson_std.get_elapsed_time_eval_mass_matrix());
-        elapsed_time_table.add_value(time_stiff_sum_fac,poisson_sf.get_elapsed_time_eval_stiffness_matrix());
-        elapsed_time_table.add_value(time_stiff_orig,poisson_std.get_elapsed_time_eval_stiffness_matrix());
+        time_table.add_value(time_mass,poisson.get_elapsed_time_eval_mass_matrix());
+        time_table.add_value(time_stiff,poisson.get_elapsed_time_eval_stiffness_matrix());
 
-        elapsed_time_table.add_value(time_assemble,poisson_sf.get_elapsed_time_assemble_stiffness_matrix());
-        elapsed_time_table.add_value(time_fill_complete,poisson_sf.get_elapsed_time_fill_complete());
-        elapsed_time_table.add_value(time_solve_lin_system,poisson_sf.get_elapsed_time_solve_linear_system());
+        time_table.add_value(time_assemble,poisson.get_elapsed_time_assemble_stiffness_matrix());
+        time_table.add_value(time_fill_complete,poisson.get_elapsed_time_fill_complete());
+        time_table.add_value(time_solve_lin_system,poisson.get_elapsed_time_solve_linear_system());
 
-        elapsed_time_table.add_value(time_total_sum_fac,poisson_sf.get_elapsed_time_total());
-        elapsed_time_table.add_value(time_total_orig,   poisson_std.get_elapsed_time_total());
+        time_table.add_value(time_total,poisson.get_elapsed_time_total());
 
-        elapsed_time_table.add_value("Num dofs",poisson_sf.get_num_dofs());
-        elapsed_time_table.add_value("Num iters",poisson_sf.get_num_iters());
-        elapsed_time_table.add_value(achieved_tol,poisson_sf.get_achieved_tol());
+        time_table.add_value("Num dofs",poisson.get_num_dofs());
+        time_table.add_value("Num iters",poisson.get_num_iters());
+        time_table.add_value(achieved_tol,poisson.get_achieved_tol());
 
     }
-    elapsed_time_table.set_precision(time_eval_basis,10);
-    elapsed_time_table.set_scientific(time_eval_basis,true);
+    time_table.set_precision(time_eval_basis,10);
+    time_table.set_scientific(time_eval_basis,true);
 
-    elapsed_time_table.set_precision(time_eval_rhs,10);
-    elapsed_time_table.set_scientific(time_eval_rhs,true);
+    time_table.set_precision(time_eval_rhs,10);
+    time_table.set_scientific(time_eval_rhs,true);
 
-    elapsed_time_table.set_precision(time_mass_sum_fac,10);
-    elapsed_time_table.set_scientific(time_mass_sum_fac,true);
+    time_table.set_precision(time_mass,10);
+    time_table.set_scientific(time_mass,true);
 
-    elapsed_time_table.set_precision(time_mass_orig,10);
-    elapsed_time_table.set_scientific(time_mass_orig,true);
+    time_table.set_precision(time_stiff,10);
+    time_table.set_scientific(time_stiff,true);
 
-    elapsed_time_table.set_precision(time_stiff_sum_fac,10);
-    elapsed_time_table.set_scientific(time_stiff_sum_fac,true);
+    time_table.set_precision(time_assemble,10);
+    time_table.set_scientific(time_assemble,true);
 
-    elapsed_time_table.set_precision(time_stiff_orig,10);
-    elapsed_time_table.set_scientific(time_stiff_orig,true);
+    time_table.set_precision(time_fill_complete,10);
+    time_table.set_scientific(time_fill_complete,true);
 
-    elapsed_time_table.set_precision(time_assemble,10);
-    elapsed_time_table.set_scientific(time_assemble,true);
+    time_table.set_precision(time_solve_lin_system,10);
+    time_table.set_scientific(time_solve_lin_system,true);
 
-    elapsed_time_table.set_precision(time_fill_complete,10);
-    elapsed_time_table.set_scientific(time_fill_complete,true);
+    time_table.set_precision(time_total,10);
+    time_table.set_scientific(time_total,true);
 
-    elapsed_time_table.set_precision(time_solve_lin_system,10);
-    elapsed_time_table.set_scientific(time_solve_lin_system,true);
+    time_table.set_precision(achieved_tol,10);
+    time_table.set_scientific(achieved_tol,true);
 
-    elapsed_time_table.set_precision(time_total_sum_fac,10);
-    elapsed_time_table.set_scientific(time_total_sum_fac,true);
 
-    elapsed_time_table.set_precision(time_total_orig,10);
-    elapsed_time_table.set_scientific(time_total_orig,true);
 
-    elapsed_time_table.set_precision(achieved_tol,10);
-    elapsed_time_table.set_scientific(achieved_tol,true);
 
-    ofstream elapsed_time_file("poisson_time_"+to_string(dim)+"D.txt");
-    elapsed_time_table.write_text(elapsed_time_file);
+    ofstream elapsed_time_file(
+        "time_" + PoissonProblemSolver::get_filename() +
+        "_" + std::to_string(degree_min) +
+        "_" + std::to_string(degree_max) +
+        "_" + std::to_string(n_elems_per_direction) +
+        ".txt");
+    time_table.write_text(elapsed_time_file);
 
 }
 
@@ -777,12 +784,39 @@ int main(int argc,char **args)
     PetscInitialize(&argc,&args,(char *)0,"Sum factorization example");
 #endif
 
-//    do_test<1>();
 
-//    do_test<2>();
+    int degree_min = 5;
+    int degree_max = 8;
+    int n_elems_per_direction = 50;
 
-    do_test<3>();
-//*/
+
+    cout << "-----------------------------------" << endl;
+    cout << "Sum-Factorization -- begin" << endl;
+    do_test< PoissonProblemSumFactorization<1> >(degree_min,degree_max,n_elems_per_direction);
+
+    do_test< PoissonProblemSumFactorization<2> >(degree_min,degree_max,n_elems_per_direction);
+
+    do_test< PoissonProblemSumFactorization<3> >(degree_min,degree_max,n_elems_per_direction);
+    cout << "Sum-Factorization -- end" << endl;
+    cout << "-----------------------------------" << endl;
+
+    cout << endl;
+
+
+
+    cout << "-----------------------------------" << endl;
+    cout << "Standard Quadrature -- begin" << endl;
+    do_test< PoissonProblemStandardIntegration<1> >(degree_min,degree_max,n_elems_per_direction);
+
+    do_test< PoissonProblemStandardIntegration<2> >(degree_min,degree_max,n_elems_per_direction);
+
+    do_test< PoissonProblemStandardIntegration<3> >(degree_min,degree_max,n_elems_per_direction);
+    cout << "Standard Quadrature -- end" << endl;
+    cout << "-----------------------------------" << endl;
+
+    cout << endl;
+
+    //*/
 #if defined(USE_PETSC)
     auto ierr = PetscFinalize();
 #endif
