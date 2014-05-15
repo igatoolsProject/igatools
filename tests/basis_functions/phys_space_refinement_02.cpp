@@ -35,16 +35,16 @@
 #include <igatools/geometry/ig_mapping.h>
 
 template <int dim>
-using RefSpace = NURBSSpace<dim,dim>;
+using ReferenceSpace = NURBSSpace<dim,dim>;
 
 template <int dim>
 using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
 
 template <int dim>
-using PhysSpace = PhysicalSpace< RefSpace<dim>, PushFwd<dim> > ;
+using PhysSpace = PhysicalSpace< ReferenceSpace<dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, RefSpace<dim>::range, RefSpace<dim>::rank >;
+using ComponentTable = StaticMultiArray<T, ReferenceSpace<dim>::range, ReferenceSpace<dim>::rank >;
 
 template <int dim>
 void test_evaluate()
@@ -55,7 +55,7 @@ void test_evaluate()
     grid->refine();
 
 
-    auto ref_space = RefSpace<dim>::create(grid, p);
+    auto ref_space = ReferenceSpace<dim>::create(grid, p);
 
     TensorSize<dim> n_weights_comp;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
@@ -167,7 +167,7 @@ void test_evaluate()
 //    ref_space->print_info(out);
 
 
-    auto map = IgMapping<RefSpace<dim>>::create(ref_space,control_pts);
+    auto map = IgMapping<ReferenceSpace<dim>>::create(ref_space,control_pts);
 
 //    ref_space->print_info(out);
 
