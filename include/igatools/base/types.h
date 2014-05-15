@@ -472,6 +472,7 @@ static const int invalid = -2;
 
 
 
+
 /**
  * Return the type T if C is true, the type F if C is false
  */
@@ -481,6 +482,37 @@ using Conditional = typename std::conditional<C,T,F>::type;
 
 template<bool B, typename T = void>
 using EnableIf = typename std::enable_if<B,T>::type;
+
+
+
+/**
+ * Type for specifying the type of reference space (BSpline or NURBS).
+ */
+enum class RefSpaceType : int
+{
+    /** Use the the BSpline basis functions.*/
+    bspline = 0,
+
+    /** Use the the NURBS basis functions.*/
+    nurbs   = 1
+};
+
+
+
+template<int dim, int range, int rank>
+class BSplineSpace;
+
+template<int dim, int range, int rank>
+class NURBSSpace;
+
+/** Alias for the reference space type. */
+template<int dim, int range, int rank,RefSpaceType space_type>
+using RefSpace = Conditional<(space_type == RefSpaceType::bspline),
+      BSplineSpace<dim,range,rank>,
+      NURBSSpace<dim,range,rank> >;
+
+
+
 
 
 IGA_NAMESPACE_CLOSE
