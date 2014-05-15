@@ -33,11 +33,17 @@
 
 #include <boost/numeric/ublas/io.hpp>
 
+
+#include <chrono>
+
 using std::shared_ptr;
 using std::vector;
 using std::array;
 using std::set;
 using std::map;
+
+using namespace std::chrono;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -349,9 +355,12 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
     auto elem = space->begin() ;
     const auto elem_end = space->end() ;
     elem->init_values(flag, quad);
+
     const int n_basis = elem->get_num_basis();
+
     DenseVector local_rhs(n_basis);
     DenseMatrix local_matrix(n_basis,n_basis);
+
 
     for (; elem != elem_end ; ++elem)
     {

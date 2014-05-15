@@ -43,6 +43,7 @@
 #include <numeric>
 
 #include <chrono>
+
 // [old includes]
 
 // [unqualified names]
@@ -452,7 +453,15 @@ assemble()
     std::map<Index, Real> values;
     const int dir_id = 0 ;
     project_boundary_values<Space,linear_algebra_package>(g, this->space, this->face_quad, dir_id, values);
+
+
+    TimePoint start_apply_bc = Clock::now();
     apply_boundary_values(values, *this->matrix, *this->rhs, *this->solution);
+    TimePoint end_apply_bc = Clock::now();
+    Duration elapsed_time_apply_bc = end_apply_bc - start_apply_bc;
+
+
+
     TimePoint end_boundary_conditions = Clock::now();
     Duration elapsed_time_boundary_conditions = end_boundary_conditions - start_boundary_conditions;
 
@@ -467,6 +476,8 @@ assemble()
         << this->elapsed_time_eval_mass_matrix_.count() << endl;
     out << "Elapsed seconds eval stiffness matrix = "
         << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
+    out << "Elapsed seconds apply bc = "
+        << elapsed_time_apply_bc.count() << endl;
     out << "Elapsed seconds boundary conditions = "
         << elapsed_time_boundary_conditions.count() << endl;
     out << "Elapsed seconds assemble() function = "
