@@ -539,7 +539,7 @@ run()
     solve();
     end_poisson_ = Clock::now();
 
-//    output();
+    output();
 
 
     elapsed_time_total_ = end_poisson_ - start_poisson_;

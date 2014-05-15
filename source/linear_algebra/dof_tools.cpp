@@ -282,48 +282,53 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<LinearAlgebraPackage::petsc> &solution)
 {
     PetscErrorCode ierr;
-
-    // todo: try to make a unified version for PETSc and trilinos
-    auto dof = boundary_values.begin();
-    const auto dof_end = boundary_values.end();
-    for (; dof != dof_end; ++dof)
-    {
-        Index row_id = dof->first;
-        const Real bc_value  = dof->second;
-        const Real mat_value = matrix(row_id,row_id);
-
-        // set the matrix in write mode
-        matrix.resume_fill();
-
-        // set the diagonal element corresponding to the entry
-        // (row_id,row_id) to mat_value
-        ierr = VecSetValue(solution.get_petsc_vector(), row_id, bc_value, INSERT_VALUES);
-
-        ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), 1, &row_id, mat_value,
-                                  solution.get_petsc_vector(),rhs.get_petsc_vector());
-
-        // I am not sure whether this is necessary in PETSc
-        matrix.fill_complete();
-    }
-
     /*
-    int num_rows = boundary_values.size();
+        // todo: try to make a unified version for PETSc and trilinos
+        auto dof = boundary_values.begin();
+        const auto dof_end = boundary_values.end();
+        for (; dof != dof_end; ++dof)
+        {
+            Index row_id = dof->first;
+            const Real bc_value  = dof->second;
+            const Real mat_value = matrix(row_id,row_id);
+
+            // set the matrix in write mode
+            matrix.resume_fill();
+
+            // set the diagonal element corresponding to the entry
+            // (row_id,row_id) to mat_value
+            ierr = VecSetValue(solution.get_petsc_vector(), row_id, bc_value, INSERT_VALUES);
+
+            ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), 1, &row_id, mat_value,
+                                      solution.get_petsc_vector(),rhs.get_petsc_vector());
+
+            // I am not sure whether this is necessary in PETSc
+            matrix.fill_complete();
+        }
+    //*/
 
     vector<Index> rows;
-    vector<Real> values;
-    Real* my_pointer;
+    vector<PetscReal> values;
 
-    for (const auto &iter:boundary_values){
-        rows.push_back(iter.first);
-        values.push_back(iter.second);
+    for (const auto &bv : boundary_values)
+    {
+        rows.push_back(bv.first);
+        values.push_back(bv.second);
     }
 
-    my_pointer = values.data();
+    const Real *values_ptr = values.data();
 
-    ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(),
-            num_rows,rows.data(),*my_pointer,
-            solution.get_petsc_vector(),rhs.get_petsc_vector()); //CHKERRQ(ierr);
-     */
+    matrix.resume_fill();
+    ierr = MatZeroRowsColumns(
+               matrix.get_petsc_matrix(),
+               rows.size(),
+               rows.data(),
+               *values_ptr,
+               solution.get_petsc_vector(),
+               rhs.get_petsc_vector()); //CHKERRQ(ierr);
+    matrix.fill_complete();
+
+//*/
 }
 #endif //#ifdef USE_PETSC
 
