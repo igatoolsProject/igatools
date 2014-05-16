@@ -1,0 +1,34 @@
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ 0.500000 ]  
+	Function[1] : [ 0.500000 ]  
+ValueTable (num_functions=2,num_points=1) :
+	Function[0] : [ [ -1.00000 ]  ]  
+	Function[1] : [ [ 1.00000 ]  ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ 0.250000 ]  
+	Function[1] : [ 0.250000 ]  
+	Function[2] : [ 0.250000 ]  
+	Function[3] : [ 0.250000 ]  
+ValueTable (num_functions=4,num_points=1) :
+	Function[0] : [ [ 0.0406343 ]  [ -1.11730 ]  ]  
+	Function[1] : [ [ 0.918217 ]  [ -0.637870 ]  ]  
+	Function[2] : [ [ -0.918217 ]  [ 0.637870 ]  ]  
+	Function[3] : [ [ -0.0406343 ]  [ 1.11730 ]  ]  
+ValueTable (num_functions=8,num_points=1) :
+	Function[0] : [ 0.125000 ]  
+	Function[1] : [ 0.125000 ]  
+	Function[2] : [ 0.125000 ]  
+	Function[3] : [ 0.125000 ]  
+	Function[4] : [ 0.125000 ]  
+	Function[5] : [ 0.125000 ]  
+	Function[6] : [ 0.125000 ]  
+	Function[7] : [ 0.125000 ]  
+ValueTable (num_functions=8,num_points=1) :
+	Function[0] : [ [ 0.0203171 ]  [ 0.00974055 ]  [ -1.18307 ]  ]  
+	Function[1] : [ [ 0.459108 ]  [ 0.220108 ]  [ -1.06815 ]  ]  
+	Function[2] : [ [ -0.459108 ]  [ 0.779892 ]  [ -0.762338 ]  ]  
+	Function[3] : [ [ -0.0203171 ]  [ 0.990260 ]  [ -0.647414 ]  ]  
+	Function[4] : [ [ 0.0203171 ]  [ -0.990260 ]  [ 0.647414 ]  ]  
+	Function[5] : [ [ 0.459108 ]  [ -0.779892 ]  [ 0.762338 ]  ]  
+	Function[6] : [ [ -0.459108 ]  [ -0.220108 ]  [ 1.06815 ]  ]  
+	Function[7] : [ [ -0.0203171 ]  [ -0.00974055 ]  [ 1.18307 ]  ]  

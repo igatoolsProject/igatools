@@ -19,10 +19,10 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the evaluation of physical space basis functions
- *  values and gradients (with the use of the cache and with the identity mapping).
+ *  values and gradients (with the use of the cache and with the ball mapping).
  *
- *  author: pauletti
- *  date: 2013-10-02
+ *  author: martinelli
+ *  date: 16 May 2014
  *
  */
 
@@ -33,7 +33,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/geometry/identity_mapping.h>
+#include <igatools/geometry/mapping_lib.h>
 
 template <int dim>
 using RefSpace_t = BSplineSpace<dim>  ;
@@ -49,7 +49,7 @@ void test_evaluate()
 {
     const int deg = 1;
     auto grid = CartesianGrid<dim>::create();
-    auto map = IdentityMapping<dim>::create(grid);
+    auto map = BallMapping<dim>::create(grid);
 
     auto push_forward = PushForward<Transformation::h_grad,dim>::create(map);
     auto ref_space = BSplineSpace<dim>::create(grid, deg);
