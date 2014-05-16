@@ -306,10 +306,76 @@ BallMapping<dim_>::set_face_element(const Index face_id,
 }
 
 
+template<int dim_>
+void
+BallMapping<dim_>::
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+{
+    const int n_points = points.size();
+    Assert(n_points >= 0, ExcEmptyObject());
+    Assert(points.size() == gradients.size(),ExcDimensionMismatch(points.size(),gradients.size()));
+
+    cos_val[0].resize(n_points);
+    sin_val[0].resize(n_points);
+    cos_val[1].resize(n_points);
+    sin_val[1].resize(n_points);
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        sin_val[0][qp][0] = points[qp][0];
+        for (int i = 1; i < dim; ++i)
+        {
+            sin_val[0][qp][i]   = sin(points[qp][i]);
+            cos_val[0][qp][i-1] = cos(points[qp][i]);
+        }
+        cos_val[0][qp][dim-1] = 1;
+
+        sin_val[1][qp][0] = 1.0;
+        for (int i = 1; i < dim; ++i)
+        {
+            sin_val[1][qp][i  ] =  cos_val[0][qp][i-1];
+            cos_val[1][qp][i-1] = -sin_val[0][qp][i];
+        }
+        cos_val[1][qp][dim-1] = 1.;
+    }
+
+    const auto &s = sin_val[0];
+    const auto &c = cos_val[0];
+    const auto &s_p = sin_val[1];
+    const auto &c_p = cos_val[1];
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &grad = gradients[qp];
+        grad = 0.;
+
+        for (int i = 0; i < dim-1; ++i)
+        {
+            for (int j = 0; j < i+2; ++j)
+            {
+                double djy = 1.;
+                for (int k = 0; k < i+1; ++k)
+                    djy *= k!=j ? s[qp][k] : s_p[qp][k];
+                grad[j][i] = djy * (i+1!=j ? c[qp][i] : c_p[qp][i]);
+            }
+        }
+
+        const int i = dim-1;
+        for (int j = 0; j < dim; ++j)
+        {
+            double djy = 1.;
+            for (int k = 0; k < i+1; ++k)
+                djy *= k!=j ? s[qp][k] : s_p[qp][k];
+            grad[j][i] = djy;
+        }
+    }
+
+}
 
 template<int dim_>
 void
-BallMapping<dim_>::evaluate(vector<ValueType> &values) const
+BallMapping<dim_>::
+evaluate(vector<ValueType> &values) const
 {
     const int der = 0;
     const auto &s = sin_val[der];

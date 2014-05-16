@@ -701,10 +701,11 @@ ValueVector< GradientMap >
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
+    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+
     ValueVector<GradientMap> map_gradient(n_points);
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    mapping_->evaluate_gradients_at_points(points_ref_domain,map_gradient);
 
     return map_gradient;
 }

@@ -131,7 +131,7 @@ public:
     Mapping<dim_,codim_> &operator=(const Mapping<dim_,codim_> &map) = delete;
     ///@}
 
-    /** @name Mapping as a standard function */
+    /** @name Mapping as a standard function (using the cache).*/
     ///@{
     virtual void evaluate(std::vector<ValueType> &values) const;
 
@@ -145,6 +145,17 @@ public:
 
     virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const;
     ///@}
+
+
+    /** @name Mapping as a standard function (without the use of the cache).*/
+    ///@{
+    virtual void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const ;
+
+    virtual void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const;
+
+    virtual void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const;
+    ///@}
+
 
     /** @name Virtual user functions to define the map */
     ///@{
