@@ -543,6 +543,24 @@ get_push_forward_accessor() const -> const PfElemAccessor &
 
 
 
+
+template< class PhysSpace >
+template <int deriv_order>
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
+ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+{
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > > phi;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    return phi;
+}
+
+
+
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::

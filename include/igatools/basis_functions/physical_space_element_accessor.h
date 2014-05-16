@@ -194,6 +194,25 @@ public :
 
 
 
+
+    /** @name Functions for the basis and field evaluations without the use of the cache */
+    ///@{
+
+    /**
+     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <int deriv_order>
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+
+    ///@}
+
+
     /**
      * @name Getting quantities that are geometry-related
      */
