@@ -689,6 +689,27 @@ get_num_points(const TopologyId<dim> &topology_id) const
     return cache.num_points_;
 }
 
+
+
+
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+evaluate_gradients_at_points(const std::vector<Point<dim>> &points) const ->
+ValueVector< GradientMap >
+{
+    const int n_points = points.size();
+    Assert(n_points >= 0, ExcEmptyObject());
+
+    ValueVector<GradientMap> map_gradient(n_points);
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    return map_gradient;
+}
+//*/
+
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::

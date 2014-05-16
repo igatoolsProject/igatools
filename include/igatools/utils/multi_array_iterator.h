@@ -55,6 +55,13 @@ class MultiArrayIterator
     typename Container::Entry> >
 {
 public:
+    using parent_t = std::iterator<
+                     std::random_access_iterator_tag,
+                     Conditional<
+                     std::is_const<Container>::value,
+                     const typename Container::Entry,
+                     typename Container::Entry> >;
+
     /**
      * Type for the values referenced by the iterator.
      * If the @p Container type is declared to be @p const then also
@@ -74,6 +81,7 @@ public:
     /** Type for the pointer. */
     using pointer = value_type *;
 
+    using difference_type = typename std::iterator_traits<parent_t>::difference_type;
 
 
     /** @name Constructors and destructor */
@@ -137,6 +145,27 @@ public:
      * will point the position identified by <tt>id + n*stride</tt>.
      */
     MultiArrayIterator<Container> operator+(const Index n) const;
+
+
+    /**
+     * This operator returns an iterator pointing to the entry obtained by going back
+     * @p n positions from the current one.
+     *
+     * @note The positions are ``counted'' considering the stride used to build the iterator so,
+     * if the original iterator was pointing the position identified by @p id, the returned iterator
+     * will point the position identified by <tt>id - n*stride</tt>.
+     */
+    MultiArrayIterator<Container> operator-(const Index n) const;
+
+#if 0
+    /**
+     * Returns <tt>n</tt> such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ( (*this) - a)</tt>.
+     *
+     */
+    difference_type
+    operator-(const MultiArrayIterator<Container> &a) const;
+#endif
+
     ///@}
 
     /** @name Dereferencing operators */
@@ -196,7 +225,9 @@ private:
 
     /** Stride used to advance to the next entry in the container. */
     const Index stride_;
+
 };
+
 
 
 

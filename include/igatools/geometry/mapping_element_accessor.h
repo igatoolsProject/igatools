@@ -267,6 +267,25 @@ public:
      */
     void print_memory_info(LogStream &out) const;
 
+
+    /** @name Functions for the mapping evaluations without the use of the cache */
+    ///@{
+
+    /**
+     * Returns the gradient of the map (i.e. the Jacobian)
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values() / fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< GradientMap >
+    evaluate_gradients_at_points(const std::vector< Point<dim> > &points) const;
+
+    ///@}
+
+
+
 private:
     // TODO (pauletti, Mar 21, 2014): Document this class
     class ValuesCache : public CacheStatus

@@ -103,7 +103,6 @@ public :
     using PfElemAccessor::transformation_type;
 
 
-
     /** Type for the quadrature scheme. */
     using QuadratureType = Quadrature<dim>;
     using QuadratureFaceType = Quadrature<dim-1>;

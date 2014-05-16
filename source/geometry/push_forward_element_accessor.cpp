@@ -431,6 +431,115 @@ transform_face_measure(const Index face_id) const
 }
 
 
+template< class PushForward >
+template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+void
+PushForwardElementAccessor<PushForward>::
+transform_basis_derivatives_at_points(
+    const std::vector<Point<dim>> &points,
+    const Container< RefValue<dim_range, rank> > &phi_hat,
+    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    Container< PhysValue<dim_range,rank> > &phi,
+    typename std::enable_if<ttype == Transformation::h_grad>::type *) const
+{
+    const int num_points = points.size() ;
+    Assert(num_points > 0, ExcEmptyObject());
+
+
+    Assert(phi_hat.size() > 0, ExcEmptyObject());
+
+    Assert(phi.size() == phi_hat.size(),
+           ExcDimensionMismatch(phi.size(), phi_hat.size())) ;
+
+    // if Container is ValueTable, phi_hat.size() is a multiple of num_points
+    // if Container is ValueVector, phi_hat.size() is equal to num_points
+    Assert((phi_hat.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+
+    auto phi_iterator = phi.begin() ;
+    for (const auto & phi_hat_to_copy : phi_hat)
+    {
+        *phi_iterator = phi_hat_to_copy ;
+        ++phi_iterator;
+    }
+
+}
+
+
+template< class PushForward >
+template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+void
+PushForwardElementAccessor<PushForward>::
+transform_basis_derivatives_at_points(
+    const std::vector<Point<dim>> &points,
+    const Container< RefValue<dim_range, rank> > &phi_hat,
+    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    Container< PhysDerivative<dim_range,rank,1> > &D1phi,
+    typename std::enable_if<ttype == Transformation::h_grad>::type *) const
+{
+    const int num_points = points.size() ;
+    Assert(num_points > 0, ExcEmptyObject());
+
+
+    Assert(D1phi_hat.size() > 0, ExcEmptyObject());
+
+    Assert(D1phi.size() == D1phi_hat.size(),
+           ExcDimensionMismatch(D1phi.size(), D1phi_hat.size())) ;
+
+
+    // the next two lines are written to retrieve the number of basis function
+    // in the case Container is a ValueTable object.
+    // if Container is ValueVector, n_func will be equal to 1.
+    Assert((D1phi_hat.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+    const int n_func = D1phi_hat.size() / num_points ;
+
+
+    auto D1phi_iterator     = D1phi.begin() ;
+    auto D1phi_hat_iterator = D1phi_hat.cbegin() ;
+
+    const auto gradients_map = this->evaluate_gradients_at_points(points) ;
+
+    vector< Derivatives<space_dim,dim,1,1> > inv_gradients_map(num_points);
+    for (Index i = 0; i < num_points; ++i)
+        inverse<dim,space_dim>(gradients_map[i],inv_gradients_map[i]);
+
+
+    for (int i_fn = 0; i_fn < n_func; ++i_fn)
+    {
+        for (Index j_pt = 0; j_pt < num_points; ++j_pt)
+        {
+//            PhysDerivative<dim_range,rank,1> test = compose((*D1phi_hat_iterator), inv_gradients_map[j_pt]);
+            (*D1phi_iterator) = compose((*D1phi_hat_iterator), inv_gradients_map[j_pt]);
+            ++D1phi_hat_iterator ;
+            ++D1phi_iterator ;
+        }
+    }
+}
+
+
+
+template< class PushForward >
+template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+void
+PushForwardElementAccessor<PushForward>::
+transform_basis_derivatives_at_points(
+    const std::vector<Point<dim>> &points,
+    const Container< RefValue<dim_range, rank> > &phi_hat,
+    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    Container< PhysDerivative<dim_range,rank,2> > &D2phi,
+    typename std::enable_if<ttype == Transformation::h_grad>::type *) const
+{
+    const int num_points = points.size() ;
+    Assert(num_points > 0, ExcEmptyObject());
+
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
 
 template< class PushForward >
 void

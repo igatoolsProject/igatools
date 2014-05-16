@@ -833,6 +833,20 @@ evaluate_nurbs_hessians(
 }
 
 
+template <int dim, int range, int rank >
+template <int deriv_order>
+auto
+NURBSElementAccessor< dim, range, rank >::
+evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
+ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+{
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > > phi_hat;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    return phi_hat;
+}
 
 template <int dim, int range, int rank >
 void
