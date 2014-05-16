@@ -141,8 +141,8 @@ CartesianGrid<dim_>::
 CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates)
     :
     kind_ {Kind::non_uniform},
-      knot_coordinates_(knot_coordinates),
-      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0))
+      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
+      knot_coordinates_(knot_coordinates)
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
