@@ -377,37 +377,45 @@ transform_hessians(
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
-    const int n_func = D1v_hat.get_num_functions();
+    Assert(D2v.size() >= 0 , ExcEmptyObject()) ;
+    Assert(D2v.size() == D1v_hat.size(), ExcDimensionMismatch(D2v.size(), D1v_hat.size())) ;
+    Assert(D2v.size() == D2v_hat.size(), ExcDimensionMismatch(D2v.size(), D2v_hat.size())) ;
+
     const int num_points = this->get_num_points(topology_id) ;
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    Assert(num_points == D1v_hat.get_num_points(),
-           ExcDimensionMismatch(num_points,D1v_hat.get_num_points()));
-    Assert(num_points == D2v_hat.get_num_points(),
-           ExcDimensionMismatch(num_points,D2v_hat.get_num_points()));
-    Assert(n_func == D2v_hat.get_num_functions(),
-           ExcDimensionMismatch(n_func,D2v_hat.get_num_functions()));
-    Assert(n_func == D2v.get_num_functions(),
-           ExcDimensionMismatch(n_func,D2v.get_num_functions()));
-    Assert(num_points == D2v.get_num_points(),
-           ExcDimensionMismatch(num_points,D2v.get_num_points()));
+    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
+    // if Container is ValueVector, n_func will be equal to 1.
+    Assert((D2v.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+    const int n_func = D2v.size() / num_points ;
+
 
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
     const auto &inv_hessians_map = this->get_inv_hessians(topology_id) ;
 
-    for (int i = 0; i < n_func; ++i)
-        for (int j = 0; j < num_points; ++j)
-        {
-            const auto &DF_inv  = inv_gradients_map[j];
-            const auto &D2F_inv = inv_hessians_map[j];
+    auto D1v_hat_iterator = D1v_hat.cbegin();
+    auto D2v_hat_iterator = D2v_hat.cbegin();
+    auto D2v_iterator = D2v.begin();
+    for (int jpt = 0; jpt < num_points; ++jpt)
+    {
 
+        const auto &DF_inv  = inv_gradients_map[jpt];
+        const auto &D2F_inv = inv_hessians_map[jpt];
+
+        for (int ifn = 0; ifn < n_func; ++ifn)
+        {
             //TODO: create a tensor compose to get rid of for loop here
             for (int u = 0; u<dim; u++)
             {
-                D2v[i][j][u] =  compose(D2v_hat[i][j][u], DF_inv);
-                D2v[i][j][u] += compose(D1v_hat[i][j], D2F_inv[u]);
+                (*D2v_iterator)[u] =  compose((*D2v_hat_iterator)[u], DF_inv);
+                (*D2v_iterator)[u] += compose((*D1v_hat_iterator), D2F_inv[u]);
             }
-        }
+            ++D1v_hat_iterator;
+            ++D2v_hat_iterator;
+            ++D2v_iterator;
+        } // end loop jpt
+    } // end loop ifn
 }
 
 

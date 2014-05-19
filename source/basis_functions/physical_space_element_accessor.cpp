@@ -279,8 +279,27 @@ fill_values(const TopologyId<dim> &topology_id)
 
     if (cache.flags_handler_.fill_hessians())
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+        if (transformation_type == Transformation::h_grad)
+        {
+            ValueTable<typename RefElemAccessor::Value> dummy;
+            PfElemAccessor::
+            template transform_hessians<PhysSpace::range,PhysSpace::rank>(
+                dummy,
+                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                ref_space_element_accessor_.get_basis_hessians(topology_id),
+                cache.D2phi_,
+                topology_id);
+
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+
+        }
+//        Assert(false,ExcNotImplemented());
+//        AssertThrow(false,ExcNotImplemented());
+        cache.flags_handler_.set_hessians_filled(true);
     }
 
     if (cache.flags_handler_.fill_divergences())

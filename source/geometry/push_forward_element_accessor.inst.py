@@ -62,6 +62,12 @@ for row in unique(inst.all_table + inst.extended_table):
             'transform_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
             '(%s,%s,%s,%s,void *) const;\n' %(v_ref,d1v_ref,d1v_phys,topology_id)
         )
+        order = 2
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_hessians<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
+            '(%s,%s,%s,%s,%s,void *) const;\n' %(v_ref,d1v_ref,d2v_ref,d2v_phys,topology_id)
+        )
 
         order = 0
         output.append(
