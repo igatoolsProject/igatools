@@ -73,13 +73,42 @@ void test_evaluate()
     }
 }
 
+void test_cylindircal_annulus()
+{
+    const int deg = 1;
+    auto grid = CartesianGrid<3>::create();
+    auto map = CylindricalAnnulus::create(grid,1.0,2.0,1.0,numbers::PI/3.0);
+
+    auto push_forward = PushForward<Transformation::h_grad,3>::create(map);
+    auto ref_space = BSplineSpace<3>::create(grid, deg);
+    auto space = PhysicalSpace_t<3>::create(ref_space, push_forward);
+
+    auto elem = space->begin() ;
+    const auto elem_end = space->end() ;
+
+    const int n_qpoints = 1;
+    QGauss<3> quad(n_qpoints);
+
+    ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
+    elem->init_values(flag, quad);
+
+    for (; elem != elem_end ; ++elem)
+    {
+        elem->fill_values();
+        elem->get_basis_values().print_info(out);
+        elem->get_basis_gradients().print_info(out);
+        elem->get_basis_hessians().print_info(out);
+    }
+}
+
 int main()
 {
     out.depth_console(10);
 
-    test_evaluate<1>();
-    test_evaluate<2>();
-    test_evaluate<3>();
+//    test_evaluate<1>();
+//    test_evaluate<2>();
+//    test_evaluate<3>();
 
+    test_cylindircal_annulus();
     return 0;
 }

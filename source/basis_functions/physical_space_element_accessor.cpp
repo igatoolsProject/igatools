@@ -297,8 +297,8 @@ fill_values(const TopologyId<dim> &topology_id)
             AssertThrow(false,ExcNotImplemented());
 
         }
-//        Assert(false,ExcNotImplemented());
-//        AssertThrow(false,ExcNotImplemented());
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
         cache.flags_handler_.set_hessians_filled(true);
     }
 

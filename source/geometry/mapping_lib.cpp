@@ -1206,7 +1206,6 @@ evaluate_gradients(vector<GradientType> &gradients) const
         dF[2][0] = 0.0;
         dF[2][1] = 0.0;
         dF[2][2] = dH_;
-
     }
 }
 
