@@ -82,6 +82,7 @@ public:
     using PeriodicTable = ComponentContainer<bool>;
 
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
+    using IndexSpaceMarkTable = Multiplicity;
 
     class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
     {
