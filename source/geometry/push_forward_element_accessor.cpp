@@ -392,7 +392,7 @@ transform_hessians(
 
 
     const auto &gradients_map = this->get_gradients(topology_id) ;
-    const auto &hessians_map = this->get_hessians(topology_id) ;
+//    const auto &hessians_map = this->get_hessians(topology_id) ;
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
     const auto &inv_hessians_map = this->get_inv_hessians(topology_id) ;
 
@@ -405,29 +405,27 @@ transform_hessians(
     {
 
         const auto &DF  = gradients_map[jpt];
-        const auto &D2F  = hessians_map[jpt];
+//        const auto &D2F  = hessians_map[jpt];
         const auto &DF_inv  = inv_gradients_map[jpt];
         const auto &D2F_inv = inv_hessians_map[jpt];
-
-        out << "DF=" << DF << std::endl;
-        out << "D2F=" << D2F << std::endl;
-        out << "DF_inv=" << DF_inv << std::endl;
-        out << "D2F_inv=" << D2F_inv << std::endl;
-
+        /*
+                out << "DF=" << DF << std::endl;
+                out << "D2F=" << D2F << std::endl;
+                out << "DF_inv=" << DF_inv << std::endl;
+                out << "D2F_inv=" << D2F_inv << std::endl;
+        //*/
         for (int ifn = 0; ifn < n_func; ++ifn)
         {
             //TODO: create a tensor compose to get rid of for loop here
-            for (int i = 0; i < dim; i++)
-                for (int j = 0; j < dim; j++)
+            for (int u = 0; u < dim; u++)
+            {
+                const auto tmp_u = action((*D2v_hat_iterator),DF_inv[u]);
+                for (int v = 0; v < dim; v++)
                 {
-                    (*D2v_iterator)[i][j] = 0.0;
-                    for (int k = 0; k < dim; k++)
-                    {
-                        (*D2v_iterator)[i][j](0) += (*D1v_hat_iterator)[k](0) * D2F_inv[i][j][k];
-                        for (int r = 0; r < dim; r++)
-                            (*D2v_iterator)[i][j] += (*D2v_hat_iterator)[k][r] *DF_inv[j][r]*DF_inv[i][k];
-                    }
-                }
+                    (*D2v_iterator)[u][v] = action((*D1v_hat_iterator),D2F_inv[u][v]) +
+                                            action(tmp_u,DF_inv[v]);
+                } // end loop v
+            } // end loop u
             /*
             for (int u = 0; u<dim; u++)
             {
@@ -435,6 +433,8 @@ transform_hessians(
                 (*D2v_iterator)[u] += compose((*D1v_hat_iterator), D2F_inv[u]);
             }
             //*/
+            out << "D2v= " << (*D2v_iterator) <<std::endl;
+
             ++D1v_hat_iterator;
             ++D2v_hat_iterator;
             ++D2v_iterator;

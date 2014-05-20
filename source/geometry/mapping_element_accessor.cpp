@@ -513,12 +513,6 @@ fill_composite_values()
         flags_handler_.set_inv_gradients_filled(true);
     }
 
-    /*
-     * To fill the hessian of F{^-1}, we use the formula
-     * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
-     * This formula can be obtained by differentiating the identity
-     * DF * DF{^-1} = I
-     */
     if (flags_handler_.fill_inv_hessians())
     {
         Assert(flags_handler_.hessians_filled(),ExcMessage("Hessians not filled."));
@@ -526,12 +520,42 @@ fill_composite_values()
 
         for (Index i = 0; i < num_points_; i++)
         {
+#if 0
+            /*
+             * To fill the hessian of F{^-1}, we use the formula
+             * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
+             * This formula can be obtained by differentiating the identity
+             * DF * DF{^-1} = I
+             */
+            /*
             const auto &DF_inv = inv_gradients_[i];
             const auto &D2F = hessians_[i];
             for (int u=0; u<dim; ++u) //TODO: should we define a compose in tensor for this?
             {
                 const auto temp = compose(DF_inv, D2F[u]);
                 inv_hessians_[i][u] = compose(temp, DF_inv);
+            }
+            //*/
+#endif
+
+            /*
+             * To fill the hessian of F{^-1}, we use the formula
+             * D2F{^-1} [u][v] = - DF{^-1}[ D2F[ DF{^-1}[u] ][ DF{^-1}[v] ] ],
+             * This formula can be obtained by differentiating the identity
+             * DF * DF{^-1} = I
+             */
+            const auto &DF_inv = - inv_gradients_[i];
+            const auto &D2F = hessians_[i];
+            auto &D2F_inv = inv_hessians_[i];
+            for (int u=0; u<dim; ++u)
+            {
+                const auto tmp_u = action(D2F,DF_inv[u]);
+                for (int v=0; v<dim; ++v)
+                {
+                    const auto tmp_u_v = action(tmp_u,DF_inv[v]);
+
+                    D2F_inv[u][v] = - action(DF_inv,tmp_u_v);
+                }
             }
         }
         flags_handler_.set_inv_hessians_filled(true);

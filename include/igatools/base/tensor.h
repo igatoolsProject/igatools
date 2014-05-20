@@ -526,6 +526,13 @@ public:
      */
     Tensor<dim_, rank_, tensor_type, value_type> &
     operator/=(const Real value);
+
+    /**
+     * Change the sign of the tensor entries
+     */
+    Tensor<dim_, rank_, tensor_type, value_type> &
+    operator-();
+
     ///@}
 
     /**
