@@ -19,7 +19,9 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the evaluation of physical space basis functions
- *  values and gradients (without the use of the cache and with the ball mapping).
+ *  values and gradients (without the use of the cache and with the following mappings:
+ *  - ball mapping;
+ *  - cylindrical annulus.
  *
  *  author: martinelli
  *  date: 16 May 2014
@@ -47,6 +49,7 @@ using PhysicalSpace_t = PhysicalSpace< RefSpace_t<dim>, PushForward_t<dim> > ;
 template <int dim>
 void test_evaluate()
 {
+    out << "========== test PhysSpaceElemAccessor on BallMapping<" << dim << "> --- begin =========" << endl;
     const int deg = 1;
     auto grid = CartesianGrid<dim>::create();
     auto map = BallMapping<dim>::create(grid);
@@ -58,16 +61,61 @@ void test_evaluate()
     auto elem = space->begin() ;
     const auto elem_end = space->end() ;
 
-    const int n_qpoints = 1;
+    const int n_qpoints = 2;
     QGauss<dim> quad(n_qpoints);
     vector<Point<dim>> eval_points = quad.get_points().get_flat_cartesian_product();
 
     for (; elem != elem_end ; ++elem)
     {
+        out << "Basis values: " << endl;
         elem->evaluate_basis_values_at_points(eval_points).print_info(out);
+        out << endl;
+
+        out << "Basis gradients: " << endl;
         elem->evaluate_basis_gradients_at_points(eval_points).print_info(out);
-        // elem->get_basis_hessians().print_info(out);
+        out << endl;
+
+        out << "Basis hessians: " << endl;
+        elem->evaluate_basis_hessians_at_points(eval_points).print_info(out);
     }
+    out << "========== test PhysSpaceElemAccessor on BallMapping<" << dim << "> --- end   =========" << endl;
+    out << endl << endl;
+}
+
+
+void test_cylindircal_annulus()
+{
+    out << "========== test PhysSpaceElemAccessor on CylindricalAnnulus --- begin =========" << endl;
+    const int deg = 1;
+    auto grid = CartesianGrid<3>::create();
+    auto map = CylindricalAnnulus::create(grid,1.0,2.0,1.0,numbers::PI/3.0);
+
+    auto push_forward = PushForward<Transformation::h_grad,3>::create(map);
+    auto ref_space = BSplineSpace<3>::create(grid, deg);
+    auto space = PhysicalSpace_t<3>::create(ref_space, push_forward);
+
+    auto elem = space->begin() ;
+    const auto elem_end = space->end() ;
+
+    const int n_qpoints = 2;
+    QGauss<3> quad(n_qpoints);
+    vector<Point<3>> eval_points = quad.get_points().get_flat_cartesian_product();
+
+    for (; elem != elem_end ; ++elem)
+    {
+        out << "Basis values: " << endl;
+        elem->evaluate_basis_values_at_points(eval_points).print_info(out);
+        out << endl;
+
+        out << "Basis gradients: " << endl;
+        elem->evaluate_basis_gradients_at_points(eval_points).print_info(out);
+        out << endl;
+
+        out << "Basis hessians: " << endl;
+        elem->evaluate_basis_hessians_at_points(eval_points).print_info(out);
+    }
+    out << "========== test PhysSpaceElemAccessor on CylindricalAnnulus --- end   =========" << endl;
+    out << endl << endl;
 }
 
 int main()
@@ -77,6 +125,8 @@ int main()
     test_evaluate<1>();
     test_evaluate<2>();
     test_evaluate<3>();
+
+    test_cylindircal_annulus();
 
     return 0;
 }

@@ -270,6 +270,16 @@ public:
 
     /** @name Functions for the mapping evaluations without the use of the cache */
     ///@{
+    /**
+     * Returns the value of the map
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values() / fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< ValueMap >
+    evaluate_values_at_points(const std::vector< Point<dim> > &points) const;
 
     /**
      * Returns the gradient of the map (i.e. the Jacobian)
@@ -281,6 +291,18 @@ public:
      */
     ValueVector< GradientMap >
     evaluate_gradients_at_points(const std::vector< Point<dim> > &points) const;
+
+
+    /**
+     * Returns the hessian of the map
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values() / fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< HessianMap >
+    evaluate_hessians_at_points(const std::vector< Point<dim> > &points) const;
 
     ///@}
 
@@ -362,6 +384,23 @@ private:
      *TODO
      */
     std::array<ValueVector<ValueMap>, codim> transform_external_normals() const;
+
+protected:
+    /**
+     * Evaluates the gradient of F^{-1} (also when the mapping has codim > 0) using the formula
+     * D(F^{-1}) = (DF^t * DF)^{-1} * DF^t
+     */
+    static void evaluate_inverse_gradient(const GradientMap &DF, Derivatives<space_dim,dim,1,1> &DF_inv);
+
+    /**
+     * Evaluates the inverse hessian of F^{-1} (also when the mapping has codim > 0) using the formula
+     * D2F{^-1} [u][v] = - DF{^-1}[ D2F[ DF{^-1}[u] ][ DF{^-1}[v] ] ],
+     * This formula can be obtained by differentiating the identity
+     * DF * DF{^-1} = I
+     */
+    static void evaluate_inverse_hessian(const HessianMap &D2F,
+                                         const Derivatives<space_dim,dim,1,1> &DF_inv,
+                                         Derivatives<space_dim,dim,1,2> &D2F_inv);
 };
 
 IGA_NAMESPACE_CLOSE
