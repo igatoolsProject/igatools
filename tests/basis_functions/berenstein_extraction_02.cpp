@@ -37,88 +37,53 @@ using boost::numeric::ublas::matrix_row;
 template<int dim, int range = 1, int rank = 1>
 class BersteinExtraction
 {
-    using SpaceSpec = SpaceSpec<dim, range, rank>;
-    using DegreeTable = typename SpaceSpec::DegreeTable;
-    using KnotsTable = typename SpaceSpec::KnotsTable;
-private:
-    using Operators = CartesianProductArray<vector<matrix<Real>>, dim>;
-    using OperatorsTable = typename SpaceSpec::template ComponentContainer<Operators>;
+public:
+    using Space = SpaceSpec<dim, range, rank>;
+    using DegreeTable = typename Space::DegreeTable;
+    using KnotsTable = typename Space::KnotsTable;
+    using MultiplicityTable = typename Space::MultiplicityTable;
 
-    OperatorsTable ext_operators;
+private:
+    using Operators = CartesianProductArray<matrix<Real>, dim>;
+    using OperatorsTable = typename Space::template ComponentContainer<Operators>;
+
 public:
 
     BersteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
                        const KnotsTable &rep_knots,
                        const MultiplicityTable &acum_mult,
-                       const DegreeTable &deg)
-    {
-        const auto n_elem = grid->get_num_elements_dim();
+                       const DegreeTable &deg);
 
 
-        for (int i = 0; i < SpaceSpec::n_components; ++i)
-        {
-            ext_operators(i).resize(n_elem);
-            for (int j = 0; j < dim; ++j)
-            {
-                const int m = deg(i)[j] + 1;
-                ext_operators(i).entry(i,j).resize(m, m);
+    vector<matrix<Real>>
+    fill_extraction(const int m,
+                    const vector<Real>    &knots,
+                    const vector<Real>    &rep_knots,
+                    const vector<Index>   &acum_mult);
 
-                fill_extraction(m, grid->get_knot_coordinates(j),
-                                rep_knots(i).get_data_direction(j),
-                                acum_mult(i).get_data_direction(j),
-                                ext_operators(i))
-            }
+    void print_info(LogStream &out) const;
 
-
-
-        }
-    }
-    void fill_extraction(const int m,
-                         const vector<Real>    &knots,
-                         const vector<Real>    &rep_knots,
-                         const vector<Index>   &acum_mult,
-                         vector<matrix<Real>>  &operators)
-    {
-
-        const auto &x = knots;
-        const auto &y = rep_knots;
-
-        for (int n=0; n< operators.size(); ++n)
-        {
-            const auto a = x[n];
-            const auto b = x[n+1];
-
-            matrix<Real> M(1,1);
-            M(0,0) = 1/(b-a);
-            for(int j = 2; j<=m; ++j)
-            {
-                const int s = acum_mult[n+1] - j;
-
-                auto M1 = compute(M, y.begin()+s, a, b);
-                M.assign_temporary(M1);
-            }
-
-            //Normalized
-            auto M2(M);
-            const int s = acum_mult[n+1] - m;
-            for (int k = 0; k < m; ++k)
-            {
-                matrix_row<matrix<double> > mr(M2, k);
-                mr *= (y[s+k+m]-y[s+k]);
-            }
-            out << M2 << endl;
-
-            operators[n] = M2;
-        }
-    }
 private:
-
     matrix<Real> compute(const matrix<Real> &M_j_1,
-                     typename vector<Real>::const_iterator  y,
-                     const Real a,
-                     const Real b)
-{
+                         typename vector<Real>::const_iterator  y,
+                         const Real a,
+                         const Real b);
 
+private:
+    OperatorsTable ext_operators;
+
+};
+
+
+
+template<int dim, int range, int rank>
+auto
+BersteinExtraction<dim, range, rank>::
+compute(const matrix<Real> &M_j_1,
+        typename vector<Real>::const_iterator  y,
+        const Real a,
+        const Real b) -> matrix<Real>
+{
     const int j = M_j_1.size1() + 1;
     matrix<Real> M_j(j,j);
 
@@ -165,9 +130,91 @@ private:
 
 
 
-
+template<int dim, int range, int rank>
+void
+BersteinExtraction<dim, range, rank>::
+print_info(LogStream &out) const
+{
+    int c=0;
+    for (const auto &comp : ext_operators)
+    {
+        out << "Component[" << c++ << "]: " << endl;
+        for (int j = 0; j < dim; ++j)
+        {
+            out << "Direction[" << j << "]:" << endl;
+            for (const auto &M : comp.get_data_direction(j))
+                out << M << endl;
+        }
+    }
 }
 
+
+
+template<int dim, int range, int rank>
+auto
+BersteinExtraction<dim, range, rank>::
+fill_extraction(const int m,
+                const vector<Real>    &knots,
+                const vector<Real>    &rep_knots,
+                const vector<Index>   &acum_mult) -> vector<matrix<Real>>
+{
+    const int n_elem = knots.size()-1;
+
+    vector<matrix<Real>>  operators(n_elem, matrix<Real>(m,m));
+    const auto &x = knots;
+    const auto &y = rep_knots;
+
+    for (int n=0; n < n_elem; ++n)
+    {
+        const auto a = x[n];
+        const auto b = x[n+1];
+
+        matrix<Real> M(1,1);
+        M(0,0) = 1/(b-a);
+        for(int j = 2; j<=m; ++j)
+        {
+            const int s = acum_mult[n+1] - j;
+
+            auto M1 = compute(M, y.begin()+s, a, b);
+            M.assign_temporary(M1);
+        }
+
+        //Normalized
+        auto M2(M);
+        const int s = acum_mult[n+1] - m;
+        for (int k = 0; k < m; ++k)
+        {
+            matrix_row<matrix<double> > mr(M2, k);
+            mr *= (y[s+k+m]-y[s+k]);
+        }
+        operators[n] = M2;
+    }
+    return operators;
+}
+
+
+
+template<int dim, int range, int rank>
+BersteinExtraction<dim, range, rank>::
+BersteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
+                   const KnotsTable &rep_knots,
+                   const MultiplicityTable &acum_mult,
+                   const DegreeTable &deg)
+{
+    for (int i = 0; i < Space::n_components; ++i)
+    {
+        for (int j = 0; j < dim; ++j)
+        {
+            const int m = deg(i)[j] + 1;
+            auto opers =
+                    fill_extraction(m,
+                                    grid->get_knot_coordinates(j),
+                                    rep_knots(i).get_data_direction(j),
+                                    acum_mult(i).get_data_direction(j));
+            ext_operators(i).copy_data_direction(j,opers);
+        }
+    }
+}
 
 
 
@@ -176,18 +223,40 @@ int main()
     out.depth_console(10);
 
     {
+        const int dim = 1;
         int degree = 1;
-        vector<Real>    knots = {0,1,2,3};
-        vector<Real>    rep_knots = {0,0,1,2,3,3};
-        vector<Index>   acum_mult = {0,2,3,4,6};
-        const int n_int = knots.size()-1;
-        const int m = degree + 1;
-        vector<matrix<Real>> extraction_operator(n_int, matrix<Real>(m, m));
-        fill_extraction(degree,knots,rep_knots, acum_mult, extraction_operator);
 
+        CartesianProductArray<Real, dim> knots({{0,1,2,3}});
+        auto grid = CartesianGrid<dim>::create(knots);
+
+        typename BersteinExtraction<dim>::KnotsTable rep_knots({{0,0,1,2,3,3}});
+        typename BersteinExtraction<dim>::MultiplicityTable acum_mult ({{{0,2,3,4,6}}});
+        typename BersteinExtraction<dim>::DegreeTable deg{{degree}};
+        BersteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
+        operators.print_info(out);
     }
 
-//
+
+    {
+        const int dim = 2;
+        int degree = 1;
+
+        CartesianProductArray<Real, dim> knots({{0,1,2,3}, {3,4,5}});
+        auto grid = CartesianGrid<dim>::create(knots);
+
+        typename BersteinExtraction<dim>::KnotsTable
+        rep_knots({{0,0,1,2,3,3},{3,3,4,5,5}});
+        typename BersteinExtraction<dim>::MultiplicityTable
+        acum_mult ({{{0,2,3,4,6}, {0,2,3,5}}});
+        typename BersteinExtraction<dim>::DegreeTable deg{{degree, degree}};
+        BersteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
+        operators.print_info(out);
+    }
+
+
+
+
+    //
 //    {
 //        int degree = 2;
 //        vector<Real>    knots = {0,1};

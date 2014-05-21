@@ -187,6 +187,7 @@ public:
      * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
      */
     const std::vector<T> &get_data_direction(const int i) const ;
+
     ///@}
 
     /** @name Functions returning rank-1 and rank+1 objects */

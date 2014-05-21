@@ -34,7 +34,7 @@ CartesianProductArray<T,rank>::
 get_data_direction(const int i) const
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i, 0, rank)) ;
-    return (data_[i]) ;
+    return data_[i];
 }
 
 

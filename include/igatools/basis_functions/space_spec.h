@@ -66,6 +66,8 @@ class SpaceSpec :
 private:
     using GridType  = CartesianGrid<dim>;
     using GridSpace = FunctionSpaceOnGrid<GridType>;
+
+public:
     template<class> class ComponentContainer;
     static const int n_components = ComponentContainer<int>::n_entries;
 
@@ -167,7 +169,7 @@ private:
 
     PeriodicTable periodic_;
 
-private:
+public:
     /**
      *  Class to manage the component quantities with the knolwge of
      * uniform range spaces
