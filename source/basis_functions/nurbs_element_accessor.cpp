@@ -876,9 +876,9 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         auto W_it = W_vector.cbegin();
         for (int comp = 0 ; comp < Space::n_components ; ++comp)
         {
-            const auto &W = *W_it;
             for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
             {
+                const auto &W = *W_it;
                 auto Q_it = Q_table.cbegin();
                 for (int jpt = 0 ; jpt < n_points ; jpt++)
                 {
@@ -915,9 +915,10 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         auto W_it = W_vector.cbegin();
         for (int comp = 0 ; comp < Space::n_components ; ++comp)
         {
-            const auto &W = *W_it;
             for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
             {
+                const auto &W = *W_it;
+
                 auto Q_it = Q_table.cbegin();
                 auto DQ_it = DQ_table.cbegin();
                 for (int jpt = 0 ; jpt < n_points ; jpt++)
@@ -931,7 +932,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     auto &DR = (*DR_it);
 
                     for (int i = 0 ; i < dim ; ++i)
-                        DR(i)(comp) = W * (DP(i)(comp) * Q - P * DQ(i)(comp)) / (Q*Q);
+                        DR(i)(comp) = (W / (Q*Q)) * (DP(i)(comp) * Q - P * DQ(i)(comp));
 
                     ++P_it;
                     ++Q_it;
@@ -967,9 +968,10 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         auto W_it = W_vector.cbegin();
         for (int comp = 0 ; comp < Space::n_components ; ++comp)
         {
-            const auto &W = *W_it;
             for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
             {
+                const auto &W = *W_it;
+
                 auto Q_it = Q_table.cbegin();
                 auto DQ_it = DQ_table.cbegin();
                 auto D2Q_it = D2Q_table.cbegin();
