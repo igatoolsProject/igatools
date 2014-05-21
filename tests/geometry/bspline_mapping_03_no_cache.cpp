@@ -18,10 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test the IgMapping class on Bspline space
- *  The map is the identity of degree two.
- *  author: pauletti
- *  date: 2013-10-04
+ *  Test the IgMapping class on Bspline space without the use of the cache
+ *  The map is of degree two.
+ *  The output is the same of the test geometry-bspline_mapping_03
+ *  author: martinelli
+ *  date: 2014-05-21
  *
  */
 
@@ -39,6 +40,8 @@
 template <int dim>
 void run_test()
 {
+
+
     typedef BSplineSpace<dim, dim> Space_t;
 
     const int p = 2;
@@ -50,7 +53,7 @@ void run_test()
     {
         int id = 0 ;
         control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.75 ;
         control_pts[id++] = 1.0 ;
     }
     else if (dim == 2)
@@ -77,7 +80,7 @@ void run_test()
         control_pts[id++] = 0.5 ;
 
         control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.5 ;
         control_pts[id++] = 1.0 ;
     }
     else if (dim == 3)
@@ -161,30 +164,27 @@ void run_test()
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.5 ;
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
 
     }
-
     QGauss<dim> quad(3);
+    const auto points = quad.get_points().get_flat_cartesian_product();
     auto map = IgMapping<Space_t>::create(bspline_space, control_pts);
-    ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values = elem->evaluate_values_at_points(points);
+    auto gradients = elem->evaluate_gradients_at_points(points);
+    auto hessians = elem->evaluate_hessians_at_points(points);
 
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;
     out << "Points: " << endl;
-    out << quad.get_points().get_flat_cartesian_product() << endl;
+    out << points << endl;
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
     out << endl;
@@ -198,7 +198,6 @@ void run_test()
     string filename = "bspline_map-" + to_string(dim) + "d";
     Writer<dim,dim> writer(map, 4);
     writer.save(filename);
-
 }
 
 int main()

@@ -18,10 +18,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test the IgMapping class on Bspline space
- *  The map is the identity of degree two.
- *  author: pauletti
- *  date: 2013-10-04
+ *  Test for IgMapping class without the use of the cache.
+ *  The output is the same of the test geometry/bspline_mapping_04
+ *  author: martinelli
+ *  date: 2014-05-21
  *
  */
 
@@ -37,109 +37,149 @@
 #include <igatools/linear_algebra/dof_tools.h>
 
 template <int dim>
-void run_test()
+void test_evaluate()
 {
-    typedef BSplineSpace<dim, dim> Space_t;
 
-    const int p = 2;
-    auto knots = CartesianGrid<dim>::create(2);
-    auto bspline_space = Space_t::create(knots, p);
+    const int rank = (dim==1) ? 0 : 1 ;
 
-    vector<Real> control_pts(bspline_space->get_num_basis());
-    if (dim == 1)
+    //----------------------------------------------------------------------------------------------
+    out << "Dim: " << dim << endl ;
+    int n_knots = 2;
+    CartesianProductArray<iga::Real , dim> coord ;
+    for (int i = 0; i < dim; ++i)
     {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+        vector<iga::Real> tmp_coord;
+        for (int j = 0; j < n_knots; ++j)
+            tmp_coord.push_back(j);
+        coord.copy_data_direction(i,tmp_coord);
     }
-    else if (dim == 2)
+
+
+    int p = 2 ;
+
+
+    auto knots = CartesianGrid<dim>::create(coord);
+
+    typedef BSplineSpace<dim,dim,rank> Space_t ;
+
+    shared_ptr< Space_t > bspline_space = Space_t::create(knots, p)  ;
+    //----------------------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------------
+    vector<Real> control_pts(bspline_space->get_num_basis()) ;
+
+    if (dim == 2)
     {
         int id = 0 ;
+
+        // x coords
         control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
 
         control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
 
         control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+
+        // y coords
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
         control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 0.0 ;
     }
     else if (dim == 3)
     {
         int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
 
+        // x coords
         control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
 
         control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+
+
+        // y coords
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 0.0 ;
+
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 2.0 ;
+        control_pts[id++] = 0.0 ;
+
+        // z coords
         control_pts[id++] = 0.0 ;
         control_pts[id++] = 0.0 ;
         control_pts[id++] = 0.0 ;
@@ -148,6 +188,8 @@ void run_test()
         control_pts[id++] = 0.0 ;
         control_pts[id++] = 0.0 ;
         control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+
         control_pts[id++] = 0.5 ;
         control_pts[id++] = 0.5 ;
         control_pts[id++] = 0.5 ;
@@ -157,6 +199,7 @@ void run_test()
         control_pts[id++] = 0.5 ;
         control_pts[id++] = 0.5 ;
         control_pts[id++] = 0.5 ;
+
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
         control_pts[id++] = 1.0 ;
@@ -169,35 +212,27 @@ void run_test()
 
     }
 
+
+
+    auto map = IgMapping<Space_t>::create(bspline_space, control_pts) ;
+
+
     QGauss<dim> quad(3);
-    auto map = IgMapping<Space_t>::create(bspline_space, control_pts);
-    ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
+    const auto points = quad.get_points().get_flat_cartesian_product();
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values = elem->evaluate_values_at_points(points);
+    auto gradients = elem->evaluate_gradients_at_points(points);
+    auto hessians = elem->evaluate_hessians_at_points(points);
 
-    out << "Dim: " << dim << endl;
-    out << "Degree: " << p << endl;
-    out << "Points: " << endl;
-    out << quad.get_points().get_flat_cartesian_product() << endl;
-    out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
     gradients.print_info(out);
-    out << endl;
-    out << "Hessians:" << endl;
     hessians.print_info(out);
-    out << endl;
 
     string filename = "bspline_map-" + to_string(dim) + "d";
-    Writer<dim,dim> writer(map, 4);
-    writer.save(filename);
+    Writer<dim> writer(map, 4);
+    writer.save(filename) ;
 
 }
 
@@ -205,8 +240,7 @@ int main()
 {
     out.depth_console(10);
 
-    run_test<1>();
-    run_test<2>();
-    run_test<3>();
+    test_evaluate<2>();
+    test_evaluate<3>();
 
 }
