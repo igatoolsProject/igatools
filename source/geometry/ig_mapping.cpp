@@ -316,6 +316,29 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) 
 }
 
 
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+{
+    values = cache_->evaluate_field_values_at_points(this->get_control_points_elem(),points);
+}
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+{
+    gradients = cache_->evaluate_field_gradients_at_points(this->get_control_points_elem(),points);
+}
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+{
+    hessians = cache_->evaluate_field_hessians_at_points(this->get_control_points_elem(),points);
+}
 
 
 template<class RefSpace>

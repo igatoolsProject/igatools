@@ -369,6 +369,7 @@ public:
 
     /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
     ///@{
+    void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const override final;
     void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
     void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
     ///@}

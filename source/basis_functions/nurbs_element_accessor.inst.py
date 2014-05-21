@@ -55,6 +55,15 @@ f.write('template class %s ;\n' %sp)
 f.write('template class GridForwardIterator<%s> ;\n' %sp)
 
 
+function = ('template  ValueTable< Conditional< deriv_order==0,'+
+            sp + '::Value,' +
+            sp + '::Derivative<deriv_order> > > ' + 
+            sp + 
+            '::evaluate_basis_derivatives_at_points<deriv_order>' +
+            '(const vector<Point<0>>&) const; \n')
+fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
+for s in fun_list:
+    f.write(s)
 
 
 

@@ -1272,24 +1272,7 @@ set_face_element(const Index face_id,
 
 void CylindricalAnnulus::evaluate(vector<ValueType> &values) const
 {
-    const Size num_points = points_.size();
-
-    Assert(Size(values.size()) == num_points,
-           ExcDimensionMismatch(values.size(),num_points));
-    for (int iPt = 0; iPt < num_points; iPt++)
-    {
-        auto &F = values[iPt];
-
-        const auto &pt = points_[iPt];
-
-        const Real theta = pt[0];
-        const Real r     = pt[1];
-        const Real z     = pt[2];
-
-        F[0] = (dR_ * r + r0_) * cos(dT_ * theta);
-        F[1] = (dR_ * r + r0_) * sin(dT_ * theta);
-        F[2] = h0_ + z * dH_;
-    }
+    this->evaluate_at_points(points_,values);
 }
 
 
@@ -1315,25 +1298,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-    auto &face_points = face_points_[face_id] ;
-    const Size num_points = face_points.size();
-
-    Assert(Size(values.size()) == num_points,
-           ExcDimensionMismatch(values.size(),num_points));
-    for (int iPt = 0; iPt < num_points; iPt++)
-    {
-        auto &F = values[iPt];
-
-        const auto &pt = face_points[iPt];
-
-        const Real theta = pt[0];
-        const Real r     = pt[1];
-        const Real z     = pt[2];
-
-        F[0] = (dR_ * r + r0_) * cos(dT_ * theta);
-        F[1] = (dR_ * r + r0_) * sin(dT_ * theta);
-        F[2] = h0_ + z * dH_;
-    }
+    this->evaluate_at_points(face_points_[face_id],values);
 }
 
 
@@ -1344,8 +1309,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-    auto &face_points = face_points_[face_id] ;
-    this->evaluate_gradients_at_points(face_points,gradients);
+    this->evaluate_gradients_at_points(face_points_[face_id],gradients);
 }
 
 
@@ -1356,11 +1320,34 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-    auto &face_points = face_points_[face_id] ;
-    this->evaluate_hessians_at_points(face_points,hessians);
+    this->evaluate_hessians_at_points(face_points_[face_id],hessians);
 }
 
 
+
+void
+CylindricalAnnulus::
+evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+{
+    const Size num_points = points.size();
+
+    Assert(Size(values.size()) == num_points,
+           ExcDimensionMismatch(values.size(),num_points));
+    for (int iPt = 0; iPt < num_points; iPt++)
+    {
+        auto &F = values[iPt];
+
+        const auto &pt = points[iPt];
+
+        const Real theta = pt[0];
+        const Real r     = pt[1];
+        const Real z     = pt[2];
+
+        F[0] = (dR_ * r + r0_) * cos(dT_ * theta);
+        F[1] = (dR_ * r + r0_) * sin(dT_ * theta);
+        F[2] = h0_ + z * dH_;
+    }
+}
 
 void
 CylindricalAnnulus::
