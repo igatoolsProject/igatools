@@ -261,21 +261,50 @@ vector<Point<dim>>
     vector<Point<dim>> points_ref_domain(n_points);
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
-        const auto &point_in = points_unit_domain[ipt];
-        auto &point_out = points_ref_domain[ipt];
+        const auto &point_unit_domain = points_unit_domain[ipt];
+        auto &point_ref_domain = points_ref_domain[ipt];
         for (int i = 0 ; i < dim ; ++i)
         {
-            Assert(point_in[i] >= 0.0 && point_in[i] <= 1.0,
+            Assert(point_unit_domain[i] >= 0.0 && point_unit_domain[i] <= 1.0,
             ExcMessage("The coordinate of the point " + std::to_string(ipt) +
             " along the direction " + std::to_string(i) +
             " is not in the unit hypercube [0,1]^" + std::to_string(dim)));
-            point_out[i] = point_in[i] * dilate[i] + translate[i];
+            point_ref_domain[i] = point_unit_domain[i] * dilate[i] + translate[i];
         } // end loop i
     }
 
     return points_ref_domain;
 }
 
+
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+transform_points_reference_to_unit(const vector<Point<dim>> &points_ref_domain) const ->
+vector<Point<dim>>
+{
+    const int n_points = points_ref_domain.size();
+    Assert(n_points > 0,ExcEmptyObject());
+
+
+    const auto translate = this->vertex(0);
+    const auto dilate    = this->get_coordinate_lengths();
+
+    vector<Point<dim>> points_unit_domain(n_points);
+    for (int ipt = 0 ; ipt < n_points ; ++ipt)
+    {
+        const auto &point_ref_domain = points_ref_domain[ipt];
+        Assert(this->is_point_inside(point_ref_domain),
+        ExcMessage("The point " + std::to_string(ipt) +
+        " is not in this CartesianGridElement."));
+
+        auto &point_unit_domain = points_unit_domain[ipt];
+        for (int i = 0 ; i < dim ; ++i)
+            point_unit_domain[i] = (point_ref_domain[i] - translate[i]) / dilate[i] ;
+    }
+
+    return points_ref_domain;
+}
 
 template <int dim_>
 void
