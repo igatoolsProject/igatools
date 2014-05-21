@@ -281,17 +281,15 @@ transform_gradients(
 
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
 
-    for (Index j_pt = 0; j_pt < num_points; ++j_pt)
-    {
-        const auto &DF_inv = inv_gradients_map[j_pt];
-
-        for (int i_fn = 0; i_fn < n_func; ++i_fn)
+    for (int i_fn = 0; i_fn < n_func; ++i_fn)
+        for (Index j_pt = 0; j_pt < num_points; ++j_pt)
         {
+            const auto &DF_inv = inv_gradients_map[j_pt];
+
             (*D1v_iterator) = compose((*D1v_hat_iterator), DF_inv);
             ++D1v_hat_iterator ;
             ++D1v_iterator ;
         }
-    }
 }
 
 
@@ -362,7 +360,7 @@ transform_gradients(
             ++Dv_iterator ;
             ++Dv_hat_iterator ;
             ++v_hat_iterator ;
-        }
+        } // end loop j_pt
 }
 
 
@@ -400,16 +398,13 @@ transform_hessians(
     auto D2v_hat_iterator = D2v_hat.cbegin();
     auto D2v_iterator = D2v.begin();
 
-//    LogStream out;
-    for (int jpt = 0; jpt < num_points; ++jpt)
-    {
-
-//        const auto &DF  = gradients_map[jpt];
-        const auto &DF_inv  = inv_gradients_map[jpt];
-        const auto &D2F_inv = inv_hessians_map[jpt];
-
-        for (int ifn = 0; ifn < n_func; ++ifn)
+    for (int ifn = 0; ifn < n_func; ++ifn)
+        for (int jpt = 0; jpt < num_points; ++jpt)
         {
+
+            const auto &DF_inv  = inv_gradients_map[jpt];
+            const auto &D2F_inv = inv_hessians_map[jpt];
+
             //TODO: create a tensor compose to get rid of for loop here
             for (int u = 0; u < dim; u++)
             {
@@ -430,8 +425,7 @@ transform_hessians(
             ++D1v_hat_iterator;
             ++D2v_hat_iterator;
             ++D2v_iterator;
-        } // end loop ifn
-    } // end loop jpt
+        } // end loop jpt
 }
 
 
@@ -531,16 +525,15 @@ transform_basis_derivatives_at_points(
         inverse<dim,space_dim>(gradients_map[i],inv_gradients_map[i]);
 
 
-    for (Index j_pt = 0; j_pt < num_points; ++j_pt)
-    {
-        const auto &DF_inv = inv_gradients_map[j_pt];
-        for (int i_fn = 0; i_fn < n_func; ++i_fn)
+    for (int i_fn = 0; i_fn < n_func; ++i_fn)
+        for (Index j_pt = 0; j_pt < num_points; ++j_pt)
         {
+            const auto &DF_inv = inv_gradients_map[j_pt];
+
             (*D1phi_iterator) = compose((*D1phi_hat_iterator), DF_inv);
             ++D1phi_hat_iterator ;
             ++D1phi_iterator ;
         }
-    }
 }
 
 
@@ -590,13 +583,12 @@ transform_basis_derivatives_at_points(
     auto D2phi_hat_iterator = D2phi_hat.cbegin();
     auto D2phi_iterator = D2phi.begin();
 
-    for (int jpt = 0; jpt < num_points; ++jpt)
-    {
-        const auto &DF_inv  = inv_gradients_map[jpt];
-        const auto &D2F_inv = inv_hessians_map[jpt];
-
-        for (int ifn = 0; ifn < n_func; ++ifn)
+    for (int ifn = 0; ifn < n_func; ++ifn)
+        for (int jpt = 0; jpt < num_points; ++jpt)
         {
+            const auto &DF_inv  = inv_gradients_map[jpt];
+            const auto &D2F_inv = inv_hessians_map[jpt];
+
             for (int u = 0; u < dim; u++)
             {
                 const auto tmp_u = action((*D2phi_hat_iterator),DF_inv[u]);
@@ -609,8 +601,7 @@ transform_basis_derivatives_at_points(
             ++D1phi_hat_iterator;
             ++D2phi_hat_iterator;
             ++D2phi_iterator;
-        } // end loop ifn
-    } // end loop jpt
+        } // end loop jpt
 
 }
 
