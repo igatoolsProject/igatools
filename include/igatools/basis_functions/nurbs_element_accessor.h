@@ -191,6 +191,11 @@ public:
 
 private:
 
+    /**
+     * For each component gives a product array of the dimension
+     */
+    template<class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
 
 
     /**
