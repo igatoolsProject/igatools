@@ -894,8 +894,8 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     ++R_it;
                 } // end loop jpt
                 ++W_it;
-            } // end loop comp
-        } // end loop ifn
+            } // end loop ifn
+        } // end loop comp
 
     } // end if (deriv_order == 0)
     else if (deriv_order == 1)
@@ -942,8 +942,8 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     ++DR_it;
                 } // end loop jpt
                 ++W_it;
-            } // end loop comp
-        } // end loop ifn
+            } // end loop ifn
+        } // end loop comp
 
     } // end else if (deriv_order == 1)
     else if (deriv_order == 2)
@@ -990,8 +990,10 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     for (int i = 0 ; i < dim ; ++i)
                         for (int j = 0 ; j < dim ; ++j, ++der_entry_id)
                             D2R(der_entry_id)(comp) = (W/Q) *(D2P(der_entry_id)(comp)
-                                                              - (P * D2Q(der_entry_id)(comp) + DP(i)(comp) * DQ(j)(comp) + DP(j)(comp) * DQ(i)(comp)) / Q
-                                                              +  DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                                                              - (P * D2Q(der_entry_id)(comp) +
+                                                                 DP(i)(comp) * DQ(j)(comp) +
+                                                                 DP(j)(comp) * DQ(i)(comp)) / Q +
+                                                              DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
                     ++P_it;
                     ++Q_it;
 
@@ -1004,8 +1006,8 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     ++D2R_it;
                 } // end loop jpt
                 ++W_it;
-            } // end loop comp
-        } // end loop ifn
+            } // end loop ifn
+        } // end loop comp
 
     } // end else if (deriv_order == 2)
 
