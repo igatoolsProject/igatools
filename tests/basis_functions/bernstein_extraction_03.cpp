@@ -222,32 +222,44 @@ int main()
     out.depth_console(10);
 
     {
-        const int dim = 1;
-        int degree = 1;
+        const int dim=1;
+        using SpaceSpec = SpaceSpec<dim>;
+        using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
 
-        CartesianProductArray<Real, dim> knots({{0,1,2,3}});
-        auto grid = CartesianGrid<dim>::create(knots);
+        typename SpaceSpec::DegreeTable deg{{2}};
 
-        typename BersteinExtraction<dim>::KnotsTable rep_knots({{0,0,1,2,3,3}});
-        typename BersteinExtraction<dim>::MultiplicityTable acum_mult ({{{0,2,3,4,6}}});
-        typename BersteinExtraction<dim>::DegreeTable deg{{degree}};
+        auto grid = CartesianGrid<dim>::create(4);
+
+        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
+        SpaceSpec sp_spec(grid, int_mult, deg);
+
+        CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+        typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bn_x} };
+        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+        auto acum_mult = sp_spec.compute_elements_index_space_mark();
+
+
         BersteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
         operators.print_info(out);
     }
 
-
     {
-        const int dim = 2;
-        int degree = 1;
+        const int dim=1;
+        using SpaceSpec = SpaceSpec<dim>;
+        using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
 
-        CartesianProductArray<Real, dim> knots({{0,1,2,3}, {3,4,5}});
+        typename SpaceSpec::DegreeTable deg{{3}};
+
+        CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
         auto grid = CartesianGrid<dim>::create(knots);
 
-        typename BersteinExtraction<dim>::KnotsTable
-        rep_knots({{0,0,1,2,3,3},{3,3,4,5,5}});
-        typename BersteinExtraction<dim>::MultiplicityTable
-        acum_mult ({{{0,2,3,4,6}, {0,2,3,5}}});
-        typename BersteinExtraction<dim>::DegreeTable deg{{degree, degree}};
+        SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
+
+
+        auto rep_knots = sp_spec.compute_knots_with_repetition(SpaceSpec::EndBehaviour::interpolatory);
+        auto acum_mult = sp_spec.compute_elements_index_space_mark();
+
+
         BersteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
         operators.print_info(out);
     }

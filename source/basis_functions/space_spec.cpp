@@ -202,10 +202,10 @@ compute_elements_index_space_mark() const -> MultiplicityTable
             const auto &mult  = (*interior_mult_)(iComp).get_data_direction(j);
             std::vector<Size> accum_mult;
             const int size = mult.size();
-            accum_mult.reserve(size + 1);
+            accum_mult.reserve(size + 2);
             accum_mult.push_back(0);
             accum_mult.push_back(order);
-            for (int i = 0; i < size-1; ++i)
+            for (int i = 0; i < size; ++i)
                 accum_mult.push_back(accum_mult[i+1] + mult[i]);
 
             result(iComp).copy_data_direction(j, accum_mult);
@@ -241,15 +241,17 @@ auto
 SpaceSpec<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
 {
     BoundaryKnotsTable result;
+
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
         BoundaryKnots bdry_knots;
         for (int j = 0; j < dim; ++j)
         {
+            const auto &knots = this->get_grid()->get_knot_coordinates(j);
             const auto deg = deg_(iComp)[j];
             const auto order = deg + 1;
-            const Real a = 0;
-            const Real b = 1;
+            const Real a = knots.front();
+            const Real b = knots.back();
             std::vector<Real> vec_left(order, a);
             std::vector<Real> vec_right(order, b);
             bdry_knots[j].copy_data_direction(0, vec_left);
