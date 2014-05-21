@@ -34,6 +34,15 @@ using boost::numeric::ublas::matrix;
 using boost::numeric::ublas::matrix_row;
 
 
+/**
+ * A spline function restricted to each interval determined by
+ * the knots is a polynomial of order m.
+ *
+ * In particular each B-spline can be expressed a linear combination
+ * of the Berstein polynomial.
+ *
+ * This class computes and stores theses coefficients.
+ */
 template<int dim, int range = 1, int rank = 1>
 class BersteinExtraction
 {
@@ -48,22 +57,26 @@ private:
     using OperatorsTable = typename Space::template ComponentContainer<Operators>;
 
 public:
-
+    /**
+     * Construct the extraction operators.
+     */
     BersteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
                        const KnotsTable &rep_knots,
                        const MultiplicityTable &acum_mult,
                        const DegreeTable &deg);
 
+    /**
+     * Print the class content
+     */
+    void print_info(LogStream &out) const;
 
+private:
     vector<matrix<Real>>
     fill_extraction(const int m,
                     const vector<Real>    &knots,
                     const vector<Real>    &rep_knots,
                     const vector<Index>   &acum_mult);
 
-    void print_info(LogStream &out) const;
-
-private:
     matrix<Real> compute(const matrix<Real> &M_j_1,
                          typename vector<Real>::const_iterator  y,
                          const Real a,
