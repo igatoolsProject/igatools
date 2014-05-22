@@ -388,13 +388,21 @@ QGaussLobatto< dim >::create(const TensorSize<dim> num_points, const Real eps_sc
 
 
 template< int dim >
-QUniform<dim>::QUniform(const Size num_points)
+QUniform<dim>::QUniform(const Size num_points, const Real eps_scaling)
     :
     Quadrature< dim >(num_points)
 {
+    Assert(eps_scaling >= iga::Real(0.0) && eps_scaling < iga::Real(0.5),
+           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
+
     vector<Real> points(num_points);
     vector<Real> weights(num_points);
     uniform_quadrature(num_points, points, weights);
+
+    if (eps_scaling > 0)
+        for (int ip = 0; ip < num_points; ++ip)
+            points[ip] = 0.5 + (points[ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
+
     for (int i = 0; i < dim; ++i)
     {
         this->points_.copy_data_direction(i,points);
@@ -406,10 +414,13 @@ QUniform<dim>::QUniform(const Size num_points)
 
 
 template< int dim >
-QUniform<dim>::QUniform(const TensorSize<dim> num_points)
+QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling)
     :
     Quadrature< dim >(num_points)
 {
+    Assert(eps_scaling >= iga::Real(0.0) && eps_scaling < iga::Real(0.5),
+           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
+
     vector<Real> points;
     vector<Real> weights;
     for (int i = 0; i < dim; ++i)
@@ -418,6 +429,10 @@ QUniform<dim>::QUniform(const TensorSize<dim> num_points)
         weights.resize(num_points(i));
         uniform_quadrature(num_points(i), points, weights);
 
+        if (eps_scaling > 0)
+            for (int ip = 0; ip < num_points(i); ++ip)
+                points[ip] = 0.5 + (points[ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
+
         this->points_.copy_data_direction(i,points);
         this->weights_.copy_data_direction(i,weights);
     }
@@ -426,9 +441,9 @@ QUniform<dim>::QUniform(const TensorSize<dim> num_points)
 
 
 template< int dim >
-QTrapez<dim>::QTrapez()
+QTrapez<dim>::QTrapez(const Real eps_scaling)
     :
-    QUniform<dim>(2)
+    QUniform<dim>(2, eps_scaling)
 {}
 
 IGA_NAMESPACE_CLOSE
