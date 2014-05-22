@@ -21,6 +21,7 @@
 
 #include <igatools/basis_functions/multi_patch_space.h>
 #include <igatools/basis_functions/physical_space.h>
+#include <igatools/utils/vector_tools.h>
 
 using std::string;
 using std::vector;
@@ -54,8 +55,22 @@ arrangement_close()
         ref_spaces.push_back(phys_space->get_reference_space());
 
 
+    vector<shared_ptr<const RefSpace>> ref_spaces_no_duplicates;
+    vector<int> ref_spaces_multiplicities;
+    vector_tools::count_and_remove_duplicates(
+        ref_spaces,ref_spaces_no_duplicates,ref_spaces_multiplicities) ;
 
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
     // check that a reference space is used in only one physical space -- end
+    //------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------
+    // check that a mapping is used in only one reference space -- begin
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    // check that a mapping is used in only one reference space -- end
     //------------------------------------------------------------------------
 }
 
