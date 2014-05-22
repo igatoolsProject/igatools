@@ -315,16 +315,18 @@ public:
      * Constructor.
      * Builds a uniform quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
      * with \p num_points points in each coordinate direction.
+     * The eps argument allows to do a local scaling of the quadrature points.
      */
-    explicit QUniform(const Size num_points) ;
+    explicit QUniform(const Size num_points, const Real eps_scaling = 0.0) ;
 
     /**
      * Constructor.
      * Builds a uniform quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
      * with a (possibly) different number of points in each coordinate direction.
      * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
+     * The eps argument allows to do a local scaling of the quadrature points.
      */
-    explicit QUniform(const TensorSize<dim> num_points) ;
+    explicit QUniform(const TensorSize<dim> num_points, const Real eps_scaling = 0.0) ;
 
     /**
      * Copy constructor. Performs a deep copy of the QUniform<dim> object.
@@ -364,7 +366,13 @@ class QTrapez :
     public QUniform<dim>
 {
 public:
-    explicit QTrapez();
+    /**
+     * Constructor.
+     * Builds a trapezoidal quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$,
+     * exact for linear polynomials.
+     * The eps argument allows to do a local scaling of the quadrature points.
+     */
+    explicit QTrapez(const Real eps_scaling = 0.0);
 
     /**
      * Copy constructor. Performs a deep copy of the QTrapez<dim> object.
