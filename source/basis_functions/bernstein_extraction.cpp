@@ -17,88 +17,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for bezier extraction
- *  author: pauletti
- *  date:
- *
- */
 
-#include "../tests.h"
-#include <igatools/basis_functions/space_spec.h>
-#include <boost/numeric/ublas/matrix.hpp>
+#include <igatools/basis_functions/bernstein_extraction.h>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-using boost::numeric::ublas::matrix;
+using std::endl;
+using std::array;
+using std::vector;
+using std::shared_ptr;
+using std::make_shared;
 using boost::numeric::ublas::matrix_row;
 
-
-/**
- * A spline function restricted to each interval determined by
- * the knots is a polynomial of order m.
- *
- * In particular each B-spline can be expressed a linear combination
- * of the Berstein polynomial.
- *
- * This class computes and stores theses coefficients.
- */
-template<int dim, int range = 1, int rank = 1>
-class BersteinExtraction
-{
-public:
-    using Space = SpaceSpec<dim, range, rank>;
-    using DegreeTable = typename Space::DegreeTable;
-    using KnotsTable = typename Space::KnotsTable;
-    using MultiplicityTable = typename Space::MultiplicityTable;
-
-private:
-    using Operators = CartesianProductArray<matrix<Real>, dim>;
-    using OperatorsTable = typename Space::template ComponentContainer<Operators>;
-
-public:
-    /**
-     * Construct the extraction operators.
-     */
-    BersteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
-                       const KnotsTable &rep_knots,
-                       const MultiplicityTable &acum_mult,
-                       const DegreeTable &deg);
-
-    /**
-     * Print the class content
-     */
-    void print_info(LogStream &out) const;
-
-private:
-    vector<matrix<Real>>
-    fill_extraction(const int m,
-                    const vector<Real>    &knots,
-                    const vector<Real>    &rep_knots,
-                    const vector<Index>   &acum_mult);
-
-    matrix<Real> compute(const matrix<Real> &M_j_1,
-                         typename vector<Real>::const_iterator  y,
-                         const Real a,
-                         const Real b);
-
-private:
-    OperatorsTable ext_operators;
-
-};
-
-
+IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
 auto
-BersteinExtraction<dim, range, rank>::
-compute(const matrix<Real> &M_j_1,
+BernsteinExtraction<dim, range, rank>::
+compute(const matrix &M_j_1,
         typename vector<Real>::const_iterator  y,
         const Real a,
-        const Real b) -> matrix<Real>
+        const Real b) -> matrix
 {
     const int j = M_j_1.size1() + 1;
-    matrix<Real> M_j(j,j);
+    matrix M_j(j,j);
 
     vector<Real> alpha(j);
     vector<Real> one_alpha(j,1);
@@ -144,7 +86,7 @@ compute(const matrix<Real> &M_j_1,
 
 template<int dim, int range, int rank>
 void
-BersteinExtraction<dim, range, rank>::
+BernsteinExtraction<dim, range, rank>::
 print_info(LogStream &out) const
 {
     int c=0;
@@ -164,15 +106,15 @@ print_info(LogStream &out) const
 
 template<int dim, int range, int rank>
 auto
-BersteinExtraction<dim, range, rank>::
+BernsteinExtraction<dim, range, rank>::
 fill_extraction(const int m,
                 const vector<Real>    &knots,
                 const vector<Real>    &rep_knots,
-                const vector<Index>   &acum_mult) -> vector<matrix<Real>>
+                const vector<Index>   &acum_mult) -> vector<matrix>
 {
     const int n_elem = knots.size()-1;
 
-    vector<matrix<Real>>  operators(n_elem, matrix<Real>(m,m));
+    vector<matrix>  operators(n_elem, matrix(m,m));
     const auto &x = knots;
     const auto &y = rep_knots;
 
@@ -181,7 +123,7 @@ fill_extraction(const int m,
         const auto a = x[n];
         const auto b = x[n+1];
 
-        matrix<Real> M(1,1);
+        matrix M(1,1);
         M(0,0) = 1/(b-a);
         for(int j = 2; j<=m; ++j)
         {
@@ -196,7 +138,7 @@ fill_extraction(const int m,
         const int s = acum_mult[n+1] - m;
         for (int k = 0; k < m; ++k)
         {
-            matrix_row<matrix<double> > mr(M2, k);
+            matrix_row<matrix> mr(M2, k);
             mr *= (y[s+k+m]-y[s+k]);
         }
         operators[n] = M2;
@@ -207,8 +149,8 @@ fill_extraction(const int m,
 
 
 template<int dim, int range, int rank>
-BersteinExtraction<dim, range, rank>::
-BersteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
+BernsteinExtraction<dim, range, rank>::
+BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
                    const KnotsTable &rep_knots,
                    const MultiplicityTable &acum_mult,
                    const DegreeTable &deg)
@@ -228,54 +170,7 @@ BersteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
     }
 }
 
+IGA_NAMESPACE_CLOSE
 
+#include <igatools/basis_functions/bernstein_extraction.inst>
 
-int main()
-{
-    out.depth_console(10);
-
-    {
-        const int dim=1;
-        using SpaceSpec = SpaceSpec<dim>;
-        using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
-
-        typename SpaceSpec::DegreeTable deg{{2}};
-
-        auto grid = CartesianGrid<dim>::create(4);
-
-        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
-        SpaceSpec sp_spec(grid, int_mult, deg);
-
-        CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-        typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bn_x} };
-        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-        auto acum_mult = sp_spec.compute_elements_index_space_mark();
-
-
-        BersteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
-        operators.print_info(out);
-    }
-
-    {
-        const int dim=1;
-        using SpaceSpec = SpaceSpec<dim>;
-        using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
-
-        typename SpaceSpec::DegreeTable deg{{3}};
-
-        CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
-        auto grid = CartesianGrid<dim>::create(knots);
-
-        SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
-
-
-        auto rep_knots = sp_spec.compute_knots_with_repetition(SpaceSpec::EndBehaviour::interpolatory);
-        auto acum_mult = sp_spec.compute_elements_index_space_mark();
-
-
-        BersteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
-        operators.print_info(out);
-    }
-
-    return 0;
-}

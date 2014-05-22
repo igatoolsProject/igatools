@@ -171,7 +171,7 @@ private:
 
 public:
     /**
-     *  Class to manage the component quantities with the knolwge of
+     *  Class to manage the component quantities with the knowledge of
      * uniform range spaces
      */
     template<class T>
@@ -201,6 +201,8 @@ public:
          */
         const T &operator()(const Index i) const;
 
+        const std::vector<Index> &get_active_components()
+        {return active_components_;}
     private:
         /** For each component return de index of the active component */
         std::array <Index, n_entries> comp_map_;
