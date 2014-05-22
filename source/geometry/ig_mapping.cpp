@@ -321,7 +321,8 @@ void
 IgMapping<RefSpace>::
 evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
 {
-    values = cache_->evaluate_field_values_at_points(this->get_control_points_elem(),points);
+    const auto points_unit_element = cache_->transform_points_reference_to_unit(points);
+    values = cache_->evaluate_field_values_at_points(this->get_control_points_elem(),points_unit_element);
 }
 
 template<class RefSpace>
@@ -329,7 +330,8 @@ void
 IgMapping<RefSpace>::
 evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
 {
-    gradients = cache_->evaluate_field_gradients_at_points(this->get_control_points_elem(),points);
+    const auto points_unit_element = cache_->transform_points_reference_to_unit(points);
+    gradients = cache_->evaluate_field_gradients_at_points(this->get_control_points_elem(),points_unit_element);
 }
 
 template<class RefSpace>
@@ -337,7 +339,8 @@ void
 IgMapping<RefSpace>::
 evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
 {
-    hessians = cache_->evaluate_field_hessians_at_points(this->get_control_points_elem(),points);
+    const auto points_unit_element = cache_->transform_points_reference_to_unit(points);
+    hessians = cache_->evaluate_field_hessians_at_points(this->get_control_points_elem(),points_unit_element);
 }
 
 
