@@ -93,6 +93,32 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 }
 
 
+template<int dim_, int codim_>
+void
+Mapping<dim_,codim_>::
+evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+{
+    Assert(false,ExcMessage("This function must be implemented by the concrete class derived from Mapping")) ;
+    AssertThrow(false, ExcMessage("This function must be implemented by the concrete class derived from Mapping"));
+}
+
+template<int dim_, int codim_>
+void
+Mapping<dim_,codim_>::
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+{
+    Assert(false,ExcMessage("This function must be implemented by the concrete class derived from Mapping")) ;
+    AssertThrow(false, ExcMessage("This function must be implemented by the concrete class derived from Mapping"));
+}
+
+template<int dim_, int codim_>
+void
+Mapping<dim_,codim_>::
+evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+{
+    Assert(false,ExcMessage("This function must be implemented by the concrete class derived from Mapping")) ;
+    AssertThrow(false, ExcMessage("This function must be implemented by the concrete class derived from Mapping"));
+}
 
 template<int dim_, int codim_>
 Mapping<dim_,codim_>::

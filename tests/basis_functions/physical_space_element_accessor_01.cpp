@@ -18,7 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the physical space refinement
+ *  Test for the evaluation of physical space basis functions
+ *  values and gradients (with the use of the cache and with the identity mapping).
  *
  *  author: pauletti
  *  date: 2013-10-02

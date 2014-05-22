@@ -182,6 +182,26 @@ public:
     bool is_boundary(const Index face_id) const;
     ///@}
 
+
+    /**
+     * This function take as input a vector of points in the unitary hypercube [0,1]^{dim}
+     * and returns the points mapped over the domain (in the parametric coordinate system)
+     * represented by this GridElementAccessor.
+     */
+    std::vector<Point<dim> >
+    transform_points_unit_to_reference(const std::vector<Point<dim>> &point_unit_domain) const;
+
+    /**
+     * This function takes as input argument a vector of points over the element
+     * represented by this GridElementAccessor
+     * (i.e. the point coordinates are in the parametric coordinate system)
+     * and returns the points mapped over the
+     * points unitary hypercube [0,1]^{dim}.
+     */
+    std::vector<Point<dim> >
+    transform_points_reference_to_unit(const std::vector<Point<dim>> &point_reference_domain) const;
+
+
     /**
      * Prints internal information about the CartesianGridElement.
      * Its main use is for testing and debugging.

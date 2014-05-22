@@ -334,7 +334,8 @@ operator()(const int i) const
 
 template<int dim_, int rank_, class tensor_type, class value_type >
 inline
-Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor< dim_, rank_, tensor_type, value_type > &
+Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(const Real value)
 {
     Assert(value==0.0 || (dim_ == 1 && rank_ == 1),
@@ -353,7 +354,8 @@ operator=(const Real value)
 
 template<int dim_, int rank_, class tensor_type, class value_type >
 inline
-Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor< dim_, rank_, tensor_type, value_type > &
+Tensor< dim_, rank_, tensor_type, value_type >::
 operator+=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 {
     for (int i = 0 ; i < dim_ ; i++)
@@ -366,7 +368,8 @@ operator+=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 
 template<int dim_, int rank_, class tensor_type, class value_type >
 inline
-Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor< dim_, rank_, tensor_type, value_type > &
+Tensor< dim_, rank_, tensor_type, value_type >::
 operator-=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 {
     for (int i = 0 ; i < dim_ ; i++)
@@ -379,7 +382,8 @@ operator-=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 
 template<int dim_, int rank_, class tensor_type, class value_type >
 inline
-Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor< dim_, rank_, tensor_type, value_type > &
+Tensor< dim_, rank_, tensor_type, value_type >::
 operator*=(const Real value)
 {
     Assert(!std::isnan(value),ExcNotANumber());
@@ -395,7 +399,8 @@ operator*=(const Real value)
 
 template<int dim_, int rank_, class tensor_type, class value_type >
 inline
-Tensor< dim_, rank_, tensor_type, value_type > &Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor< dim_, rank_, tensor_type, value_type > &
+Tensor< dim_, rank_, tensor_type, value_type >::
 operator/=(const Real value)
 {
     Assert(!std::isnan(value),ExcNotANumber());
@@ -404,6 +409,19 @@ operator/=(const Real value)
 
     for (auto & tensor_component : tensor_)
         tensor_component /= value ;
+
+    return *this ;
+}
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
+inline
+Tensor< dim_, rank_, tensor_type, value_type > &
+Tensor< dim_, rank_, tensor_type, value_type >::
+operator-()
+{
+    for (auto & tensor_component : tensor_)
+        tensor_component = -tensor_component ;
 
     return *this ;
 }

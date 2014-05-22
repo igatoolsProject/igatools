@@ -111,7 +111,7 @@ public:
                           const ValueFlags fill_flag,
                           const Quadrature<dim-1> &quad) ;
 
-    /** @name Mapping used for transforming quantities   */
+    /** @name Mapping used for transforming quantities with the use of the cache  */
     ///@{
     /**
      * Transform values of scalar, vector or tensor fields from
@@ -193,6 +193,59 @@ public:
     ///@}
 
 
+    /** @name Mapping used for transforming quantities without the use of the cache  */
+    ///@{
+
+    /**
+     * Transform values of scalar, vector or tensor fields from
+     * the reference domain to the physical one.
+     * The templates arguments indicate the value type and the container type
+     * of object to be transformed.
+    */
+    template < int dim_range, int rank, template<class T> class Container, Transformation ttype=type >
+    void
+    transform_basis_derivatives_at_points(
+        const std::vector<Point<dim>> &points,
+        const Container< RefValue<dim_range, rank> > &phi_hat,
+        const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+        const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+        Container< PhysValue<dim_range,rank> > &phi,
+        typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
+
+    /**
+     * Transform gradients of scalar, vector or tensor fields from
+     * the reference domain to the physical one.
+     * The templates arguments indicate the value type and the container type
+     * of object to be transformed.
+    */
+    template < int dim_range, int rank,template<class T> class Container, Transformation ttype=type >
+    void
+    transform_basis_derivatives_at_points(
+        const std::vector<Point<dim>> &points,
+        const Container< RefValue<dim_range, rank> > &phi_hat,
+        const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+        const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+        Container< PhysDerivative<dim_range,rank,1> > &D1phi,
+        typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
+
+    /**
+     * Transform hessians of scalar, vector or tensor fields from
+     * the reference domain to the physical one.
+     * The templates arguments indicate the value type and the container type
+     * of object to be transformed.
+    */
+    template < int dim_range, int rank,template<class T> class Container, Transformation ttype=type >
+    void
+    transform_basis_derivatives_at_points(
+        const std::vector<Point<dim>> &points,
+        const Container< RefValue<dim_range, rank> > &phi_hat,
+        const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+        const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+        Container< PhysDerivative<dim_range,rank,2> > &D2phi,
+        typename std::enable_if<ttype == Transformation::h_grad>::type * = 0) const;
+
+    ///@}
+
 
     void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const ;
 
@@ -217,114 +270,6 @@ private:
     ValueFlags value_to_mapping_flag(const ValueFlags v_flag) const ;
 
 
-
-#if 0
-    /** @name Transformation used for the h_grad push-forward   */
-    ///@{
-
-    /**
-     * Transform values of scalar, vector or tensor fields from
-     * the reference domain to the physical one covariantly.
-     * The templates arguments indicate the value type and the container type
-     * of object to be transformed.
-    */
-    template < int dim_range, int rank,template<class T> class Container >
-    void
-    transform_values_h_grad(
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        Container< typename Derivatives< space_dim,dim_range, rank, 0>::value_t > &D0v) const;
-
-
-    /**
-     * Transform first derivatives of scalar, vector or tensor field from
-     * the reference domain to the physical on covariantly.
-     * The templates arguments indicate the value type and the container type
-     * of object to be transformed.
-     */
-    template < int dim_range, int rank,template<class T> class Container >
-    void
-    transform_gradients_h_grad(
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        const Container< Derivatives<dim,dim_range,rank,1> > &D1v_hat,
-        Container< Derivatives< space_dim,dim_range, rank, 1> > &D1v) const;
-
-    ///@}
-
-
-    /** @name Transformation used for the h_div (a.k.a. Piola) push-forward   */
-    ///@{
-
-    /**
-     * Transform the values of vector basis functions from
-     * the reference domain to the physical one using the h_div transformation
-     * (a.k.a. Piola transformation):
-     * \f[ (v \circ F) = \frac{1}{\det DF } DF \hat{v} \; . \f]
-     * The templates arguments indicate the value type and the container type of
-     * objects to be transformed.
-     *
-     * @note In order to call this function the following condition must be satisfied
-     * @code
-     * dim_range == space_dim && rank == 1
-     * @endcode
-     */
-    template < int dim_range, int rank,template<class T> class Container >
-    void
-    transform_values_h_div(
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        Container<Values< space_dim,dim_range, rank> > &D0v,
-        typename std::enable_if< dim_range == space_dim && rank == 1 >::type * = 0) const;
-
-    /**
-     * This function is there only for compatibility with the template parameters.
-     * If this function is called an exception will be raised.
-     * \warning If this function is called an exception will be raised.
-     */
-    template < int dim_range, int rank,template<class T> class Container >
-    void
-    transform_values_h_div(
-        const Container< RefValue<dim_range, rank> > &D0v_hat,
-        Container<Values< space_dim,dim_range, rank>> &D0v,
-        typename std::enable_if< !(dim_range == space_dim && rank == 1) >::type * = 0) const;
-
-
-    /**
-     * Transform the gradients of vector basis functions from
-     * the reference domain to the physical one using the h_div transformation
-     * (a.k.a. Piola transformation). For the gradients the transformation writes as
-     * \f[ Dv DF = \frac{1}{\det DF } \biggl( DF [D\hat{v}] + D^2F [\hat{v}] - (DF [\hat{v}]) \otimes (D^2F : DF^{-T}) \biggr) \; . \f]
-     * The templates arguments indicate the value type and the container type of
-     * objects to be transformed.
-     *
-     * @note In order to call this function the following condition must be satisfied
-     * @code
-     * dim_range == space_dim && rank == 1
-     * @endcode
-     */
-    template < int dim_range, int rank,template<class T> class Container >
-    void
-    transform_gradients_h_div(
-        const Container< Values<dim, dim_range, rank> > &D0v_hat,
-        const Container< Derivatives<dim,dim_range,rank,1> > &D1v_hat,
-        Container< Derivatives<space_dim,dim_range,rank,1> > &D1v,
-        typename std::enable_if< dim_range == space_dim && rank == 1 >::type * = 0) const;
-
-    /**
-     * This function is there only for compatibility with the template parameters.
-     * If this function is called an exception will be raised.
-     * \warning If this function is called an exception will be raised.
-     */
-    template < int dim_range, int rank,template<class T> class Container >
-    void
-    transform_gradients_h_div(
-        const Container< Values<dim, dim_range, rank> > &D0v_hat,
-        const Container< Derivatives<dim,dim_range,rank,1> > &D1v_hat,
-        Container< Derivatives<space_dim,dim_range,rank,1> > &D1v,
-        typename std::enable_if< !(dim_range == space_dim && rank == 1) >::type * = 0) const;
-
-
-
-    ///@}
-#endif
 } ;
 
 

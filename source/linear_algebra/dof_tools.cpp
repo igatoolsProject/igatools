@@ -308,7 +308,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
     //*/
 
     vector<Index> rows;
-    vector<PetscReal> values;
+    vector<PetscScalar> values;
 
     for (const auto &bv : boundary_values)
     {
@@ -316,7 +316,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         values.push_back(bv.second);
     }
 
-    const Real *values_ptr = values.data();
+    const PetscScalar *values_ptr = values.data();
 
     matrix.resume_fill();
     ierr = MatZeroRowsColumns(

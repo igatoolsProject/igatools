@@ -833,6 +833,188 @@ evaluate_nurbs_hessians(
 }
 
 
+template <int dim, int range, int rank >
+template <int deriv_order>
+auto
+NURBSElementAccessor< dim, range, rank >::
+evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
+ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+{
+    Assert(deriv_order >= 0 && deriv_order <= 2, ExcIndexRange(deriv_order,0,3));
+
+    const int n_points = points.size();
+    Assert(points.size() > 0, ExcEmptyObject());
+
+    const int n_basis = this->get_num_basis();
+
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > > result(n_basis,n_points);
+
+    ComponentTable<int> n_basis_component;
+    for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        n_basis_component(comp) = this->get_num_basis(comp);
+
+    const auto W_vector = this->get_local_weights();
+
+    if (deriv_order == 0)
+    {
+        const auto P_table = bspline_element_accessor_.evaluate_basis_values_at_points(points);
+        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(this->get_local_weights(),points);
+
+        LogStream out ;
+        out << "P table=" << std::endl;
+        P_table.print_info(out);
+        out << std::endl;
+
+        out << "Q table=" << std::endl;
+        Q_table.print_info(out);
+        out << std::endl;
+
+        auto P_it = P_table.cbegin();
+
+        auto R_it = result.begin();
+
+        auto W_it = W_vector.cbegin();
+        for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        {
+            for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
+            {
+                const auto &W = *W_it;
+                auto Q_it = Q_table.cbegin();
+                for (int jpt = 0 ; jpt < n_points ; jpt++)
+                {
+                    const auto &P = (*P_it)[comp];
+                    const auto &Q = (*Q_it)[comp];
+                    auto &R = (*R_it)[comp];
+
+                    R = W * P / Q;
+
+                    ++P_it;
+                    ++Q_it;
+
+                    ++R_it;
+                } // end loop jpt
+                ++W_it;
+            } // end loop ifn
+        } // end loop comp
+
+    } // end if (deriv_order == 0)
+    else if (deriv_order == 1)
+    {
+        const auto P_table = bspline_element_accessor_.evaluate_basis_values_at_points(points);
+        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(this->get_local_weights(),points);
+
+        const auto DP_table = bspline_element_accessor_.evaluate_basis_gradients_at_points(points);
+        const auto DQ_table = bspline_element_accessor_.evaluate_field_gradients_at_points(this->get_local_weights(),points);
+
+        auto P_it = P_table.cbegin();
+        auto DP_it = DP_table.cbegin();
+
+        auto DR_it = result.begin();
+
+
+        auto W_it = W_vector.cbegin();
+        for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        {
+            for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
+            {
+                const auto &W = *W_it;
+
+                auto Q_it = Q_table.cbegin();
+                auto DQ_it = DQ_table.cbegin();
+                for (int jpt = 0 ; jpt < n_points ; jpt++)
+                {
+                    const auto &P = (*P_it)[comp];
+                    const auto &Q = (*Q_it)[comp];
+
+                    const auto &DP = (*DP_it);
+                    const auto &DQ = (*DQ_it);
+
+                    auto &DR = (*DR_it);
+
+                    for (int i = 0 ; i < dim ; ++i)
+                        DR(i)(comp) = (W / (Q*Q)) * (DP(i)(comp) * Q - P * DQ(i)(comp));
+
+                    ++P_it;
+                    ++Q_it;
+
+                    ++DP_it;
+                    ++DQ_it;
+
+                    ++DR_it;
+                } // end loop jpt
+                ++W_it;
+            } // end loop ifn
+        } // end loop comp
+
+    } // end else if (deriv_order == 1)
+    else if (deriv_order == 2)
+    {
+        const auto P_table = bspline_element_accessor_.evaluate_basis_values_at_points(points);
+        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(this->get_local_weights(),points);
+
+        const auto DP_table = bspline_element_accessor_.evaluate_basis_gradients_at_points(points);
+        const auto DQ_table = bspline_element_accessor_.evaluate_field_gradients_at_points(this->get_local_weights(),points);
+
+        const auto D2P_table = bspline_element_accessor_.evaluate_basis_hessians_at_points(points);
+        const auto D2Q_table = bspline_element_accessor_.evaluate_field_hessians_at_points(this->get_local_weights(),points);
+
+        auto P_it = P_table.cbegin();
+        auto DP_it = DP_table.cbegin();
+        auto D2P_it = D2P_table.cbegin();
+
+        auto D2R_it = result.begin();
+
+
+        auto W_it = W_vector.cbegin();
+        for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        {
+            for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
+            {
+                const auto &W = *W_it;
+
+                auto Q_it = Q_table.cbegin();
+                auto DQ_it = DQ_table.cbegin();
+                auto D2Q_it = D2Q_table.cbegin();
+                for (int jpt = 0 ; jpt < n_points ; jpt++)
+                {
+                    const auto &P = (*P_it)[comp];
+                    const auto &Q = (*Q_it)[comp];
+
+                    const auto &DP = (*DP_it);
+                    const auto &DQ = (*DQ_it);
+
+                    const auto &D2P = (*D2P_it);
+                    const auto &D2Q = (*D2Q_it);
+
+                    auto &D2R = (*D2R_it);
+
+                    int der_entry_id = 0;
+                    for (int i = 0 ; i < dim ; ++i)
+                        for (int j = 0 ; j < dim ; ++j, ++der_entry_id)
+                            D2R(der_entry_id)(comp) = (W/Q) *(D2P(der_entry_id)(comp)
+                                                              - (P * D2Q(der_entry_id)(comp) +
+                                                                 DP(i)(comp) * DQ(j)(comp) +
+                                                                 DP(j)(comp) * DQ(i)(comp)) / Q +
+                                                              DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                    ++P_it;
+                    ++Q_it;
+
+                    ++DP_it;
+                    ++DQ_it;
+
+                    ++D2P_it;
+                    ++D2Q_it;
+
+                    ++D2R_it;
+                } // end loop jpt
+                ++W_it;
+            } // end loop ifn
+        } // end loop comp
+
+    } // end else if (deriv_order == 2)
+
+    return result;
+}
 
 template <int dim, int range, int rank >
 void

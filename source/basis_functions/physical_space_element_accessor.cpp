@@ -282,8 +282,25 @@ fill_values(const TopologyId<dim> &topology_id)
 
     if (cache.flags_handler_.fill_hessians())
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+        if (transformation_type == Transformation::h_grad)
+        {
+            ValueTable<typename RefElemAccessor::Value> dummy;
+            PfElemAccessor::
+            template transform_hessians<PhysSpace::range,PhysSpace::rank>(
+                dummy,
+                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                ref_space_element_accessor_.get_basis_hessians(topology_id),
+                cache.D2phi_,
+                topology_id);
+
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+
+        }
+        cache.flags_handler_.set_hessians_filled(true);
     }
 
     if (cache.flags_handler_.fill_divergences())
@@ -543,6 +560,79 @@ get_push_forward_accessor() const -> const PfElemAccessor &
 {
     return static_cast<const PfElemAccessor &>(*this);
 }
+
+
+
+
+template< class PhysSpace >
+template <int deriv_order>
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
+ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+{
+    Assert(deriv_order >= 0 && deriv_order <= 2,ExcIndexRange(deriv_order,0,2));
+
+    const Size n_basis  = this->get_num_basis();
+    const Size n_points = points.size();
+
+
+    ValueFlags phys_space_flags;
+    if (deriv_order == 0)
+    {
+        phys_space_flags = ValueFlags::value;
+    }
+    else if (deriv_order == 1)
+    {
+        phys_space_flags = ValueFlags::gradient;
+    }
+    else if (deriv_order == 2)
+    {
+        phys_space_flags = ValueFlags::hessian;
+    }
+
+
+    //---------------------------------------------------------------------------------------------
+    // evaluation of the basis function values (or derivatives) using the reference space --- begin
+    const ValueFlags ref_space_flags = get_reference_space_accessor_fill_flags(phys_space_flags);
+
+    using ref_values_t = typename RefElemAccessor::Value;
+    using ref_gradients_t = typename RefElemAccessor::template Derivative<1>;
+    using ref_hessians_t = typename RefElemAccessor::template Derivative<2>;
+
+    ValueTable<ref_values_t> phi_hat;
+    if (contains(ref_space_flags,ValueFlags::value))
+        phi_hat = ref_space_element_accessor_.evaluate_basis_values_at_points(points);
+
+    ValueTable<ref_gradients_t> D1phi_hat;
+    if (contains(ref_space_flags,ValueFlags::gradient))
+        D1phi_hat = ref_space_element_accessor_.evaluate_basis_gradients_at_points(points);
+
+    ValueTable<ref_hessians_t> D2phi_hat;
+    if (contains(ref_space_flags,ValueFlags::hessian))
+        D2phi_hat = ref_space_element_accessor_.evaluate_basis_hessians_at_points(points);
+    // evaluation of the basis function values (or derivatives) using the reference space --- end
+    //---------------------------------------------------------------------------------------------
+
+
+    //---------------------------------------------------------------------------------------------
+    // basis function push forwarding from ref. space to phys. space --- begin
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > > transformed_basis(n_basis,n_points);
+    PfElemAccessor::
+    template transform_basis_derivatives_at_points<PhysSpace::range,PhysSpace::rank>(
+        points,
+        phi_hat,
+        D1phi_hat,
+        D2phi_hat,
+        transformed_basis);
+    // basis function push forwarding from ref. space to phys. space --- end
+    //---------------------------------------------------------------------------------------------
+
+
+    return transformed_basis;
+}
+
+
 
 template< class PhysSpace >
 void

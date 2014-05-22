@@ -183,6 +183,37 @@ operator+(const Index n) const
     return MultiArrayIterator<Container>(*container_,id_ + n*stride_,stride_);
 }
 
+template <class Container>
+inline
+MultiArrayIterator<Container>
+MultiArrayIterator<Container>::
+operator-(const Index n) const
+{
+    Assert(id_ - n*stride_ >=0, ExcLowerRange(id_ - n*stride_,0));
+    return MultiArrayIterator<Container>(*container_,id_ - n*stride_,stride_);
+}
+
+#if 0
+template <class Container>
+inline
+auto
+MultiArrayIterator<Container>::
+operator-(const MultiArrayIterator<Container> &a) const -> difference_type
+{
+    // check if the iterators are comparable
+    Assert(a.stride_ == stride_ && a.container_ == container_,
+           ExcInvalidIterator());
+
+    Assert(a <= (*this), ExcInvalidIterator());
+
+    const int position_difference = id_ - a.id_;
+
+    const difference_type n = position_difference / a.stride_;
+
+    Assert(a+n == (*this), ExcMessage("Iterator a cannot advance to (*this)."));
+    return n;
+}
+#endif
 
 IGA_NAMESPACE_CLOSE
 

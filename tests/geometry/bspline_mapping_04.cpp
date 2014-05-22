@@ -219,14 +219,16 @@ void test_evaluate()
 
     QGauss<dim> quad(3);
     auto elem = map->begin();
-    elem->init_values(ValueFlags::point|ValueFlags::map_gradient, quad);
+    elem->init_values(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
     elem->fill_values();
 
     auto values = elem->get_values();
     auto gradients = elem->get_gradients();
+    auto hessians = elem->get_hessians();
 
     values.print_info(out);
     gradients.print_info(out);
+    hessians.print_info(out);
 
     string filename = "bspline_map-" + to_string(dim) + "d";
     Writer<dim> writer(map, 4);
