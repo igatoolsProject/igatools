@@ -63,3 +63,6 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif // VECTOR_TOOLS_H_
+
+
+#include <igatools/utils/vector_tools-inline.h>

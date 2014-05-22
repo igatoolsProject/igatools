@@ -493,7 +493,8 @@ build_map_elements_between_cartesian_grids(
  * @relates CartesianGrid
  */
 template <int dim>
-CartesianGrid<dim> build_cartesian_grid_union(
+CartesianGrid<dim>
+build_cartesian_grid_union(
     const CartesianGrid<dim> &grid_1,
     const CartesianGrid<dim> &grid_2,
     std::vector<Index> &map_elem_grid_union_to_elem_grid_1,

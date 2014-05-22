@@ -154,7 +154,7 @@ public:
     ///@}
 
 
-    /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
+    /** @name Evaluating the quantities related to the IgMapping without the use of the cache. */
     ///@{
     void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const override final;
     void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;

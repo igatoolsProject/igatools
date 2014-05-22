@@ -18,6 +18,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifndef VECTOR_TOOLS_INLINE_H_
+#define VECTOR_TOOLS_INLINE_H_
+
+
 #include <igatools/utils/vector_tools.h>
 
 #include <algorithm>
@@ -31,6 +35,7 @@ namespace vector_tools
 {
 
 template< class T >
+inline
 void
 count_and_remove_duplicates(
     const vector<T> &vec_with_duplicates,
@@ -66,7 +71,8 @@ count_and_remove_duplicates(
 
 } ;
 
-template void vector_tools::count_and_remove_duplicates<Real>(const vector<Real> &, vector<Real> &, vector<int> &) ;
+//template void vector_tools::count_and_remove_duplicates<Real>(const vector<Real> &, vector<Real> &, vector<int> &) ;
 
 IGA_NAMESPACE_CLOSE
 
+#endif //#ifndef VECTOR_TOOLS_INLINE_H_
