@@ -20,7 +20,7 @@ Boundary knots:
 Repeated knots:
 [ -0.500000 0 0 0.333333 0.666667 0.666667 0.666667 1.10000 1.20000 1.30000 ]
 Elements start basis index
-[ 0 3 4 7 ]
+[ 0 1 4 ]
 Knots without repetition:
 CartesianGrid<2>
 	Knot coordinates:
@@ -49,8 +49,8 @@ Repeated knots:
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
 [ -0.600000 0 0 0 0.250000 0.500000 0.500000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
 Elements start basis index
-[ 0 2 3 ]
-[ 0 4 5 8 9 ]
+[ 0 1 ]
+[ 0 1 4 5 ]
 Knots without repetition:
 CartesianGrid<3>
 	Knot coordinates:
@@ -85,9 +85,9 @@ Repeated knots:
 [ -0.600000 0 0 0 0.333333 0.666667 0.666667 0.666667 1.00000 1.00000 1.60000 1.60000 ]
 [ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
 Elements start basis index
-[ 0 2 3 ]
-[ 0 4 5 8 ]
-[ 0 1 2 3 4 ]
+[ 0 1 ]
+[ 0 1 4 ]
+[ 0 1 2 3 ]
 Knots without repetition:
 CartesianGrid<2>
 	Knot coordinates:
@@ -124,7 +124,7 @@ Repeated knots:
 [ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
 [ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]
 Elements start basis index
-[ 0 2 3 ]
-[ 0 4 5 8 ]
-[ 0 4 5 ]
-[ 0 2 3 4 ]
+[ 0 1 ]
+[ 0 1 4 ]
+[ 0 1 ]
+[ 0 1 2 ]

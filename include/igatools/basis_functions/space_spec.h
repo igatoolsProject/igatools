@@ -130,6 +130,53 @@ public:
     }
 
 
+//
+//    /** @name Getting information about the space */
+//    ///@{
+//    /**
+//     * Total number of basis functions. This is the dimensionality
+//     * of the space.
+//     */
+//    Size get_num_basis() const;
+//
+//    /**
+//     * Total number of basis functions
+//     * for the comp space component.
+//     */
+//    Size get_num_basis(const int comp) const;
+//
+//    /**
+//     *  Total number of basis functions for the comp space component
+//     *  and the dir direction.
+//     */
+//    Size get_num_basis(const int comp, const int dir) const;
+
+    /**
+     * Component-direction indexed table with the number of basis functions
+     * in each direction and component
+     */
+    const SpaceDimensionTable &get_num_basis_table() const
+    {
+        return space_dim_;
+    }
+
+    const SpaceDimensionTable &get_num_basis_per_element_table() const
+    {
+        return elem_n_basis_;
+    }
+//    /**
+//     * Returns the number of dofs per element.
+//     */
+//    Size get_num_basis_per_element() const;
+//
+//    /**
+//     *  Return the number of dofs per element for the i-th space component.
+//     */
+//    Size get_num_basis_per_element(int i) const;
+
+    ///@}
+
+
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);
 
     KnotsTable compute_knots_with_repetition(const EndBehaviour type)
@@ -142,7 +189,7 @@ public:
      * tensor index in the Index space from where all non-zero basis
      * function can be determined.
      */
-    MultiplicityTable compute_elements_index_space_mark() const;
+    MultiplicityTable accumulated_interior_multiplicities() const;
 
 
 
@@ -166,6 +213,9 @@ private:
 
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
+
+    /** Table with the number of element non zero basis in each component and direction */
+    SpaceDimensionTable elem_n_basis_;
 
     PeriodicTable periodic_;
 

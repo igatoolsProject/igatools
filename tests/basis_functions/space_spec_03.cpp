@@ -52,7 +52,7 @@ void test_1d()
 		v.print_info(out);
 
 	out << "Elements start basis index\n";
-	auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+	auto element_index_mark = sp_spec.accumulated_interior_multiplicities();
 	for(const auto &v : element_index_mark)
 		v.print_info(out);
 
@@ -87,7 +87,7 @@ void test_2d()
 
 
 		out << "Elements start basis index\n";
-			auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+			auto element_index_mark = sp_spec.accumulated_interior_multiplicities();
 			for(const auto &v : element_index_mark)
 				v.print_info(out);
 }
@@ -123,7 +123,7 @@ void test_3d()
 			v.print_info(out);
 
 		out << "Elements start basis index\n";
-			auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+			auto element_index_mark = sp_spec.accumulated_interior_multiplicities();
 			for(const auto &v : element_index_mark)
 				v.print_info(out);
 }
@@ -157,7 +157,7 @@ void test_2d_2()
 			v.print_info(out);
 
 		out << "Elements start basis index\n";
-			auto element_index_mark = sp_spec.compute_elements_index_space_mark();
+			auto element_index_mark = sp_spec.accumulated_interior_multiplicities();
 			for(const auto &v : element_index_mark)
 				v.print_info(out);
 }

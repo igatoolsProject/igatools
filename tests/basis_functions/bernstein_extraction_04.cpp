@@ -47,7 +47,7 @@ int main()
         CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
         typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bn_x} };
         auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-        auto acum_mult = sp_spec.compute_elements_index_space_mark();
+        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
 
         BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
@@ -68,7 +68,7 @@ int main()
 
 
         auto rep_knots = sp_spec.compute_knots_with_repetition(SpaceSpec::EndBehaviour::interpolatory);
-        auto acum_mult = sp_spec.compute_elements_index_space_mark();
+        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
 
         BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);

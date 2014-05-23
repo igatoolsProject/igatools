@@ -125,9 +125,9 @@ fill_extraction(const int m,
 
         matrix M(1,1);
         M(0,0) = 1/(b-a);
-        for(int j = 2; j<=m; ++j)
+        for(int k = m-2; k>=0; --k)
         {
-            const int s = acum_mult[n+1] - j;
+            const int s = acum_mult[n] + k;
 
             auto M1 = compute(M, y.begin()+s, a, b);
             M.assign_temporary(M1);
@@ -135,7 +135,7 @@ fill_extraction(const int m,
 
         //Normalized
         auto M2(M);
-        const int s = acum_mult[n+1] - m;
+        const int s = acum_mult[n];
         for (int k = 0; k < m; ++k)
         {
             matrix_row<matrix> mr(M2, k);

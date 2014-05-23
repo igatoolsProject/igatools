@@ -50,12 +50,16 @@ SpaceSpec(std::shared_ptr<GridType> knots,
             const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
             Assert(mult.size() == knots_size[j]-2,
                    ExcMessage("Interior multiplicity size does not match the grid"));
-            auto result = std::minmax_element(mult.begin(), mult.end());
-            Assert((*result.first > 0) && (*result.second <= order),
-                   ExcMessage("multiplicity values not between 0 and p+1"));
+            if (!mult.empty())
+            {
+                auto result = std::minmax_element(mult.begin(), mult.end());
+                Assert((*result.first > 0) && (*result.second <= order),
+                       ExcMessage("multiplicity values not between 0 and p+1"));
+            }
         }
     }
 #endif
+    int elem_total = 0;
     int total_dim = 0;
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
@@ -65,12 +69,16 @@ SpaceSpec(std::shared_ptr<GridType> knots,
             const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
 
             int size = periodic_(iComp)? 0 : deg + 1;
+            elem_n_basis_ (iComp)[j] = deg + 1;
+
             for (auto &n: mult)
                 size += n;
             space_dim_(iComp)[j] = size;
         }
         space_dim_.comp_dimension(iComp) = space_dim_(iComp).flat_size();
         total_dim += space_dim_.comp_dimension(iComp);
+        elem_n_basis_.comp_dimension(iComp) = elem_n_basis_(iComp).flat_size();
+        elem_total += elem_n_basis_.comp_dimension(iComp);
     }
     space_dim_.total_dimension = total_dim;
 }
@@ -189,7 +197,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 
 template<int dim, int range, int rank>
 auto SpaceSpec<dim, range, rank>::
-compute_elements_index_space_mark() const -> MultiplicityTable
+accumulated_interior_multiplicities() const -> MultiplicityTable
 {
     MultiplicityTable result;
     for (int iComp = 0; iComp < n_components; ++iComp)
@@ -197,16 +205,13 @@ compute_elements_index_space_mark() const -> MultiplicityTable
         Assert(!periodic_(iComp), ExcMessage("periodic needs to be implemented"))
         for (int j = 0; j < dim; ++j)
         {
-            const auto deg = deg_(iComp)[j];
-            const auto order = deg + 1;
             const auto &mult  = (*interior_mult_)(iComp).get_data_direction(j);
             std::vector<Size> accum_mult;
             const int size = mult.size();
-            accum_mult.reserve(size + 2);
+            accum_mult.reserve(size + 1);
             accum_mult.push_back(0);
-            accum_mult.push_back(order);
             for (int i = 0; i < size; ++i)
-                accum_mult.push_back(accum_mult[i+1] + mult[i]);
+                accum_mult.push_back(accum_mult[i] + mult[i]);
 
             result(iComp).copy_data_direction(j, accum_mult);
 
@@ -229,7 +234,9 @@ fill_max_regularity(std::shared_ptr<const GridType> grid) -> std::shared_ptr<Mul
     for (int iComp = 0; iComp < n_components; ++iComp)
         for (int j = 0; j < dim; ++j)
         {
-            (*res)(iComp).copy_data_direction(j, vector<Size>(knots_size[j]-2, 1));
+            const auto size = knots_size[j]-2;
+            if (size>0)
+                (*res)(iComp).copy_data_direction(j, vector<Size>(size, 1));
         }
     return res;
 }
