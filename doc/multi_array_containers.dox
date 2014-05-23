@@ -2,6 +2,9 @@
    
    @defgroup multi_array_containers Containers for multi-dimensional arrays.
    
+   @brief In this section we describe the rationale about the different kind of containers used in igatools
+   for storing quantities with an underlying multi-dimensional structure. 
+   
    Igatools provides different containers for special types of multi-dimensional
    arrays. They can be classified according to two different categories:
    - <b>data structure</b>:
@@ -65,7 +68,7 @@
      - <b><em>dynamic</em></b>: the size of the container is passed as argument of the constructors. 
        The container can be resized with the function resize().
        The containers in this category are: DynamicMultiArray, CartesianProductArray and TensorProductArray;
-     
+    
    
    @remark All the multi-dimensional containers share the flat to tensor (and viceversa) index convention.
 */
