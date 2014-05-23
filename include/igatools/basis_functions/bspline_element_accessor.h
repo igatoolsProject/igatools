@@ -41,7 +41,7 @@ template <typename Accessor> class GridForwardIterator;
 
 /**
  * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template <int dim, int range, int rank>
 class BSplineElementAccessor :

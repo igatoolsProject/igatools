@@ -37,6 +37,7 @@ template < class > class PhysicalSpaceElementAccessor;
  *
  * @sa FunctionSpace
  *
+ * @ingroup containers
  */
 template <class RefSpace_, class PushForward_>
 class PhysicalSpace :

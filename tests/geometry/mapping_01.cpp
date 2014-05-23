@@ -56,9 +56,9 @@ void test_evaluate()
     auto elem = map->begin();
     elem->init_values(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
     elem->fill_values();
-    auto values=elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values=elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "Values:" << endl;
     values.print_info(out);

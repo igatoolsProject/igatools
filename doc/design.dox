@@ -1,0 +1,120 @@
+/**
+
+@defgroup design Igatools general design
+@brief Rationale behind the the igatools classes design
+@{   
+
+In order to explain the design of the igatools library, it is useful to think the igatools' classes
+grouped into three concepts:
+- the @subpage containers i.e. the classes that represents <em>global data</em>. 
+The classes in this group have an underlying grid-like structure (intended as union of elements) 
+and usually have a big memory footprint. They are not intended to be used to perform computations.
+- the @subpage iterators_accessors  i.e. the classes that are used to iterate over the elements of the
+<em>Containers</em> from which the use some portion of their data. 
+Those classes are the one that performs the heavy computations.
+- the @subpage infrastructure i.e. the classes that are used in order to let the <em>Containers</em> and
+the <em>Iterators/Accessors</em> to work properly.
+
+The split in the above concepts is made to have (and maintain) a clear distinction between
+<em>data</em> and <em>methods using the data</em>, with the goal of maximum encapsulation.
+
+@remark For each class in the <em>Containers</em> group is associated one (or more) class in the
+<em>Iterators/Accessors</em> iterator group. The association between a <em>Container</em> and 
+its relative <em>Iterator/Accessor</em> is shown in the next table
+
+Container     | Iterator/Accessor
+------------- | -----------------
+CartesianGrid | CartesianGridElementAccessor 
+BSplineSpace  | BSplineElementAccessor 
+NURBSSpace    | NURBSElementAccessor
+Mapping       | MappingElementAccessor
+PushForward   | PushForwardElementAccessor
+PhysicalSpace | PhysicalSpaceElementAccessor
+
+   
+*/
+
+/** @}*/ //end of group accessors_iterators
+
+
+/**
+@defgroup containers Containers
+@ingroup design
+@{
+*/
+
+/** @}*/ //end of group containers
+
+/**
+@defgroup iterators_accessors Iterators/Accessors
+@ingroup design
+@{
+*/
+
+/** @}*/ //end of group iterators_accessors
+
+/**
+@defgroup iterators Iterators
+@ingroup iterators_accessors
+@{
+
+Generally speaking, an iterator is an object that enables to traverse a container, while an accessor
+is an object that access information on a container.
+
+Currently in igatools there is only one kind of iterator, the GridForwardIterator, that permits to
+iterate sequentially over a container of elements with an underlying tensor-product structure,
+in a range in the direction that goes from its beginning towards its end.
+Its main features are:
+- it takes an accessor's type as template parameter;
+- can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element 
+in the container;
+- when dereferenced (using the dereferencing operator <tt>*</tt> or <tt>-></tt>), 
+it returns an accessor object.
+
+It not fulfills all the requirements to be an 
+<a href="http://www.cplusplus.com/reference/iterator/ForwardIterator/">STL forward iterator</a>
+because:
+- it is not default constructible;
+- the postfix operator <tt>++</tt> is not defined. 
+*/
+
+/** @}*/ //end of group iterators
+
+/**
+@defgroup accessors Accessors
+@ingroup iterators_accessors
+@{
+
+The accessors are objects used to represent an element on an associated container.
+Their use and specifications can be summarized as follow:
+- they are template argument for @subpage iterators, so it is safe to think of them as part of the iterators;
+- they access information on @subpage containers. For each class in the @subpage containers group 
+there is an associated accessor, as shown in the following table: 
+<center>
+Container     | Iterator/Accessor
+------------- | -----------------
+CartesianGrid | CartesianGridElementAccessor 
+BSplineSpace  | BSplineElementAccessor 
+NURBSSpace    | NURBSElementAccessor
+Mapping       | MappingElementAccessor
+PushForward   | PushForwardElementAccessor
+PhysicalSpace | PhysicalSpaceElementAccessor
+</center>
+- they have an identifier in order to specify which element in the associated container they are representing;
+- they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
+element identifier withih the accessor).
+
+
+@todo complete the documentation
+
+*/
+
+/** @}*/ //end of group accessors
+
+/**
+@defgroup infrastructure Infrastructure
+@ingroup design
+@{
+*/
+
+/** @}*/ //end of group infrastructure

@@ -35,7 +35,7 @@ template < int, int , int > class NURBSSpace ;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template <int dim, int range, int rank >
 class NURBSElementAccessor :
@@ -162,15 +162,61 @@ public:
     std::vector<Real> get_local_weights() const ;
 
 
-
-
+    /**
+     * @name Functions reimplemented from CartesianGridElement.
+     */
+    ///@{
+    /**
+     * Compare for equality.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be
+     * also used in the comparison.
+     */
     bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
 
+    /**
+     * Compare for inequality.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be
+     * also used in the comparison.
+     */
     bool operator!=(const NURBSElementAccessor<dim,range,rank> &a) const;
 
+    /**
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
+     * (i.e. must have the same element-index) after an index update/reset.
+     */
     void operator++();
 
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
+     * (i.e. must have the same element-index) after an index update/reset.
+     */
+    void reset_flat_tensor_indices(const Index flat_index);
 
+    /**
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
+     * (i.e. must have the same element-index) after an index update/reset.
+     */
+    void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
+    ///@}
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
     ///@{

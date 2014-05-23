@@ -71,7 +71,6 @@ count_and_remove_duplicates(
 
 } ;
 
-//template void vector_tools::count_and_remove_duplicates<Real>(const vector<Real> &, vector<Real> &, vector<int> &) ;
 
 IGA_NAMESPACE_CLOSE
 
