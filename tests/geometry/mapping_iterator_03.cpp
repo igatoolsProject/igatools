@@ -84,7 +84,7 @@ void run_test(std::string &file_name)
         map_elem->fill_values();
         out << "Element id: " << map_elem->get_flat_index() << endl;
 
-        auto points = map_elem->get_values();
+        auto points = map_elem->get_map_values();
         int qp = 0;
         for (auto p : points)
             out << "    Point " << ++qp << ": " << p << endl;
