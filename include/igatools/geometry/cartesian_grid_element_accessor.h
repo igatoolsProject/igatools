@@ -67,6 +67,9 @@ public:
         ValueFlags::face_w_measure |
         ValueFlags::face_normal;
 
+    /** Number of faces of the element. */
+    static const Size n_faces = UnitElement<dim_>::faces_per_element;
+
 public:
     /** @name Constructors */
     ///@{
@@ -238,7 +241,6 @@ public:
                         VerbosityLevel::normal) const;
 
 
-    static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
 public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
