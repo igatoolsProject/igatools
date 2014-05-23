@@ -37,7 +37,7 @@ template <int,int> class Mapping;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @todo document me
  */

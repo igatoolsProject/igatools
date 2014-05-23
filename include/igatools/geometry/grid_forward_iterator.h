@@ -31,10 +31,19 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
  *
- * It fulfills the requirements of a
- * forward iterator as intended by the Standard Template Library.
- * See the C++ documentation for further
- * details of iterator specification and usage.
+ *
+ * Its main features are:
+ * - it takes an accessor's type as template parameter;
+ * - can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element
+ * in the container;
+ * - when dereferenced (using the dereferencing operator <tt>*</tt> or <tt>-></tt>),
+ * it returns an accessor object.
+ *
+ * It not fulfills all the requirements to be an
+ * <a href="http://www.cplusplus.com/reference/iterator/ForwardIterator/">STL forward iterator</a>
+ * because:
+ * - it is not default constructible;
+ * - the postfix operator <tt>++</tt> is not defined.
  *
  * The object pointed to the GridForwardIterator is called <em>accessor</em>
  * and its type is passed as template argument <tt>Accessor</tt>
@@ -142,6 +151,7 @@ IGA_NAMESPACE_OPEN
  *
  * @tparam Accessor Type of the accessor.
  *
+ * @ingroup iterators
  * @author M.Martinelli, S.Pauletti
  * @date 2012,2013,2014
  */

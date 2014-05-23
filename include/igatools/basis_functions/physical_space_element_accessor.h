@@ -65,7 +65,7 @@ template < typename Accessor > class GridForwardIterator;
  *   good performances are requested.
  *
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @tparam PhysSpace - type for the space in the physical domain
  */

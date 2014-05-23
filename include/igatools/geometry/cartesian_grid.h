@@ -66,6 +66,7 @@ template <int> class CartesianGridElementAccessor;
  *
  * @see get_cartesian_grid_from_xml()
  * @ingroup h_refinement
+ * @ingroup containers
  * @todo document more
  */
 template< int dim_ >

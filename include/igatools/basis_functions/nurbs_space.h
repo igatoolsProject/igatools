@@ -32,6 +32,7 @@ template < int, int, int > class NURBSElementAccessor;
 /**
  * This class represent a function space in which the basis functions are NURBS.
  *
+ * @ingroup containers
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBSSpace :

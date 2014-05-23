@@ -35,7 +35,7 @@ template < int, int , int > class NURBSSpace ;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template <int dim, int range, int rank >
 class NURBSElementAccessor :

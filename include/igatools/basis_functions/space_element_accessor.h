@@ -52,7 +52,7 @@ template <typename Accessor> class GridForwardIterator;
  * virtual-table lookups.
  *
  *
- *
+ * @ingroup accessors
  * @todo Complete the documentation
  * @author M. Martinelli
  * @date 13 May 2014

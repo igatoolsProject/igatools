@@ -41,8 +41,8 @@ IGA_NAMESPACE_OPEN
  * that are obtained through a cache mechanism
  *
  *
- * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * See module (and the submodules) on \ref accessors_iterators for a general overview.
+ * @ingroup accessors
  *
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014
@@ -246,6 +246,8 @@ public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
 
     bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
+
+//protected:
 
     void operator++();
 

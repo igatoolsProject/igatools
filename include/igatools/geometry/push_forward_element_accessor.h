@@ -32,7 +32,7 @@ IGA_NAMESPACE_OPEN
 /**
  *
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template< class PushForward_ >
 class PushForwardElementAccessor

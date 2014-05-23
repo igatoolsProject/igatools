@@ -46,6 +46,7 @@ template <int, int> class MappingElementAccessor;
  * because we want to use Mapping as general interface for user-defined Mapping
  * specializations (unknown at compile time).
  *
+ * @ingroup containers
  *
  * @author M.S. Pauletti 2012, 2013
  * @author M. Martinelli 2013, 2014
