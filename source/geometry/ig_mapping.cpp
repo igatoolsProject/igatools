@@ -681,7 +681,7 @@ print_info(LogStream &out) const
     out << "Control points info (euclidean coordinates): [ ";
     for (const auto &ctrl_pt : data_->control_points_)
         out << ctrl_pt << " ";
-    out << endl;
+    out << "]" << endl;
     out.pop();
 }
 

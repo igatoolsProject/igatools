@@ -29,33 +29,69 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/ig_mapping.h>
 #include <igatools/geometry/mapping_element_accessor.h>
+#include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/io/reader.h>
 
 template <int dim>
-void run_test(std::string& file_name)
+void run_test(std::string &file_name)
 {
-    out << "Dimension: " << dim << endl;
+    out << "========== Test (Dimension: " << dim << ") --- begin ========== " << endl;
 
     // Reading input file.
-    auto map = get_mapping_from_file<dim,0>(file_name);
+    auto map = dynamic_pointer_cast<IgMapping<NURBSSpace<dim,dim,1>>>(get_mapping_from_file<dim,0>(file_name));
+    map->print_info(out);
+    out << endl;
 
     QTrapez<dim> quad(Real(0.0));
+    const auto quad_pts = quad.get_points().get_flat_cartesian_product();
+    out << "Quad pts.= " << quad_pts << endl;
 
-    auto elem     = map->begin();
-    auto elem_end = map->end();
+    const auto ref_space = map->get_iga_space();
+    out << endl;
 
-    ValueFlags flag = ValueFlags::point;
-    elem->init_values(flag, quad);
-    for (; elem != elem_end; ++elem)
+    //------------------------------------------------------
+    out << "Loop using the NURBSElementAccessor" << endl;
+    auto sp_elem     = ref_space->begin();
+    auto sp_elem_end = ref_space->end();
+
+    sp_elem->init_values(ValueFlags::value, quad);
+    for (; sp_elem != sp_elem_end; ++sp_elem)
     {
-        out << "Element: " << elem->get_flat_index() << endl;
-        elem->fill_values();
-        auto points = elem->get_values();
+        sp_elem->fill_values();
+
+        out << "Element id: " << sp_elem->get_flat_index() << endl;
+
+        const auto values = sp_elem->get_basis_values();
+        out << "Values = ";
+        values.print_info(out);
+        out<< endl;
+    }
+    out << endl;
+    //------------------------------------------------------
+
+
+
+    //------------------------------------------------------
+    out << "Loop using the MappingElementAccessor" << endl;
+    auto map_elem     = map->begin();
+    auto map_elem_end = map->end();
+
+    map_elem->init_values(ValueFlags::point, quad);
+    for (; map_elem != map_elem_end; ++map_elem)
+    {
+        map_elem->fill_values();
+        out << "Element id: " << map_elem->get_flat_index() << endl;
+
+        auto points = map_elem->get_values();
         int qp = 0;
-        for(auto p : points)
+        for (auto p : points)
             out << "    Point " << ++qp << ": " << p << endl;
     }
+    //------------------------------------------------------
+    out << endl;
+    out << "========== Test (Dimension: " << dim << ") --- end ========== " << endl;
 
     out << endl << endl << endl;
 }
@@ -66,10 +102,11 @@ int main()
 
     std::string file_name = "cube_1D.xml";
     run_test<1>(file_name);
+
     file_name = "cube_2D.xml";
     run_test<2>(file_name);
     file_name = "cube_3D.xml";
     run_test<3>(file_name);
-
+//*/
     return (0) ;
 }
