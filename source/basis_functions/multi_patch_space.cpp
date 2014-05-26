@@ -88,7 +88,7 @@ arrangement_close()
 
     //------------------------------------------------------------------------
     // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- begin
-    this->perform_ref_spaces_dofs_renumbering();
+    this->perform_ref_spaces_add_dofs_offset();
     // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- end
     //------------------------------------------------------------------------
 }
@@ -97,7 +97,7 @@ arrangement_close()
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
-perform_ref_spaces_dofs_renumbering()
+perform_ref_spaces_add_dofs_offset()
 {
     Index dofs_offset = 0;
     for (const auto & phys_space : patches_)
@@ -144,6 +144,22 @@ get_num_interfaces() const
 }
 
 template <class PhysicalSpace>
+int
+MultiPatchSpace<PhysicalSpace>::
+get_num_linear_constraints() const
+{
+    return linear_constraints_.size();
+}
+
+template <class PhysicalSpace>
+int
+MultiPatchSpace<PhysicalSpace>::
+get_num_equality_constraints() const
+{
+    return equality_constraints_.size();
+}
+
+template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
 print_info(LogStream &out) const
@@ -179,6 +195,9 @@ print_info(LogStream &out) const
     }
 
 
+    out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
+    out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
+
     out.pop();
 }
 
@@ -189,6 +208,24 @@ add_interface(const InterfaceType &type,
               Patch patch_0,const int side_id_patch_0,
               Patch patch_1,const int side_id_patch_1)
 {
+    Assert(is_arrangement_open_,ExcInvalidState());
+
+    //------------------------------------------------------------------------
+    // Verify that patch 0 is present in the vector of patches -- begin
+    Assert(std::count(patches_.begin(),patches_.end(),patch_0) == 1,
+           ExcMessage("Patch 0 is not present in the vector of patches."))
+    // Verify that patch 0 is present in the vector of patches -- end
+    //------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------
+    // Verify that patch 1 is present in the vector of patches -- begin
+    Assert(std::count(patches_.begin(),patches_.end(),patch_1) == 1,
+           ExcMessage("Patch 1 is not present in the vector of patches."))
+    // Verify that patch 1 is present in the vector of patches -- end
+    //------------------------------------------------------------------------
+
+
     unique_ptr<Interface> interface_to_be_added(
         new Interface(type,patch_0,side_id_patch_0,patch_1,side_id_patch_1));
 

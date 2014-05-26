@@ -42,6 +42,8 @@ IGA_NAMESPACE_OPEN
  * (i.e. a given PushFwd object cannot be used to define more than one PhysicalSpace).
  * - each PushFwd object must be build by one and only one Mapping object
  * (i.e. a given Mapping object cannot be used to define more than one PushFwd).
+ *
+ * @ingroup containers
  */
 template <class PhysicalSpace>
 class MultiPatchSpace
@@ -116,6 +118,15 @@ public:
     /** Returns the number of interfaces used to define this space. */
     int get_num_interfaces() const;
 
+
+    /** Returns the number of linear constraints used to define this space. */
+    int get_num_linear_constraints() const;
+
+
+    /** Returns the number of equality constraints used to define this space. */
+    int get_num_equality_constraints() const;
+
+
     /**
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
@@ -130,9 +141,10 @@ private:
     std::vector< std::shared_ptr<const PhysicalSpace> > patches_;
 
     /**
-     * Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces.
+     * Add the offset to the dofs id in the reference spaces in order to avoid same
+     * dof ids between different spaces.
      */
-    void perform_ref_spaces_dofs_renumbering();
+    void perform_ref_spaces_add_dofs_offset();
 
 
     class Interface
@@ -177,6 +189,32 @@ private:
 
 
     std::vector<std::unique_ptr<Interface> > interfaces_;
+
+
+
+    class LinearConstraint
+    {
+    public:
+
+    private:
+        std::vector<Index> dofs_id_;
+        std::vector<Real> dofs_value_;
+    };
+
+    std::vector<LinearConstraint> linear_constraints_;
+
+
+    class EqualityConstraint
+    {
+    public:
+    private:
+        Index dof_id_master_;
+        Index dof_id_slave_;
+    };
+
+
+    std::vector<EqualityConstraint> equality_constraints_;
+
 };
 
 
