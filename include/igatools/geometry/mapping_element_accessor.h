@@ -37,7 +37,7 @@ template <int,int> class Mapping;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @todo document me
  */
@@ -200,7 +200,7 @@ public:
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &
-    get_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the value of the map at the dilated quadrature points
@@ -211,11 +211,11 @@ public:
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
-    get_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &
-    get_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &
@@ -227,7 +227,13 @@ public:
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &
-    get_dets(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the gradient determinant of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &get_face_measures(const Index face_id) const;
 
     /**
      * Returns the quadrature weights multiplied by the

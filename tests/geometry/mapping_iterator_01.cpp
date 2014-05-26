@@ -61,11 +61,11 @@ void test_iterator()
 
     elem->fill_values();
 
-    auto values = elem->get_values();
-    auto dets = elem->get_dets();
+    auto values = elem->get_map_values();
+    auto dets = elem->get_measures();
     auto wdets = elem->get_w_measures();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "x = " << endl << quad.get_points().get_flat_cartesian_product() << endl;
     out << "F(x)     = " << endl;

@@ -117,8 +117,8 @@ void run_test()
     elem->init_values(flag, quad);
     elem->fill_values();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
+    auto values = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
 
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;

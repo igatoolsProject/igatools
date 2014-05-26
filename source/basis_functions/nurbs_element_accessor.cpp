@@ -1132,6 +1132,26 @@ operator++()
 }
 
 
+template <int dim, int range, int rank>
+void
+NURBSElementAccessor<dim, range, rank>::
+reset_flat_tensor_indices(const Index flat_index)
+{
+    CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
+    grid_element_accessor.reset_flat_tensor_indices(flat_index);
+    bspline_element_accessor_.reset_flat_tensor_indices(flat_index);
+}
+
+template <int dim, int range, int rank>
+void
+NURBSElementAccessor<dim, range, rank>::
+reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
+{
+    CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
+    grid_element_accessor.reset_flat_tensor_indices(tensor_index);
+    bspline_element_accessor_.reset_flat_tensor_indices(tensor_index);
+}
+
 
 IGA_NAMESPACE_CLOSE
 

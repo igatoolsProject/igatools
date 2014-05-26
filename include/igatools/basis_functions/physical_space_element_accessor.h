@@ -65,7 +65,7 @@ template < typename Accessor > class GridForwardIterator;
  *   good performances are requested.
  *
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @tparam PhysSpace - type for the space in the physical domain
  */
@@ -220,31 +220,27 @@ public :
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector< Real > &
-    get_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_measures;
 
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points
      * on the face specified by @p face_id.
      */
-    const ValueVector< Real > &
-    get_face_measures(const Index face_id) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_face_measures;
 
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points.
      */
-    const ValueVector<Real> &
-    get_w_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points
      * on the face specified by @p face_id.
      */
-    const ValueVector<Real> &
-    get_face_w_measures(const Index face_id) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_face_w_measures;
 
 
     /**
@@ -273,16 +269,13 @@ public :
      * \author M.Martinelli
      * \date 03 Jun 2013
      */
-    const ValueVector< typename Mapping<dim,codim>::GradientType > &
-    get_map_gradient_at_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
+    using PhysSpace::PushForwardType::ElementAccessor::get_map_gradients;
 
 
     /**
      * Return a const reference to the one-dimensional container with the normals at the face evaluation points.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_face_normals(const Index face_id) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_face_normals;
 
     /**
      * Test if the element has a boundary face.
@@ -316,7 +309,7 @@ public :
     /**
      * Return a pointer to the physical space on which the element is defined.
      */
-    std::shared_ptr<const PhysSpace>get_physical_space() const;
+    std::shared_ptr<const PhysSpace> get_physical_space() const;
 
 
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
@@ -345,7 +338,6 @@ public :
 
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const ;
-
 
 
 protected:

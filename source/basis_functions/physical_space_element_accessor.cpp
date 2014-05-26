@@ -320,46 +320,12 @@ fill_face_values(const Index face_id)
 
 
 template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_measures(const TopologyId<dim> &topology_id) const
-{
-    return PfElemAccessor::get_dets(topology_id);
-}
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_measures(const Index face_id) const
-{
-    return this->get_measures(FaceTopology<dim>(face_id));
-}
-
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_w_measures(const TopologyId<dim> &topology_id) const
-{
-    return PfElemAccessor::get_w_measures(topology_id);
-}
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_w_measures(const Index face_id) const
-{
-    return this->get_w_measures(FaceTopology<dim>(face_id));
-}
-
-
-template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point<space_dim> &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return (PfElemAccessor::get_values(topology_id))[qp];
+    return (PfElemAccessor::get_map_values(topology_id))[qp];
 }
 
 
@@ -436,7 +402,7 @@ get_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::ValueType > &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_values(topology_id);
+    return PfElemAccessor::get_map_values(topology_id);
 }
 
 template< class PhysSpace >
@@ -448,20 +414,20 @@ const ValueVector< typename Mapping<dim, codim>::ValueType > &
     return this->get_points(FaceTopology<dim>(face_id));
 }
 
-
+/*
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_map_gradient_at_points(const TopologyId<dim> &topology_id) const ->
+get_map_gradients(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::GradientType > &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_gradients(topology_id);
 }
+//*/
 
 
-
-
+/*
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
@@ -472,8 +438,7 @@ const ValueVector< typename Mapping<dim, codim>::ValueType > &
 //    Assert(this->face_values_[face_id].is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_face_normals(face_id);
 }
-
-
+//*/
 
 template< class PhysSpace >
 bool
@@ -482,6 +447,7 @@ is_boundary() const
 {
     return PfElemAccessor::is_boundary();
 }
+//*/
 
 
 template< class PhysSpace >
@@ -491,7 +457,7 @@ is_boundary(const Index face) const
 {
     return PfElemAccessor::is_boundary(face);
 }
-
+//*/
 
 template< class PhysSpace >
 Index
@@ -500,7 +466,7 @@ get_flat_index() const
 {
     return parent_t::get_flat_index();
 }
-
+//*/
 
 template< class PhysSpace >
 auto

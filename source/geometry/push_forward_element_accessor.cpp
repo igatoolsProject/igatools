@@ -435,7 +435,7 @@ ValueVector<Real>
 PushForwardElementAccessor<PushForward>::
 transform_measure(const TopologyId<dim> &topology_id) const
 {
-    return this->get_dets(topology_id);
+    return this->get_measures(topology_id);
 }
 
 

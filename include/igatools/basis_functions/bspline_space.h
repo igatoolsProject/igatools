@@ -91,6 +91,7 @@ template < int, int, int> class BSplineElementAccessor;
  * @tparam dim Dimensionality of the parametric space (must be equal to the dimensionality
  * of the grid used top build the space
  *
+ * @ingroup containers
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
