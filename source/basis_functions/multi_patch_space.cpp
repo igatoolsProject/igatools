@@ -23,6 +23,8 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/utils/vector_tools.h>
 
+#include <igatools/base/logstream.h>
+
 using std::string;
 using std::vector;
 using std::shared_ptr;
@@ -68,12 +70,43 @@ arrangement_close()
 
     //------------------------------------------------------------------------
     // check that a each mapping is used in only one reference space -- begin
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    vector<shared_ptr<const Map>> maps;
+    for (const auto & phys_space : patches_)
+        maps.push_back(phys_space->get_push_forward()->get_mapping());
+
+    vector<shared_ptr<const Map>> maps_no_duplicates;
+    vector<int> maps_multiplicities;
+    vector_tools::count_and_remove_duplicates(
+        maps,maps_no_duplicates,maps_multiplicities) ;
+
+    for (const int mult : maps_multiplicities)
+        AssertThrow(mult == 1,ExcMessage("At least one mapping is used to define multiple physical spaces."));
     // check that a mapping is used in only one reference space -- end
+    //------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------
+    // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- begin
+    this->perform_ref_spaces_dofs_renumbering();
+    // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- end
     //------------------------------------------------------------------------
 }
 
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+perform_ref_spaces_dofs_renumbering()
+{
+    Index dofs_offset = 0;
+    for (const auto & phys_space : patches_)
+    {
+        shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(phys_space->get_reference_space());
+        ref_space->add_dofs_offset(dofs_offset);
+
+        dofs_offset += ref_space->get_num_basis();
+    }
+}
 
 template <class PhysicalSpace>
 void

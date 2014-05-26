@@ -138,13 +138,15 @@ void test_evaluate()
     auto ref_space_1 = RefSpace_t<dim>::create(knots, p);
 
     auto map_0 = create_mapping<dim>(ref_space_0);
+    auto map_1 = create_mapping<dim>(ref_space_1);
     auto push_forward_0 = PushForward_t<dim>::create(map_0);
+    auto push_forward_1 = PushForward_t<dim>::create(map_1);
     // push_forward->print_info(out) ;
 
 //    auto ref_space1 = RefSpace_t<dim>::create(knots, p);
     auto physical_space_0 = PhysicalSpace_t<dim>::create(ref_space_0, push_forward_0) ;
 //    physical_space->print_info(out) ;
-    auto physical_space_1 = PhysicalSpace_t<dim>::create(ref_space_1, push_forward_0) ;
+    auto physical_space_1 = PhysicalSpace_t<dim>::create(ref_space_1, push_forward_1) ;
 
 
     MultiPatchSpace<PhysicalSpace_t<dim>> multi_patch_space;

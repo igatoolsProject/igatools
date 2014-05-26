@@ -364,6 +364,10 @@ public:
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
 
+    /**
+     * Adds an @p offset to the values of the dof ids.
+     */
+    void add_dofs_offset(const Index offset);
 
 private:
 

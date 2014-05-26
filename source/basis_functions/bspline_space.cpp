@@ -986,11 +986,31 @@ get_index_space() const -> const ComponentTable<DynamicMultiArray<Index,dim>> &
 
 template<int dim_, int range_, int rank_>
 const std::vector<std::vector<Index>> &
-BSplineSpace<dim_, range_, rank_>::
-get_element_global_dofs() const
+                                   BSplineSpace<dim_, range_, rank_>::
+                                   get_element_global_dofs() const
 {
-	return element_global_dofs_;
+    return element_global_dofs_;
 }
+
+
+template<int dim_, int range_, int rank_>
+void
+BSplineSpace<dim_, range_, rank_>::
+add_dofs_offset(const Index offset)
+{
+    for (int comp = 0 ; comp < n_components ; ++comp)
+    {
+        auto &dofs_component = index_space_(comp);
+        for (auto & dof_id : dofs_component)
+            dof_id += offset;
+    }
+
+    for (auto & dofs_element : element_global_dofs_)
+        for (auto & dof_id : dofs_element)
+            dof_id += offset;
+}
+
+
 
 template<int dim_, int range_, int rank_>
 void

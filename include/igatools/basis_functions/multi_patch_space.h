@@ -52,6 +52,9 @@ public:
     /** Type alias for the reference space. */
     using RefSpace = typename PhysicalSpace::RefSpace;
 
+    using PushForward = typename PhysicalSpace::PushForwardType;
+
+    using Map = typename PushForward::Map;
     ///@}
 
 
@@ -104,6 +107,11 @@ private:
     bool is_arrangement_open_ = false;
 
     std::vector< std::shared_ptr<const PhysicalSpace> > patches_;
+
+    /**
+     * Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces.
+     */
+    void perform_ref_spaces_dofs_renumbering();
 };
 
 

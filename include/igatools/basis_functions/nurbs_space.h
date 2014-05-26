@@ -323,6 +323,15 @@ public :
     }
 
 
+
+    /**
+     * Adds an @p offset to the values of the dof ids.
+     */
+    void add_dofs_offset(const Index offset)
+    {
+        sp_space_->add_dofs_offset(offset);
+    }
+
     /**
     * Returns a element iterator to the first element of the patch
     */
