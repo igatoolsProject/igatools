@@ -134,16 +134,17 @@ void test_evaluate()
     const int p = 1 ;
     auto knots = CartesianGrid<dim>::create(num_knots);
 
-    auto ref_space = RefSpace_t<dim>::create(knots, p);
+    auto ref_space_0 = RefSpace_t<dim>::create(knots, p);
+    auto ref_space_1 = RefSpace_t<dim>::create(knots, p);
 
-    auto map = create_mapping<dim>(ref_space);
-    auto push_forward=PushForward_t<dim>::create(map);
+    auto map_0 = create_mapping<dim>(ref_space_0);
+    auto push_forward_0 = PushForward_t<dim>::create(map_0);
     // push_forward->print_info(out) ;
 
 //    auto ref_space1 = RefSpace_t<dim>::create(knots, p);
-    auto physical_space_0 = PhysicalSpace_t<dim>::create(ref_space, push_forward) ;
+    auto physical_space_0 = PhysicalSpace_t<dim>::create(ref_space_0, push_forward_0) ;
 //    physical_space->print_info(out) ;
-    auto physical_space_1 = PhysicalSpace_t<dim>::create(ref_space, push_forward) ;
+    auto physical_space_1 = PhysicalSpace_t<dim>::create(ref_space_1, push_forward_0) ;
 
 
     MultiPatchSpace<PhysicalSpace_t<dim>> multi_patch_space;

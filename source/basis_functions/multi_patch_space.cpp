@@ -49,7 +49,7 @@ arrangement_close()
 
 
     //------------------------------------------------------------------------
-    // check that a reference space is used in only one physical space -- begin
+    // check that each reference space is used in only one physical space -- begin
     vector<shared_ptr<const RefSpace>> ref_spaces;
     for (const auto & phys_space : patches_)
         ref_spaces.push_back(phys_space->get_reference_space());
@@ -60,14 +60,14 @@ arrangement_close()
     vector_tools::count_and_remove_duplicates(
         ref_spaces,ref_spaces_no_duplicates,ref_spaces_multiplicities) ;
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    for (const int mult : ref_spaces_multiplicities)
+        AssertThrow(mult == 1,ExcMessage("At least one reference space is used to define multiple physical spaces."));
     // check that a reference space is used in only one physical space -- end
     //------------------------------------------------------------------------
 
 
     //------------------------------------------------------------------------
-    // check that a mapping is used in only one reference space -- begin
+    // check that a each mapping is used in only one reference space -- begin
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
     // check that a mapping is used in only one reference space -- end
