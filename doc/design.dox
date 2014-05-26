@@ -10,7 +10,7 @@ grouped into three concepts:
 The classes in this group have an underlying grid-like structure (intended as union of elements) 
 and usually have a big memory footprint. They are not intended to be used to perform computations.
 - the @subpage iterators_accessors  i.e. the classes that are used to iterate over the elements of the
-<em>Containers</em> from which the use some portion of their data. 
+<em>Containers</em> from which they use some portion of their data. 
 Those classes are the one that performs the heavy computations.
 - the @subpage infrastructure i.e. the classes that are used in order to let the <em>Containers</em> and
 the <em>Iterators/Accessors</em> to work properly.
@@ -21,7 +21,7 @@ The split in the above concepts is made to have (and maintain) a clear distincti
 @remark For each class in the <em>Containers</em> group is associated one (or more) class in the
 <em>Iterators/Accessors</em> iterator group. The association between a <em>Container</em> and 
 its relative <em>Iterator/Accessor</em> is shown in the next table
-
+<center>
 Container     | Iterator/Accessor
 ------------- | -----------------
 CartesianGrid | CartesianGridElementAccessor 
@@ -30,7 +30,7 @@ NURBSSpace    | NURBSElementAccessor
 Mapping       | MappingElementAccessor
 PushForward   | PushForwardElementAccessor
 PhysicalSpace | PhysicalSpaceElementAccessor
-
+</center>
    
 */
 
@@ -49,7 +49,11 @@ PhysicalSpace | PhysicalSpaceElementAccessor
 @defgroup iterators_accessors Iterators/Accessors
 @ingroup design
 @{
+Generally speaking, an iterator is an object that enables to traverse a container, while an accessor
+is an object that access information on a container.
+
 */
+
 
 /** @}*/ //end of group iterators_accessors
 
@@ -58,10 +62,7 @@ PhysicalSpace | PhysicalSpaceElementAccessor
 @ingroup iterators_accessors
 @{
 
-Generally speaking, an iterator is an object that enables to traverse a container, while an accessor
-is an object that access information on a container.
-
-Currently in igatools there is only one kind of iterator, the GridForwardIterator, that permits to
+Currently, in igatools there is only one kind of iterator: the GridForwardIterator, that permits to
 iterate sequentially over a container of elements with an underlying tensor-product structure,
 in a range in the direction that goes from its beginning towards its end.
 Its main features are:
@@ -69,7 +70,7 @@ Its main features are:
 - can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element 
 in the container;
 - when dereferenced (using the dereferencing operator <tt>*</tt> or <tt>-></tt>), 
-it returns an accessor object.
+it returns an accessor object or a pointer to an accessor.
 
 It not fulfills all the requirements to be an 
 <a href="http://www.cplusplus.com/reference/iterator/ForwardIterator/">STL forward iterator</a>
