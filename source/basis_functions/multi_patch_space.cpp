@@ -28,6 +28,7 @@
 using std::string;
 using std::vector;
 using std::shared_ptr;
+using std::unique_ptr;
 
 
 IGA_NAMESPACE_OPEN
@@ -135,6 +136,14 @@ get_num_patches() const
 }
 
 template <class PhysicalSpace>
+int
+MultiPatchSpace<PhysicalSpace>::
+get_num_interfaces() const
+{
+    return interfaces_.size();
+}
+
+template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
 print_info(LogStream &out) const
@@ -151,12 +160,125 @@ print_info(LogStream &out) const
     int patch_id = 0 ;
     for (const auto & patch : patches_)
     {
-        out << "Patch id = " << patch_id << endl;
+        out << "Patch id = " << patch_id++ << endl;
         patch->print_info(out);
+        out.push(tab);
     }
+
+
+
+    out.pop();
+
+    out << "Num. interfaces = " << this->get_num_interfaces() << endl;
+    int interface_id = 0 ;
+    for (const auto & interface : interfaces_)
+    {
+        out << "Interface id = " << interface_id++ << endl;
+        interface->print_info(out);
+        out.push(tab);
+    }
+
+
+    out.pop();
+}
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+add_interface(const InterfaceType &type,
+              Patch patch_0,const int side_id_patch_0,
+              Patch patch_1,const int side_id_patch_1)
+{
+    unique_ptr<Interface> interface_to_be_added(
+        new Interface(type,patch_0,side_id_patch_0,patch_1,side_id_patch_1));
+
+#ifndef NDEBUG
+    for (const auto & interface : interfaces_)
+        Assert(*interface_to_be_added != *interface, ExcMessage("Interface already added."));
+#endif
+
+    interfaces_.push_back(std::move(interface_to_be_added));
+}
+
+
+template <class PhysicalSpace>
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+Interface(const InterfaceType &type, Patch patch_0,const int side_id_patch_0,Patch patch_1,const int side_id_patch_1)
+    :
+    type_(type)
+{
+    Assert(patch_0 != patch_1,ExcMessage("Impossible to use the same patch to define an interface."));
+    Assert(side_id_patch_0 >= 0 && side_id_patch_0 < (UnitElement<dim>::faces_per_element),
+           ExcIndexRange(side_id_patch_0,0,UnitElement<dim>::faces_per_element));
+    Assert(side_id_patch_1 >= 0 && side_id_patch_1 < (UnitElement<dim>::faces_per_element),
+           ExcIndexRange(side_id_patch_1,0,UnitElement<dim>::faces_per_element));
+
+
+    patch_[0] = patch_0;
+    side_id_[0] = side_id_patch_0;
+
+    patch_[1] = patch_1;
+    side_id_[1] = side_id_patch_1;
+}
+
+
+
+
+template <class PhysicalSpace>
+bool
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+operator==(const Interface &interface_to_compare) const
+{
+    return (type_ == interface_to_compare.type_ &&
+            patch_[0] == interface_to_compare.patch_[0] &&
+            patch_[1] == interface_to_compare.patch_[1] &&
+            side_id_[0] == interface_to_compare.side_id_[0] &&
+            side_id_[1] == interface_to_compare.side_id_[1]);
+}
+
+template <class PhysicalSpace>
+bool
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+operator!=(const Interface &interface_to_compare) const
+{
+    return !(*this == interface_to_compare);
+}
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+print_info(LogStream &out) const
+{
+    using std::endl;
+    string tab = "   ";
+
+    out << "Interface type = " << static_cast<int>(type_) << endl;
+    out.push(tab);
+
+    out << "Patch 0 infos:" << endl;
+    out.push(tab);
+    out << "shared_ptr = " << patch_[0] << endl;
+    out << "Side id = " << side_id_[0] << endl;
+    out.pop();
+
+    out << "Patch 1 infos:" << endl;
+    out.push(tab);
+    out << "shared_ptr = " << patch_[1] << endl;
+    out << "Side id = " << side_id_[1] << endl;
+    out.pop();
+
+
+
+
     out.pop();
 
     out.pop();
+
 }
 
 

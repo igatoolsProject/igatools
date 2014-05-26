@@ -151,8 +151,15 @@ void test_evaluate()
 
     MultiPatchSpace<PhysicalSpace_t<dim>> multi_patch_space;
     multi_patch_space.arrangement_open();
+
     multi_patch_space.add_patch(physical_space_0);
     multi_patch_space.add_patch(physical_space_1);
+
+    multi_patch_space.add_interface(
+        InterfaceType::C0_strong,
+        physical_space_0,1,
+        physical_space_1,0);
+
     multi_patch_space.arrangement_close();
     multi_patch_space.print_info(out);
 

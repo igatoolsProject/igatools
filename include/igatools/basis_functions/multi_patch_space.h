@@ -55,6 +55,10 @@ public:
     using PushForward = typename PhysicalSpace::PushForwardType;
 
     using Map = typename PushForward::Map;
+
+    using Patch = std::shared_ptr<const PhysicalSpace>;
+
+    static const int dim = PhysicalSpace::dim;
     ///@}
 
 
@@ -83,17 +87,34 @@ public:
     MultiPatchSpace<PhysicalSpace> &operator=(MultiPatchSpace<PhysicalSpace> &&multi_patch_space) = delete;
     ///@}
 
-    /** @name Functions for the management of the patches addition. */
+    /** @name Functions for the management of the patches and/or interfaces addition. */
     ///@{
     void arrangement_open();
     void arrangement_close();
 
+    /**
+     * Adds a patch to the space.
+     * @note In Debug mode, an assertion will be raised if the patch is already added.
+     *
+     */
     void add_patch(std::shared_ptr<const PhysicalSpace> patch);
+
+    /**
+     * Adds an interface between two different patches.
+     * @note In Debug mode, an assertion will be raised if the interface is already added.
+     */
+    void add_interface(const InterfaceType &type,
+                       Patch patch_0,const int side_id_patch_0,
+                       Patch patch_1,const int side_id_patch_1);
     ///@}
 
 
     /** Returns the number of patches used to define this space. */
     int get_num_patches() const;
+
+
+    /** Returns the number of interfaces used to define this space. */
+    int get_num_interfaces() const;
 
     /**
      * Prints internal information about the space.
@@ -112,6 +133,50 @@ private:
      * Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces.
      */
     void perform_ref_spaces_dofs_renumbering();
+
+
+    class Interface
+    {
+    public:
+        /** @name Constructors and destructor */
+        ///@{
+        Interface() = delete;
+        Interface(const InterfaceType &type,
+                  Patch patch_0,const int side_id_patch_0,
+                  Patch patch_1,const int side_id_patch_1);
+        Interface(const Interface &interface) = delete;
+        Interface(Interface &&interface) = delete;
+        ~Interface() = default;
+        ///@}
+
+
+        /** @name Assignment operators */
+        ///@{
+        Interface &operator=(const Interface &interface) = delete;
+        Interface &operator=(Interface &&interface) = delete;
+        ///@}
+
+
+        /** @name Comparison operators */
+        ///@{
+        bool operator==(const Interface &interface_to_compare) const;
+        bool operator!=(const Interface &interface_to_compare) const;
+        ///@}
+
+        /**
+         * Prints internal information about the Interface.
+         * @note Mostly used for debugging and testing.
+         */
+        void print_info(LogStream &out) const;
+
+    private:
+        InterfaceType type_;
+        std::array<Patch,2> patch_;
+        std::array<int,2> side_id_;
+    };
+
+
+    std::vector<std::unique_ptr<Interface> > interfaces_;
 };
 
 
