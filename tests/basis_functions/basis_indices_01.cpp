@@ -30,7 +30,9 @@
 
 
 /**
- *
+ * Class to manage the basis indices distribution
+ * It provides an implementation of the local to global
+ * basis indices.
  */
 template<int dim, int range = 1, int rank = 1>
 class BasisIndex
@@ -46,19 +48,18 @@ public:
     };
 
     BasisIndex(std::shared_ptr<CartesianGrid<dim> > grid,
-               MultiplicityTable &element_index,
+               MultiplicityTable &accum_mult,
                const SpaceDimensionTable &n_basis,
                const SpaceDimensionTable &n_elem_basis,
                DistributionPolicy pol = DistributionPolicy::standard)
     :
-        element_index_(element_index),
-        element_loc_to_global_(grid->get_num_elements_dim())
+    	element_loc_to_global_(grid->get_num_elements_dim())
     {
         Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
-
-        int j = 0;
-        for (int comp = 0; comp < Space::n_components; ++comp)
+        // fills the standard distribution, sorted by component and
+        // by direction x moves faster
+        for (int comp = 0, j = 0; comp < Space::n_components; ++comp)
         {
             index_distribution_(comp).resize(n_basis(comp));
             for (auto &x : index_distribution_(comp))
@@ -66,22 +67,22 @@ public:
         }
 
 
-        for (const auto element : *grid)
+        for (const auto elem : *grid)
         {
-            const auto e_index  = element.get_tensor_index();
-
-            auto elem_basis = element_loc_to_global_(e_index).begin();
+            const auto index = elem.get_tensor_index();
+            auto &basis_list = element_loc_to_global_(index);
+            auto basis = basis_list.begin();
 
             for (int comp = 0; comp < Space::n_components; ++comp)
             {
-                auto origin = element_index_(comp).cartesian_product(e_index);
+                auto origin = accum_mult(comp).cartesian_product(index);
                 auto increment = n_elem_basis(comp);
 
                 auto comp_dofs = index_distribution_(comp).get_flat_view(origin, increment);
-                element_loc_to_global_(e_index).insert
-                        (elem_basis, comp_dofs.begin(),comp_dofs.end());
+                element_loc_to_global_(index).insert
+                        (basis, comp_dofs.begin(), comp_dofs.end());
                 for (auto x : element_loc_to_global_)
-                elem_basis = element_loc_to_global_(e_index).end();
+                basis = element_loc_to_global_(index).end();
             }
         }
 
@@ -106,7 +107,6 @@ private:
     using IndexDistributionTable =
             typename Space::template ComponentContainer<DynamicMultiArray<Index,dim>>;
     IndexDistributionTable index_distribution_;
-    MultiplicityTable element_index_;
 
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
 
