@@ -92,22 +92,35 @@ void run_test()
     ValueFlags fill_flags = ValueFlags::map_value | ValueFlags::face_point;
     elem->init_values(fill_flags, *quad);
 
-    vector<Point<dim>> unit_points(2);
-    unit_points[0][0] = Real(0.99999999999999);
-    unit_points[0][1] = Real(1.0e-9);
-    unit_points[1][0] = Real(0.99999999999999);
-    unit_points[1][1] = Real(0.99999999999999);
+
+    vector<Point<dim>> unit_points_face(2);
+    unit_points_face[0][0] = 1.0;
+    unit_points_face[0][1] = 0.0;
+    unit_points_face[1][0] = 1.0;
+    unit_points_face[1][1] = 1.0;
+//*/
+    const auto unit_points = quad->get_points().get_flat_cartesian_product();
+    int point_id = 0;
+    for (const auto &pt : unit_points)
+        out << "Point[" << point_id++ << "]= " << pt <<endl;
 
     out << "Loop using the MappingElementAccessor" << endl;
 
     for (; elem != elem_end; ++elem)
     {
+        out << "----" << endl;
         out << "Element id " << elem->get_flat_index() << endl;
+        elem->print_info(out);
 
         out << "Points evaluated at the element using the cache" << endl;
         elem->fill_values();
         auto points = elem->get_map_values();
         points.print_info(out);
+        out << endl;
+
+        out << "Points evaluated at the element using evaluate_values_at_points()" << endl;
+        auto points_no_cache = elem->evaluate_values_at_points(unit_points);
+        points_no_cache.print_info(out);
         out << endl;
 
         out << "Points evaluated at the face id " << face_id << " using the cache" << endl;
@@ -116,10 +129,12 @@ void run_test()
         points_face.print_info(out);
         out << endl;
 
-        out << "Points evaluate at the face id " << face_id << " throw evaluate_values_at_points " << face_id << endl;
-        auto points_at_face = elem->evaluate_values_at_points(unit_points);
-        points_at_face.print_info(out);
+        out << "Points evaluate at the face id " << face_id << " using evaluate_values_at_points()" << endl;
+        auto points_face_no_cache = elem->evaluate_values_at_points(unit_points_face);
+        points_face_no_cache.print_info(out);
+        out << "----" << endl;
         out << endl;
+        //*/
     }
     out << "========== Test (Dimension: " << dim << ") --- end ========== " << endl;
 }

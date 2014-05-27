@@ -37,6 +37,8 @@ count_and_remove_duplicates(
     vector<T> &vec_without_duplicates,
     vector<int> &multiplicities)
 {
+    Assert(vec_with_duplicates.empty()==false,ExcEmptyObject());
+
     //------------------------------------------------------------------------------------------
     const auto vec_with_duplicates_begin = vec_with_duplicates.cbegin() ;
     const auto vec_with_duplicates_end   = vec_with_duplicates.cend() ;
@@ -58,10 +60,37 @@ count_and_remove_duplicates(
     //------------------------------------------------------------------------------------------
     // now we count how many entries with the same values (==>multiplicity)
     multiplicities.clear() ;
+
+    const int size_vec_with_duplicates = vec_with_duplicates.size();
+    int id = 0;
+    multiplicities.push_back(1);
+    int mult_id = 0;
+    for (id = 1 ; id < size_vec_with_duplicates ; ++id)
+    {
+        if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
+        {
+            multiplicities[mult_id]++;
+        }
+        else
+        {
+            multiplicities.push_back(1);
+            mult_id++;
+        }
+    }
+
+    Assert(multiplicities.size() == vec_without_duplicates.size(),
+           ExcDimensionMismatch(multiplicities.size(),vec_without_duplicates.size()));
+
+    Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == vec_with_duplicates.size(),
+           ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
+    /*
+    //------------------------------------------------------------------------------------------
+    // now we count how many entries with the same values (==>multiplicity)
+    multiplicities.clear() ;
     for (const auto & v : vec_without_duplicates)
         multiplicities.push_back(count(vec_with_duplicates_begin, vec_with_duplicates_end, v)) ;
     //------------------------------------------------------------------------------------------
-
+    //*/
 }
 
 } ;

@@ -807,9 +807,15 @@ MappingElementAccessor<dim_ref_,codim_>::
 print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 {
     using std::endl;
+
+    std::string tab = "   ";
+
     out << "MappingElementAccessor info" << endl;
 
-    out.push("\t");
+    out.push(tab);
+
+
+    CartesianGridElementAccessor<dim_ref_>::print_info(out);
     out << "num. points = " << elem_values_.num_points_ << endl;
 
 
