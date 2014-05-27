@@ -342,13 +342,9 @@ private:
          * quadrature points
          * splines1d_cache_data_[comp][interval][order][function][point]
          */
-        ComponentTable<BasisValues1d> splines1d_cache_data_;
+        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
 
-        ComponentDirectionTable<BasisValues1d> test_cache_data_;
-
-        ComponentTable<const BasisValues1d *> splines1d_cache_;
-
-        ComponentDirectionTable<const BasisValues1d *> test_cache_;
+        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
 
     };
 

@@ -399,7 +399,10 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
     }
     else
     {
-        std::cout << "SpaceElementAccessor::get_values_cache" << std::endl;
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
         Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
                ExcIndexRange(topology_id.get_id(),0,n_faces));
         return face_values_[topology_id.get_id()];
@@ -652,9 +655,6 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
-    using std::cout;
-    using std::endl;
-    cout << "SpaceElementAccessor::evaluate_field" << endl;
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_values() == true, ExcCacheNotFilled());
     Assert(this->get_num_basis() == local_coefs.size(),

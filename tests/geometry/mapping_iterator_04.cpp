@@ -43,7 +43,6 @@ void run_test()
     const int range = dim;
     const int rank =  1;
     const int degree = 2;
-    const int face_id = 1;
     auto knots = CartesianGrid<dim>::create();
     typedef BSplineSpace< dim, range, rank > RefSpace_t;
     auto ref_space = RefSpace_t::create(knots, degree);
@@ -82,8 +81,8 @@ void run_test()
 
     auto map = IgMapping<RefSpace_t>::create(ref_space, control_pts);
     map->refine_h_direction(0, 2);
-    map->print_info(out);
-    out << endl;
+//    map->print_info(out);
+//    out << endl;
 
     shared_ptr<Quadrature<dim>> quad = std::make_shared<Quadrature<dim>>(QTrapez<dim>());
 
@@ -93,11 +92,6 @@ void run_test()
     elem->init_values(fill_flags, *quad);
 
 
-    vector<Point<dim>> unit_points_face(2);
-    unit_points_face[0][0] = 1.0;
-    unit_points_face[0][1] = 0.0;
-    unit_points_face[1][0] = 1.0;
-    unit_points_face[1][1] = 1.0;
 //*/
     const auto unit_points = quad->get_points().get_flat_cartesian_product();
     int point_id = 0;
@@ -111,6 +105,33 @@ void run_test()
         out << "----" << endl;
         out << "Element id " << elem->get_flat_index() << endl;
         elem->print_info(out);
+
+
+        vector<Point<dim>> unit_points_face(2);
+        int face_id;
+        if (elem->get_flat_index() == 0)
+        {
+            unit_points_face[0][0] = 0.0;
+            unit_points_face[0][1] = 0.0;
+            unit_points_face[1][0] = 0.0;
+            unit_points_face[1][1] = 1.0;
+
+            face_id = 0;
+        }
+        else if (elem->get_flat_index() == 1)
+        {
+            unit_points_face[0][0] = 1.0;
+            unit_points_face[0][1] = 0.0;
+            unit_points_face[1][0] = 1.0;
+            unit_points_face[1][1] = 1.0;
+
+            face_id = 1;
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
 
         out << "Points evaluated at the element using the cache" << endl;
         elem->fill_values();

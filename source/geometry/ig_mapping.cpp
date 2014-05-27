@@ -294,9 +294,6 @@ void
 IgMapping<RefSpace>::
 evaluate_face(const Index face_id, vector<ValueType> &values) const
 {
-    using std::cout;
-    using std::endl;
-    cout << "IgMapping::evaluate_face" << endl;
     values = cache_->evaluate_field(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
 
