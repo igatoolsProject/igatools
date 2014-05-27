@@ -818,14 +818,13 @@ fill_values(const TopologyId<dim> &topology_id)
 
     if (topology_id.is_element())
     {
-
         for (int iComp=0; iComp< Space::n_components; ++iComp)
         {
             const auto &univariate_values = values_1d_elem_->splines1d_cache_(iComp);
             for (int i = 0; i < dim; ++i)
                 elem_univariate_values(iComp)[i] = univariate_values.get_data_direction(i)[element_tensor_id[i]];
         }
-    }
+    } // if (topology_id.is_element())
     else // if (topology_id.is_face())
     {
         const int face_id = topology_id.get_id();
@@ -848,7 +847,7 @@ fill_values(const TopologyId<dim> &topology_id)
 
         Assert(values_1d_elem_->max_deriv_order_ == values_1d_faces_[face_id]->max_deriv_order_,
                ExcDimensionMismatch(values_1d_elem_->max_deriv_order_,values_1d_faces_[face_id]->max_deriv_order_));
-    }
+    } // if (topology_id.is_face())
 
 
     this->fill_values_cache_from_univariate(
