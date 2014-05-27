@@ -102,7 +102,7 @@ void run_test()
     const auto unit_points = quad->get_points().get_flat_cartesian_product();
     int point_id = 0;
     for (const auto &pt : unit_points)
-        out << "Point[" << point_id++ << "]= " << pt <<endl;
+        out << "unit point[" << point_id++ << "]= " << pt <<endl;
 
     out << "Loop using the MappingElementAccessor" << endl;
 

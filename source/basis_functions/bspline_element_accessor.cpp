@@ -426,6 +426,119 @@ get_bezier_extraction_operator() const -> ComponentTable< std::array< const Dens
 
 
 
+template < int dim, int range, int rank>
+void
+BSplineElementAccessor<dim, range, rank>::
+GlobalElemCache::
+reset(const Space &space,
+      const Quadrature<dim> &quad,
+      const int max_der)
+{
+    //------------------------------------------------------------------------------------------
+    this->max_deriv_order_ = max_der;
+    // resizing the structures for the one dimensional splines
+    const int n_active_components = space.num_active_components_;
+    const auto &n_elem = space.get_grid()->get_num_elements_dim();
+    const int max_der_plus_one = this->max_deriv_order_ + 1;
+
+    for (int iComp = 0; iComp < n_active_components; ++iComp)
+    {
+        Assert(n_elem == space.bezier_op_(iComp).tensor_size(),
+               ExcMessage("Not same size"));
+        this->splines1d_cache_data_(iComp).resize(n_elem);
+        for (int i=0; i<dim; ++i)
+            for (int j=0; j<n_elem[i]; ++j)
+                this->splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
+    }
+
+
+    for (int iComp = 0; iComp < Space::n_components; ++iComp)
+    {
+        Assert(n_elem == this->splines1d_cache_data_(space.map_component_to_active_data_(iComp)).tensor_size(),
+               ExcMessage("Not same size"));
+        this->splines1d_cache_(iComp).resize(n_elem);
+    }
+    this->set_initialized(true);
+    //------------------------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------------------------
+    /*
+     * For each component and each direction we consider the number
+     * of intervals in the space.
+     * Then in each interval we compute the values and derivatives of
+     * the one dimensional B-splines on each quadrature point.
+     */
+
+    const auto &bezier_op_ = space.bezier_op_;
+    const auto &degree_    = space.degree_;
+    const auto &eval_points = quad.get_points();
+
+    const auto lengths = space.get_grid()->get_element_lengths();
+    BasisValues1d bernstein_values(max_der_plus_one);
+    for (int iComp = 0; iComp < n_active_components; ++iComp)
+    {
+        for (int jDim = 0; jDim < dim; ++jDim)
+        {
+            const int num_intevals = n_elem[jDim];
+            const int degree = degree_(iComp)[ jDim ];
+            const vector<Real> &pt_coords = eval_points.get_data_direction(jDim);
+
+            // fill values and derivatives of the Bernstein's polynomials at
+            // quad points in [0,1]
+
+            for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
+                bernstein_values[ deriv_order ] =
+                    BernsteinBasis::derivative(deriv_order, degree, pt_coords);
+
+            const auto &bez_iComp_jDim = bezier_op_(iComp).get_data_direction(jDim);
+            const auto &lengths_jDim = lengths.get_data_direction(jDim);
+
+            // compute the one dimensional B-splines at quad point on the reference interval
+            for (int interval = 0; interval < num_intevals; interval++)
+            {
+                const auto &M = *(bez_iComp_jDim[interval]);
+                const Real one_div_size = 1.0 / lengths_jDim[interval];
+                BasisValues1d &basis = this->splines1d_cache_data_(iComp).entry(jDim,interval);
+
+                for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
+                {
+                    const Real scaling_coef = std::pow(one_div_size, deriv_order);
+                    basis[ deriv_order ] = scaling_coef * prec_prod(M, bernstein_values[ deriv_order ]);
+                } //end loop deriv_order
+            } // end loop interval
+        } // end loop jDim
+    } // end loop iComp
+    //------------------------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------------------------
+    // assign the basis1D data to the proper component/interval through their memory address
+    for (int iComp = 0; iComp < Space::n_components; iComp++)
+    {
+        const int active_comp = space.map_component_to_active_data_(iComp);
+
+        const auto &spline1d_active_data = this->splines1d_cache_data_(active_comp);
+
+        const auto n_intervals_multi_d = spline1d_active_data.tensor_size();
+
+        for (int jDim = 0; jDim < dim; jDim++)
+        {
+            const Size n_intervals_1d = n_intervals_multi_d[jDim];
+
+            const auto &data = spline1d_active_data.get_data_direction(jDim);
+
+            for (Size i = 0; i < n_intervals_1d; ++i)
+                this->splines1d_cache_(iComp).entry(jDim,i) = &(data[i]);
+        } // end loop jDim
+    } // end loop iComp
+    //-------------------------------------------------------------------------
+
+
+    this->set_filled(true);
+
+}
+
 
 template <int dim, int range, int rank>
 void
@@ -438,6 +551,38 @@ reset(const Space &space,
 {
     const auto quad = quad1.collapse_to_face(face_id);
     this->max_deriv_order_ = max_der;
+
+    const int   const_dir  = UnitElement<dim>::face_constant_direction[face_id];
+    const auto active_dirs = UnitElement<dim>::face_active_directions[face_id];
+
+//    const int face_dim = (dim>0)?dim-1:0;
+    TensorSize<dim> n_elem;
+    array<vector<int>,dim> intervals_id;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        auto &intervals_id_direction = intervals_id[i];
+        if (i != const_dir)
+        {
+            n_elem(i) = space.get_grid()->get_num_elements_dim()(i);
+
+            intervals_id_direction.resize(n_elem(i));
+            for (int id = 0 ; id < n_elem(i) ; ++id)
+                intervals_id_direction[id] = id;
+        }
+        else
+        {
+            n_elem(i) = 1;
+
+            if (face_id % 2 == 0)
+                intervals_id_direction.push_back(0);
+            else
+                intervals_id_direction.push_back(n_elem(i)-1);
+
+            Assert(intervals_id_direction.size() == 1,
+                   ExcDimensionMismatch(intervals_id_direction.size(),1));
+        }
+    }
+
     // resizing the structures for the one dimensional splines
     const int n_active_components = space.num_active_components_;
     const int max_der_plus_one = this->max_deriv_order_ + 1;
@@ -445,7 +590,21 @@ reset(const Space &space,
     for (int iComp = 0; iComp < n_active_components; ++iComp)
     {
         this->splines1d_cache_data_(iComp).resize(max_der_plus_one);
+
+        this->test_cache_data_(iComp).resize(n_elem);
+        for (int i=0; i<dim; ++i)
+            for (int j=0; j<n_elem[i]; ++j)
+                this->test_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
+
     }
+
+    for (int iComp = 0; iComp < Space::n_components; ++iComp)
+    {
+        Assert(n_elem == this->test_cache_data_(space.map_component_to_active_data_(iComp)).tensor_size(),
+               ExcMessage("Not same size"));
+        this->test_cache_(iComp).resize(n_elem);
+    }
+
     this->set_initialized(true);
 
     /*
@@ -496,6 +655,46 @@ reset(const Space &space,
             }
         } // end loop jDim
     } // end loop iComp
+    for (int iComp = 0; iComp < n_active_components; ++iComp)
+    {
+        for (int jDim = 0; jDim < dim; ++jDim)
+        {
+            const auto &intervals_id_dir = intervals_id[jDim];
+
+            const int num_intevals = intervals_id_dir.size();
+            const int degree = degree_(iComp)[jDim];
+            const vector<Real> &pt_coords = eval_points.get_data_direction(jDim);
+
+#ifndef NDEBUG
+            if (jDim == const_dir)
+                Assert(pt_coords.size()==1,ExcDimensionMismatch(pt_coords.size(),1));
+#endif
+
+            // fill values and derivatives of the Bernstein's polynomials at
+            // quad points in [0,1]
+
+            for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
+                bernstein_values[ deriv_order ] =
+                    BernsteinBasis::derivative(deriv_order, degree, pt_coords);
+
+            const auto &bez_iComp_jDim = bezier_op_(iComp).get_data_direction(jDim);
+            const auto &lengths_jDim = lengths.get_data_direction(jDim);
+
+            // compute the one dimensional B-splines at quad point on the reference interval
+            for (const int & interval_id : intervals_id_dir)
+            {
+                const auto &M = *(bez_iComp_jDim[interval_id]);
+                const Real one_div_size = 1.0 / lengths_jDim[interval_id];
+                BasisValues1d &basis = this->test_cache_data_(iComp).entry(jDim,interval_id);
+
+                for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
+                {
+                    const Real scaling_coef = std::pow(one_div_size, deriv_order);
+                    basis[ deriv_order ] = scaling_coef * prec_prod(M, bernstein_values[ deriv_order ]);
+                } //end loop deriv_order
+            } // end loop interval
+        } // end loop jDim
+    } // end loop iComp
 
 
     // assign the basis1D data to the proper component/interval through their memory address
@@ -504,6 +703,31 @@ reset(const Space &space,
         const int active_comp = space.map_component_to_active_data_(iComp);
         this->splines1d_cache_(iComp) = &(this->splines1d_cache_data_(active_comp));
     }
+
+
+
+    //------------------------------------------------------------------------------------------
+    // assign the basis1D data to the proper component/interval through their memory address
+    for (int iComp = 0; iComp < Space::n_components; iComp++)
+    {
+        const int active_comp = space.map_component_to_active_data_(iComp);
+
+        const auto &spline1d_active_data = this->test_cache_data_(active_comp);
+
+        const auto n_intervals_multi_d = spline1d_active_data.tensor_size();
+
+        for (int jDim = 0; jDim < dim; jDim++)
+        {
+            const Size n_intervals_1d = n_intervals_multi_d[jDim];
+
+            const auto &data = spline1d_active_data.get_data_direction(jDim);
+
+            for (Size i = 0; i < n_intervals_1d; ++i)
+                this->test_cache_(iComp).entry(jDim,i) = &(data[i]);
+        } // end loop jDim
+    } // end loop iComp
+    //-------------------------------------------------------------------------
+
 
     this->set_filled(true);
 }
@@ -653,6 +877,12 @@ fill_values(const TopologyId<dim> &topology_id)
         const int face_id = topology_id.get_id();
 
         const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
+
+        using std::cout ;
+        using std::endl;
+        cout << "BSplineElementAccessor::fill_values on face " << endl;
+        cout << "\tconst_dir= " << const_dir << endl;
+
         for (int iComp=0; iComp < Space::n_components ; ++iComp)
         {
             for (int i = 0; i < dim; ++i)
@@ -661,6 +891,11 @@ fill_values(const TopologyId<dim> &topology_id)
                 {
                     Assert(values_1d_faces_[face_id]->is_filled(), ExcCacheNotFilled());
                     elem_univariate_values(iComp)[i] = values_1d_faces_[face_id]->splines1d_cache_(iComp);
+
+                    cout << "i==const_dir" << endl;
+                    const vector<DenseMatrix> tmp = (*values_1d_faces_[face_id]->splines1d_cache_(iComp));
+
+                    cout << "Values 1D = " << tmp[0] <<endl;
                 }
                 else
                     elem_univariate_values(iComp)[i] =
@@ -683,119 +918,6 @@ fill_values(const TopologyId<dim> &topology_id)
 
 
 
-
-template < int dim, int range, int rank>
-void
-BSplineElementAccessor<dim, range, rank>::
-GlobalElemCache::
-reset(const Space &space,
-      const Quadrature<dim> &quad,
-      const int max_der)
-{
-    //------------------------------------------------------------------------------------------
-    this->max_deriv_order_ = max_der;
-    // resizing the structures for the one dimensional splines
-    const int n_active_components = space.num_active_components_;
-    const auto &n_elem = space.get_grid()->get_num_elements_dim();
-    const int max_der_plus_one = this->max_deriv_order_ + 1;
-
-    for (int iComp = 0; iComp < n_active_components; ++iComp)
-    {
-        Assert(n_elem == space.bezier_op_(iComp).tensor_size(),
-               ExcMessage("Not same size"));
-        this->splines1d_cache_data_(iComp).resize(n_elem);
-        for (int i=0; i<dim; ++i)
-            for (int j=0; j<n_elem[i]; ++j)
-                this->splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
-    }
-
-
-    for (int iComp = 0; iComp < Space::n_components; ++iComp)
-    {
-        Assert(n_elem == this->splines1d_cache_data_(space.map_component_to_active_data_(iComp)).tensor_size(),
-               ExcMessage("Not same size"));
-        this->splines1d_cache_(iComp).resize(n_elem);
-    }
-    this->set_initialized(true);
-    //------------------------------------------------------------------------------------------
-
-
-    //------------------------------------------------------------------------------------------
-    /*
-     * For each component and each direction we consider the number
-     * of intervals in the space.
-     * Then in each interval we compute the values and derivatives of
-     * the one dimensional B-splines on each quadrature point.
-     */
-
-    const auto &bezier_op_ = space.bezier_op_;
-    const auto &degree_    = space.degree_;
-    const auto &eval_points = quad.get_points();
-
-    const auto lengths = space.get_grid()->get_element_lengths();
-    BasisValues1d bernstein_values(max_der_plus_one);
-    for (int iComp = 0; iComp < n_active_components; ++iComp)
-    {
-        for (int jDim = 0; jDim < dim; ++jDim)
-        {
-            const int num_intevals = n_elem[jDim];
-            const int degree = degree_(iComp)[ jDim ];
-            const vector<Real> &pt_coords = eval_points.get_data_direction(jDim);
-
-            // fill values and derivatives of the Bernstein's polynomials at
-            // quad points in [0,1]
-
-            for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
-                bernstein_values[ deriv_order ] =
-                    BernsteinBasis::derivative(deriv_order, degree, pt_coords);
-
-            const auto &bez_iComp_jDim = bezier_op_(iComp).get_data_direction(jDim);
-            const auto &lengths_jDim = lengths.get_data_direction(jDim);
-
-            // compute the one dimensional B-splines at quad point on the reference interval
-            for (int interval = 0; interval < num_intevals; interval++)
-            {
-                const auto &M = *(bez_iComp_jDim[interval]);
-                const Real one_div_size = 1.0 / lengths_jDim[interval];
-                BasisValues1d &basis = this->splines1d_cache_data_(iComp).entry(jDim,interval);
-
-                for (int deriv_order = 0; deriv_order < max_der_plus_one; ++deriv_order)
-                {
-                    const Real scaling_coef = std::pow(one_div_size, deriv_order);
-                    basis[ deriv_order ] = scaling_coef * prec_prod(M, bernstein_values[ deriv_order ]);
-                }
-            }
-        } // end loop jDim
-    } // end loop iComp
-    //------------------------------------------------------------------------------------------
-
-
-    //------------------------------------------------------------------------------------------
-    // assign the basis1D data to the proper component/interval through their memory address
-    for (int iComp = 0; iComp < Space::n_components; iComp++)
-    {
-        const int active_comp = space.map_component_to_active_data_(iComp);
-
-        const auto &spline1d_active_data = this->splines1d_cache_data_(active_comp);
-
-        const auto n_intervals_multi_d = spline1d_active_data.tensor_size();
-
-        for (int jDim = 0; jDim < dim; jDim++)
-        {
-            const Size n_intervals_1d = n_intervals_multi_d[jDim];
-
-            const auto &data = spline1d_active_data.get_data_direction(jDim);
-
-            for (Size i = 0; i < n_intervals_1d; ++i)
-                this->splines1d_cache_(iComp).entry(jDim,i) = &(data[i]);
-        }
-    }
-    //-------------------------------------------------------------------------
-
-
-    this->set_filled(true);
-
-}
 
 
 

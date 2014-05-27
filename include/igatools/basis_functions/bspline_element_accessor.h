@@ -234,8 +234,7 @@ protected:
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentDirectionTable =
-        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
+    using ComponentDirectionTable = ComponentTable<CartesianProductArray<T,dim> >;
 
 
 
@@ -345,7 +344,11 @@ private:
          */
         ComponentTable<BasisValues1d> splines1d_cache_data_;
 
+        ComponentDirectionTable<BasisValues1d> test_cache_data_;
+
         ComponentTable<const BasisValues1d *> splines1d_cache_;
+
+        ComponentDirectionTable<const BasisValues1d *> test_cache_;
 
     };
 
