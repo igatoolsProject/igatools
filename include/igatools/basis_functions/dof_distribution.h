@@ -51,7 +51,7 @@ public:
     };
 
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
-               MultiplicityTable &accum_mult,
+               const MultiplicityTable &accum_mult,
                const SpaceDimensionTable &n_basis,
                const SpaceDimensionTable &n_elem_basis,
                DistributionPolicy pol = DistributionPolicy::standard);

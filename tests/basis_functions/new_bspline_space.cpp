@@ -23,9 +23,9 @@
  *  date:
  *
  */
-
 #include "../tests.h"
- #include <igatools/base/config.h>
+
+#include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
 #include <igatools/basis_functions/space_spec.h>
@@ -36,7 +36,6 @@
 #include<igatools/geometry/push_forward.h>
 
 
-#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/identity_mapping.h>
@@ -47,7 +46,7 @@ using std::vector;
 using std::shared_ptr;
 using std::make_shared;
 
-
+//IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including the header
 template < int, int, int> class BSplineElementAccessor;
@@ -364,6 +363,9 @@ public:
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
 };
+
+
+#if 0
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(shared_ptr<GridType> grid, const int degree)
@@ -425,15 +427,16 @@ create(shared_ptr<GridType> knots,
     return shared_ptr<self_t>(new self_t(knots, degree));
 }
 
-
+#endif
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(std::shared_ptr<GridType> knots,
+BSplineSpace(const DegreeTable &deg,
+             std::shared_ptr<GridType> knots,
              std::shared_ptr<const MultiplicityTable> interior_mult,
-             const DegreeTable &deg)
+             const EndBehaviourTable & ends = EndBehaviourTable())
     :
-    BaseSpace(knots, interior_mult, deg),
+    BaseSpace(deg, knots, interior_mult),
     basis_indices_(knots,BaseSpace::accumulated_interior_multiplicities(),
                    BaseSpace::get_num_basis_table(),BaseSpace::get_num_basis_per_element_table()),
     operators_(knots, BaseSpace::compute_knots_with_repetition(BaseSpace::EndBehaviour::interpolatory),
@@ -451,7 +454,7 @@ create(std::shared_ptr<GridType> knots,
        const DegreeTable &deg)
 -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots, interior_mult, deg));
+    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult));
 }
 
 
@@ -683,11 +686,24 @@ print_info(LogStream &out) const
     out << sparsity_pattern.get_num_overlapping_funcs() << endl;
 #endif
 }
+//IGA_NAMESPACE_CLOSE
+
+
 
 int main()
 {
     out.depth_console(10);
 
+    const int dim=1;
+    using BSplineSpace = BSplineSpace<dim>;
+    using MultiplicityTable = typename BSplineSpace::MultiplicityTable;
+
+    typename BSplineSpace::DegreeTable deg{{2}};
+    auto grid = CartesianGrid<dim>::create(4);
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
+    auto space = BSplineSpace::create(grid, int_mult, deg);
+
+    space->print_info(out);
 
     return 0;
 }

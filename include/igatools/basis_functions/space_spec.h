@@ -202,7 +202,7 @@ public:
 
 
 
-    void print_info(LogStream &out);
+    void print_info(LogStream &out) const;
 
 private:
     /**

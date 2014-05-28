@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
 DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
-                MultiplicityTable &accum_mult,
+                const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis,
                 const SpaceDimensionTable &n_elem_basis,
                 DistributionPolicy pol)

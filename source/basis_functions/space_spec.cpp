@@ -274,7 +274,7 @@ SplineSpace<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
 template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
-print_info(LogStream &out)
+print_info(LogStream &out) const
 {
     out << "Knots without repetition:\n";
     this->get_grid()->print_info(out);
