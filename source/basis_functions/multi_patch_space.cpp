@@ -252,11 +252,8 @@ Interface(const InterfaceType &type, Patch patch_0,const int side_id_patch_0,Pat
            ExcIndexRange(side_id_patch_1,0,UnitElement<dim>::faces_per_element));
 
 
-    patch_[0] = patch_0;
-    side_id_[0] = side_id_patch_0;
-
-    patch_[1] = patch_1;
-    side_id_[1] = side_id_patch_1;
+    patch_and_side_[0] = std::make_pair(patch_0, side_id_patch_0);
+    patch_and_side_[1] = std::make_pair(patch_1, side_id_patch_1);
 }
 
 
@@ -269,10 +266,8 @@ Interface::
 operator==(const Interface &interface_to_compare) const
 {
     return (type_ == interface_to_compare.type_ &&
-            patch_[0] == interface_to_compare.patch_[0] &&
-            patch_[1] == interface_to_compare.patch_[1] &&
-            side_id_[0] == interface_to_compare.side_id_[0] &&
-            side_id_[1] == interface_to_compare.side_id_[1]);
+            patch_and_side_[0] == interface_to_compare.patch_and_side_[0] &&
+            patch_and_side_[1] == interface_to_compare.patch_and_side_[1]);
 }
 
 template <class PhysicalSpace>
@@ -299,14 +294,14 @@ print_info(LogStream &out) const
 
     out << "Patch 0 infos:" << endl;
     out.push(tab);
-    out << "shared_ptr = " << patch_[0] << endl;
-    out << "Side id = " << side_id_[0] << endl;
+    out << "shared_ptr = " << patch_and_side_[0].first << endl;
+    out << "Side id = " << patch_and_side_[0].second << endl;
     out.pop();
 
     out << "Patch 1 infos:" << endl;
     out.push(tab);
-    out << "shared_ptr = " << patch_[1] << endl;
-    out << "Side id = " << side_id_[1] << endl;
+    out << "shared_ptr = " << patch_and_side_[1].first << endl;
+    out << "Side id = " << patch_and_side_[1].second << endl;
     out.pop();
 
 

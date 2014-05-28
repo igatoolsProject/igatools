@@ -33,6 +33,17 @@ IGA_NAMESPACE_OPEN
  * @brief This class represents a space built upon several patches, where each patch is a different
  * instance of a given PhysicalSpace type.
  *
+ * In order to build/represent a multi-patch space, two ingredients are needed:
+ * - a vector of patches;
+ * - a vector of interfaces, i.e. a data structure that specifies if and how the patches are
+ * ''glued'' together.
+ *
+ * By now, the building process of a MultiPatchSpace must follow this order:
+ * - 1) insertion of the patches (mandatory);
+ * - 2) insertion of the interfaces (optional).
+ * If no interfaces are inserted, the patches in MultiPatchSpace will be considered as totally
+ * independent one from the other.
+ *
  * @note Some restrictions must be ensured for building a MultiPatchSpace:
  * - each patch is defined by one and only one PhysicalSpace object (i.e. a given PhysicalSpace object
  * cannot be used to define more than one patch).
@@ -54,12 +65,15 @@ public:
     /** Type alias for the reference space. */
     using RefSpace = typename PhysicalSpace::RefSpace;
 
+    /** Type alias for the push-forward. */
     using PushForward = typename PhysicalSpace::PushForwardType;
 
+    /** Type alias for the mapping. */
     using Map = typename PushForward::Map;
 
     using Patch = std::shared_ptr<const PhysicalSpace>;
 
+    /** Dimensionality of the reference domain. */
     static const int dim = PhysicalSpace::dim;
     ///@}
 
@@ -91,19 +105,37 @@ public:
 
     /** @name Functions for the management of the patches and/or interfaces addition. */
     ///@{
+
+    /**
+     * Sets the object in a state that permits the user to add new patches/interfaces.
+     */
     void arrangement_open();
+
+
+    /**
+     * Communicates that the insertion of patches/interfaces is completed.
+     *
+     * Moreover, performs the data analysis in order to set equality and linear constraints
+     * for the degrees of freedom.
+     *
+     * @warning After calling this function, it will be not possible to add new patches/interfaces
+     * to the MultiPatchSpace.
+     */
     void arrangement_close();
 
     /**
      * Adds a patch to the space.
      * @note In Debug mode, an assertion will be raised if the patch is already added.
-     *
+     * @pre Before calling this function, the member variable is_arrangement_open_ must be set to TRUE
+     * (for example using the function arrangement_open()).
      */
     void add_patch(std::shared_ptr<const PhysicalSpace> patch);
 
     /**
      * Adds an interface between two different patches.
      * @note In Debug mode, an assertion will be raised if the interface is already added.
+     * @pre Before calling this function, the member variable is_arrangement_open_ must be set to TRUE
+     * (for example using the function arrangement_open()).
      */
     void add_interface(const InterfaceType &type,
                        Patch patch_0,const int side_id_patch_0,
@@ -138,40 +170,69 @@ private:
 
     bool is_arrangement_open_ = false;
 
+    /** Vector of patches defining the MultiPatchSpace. */
     std::vector< std::shared_ptr<const PhysicalSpace> > patches_;
 
     /**
-     * Add the offset to the dofs id in the reference spaces in order to avoid same
+     * Add the proper offset to the dofs id in the reference spaces in order to avoid same
      * dof ids between different spaces.
+     *
+     * @warning This function modifies some internal variables of the reference spaces used to
+     * define the physical spaces (i.e. the patches).
      */
     void perform_ref_spaces_add_dofs_offset();
 
 
+    /**
+     * @brief This class represent an interface between two patches.
+     *
+     * An interface is defined by the two patches and one side/face indicator for each patch, plus
+     * a flag of type InterfaceType used to specify the type of interface.
+     *
+     */
     class Interface
     {
     public:
         /** @name Constructors and destructor */
         ///@{
+        /** Default constructor. */
         Interface() = delete;
+
         Interface(const InterfaceType &type,
                   Patch patch_0,const int side_id_patch_0,
                   Patch patch_1,const int side_id_patch_1);
+
+
+        /** Copy constructor. */
         Interface(const Interface &interface) = delete;
+
+
+        /** Move constructor. */
         Interface(Interface &&interface) = delete;
+
+
+        /** Destructor. */
         ~Interface() = default;
         ///@}
 
 
         /** @name Assignment operators */
         ///@{
+        /** Copy assignment operator. */
         Interface &operator=(const Interface &interface) = delete;
+
+
+        /** Move assignment operator. */
         Interface &operator=(Interface &&interface) = delete;
         ///@}
 
 
         /** @name Comparison operators */
         ///@{
+        /** Compares for equality. */
         bool operator==(const Interface &interface_to_compare) const;
+
+        /** Compares for inequality. */
         bool operator!=(const Interface &interface_to_compare) const;
         ///@}
 
@@ -182,9 +243,13 @@ private:
         void print_info(LogStream &out) const;
 
     private:
+        /** Interface type. */
         InterfaceType type_;
-        std::array<Patch,2> patch_;
-        std::array<int,2> side_id_;
+
+        /**
+         * The two pairs patch/side_id defining the interface.
+         */
+        std::array<std::pair<Patch,int>,2> patch_and_side_;
     };
 
 
@@ -197,8 +262,8 @@ private:
     public:
 
     private:
-        std::vector<Index> dofs_id_;
-        std::vector<Real> dofs_value_;
+        /** Vector of pairs dof_id/value defining the linear constraint.*/
+        std::vector<std::pair<Index,Real> > dofs_id_and_value_;
     };
 
     std::vector<LinearConstraint> linear_constraints_;
