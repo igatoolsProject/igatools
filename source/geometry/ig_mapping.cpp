@@ -345,7 +345,9 @@ evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> 
         cache_->reset_flat_tensor_indices(elem_fid);
 
         //here we copy the points that belongs to the current element
-        vector<PointType> points_current_element(point_it,point_it+(*elem_multiplicity_it++));
+        const auto point_it_end = point_it + (*elem_multiplicity_it++);
+        vector<PointType> points_current_element(point_it,point_it_end);
+        point_it = point_it_end;
 
         const auto points_unit_element =
             cache_->transform_points_reference_to_unit(points_current_element);
@@ -389,7 +391,9 @@ evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<G
         cache_->reset_flat_tensor_indices(elem_fid);
 
         //here we copy the points that belongs to the current element
-        vector<PointType> points_current_element(point_it,point_it+(*elem_multiplicity_it++));
+        const auto point_it_end = point_it + (*elem_multiplicity_it++);
+        vector<PointType> points_current_element(point_it,point_it_end);
+        point_it = point_it_end;
 
         const auto points_unit_element =
             cache_->transform_points_reference_to_unit(points_current_element);
@@ -433,7 +437,9 @@ evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<He
         cache_->reset_flat_tensor_indices(elem_fid);
 
         //here we copy the points that belongs to the current element
-        vector<PointType> points_current_element(point_it,point_it+(*elem_multiplicity_it++));
+        const auto point_it_end = point_it + (*elem_multiplicity_it++);
+        vector<PointType> points_current_element(point_it,point_it_end);
+        point_it = point_it_end;
 
         const auto points_unit_element =
             cache_->transform_points_reference_to_unit(points_current_element);

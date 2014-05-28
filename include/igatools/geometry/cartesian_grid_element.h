@@ -171,6 +171,11 @@ public:
     bool is_point_inside(const Point<dim> &point) const;
 
     /**
+     * Test if the point is on the element boundary.
+     */
+    bool is_point_on_boundary(const Point<dim> &point) const;
+
+    /**
      * Test if the element has a boundary face.
      */
     bool is_boundary() const;

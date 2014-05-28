@@ -234,8 +234,7 @@ protected:
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentDirectionTable =
-        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
+    using ComponentDirectionTable = ComponentTable<CartesianProductArray<T,dim> >;
 
 
 
@@ -291,7 +290,24 @@ private:
     class GlobalCache : public CacheStatus
     {
     public:
+        /**
+         * univariate B-splines values and derivatives at
+         * quadrature points
+         * splines1d_cache_data_[comp][dir][interval][order][function][point]
+         */
+        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
+
+        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+
         int max_deriv_order_ = 0;
+
+    protected:
+        void reset(const Space &space,
+                   const Quadrature<dim> &quad,
+                   const int max_der,
+                   const std::array<std::vector<int>,dim> &intervals_id);
+
+        TensorSize<dim> n_intervals_;
     };
 
     /**
@@ -311,16 +327,6 @@ private:
         void reset(const Space &space,
                    const Quadrature<dim> &quad,
                    const int max_der);
-
-        /**
-         * univariate B-splines values and derivatives at
-         * quadrature points
-         * splines1d_cache_data_[comp][dir][interval][order][function][point]
-         */
-        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
-
-        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
-
     };
 
     class GlobalFaceCache : public GlobalCache
@@ -337,16 +343,6 @@ private:
                    const Quadrature<dim> &quad1,
                    const Index face_id,
                    const int max_der);
-
-        /**
-         * univariate B-splines values and derivatives at
-         * quadrature points
-         * splines1d_cache_data_[comp][interval][order][function][point]
-         */
-        ComponentTable<BasisValues1d> splines1d_cache_data_;
-
-        ComponentTable<const BasisValues1d *> splines1d_cache_;
-
     };
 
 

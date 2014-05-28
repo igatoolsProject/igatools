@@ -209,6 +209,37 @@ is_point_inside(const Point< dim > &point) const
     return (true) ;
 }
 
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_point_on_boundary(const Point< dim > &point) const
+{
+    int n_coords_inside = 0;
+    int n_coords_on_boundary = 0;
+
+    const auto &knots_directions = this->get_grid()->get_knot_coordinates();
+    const auto &tensor_index = this->get_tensor_index();
+    for (int j = 0; j < dim; ++j)
+    {
+        const auto &knots = knots_directions.get_data_direction(j) ;
+        const Index id = tensor_index[j] ;
+
+        const Real pt_coord = point(j) ;
+
+        if (pt_coord > knots[id] && pt_coord < knots[id+1])
+            n_coords_inside++;
+
+        if (pt_coord == knots[id] || pt_coord == knots[id+1])
+            n_coords_on_boundary++;
+    }
+
+    int n_coords_outside = dim - (n_coords_inside+n_coords_on_boundary);
+
+    if (n_coords_on_boundary > 0 && n_coords_outside == 0)
+        return true;
+    else
+        return false;
+}
 
 
 template <int dim_>
@@ -291,19 +322,30 @@ vector<Point<dim>>
     const auto dilate    = this->get_coordinate_lengths();
 
     vector<Point<dim>> points_unit_domain(n_points);
+//    LogStream out ;
+//    using std::endl;
+//    out << "CartesianGridElement::transform_points_reference_to_unit" << endl;
+//    this->print_info(out);
+//    out <<endl;
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_ref_domain = points_ref_domain[ipt];
-        Assert(this->is_point_inside(point_ref_domain),
+//        out << "point_ref_domain="<<point_ref_domain<<endl;
+        Assert(this->is_point_inside(point_ref_domain) || this->is_point_on_boundary(point_ref_domain),
         ExcMessage("The point " + std::to_string(ipt) +
-        " is not in this CartesianGridElement."));
+        " is outside this CartesianGridElement."));
 
         auto &point_unit_domain = points_unit_domain[ipt];
         for (int i = 0 ; i < dim ; ++i)
+        {
+//            out << "dilate["<<i<<"]=" <<dilate[i] << endl;
+//            out << "translate["<<i<<"]=" <<translate[i] << endl;
+
             point_unit_domain[i] = (point_ref_domain[i] - translate[i]) / dilate[i] ;
+        }
     }
 
-    return points_ref_domain;
+    return points_unit_domain;
 }
 
 template <int dim_>
