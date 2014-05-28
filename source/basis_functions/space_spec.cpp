@@ -29,10 +29,10 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
-SplineSpace(std::shared_ptr<GridType> knots,
-          shared_ptr<const MultiplicityTable> interior_mult,
-          const DegreeTable &deg,
-          const PeriodicTable periodic)
+SplineSpace(const DegreeTable &deg,
+            std::shared_ptr<GridType> knots,
+            shared_ptr<const MultiplicityTable> interior_mult,
+            const PeriodicTable periodic)
     :
     GridSpace(knots),
     interior_mult_(interior_mult),

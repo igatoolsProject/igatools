@@ -112,16 +112,16 @@ public:
     /**
      * Most general constructor
      */
-    explicit SplineSpace(std::shared_ptr<GridType> knots,
-                       std::shared_ptr<const MultiplicityTable> interior_mult,
-                       const DegreeTable &deg,
-                       const PeriodicTable periodic = PeriodicTable(false));
+    explicit SplineSpace(const DegreeTable &deg,
+                         std::shared_ptr<GridType> knots,
+                         std::shared_ptr<const MultiplicityTable> interior_mult,
+                         const PeriodicTable periodic = PeriodicTable(false));
 
-    explicit SplineSpace(std::shared_ptr<GridType> knots,
-                       const InteriorReg interior_mult,
-                       const DegreeTable &deg,
-                       const PeriodicTable periodic = PeriodicTable(false))
-        :SplineSpace(knots, fill_max_regularity(knots), deg, periodic)
+    explicit SplineSpace(const DegreeTable &deg,
+                         std::shared_ptr<GridType> knots,
+                         const InteriorReg interior_mult,
+                         const PeriodicTable periodic = PeriodicTable(false))
+        :SplineSpace(deg, knots, fill_max_regularity(knots), periodic)
     {}
 
     const DegreeTable &get_degree() const
@@ -130,26 +130,35 @@ public:
     }
 
 
-//
-//    /** @name Getting information about the space */
-//    ///@{
-//    /**
-//     * Total number of basis functions. This is the dimensionality
-//     * of the space.
-//     */
-//    Size get_num_basis() const;
-//
-//    /**
-//     * Total number of basis functions
-//     * for the comp space component.
-//     */
-//    Size get_num_basis(const int comp) const;
-//
-//    /**
-//     *  Total number of basis functions for the comp space component
-//     *  and the dir direction.
-//     */
-//    Size get_num_basis(const int comp, const int dir) const;
+
+    /** @name Getting information about the space */
+    ///@{
+    /**
+     * Total number of basis functions. This is the dimensionality
+     * of the space.
+     */
+    Size get_num_basis() const
+    {
+        return space_dim_.total_dimension;
+    }
+
+    /**
+     * Total number of basis functions
+     * for the comp space component.
+     */
+    Size get_num_basis(const int comp) const
+    {
+        return space_dim_.comp_dimension(comp);
+    }
+
+    /**
+     *  Total number of basis functions for the comp space component
+     *  and the dir direction.
+     */
+    Size get_num_basis(const int comp, const int dir) const
+    {
+        return  space_dim_(comp)[dir];
+    }
 
     /**
      * Component-direction indexed table with the number of basis functions
