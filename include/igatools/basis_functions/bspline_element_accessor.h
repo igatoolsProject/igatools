@@ -290,6 +290,12 @@ private:
     class GlobalCache : public CacheStatus
     {
     public:
+        void reset(const Space &space,
+                   const Quadrature<dim> &quad,
+                   const int max_der,
+                   const std::array<std::vector<int>,dim> &intervals_id);
+
+
         int max_deriv_order_ = 0;
 
         /**
@@ -300,6 +306,8 @@ private:
         ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
 
         ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+
+        TensorSize<dim> n_intervals_;
     };
 
     /**
