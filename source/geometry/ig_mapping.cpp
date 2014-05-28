@@ -64,7 +64,7 @@ IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
           const std::vector<Real> &control_points)
     :
-    base_t::Mapping(space->get_grid()),
+    base_t::SplineMapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
     cache_(space->begin())
 {
@@ -139,7 +139,7 @@ template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const self_t &map)
     :
-    Mapping<dim,codim>(map),
+    base_t::SplineMapping(map),
     data_(shared_ptr<IgMappingData>(new IgMappingData(*map.data_))),
     cache_(map.cache_)
 {}
@@ -148,7 +148,7 @@ template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<IgMappingData> mapping_data)
     :
-    base_t::Mapping(mapping_data->ref_space_->get_grid()),
+    base_t::SplineMapping(mapping_data->ref_space_->get_grid()),
     data_(mapping_data),
     cache_(mapping_data->ref_space_->begin())
 {
@@ -236,7 +236,7 @@ template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const std::vector<Real> &control_points) -> shared_ptr<base_t>
+    const std::vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));
