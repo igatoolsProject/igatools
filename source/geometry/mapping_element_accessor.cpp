@@ -82,6 +82,11 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
     {
         Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
                ExcIndexRange(topology_id.get_id(),0,n_faces));
+
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
         return face_values_[topology_id.get_id()];
     }
 }
@@ -253,20 +258,6 @@ reset(const Index face_id,
     Assert(false, ExcNotImplemented());
 }
 
-/*
-template< int dim_ref_, int codim_ >
-shared_ptr<MappingFaceValueFlagsHandler>
-MappingElementAccessor<dim_ref_,codim_>::
-FaceValuesCache::
-get_flags_handler() const
-{
-    shared_ptr<MappingFaceValueFlagsHandler> flags_handler =
-        static_pointer_cast<MappingFaceValueFlagsHandler>(this->flags_handler_);
-    Assert(flags_handler.get() != nullptr,ExcNullPtr());
-
-    return flags_handler;
-}
-//*/
 
 
 template< int dim_ref_, int codim_ >
@@ -508,7 +499,9 @@ fill_composite_values()
     {
         Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
         for (Index i = 0; i < num_points_; i++)
-            MappingElementAccessor<dim_ref_,codim_>::evaluate_inverse_gradient(gradients_[i],inv_gradients_[i]);
+            MappingElementAccessor<dim_ref_,codim_>::evaluate_inverse_gradient(
+                gradients_[i],
+                inv_gradients_[i]);
 
         flags_handler_.set_inv_gradients_filled(true);
     }
@@ -520,24 +513,6 @@ fill_composite_values()
 
         for (Index i = 0; i < num_points_; i++)
         {
-#if 0
-            /*
-             * To fill the hessian of F{^-1}, we use the formula
-             * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
-             * This formula can be obtained by differentiating the identity
-             * DF * DF{^-1} = I
-             */
-            /*
-            const auto &DF_inv = inv_gradients_[i];
-            const auto &D2F = hessians_[i];
-            for (int u=0; u<dim; ++u) //TODO: should we define a compose in tensor for this?
-            {
-                const auto temp = compose(DF_inv, D2F[u]);
-                inv_hessians_[i][u] = compose(temp, DF_inv);
-            }
-            //*/
-#endif
-
             /*
              * To fill the hessian of F{^-1}, we use the formula
              * D2F{^-1} [u][v] = - DF{^-1}[ D2F[ DF{^-1}[u] ][ DF{^-1}[v] ] ],

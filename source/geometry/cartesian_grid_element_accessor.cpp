@@ -118,6 +118,11 @@ get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache
     }
     else
     {
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
+
         return face_values_[topology_id.get_id()];
     }
 }
@@ -135,6 +140,11 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
     }
     else
     {
+        Assert(this->is_boundary(topology_id.get_id()),
+        ExcMessage("The requested face_id=" +
+        std::to_string(topology_id.get_id()) +
+        " is not a boundary for the element"));
+
         return face_values_[topology_id.get_id()];
     }
 }
