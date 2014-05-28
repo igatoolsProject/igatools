@@ -34,7 +34,7 @@ void test_1d()
 
 	auto grid = CartesianGrid<dim>::create(4);
 	typename SplineSpace::DegreeTable deg{{2}};
-	SplineSpace sp_spec(grid, SplineSpace::InteriorReg::maximum, deg);
+	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
 	sp_spec.print_info(out);
 
 	CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
@@ -65,7 +65,7 @@ void test_2d()
 	typename SplineSpace::DegreeTable deg{{1,3}};
 
 
-	SplineSpace sp_spec(grid, SplineSpace::InteriorReg::maximum, deg);
+	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
@@ -89,7 +89,7 @@ void test_3d()
 
 	auto grid = CartesianGrid<dim>::create({3,4,5});
 	typename SplineSpace::DegreeTable deg{{1,3,0}};
-	SplineSpace sp_spec(grid, SplineSpace::InteriorReg::maximum, deg);
+	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
 	sp_spec.print_info(out);
 
 
@@ -117,7 +117,7 @@ void test_2d_2()
 
 	auto grid = CartesianGrid<dim>::create({3,4});
 	typename SplineSpace::DegreeTable deg{{1,3},{3,1}};
-	SplineSpace sp_spec(grid, SplineSpace::InteriorReg::maximum, deg);
+	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};

@@ -37,7 +37,7 @@ void test_1d()
 	auto grid = CartesianGrid<dim>::create(4);
 	typename SplineSpace::DegreeTable deg{{2}};
 	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
-	SplineSpace sp_spec(grid, int_mult, deg);
+	SplineSpace sp_spec(deg, grid, int_mult);
 	sp_spec.print_info(out);
 
 	CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
@@ -70,7 +70,7 @@ void test_2d()
 
 	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3,1}} }));
 
-	SplineSpace sp_spec(grid, int_mult, deg);
+	SplineSpace sp_spec(deg, grid, int_mult);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
@@ -105,7 +105,7 @@ void test_3d()
 
 
 
-	SplineSpace sp_spec(grid, int_mult, deg);
+	SplineSpace sp_spec(deg, grid, int_mult);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
@@ -140,7 +140,7 @@ void test_2d_2()
 
 	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}}));
 
-	SplineSpace sp_spec(grid, int_mult, deg);
+	SplineSpace sp_spec(deg, grid, int_mult);
 	sp_spec.print_info(out);
 
 	iga::CartesianProductArray<double, 2> bk_x{{-0.5, 0}, {1.2, 1.3}};
