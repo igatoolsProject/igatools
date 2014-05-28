@@ -42,7 +42,7 @@ class BernsteinExtraction
 {
 public:
     using matrix = typename boost::numeric::ublas::matrix<Real>;
-    using Space = SpaceSpec<dim, range, rank>;
+    using Space = SplineSpace<dim, range, rank>;
     using DegreeTable = typename Space::DegreeTable;
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;

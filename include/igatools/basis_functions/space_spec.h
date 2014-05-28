@@ -59,7 +59,7 @@ iota_array(const int init=0)
  *
  */
 template<int dim, int range = 1, int rank = 1>
-class SpaceSpec :
+class SplineSpace :
         public FunctionSpaceOnGrid<CartesianGrid<dim> >
 {
 
@@ -112,16 +112,16 @@ public:
     /**
      * Most general constructor
      */
-    explicit SpaceSpec(std::shared_ptr<GridType> knots,
+    explicit SplineSpace(std::shared_ptr<GridType> knots,
                        std::shared_ptr<const MultiplicityTable> interior_mult,
                        const DegreeTable &deg,
                        const PeriodicTable periodic = PeriodicTable(false));
 
-    explicit SpaceSpec(std::shared_ptr<GridType> knots,
+    explicit SplineSpace(std::shared_ptr<GridType> knots,
                        const InteriorReg interior_mult,
                        const DegreeTable &deg,
                        const PeriodicTable periodic = PeriodicTable(false))
-        :SpaceSpec(knots, fill_max_regularity(knots), deg, periodic)
+        :SplineSpace(knots, fill_max_regularity(knots), deg, periodic)
     {}
 
     const DegreeTable &get_degree() const
@@ -277,7 +277,7 @@ unique_container(std::array <T, dim> a)
 
 template<int dim, int range, int rank>
 template<class T>
-SpaceSpec<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map)
     :
     base_t(),
@@ -289,7 +289,7 @@ ComponentContainer(const ComponentMap &comp_map)
 
 template<int dim, int range, int rank>
 template<class T>
-SpaceSpec<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),
@@ -301,7 +301,7 @@ ComponentContainer(std::initializer_list<T> list)
 
 template<int dim, int range, int rank>
 template<class T>
-SpaceSpec<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(const T &val)
     :
     comp_map_(filled_array<Index, n_entries>(0)),
@@ -315,7 +315,7 @@ ComponentContainer(const T &val)
 template<int dim, int range, int rank>
 template<class T>
 T &
-SpaceSpec<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 operator()(const Index i)
 {
     return base_t::operator()(comp_map_[i]);
@@ -325,7 +325,7 @@ operator()(const Index i)
 template<int dim, int range, int rank>
 template<class T>
 const T &
-SpaceSpec<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 operator()(const Index i) const
 {
     return base_t::operator()(comp_map_[i]);

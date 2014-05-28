@@ -47,7 +47,7 @@ template<int dim, int range = 1, int rank = 1>
 class BersteinExtraction
 {
 public:
-    using Space = SpaceSpec<dim, range, rank>;
+    using Space = SplineSpace<dim, range, rank>;
     using DegreeTable = typename Space::DegreeTable;
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;
@@ -236,18 +236,18 @@ int main()
 
     {
         const int dim=1;
-        using SpaceSpec = SpaceSpec<dim>;
-        using MultiplicityTable = typename SpaceSpec::MultiplicityTable;
+        using SplineSpace = SplineSpace<dim>;
+        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
-        typename SpaceSpec::DegreeTable deg{{2}};
+        typename SplineSpace::DegreeTable deg{{2}};
 
         auto grid = CartesianGrid<dim>::create(4);
 
         auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
-        SpaceSpec sp_spec(grid, int_mult, deg);
+        SplineSpace sp_spec(grid, int_mult, deg);
 
         CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-        typename SpaceSpec::BoundaryKnotsTable bdry_knots{ {bn_x} };
+        typename SplineSpace::BoundaryKnotsTable bdry_knots{ {bn_x} };
         auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
@@ -258,17 +258,17 @@ int main()
 
     {
         const int dim=1;
-        using SpaceSpec = SpaceSpec<dim>;
+        using SplineSpace = SplineSpace<dim>;
 
-        typename SpaceSpec::DegreeTable deg{{3}};
+        typename SplineSpace::DegreeTable deg{{3}};
 
         CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
         auto grid = CartesianGrid<dim>::create(knots);
 
-        SpaceSpec sp_spec(grid, SpaceSpec::InteriorReg::maximum, deg);
+        SplineSpace sp_spec(grid, SplineSpace::InteriorReg::maximum, deg);
 
 
-        auto rep_knots = sp_spec.compute_knots_with_repetition(SpaceSpec::EndBehaviour::interpolatory);
+        auto rep_knots = sp_spec.compute_knots_with_repetition(SplineSpace::EndBehaviour::interpolatory);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();;
 
 

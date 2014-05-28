@@ -28,8 +28,8 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
-SpaceSpec<dim, range, rank>::
-SpaceSpec(std::shared_ptr<GridType> knots,
+SplineSpace<dim, range, rank>::
+SplineSpace(std::shared_ptr<GridType> knots,
           shared_ptr<const MultiplicityTable> interior_mult,
           const DegreeTable &deg,
           const PeriodicTable periodic)
@@ -87,7 +87,7 @@ SpaceSpec(std::shared_ptr<GridType> knots,
 
 template<int dim, int range, int rank>
 auto
-SpaceSpec<dim, range, rank>::
+SplineSpace<dim, range, rank>::
 compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 -> KnotsTable
 {
@@ -162,8 +162,8 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 }
 
 //template<int dim, int range, int rank>
-//SpaceSpec<dim, range, rank>::
-//SpaceSpec(std::shared_ptr<const Grid> knots,
+//SplineSpace<dim, range, rank>::
+//SplineSpace(std::shared_ptr<const Grid> knots,
 //             const DegreeTable &deg,
 //             const bool max_reg)
 //:
@@ -196,7 +196,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 //
 
 template<int dim, int range, int rank>
-auto SpaceSpec<dim, range, rank>::
+auto SplineSpace<dim, range, rank>::
 accumulated_interior_multiplicities() const -> MultiplicityTable
 {
     MultiplicityTable result;
@@ -225,7 +225,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
 
 template<int dim, int range, int rank>
 auto
-SpaceSpec<dim, range, rank>::
+SplineSpace<dim, range, rank>::
 fill_max_regularity(std::shared_ptr<const GridType> grid) -> std::shared_ptr<MultiplicityTable>
 {
     auto  res = std::make_shared<MultiplicityTable>();
@@ -245,7 +245,7 @@ fill_max_regularity(std::shared_ptr<const GridType> grid) -> std::shared_ptr<Mul
 
 template<int dim, int range, int rank>
 auto
-SpaceSpec<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
+SplineSpace<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
 {
     BoundaryKnotsTable result;
 
@@ -273,7 +273,7 @@ SpaceSpec<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
 
 template<int dim, int range, int rank>
 void
-SpaceSpec<dim, range, rank>::
+SplineSpace<dim, range, rank>::
 print_info(LogStream &out)
 {
     out << "Knots without repetition:\n";
