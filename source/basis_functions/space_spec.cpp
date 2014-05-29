@@ -68,7 +68,7 @@ SplineSpace(const DegreeTable &deg,
             const auto deg = deg_(iComp)[j];
             const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
 
-            int size = periodic_(iComp)? 0 : deg + 1;
+            int size = periodic_(iComp)[j]? 0 : deg + 1;
             elem_n_basis_ (iComp)[j] = deg + 1;
 
             for (auto &n: mult)
@@ -102,7 +102,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
             const auto &left_knts = boundary_knots(iComp)[j].get_data_direction(0);
             const auto &right_knts = boundary_knots(iComp)[j].get_data_direction(1);
 
-            if (periodic_(iComp))
+            if (periodic_(iComp)[j])
             {
                 Assert((left_knts.size()==0) && (right_knts.size()==0),
                 ExcMessage("Periodic component has non zero size"));
@@ -202,9 +202,9 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     MultiplicityTable result;
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
-        Assert(!periodic_(iComp), ExcMessage("periodic needs to be implemented"))
         for (int j = 0; j < dim; ++j)
         {
+            Assert(!periodic_(iComp)[j], ExcMessage("periodic needs to be implemented"));
             const auto &mult  = (*interior_mult_)(iComp).get_data_direction(j);
             std::vector<Size> accum_mult;
             const int size = mult.size();

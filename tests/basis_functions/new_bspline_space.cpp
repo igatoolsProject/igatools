@@ -153,6 +153,8 @@ public:
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
 
+    using typename BaseSpace::InteriorReg;
+
     enum class EndBehaviour
     {
         interpolatory, periodic, end_knots
@@ -161,7 +163,6 @@ public:
             ComponentContainer<std::array<EndBehaviour, dim> >;
 
 public:
-#if 0
     /** @name Constructor and destructor */
     ///@{
     /**
@@ -169,37 +170,38 @@ public:
      * @p knots for the given @p degree in all directions and homogeneous
      * in all components.
      */
-    explicit BSplineSpace(std::shared_ptr<GridType> knots, const int degree);
+    explicit BSplineSpace(const int degree, std::shared_ptr<GridType> knots);
 
     /**
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<GridType> knots, const int degree);
+    create(const int degree, std::shared_ptr<GridType> knots);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree[i] in the i-th direction and homogeneous
      * in all components.
      */
-    explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const TensorIndex<dim> &degree);
+    explicit BSplineSpace(const TensorIndex<dim> &degree,
+                          std::shared_ptr<GridType> knots);
 
     /**
      * Smart pointer create construction technique, see more detail
      * in the corresponding wrapped constructor before.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<GridType> knots, const TensorIndex<dim> &degree);
+    create(const TensorIndex<dim> &degree, std::shared_ptr<GridType> knots);
+
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree for each direction and for each
      * component.
      */
-    explicit BSplineSpace(std::shared_ptr<GridType> knots,
-                          const DegreeTable &degree,
+    explicit BSplineSpace(const DegreeTable &degree,
+                          std::shared_ptr<GridType> knots,
                           const bool homogeneous_range = false);
 
     /**
@@ -207,9 +209,10 @@ public:
      * in the corresponding wrapped constructor before.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<GridType> knots,
-           const DegreeTable &degree);
-#endif
+    create(const DegreeTable &degree,
+           std::shared_ptr<GridType> knots,
+           const bool homogeneous_range = false);
+
     /**
      * Constructs a BSpline space over the CartesianGrid
      * @p knots with the given multiplicity vector @p mult_vectors
@@ -220,8 +223,7 @@ public:
     explicit BSplineSpace(const DegreeTable &deg,
                           std::shared_ptr<GridType> knots,
                           std::shared_ptr<const MultiplicityTable> interior_mult,
-                          const EndBehaviourTable & ends
-                          );
+                          const EndBehaviourTable &ends);
 
 
     /**
@@ -229,9 +231,10 @@ public:
      * in the corresponding wrapped constructor before.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<GridType> knots,
+    create(const DegreeTable &deg,
+           std::shared_ptr<GridType> knots,
            std::shared_ptr<const MultiplicityTable> interior_mult,
-           const DegreeTable &deg);
+           const EndBehaviourTable &ends = EndBehaviourTable());
 
     /** Destructor */
     ~BSplineSpace() = default;
@@ -365,12 +368,12 @@ public:
 };
 
 
-#if 0
+
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(shared_ptr<GridType> grid, const int degree)
+BSplineSpace(const int degree, shared_ptr<GridType> grid)
     :
-    BSplineSpace(grid, TensorIndex<dim>(degree))
+    BSplineSpace(TensorIndex<dim>(degree), grid)
 {}
 
 
@@ -378,18 +381,18 @@ BSplineSpace(shared_ptr<GridType> grid, const int degree)
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots, const int degree) -> shared_ptr<self_t>
+create(const int degree, shared_ptr< GridType > knots) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(degree, knots));
 }
 
 
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
+BSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
     :
-    BSplineSpace(knots, DegreeTable(degree), true)
+    BSplineSpace(DegreeTable(degree), knots, true)
 {}
 
 
@@ -397,23 +400,26 @@ BSplineSpace(shared_ptr<GridType> knots, const TensorIndex<dim> &degree)
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(shared_ptr<GridType> knots,
-       const TensorIndex<dim> &degree) -> shared_ptr<self_t>
+create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
+-> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(degree, knots));
 }
 
 
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(shared_ptr<GridType> knots,
-             const DegreeTable &degree,
+BSplineSpace(const DegreeTable &deg,
+             std::shared_ptr<GridType> knots,
              const bool homogeneous_range)
-    :
-    BSplineSpace(knots,
-                 MultiplicityTable(knots, degree, true),
-                 homogeneous_range)
+             :
+             BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum),
+             basis_indices_(knots,BaseSpace::accumulated_interior_multiplicities(),
+                            BaseSpace::get_num_basis_table(),BaseSpace::get_num_basis_per_element_table()),
+                            operators_(knots, BaseSpace::compute_knots_with_repetition(BaseSpace::EndBehaviour::interpolatory),
+                            BaseSpace::accumulated_interior_multiplicities(), deg)
+
 {}
 
 
@@ -421,20 +427,21 @@ BSplineSpace(shared_ptr<GridType> knots,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(shared_ptr<GridType> knots,
-       const DegreeTable &degree) -> shared_ptr<self_t>
+create(const DegreeTable &deg,
+       std::shared_ptr<GridType> knots,
+       const bool homogeneous_range) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(deg, knots, homogeneous_range));
 }
 
-#endif
+
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              std::shared_ptr<const MultiplicityTable> interior_mult,
-             const EndBehaviourTable & ends = EndBehaviourTable())
+             const EndBehaviourTable &ends)
     :
     BaseSpace(deg, knots, interior_mult),
     basis_indices_(knots,BaseSpace::accumulated_interior_multiplicities(),
@@ -449,12 +456,13 @@ BSplineSpace(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(std::shared_ptr<GridType> knots,
+create(const DegreeTable &deg,
+       std::shared_ptr<GridType> knots,
        std::shared_ptr<const MultiplicityTable> interior_mult,
-       const DegreeTable &deg)
--> shared_ptr<self_t>
+       const EndBehaviourTable &ends)
+       -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult));
+    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends));
 }
 
 
@@ -694,16 +702,80 @@ int main()
 {
     out.depth_console(10);
 
-    const int dim=1;
-    using BSplineSpace = BSplineSpace<dim>;
-    using MultiplicityTable = typename BSplineSpace::MultiplicityTable;
+    {
+        const int dim=1;
+        using BSplineSpace = BSplineSpace<dim>;
+        using MultiplicityTable = typename BSplineSpace::MultiplicityTable;
+        using DegreeTable = typename BSplineSpace::DegreeTable;
 
-    typename BSplineSpace::DegreeTable deg{{2}};
-    auto grid = CartesianGrid<dim>::create(4);
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
-    auto space = BSplineSpace::create(grid, int_mult, deg);
+        DegreeTable deg{{2}};
+        auto grid = CartesianGrid<dim>::create(4);
+        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
+        auto space = BSplineSpace::create(deg, grid, int_mult);
 
-    space->print_info(out);
+        space->print_info(out);
+        out << endl;
+    }
+
+    {
+        const int dim=2;
+        using BSplineSpace = BSplineSpace<dim>;
+        using MultiplicityTable = typename BSplineSpace::MultiplicityTable;
+        using DegreeTable = typename BSplineSpace::DegreeTable;
+
+        DegreeTable deg{{2,1}};
+        auto grid = CartesianGrid<dim>::create({4,3});
+        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3},{1}} }));
+        auto space = BSplineSpace::create(deg, grid, int_mult);
+
+        space->print_info(out);
+        out << endl;
+    }
+
+    {
+        const int dim=2;
+        const int range=2;
+        using BSplineSpace = BSplineSpace<dim,range>;
+        using MultiplicityTable = typename BSplineSpace::MultiplicityTable;
+        using DegreeTable = typename BSplineSpace::DegreeTable;
+
+        DegreeTable deg{{2,1},{1,3}};
+        auto grid = CartesianGrid<dim>::create({4,3});
+        auto int_mult = shared_ptr<MultiplicityTable>(
+                new MultiplicityTable ({ {{1,3},{1}}, {{1,1},{2}}}));
+        auto space = BSplineSpace::create(deg, grid, int_mult);
+
+        space->print_info(out);
+        out << endl;
+    }
+
+
+    // Maximum regularity constructor
+    {
+        const int dim=2;
+        using BSplineSpace = BSplineSpace<dim>;
+        using DegreeTable = typename BSplineSpace::DegreeTable;
+
+        DegreeTable deg{{2,1}};
+        auto grid = CartesianGrid<dim>::create({4,3});
+        auto space = BSplineSpace::create(deg, grid);
+
+        space->print_info(out);
+        out << endl;
+    }
+
+    // Maximum regularity constructor
+    {
+        const int dim=2;
+        using BSplineSpace = BSplineSpace<dim>;
+
+        int deg=3;
+        auto grid = CartesianGrid<dim>::create({4,3});
+        auto space = BSplineSpace::create(deg, grid);
+
+        space->print_info(out);
+        out << endl;
+    }
 
     return 0;
 }

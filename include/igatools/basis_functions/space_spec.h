@@ -81,7 +81,7 @@ public:
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<Knots>;
-    using PeriodicTable = ComponentContainer<bool>;
+    using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
 
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
     using IndexSpaceMarkTable = Multiplicity;
@@ -115,12 +115,12 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const PeriodicTable periodic = PeriodicTable(false));
+                         const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)));
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const InteriorReg interior_mult,
-                         const PeriodicTable periodic = PeriodicTable(false))
+                         const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)))
         :SplineSpace(deg, knots, fill_max_regularity(knots), periodic)
     {}
 
