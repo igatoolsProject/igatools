@@ -54,7 +54,7 @@ arrangement_close()
     //------------------------------------------------------------------------
     // check that each reference space is used in only one physical space -- begin
     vector<shared_ptr<const RefSpace>> ref_spaces;
-    for (const auto & phys_space : patches_)
+    for (const auto &phys_space : patches_)
         ref_spaces.push_back(phys_space->get_reference_space());
 
 
@@ -72,7 +72,7 @@ arrangement_close()
     //------------------------------------------------------------------------
     // check that a each mapping is used in only one reference space -- begin
     vector<shared_ptr<const Map>> maps;
-    for (const auto & phys_space : patches_)
+    for (const auto &phys_space : patches_)
         maps.push_back(phys_space->get_push_forward()->get_mapping());
 
     vector<shared_ptr<const Map>> maps_no_duplicates;
@@ -91,6 +91,44 @@ arrangement_close()
     this->perform_ref_spaces_add_dofs_offset();
     // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- end
     //------------------------------------------------------------------------
+
+
+
+    //------------------------------------------------------------------------
+    // creating the graph representing the multipatch structure -- begin
+
+    // the vertices of the graph represents the patches
+    std::map<PatchPtr,Index> map_patch_id;
+    Index id = 0;
+    for (const auto &patch : patches_)
+    {
+        boost::add_vertex(patch, multipatch_graph_);
+
+        map_patch_id.emplace(patch,id++);
+    }
+
+
+    // the edges of the graph represents the interfaces
+    for (const auto &interface : interfaces_)
+    {
+        const Index id_patch_0 = map_patch_id.at(interface->patch_and_side_[0].first);
+        const Index id_patch_1 = map_patch_id.at(interface->patch_and_side_[1].first);
+
+        boost::add_edge(
+            boost::vertex(id_patch_0,multipatch_graph_),
+            boost::vertex(id_patch_1,multipatch_graph_),
+            interface,
+            multipatch_graph_);
+    }
+    Assert(patches_.size() == boost::num_vertices(multipatch_graph_),
+           ExcDimensionMismatch(patches_.size(),boost::num_vertices(multipatch_graph_)));
+    Assert(interfaces_.size() == boost::num_edges(multipatch_graph_),
+           ExcDimensionMismatch(interfaces_.size(),boost::num_edges(multipatch_graph_)));
+
+    // creating the graph representing the multipatch structure -- end
+    //------------------------------------------------------------------------
+
+
 }
 
 
@@ -100,7 +138,7 @@ MultiPatchSpace<PhysicalSpace>::
 perform_ref_spaces_add_dofs_offset()
 {
     Index dofs_offset = 0;
-    for (const auto & phys_space : patches_)
+    for (const auto &phys_space : patches_)
     {
         shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(phys_space->get_reference_space());
         ref_space->add_dofs_offset(dofs_offset);
@@ -174,7 +212,7 @@ print_info(LogStream &out) const
 
     out.push(tab);
     int patch_id = 0 ;
-    for (const auto & patch : patches_)
+    for (const auto &patch : patches_)
     {
         out << "Patch id = " << patch_id++ << endl;
         patch->print_info(out);
@@ -187,7 +225,7 @@ print_info(LogStream &out) const
 
     out << "Num. interfaces = " << this->get_num_interfaces() << endl;
     int interface_id = 0 ;
-    for (const auto & interface : interfaces_)
+    for (const auto &interface : interfaces_)
     {
         out << "Interface id = " << interface_id++ << endl;
         interface->print_info(out);
@@ -205,8 +243,8 @@ template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
 add_interface(const InterfaceType &type,
-              Patch patch_0,const int side_id_patch_0,
-              Patch patch_1,const int side_id_patch_1)
+              PatchPtr patch_0,const int side_id_patch_0,
+              PatchPtr patch_1,const int side_id_patch_1)
 {
     Assert(is_arrangement_open_,ExcInvalidState());
 
@@ -226,22 +264,22 @@ add_interface(const InterfaceType &type,
     //------------------------------------------------------------------------
 
 
-    unique_ptr<Interface> interface_to_be_added(
+    InterfacePtr interface_to_be_added(
         new Interface(type,patch_0,side_id_patch_0,patch_1,side_id_patch_1));
 
 #ifndef NDEBUG
-    for (const auto & interface : interfaces_)
+    for (const auto &interface : interfaces_)
         Assert(*interface_to_be_added != *interface, ExcMessage("Interface already added."));
 #endif
 
-    interfaces_.push_back(std::move(interface_to_be_added));
+    interfaces_.push_back(interface_to_be_added);
 }
 
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
 Interface::
-Interface(const InterfaceType &type, Patch patch_0,const int side_id_patch_0,Patch patch_1,const int side_id_patch_1)
+Interface(const InterfaceType &type, PatchPtr patch_0,const int side_id_patch_0,PatchPtr patch_1,const int side_id_patch_1)
     :
     type_(type)
 {

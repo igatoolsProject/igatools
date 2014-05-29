@@ -25,6 +25,8 @@
 #include <igatools/base/logstream.h>
 
 
+#include <boost/graph/adjacency_list.hpp>
+
 #include <memory>
 
 IGA_NAMESPACE_OPEN
@@ -71,7 +73,8 @@ public:
     /** Type alias for the mapping. */
     using Map = typename PushForward::Map;
 
-    using Patch = std::shared_ptr<const PhysicalSpace>;
+    /** Type alias for the pointer to a patch . */
+    using PatchPtr = std::shared_ptr<const PhysicalSpace>;
 
     /** Dimensionality of the reference domain. */
     static const int dim = PhysicalSpace::dim;
@@ -138,8 +141,8 @@ public:
      * (for example using the function arrangement_open()).
      */
     void add_interface(const InterfaceType &type,
-                       Patch patch_0,const int side_id_patch_0,
-                       Patch patch_1,const int side_id_patch_1);
+                       PatchPtr patch_0,const int side_id_patch_0,
+                       PatchPtr patch_1,const int side_id_patch_1);
     ///@}
 
 
@@ -171,7 +174,7 @@ private:
     bool is_arrangement_open_ = false;
 
     /** Vector of patches defining the MultiPatchSpace. */
-    std::vector< std::shared_ptr<const PhysicalSpace> > patches_;
+    std::vector< PatchPtr > patches_;
 
     /**
      * Add the proper offset to the dofs id in the reference spaces in order to avoid same
@@ -199,8 +202,8 @@ private:
         Interface() = delete;
 
         Interface(const InterfaceType &type,
-                  Patch patch_0,const int side_id_patch_0,
-                  Patch patch_1,const int side_id_patch_1);
+                  PatchPtr patch_0,const int side_id_patch_0,
+                  PatchPtr patch_1,const int side_id_patch_1);
 
 
         /** Copy constructor. */
@@ -242,18 +245,19 @@ private:
          */
         void print_info(LogStream &out) const;
 
-    private:
         /** Interface type. */
         InterfaceType type_;
 
         /**
          * The two pairs patch/side_id defining the interface.
          */
-        std::array<std::pair<Patch,int>,2> patch_and_side_;
+        std::array<std::pair<PatchPtr,int>,2> patch_and_side_;
     };
 
+    /** Type alias for the pointer to an interface. */
+    using InterfacePtr = std::shared_ptr<const Interface>;
 
-    std::vector<std::unique_ptr<Interface> > interfaces_;
+    std::vector<InterfacePtr> interfaces_;
 
 
 
@@ -280,6 +284,34 @@ private:
 
     std::vector<EqualityConstraint> equality_constraints_;
 
+
+
+
+    /** @name Stuff related to the multipatch graph(implemented with the boost::graph library) */
+    ///@{
+    /** Type of container used to hold the edges of the graph. */
+    using out_edge_list_t = boost::vecS;
+
+    /** Type of container used to hold the vertices of the graph. */
+    using vertex_list_t = boost::vecS;
+
+    /** A vertex of the graph represents a Patch. */
+    using vertex_property_t = PatchPtr;
+
+    /** An edge of the graph represents an interface. */
+    using edge_property_t = InterfacePtr;
+
+    /** Type of the graph. */
+    using Graph = boost::adjacency_list<
+                  out_edge_list_t,
+                  vertex_list_t,
+                  boost::undirectedS,
+                  vertex_property_t,
+                  edge_property_t> ;
+
+    /** Graph container used to represent the tree of the elements. */
+    Graph multipatch_graph_;
+    ///*}
 };
 
 
