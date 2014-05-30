@@ -45,7 +45,12 @@ void do_test()
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
     auto space = Space_t::create(grid, degree);
 
-    Vector u(space->get_num_basis());
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+    Vector<linear_algebra_package> u(space->get_num_basis());
 
     {
         int id = 0 ;
@@ -65,26 +70,28 @@ void do_test()
     QGauss< dim_domain > quad_scheme1(2) ;
 
     auto element1 = space->begin();
-    element1->init_values(ValueFlags::value,
+    element1->init_values(ValueFlags::value | ValueFlags::gradient,
                           quad_scheme1);
     element1->fill_values() ;
 
-    auto u_values = element1->evaluate_field(
-                        dof_tools::get_local_coefs(u,element1->get_local_to_global()));
+    auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
     auto values1    = element1->get_basis_values();
     values1.print_info(out);
+    auto gradients1    = element1->get_basis_gradients();
+    gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme2(3) ;
-    element1->init_values(ValueFlags::value,
+    element1->init_values(ValueFlags::value | ValueFlags::gradient,
                           quad_scheme2);
     element1->fill_values() ;
 
     auto values2    = element1->get_basis_values();
     values2.print_info(out);
+    auto gradients2    = element1->get_basis_gradients();
+    gradients2.print_info(out);
 
-    u_values = element1->evaluate_field(
-                   dof_tools::get_local_coefs(u,element1->get_local_to_global()));
+    u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
 
 

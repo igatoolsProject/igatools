@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Trilinos library (Required)
+# Find Trilinos library (Optional)
 #-------------------------------------------------------------------------------
 macro(find_trilinos)
   set(Trilinos_PREFIX $ENV{TRILINOS_PREFIX} CACHE LOCATION 

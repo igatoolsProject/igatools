@@ -282,14 +282,14 @@ transform_gradients(
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
 
     for (int i_fn = 0; i_fn < n_func; ++i_fn)
-    {
         for (Index j_pt = 0; j_pt < num_points; ++j_pt)
         {
-            (*D1v_iterator) = compose((*D1v_hat_iterator), inv_gradients_map[j_pt]);
+            const auto &DF_inv = inv_gradients_map[j_pt];
+
+            (*D1v_iterator) = compose((*D1v_hat_iterator), DF_inv);
             ++D1v_hat_iterator ;
             ++D1v_iterator ;
         }
-    }
 }
 
 
@@ -360,7 +360,7 @@ transform_gradients(
             ++Dv_iterator ;
             ++Dv_hat_iterator ;
             ++v_hat_iterator ;
-        }
+        } // end loop j_pt
 }
 
 
@@ -377,37 +377,55 @@ transform_hessians(
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
-    const int n_func = D1v_hat.get_num_functions();
+    Assert(D2v.size() >= 0 , ExcEmptyObject()) ;
+    Assert(D2v.size() == D1v_hat.size(), ExcDimensionMismatch(D2v.size(), D1v_hat.size())) ;
+    Assert(D2v.size() == D2v_hat.size(), ExcDimensionMismatch(D2v.size(), D2v_hat.size())) ;
+
     const int num_points = this->get_num_points(topology_id) ;
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    Assert(num_points == D1v_hat.get_num_points(),
-           ExcDimensionMismatch(num_points,D1v_hat.get_num_points()));
-    Assert(num_points == D2v_hat.get_num_points(),
-           ExcDimensionMismatch(num_points,D2v_hat.get_num_points()));
-    Assert(n_func == D2v_hat.get_num_functions(),
-           ExcDimensionMismatch(n_func,D2v_hat.get_num_functions()));
-    Assert(n_func == D2v.get_num_functions(),
-           ExcDimensionMismatch(n_func,D2v.get_num_functions()));
-    Assert(num_points == D2v.get_num_points(),
-           ExcDimensionMismatch(num_points,D2v.get_num_points()));
+    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
+    // if Container is ValueVector, n_func will be equal to 1.
+    Assert((D2v.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+    const int n_func = D2v.size() / num_points ;
+
 
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id) ;
     const auto &inv_hessians_map = this->get_inv_hessians(topology_id) ;
 
-    for (int i = 0; i < n_func; ++i)
-        for (int j = 0; j < num_points; ++j)
+    auto D1v_hat_iterator = D1v_hat.cbegin();
+    auto D2v_hat_iterator = D2v_hat.cbegin();
+    auto D2v_iterator = D2v.begin();
+
+    for (int ifn = 0; ifn < n_func; ++ifn)
+        for (int jpt = 0; jpt < num_points; ++jpt)
         {
-            const auto &DF_inv  = inv_gradients_map[j];
-            const auto &D2F_inv = inv_hessians_map[j];
+
+            const auto &DF_inv  = inv_gradients_map[jpt];
+            const auto &D2F_inv = inv_hessians_map[jpt];
 
             //TODO: create a tensor compose to get rid of for loop here
+            for (int u = 0; u < dim; u++)
+            {
+                const auto tmp_u = action((*D2v_hat_iterator),DF_inv[u]);
+                for (int v = 0; v < dim; v++)
+                {
+                    (*D2v_iterator)[u][v] = action((*D1v_hat_iterator),D2F_inv[u][v]) +
+                                            action(tmp_u,DF_inv[v]);
+                } // end loop v
+            } // end loop u
+            /*
             for (int u = 0; u<dim; u++)
             {
-                D2v[i][j][u] =  compose(D2v_hat[i][j][u], DF_inv);
-                D2v[i][j][u] += compose(D1v_hat[i][j], D2F_inv[u]);
+                (*D2v_iterator)[u] =  compose((*D2v_hat_iterator)[u], DF_inv);
+                (*D2v_iterator)[u] += compose((*D1v_hat_iterator), D2F_inv[u]);
             }
-        }
+            //*/
+            ++D1v_hat_iterator;
+            ++D2v_hat_iterator;
+            ++D2v_iterator;
+        } // end loop jpt
 }
 
 
@@ -417,7 +435,7 @@ ValueVector<Real>
 PushForwardElementAccessor<PushForward>::
 transform_measure(const TopologyId<dim> &topology_id) const
 {
-    return this->get_dets(topology_id);
+    return this->get_measures(topology_id);
 }
 
 
@@ -431,6 +449,161 @@ transform_face_measure(const Index face_id) const
 }
 
 
+template< class PushForward >
+template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+void
+PushForwardElementAccessor<PushForward>::
+transform_basis_derivatives_at_points(
+    const std::vector<Point<dim>> &points,
+    const Container< RefValue<dim_range, rank> > &phi_hat,
+    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    Container< PhysValue<dim_range,rank> > &phi,
+    typename std::enable_if<ttype == Transformation::h_grad>::type *) const
+{
+    const int num_points = points.size() ;
+    Assert(num_points > 0, ExcEmptyObject());
+
+
+    Assert(phi_hat.size() > 0, ExcEmptyObject());
+
+    Assert(phi.size() == phi_hat.size(),
+           ExcDimensionMismatch(phi.size(), phi_hat.size())) ;
+
+    // if Container is ValueTable, phi_hat.size() is a multiple of num_points
+    // if Container is ValueVector, phi_hat.size() is equal to num_points
+    Assert((phi_hat.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+
+    auto phi_iterator = phi.begin() ;
+    for (const auto & phi_hat_to_copy : phi_hat)
+    {
+        *phi_iterator = phi_hat_to_copy ;
+        ++phi_iterator;
+    }
+
+}
+
+
+template< class PushForward >
+template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+void
+PushForwardElementAccessor<PushForward>::
+transform_basis_derivatives_at_points(
+    const std::vector<Point<dim>> &points,
+    const Container< RefValue<dim_range, rank> > &phi_hat,
+    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    Container< PhysDerivative<dim_range,rank,1> > &D1phi,
+    typename std::enable_if<ttype == Transformation::h_grad>::type *) const
+{
+    const int num_points = points.size() ;
+    Assert(num_points > 0, ExcEmptyObject());
+
+
+    Assert(D1phi_hat.size() > 0, ExcEmptyObject());
+
+    Assert(D1phi.size() == D1phi_hat.size(),
+           ExcDimensionMismatch(D1phi.size(), D1phi_hat.size())) ;
+
+
+    // the next two lines are written to retrieve the number of basis function
+    // in the case Container is a ValueTable object.
+    // if Container is ValueVector, n_func will be equal to 1.
+    Assert((D1phi_hat.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+    const int n_func = D1phi_hat.size() / num_points ;
+
+
+    auto D1phi_iterator     = D1phi.begin() ;
+    auto D1phi_hat_iterator = D1phi_hat.cbegin() ;
+
+    const auto gradients_map = this->evaluate_gradients_at_points(points) ;
+
+    vector< Derivatives<space_dim,dim,1,1> > inv_gradients_map(num_points);
+    for (Index i = 0; i < num_points; ++i)
+        inverse<dim,space_dim>(gradients_map[i],inv_gradients_map[i]);
+
+
+    for (int i_fn = 0; i_fn < n_func; ++i_fn)
+        for (Index j_pt = 0; j_pt < num_points; ++j_pt)
+        {
+            const auto &DF_inv = inv_gradients_map[j_pt];
+
+            (*D1phi_iterator) = compose((*D1phi_hat_iterator), DF_inv);
+            ++D1phi_hat_iterator ;
+            ++D1phi_iterator ;
+        }
+}
+
+
+
+template< class PushForward >
+template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+void
+PushForwardElementAccessor<PushForward>::
+transform_basis_derivatives_at_points(
+    const std::vector<Point<dim>> &points,
+    const Container< RefValue<dim_range, rank> > &phi_hat,
+    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    Container< PhysDerivative<dim_range,rank,2> > &D2phi,
+    typename std::enable_if<ttype == Transformation::h_grad>::type *) const
+{
+    const int num_points = points.size() ;
+    Assert(num_points >= 0, ExcLowerRange(num_points,0));
+
+    Assert(D2phi.size() >= 0 , ExcEmptyObject()) ;
+    Assert(D2phi.size() == D1phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D1phi_hat.size())) ;
+    Assert(D2phi.size() == D2phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D2phi_hat.size())) ;
+
+    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
+    // if Container is ValueVector, n_func will be equal to 1.
+    Assert((D2phi.size() % num_points) == 0,
+           ExcMessage("The size of the container must be a multiple of num_points.")) ;
+    const int n_func = D2phi.size() / num_points ;
+
+    const auto gradients_map = this->evaluate_gradients_at_points(points) ;
+    const auto hessians_map = this->evaluate_hessians_at_points(points) ;
+
+    vector< Derivatives<space_dim,dim,1,1> > inv_gradients_map(num_points);
+    vector< Derivatives<space_dim,dim,1,2> > inv_hessians_map(num_points);
+    for (Index i = 0; i < num_points; ++i)
+    {
+        MappingElementAccessor<dim,codim>::evaluate_inverse_gradient(
+            gradients_map[i],inv_gradients_map[i]);
+
+        MappingElementAccessor<dim,codim>::evaluate_inverse_hessian(
+            hessians_map[i],
+            inv_gradients_map[i],
+            inv_hessians_map[i]);
+    }
+
+    auto D1phi_hat_iterator = D1phi_hat.cbegin();
+    auto D2phi_hat_iterator = D2phi_hat.cbegin();
+    auto D2phi_iterator = D2phi.begin();
+
+    for (int ifn = 0; ifn < n_func; ++ifn)
+        for (int jpt = 0; jpt < num_points; ++jpt)
+        {
+            const auto &DF_inv  = inv_gradients_map[jpt];
+            const auto &D2F_inv = inv_hessians_map[jpt];
+
+            for (int u = 0; u < dim; u++)
+            {
+                const auto tmp_u = action((*D2phi_hat_iterator),DF_inv[u]);
+                for (int v = 0; v < dim; v++)
+                {
+                    (*D2phi_iterator)[u][v] = action((*D1phi_hat_iterator),D2F_inv[u][v]) +
+                                              action(tmp_u,DF_inv[v]);
+                } // end loop v
+            } // end loop u
+            ++D1phi_hat_iterator;
+            ++D2phi_hat_iterator;
+            ++D2phi_iterator;
+        } // end loop jpt
+
+}
 
 template< class PushForward >
 void

@@ -22,6 +22,7 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
+#include <igatools/utils/vector_tools.h>
 
 using std::vector;
 using std::array;
@@ -316,6 +317,143 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) 
 }
 
 
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+{
+    Assert(points.size() > 0, ExcEmptyObject());
+
+    const auto grid = this->get_grid();
+
+    // for each point: get the flat-id of the element on which the point belongs from
+    vector<int> elem_fids;
+    for (const auto & pt : points)
+        elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
+
+    // aggregate consecutive points on the same element
+    vector<int> elem_fids_no_duplicates;
+    vector<int> elem_fids_multiplicity;
+    vector_tools::count_and_remove_duplicates(elem_fids,elem_fids_no_duplicates,elem_fids_multiplicity);
+
+
+    values.clear();
+    auto point_it = points.cbegin();
+    auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
+    for (const auto & elem_fid : elem_fids_no_duplicates)
+    {
+        cache_->reset_flat_tensor_indices(elem_fid);
+
+        //here we copy the points that belongs to the current element
+        const auto point_it_end = point_it + (*elem_multiplicity_it++);
+        vector<PointType> points_current_element(point_it,point_it_end);
+        point_it = point_it_end;
+
+        const auto points_unit_element =
+            cache_->transform_points_reference_to_unit(points_current_element);
+
+        const auto values_current_element =
+            cache_->evaluate_field_values_at_points(
+                this->get_control_points_elem(),points_unit_element);
+
+        for (const auto &v : values_current_element)
+            values.push_back(v);
+
+    }
+    Assert(values.size() == points.size(),ExcDimensionMismatch(values.size(),points.size()));
+}
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+{
+    Assert(points.size() > 0, ExcEmptyObject());
+
+    const auto grid = this->get_grid();
+
+    // for each point: get the flat-id of the element on which the point belongs from
+    vector<int> elem_fids;
+    for (const auto & pt : points)
+        elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
+
+    // aggregate consecutive points on the same element
+    vector<int> elem_fids_no_duplicates;
+    vector<int> elem_fids_multiplicity;
+    vector_tools::count_and_remove_duplicates(elem_fids,elem_fids_no_duplicates,elem_fids_multiplicity);
+
+
+    gradients.clear();
+    auto point_it = points.cbegin();
+    auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
+    for (const auto & elem_fid : elem_fids_no_duplicates)
+    {
+        cache_->reset_flat_tensor_indices(elem_fid);
+
+        //here we copy the points that belongs to the current element
+        const auto point_it_end = point_it + (*elem_multiplicity_it++);
+        vector<PointType> points_current_element(point_it,point_it_end);
+        point_it = point_it_end;
+
+        const auto points_unit_element =
+            cache_->transform_points_reference_to_unit(points_current_element);
+
+        const auto gradients_current_element =
+            cache_->evaluate_field_gradients_at_points(
+                this->get_control_points_elem(),points_unit_element);
+
+        for (const auto &v : gradients_current_element)
+            gradients.push_back(v);
+
+    }
+    Assert(gradients.size() == points.size(),ExcDimensionMismatch(gradients.size(),points.size()));
+}
+
+template<class RefSpace>
+void
+IgMapping<RefSpace>::
+evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+{
+    Assert(points.size() > 0, ExcEmptyObject());
+
+    const auto grid = this->get_grid();
+
+    // for each point: get the flat-id of the element on which the point belongs from
+    vector<int> elem_fids;
+    for (const auto & pt : points)
+        elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
+
+    // aggregate consecutive points on the same element
+    vector<int> elem_fids_no_duplicates;
+    vector<int> elem_fids_multiplicity;
+    vector_tools::count_and_remove_duplicates(elem_fids,elem_fids_no_duplicates,elem_fids_multiplicity);
+
+
+    hessians.clear();
+    auto point_it = points.cbegin();
+    auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
+    for (const auto & elem_fid : elem_fids_no_duplicates)
+    {
+        cache_->reset_flat_tensor_indices(elem_fid);
+
+        //here we copy the points that belongs to the current element
+        const auto point_it_end = point_it + (*elem_multiplicity_it++);
+        vector<PointType> points_current_element(point_it,point_it_end);
+        point_it = point_it_end;
+
+        const auto points_unit_element =
+            cache_->transform_points_reference_to_unit(points_current_element);
+
+        const auto hessians_current_element =
+            cache_->evaluate_field_hessians_at_points(
+                this->get_control_points_elem(),points_unit_element);
+
+        for (const auto &v : hessians_current_element)
+            hessians.push_back(v);
+
+    }
+    Assert(hessians.size() == points.size(),ExcDimensionMismatch(hessians.size(),points.size()));
+}
 
 
 template<class RefSpace>
@@ -549,7 +687,7 @@ print_info(LogStream &out) const
     out << "Control points info (euclidean coordinates): [ ";
     for (const auto &ctrl_pt : data_->control_points_)
         out << ctrl_pt << " ";
-    out << endl;
+    out << "]" << endl;
     out.pop();
 }
 

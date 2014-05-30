@@ -49,6 +49,7 @@ template < class PushForward > class PushForwardElementAccessor;
  * - H_DIV  also known as Piola
  * - H_CURL
  * @tparam transformation_type_ The type of transformation. @sa Transformation
+ * @ingroup containers
  */
 template<Transformation transformation_type_, int dim_, int codim_ = 0 >
 class PushForward

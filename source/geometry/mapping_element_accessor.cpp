@@ -82,6 +82,11 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
     {
         Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
                ExcIndexRange(topology_id.get_id(),0,n_faces));
+
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
         return face_values_[topology_id.get_id()];
     }
 }
@@ -253,20 +258,6 @@ reset(const Index face_id,
     Assert(false, ExcNotImplemented());
 }
 
-/*
-template< int dim_ref_, int codim_ >
-shared_ptr<MappingFaceValueFlagsHandler>
-MappingElementAccessor<dim_ref_,codim_>::
-FaceValuesCache::
-get_flags_handler() const
-{
-    shared_ptr<MappingFaceValueFlagsHandler> flags_handler =
-        static_pointer_cast<MappingFaceValueFlagsHandler>(this->flags_handler_);
-    Assert(flags_handler.get() != nullptr,ExcNullPtr());
-
-    return flags_handler;
-}
-//*/
 
 
 template< int dim_ref_, int codim_ >
@@ -508,17 +499,13 @@ fill_composite_values()
     {
         Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
         for (Index i = 0; i < num_points_; i++)
-            inverse<dim,space_dim>(gradients_[i],inv_gradients_[i]);
+            MappingElementAccessor<dim_ref_,codim_>::evaluate_inverse_gradient(
+                gradients_[i],
+                inv_gradients_[i]);
 
         flags_handler_.set_inv_gradients_filled(true);
     }
 
-    /*
-     * To fill the hessian of F{^-1}, we use the formula
-     * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
-     * This formula can be obtained by differentiating the identity
-     * DF * DF{^-1} = I
-     */
     if (flags_handler_.fill_inv_hessians())
     {
         Assert(flags_handler_.hessians_filled(),ExcMessage("Hessians not filled."));
@@ -526,23 +513,56 @@ fill_composite_values()
 
         for (Index i = 0; i < num_points_; i++)
         {
-            const auto &DF_inv = inv_gradients_[i];
-            const auto &D2F = hessians_[i];
-            for (int u=0; u<dim; ++u) //TODO: should we define a compose in tensor for this?
-            {
-                const auto temp = compose(DF_inv, D2F[u]);
-                inv_hessians_[i][u] = compose(temp, DF_inv);
-            }
+            /*
+             * To fill the hessian of F{^-1}, we use the formula
+             * D2F{^-1} [u][v] = - DF{^-1}[ D2F[ DF{^-1}[u] ][ DF{^-1}[v] ] ],
+             * This formula can be obtained by differentiating the identity
+             * DF * DF{^-1} = I
+             */
+            MappingElementAccessor<dim_ref_,codim_>::evaluate_inverse_hessian(
+                hessians_[i],
+                inv_gradients_[i],
+                inv_hessians_[i]);
         }
         flags_handler_.set_inv_hessians_filled(true);
 
     }
 }
 
+
+template< int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+evaluate_inverse_hessian(
+    const HessianMap &D2F,
+    const Derivatives<space_dim,dim,1,1> &DF_inv,
+    Derivatives<space_dim,dim,1,2> &D2F_inv)
+{
+    for (int u=0; u<dim; ++u)
+    {
+        const auto tmp_u = action(D2F,DF_inv[u]);
+        for (int v=0; v<dim; ++v)
+        {
+            const auto tmp_u_v = action(tmp_u,DF_inv[v]);
+
+            D2F_inv[u][v] = - action(DF_inv,tmp_u_v);
+        }
+    }
+}
+
+
+template< int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+evaluate_inverse_gradient(const GradientMap &DF, Derivatives<space_dim,dim,1,1> &DF_inv)
+{
+    inverse<dim,space_dim>(DF,DF_inv);
+}
+
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_values(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
+get_map_values(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -555,14 +575,14 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_face_values(const Index face_id) const -> const ValueVector<ValueMap> &
 {
-    return this->get_values(FaceTopology<dim>(face_id));
+    return this->get_map_values(FaceTopology<dim>(face_id));
 }
 
 
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
+get_map_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -575,7 +595,7 @@ get_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<Gra
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
+get_map_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -614,7 +634,7 @@ get_inv_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_dets(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
+get_measures(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -622,6 +642,13 @@ get_dets(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
     return cache.measures_;
 }
 
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+get_face_measures(const Index face_id) const -> const ValueVector<Real> &
+{
+    return this->get_measures(FaceTopology<dim>(face_id));
+}
 
 
 template< int dim_ref_, int codim_ >
@@ -689,15 +716,81 @@ get_num_points(const TopologyId<dim> &topology_id) const
     return cache.num_points_;
 }
 
+
+
+
+
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+evaluate_values_at_points(const std::vector<Point<dim>> &points) const ->
+ValueVector< ValueMap >
+{
+    const int n_points = points.size();
+    Assert(n_points >= 0, ExcEmptyObject());
+
+    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+
+    ValueVector<ValueMap> map_value(n_points);
+
+    mapping_->evaluate_at_points(points_ref_domain,map_value);
+
+    return map_value;
+}
+
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+evaluate_gradients_at_points(const std::vector<Point<dim>> &points) const ->
+ValueVector< GradientMap >
+{
+    const int n_points = points.size();
+    Assert(n_points >= 0, ExcEmptyObject());
+
+    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+
+    ValueVector<GradientMap> map_gradient(n_points);
+
+    mapping_->evaluate_gradients_at_points(points_ref_domain,map_gradient);
+
+    return map_gradient;
+}
+
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+evaluate_hessians_at_points(const std::vector<Point<dim>> &points) const ->
+ValueVector< HessianMap >
+{
+    const int n_points = points.size();
+    Assert(n_points >= 0, ExcEmptyObject());
+
+    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+
+    ValueVector<HessianMap> map_hessian(n_points);
+
+    mapping_->evaluate_hessians_at_points(points_ref_domain,map_hessian);
+
+    return map_hessian;
+}
+
+//*/
+
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 {
     using std::endl;
+
+    std::string tab = "   ";
+
     out << "MappingElementAccessor info" << endl;
 
-    out.push("\t");
+    out.push(tab);
+
+
+    CartesianGridElementAccessor<dim_ref_>::print_info(out);
     out << "num. points = " << elem_values_.num_points_ << endl;
 
 

@@ -171,14 +171,15 @@ void run_test()
 
     QGauss<dim> quad(3);
     auto map = IgMapping<Space_t>::create(bspline_space, control_pts);
-    ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient;
+    ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
 
     auto elem = map->begin();
     elem->init_values(flag, quad);
     elem->fill_values();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
+    auto values = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;
@@ -189,6 +190,9 @@ void run_test()
     out << endl;
     out << "Gradients:" << endl;
     gradients.print_info(out);
+    out << endl;
+    out << "Hessians:" << endl;
+    hessians.print_info(out);
     out << endl;
 
     string filename = "bspline_map-" + to_string(dim) + "d";

@@ -37,7 +37,7 @@ template <int,int> class Mapping;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @todo document me
  */
@@ -200,7 +200,7 @@ public:
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &
-    get_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the value of the map at the dilated quadrature points
@@ -211,11 +211,11 @@ public:
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
-    get_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &
-    get_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &
@@ -227,7 +227,13 @@ public:
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &
-    get_dets(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the gradient determinant of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &get_face_measures(const Index face_id) const;
 
     /**
      * Returns the quadrature weights multiplied by the
@@ -266,6 +272,47 @@ public:
      * @note Mostly used for testing and debugging.
      */
     void print_memory_info(LogStream &out) const;
+
+
+    /** @name Functions for the mapping evaluations without the use of the cache */
+    ///@{
+    /**
+     * Returns the value of the map
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values() / fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< ValueMap >
+    evaluate_values_at_points(const std::vector< Point<dim> > &points) const;
+
+    /**
+     * Returns the gradient of the map (i.e. the Jacobian)
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values() / fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< GradientMap >
+    evaluate_gradients_at_points(const std::vector< Point<dim> > &points) const;
+
+
+    /**
+     * Returns the hessian of the map
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values() / fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ValueVector< HessianMap >
+    evaluate_hessians_at_points(const std::vector< Point<dim> > &points) const;
+
+    ///@}
+
+
 
 private:
     // TODO (pauletti, Mar 21, 2014): Document this class
@@ -343,6 +390,23 @@ private:
      *TODO
      */
     std::array<ValueVector<ValueMap>, codim> transform_external_normals() const;
+
+protected:
+    /**
+     * Evaluates the gradient of F^{-1} (also when the mapping has codim > 0) using the formula
+     * D(F^{-1}) = (DF^t * DF)^{-1} * DF^t
+     */
+    static void evaluate_inverse_gradient(const GradientMap &DF, Derivatives<space_dim,dim,1,1> &DF_inv);
+
+    /**
+     * Evaluates the inverse hessian of F^{-1} (also when the mapping has codim > 0) using the formula
+     * D2F{^-1} [u][v] = - DF{^-1}[ D2F[ DF{^-1}[u] ][ DF{^-1}[v] ] ],
+     * This formula can be obtained by differentiating the identity
+     * DF * DF{^-1} = I
+     */
+    static void evaluate_inverse_hessian(const HessianMap &D2F,
+                                         const Derivatives<space_dim,dim,1,1> &DF_inv,
+                                         Derivatives<space_dim,dim,1,2> &D2F_inv);
 };
 
 IGA_NAMESPACE_CLOSE

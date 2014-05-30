@@ -19,59 +19,57 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef __BSPLINE_ELEMENT_ACCESSOR_H_
-#define __BSPLINE_ELEMENT_ACCESSOR_H_
+#ifndef BSPLINE_ELEMENT_ACCESSOR_H_
+#define BSPLINE_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/cache_status.h>
-#include <igatools/base/value_flags_handler.h>
-#include <igatools/base/quadrature.h>
-#include <igatools/base/function.h>
-#include <igatools/geometry/topology.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
-#include <igatools/utils/value_vector.h>
-#include <igatools/utils/value_table.h>
-#include <igatools/utils/static_multi_array.h>
-#include <igatools/utils/cartesian_product_indexer.h>
-#include <boost/numeric/ublas/matrix.hpp>
 
+#include <igatools/basis_functions/space_element_accessor.h>
+
+//#include <igatools/utils/cartesian_product_indexer.h>
+#include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
+#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
+
+
 
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
+
 /**
  * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template <int dim, int range, int rank>
-class BSplineElementAccessor : public CartesianGridElementAccessor<dim>
+class BSplineElementAccessor :
+    public SpaceElementAccessor<
+    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim,range,rank>,dim,0,range,rank>
 {
 public:
+    using parent_t = SpaceElementAccessor<
+                     BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>;
+
+    /** Type for the grid accessor. */
+    using GridAccessor = CartesianGridElementAccessor<dim>;
+
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
-    using  Space_t = BSplineSpace<dim, range, rank> ;
+    using Space = BSplineSpace<dim, range, rank> ;
 
-    /** Fill flags supported by this iterator */
-    static const ValueFlags admisible_flag =
-        ValueFlags::point|
-        ValueFlags::w_measure |
-        ValueFlags::face_point |
-        ValueFlags::face_w_measure |
-        ValueFlags::value |
-        ValueFlags::gradient |
-        ValueFlags::hessian |
-        ValueFlags::divergence |
-        ValueFlags::face_value |
-        ValueFlags::face_gradient |
-        ValueFlags::face_hessian |
-        ValueFlags::face_divergence;
+    /** Number of faces of the element. */
+    using parent_t::n_faces;
 
-    static const Size n_faces = UnitElement<dim>::faces_per_element;
+
+    using ValuesCache = typename parent_t::ValuesCache;
+
+
+    using parent_t::admisible_flag;
+
 
 public:
     /** @name Constructors */
@@ -130,44 +128,9 @@ public:
         = default;
     ///@}
 
-    /** @name Query information without use of cache */
-    ///@{
-    /**
-     *  Number of non zero basis functions over the current element.
-     */
-    Size get_num_basis() const;
 
-    /**
-     * Number of non-zero scalar basis functions associated
-     * with the i-th space component on the element.
-     * This makes sense as a reference B-spline space
-     * is only allowed to be of the cartesian product type
-     * V = V1 x V2 x ... X Vn.
-     */
-    int get_num_basis(const int i) const;
 
-    /**
-     * Returns the global dofs of the local (non zero) basis functions
-     * on the element.
-     * For example:
-     * \code
-       auto loc_to_glob = elem->get_local_to_global();
-       // loc_to_glob[0] is the global id of the first element basis function
-       // loc_to_glob[1] is the global id of the second element basis function
-       // ...
-      \endcode
-     *
-     */
-    std::vector<Index> const &get_local_to_global() const;
-
-    /**
-     * Pointer to the BsplineSpace the accessor is iterating on.
-     */
-    std::shared_ptr<const Space_t> get_space() const;
-
-    ///@}
-
-    /** @name Query information that requires the use of the cache */
+    /** @name Cache initialization and filling */
     ///@{
 
     /**
@@ -191,15 +154,14 @@ public:
     /**
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
+     *
+     * @note The topology for which the measure is computed is specified by
+     * the input argument @p topology_id.
      */
-    void fill_values();
+    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    ///@}
 
-    void fill_face_values(const Index face_id);
 
-    /** Reset the global cache */
-    void reset_global_cache();
-
-protected:
     /**
      * Typedef for specifying the value of the basis function in the
      * reference domain.
@@ -213,236 +175,26 @@ protected:
     template <int deriv_order>
     using Derivative = Derivatives<dim, range, rank, deriv_order>;
 
-    /**
-     * Typedef for specifying the divergence of the basis function in the
-     * reference domain.
-     */
-    using Div = Values<dim, 1, 1>;
+protected:
 
 public:
-    /** @name Functions returning the value of the basis functions. */
+
+    /** @name Functions for the basis and field evaluations without the use of the cache */
     ///@{
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Value> const &get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
-     * Returns a const view to the values of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
+     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_values()/fill_values().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
-    typename ValueTable<Value>::const_view
-    get_basis_values(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    template <int deriv_order>
+    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
 
-    /**
-     * Returns the const reference to the value of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Value const &get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
     ///@}
-
-
-    /** @name Functions returning the gradient of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the gradients of all local basis function
-     * evaluated at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Derivative<1>> const &get_basis_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns a const view to the gradients of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Derivative<1> >::const_view
-    get_basis_gradients(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the gradient of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Derivative<1> const &get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the gradients of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Derivative<1>> const &get_face_basis_gradients(const Index face_id) const;
-    ///@}
-
-    /** @name Functions returning the hessian of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with hessians of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Derivative<2>> const &get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns a const view to the hessians of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Derivative<2> >::const_view
-    get_basis_hessians(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the hessian of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Derivative<2> const &get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the hessians of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Derivative<2>> const &get_face_basis_hessians(const Index face_id) const;
-    ///@}
-
-    /** @name Functions returning the divergence of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Div> const &get_basis_divergences(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns a const view to the divergences of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Div>::const_view
-    get_basis_divergences(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the divergence of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Div const &get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the divergences of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Div> const &get_face_basis_divergences(const Index face_id) const;
-    ///@}
-
-
-
-    /** @name Fields related */
-    ///@{
-    /**
-     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
-     * points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Value>
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-
-    /**
-     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Value>
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Div>
-    evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Div>
-    evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const;
-    ///@}
-
 
     /**
      * Prints internal information about the BSplineElementAccessor.
@@ -451,6 +203,154 @@ public:
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
+
+
+
+
+    /**
+     * @name Containers for the cache of the element values and for the
+     * cache of the face values
+     */
+    ///@{
+
+    /**
+     * This type store the values, first second derivatives
+     * of a 1D Bspline functions, i.e BasisValues1d[k]
+     * stores the values of the k-th derivative of the (p+1) basis function on a given interval
+     * at the quadrature points.
+     * BasisValues1d[k] is a (p+1) x n_qp matrix
+     */
+    using BasisValues1d = std::vector<DenseMatrix>;
+
+
+protected:
+
+    /**
+
+     * For each component gives a product array of the dimension
+     */
+    template<class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
+
+    /**
+     * For each component gives a product array of the dimension
+     */
+    template<class T>
+    using ComponentDirectionTable = ComponentTable<CartesianProductArray<T,dim> >;
+
+
+
+private:
+
+    ComponentTable<
+    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+
+
+    using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
+
+    /**
+     * Fills the cache (accordingly with the flags_handler status)
+     * from the univariate values (and derivatives up to the order
+     * specified by @p max_deriv_order).
+     *
+     *
+     * @note The BSplineElementAccessor @p elem is needed in order to call the function
+     * elem.evaluate_bspline_derivatives<p>()
+     * that computes the @p p-th order derivatives of a BSpline from the univariate values.
+     */
+    void fill_values_cache_from_univariate(const int max_deriv_order,
+                                           const univariate_values_t &values_1D,
+                                           ValuesCache &cache);
+
+
+
+
+    ///@}
+
+
+
+    /**
+     * Computes the k-th order derivative of the non-zero B-spline basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    template <int deriv_order>
+    void evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
+                                      const ValuesCache &cache,
+                                      ValueTable<
+                                      Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
+                                      > &derivatives_phi_hat) const;
+
+
+
+
+
+    class GlobalCache : public CacheStatus
+    {
+    public:
+        /**
+         * univariate B-splines values and derivatives at
+         * quadrature points
+         * splines1d_cache_data_[comp][dir][interval][order][function][point]
+         */
+        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
+
+        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+
+        int max_deriv_order_ = 0;
+
+    protected:
+        void reset(const Space &space,
+                   const Quadrature<dim> &quad,
+                   const int max_der,
+                   const std::array<std::vector<int>,dim> &intervals_id);
+
+        TensorSize<dim> n_intervals_;
+    };
+
+    /**
+     * Cache for the efficient use of Bspline basis on a uniform
+     * quadrature scheme on all elements.
+     */
+    class GlobalElemCache : public GlobalCache
+    {
+    public:
+        /**
+         * Allocates space for and compute the values and
+         * derivatives at quadrature points for one
+         * dimensional B-splines for each component
+         * and each direction of a component and each interval
+         * of a direction.
+         */
+        void reset(const Space &space,
+                   const Quadrature<dim> &quad,
+                   const int max_der);
+    };
+
+    class GlobalFaceCache : public GlobalCache
+    {
+    public:
+        /**
+         * Allocates space for and compute the values and
+         * derivatives at quadrature points for one
+         * dimensional B-splines for each component
+         * and each direction of a component and each interval
+         * of a direction.
+         */
+        void reset(const Space &space,
+                   const Quadrature<dim> &quad1,
+                   const Index face_id,
+                   const int max_der);
+    };
+
+
+
+    /** Reset the global cache */
+    void reset_global_cache();
+
     /**
      * Initilizes (reserves memory) the
      * univariate basis values
@@ -463,257 +363,6 @@ private:
     void reset_univariate_cache(const Quadrature<dim> &quad,
                                 const int max_der);
 
-    /**
-     * Initializes the element cache according to
-     * the quadrature number of point and the fill_flag.
-     */
-    void reset_element_cache(const ValueFlags fill_flag,
-                             const Quadrature<dim> &quad);
-
-
-
-    /**
-     * @name Containers for the cache of the element values and for the
-     * cache of the face values
-     */
-    ///@{
-    class FuncPointSize
-    {
-    public:
-        void reset(StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction,
-                   TensorSize<dim> n_points_direction);
-
-        StaticMultiArray<TensorSize<dim>,range,rank> n_basis_direction_;
-
-        TensorSize<dim> n_points_direction_;
-
-        std::shared_ptr<CartesianProductIndexer<dim>> points_indexer_;
-
-        StaticMultiArray<std::shared_ptr<CartesianProductIndexer<dim>>,range,rank> basis_functions_indexer_;
-    };
-
-
-    /**
-     * rectangular matrix to store for each
-     * univariate basis function
-     * its values or derivatives at the quadrature points
-     * it is a (p+1) x n_qp matrix.
-     * We use this type as it is consistent with the bernstein
-     * extraction operator.
-     */
-    typedef boost::numeric::ublas::matrix<Real> matrix_t;
-
-    /**
-     * This type store the values, first second derivatives
-     * of a 1D Bspline functions, i.e BasisValues1d[k]
-     * stores the k-th derivative
-     */
-    using BasisValues1d = std::vector<matrix_t>;
-
-protected:
-    /**
-     * Base class for the cache of the element values and for the cache of the
-     * face values.
-     */
-    class ValuesCache : public CacheStatus
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
-                   const TensorSize<dim> &n_points_direction);
-
-        /** Returns the values. */
-        const ValueTable<Value> &get_values() const;
-
-        /** Returns the gradients. */
-        const ValueTable<Derivative<1>> &get_gradients() const;
-
-        /** Returns the hessians. */
-        const ValueTable<Derivative<2>> &get_hessians() const;
-
-        /** Returns the divergences. */
-        const ValueTable<Div> &get_divergences() const;
-
-        // TODO (pauletti, May 29, 2014): this should be private
-
-        using univariate_values_t = StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>;
-
-        /**
-         * Fills the cache (accordingly with the flags_handler status)
-         * from the univariate values (and derivatives).
-         *
-         * @note The BSplineElementAccessor @p elem is needed in order to call the function
-         * elem.evaluate_bspline_derivatives<p>()
-         * that computes the @p p-th order derivatives of a BSpline from the univariate values.
-         */
-        void fill_from_univariate(
-            const univariate_values_t &values_1D,
-            const BSplineElementAccessor<dim,range,rank> &elem);
-
-
-        //TODO: the member variables should be private
-    public:
-
-        BasisElemValueFlagsHandler flags_handler_;
-
-
-        ValueTable<Value> phi_hat_;
-
-        //TODO (Sep 16, 2013, pauletti): D0phi_hat_ must be removed
-        ValueTable<Derivative<0>> D0phi_hat_;
-        ValueTable<Derivative<1>> D1phi_hat_;
-        ValueTable<Derivative<2>> D2phi_hat_;
-
-        // TODO (pauletti, May 29, 2014): is there any reason for div to have be chached?
-        ValueTable<Div> div_phi_hat_;
-
-    public:
-
-        FuncPointSize size_;
-    };
-
-
-    /**
-     * Cache for the element values at quadrature points
-     */
-    class ElementValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-                   const Quadrature<dim> &quad);
-
-    };
-
-
-    /**
-     * Cache for the face values at quadrature points
-     */
-    class FaceValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void reset(const Index face_id,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-                   const Quadrature<dim> &quad);
-
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points for a specified face.
-         */
-        void reset(const Index face_id,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>, range, rank> &n_basis_direction,
-                   const Quadrature<dim-1> &quad);
-
-    };
-
-    /**
-     * @todo Document this function
-     */
-    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
-
-    ///@}
-
-public:
-    /**
-     * For a given flags input argument identifies the face quantities and
-     * returns a new ValueFlags variable containing only face quantities.
-     * The output flags does not contain the word face.
-     */
-    ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
-
-
-private:
-
-    /**
-     * Computes the k-th order derivative of the non-zero B-spline basis
-     * functions over the current element,
-     * at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    template <int deriv_order>
-    void evaluate_bspline_derivatives(const FuncPointSize &size,
-                                      const StaticMultiArray<std::array<const BasisValues1d *, dim>, range, rank> &elem_values,
-                                      ValueTable< Derivative<deriv_order> > &derivatives_phi_hat) const;
-
-
-    /**
-     * For each component gives a product array of the dimension
-     */
-    template<class T>
-    using ComponentDirectionTable =
-        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
-
-
-
-    /**
-     * Cache for the efficient use of Bspline basis on a uniform
-     * quadrature scheme on all elements.
-     */
-    class UniformQuadCache : public CacheStatus
-    {
-    public:
-        int max_deriv_order = 2;
-        /**
-         * Allocates space for and compute the values and
-         * derivatives at quadrature points for one
-         * dimensional B-splines for each component
-         * and each direction of a component and each interval
-         * of a direction.
-         */
-        void reset(const Space_t &space,
-                   const Quadrature<dim> &quad,
-                   const int max_der);
-
-        /**
-         * univariate B-splines values and derivatives at
-         * quadrature points
-         * splines1d_cache_data_[comp][dir][interval][order][function][point]
-         */
-        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
-
-        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
-    };
-
-    class GlobalFaceCache : public CacheStatus
-    {
-    public:
-        int max_deriv_order = 2;
-        /**
-         * Allocates space for and compute the values and
-         * derivatives at quadrature points for one
-         * dimensional B-splines for each component
-         * and each direction of a component and each interval
-         * of a direction.
-         */
-        void reset(const Space_t &space,
-                   const Quadrature<dim> &quad1,
-                   const Index face_id,
-                   const int max_der);
-
-        /**
-         * univariate B-splines values and derivatives at
-         * quadrature points
-         * splines1d_cache_data_[comp][order][function][point]
-         */
-        StaticMultiArray<BasisValues1d ,range,rank> splines1d_cache_data_;
-        StaticMultiArray<BasisValues1d *,range,rank> splines1d_cache_;
-    };
 
     /**
      * Tensor product style space sized cache for
@@ -721,32 +370,37 @@ private:
      * one dimensional values of the basis
      * function at the quadrature points
      */
-    std::shared_ptr< UniformQuadCache > values_1d_data_ = nullptr;
+    std::shared_ptr< GlobalElemCache > values_1d_elem_ = nullptr;
 
     std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
 
-protected:
-    /**
-     * Element cache to store the values and derivatives
-     * of the B-spline basis functions
-     */
-    ElementValuesCache elem_values_;
 
-    /**
-     * Face cache to store the values and derivatives
-     * of the B-spline basis functions on the faces of the element
-     */
-    std::array<FaceValuesCache, n_faces> face_values_;
+
+protected:
+
+
+    /** Returns the Bezier extraction operator relative to the current element. */
+    ComponentTable< std::array< const DenseMatrix *,dim> > get_bezier_extraction_operator() const;
+
 
 private:
-    /**
-     * Space for which the BSplineElementAccessor refers to.
-     */
-    std::shared_ptr<ContainerType> space_ = nullptr;
 
 
     template <typename Accessor> friend class GridForwardIterator;
+
+
+
+
+protected:
+    const ComponentTable<
+    DynamicMultiArray<
+    std::shared_ptr<
+    BSplineElementScalarEvaluator<dim>>,dim> > &get_scalar_evaluators() const;
+
 };
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

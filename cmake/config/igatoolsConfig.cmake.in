@@ -33,6 +33,7 @@ set(IGATOOLS_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
 # include paths
 set(IGATOOLS_INCLUDE_DIRS 
   @Trilinos_INCLUDE_DIRS@
+  @Petsc_INCLUDE_DIRS@
   @Boost_INCLUDE_DIRS@
   @CMAKE_INSTALL_PREFIX@/include
   )
@@ -40,6 +41,7 @@ set(IGATOOLS_INCLUDE_DIRS
 # library path
 set(IGATOOLS_LIBRARY_DIR
   @Trilinos_LIBRARY_DIRS@
+  @Petsc_LIBRARY_DIRS@
   @Boost_LIBRARY_DIRS@
   @CMAKE_INSTALL_PREFIX@/lib
   )
@@ -48,6 +50,7 @@ set(IGATOOLS_LIBRARY_DIR
 set(IGATOOLS_LIBRARIES 
   @lib_name@
   @Boost_LIBRARIES@
+  @Petsc_LIBRARIES@
   @Trilinos_LIBRARIES@
   @Trilinos_TPL_LIBRARIES@
   )

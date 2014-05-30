@@ -26,6 +26,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -36,6 +37,7 @@ template < class > class PhysicalSpaceElementAccessor;
  *
  * @sa FunctionSpace
  *
+ * @ingroup containers
  */
 template <class RefSpace_, class PushForward_>
 class PhysicalSpace :
@@ -65,6 +67,10 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+
+    /** Container indexed by the components of the space */
+    template< class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
 
 public:
     /** Type for the reference space on the face. */
@@ -125,15 +131,23 @@ public:
 
     void print_memory_info(LogStream &out) const;
 
+
+    /**
+     * Returns the degree of the BSpline space for each component and for each coordinate direction.
+     * The first index of the returned object is the component id, the second index is the direction id.
+     */
+    const ComponentTable<TensorIndex<dim>> &get_degree() const;
+
+
+    /**
+     * @todo Missing documentation
+     */
+    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
+
 private:
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;
-
-    /**
-     * Map between the element accessors defined by the reference space and the element accessors defined by the push-forward.
-     */
-    std::vector<int> map_elements_;
 
 
     friend ElementAccessor;

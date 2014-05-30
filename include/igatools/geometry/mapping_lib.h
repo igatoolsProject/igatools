@@ -160,6 +160,13 @@ public:
 
     void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
 
+
+    /** @name Evaluating the quantities related to BallMapping without the use of the cache. */
+    ///@{
+    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
+    ///@}
+
 private:
     static const int order = 3;
 
@@ -359,6 +366,13 @@ public:
     void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
 
     void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
+
+    /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
+    ///@{
+    void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
+    ///@}
 
 private:
     const Real r0_;

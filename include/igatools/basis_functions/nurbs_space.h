@@ -32,6 +32,7 @@ template < int, int, int > class NURBSElementAccessor;
 /**
  * This class represent a function space in which the basis functions are NURBS.
  *
+ * @ingroup containers
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBSSpace :
@@ -77,6 +78,10 @@ public:
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
 public:
+    /** Container indexed by the components of the space */
+    template< class T>
+    using ComponentTable = StaticMultiArray<T,range,rank>;
+
     using DegreeTable = typename spline_space_t::DegreeTable;
 
     using MultiplicityTable = typename spline_space_t::MultiplicityTable;
@@ -307,6 +312,16 @@ public:
     {
         return sp_space_->get_num_basis_table();
     }
+
+
+    /**
+     * @todo Missing documentation
+     */
+    const std::vector<std::vector<Index>> &get_element_global_dofs() const
+    {
+        return sp_space_->get_element_global_dofs();
+    }
+
 
     /**
     * Returns a element iterator to the first element of the patch

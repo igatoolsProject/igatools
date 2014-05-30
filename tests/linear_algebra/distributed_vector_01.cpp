@@ -32,11 +32,20 @@
 
 void run_test()
 {
-    Vector v0(0);
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+    using VectorType = Vector<linear_algebra_package>;
+
+
+
+    VectorType v0(0);
     v0.print(out);
     out << endl;
 
-    Vector v1(10);
+    VectorType v1(10);
     v1.print(out);
     out << endl;
 

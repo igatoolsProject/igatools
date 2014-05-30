@@ -35,20 +35,47 @@ strings = []
 spaces = ['BSplineSpace', 'NURBSSpace']
 writer_real_types = ['double','float']
 
+
+
 for row in inst.user_table:
     for writer_real_t in writer_real_types:
         writer = 'Writer<%d, %d, %s>' %(row.dim, row.space_dim, writer_real_t)
         strings.append('template class %s ;\n' % (writer))
+for s in unique(strings): # Removing repeated entries.
+    f.write(s)
+
+
+
+strings = []
+for row in inst.user_table:
+    for writer_real_t in writer_real_types:
+        writer = 'Writer<%d, %d, %s>' %(row.dim, row.space_dim, writer_real_t)
         for name in spaces:
             space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
             PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
             space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_phys,space_phys)
+            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_phys,space_phys)
             strings.append('template void %s::%s ;\n' % (writer,func))
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector &, const string & )' % (space_ref,space_ref)
+            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_ref,space_ref)
             strings.append('template void %s::%s ;\n' % (writer,func))
 
 
+############################################
+# TRILINOS specific instantiations -- begin
+f.write('#ifdef USE_TRILINOS\n')
 for s in unique(strings): # Removing repeated entries.
-    f.write(s)
+    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+f.write('#endif\n')
+# TRILINOS specific instantiations -- end
+############################################
+
+
+############################################
+# PETSC specific instantiations -- begin
+f.write('#ifdef USE_PETSC\n')
+for s in unique(strings): # Removing repeated entries.
+    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+f.write('#endif\n')
+# PETSC specific instantiations -- end
+############################################
 

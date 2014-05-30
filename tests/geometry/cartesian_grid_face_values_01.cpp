@@ -56,15 +56,18 @@ void run_test1()
         out.push("  ");
         for (int face_id=0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
         {
-            elem->fill_face_values(face_id);
-            out << "face: " << face_id << endl;
-            out.push("  ");
-            out << "meas: "<< elem->get_face_measure(face_id) << endl;
-            out << "w_meas: "<< endl;
-            elem->get_face_w_measures(face_id).print_info(out);
-            out << endl;
-            out << "points: " << elem->get_face_points(face_id) << endl;
-            out.pop();
+            if (elem->is_boundary(face_id))
+            {
+                elem->fill_face_values(face_id);
+                out << "face: " << face_id << endl;
+                out.push("  ");
+                out << "meas: "<< elem->get_face_measure(face_id) << endl;
+                out << "w_meas: "<< endl;
+                elem->get_face_w_measures(face_id).print_info(out);
+                out << endl;
+                out << "points: " << elem->get_face_points(face_id) << endl;
+                out.pop();
+            }
         }
         out.pop();
     }
@@ -103,15 +106,18 @@ void run_test2()
         out.push("  ");
         for (int face_id=0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
         {
-            elem->fill_face_values(face_id);
-            out << "face: " << face_id << endl;
-            out.push("  ");
-            out << "meas: "<< elem->get_face_measure(face_id) << endl;
-            out << "w_meas: "<< endl;
-            elem->get_face_w_measures(face_id).print_info(out);
-            out << endl;
-            out << "points: " << elem->get_face_points(face_id) << endl;
-            out.pop();
+            if (elem->is_boundary(face_id))
+            {
+                elem->fill_face_values(face_id);
+                out << "face: " << face_id << endl;
+                out.push("  ");
+                out << "meas: "<< elem->get_face_measure(face_id) << endl;
+                out << "w_meas: "<< endl;
+                elem->get_face_w_measures(face_id).print_info(out);
+                out << endl;
+                out << "points: " << elem->get_face_points(face_id) << endl;
+                out.pop();
+            }
         }
         out.pop();
     }

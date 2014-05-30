@@ -306,10 +306,191 @@ BallMapping<dim_>::set_face_element(const Index face_id,
 }
 
 
+template<int dim_>
+void
+BallMapping<dim_>::
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+{
+    const int n_points = points.size();
+    Assert(n_points > 0, ExcEmptyObject());
+    Assert(points.size() == gradients.size(),ExcDimensionMismatch(points.size(),gradients.size()));
+
+    cos_val[0].resize(n_points);
+    sin_val[0].resize(n_points);
+    cos_val[1].resize(n_points);
+    sin_val[1].resize(n_points);
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        const auto &pt = points[qp];
+
+        sin_val[0][qp][0] = pt[0];
+        for (int i = 1; i < dim; ++i)
+        {
+            sin_val[0][qp][i]   = sin(pt[i]);
+            cos_val[0][qp][i-1] = cos(pt[i]);
+        }
+        cos_val[0][qp][dim-1] = 1;
+
+        sin_val[1][qp][0] = 1.0;
+        for (int i = 1; i < dim; ++i)
+        {
+            sin_val[1][qp][i  ] =  cos_val[0][qp][i-1];
+            cos_val[1][qp][i-1] = -sin_val[0][qp][i];
+        }
+        cos_val[1][qp][dim-1] = 1.;
+    }
+
+    const auto &s = sin_val[0];
+    const auto &c = cos_val[0];
+    const auto &s_p = sin_val[1];
+    const auto &c_p = cos_val[1];
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &grad = gradients[qp];
+        grad = 0.;
+
+        for (int i = 0; i < dim-1; ++i)
+        {
+            for (int j = 0; j < i+2; ++j)
+            {
+                double djy = 1.;
+                for (int k = 0; k < i+1; ++k)
+                    djy *= k!=j ? s[qp][k] : s_p[qp][k];
+                grad[j][i] = djy * (i+1!=j ? c[qp][i] : c_p[qp][i]);
+            }
+        }
+
+        const int i = dim-1;
+        for (int j = 0; j < dim; ++j)
+        {
+            double djy = 1.;
+            for (int k = 0; k < i+1; ++k)
+                djy *= k!=j ? s[qp][k] : s_p[qp][k];
+            grad[j][i] = djy;
+        }
+    }
+
+}
 
 template<int dim_>
 void
-BallMapping<dim_>::evaluate(vector<ValueType> &values) const
+BallMapping<dim_>::
+evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+{
+    const int n_points = points.size();
+    Assert(n_points > 0, ExcEmptyObject());
+    Assert(points.size() == hessians.size(),ExcDimensionMismatch(points.size(),hessians.size()));
+
+
+    for (int der = 0; der <= 2 ; ++der)
+    {
+        cos_val[der].resize(n_points);
+        sin_val[der].resize(n_points);
+    }
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        const auto &pt = points[qp];
+
+        sin_val[0][qp][0] = pt[0];
+        for (int i = 1; i < dim; ++i)
+        {
+            sin_val[0][qp][i]   = sin(pt[i]);
+            cos_val[0][qp][i-1] = cos(pt[i]);
+        }
+        cos_val[0][qp][dim-1] = 1;
+
+        for (int der = 1; der <= 2 ; ++der)
+        {
+            auto res = std::div(der,2);
+            sin_val[der][qp][0] = der>1? 0. : 1.;
+            for (int i = 1; i < dim; ++i)
+            {
+                sin_val[der][qp][i] =
+                    std::pow(-1, res.quot) *
+                    (res.rem == 0? sin_val[0][qp][i]: cos_val[0][qp][i-1]);
+                cos_val[der][qp][i-1] = -sin_val[der-1][qp][i];
+            }
+            cos_val[der][qp][dim-1] = 1.;
+        }
+    }
+
+
+
+    const auto &s = sin_val[0];
+    const auto &c = cos_val[0];
+    const auto &s_p = sin_val[1];
+    const auto &c_p = cos_val[1];
+    const auto &s_2p = sin_val[2];
+    const auto &c_2p = cos_val[2];
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &hessian = hessians[qp];
+        hessian = 0.;
+        for (int i = 0; i < dim-1; ++i)
+        {
+            for (int j = 0; j < i+2; ++j)
+            {
+                for (int k = 0; k < j+1; ++k)
+                {
+                    double d2jy = 1.;
+                    for (int l = 0; l < i+1; ++l)
+                    {
+                        double factor;
+                        if (j==k)
+                            factor = l==j ? s_2p[qp][l] : s[qp][l];
+                        else
+                            factor = (l==j || l==k) ?  s_p[qp][l] : s[qp][l];
+
+                        d2jy *= factor;
+                    }
+                    double factor;
+                    if (j==k)
+                        factor = (i+1)==j ? c_2p[qp][i] : c[qp][i];
+                    else
+                        factor = ((i+1)==j || (i+1)==k) ?
+                                 c_p[qp][i] : c[qp][i];
+
+                    hessian[j][k][i] = d2jy * factor;
+                }
+            }
+        }
+
+        const int i = dim-1;
+        for (int j = 0; j < dim; ++j)
+            for (int k = 0; k < j+1; ++k)
+            {
+                double d2jy = 1.;
+                for (int l = 0; l < dim; ++l)
+                {
+                    double factor;
+                    if (j==k)
+                        factor = l==j ? s_2p[qp][l] : s[qp][l];
+                    else
+                        factor = (l==j || l==k) ?  s_p[qp][l] : s[qp][l];
+
+                    d2jy *= factor;
+                }
+                hessian[j][k][i] = d2jy;
+            }
+
+
+        for (int i = 0; i < dim; ++i)
+            for (int j = 0; j < dim; ++j)
+                for (int k = 0; k< j; ++k)
+                {
+                    hessian[k][j][i] = hessian[j][k][i];
+                }
+    }
+}
+
+template<int dim_>
+void
+BallMapping<dim_>::
+evaluate(vector<ValueType> &values) const
 {
     const int der = 0;
     const auto &s = sin_val[der];
@@ -1091,24 +1272,7 @@ set_face_element(const Index face_id,
 
 void CylindricalAnnulus::evaluate(vector<ValueType> &values) const
 {
-    const Size num_points = points_.size();
-
-    Assert(Size(values.size()) == num_points,
-           ExcDimensionMismatch(values.size(),num_points));
-    for (int iPt = 0; iPt < num_points; iPt++)
-    {
-        auto &F = values[iPt];
-
-        const auto &pt = points_[iPt];
-
-        const Real theta = pt[0];
-        const Real r     = pt[1];
-        const Real z     = pt[2];
-
-        F[0] = (dR_ * r + r0_) * cos(dT_ * theta);
-        F[1] = (dR_ * r + r0_) * sin(dT_ * theta);
-        F[2] = h0_ + z * dH_;
-    }
+    this->evaluate_at_points(points_,values);
 }
 
 
@@ -1116,89 +1280,14 @@ void CylindricalAnnulus::evaluate(vector<ValueType> &values) const
 void CylindricalAnnulus::
 evaluate_gradients(vector<GradientType> &gradients) const
 {
-    const Size num_points = points_.size();
-
-    Assert(Size(gradients.size()) == num_points,
-           ExcDimensionMismatch(gradients.size(),num_points));
-    for (int iPt = 0; iPt < num_points; iPt++)
-    {
-        auto &dF = gradients[iPt];
-
-        const auto &pt = points_[iPt];
-
-        const Real theta = pt[0];
-        const Real r     = pt[1];
-
-        dF[0][0] = - dT_ * (dR_ * r + r0_) * sin(dT_ * theta);
-        dF[0][1] =   dT_ * (dR_ * r + r0_) * cos(dT_ * theta);
-        dF[0][2] = 0.0;
-
-        dF[1][0] = dR_ * cos(dT_ * theta);
-        dF[1][1] = dR_ * sin(dT_ * theta);
-        dF[1][2] = 0.0;
-
-        dF[2][0] = 0.0;
-        dF[2][1] = 0.0;
-        dF[2][2] = dH_;
-
-    }
+    this->evaluate_gradients_at_points(points_,gradients);
 }
 
 
 void CylindricalAnnulus::
 evaluate_hessians(vector<HessianType> &hessians) const
 {
-    const Size num_points = points_.size();
-
-    Assert(Size(hessians.size()) == num_points,
-           ExcDimensionMismatch(hessians.size(),num_points));
-    for (int iPt = 0; iPt < num_points; iPt++)
-    {
-        auto &d2F = hessians[iPt];
-
-        const auto &pt = points_[iPt];
-
-        const Real theta = pt[0];
-        const Real r     = pt[1];
-
-        d2F[0][0][0] = - dT_ * dT_ * (dR_ * r + r0_) * cos(dT_ * theta);
-        d2F[0][0][1] = - dT_ * dT_ * (dR_ * r + r0_) * sin(dT_ * theta);
-        d2F[0][0][2] = 0.0;
-
-        d2F[1][0][0] = -dT_ * dR_ * sin(dT_ * theta);
-        d2F[1][0][1] =  dT_ * dR_ * cos(dT_ * theta);
-        d2F[1][0][2] = 0.0;
-
-        d2F[2][0][0] = 0.0;
-        d2F[2][0][1] = 0.0;
-        d2F[2][0][2] = 0.0;
-
-
-        d2F[0][1][0] = - dT_ * dR_ * sin(dT_ * theta);
-        d2F[0][1][1] =   dT_ * dR_ * cos(dT_ * theta);
-        d2F[0][1][2] = 0.0;
-
-        d2F[1][1][0] = 0.0;
-        d2F[1][1][1] = 0.0;
-        d2F[1][1][2] = 0.0;
-
-        d2F[2][1][0] = 0.0;
-        d2F[2][1][1] = 0.0;
-        d2F[2][1][2] = 0.0;
-
-
-        d2F[0][2][0] = 0.0;
-        d2F[0][2][1] = 0.0;
-        d2F[0][2][2] = 0.0;
-
-        d2F[1][2][0] = 0.0;
-        d2F[1][2][1] = 0.0;
-        d2F[1][2][2] = 0.0;
-
-        d2F[2][2][0] = 0.0;
-        d2F[2][2][1] = 0.0;
-        d2F[2][2][2] = 0.0;
-    }
+    this->evaluate_hessians_at_points(points_,hessians);
 }
 
 
@@ -1209,8 +1298,38 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
 
-    auto &face_points = face_points_[face_id] ;
-    const Size num_points = face_points.size();
+    this->evaluate_at_points(face_points_[face_id],values);
+}
+
+
+
+void CylindricalAnnulus::
+evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
+{
+    Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
+
+    this->evaluate_gradients_at_points(face_points_[face_id],gradients);
+}
+
+
+
+void CylindricalAnnulus::
+evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
+{
+    Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
+
+    this->evaluate_hessians_at_points(face_points_[face_id],hessians);
+}
+
+
+
+void
+CylindricalAnnulus::
+evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+{
+    const Size num_points = points.size();
 
     Assert(Size(values.size()) == num_points,
            ExcDimensionMismatch(values.size(),num_points));
@@ -1218,7 +1337,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     {
         auto &F = values[iPt];
 
-        const auto &pt = face_points[iPt];
+        const auto &pt = points[iPt];
 
         const Real theta = pt[0];
         const Real r     = pt[1];
@@ -1230,16 +1349,13 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
     }
 }
 
-
-
-void CylindricalAnnulus::
-evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
+void
+CylindricalAnnulus::
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
 {
-    Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
-           ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
+    const Size num_points = points.size();
+    Assert(num_points > 0, ExcEmptyObject());
 
-    auto &face_points = face_points_[face_id] ;
-    const Size num_points = face_points.size();
 
     Assert(Size(gradients.size()) == num_points,
            ExcDimensionMismatch(gradients.size(),num_points));
@@ -1247,7 +1363,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
     {
         auto &dF = gradients[iPt];
 
-        const auto &pt = face_points[iPt];
+        const auto &pt = points[iPt];
 
         const Real theta = pt[0];
         const Real r     = pt[1];
@@ -1263,20 +1379,15 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
         dF[2][0] = 0.0;
         dF[2][1] = 0.0;
         dF[2][2] = dH_;
-
     }
 }
 
-
-
-void CylindricalAnnulus::
-evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
+void
+CylindricalAnnulus::
+evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
 {
-    Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
-           ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
-
-    auto &face_points = face_points_[face_id] ;
-    const Size num_points = face_points.size();
+    const Size num_points = points.size();
+    Assert(num_points > 0, ExcEmptyObject());
 
     Assert(Size(hessians.size()) == num_points,
            ExcDimensionMismatch(hessians.size(),num_points));
@@ -1284,7 +1395,7 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
     {
         auto &d2F = hessians[iPt];
 
-        const auto &pt = face_points[iPt];
+        const auto &pt = points[iPt];
 
         const Real theta = pt[0];
         const Real r     = pt[1];
@@ -1328,7 +1439,6 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
         d2F[2][2][2] = 0.0;
     }
 }
-
 
 
 auto

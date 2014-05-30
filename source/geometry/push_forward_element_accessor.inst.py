@@ -37,26 +37,57 @@ for row in unique(inst.all_table + inst.extended_table):
     output.append('template class %s ;\n' %(push_fwd_elem_acc) )
     output.append('template class GridForwardIterator<%s> ;\n' %(push_fwd_elem_acc) )
     value_ref  = ("Values<%d,%d,%d>" %(row.dim, row.range, row.rank)) 
+    gradient_ref  = ("Derivatives<%d,%d,%d,1>" %(row.dim, row.range, row.rank)) 
+    hessian_ref  = ("Derivatives<%d,%d,%d,2>" %(row.dim, row.range, row.rank)) 
     value_phys = ("Values<%d,%d,%d>" %(row.space_dim, row.phys_range, row.phys_rank)) 
-    topology_id = ("TopologyId<%d>" %(row.dim))
+    gradient_phys = ("Derivatives<%d,%d,%d,1>" %(row.space_dim, row.phys_range, row.phys_rank)) 
+    hessian_phys = ("Derivatives<%d,%d,%d,2>" %(row.space_dim, row.phys_range, row.phys_rank)) 
+    topology_id = ("const TopologyId<%d> &" %(row.dim))
+    pts = 'const vector<Point<%d>> &' %(row.dim)
     for container in containers:
         v_ref  = 'const %s<%s> &' %(container, value_ref)
+        d1v_ref  = 'const %s<%s> &' %(container, gradient_ref)
+        d2v_ref  = 'const %s<%s> &' %(container, hessian_ref)
         v_phys = '%s<%s> &' %(container, value_phys)
+        d1v_phys = '%s<%s> &' %(container, gradient_phys)
+        d2v_phys = '%s<%s> &' %(container, hessian_phys)
         output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
                     'transform_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-                    '(%s, %s, const %s &, void *) const ;\n' %(v_ref, v_phys, topology_id)
+                    '(%s,%s,%s,void *) const ;\n' %(v_ref, v_phys, topology_id)
                     )
         order = 1
-        deriv_ref  = ("Derivatives<%d,%d,%d,%d>" %(row.dim, row.range, row.rank, order)) 
-        deriv_phys = ("Derivatives<%d,%d,%d,%d>" %(row.space_dim, row.phys_range, row.phys_rank, order)) 
-        dv_ref  = 'const %s<%s> &' %(container, deriv_ref)
-        dv_phys = '%s<%s> &' %(container, deriv_phys)
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
             'transform_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
-            '(%s,%s,%s, const %s &, void * ) const;\n' %(v_ref,dv_ref,dv_phys,topology_id)
+            '(%s,%s,%s,%s,void *) const;\n' %(v_ref,d1v_ref,d1v_phys,topology_id)
         )
+        order = 2
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_hessians<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
+            '(%s,%s,%s,%s,%s,void *) const;\n' %(v_ref,d1v_ref,d2v_ref,d2v_phys,topology_id)
+        )
+
+        order = 0
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_basis_derivatives_at_points<%d,%d,%s,Transformation::%s>' %(row.range,row.rank,container,row.trans_type) +
+            '(%s,%s,%s,%s,%s,void *) const;\n' %(pts,v_ref,d1v_ref,d2v_ref,v_phys)
+        )
+        order = 1
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_basis_derivatives_at_points<%d,%d,%s,Transformation::%s>' %(row.range,row.rank,container,row.trans_type) +
+            '(%s,%s,%s,%s,%s,void *) const;\n' %(pts,v_ref,d1v_ref,d2v_ref,d1v_phys)
+        )
+        order = 2
+        output.append(
+            'template void %s::' %(push_fwd_elem_acc) +
+            'transform_basis_derivatives_at_points<%d,%d,%s,Transformation::%s>' %(row.range,row.rank,container,row.trans_type) +
+            '(%s,%s,%s,%s,%s,void *) const;\n' %(pts,v_ref,d1v_ref,d2v_ref,d2v_phys)
+        )
+
  
 
 

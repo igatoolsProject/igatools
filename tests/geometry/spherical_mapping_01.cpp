@@ -46,9 +46,9 @@ void test_evaluate()
     elem->init_values(flag, quad);
     elem->fill_values();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "Points: (r,phi,thetas...) :" << endl;
     out << quad.get_points().get_flat_cartesian_product() << endl;

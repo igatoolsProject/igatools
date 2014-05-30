@@ -46,10 +46,37 @@ f.write('template class GridForwardIterator<%s> ;\n' %sp)
 for i in range(len(spaces)):
    row = inst.all_ref_sp_dims[i]
    function = ('template  void ' + spaces[i] + '::evaluate_bspline_derivatives<deriv_order>' +
-               '(const FuncPointSize &,' +
-               'const StaticMultiArray<std::array<const BasisValues1d*, dim_domain>, dim_range, rank> &,'+
-               'ValueTable< Derivative<deriv_order> > &) const; \n')
+               '(const StaticMultiArray<std::array<const BasisValues1d*, dim_domain>, dim_range, rank> &,'+
+               'const ' + spaces[i] + '::ValuesCache &,'+
+               'ValueTable< Conditional<deriv_order==0,Value,Derivative<deriv_order> > > &) const; \n')
    f1 = function.replace('dim_domain', str(row.dim) ).replace('dim_range', str(row.range) ).replace('rank', str(row.rank) );
    fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
    for s in fun_list:
       f.write(s)
+
+
+for i in range(len(spaces)):
+   row = inst.all_ref_sp_dims[i]
+   function = ('template  ValueTable< Conditional< deriv_order==0,'+
+               spaces[i] + '::Value,' +
+               spaces[i] + '::Derivative<deriv_order> > > ' + 
+               spaces[i] + 
+               '::evaluate_basis_derivatives_at_points<deriv_order>' +
+               '(const vector<Point<dim_domain>>&) const; \n')
+   f1 = function.replace('dim_domain', str(row.dim) );
+   fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
+   for s in fun_list:
+      f.write(s)
+
+
+sp = 'BSplineElementAccessor<0, 0, 1>'
+function = ('template  ValueTable< Conditional< deriv_order==0,'+
+            sp + '::Value,' +
+            sp + '::Derivative<deriv_order> > > ' + 
+            sp + 
+            '::evaluate_basis_derivatives_at_points<deriv_order>' +
+            '(const vector<Point<0>>&) const; \n')
+fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
+for s in fun_list:
+    f.write(s)
+

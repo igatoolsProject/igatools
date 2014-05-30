@@ -32,6 +32,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * @brief Element accessor for the CartesianGrid.
  *
@@ -41,8 +43,8 @@ IGA_NAMESPACE_OPEN
  * that are obtained through a cache mechanism
  *
  *
- * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * See module (and the submodules) on \ref accessors_iterators for a general overview.
+ * @ingroup accessors
  *
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014
@@ -66,6 +68,9 @@ public:
         ValueFlags::face_measure |
         ValueFlags::face_w_measure |
         ValueFlags::face_normal;
+
+    /** Number of faces of the element. */
+    static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
 public:
     /** @name Constructors */
@@ -153,7 +158,7 @@ public:
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_values();
+    void fill_values(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Fills the i-th face values cache according to the evaluation points
@@ -238,12 +243,12 @@ public:
                         VerbosityLevel::normal) const;
 
 
-    static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
-protected:
+public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
 
     bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
+
 
     void operator++();
 
@@ -348,8 +353,13 @@ private:
     /**
      * @todo Document this function
      */
-    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id)
+    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>())
     const;
+
+    /**
+     * @todo Document this function
+     */
+    ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Grid (global) lengths cache.

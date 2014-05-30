@@ -129,10 +129,6 @@ create(const DegreeTable &deg,
 
 
 
-
-
-
-
 //template<int dim_, int range_, int rank_>
 //void
 //BSplineSpace<dim_, range_, rank_>::
@@ -145,6 +141,7 @@ create(const DegreeTable &deg,
 //        std::bind(&self_t::refine_h_after_grid_refinement, this,
 //                  std::placeholders::_1,std::placeholders::_2));
 //}
+
 
 
 

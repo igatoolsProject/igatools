@@ -26,11 +26,15 @@
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/basis_functions/function_space.h>
 
+
 #include <memory>
 
 IGA_NAMESPACE_OPEN
 
+template <LinearAlgebraPackage linear_algebra_package>
 class Vector;
+
+template <LinearAlgebraPackage linear_algebra_package>
 class Matrix;
 
 /**
@@ -219,20 +223,11 @@ SparsityPattern get_sparsity_pattern(
  * to impose dirichlet constraints on the dofs.
  * todo: document more.
  */
+template <LinearAlgebraPackage linear_algebra_package>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix      &matrix,
-                           Vector      &rhs,
-                           Vector      &solution);
-
-
-
-/**
- * Returns the local coefficients from the distributed vector of global coefficients
- * @p global_coefs and from the vector of local-to-global indices.
- *
- */
-std::vector<Real>
-get_local_coefs(const Vector &global_coefs, const std::vector<Index> &local_to_global_ids);
+                           Matrix<linear_algebra_package> &matrix,
+                           Vector<linear_algebra_package> &rhs,
+                           Vector<linear_algebra_package> &solution);
 
 
 } // end of namespace dof_tools

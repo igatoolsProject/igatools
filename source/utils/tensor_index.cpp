@@ -34,6 +34,17 @@
 IGA_NAMESPACE_OPEN
 
 
+template <int rank>
+TensorIndex<rank>
+operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
+{
+    TensorIndex<rank> tensor_index;
+    for (int i = 0 ; i < rank ; ++i)
+        tensor_index[i] = index_a[i] + index_b[i];
+
+    return tensor_index;
+}
+
 
 
 template <int rank>

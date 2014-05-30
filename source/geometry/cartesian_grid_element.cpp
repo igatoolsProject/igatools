@@ -209,6 +209,37 @@ is_point_inside(const Point< dim > &point) const
     return (true) ;
 }
 
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_point_on_boundary(const Point< dim > &point) const
+{
+    int n_coords_inside = 0;
+    int n_coords_on_boundary = 0;
+
+    const auto &knots_directions = this->get_grid()->get_knot_coordinates();
+    const auto &tensor_index = this->get_tensor_index();
+    for (int j = 0; j < dim; ++j)
+    {
+        const auto &knots = knots_directions.get_data_direction(j) ;
+        const Index id = tensor_index[j] ;
+
+        const Real pt_coord = point(j) ;
+
+        if (pt_coord > knots[id] && pt_coord < knots[id+1])
+            n_coords_inside++;
+
+        if (pt_coord == knots[id] || pt_coord == knots[id+1])
+            n_coords_on_boundary++;
+    }
+
+    int n_coords_outside = dim - (n_coords_inside+n_coords_on_boundary);
+
+    if (n_coords_on_boundary > 0 && n_coords_outside == 0)
+        return true;
+    else
+        return false;
+}
 
 
 template <int dim_>
@@ -244,6 +275,78 @@ is_boundary(const Index face_id) const
 }
 
 
+
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+transform_points_unit_to_reference(const vector<Point<dim>> &points_unit_domain) const ->
+vector<Point<dim>>
+{
+    const int n_points = points_unit_domain.size();
+    Assert(n_points > 0,ExcEmptyObject());
+
+
+    const auto translate = this->vertex(0);
+    const auto dilate    = this->get_coordinate_lengths();
+
+    vector<Point<dim>> points_ref_domain(n_points);
+    for (int ipt = 0 ; ipt < n_points ; ++ipt)
+    {
+        const auto &point_unit_domain = points_unit_domain[ipt];
+        auto &point_ref_domain = points_ref_domain[ipt];
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            Assert(point_unit_domain[i] >= 0.0 && point_unit_domain[i] <= 1.0,
+            ExcMessage("The coordinate of the point " + std::to_string(ipt) +
+            " along the direction " + std::to_string(i) +
+            " is not in the unit hypercube [0,1]^" + std::to_string(dim)));
+            point_ref_domain[i] = point_unit_domain[i] * dilate[i] + translate[i];
+        } // end loop i
+    }
+
+    return points_ref_domain;
+}
+
+
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+transform_points_reference_to_unit(const vector<Point<dim>> &points_ref_domain) const ->
+vector<Point<dim>>
+{
+    const int n_points = points_ref_domain.size();
+    Assert(n_points > 0,ExcEmptyObject());
+
+
+    const auto translate = this->vertex(0);
+    const auto dilate    = this->get_coordinate_lengths();
+
+    vector<Point<dim>> points_unit_domain(n_points);
+//    LogStream out ;
+//    using std::endl;
+//    out << "CartesianGridElement::transform_points_reference_to_unit" << endl;
+//    this->print_info(out);
+//    out <<endl;
+    for (int ipt = 0 ; ipt < n_points ; ++ipt)
+    {
+        const auto &point_ref_domain = points_ref_domain[ipt];
+//        out << "point_ref_domain="<<point_ref_domain<<endl;
+        Assert(this->is_point_inside(point_ref_domain) || this->is_point_on_boundary(point_ref_domain),
+        ExcMessage("The point " + std::to_string(ipt) +
+        " is outside this CartesianGridElement."));
+
+        auto &point_unit_domain = points_unit_domain[ipt];
+        for (int i = 0 ; i < dim ; ++i)
+        {
+//            out << "dilate["<<i<<"]=" <<dilate[i] << endl;
+//            out << "translate["<<i<<"]=" <<translate[i] << endl;
+
+            point_unit_domain[i] = (point_ref_domain[i] - translate[i]) / dilate[i] ;
+        }
+    }
+
+    return points_unit_domain;
+}
 
 template <int dim_>
 void

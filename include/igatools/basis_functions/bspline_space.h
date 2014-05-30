@@ -89,6 +89,7 @@ template < int, int, int> class BSplineElementAccessor;
  * @tparam dim Dimensionality of the parametric space (must be equal to the dimensionality
  * of the grid used top build the space
  *
+ * @ingroup containers
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
@@ -239,7 +240,9 @@ public:
      * Returns true if all component belong to the same scalar valued
      * space.
      */
+
  //   bool is_range_homogeneous() const;
+
 
 
     std::shared_ptr<const self_t >
@@ -250,7 +253,9 @@ public:
      * Each element has a statically defined zone to read their dofs from,
      * independent of the distribution policy in use.
      */
+
   //  const IndexSpaceTable &get_index_space() const;
+
     ///@}
 
     /** @name Functions involving the element iterator */
@@ -303,7 +308,9 @@ private:
     DofDistribution<dim, range, rank> basis_indices_;
 
     /** @name Bezier extraction operator. */
+
     BernsteinExtraction<dim, range, rank> operators_;
+
 
     ///@{
 protected:

@@ -66,13 +66,24 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create (knots, p) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(knots, p) ;
     bspline_space->print_info(out);
     out << endl;
     out << "Number of dofs: " << bspline_space->get_num_basis() << std::endl;
 
 
-    Matrix matrix(dof_tools::get_sparsity_pattern<BSplineSpace< dim_domain, dim_range, rank>>(bspline_space));
+
+#if defined(USE_TRILINOS)
+    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+#elif defined(USE_PETSC)
+    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+#endif
+    using VectorType = Vector<linear_algebra_package>;
+    using MatrixType = Matrix<linear_algebra_package>;
+    using LinSolverType = LinearSolver<linear_algebra_package>;
+
+    MatrixType matrix(
+        dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>>(bspline_space));
 
 
     const Index num_rows = matrix.get_num_rows() ;
@@ -85,16 +96,16 @@ int main(int argc, char *argv[])
     matrix.print(out);
     out << std::endl;
 
-    Vector b(bspline_space->get_num_basis());
+    VectorType b(bspline_space->get_num_basis());
     for (Index i = 0; i<b.size() ; i++)
         b.add_entry(i,i*1.0);
 
     b.print(out);
     out << endl;
 
-    Vector x(bspline_space->get_num_basis());
+    VectorType x(bspline_space->get_num_basis());
 
-    LinearSolver solver(LinearSolver::Type::GMRES);
+    LinSolverType solver(LinSolverType::SolverType::GMRES);
     solver.solve(matrix,b,x);
 
     x.print(out);

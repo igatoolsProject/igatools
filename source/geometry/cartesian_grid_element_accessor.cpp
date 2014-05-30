@@ -118,10 +118,36 @@ get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache
     }
     else
     {
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
+
         return face_values_[topology_id.get_id()];
     }
 }
 
+template <int dim_>
+auto
+CartesianGridElementAccessor<dim_>::
+get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+    ExcMessage("Only element or face topology is allowed."));
+    if (topology_id.is_element())
+    {
+        return elem_values_;
+    }
+    else
+    {
+        Assert(this->is_boundary(topology_id.get_id()),
+        ExcMessage("The requested face_id=" +
+        std::to_string(topology_id.get_id()) +
+        " is not a boundary for the element"));
+
+        return face_values_[topology_id.get_id()];
+    }
+}
 
 
 template <int dim_>
@@ -203,11 +229,13 @@ init_face_values(const Index face_id,
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-fill_values()
+fill_values(const TopologyId<dim_> &topology_id)
 {
-    elem_values_.fill(CartesianGridElement<dim_>::get_measure());
+    auto &cache = get_values_cache(topology_id);
 
-    elem_values_.set_filled(true);
+    cache.fill(CartesianGridElement<dim_>::get_measure(topology_id));
+
+    cache.set_filled(true);
 }
 
 
@@ -217,12 +245,7 @@ void
 CartesianGridElementAccessor<dim_>::
 fill_face_values(const Index face_id)
 {
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    auto &face_value = face_values_[face_id] ;
-
-    face_value.fill(CartesianGridElement<dim_>::get_face_measure(face_id));
-
-    face_value.set_filled(true);
+    fill_values(FaceTopology<dim_>(face_id));
 }
 
 

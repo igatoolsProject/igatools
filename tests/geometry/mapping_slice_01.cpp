@@ -56,7 +56,7 @@ void run_test()
         {
             out << "face element: " <<  face_elem->get_flat_index() << endl;
             face_elem->fill_values();
-            face_elem->get_values().print_info(out);
+            face_elem->get_map_values().print_info(out);
             //face_elem->get_gradients().print_info(out);
         }
         out << endl;

@@ -37,14 +37,13 @@ using std::array;
 using std::shared_ptr;
 using std::make_shared;
 using std::string;
+using namespace iga::reader_utils;
 
 IGA_NAMESPACE_OPEN
 
-namespace
+namespace reader_utils
 {
-/**
- * Returns the XML tree contained in the file @p filename.
- */
+
 boost::property_tree::ptree
 get_xml_tree(const std::string &filename)
 {
@@ -57,9 +56,7 @@ get_xml_tree(const std::string &filename)
 }
 
 
-/**
- * Returns the number of nodes in the XML @p tree that have the tag @p tag_name.
- */
+
 Size
 count_xml_elements_same_tag(
     const boost::property_tree::ptree &tree,
@@ -74,9 +71,8 @@ count_xml_elements_same_tag(
     return counter;
 }
 
-/**
- * Returns true if the XML @p tree has at least one node with the tag @p tag_name.
- */
+
+
 bool
 xml_element_is_present(
     const boost::property_tree::ptree &tree,
@@ -85,11 +81,8 @@ xml_element_is_present(
     return (count_xml_elements_same_tag(tree,tag_name) > 0) ? true:false;
 }
 
-/**
- * Returns true if the XML @p tree has exactly one node with the tag @p tag_name.
- * @note If no node with the tag @p tag_name are present,
- * an assertion (in Debug and Release mode) will be raised.
- */
+
+
 bool
 xml_element_is_unique(
     const boost::property_tree::ptree &tree,
@@ -102,11 +95,7 @@ xml_element_is_unique(
 }
 
 
-/**
- * Extracts from the XML @tree, the subtrees corresponding to the tag @p tag_name.
- * @note If any element is present in the tree, an assertion will be raised
- * (in Debug and Release mode).
- */
+
 vector< boost::property_tree::ptree >
 get_xml_element_vector(
     const boost::property_tree::ptree &tree,
@@ -126,12 +115,6 @@ get_xml_element_vector(
 
 
 
-/**
- * Extracts from the XML @tree, the unique subtree corresponding to the tag @p tag_name.
- * @note The must be only one element in the @p tree with the given @p tag_name,
- * otherwise (more than one element on no element present) an assertion will be raised
- * (in Debug and Release mode).
- */
 boost::property_tree::ptree
 get_xml_element(
     const boost::property_tree::ptree &tree,
@@ -146,12 +129,6 @@ get_xml_element(
 
 
 
-
-/**
- * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.
- * @note If any element is present in the tree, an assertion will be raised
- * (in Debug and Release mode).
- */
 boost::property_tree::ptree
 get_xml_element_attributes(const boost::property_tree::ptree &element)
 {
@@ -160,10 +137,6 @@ get_xml_element_attributes(const boost::property_tree::ptree &element)
 
 
 
-/**
- * Extracts a vector of scalars from the XML @p tree.
- * The type of scalars is determined by the template parameter @p ScalarType.
- */
 template <class ScalarType>
 vector<ScalarType>
 get_vector_data_from_xml(const boost::property_tree::ptree &tree)
@@ -178,7 +151,46 @@ get_vector_data_from_xml(const boost::property_tree::ptree &tree)
     return data;
 }
 
-};
+
+
+template <int dim>
+Multiplicity<dim>
+get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
+{
+    //-------------------------------------------------------------------------
+    // reading the Multiplicity attributes
+    const auto &mult_attributes = get_xml_element_attributes(tree);
+
+    const int dim_from_file = mult_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the multiplicity along each direction
+    const auto &mult_elements = get_xml_element_vector(tree,"Multiplicity");
+    AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
+
+    array<vector<Size>,dim> mlt_data;
+    for (const auto mlt_element : mult_elements)
+    {
+        const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
+
+        const int direction_id = mlt_attributes.get<int>("Direction");
+        mlt_data[direction_id] = get_vector_data_from_xml<Size>(mlt_element);
+
+        const int n_mlt_from_file = mlt_attributes.get<int>("Size");
+        AssertThrow(mlt_data[direction_id].size() == n_mlt_from_file,
+                    ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
+    }
+    //-------------------------------------------------------------------------
+    Multiplicity<dim> mult(mlt_data);
+
+    return mult;
+}
+
+}; // of namespace reader_utils.
 
 
 
@@ -252,50 +264,6 @@ get_xml_input_file_format(const std::string &filename)
 
     return file_format_version;
 }
-
-
-
-namespace
-{
-template <int dim>
-CartesianProductArray<Size, dim>
-get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
-{
-    //-------------------------------------------------------------------------
-    // reading the Multiplicity attributes
-    const auto &mult_attributes = get_xml_element_attributes(tree);
-
-    const int dim_from_file = mult_attributes.get<int>("Dim");
-    AssertThrow(dim == dim_from_file,
-                ExcDimensionMismatch(dim,dim_from_file));
-    //-------------------------------------------------------------------------
-
-
-    //-------------------------------------------------------------------------
-    // reading the multiplicity along each direction
-    const auto &mult_elements = get_xml_element_vector(tree,"Multiplicity");
-    AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
-
-    array<vector<Size>,dim> mlt_data;
-    for (const auto mlt_element : mult_elements)
-    {
-        const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
-
-        const int direction_id = mlt_attributes.get<int>("Direction");
-        mlt_data[direction_id] = get_vector_data_from_xml<Size>(mlt_element);
-
-        const int n_mlt_from_file = mlt_attributes.get<int>("Size");
-        AssertThrow(mlt_data[direction_id].size() == n_mlt_from_file,
-                    ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
-    }
-    //-------------------------------------------------------------------------
-    CartesianProductArray<Size, dim> mult(mlt_data);
-
-    return mult;
-}
-
-
-};
 
 
 
@@ -542,7 +510,7 @@ shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
-                ExcMessage("The NURBSSpace tag is not unique."));
+                ExcMessage("The BSplineSpace tag is not unique."));
 
     const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
 
