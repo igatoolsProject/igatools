@@ -64,7 +64,7 @@ count_xml_elements_same_tag(
 {
     Size counter = 0;
 
-    for (const auto & leaf : tree)
+    for (const auto &leaf : tree)
         if (boost::iequals(leaf.first,tag_name))
             counter++;
 
@@ -104,7 +104,7 @@ get_xml_element_vector(
     vector<boost::property_tree::ptree> element;
 
 //    std::cout << "tag_name= " << tag_name << std::endl ;
-    for (const auto & leaf : tree)
+    for (const auto &leaf : tree)
         if (boost::iequals(leaf.first,tag_name))
             element.push_back(leaf.second);
 
@@ -244,7 +244,7 @@ get_xml_input_file_format(const std::string &filename)
 
     const auto &xml_tree = get_xml_tree(filename);
 
-    for (const auto & leaf : xml_tree)
+    for (const auto &leaf : xml_tree)
     {
         if (boost::iequals(leaf.first,"XMLFile"))
         {
@@ -286,7 +286,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
     bool is_nurbs_mapping = false;
 
-    for (const auto & patch : xml_tree.get_child("XMLFile.Patch"))
+    for (const auto &patch : xml_tree.get_child("XMLFile.Patch"))
     {
         if (boost::iequals(patch.first,"<xmlattr>"))
         {
@@ -308,7 +308,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
             vector<Real> knots_unique_values_dir;
             vector<Index> multiplicities_dir;
-            for (const auto & knot : patch.second)
+            for (const auto &knot : patch.second)
             {
                 if (boost::iequals(knot.first,"<xmlattr>"))
                 {
@@ -329,7 +329,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> knt)
                         knots_unique_values_dir.push_back(knt);
 
-                    for (const auto & brk : knot.second)
+                    for (const auto &brk : knot.second)
                         if (boost::iequals(brk.first,"<xmlattr>"))
                         {
                             const Index n_brk = brk.second.get<Index>("Num");
@@ -345,7 +345,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> m)
                         multiplicities_dir.push_back(m);
 
-                    for (const auto & mlt : knot.second)
+                    for (const auto &mlt : knot.second)
                         if (boost::iequals(mlt.first,"<xmlattr>"))
                         {
                             const Index n_mlt = mlt.second.get<Index>("Num");
@@ -402,7 +402,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> v)
                         control_pts_coord_dir.push_back(v);
 
-                    for (const auto & coord : cp.second)
+                    for (const auto &coord : cp.second)
                         if (boost::iequals(coord.first,"<xmlattr>"))
                         {
                             const Index n_coord = coord.second.get<Index>("Num");
@@ -427,7 +427,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> w)
                         weights_vec.push_back(w);
 
-                    for (const auto & wght : cp.second)
+                    for (const auto &wght : cp.second)
                         if (boost::iequals(wght.first,"<xmlattr>"))
                         {
                             const Index n_weights = wght.second.get<Index>("Num");
@@ -441,7 +441,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                                 ExcDimensionMismatch(weights_vec.size(),weights.flat_size()));
 
                     Index flat_id = 0;
-                    for (auto & w : weights)
+                    for (auto &w : weights)
                         w =  weights_vec[flat_id++];
                 }
                 //*/
@@ -556,7 +556,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     typename space_t::template ComponentTable<Multiplicity<dim>> multiplicities;
     typename space_t::DegreeTable degrees;
 
-    for (const auto & comp_element : scalar_component_vector)
+    for (const auto &comp_element : scalar_component_vector)
     {
         const auto &component_attributes = get_xml_element_attributes(comp_element);
         const int comp_id = component_attributes.get<int>("Id");
@@ -663,7 +663,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     typename space_t::DegreeTable degrees;
     StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> weights;
 
-    for (const auto & comp_element : scalar_component_vector)
+    for (const auto &comp_element : scalar_component_vector)
     {
         const auto &component_attributes = get_xml_element_attributes(comp_element);
         const int comp_id = component_attributes.get<int>("Id");
