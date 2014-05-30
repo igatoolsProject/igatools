@@ -510,7 +510,7 @@ shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
-                ExcMessage("The NURBSSpace tag is not unique."));
+                ExcMessage("The BSplineSpace tag is not unique."));
 
     const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
 
