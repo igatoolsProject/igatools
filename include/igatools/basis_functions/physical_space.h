@@ -88,7 +88,8 @@ public:
 
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward);
+                  std::shared_ptr<PushForwardType> push_forward,
+                  const Index id = 0);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
@@ -96,7 +97,8 @@ public:
 
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<PushForwardType> push_forward);
+        std::shared_ptr<PushForwardType> push_forward,
+        const Index id = 0);
 
     /**
      * Total number of dofs of the space.
@@ -132,6 +134,8 @@ public:
     void print_memory_info(LogStream &out) const;
 
 
+    Index get_id() const;
+
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
@@ -154,6 +158,7 @@ private:
      */
     std::vector<int> map_elements_;
 
+    Index id_;
 
     friend ElementAccessor;
 };

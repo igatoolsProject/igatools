@@ -150,7 +150,7 @@ perform_ref_spaces_add_dofs_offset()
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
-add_patch(std::shared_ptr<const PhysicalSpace> patch)
+add_patch(PatchPtr patch)
 {
     Assert(is_arrangement_open_,ExcInvalidState());
 
@@ -235,6 +235,44 @@ print_info(LogStream &out) const
 
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
     out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
+
+
+    //---------------------------------------------------------------------------
+    out << "Patches in the graph:" << endl;
+    using vertex_iterator = typename boost::graph_traits<Graph>::vertex_iterator;
+    vertex_iterator vertex;
+    vertex_iterator vertex_end;
+    boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
+
+    out.push("\t");
+    for (; vertex != vertex_end ; ++vertex)
+    {
+        //printing the id of the patch represented by the vertex
+        out << "Patch ID = " << multipatch_graph_[*vertex]->get_id() << endl;
+    }
+    out.pop();
+    //---------------------------------------------------------------------------
+
+
+
+    //---------------------------------------------------------------------------
+    out << "Interfaces in the graph:" << endl;
+    using edge_iterator = typename boost::graph_traits<Graph>::edge_iterator;
+    edge_iterator edge;
+    edge_iterator edge_end;
+    boost::tie(edge, edge_end) = boost::edges(multipatch_graph_);
+
+    out.push("\t");
+    for (; edge != edge_end ; ++edge)
+    {
+        //printing the information about the interface represented by the edge
+        multipatch_graph_[*edge]->print_info(out);
+        out << endl;
+    }
+    out.pop();
+    //---------------------------------------------------------------------------
+
+
 
     out.pop();
 }
@@ -332,13 +370,13 @@ print_info(LogStream &out) const
 
     out << "Patch 0 infos:" << endl;
     out.push(tab);
-    out << "shared_ptr = " << patch_and_side_[0].first << endl;
-    out << "Side id = " << patch_and_side_[0].second << endl;
+    out << "Patch id = " << patch_and_side_[0].first->get_id() << endl;
+    out << "Side  id = " << patch_and_side_[0].second << endl;
     out.pop();
 
     out << "Patch 1 infos:" << endl;
     out.push(tab);
-    out << "shared_ptr = " << patch_and_side_[1].first << endl;
+    out << "Patch id = " << patch_and_side_[1].first->get_id() << endl;
     out << "Side id = " << patch_and_side_[1].second << endl;
     out.pop();
 

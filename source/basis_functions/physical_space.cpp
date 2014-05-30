@@ -30,11 +30,13 @@ template <class RefSpace_, class PushForward_>
 PhysicalSpace<RefSpace_,PushForward_>::
 PhysicalSpace(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward)
+    shared_ptr<PushForwardType> push_forward,
+    const Index id)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
-    push_forward_(push_forward)
+    push_forward_(push_forward),
+    id_(id)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
@@ -59,7 +61,9 @@ clone() const -> shared_ptr<self_t>
     return shared_ptr<self_t>(
         new self_t(
             shared_ptr<RefSpace>(new RefSpace(*ref_space_)),
-            shared_ptr<PushForwardType>(new PushForwardType(*push_forward_))));
+            shared_ptr<PushForwardType>(new PushForwardType(*push_forward_)),
+            id_)
+    );
 };
 
 
@@ -69,11 +73,12 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 create(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward) -> shared_ptr<self_t>
+    shared_ptr<PushForwardType> push_forward,
+    const Index id) -> shared_ptr<self_t>
 {
     Assert(ref_space != nullptr, ExcNullPtr());
     Assert(push_forward != nullptr, ExcNullPtr());
-    return shared_ptr<self_t>(new self_t(ref_space,push_forward));
+    return shared_ptr<self_t>(new self_t(ref_space,push_forward,id));
 }
 
 
@@ -165,6 +170,14 @@ get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
     return ref_space_->get_element_global_dofs();
 }
 
+
+template <class RefSpace_, class PushForward_>
+Index
+PhysicalSpace<RefSpace_,PushForward_>::
+get_id() const
+{
+    return id_;
+}
 
 template <class RefSpace_, class PushForward_>
 void

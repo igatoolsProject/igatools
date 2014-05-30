@@ -31,6 +31,48 @@
 
 IGA_NAMESPACE_OPEN
 
+
+#if 0
+template <class PhysicalSpace>
+class PatchSpace : public PhysicalSpace
+{
+public:
+    /** @names Type aliases used within this class */
+    ///@{
+    /** Type alias for the reference space. */
+    using RefSpace = typename PhysicalSpace::RefSpace;
+
+    /** Type alias for the push-forward. */
+    using PushForward = typename PhysicalSpace::PushForwardType;
+
+    /** Type alias for the mapping. */
+    using Map = typename PushForward::Map;
+
+    /** Dimensionality of the reference domain. */
+    static const int dim = PhysicalSpace::dim;
+    ///@}
+
+    using PhysicalSpace::PhysicalSpace;
+
+
+    int get_id() const
+    {
+        return id_;
+    }
+
+    void set_id(const int id)
+    {
+        id_ = id;
+    }
+
+private:
+
+    int id_;
+};
+#endif
+
+
+
 /**
  * @brief This class represents a space built upon several patches, where each patch is a different
  * instance of a given PhysicalSpace type.
@@ -73,8 +115,11 @@ public:
     /** Type alias for the mapping. */
     using Map = typename PushForward::Map;
 
+    /** Type alias for a patch . */
+    using Patch = PhysicalSpace;
+
     /** Type alias for the pointer to a patch . */
-    using PatchPtr = std::shared_ptr<const PhysicalSpace>;
+    using PatchPtr = std::shared_ptr<const Patch>;
 
     /** Dimensionality of the reference domain. */
     static const int dim = PhysicalSpace::dim;
@@ -132,7 +177,7 @@ public:
      * @pre Before calling this function, the member variable is_arrangement_open_ must be set to TRUE
      * (for example using the function arrangement_open()).
      */
-    void add_patch(std::shared_ptr<const PhysicalSpace> patch);
+    void add_patch(PatchPtr patch);
 
     /**
      * Adds an interface between two different patches.
