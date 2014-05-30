@@ -266,8 +266,18 @@ PoissonProblem(const int n_knots, const int deg)
     start_poisson_(Clock::now()),
     deg_(deg),
     elem_quad(QGauss<dim>(deg+1)),
-    face_quad(QGauss<dim-1>(deg+1))
+    face_quad(QGauss<dim-1>(deg+1)),
+    elapsed_time_total_(0),
+    elapsed_time_eval_basis_(0),
+    elapsed_time_eval_mass_matrix_(0),
+    elapsed_time_eval_stiffness_matrix_(0),
+    elapsed_time_eval_rhs_(0),
+    elapsed_time_assemble_stiffness_matrix_(0),
+    elapsed_time_fill_complete_(0),
+    elapsed_time_solve_linear_system_(0)
 {
+
+
     LogStream out;
     out << "PoissonProblem constructor -- begin" << endl;
 
@@ -353,8 +363,6 @@ assemble()
 
     const auto &elliptic_operators = static_cast<const DerivedClass &>(*this).get_elliptic_operators();
 
-//    EllipticOperatorsStdIntegration<SpaceTest,SpaceTrial> elliptic_operators_std;
-
     for (; elem != elem_end; ++elem)
     {
 
@@ -381,7 +389,7 @@ assemble()
         //----------------------------------------------------
         // multiplicative coefficients of the mass matrix term.
         ValueVector<Real> c_mass(n_quad_points.flat_size());
-        for (auto & c : c_mass)
+        for (auto &c : c_mass)
             c = 1.0;
         //----------------------------------------------------
 
@@ -403,7 +411,7 @@ assemble()
         //----------------------------------------------------
         // multiplicative coefficients of the stiffness matrix term.
         vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
-        for (auto & c : c_stiffness)
+        for (auto &c : c_stiffness)
             for (Index i = 0 ; i < dim ; ++i)
                 c[i][i] = 1.0;
         //----------------------------------------------------
@@ -506,7 +514,7 @@ solve()
     const Real tol = 1.0e-10;
     const Size max_iters = 10000000;
     LinearSolverType solver(
-        LinearSolverType::SolverType::GMRES,
+        LinearSolverType::SolverType::CG,
         LinearSolverType::PreconditionerType::ILU,
         tol,
         max_iters);
