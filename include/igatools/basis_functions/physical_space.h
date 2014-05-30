@@ -153,11 +153,6 @@ private:
 
     std::shared_ptr<PushForwardType> push_forward_;
 
-    /**
-     * Map between the element accessors defined by the reference space and the element accessors defined by the push-forward.
-     */
-    std::vector<int> map_elements_;
-
     Index id_;
 
     friend ElementAccessor;
