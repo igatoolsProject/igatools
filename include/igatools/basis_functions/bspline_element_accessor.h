@@ -497,7 +497,9 @@ private:
      * rectangular matrix to store for each
      * univariate basis function
      * its values or derivatives at the quadrature points
-     * it is a (p+1) x n_qp matrix
+     * it is a (p+1) x n_qp matrix.
+     * We use this type as it is consistent with the bernstein
+     * extraction operator.
      */
     typedef boost::numeric::ublas::matrix<Real> matrix_t;
 
@@ -506,11 +508,12 @@ private:
      * of a 1D Bspline functions, i.e BasisValues1d[k]
      * stores the k-th derivative
      */
-    typedef std::vector<matrix_t> BasisValues1d;
+    using BasisValues1d = std::vector<matrix_t>;
 
 protected:
     /**
-     * Base class for the cache of the element values and for the cache of the face values.
+     * Base class for the cache of the element values and for the cache of the
+     * face values.
      */
     class ValuesCache : public CacheStatus
     {
@@ -535,6 +538,7 @@ protected:
         /** Returns the divergences. */
         const ValueTable<Div> &get_divergences() const;
 
+        // TODO (pauletti, May 29, 2014): this should be private
 
         using univariate_values_t = StaticMultiArray<std::array<const BasisValues1d *,dim>,range,rank>;
 
@@ -564,6 +568,7 @@ protected:
         ValueTable<Derivative<1>> D1phi_hat_;
         ValueTable<Derivative<2>> D2phi_hat_;
 
+        // TODO (pauletti, May 29, 2014): is there any reason for div to have be chached?
         ValueTable<Div> div_phi_hat_;
 
     public:

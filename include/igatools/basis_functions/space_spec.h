@@ -173,15 +173,21 @@ public:
     {
         return elem_n_basis_;
     }
-//    /**
-//     * Returns the number of dofs per element.
-//     */
-//    Size get_num_basis_per_element() const;
-//
-//    /**
-//     *  Return the number of dofs per element for the i-th space component.
-//     */
-//    Size get_num_basis_per_element(int i) const;
+    /**
+     * Returns the number of dofs per element.
+     */
+    Size get_num_basis_per_element() const
+    {
+        return elem_n_basis_.total_dimension;
+    }
+
+    /**
+     *  Return the number of dofs per element for the i-th space component.
+     */
+    Size get_num_basis_per_element(int i) const
+    {
+        return elem_n_basis_.comp_dimension(i);
+    }
 
     ///@}
 

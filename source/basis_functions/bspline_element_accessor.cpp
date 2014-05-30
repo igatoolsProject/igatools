@@ -296,7 +296,7 @@ int
 BSplineElementAccessor<dim, range, rank>::
 get_num_basis() const
 {
-    return (this->space_->get_num_basis_per_element());
+    return space_->get_num_basis_per_element();
 }
 
 
@@ -305,12 +305,7 @@ int
 BSplineElementAccessor<dim, range, rank>::
 get_num_basis(const int i) const
 {
-    const auto &degree_comp = this->space_->get_degree()(i);
-    int component_num_basis = 1;
-    for (int j = 0; j < dim; ++j)
-        component_num_basis *= degree_comp[j] + 1;
-
-    return component_num_basis;
+    return space_->get_num_basis_per_element(i);
 }
 
 
@@ -320,7 +315,7 @@ vector<Index> const &
 BSplineElementAccessor<dim, range, rank>::
 get_local_to_global() const
 {
-    return space_->element_global_dofs_[this->get_flat_index()];
+    return space_->basis_indices_.get_loc_to_global_indices(this->get_tensor_index());
 }
 
 
@@ -836,6 +831,7 @@ fill_values()
     CartesianGridElementAccessor<dim>::fill_values();
 
     const auto  &element_tensor_id = this->get_tensor_index();
+
     StaticMultiArray<array<const BasisValues1d *, dim>, range, rank>
     elem_univariate_values;
     for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
@@ -865,9 +861,11 @@ fill_face_values(const Index face_id)
     const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
 
     const auto &element_tensor_id = this->get_tensor_index();
-    StaticMultiArray<array<const BasisValues1d *,dim>,range,rank>
-    elem_univariate_values;
-    for (int iComp=0; iComp<space_->num_active_components_; ++iComp)
+
+    typename Space_t::BaseSpace::template
+    ComponentContainer<array<const BasisValues1d, dim>> elem_univariate_values;
+
+    for (auto iComp : elem_univariate_values.get_active_components())
     {
         for (int i = 0; i < dim; ++i)
         {
