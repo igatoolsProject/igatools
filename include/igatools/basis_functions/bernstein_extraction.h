@@ -65,6 +65,10 @@ public:
      */
     void print_info(LogStream &out) const;
 
+    const std::vector<matrix> &get_operator(const int comp, const int  dir) const
+    {
+        return ext_operators(comp).get_data_direction(dir);
+    }
 private:
     std::vector<matrix>
     fill_extraction(const int m,

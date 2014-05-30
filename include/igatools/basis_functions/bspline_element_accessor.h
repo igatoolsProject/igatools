@@ -294,7 +294,7 @@ private:
          */
         ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
 
-        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+       // ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
 
         int max_deriv_order_ = 0;
 
