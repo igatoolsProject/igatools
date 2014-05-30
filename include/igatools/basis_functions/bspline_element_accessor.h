@@ -226,27 +226,23 @@ private:
 protected:
 
     /**
-
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename Space::BaseSpace::template ComponentContainer<T>;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentDirectionTable = ComponentTable<CartesianProductArray<T,dim> >;
-
-
+    using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim>>;
 
 private:
 
-    ComponentTable<
-    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+    ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
+    using univariate_values_t = ComponentContainer <std::array<const BasisValues1d *,dim>>;
 
     /**
      * Fills the cache (accordingly with the flags_handler status)
@@ -278,7 +274,7 @@ private:
      * an exception will be raised.
      */
     template <int deriv_order>
-    void evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
+    void evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValues1d *, dim> > &elem_values,
                                       const ValuesCache &cache,
                                       ValueTable<
                                       Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
@@ -302,6 +298,7 @@ private:
 
         int max_deriv_order_ = 0;
 
+        // TODO (pauletti, May 30, 2014): the type for intervals_id should be CartesianProductArray
     protected:
         void reset(const Space &space,
                    const Quadrature<dim> &quad,
@@ -378,10 +375,10 @@ private:
 
 protected:
 
-
+#if 0
     /** Returns the Bezier extraction operator relative to the current element. */
     ComponentTable< std::array< const DenseMatrix *,dim> > get_bezier_extraction_operator() const;
-
+#endif
 
 private:
 
@@ -392,15 +389,10 @@ private:
 
 
 protected:
-    const ComponentTable<
-    DynamicMultiArray<
-    std::shared_ptr<
-    BSplineElementScalarEvaluator<dim>>,dim> > &get_scalar_evaluators() const;
+    const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
+    &get_scalar_evaluators() const;
 
 };
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

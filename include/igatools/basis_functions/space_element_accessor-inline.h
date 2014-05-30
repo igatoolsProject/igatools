@@ -791,12 +791,7 @@ int
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_num_basis(const int i) const
 {
-    const auto &degree_comp = this->space_->get_degree()(i);
-    int component_num_basis = 1;
-    for (int j = 0; j < dim; ++j)
-        component_num_basis *= degree_comp[j] + 1;
-
-    return component_num_basis;
+    return space_->get_num_basis_per_element(i);
 }
 
 
@@ -806,7 +801,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_local_to_global() const -> std::vector<Index> const &
 {
-    return space_->get_element_global_dofs()[this->get_flat_index()];
+    return space_->basis_indices_.get_loc_to_global_indices(this->get_tensor_index());
 }
 
 

@@ -56,7 +56,7 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
             auto origin = accum_mult(comp).cartesian_product(index);
             auto increment = n_elem_basis(comp);
 
-            auto comp_dofs = index_distribution_(comp).get_flat_view(origin, increment);
+            auto comp_dofs = index_distribution_(comp).get_sub_array(origin, increment).get_data();
             element_loc_to_global_(index).insert
                     (basis, comp_dofs.begin(), comp_dofs.end());
             for (auto x : element_loc_to_global_)

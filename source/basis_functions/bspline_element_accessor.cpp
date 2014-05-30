@@ -286,39 +286,6 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
 
 
 
-
-//TODO: inline this
-template <int dim, int range, int rank>
-int
-BSplineElementAccessor<dim, range, rank>::
-get_num_basis() const
-{
-    return space_->get_num_basis_per_element();
-}
-
-
-template <int dim, int range, int rank>
-int
-BSplineElementAccessor<dim, range, rank>::
-get_num_basis(const int i) const
-{
-    return space_->get_num_basis_per_element(i);
-}
-
-
-
-template <int dim, int range, int rank>
-vector<Index> const &
-BSplineElementAccessor<dim, range, rank>::
-get_local_to_global() const
-{
-    return space_->basis_indices_.get_loc_to_global_indices(this->get_tensor_index());
-}
-
-
-
-
-
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
@@ -434,8 +401,8 @@ reset_univariate_cache(const Quadrature<dim> &quad, const int max_der)
 
 
 
-
-
+// TODO (pauletti, May 30, 2014): we may not need this
+#if 0
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
@@ -456,6 +423,8 @@ get_bezier_extraction_operator() const -> ComponentTable< std::array< const Dens
     return bezier_op;
 
 }
+#endif
+
 
 template < int dim, int range, int rank>
 void
@@ -805,7 +774,7 @@ fill_values(const TopologyId<dim> &topology_id)
     Assert(cache.is_initialized(), ExcNotInitialized());
 
     const auto &element_tensor_id = this->get_tensor_index();
-    ComponentTable<array<const BasisValues1d *, dim>> elem_univariate_values;
+    ComponentContainer<array<const BasisValues1d *, dim>> elem_univariate_values;
 
 
     CartesianGridElementAccessor<dim>::fill_values(topology_id);
@@ -867,7 +836,7 @@ template <int dim, int range, int rank>
 template < int deriv_order >
 void
 BSplineElementAccessor<dim, range, rank>::
-evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
+evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValues1d *, dim> > &elem_values,
                              const ValuesCache &cache,
                              ValueTable< Conditional<(deriv_order==0),Value,Derivative<deriv_order> > >
                              &derivatives_phi_hat) const
@@ -1062,7 +1031,7 @@ template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
 get_scalar_evaluators() const ->
-const ComponentTable<
+const ComponentContainer<
 DynamicMultiArray<
 shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> &
 {
