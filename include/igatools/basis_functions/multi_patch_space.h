@@ -32,45 +32,6 @@
 IGA_NAMESPACE_OPEN
 
 
-#if 0
-template <class PhysicalSpace>
-class PatchSpace : public PhysicalSpace
-{
-public:
-    /** @names Type aliases used within this class */
-    ///@{
-    /** Type alias for the reference space. */
-    using RefSpace = typename PhysicalSpace::RefSpace;
-
-    /** Type alias for the push-forward. */
-    using PushForward = typename PhysicalSpace::PushForwardType;
-
-    /** Type alias for the mapping. */
-    using Map = typename PushForward::Map;
-
-    /** Dimensionality of the reference domain. */
-    static const int dim = PhysicalSpace::dim;
-    ///@}
-
-    using PhysicalSpace::PhysicalSpace;
-
-
-    int get_id() const
-    {
-        return id_;
-    }
-
-    void set_id(const int id)
-    {
-        id_ = id;
-    }
-
-private:
-
-    int id_;
-};
-#endif
-
 
 
 /**
