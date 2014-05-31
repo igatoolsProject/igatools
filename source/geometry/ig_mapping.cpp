@@ -77,7 +77,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     Assert(RefSpace::rank == 1, ExcDimensionMismatch(RefSpace::rank,1));
 
-
+#if 0
     //----------------------------------
     // if RefSpace is NURBSSpace
     // save the weights in order to be used in the h-refinement algorithm
@@ -131,6 +131,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
             &IgMapping<RefSpace>::refine_h_control_mesh,
             this,
             std::placeholders::_1,std::placeholders::_2));
+#endif
 }
 
 
@@ -469,7 +470,7 @@ set_control_points(const std::vector<Real> &control_points)
 
 
 
-
+#if 0
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
@@ -616,7 +617,7 @@ refine_h_control_mesh(
     //----------------------------------
 }
 
-
+#endif
 
 
 template<class RefSpace>
@@ -693,4 +694,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/geometry/ig_mapping.inst>
+#include <igatools/geometry/ig_mapping.inst>

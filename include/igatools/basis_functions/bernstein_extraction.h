@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 
 #include <igatools/basis_functions/space_spec.h>
-#include <boost/numeric/ublas/matrix.hpp>
+#include <igatools/linear_algebra/dense_matrix.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -41,7 +41,7 @@ template<int dim, int range = 1, int rank = 1>
 class BernsteinExtraction
 {
 public:
-    using matrix = typename boost::numeric::ublas::matrix<Real>;
+    using matrix = DenseMatrix;
     using Space = SplineSpace<dim, range, rank>;
     using DegreeTable = typename Space::DegreeTable;
     using KnotsTable = typename Space::KnotsTable;

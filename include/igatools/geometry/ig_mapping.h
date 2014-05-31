@@ -244,11 +244,12 @@ private:
      * @ingroup h_refinement
      *
      */
+#if 0
     void refine_h_control_mesh(
         const std::array<bool,dim> &refinement_directions,
         const typename base_t::GridType &grid_old);
 
-
+#endif
     /**
      * Returns the control points that are active on the element represented by the cache.
      */
