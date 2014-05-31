@@ -693,4 +693,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/ig_mapping.inst>
+//#include <igatools/geometry/ig_mapping.inst>

@@ -84,7 +84,7 @@ public:
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename Space::template ComponentContainer<T>;
 
     ///@}
 
@@ -535,13 +535,13 @@ protected:
 
 
     /** Number of scalar basis functions along each direction, for all space components. */
-    ComponentTable< TensorSize<dim> > n_basis_direction_;
+   // const typename Space::SpaceDimensionTable &n_basis_direction_;
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
-    ComponentTable<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
+    ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
 
     /** Basis function ID offset between the different components. */
-    ComponentTable<int> comp_offset_;
+    ComponentContainer<int> comp_offset_;
 
 
 
@@ -556,7 +556,7 @@ protected:
          * at quadrature points
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim> &quad);
 
         /** Returns the values. */
@@ -599,7 +599,7 @@ protected:
          * at quadrature points
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim> &quad);
 
     };
@@ -617,7 +617,7 @@ protected:
          */
         void reset(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim> &quad);
 
         /**
@@ -626,7 +626,7 @@ protected:
          */
         void reset(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim-1> &quad);
 
     };

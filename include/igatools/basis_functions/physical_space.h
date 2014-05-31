@@ -68,10 +68,10 @@ public:
     static constexpr int n_components = constexpr_pow(range, rank);
 
 
-    /** Container indexed by the components of the space */
     template< class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
 
+    using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 public:
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
@@ -108,6 +108,15 @@ public:
      */
     int get_num_basis_per_element() const;
 
+    const SpaceDimensionTable get_num_basis_per_element_table() const
+    {
+    	return ref_space_->get_num_basis_per_element_table();
+    }
+
+    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    {
+    	return ref_space_->get_loc_to_global(j);
+    }
     /**
      * Returns a element iterator to the first element of the patch.
      */
@@ -131,7 +140,7 @@ public:
 
     void print_memory_info(LogStream &out) const;
 
-
+#if 0
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
@@ -143,6 +152,7 @@ public:
      * @todo Missing documentation
      */
     const std::vector<std::vector<Index>> &get_element_global_dofs() const;
+#endif
 
 private:
     std::shared_ptr<RefSpace> ref_space_;

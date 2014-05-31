@@ -266,14 +266,25 @@ public:
          */
         const T &operator()(const Index i) const;
 
-        const std::vector<Index> &get_active_components()
+        const Index active(const Index i) const
+        {
+        	return comp_map_[i];
+        }
+
+        const std::vector<Index> &get_active_components() const
         {return active_components_;}
+
+        const std::vector<Index> &get_inactive_components() const
+        {return inactive_components_;}
     private:
         /** For each component return de index of the active component */
         std::array <Index, n_entries> comp_map_;
 
         /** list of the active components */
         std::vector<Index> active_components_;
+
+        /** list of the inactive components */
+        std::vector<Index> inactive_components_;
     };
 
 };
@@ -297,8 +308,15 @@ ComponentContainer(const ComponentMap &comp_map)
     :
     base_t(),
     comp_map_(comp_map),
-    active_components_(unique_container<Index, n_entries>(comp_map))
-{}
+    active_components_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_(n_entries)
+{
+	auto all = iota_array<Index, n_entries>();
+	auto it=std::set_difference (all.begin(), all.end(), active_components_.begin(),
+			active_components_.end(), inactive_components_.begin());
+
+	inactive_components_.resize(it-inactive_components_.begin());
+}
 
 
 

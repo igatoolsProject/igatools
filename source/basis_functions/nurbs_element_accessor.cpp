@@ -169,7 +169,7 @@ evaluate_nurbs_values(
         const auto &bspline_values = bspline_cache.get_values();
         //----------------------------------------------------------------------------------------------
 
-        if ((this->space_)->is_range_homogeneous() == false)
+    //    if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -219,6 +219,7 @@ evaluate_nurbs_values(
             } // end iComp loop
             //------------------------------------------------------------------------------------------
         }
+#if 0
         else // space_->homogeneous_range_ == true
         {
             //------------------------------------------------------------------------------------------
@@ -271,6 +272,7 @@ evaluate_nurbs_values(
                 }
             }
         }
+#endif
     }
 }
 
@@ -282,7 +284,8 @@ evaluate_nurbs_gradients(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const
 {
-    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
+#if 0
+	Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D1_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -513,6 +516,7 @@ evaluate_nurbs_gradients(
         }
 
     }
+#endif
 }
 
 
@@ -523,6 +527,7 @@ evaluate_nurbs_hessians(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const
 {
+#if 0
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D2_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D2_phi_hat.get_num_functions(), this->get_num_basis()));
@@ -597,7 +602,7 @@ evaluate_nurbs_hessians(
         //----------------------------------------------------------------------------------------------
 
 
-        if ((this->space_)->is_range_homogeneous() == false)
+     //   if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -714,6 +719,7 @@ evaluate_nurbs_hessians(
             } // end iComp loop
             //------------------------------------------------------------------------------------------
         } // space_->homogeneous_range_ == false
+#if 0
         else // space_->homogeneous_range_ == true
         {
             const int num_basis_comp = this->get_num_basis(0);
@@ -829,7 +835,9 @@ evaluate_nurbs_hessians(
             }
             //------------------------------------------------------------------------------------------
         } // space_->homogeneous_range_ == true
+#endif
     }
+#endif
 }
 
 
@@ -840,6 +848,7 @@ NURBSElementAccessor< dim, range, rank >::
 evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
+
     Assert(deriv_order >= 0 && deriv_order <= 2, ExcIndexRange(deriv_order,0,3));
 
     const int n_points = points.size();
@@ -848,7 +857,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     const int n_basis = this->get_num_basis();
 
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > > result(n_basis,n_points);
-
+#if 0
     ComponentTable<int> n_basis_component;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
         n_basis_component(comp) = this->get_num_basis(comp);
@@ -1012,7 +1021,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         } // end loop comp
 
     } // end else if (deriv_order == 2)
-
+#endif
     return result;
 }
 

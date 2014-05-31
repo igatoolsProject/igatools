@@ -41,7 +41,7 @@ using std::map;
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 namespace
 {
 template <class RefSpace>
@@ -547,7 +547,7 @@ void reference_to_element(
 
 
 };
-
+#endif
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/space_tools.inst>
+//#include <igatools/basis_functions/space_tools.inst>

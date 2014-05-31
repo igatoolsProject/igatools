@@ -37,32 +37,24 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     :
     CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
     space_(space)
-{
+  {
     Assert(space_ != nullptr, ExcNullPtr());
 
-
-    //--------------------------------------------------------------------------
     using Indexer = CartesianProductIndexer<dim>;
-
-    for (int comp_id = 0; comp_id < Space::n_components; ++comp_id)
+    auto n_basis = space->get_num_basis_per_element_table();
+    for (int comp_id : basis_functions_indexer_.get_active_components())
     {
-        for (int j=0; j<dim; ++j)
-            n_basis_direction_(comp_id)[j] = this->space_->get_degree()(comp_id)[j]+1;
-
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) = std::shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
+        basis_functions_indexer_(comp_id) =
+        		std::shared_ptr<Indexer>(new Indexer(n_basis(comp_id)));
     }
-    //--------------------------------------------------------------------------
 
-
-
-    //--------------------------------------------------------------------------
     comp_offset_(0) = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
-    //--------------------------------------------------------------------------
-};
+        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis.comp_dimension(comp_id);
+
+}
 
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -443,7 +435,7 @@ void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim> &quad)
 {
     quad_ = quad;
@@ -540,7 +532,7 @@ void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ElementValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim> &quad)
 {
     ValuesCache::reset(flags_handler, n_basis_direction,quad);
@@ -553,7 +545,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim> &quad1)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
@@ -572,7 +564,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim-1> &quad)
 {
     Assert(false,ExcNotImplemented()) ;
@@ -597,15 +589,16 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
            !face_flags_handler.fill_none(),
            ExcMessage("Nothing to reset"));
 
+    auto n_basis = space_->get_num_basis_per_element_table();
     if (!elem_flags_handler.fill_none())
-        this->elem_values_.reset(elem_flags_handler, this->n_basis_direction_, quad);
+        this->elem_values_.reset(elem_flags_handler, n_basis, quad);
 
 
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0 ;
         for (auto& face_value : this->face_values_)
-            face_value.reset(face_id++, face_flags_handler, this->n_basis_direction_, quad);
+            face_value.reset(face_id++, face_flags_handler, n_basis, quad);
     }
     //--------------------------------------------------------------------------
 }
@@ -801,7 +794,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_local_to_global() const -> std::vector<Index> const &
 {
-    return space_->basis_indices_.get_loc_to_global_indices(this->get_tensor_index());
+    return space_->get_loc_to_global(this->get_tensor_index());
 }
 
 

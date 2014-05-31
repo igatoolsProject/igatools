@@ -34,7 +34,7 @@ using std::placeholders::_2;
 IGA_NAMESPACE_OPEN
 
 //TODO(pauletti, Jan 19, 2014): remove the is_bspline from this class
-
+#if 0
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
@@ -44,7 +44,6 @@ create_refinement_connection()
     this->connect_refinement_h_function(
         bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
 }
-
 
 
 template <int dim_, int range_, int rank_>
@@ -154,23 +153,23 @@ create(shared_ptr< GridType > knots,
 {
     return (shared_ptr<self_t>(new self_t(knots, mult_vector, degree)));
 }
-
+#endif
 
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(
-    std::shared_ptr< GridType > knots,
-    const MultiplicityTable &mult_vector,
-    const DegreeTable &degree,
-    const WeightsTable &weights)
-    :
+NURBSSpace(const DegreeTable &deg,
+		std::shared_ptr<GridType> knots,
+		std::shared_ptr<const MultiplicityTable> interior_mult,
+		const EndBehaviourTable &ends,
+		const WeightsTable &weights)
+   :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, mult_vector)),
+    sp_space_(spline_space_t::create(deg, knots, interior_mult, ends)),
     weights_(weights)
 {
 
-    create_refinement_connection();
+    //create_refinement_connection();
     perform_post_construction_checks();
 }
 
@@ -179,12 +178,13 @@ NURBSSpace(
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(std::shared_ptr< GridType > knots,
-       const MultiplicityTable &mult_vector,
-       const DegreeTable &degree,
-       const WeightsTable &weights) -> shared_ptr<self_t>
+create(const DegreeTable &deg,
+		std::shared_ptr<GridType> knots,
+		std::shared_ptr<const MultiplicityTable> interior_mult,
+		const EndBehaviourTable &ends,
+		const WeightsTable &weights) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots, mult_vector, degree, weights));
+    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends, weights));
 }
 
 
@@ -264,7 +264,7 @@ reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> &we
 }
 
 
-
+#if 0
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
@@ -378,7 +378,7 @@ refine_h_weights(
 
     this->perform_post_construction_checks();
 }
-
+#endif
 
 template <int dim_, int range_, int rank_>
 void

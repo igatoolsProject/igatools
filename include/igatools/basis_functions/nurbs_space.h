@@ -78,19 +78,22 @@ public:
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
 public:
-    /** Container indexed by the components of the space */
+//    /** Container indexed by the components of the space */
     template< class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename spline_space_t::template ComponentContainer<T>;
 
     using DegreeTable = typename spline_space_t::DegreeTable;
 
     using MultiplicityTable = typename spline_space_t::MultiplicityTable;
+    using EndBehaviourTable = typename spline_space_t::EndBehaviourTable;
+    using SpaceDimensionTable = typename spline_space_t::SpaceDimensionTable;
 
-    using WeightsTable = typename spline_space_t::template ComponentTable<DynamicMultiArray<Real,dim> >;
+    using WeightsTable = ComponentContainer<DynamicMultiArray<Real,dim> >;
 
 public:
     /** @name Constructor and destructor */
     ///@{
+#if 0
     /**
      * Constructs a maximum regularity NURBSSpace over CartesianGrid
      * @p knots for the given @p degree in all directions and homogeneous in all components.
@@ -142,38 +145,34 @@ public:
     create(std::shared_ptr< GridType > knots,
            const MultiplicityTable &mult_vector,
            const DegreeTable &degree);
-
+#endif
     /**
      * Construct a NURBSSpace over the CartesianGrid @p knots with
      * the given multiplicity vector @p mult_vector for each component
      * and for the given @p degree for each direction and for each component.
      */
-    explicit NURBSSpace(std::shared_ptr< GridType > knots,
-                        const MultiplicityTable &mult_vector,
-                        const DegreeTable &degree,
-                        const WeightsTable &weights);
+    explicit  NURBSSpace(const DegreeTable &deg,
+    		std::shared_ptr<GridType> knots,
+    		std::shared_ptr<const MultiplicityTable> interior_mult,
+    		const EndBehaviourTable &ends,
+    		const WeightsTable &weights);
+
 
     /**
-     * Returns a shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
-     * the given multiplicity vector @p mult_vector for each component
-     * and for the given @p degree for each direction and for each component.
+     * Smart pointer create construction technique, see more detail
+     * in the corresponding wrapped constructor before.
      */
-    static std::shared_ptr< self_t >
-    create(std::shared_ptr< GridType > knots,
-           const MultiplicityTable &mult_vector,
-           const DegreeTable &degree,
-           const WeightsTable &weights);
+    static std::shared_ptr<self_t>
+    create(const DegreeTable &deg,
+    		std::shared_ptr<GridType> knots,
+    		std::shared_ptr<const MultiplicityTable> interior_mult,
+    		const EndBehaviourTable &ends = EndBehaviourTable(),
+    		const WeightsTable &weights = WeightsTable());
 
     /** Destructor */
     ~NURBSSpace() = default;
 
     ///@}
-
-    /**
-     * Returns true if all component belong to the same scalar valued
-     * space.
-     */
-    // bool is_range_homogeneous() const;
 
     /** @name Getting information about the space */
     ///@{
@@ -181,10 +180,12 @@ public:
      * Returns true if all component belong to the same scalar valued
      * space.
      */
+#if 0
     bool is_range_homogeneous() const
     {
         return sp_space_->is_range_homogeneous();
     }
+#endif
     /**
      * Total number of dofs (i.e number of basis functions aka dimensionality)
      * of the space.
@@ -214,6 +215,11 @@ public:
     {
         return sp_space_->get_num_basis_per_element();
     }
+
+    const SpaceDimensionTable get_num_basis_per_element_table() const
+    {
+    	return sp_space_->get_num_basis_per_element_table();
+    }
     /**
      *  Return the number of dofs per element for the i-th space component.
      */
@@ -230,6 +236,11 @@ public:
     {
         return sp_space_->get_degree();
     }
+
+    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    {
+    	return sp_space_->get_loc_to_global(j);
+    }
     ///@}
 
     /** @name Getting the space data */
@@ -237,11 +248,13 @@ public:
     /**
      * Return the knots with repetitions, in each direction, for each component of the space.
      */
+#if 0
     const typename spline_space_t::template ComponentTable<CartesianProductArray<Real,dim> > &
     get_knots_with_repetitions() const
     {
         return sp_space_->get_knots_with_repetitions();
     }
+#endif
     ///@}
 
 
@@ -249,7 +262,7 @@ public:
     {
         return sp_space_;
     }
-
+#if 0
     /**
      * Returns a reference to the dense multi array storing the global dofs.
      * Each element has a statically defined zone to read their dofs from,
@@ -259,6 +272,7 @@ public:
     {
         return sp_space_->get_index_space();
     }
+
 
     /**
      * Transforms basis flat index of the component comp to a basis
@@ -279,7 +293,7 @@ public:
     {
         return sp_space_->tensor_to_flat(tensor_index, comp);
     }
-
+#endif
     /** Return the push forward (non-const version). */
     std::shared_ptr<PushForwardType> get_push_forward()
     {
@@ -298,6 +312,7 @@ public:
         return this->shared_from_this();
     }
 
+#if 0
     /**
      * Return the knot multiplicities for each component of the space.
      */
@@ -306,12 +321,13 @@ public:
     {
         return sp_space_->get_multiplicities();
     }
-
-
-    DegreeTable get_num_basis_table() const
+#endif
+#if 0
+    const SpaceDimensionTable &get_num_basis_table() const
     {
         return sp_space_->get_num_basis_table();
     }
+
 
 
     /**
@@ -321,7 +337,7 @@ public:
     {
         return sp_space_->get_element_global_dofs();
     }
-
+#endif
 
     /**
     * Returns a element iterator to the first element of the patch
@@ -362,6 +378,7 @@ private:
      */
     StaticMultiArray<DynamicMultiArray<iga::Real,dim>,range,rank> weights_;
 
+#if 0
     /**
      * Refines the NURBSSpace after the uniform refinement of the BSplineSpace.
      *
@@ -382,7 +399,7 @@ private:
      * Create a signal and a connection for the refinement.
      */
     void create_refinement_connection();
-
+#endif
     friend ElementAccessor;
 
     /**

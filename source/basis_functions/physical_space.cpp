@@ -148,6 +148,7 @@ get_reference_space() const -> shared_ptr<const RefSpace>
     return shared_ptr<const RefSpace>(ref_space_);
 }
 
+#if 0
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
@@ -164,7 +165,7 @@ get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
 {
     return ref_space_->get_element_global_dofs();
 }
-
+#endif
 
 template <class RefSpace_, class PushForward_>
 void

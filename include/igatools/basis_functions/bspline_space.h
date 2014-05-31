@@ -137,8 +137,8 @@ public:
     using typename BaseSpace::DegreeTable;
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
-
     using typename BaseSpace::InteriorReg;
+    using typename BaseSpace::SpaceDimensionTable;
 
     enum class EndBehaviour
     {
@@ -243,7 +243,10 @@ public:
 
  //   bool is_range_homogeneous() const;
 
-
+    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    {
+    	return basis_indices_.get_loc_to_global_indices(j);
+    }
 
     std::shared_ptr<const self_t >
     get_reference_space() const;
