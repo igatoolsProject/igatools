@@ -92,22 +92,11 @@ reshape(const TensorSize<rank> &new_sizes)
 template<class T, int rank>
 DynamicMultiArray<T,rank>
 DynamicMultiArray<T,rank>::
-get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &end) const
+get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) const
 {
-    TensorIndex<rank> inc;
-    TensorSize<rank> loc_size;
-    for (int i = 0 ; i < rank ; ++i)
-    {
-        inc[i] = end[i] - start[i];
-        loc_size(i) = inc[i];
-    }
+    DynamicMultiArray<T,rank> sub_array(inc);
 
-    DynamicMultiArray<T,rank> sub_array(loc_size);
-
-//    auto loc_weight = MultiArrayUtils<rank>::compute_weight(loc_size);
-    const Size size = loc_size.flat_size();
-    Assert(size == MultiArrayUtils<rank>::size(inc),
-           ExcDimensionMismatch(size,MultiArrayUtils<rank>::size(inc)));
+    const Size size = MultiArrayUtils<rank>::size(inc);
 
     for (int i = 0; i < size; ++i)
     {
@@ -118,7 +107,7 @@ get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &end) cons
 
     return sub_array;
 }
-//*/
+
 
 
 template<class T, int rank>

@@ -45,7 +45,7 @@ void do_test(const int p, const int num_knots)
     typedef PhysicalSpace<space_ref_t,push_forward_t> space_phys_t;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = space_ref_t::create(knots, p);
+    auto space = space_ref_t::create(p,knots);
     auto map = IdentityMapping<dim>::create(knots);
     auto push_forward = push_forward_t::create(map) ;
     auto phys_space = space_phys_t::create(space, push_forward) ;

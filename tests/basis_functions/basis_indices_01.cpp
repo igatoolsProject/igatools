@@ -58,7 +58,6 @@ int main()
     {
         const int dim=2;
         using SplineSpace = SplineSpace<dim>;
-        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
         typename SplineSpace::DegreeTable deg{{1,2}};
 

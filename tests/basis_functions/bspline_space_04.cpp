@@ -33,7 +33,7 @@ template<int dim>
 void def_const()
 {
     auto grid = CartesianGrid<dim>::create();
-    auto space = BSplineSpace<dim>::create(grid,1);
+    auto space = BSplineSpace<dim>::create(1,grid);
     grid->print_info(out);
     out << endl;
 }

@@ -34,12 +34,7 @@
 template< int dim_domain, int dim_range, int rank >
 void do_test()
 {
-
-
-
-    //----------------------------------------------------------------------------------------------
-    // begin : testing the constructor
-    vector< iga::Real > coord_x ;
+	vector< iga::Real > coord_x ;
     coord_x.push_back(0.0) ;
     coord_x.push_back(1.0) ;
     coord_x.push_back(2.0) ;
@@ -57,10 +52,11 @@ void do_test()
     coord_z.push_back(10.0) ;
     coord_z.push_back(11.0) ;
 
+    using Space = BSplineSpace<dim_domain, dim_range, rank>;
+
     CartesianProductArray< iga::Real, dim_domain > coord ;
-    //array< int, dim_domain > num_knots ;
-    CartesianProductArray<Index , dim_domain >  mult ;
-    array< int, dim_domain > degree ;
+    TensorIndex<dim_domain> degree ;
+
 
     if (dim_domain == 1)
     {
@@ -87,20 +83,16 @@ void do_test()
     }
 
 
-
-    auto  knots = CartesianGrid<dim_domain>::create(coord) ;
-    StaticMultiArray<TensorIndex<dim_domain>,dim_range,rank> deg;
-    deg.fill(TensorIndex<dim_domain>(degree));
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create (knots, deg) ;
+    auto  knots = CartesianGrid<dim_domain>::create(coord);
+    typename Space::DegreeTable deg;
+    deg.fill(degree);
+    auto bspline_space = Space::create(deg, knots) ;
     bspline_space->print_info(out);
     out << endl;
-    // end : testing the constructor
-    //----------------------------------------------------------------------------------------------
-
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
     out.depth_console(10);
     do_test< 1, 1, 1 >() ;

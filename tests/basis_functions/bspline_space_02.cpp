@@ -21,7 +21,7 @@
  * todo: Header please
  * author: Max?
  */
-
+//TODO(pauletti, May 31, 2014): update this test code to current standards
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
@@ -48,7 +48,7 @@ void do_test()
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto  bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create(knots, p) ;
+    auto  bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create(p, knots) ;
 
 
     typename BSplineSpace< dim_domain, dim_range, rank >::ElementIterator

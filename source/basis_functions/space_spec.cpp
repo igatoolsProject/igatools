@@ -81,6 +81,7 @@ SplineSpace(const DegreeTable &deg,
         elem_total += elem_n_basis_.comp_dimension(iComp);
     }
     space_dim_.total_dimension = total_dim;
+    elem_n_basis_.total_dimension = elem_total;
 }
 
 

@@ -32,7 +32,7 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                 DistributionPolicy pol)
                 :
                 element_loc_to_global_(grid->get_num_elements_dim())
-                {
+{
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
     // fills the standard distribution, sorted by component and
@@ -63,7 +63,7 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                 basis = element_loc_to_global_(index).end();
         }
     }
-                }
+}
 
 
 

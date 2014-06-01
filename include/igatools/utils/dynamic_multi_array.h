@@ -113,18 +113,12 @@ public:
     void reshape(const TensorSize<rank> &new_sizes);
     ///@}
 
-
-
-
-
-    //TODO: where do we need this function? (MM 22 Feb 2014)
     /**
      * Extract a sub multi-array from the array and return it
-     * as a flat vector.
-     * @todo: where do we need this function? (MM 22 Feb 2014)
+     * in the tensor range start with the tensor increment inc.
      */
     DynamicMultiArray<T,rank> get_sub_array(const TensorIndex<rank> &start,
-                                            const TensorIndex<rank> &end) const;
+                                            const TensorIndex<rank> &inc) const;
 
 
 
