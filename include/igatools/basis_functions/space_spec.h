@@ -252,6 +252,9 @@ public:
         ComponentContainer(const ComponentMap &comp_map =
                 iota_array<Index, n_entries>());
 
+        /**
+         * Construct a homogenous range table with val value
+         */
         ComponentContainer(const T &val);
 
         ComponentContainer(std::initializer_list<T> list);
@@ -276,6 +279,13 @@ public:
 
         const std::vector<Index> &get_inactive_components() const
         {return inactive_components_;}
+
+        void
+        print_info(LogStream &out) const
+        {
+            for (int i=0; i<n_entries; ++i)
+                out << (*this)(i) << " ";
+        }
     private:
         /** For each component return de index of the active component */
         std::array <Index, n_entries> comp_map_;
@@ -295,8 +305,8 @@ inline
 std::vector<T>
 unique_container(std::array <T, dim> a)
 {
-    std::unique(a.begin(), a.end());
-    return std::vector<T>(a.begin(), a.end());
+    auto it = std::unique(a.begin(), a.end());
+    return std::vector<T>(a.begin(), it);
 }
 
 
@@ -338,8 +348,12 @@ SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(const T &val)
     :
     comp_map_(filled_array<Index, n_entries>(0)),
-    active_components_(unique_container<Index, n_entries>(comp_map_))
+    active_components_(1,0),
+    inactive_components_(n_entries-1)
 {
+    for(int i=1; i<n_entries; ++i)
+        inactive_components_[i-1] = i;
+
     base_t::operator()(0) = val;
 }
 
