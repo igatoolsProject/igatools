@@ -43,7 +43,7 @@ void do_test(const int degree)
     auto knots = CartesianGrid<dim_domain>::create(3);
 
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(knots, degree) ;
+    auto space = Space_t::create(degree, knots) ;
 
     const int n_points = 1;
     QGauss< dim_domain > quad(n_points) ;

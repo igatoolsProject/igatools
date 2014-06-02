@@ -32,36 +32,17 @@ void test(const int deg1)
 {
     using SplineSpace = SplineSpace<dim, range, rank>;
 
-    //using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-
-	auto grid = CartesianGrid<dim>::create(4);
+   	auto grid = CartesianGrid<dim>::create(4);
 	typename SplineSpace::Degrees deg2(deg1);
 	typename SplineSpace::DegreeTable deg(deg2);
 
-	out << deg.get_active_components()<< endl;
-	out << deg.get_inactive_components()<< endl;
+	out << deg.get_active_components() << endl;
+	out << deg.get_inactive_components() << endl;
 
 
-	//auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable ({ {{1,3}} }));
-
-
-//	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
-//	sp_spec.print_info(out);
-
-//	CartesianProductArray<Real,2> bn_x{{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-//	typename SplineSpace::BoundaryKnotsTable bdry_knots{ {bn_x} };
-//	auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-//	out << "Boundary knots:\n";
-//	for(const auto &v : bdry_knots)
-//		for(const auto &w : v)
-//			w.print_info(out);
-//	out << "Repeated knots:\n";
-//	for(const auto &v : rep_knots)
-//		v.print_info(out);
+	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
+	sp_spec.print_info(out);
 }
-
-
-
 
 
 
@@ -71,6 +52,8 @@ int main()
 
     test<1, 1, 1>(1);
     test<1, 2, 1>(1);
+    test<2, 2, 1>(3);
+    test<2, 2, 1>(2);
 
     return 0;
 }
