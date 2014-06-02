@@ -130,7 +130,7 @@ void do_test_3()
         increment[i] = 3-i;
 
     const auto end = origin + increment;
-    out << "Flat view: " << data1.get_sub_array(origin, end).get_data() << endl;
+    out << "Flat view: " << data1.get_sub_array(origin, increment).get_data() << endl;
 }
 
 

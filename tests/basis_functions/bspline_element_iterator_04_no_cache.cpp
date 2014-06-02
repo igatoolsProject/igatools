@@ -27,7 +27,8 @@
  *  date: May 08, 2014
  *
  */
-
+// TODO (pauletti, Jun 2, 2014): no need to print info of the spaces
+// TODO (pauletti, Jun 2, 2014): rename this file to have 04 at the end
 #include "../tests.h"
 
 
@@ -45,11 +46,11 @@ create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
 
-    StaticMultiArray<TensorIndex<2>,2,1> degree = { {{3,2}},
+    typename BSplineSpace<2,2,1>::DegreeTable degree = { {{3,2}},
         {{2,3}}
     } ;
 
-    return BSplineSpace<2,2,1>::create(knots, degree) ;
+    return BSplineSpace<2,2,1>::create(degree, knots) ;
 }
 
 template <>
@@ -58,12 +59,12 @@ create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
 
-    StaticMultiArray<TensorIndex<3>,3,1> degree = { {{3,2,2}},
+    typename BSplineSpace<3,3,1>::DegreeTable  degree = { {{3,2,2}},
         {{2,3,2}},
         {{2,2,3}}
     } ;
 
-    return BSplineSpace<3,3,1>::create(knots, degree) ;
+    return BSplineSpace<3,3,1>::create(degree, knots) ;
 }
 
 

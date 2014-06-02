@@ -126,7 +126,7 @@ void do_test_3()
 
     TensorIndex<dim> end = origin + increment;
 
-    out << "Flat view: " << data1.get_sub_array(origin, end).get_data() << endl;
+    out << "Flat view: " << data1.get_sub_array(origin, increment).get_data() << endl;
 }
 
 
