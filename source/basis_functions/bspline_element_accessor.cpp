@@ -929,7 +929,7 @@ evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d
         const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
         const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
 
-        using der_t = Conditional<deriv_order==0,Values<dim,range,rank>,Derivatives<dim,range,rank,deriv_order>>;
+        using der_t = Conditional<deriv_order==0,Values<range,rank>,Derivatives<dim,range,rank,deriv_order>>;
 
         for (int iComp = 0; iComp < this->space_->num_active_components_; ++iComp)
         {

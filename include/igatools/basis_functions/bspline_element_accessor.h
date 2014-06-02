@@ -166,7 +166,7 @@ public:
      * Typedef for specifying the value of the basis function in the
      * reference domain.
      */
-    using Value = Values<dim, range, rank>;
+    using Value = Values<range, rank>;
 
     /**
      * Typedef for specifying the derivatives of the basis function in the

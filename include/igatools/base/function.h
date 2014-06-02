@@ -75,7 +75,7 @@ public:
     /**
      * Type for the return of the function.
      */
-    using ValueType = Values<dim, dim_range, rank>;
+    using ValueType = Values<dim_range, rank>;
 
     /**
      * Type for the gradient of the function.

@@ -76,7 +76,7 @@ public:
     };
 
     template <int range, int rank>
-    using RefValue = Values<dim, range, rank>;
+    using RefValue = Values<range, rank>;
 
     template <int range, int rank, int order>
     using RefDerivative = Derivatives<dim, range, rank, order>;
@@ -87,7 +87,7 @@ public:
           Derivatives<dim-1, range, rank, order> >;
 
     template <int range, int rank>
-    using PhysValue = Values<space_dim, PhysRange<range>::value, rank>;
+    using PhysValue = Values<PhysRange<range>::value, rank>;
 
     template <int range, int rank, int order>
     using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;

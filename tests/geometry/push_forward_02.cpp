@@ -77,7 +77,7 @@ int main()
 
     push_fwd_accessor.fill_values() ;
 
-    typedef Values<3,1,1> Value_t ;
+    typedef Values<1,1> Value_t ;
     typedef Derivatives<3,1,1,1> Grad_t ;
 
     ValueVector< Value_t > dummy ;

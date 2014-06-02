@@ -66,7 +66,7 @@ public:
     /**
      * Typedef for specifying the value of the basis function.
      */
-    using Value = Values<dim+codim, range, rank>;
+    using Value = Values<range, rank>;
 
     /**
      * Typedef for specifying the derivatives of the basis function.
@@ -77,7 +77,7 @@ public:
     /**
      * Typedef for specifying the divergence of the basis function.
      */
-    using Div = Values<dim+codim, 1, 1>;
+    using Div = Values<1, 1>;
 
 
     /**

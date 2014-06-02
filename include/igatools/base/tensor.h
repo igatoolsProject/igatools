@@ -597,7 +597,7 @@ using Derivatives =
     >;
 
 
-template<int dim, int range, int rank>
+template<int range, int rank>
 using Values = Tensor<range, rank, tensor::contravariant, Tdouble>;
 
 
