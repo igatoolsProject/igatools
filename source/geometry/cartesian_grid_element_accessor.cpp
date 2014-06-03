@@ -58,7 +58,7 @@ operator== (const CartesianGridElementAccessor<dim_> &a) const
 template <int dim_>
 bool
 CartesianGridElementAccessor<dim_>::
-operator!= (const CartesianGridElementAccessor<dim_> &a) const
+operator!=(const CartesianGridElementAccessor<dim_> &a) const
 {
     Assert(this->get_grid() == a.get_grid(), ExcMessage("Cannot Compare Iterators."));
     return (this->get_flat_index() != a.get_flat_index());
@@ -70,7 +70,7 @@ operator!= (const CartesianGridElementAccessor<dim_> &a) const
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-operator ++ ()
+operator++()
 {
     Index index = this->get_flat_index();
     ++index;
@@ -169,7 +169,7 @@ init_values(const ValueFlags flag,
     elem_values_.reset(elem_flags_handler, quad);
 
     Index face_id = 0 ;
-    for (auto& face_value : face_values_)
+    for (auto &face_value : face_values_)
         face_value.reset(face_flags_handler, quad, face_id++);
 }
 
