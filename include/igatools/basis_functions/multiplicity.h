@@ -36,6 +36,7 @@ IGA_NAMESPACE_OPEN
  * @author pauletti, 2013-2014
  *
  */
+#if 0
 template<int dim, int range, int rank>
 class Multiplicity :
     public StaticMultiArray<CartesianProductArray<Size, dim>,range,rank>
@@ -104,7 +105,7 @@ private:
 };
 
 
-
+#endif
 IGA_NAMESPACE_CLOSE
 
 

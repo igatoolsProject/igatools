@@ -20,7 +20,7 @@
 
 
 #include <igatools/basis_functions/multiplicity.h>
-
+#if 0
 using std::vector;
 using std::array;
 
@@ -133,4 +133,4 @@ fill_max_regularity()
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/multiplicity.inst>
-
+#endif
