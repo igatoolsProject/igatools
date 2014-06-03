@@ -34,30 +34,30 @@ template <class Iterator>
 class ConcatenatedIterator
 {
 public:
-	void push_back(const Iterator &begin,const Iterator &end)
-	{
-		Assert(begin < end,ExcInvalidIterator());
-		ranges_.push_back(std::make_pair(begin,end));
-	}
+    void push_back(const Iterator &begin,const Iterator &end)
+    {
+        Assert(begin < end,ExcInvalidIterator());
+        ranges_.push_back(std::make_pair(begin,end));
+    }
 
 
 
 private:
 
-	std::vector<std::pair<Iterator,Iterator>> ranges_;
+    std::vector<std::pair<Iterator,Iterator>> ranges_;
 };
 
 
 
 int main()
 {
-	vector<int> v0 = {1,2,3,4};
-	vector<int> v1 = {2,3,4,5};
+    vector<int> v0 = {1,2,3,4};
+    vector<int> v1 = {2,3,4,5};
 
-	using VecIterator = vector<int>::iterator;
+    using VecIterator = vector<int>::iterator;
 
-	ConcatenatedIterator<VecIterator> concatenated_iterator;
-	concatenated_iterator.push_back(v0.begin(),v0.end());
-	concatenated_iterator.push_back(v1.begin(),v1.end());
+    ConcatenatedIterator<VecIterator> concatenated_iterator;
+    concatenated_iterator.push_back(v0.begin(),v0.end());
+    concatenated_iterator.push_back(v1.begin(),v1.end());
 
 }
