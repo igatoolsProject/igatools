@@ -24,6 +24,7 @@
 #define CONCATENATED_FORWARD_ITERATOR_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 
 #include <vector>
 
@@ -48,9 +49,9 @@ public:
     /** @name Constructors & destructor */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing.
      */
-    ConcatenatedForwardIterator() = delete;
+    ConcatenatedForwardIterator();
 
     /**
      * Constructor.
@@ -58,6 +59,8 @@ public:
     ConcatenatedForwardIterator(
         const std::vector<std::pair<Iterator,Iterator>> &ranges,
         const Index index);
+
+
 
     /** Copy constructor. */
     ConcatenatedForwardIterator(const ConcatenatedForwardIterator<Iterator> &it) = default;
@@ -69,6 +72,18 @@ public:
     ~ConcatenatedForwardIterator() = default ;
     ///@}
 
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    ConcatenatedForwardIterator<Iterator> &operator=(
+        const ConcatenatedForwardIterator<Iterator> &it) = default;
+
+    /** Move assignment operator. */
+    ConcatenatedForwardIterator<Iterator> &operator=(
+        ConcatenatedForwardIterator<Iterator> &&it) = default;
+
+    ///@}
 
 
     /** @name Dereferencing operators */
@@ -118,6 +133,12 @@ public:
     ConcatenatedForwardIterator<Iterator> &operator++();
     ///@}
 
+
+
+    std::vector<std::pair<Iterator,Iterator>> get_ranges() const;
+
+    /** Prints some information. Mostly used for debug and testing. */
+    void print_info(LogStream &out) const;
 
 private:
 

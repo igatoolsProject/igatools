@@ -1,3 +1,4 @@
+========== do_test_1() --- begin ==========
 i = 0     value = 1
 i = 1     value = 2
 i = 2     value = 3
@@ -11,3 +12,36 @@ i = 9     value = 10
 i = 10     value = 11
 i = 11     value = 12
 i = 12     value = 13
+========== do_test_1() --- end ==========
+
+========== do_test_2() --- begin ==========
+i_a = 0     value = 1
+i_a = 1     value = 2
+i_a = 2     value = 3
+i_a = 3     value = 4
+i_a = 4     value = 5
+i_a = 5     value = 6
+i_a = 6     value = 7
+i_a = 7     value = 8
+i_a = 8     value = 9
+
+i_b = 0     value = 10
+i_b = 1     value = 11
+i_b = 2     value = 12
+i_b = 3     value = 13
+
+i = 0     value = 1
+i = 1     value = 2
+i = 2     value = 3
+i = 3     value = 4
+i = 4     value = 5
+i = 5     value = 6
+i = 6     value = 7
+i = 7     value = 8
+i = 8     value = 9
+i = 9     value = 10
+i = 10     value = 11
+i = 11     value = 12
+i = 12     value = 13
+========== do_test_2() --- end ==========
+

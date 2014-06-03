@@ -28,7 +28,11 @@
 
 IGA_NAMESPACE_OPEN
 
-
+template <class Iterator>
+inline
+ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardIterator()
+{}
 
 
 template <class Iterator>
@@ -40,12 +44,12 @@ ConcatenatedForwardIterator(
     :
     ranges_(ranges)
 {
-    const int n_ranges = ranges_.size();
+    const int n_ranges = ranges.size();
     Assert(n_ranges != 0 , ExcEmptyObject());
 
 #ifndef NDEBUG
     for (int i = 0 ; i < n_ranges ; ++i)
-        Assert(ranges_[i].first < ranges_[i].second,ExcInvalidIterator());
+        Assert(ranges_[i].first != ranges_[i].second,ExcInvalidIterator());
 #endif
 
     Assert(index == 0 || index == IteratorState::pass_the_end,ExcInvalidIterator());
@@ -59,7 +63,12 @@ ConcatenatedForwardIterator(
         iterator_current_ = ranges_.back().second;
         range_id_ = n_ranges - 1;
     }
+    /*
+        LogStream out;
+        this->print_info(out);
+    //*/
 }
+
 
 
 template <class Iterator>
@@ -101,7 +110,7 @@ operator++() -> ConcatenatedForwardIterator<Iterator> &
     if (range_id_ < ranges_.size()-1)
     {
         // if the current iterator is before the end, advance one position
-        if (iterator_current_ < ranges_[range_id_].second)
+        if (iterator_current_ != ranges_[range_id_].second)
             ++iterator_current_;
 
         // if the current iterator is already at the end of one iterator,
@@ -138,8 +147,13 @@ operator==(const ConcatenatedForwardIterator<Iterator> &it) const
             ranges_are_equal = false;
             break;
         }
+    Assert(ranges_are_equal,ExcMessage("Iterators are not comparable."));
 
-    return (same_size && ranges_are_equal && iterator_current_ == it.iterator_current_);
+
+    return (same_size &&
+            ranges_are_equal &&
+            range_id_ == it.range_id_ &&
+            iterator_current_ == it.iterator_current_);
 }
 
 template <class Iterator>
@@ -148,9 +162,45 @@ bool
 ConcatenatedForwardIterator<Iterator>::
 operator!=(const ConcatenatedForwardIterator<Iterator> &it) const
 {
-    return !((*this) == it);
+    return !(*this == it);
 }
 
+
+template <class Iterator>
+inline
+auto
+ConcatenatedForwardIterator<Iterator>::
+get_ranges() const -> std::vector<std::pair<Iterator,Iterator>>
+{
+    return ranges_;
+}
+
+
+template <class Iterator>
+inline
+void
+ConcatenatedForwardIterator<Iterator>::
+print_info(LogStream &out) const
+{
+    using std::endl;
+    std::string tab("   ");
+
+    out << "ConcatenatedForwardIterator infos:" << endl;
+    out.push(tab);
+
+    out << "Num. ranges = " << ranges_.size() << endl;
+    int i = 0 ;
+    for (const auto &r : ranges_)
+    {
+        out << "Range[" << i << "].first = " << &r.first << "   ";
+        out << "Range[" << i << "].second = " << &r.second;
+        out << endl;
+        ++i;
+    }
+    out << "range_id_ = " << range_id_ << endl;
+
+    out.pop();
+}
 
 
 IGA_NAMESPACE_CLOSE

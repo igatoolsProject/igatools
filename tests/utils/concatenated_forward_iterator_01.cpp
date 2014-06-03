@@ -35,8 +35,12 @@
 using std::vector;
 
 
-int main()
+using std::endl;
+
+
+void do_test_1()
 {
+    out << "========== do_test_1() --- begin ==========" << endl;
     vector<int> v0 = {1,2,3,4};
     vector<int> v1 = {5,6,7,8,9};
     vector<int> v2 = {10,11,12};
@@ -59,5 +63,78 @@ int main()
     using std::endl;
     int i = 0;
     for (; begin != end ; ++begin, ++i)
+        out << "i = " << i << "     value = " << *begin << endl;
+
+    out << "========== do_test_1() --- end ==========" << endl;
+    out << endl;
+}
+
+
+
+void do_test_2()
+{
+
+    out << "========== do_test_2() --- begin ==========" << endl;
+
+    vector<int> v0a = {1};
+    vector<int> v1a = {2,3,4};
+    vector<int> v2a = {5,6,7,8,9};
+
+    vector<int> v0b = {10,11,12};
+    vector<int> v1b = {13};
+
+    using ItType_0 = vector<int>::iterator;
+
+    std::vector<std::pair<ItType_0,ItType_0>> ranges_a;
+    ranges_a.push_back(std::make_pair<ItType_0,ItType_0>(v0a.begin(),v0a.end()));
+    ranges_a.push_back(std::make_pair<ItType_0,ItType_0>(v1a.begin(),v1a.end()));
+    ranges_a.push_back(std::make_pair<ItType_0,ItType_0>(v2a.begin(),v2a.end()));
+
+    using ItType_1 = ConcatenatedForwardIterator<ItType_0>;
+    ItType_1 begin_a(ranges_a,0);
+    ItType_1 end_a(ranges_a,IteratorState::pass_the_end);
+
+
+    std::vector<std::pair<ItType_0,ItType_0>> ranges_b;
+    ranges_b.push_back(std::make_pair<ItType_0,ItType_0>(v0b.begin(),v0b.end()));
+    ranges_b.push_back(std::make_pair<ItType_0,ItType_0>(v1b.begin(),v1b.end()));
+
+    ItType_1 begin_b(ranges_b,0);
+    ItType_1 end_b(ranges_b,IteratorState::pass_the_end);
+
+
+    std::vector<std::pair<ItType_0,ItType_0>> ranges;
+    for (const auto &r : ranges_a)
+        ranges.push_back(r);
+    for (const auto &r : ranges_b)
+        ranges.push_back(r);
+
+    ItType_1 begin(ranges,0);
+    ItType_1 end(ranges,IteratorState::pass_the_end);
+
+    int i_a = 0;
+    for (; begin_a != end_a ; ++begin_a, ++i_a)
+        out << "i_a = " << i_a << "     value = " << *begin_a << std::endl;
+    out << endl;
+
+    int i_b = 0;
+    for (; begin_b != end_b ; ++begin_b, ++i_b)
+        out << "i_b = " << i_b << "     value = " << *begin_b << std::endl;
+    out << endl;
+
+    int i = 0;
+    for (; begin != end ; ++begin, ++i)
         out << "i = " << i << "     value = " << *begin << std::endl;
+
+    out << "========== do_test_2() --- end ==========" << endl;
+    out << endl;
+}
+
+
+int main()
+{
+    do_test_1();
+    do_test_2();
+
+    return 0;
 }
