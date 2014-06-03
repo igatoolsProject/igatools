@@ -56,8 +56,7 @@ public:
      * Constructor.
      */
     ConcatenatedIterator(
-        const std::vector<Iterator> &ranges_begin,
-        const std::vector<Iterator> &ranges_end,
+        const std::vector<std::pair<Iterator,Iterator>> &ranges,
         const Index index);
 
     /** Copy constructor. */
@@ -132,30 +131,30 @@ private:
 template <class Iterator>
 ConcatenatedIterator<Iterator>::
 ConcatenatedIterator(
-    const std::vector<Iterator> &ranges_begin,
-    const std::vector<Iterator> &ranges_end,
+    const std::vector<std::pair<Iterator,Iterator>> &ranges,
     const Index index)
+    :
+    ranges_(ranges)
 {
-    Assert(ranges_begin.size() == ranges_end.size(),
-           ExcDimensionMismatch(ranges_begin.size(),ranges_end.size()));
-
-    const int n_ranges = ranges_begin.size();
+    const int n_ranges = ranges_.size();
     Assert(n_ranges != 0 , ExcEmptyObject());
 
-    ranges_.clear();
+#ifndef NDEBUG
     for (int i = 0 ; i < n_ranges ; ++i)
-    {
-        Assert(ranges_begin[i] < ranges_end[i],ExcInvalidIterator());
-
-        ranges_.push_back(std::make_pair(ranges_begin[i],ranges_end[i]));
-    }
-
+        Assert(ranges_[i].first < ranges_[i].second,ExcInvalidIterator());
+#endif
 
     Assert(index == 0 || index == IteratorState::pass_the_end,ExcInvalidIterator());
     if (index == 0)
+    {
         iterator_current_ = ranges_.front().first;
+        range_id_ = 0;
+    }
     else if (index == IteratorState::pass_the_end)
+    {
         iterator_current_ = ranges_.back().second;
+        range_id_ = n_ranges - 1;
+    }
 }
 
 
@@ -250,17 +249,13 @@ int main()
 
     using VecIterator = vector<int>::iterator;
 
-    std::vector<VecIterator> ranges_begin;
-    ranges_begin.push_back(v0.begin());
-    ranges_begin.push_back(v1.begin());
-    ranges_begin.push_back(v2.begin());
+    std::vector<std::pair<VecIterator,VecIterator>> ranges;
+    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v0.begin(),v0.end()));
+    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v1.begin(),v1.end()));
+    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v2.begin(),v2.end()));
 
-    std::vector<VecIterator> ranges_end;
-    ranges_end.push_back(v0.end());
-    ranges_end.push_back(v1.end());
-    ranges_end.push_back(v2.end());
 
-    ConcatenatedIterator<VecIterator> concatenated_iterator(ranges_begin,ranges_end,0);
+    ConcatenatedIterator<VecIterator> concatenated_iterator(ranges,0);
 
 
 
