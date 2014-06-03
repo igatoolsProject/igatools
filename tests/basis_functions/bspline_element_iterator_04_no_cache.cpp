@@ -77,8 +77,6 @@ void do_test()
 
     auto space = create_space<dim_domain>(num_knots) ;
 
-    space->print_info(out) ;
-
     const int n_points = 2;
     QGauss< dim_domain > quad(n_points) ;
     vector<Point<dim_domain>> eval_points = quad.get_points().get_flat_cartesian_product();

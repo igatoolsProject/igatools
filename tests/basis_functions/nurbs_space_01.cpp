@@ -107,7 +107,7 @@ void do_test()
     auto  knots = CartesianGrid<dim_domain>::create(coord) ;
     StaticMultiArray<TensorIndex<dim_domain>,dim_range,rank> deg;
     deg.fill(degree);
-    NURBSSpace< dim_domain, dim_range, rank > nurbs_space(knots, deg) ;
+    NURBSSpace< dim_domain, dim_range, rank > nurbs_space(deg, knots) ;
     nurbs_space.print_info(out);
     out << endl ;
     // end : testing the constructor

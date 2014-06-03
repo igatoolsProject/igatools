@@ -47,6 +47,8 @@ public:
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;
 
+    using ElemOper = std::array<matrix const*, dim>;
+    using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
     using Operators = CartesianProductArray<matrix, dim>;
     using OperatorsTable = typename Space::template ComponentContainer<Operators>;
@@ -69,6 +71,16 @@ public:
     {
         return ext_operators(comp).get_data_direction(dir);
     }
+
+    ElemOperTable get_element_operators(TensorIndex<dim> idx) const
+    {
+        ElemOperTable result(ext_operators.get_comp_map());
+        for (auto comp : result.get_active_components())
+            for (int dir = 0 ; dir < dim ; ++dir)
+                result(comp)[dir] = &(ext_operators(comp).get_data_direction(dir)[idx[dir]]);
+        return result;
+    }
+
 private:
     std::vector<matrix>
     fill_extraction(const int m,

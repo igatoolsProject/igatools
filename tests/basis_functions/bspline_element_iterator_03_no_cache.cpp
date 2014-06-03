@@ -43,7 +43,7 @@ void do_test()
     const int degree = 1;
     const int rank =  1 ;
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(grid, degree);
+    auto space = Space_t::create(degree, grid);
 
 #if defined(USE_TRILINOS)
     const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
