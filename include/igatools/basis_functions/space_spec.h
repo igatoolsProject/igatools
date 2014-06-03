@@ -150,7 +150,7 @@ public:
                          std::shared_ptr<GridType> knots,
                          const InteriorReg interior_mult,
                          const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)))
-        :SplineSpace(deg, knots, fill_max_regularity(knots), periodic)
+        :SplineSpace(deg, knots, fill_max_regularity(deg, knots), periodic)
     {}
 
     const DegreeTable &get_degree() const
@@ -244,7 +244,7 @@ private:
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    std::shared_ptr<MultiplicityTable> fill_max_regularity(std::shared_ptr<const GridType> grid);
+    std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
 
     BoundaryKnotsTable interpolatory_end_knots();
 
@@ -344,7 +344,7 @@ public:
                 out << (*this)(i) << " ";
         }
 
-        const std::array <Index, n_entries> &get_comp_map()
+        const std::array <Index, n_entries> &get_comp_map() const
 		{
         	return comp_map_;
 		}

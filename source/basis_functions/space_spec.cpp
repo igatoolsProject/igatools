@@ -227,11 +227,9 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-fill_max_regularity(std::shared_ptr<const GridType> grid) -> std::shared_ptr<MultiplicityTable>
+fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid) -> std::shared_ptr<MultiplicityTable>
 {
-	//TODO(pauletti, Jun 2, 2014): has to be initilized with mapping patern
-	// of degree
-    auto  res = std::make_shared<MultiplicityTable>(deg_.get_comp_map());
+    auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
 
     auto const knots_size = grid->get_num_knots_dim();
     for (int iComp : res->get_active_components())

@@ -65,17 +65,11 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(knots, p_r) ;
-    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(knots, p_c) ;
+    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
+    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
 
     const auto n_basis_sp_rows = bspline_space_rows->get_num_basis();
     const auto n_basis_sp_cols = bspline_space_cols->get_num_basis();
-    out << endl;
-    out << "Rows space:" << endl;
-    bspline_space_rows->print_info(out);
-    out << endl;
-    out << "Columns space:" << endl;
-    bspline_space_cols->print_info(out);
     out << endl;
     out << "Number of dofs of rows space: " << n_basis_sp_rows << std::endl;
     out << "Number of dofs of columns space: " << n_basis_sp_cols << std::endl;
