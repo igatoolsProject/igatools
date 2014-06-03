@@ -41,7 +41,36 @@ iota_array(const int init=0)
     return res;
 }
 
-
+//template<int ...>
+//struct seq { };
+//
+//template<int N, int ...S>
+//struct gens : gens<N-1, N-1, S...> { };
+//
+//template<int ...S>
+//struct gens<0, S...> {
+//  typedef seq<S...> type;
+//};
+//
+//constexpr int f(int n) {
+//  return n;
+//}
+//
+//template <int N>
+//class array_thinger {
+//  typedef typename gens<N>::type list;
+//
+//  template <int ...S>
+//  static constexpr std::array<int,N> make_arr(seq<S...>) {
+//    return std::array<int,N>{{f(S)...}};
+//  }
+//public:
+//  static constexpr std::array<int,N> arr = make_arr(list());
+//};
+//
+//template <int N>
+//constexpr std::array<int,N> array_thinger<N>::arr;
+//static constexpr std::array<Index, n_entries> all_components = array_thinger<n_components>::arr;
 
 /**
  * @brief Tensor product spline space specification class
@@ -243,7 +272,10 @@ public:
     class ComponentContainer : public StaticMultiArray<T,range,rank>
     {
         using base_t = StaticMultiArray<T,range,rank>;
-
+    public:
+       // using base_t::Entry;
+        /** Type of the const iterator. */
+        using const_iterator =  MultiArrayIterator<const ComponentContainer<T>>;
     public:
         using base_t::n_entries;
 
@@ -258,6 +290,31 @@ public:
         ComponentContainer(const T &val);
 
         ComponentContainer(std::initializer_list<T> list);
+
+        const_iterator
+        cbegin() const
+        {
+            return const_iterator(*this,0);
+        }
+
+        const_iterator
+        cend() const
+        {
+            return const_iterator(*this,IteratorState::pass_the_end);
+        }
+
+
+        const_iterator
+        begin() const
+        {
+            return cbegin();
+        }
+
+        const_iterator
+        end() const
+        {
+            return cend();
+        }
 
         /**
          *  Flat index access operator (non-const version).
@@ -286,6 +343,12 @@ public:
             for (int i=0; i<n_entries; ++i)
                 out << (*this)(i) << " ";
         }
+
+        const std::array <Index, n_entries> &get_comp_map()
+		{
+        	return comp_map_;
+		}
+
     private:
         /** For each component return de index of the active component */
         std::array <Index, n_entries> comp_map_;
@@ -295,6 +358,8 @@ public:
 
         /** list of the inactive components */
         std::vector<Index> inactive_components_;
+
+
     };
 
 };

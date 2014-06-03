@@ -69,7 +69,6 @@ MultiArrayIterator<Container>::
 operator*() const -> const_reference
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
-//    return container_->get_data()[id_];
     return (*container_)(id_);
 }
 

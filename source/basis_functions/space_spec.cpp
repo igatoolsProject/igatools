@@ -229,10 +229,12 @@ auto
 SplineSpace<dim, range, rank>::
 fill_max_regularity(std::shared_ptr<const GridType> grid) -> std::shared_ptr<MultiplicityTable>
 {
-    auto  res = std::make_shared<MultiplicityTable>();
+	//TODO(pauletti, Jun 2, 2014): has to be initilized with mapping patern
+	// of degree
+    auto  res = std::make_shared<MultiplicityTable>(deg_.get_comp_map());
 
     auto const knots_size = grid->get_num_knots_dim();
-    for (int iComp = 0; iComp < n_components; ++iComp)
+    for (int iComp : res->get_active_components())
         for (int j = 0; j < dim; ++j)
         {
             const auto size = knots_size[j]-2;
@@ -248,9 +250,9 @@ template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
 {
-    BoundaryKnotsTable result;
+    BoundaryKnotsTable result(deg_.get_comp_map());
 
-    for (int iComp = 0; iComp < n_components; ++iComp)
+    for (int iComp : result.get_active_components())
     {
         BoundaryKnots bdry_knots;
         for (int j = 0; j < dim; ++j)
@@ -284,7 +286,7 @@ print_info(LogStream &out) const
     out << std::endl;
     out << "Interior multiplicities:\n";
     for (const auto &v : *interior_mult_)
-        v.print_info(out);
+    	v.print_info(out);
     out << "Dimensionality Table:\n";
     space_dim_.print_info(out);
     out << std::endl;

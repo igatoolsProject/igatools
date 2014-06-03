@@ -84,8 +84,6 @@ void do_test()
 
 
     auto  knots = CartesianGrid<dim_domain>::create(coord);
-    typename Space::DegreeTable deg;
-    deg.fill(degree);
     auto bspline_space = Space::create(degree, knots) ;
     bspline_space->print_info(out);
     out << endl;
