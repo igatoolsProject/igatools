@@ -33,6 +33,16 @@ IGA_NAMESPACE_OPEN
 template <class Container>
 inline
 MultiArrayIterator<Container>::
+MultiArrayIterator()
+    :
+    container_(nullptr),
+    id_(IteratorState::invalid),
+    stride_(0)
+{}
+
+template <class Container>
+inline
+MultiArrayIterator<Container>::
 MultiArrayIterator(Container &container,const Index id,const Index stride)
     :
     container_(&container),

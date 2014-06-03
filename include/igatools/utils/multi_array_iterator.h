@@ -87,13 +87,13 @@ public:
     /** @name Constructors and destructor */
     ///@{
 
-    /** Default constructor. Not allowed to be used.*/
-    MultiArrayIterator() = delete;
+    /** Default constructor.*/
+    MultiArrayIterator();
 
-    /** Copy constructor. Not allowed to be used. */
+    /** Copy constructor. */
     MultiArrayIterator(const MultiArrayIterator<Container> &in) = default;
 
-    /** Move constructor. Not allowed to be used. */
+    /** Move constructor.*/
     MultiArrayIterator(MultiArrayIterator<Container> &&in) = default;
 
 
@@ -115,9 +115,8 @@ public:
 
     /** @name Assignment operators */
     ///@{
-    /** Copy assignment operator. Not allowed to be used. */
-    MultiArrayIterator<Container> &operator=(
-        const MultiArrayIterator<Container> &) = delete;
+    /** Copy assignment operator.*/
+    MultiArrayIterator<Container> &operator=(const MultiArrayIterator<Container> &) = delete;
 
     /** Move assignment operator. Not allowed to be used. */
     MultiArrayIterator<Container> &operator=(
