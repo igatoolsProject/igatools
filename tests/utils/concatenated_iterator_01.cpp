@@ -30,6 +30,13 @@
 
 using std::vector;
 
+
+/**
+ * This class represents a forward iterator made by the concatenation of several forward iterator.
+ *
+ * @author M. Martinelli
+ * @date 03 June 2014
+ */
 template <class Iterator>
 class ConcatenatedIterator
     : public std::iterator<std::forward_iterator_tag, typename Iterator::value_type>
@@ -37,11 +44,32 @@ class ConcatenatedIterator
 public:
     using value_type = typename Iterator::value_type;
 
-    void push_back(const Iterator &begin,const Iterator &end)
-    {
-        Assert(begin < end,ExcInvalidIterator());
-        ranges_.push_back(std::make_pair(begin,end));
-    }
+
+    /** @name Constructors & destructor */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    ConcatenatedIterator() = delete;
+
+    /**
+     * Constructor.
+     */
+    ConcatenatedIterator(
+        const std::vector<Iterator> &ranges_begin,
+        const std::vector<Iterator> &ranges_end,
+        const Index index);
+
+    /** Copy constructor. */
+    ConcatenatedIterator(const ConcatenatedIterator<Iterator> &it) = default;
+
+    /** Move constructor. */
+    ConcatenatedIterator(ConcatenatedIterator<Iterator> &&it) = default;
+
+    /** Destructor */
+    ~ConcatenatedIterator() = default ;
+    ///@}
+
 
 
     /** @name Dereferencing operators */
@@ -74,10 +102,10 @@ public:
     /** @name Comparison operators */
     ///@{
     /** Compare for equality.*/
-    bool operator== (const ConcatenatedIterator<Iterator> &) const;
+    bool operator==(const ConcatenatedIterator<Iterator> &it) const;
 
     /** Compare for inequality.*/
-    bool operator!= (const ConcatenatedIterator<Iterator> &) const;
+    bool operator!=(const ConcatenatedIterator<Iterator> &it) const;
     ///@}
 
     /** @name Advance operator */
@@ -92,13 +120,6 @@ public:
     ///@}
 
 
-    void init()
-    {
-        Assert(!ranges_.empty(),ExcEmptyObject());
-
-        iterator_current_ = ranges_[0].first;
-    }
-
 private:
 
     std::vector<std::pair<Iterator,Iterator>> ranges_;
@@ -108,12 +129,42 @@ private:
     Iterator iterator_current_;
 };
 
+template <class Iterator>
+ConcatenatedIterator<Iterator>::
+ConcatenatedIterator(
+    const std::vector<Iterator> &ranges_begin,
+    const std::vector<Iterator> &ranges_end,
+    const Index index)
+{
+    Assert(ranges_begin.size() == ranges_end.size(),
+           ExcDimensionMismatch(ranges_begin.size(),ranges_end.size()));
+
+    const int n_ranges = ranges_begin.size();
+    Assert(n_ranges != 0 , ExcEmptyObject());
+
+    ranges_.clear();
+    for (int i = 0 ; i < n_ranges ; ++i)
+    {
+        Assert(ranges_begin[i] < ranges_end[i],ExcInvalidIterator());
+
+        ranges_.push_back(std::make_pair(ranges_begin[i],ranges_end[i]));
+    }
+
+
+    Assert(index == 0 || index == IteratorState::pass_the_end,ExcInvalidIterator());
+    if (index == 0)
+        iterator_current_ = ranges_.front().first;
+    else if (index == IteratorState::pass_the_end)
+        iterator_current_ = ranges_.back().second;
+}
+
 
 template <class Iterator>
 auto
 ConcatenatedIterator<Iterator>::
 operator*() -> value_type &
 {
+    Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
     return *iterator_current_;
 }
 
@@ -122,8 +173,18 @@ auto
 ConcatenatedIterator<Iterator>::
 operator*() const -> const value_type &
 {
+    Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
     return *iterator_current_;
 }
+
+template <class Iterator>
+auto
+ConcatenatedIterator<Iterator>::
+operator->() const -> const value_type *
+{
+    return &(this->operator*());
+}
+
 
 template <class Iterator>
 auto
@@ -143,11 +204,42 @@ operator++() -> ConcatenatedIterator<Iterator> &
     }
     else
     {
-        Assert(iterator_current_ != ranges_[range_id_].second,ExcIteratorPastEnd());
+        Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
         ++iterator_current_;
     }
 
     return *this;
+}
+
+template <class Iterator>
+bool
+ConcatenatedIterator<Iterator>::
+operator==(const ConcatenatedIterator<Iterator> &it) const
+{
+    // check the equality of the size
+    bool same_size = (ranges_.size() == it.ranges_.size());
+    Assert(same_size,ExcMessage("Iterators are not comparable."));
+
+
+    const int n_ranges = ranges_.size();
+    bool ranges_are_equal = true;
+    for (int i = 0 ; i < n_ranges ; ++i)
+        if (ranges_[i].begin != it.ranges_[i].begin ||
+            ranges_[i].end != it.ranges_[i].end)
+        {
+            ranges_are_equal = false;
+            break;
+        }
+
+    return (same_size && ranges_are_equal && iterator_current_ == it.iterator_current_);
+}
+
+template <class Iterator>
+bool
+ConcatenatedIterator<Iterator>::
+operator!=(const ConcatenatedIterator<Iterator> &it) const
+{
+    return !((*this) == it);
 }
 
 int main()
@@ -158,13 +250,19 @@ int main()
 
     using VecIterator = vector<int>::iterator;
 
-    ConcatenatedIterator<VecIterator> concatenated_iterator;
-    concatenated_iterator.push_back(v0.begin(),v0.end());
-    concatenated_iterator.push_back(v1.begin(),v1.end());
-    concatenated_iterator.push_back(v2.begin(),v2.end());
+    std::vector<VecIterator> ranges_begin;
+    ranges_begin.push_back(v0.begin());
+    ranges_begin.push_back(v1.begin());
+    ranges_begin.push_back(v2.begin());
+
+    std::vector<VecIterator> ranges_end;
+    ranges_end.push_back(v0.end());
+    ranges_end.push_back(v1.end());
+    ranges_end.push_back(v2.end());
+
+    ConcatenatedIterator<VecIterator> concatenated_iterator(ranges_begin,ranges_end,0);
 
 
-    concatenated_iterator.init();
 
     using std::cout;
     using std::endl;
