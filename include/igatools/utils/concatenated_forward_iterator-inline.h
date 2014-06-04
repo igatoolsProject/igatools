@@ -30,15 +30,17 @@ IGA_NAMESPACE_OPEN
 
 template <class Iterator>
 inline
-ConcatenatedForwardIterator<Iterator>::
-ConcatenatedForwardIterator()
+ConcatenatedForwardConstIterator<Iterator>::
+ConcatenatedForwardConstIterator()
+    :
+    range_id_(IteratorState::invalid)
 {}
 
 
 template <class Iterator>
 inline
-ConcatenatedForwardIterator<Iterator>::
-ConcatenatedForwardIterator(
+ConcatenatedForwardConstIterator<Iterator>::
+ConcatenatedForwardConstIterator(
     const std::vector<std::pair<Iterator,Iterator>> &ranges,
     const Index index)
     :
@@ -71,20 +73,11 @@ ConcatenatedForwardIterator(
 
 
 
-template <class Iterator>
-inline
-auto
-ConcatenatedForwardIterator<Iterator>::
-operator*() -> value_type &
-{
-    Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
-    return const_cast<value_type &>(*iterator_current_);
-}
 
 template <class Iterator>
 inline
 auto
-ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardConstIterator<Iterator>::
 operator*() const -> const value_type &
 {
     Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
@@ -94,7 +87,7 @@ operator*() const -> const value_type &
 template <class Iterator>
 inline
 auto
-ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardConstIterator<Iterator>::
 operator->() const -> const value_type *
 {
     return &(this->operator*());
@@ -104,8 +97,8 @@ operator->() const -> const value_type *
 template <class Iterator>
 inline
 auto
-ConcatenatedForwardIterator<Iterator>::
-operator++() -> ConcatenatedForwardIterator<Iterator> &
+ConcatenatedForwardConstIterator<Iterator>::
+operator++() -> ConcatenatedForwardConstIterator<Iterator> &
 {
     if (range_id_ < ranges_.size()-1)
     {
@@ -130,8 +123,8 @@ operator++() -> ConcatenatedForwardIterator<Iterator> &
 template <class Iterator>
 inline
 bool
-ConcatenatedForwardIterator<Iterator>::
-operator==(const ConcatenatedForwardIterator<Iterator> &it) const
+ConcatenatedForwardConstIterator<Iterator>::
+operator==(const ConcatenatedForwardConstIterator<Iterator> &it) const
 {
     // check the equality of the size
     bool same_size = (ranges_.size() == it.ranges_.size());
@@ -159,8 +152,8 @@ operator==(const ConcatenatedForwardIterator<Iterator> &it) const
 template <class Iterator>
 inline
 bool
-ConcatenatedForwardIterator<Iterator>::
-operator!=(const ConcatenatedForwardIterator<Iterator> &it) const
+ConcatenatedForwardConstIterator<Iterator>::
+operator!=(const ConcatenatedForwardConstIterator<Iterator> &it) const
 {
     return !(*this == it);
 }
@@ -169,7 +162,7 @@ operator!=(const ConcatenatedForwardIterator<Iterator> &it) const
 template <class Iterator>
 inline
 auto
-ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardConstIterator<Iterator>::
 get_ranges() const -> std::vector<std::pair<Iterator,Iterator>>
 {
     return ranges_;
@@ -179,13 +172,13 @@ get_ranges() const -> std::vector<std::pair<Iterator,Iterator>>
 template <class Iterator>
 inline
 void
-ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardConstIterator<Iterator>::
 print_info(LogStream &out) const
 {
     using std::endl;
     std::string tab("   ");
 
-    out << "ConcatenatedForwardIterator infos:" << endl;
+    out << "ConcatenatedForwardConstIterator infos:" << endl;
     out.push(tab);
 
     out << "Num. ranges = " << ranges_.size() << endl;
@@ -202,6 +195,26 @@ print_info(LogStream &out) const
     out.pop();
 }
 
+
+
+template <class Iterator>
+inline
+auto
+ConcatenatedForwardIterator<Iterator>::
+operator*() -> value_type &
+{
+    Assert(this->iterator_current_ != this->ranges_.back().second,ExcIteratorPastEnd());
+    return *this->iterator_current_;
+}
+
+template <class Iterator>
+inline
+auto
+ConcatenatedForwardIterator<Iterator>::
+operator->() -> value_type *
+{
+    return &(this->operator*());
+}
 
 IGA_NAMESPACE_CLOSE
 

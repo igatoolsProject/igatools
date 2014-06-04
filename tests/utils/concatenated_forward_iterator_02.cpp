@@ -81,8 +81,8 @@ do_test()
     ranges.push_back(PairVecIt(index_space_1_begin,index_space_1_end));
     ranges.push_back(PairVecIt(index_space_2_begin,index_space_2_end));
 
-    ConcatenatedForwardIterator<VecIt> dofs_iterator_begin(ranges,0);
-    ConcatenatedForwardIterator<VecIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedForwardConstIterator<VecIt> dofs_iterator_begin(ranges,0);
+    ConcatenatedForwardConstIterator<VecIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
@@ -98,31 +98,6 @@ do_test()
 
 int main()
 {
-    vector<int> v0 = {1,2,3,4};
-    vector<int> v1 = {5,6,7,8,9};
-    vector<int> v2 = {10,11,12};
-    vector<int> v3 = {13};
-
-    using VecIterator = vector<int>::iterator;
-
-    std::vector<std::pair<VecIterator,VecIterator>> ranges;
-    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v0.begin(),v0.end()));
-    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v1.begin(),v1.end()));
-    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v2.begin(),v2.end()));
-    ranges.push_back(std::make_pair<VecIterator,VecIterator>(v3.begin(),v3.end()));
-
-
-    ConcatenatedForwardIterator<VecIterator> begin(ranges,0);
-    ConcatenatedForwardIterator<VecIterator> end(ranges,IteratorState::pass_the_end);
-
-
-
-    using std::endl;
-    int i = 0;
-    for (; begin != end ; ++begin, ++i)
-        out << "i = " << i << "     value = " << *begin << std::endl;
-
-
     do_test<1>();
 //    do_test<2>();
 //    do_test<3>();

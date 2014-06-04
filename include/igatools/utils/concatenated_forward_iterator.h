@@ -33,16 +33,118 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * This class represents a forward iterator made by the concatenation of several forward iterator.
+ * @brief This class represents a forward const iterator made by the
+ * concatenation of several forward iterator.
+ *
+ * This class can be used to define a forward const iterator over elements
+ * traversed by a certain number of forward iterators (for which the type is specified
+ * by the template parameter <tt>Iterator</tt>) in order to avoid multiple loops.
+ *
+ * For example, if we want to iterate over the entries of the four vectors
+ * @code{.cpp}
+   std::vector<int> v0 = {1,2,3,4};
+   std::vector<int> v1 = {5,6,7,8,9};
+   std::vector<int> v2 = {10,11,12};
+   std::vector<int> v3 = {13};
+   @endcode
+ * we can use different approaches:
+ * - use one range-for-loop for each vector
+ * @code{.cpp}
+   for (const auto & v : v0)
+       cout << v << endl;
+   for (const auto & v : v1)
+       cout << v << endl;
+   for (const auto & v : v2)
+       cout << v << endl;
+   for (const auto & v : v3)
+       cout << v << endl;
+   @endcode
+ * - define eight iterators (two for each vectors, one representing the current position and
+ * the other representing the one-pass-end position) and then use four loops for the iteration
+ * @code{.cpp}
+   for (auto v = v0.cbegin() ; v != v0.cend() ; ++v)
+       cout << *v << endl;
+   for (auto v = v1.cbegin() ; v != v1.cend() ; ++v)
+       cout << *v << endl;
+   for (auto v = v2.cbegin() ; v != v2.cend() ; ++v)
+       cout << *v << endl;
+   for (auto v = v3.cbegin() ; v != v3.cend() ; ++v)
+       cout << *v << endl;
+   @endcode
+ *
+ * If we organize the vector or the iterators in another vector, we can reduce the previous 4 loops
+ * to two nested loops:
+ *@code
+  using IteratorType = std::vector<int>::const_iterator;
+
+  std::vector<IteratorType> begins;
+  begins.push_back(v0.cbegin());
+  begins.push_back(v1.cbegin());
+  begins.push_back(v2.cbegin());
+  begins.push_back(v3.cbegin());
+
+
+  std::vector<IteratorType> begins;
+  ends.push_back(v0.cend());
+  ends.push_back(v1.cend());
+  ends.push_back(v2.cend());
+  ends.push_back(v3.cend());
+
+  for ( i = 0 ; i < 4 ; ++i)
+     for (auto v = begins[i] ; v != ends[i] ; ++v)
+        cout << *v << endl;
+  @endcode
+ *or, more nicely using a vector of iterators pairs:
+ *@code
+  using IteratorType = std::vector<int>::const_iterator;
+  using IteratorPair = std::pair<IteratorType,IteratorType>;
+
+  std::vector<IteratorPair> ranges;
+  ranges.push_back(IteratorPair(v0.cbegin(),v0.cend()));
+  ranges.push_back(IteratorPair(v1.cbegin(),v1.cend()));
+  ranges.push_back(IteratorPair(v2.cbegin(),v2.cend()));
+  ranges.push_back(IteratorPair(v3.cbegin(),v3.cend()));
+
+  for ( const auto &r : ranges)
+     for (auto v = r.first ; v != r.second ; ++v)
+        cout << *v << endl;
+  @endcode
+ *
+ * The ConcatenatedForwardConstIterator class permits to iterate over the four vectors
+ * (as made in the examples above) in this way:
+ *@code
+  using IteratorType = std::vector<int>::const_iterator;
+  using IteratorPair = std::pair<IteratorType,IteratorType>;
+
+  std::vector<IteratorPair> ranges;
+  ranges.push_back(IteratorPair(v0.cbegin(),v0.cend()));
+  ranges.push_back(IteratorPair(v1.cbegin(),v1.cend()));
+  ranges.push_back(IteratorPair(v2.cbegin(),v2.cend()));
+  ranges.push_back(IteratorPair(v3.cbegin(),v3.cend()));
+
+  ConcatenatedForwardConstIterator<IteratorType> begin(ranges,0); // this represents the first entry
+  ConcatenatedForwardConstIterator<IteratorType> end(ranges,IteratorState::pass_the_end);  // this represents the one-pass-end entry
+
+  for (; begin != end ; ++begin)
+        cout << *begin << endl;
+
+  @endcode
+  @endcode
+ * avoiding the nested loop needed by the
+ * previous examples.
  *
  * @author M. Martinelli
  * @date 03 June 2014
  */
 template <class Iterator>
-class ConcatenatedForwardIterator
+class ConcatenatedForwardConstIterator
     : public std::iterator<std::forward_iterator_tag, typename Iterator::value_type>
 {
 public:
+    /**
+     * Alias for specifying the value_type of this iterator (it's the same of the iterator specified
+     * by the template parameter <tt>Iterator</tt>).
+     */
     using value_type = typename Iterator::value_type;
 
 
@@ -51,42 +153,42 @@ public:
     /**
      * Default constructor. It does nothing.
      */
-    ConcatenatedForwardIterator();
+    ConcatenatedForwardConstIterator();
 
     /**
      * Constructor.
      */
-    ConcatenatedForwardIterator(
+    ConcatenatedForwardConstIterator(
         const std::vector<std::pair<Iterator,Iterator>> &ranges,
         const Index index);
 
 
 
     /** Copy constructor. */
-    ConcatenatedForwardIterator(const ConcatenatedForwardIterator<Iterator> &it) = default;
+    ConcatenatedForwardConstIterator(const ConcatenatedForwardConstIterator<Iterator> &it) = default;
 
     /** Move constructor. */
-    ConcatenatedForwardIterator(ConcatenatedForwardIterator<Iterator> &&it) = default;
+    ConcatenatedForwardConstIterator(ConcatenatedForwardConstIterator<Iterator> &&it) = default;
 
     /** Destructor */
-    ~ConcatenatedForwardIterator() = default ;
+    ~ConcatenatedForwardConstIterator() = default ;
     ///@}
 
 
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    ConcatenatedForwardIterator<Iterator> &operator=(
-        const ConcatenatedForwardIterator<Iterator> &it) = default;
+    ConcatenatedForwardConstIterator<Iterator> &operator=(
+        const ConcatenatedForwardConstIterator<Iterator> &it) = default;
 
     /** Move assignment operator. */
-    ConcatenatedForwardIterator<Iterator> &operator=(
-        ConcatenatedForwardIterator<Iterator> &&it) = default;
+    ConcatenatedForwardConstIterator<Iterator> &operator=(
+        ConcatenatedForwardConstIterator<Iterator> &&it) = default;
 
     ///@}
 
 
-    /** @name Dereferencing operators */
+    /** @name Dereferencing operators (const version) */
     ///@{
     /**
      *  Dereferencing operator, returns a
@@ -94,33 +196,24 @@ public:
      */
     const value_type &operator*() const;
 
-    /**
-     *  Dereferencing operator, returns a
-     *  reference to the value_type.
-     */
-    value_type &operator*();
 
     /**
      *  Dereferencing operator, returns a
      *  const pointer to the value_type.
      */
     const value_type *operator->() const;
-
-    /**
-     *  Dereferencing operator, returns a
-     *  pointer to the value_type.
-     */
-    value_type *operator->();
     ///@}
+
 
     /** @name Comparison operators */
     ///@{
     /** Compare for equality.*/
-    bool operator==(const ConcatenatedForwardIterator<Iterator> &it) const;
+    bool operator==(const ConcatenatedForwardConstIterator<Iterator> &it) const;
 
     /** Compare for inequality.*/
-    bool operator!=(const ConcatenatedForwardIterator<Iterator> &it) const;
+    bool operator!=(const ConcatenatedForwardConstIterator<Iterator> &it) const;
     ///@}
+
 
     /** @name Advance operator */
     ///@{
@@ -130,7 +223,7 @@ public:
      *  the next element and returns
      *  a reference to <tt>*this</tt>.
      */
-    ConcatenatedForwardIterator<Iterator> &operator++();
+    ConcatenatedForwardConstIterator<Iterator> &operator++();
     ///@}
 
 
@@ -140,14 +233,68 @@ public:
     /** Prints some information. Mostly used for debug and testing. */
     void print_info(LogStream &out) const;
 
-private:
+protected:
 
+    /**
+     * Vector of ranges upon which the ConcatenatedIterator is defined.
+     * Each entry in the vector is a pair of objects of type <tt>Iterator</tt>
+     * in the the form [begin,end), telling which is the begin of the range and which
+     * is one-pass-end of the range.
+     */
     std::vector<std::pair<Iterator,Iterator>> ranges_;
 
-    int range_id_ = 0;
+    /**
+     * Index used to specify which range is spanned at a given moment by the
+     * iterator_current_ member variable.
+     */
+    int range_id_;
 
+    /**
+     * Iterator pointing to the current position.
+     */
     Iterator iterator_current_;
 };
+
+
+/**
+ * @brief This class represents a forward iterator made by the
+ * concatenation of several forward iterator.
+ *
+ * Basically it provides the same functionality of ConcatenatedForwardConstIterator plus
+ * two methods for dereferencing the iterator to non-const value reference and value pointer.
+ *
+ * @author M. Martinelli
+ * @date 03 June 2014
+ */
+template <class Iterator>
+class ConcatenatedForwardIterator
+    : public ConcatenatedForwardConstIterator<Iterator>
+{
+public:
+    using value_type = typename Iterator::value_type;
+
+    /** Using the base class constructors. */
+    using ConcatenatedForwardConstIterator<Iterator>::ConcatenatedForwardConstIterator;
+
+
+    /** @name Dereferencing operators (non-const version) */
+    ///@{
+    /**
+     *  Dereferencing operator, returns a
+     *  reference to the value_type.
+     */
+    value_type &operator*();
+
+
+    /**
+     *  Dereferencing operator, returns a
+     *  pointer to the value_type.
+     */
+    value_type *operator->();
+    ///@}
+
+};
+
 
 
 
