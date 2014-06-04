@@ -98,38 +98,38 @@ operator[](const Index n) const -> const_reference
     return begin_[n];
 }
 
-template <class Container>
+template <class ContainerConstIterator>
 inline
-ConstContainerView<Container>::
-ConstContainerView(const const_iterator begin, const const_iterator end)
+ConstView<ContainerConstIterator>::
+ConstView(const const_iterator begin, const const_iterator end)
     : begin_(begin), end_(end)
 {
     Assert(begin_ <= end_, ExcInvalidIterator());
 }
 
 
-template <class Container>
+template <class ContainerConstIterator>
 inline
 auto
-ConstContainerView<Container>::
+ConstView<ContainerConstIterator>::
 begin() const -> const_iterator
 {
     return begin_;
 }
 
-template <class Container>
+template <class ContainerConstIterator>
 inline
 auto
-ConstContainerView<Container>::
+ConstView<ContainerConstIterator>::
 end() const -> const_iterator
 {
     return end_;
 }
 
-template <class Container>
+template <class ContainerConstIterator>
 inline
 auto
-ConstContainerView<Container>::
+ConstView<ContainerConstIterator>::
 operator[](const Index n) const -> const_reference
 {
     Assert(begin_+n < end_, ExcIteratorPastEnd());

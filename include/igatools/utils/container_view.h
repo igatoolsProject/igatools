@@ -139,12 +139,12 @@ private:
  * @author M.Martinelli
  * @date 2014
  */
-template <class Container>
-class ConstContainerView
+template <class ContainerConstIterator>
+class ConstView
 {
 public:
     /** Type of the const iterator. */
-    using const_iterator = typename Container::const_iterator;
+    using const_iterator = ContainerConstIterator;
 
     /** Type of the const reference. */
     using const_reference = typename const_iterator::reference;
@@ -156,26 +156,26 @@ public:
      * and the const iterator @p end pointing to one-past-the-end element
      * satisfying the chosen criteria.
      */
-    explicit ConstContainerView(const const_iterator begin, const const_iterator end);
+    explicit ConstView(const const_iterator begin, const const_iterator end);
 
 
     /** Copy constructor. */
-    ConstContainerView(const ConstContainerView<Container> &view) = default;
+    ConstView(const ConstView<ContainerConstIterator> &view) = default;
 
     /** Move constructor. */
-    ConstContainerView(ConstContainerView<Container> &&view) = default;
+    ConstView(ConstView<ContainerConstIterator> &&view) = default;
 
     /** Destructor. */
-    ~ConstContainerView() = default;
+    ~ConstView() = default;
     ///@}
 
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    ConstContainerView<Container> &operator=(const ConstContainerView<Container> &view) = default;
+    ConstView<ContainerConstIterator> &operator=(const ConstView<ContainerConstIterator> &view) = default;
 
     /** Move assignment operator. */
-    ConstContainerView<Container> &operator=(ConstContainerView<Container> &&view) = default;
+    ConstView<ContainerConstIterator> &operator=(ConstView<ContainerConstIterator> &&view) = default;
     ///@}
 
 
@@ -200,6 +200,14 @@ private:
 
     /** Iterator pointing to one-past-end element in the view. */
     const_iterator end_;
+};
+
+
+
+template <class Container>
+class ConstContainerView : public ConstView<typename Container::const_iterator>
+{
+    using ConstView<typename Container::const_iterator>::ConstView;
 };
 
 
