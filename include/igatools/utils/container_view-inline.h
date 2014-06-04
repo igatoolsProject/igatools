@@ -32,55 +32,55 @@ IGA_NAMESPACE_OPEN
 
 
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
-ContainerView<Container>::
-ContainerView(const iterator begin, const iterator end)
+View<Iterator,ConstIterator>::
+View(const iterator begin, const iterator end)
     : begin_(begin), end_(end)
 {
     Assert(begin_ <= end_, ExcInvalidIterator());
 }
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ContainerView<Container>::
+View<Iterator,ConstIterator>::
 begin() -> iterator
 {
     return begin_;
 }
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ContainerView<Container>::
+View<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
     return begin_;
 }
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ContainerView<Container>::
+View<Iterator,ConstIterator>::
 end() -> iterator
 {
     return end_;
 }
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ContainerView<Container>::
+View<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
     return end_;
 }
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ContainerView<Container>::
+View<Iterator,ConstIterator>::
 operator[](const Index n) -> reference
 {
 
@@ -88,19 +88,19 @@ operator[](const Index n) -> reference
     return begin_[n];
 }
 
-template <class Container>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ContainerView<Container>::
+View<Iterator,ConstIterator>::
 operator[](const Index n) const -> const_reference
 {
     Assert(begin_+n < end_, ExcIteratorPastEnd());
     return begin_[n];
 }
 
-template <class ContainerConstIterator>
+template <class ConstIterator>
 inline
-ConstView<ContainerConstIterator>::
+ConstView<ConstIterator>::
 ConstView(const const_iterator begin, const const_iterator end)
     : begin_(begin), end_(end)
 {
@@ -108,28 +108,28 @@ ConstView(const const_iterator begin, const const_iterator end)
 }
 
 
-template <class ContainerConstIterator>
+template <class ConstIterator>
 inline
 auto
-ConstView<ContainerConstIterator>::
+ConstView<ConstIterator>::
 begin() const -> const_iterator
 {
     return begin_;
 }
 
-template <class ContainerConstIterator>
+template <class ConstIterator>
 inline
 auto
-ConstView<ContainerConstIterator>::
+ConstView<ConstIterator>::
 end() const -> const_iterator
 {
     return end_;
 }
 
-template <class ContainerConstIterator>
+template <class ConstIterator>
 inline
 auto
-ConstView<ContainerConstIterator>::
+ConstView<ConstIterator>::
 operator[](const Index n) const -> const_reference
 {
     Assert(begin_+n < end_, ExcIteratorPastEnd());

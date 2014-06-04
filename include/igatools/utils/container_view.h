@@ -50,15 +50,15 @@ IGA_NAMESPACE_OPEN
  * @author M.Martinelli
  * @date 2014
  */
-template <class Container>
-class ContainerView
+template <class Iterator, class ConstIterator>
+class View
 {
 public:
     /** Type of the iterator. */
-    using iterator = typename Container::iterator;
+    using iterator = Iterator;
 
     /** Type of the const iterator. */
-    using const_iterator = typename Container::const_iterator;
+    using const_iterator = ConstIterator;
 
     /** Type of the reference. */
     using reference = typename iterator::reference;
@@ -74,27 +74,27 @@ public:
      * and the iterator @p end pointing to one-past-the-end element
      * satisfying the chosen criteria.
      */
-    explicit ContainerView(const iterator begin, const iterator end);
+    explicit View(const iterator begin, const iterator end);
 
 
     /** Copy constructor. */
-    ContainerView(const ContainerView<Container> &view) = default;
+    View(const View<Iterator,ConstIterator> &view) = default;
 
     /** Move constructor. */
-    ContainerView(ContainerView<Container> &&view) = default;
+    View(View<Iterator,ConstIterator> &&view) = default;
 
     /** Destructor. */
-    ~ContainerView() = default;
+    ~View() = default;
     ///@}
 
     /** @name Assignment operators */
     ///@{
 
     /** Copy assignment operator. */
-    ContainerView<Container> &operator=(const ContainerView<Container> &view) = default;
+    View<Iterator,ConstIterator> &operator=(const View<Iterator,ConstIterator> &view) = default;
 
     /** Move assignment operator. */
-    ContainerView<Container> &operator=(ContainerView<Container> &&view) = default;
+    View<Iterator,ConstIterator> &operator=(View<Iterator,ConstIterator> &&view) = default;
     ///@}
 
     /** @name Dealing with the iterator */
@@ -139,12 +139,12 @@ private:
  * @author M.Martinelli
  * @date 2014
  */
-template <class ContainerConstIterator>
+template <class ConstIterator>
 class ConstView
 {
 public:
     /** Type of the const iterator. */
-    using const_iterator = ContainerConstIterator;
+    using const_iterator = ConstIterator;
 
     /** Type of the const reference. */
     using const_reference = typename const_iterator::reference;
@@ -160,10 +160,10 @@ public:
 
 
     /** Copy constructor. */
-    ConstView(const ConstView<ContainerConstIterator> &view) = default;
+    ConstView(const ConstView<ConstIterator> &view) = default;
 
     /** Move constructor. */
-    ConstView(ConstView<ContainerConstIterator> &&view) = default;
+    ConstView(ConstView<ConstIterator> &&view) = default;
 
     /** Destructor. */
     ~ConstView() = default;
@@ -172,10 +172,10 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    ConstView<ContainerConstIterator> &operator=(const ConstView<ContainerConstIterator> &view) = default;
+    ConstView<ConstIterator> &operator=(const ConstView<ConstIterator> &view) = default;
 
     /** Move assignment operator. */
-    ConstView<ContainerConstIterator> &operator=(ConstView<ContainerConstIterator> &&view) = default;
+    ConstView<ConstIterator> &operator=(ConstView<ConstIterator> &&view) = default;
     ///@}
 
 
@@ -208,6 +208,13 @@ template <class Container>
 class ConstContainerView : public ConstView<typename Container::const_iterator>
 {
     using ConstView<typename Container::const_iterator>::ConstView;
+};
+
+
+template <class Container>
+class ContainerView : public View<typename Container::iterator,typename Container::const_iterator>
+{
+    using View<typename Container::iterator,typename Container::const_iterator>::View;
 };
 
 
