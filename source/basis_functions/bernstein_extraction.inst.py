@@ -30,5 +30,5 @@ for sp in spaces:
    f.write('template class %s ;\n' %sp)
 
 
-# needed by IgMapping
-f.write('template class BernsteinExtraction<0,0,1> ;\n')
+# # needed by IgMapping
+# f.write('template class BernsteinExtraction<0,0,1> ;\n')

@@ -29,4 +29,4 @@ for x in inst.all_ref_sp_dims:
             %(x.dim, x.range, x.rank))
 
 # needed by igamapping
-f.write('template class SplineSpace<0, 0, 1> ;\n')
+#f.write('template class SplineSpace<0, 0, 1> ;\n')

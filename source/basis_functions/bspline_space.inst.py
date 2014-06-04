@@ -33,4 +33,4 @@ for sp in spaces:
 
 
 # needed by IgMapping
-f.write('template class BSplineSpace<0,0,1> ;\n')
+#f.write('template class BSplineSpace<0,0,1> ;\n')

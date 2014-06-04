@@ -40,8 +40,8 @@ using std::set;
 using std::map;
 
 IGA_NAMESPACE_OPEN
-
 #if 0
+
 namespace
 {
 template <class RefSpace>
@@ -96,6 +96,16 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
 }
 
 
+
+/**
+ * Given a Spline type reference space, create a spline type
+ * space given by the trace of the function over the face.
+ *
+ * @param ref_space
+ * @param face_id
+ * @param elem_map
+ * @return
+ */
 template <typename RefSpace>
 EnableIf<RefSpace::has_weights, std::shared_ptr<typename RefSpace::RefFaceSpace> >
 create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
@@ -146,6 +156,7 @@ Index find_span(
 }
 
 
+
 template <class Space>
 std::shared_ptr< FaceSpace<Space> >
 get_face_space(std::shared_ptr<const Space> space,
@@ -170,6 +181,7 @@ get_face_space(std::shared_ptr<const Space> space,
     auto fpf = FPF::create(fmap);
 
     auto face_space = FaceSpace<Space>::create(face_ref_sp,fpf);
+
 
     const auto &active_dirs = UnitElement<Space::dim>::face_active_directions[face_id];
     const auto const_dir = UnitElement<Space::dim>::face_constant_direction[face_id];

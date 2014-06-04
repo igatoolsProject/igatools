@@ -38,5 +38,5 @@ for sp in ref_spaces:
       f.write('template class IgMapping< %s > ;\n' %space)
   
 # MM: why do we need this?
-f.write('template class IgMapping< BSplineSpace<0,0,1 > > ;\n')
-f.write('template class IgMapping< NURBSSpace<0,0,1 > > ;\n')
+#f.write('template class IgMapping< BSplineSpace<0,0,1 > > ;\n')
+#f.write('template class IgMapping< NURBSSpace<0,0,1 > > ;\n')

@@ -41,33 +41,33 @@ iota_array(const int init=0)
     return res;
 }
 
-//template<int ...>
-//struct seq { };
-//
-//template<int N, int ...S>
-//struct gens : gens<N-1, N-1, S...> { };
-//
-//template<int ...S>
-//struct gens<0, S...> {
-//  typedef seq<S...> type;
-//};
-//
-//constexpr int f(int n) {
-//  return n;
-//}
-//
-//template <int N>
-//class array_thinger {
-//  typedef typename gens<N>::type list;
-//
-//  template <int ...S>
-//  static constexpr std::array<int,N> make_arr(seq<S...>) {
-//    return std::array<int,N>{{f(S)...}};
-//  }
-//public:
-//  static constexpr std::array<int,N> arr = make_arr(list());
-//};
-//
+template<int ...>
+struct seq { };
+
+template<int N, int ...S>
+struct gens : gens<N-1, N-1, S...> { };
+
+template<int ...S>
+struct gens<0, S...> {
+  typedef seq<S...> type;
+};
+
+constexpr int f(int n) {
+  return n;
+}
+
+template <int N>
+class sequence {
+  typedef typename gens<N>::type list;
+
+  template <int ...S>
+  static constexpr std::array<int,N> make_arr(seq<S...>) {
+    return std::array<int,N>{{f(S)...}};
+  }
+public:
+  static constexpr std::array<int,N> arr = make_arr(list());
+};
+
 //template <int N>
 //constexpr std::array<int,N> array_thinger<N>::arr;
 //static constexpr std::array<Index, n_entries> all_components = array_thinger<n_components>::arr;
@@ -96,6 +96,12 @@ private:
     using GridType  = CartesianGrid<dim>;
     using GridSpace = FunctionSpaceOnGrid<GridType>;
 
+public:
+    static constexpr std::array<int,dim> dims = sequence<dim>::arr;
+
+    using FaceSpace = Conditional<(dim>0),
+                SplineSpace<dim-1,range,rank>,
+                SplineSpace<0, range, rank> >;
 public:
     template<class> class ComponentContainer;
     static const int n_components = ComponentContainer<int>::n_entries;
@@ -219,6 +225,23 @@ public:
     }
 
     ///@}
+
+    typename FaceSpace::MultiplicityTable
+    get_face_mult(const Index face_id)
+    {
+       // const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+
+
+        typename FaceSpace::MultiplicityTable f_mult(interior_mult_->get_comp_map());
+//        for (int comp : f_mult.get_active_components())
+//        {
+//            for (int j=0; j<RefSpace::dim-1; ++j)
+//                   f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
+//           return typename RefSpace::RefFaceSpace::MultiplicityTable(f_mult, f_degree);
+//        interior_mult_
+        return f_mult;
+    }
+    //get_face_degree(face_id);
 
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);

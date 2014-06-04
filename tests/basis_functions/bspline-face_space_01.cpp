@@ -41,7 +41,7 @@ void run_test()
         n[i]=2+i;
     }
     auto grid = CartesianGrid<dim_domain>::create(n);
-    auto space = space_t::create(grid,degree);
+    auto space = space_t::create(degree, grid);
 
     vector<Index> dof_map;
 

@@ -28,5 +28,5 @@ for x in inst.all_ref_sp_dims:
     f.write('template class Multiplicity<%d, %d, %d> ;\n' 
             %(x.dim, x.range, x.rank))
 
-# needed by igamapping
-f.write('template class Multiplicity<0, 0, 1> ;\n')
+# # needed by igamapping
+# f.write('template class Multiplicity<0, 0, 1> ;\n')

@@ -85,8 +85,12 @@ public:
         uniform, direction_uniform, non_uniform
     };
 
-    /** Type for the face of the grid */
-    using FaceType = Conditional<(dim>0),CartesianGrid<dim-1>,CartesianGrid<0> >;
+    /** Type for the face of the grid
+     * @note for the case dim==0 (with non existent face type)
+     * we use CartesianGrid<0>, but any function dealing with face
+     * should generate an exception if called with dim=0.
+     */
+    using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
 
 
     /** Type for iterator over the elements.*/

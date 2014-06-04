@@ -126,7 +126,9 @@ public:
 
 public:
     /** Type for the reference face space.*/
-    using RefFaceSpace = BSplineSpace<dim-1,range,rank>;
+    using RefFaceSpace = Conditional<(dim>0),
+            BSplineSpace<dim-1,range,rank>,
+            BSplineSpace<0,range,rank> >;
 
     /** Type for the element accessor. */
     using ElementAccessor = BSplineElementAccessor<dim,range,rank>;
@@ -292,8 +294,18 @@ public:
 
 
 
-
-
+//    std::shared_ptr<RefFaceSpace>
+//    get_face_space(const Index face_id,
+//                   std::map<int, int> &elem_map)
+//    {
+//        auto face_grid   = this->get_grid()->get_face_grid(face_id, elem_map);
+//        auto face_mult   = this->get_face_mult(face_id);
+//        auto face_degree = this->get_face_degree(face_id);
+//
+//        // TODO (pauletti, Jun 4, 2014): get face end_behaviour
+//        return RefFaceSpace::create(face_degree, face_grid, face_mult,
+//                                    RefFaceSpace::InteriorReg::maximum);
+//    }
 
 
     /** Return the push forward (non-const version). */
