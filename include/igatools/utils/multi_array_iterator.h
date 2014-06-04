@@ -116,11 +116,12 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator.*/
-    MultiArrayIterator<Container> &operator=(const MultiArrayIterator<Container> &) = delete;
-
-    /** Move assignment operator. Not allowed to be used. */
     MultiArrayIterator<Container> &operator=(
-        MultiArrayIterator<Container> &&) = delete;
+        const MultiArrayIterator<Container> &it) = default;
+
+    /** Move assignment operator.*/
+    MultiArrayIterator<Container> &operator=(
+        MultiArrayIterator<Container> &&) = default;
 
     ///@}
 
@@ -223,7 +224,7 @@ private:
     Index id_;
 
     /** Stride used to advance to the next entry in the container. */
-    const Index stride_;
+    Index stride_;
 
 };
 

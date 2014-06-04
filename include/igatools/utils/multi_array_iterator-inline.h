@@ -49,8 +49,12 @@ MultiArrayIterator(Container &container,const Index id,const Index stride)
     id_(id),
     stride_(stride)
 {
+    Assert(container_ != nullptr,ExcNullPtr());
+
     //the iterator must not be built id the container is empty!
     Assert(container_->flat_size() > 0,ExcEmptyObject());
+
+    Assert(stride_ >= 1, ExcLowerRange(stride_,1));
 
     Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
     if (id_ == container_->flat_size())
