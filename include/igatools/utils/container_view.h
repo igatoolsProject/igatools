@@ -32,24 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 
-/**
- * @brief This class represents a "view" of a container of type <tt>Container</tt>.
- *
- * A "view" is a special iterator that operates on entries
- * that can be grouped in accordance with some criteria.
- * In order to do so, the "view" needs to be constructed from two Container::iterator object
- * (one pointing to the first element and the other pointing to one-pass-the-end) that
- * satisfy the chosen criteria.
- *
- * For example a criteria could be that from an element pointed by the view and the next one
- * corresponds to a given number of elements in the container
- * (i.e. the elements are iterated with a <em>stride > 1</em>).
- *
- * @see ValueTable
- *
- * @author M.Martinelli
- * @date 2014
- */
+
 template <class Iterator, class ConstIterator>
 class View
 {
@@ -130,15 +113,6 @@ private:
 };
 
 
-/**
- * @brief This class represents a const "view" of a container of type <tt>Container</tt>.
- *
- * For the class documentation see the analogous non-const version ContainerView.
- *
- * @see ContainerView
- * @author M.Martinelli
- * @date 2014
- */
 template <class ConstIterator>
 class ConstView
 {
@@ -204,6 +178,15 @@ private:
 
 
 
+/**
+ * @brief This class represents a const "view" of a container of type <tt>Container</tt>.
+ *
+ * For the class documentation see the analogous non-const version ContainerView.
+ *
+ * @see ContainerView
+ * @author M.Martinelli
+ * @date 2014
+ */
 template <class Container>
 class ConstContainerView : public ConstView<typename Container::const_iterator>
 {
@@ -211,6 +194,24 @@ class ConstContainerView : public ConstView<typename Container::const_iterator>
 };
 
 
+/**
+ * @brief This class represents a "view" of a container of type <tt>Container</tt>.
+ *
+ * A "view" is a special iterator that operates on entries
+ * that can be grouped in accordance with some criteria.
+ * In order to do so, the "view" needs to be constructed from two Container::iterator object
+ * (one pointing to the first element and the other pointing to one-pass-the-end) that
+ * satisfy the chosen criteria.
+ *
+ * For example a criteria could be that from an element pointed by the view and the next one
+ * corresponds to a given number of elements in the container
+ * (i.e. the elements are iterated with a <em>stride > 1</em>).
+ *
+ * @see ValueTable
+ *
+ * @author M.Martinelli
+ * @date 2014
+ */
 template <class Container>
 class ContainerView : public View<typename Container::iterator,typename Container::const_iterator>
 {
