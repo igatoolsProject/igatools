@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-
+#include <igatools/utils/concatenated_forward_iterator.h>
 
 #include <boost/graph/adjacency_list.hpp>
 
@@ -33,6 +33,94 @@ IGA_NAMESPACE_OPEN
 
 
 
+class DofsManager
+{
+public:
+    using VecIterator = typename std::vector<Index>::iterator;
+    using DofsIterator = ConcatenatedForwardIterator<VecIterator>;
+    using DofsConstIterator = ConcatenatedForwardConstIterator<VecIterator>;
+
+    DofsManager() = default;
+    DofsManager(const DofsIterator &begin, const DofsIterator &end);
+
+    DofsIterator begin();
+    DofsIterator end();
+
+    DofsConstIterator begin() const;
+    DofsConstIterator end() const;
+
+
+    /**
+     * Prints internal information about the DofsManager.
+     * @note Mostly used for debugging and testing.
+     */
+    void print_info(LogStream &out) const;
+
+
+
+private:
+
+
+    DofsIterator dofs_view_begin_;
+    DofsIterator dofs_view_end_;
+};
+
+
+DofsManager::
+DofsManager(const DofsIterator &begin, const DofsIterator &end)
+    :
+    dofs_view_begin_(begin),
+    dofs_view_end_(end)
+{
+    Assert(dofs_view_begin_!=dofs_view_end_,ExcInvalidIterator());
+}
+
+
+auto
+DofsManager::
+begin() -> DofsIterator
+{
+    return dofs_view_begin_;
+}
+
+auto
+DofsManager::
+end() -> DofsIterator
+{
+    return dofs_view_end_;
+}
+
+auto
+DofsManager::
+begin() const -> DofsConstIterator
+{
+    return dofs_view_begin_;
+}
+
+auto
+DofsManager::
+end() const -> DofsConstIterator
+{
+    return dofs_view_end_;
+}
+
+void
+DofsManager::
+print_info(LogStream &out) const
+{
+    using std::endl;
+
+
+    Assert(this->begin() != this->end(),ExcInvalidIterator());
+
+    out << "Dofs = [ ";
+    for (auto dof = this->begin(); dof != this->end() ; ++dof)
+        out << *dof << " ";
+    out << "]" << endl;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
 
 /**
  * @brief This class represents a space built upon several patches, where each patch is a different
@@ -318,6 +406,9 @@ private:
     /** Graph container used to represent the tree of the elements. */
     Graph multipatch_graph_;
     ///*}
+
+
+    DofsManager dofs_manager_;
 };
 
 

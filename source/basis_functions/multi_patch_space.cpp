@@ -129,6 +129,27 @@ arrangement_close()
     //------------------------------------------------------------------------
 
 
+
+
+    //---------------------------------------------------------------------------
+    // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- begin
+    using vertex_iterator = typename boost::graph_traits<Graph>::vertex_iterator;
+    vertex_iterator vertex;
+    vertex_iterator vertex_end;
+    boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
+
+    for (; vertex != vertex_end ; ++vertex)
+    {
+        auto ref_space = multipatch_graph_[*vertex]->get_reference_space();
+
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+//      auto dofs_view = ref_space->get_dofs_view();
+    }
+    // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
+    //---------------------------------------------------------------------------
+
+
 }
 
 
@@ -274,6 +295,15 @@ print_info(LogStream &out) const
 
 
 
+    //---------------------------------------------------------------------------
+    out << "DOFs manager:" << endl;
+    out.push("\t");
+    dofs_manager_.print_info(out);
+    out << endl;
+    out.pop();
+    //---------------------------------------------------------------------------
+
+
     out.pop();
 }
 
@@ -379,7 +409,6 @@ print_info(LogStream &out) const
     out << "Patch id = " << patch_and_side_[1].first->get_id() << endl;
     out << "Side id = " << patch_and_side_[1].second << endl;
     out.pop();
-
 
 
 
