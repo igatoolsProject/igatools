@@ -1,4 +1,4 @@
-========== do_test_1() --- begin ==========
+========== do_test_1_const() --- begin ==========
 i = 0     value = 1
 i = 1     value = 2
 i = 2     value = 3
@@ -12,7 +12,23 @@ i = 9     value = 10
 i = 10     value = 11
 i = 11     value = 12
 i = 12     value = 13
-========== do_test_1() --- end ==========
+========== do_test_1_const() --- end ==========
+
+========== do_test_1_nonconst() --- begin ==========
+i = 0     value = 1
+i = 1     value = 2
+i = 2     value = 3
+i = 3     value = 4
+i = 4     value = 5
+i = 5     value = 6
+i = 6     value = 7
+i = 7     value = 8
+i = 8     value = 9
+i = 9     value = 10
+i = 10     value = 11
+i = 11     value = 12
+i = 12     value = 13
+========== do_test_1_nonconst() --- end ==========
 
 ========== do_test_2() --- begin ==========
 i_a = 0     value = 1

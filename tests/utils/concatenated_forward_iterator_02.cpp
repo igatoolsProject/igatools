@@ -33,8 +33,10 @@
 #include <igatools/utils/concatenated_forward_iterator.h>
 
 #include <vector>
+#include <memory>
 
 using std::vector;
+using std::shared_ptr;
 
 
 template <int dim>
@@ -44,42 +46,42 @@ do_test()
     out << "========== do_test() dim=" << dim << " --- begin ==========" << endl;
     using Grid = CartesianGrid<dim>;
     using RefSpace = BSplineSpace<dim>;
-
-    auto grid_1 = Grid::create(2);
-    auto grid_2 = Grid::create(3);
-
-
-    auto ref_space_1 = RefSpace::create(grid_1,2);
-    const int n_dofs_space_1 = ref_space_1->get_num_basis();
-
-    auto ref_space_2 = RefSpace::create(grid_2,3);
-    ref_space_2->add_dofs_offset(n_dofs_space_1);
-
-    ref_space_1->print_info(out);
-    ref_space_2->print_info(out);
-
     using DMA = DynamicMultiArray<Index,dim>;
-    const DMA &index_space_1 = ref_space_1->get_index_space()(0);
-    const DMA &index_space_2 = ref_space_2->get_index_space()(0);
-
-    out << "Index space 1 =" << endl;
-    index_space_1.print_info(out);
-    out << endl;
-
-    out << "Index space 2 =" << endl;
-    index_space_2.print_info(out);
-    out << endl;
     using VecIt = typename vector<Index>::const_iterator;
-    VecIt index_space_1_begin = index_space_1.get_data().begin();
-    VecIt index_space_1_end = index_space_1.get_data().end();
-
-    VecIt index_space_2_begin = index_space_2.get_data().begin();
-    VecIt index_space_2_end = index_space_2.get_data().end();
-
     using PairVecIt = std::pair<VecIt,VecIt>;
+
     std::vector<PairVecIt> ranges;
-    ranges.push_back(PairVecIt(index_space_1_begin,index_space_1_end));
-    ranges.push_back(PairVecIt(index_space_2_begin,index_space_2_end));
+
+    int n_spaces = 3;
+    vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
+
+
+    int dofs_offset = 0;
+    for (int i_sp = 0 ; i_sp < n_spaces ; ++i_sp)
+    {
+        int n_knots = i_sp + 2;
+        auto grid = Grid::create(n_knots);
+
+        int degree = i_sp + 2;
+
+        ref_spaces[i_sp] = RefSpace::create(grid,degree);
+
+        ref_spaces[i_sp]->add_dofs_offset(dofs_offset);
+
+        dofs_offset += ref_spaces[i_sp]->get_num_basis();
+
+        const DMA &index_space = ref_spaces[i_sp]->get_index_space()(0);
+
+        out << "Index space " << i_sp << " =" << endl;
+        index_space.print_info(out);
+        out << endl;
+
+        VecIt index_space_begin = index_space.get_data().begin();
+        VecIt index_space_end   = index_space.get_data().end();
+
+        ranges.push_back(PairVecIt(index_space_begin,index_space_end));
+    }
+
 
     ConcatenatedForwardConstIterator<VecIt> dofs_iterator_begin(ranges,0);
     ConcatenatedForwardConstIterator<VecIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
@@ -93,12 +95,12 @@ do_test()
     out << "]" << endl;
 
     out << "========== do_test() dim=" << dim << " --- end ==========" << endl;
-    out << endl;
+    out << endl << endl;
 }
 
 int main()
 {
     do_test<1>();
-//    do_test<2>();
-//    do_test<3>();
+    do_test<2>();
+    do_test<3>();
 }
