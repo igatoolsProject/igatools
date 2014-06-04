@@ -78,7 +78,7 @@ ConcatenatedForwardIterator<Iterator>::
 operator*() -> value_type &
 {
     Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
-    return *iterator_current_;
+    return const_cast<value_type &>(*iterator_current_);
 }
 
 template <class Iterator>

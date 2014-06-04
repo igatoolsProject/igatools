@@ -69,24 +69,27 @@ do_test()
     out << "Index space 2 =" << endl;
     index_space_2.print_info(out);
     out << endl;
-    auto index_space_1_begin = index_space_1.get_data().begin();
-    auto index_space_1_end = index_space_1.get_data().end();
+    using VecIt = typename vector<Index>::const_iterator;
+    VecIt index_space_1_begin = index_space_1.get_data().begin();
+    VecIt index_space_1_end = index_space_1.get_data().end();
 
-    auto index_space_2_begin = index_space_2.get_data().begin();
-    auto index_space_2_end = index_space_2.get_data().end();
+    VecIt index_space_2_begin = index_space_2.get_data().begin();
+    VecIt index_space_2_end = index_space_2.get_data().end();
 
-    using DofIt = decltype(index_space_1_begin);
-    using PairDofIt = std::pair<DofIt,DofIt>;
-    std::vector<PairDofIt> ranges;
-    ranges.push_back(PairDofIt(index_space_1_begin,index_space_1_end));
-    ranges.push_back(PairDofIt(index_space_2_begin,index_space_2_end));
+    using PairVecIt = std::pair<VecIt,VecIt>;
+    std::vector<PairVecIt> ranges;
+    ranges.push_back(PairVecIt(index_space_1_begin,index_space_1_end));
+    ranges.push_back(PairVecIt(index_space_2_begin,index_space_2_end));
 
-    ConcatenatedForwardIterator<DofIt> dofs_iterator_begin(ranges,0);
-    ConcatenatedForwardIterator<DofIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedForwardIterator<VecIt> dofs_iterator_begin(ranges,0);
+    ConcatenatedForwardIterator<VecIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
-        out << *dofs_iterator_begin << " ";
+    {
+        Index dof_id = *dofs_iterator_begin;
+        out << dof_id << " ";
+    }
     out << "]" << endl;
 
     out << "========== do_test() dim=" << dim << " --- end ==========" << endl;

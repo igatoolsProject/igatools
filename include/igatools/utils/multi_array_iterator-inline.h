@@ -57,6 +57,8 @@ MultiArrayIterator(Container &container,const Index id,const Index stride)
         id_ = IteratorState::pass_the_end;
 }
 
+
+
 template <class Container>
 inline
 MultiArrayIterator<Container> &

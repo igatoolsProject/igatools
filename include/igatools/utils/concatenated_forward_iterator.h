@@ -44,6 +44,7 @@ class ConcatenatedForwardIterator
 {
 public:
     using value_type = typename Iterator::value_type;
+    using reference = typename Iterator::reference;
 
 
     /** @name Constructors & destructor */
