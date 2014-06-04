@@ -26,6 +26,8 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
+#include <igatools/utils/container_view.h>
+
 #include <vector>
 
 
@@ -114,13 +116,13 @@ IGA_NAMESPACE_OPEN
  * (as made in the examples above) in this way:
  *@code
   using IteratorType = std::vector<int>::const_iterator;
-  using IteratorPair = std::pair<IteratorType,IteratorType>;
+  using IteratorView = ConstView<IteratorType>;
 
-  std::vector<IteratorPair> ranges;
-  ranges.push_back(IteratorPair(v0.cbegin(),v0.cend()));
-  ranges.push_back(IteratorPair(v1.cbegin(),v1.cend()));
-  ranges.push_back(IteratorPair(v2.cbegin(),v2.cend()));
-  ranges.push_back(IteratorPair(v3.cbegin(),v3.cend()));
+  std::vector<IteratorView> ranges;
+  ranges.push_back(IteratorView(v0.cbegin(),v0.cend()));
+  ranges.push_back(IteratorView(v1.cbegin(),v1.cend()));
+  ranges.push_back(IteratorView(v2.cbegin(),v2.cend()));
+  ranges.push_back(IteratorView(v3.cbegin(),v3.cend()));
 
   ConcatenatedForwardConstIterator<IteratorType> begin(ranges,0); // this represents the first entry
   ConcatenatedForwardConstIterator<IteratorType> end(ranges,IteratorState::pass_the_end);  // this represents the one-pass-end entry
@@ -159,7 +161,7 @@ public:
      * Constructor.
      */
     ConcatenatedForwardConstIterator(
-        const std::vector<std::pair<Iterator,Iterator>> &ranges,
+        const std::vector<ConstView<Iterator>> &ranges,
         const Index index);
 
 
@@ -228,7 +230,7 @@ public:
 
 
 
-    std::vector<std::pair<Iterator,Iterator>> get_ranges() const;
+    std::vector<ConstView<Iterator>> get_ranges() const;
 
     /** Prints some information. Mostly used for debug and testing. */
     void print_info(LogStream &out) const;
@@ -241,7 +243,7 @@ protected:
      * in the the form [begin,end), telling which is the begin of the range and which
      * is one-pass-end of the range.
      */
-    std::vector<std::pair<Iterator,Iterator>> ranges_;
+    std::vector<ConstView<Iterator>> ranges_;
 
     /**
      * Index used to specify which range is spanned at a given moment by the

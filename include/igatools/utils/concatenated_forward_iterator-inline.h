@@ -41,7 +41,7 @@ template <class Iterator>
 inline
 ConcatenatedForwardConstIterator<Iterator>::
 ConcatenatedForwardConstIterator(
-    const std::vector<std::pair<Iterator,Iterator>> &ranges,
+    const std::vector<ConstView<Iterator>> &ranges,
     const Index index)
     :
     ranges_(ranges)
@@ -51,18 +51,18 @@ ConcatenatedForwardConstIterator(
 
 #ifndef NDEBUG
     for (int i = 0 ; i < n_ranges ; ++i)
-        Assert(ranges_[i].first != ranges_[i].second,ExcInvalidIterator());
+        Assert(ranges_[i].begin() != ranges_[i].end(),ExcInvalidIterator());
 #endif
 
     Assert(index == 0 || index == IteratorState::pass_the_end,ExcInvalidIterator());
     if (index == 0)
     {
-        iterator_current_ = ranges_.front().first;
+        iterator_current_ = ranges_.front().begin();
         range_id_ = 0;
     }
     else if (index == IteratorState::pass_the_end)
     {
-        iterator_current_ = ranges_.back().second;
+        iterator_current_ = ranges_.back().end();
         range_id_ = n_ranges - 1;
     }
     /*
@@ -80,7 +80,7 @@ auto
 ConcatenatedForwardConstIterator<Iterator>::
 operator*() const -> const value_type &
 {
-    Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
+    Assert(iterator_current_ != ranges_.back().end(),ExcIteratorPastEnd());
     return *iterator_current_;
 }
 
@@ -103,17 +103,17 @@ operator++() -> ConcatenatedForwardConstIterator<Iterator> &
     if (range_id_ < ranges_.size()-1)
     {
         // if the current iterator is before the end, advance one position
-        if (iterator_current_ != ranges_[range_id_].second)
+        if (iterator_current_ != ranges_[range_id_].end())
             ++iterator_current_;
 
         // if the current iterator is already at the end of one iterator,
         // point to the first element of the next one
-        if (iterator_current_ == ranges_[range_id_].second)
-            iterator_current_ = ranges_[++range_id_].first;
+        if (iterator_current_ == ranges_[range_id_].end())
+            iterator_current_ = ranges_[++range_id_].begin();
     }
     else
     {
-        Assert(iterator_current_ != ranges_.back().second,ExcIteratorPastEnd());
+        Assert(iterator_current_ != ranges_.back().end(),ExcIteratorPastEnd());
         ++iterator_current_;
     }
 
@@ -134,8 +134,8 @@ operator==(const ConcatenatedForwardConstIterator<Iterator> &it) const
     const int n_ranges = ranges_.size();
     bool ranges_are_equal = true;
     for (int i = 0 ; i < n_ranges ; ++i)
-        if (ranges_[i].first  != it.ranges_[i].first ||
-            ranges_[i].second != it.ranges_[i].second)
+        if (ranges_[i].begin() != it.ranges_[i].begin() ||
+            ranges_[i].end()   != it.ranges_[i].end())
         {
             ranges_are_equal = false;
             break;
@@ -163,7 +163,7 @@ template <class Iterator>
 inline
 auto
 ConcatenatedForwardConstIterator<Iterator>::
-get_ranges() const -> std::vector<std::pair<Iterator,Iterator>>
+get_ranges() const -> std::vector<ConstView<Iterator>>
 {
     return ranges_;
 }
@@ -185,8 +185,8 @@ print_info(LogStream &out) const
     int i = 0 ;
     for (const auto &r : ranges_)
     {
-        out << "Range[" << i << "].first = " << &r.first << "   ";
-        out << "Range[" << i << "].second = " << &r.second;
+        out << "Range[" << i << "].begin() = " << &r.begin() << "   ";
+        out << "Range[" << i << "].end() = " << &r.end();
         out << endl;
         ++i;
     }
@@ -203,7 +203,7 @@ auto
 ConcatenatedForwardIterator<Iterator>::
 operator*() -> value_type &
 {
-    Assert(this->iterator_current_ != this->ranges_.back().second,ExcIteratorPastEnd());
+    Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
     return *this->iterator_current_;
 }
 

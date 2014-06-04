@@ -47,13 +47,13 @@ void do_test_1_const()
     vector<int> v3 = {13};
 
     using VecIterator = vector<int>::const_iterator;
-    using PairIt = std::pair<VecIterator,VecIterator>;
+    using VecView = ConstView<VecIterator>;
 
-    std::vector<PairIt> ranges;
-    ranges.push_back(PairIt(v0.begin(),v0.end()));
-    ranges.push_back(PairIt(v1.begin(),v1.end()));
-    ranges.push_back(PairIt(v2.begin(),v2.end()));
-    ranges.push_back(PairIt(v3.begin(),v3.end()));
+    std::vector<VecView> ranges;
+    ranges.push_back(VecView(v0.begin(),v0.end()));
+    ranges.push_back(VecView(v1.begin(),v1.end()));
+    ranges.push_back(VecView(v2.begin(),v2.end()));
+    ranges.push_back(VecView(v3.begin(),v3.end()));
 
 
     ConcatenatedForwardConstIterator<VecIterator> begin(ranges,0);
@@ -79,13 +79,13 @@ void do_test_1_nonconst()
     vector<int> v3 = {13};
 
     using VecIterator = vector<int>::iterator;
-    using PairIt = std::pair<VecIterator,VecIterator>;
+    using VecView = ConstView<VecIterator>;
 
-    std::vector<PairIt> ranges;
-    ranges.push_back(PairIt(v0.begin(),v0.end()));
-    ranges.push_back(PairIt(v1.begin(),v1.end()));
-    ranges.push_back(PairIt(v2.begin(),v2.end()));
-    ranges.push_back(PairIt(v3.begin(),v3.end()));
+    std::vector<VecView> ranges;
+    ranges.push_back(VecView(v0.begin(),v0.end()));
+    ranges.push_back(VecView(v1.begin(),v1.end()));
+    ranges.push_back(VecView(v2.begin(),v2.end()));
+    ranges.push_back(VecView(v3.begin(),v3.end()));
 
 
     ConcatenatedForwardIterator<VecIterator> begin(ranges,0);
@@ -116,27 +116,27 @@ void do_test_2()
     vector<int> v1b = {13};
 
     using ItType_0 = vector<int>::iterator;
-    using PairIt0 = std::pair<ItType_0,ItType_0>;
+    using VecView0 = ConstView<ItType_0>;
 
-    std::vector<std::pair<ItType_0,ItType_0>> ranges_a;
-    ranges_a.push_back(PairIt0(v0a.begin(),v0a.end()));
-    ranges_a.push_back(PairIt0(v1a.begin(),v1a.end()));
-    ranges_a.push_back(PairIt0(v2a.begin(),v2a.end()));
+    std::vector<VecView0> ranges_a;
+    ranges_a.push_back(VecView0(v0a.begin(),v0a.end()));
+    ranges_a.push_back(VecView0(v1a.begin(),v1a.end()));
+    ranges_a.push_back(VecView0(v2a.begin(),v2a.end()));
 
     using ItType_1 = ConcatenatedForwardIterator<ItType_0>;
     ItType_1 begin_a(ranges_a,0);
     ItType_1 end_a(ranges_a,IteratorState::pass_the_end);
 
 
-    std::vector<PairIt0> ranges_b;
-    ranges_b.push_back(PairIt0(v0b.begin(),v0b.end()));
-    ranges_b.push_back(PairIt0(v1b.begin(),v1b.end()));
+    std::vector<VecView0> ranges_b;
+    ranges_b.push_back(VecView0(v0b.begin(),v0b.end()));
+    ranges_b.push_back(VecView0(v1b.begin(),v1b.end()));
 
     ItType_1 begin_b(ranges_b,0);
     ItType_1 end_b(ranges_b,IteratorState::pass_the_end);
 
 
-    std::vector<PairIt0> ranges;
+    std::vector<VecView0> ranges;
     for (const auto &r : ranges_a)
         ranges.push_back(r);
     for (const auto &r : ranges_b)

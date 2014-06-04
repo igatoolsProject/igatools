@@ -48,9 +48,9 @@ do_test_1()
     using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename DMA::const_iterator;
-    using PairVecIt = std::pair<VecIt,VecIt>;
+    using VecView = ConstView<VecIt>;
 
-    std::vector<PairVecIt> ranges;
+    std::vector<VecView> ranges;
 
     int n_spaces = 3;
     vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
@@ -77,9 +77,7 @@ do_test_1()
         out << endl;
 
         ranges.push_back(
-            PairVecIt(
-                index_space.begin(),
-                index_space.end()));
+            VecView(index_space.begin(),index_space.end()));
     }
 
 
@@ -109,9 +107,9 @@ do_test_2()
     using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename vector<Index>::const_iterator;
-    using PairVecIt = std::pair<VecIt,VecIt>;
+    using VecView = ConstView<VecIt>;
 
-    std::vector<PairVecIt> ranges;
+    std::vector<VecView> ranges;
 
     int n_spaces = 3;
     vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
@@ -139,9 +137,7 @@ do_test_2()
 
 
         ranges.push_back(
-            PairVecIt(
-                index_space.get_data().begin(),
-                index_space.get_data().end()));
+            VecView(index_space.get_data().begin(),index_space.get_data().end()));
     }
 
 
