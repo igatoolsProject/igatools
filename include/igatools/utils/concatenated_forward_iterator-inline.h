@@ -216,16 +216,16 @@ operator->() const -> const value_type *
 }
 
 
-template <class Iterator>
+template <class ConstViewType>
 inline
-ConcatenatedForwardConstIterator<Iterator>::
+ConcatenatedForwardConstIterator<ConstViewType>::
 ConcatenatedForwardConstIterator(
-    const std::vector<ConstView<Iterator>> &ranges,
+    const std::vector<ConstViewType> &ranges,
     const Index index)
     :
     ConcatenatedForwardIteratorData<
-    ConstView<Iterator>,
-    ConcatenatedForwardConstIterator<Iterator>
+    ConstViewType,
+    ConcatenatedForwardConstIterator<ConstViewType>
     >(ranges,index)
 {}
 

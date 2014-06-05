@@ -81,8 +81,8 @@ do_test_1()
     }
 
 
-    ConcatenatedForwardConstIterator<VecIt> dofs_iterator_begin(ranges,0);
-    ConcatenatedForwardConstIterator<VecIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedForwardConstIterator<VecView> dofs_iterator_begin(ranges,0);
+    ConcatenatedForwardConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
@@ -141,8 +141,8 @@ do_test_2()
     }
 
 
-    ConcatenatedForwardConstIterator<VecIt> dofs_iterator_begin(ranges,0);
-    ConcatenatedForwardConstIterator<VecIt> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedForwardConstIterator<VecView> dofs_iterator_begin(ranges,0);
+    ConcatenatedForwardConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
