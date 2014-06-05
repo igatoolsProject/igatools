@@ -100,7 +100,7 @@ template <class Iterator,class ConstIterator>
 inline
 auto
 View<Iterator,ConstIterator>::
-operator[](const Index n) const -> const_reference
+operator[](const Index n) const -> const reference
 {
     Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
     return this->begin_[n];
@@ -137,7 +137,7 @@ template <class ConstIterator>
 inline
 auto
 ConstView<ConstIterator>::
-operator[](const Index n) const -> const_reference
+operator[](const Index n) const -> const reference
 {
     Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
     return this->begin_[n];

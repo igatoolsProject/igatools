@@ -65,8 +65,6 @@ public:
     /** Type of the reference. */
     using reference = typename iterator::reference;
 
-    /** Type of the const reference. */
-    using const_reference = typename const_iterator::reference;
 
     /** @name Constructor & destructor */
     ///@{
@@ -120,7 +118,7 @@ public:
     reference operator[](const Index n);
 
     /** Return a const reference to the <tt>n</tt>-th element in the view. */
-    const_reference operator[](const Index n) const;
+    const reference operator[](const Index n) const;
     ///@}
 };
 
@@ -135,8 +133,8 @@ public:
     /** Type of the const iterator. */
     using const_iterator = ConstIterator;
 
-    /** Type of the const reference. */
-    using const_reference = typename const_iterator::reference;
+    /** Type of the reference. */
+    using reference = typename iterator::reference;
 
     /** @name Constructor & destructor */
     ///@{
@@ -180,7 +178,7 @@ public:
     /** @name Dereference offset operators */
     ///@{
     /** Return a const reference to the <tt>n</tt>-th element in the view. */
-    const_reference operator[](const Index n) const;
+    const reference operator[](const Index n) const;
     ///@}
 };
 

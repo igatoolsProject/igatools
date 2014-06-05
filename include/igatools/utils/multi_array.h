@@ -172,7 +172,7 @@ public:
     ///@{
 
     /** Type of the const iterator. */
-    using const_iterator = MultiArrayIterator<const MultiArray<STLContainer,rank>>;
+    using const_iterator = MultiArrayConstIterator<MultiArray<STLContainer,rank>>;
 
     /** Type of the iterator. */
     using iterator = MultiArrayIterator<MultiArray<STLContainer,rank>>;
