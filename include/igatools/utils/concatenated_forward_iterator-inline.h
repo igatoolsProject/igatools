@@ -28,20 +28,19 @@
 
 IGA_NAMESPACE_OPEN
 
-template <class Iterator>
-inline
-ConcatenatedForwardConstIterator<Iterator>::
-ConcatenatedForwardConstIterator()
+
+template <class ViewType,class DerivedClass>
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedForwardIteratorData()
     :
     range_id_(IteratorState::invalid)
 {}
 
 
-template <class Iterator>
-inline
-ConcatenatedForwardConstIterator<Iterator>::
-ConcatenatedForwardConstIterator(
-    const std::vector<ConstView<Iterator>> &ranges,
+template <class ViewType,class DerivedClass>
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedForwardIteratorData(
+    const std::vector<ViewType> &ranges,
     const Index index)
     :
     ranges_(ranges)
@@ -51,7 +50,10 @@ ConcatenatedForwardConstIterator(
 
 #ifndef NDEBUG
     for (int i = 0 ; i < n_ranges ; ++i)
+    {
+        //TODO (mm): maybe it is better to assert  ranges_[i].begin() < ranges_[i].end()
         Assert(ranges_[i].begin() != ranges_[i].end(),ExcInvalidIterator());
+    }
 #endif
 
     Assert(index == 0 || index == IteratorState::pass_the_end,ExcInvalidIterator());
@@ -65,77 +67,37 @@ ConcatenatedForwardConstIterator(
         iterator_current_ = ranges_.back().end();
         range_id_ = n_ranges - 1;
     }
-    /*
-        LogStream out;
-        this->print_info(out);
-    //*/
 }
 
 
-
-
-template <class Iterator>
+template <class ViewType,class DerivedClass>
 inline
 auto
-ConcatenatedForwardConstIterator<Iterator>::
-operator*() const -> const value_type &
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+get_ranges() const -> std::vector<ViewType>
 {
-    Assert(iterator_current_ != ranges_.back().end(),ExcIteratorPastEnd());
-    return *iterator_current_;
-}
-
-template <class Iterator>
-inline
-auto
-ConcatenatedForwardConstIterator<Iterator>::
-operator->() const -> const value_type *
-{
-    return &(this->operator*());
+    return this->ranges_;
 }
 
 
-template <class Iterator>
-inline
-auto
-ConcatenatedForwardConstIterator<Iterator>::
-operator++() -> ConcatenatedForwardConstIterator<Iterator> &
-{
-    if (range_id_ < ranges_.size()-1)
-    {
-        // if the current iterator is before the end, advance one position
-        if (iterator_current_ != ranges_[range_id_].end())
-            ++iterator_current_;
 
-        // if the current iterator is already at the end of one iterator,
-        // point to the first element of the next one
-        if (iterator_current_ == ranges_[range_id_].end())
-            iterator_current_ = ranges_[++range_id_].begin();
-    }
-    else
-    {
-        Assert(iterator_current_ != ranges_.back().end(),ExcIteratorPastEnd());
-        ++iterator_current_;
-    }
 
-    return *this;
-}
-
-template <class Iterator>
+template <class ViewType,class DerivedClass>
 inline
 bool
-ConcatenatedForwardConstIterator<Iterator>::
-operator==(const ConcatenatedForwardConstIterator<Iterator> &it) const
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
 {
     // check the equality of the size
-    bool same_size = (ranges_.size() == it.ranges_.size());
+    bool same_size = (this->ranges_.size() == it.ranges_.size());
     Assert(same_size,ExcMessage("Iterators are not comparable."));
 
 
-    const int n_ranges = ranges_.size();
+    const int n_ranges = this->ranges_.size();
     bool ranges_are_equal = true;
     for (int i = 0 ; i < n_ranges ; ++i)
-        if (ranges_[i].begin() != it.ranges_[i].begin() ||
-            ranges_[i].end()   != it.ranges_[i].end())
+        if (this->ranges_[i].begin() != it.ranges_[i].begin() ||
+            this->ranges_[i].end()   != it.ranges_[i].end())
         {
             ranges_are_equal = false;
             break;
@@ -145,72 +107,159 @@ operator==(const ConcatenatedForwardConstIterator<Iterator> &it) const
 
     return (same_size &&
             ranges_are_equal &&
-            range_id_ == it.range_id_ &&
-            iterator_current_ == it.iterator_current_);
+            this->range_id_ == it.range_id_ &&
+            this->iterator_current_ == it.iterator_current_);
 }
 
-template <class Iterator>
+template <class ViewType,class DerivedClass>
 inline
 bool
-ConcatenatedForwardConstIterator<Iterator>::
-operator!=(const ConcatenatedForwardConstIterator<Iterator> &it) const
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator!=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
 {
     return !(*this == it);
 }
 
-
-template <class Iterator>
+template <class ViewType,class DerivedClass>
 inline
-auto
-ConcatenatedForwardConstIterator<Iterator>::
-get_ranges() const -> std::vector<ConstView<Iterator>>
+DerivedClass &
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+as_derived_class()
 {
-    return ranges_;
+    return static_cast<DerivedClass &>(*this);
+}
+
+template <class ViewType,class DerivedClass>
+inline
+const DerivedClass &
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+as_derived_class() const
+{
+    return static_cast<const DerivedClass &>(*this);
 }
 
 
-template <class Iterator>
+
+
+template <class ViewType,class DerivedClass>
+inline
+DerivedClass &
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator++()
+{
+    if (this->range_id_ < this->ranges_.size()-1)
+    {
+        // if the current iterator is before the end, advance one position
+        if (this->iterator_current_ != this->ranges_[this->range_id_].end())
+            ++this->iterator_current_;
+
+        // if the current iterator is already at the end of one iterator,
+        // point to the first element of the next one
+        if (this->iterator_current_ == this->ranges_[this->range_id_].end())
+            this->iterator_current_ = this->ranges_[++this->range_id_].begin();
+    }
+    else
+    {
+        Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
+        ++this->iterator_current_;
+    }
+
+    return this->as_derived_class();
+}
+
+
+
+template <class ViewType,class DerivedClass>
 inline
 void
-ConcatenatedForwardConstIterator<Iterator>::
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
 print_info(LogStream &out) const
 {
     using std::endl;
     std::string tab("   ");
 
-    out << "ConcatenatedForwardConstIterator infos:" << endl;
+    out << "ConcatenatedForwardIteratorData infos:" << endl;
     out.push(tab);
 
-    out << "Num. ranges = " << ranges_.size() << endl;
+    out << "Num. ranges = " << this->ranges_.size() << endl;
     int i = 0 ;
-    for (const auto &r : ranges_)
+    for (const auto &r : this->ranges_)
     {
         out << "Range[" << i << "].begin() = " << &r.begin() << "   ";
         out << "Range[" << i << "].end() = " << &r.end();
         out << endl;
         ++i;
     }
-    out << "range_id_ = " << range_id_ << endl;
+    out << "range_id_ = " << this->range_id_ << endl;
 
     out.pop();
 }
 
 
+template <class ViewType,class DerivedClass>
+inline
+auto
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator*() const -> const value_type &
+{
+    Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
+    return *this->iterator_current_;
+}
+
+template <class ViewType,class DerivedClass>
+inline
+auto
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator->() const -> const value_type *
+{
+    return &(this->operator*());
+}
+
 
 template <class Iterator>
 inline
+ConcatenatedForwardConstIterator<Iterator>::
+ConcatenatedForwardConstIterator(
+    const std::vector<ConstView<Iterator>> &ranges,
+    const Index index)
+    :
+    ConcatenatedForwardIteratorData<
+    ConstView<Iterator>,
+    ConcatenatedForwardConstIterator<Iterator>
+    >(ranges,index)
+{}
+
+
+
+
+template <class Iterator,class ConstIterator>
+inline
+ConcatenatedForwardIterator<Iterator,ConstIterator>::
+ConcatenatedForwardIterator(
+    const std::vector<View<Iterator,ConstIterator>> &ranges,
+    const Index index)
+    :
+    ConcatenatedForwardIteratorData<
+    View<Iterator,ConstIterator>,
+    ConcatenatedForwardIterator<Iterator,ConstIterator>
+    >(ranges,index)
+{}
+
+
+template <class Iterator,class ConstIterator>
+inline
 auto
-ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardIterator<Iterator,ConstIterator>::
 operator*() -> value_type &
 {
     Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
     return *this->iterator_current_;
 }
 
-template <class Iterator>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ConcatenatedForwardIterator<Iterator>::
+ConcatenatedForwardIterator<Iterator,ConstIterator>::
 operator->() -> value_type *
 {
     return &(this->operator*());

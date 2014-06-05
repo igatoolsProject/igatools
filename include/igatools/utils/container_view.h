@@ -130,6 +130,9 @@ class ConstView : public ViewData<ConstIterator>
 {
 public:
     /** Type of the const iterator. */
+    using iterator = ConstIterator;
+
+    /** Type of the const iterator. */
     using const_iterator = ConstIterator;
 
     /** Type of the const reference. */

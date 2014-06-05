@@ -55,9 +55,6 @@ auto
 View<Iterator,ConstIterator>::
 begin() -> iterator
 {
-    using std::cout;
-    using std::endl;
-    cout << "View::begin()" <<endl;
     return this->begin_;
 }
 

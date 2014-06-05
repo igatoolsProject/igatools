@@ -90,7 +90,7 @@ arrangement_close()
 
     //------------------------------------------------------------------------
     // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- begin
-    this->perform_ref_spaces_add_dofs_offset();
+//    this->perform_ref_spaces_add_dofs_offset();
     // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- end
     //------------------------------------------------------------------------
 
@@ -142,58 +142,52 @@ arrangement_close()
 
     using std::cout;
     using std::endl;
+    Index offset = 0;
     for (; vertex != vertex_end ; ++vertex)
     {
         shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(multipatch_graph_[*vertex]->get_reference_space());
 
-        using DMA = DynamicMultiArray<Index,dim>;
-
-
         LogStream out;
-        ref_space->print_info(out);
-        typename RefSpace::template ComponentTable<DMA> &index_space = ref_space->get_index_space();
+//        ref_space->print_info(out);
+        auto &index_space = ref_space->get_index_space();
+
+        using DofsComponentView = ContainerView<MultiArray<vector<Index>,dim>>;
+
+        vector<DofsComponentView> dofs_views;
+
         for (int comp = 0 ; comp < RefSpace::n_components ; ++comp)
         {
-            DMA &index_space_comp = index_space(comp);
+            auto &index_space_comp = index_space(comp);
 
-            const auto index_space_comp_const_view = index_space_comp.get_const_view();
-            cout << "const DOFs component " << comp << " = ";
-            for (const Index &dof : index_space_comp_const_view)
-            {
-                cout << dof << " " ;
-            }
-            cout << endl;
+            dofs_views.push_back(index_space_comp.get_view());
 
-
-            const vector<Index> &dof_data = index_space_comp.get_data();
-
-            auto index_space_comp_view = index_space_comp.get_view();
+            DofsComponentView index_space_comp_view = index_space_comp.get_view();
             cout << "DOFs component " << comp << " = ";
 
             for (Index &dof : index_space_comp_view)
             {
-                cout << "&dof = " << &dof << endl;
-                dof += 10;
-//              cout << dof << " " ;
-            }
-            for (const Index &dof : dof_data)
-            {
-                cout << "&dof_data = " << &dof << "   value = " << dof << endl;
+                dof += offset;
+                cout << dof << " " ;
             }
             cout << endl;
 
         }
-        cout << "&ref_space = " << &(*ref_space) << "   " << ref_space.get() <<endl;
-        ref_space->print_info(out);
+        offset += ref_space->get_num_basis();
+
+//        using DofsComponentViewIt = typename DofsComponentView::iterator;
+//        ConcatenatedForwardIterator<DofsComponentViewIt> space_dofs_begin(dofs_views,0);
+//        ConcatenatedForwardIterator<DofsComponentViewIt> space_dofs_end(dofs_views,IteratorState::pass_the_end);
+//        cout << "&ref_space = " << &(*ref_space) << "   " << ref_space.get() <<endl;
+//        ref_space->print_info(out);
 //        View<vec_it_t> dofs_view_comp =
 
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
 //      auto dofs_view = ref_space->get_dofs_view();
     }
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
     //---------------------------------------------------------------------------
 
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
 
 }
 

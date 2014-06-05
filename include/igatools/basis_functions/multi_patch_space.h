@@ -37,18 +37,19 @@ class DofsManager
 {
 public:
     using VecIterator = typename std::vector<Index>::iterator;
-    using DofsIterator = ConcatenatedForwardIterator<VecIterator>;
+    using VecConstIterator = typename std::vector<Index>::const_iterator;
+    using DofsIterator = ConcatenatedForwardIterator<VecIterator,VecConstIterator>;
     using DofsConstIterator = ConcatenatedForwardConstIterator<VecIterator>;
 
     DofsManager() = default;
     DofsManager(const DofsIterator &begin, const DofsIterator &end);
-
+#if 0
     DofsIterator begin();
     DofsIterator end();
 
     DofsConstIterator begin() const;
     DofsConstIterator end() const;
-
+#endif
 
     /**
      * Prints internal information about the DofsManager.
@@ -65,7 +66,7 @@ private:
     DofsIterator dofs_view_end_;
 };
 
-
+#if 0
 DofsManager::
 DofsManager(const DofsIterator &begin, const DofsIterator &end)
     :
@@ -121,6 +122,15 @@ print_info(LogStream &out) const
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
 }
+#endif
+void
+DofsManager::
+print_info(LogStream &out) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
 
 /**
  * @brief This class represents a space built upon several patches, where each patch is a different

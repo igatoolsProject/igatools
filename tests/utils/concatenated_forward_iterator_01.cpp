@@ -79,7 +79,8 @@ void do_test_1_nonconst()
     vector<int> v3 = {13};
 
     using VecIterator = vector<int>::iterator;
-    using VecView = ConstView<VecIterator>;
+    using VecConstIterator = vector<int>::const_iterator;
+    using VecView = View<VecIterator,VecConstIterator>;
 
     std::vector<VecView> ranges;
     ranges.push_back(VecView(v0.begin(),v0.end()));
@@ -88,8 +89,8 @@ void do_test_1_nonconst()
     ranges.push_back(VecView(v3.begin(),v3.end()));
 
 
-    ConcatenatedForwardIterator<VecIterator> begin(ranges,0);
-    ConcatenatedForwardIterator<VecIterator> end(ranges,IteratorState::pass_the_end);
+    ConcatenatedForwardIterator<VecIterator,VecConstIterator> begin(ranges,0);
+    ConcatenatedForwardIterator<VecIterator,VecConstIterator> end(ranges,IteratorState::pass_the_end);
 
 
 
@@ -123,7 +124,7 @@ void do_test_2()
     ranges_a.push_back(VecView0(v1a.begin(),v1a.end()));
     ranges_a.push_back(VecView0(v2a.begin(),v2a.end()));
 
-    using ItType_1 = ConcatenatedForwardIterator<ItType_0>;
+    using ItType_1 = ConcatenatedForwardConstIterator<ItType_0>;
     ItType_1 begin_a(ranges_a,0);
     ItType_1 end_a(ranges_a,IteratorState::pass_the_end);
 
