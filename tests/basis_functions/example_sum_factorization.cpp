@@ -511,7 +511,7 @@ void
 PoissonProblem<dim,DerivedClass>::
 solve()
 {
-    const Real tol = 1.0e-10;
+    const Real tol = 1.0e-13;
     const Size max_iters = 10000000;
     LinearSolverType solver(
         LinearSolverType::SolverType::CG,
