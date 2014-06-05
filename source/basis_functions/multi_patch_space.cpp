@@ -138,9 +138,22 @@ arrangement_close()
     vertex_iterator vertex_end;
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
 
+
     for (; vertex != vertex_end ; ++vertex)
     {
         auto ref_space = multipatch_graph_[*vertex]->get_reference_space();
+
+        using vec_it_t = vector<Index>::iterator;
+        auto &index_space = ref_space->get_index_space();
+        for (int comp = 0 ; comp < RefSpace::n_components ; ++comp)
+        {
+            auto &index_space_comp = index_space(comp);
+            const vector<Index> &index_space_comp_data = index_space_comp.get_data();
+
+            const auto index_space_comp_const_view = index_space_comp.get_const_view();
+
+        }
+//        View<vec_it_t> dofs_view_comp =
 
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());

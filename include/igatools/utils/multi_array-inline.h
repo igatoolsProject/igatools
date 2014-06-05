@@ -166,7 +166,7 @@ MultiArray<STLContainer,rank>::
 fill_progression(const Entry &init)
 {
     Entry val = init;
-    for (auto & d : data_)
+    for (auto &d : data_)
         d = val++;
 }
 
@@ -181,6 +181,25 @@ fill(const Entry &value)
     std::fill(this->data_.begin(),this->data_.end(),value);
 }
 
+
+
+template<class STLContainer, int rank>
+inline
+ContainerView<MultiArray<STLContainer,rank>>
+                                          MultiArray<STLContainer,rank>::
+                                          get_view() const
+{
+    return ContainerView<MultiArray<STLContainer,rank>>(this->begin(),this->end());
+}
+
+template<class STLContainer, int rank>
+inline
+ConstContainerView<MultiArray<STLContainer,rank>>
+                                               MultiArray<STLContainer,rank>::
+                                               get_const_view() const
+{
+    return ConstContainerView<MultiArray<STLContainer,rank>>(this->cbegin(),this->cend());
+}
 
 
 template<class STLContainer, int rank>

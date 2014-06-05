@@ -32,9 +32,28 @@
 IGA_NAMESPACE_OPEN
 
 
+template <class IteratorType>
+class ViewData
+{
+protected:
+    /**
+     * Builds a ViewData object from two IteratorType objects: one pointing to the beginning
+     * of the view, and the other pointing to one-pass-end.
+     * @note In Debug mode is checked if the relation <tt>begin < end</tt> is satisfied.
+     * If it is not, an assertion will be raised.
+     */
+    explicit ViewData(const IteratorType begin, const IteratorType end);
+
+    /** Iterator pointing to the first element in the view. */
+    IteratorType begin_;
+
+    /** Iterator pointing to one-past-end element in the view. */
+    IteratorType end_;
+};
+
 
 template <class Iterator, class ConstIterator>
-class View
+class View : public ViewData<Iterator>
 {
 public:
     /** Type of the iterator. */
@@ -103,18 +122,11 @@ public:
     /** Return a const reference to the <tt>n</tt>-th element in the view. */
     const_reference operator[](const Index n) const;
     ///@}
-
-private:
-    /** Iterator pointing to the first element in the view. */
-    iterator begin_;
-
-    /** Iterator pointing to one-past-end element in the view. */
-    iterator end_;
 };
 
 
 template <class ConstIterator>
-class ConstView
+class ConstView : public ViewData<ConstIterator>
 {
 public:
     /** Type of the const iterator. */
@@ -167,13 +179,6 @@ public:
     /** Return a const reference to the <tt>n</tt>-th element in the view. */
     const_reference operator[](const Index n) const;
     ///@}
-
-private:
-    /** Iterator pointing to the first element in the view. */
-    const_iterator begin_;
-
-    /** Iterator pointing to one-past-end element in the view. */
-    const_iterator end_;
 };
 
 

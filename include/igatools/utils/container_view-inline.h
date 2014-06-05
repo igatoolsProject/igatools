@@ -29,6 +29,15 @@
 
 IGA_NAMESPACE_OPEN
 
+template <class IteratorType>
+ViewData<IteratorType>::
+ViewData(const IteratorType begin, const IteratorType end)
+    :
+    begin_(begin),
+    end_(end)
+{
+    Assert(begin_ <= end_, ExcInvalidIterator());
+}
 
 
 
@@ -36,10 +45,9 @@ template <class Iterator,class ConstIterator>
 inline
 View<Iterator,ConstIterator>::
 View(const iterator begin, const iterator end)
-    : begin_(begin), end_(end)
-{
-    Assert(begin_ <= end_, ExcInvalidIterator());
-}
+    :
+    ViewData<Iterator>(begin,end)
+{}
 
 template <class Iterator,class ConstIterator>
 inline
@@ -47,7 +55,7 @@ auto
 View<Iterator,ConstIterator>::
 begin() -> iterator
 {
-    return begin_;
+    return this->begin_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -56,7 +64,7 @@ auto
 View<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
-    return begin_;
+    return this->begin_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -65,7 +73,7 @@ auto
 View<Iterator,ConstIterator>::
 end() -> iterator
 {
-    return end_;
+    return this->end_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -74,7 +82,7 @@ auto
 View<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
-    return end_;
+    return this->end_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -84,8 +92,8 @@ View<Iterator,ConstIterator>::
 operator[](const Index n) -> reference
 {
 
-    Assert(begin_+n < end_, ExcIteratorPastEnd());
-    return begin_[n];
+    Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
+    return this->begin_[n];
 }
 
 template <class Iterator,class ConstIterator>
@@ -94,18 +102,17 @@ auto
 View<Iterator,ConstIterator>::
 operator[](const Index n) const -> const_reference
 {
-    Assert(begin_+n < end_, ExcIteratorPastEnd());
-    return begin_[n];
+    Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
+    return this->begin_[n];
 }
 
 template <class ConstIterator>
 inline
 ConstView<ConstIterator>::
 ConstView(const const_iterator begin, const const_iterator end)
-    : begin_(begin), end_(end)
-{
-    Assert(begin_ <= end_, ExcInvalidIterator());
-}
+    :
+    ViewData<ConstIterator>(begin,end)
+{}
 
 
 template <class ConstIterator>
@@ -114,7 +121,7 @@ auto
 ConstView<ConstIterator>::
 begin() const -> const_iterator
 {
-    return begin_;
+    return this->begin_;
 }
 
 template <class ConstIterator>
@@ -123,7 +130,7 @@ auto
 ConstView<ConstIterator>::
 end() const -> const_iterator
 {
-    return end_;
+    return this->end_;
 }
 
 template <class ConstIterator>
@@ -132,8 +139,8 @@ auto
 ConstView<ConstIterator>::
 operator[](const Index n) const -> const_reference
 {
-    Assert(begin_+n < end_, ExcIteratorPastEnd());
-    return begin_[n];
+    Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
+    return this->begin_[n];
 }
 
 

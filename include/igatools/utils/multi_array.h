@@ -27,7 +27,7 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_sized_container.h>
 #include <igatools/utils/multi_array_iterator.h>
-
+#include <igatools/utils/container_view.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -76,6 +76,18 @@ IGA_NAMESPACE_OPEN
  * one-pass the end of the container, you can use MultiArray::end() (const and non-const version) or
  * MultiArray::cend() (const version).
  *
+ *
+ * ## View
+ * Another way to access the elements of a MultiArray is using a ContainerView
+ * (or its <tt>const</tt> counterpart ConstContainerView).
+ * A ContainerView is basically an object that:
+ * - store two iterators (one pointing the begin of the container
+ * and the other pointing to one-pass-end the container;
+ * - have some methods for accessing the entries of the container.
+ * It is important to note that a ContainerView is a lightweight object
+ * (compared to the container from which the View refers from) because the memory used to store
+ * the data is allocated on the container and not on the ContainerView,
+ * and that the entry access are managed by the iterators.
  *
  * @ingroup multi_array_containers
  *
@@ -186,6 +198,15 @@ public:
 
     ///@}
 
+
+    /** @name Getting a view */
+    ///@{
+    /** Returns a ContainerView of the MultiArray. */
+    ContainerView<MultiArray<STLContainer,rank>> get_view() const;
+
+    /** Returns a ConstContainerView of the MultiArray. */
+    ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;
+    ///@}
 
     /** @name Functions to easily fill the multiarray */
     ///@{
