@@ -22,7 +22,7 @@ BSplineSpace<1,1>
 						0 0 1.00000 0 
 						0 0 0 1.00000 
 	Num dofs: 4
-	Dofs: [ 0 1 2 3 ]
+	DOFs component 0 = [ 0 1 2 3 ]
 	Num overlapping funcs: [ 4 4 4 4 ]
 
 Columns space:
@@ -44,7 +44,7 @@ BSplineSpace<1,1>
 						0 1.00000 0 
 						0 0 1.00000 
 	Num dofs: 3
-	Dofs: [ 0 1 2 ]
+	DOFs component 0 = [ 0 1 2 ]
 	Num overlapping funcs: [ 3 3 3 ]
 
 Number of dofs of rows space: 4

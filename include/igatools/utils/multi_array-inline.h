@@ -185,18 +185,18 @@ fill(const Entry &value)
 
 template<class STLContainer, int rank>
 inline
-ContainerView<MultiArray<STLContainer,rank>>
-                                          MultiArray<STLContainer,rank>::
-                                          get_view() const
+ContainerView<MultiArray<STLContainer,rank> >
+MultiArray<STLContainer,rank>::
+get_view()
 {
     return ContainerView<MultiArray<STLContainer,rank>>(this->begin(),this->end());
 }
 
 template<class STLContainer, int rank>
 inline
-ConstContainerView<MultiArray<STLContainer,rank>>
-                                               MultiArray<STLContainer,rank>::
-                                               get_const_view() const
+ConstContainerView<MultiArray<STLContainer,rank> >
+MultiArray<STLContainer,rank>::
+get_const_view() const
 {
     return ConstContainerView<MultiArray<STLContainer,rank>>(this->cbegin(),this->cend());
 }

@@ -251,11 +251,21 @@ public :
     }
 
     /**
-     * Returns a reference to the dense multi array storing the global dofs.
+     * Returns a const reference to the dense multi array storing the global dofs.
      * Each element has a statically defined zone to read their dofs from,
      * independent of the distribution policy in use.
      */
     const typename spline_space_t::template ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const
+    {
+        return sp_space_->get_index_space();
+    }
+
+    /**
+     * Returns a reference to the dense multi array storing the global dofs.
+     * Each element has a statically defined zone to read their dofs from,
+     * independent of the distribution policy in use.
+     */
+    typename spline_space_t::template ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space()
     {
         return sp_space_->get_index_space();
     }

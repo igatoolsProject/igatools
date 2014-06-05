@@ -8,7 +8,7 @@ PhysicalSpace info
 		
 			Space component[0]: 
 		Num dofs: 1
-		Dofs: [ 0 ]
+		DOFs component 0 = [ 0 ]
 		Num overlapping funcs: [ 1 ]
 
 Push-forward:
@@ -34,7 +34,7 @@ PhysicalSpace info
 		
 			Space component[0]: 
 		Num dofs: 1
-		Dofs: [ 0 ]
+		DOFs component 0 = [ 0 ]
 		Num overlapping funcs: [ 1 ]
 
 Push-forward:
@@ -74,7 +74,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 3
-		Dofs: [ 0 1 2 ]
+		DOFs component 0 = [ 0 1 2 ]
 		Num overlapping funcs: [ 2 3 2 ]
 
 Push-forward:
@@ -114,7 +114,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 3
-		Dofs: [ 0 1 2 ]
+		DOFs component 0 = [ 0 1 2 ]
 		Num overlapping funcs: [ 2 3 2 ]
 
 Push-forward:
@@ -150,7 +150,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 2
-		Dofs: [ 0 1 ]
+		DOFs component 0 = [ 0 1 ]
 		Num overlapping funcs: [ 2 2 ]
 
 Push-forward:
@@ -186,7 +186,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 2
-		Dofs: [ 0 1 ]
+		DOFs component 0 = [ 0 1 ]
 		Num overlapping funcs: [ 2 2 ]
 
 Push-forward:
@@ -244,7 +244,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 12
-		Dofs: [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+		DOFs component 0 = [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
 		Num overlapping funcs: [ 4 6 4 6 9 6 6 9 6 4 6 4 ]
 
 Push-forward:
@@ -302,7 +302,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 12
-		Dofs: [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+		DOFs component 0 = [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
 		Num overlapping funcs: [ 4 6 4 6 9 6 6 9 6 4 6 4 ]
 
 Push-forward:
@@ -356,7 +356,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 8
-		Dofs: [ 0 1 2 3 4 5 6 7 ]
+		DOFs component 0 = [ 0 1 2 3 4 5 6 7 ]
 		Num overlapping funcs: [ 4 4 6 6 6 6 4 4 ]
 
 Push-forward:
@@ -410,7 +410,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 8
-		Dofs: [ 0 1 2 3 4 5 6 7 ]
+		DOFs component 0 = [ 0 1 2 3 4 5 6 7 ]
 		Num overlapping funcs: [ 4 4 6 6 6 6 4 4 ]
 
 Push-forward:
@@ -460,7 +460,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 6
-		Dofs: [ 0 1 2 3 4 5 ]
+		DOFs component 0 = [ 0 1 2 3 4 5 ]
 		Num overlapping funcs: [ 4 4 6 6 4 4 ]
 
 Push-forward:
@@ -510,7 +510,7 @@ PhysicalSpace info
 							1.00000 0 
 							0 1.00000 
 		Num dofs: 6
-		Dofs: [ 0 1 2 3 4 5 ]
+		DOFs component 0 = [ 0 1 2 3 4 5 ]
 		Num overlapping funcs: [ 4 4 6 6 4 4 ]
 
 Push-forward:

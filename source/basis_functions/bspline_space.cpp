@@ -764,7 +764,7 @@ get_num_basis_per_element(int iComp) const
     const auto &degree_component = degree_(iComp) ;
 
     Index num_dofs_per_element_component = 1 ;
-    for (const auto & p : degree_component)
+    for (const auto &p : degree_component)
         num_dofs_per_element_component *= (p + 1) ;
 
     return (num_dofs_per_element_component) ;
@@ -985,6 +985,14 @@ get_index_space() const -> const ComponentTable<DynamicMultiArray<Index,dim>> &
 }
 
 template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_index_space() -> ComponentTable<DynamicMultiArray<Index,dim>> &
+{
+    return index_space_;
+}
+
+template<int dim_, int range_, int rank_>
 const std::vector<std::vector<Index>> &
                                    BSplineSpace<dim_, range_, rank_>::
                                    get_element_global_dofs() const
@@ -1001,12 +1009,12 @@ add_dofs_offset(const Index offset)
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
         auto &dofs_component = index_space_(comp);
-        for (auto & dof_id : dofs_component)
+        for (auto &dof_id : dofs_component)
             dof_id += offset;
     }
 
-    for (auto & dofs_element : element_global_dofs_)
-        for (auto & dof_id : dofs_element)
+    for (auto &dofs_element : element_global_dofs_)
+        for (auto &dof_id : dofs_element)
             dof_id += offset;
 }
 
@@ -1050,7 +1058,7 @@ print_info(LogStream &out) const
             //------------------------------------------------------------------------------------------
             out << "Knot multiplicities: [ " ;
             const auto &mult_iComp_jDim = mult_(iComp).get_data_direction(jDim);
-            for (const int & m : mult_iComp_jDim)
+            for (const int &m : mult_iComp_jDim)
             {
                 out << m << " " ;
             }
@@ -1060,7 +1068,7 @@ print_info(LogStream &out) const
             //------------------------------------------------------------------------------------------
             out << "Knots vectors (with repetitions): [ " ;
             const auto &knots_iComp_jDim = knots_with_repetitions_(iComp).get_data_direction(jDim);
-            for (const Real & knt : knots_iComp_jDim)
+            for (const Real &knt : knots_iComp_jDim)
             {
                 out << knt << " ";
             }
@@ -1111,8 +1119,18 @@ print_info(LogStream &out) const
     const int num_dofs = get_num_basis() ;
     out << "Num dofs: " << num_dofs << endl ;
 
-    //TODO: Do we need to call external functions from this output operator?
-    out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl ;
+    for (int comp = 0 ; comp < n_components ; ++comp)
+    {
+        const auto &index_space_comp = this->get_index_space()(comp);
+
+        const auto index_space_const_view = index_space_comp.get_const_view();
+
+        out << "DOFs component " << comp << " = [ ";
+        for (const Index &dof : index_space_const_view)
+            out << dof << " " ;
+        out << "]" << endl;
+    }
+
 
     const SparsityPattern &sparsity_pattern =
         dof_tools::get_sparsity_pattern(this->shared_from_this()) ;

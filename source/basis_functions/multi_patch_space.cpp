@@ -23,6 +23,8 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/utils/vector_tools.h>
 
+#include <igatools/utils/dynamic_multi_array.h>
+
 #include <igatools/base/logstream.h>
 
 using std::string;
@@ -138,21 +140,51 @@ arrangement_close()
     vertex_iterator vertex_end;
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
 
-
+    using std::cout;
+    using std::endl;
     for (; vertex != vertex_end ; ++vertex)
     {
-        auto ref_space = multipatch_graph_[*vertex]->get_reference_space();
+        shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(multipatch_graph_[*vertex]->get_reference_space());
 
-        using vec_it_t = vector<Index>::iterator;
-        auto &index_space = ref_space->get_index_space();
+        using DMA = DynamicMultiArray<Index,dim>;
+
+
+        LogStream out;
+        ref_space->print_info(out);
+        typename RefSpace::template ComponentTable<DMA> &index_space = ref_space->get_index_space();
         for (int comp = 0 ; comp < RefSpace::n_components ; ++comp)
         {
-            auto &index_space_comp = index_space(comp);
-            const vector<Index> &index_space_comp_data = index_space_comp.get_data();
+            DMA &index_space_comp = index_space(comp);
 
             const auto index_space_comp_const_view = index_space_comp.get_const_view();
+            cout << "const DOFs component " << comp << " = ";
+            for (const Index &dof : index_space_comp_const_view)
+            {
+                cout << dof << " " ;
+            }
+            cout << endl;
+
+
+            const vector<Index> &dof_data = index_space_comp.get_data();
+
+            auto index_space_comp_view = index_space_comp.get_view();
+            cout << "DOFs component " << comp << " = ";
+
+            for (Index &dof : index_space_comp_view)
+            {
+                cout << "&dof = " << &dof << endl;
+                dof += 10;
+//              cout << dof << " " ;
+            }
+            for (const Index &dof : dof_data)
+            {
+                cout << "&dof_data = " << &dof << "   value = " << dof << endl;
+            }
+            cout << endl;
 
         }
+        cout << "&ref_space = " << &(*ref_space) << "   " << ref_space.get() <<endl;
+        ref_space->print_info(out);
 //        View<vec_it_t> dofs_view_comp =
 
         Assert(false,ExcNotImplemented());

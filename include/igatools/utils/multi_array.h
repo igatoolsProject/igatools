@@ -202,7 +202,7 @@ public:
     /** @name Getting a view */
     ///@{
     /** Returns a ContainerView of the MultiArray. */
-    ContainerView<MultiArray<STLContainer,rank>> get_view() const;
+    ContainerView<MultiArray<STLContainer,rank>> get_view();
 
     /** Returns a ConstContainerView of the MultiArray. */
     ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;

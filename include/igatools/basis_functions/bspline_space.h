@@ -290,12 +290,18 @@ public:
     get_reference_space() const;
 
     /**
-     * Returns a reference to the dense multi array storing the global dofs.
+     * Returns a const reference to the dense multi array storing the global dofs.
      * Each element has a statically defined zone to read their dofs from,
      * independent of the distribution policy in use.
      */
     const ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const;
 
+    /**
+     * Returns a reference to the dense multi array storing the global dofs.
+     * Each element has a statically defined zone to read their dofs from,
+     * independent of the distribution policy in use.
+     */
+    ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space();
 
     /**
      * @todo Missing documentation
