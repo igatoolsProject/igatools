@@ -38,7 +38,8 @@ class DofsManager
 public:
     using VecIterator = typename std::vector<Index>::iterator;
     using VecConstIterator = typename std::vector<Index>::const_iterator;
-    using DofsIterator = ConcatenatedForwardIterator<VecIterator,VecConstIterator>;
+    using VecView = View<VecIterator,VecConstIterator>;
+    using DofsIterator = ConcatenatedForwardIterator<VecView>;
     using DofsConstIterator = ConcatenatedForwardConstIterator<VecIterator>;
 
     DofsManager() = default;

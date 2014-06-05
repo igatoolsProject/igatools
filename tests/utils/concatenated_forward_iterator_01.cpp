@@ -89,8 +89,8 @@ void do_test_1_nonconst()
     ranges.push_back(VecView(v3.begin(),v3.end()));
 
 
-    ConcatenatedForwardIterator<VecIterator,VecConstIterator> begin(ranges,0);
-    ConcatenatedForwardIterator<VecIterator,VecConstIterator> end(ranges,IteratorState::pass_the_end);
+    ConcatenatedForwardIterator<VecView> begin(ranges,0);
+    ConcatenatedForwardIterator<VecView> end(ranges,IteratorState::pass_the_end);
 
 
 

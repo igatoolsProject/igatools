@@ -281,7 +281,7 @@ public:
 
 /**
  * @brief This class represents a forward iterator made by the
- * concatenation of several forward iterator.
+ * concatenation of several View objects.
  *
  * Basically it provides the same functionality of ConcatenatedForwardConstIterator plus
  * two methods for dereferencing the iterator to non-const value reference and value pointer.
@@ -289,13 +289,13 @@ public:
  * @author M. Martinelli
  * @date 03 June 2014
  */
-template <class Iterator,class ConstIterator>
+template <class ViewType>
 class ConcatenatedForwardIterator
     :
-    public ConcatenatedForwardIteratorData< View<Iterator,ConstIterator>, ConcatenatedForwardIterator<Iterator,ConstIterator> >
+    public ConcatenatedForwardIteratorData< ViewType, ConcatenatedForwardIterator<ViewType> >
 {
 public:
-    using value_type = typename Iterator::value_type;
+    using value_type = typename ViewType::iterator::value_type;
 
 
     /** @name Constructors & destructor */
@@ -309,14 +309,14 @@ public:
      * Constructor.
      */
     ConcatenatedForwardIterator(
-        const std::vector<View<Iterator,ConstIterator>> &ranges,
+        const std::vector<ViewType> &ranges,
         const Index index);
 
     /** Copy constructor. */
-    ConcatenatedForwardIterator(const ConcatenatedForwardIterator<Iterator,ConstIterator> &it) = default;
+    ConcatenatedForwardIterator(const ConcatenatedForwardIterator<ViewType> &it) = default;
 
     /** Move constructor. */
-    ConcatenatedForwardIterator(ConcatenatedForwardIterator<Iterator,ConstIterator> &&it) = default;
+    ConcatenatedForwardIterator(ConcatenatedForwardIterator<ViewType> &&it) = default;
 
     /** Destructor */
     ~ConcatenatedForwardIterator() = default ;

@@ -175,7 +175,7 @@ arrangement_close()
         offset += ref_space->get_num_basis();
 
 //        using DofsComponentViewIt = typename DofsComponentView::iterator;
-//        ConcatenatedForwardIterator<DofsComponentViewIt> space_dofs_begin(dofs_views,0);
+        ConcatenatedForwardIterator<DofsComponentView> space_dofs_begin(dofs_views,0);
 //        ConcatenatedForwardIterator<DofsComponentViewIt> space_dofs_end(dofs_views,IteratorState::pass_the_end);
 //        cout << "&ref_space = " << &(*ref_space) << "   " << ref_space.get() <<endl;
 //        ref_space->print_info(out);

@@ -232,34 +232,34 @@ ConcatenatedForwardConstIterator(
 
 
 
-template <class Iterator,class ConstIterator>
+template <class ViewType>
 inline
-ConcatenatedForwardIterator<Iterator,ConstIterator>::
+ConcatenatedForwardIterator<ViewType>::
 ConcatenatedForwardIterator(
-    const std::vector<View<Iterator,ConstIterator>> &ranges,
+    const std::vector<ViewType> &ranges,
     const Index index)
     :
     ConcatenatedForwardIteratorData<
-    View<Iterator,ConstIterator>,
-    ConcatenatedForwardIterator<Iterator,ConstIterator>
+    ViewType,
+    ConcatenatedForwardIterator<ViewType>
     >(ranges,index)
 {}
 
 
-template <class Iterator,class ConstIterator>
+template <class ViewType>
 inline
 auto
-ConcatenatedForwardIterator<Iterator,ConstIterator>::
+ConcatenatedForwardIterator<ViewType>::
 operator*() -> value_type &
 {
     Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
     return *this->iterator_current_;
 }
 
-template <class Iterator,class ConstIterator>
+template <class ViewType>
 inline
 auto
-ConcatenatedForwardIterator<Iterator,ConstIterator>::
+ConcatenatedForwardIterator<ViewType>::
 operator->() -> value_type *
 {
     return &(this->operator*());
