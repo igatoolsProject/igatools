@@ -138,63 +138,43 @@ arrangement_close()
     using vertex_iterator = typename boost::graph_traits<Graph>::vertex_iterator;
     vertex_iterator vertex;
     vertex_iterator vertex_end;
-    boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
 
-    using std::cout;
-    using std::endl;
+    using DofsComponentContainer = vector<Index>;
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+
+    LogStream out;
+
+    dofs_manager_.dofs_arrangement_open();
+
     Index offset = 0;
+    boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
     for (; vertex != vertex_end ; ++vertex)
     {
         shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(multipatch_graph_[*vertex]->get_reference_space());
 
-        LogStream out;
-//        ref_space->print_info(out);
+        ref_space->print_info(out);
+
         auto &index_space = ref_space->get_index_space();
-
-        using MultArrContainer = MultiArray<vector<Index>,dim>;
-        using DofsComponentView = ContainerView<MultArrContainer>;
-        using DofsComponentConstView = ConstContainerView<MultArrContainer>;
-
-        vector<DofsComponentView> dofs_views;
 
         for (int comp = 0 ; comp < RefSpace::n_components ; ++comp)
         {
             auto &index_space_comp = index_space(comp);
 
-            dofs_views.push_back(index_space_comp.get_view());
+            vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
+            DofsComponentView index_space_comp_view(
+                index_space_comp_data.begin(),index_space_comp_data.end());
 
-            DofsComponentView index_space_comp_view = index_space_comp.get_view();
-            cout << "DOFs component " << comp << " = ";
-
-            for (Index &dof : index_space_comp_view)
-            {
-                dof += offset;
-                cout << dof << " " ;
-            }
-            cout << endl;
-
+            dofs_manager_.add_dofs_component_view(index_space_comp_view,offset);
         }
         offset += ref_space->get_num_basis();
-
-//        using DofsComponentViewIt = typename DofsComponentView::iterator;
-        using ConcatenatedIterator = ConcatenatedForwardIterator<DofsComponentView>;
-        using ConcatenatedConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
-        ConcatenatedIterator space_dofs_begin(dofs_views,0);
-        ConcatenatedIterator space_dofs_end(dofs_views,IteratorState::pass_the_end);
-
-        View<ConcatenatedIterator,ConcatenatedConstIterator> space_dofs_view(space_dofs_begin,space_dofs_end);
-//        cout << "&ref_space = " << &(*ref_space) << "   " << ref_space.get() <<endl;
-//        ref_space->print_info(out);
-//        View<vec_it_t> dofs_view_comp =
-
-//      auto dofs_view = ref_space->get_dofs_view();
     }
+    dofs_manager_.dofs_arrangement_close();
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
     //---------------------------------------------------------------------------
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-
+    /*
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    //*/
 }
 
 
@@ -247,21 +227,6 @@ get_num_interfaces() const
     return interfaces_.size();
 }
 
-template <class PhysicalSpace>
-int
-MultiPatchSpace<PhysicalSpace>::
-get_num_linear_constraints() const
-{
-    return linear_constraints_.size();
-}
-
-template <class PhysicalSpace>
-int
-MultiPatchSpace<PhysicalSpace>::
-get_num_equality_constraints() const
-{
-    return equality_constraints_.size();
-}
 
 template <class PhysicalSpace>
 void
@@ -299,8 +264,6 @@ print_info(LogStream &out) const
     }
 
 
-    out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
-    out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
 
 
     //---------------------------------------------------------------------------
@@ -310,7 +273,7 @@ print_info(LogStream &out) const
     vertex_iterator vertex_end;
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
 
-    out.push("\t");
+    out.push(tab);
     for (; vertex != vertex_end ; ++vertex)
     {
         //printing the id of the patch represented by the vertex
@@ -328,7 +291,7 @@ print_info(LogStream &out) const
     edge_iterator edge_end;
     boost::tie(edge, edge_end) = boost::edges(multipatch_graph_);
 
-    out.push("\t");
+    out.push(tab);
     for (; edge != edge_end ; ++edge)
     {
         //printing the information about the interface represented by the edge
@@ -341,8 +304,9 @@ print_info(LogStream &out) const
 
 
     //---------------------------------------------------------------------------
+    out.push(tab);
     out << "DOFs manager:" << endl;
-    out.push("\t");
+    out.push(tab);
     dofs_manager_.print_info(out);
     out << endl;
     out.pop();

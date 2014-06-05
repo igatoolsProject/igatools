@@ -36,21 +36,19 @@ IGA_NAMESPACE_OPEN
 class DofsManager
 {
 public:
-    using VecIterator = typename std::vector<Index>::iterator;
-    using VecConstIterator = typename std::vector<Index>::const_iterator;
-    using VecView = View<VecIterator,VecConstIterator>;
-    using DofsIterator = ConcatenatedForwardIterator<VecView>;
-    using DofsConstIterator = ConcatenatedForwardConstIterator<VecIterator>;
+    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+    using DofsComponentConstView = ContainerView<DofsComponentContainer>;
+    using SpaceDofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
+    using SpaceDofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+    using SpaceDofsView = View<SpaceDofsIterator,SpaceDofsConstIterator>;
 
-    DofsManager() = default;
-    DofsManager(const DofsIterator &begin, const DofsIterator &end);
-#if 0
-    DofsIterator begin();
-    DofsIterator end();
+    using DofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
+    using DofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+    using DofsView = View<DofsIterator,DofsConstIterator>;
 
-    DofsConstIterator begin() const;
-    DofsConstIterator end() const;
-#endif
+
+    DofsManager();
 
     /**
      * Prints internal information about the DofsManager.
@@ -59,51 +57,141 @@ public:
     void print_info(LogStream &out) const;
 
 
+    void dofs_arrangement_open();
+    void dofs_arrangement_close();
+    void add_dofs_component_view(const DofsComponentView &dofs_component_view, const Index offset);
+
+
+    DofsView &get_dofs_view();
+
+
+    /** Returns the number of linear constraints. */
+    int get_num_linear_constraints() const;
+
+
+    /** Returns the number of equality constraints. */
+    int get_num_equality_constraints() const;
+
 
 private:
+    bool is_dofs_arrangement_open_ = false;
+
+    std::vector<DofsComponentView> dofs_components_view_;
+    std::vector<Index> dofs_components_offset_;
+
+    std::unique_ptr<DofsView> dofs_view_;
 
 
-    DofsIterator dofs_view_begin_;
-    DofsIterator dofs_view_end_;
+
+    class LinearConstraint
+    {
+    public:
+
+    private:
+        /** Vector of pairs dof_id/value defining the linear constraint.*/
+        std::vector<std::pair<Index,Real> > dofs_id_and_value_;
+    };
+
+    std::vector<LinearConstraint> linear_constraints_;
+
+
+    class EqualityConstraint
+    {
+    public:
+    private:
+        Index dof_id_master_;
+        Index dof_id_slave_;
+    };
+
+
+    std::vector<EqualityConstraint> equality_constraints_;
+
+
 };
 
-#if 0
 DofsManager::
-DofsManager(const DofsIterator &begin, const DofsIterator &end)
+DofsManager()
     :
-    dofs_view_begin_(begin),
-    dofs_view_end_(end)
+    is_dofs_arrangement_open_(false),
+    dofs_view_(nullptr)
+{}
+
+
+void
+DofsManager::
+dofs_arrangement_open()
 {
-    Assert(dofs_view_begin_!=dofs_view_end_,ExcInvalidIterator());
+    is_dofs_arrangement_open_ = true;
 }
 
 
-auto
+void
 DofsManager::
-begin() -> DofsIterator
+add_dofs_component_view(const DofsComponentView &dofs_component_view, const Index offset)
 {
-    return dofs_view_begin_;
+    Assert(is_dofs_arrangement_open_ == true,ExcInvalidState());
+
+    Assert(dofs_components_view_.size() == dofs_components_offset_.size(),
+           ExcDimensionMismatch(dofs_components_view_.size(),dofs_components_offset_.size()));
+
+    dofs_components_view_.push_back(dofs_component_view);
+    dofs_components_offset_.push_back(offset);
+}
+
+
+void
+DofsManager::
+dofs_arrangement_close()
+{
+    Assert(dofs_components_view_.size() == dofs_components_offset_.size(),
+           ExcDimensionMismatch(dofs_components_view_.size(),dofs_components_offset_.size()));
+
+    const int n_components = dofs_components_view_.size();
+    Assert(n_components > 0,ExcEmptyObject());
+
+
+    for (int comp = 0 ; comp < n_components ; ++ comp)
+    {
+        auto &dofs_component_view = dofs_components_view_[comp];
+        const Index offset = dofs_components_offset_[comp];
+
+        for (Index &dof : dofs_component_view)
+            dof += offset;
+    }
+
+
+    DofsIterator dofs_begin(dofs_components_view_,0);;
+    DofsIterator dofs_end(dofs_components_view_,IteratorState::pass_the_end);
+
+    Assert(dofs_view_ == nullptr, ExcInvalidState())
+    dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
+
+    is_dofs_arrangement_open_ = false;
 }
 
 auto
 DofsManager::
-end() -> DofsIterator
+get_dofs_view() -> DofsView &
 {
-    return dofs_view_end_;
+    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+
+    Assert(dofs_view_ != nullptr, ExcNullPtr())
+    return *dofs_view_;
 }
 
-auto
+
+int
 DofsManager::
-begin() const -> DofsConstIterator
+get_num_linear_constraints() const
 {
-    return dofs_view_begin_;
+    return linear_constraints_.size();
 }
 
-auto
+int
 DofsManager::
-end() const -> DofsConstIterator
+get_num_equality_constraints() const
 {
-    return dofs_view_end_;
+    return equality_constraints_.size();
 }
 
 void
@@ -112,24 +200,26 @@ print_info(LogStream &out) const
 {
     using std::endl;
 
+    std::string tab("    ");
 
-    Assert(this->begin() != this->end(),ExcInvalidIterator());
+    out << "DofsManager infos:" << endl;
 
-    out << "Dofs = [ ";
-    for (auto dof = this->begin(); dof != this->end() ; ++dof)
-        out << *dof << " ";
+    out.push(tab);
+
+
+    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+    Assert(dofs_view_ != nullptr, ExcNullPtr())
+    out << "DOFs = [ ";
+    for (Index &dof : *dofs_view_)
+        out << dof << " ";
     out << "]" << endl;
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-}
-#endif
-void
-DofsManager::
-print_info(LogStream &out) const
-{
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+
+
+    out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
+    out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
+
+    out.pop();
 }
 
 
@@ -259,12 +349,6 @@ public:
     int get_num_interfaces() const;
 
 
-    /** Returns the number of linear constraints used to define this space. */
-    int get_num_linear_constraints() const;
-
-
-    /** Returns the number of equality constraints used to define this space. */
-    int get_num_equality_constraints() const;
 
 
     /**
@@ -365,29 +449,6 @@ private:
     std::vector<InterfacePtr> interfaces_;
 
 
-
-    class LinearConstraint
-    {
-    public:
-
-    private:
-        /** Vector of pairs dof_id/value defining the linear constraint.*/
-        std::vector<std::pair<Index,Real> > dofs_id_and_value_;
-    };
-
-    std::vector<LinearConstraint> linear_constraints_;
-
-
-    class EqualityConstraint
-    {
-    public:
-    private:
-        Index dof_id_master_;
-        Index dof_id_slave_;
-    };
-
-
-    std::vector<EqualityConstraint> equality_constraints_;
 
 
 

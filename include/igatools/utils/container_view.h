@@ -68,7 +68,6 @@ public:
 
     /** @name Constructor & destructor */
     ///@{
-
     /**
      * Construct a view defined by the iterator @p begin pointing to the first element,
      * and the iterator @p end pointing to one-past-the-end element
