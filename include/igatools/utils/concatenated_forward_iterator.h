@@ -57,6 +57,10 @@ public:
 
     /** Compare for inequality.*/
     bool operator!=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+
+
+    bool operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+
     ///@}
 
 
@@ -123,7 +127,12 @@ protected:
      */
     Iterator iterator_current_;
 
+
+private:
+
+    bool is_comparable(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
 };
+
 
 
 /**

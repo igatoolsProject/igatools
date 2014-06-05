@@ -151,7 +151,9 @@ arrangement_close()
 //        ref_space->print_info(out);
         auto &index_space = ref_space->get_index_space();
 
-        using DofsComponentView = ContainerView<MultiArray<vector<Index>,dim>>;
+        using MultArrContainer = MultiArray<vector<Index>,dim>;
+        using DofsComponentView = ContainerView<MultArrContainer>;
+        using DofsComponentConstView = ConstContainerView<MultArrContainer>;
 
         vector<DofsComponentView> dofs_views;
 
@@ -175,8 +177,12 @@ arrangement_close()
         offset += ref_space->get_num_basis();
 
 //        using DofsComponentViewIt = typename DofsComponentView::iterator;
-        ConcatenatedForwardIterator<DofsComponentView> space_dofs_begin(dofs_views,0);
-//        ConcatenatedForwardIterator<DofsComponentViewIt> space_dofs_end(dofs_views,IteratorState::pass_the_end);
+        using ConcatenatedIterator = ConcatenatedForwardIterator<DofsComponentView>;
+        using ConcatenatedConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+        ConcatenatedIterator space_dofs_begin(dofs_views,0);
+        ConcatenatedIterator space_dofs_end(dofs_views,IteratorState::pass_the_end);
+
+        View<ConcatenatedIterator,ConcatenatedConstIterator> space_dofs_view(space_dofs_begin,space_dofs_end);
 //        cout << "&ref_space = " << &(*ref_space) << "   " << ref_space.get() <<endl;
 //        ref_space->print_info(out);
 //        View<vec_it_t> dofs_view_comp =

@@ -36,7 +36,7 @@ ViewData(const IteratorType begin, const IteratorType end)
     begin_(begin),
     end_(end)
 {
-    Assert(begin_ <= end_, ExcInvalidIterator());
+    Assert(begin_ < end_, ExcInvalidIterator());
 }
 
 

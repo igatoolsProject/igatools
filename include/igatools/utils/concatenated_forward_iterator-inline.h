@@ -81,12 +81,11 @@ get_ranges() const -> std::vector<ViewType>
 
 
 
-
 template <class ViewType,class DerivedClass>
 inline
 bool
 ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+is_comparable(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
 {
     // check the equality of the size
     bool same_size = (this->ranges_.size() == it.ranges_.size());
@@ -104,11 +103,41 @@ operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) con
         }
     Assert(ranges_are_equal,ExcMessage("Iterators are not comparable."));
 
+    return (same_size && ranges_are_equal);
+}
 
-    return (same_size &&
-            ranges_are_equal &&
-            this->range_id_ == it.range_id_ &&
+template <class ViewType,class DerivedClass>
+inline
+bool
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+{
+    Assert(this->is_comparable(it), ExcInvalidIterator());
+
+    return (this->range_id_ == it.range_id_ &&
             this->iterator_current_ == it.iterator_current_);
+}
+
+template <class ViewType,class DerivedClass>
+inline
+bool
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+{
+    Assert(this->is_comparable(it), ExcInvalidIterator());
+
+    if (this->range_id_ < it.range_id_)
+    {
+        return true;
+    }
+    else if (this->range_id_ == it.range_id_)
+    {
+        return this->iterator_current_ < it.iterator_current_;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 template <class ViewType,class DerivedClass>
