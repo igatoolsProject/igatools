@@ -22,7 +22,6 @@
 //TODO Add doxygen description to the content of this file
 
 #include <igatools/basis_functions/space_tools.h>
-#include <igatools/basis_functions/multiplicity.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 
 #include <igatools/linear_algebra/dof_tools.h>
