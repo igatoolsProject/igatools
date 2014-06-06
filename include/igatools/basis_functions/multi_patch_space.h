@@ -38,13 +38,13 @@ class DofsManager
 public:
     using DofsComponentContainer = std::vector<Index>;
     using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ContainerView<DofsComponentContainer>;
-    using SpaceDofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
-    using SpaceDofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
-    using SpaceDofsView = View<SpaceDofsIterator,SpaceDofsConstIterator>;
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
 
     using DofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
     using DofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+
+    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
+
     using DofsView = View<DofsIterator,DofsConstIterator>;
 
 
@@ -60,8 +60,9 @@ public:
     void dofs_arrangement_open();
     void dofs_arrangement_close();
 
-    void add_dofs_space_view(const int space_id, const SpaceDofsView &dofs_space_view);
-    void add_dofs_component_view(const DofsComponentView &dofs_component_view, const Index offset);
+    void add_dofs_space_view(const int space_id,
+                             const Index num_dofs_space,
+                             const SpaceDofsView &dofs_space_view);
 
 
     DofsView &get_dofs_view();
@@ -78,9 +79,9 @@ public:
 private:
     bool is_dofs_arrangement_open_ = false;
 
-    std::vector<int> spaces_id_;
     std::vector<DofsComponentView> dofs_components_view_;
-    std::vector<Index> dofs_components_offset_;
+
+    std::map<int,std::pair<Index,SpaceDofsView>> spaces_info_;
 
     std::unique_ptr<DofsView> dofs_view_;
 
@@ -127,41 +128,45 @@ dofs_arrangement_open()
     is_dofs_arrangement_open_ = true;
 }
 
-
 void
 DofsManager::
-add_dofs_component_view(const DofsComponentView &dofs_component_view, const Index offset)
+add_dofs_space_view(
+    const int space_id,
+    const Index num_dofs_space,
+    const SpaceDofsView &dofs_space_view)
 {
-    Assert(is_dofs_arrangement_open_ == true,ExcInvalidState());
+    Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
-    Assert(dofs_components_view_.size() == dofs_components_offset_.size(),
-           ExcDimensionMismatch(dofs_components_view_.size(),dofs_components_offset_.size()));
-
-    dofs_components_view_.push_back(dofs_component_view);
-    dofs_components_offset_.push_back(offset);
+    spaces_info_.emplace(
+        space_id,
+        std::pair<Index,SpaceDofsView>(num_dofs_space,dofs_space_view));
 }
+
 
 
 void
 DofsManager::
 dofs_arrangement_close()
 {
-    Assert(dofs_components_view_.size() == dofs_components_offset_.size(),
-           ExcDimensionMismatch(dofs_components_view_.size(),dofs_components_offset_.size()));
+    Assert(is_dofs_arrangement_open_ == true,ExcInvalidState());
 
-    const int n_components = dofs_components_view_.size();
-    Assert(n_components > 0,ExcEmptyObject());
+    Assert(!spaces_info_.empty(),ExcEmptyObject());
 
-
-    for (int comp = 0 ; comp < n_components ; ++ comp)
+    Index offset = 0;
+    for (auto &space : spaces_info_)
     {
-        auto &dofs_component_view = dofs_components_view_[comp];
-        const Index offset = dofs_components_offset_[comp];
-
-        for (Index &dof : dofs_component_view)
+//      auto space_id = space.first;
+        auto num_dofs = space.second.first;
+        auto &dofs_view = space.second.second;
+        for (Index &dof : dofs_view)
             dof += offset;
-    }
 
+        offset += num_dofs;
+
+        auto dofs_view_begin = dofs_view.begin();
+        auto view_ranges = dofs_view_begin.get_ranges();
+        dofs_components_view_.insert(dofs_components_view_.end(),view_ranges.begin(),view_ranges.end());
+    }
 
     DofsIterator dofs_begin(dofs_components_view_,0);;
     DofsIterator dofs_end(dofs_components_view_,IteratorState::pass_the_end);
@@ -211,11 +216,29 @@ print_info(LogStream &out) const
 
 
     Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+
     Assert(dofs_view_ != nullptr, ExcNullPtr())
     out << "DOFs = [ ";
     for (Index &dof : *dofs_view_)
         out << dof << " ";
     out << "]" << endl;
+
+
+    Assert(!spaces_info_.empty(),ExcEmptyObject());
+    int i = 0;
+    for (auto &space_info : spaces_info_)
+    {
+        out << "Space["<< i++ <<"]:   ID=" << space_info.first
+            << "   n_dofs=" << space_info.second.first
+            << "   DOFs=[ ";
+
+        SpaceDofsView &dofs_space_view = const_cast<SpaceDofsView &>(space_info.second.second);
+
+        for (Index &dof : dofs_space_view)
+            out << dof << " ";
+        out << "]" << endl;
+        //*/
+    }
 
 
 

@@ -139,19 +139,21 @@ arrangement_close()
     vertex_iterator vertex;
     vertex_iterator vertex_end;
 
-    using DofsComponentContainer = vector<Index>;
+    using DofsComponentContainer = std::vector<Index>;
     using DofsComponentView = ContainerView<DofsComponentContainer>;
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
 
-    using DofsComponentConstView = ContainerView<DofsComponentContainer>;
-    using SpaceDofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
-    using SpaceDofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
-    using SpaceDofsView = View<SpaceDofsIterator,SpaceDofsConstIterator>;
+    using DofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
+    using DofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+
+    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
+
 
     LogStream out;
 
     dofs_manager_.dofs_arrangement_open();
 
-    Index offset = 0;
+//    Index offset = 0;
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
     for (; vertex != vertex_end ; ++vertex)
     {
@@ -160,10 +162,9 @@ arrangement_close()
 
         ref_space->print_info(out);
 
-
-
         auto &index_space = ref_space->get_index_space();
 
+        vector<DofsComponentView> space_components_view;
         for (int comp = 0 ; comp < RefSpace::n_components ; ++comp)
         {
             auto &index_space_comp = index_space(comp);
@@ -172,14 +173,16 @@ arrangement_close()
             DofsComponentView index_space_comp_view(
                 index_space_comp_data.begin(),index_space_comp_data.end());
 
-            dofs_manager_.add_dofs_component_view(index_space_comp_view,offset);
+            space_components_view.push_back(index_space_comp_view);
+//            dofs_manager_.add_dofs_component_view(index_space_comp_view,offset);
         }
 
-        SpaceDofsIterator space_dofs_begin;
-        SpaceDofsIterator space_dofs_end;
+        DofsIterator space_dofs_begin(space_components_view,0);
+        DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
         SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
-        dofs_manager_.add_dofs_space_view(patch->get_id(),dofs_space_view);
-        offset += ref_space->get_num_basis();
+
+        dofs_manager_.add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
+//        offset += ref_space->get_num_basis();
     }
     dofs_manager_.dofs_arrangement_close();
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
