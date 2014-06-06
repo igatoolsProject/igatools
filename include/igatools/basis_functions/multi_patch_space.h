@@ -76,6 +76,13 @@ public:
     int get_num_equality_constraints() const;
 
 
+    /**
+     * Returns the global dof corresponding to the @p local_dof
+     * in the space with id equal to @p space_id.
+     */
+    Index get_global_dof(const int space_id, const Index local_dof) const;
+
+
 private:
     bool is_dofs_arrangement_open_ = false;
 
@@ -228,6 +235,21 @@ get_num_equality_constraints() const
     return equality_constraints_.size();
 }
 
+Index
+DofsManager::
+get_global_dof(const int space_id, const Index local_dof) const
+{
+    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+
+    Assert(space_id >= 0,ExcLowerRange(space_id,0));
+
+    const auto &space = spaces_info_.at(space_id);
+//    const auto & dofs_view = space.dofs_view_;
+
+    return space.dofs_view_[local_dof] + space.offset_;
+}
+
+
 void
 DofsManager::
 print_info(LogStream &out) const
@@ -254,7 +276,8 @@ print_info(LogStream &out) const
     int i = 0;
     for (auto &space_info : spaces_info_)
     {
-        out << "Space["<< i++ <<"]:   ID=" << space_info.first
+
+        out << "Space["<< i <<"]:   ID=" << space_info.first
             << "   n_dofs=" << space_info.second.n_dofs_
             << "   DOFs=[ ";
 
@@ -262,8 +285,14 @@ print_info(LogStream &out) const
         for (Index &dof : dofs_space_view)
             out << dof << " ";
         out << "]" << endl;
+
+
+        out << "     The local_dof=3 correspond to the global_dof="<<this->get_global_dof(i,3) << endl;
+
+        i++;
         //*/
     }
+
 
 
 

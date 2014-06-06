@@ -73,6 +73,8 @@ public:
      *  a reference to <tt>*this</tt>.
      */
     DerivedClass &operator++();
+
+    DerivedClass &operator+(const int n);
     ///@}
 
 

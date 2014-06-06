@@ -197,6 +197,19 @@ operator++()
 }
 
 
+template <class ViewType,class DerivedClass>
+inline
+DerivedClass &
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator+(const int n)
+{
+    Assert(n>=0,ExcLowerRange(n,0));
+    for (int i=0 ; i < n ; ++i, ++(*this));
+
+    return this->as_derived_class();
+}
+
+
 
 template <class ViewType,class DerivedClass>
 inline
