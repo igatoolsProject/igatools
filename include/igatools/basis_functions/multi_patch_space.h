@@ -59,6 +59,8 @@ public:
 
     void dofs_arrangement_open();
     void dofs_arrangement_close();
+
+    void add_dofs_space_view(const int space_id, const SpaceDofsView &dofs_space_view);
     void add_dofs_component_view(const DofsComponentView &dofs_component_view, const Index offset);
 
 
@@ -76,6 +78,7 @@ public:
 private:
     bool is_dofs_arrangement_open_ = false;
 
+    std::vector<int> spaces_id_;
     std::vector<DofsComponentView> dofs_components_view_;
     std::vector<Index> dofs_components_offset_;
 

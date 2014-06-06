@@ -142,6 +142,11 @@ arrangement_close()
     using DofsComponentContainer = vector<Index>;
     using DofsComponentView = ContainerView<DofsComponentContainer>;
 
+    using DofsComponentConstView = ContainerView<DofsComponentContainer>;
+    using SpaceDofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
+    using SpaceDofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+    using SpaceDofsView = View<SpaceDofsIterator,SpaceDofsConstIterator>;
+
     LogStream out;
 
     dofs_manager_.dofs_arrangement_open();
@@ -150,9 +155,12 @@ arrangement_close()
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
     for (; vertex != vertex_end ; ++vertex)
     {
-        shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(multipatch_graph_[*vertex]->get_reference_space());
+        auto patch = multipatch_graph_[*vertex];
+        shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
 
         ref_space->print_info(out);
+
+
 
         auto &index_space = ref_space->get_index_space();
 
@@ -166,6 +174,11 @@ arrangement_close()
 
             dofs_manager_.add_dofs_component_view(index_space_comp_view,offset);
         }
+
+        SpaceDofsIterator space_dofs_begin;
+        SpaceDofsIterator space_dofs_end;
+        SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
+        dofs_manager_.add_dofs_space_view(patch->get_id(),dofs_space_view);
         offset += ref_space->get_num_basis();
     }
     dofs_manager_.dofs_arrangement_close();
