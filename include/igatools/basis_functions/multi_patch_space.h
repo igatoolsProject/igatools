@@ -81,9 +81,22 @@ private:
 
     std::vector<DofsComponentView> dofs_components_view_;
 
-    std::map<int,std::pair<Index,SpaceDofsView>> spaces_info_;
+    struct SpaceInfo
+    {
+        SpaceInfo() = delete;
+        SpaceInfo(const Index n_dofs, const SpaceDofsView &dofs_view);
+
+        Index n_dofs_;
+        Index offset_;
+        SpaceDofsView dofs_view_;
+    };
+
+    std::map<int,SpaceInfo> spaces_info_;
+
+
 
     std::unique_ptr<DofsView> dofs_view_;
+
 
 
 
@@ -128,6 +141,17 @@ dofs_arrangement_open()
     is_dofs_arrangement_open_ = true;
 }
 
+DofsManager::
+SpaceInfo::
+SpaceInfo(const Index n_dofs, const SpaceDofsView &dofs_view)
+    :
+    n_dofs_(n_dofs),
+    offset_(0),
+    dofs_view_(dofs_view)
+{
+    Assert(n_dofs > 0,ExcEmptyObject());
+}
+
 void
 DofsManager::
 add_dofs_space_view(
@@ -139,7 +163,7 @@ add_dofs_space_view(
 
     spaces_info_.emplace(
         space_id,
-        std::pair<Index,SpaceDofsView>(num_dofs_space,dofs_space_view));
+        SpaceInfo(num_dofs_space,dofs_space_view));
 }
 
 
@@ -156,8 +180,10 @@ dofs_arrangement_close()
     for (auto &space : spaces_info_)
     {
 //      auto space_id = space.first;
-        auto num_dofs = space.second.first;
-        auto &dofs_view = space.second.second;
+        auto num_dofs = space.second.n_dofs_;
+        auto &dofs_view = space.second.dofs_view_;
+        space.second.offset_ = offset;
+
         for (Index &dof : dofs_view)
             dof += offset;
 
@@ -229,11 +255,10 @@ print_info(LogStream &out) const
     for (auto &space_info : spaces_info_)
     {
         out << "Space["<< i++ <<"]:   ID=" << space_info.first
-            << "   n_dofs=" << space_info.second.first
+            << "   n_dofs=" << space_info.second.n_dofs_
             << "   DOFs=[ ";
 
-        SpaceDofsView &dofs_space_view = const_cast<SpaceDofsView &>(space_info.second.second);
-
+        SpaceDofsView &dofs_space_view = const_cast<SpaceDofsView &>(space_info.second.dofs_view_);
         for (Index &dof : dofs_space_view)
             out << dof << " ";
         out << "]" << endl;

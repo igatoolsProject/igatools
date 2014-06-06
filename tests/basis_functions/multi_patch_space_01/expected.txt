@@ -1,0 +1,226 @@
+========== Test dim=2 --- begin ==========
+Dim: 2
+MultiPatchSpace infos:
+   Num. patches = 2
+      Patch id = 0
+      PhysicalSpace info
+      	Reference space:
+      	BSplineSpace<2,2>
+      		Reference Patch: CartesianGrid<2>
+      			Knot coordinates:
+      				Direction[0] = [ 0 1.00000 ]
+      				Direction[1] = [ 0 1.00000 ]
+      			Num elements: 1
+      				Direction[0] = 1
+      				Direction[1] = 1
+      		
+      			Space component[0]: 
+      				Direction[0]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      					Interval[0]
+      						Bezier extraction operator:
+      							1.00000 0 
+      							0 1.00000 
+      				Direction[1]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      					Interval[0]
+      						Bezier extraction operator:
+      							1.00000 0 
+      							0 1.00000 
+      			Space component[1]: 
+      				Direction[0]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      				Direction[1]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      		Num dofs: 8
+      		DOFs component 0 = [ 0 1 2 3 ]
+      		DOFs component 1 = [ 4 5 6 7 ]
+      		Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
+      
+      Push-forward:
+      PushForward info
+      	transformation type = 1
+      	Map info:
+      		Type = IgMapping
+      			Reference space info:
+      			BSplineSpace<2,2>
+      				Reference Patch: CartesianGrid<2>
+      					Knot coordinates:
+      						Direction[0] = [ 0 1.00000 ]
+      						Direction[1] = [ 0 1.00000 ]
+      					Num elements: 1
+      						Direction[0] = 1
+      						Direction[1] = 1
+      				
+      					Space component[0]: 
+      						Direction[0]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      							Interval[0]
+      								Bezier extraction operator:
+      									1.00000 0 
+      									0 1.00000 
+      						Direction[1]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      							Interval[0]
+      								Bezier extraction operator:
+      									1.00000 0 
+      									0 1.00000 
+      					Space component[1]: 
+      						Direction[0]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      						Direction[1]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      				Num dofs: 8
+      				DOFs component 0 = [ 0 1 2 3 ]
+      				DOFs component 1 = [ 4 5 6 7 ]
+      				Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
+      		
+      			Control points info (projective coordinates):
+      				Control mesh[0] = 0 1.00000 0 1.00000 
+      				Control mesh[1] = 0 0 1.00000 1.00000 
+      				
+      			Control points info (euclidean coordinates): [ 0 1.00000 0 1.00000 0 0 1.00000 1.00000 ]
+      
+      Patch id = 1
+      PhysicalSpace info
+      	Reference space:
+      	BSplineSpace<2,2>
+      		Reference Patch: CartesianGrid<2>
+      			Knot coordinates:
+      				Direction[0] = [ 0 1.00000 ]
+      				Direction[1] = [ 0 1.00000 ]
+      			Num elements: 1
+      				Direction[0] = 1
+      				Direction[1] = 1
+      		
+      			Space component[0]: 
+      				Direction[0]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      					Interval[0]
+      						Bezier extraction operator:
+      							1.00000 0 
+      							0 1.00000 
+      				Direction[1]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      					Interval[0]
+      						Bezier extraction operator:
+      							1.00000 0 
+      							0 1.00000 
+      			Space component[1]: 
+      				Direction[0]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      				Direction[1]:
+      					Degree = 1
+      					Knot multiplicities: [ 2 2 ]
+      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      		Num dofs: 8
+      		DOFs component 0 = [ 8 9 10 11 ]
+      		DOFs component 1 = [ 12 13 14 15 ]
+      		Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
+      
+      Push-forward:
+      PushForward info
+      	transformation type = 1
+      	Map info:
+      		Type = IgMapping
+      			Reference space info:
+      			BSplineSpace<2,2>
+      				Reference Patch: CartesianGrid<2>
+      					Knot coordinates:
+      						Direction[0] = [ 0 1.00000 ]
+      						Direction[1] = [ 0 1.00000 ]
+      					Num elements: 1
+      						Direction[0] = 1
+      						Direction[1] = 1
+      				
+      					Space component[0]: 
+      						Direction[0]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      							Interval[0]
+      								Bezier extraction operator:
+      									1.00000 0 
+      									0 1.00000 
+      						Direction[1]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      							Interval[0]
+      								Bezier extraction operator:
+      									1.00000 0 
+      									0 1.00000 
+      					Space component[1]: 
+      						Direction[0]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      						Direction[1]:
+      							Degree = 1
+      							Knot multiplicities: [ 2 2 ]
+      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      				Num dofs: 8
+      				DOFs component 0 = [ 8 9 10 11 ]
+      				DOFs component 1 = [ 12 13 14 15 ]
+      				Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
+      		
+      			Control points info (projective coordinates):
+      				Control mesh[0] = 0 1.00000 0 1.00000 
+      				Control mesh[1] = 0 0 1.00000 1.00000 
+      				
+      			Control points info (euclidean coordinates): [ 0 1.00000 0 1.00000 0 0 1.00000 1.00000 ]
+      
+   Num. interfaces = 1
+   Interface id = 0
+   Interface type = 1
+      Patch 0 infos:
+         Patch id = 0
+         Side  id = 1
+      Patch 1 infos:
+         Patch id = 1
+         Side id = 0
+   Patches in the graph:
+      Patch ID = 0
+      Patch ID = 1
+   Interfaces in the graph:
+      Interface type = 1
+         Patch 0 infos:
+            Patch id = 0
+            Side  id = 1
+         Patch 1 infos:
+            Patch id = 1
+            Side id = 0
+   
+   DOFs manager:
+      DofsManager infos:
+          DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+          Space[0]:   ID=0   n_dofs=8   DOFs=[ 0 1 2 3 4 5 6 7 ]
+          Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
+          Num. linear   constraints = 0
+          Num. equality constraints = 0
+      
+========== Test dim=2 --- end ==========
+
+
