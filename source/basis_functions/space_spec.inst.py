@@ -24,9 +24,6 @@ data = Instantiation()
 f = data.file_output
 inst = data.inst
               
-for x in inst.all_ref_sp_dims:
+for x in inst.really_all_ref_sp_dims:
     f.write('template class SplineSpace<%d, %d, %d> ;\n' 
             %(x.dim, x.range, x.rank))
-
-# needed by igamapping
-#f.write('template class SplineSpace<0, 0, 1> ;\n')

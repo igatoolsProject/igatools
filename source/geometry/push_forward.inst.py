@@ -22,15 +22,8 @@
 from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
-
-pf_dims = unique( [ [x.dim, x.codim, x.trans_type] for x in 
-                   inst.all_table + inst.extended_table] )
-all_pf_args = [PForwRow(x) for x in pf_dims]
-# We need the pushforwards for all physical spaces and
-# all reference spaces
-pf_args = ['Transformation::%s, %d, %d'
-            %(x.trans_type, x.dim, x.codim) for x in all_pf_args]
-# pf_args = pf_args + unique(['Transformation::h_grad, %d, 0' %(x.dim)
-#                             for x in inst.all_ref_sp_dims])
+ 
+pf_args = unique (inst.AllPushForwards + inst.RefPushForwards)
+      
 for pf in unique(pf_args):
-    f.write('template class PushForward<%s> ;\n' %(pf))
+    f.write('template class %s ;\n' %(pf))

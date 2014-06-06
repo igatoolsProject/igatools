@@ -30,7 +30,7 @@ ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim)
 ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
                      for  dim in inst.domain_dims for t in ('Real','Index','std::vector<Index>')]
 ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
-           for deriv in inst.derivatives + inst.values]
+           for deriv in inst.derivatives + inst.values + inst.divs]
 
 for row in ma_list:
     f.write('template class %s; \n' % (row))

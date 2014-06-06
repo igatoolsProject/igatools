@@ -22,6 +22,7 @@
 #define SPACE_SPEC_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/function.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
@@ -102,6 +103,15 @@ public:
     using FaceSpace = Conditional<(dim>0),
                 SplineSpace<dim-1,range,rank>,
                 SplineSpace<0, range, rank> >;
+private:
+    using Func = Function<dim, range, rank>;
+public:
+    template <int order>
+    using Derivative = typename Func::template Derivative<order>;
+    using Point = typename Func::PointType;
+    using Value = typename Func::ValueType;
+    using Div   = typename Func::Div;
+
 public:
     template<class> class ComponentContainer;
     static const int n_components = ComponentContainer<int>::n_entries;

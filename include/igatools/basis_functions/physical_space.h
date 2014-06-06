@@ -22,6 +22,7 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/function.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
@@ -67,7 +68,18 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+private:
+    using Func = Function<space_dim, range, rank>;
+public:
+public:
+    template <int order>
+    using Derivative = typename Func::template Derivative<order>;
+    using Point = typename Func::PointType;
+    using Value = typename Func::ValueType;
+    using Div   = typename Func::Div;
 
+
+public:
     template< class T>
     using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
 

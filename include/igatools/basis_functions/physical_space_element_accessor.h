@@ -110,7 +110,7 @@ public :
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 
-    using Value = typename PfElemAccessor::template PhysValue<RefSpace::range, RefSpace::rank>;
+    using Value = typename PhysSpace::Value;//PfElemAccessor::template PhysValue<RefSpace::range, RefSpace::rank>;
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 
     /**

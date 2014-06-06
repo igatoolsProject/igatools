@@ -57,6 +57,7 @@ template <typename Accessor> class GridForwardIterator;
  * @author M. Martinelli
  * @date 13 May 2014
  */
+// TODO (pauletti, Jun 5, 2014): from space one can get dim, codim, range and rank
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
 {
@@ -66,18 +67,19 @@ public:
     /**
      * Typedef for specifying the value of the basis function.
      */
-    using Value = Values<dim+codim, range, rank>;
-
-    /**
-     * Typedef for specifying the derivatives of the basis function.
-     */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim+codim, range, rank, deriv_order>;
+    using Value = typename Space::Value;
 
     /**
      * Typedef for specifying the divergence of the basis function.
      */
-    using Div = Values<dim+codim, 1, 1>;
+    using Div = typename Space::Div;
+    /**
+     * Typedef for specifying the derivatives of the basis function.
+     */
+    template <int order>
+    using Derivative = typename Space::template Derivative<order>;
+
+
 
 
     /**

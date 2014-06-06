@@ -64,7 +64,15 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
     Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
 }
 
-
+template<>
+MappingElementAccessor<0, 0>::
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const int index)
+    :
+    CartesianGridElementAccessor<0>(mapping->get_grid(), index),
+    mapping_(mapping)
+{
+}
 
 
 template<int dim_ref_, int codim_ >

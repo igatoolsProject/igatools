@@ -68,6 +68,13 @@ public:
     static const bool has_weights = true;
 
 public:
+    using Value = typename spline_space_t::Value;
+    using Point = typename spline_space_t::Point;
+    using Div   = typename spline_space_t::Div;
+    template <int order>
+    using Derivative = typename spline_space_t::template Derivative<order>;
+
+public:
     /** Type for the reference face space.*/
     using RefFaceSpace = NURBSSpace<dim-1, range, rank>;
 

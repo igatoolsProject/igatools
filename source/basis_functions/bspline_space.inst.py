@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
+# QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid_element_accessor.h',
@@ -27,10 +27,6 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 spaces = ['BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-          for x in inst.all_ref_sp_dims ]
+          for x in inst.really_all_ref_sp_dims ]
 for sp in spaces:
    f.write('template class %s ;\n' %sp)
-
-
-# needed by IgMapping
-#f.write('template class BSplineSpace<0,0,1> ;\n')

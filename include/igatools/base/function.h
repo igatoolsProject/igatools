@@ -77,15 +77,22 @@ public:
      */
     using ValueType = Values<dim, dim_range, rank>;
 
+    template <int order>
+    using Derivative = Derivatives<dim, dim_range, rank, order>;
     /**
      * Type for the gradient of the function.
      */
-    using GradientType = Derivatives<dim, dim_range, rank, 1>;
+    using GradientType = Derivative<1>;
 
     /**
      * Type for the hessian of the function.
      */
-    using HessianType = Derivatives<dim, dim_range, rank, 2>;
+    using HessianType = Derivative<2>;
+
+    /**
+     * Typedef for specifying the divergence of the basis function.
+     */
+    using Div = Values<dim, dim_range, rank-1>;
     ///@}
 
     /** @name Constructors and destructor. */

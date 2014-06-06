@@ -125,6 +125,12 @@ public:
     static const bool has_weights = false;
 
 public:
+    using typename BaseSpace::Derivative;
+    using typename BaseSpace::Point;
+    using typename BaseSpace::Value;
+    using typename BaseSpace::Div;
+
+public:
     /** Type for the reference face space.*/
     using RefFaceSpace = Conditional<(dim>0),
             BSplineSpace<dim-1,range,rank>,

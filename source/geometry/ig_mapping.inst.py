@@ -32,11 +32,8 @@ data = Instantiation(include_files)
 
 ref_spaces = ('BSplineSpace', 'NURBSSpace')
 for sp in ref_spaces:
-   for row in inst.mapping_dims:
+   for row in inst.all_mapping_dims:
       (dim, range, rank) = (row.dim, row.space_dim, 1)
       space = '%s< %d, %d, %d >' %(sp, dim, range, rank)
       f.write('template class IgMapping< %s > ;\n' %space)
-  
-# MM: why do we need this?
-#f.write('template class IgMapping< BSplineSpace<0,0,1 > > ;\n')
-#f.write('template class IgMapping< NURBSSpace<0,0,1 > > ;\n')
+        

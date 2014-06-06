@@ -30,8 +30,12 @@ data = Instantiation(include_files)
 output = []
 containers = ['ValueTable', 'ValueVector']
 
+
+igm_phy_sp_dims = unique( [ PhysSpaceTableRow([x.dim, 0, x.range, 1, 'h_grad'])
+                                       for x in inst.igm_ref_sp_dims] )
+
 # Trasformation for values
-for row in unique(inst.all_table + inst.extended_table):
+for row in unique(inst.all_phy_sp_dims + igm_phy_sp_dims):
     PF = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
     push_fwd_elem_acc = 'PushForwardElementAccessor<%s>' %(PF)
     output.append('template class %s ;\n' %(push_fwd_elem_acc) )
