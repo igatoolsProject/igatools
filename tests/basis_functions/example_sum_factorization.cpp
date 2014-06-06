@@ -794,8 +794,8 @@ int main(int argc,char **args)
 
 
     int degree_min = 1;
-    int degree_max = 7;
-    int n_elems_per_direction = 50;
+    int degree_max = 4;
+    int n_elems_per_direction = 100;
 
 
     cout << "-----------------------------------" << endl;
