@@ -1,0 +1,20 @@
+face: 0
+Multiplicity:
+[ 1 1 ]
+Degree:
+[3]
+face: 1
+Multiplicity:
+[ 1 1 ]
+Degree:
+[3]
+face: 2
+Multiplicity:
+[ 1 ]
+Degree:
+[1]
+face: 3
+Multiplicity:
+[ 1 ]
+Degree:
+[1]

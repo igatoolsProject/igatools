@@ -121,6 +121,8 @@ public:
     static const int rank = rank_;
 
     using BaseSpace::n_components;
+    using BaseSpace::components;
+    using BaseSpace::dims;
 
     static const bool has_weights = false;
 
@@ -300,19 +302,9 @@ public:
 
 
 
-//    std::shared_ptr<RefFaceSpace>
-//    get_face_space(const Index face_id,
-//                   std::map<int, int> &elem_map)
-//    {
-//        auto face_grid   = this->get_grid()->get_face_grid(face_id, elem_map);
-//        auto face_mult   = this->get_face_mult(face_id);
-//        auto face_degree = this->get_face_degree(face_id);
-//
-//        // TODO (pauletti, Jun 4, 2014): get face end_behaviour
-//        return RefFaceSpace::create(face_degree, face_grid, face_mult,
-//                                    RefFaceSpace::InteriorReg::maximum);
-//    }
-
+    std::shared_ptr<RefFaceSpace>
+    get_face_space(const Index face_id,
+    		       std::vector<Index> &face_to_element_dofs);
 
     /** Return the push forward (non-const version). */
     std::shared_ptr<PushForwardType> get_push_forward();
@@ -321,7 +313,25 @@ public:
     /** Return the push forward (const version). */
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
+    /**
+     * @note try not to use as plans are to make it private
+     */
+    TensorIndex<dim>
+    basis_flat_to_tensor(const Index index, const Index comp) const
+    {
+    	return basis_indices_.basis_flat_to_tensor(index,comp);
+    }
 
+
+    /**
+     * @note try not to use as plans are to make it private
+     */
+    Index
+    basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
+    		const Index comp) const
+    {
+    	return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
+    }
 
 private:
 

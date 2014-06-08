@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/unit_element.h>
+#include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -86,6 +87,12 @@ UnitElement<4>::vertex_to_component[vertices_per_element][4]
     { 0, 1, 1, 1},
     { 1, 1, 1, 1}
 };
+
+
+
+template <int dim>
+const std::array<int, UnitElement<dim>::faces_per_element>
+UnitElement<dim>::faces = sequence<UnitElement<dim>::faces_per_element>();
 
 
 template <>

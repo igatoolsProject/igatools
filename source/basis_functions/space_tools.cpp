@@ -155,7 +155,6 @@ Index find_span(
 }
 
 
-
 template <class Space>
 std::shared_ptr< FaceSpace<Space> >
 get_face_space(std::shared_ptr<const Space> space,
@@ -212,8 +211,6 @@ get_face_space(std::shared_ptr<const Space> space,
 
     return face_space;
 }
-
-
 
 template<class Space, LinearAlgebraPackage linear_algebra_package>
 Real

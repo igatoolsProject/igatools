@@ -196,28 +196,51 @@ BSplineSpace<dim_, range_, rank_>::end() const -> ElementIterator
 }
 
 
-#if 0
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
+get_face_space(const Index face_id,
+		std::vector<Index> &face_to_element_dofs) -> std::shared_ptr<RefFaceSpace>
 {
-    return index_space_(comp).flat_to_tensor(index);
+	std::map<int, int> elem_map;
+	auto face_grid   = this->get_grid()->get_face_grid(face_id, elem_map);
+	auto face_mult   = this->get_face_mult(face_id);
+	auto face_degree = this->get_face_degree(face_id);
+
+	// TODO (pauletti, Jun 4, 2014): make sure the face space is compatible with the space end behaviou
+	auto f_space = RefFaceSpace::create(face_degree, face_grid, face_mult);
+
+	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+	const auto const_dir = UnitElement<dim>::face_constant_direction[face_id];
+	const auto face_side = UnitElement<dim>::face_side[face_id];
+
+	TensorIndex<dim> tensor_index;
+	face_to_element_dofs.resize(f_space->get_num_basis());
+	int k=0;
+	int offset=0;
+	for (auto comp : components)
+	{
+		const int face_n_basis = f_space->get_num_basis(comp);
+		for (Index i = 0; i < face_n_basis; ++i, ++k)
+		{
+			const auto f_tensor_idx = f_space->basis_flat_to_tensor(i,comp);
+			const int fixed_idx =
+					face_side * (this->get_num_basis(comp,const_dir) - 1);
+			for (int j : RefFaceSpace::dims)
+				tensor_index[active_dirs[j]] =  f_tensor_idx[j];
+			tensor_index[const_dir] = fixed_idx;
+
+			const Index dof = basis_tensor_to_flat(tensor_index, comp);
+
+			face_to_element_dofs[k] = offset + dof;
+		}
+		offset += this->get_num_basis(comp);
+	}
+	return f_space;
 }
 
 
-
-template<int dim_, int range_, int rank_>
-Index
-BSplineSpace<dim_, range_, rank_>::
-tensor_to_flat(const TensorIndex<dim> &tensor_index,
-               const Index comp) const
-{
-    return index_space_(comp).tensor_to_flat(tensor_index);
-}
-
-#endif
 
 
 

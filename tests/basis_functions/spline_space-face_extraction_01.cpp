@@ -21,52 +21,48 @@
  *  Test for the BsplineSpace class face subspace extraction function.
  *  Here we print the information of the face spaces thus extracted.
  *  author: pauletti
- *  date: Jan 29, 2013
- *  updated: 2013-04-02
+ *  date:
  */
 
 #include "../tests.h"
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/geometry/unit_element.h>
+#include <igatools/basis_functions/space_spec.h>
 
-template< int dim_domain, int dim_range, int rank >
+
+template< int dim, int range, int rank >
 void run_test()
 {
-    using space_t = BSplineSpace<dim_domain, dim_range, rank>;
-    const int degree = 1;
-    TensorSize<dim_domain> n;
-    for (int i = 0; i < dim_domain; ++i)
-    {
-        n[i]=2+i;
-    }
-    auto grid = CartesianGrid<dim_domain>::create(n);
-    auto space = space_t::create(degree, grid);
+	using SplineSpace = SplineSpace<dim, range, rank>;
+	auto grid = CartesianGrid<dim>::create({3,4});
+	typename SplineSpace::DegreeTable deg{{1,3}};
+	SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
 
+	for (auto  f : UnitElement<dim>::faces)
+	{
+		out << "face: " << f << endl;
 
+		out << "Multiplicity:\n";
+		auto f_mult = space.get_face_mult(f);
+		for (auto x: *f_mult)
+			x.print_info(out);
 
-    vector<Index> dof_map;
-
-    for (int i = 0; i < UnitElement<dim_domain>::faces_per_element; ++i)
-    {
-        out << "Face space: " << i << endl;
-        auto face_space = space->get_face_space(i, dof_map);
-        face_space->print_info(out);
-
-        out << "Dofs face to space mapping: " << endl;
-        out << dof_map << endl;
-    }
+		out << "Degree:\n";
+		auto f_deg = space.get_face_degree(f);
+		for (auto x: f_deg)
+			out << x;
+		out << endl;
+	}
 }
 
 
 
 int main()
 {
-    //out.depth_console(10);
+    out.depth_console(10);
 
-    run_test<1,1,1>();
+ //   run_test<1,1,1>();
     run_test<2,1,1>();
-    run_test<3,1,1>();
+ //   run_test<3,1,1>();
 
     return  0;
 }

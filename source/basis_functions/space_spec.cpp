@@ -20,12 +20,22 @@
 
 
 #include <igatools/basis_functions/space_spec.h>
+#include <igatools/base/array_utils.h>
 
 using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 
 IGA_NAMESPACE_OPEN
+
+template<int dim, int range, int rank>
+const std::array<int, dim>
+SplineSpace<dim, range, rank>::dims = sequence<dim>();
+
+template<int dim, int range, int rank>
+const std::array<int, SplineSpace<dim, range, rank>::n_components>
+SplineSpace<dim, range, rank>::components = sequence<SplineSpace<dim, range, rank>::n_components>();
 
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
@@ -195,6 +205,41 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 //    return result;
 //}
 //
+
+
+template<int dim, int range, int rank>
+auto SplineSpace<dim, range, rank>::
+get_face_mult(const Index face_id) -> shared_ptr<typename FaceSpace::MultiplicityTable>
+{
+	const auto &v_mult = *interior_mult_;
+	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+	auto f_int_mult = make_shared<typename FaceSpace::MultiplicityTable> (v_mult.get_comp_map());
+	auto &f_mult = *f_int_mult;
+	for (int comp : f_mult.get_active_components())
+	{
+		for (auto j : FaceSpace::dims)
+			f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
+	}
+	return f_int_mult;
+}
+
+
+
+template<int dim, int range, int rank>
+auto SplineSpace<dim, range, rank>::
+get_face_degree(const Index face_id) -> typename FaceSpace::DegreeTable
+{
+	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+	typename FaceSpace::DegreeTable f_degree(deg_.get_comp_map());
+	for (int comp : f_degree.get_active_components())
+	{
+		for (auto j : FaceSpace::dims)
+			f_degree(comp)[j] = deg_(comp)[active_dirs[j]];
+	}
+	return f_degree;
+}
+
+
 
 template<int dim, int range, int rank>
 auto SplineSpace<dim, range, rank>::

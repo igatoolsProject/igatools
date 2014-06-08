@@ -20,6 +20,7 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/base/exceptions.h>
+#include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
 
@@ -59,7 +60,7 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const TensorSize<dim> &n)
     :
-    CartesianGrid(filled_array<array<Real,2>, dim>(array<Real,2> {{0,1}}), n)
+    CartesianGrid(filled_array<array<Real,2>,dim>(array<Real,2> {{0,1}}), n)
 {
     kind_ = Kind::direction_uniform ;
 }

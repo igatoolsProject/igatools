@@ -58,6 +58,20 @@ public:
 
     const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &j) const;
 
+
+    TensorIndex<dim>
+    basis_flat_to_tensor(const Index index, const Index comp) const
+    {
+        return index_distribution_(comp).flat_to_tensor(index);
+    }
+
+
+    Index
+    basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
+                   const Index comp) const
+    {
+        return index_distribution_(comp).tensor_to_flat(tensor_index);
+    }
     /**
      * Print the class content
      */

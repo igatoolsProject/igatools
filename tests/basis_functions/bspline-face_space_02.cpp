@@ -40,13 +40,13 @@ void run_test()
     const int degree=1;
 
     auto grid = CartesianGrid<dim_domain>::create(3);
-    auto space = BSplineSpace<dim_domain, dim_range, rank>::create(grid,degree);
+    auto space = BSplineSpace<dim_domain, dim_range, rank>::create(degree, grid);
 
     vector<Index> dof_map;
 
     int face_id = 0;
 
-    auto face_space = space_tools::get_face_space<BSplineSpace<dim_domain, dim_range, rank>>(space,face_id,dof_map);
+    auto face_space = space->get_face_space(face_id,dof_map);
 
     for (vector<Index>::iterator it=dof_map.begin() ; it < dof_map.end(); ++it)
         out<< "face_id = "<< face_id << ", dof_id = "<< *it << endl;

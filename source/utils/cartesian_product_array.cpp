@@ -20,6 +20,7 @@
 
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/base/exceptions.h>
+#include <igatools/base/array_utils.h>
 
 
 using std::array;
@@ -70,7 +71,7 @@ template< class T, int rank>
 CartesianProductArray<T,rank>::
 CartesianProductArray(const Size size)
     :
-    CartesianProductArray(TensorSize<rank>(filled_array<Size,rank>(size)))
+    CartesianProductArray(TensorSize<rank>(size))
 {}
 
 
@@ -134,7 +135,8 @@ CartesianProductArray<T,rank>::
 copy_data_direction(const int i, const vector<T> &data)
 {
     Assert(i>=0 && i<rank, ExcIndexRange(i,0,rank));
-    Assert(data.size()>0, ExcLowerRange(data.size(),0));
+    //TODO(pauletti, Jun 8, 2014): why the next assertion?
+    //Assert(data.size()>0, ExcLowerRange(data.size(),0));
     data_[i] = data;
     TensorSize<rank> size = this->tensor_size();
     if (data_[i].size() != size(i))

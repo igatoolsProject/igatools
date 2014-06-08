@@ -22,56 +22,16 @@
 #define SPACE_SPEC_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/array_utils.h>
 #include <igatools/base/function.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <algorithm>
+
 
 IGA_NAMESPACE_OPEN
-
-template <class T, int dim>
-inline
-std::array<T,dim>
-iota_array(const int init=0)
-{
-    std::array<T,dim> res;
-    std::iota(res.begin(), res.end(), init);
-    return res;
-}
-
-template<int ...>
-struct seq { };
-
-template<int N, int ...S>
-struct gens : gens<N-1, N-1, S...> { };
-
-template<int ...S>
-struct gens<0, S...> {
-  typedef seq<S...> type;
-};
-
-constexpr int f(int n) {
-  return n;
-}
-
-template <int N>
-class sequence {
-  typedef typename gens<N>::type list;
-
-  template <int ...S>
-  static constexpr std::array<int,N> make_arr(seq<S...>) {
-    return std::array<int,N>{{f(S)...}};
-  }
-public:
-  static constexpr std::array<int,N> arr = make_arr(list());
-};
-
-//template <int N>
-//constexpr std::array<int,N> array_thinger<N>::arr;
-//static constexpr std::array<Index, n_entries> all_components = array_thinger<n_components>::arr;
 
 /**
  * @brief Tensor product spline space specification class
@@ -98,7 +58,7 @@ private:
     using GridSpace = FunctionSpaceOnGrid<GridType>;
 
 public:
-    static constexpr std::array<int,dim> dims = sequence<dim>::arr;
+    static const std::array<int, dim> dims;
 
     using FaceSpace = Conditional<(dim>0),
                 SplineSpace<dim-1,range,rank>,
@@ -114,7 +74,8 @@ public:
 
 public:
     template<class> class ComponentContainer;
-    static const int n_components = ComponentContainer<int>::n_entries;
+    static constexpr int n_components = ComponentContainer<int>::n_entries;
+    static const std::array<int, n_components> components;
 
 public:
     using Knots = CartesianProductArray<Real, dim>;
@@ -236,22 +197,17 @@ public:
 
     ///@}
 
-    typename FaceSpace::MultiplicityTable
-    get_face_mult(const Index face_id)
-    {
-       // const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+    /**
+     * Returns the multiplicity of the face space face_id
+     */
+    std::shared_ptr<typename FaceSpace::MultiplicityTable>
+    get_face_mult(const Index face_id);
 
-
-        typename FaceSpace::MultiplicityTable f_mult(interior_mult_->get_comp_map());
-//        for (int comp : f_mult.get_active_components())
-//        {
-//            for (int j=0; j<RefSpace::dim-1; ++j)
-//                   f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
-//           return typename RefSpace::RefFaceSpace::MultiplicityTable(f_mult, f_degree);
-//        interior_mult_
-        return f_mult;
-    }
-    //get_face_degree(face_id);
+    /**
+     * Returns the multiplicity of the face space face_id
+     */
+    typename FaceSpace::DegreeTable
+    get_face_degree(const Index face_id);
 
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);
@@ -315,7 +271,7 @@ public:
         using  ComponentMap = std::array <Index, n_entries>;
 
         ComponentContainer(const ComponentMap &comp_map =
-                iota_array<Index, n_entries>());
+                sequence<n_entries>());
 
         /**
          * Construct a homogenous range table with val value
@@ -419,7 +375,7 @@ ComponentContainer(const ComponentMap &comp_map)
     active_components_(unique_container<Index, n_entries>(comp_map)),
     inactive_components_(n_entries)
 {
-	auto all = iota_array<Index, n_entries>();
+	auto all = sequence<n_entries>();
 	auto it=std::set_difference (all.begin(), all.end(), active_components_.begin(),
 			active_components_.end(), inactive_components_.begin());
 
@@ -434,7 +390,7 @@ SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),
-    comp_map_(iota_array<Index, n_entries>()),
+    comp_map_(sequence<n_entries>()),
     active_components_(unique_container<Index, n_entries>(comp_map_))
 {}
 

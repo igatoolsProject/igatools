@@ -55,9 +55,9 @@ struct UnitElement
     static const int face_dim = (dim >= 1)?dim-1:0;
 
     /** Number of faces per element.*/
-    static const int faces_per_element = 2 * dim;
+    static constexpr int faces_per_element = 2 * dim;
 
-
+    static const std::array<int,faces_per_element> faces;
     /**
      * Converts the local face index of the unit element
      * to the hyperplane it belongs to.

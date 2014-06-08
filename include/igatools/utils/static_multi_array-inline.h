@@ -27,11 +27,9 @@
 
 #include<igatools/utils/static_multi_array.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
-
-
-
 
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
@@ -49,7 +47,7 @@ StaticMultiArray(const T &val)
     :
     StaticMultiArray<T,dim,rank>()
 {
-    this->data_ = filled_array<T,n_entries>(val) ;
+    this->data_ = filled_array<T, n_entries>(val);
 }
 
 
