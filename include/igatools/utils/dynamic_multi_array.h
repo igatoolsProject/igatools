@@ -101,6 +101,7 @@ public:
      */
     void resize(const TensorSize<rank> &dim);
 
+    void resize(const TensorSize<rank> &dim, const T &val);
 
     /**
      * Reshape the multiarray, i.e. change the size along each coordinate direction without

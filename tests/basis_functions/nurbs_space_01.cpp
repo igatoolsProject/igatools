@@ -21,113 +21,93 @@
 #include "../tests.h"
 
 #include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/base/exceptions.h>
 
 
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <vector>
-using std::vector ;
-
-#include <array>
-using std::array ;
-
-#include <memory>
-using std::shared_ptr ;
-
-
-
-
-
-
-
-template< int dim_domain, int dim_range, int rank >
+template< int dim, int range, int rank = 1>
 void do_test()
 {
-    Assert(dim_domain == 1 || dim_domain == 2 || dim_domain == 3, ExcIndexRange(dim_domain, 1, 4)) ;
+    vector< iga::Real > coord_x;
+    coord_x.push_back(0.0);
+    coord_x.push_back(1.0);
+    coord_x.push_back(2.0);
+    coord_x.push_back(3.0);
+    coord_x.push_back(4.0);
 
+    vector< iga::Real > coord_y;
+    coord_y.push_back(5.0);
+    coord_y.push_back(6.0);
+    coord_y.push_back(7.0);
+    coord_y.push_back(8.0);
 
-//  LogStream cout( rcp( new std::ostream( std::cout.rdbuf() ) ), "\t" ) ;
+    vector< iga::Real > coord_z;
+    coord_z.push_back(9.0);
+    coord_z.push_back(10.0);
+    coord_z.push_back(11.0);
 
+    CartesianProductArray< iga::Real, dim> coord;
+    CartesianProductArray<Index , dim>  mult;
+    TensorIndex<dim> degree;
 
-
-    //----------------------------------------------------------------------------------------------
-    // begin : testing the constructor
-    vector< iga::Real > coord_x ;
-    coord_x.push_back(0.0) ;
-    coord_x.push_back(1.0) ;
-    coord_x.push_back(2.0) ;
-    coord_x.push_back(3.0) ;
-    coord_x.push_back(4.0) ;
-
-    vector< iga::Real > coord_y ;
-    coord_y.push_back(5.0) ;
-    coord_y.push_back(6.0) ;
-    coord_y.push_back(7.0) ;
-    coord_y.push_back(8.0) ;
-
-    vector< iga::Real > coord_z ;
-    coord_z.push_back(9.0) ;
-    coord_z.push_back(10.0) ;
-    coord_z.push_back(11.0) ;
-
-    CartesianProductArray< iga::Real, dim_domain> coord ;
-    CartesianProductArray<Index , dim_domain>  mult ;
-    TensorIndex<dim_domain> degree ;
-
-    if (dim_domain == 1)
+    if (dim == 1)
     {
-        coord.copy_data_direction(0,coord_x) ;
-        degree[0] = 3 ;
+        coord.copy_data_direction(0,coord_x);
+        degree[0] = 3;
     }
-    else if (dim_domain == 2)
+    else if (dim == 2)
     {
         coord.copy_data_direction(0,coord_x);
         coord.copy_data_direction(1,coord_y);
 
-        degree[0] = 3 ;
-        degree[1] = 2 ;
+        degree[0] = 3;
+        degree[1] = 2;
     }
-    else if (dim_domain == 3)
+    else if (dim == 3)
     {
         coord.copy_data_direction(0,coord_x);
         coord.copy_data_direction(1,coord_y);
         coord.copy_data_direction(2,coord_z);
 
-        degree[0] = 3 ;
-        degree[1] = 2 ;
-        degree[2] = 1 ;
+        degree[0] = 3;
+        degree[1] = 2;
+        degree[2] = 1;
     }
 
 
 
 
-    auto  knots = CartesianGrid<dim_domain>::create(coord) ;
-    StaticMultiArray<TensorIndex<dim_domain>,dim_range,rank> deg;
-    deg.fill(degree);
-    NURBSSpace< dim_domain, dim_range, rank > nurbs_space(deg, knots) ;
-    nurbs_space.print_info(out);
-    out << endl ;
-    // end : testing the constructor
-    //----------------------------------------------------------------------------------------------
+    using Space = NURBSSpace< dim, range, rank >;
+    using WeightsTable = typename Space::WeightsTable;
+    using DegreeTable = typename Space::DegreeTable;
+    auto  knots = CartesianGrid<dim>::create(coord);
+    DegreeTable deg(degree);
 
+    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
+    WeightsTable weights;
+    const auto n_basis = bsp->get_num_basis_table();
+
+    for (auto comp : Space::components)
+        weights(comp).resize(n_basis(comp),1.0);
+
+    for (auto &w : weights)
+        w.print_info(out);
+
+    auto nurbs_space = Space::create(deg, knots, weights);
+    nurbs_space->print_info(out);
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
-    do_test< 1, 1, 1 >() ;
-    do_test< 1, 2, 1 >() ;
-    do_test< 1, 3, 1 >() ;
+    do_test<1, 1>();
+    do_test<1, 2>();
+    do_test<1, 3>();
 
-    do_test< 2, 1, 1 >() ;
-    do_test< 2, 2, 1 >() ;
-    do_test< 2, 3, 1 >() ;
+    do_test<2, 1>();
+    do_test<2, 2>();
+    do_test<2, 3>();
 
-    do_test< 3, 1, 1 >() ;
-    do_test< 3, 3, 1 >() ;
+    do_test<3, 1>();
+    do_test<3, 3>();
 
     return 0;
 }

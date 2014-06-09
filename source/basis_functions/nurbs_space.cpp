@@ -34,6 +34,13 @@ using std::placeholders::_2;
 IGA_NAMESPACE_OPEN
 
 //TODO(pauletti, Jan 19, 2014): remove the is_bspline from this class
+
+template <int dim_, int range_, int rank_>
+const std::array<int, NURBSSpace<dim_, range_, rank_>::n_components>
+NURBSSpace<dim_, range_, rank_>::
+components = sequence<spline_space_t::n_components>();
+
+
 #if 0
 template <int dim_, int range_, int rank_>
 void
@@ -44,28 +51,43 @@ create_refinement_connection()
     this->connect_refinement_h_function(
         bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
 }
+#endif
+
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
+NURBSSpace(const int degree,
+           shared_ptr< GridType > knots,
+           const WeightsTable &weights)
+           :
+           NURBSSpace(DegreeTable(TensorIndex<dim>(degree)), knots, weights)
+{}
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create(const int degree,
+       shared_ptr< GridType > knots,
+       const WeightsTable &weights) -> shared_ptr<self_t>
+{
+    return shared_ptr<self_t>(new self_t(degree, knots,  weights));
+}
+
 
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(shared_ptr< GridType > knots, const int degree)
+NURBSSpace(const DegreeTable &degree,
+           shared_ptr<GridType> knots,
+           const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, degree))
+    sp_space_(spline_space_t::create(degree,knots)),
+    weights_(weights)
 {
-    // initialize all the weights to 1.0 (then this space will have the same
-    // mathematical structure of a BSpline space)
-    const auto n_dofs = sp_space_->get_num_basis_table();
-    for (int comp_id = 0; comp_id < n_components; ++comp_id)
-    {
-        const auto n_dofs_component = n_dofs(comp_id);
 
-        weights_(comp_id).resize(n_dofs_component);
-        weights_(comp_id).fill(1.0);
-    }
-
-    create_refinement_connection();
-
+    //create_refinement_connection();
     perform_post_construction_checks();
 }
 
@@ -74,86 +96,13 @@ NURBSSpace(shared_ptr< GridType > knots, const int degree)
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots, const int degree) -> shared_ptr<self_t>
-{
-    return shared_ptr<self_t>(new self_t(knots, degree));
-}
-
-
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(shared_ptr<GridType> knots, const DegreeTable &degree)
-    :
-    BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, degree))
-{
-
-    const auto n_dofs = sp_space_->get_num_basis_table();
-    for (int comp_id = 0; comp_id < n_components; ++comp_id)
-    {
-        const auto n_dofs_component = n_dofs(comp_id);
-
-        weights_(comp_id).resize(n_dofs_component);
-        weights_(comp_id).fill(1.0);
-    }
-    create_refinement_connection();
-
-    perform_post_construction_checks();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr<GridType> knots, const DegreeTable &degree)
+create(const DegreeTable &degree, shared_ptr<GridType> knots,
+       const WeightsTable &weights)
 -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(degree, knots, weights));
 }
 
-
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(
-    shared_ptr< GridType > knots,
-    const MultiplicityTable &mult_vector,
-    const DegreeTable &degree)
-    :
-    BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, mult_vector))
-{
-    // initialize all the weights to 1.0 (then this space will have the
-    // same mathematical structure of a BSpline space)
-    const auto n_dofs = sp_space_->get_num_basis_table();
-    for (int comp_id = 0; comp_id < n_components; ++comp_id)
-    {
-        const auto n_dofs_component = n_dofs(comp_id);
-
-        weights_(comp_id).resize(n_dofs_component);
-        weights_(comp_id).fill(1.0);
-    }
-    //----------------------------------------------------------------------------------------------
-
-    create_refinement_connection();
-
-    perform_post_construction_checks();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots,
-       const MultiplicityTable &mult_vector,
-       const DegreeTable &degree) -> shared_ptr<self_t>
-{
-    return (shared_ptr<self_t>(new self_t(knots, mult_vector, degree)));
-}
-#endif
 
 
 template <int dim_, int range_, int rank_>
@@ -195,13 +144,12 @@ NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
     // check that the number of weights is equal to the number of basis functions in the space
-    using weights_container_t = StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>;
-    Size n_weights = 0;
-    for (int comp_id = 0; comp_id < weights_container_t::n_entries; ++comp_id)
-        n_weights += weights_(comp_id).flat_size();
+    for (auto comp : components)
+    {
+        Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
+               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
+    }
 
-    Assert(sp_space_->get_num_basis() == n_weights,
-           ExcDimensionMismatch(sp_space_->get_num_basis(),n_weights));
 }
 
 
@@ -241,9 +189,9 @@ end() const -> ElementIterator
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_weights() const -> const StaticMultiArray<DynamicMultiArray<Real,dim>, range, rank >
+get_weights() const -> const WeightsTable &
 {
-    return (weights_);
+    return weights_;
 }
 
 
@@ -251,16 +199,10 @@ get_weights() const -> const StaticMultiArray<DynamicMultiArray<Real,dim>, range
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
-reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> &weights)
+reset_weights(const WeightsTable &weights)
 {
-    //-------------------------------------------------------------------------
-    for (int i = 0; i < StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>::n_entries; ++i)
-    {
-        Assert(sp_space_->get_num_basis(i) == int(weights(i).flat_size()),
-               ExcDimensionMismatch(sp_space_->get_num_basis(i), weights(i).flat_size()));
-    }
-    //-------------------------------------------------------------------------
     weights_ = weights;
+    perform_post_construction_checks();
 }
 
 
@@ -389,6 +331,8 @@ print_info(LogStream &out) const
 
     sp_space_->print_info(out);
 
+//    for (auto w : weights_)
+//        w.print_info(out);
     out.push("\t");
     for (int comp_id = 0; comp_id < n_components; comp_id++)
     {

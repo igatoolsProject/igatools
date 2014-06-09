@@ -106,6 +106,7 @@ public:
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
 
+    /** Required type for space templated functions */
     using RefSpace = self_t;
 
     using GridType = typename PushForwardType::GridType;
@@ -144,10 +145,12 @@ public:
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
+
+    using typename BaseSpace::InteriorReg;
+
     using typename BaseSpace::DegreeTable;
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
-    using typename BaseSpace::InteriorReg;
     using typename BaseSpace::SpaceDimensionTable;
 
     enum class EndBehaviour

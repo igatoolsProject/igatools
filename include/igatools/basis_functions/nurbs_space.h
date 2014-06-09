@@ -30,7 +30,8 @@ IGA_NAMESPACE_OPEN
 template < int, int, int > class NURBSElementAccessor;
 
 /**
- * This class represent a function space in which the basis functions are NURBS.
+ * Multivariate (tensor product) scalar, vector or k-tensor
+ * valued NURBS space.
  *
  * @ingroup containers
  */
@@ -65,18 +66,22 @@ public:
 
     static constexpr int n_components = spline_space_t::n_components;
 
+    static const std::array<int, n_components> components;
+
     static const bool has_weights = true;
 
 public:
-    using Value = typename spline_space_t::Value;
-    using Point = typename spline_space_t::Point;
-    using Div   = typename spline_space_t::Div;
     template <int order>
     using Derivative = typename spline_space_t::template Derivative<order>;
+    using Point = typename spline_space_t::Point;
+    using Value = typename spline_space_t::Value;
+    using Div   = typename spline_space_t::Div;
 
 public:
     /** Type for the reference face space.*/
-    using RefFaceSpace = NURBSSpace<dim-1, range, rank>;
+    using RefFaceSpace = Conditional<(dim>0),
+            NURBSSpace<dim-1, range, rank>,
+            NURBSSpace<0, range, rank> >;
 
     /** Type for the element accessor. */
     using ElementAccessor = NURBSElementAccessor<dim, range, rank> ;
@@ -90,23 +95,26 @@ public:
     using ComponentContainer = typename spline_space_t::template ComponentContainer<T>;
 
     using DegreeTable = typename spline_space_t::DegreeTable;
-
     using MultiplicityTable = typename spline_space_t::MultiplicityTable;
     using EndBehaviourTable = typename spline_space_t::EndBehaviourTable;
+    using InteriorReg= typename spline_space_t::InteriorReg;
     using SpaceDimensionTable = typename spline_space_t::SpaceDimensionTable;
 
-    using WeightsTable = ComponentContainer<DynamicMultiArray<Real,dim> >;
+    using Weights = DynamicMultiArray<Real,dim>;
+    using WeightsTable = ComponentContainer<Weights>;
 
 public:
     /** @name Constructor and destructor */
     ///@{
-#if 0
+
     /**
      * Constructs a maximum regularity NURBSSpace over CartesianGrid
      * @p knots for the given @p degree in all directions and homogeneous in all components.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    explicit NURBSSpace(std::shared_ptr<GridType> knots, const int degree);
+    explicit NURBSSpace(const int degree,
+                        std::shared_ptr< GridType > knots,
+                        const WeightsTable &weights);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -114,15 +122,18 @@ public:
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
     static std::shared_ptr< self_t >
-    create(std::shared_ptr< GridType > knots, const int degree);
+    create(const int degree,
+           std::shared_ptr< GridType > knots,
+           const WeightsTable &weights);
 
     /**
      * Constructs a maximum regularity NURBSSpace over CartesianGrid
      * @p knots for the given @p degree for each direction and for each component.
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
-    explicit NURBSSpace(std::shared_ptr<GridType> knots,
-                        const DegreeTable &degree);
+    explicit NURBSSpace(const DegreeTable &degree,
+                        std::shared_ptr<GridType> knots,
+                        const WeightsTable &weights);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -130,29 +141,10 @@ public:
      * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
      */
     static std::shared_ptr< self_t >
-    create(std::shared_ptr<GridType> knots, const DegreeTable &degree);
+    create(const DegreeTable &degree,
+           std::shared_ptr<GridType> knots,
+           const WeightsTable &weights);
 
-    /**
-     * Construct a NURBSSpace over the CartesianGrid @p knots with
-     * the given multiplicity vector @p mult_vector for each component
-     * and for the given @p degree for each direction and for each component.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    explicit NURBSSpace(std::shared_ptr< GridType > knots,
-                        const MultiplicityTable &mult_vector,
-                        const DegreeTable &degree);
-
-    /**
-     * Returns shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
-     * the given multiplicity vector @p mult_vector for each component
-     * and for the given @p degree for each direction and for each component.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    static std::shared_ptr< self_t >
-    create(std::shared_ptr< GridType > knots,
-           const MultiplicityTable &mult_vector,
-           const DegreeTable &degree);
-#endif
     /**
      * Construct a NURBSSpace over the CartesianGrid @p knots with
      * the given multiplicity vector @p mult_vector for each component
@@ -362,28 +354,32 @@ public:
     ElementIterator end() const;
 
     /**
-     * todo document me
-     *
-     */
-    void print_info(LogStream &out) const;
-
-    /**
      * Get the weights of the NURBSSpace.
      */
-    const StaticMultiArray< DynamicMultiArray<Real,dim>,range,rank>
-    get_weights() const;
+    const WeightsTable  &get_weights() const;
 
     /**
      * Reset the weights of the NURBSSpace.
      */
-    void reset_weights(const StaticMultiArray<DynamicMultiArray<iga::Real,dim>,range,rank> &weights);
+    void reset_weights(const WeightsTable &weights);
+
+    /**
+     * Prints internal information about the space.
+     * @note Mostly used for debugging and testing.
+     */
+    void print_info(LogStream &out) const;
+
 
 private:
-    std::shared_ptr<BSplineSpace<dim_, range_, rank_> > sp_space_;
+    /**
+     * B-spline space
+     */
+    std::shared_ptr<spline_space_t> sp_space_;
+
     /**
      * Weights associated to the basis functions.
      */
-    StaticMultiArray<DynamicMultiArray<iga::Real,dim>,range,rank> weights_;
+    WeightsTable weights_;
 
 #if 0
     /**

@@ -75,6 +75,18 @@ resize(const TensorSize<rank> &dim)
 }
 
 
+
+template<class T, int rank>
+void
+DynamicMultiArray<T,rank>::
+resize(const TensorSize<rank> &dim, const T &val)
+{
+    TensorSizedContainer<rank>::reset_size(dim);
+    this->data_.resize(this->flat_size(), val);
+}
+
+
+
 template<class T, int rank>
 void
 DynamicMultiArray<T,rank>::
