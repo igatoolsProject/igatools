@@ -246,7 +246,10 @@ get_global_dof(const int space_id, const Index local_dof) const
     const auto &space = spaces_info_.at(space_id);
 //    const auto & dofs_view = space.dofs_view_;
 
-    return space.dofs_view_[local_dof] + space.offset_;
+//    const Index space_dof = const_cast<const SpaceDofsView &>(space.dofs_view_)[local_dof];
+    const Index space_dof = space.dofs_view_[local_dof];
+
+    return space_dof + space.offset_;
 }
 
 

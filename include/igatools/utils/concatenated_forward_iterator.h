@@ -98,6 +98,8 @@ public:
     const value_type *operator->() const;
     ///@}
 
+
+
 protected:
     ConcatenatedForwardIteratorData();
 
@@ -128,6 +130,8 @@ protected:
      * Iterator pointing to the current position.
      */
     Iterator iterator_current_;
+
+
 
 
 private:
@@ -282,7 +286,6 @@ public:
     /** Move assignment operator. */
     ConcatenatedForwardConstIterator<ConstViewType> &operator=(
         ConcatenatedForwardConstIterator<ConstViewType> &&it) = default;
-
     ///@}
 };
 
@@ -346,6 +349,31 @@ public:
      */
     value_type *operator->();
     ///@}
+
+    typename ViewType::reference operator[](const Index id)
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
+    const typename ViewType::reference operator[](const Index id) const
+    {
+        Assert(!this->ranges_.empty(),ExcEmptyObject());
+
+        // find the view that holds the data
+        Index offset_begin = 0;
+        Index offset_end = this->ranges_.front().get_num_entries();
+        for (const auto rng : this->ranges_)
+        {
+
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+
+        }
+
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
 
 };
 

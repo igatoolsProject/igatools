@@ -91,8 +91,10 @@ auto
 View<Iterator,ConstIterator>::
 operator[](const Index n) -> reference
 {
-
-    Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
+#ifndef NDEBUG
+    auto tmp = this->begin_;
+    Assert(tmp+n < this->end_, ExcIteratorPastEnd());
+#endif
     return this->begin_[n];
 }
 
@@ -102,7 +104,11 @@ auto
 View<Iterator,ConstIterator>::
 operator[](const Index n) const -> const reference
 {
-    Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
+#ifndef NDEBUG
+    auto tmp = this->begin_;
+    Assert(tmp+n < this->end_, ExcIteratorPastEnd());
+#endif
+//    return const_cast<const Iterator &>(this->begin_)[n];
     return this->begin_[n];
 }
 
