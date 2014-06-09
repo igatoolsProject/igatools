@@ -26,25 +26,11 @@
 template< int dim, int range, int rank = 1>
 void do_test()
 {
-    vector< iga::Real > coord_x;
-    coord_x.push_back(0.0);
-    coord_x.push_back(1.0);
-    coord_x.push_back(2.0);
-    coord_x.push_back(3.0);
-    coord_x.push_back(4.0);
+    vector<Real> coord_x{0,1,2,3,4};
+    vector<Real> coord_y{5,6,7,8};
+    vector<Real> coord_z{9, 10, 11};
 
-    vector< iga::Real > coord_y;
-    coord_y.push_back(5.0);
-    coord_y.push_back(6.0);
-    coord_y.push_back(7.0);
-    coord_y.push_back(8.0);
-
-    vector< iga::Real > coord_z;
-    coord_z.push_back(9.0);
-    coord_z.push_back(10.0);
-    coord_z.push_back(11.0);
-
-    CartesianProductArray< iga::Real, dim> coord;
+    CartesianProductArray<Real, dim> coord;
     CartesianProductArray<Index , dim>  mult;
     TensorIndex<dim> degree;
 
