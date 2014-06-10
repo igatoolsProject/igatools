@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+// TODO (pauletti, Jun 10, 2014): write appropriate header comment
+
 #include "../tests.h"
 
 #include <igatools/base/exceptions.h>
@@ -27,31 +29,31 @@
 
 
 
-template< int dim_domain, int dim_range >
+template< int dim, int range, int rank = 1>
 void do_test()
 {
-    out << "do_test<" << dim_domain << "," << dim_range << ">" << endl ;
+    const int r = 2;
 
-    auto knots = CartesianGrid<dim_domain>::create();
+    out << "do_test<" << dim << "," << range << ">" << endl ;
 
+    using Space = NURBSSpace< dim, range, rank >;
+    using WeightsTable = typename Space::WeightsTable;
+    using DegreeTable = typename Space::DegreeTable;
+    auto  knots = CartesianGrid<dim>::create();
 
-    // and here we build the NURBSSpace
-    const int rank = 1;
+    auto degree = TensorIndex<dim> (r);
+    DegreeTable deg(degree);
 
-    typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(knots, 2) ;
+    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
+    WeightsTable weights;
+    const auto n_basis = bsp->get_num_basis_table();
+    for (auto comp : Space::components)
+        weights(comp).resize(n_basis(comp),1.0);
 
-    space->print_info(out) ;
-    out << endl;
-    //----------------------------------------------------------------------------------------------
-
-
-    //----------------------------------------------------------------------------------------------
-    // for the basis functions evaluation we need a set of points (with tensor product structure)
-    // to do so, we get the points from a Gauss quadrature scheme with 3 points
+    auto space = Space::create(deg, knots, weights);
 
     const int n_points = 3 ;
-    QGauss< dim_domain > quad_scheme(n_points) ;
+    QGauss< dim > quad_scheme(n_points) ;
 
     auto element     = space->begin();
     auto end_element = space->end();
@@ -83,13 +85,13 @@ void do_test()
 
 
         out << "Gradients basis functions:" << endl ;
-        ValueTable< Derivatives<dim_domain, dim_range, rank, 1 > > gradients = element->get_basis_gradients() ;
+        ValueTable< Derivatives<dim, range, rank, 1 > > gradients = element->get_basis_gradients() ;
         gradients.print_info(out) ;
         out << endl ;
 
 
         out << "Hessians basis functions:" << endl ;
-        ValueTable< Derivatives<dim_domain, dim_range, rank, 2 > > hessians = element->get_basis_hessians() ;
+        ValueTable< Derivatives<dim, range, rank, 2 > > hessians = element->get_basis_hessians() ;
         hessians.print_info(out) ;
         out << endl ;
 
@@ -102,7 +104,7 @@ void do_test()
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
     do_test< 1, 1 >() ;
 

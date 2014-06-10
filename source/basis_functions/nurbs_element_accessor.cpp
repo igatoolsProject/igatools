@@ -129,152 +129,97 @@ evaluate_nurbs_values(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable<Value> &D0_phi_hat) const
 {
+    /*
+     * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the i-th NURBS basis function is defined as
+     *
+     *         P_i
+     * R_i = -------
+     *          Q
+     *
+     * and
+     *
+     * P_i = w_i * N_i
+     *
+     *
+     *
+     *     _n_
+     *     \
+     * Q = /__  P_i
+     *    i = 0
+     *
+     */
+
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D0_phi_hat.get_num_functions(), this->get_num_basis()));
 
+    const auto &w_table = this->space_->weights_;
     const int num_points = D0_phi_hat.get_num_points();
 
+    const auto &weights = this->get_local_weights();
+    const auto &bspline_values = bspline_cache.get_values();
+
+    for (int iComp : w_table.get_active_components())
     {
-        // here we treat the pure NURBS case
-        using space_t = ContainerType;
+        const int num_basis_comp = this->get_num_basis(iComp);
 
-        typedef Real ValueRange1_t;
+        vector<vector<Real>> P(num_basis_comp, vector<Real>(num_points));
+        vector< Real > Q(num_points);
 
-        const vector< Real > &weights = this->get_local_weights();
-
-        /*
-        * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
-        * from the set of BSpline basis function N_0,...,N_n
-        * where the i-th NURBS basis function is defined as
-        *
-        *         P_i
-        * R_i = -------
-        *          Q
-        *
-        * and
-        *
-        * P_i = w_i * N_i
-        *
-        *
-        *
-        *     _n_
-        *     \
-        * Q = /__  P_i
-        *    i = 0
-        *
-        */
-
-        //----------------------------------------------------------------------------------------------
-        const auto &bspline_values = bspline_cache.get_values();
-        //----------------------------------------------------------------------------------------------
-
-    //    if ((this->space_)->is_range_homogeneous() == false)
+        for (int i = 0; i < num_basis_comp; ++i)
         {
-            //------------------------------------------------------------------------------------------
-            int dof_offset = 0;
-            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
+            const int basis_flat_id = this->comp_offset_(iComp) + i;
+
+            const auto &N_i = bspline_values.get_function_view(basis_flat_id);
+            const Real w_i = weights[basis_flat_id];
+
+            auto &P_i = P[i];
+
+            for (int iPt = 0; iPt < num_points; iPt++)
             {
-                const int num_basis_comp = this->get_num_basis(iComp);
-
-                vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points));
-
-                vector< ValueRange1_t > Q(num_points);
-                for (int i = 0; i < num_basis_comp; ++i)
-                {
-                    const int basis_flat_id = dof_offset + i;
-
-                    const auto &N_i = bspline_values.get_function_view(basis_flat_id);
-                    const Real w_i = weights[basis_flat_id];
-
-                    auto &P_i = P[i];
-
-                    for (int iPt = 0; iPt < num_points; iPt++)
-                    {
-                        P_i[iPt] = w_i * N_i[iPt](iComp);
-
-                        Q[iPt] += P_i[iPt];
-                    }
-                }
-
-                vector< ValueRange1_t >  invQ(num_points);
-                for (int iPt = 0; iPt < num_points; ++iPt)
-                    invQ[iPt] = 1.0 / Q[iPt];
-
-                for (int i = 0; i < num_basis_comp; i++)
-                {
-                    const int basis_flat_id = dof_offset + i;
-
-                    const auto &P_i = P[i];
-
-                    for (int iPt = 0; iPt < num_points; ++iPt)
-                    {
-                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt];
-
-                        R(iComp) = invQ[iPt] * P_i[iPt];
-                    }
-                }
-                dof_offset += num_basis_comp;
-
-            } // end iComp loop
-            //------------------------------------------------------------------------------------------
+                P_i[iPt] = w_i * N_i[iPt](iComp);
+                Q[iPt] += P_i[iPt];
+            }
         }
-#if 0
-        else // space_->homogeneous_range_ == true
+
+        vector< Real >  invQ(num_points);
+        for (int iPt = 0; iPt < num_points; ++iPt)
+            invQ[iPt] = 1.0 / Q[iPt];
+
+        for (int i = 0; i < num_basis_comp; i++)
         {
-            //------------------------------------------------------------------------------------------
-            const int num_basis_comp = this->get_num_basis(0);
+            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const auto &P_i = P[i];
 
-            for (int iComp = 0; iComp < space_t::n_components; ++iComp)
-            {
-                Assert(this->get_num_basis(iComp) == num_basis_comp,
-                       ExcDimensionMismatch(this->get_num_basis(iComp), num_basis_comp));
-            }
-
-            vector< vector<ValueRange1_t> > P(num_basis_comp, vector<Real>(num_points));
-            vector< ValueRange1_t > Q(num_points);
-
-            for (int i = 0; i < num_basis_comp; ++i)
-            {
-                const auto &N_i = bspline_values.get_function_view(i);
-                const Real w_i = weights[i];
-
-                auto &P_i = P[i];
-
-                for (int iPt = 0; iPt < num_points; iPt++)
-                {
-                    P_i[iPt] = w_i * N_i[iPt](0);
-
-                    Q[iPt] += P_i[iPt];
-                }
-            }
-
-            vector< ValueRange1_t > invQ(num_points);
             for (int iPt = 0; iPt < num_points; ++iPt)
-                invQ[iPt] = 1.0 / Q[iPt];
-
-
-            for (int i = 0; i < num_basis_comp; i++)
             {
-                const auto &P_i = P[i];
-
-                for (int iPt = 0; iPt < num_points; ++iPt)
-                {
-                    const ValueRange1_t tmp_R = invQ[iPt] * P_i[iPt];
-
-                    for (int iComp = 0; iComp < space_t::n_components; ++iComp)
-                    {
-                        const int basis_flat_id = i + iComp * num_basis_comp;
-
-                        auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt];
-                        R(iComp) = tmp_R;
-                    }
-                }
+                auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt];
+                R(iComp) = invQ[iPt] * P_i[iPt];
             }
         }
-#endif
+    }
+
+    for (int comp : w_table.get_inactive_components())
+    {
+        const auto n_basis = this->space_->get_num_basis_per_element(comp);
+        const Size offset = this->comp_offset_(comp);
+        const Size act_offset = this->comp_offset_(w_table.active(comp));
+
+        for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+        {
+            const auto values_phi_hat_copy_from = D0_phi_hat.get_function_view(act_offset+basis_i);
+            auto values_phi_hat_copy_to = D0_phi_hat.get_function_view(offset+basis_i);
+
+            for (int qp = 0; qp < num_points; ++qp)
+                values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+        }
     }
 }
+
+
+
 
 
 template <int dim, int range, int rank  >
@@ -284,7 +229,7 @@ evaluate_nurbs_gradients(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const
 {
-#if 0
+
 	Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D1_phi_hat.get_num_functions(), this->get_num_basis()));
@@ -341,7 +286,7 @@ evaluate_nurbs_gradients(
         //----------------------------------------------------------------------------------------------
 
 
-        if ((this->space_)->is_range_homogeneous() == false)
+      //  if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -427,6 +372,7 @@ evaluate_nurbs_gradients(
             } // end iComp loop
             //------------------------------------------------------------------------------------------
         } // space_->homogeneous_range_ == false
+#if 0
         else // space_->homogeneous_range_ == true
         {
             //------------------------------------------------------------------------------------------
@@ -514,9 +460,9 @@ evaluate_nurbs_gradients(
 
             //------------------------------------------------------------------------------------------
         }
-
-    }
 #endif
+    }
+
 }
 
 
@@ -527,7 +473,7 @@ evaluate_nurbs_hessians(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
     ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const
 {
-#if 0
+
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D2_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D2_phi_hat.get_num_functions(), this->get_num_basis()));
@@ -837,7 +783,6 @@ evaluate_nurbs_hessians(
         } // space_->homogeneous_range_ == true
 #endif
     }
-#endif
 }
 
 
