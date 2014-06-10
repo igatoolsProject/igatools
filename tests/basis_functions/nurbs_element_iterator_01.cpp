@@ -22,12 +22,9 @@
 
 #include "../tests.h"
 
-#include <igatools/base/exceptions.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
-
-
 
 template< int dim, int range, int rank = 1>
 void do_test()

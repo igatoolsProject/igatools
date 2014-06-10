@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+
+// TODO (pauletti, Jun 10, 2014): write appropriate header comment
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
@@ -26,40 +28,33 @@
 
 
 
-template< int dim_domain, int dim_range >
+template< int dim, int range, int rank = 1>
 void do_test()
 {
-    Assert(dim_domain == 1 || dim_domain == 2 || dim_domain == 3, ExcIndexRange(dim_domain, 1, 4)) ;
+    const int r = 2;
 
-    out << "do_test<" << dim_domain << "," << dim_range << ">" << endl ;
+    out << "do_test<" << dim << "," << range << ">" << endl ;
 
-    auto knots = CartesianGrid<dim_domain>::create(3);
+    using Space = NURBSSpace< dim, range, rank >;
+    using WeightsTable = typename Space::WeightsTable;
+    using DegreeTable = typename Space::DegreeTable;
+    auto  knots = CartesianGrid<dim>::create(3);
 
-    // and here we build the NURBSSpace
-    const int rank = 1;
+    auto degree = TensorIndex<dim>(r);
+    DegreeTable deg(degree);
 
+    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
+    WeightsTable weights;
+    const auto n_basis = bsp->get_num_basis_table();
+    for (auto comp : Space::components)
+    {
+        weights(comp).resize(n_basis(comp));
+        const int n_entries = weights(comp).flat_size();
+        for (int i = 0 ; i < n_entries ; ++i)
+            weights(comp)(i) = (i+1) * (1.0 / n_entries) ;
 
-
-    typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(knots, 2) ;
-
-
-    // defining and assigning some weights (different from 1.0) to the NURBSSpace
-    const auto n_dofs = space->get_num_basis_table() ;
-
-    const auto n_dofs_component = n_dofs(0);
-    DynamicMultiArray<iga::Real,dim_domain> weights_component(n_dofs_component) ;
-    const int n_entries_component = weights_component.flat_size();
-    for (int i = 0 ; i < n_entries_component ; ++i)
-        weights_component(i) = (i+1) * (1.0 / n_entries_component) ;
-
-    StaticMultiArray<DynamicMultiArray<iga::Real,dim_domain>,dim_range,rank> weights(weights_component) ;
-
-    space->reset_weights(weights) ;
-
-    space->print_info(out) ;
-    out << endl;
-    //----------------------------------------------------------------------------------------------
+    }
+    auto space = Space::create(deg, knots, weights);
 
 
     //----------------------------------------------------------------------------------------------
@@ -67,7 +62,7 @@ void do_test()
     // to do so, we get the points from a Gauss quadrature scheme with 3 points
 
     const int n_points = 3 ;
-    QGauss< dim_domain > quad_scheme(n_points) ;
+    QGauss<dim> quad_scheme(n_points) ;
     //----------------------------------------------------------------------------------------------
 
 
