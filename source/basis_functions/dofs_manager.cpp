@@ -63,6 +63,9 @@ add_dofs_space_view(
 {
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
+    Assert(num_dofs_space == dofs_space_view.get_num_entries(),
+           ExcDimensionMismatch(num_dofs_space,dofs_space_view.get_num_entries()));
+
     spaces_info_.emplace(
         space_id,
         SpaceInfo(num_dofs_space,dofs_space_view));

@@ -61,6 +61,8 @@ public:
 
     bool operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
 
+    bool operator<=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+
     ///@}
 
 
@@ -99,12 +101,19 @@ public:
     ///@}
 
 
+    /**
+     * Returns @p n such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ((*this) - a)</tt>.
+     */
+    Size
+    operator-(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const;
 
 protected:
     ConcatenatedForwardIteratorData();
 
     ConcatenatedForwardIteratorData(const std::vector<ViewType> &views,const Index index);
 
+
+    void get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const;
 
 
     DerivedClass &as_derived_class();
@@ -351,32 +360,7 @@ public:
     ///@}
 
 
-    void get_range_id_and_dof_id_in_range(const Index id, Index &rng_id, Index &dof_id_rng) const
-    {
-        Assert(!this->ranges_.empty(),ExcEmptyObject());
 
-//        using std::cout;
-//        using std::endl;
-
-
-        // find the view that holds the data
-        Index id_first = 0;
-        Index id_last = - 1;
-        for (const auto rng : this->ranges_)
-        {
-            id_first = id_last + 1;
-            id_last += rng.get_num_entries() ;
-
-//          cout << "id_first=" << id_first << "   id_last=" <<id_last << "   num entries = " << rng.get_num_entries() << endl;
-            if (id >= id_first && id <= id_last)
-            {
-                dof_id_rng = id - id_first;
-                break;
-            }
-
-            rng_id += 1;
-        }
-    }
 
     typename ViewType::reference operator[](const Index id)
     {
@@ -388,11 +372,11 @@ public:
     {
         Index rng_id = 0 ;
         Index dof_id_rng = 0;
-        this->get_range_id_and_dof_id_in_range(id,rng_id,dof_id_rng);
+        this->get_range_id_and_entry_id_in_range(id,rng_id,dof_id_rng);
 
+        /*
         using std::cout;
         using std::endl;
-        /*
                 cout << "range_id=" << rng_id << "   dof_id_rng=" << dof_id_rng << endl;
                 cout << "global_id = " << this->ranges_[rng_id][dof_id_rng] << endl;
         //*/

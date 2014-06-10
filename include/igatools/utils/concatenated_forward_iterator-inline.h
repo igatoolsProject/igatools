@@ -112,7 +112,7 @@ bool
 ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
 operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
 {
-    Assert(this->is_comparable(it), ExcInvalidIterator());
+    Assert(this->is_comparable(it), ExcMessage("Iterators are not comparable."));
 
     return (this->range_id_ == it.range_id_ &&
             this->iterator_current_ == it.iterator_current_);
@@ -124,20 +124,19 @@ bool
 ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
 operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
 {
-    Assert(this->is_comparable(it), ExcInvalidIterator());
+    Assert(this->is_comparable(it), ExcMessage("Iterators are not comparable."));
 
-    if (this->range_id_ < it.range_id_)
-    {
-        return true;
-    }
-    else if (this->range_id_ == it.range_id_)
-    {
-        return this->iterator_current_ < it.iterator_current_;
-    }
-    else
-    {
-        return false;
-    }
+    return (this->range_id_ < it.range_id_ ||
+            (this->range_id_ == it.range_id_ && this->iterator_current_ < it.iterator_current_));
+}
+
+
+template <class ViewType,class DerivedClass>
+bool
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator<=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const
+{
+    return ((*this) == a || (*this) < a);
 }
 
 template <class ViewType,class DerivedClass>
@@ -209,6 +208,82 @@ operator+(const int n)
     return this->as_derived_class();
 }
 
+
+template <class ViewType,class DerivedClass>
+inline
+Size
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+operator-(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const
+{
+    Assert(this->is_comparable(a), ExcMessage("Iterators are not comparable."));
+    Assert(a <= (*this),ExcInvalidIterator());
+
+    /*
+    using std::cout;
+    using std::endl;
+    //*/
+
+    Size n_entries = 0;
+    for (Index i = a.range_id_ ; i < this->range_id_ ; ++i)
+    {
+        n_entries += this->ranges_[i].get_num_entries();
+        /*
+        cout << "i=" << i
+             << "    ranges_[i].get_num_entries()=" << this->ranges_[i].get_num_entries()
+             << "    n_entries=" << n_entries << endl;
+             //*/
+    }
+    n_entries -= a.iterator_current_ - a.ranges_[a.range_id_].begin();
+
+
+    for (auto it = ranges_[range_id_].begin() ; it != this->iterator_current_ ; ++it)
+    {
+        ++n_entries;
+//       cout << "    n_entries=" << n_entries << endl;
+    }
+
+    /*
+        cout << "range_diff=" << this->range_id_ - a.range_id_ << endl;
+        cout << "n_entries=" << n_entries << endl;
+
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    //*/
+    return n_entries;
+}
+
+
+template <class ViewType,class DerivedClass>
+inline
+void
+ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const
+{
+    Assert(!this->ranges_.empty(),ExcEmptyObject());
+
+//        using std::cout;
+//        using std::endl;
+
+    entry_id_rng = 0;
+
+    // find the view that holds the data
+    Index id_first = 0;
+    Index id_last = - 1;
+    for (const auto rng : this->ranges_)
+    {
+        id_first = id_last + 1;
+        id_last += rng.get_num_entries() ;
+
+//          cout << "id_first=" << id_first << "   id_last=" <<id_last << "   num entries = " << rng.get_num_entries() << endl;
+        if (id >= id_first && id <= id_last)
+        {
+            entry_id_rng = id - id_first;
+            break;
+        }
+
+        rng_id += 1;
+    }
+}
 
 
 template <class ViewType,class DerivedClass>
