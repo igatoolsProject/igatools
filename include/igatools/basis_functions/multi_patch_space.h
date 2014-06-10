@@ -23,7 +23,6 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/utils/concatenated_forward_iterator.h>
 #include <igatools/basis_functions/dofs_manager.h>
 
 #include <boost/graph/adjacency_list.hpp>

@@ -20,8 +20,8 @@
 
 
 
-#ifndef CONCATENATED_FORWARD_ITERATOR_H_
-#define CONCATENATED_FORWARD_ITERATOR_H_
+#ifndef CONCATENATED_ITERATOR_H_
+#define CONCATENATED_ITERATOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <class ViewType,class DerivedClass>
-class ConcatenatedForwardIteratorData
+class ConcatenatedIteratorData
     : public std::iterator<std::forward_iterator_tag, typename ViewType::iterator::value_type>
 {
 public:
@@ -53,15 +53,15 @@ public:
     /** @name Comparison operators */
     ///@{
     /** Compare for equality.*/
-    bool operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+    bool operator==(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 
     /** Compare for inequality.*/
-    bool operator!=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+    bool operator!=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 
 
-    bool operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+    bool operator<(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 
-    bool operator<=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+    bool operator<=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 
     ///@}
 
@@ -105,15 +105,17 @@ public:
      * Returns @p n such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ((*this) - a)</tt>.
      */
     Size
-    operator-(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const;
+    operator-(const ConcatenatedIteratorData<ViewType,DerivedClass> &a) const;
+
+
+
 
 protected:
-    ConcatenatedForwardIteratorData();
+    ConcatenatedIteratorData();
 
-    ConcatenatedForwardIteratorData(const std::vector<ViewType> &views,const Index index);
+    ConcatenatedIteratorData(const std::vector<ViewType> &views,const Index index);
 
 
-    void get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const;
 
 
     DerivedClass &as_derived_class();
@@ -141,21 +143,28 @@ protected:
     Iterator iterator_current_;
 
 
+    void get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const;
 
+
+    /** Returns a reference to the entry with the identifier specified by @p id. */
+    const typename ViewType::reference get_entry_const_reference(const Index id) const;
+
+    /** Returns a const reference to the entry with the identifier specified by @p id. */
+    typename ViewType::reference get_entry_reference(const Index id);
 
 private:
 
-    bool is_comparable(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const;
+    bool is_comparable(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 };
 
 
 
 /**
- * @brief This class represents a forward const iterator made by the
+ * @brief This class represents a const iterator made by the
  * concatenation of several forward iterator.
  *
- * This class can be used to define a forward const iterator over elements
- * traversed by a certain number of forward iterators (for which the type is specified
+ * This class can be used to define a const iterator over elements
+ * traversed by a certain number of iterators (for which the type is specified
  * by the template parameter <tt>Iterator</tt>) in order to avoid multiple loops.
  *
  * For example, if we want to iterate over the entries of the four vectors
@@ -228,7 +237,7 @@ private:
         cout << *v << endl;
   @endcode
  *
- * The ConcatenatedForwardConstIterator class permits to iterate over the four vectors
+ * The ConcatenatedConstIterator class permits to iterate over the four vectors
  * (as made in the examples above) in this way:
  *@code
   using IteratorType = std::vector<int>::const_iterator;
@@ -240,8 +249,8 @@ private:
   ranges.push_back(ViewType(v2.cbegin(),v2.cend()));
   ranges.push_back(ViewType(v3.cbegin(),v3.cend()));
 
-  ConcatenatedForwardConstIterator<ViewType> begin(ranges,0); // this represents the first entry
-  ConcatenatedForwardConstIterator<ViewType> end(ranges,IteratorState::pass_the_end);  // this represents the one-pass-end entry
+  ConcatenatedConstIterator<ViewType> begin(ranges,0); // this represents the first entry
+  ConcatenatedConstIterator<ViewType> end(ranges,IteratorState::pass_the_end);  // this represents the one-pass-end entry
 
   for (; begin != end ; ++begin)
         cout << *begin << endl;
@@ -255,8 +264,8 @@ private:
  * @date 03 June 2014
  */
 template <class ConstViewType>
-class ConcatenatedForwardConstIterator
-    : public ConcatenatedForwardIteratorData<ConstViewType,ConcatenatedForwardConstIterator<ConstViewType>>
+class ConcatenatedConstIterator
+    : public ConcatenatedIteratorData<ConstViewType,ConcatenatedConstIterator<ConstViewType>>
 {
 public:
     /** @name Constructors & destructor */
@@ -264,38 +273,43 @@ public:
     /**
      * Default constructor. It does nothing.
      */
-    ConcatenatedForwardConstIterator() = default;
+    ConcatenatedConstIterator() = default;
 
     /**
      * Constructor.
      */
-    ConcatenatedForwardConstIterator(
+    ConcatenatedConstIterator(
         const std::vector<ConstViewType> &ranges,
         const Index index);
 
 
 
     /** Copy constructor. */
-    ConcatenatedForwardConstIterator(const ConcatenatedForwardConstIterator<ConstViewType> &it) = default;
+    ConcatenatedConstIterator(const ConcatenatedConstIterator<ConstViewType> &it) = default;
 
     /** Move constructor. */
-    ConcatenatedForwardConstIterator(ConcatenatedForwardConstIterator<ConstViewType> &&it) = default;
+    ConcatenatedConstIterator(ConcatenatedConstIterator<ConstViewType> &&it) = default;
 
     /** Destructor */
-    ~ConcatenatedForwardConstIterator() = default ;
+    ~ConcatenatedConstIterator() = default ;
     ///@}
 
 
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    ConcatenatedForwardConstIterator<ConstViewType> &operator=(
-        const ConcatenatedForwardConstIterator<ConstViewType> &it) = default;
+    ConcatenatedConstIterator<ConstViewType> &operator=(
+        const ConcatenatedConstIterator<ConstViewType> &it) = default;
 
     /** Move assignment operator. */
-    ConcatenatedForwardConstIterator<ConstViewType> &operator=(
-        ConcatenatedForwardConstIterator<ConstViewType> &&it) = default;
+    ConcatenatedConstIterator<ConstViewType> &operator=(
+        ConcatenatedConstIterator<ConstViewType> &&it) = default;
     ///@}
+
+
+    /** Returns a const reference to the entry with the identifier specified by @p id. */
+    const typename ConstViewType::reference operator[](const Index id) const;
+
 };
 
 
@@ -303,16 +317,16 @@ public:
  * @brief This class represents a forward iterator made by the
  * concatenation of several View objects.
  *
- * Basically it provides the same functionality of ConcatenatedForwardConstIterator plus
+ * Basically it provides the same functionality of ConcatenatedConstIterator plus
  * two methods for dereferencing the iterator to non-const value reference and value pointer.
  *
  * @author M. Martinelli
  * @date 03 June 2014
  */
 template <class ViewType>
-class ConcatenatedForwardIterator
+class ConcatenatedIterator
     :
-    public ConcatenatedForwardIteratorData< ViewType, ConcatenatedForwardIterator<ViewType> >
+    public ConcatenatedIteratorData< ViewType, ConcatenatedIterator<ViewType> >
 {
 public:
     using value_type = typename ViewType::iterator::value_type;
@@ -323,23 +337,23 @@ public:
     /**
      * Default constructor. It does nothing.
      */
-    ConcatenatedForwardIterator() = default;
+    ConcatenatedIterator() = default;
 
     /**
      * Constructor.
      */
-    ConcatenatedForwardIterator(
+    ConcatenatedIterator(
         const std::vector<ViewType> &ranges,
         const Index index);
 
     /** Copy constructor. */
-    ConcatenatedForwardIterator(const ConcatenatedForwardIterator<ViewType> &it) = default;
+    ConcatenatedIterator(const ConcatenatedIterator<ViewType> &it) = default;
 
     /** Move constructor. */
-    ConcatenatedForwardIterator(ConcatenatedForwardIterator<ViewType> &&it) = default;
+    ConcatenatedIterator(ConcatenatedIterator<ViewType> &&it) = default;
 
     /** Destructor */
-    ~ConcatenatedForwardIterator() = default ;
+    ~ConcatenatedIterator() = default ;
     ///@}
 
 
@@ -362,27 +376,11 @@ public:
 
 
 
-    typename ViewType::reference operator[](const Index id)
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
+    /** Returns a reference to the entry with the identifier specified by @p id. */
+    typename ViewType::reference operator[](const Index id);
 
-    const typename ViewType::reference operator[](const Index id) const
-    {
-        Index rng_id = 0 ;
-        Index dof_id_rng = 0;
-        this->get_range_id_and_entry_id_in_range(id,rng_id,dof_id_rng);
-
-        /*
-        using std::cout;
-        using std::endl;
-                cout << "range_id=" << rng_id << "   dof_id_rng=" << dof_id_rng << endl;
-                cout << "global_id = " << this->ranges_[rng_id][dof_id_rng] << endl;
-        //*/
-        return this->ranges_[rng_id][dof_id_rng];
-    }
-
+    /** Returns a const reference to the entry with the identifier specified by @p id. */
+    const typename ViewType::reference operator[](const Index id) const;
 };
 
 
@@ -391,6 +389,6 @@ public:
 IGA_NAMESPACE_CLOSE
 
 
-#include <igatools/utils/concatenated_forward_iterator-inline.h>
+#include <igatools/utils/concatenated_iterator-inline.h>
 
-#endif // #ifndef CONCATENATED_FORWARD_ITERATOR_H_
+#endif // #ifndef CONCATENATED_ITERATOR_H_

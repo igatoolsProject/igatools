@@ -143,8 +143,8 @@ arrangement_close()
     using DofsComponentView = ContainerView<DofsComponentContainer>;
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
 
-    using DofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
 
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
 

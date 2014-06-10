@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/utils/concatenated_forward_iterator.h>
+#include <igatools/utils/concatenated_iterator.h>
 
 //#include <boost/graph/adjacency_list.hpp>
 
@@ -61,10 +61,10 @@ public:
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
 
     /** Type alias for a concatenated iterator defined on several compoenent views. */
-    using DofsIterator = ConcatenatedForwardIterator<DofsComponentView>;
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
 
     /** Type alias for a concatenated const-iterator defined on several compoenent views. */
-    using DofsConstIterator = ConcatenatedForwardConstIterator<DofsComponentConstView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
 
     /** Type alias for the View on the dofs held by each space in the DofsManager object. */
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;

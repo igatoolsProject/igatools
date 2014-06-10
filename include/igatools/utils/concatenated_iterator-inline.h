@@ -20,26 +20,26 @@
 
 
 
-#ifndef CONCATENATED_FORWARD_ITERATOR_INLINE_H_
-#define CONCATENATED_FORWARD_ITERATOR_INLINE_H_
+#ifndef CONCATENATED_ITERATOR_INLINE_H_
+#define CONCATENATED_ITERATOR_INLINE_H_
 
-#include <igatools/utils/concatenated_forward_iterator.h>
+#include <igatools/utils/concatenated_iterator.h>
 #include <igatools/base/exceptions.h>
 
 IGA_NAMESPACE_OPEN
 
 
 template <class ViewType,class DerivedClass>
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-ConcatenatedForwardIteratorData()
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData()
     :
     range_id_(IteratorState::invalid)
 {}
 
 
 template <class ViewType,class DerivedClass>
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-ConcatenatedForwardIteratorData(
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData(
     const std::vector<ViewType> &ranges,
     const Index index)
     :
@@ -73,7 +73,7 @@ ConcatenatedForwardIteratorData(
 template <class ViewType,class DerivedClass>
 inline
 auto
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 get_ranges() const -> std::vector<ViewType>
 {
     return this->ranges_;
@@ -84,8 +84,8 @@ get_ranges() const -> std::vector<ViewType>
 template <class ViewType,class DerivedClass>
 inline
 bool
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-is_comparable(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+is_comparable(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const
 {
     // check the equality of the size
     bool same_size = (this->ranges_.size() == it.ranges_.size());
@@ -109,8 +109,8 @@ is_comparable(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) 
 template <class ViewType,class DerivedClass>
 inline
 bool
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+operator==(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const
 {
     Assert(this->is_comparable(it), ExcMessage("Iterators are not comparable."));
 
@@ -121,8 +121,8 @@ operator==(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) con
 template <class ViewType,class DerivedClass>
 inline
 bool
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+operator<(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const
 {
     Assert(this->is_comparable(it), ExcMessage("Iterators are not comparable."));
 
@@ -133,8 +133,8 @@ operator<(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) cons
 
 template <class ViewType,class DerivedClass>
 bool
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-operator<=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+operator<=(const ConcatenatedIteratorData<ViewType,DerivedClass> &a) const
 {
     return ((*this) == a || (*this) < a);
 }
@@ -142,8 +142,8 @@ operator<=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) cons
 template <class ViewType,class DerivedClass>
 inline
 bool
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-operator!=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) const
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+operator!=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const
 {
     return !(*this == it);
 }
@@ -151,7 +151,7 @@ operator!=(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &it) con
 template <class ViewType,class DerivedClass>
 inline
 DerivedClass &
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 as_derived_class()
 {
     return static_cast<DerivedClass &>(*this);
@@ -160,7 +160,7 @@ as_derived_class()
 template <class ViewType,class DerivedClass>
 inline
 const DerivedClass &
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 as_derived_class() const
 {
     return static_cast<const DerivedClass &>(*this);
@@ -172,7 +172,7 @@ as_derived_class() const
 template <class ViewType,class DerivedClass>
 inline
 DerivedClass &
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 operator++()
 {
     if (this->range_id_ < this->ranges_.size()-1)
@@ -199,7 +199,7 @@ operator++()
 template <class ViewType,class DerivedClass>
 inline
 DerivedClass &
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 operator+(const int n)
 {
     Assert(n>=0,ExcLowerRange(n,0));
@@ -212,8 +212,8 @@ operator+(const int n)
 template <class ViewType,class DerivedClass>
 inline
 Size
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
-operator-(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+operator-(const ConcatenatedIteratorData<ViewType,DerivedClass> &a) const
 {
     Assert(this->is_comparable(a), ExcMessage("Iterators are not comparable."));
     Assert(a <= (*this),ExcInvalidIterator());
@@ -256,7 +256,7 @@ operator-(const ConcatenatedForwardIteratorData<ViewType,DerivedClass> &a) const
 template <class ViewType,class DerivedClass>
 inline
 void
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const
 {
     Assert(!this->ranges_.empty(),ExcEmptyObject());
@@ -285,17 +285,43 @@ get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_i
     }
 }
 
+template <class ViewType,class DerivedClass>
+inline
+auto
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+get_entry_const_reference(const Index id) const -> const typename ViewType::reference
+{
+    Index rng_id = 0 ;
+    Index dof_id_rng = 0;
+    this->get_range_id_and_entry_id_in_range(id,rng_id,dof_id_rng);
+
+    return this->ranges_[rng_id][dof_id_rng];
+}
+
+template <class ViewType,class DerivedClass>
+inline
+auto
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+get_entry_reference(const Index id) -> typename ViewType::reference
+{
+    Index rng_id = 0 ;
+    Index dof_id_rng = 0;
+    this->get_range_id_and_entry_id_in_range(id,rng_id,dof_id_rng);
+
+    return this->ranges_[rng_id][dof_id_rng];
+}
+
 
 template <class ViewType,class DerivedClass>
 inline
 void
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 print_info(LogStream &out) const
 {
     using std::endl;
     std::string tab("   ");
 
-    out << "ConcatenatedForwardIteratorData infos:" << endl;
+    out << "ConcatenatedIteratorData infos:" << endl;
     out.push(tab);
 
     out << "Num. ranges = " << this->ranges_.size() << endl;
@@ -316,7 +342,7 @@ print_info(LogStream &out) const
 template <class ViewType,class DerivedClass>
 inline
 auto
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 operator*() const -> const value_type &
 {
     Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
@@ -326,7 +352,7 @@ operator*() const -> const value_type &
 template <class ViewType,class DerivedClass>
 inline
 auto
-ConcatenatedForwardIteratorData<ViewType,DerivedClass>::
+ConcatenatedIteratorData<ViewType,DerivedClass>::
 operator->() const -> const value_type *
 {
     return &(this->operator*());
@@ -335,30 +361,39 @@ operator->() const -> const value_type *
 
 template <class ConstViewType>
 inline
-ConcatenatedForwardConstIterator<ConstViewType>::
-ConcatenatedForwardConstIterator(
+ConcatenatedConstIterator<ConstViewType>::
+ConcatenatedConstIterator(
     const std::vector<ConstViewType> &ranges,
     const Index index)
     :
-    ConcatenatedForwardIteratorData<
+    ConcatenatedIteratorData<
     ConstViewType,
-    ConcatenatedForwardConstIterator<ConstViewType>
+    ConcatenatedConstIterator<ConstViewType>
     >(ranges,index)
 {}
 
+
+template <class ConstViewType>
+inline
+auto
+ConcatenatedConstIterator<ConstViewType>::
+operator[](const Index id) const -> const typename ConstViewType::reference
+{
+    return this->get_entry_const_reference(id);
+}
 
 
 
 template <class ViewType>
 inline
-ConcatenatedForwardIterator<ViewType>::
-ConcatenatedForwardIterator(
+ConcatenatedIterator<ViewType>::
+ConcatenatedIterator(
     const std::vector<ViewType> &ranges,
     const Index index)
     :
-    ConcatenatedForwardIteratorData<
+    ConcatenatedIteratorData<
     ViewType,
-    ConcatenatedForwardIterator<ViewType>
+    ConcatenatedIterator<ViewType>
     >(ranges,index)
 {}
 
@@ -366,7 +401,7 @@ ConcatenatedForwardIterator(
 template <class ViewType>
 inline
 auto
-ConcatenatedForwardIterator<ViewType>::
+ConcatenatedIterator<ViewType>::
 operator*() -> value_type &
 {
     Assert(this->iterator_current_ != this->ranges_.back().end(),ExcIteratorPastEnd());
@@ -376,13 +411,33 @@ operator*() -> value_type &
 template <class ViewType>
 inline
 auto
-ConcatenatedForwardIterator<ViewType>::
+ConcatenatedIterator<ViewType>::
 operator->() -> value_type *
 {
     return &(this->operator*());
 }
 
+
+template <class ViewType>
+inline
+auto
+ConcatenatedIterator<ViewType>::
+operator[](const Index id) -> typename ViewType::reference
+{
+    return this->get_entry_reference(id);
+}
+
+template <class ViewType>
+inline
+auto
+ConcatenatedIterator<ViewType>::
+operator[](const Index id) const -> const typename ViewType::reference
+{
+    return this->get_entry_const_reference(id);
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 
-#endif // #ifndef CONCATENATED_FORWARD_ITERATOR_INLINE_H_
+#endif // #ifndef CONCATENATED_ITERATOR_INLINE_H_
