@@ -39,6 +39,14 @@ ViewData(const IteratorType begin, const IteratorType end)
     Assert(begin_ < end_, ExcInvalidIterator());
 }
 
+template <class IteratorType>
+inline
+Size
+ViewData<IteratorType>::
+get_num_entries() const
+{
+    return end_ - begin_;
+}
 
 
 template <class Iterator,class ConstIterator>
@@ -48,6 +56,7 @@ View(const iterator begin, const iterator end)
     :
     ViewData<Iterator>(begin,end)
 {}
+
 
 template <class Iterator,class ConstIterator>
 inline

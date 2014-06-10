@@ -164,51 +164,12 @@ void test_evaluate()
     multi_patch_space.print_info(out);
 
 
+    const auto &dofs_manager = multi_patch_space.get_dofs_manager();
 
-
-#if 0
-    auto element = physical_space->begin() ;
-    const auto element_end = physical_space->end() ;
-
-    QGauss<dim> quad(3);
-    const int n_qpoints = quad.get_num_points();
-
-    element->init_values(ValueFlags::value |
-                         ValueFlags::gradient |
-                         ValueFlags::w_measure,
-                         quad) ;
-    for (; element != element_end ; ++element)
-    {
-        element->fill_values() ;
-
-        const int n_basis = element->get_num_basis() ;
-
-        for (int i = 0 ; i < n_basis ; ++i)
-        {
-            out << "Values basis[" << i << "] = " << endl ;
-            for (int jpt = 0 ; jpt < n_qpoints ; ++jpt)
-                out << element->get_basis_value(i,jpt) << endl ;
-            out << endl ;
-        }
-
-
-        for (int i = 0 ; i < n_basis ; ++i)
-        {
-            out << "Gradients basis[" << i << "] = " << endl ;
-            for (int jpt = 0 ; jpt < n_qpoints ; ++jpt)
-                out << element->get_basis_gradient(i,jpt) << endl ;
-            out << endl ;
-        }
-
-        out << "w * dets = " << endl;
-        for (int jpt =0 ; jpt < n_qpoints ; ++jpt)
-        {
-            out << element->get_w_measures()[jpt] << endl ;
-        }
-        out << endl ;
-    }
-
-#endif
+    out << "The local_dof=3 for the space_id=0 corresponds to the global_dof="<< dofs_manager.get_global_dof(0,3) << endl;
+    out << "The local_dof=7 for the space_id=0 corresponds to the global_dof="<< dofs_manager.get_global_dof(0,7) << endl;
+    out << "The local_dof=3 for the space_id=1 corresponds to the global_dof="<< dofs_manager.get_global_dof(1,3) << endl;
+    out << "The local_dof=7 for the space_id=1 corresponds to the global_dof="<< dofs_manager.get_global_dof(1,7) << endl;
 
     out << "========== Test dim=" << dim << " --- end ==========" << endl;
     out << endl << endl;

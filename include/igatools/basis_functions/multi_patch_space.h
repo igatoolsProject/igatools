@@ -243,13 +243,9 @@ get_global_dof(const int space_id, const Index local_dof) const
 
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
-    const auto &space = spaces_info_.at(space_id);
-//    const auto & dofs_view = space.dofs_view_;
+//    const auto &space = spaces_info_.at(space_id);
 
-//    const Index space_dof = const_cast<const SpaceDofsView &>(space.dofs_view_)[local_dof];
-    const Index space_dof = space.dofs_view_[local_dof];
-
-    return space_dof + space.offset_;
+    return spaces_info_.at(space_id).dofs_view_[local_dof];
 }
 
 
@@ -288,9 +284,6 @@ print_info(LogStream &out) const
         for (Index &dof : dofs_space_view)
             out << dof << " ";
         out << "]" << endl;
-
-
-        out << "     The local_dof=3 correspond to the global_dof="<<this->get_global_dof(i,3) << endl;
 
         i++;
         //*/
@@ -432,6 +425,9 @@ public:
     int get_num_interfaces() const;
 
 
+
+    /** Returns a const reference to the DofsManager used in the MultiPatchSpace. */
+    const DofsManager &get_dofs_manager() const;
 
 
     /**

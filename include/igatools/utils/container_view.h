@@ -35,6 +35,10 @@ IGA_NAMESPACE_OPEN
 template <class IteratorType>
 class ViewData
 {
+public:
+    /** Returns the number of entries represented by the ViewData. */
+    Size get_num_entries() const;
+
 protected:
     /**
      * Builds a ViewData object from two IteratorType objects: one pointing to the beginning

@@ -221,6 +221,10 @@ MultiPatchSpace infos:
           Num. linear   constraints = 0
           Num. equality constraints = 0
       
+The local_dof=3 for the space_id=0 corresponds to the global_dof=3
+The local_dof=7 for the space_id=0 corresponds to the global_dof=7
+The local_dof=3 for the space_id=1 corresponds to the global_dof=11
+The local_dof=7 for the space_id=1 corresponds to the global_dof=15
 ========== Test dim=2 --- end ==========
 
 

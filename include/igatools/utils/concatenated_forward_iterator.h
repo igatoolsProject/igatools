@@ -350,6 +350,34 @@ public:
     value_type *operator->();
     ///@}
 
+
+    void get_range_id_and_dof_id_in_range(const Index id, Index &rng_id, Index &dof_id_rng) const
+    {
+        Assert(!this->ranges_.empty(),ExcEmptyObject());
+
+//        using std::cout;
+//        using std::endl;
+
+
+        // find the view that holds the data
+        Index id_first = 0;
+        Index id_last = - 1;
+        for (const auto rng : this->ranges_)
+        {
+            id_first = id_last + 1;
+            id_last += rng.get_num_entries() ;
+
+//          cout << "id_first=" << id_first << "   id_last=" <<id_last << "   num entries = " << rng.get_num_entries() << endl;
+            if (id >= id_first && id <= id_last)
+            {
+                dof_id_rng = id - id_first;
+                break;
+            }
+
+            rng_id += 1;
+        }
+    }
+
     typename ViewType::reference operator[](const Index id)
     {
         Assert(false,ExcNotImplemented());
@@ -358,21 +386,17 @@ public:
 
     const typename ViewType::reference operator[](const Index id) const
     {
-        Assert(!this->ranges_.empty(),ExcEmptyObject());
+        Index rng_id = 0 ;
+        Index dof_id_rng = 0;
+        this->get_range_id_and_dof_id_in_range(id,rng_id,dof_id_rng);
 
-        // find the view that holds the data
-        Index offset_begin = 0;
-        Index offset_end = this->ranges_.front().get_num_entries();
-        for (const auto rng : this->ranges_)
-        {
-
-            Assert(false,ExcNotImplemented());
-            AssertThrow(false,ExcNotImplemented());
-
-        }
-
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+        using std::cout;
+        using std::endl;
+        /*
+                cout << "range_id=" << rng_id << "   dof_id_rng=" << dof_id_rng << endl;
+                cout << "global_id = " << this->ranges_[rng_id][dof_id_rng] << endl;
+        //*/
+        return this->ranges_[rng_id][dof_id_rng];
     }
 
 };

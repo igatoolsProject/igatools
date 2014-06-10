@@ -243,6 +243,16 @@ get_num_interfaces() const
     return interfaces_.size();
 }
 
+template <class PhysicalSpace>
+const DofsManager &
+MultiPatchSpace<PhysicalSpace>::
+get_dofs_manager() const
+{
+    Assert(is_arrangement_open_ == false,ExcInvalidState());
+
+    return dofs_manager_;
+}
+
 
 template <class PhysicalSpace>
 void
@@ -409,6 +419,7 @@ operator!=(const Interface &interface_to_compare) const
 {
     return !(*this == interface_to_compare);
 }
+
 
 
 template <class PhysicalSpace>
