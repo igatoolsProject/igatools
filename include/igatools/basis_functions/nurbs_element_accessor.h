@@ -28,7 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
 template < int, int , int > class NURBSSpace ;
 
 
@@ -43,16 +42,12 @@ class NURBSElementAccessor :
     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
 {
 public:
-
-
     using parent_t = SpaceElementAccessor<
                      NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
 
     using ContainerType = const NURBSSpace< dim, range, rank>;
 
-
     using Space = NURBSSpace<dim,range,rank>;
-
 
     /**
      * Typedef for specifying the value of the basis function in the

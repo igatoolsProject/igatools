@@ -23,21 +23,15 @@
 #define BSPLINE_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
-
 #include <igatools/basis_functions/space_element_accessor.h>
-
-//#include <igatools/utils/cartesian_product_indexer.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
-
-
 
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
-
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -64,11 +58,17 @@ public:
     /** Number of faces of the element. */
     using parent_t::n_faces;
 
-
     using ValuesCache = typename parent_t::ValuesCache;
 
-
     using parent_t::admisible_flag;
+
+
+public:
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+//    using typename parent_t::Point;
+    using typename parent_t::Value;
+//    using typename parent_t::Div;
 
 
 public:
@@ -162,18 +162,7 @@ public:
     ///@}
 
 
-    /**
-     * Typedef for specifying the value of the basis function in the
-     * reference domain.
-     */
-    using Value = Values<dim, range, rank>;
 
-    /**
-     * Typedef for specifying the derivatives of the basis function in the
-     * reference domain.
-     */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim, range, rank, deriv_order>;
 
 protected:
 
@@ -203,10 +192,6 @@ public:
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
-
-
-
-
     /**
      * @name Containers for the cache of the element values and for the
      * cache of the face values
