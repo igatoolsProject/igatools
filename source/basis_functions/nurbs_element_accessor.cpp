@@ -29,7 +29,10 @@ using std::vector;
 using std::accumulate;
 
 using std::make_shared;
-using std::dynamic_pointer_cast;
+
+// TODO (pauletti, Jun 11, 2014): evaluate_basis_at_point and all the evaluate nurbs should
+// have a more consisten interface and code structrure
+
 IGA_NAMESPACE_OPEN
 
 
@@ -790,8 +793,8 @@ template <int dim, int range, int rank >
 template <int deriv_order>
 auto
 NURBSElementAccessor< dim, range, rank >::
-evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
-ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+evaluate_basis_derivatives_at_points(const vector<Point<dim>> &points) const
+->ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
 
     Assert(deriv_order >= 0 && deriv_order <= 2, ExcIndexRange(deriv_order,0,3));
@@ -802,35 +805,22 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     const int n_basis = this->get_num_basis();
 
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > > result(n_basis,n_points);
-#if 0
-    ComponentTable<int> n_basis_component;
-    for (int comp = 0 ; comp < Space::n_components ; ++comp)
-        n_basis_component(comp) = this->get_num_basis(comp);
 
-    const auto W_vector = this->get_local_weights();
-
+    const auto &weights = this->get_local_weights();
+    const auto &w_table = this->space_->weights_;
     if (deriv_order == 0)
     {
         const auto P_table = bspline_element_accessor_.evaluate_basis_values_at_points(points);
-        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(this->get_local_weights(),points);
-
-        LogStream out ;
-        out << "P table=" << std::endl;
-        P_table.print_info(out);
-        out << std::endl;
-
-        out << "Q table=" << std::endl;
-        Q_table.print_info(out);
-        out << std::endl;
+        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(weights, points);
 
         auto P_it = P_table.cbegin();
-
         auto R_it = result.begin();
+        auto W_it = weights.cbegin();
 
-        auto W_it = W_vector.cbegin();
-        for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        for (int comp : w_table.get_active_components())
         {
-            for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
+            const int n_basis_comp = this->get_num_basis(comp);
+            for (int ifn = 0 ; ifn < n_basis_comp ; ++ifn)
             {
                 const auto &W = *W_it;
                 auto Q_it = Q_table.cbegin();
@@ -850,29 +840,41 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ++W_it;
             } // end loop ifn
         } // end loop comp
+        for (int comp : w_table.get_inactive_components())
+        {
+            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const Size offset = this->comp_offset_(comp);
+            const Size act_offset = this->comp_offset_(w_table.active(comp));
 
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto values_phi_hat_copy_from = result.get_function_view(act_offset+basis_i);
+                auto values_phi_hat_copy_to = result.get_function_view(offset+basis_i);
+
+                for (int qp = 0; qp < n_points; ++qp)
+                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+            }
+        }
     } // end if (deriv_order == 0)
     else if (deriv_order == 1)
     {
         const auto P_table = bspline_element_accessor_.evaluate_basis_values_at_points(points);
-        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(this->get_local_weights(),points);
+        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(weights,points);
 
         const auto DP_table = bspline_element_accessor_.evaluate_basis_gradients_at_points(points);
-        const auto DQ_table = bspline_element_accessor_.evaluate_field_gradients_at_points(this->get_local_weights(),points);
+        const auto DQ_table = bspline_element_accessor_.evaluate_field_gradients_at_points(weights,points);
 
         auto P_it = P_table.cbegin();
         auto DP_it = DP_table.cbegin();
-
         auto DR_it = result.begin();
-
-
-        auto W_it = W_vector.cbegin();
-        for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        auto W_it = weights.cbegin();
+        for (int comp : w_table.get_active_components())
         {
-            for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
+
+            const int n_basis_comp = this->get_num_basis(comp);
+            for (int ifn = 0 ; ifn < n_basis_comp ; ++ifn)
             {
                 const auto &W = *W_it;
-
                 auto Q_it = Q_table.cbegin();
                 auto DQ_it = DQ_table.cbegin();
                 for (int jpt = 0 ; jpt < n_points ; jpt++)
@@ -899,33 +901,47 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ++W_it;
             } // end loop ifn
         } // end loop comp
+        for (int comp : w_table.get_inactive_components())
+        {
+            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const Size offset = this->comp_offset_(comp);
+            const Size act_offset = this->comp_offset_(w_table.active(comp));
 
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto values_phi_hat_copy_from = result.get_function_view(act_offset+basis_i);
+                auto values_phi_hat_copy_to = result.get_function_view(offset+basis_i);
+
+                for (int qp = 0; qp < n_points; ++qp)
+                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+            }
+        }
     } // end else if (deriv_order == 1)
     else if (deriv_order == 2)
     {
         const auto P_table = bspline_element_accessor_.evaluate_basis_values_at_points(points);
-        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(this->get_local_weights(),points);
+        const auto Q_table = bspline_element_accessor_.evaluate_field_values_at_points(weights,points);
 
         const auto DP_table = bspline_element_accessor_.evaluate_basis_gradients_at_points(points);
-        const auto DQ_table = bspline_element_accessor_.evaluate_field_gradients_at_points(this->get_local_weights(),points);
+        const auto DQ_table = bspline_element_accessor_.evaluate_field_gradients_at_points(weights,points);
 
         const auto D2P_table = bspline_element_accessor_.evaluate_basis_hessians_at_points(points);
-        const auto D2Q_table = bspline_element_accessor_.evaluate_field_hessians_at_points(this->get_local_weights(),points);
+        const auto D2Q_table = bspline_element_accessor_.evaluate_field_hessians_at_points(weights,points);
 
         auto P_it = P_table.cbegin();
         auto DP_it = DP_table.cbegin();
         auto D2P_it = D2P_table.cbegin();
-
         auto D2R_it = result.begin();
+        auto W_it = weights.cbegin();
 
 
-        auto W_it = W_vector.cbegin();
-        for (int comp = 0 ; comp < Space::n_components ; ++comp)
+
+        for (int comp : w_table.get_active_components())
         {
-            for (int ifn = 0 ; ifn < n_basis_component(comp) ; ifn++)
+            const int n_basis_comp = this->get_num_basis(comp);
+            for (int ifn = 0 ; ifn < n_basis_comp ; ++ifn)
             {
                 const auto &W = *W_it;
-
                 auto Q_it = Q_table.cbegin();
                 auto DQ_it = DQ_table.cbegin();
                 auto D2Q_it = D2Q_table.cbegin();
@@ -946,10 +962,10 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     for (int i = 0 ; i < dim ; ++i)
                         for (int j = 0 ; j < dim ; ++j, ++der_entry_id)
                             D2R(der_entry_id)(comp) = (W/Q) *(D2P(der_entry_id)(comp)
-                                                              - (P * D2Q(der_entry_id)(comp) +
-                                                                 DP(i)(comp) * DQ(j)(comp) +
-                                                                 DP(j)(comp) * DQ(i)(comp)) / Q +
-                                                              DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                                    - (P * D2Q(der_entry_id)(comp) +
+                                            DP(i)(comp) * DQ(j)(comp) +
+                                            DP(j)(comp) * DQ(i)(comp)) / Q +
+                                            DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
                     ++P_it;
                     ++Q_it;
 
@@ -964,9 +980,22 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ++W_it;
             } // end loop ifn
         } // end loop comp
+        for (int comp : w_table.get_inactive_components())
+        {
+            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const Size offset = this->comp_offset_(comp);
+            const Size act_offset = this->comp_offset_(w_table.active(comp));
 
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto values_phi_hat_copy_from = result.get_function_view(act_offset+basis_i);
+                auto values_phi_hat_copy_to = result.get_function_view(offset+basis_i);
+
+                for (int qp = 0; qp < n_points; ++qp)
+                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+            }
+        }
     } // end else if (deriv_order == 2)
-#endif
     return result;
 }
 

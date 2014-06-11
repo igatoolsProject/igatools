@@ -57,27 +57,27 @@ void test()
     const int n_points = 3;
     QGauss<dim> quad(n_points);
 
-    auto element     = space->begin();
+    auto elem     = space->begin();
     auto end_element = space->end();
 
     const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    element->init_values(flag, quad);
+    elem->init_values(flag, quad);
 
-    for (; element != end_element; ++element)
+    for (; elem != end_element; ++elem)
     {
-        element->fill_values();
-        out << "Element: " << element->get_flat_index()<< endl;
+        elem->fill_values();
+        out << "Element: " << elem->get_flat_index()<< endl;
 
         out << "Values basis functions:" << endl;
-        auto values = element->get_basis_values();
+        auto values = elem->get_basis_values();
         values.print_info(out);
 
         out << "Gradients basis functions:" << endl;
-        auto gradients = element->get_basis_gradients();
+        auto gradients = elem->get_basis_gradients();
         gradients.print_info(out);
 
         out << "Hessians basis functions:" << endl;
-        auto hessians = element->get_basis_hessians();
+        auto hessians = elem->get_basis_hessians();
         hessians.print_info(out);
      }
 }
