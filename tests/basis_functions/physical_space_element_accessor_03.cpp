@@ -57,7 +57,7 @@ void test_evaluate()
     auto map = IdentityMapping<dim>::create(grid);
 
     auto push_forward = PushForward<Transformation::h_grad,dim>::create(map);
-    auto ref_space = BSplineSpace<dim>::create(grid, deg);
+    auto ref_space = BSplineSpace<dim>::create(deg, grid);
     auto space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;

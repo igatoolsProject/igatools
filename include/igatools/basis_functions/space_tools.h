@@ -83,17 +83,17 @@ Index find_span(
 
 
 
-/**
- * Constructs and returns the trace space on the requested
- * face @p face_id.
- * It also returns a map from the face space dof indices to the
- * corresponding dof indices in the patch space.
- */
-template <class Space>
-std::shared_ptr< FaceSpace<Space> >
-get_face_space(std::shared_ptr<const Space> space,
-               const Index face_id,
-               std::vector<Index> &face_to_element_dofs);
+///**
+// * Constructs and returns the trace space on the requested
+// * face @p face_id.
+// * It also returns a map from the face space dof indices to the
+// * corresponding dof indices in the patch space.
+// */
+//template <class Space>
+//std::shared_ptr< FaceSpace<Space> >
+//get_face_space(std::shared_ptr<const Space> space,
+//               const Index face_id,
+//               std::vector<Index> &face_to_element_dofs);
 
 
 //TODO the order of parameters should be consistent

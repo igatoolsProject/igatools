@@ -32,15 +32,7 @@ include_files = ['basis_functions/bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-
-master=('template std::shared_ptr< FaceSpace<SP> >'
-        'space_tools::get_face_space(const std::shared_ptr<const SP> ,'
-        'const int ,'
-        'std::vector<Index> &);\n');
-for sp in inst.UserPhysSpaces + inst.UserFilteredRefSpaces:
-    f.write(master.replace('SP', sp))   
-
-
+ 
 projection_l2=('template Vector<LinAlgebra> '
         'space_tools::projection_l2<Space,LinAlgebra>('
         'const Function<Space::space_dim,Space::range,Space::rank> &f,'
@@ -78,16 +70,16 @@ for sp in inst.PhysSpaces + inst.RefSpaces:
     f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
 
 
-for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
-
-
-for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
-
-
-for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-    f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+# for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+#     f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+# 
+# 
+# for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+#     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+# 
+# 
+# for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
+#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
 f.write('#endif\n')
 # TRILINOS specific instantiations -- end
 ############################################
@@ -101,16 +93,16 @@ for sp in inst.PhysSpaces + inst.RefSpaces:
     f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 
 
-for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
-
-
-for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-    f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
-
-
-for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-    f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+# for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+#     f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+# 
+# 
+# for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+#     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+# 
+# 
+# for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
+#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
 f.write('#endif\n')
 # PETSC specific instantiations -- end
 ############################################

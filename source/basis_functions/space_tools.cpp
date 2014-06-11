@@ -122,10 +122,11 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
 }
 
 }
+#endif
 
 namespace space_tools
 {
-
+#if 0
 Index find_span(
     const int p,
     const Real u,
@@ -334,7 +335,7 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 
 
-
+#endif
 
 template<class Space, LinearAlgebraPackage linear_algebra_package>
 Vector<linear_algebra_package>
@@ -481,7 +482,7 @@ project_boundary_values(const Func<Space> &func,
 }
 
 
-
+#if 0
 template < int dim >
 void reference_to_element(
     const CartesianGrid< dim > &reference_patch,
@@ -553,9 +554,9 @@ void reference_to_element(
     //----------------------------------------------------------------------------------------------
 }
 
-
-};
 #endif
+};
+
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/basis_functions/space_tools.inst>
+#include <igatools/basis_functions/space_tools.inst>

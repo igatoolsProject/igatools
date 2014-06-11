@@ -62,7 +62,7 @@ void test_evaluate()
 
     typedef BSplineSpace<dim,dim,rank> Space_t ;
 
-    shared_ptr< Space_t > bspline_space = Space_t::create(knots, p)  ;
+    shared_ptr< Space_t > bspline_space = Space_t::create(p, knots)  ;
     //----------------------------------------------------------------------------------------------
 
 

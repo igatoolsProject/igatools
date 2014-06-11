@@ -73,7 +73,7 @@ void do_test(const int p)
 
     const int num_knots = 10;
     auto grid = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = space_ref_t::create(grid, p);
+    auto ref_space = space_ref_t::create(p, grid);
     Point<spacedim> b;
     Derivatives<dim, spacedim, 1, 1> A;
     for (int i = 0; i < dim; ++i)

@@ -43,7 +43,7 @@ void run_test()
 
     const int p = 1;
     auto knots = CartesianGrid<dim>::create(2);
-    auto bspline_space = Space_t::create(knots, p);
+    auto bspline_space = Space_t::create(p, knots);
 
     vector<Real> control_pts(bspline_space->get_num_basis());
     if (dim == 1)
