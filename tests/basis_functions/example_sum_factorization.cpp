@@ -512,7 +512,7 @@ PoissonProblem<dim,DerivedClass>::
 solve()
 {
     const Real tol = 1.0e-13;
-    const Size max_iters = 10000000;
+    const Size max_iters = 100;
     LinearSolverType solver(
         LinearSolverType::SolverType::CG,
         LinearSolverType::PreconditionerType::ILU,
@@ -793,8 +793,8 @@ int main(int argc,char **args)
 #endif
 
 
-    int degree_min = 1;
-    int degree_max = 15;
+    int degree_min = 21;
+    int degree_max = 25;
     int n_elems_per_direction = 1;
 
 
