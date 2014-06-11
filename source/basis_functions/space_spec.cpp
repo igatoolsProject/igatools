@@ -209,7 +209,8 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 
 template<int dim, int range, int rank>
 auto SplineSpace<dim, range, rank>::
-get_face_mult(const Index face_id) -> shared_ptr<typename FaceSpace::MultiplicityTable>
+get_face_mult(const Index face_id) const
+-> shared_ptr<typename FaceSpace::MultiplicityTable>
 {
 	const auto &v_mult = *interior_mult_;
 	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
@@ -227,7 +228,8 @@ get_face_mult(const Index face_id) -> shared_ptr<typename FaceSpace::Multiplicit
 
 template<int dim, int range, int rank>
 auto SplineSpace<dim, range, rank>::
-get_face_degree(const Index face_id) -> typename FaceSpace::DegreeTable
+get_face_degree(const Index face_id) const
+-> typename FaceSpace::DegreeTable
 {
 	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
 	typename FaceSpace::DegreeTable f_degree(deg_.get_comp_map());

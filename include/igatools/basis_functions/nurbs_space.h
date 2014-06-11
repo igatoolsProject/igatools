@@ -70,6 +70,7 @@ public:
 
     static const bool has_weights = true;
 
+    static const std::array<int, dim> dims;
 public:
     template <int order>
     using Derivative = typename spline_space_t::template Derivative<order>;
@@ -167,6 +168,13 @@ public:
     		std::shared_ptr<const MultiplicityTable> interior_mult,
     		const EndBehaviourTable &ends = EndBehaviourTable(),
     		const WeightsTable &weights = WeightsTable());
+
+    explicit  NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
+                         const WeightsTable &weights);
+
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<spline_space_t> bs_space,
+           const WeightsTable &weights);
 
     /** Destructor */
     ~NURBSSpace() = default;
@@ -337,6 +345,10 @@ public:
         return sp_space_->get_element_global_dofs();
     }
 #endif
+
+    std::shared_ptr<RefFaceSpace>
+    get_face_space(const Index face_id,
+                   std::vector<Index> &face_to_element_dofs) const;
 
     /**
     * Returns a element iterator to the first element of the patch

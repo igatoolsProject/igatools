@@ -457,7 +457,7 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
     for (const Index& face_id : faces)
     {
         vector<Index> dof_map;
-        auto face_space = get_face_space(space, face_id, dof_map);
+        auto face_space = space->get_face_space(face_id, dof_map);
 
         Vector<linear_algebra_package> proj_on_face =
             projection_l2<FaceSpace<Space>,linear_algebra_package>(func, face_space, quad);

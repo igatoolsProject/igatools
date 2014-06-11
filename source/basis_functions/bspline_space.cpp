@@ -201,7 +201,8 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_face_space(const Index face_id,
-		std::vector<Index> &face_to_element_dofs) -> std::shared_ptr<RefFaceSpace>
+		std::vector<Index> &face_to_element_dofs) const
+		-> std::shared_ptr<RefFaceSpace>
 {
 	std::map<int, int> elem_map;
 	auto face_grid   = this->get_grid()->get_face_grid(face_id, elem_map);

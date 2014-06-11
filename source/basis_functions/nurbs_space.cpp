@@ -41,6 +41,11 @@ NURBSSpace<dim_, range_, rank_>::
 components = sequence<spline_space_t::n_components>();
 
 
+template <int dim_, int range_, int rank_>
+const std::array<int, NURBSSpace<dim_, range_, rank_>::dim>
+NURBSSpace<dim_, range_, rank_>::
+dims = sequence<dim>();
+
 #if 0
 template <int dim_, int range_, int rank_>
 void
@@ -139,6 +144,28 @@ create(const DegreeTable &deg,
 
 
 template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
+NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
+           const WeightsTable &weights)
+           :
+           BaseSpace(bs_space->get_grid()),
+           sp_space_(bs_space),
+           weights_(weights)
+{
+    perform_post_construction_checks();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create(std::shared_ptr<spline_space_t> bs_space,
+       const WeightsTable &weights) -> shared_ptr<self_t>
+{
+    return shared_ptr<self_t>(new self_t(bs_space, weights));
+}
+
+template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
@@ -203,6 +230,34 @@ reset_weights(const WeightsTable &weights)
 {
     weights_ = weights;
     perform_post_construction_checks();
+}
+
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_face_space(const Index face_id,
+        std::vector<Index> &face_to_element_dofs) const
+        -> std::shared_ptr<RefFaceSpace>
+{
+    auto f_space = sp_space_->get_face_space(face_id, face_to_element_dofs);
+
+    // TODO (pauletti, Jun 11, 2014): this should be put and completed in
+    // get_face_weigjts()
+    const auto &v_weights = weights_;
+    //const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+    typename RefFaceSpace::WeightsTable f_weights(v_weights.get_comp_map());
+
+    const auto n_basis = f_space->get_num_basis_table();
+    for (int comp : f_weights.get_active_components())
+    {
+        f_weights(comp).resize(n_basis(comp),1.0);
+        //        for (auto j : RefFaceSpace::dims)
+        //            f_weights(comp).copy_data_direction(j, v_weights(comp).get_data_direction(active_dirs[j]));
+    }
+
+
+    return RefFaceSpace::create(f_space, f_weights);
 }
 
 

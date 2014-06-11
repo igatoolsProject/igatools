@@ -201,13 +201,13 @@ public:
      * Returns the multiplicity of the face space face_id
      */
     std::shared_ptr<typename FaceSpace::MultiplicityTable>
-    get_face_mult(const Index face_id);
+    get_face_mult(const Index face_id) const;
 
     /**
      * Returns the multiplicity of the face space face_id
      */
     typename FaceSpace::DegreeTable
-    get_face_degree(const Index face_id);
+    get_face_degree(const Index face_id) const;
 
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);

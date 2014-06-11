@@ -70,9 +70,9 @@ for sp in inst.PhysSpaces + inst.RefSpaces:
     f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
 
 
-# for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
+# for sp in inst.UserPhysSpaces:
 #     f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
-# 
+#  
 # 
 # for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
 #     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))

@@ -36,7 +36,7 @@ void run_test(const int num_knots, const int p)
     using space_t = BSplineSpace<dim>;
 
     auto grid = CartesianGrid<dim>::create(num_knots);
-    auto space = space_t::create(grid, p);
+    auto space = space_t::create(p, grid);
 
     const int num_faces = UnitElement<dim>::faces_per_element;
     QGauss<dim> quad(2);

@@ -35,7 +35,7 @@
 
 
 // output the values of basis functions in the reference domain
-template< int dim, int dim_range, int rank >
+template< int dim, int dim_range, int rank = 1>
 void do_test(const int p, const int num_knots)
 {
     out << "Values, dim: " << dim <<" degree: " << p << endl;
@@ -94,7 +94,7 @@ void do_test(const int p, const int num_knots)
 
 
 //Now a test the values on a deformed domain
-template< int dim_ref_domain, int dim_phys_domain, int dim_range, int rank >
+template< int dim_ref_domain, int dim_phys_domain, int dim_range, int rank=1 >
 void do_test1(const int p)
 {
     const int codim = dim_phys_domain - dim_ref_domain;
@@ -107,7 +107,7 @@ void do_test1(const int p)
 
     const int num_knots = 3;
     auto grid = CartesianGrid<dim_ref_domain>::create(num_knots);
-    auto space = space_ref_t::create(grid, p);
+    auto space = space_ref_t::create(p, grid);
 
 
 
@@ -178,8 +178,8 @@ int main()
 
     for (int p=0; p<2; p++)
     {
-        do_test1< 1, 1 ,1, 1>(p) ;
-        do_test1< 2, 2, 1, 1>(p) ;
+        do_test1< 1, 1 ,1>(p) ;
+        do_test1< 2, 2, 1>(p) ;
         //  do_test1< 3, 3, 1, 1>(p) ;
     }
 

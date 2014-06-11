@@ -307,7 +307,7 @@ public:
 
     std::shared_ptr<RefFaceSpace>
     get_face_space(const Index face_id,
-    		       std::vector<Index> &face_to_element_dofs);
+    		       std::vector<Index> &face_to_element_dofs) const;
 
     /** Return the push forward (non-const version). */
     std::shared_ptr<PushForwardType> get_push_forward();

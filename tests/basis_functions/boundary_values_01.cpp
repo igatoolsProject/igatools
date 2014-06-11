@@ -79,7 +79,7 @@ void do_test(const int p)
 
     const int num_knots = 10;
     auto knots = CartesianGrid<dim_ref_domain>::create(num_knots);
-    auto space = space_ref_t::create(knots, p) ;
+    auto space = space_ref_t::create(p, knots) ;
     auto map = IdentityMapping<dim_ref_domain,codim>::create(knots);
     auto phys_space = space_phys_t::create(space, PushForward::create(map));
 
