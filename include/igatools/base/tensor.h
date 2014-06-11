@@ -598,7 +598,9 @@ using Derivatives =
 
 
 template<int dim, int range, int rank>
-using Values = Tensor<range, rank, tensor::contravariant, Tdouble>;
+using Values = Conditional<rank==0,
+        Tensor<1, 1, tensor::contravariant, Tdouble>,
+        Tensor<range, rank, tensor::contravariant, Tdouble>>;
 
 
 /**

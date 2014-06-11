@@ -17,6 +17,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
+// TODO (pauletti, Jun 11, 2014): put appropriate header
+
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
@@ -118,32 +121,30 @@ StokesProblem(const int deg, const int n_knots)
 {
     const int reg = 0;
 
-    Multiplicity<dim> pre_mult, vel_mult;
-    vector<Index> mult_p(n_knots, deg - reg);
-    vector<Index> mult_v(n_knots, deg + 1 -reg);
-    mult_p[0] = deg+1;
-    mult_p[n_knots-1] = deg+1;
-    mult_v[0] = deg+2;
-    mult_v[n_knots-1] = deg+2;
+    typename PreSpace::Multiplicity pre_mult;
+    typename VelSpace::Multiplicity vel_mult;
+
+    vector<Index> mult_p(n_knots-2, deg - reg);
+    vector<Index> mult_v(n_knots-2, deg + 1 -reg);
     for (int i = 0; i < dim; ++i)
     {
         pre_mult.copy_data_direction(i, mult_p) ;
         vel_mult.copy_data_direction(i, mult_v) ;
     }
 
-//    StaticMultiArray<TensorIndex<dim>,1,1> pre_deg(TensorIndex<dim>(deg));
-//    StaticMultiArray<TensorIndex<dim>,dim,1> vel_deg(TensorIndex<dim>(deg+1));
+
+    auto pres_m = make_shared<typename PreSpace::MultiplicityTable>(pre_mult);
+    auto vel_m  = make_shared<typename VelSpace::MultiplicityTable>(vel_mult);
+
+    typename PreSpace::DegreeTable pre_deg;//(TensorIndex<dim>(deg));
+    pre_deg(0) = TensorIndex<dim>(deg);
+
+    const typename VelSpace::DegreeTable vel_deg(TensorIndex<dim>(deg+1));
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    pre_space_ = PreSpace::create(
-                     grid,
-                     StaticMultiArray<Multiplicity<dim>,1,1>(pre_mult),
-                     StaticMultiArray<TensorIndex<dim>,1,1>(TensorIndex<dim>(deg)));
+    pre_space_ = PreSpace::create(pre_deg, grid, pres_m);
 
-    vel_space_ = VelSpace::create(
-                     grid,
-                     StaticMultiArray<Multiplicity<dim>,dim,1>(vel_mult),
-                     StaticMultiArray<TensorIndex<dim>,dim,1>(TensorIndex<dim>(deg+1)));
+    vel_space_ = VelSpace::create(vel_deg, grid,vel_m);
 
     const auto sparsity_pattern =
         dof_tools::get_sparsity_pattern<VelSpace, PreSpace>(
