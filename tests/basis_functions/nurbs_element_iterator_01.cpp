@@ -18,7 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-// TODO (pauletti, Jun 10, 2014): write appropriate header comment
+/*
+ *  Test for the NURBS space iterator
+ *
+ *  author: pauletti
+ *  date: Jun 11, 2014
+ *
+ */
 
 #include "../tests.h"
 
@@ -27,18 +33,17 @@
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 
 template< int dim, int range, int rank = 1>
-void do_test()
+void test()
 {
     const int r = 2;
-
-    out << "do_test<" << dim << "," << range << ">" << endl ;
+    out << "test<" << dim << "," << range << ">" << endl;
 
     using Space = NURBSSpace< dim, range, rank >;
     using WeightsTable = typename Space::WeightsTable;
     using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create();
 
-    auto degree = TensorIndex<dim> (r);
+    auto degree = TensorIndex<dim>(r);
     DegreeTable deg(degree);
 
     auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
@@ -49,73 +54,45 @@ void do_test()
 
     auto space = Space::create(deg, knots, weights);
 
-    const int n_points = 3 ;
-    QGauss< dim > quad_scheme(n_points) ;
+    const int n_points = 3;
+    QGauss<dim> quad(n_points);
 
     auto element     = space->begin();
     auto end_element = space->end();
 
+    const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
+    element->init_values(flag, quad);
 
-    // initialize the cache of the NURBSSpaceElementAccessor
-    element->init_values(ValueFlags::value |
-                         ValueFlags::gradient |
-                         ValueFlags::hessian,
-                         quad_scheme) ;
-
-
-    out.push("\t") ;
-    for (int j = 0 ; element != end_element ; ++j, ++element)
+    for (; element != end_element; ++element)
     {
-        // fill the cache (with basis functions values, first and second derivatives) at the evaluation points
-        element->fill_values() ;
+        element->fill_values();
+        out << "Element: " << element->get_flat_index()<< endl;
 
+        out << "Values basis functions:" << endl;
+        auto values = element->get_basis_values();
+        values.print_info(out);
 
-        out << "Element: " << j << endl ;
+        out << "Gradients basis functions:" << endl;
+        auto gradients = element->get_basis_gradients();
+        gradients.print_info(out);
 
-        out.push("\t") ;
-
-
-        out << "Values basis functions:" << endl ;
-        auto values = element->get_basis_values() ;
-        values.print_info(out) ;
-        out << endl ;
-
-
-        out << "Gradients basis functions:" << endl ;
-        ValueTable< Derivatives<dim, range, rank, 1 > > gradients = element->get_basis_gradients() ;
-        gradients.print_info(out) ;
-        out << endl ;
-
-
-        out << "Hessians basis functions:" << endl ;
-        ValueTable< Derivatives<dim, range, rank, 2 > > hessians = element->get_basis_hessians() ;
-        hessians.print_info(out) ;
-        out << endl ;
-
-
-        out.pop() ;
-    }
-    out.pop() ;
-
-    out << endl ;
+        out << "Hessians basis functions:" << endl;
+        auto hessians = element->get_basis_hessians();
+        hessians.print_info(out);
+     }
 }
 
 
 int main()
 {
-    do_test< 1, 1 >() ;
+    test<1, 1>();
+    test<1, 2>();
+    test<1, 3>();
+    test<2, 1>();
+    test<2, 2>();
+    test<2, 3>();
+    test<3, 1>();
+    test<3, 3>();
 
-    do_test< 1, 2 >() ;
-
-    do_test< 1, 3 >() ;
-
-    do_test< 2, 1 >() ;
-
-    do_test< 2, 2 >() ;
-    do_test< 2, 3 >() ;
-    do_test< 3, 1 >() ;
-//  do_test< 3, 2 >() ;
-    do_test< 3, 3 >() ;
-//*/
-    return (0) ;
+    return 0;
 }
