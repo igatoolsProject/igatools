@@ -53,7 +53,9 @@ public:
     ///@{
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward_;
+
     using RefSpace = RefSpace_;
+
     using GridType = typename PushForwardType::GridType;
     ///@}
     static const int dim = PushForwardType::dim;
@@ -84,10 +86,11 @@ public:
     using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
 
     using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
+
 public:
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
-
+    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
     /**
      * Type for the element accessor.
      */
@@ -148,8 +151,18 @@ public:
 
     std::shared_ptr<const RefSpace> get_reference_space() const;
 
+
+    std::shared_ptr<FaceSpace>
+    get_face_space(const Index face_id,
+                   std::vector<Index> &face_to_element_dofs) const;
+
+
     void print_info(LogStream &out) const;
 
+
+
+    // TODO (pauletti, Jun 12, 2014): if we are using this it should be
+    // implemented in all library classes
     void print_memory_info(LogStream &out) const;
 
 #if 0

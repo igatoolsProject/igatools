@@ -78,6 +78,16 @@ public:
            const std::shared_ptr<GridType > grid,
            const std::shared_ptr<std::map<int,int> > elem_map);
 
+    static std::shared_ptr<base_t>
+    create(const std::shared_ptr<const base_t> map,
+           const int face_id,
+           const std::shared_ptr<GridType > grid,
+           const std::shared_ptr<std::map<int,int> > elem_map)
+     {
+        AssertThrow(true, ExcImpossibleInDim(-1));
+        return std::shared_ptr<base_t>();//Should never reach this
+     }
+
     void evaluate(std::vector<ValueType> &values) const override;
 
     void evaluate_gradients(std::vector<GradientType> &gradients) const override;

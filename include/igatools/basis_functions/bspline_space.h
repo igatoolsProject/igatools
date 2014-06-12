@@ -30,6 +30,7 @@
 
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
+#include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -138,6 +139,9 @@ public:
     using RefFaceSpace = Conditional<(dim>0),
             BSplineSpace<dim-1,range,rank>,
             BSplineSpace<0,range,rank> >;
+
+    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
+
 
     /** Type for the element accessor. */
     using ElementAccessor = BSplineElementAccessor<dim,range,rank>;
@@ -306,8 +310,14 @@ public:
 
 
     std::shared_ptr<RefFaceSpace>
+    get_ref_face_space(const Index face_id,
+                       std::vector<Index> &face_to_element_dofs) const;
+
+
+    std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
-    		       std::vector<Index> &face_to_element_dofs) const;
+                   std::vector<Index> &face_to_element_dofs) const;
+
 
     /** Return the push forward (non-const version). */
     std::shared_ptr<PushForwardType> get_push_forward();

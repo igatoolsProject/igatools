@@ -72,7 +72,12 @@ public:
     static const int space_dim = dim + codim;
 
 
+    using FaceMapping = Conditional<(dim>0),
+            Mapping<dim-1, codim+1>,
+            Mapping<0, codim> >;
+
     /** Dimension of the face.*/
+    // TODO (pauletti, Jun 12, 2014): use FaceMapping::dim instead
     static const auto face_dim = dim_>0 ? dim_-1 : 0 ;
 
 
@@ -86,6 +91,7 @@ public:
 
     /** Type of the element iterator */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
+
 
 
 private:

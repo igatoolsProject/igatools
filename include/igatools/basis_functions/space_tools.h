@@ -41,13 +41,14 @@
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 /**
  * @todo document
  */
 template <class Space>
 using FaceSpace = PhysicalSpace<typename Space::RefFaceSpace,
       PushForward<Transformation::h_grad, Space::dim-1, Space::codim + 1> >;
+#endif
 
 /**
  * @todo document

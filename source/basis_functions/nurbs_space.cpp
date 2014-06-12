@@ -21,6 +21,7 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/space_tools.h>
 
+#include <igatools/geometry/mapping_slice.h>
 #include <igatools/base/exceptions.h>
 
 using std::array;
@@ -236,11 +237,11 @@ reset_weights(const WeightsTable &weights)
 template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_face_space(const Index face_id,
+get_ref_face_space(const Index face_id,
         std::vector<Index> &face_to_element_dofs) const
         -> std::shared_ptr<RefFaceSpace>
 {
-    auto f_space = sp_space_->get_face_space(face_id, face_to_element_dofs);
+    auto f_space = sp_space_->get_ref_face_space(face_id, face_to_element_dofs);
 
     // TODO (pauletti, Jun 11, 2014): this should be put and completed in
     // get_face_weigjts()
@@ -260,6 +261,25 @@ get_face_space(const Index face_id,
     return RefFaceSpace::create(f_space, f_weights);
 }
 
+
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_face_space(const Index face_id,
+        std::vector<Index> &face_to_element_dofs) const
+        -> std::shared_ptr<FaceSpace>
+{
+    auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs);
+    auto map  = get_push_forward()->get_mapping();
+    auto elem_map = std::make_shared<std::map<int,int> >();
+    auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
+            create(map, face_id, face_ref_sp->get_grid(), elem_map);
+    auto fpf = FaceSpace::PushForwardType::create(fmap);
+    auto face_space = FaceSpace::create(face_ref_sp,fpf);
+
+    return face_space;
+}
 
 #if 0
 template <int dim_, int range_, int rank_>

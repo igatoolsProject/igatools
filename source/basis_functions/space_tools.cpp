@@ -430,7 +430,7 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
 
 
 
-
+// TODO (pauletti, Jun 12, 2014): LinearAlgebraPackage should have shorter name like LAPack
 
 template<class Space, LinearAlgebraPackage linear_algebra_package>
 void
@@ -460,7 +460,7 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
         auto face_space = space->get_face_space(face_id, dof_map);
 
         Vector<linear_algebra_package> proj_on_face =
-            projection_l2<FaceSpace<Space>,linear_algebra_package>(func, face_space, quad);
+            projection_l2<typename Space::FaceSpace,linear_algebra_package>(func, face_space, quad);
 
         const int face_n_dofs = dof_map.size() ;
         for (Index i = 0 ; i< face_n_dofs ; ++i)

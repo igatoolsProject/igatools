@@ -66,6 +66,8 @@ public:
     static const int space_dim = Map::space_dim;
 
 
+
+
     static const Transformation type = transformation_type_;
 
     template<int ref_range>
@@ -75,12 +77,20 @@ public:
 
     };
 
+    /**
+     * Typedef for the PushForward on a face.
+     */
+    using FacePushForward =
+            PushForward<type,Map::FaceMapping::dim, Map::FaceMapping::codim>;
+
     template <int range, int rank>
     using RefValue = Values<dim, range, rank>;
 
     template <int range, int rank, int order>
     using RefDerivative = Derivatives<dim, range, rank, order>;
 
+
+    //
     template <int range, int rank, int order>
     using RefFaceDerivative = Conditional< dim == 0,
           Derivatives<0,     range, rank, order>,
@@ -97,10 +107,6 @@ public:
 
     typedef PushForward<transformation_type, dim, codim > Self ;
 
-    /**
-     * Typedef for the PushForward on a face.
-     */
-    typedef PushForward<transformation_type,dim-1, codim + 1> FacePushForward;
 
 
     /**

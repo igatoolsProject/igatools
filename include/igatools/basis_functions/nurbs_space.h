@@ -84,6 +84,8 @@ public:
             NURBSSpace<dim-1, range, rank>,
             NURBSSpace<0, range, rank> >;
 
+    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
+
     /** Type for the element accessor. */
     using ElementAccessor = NURBSElementAccessor<dim, range, rank> ;
 
@@ -347,8 +349,13 @@ public:
 #endif
 
     std::shared_ptr<RefFaceSpace>
+    get_ref_face_space(const Index face_id,
+                   std::vector<Index> &face_to_element_dofs) const;
+
+    std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
                    std::vector<Index> &face_to_element_dofs) const;
+
 
     /**
     * Returns a element iterator to the first element of the patch
