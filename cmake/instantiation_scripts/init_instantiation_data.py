@@ -285,6 +285,7 @@ class InstantiationInfo:
       self.IgmRefSpaces = ( ['%s%s' % (sp, dims)
                              for sp in spaces
                              for dims in IgRefDims] )
+      
 
       return None
 
@@ -305,7 +306,14 @@ class InstantiationInfo:
                                    %(x.trans_type, x.dim, x.codim)
                                    for sp in spaces
                                    for x in self.all_phy_sp_dims] )
-
+      
+      self.PhysSpaces   = unique( self.PhysSpaces + ['PhysicalSpace <' +
+                          '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
+                          ', PushForward<Transformation::%s, %d, %d> >'
+                          %('h_grad', x.dim, 0)
+                          for sp in spaces
+                          for x in self.all_ref_sp_dims] )
+      
       self.UserPhysSpaces = unique( ['PhysicalSpace <' +
                                      '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
                                      ', PushForward<Transformation::%s, %d, %d> >'
