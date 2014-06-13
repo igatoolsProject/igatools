@@ -350,7 +350,8 @@ public:
 
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs) const;
+                   std::vector<Index> &face_to_element_dofs,
+                   std::map<int, int> &elem_map) const;
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,

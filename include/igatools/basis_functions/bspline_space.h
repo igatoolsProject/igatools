@@ -106,6 +106,7 @@ private:
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
+    using PhysSpace = PhysicalSpace<self_t, PushForwardType>;
 
     /** Required type for space templated functions */
     using RefSpace = self_t;
@@ -311,7 +312,8 @@ public:
 
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
-                       std::vector<Index> &face_to_element_dofs) const;
+                       std::vector<Index> &face_to_element_dofs,
+                       std::map<int, int> &elem_map) const;
 
 
     std::shared_ptr<FaceSpace>

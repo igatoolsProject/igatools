@@ -202,10 +202,11 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
-		std::vector<Index> &face_to_element_dofs) const
+		std::vector<Index> &face_to_element_dofs,
+		std::map<int, int> &elem_map) const
 		-> std::shared_ptr<RefFaceSpace>
 {
-	std::map<int, int> elem_map;
+
 	auto face_grid   = this->get_grid()->get_face_grid(face_id, elem_map);
 	auto face_mult   = this->get_face_mult(face_id);
 	auto face_degree = this->get_face_degree(face_id);
@@ -250,9 +251,10 @@ get_face_space(const Index face_id,
         std::vector<Index> &face_to_element_dofs) const
         -> std::shared_ptr<FaceSpace>
 {
-    auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs);
-    auto map  = get_push_forward()->get_mapping();
     auto elem_map = std::make_shared<std::map<int,int> >();
+    auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+    auto map  = get_push_forward()->get_mapping();
+
     auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
             create(map, face_id, face_ref_sp->get_grid(), elem_map);
     auto fpf = FaceSpace::PushForwardType::create(fmap);
