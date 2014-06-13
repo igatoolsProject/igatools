@@ -66,7 +66,7 @@ integrate_difference=('template Real space_tools::integrate_difference('
 ############################################
 # TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
-for sp in inst.PhysSpaces + inst.RefSpaces:
+for sp in inst.PhysSpaces + inst.UserRefSpaces:
     f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
 
 
@@ -74,7 +74,7 @@ for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
    f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
   
  
-for sp in inst.UserPhysSpaces:
+for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
  
 # 
