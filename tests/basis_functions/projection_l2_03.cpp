@@ -66,8 +66,8 @@ void test_proj(const int p)
 int main()
 {
     out.depth_console(20);
-    test_proj<0,1,1>(1);
-    test_proj<0,1,1>(2);
+ //   test_proj<0,1,1>(1);
+ //   test_proj<0,1,1>(2);
     test_proj<1,1,1>(3);
     test_proj<2,1,1>(3);
     test_proj<3,1,1>(1);

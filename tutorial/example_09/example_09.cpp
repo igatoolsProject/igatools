@@ -50,7 +50,7 @@ template<int dim>
 class PoissonProblem
 {
 public:
-    PoissonProblem(const TensorSize<dim> &n_knots, const int deg);
+    PoissonProblem(const int deg, const TensorSize<dim> &n_knots);
     void run();
 
 private:
@@ -84,7 +84,7 @@ private:
 
 template<int dim>
 PoissonProblem<dim>::
-PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
+PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     :
     elem_quad(QGauss<dim>(deg+1)),
     face_quad(QGauss<dim-1>(deg+1))
@@ -95,7 +95,7 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
         box[i] = {{PI/4,PI/2}};
 
     auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto ref_space = RefSpace::create(grid, deg);
+    auto ref_space = RefSpace::create(deg, grid);
     map       = BallMapping<dim>::create(grid);
     space     = Space::create(ref_space, PushFw::create(map));
 
@@ -211,13 +211,13 @@ int main()
     const int n_knots = 10;
     const int deg     = 1;
 
-    PoissonProblem<1> poisson_1d({n_knots}, deg);
+    PoissonProblem<1> poisson_1d(deg, {n_knots});
     poisson_1d.run();
 
-    PoissonProblem<2> poisson_2d({n_knots, n_knots}, deg);
+    PoissonProblem<2> poisson_2d(deg, {n_knots, n_knots});
     poisson_2d.run();
 
-    PoissonProblem<3> poisson_3d({n_knots, n_knots, n_knots}, deg);
+    PoissonProblem<3> poisson_3d(deg, {n_knots, n_knots, n_knots});
     poisson_3d.run();
 
     return  0;

@@ -67,7 +67,7 @@ void do_test(const int p)
         n_knots[i] = num_knots+i;
     }
     auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = space_ref_t::create(grid, p) ;
+    auto space = space_ref_t::create(p, grid) ;
 
     const int n_qpoints = 4;
     QGauss<dim-1> quad(n_qpoints);

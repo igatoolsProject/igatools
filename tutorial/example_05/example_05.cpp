@@ -54,7 +54,7 @@ template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
     :
     grid {CartesianGrid<dim>::create(n_knots)},
-     space {BSplineSpace<dim>::create(grid, deg)}
+     space {BSplineSpace<dim>::create(deg, grid)}
 {}
 // [constructor]
 
