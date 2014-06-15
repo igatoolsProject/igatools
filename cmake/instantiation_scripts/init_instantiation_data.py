@@ -207,7 +207,7 @@ class InstantiationInfo:
          self.face_phy_sp_dims.append(PhysSpaceTableRow(row))
          self.all_phy_sp_dims.append(PhysSpaceTableRow(row))
 
-         self.all_phy_sp_dims = unique(self.all_phy_sp_dims)
+      self.all_phy_sp_dims = unique(self.all_phy_sp_dims)
             
       self.domain_dims = unique([sp.dim for sp in self.all_phy_sp_dims])
            
@@ -263,6 +263,15 @@ class InstantiationInfo:
       
       self.really_all_ref_sp_dims=unique(self.all_ref_sp_dims + self.igm_ref_sp_dims)
      
+      #self.all_phy_sp_dims.append(  
+      a= unique( [PhysSpaceTableRow([x.dim, 0, x.range, x.rank, 'h_grad'])
+                                           for x in self.really_all_ref_sp_dims] +
+                                         [PhysSpaceTableRow([x.dim-1, 1, x.range, x.rank, 'h_grad'])
+                                          for x in self.user_ref_sp_dims])
+                                    #)
+      
+      self.all_phy_sp_dims = unique(self.all_phy_sp_dims+a)
+     
 #       self.igm_phy_sp_dims = unique( [PhysSpaceRow([x.dim, 0, x.space_dim, 1, 'h_grad'])
 #                                        for x in self.igm_ref_sp_dims] )
      
@@ -307,12 +316,8 @@ class InstantiationInfo:
                                    for sp in spaces
                                    for x in self.all_phy_sp_dims] )
       
-      self.PhysSpaces   = unique( self.PhysSpaces + ['PhysicalSpace <' +
-                          '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
-                          ', PushForward<Transformation::%s, %d, %d> >'
-                          %('h_grad', x.dim, 0)
-                          for sp in spaces
-                          for x in self.all_ref_sp_dims] )
+      
+      
       
       self.UserPhysSpaces = unique( ['PhysicalSpace <' +
                                      '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
