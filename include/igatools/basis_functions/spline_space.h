@@ -34,18 +34,21 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Tensor product spline space specification class
+ * @brief Tensor product spline space
  *
- * A polynomial spline space is determined by:
- * - the interval
- * - the order
- * - a partition (interior knots without repetition)
- * - the interior knots multiplicity (or smoothness a the knots)
+ * A one dimensional polynomial spline space is determined by:
+ * - a domain, the interval [a,b]
+ * - the polynomial order
+ * - a partition of [a,b], the knots
+ * - the interior knots smoothness (given by the interior multiplicity)
  *
- * This is independent of the basis functions one may wish to use
+ * This class provides the realization of a scalar, vector or k-tensor
+ * value tensor product spline space.
+ *
+ * @note This is independent of the basis functions one may wish to use
  * for the given space.
  *
- * @author pauletti, 2013-2014
+ * @author pauletti, 2014
  *
  */
 template<int dim, int range = 1, int rank = 1>
