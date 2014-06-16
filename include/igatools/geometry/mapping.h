@@ -60,6 +60,9 @@ class Mapping
    public GridWrapper<CartesianGrid<dim_>>
 {
 public:
+    /** Type of the Grid */
+    using typename GridWrapper<CartesianGrid<dim_>>::GridType;
+
     /** Dimension of the reference domain */
     static const int dim = dim_;
 
@@ -79,10 +82,6 @@ public:
     /** Dimension of the face.*/
     // TODO (pauletti, Jun 12, 2014): use FaceMapping::dim instead
     static const auto face_dim = dim_>0 ? dim_-1 : 0 ;
-
-
-    /** Type of the Grid */
-    using GridType = CartesianGrid<dim>;
 
 
     /** Type of the element accessor */

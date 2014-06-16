@@ -53,19 +53,19 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-        public FunctionSpaceOnGrid<CartesianGrid<dim> >
+        public FunctionSpaceOnGrid<CartesianGrid<dim>>
 {
 
 private:
-    using GridType  = CartesianGrid<dim>;
-    using GridSpace = FunctionSpaceOnGrid<GridType>;
+    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+    using typename GridSpace::GridType;
 
 public:
     static const std::array<int, dim> dims;
 
     using FaceSpace = Conditional<(dim>0),
-                SplineSpace<dim-1,range,rank>,
-                SplineSpace<0, range, rank> >;
+                SplineSpace<dim-1, range, rank>,
+                SplineSpace<    0, range, rank> >;
 private:
     using Func = Function<dim, range, rank>;
 public:
