@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 
-#include <igatools/basis_functions/space_spec.h>
+#include <igatools/basis_functions/spline_space.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 
 IGA_NAMESPACE_OPEN

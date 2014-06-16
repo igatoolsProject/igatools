@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/space_spec.h>
+#include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 
 using std::vector;
@@ -345,5 +345,5 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/space_spec.inst>
+#include <igatools/basis_functions/spline_space.inst>
 

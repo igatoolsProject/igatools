@@ -25,7 +25,7 @@
  */
 
 #include "../tests.h"
-#include <igatools/basis_functions/space_spec.h>
+#include <igatools/basis_functions/spline_space.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>

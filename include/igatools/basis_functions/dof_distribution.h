@@ -22,7 +22,7 @@
 #define DOF_DISTRIBUTION_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space_spec.h>
+#include <igatools/basis_functions/spline_space.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
 IGA_NAMESPACE_OPEN

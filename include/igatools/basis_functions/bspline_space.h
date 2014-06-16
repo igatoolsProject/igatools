@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
-#include <igatools/basis_functions/space_spec.h>
+#include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 

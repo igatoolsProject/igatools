@@ -25,7 +25,7 @@
  */
 
 #include "../tests.h"
-#include <igatools/basis_functions/space_spec.h>
+#include <igatools/basis_functions/spline_space.h>
 
 template<int dim, int range, int rank>
 void test(const int deg1)
