@@ -130,6 +130,7 @@ public:
     static const bool has_weights = false;
 
 public:
+    using typename BaseSpace::Func;
     using typename BaseSpace::Derivative;
     using typename BaseSpace::Point;
     using typename BaseSpace::Value;

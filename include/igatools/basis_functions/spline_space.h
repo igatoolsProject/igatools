@@ -66,8 +66,9 @@ public:
     using FaceSpace = Conditional<(dim>0),
                 SplineSpace<dim-1, range, rank>,
                 SplineSpace<    0, range, rank> >;
-private:
+public:
     using Func = Function<dim, range, rank>;
+
 public:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;

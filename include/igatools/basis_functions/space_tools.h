@@ -116,6 +116,7 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 
 // TODO (pauletti, Jun 18, 2014):use space::Function
+// TODO (pauletti, Jun 18, 2014): use a quadrature table, and use a default quad if none provided
 /**
  * Perform an (L2)-Projection the function @p func
  * onto the space @p space using the quadrature rule @p quad.

@@ -35,10 +35,10 @@
 IGA_NAMESPACE_OPEN
 
 template < class RefSpace, class PushForward >
-class PhysicalSpace ;
+class PhysicalSpace;
 
 template< int dim_domain, int range, int rank >
-class NURBSSpace ;
+class NURBSSpace;
 
 
 
@@ -54,7 +54,7 @@ class Writer
 public:
 
     static const int codim = dim_phys-dim_ref;
-
+// TODO (pauletti, Jun 18, 2014): document this constructors
     Writer(const std::shared_ptr< CartesianGrid< dim_ref > > grid);
 
     Writer(const std::shared_ptr< CartesianGrid< dim_ref > > grid,
@@ -97,26 +97,26 @@ public:
      * \see add_field
      */
     Writer(const std::shared_ptr< const Mapping< dim_ref, codim > > mapping,
-           const std::shared_ptr< const Quadrature<dim_ref> > quadrature) ;
+           const std::shared_ptr< const Quadrature<dim_ref> > quadrature);
 
 
     /**
      * Default constructor. Not allowed to be used.
      */
-    Writer() = delete ;
+    Writer() = delete;
 
 
     /**
      * Copy constructor. Not allowed to be used.
      */
-    Writer(const Writer< dim_ref, codim > &writer) = delete ;
+    Writer(const Writer< dim_ref, codim > &writer) = delete;
 
 
     /**
      * Assignment operator. Not allowed to be used.
      */
     Writer< dim_ref, dim_phys > &
-    operator=(const Writer< dim_ref, dim_phys > &writer) = delete ;
+    operator=(const Writer< dim_ref, dim_phys > &writer) = delete;
 
 
     /**
@@ -132,20 +132,20 @@ public:
      * \note The number of coefficients must be equal to the number of basis functions specified
      * by the space, otherwise an exception will be raised.
      */
-    template<class Space, LAPack la_pack>
+    template<class Space, LAPack la_pack = LAPack::trilinos>
     void add_field(
         std::shared_ptr<Space> space,
         const Vector<la_pack> &coefs,
-        const std::string &name) ;
+        const std::string &name);
 
-
+// TODO (pauletti, Jun 18, 2014):should be private
     void add_element_data(
         const std::vector<double> &element_data,
-        const std::string &name) ;
+        const std::string &name);
 
     void add_element_data(
         const std::vector<int> &element_data,
-        const std::string &name) ;
+        const std::string &name);
 
 
     /**
@@ -156,7 +156,7 @@ public:
      */
     void save(
         const std::string &filename,
-        const std::string &format = "ascii") ;
+        const std::string &format = "ascii");
 
 
     /**
@@ -164,31 +164,31 @@ public:
      * The first index refers to the iga element,
      * the second index refers to the point within the iga element specified by the first index.
      * \code
-     * auto points = writer.get_points_in_elements() ;
+     * auto points = writer.get_points_in_elements();
      * //points[i][j] is the j-th point in the i-th iga element
      * \endcode
      */
-    const std::vector< std::vector< std::array<T,3> > > &get_points_in_iga_elements() const ;
+    const std::vector< std::vector< std::array<T,3> > > &get_points_in_iga_elements() const;
 
     /**
      * Returns the number of IGA elements handled by the Writer.
      */
-    int get_num_iga_elements() const ;
+    int get_num_iga_elements() const;
 
     /**
      * Returns the number of VTK elements handled by the Writer.
      */
-    int get_num_vtk_elements() const ;
+    int get_num_vtk_elements() const;
 
     /**
      * Returns the number of VTK elements used for each IGA element.
      */
-    int get_num_vtk_elements_per_iga_element() const ;
+    int get_num_vtk_elements_per_iga_element() const;
 
     /**
      * Returns the number of evaluation points used for each IGA element.
      */
-    int get_num_points_per_iga_element() const ;
+    int get_num_points_per_iga_element() const;
 
 
     void add_point_data(const int n_iga_elements,
@@ -196,72 +196,72 @@ public:
                         const int n_values_per_point,
                         const std::string &type,
                         const std::vector<std::vector<std::vector<T>>> &data_iga_elements,
-                        const std::string &name) ;
+                        const std::string &name);
 
 
 
 private:
-    std::string byte_order_ ;
+    std::string byte_order_;
 
-    static const int n_vertices_per_vtk_element_ = UnitElement< dim_ref >::vertices_per_element ;
+    static const int n_vertices_per_vtk_element_ = UnitElement< dim_ref >::vertices_per_element;
 
-    const std::string filename_ ;
+    const std::string filename_;
 
-    std::shared_ptr< const CartesianGrid< dim_ref > > grid_ ;
+    std::shared_ptr< const CartesianGrid< dim_ref > > grid_;
 
 
-    std::shared_ptr< const Mapping< dim_ref, codim > > map_ ;
+    std::shared_ptr< const Mapping< dim_ref, codim > > map_;
 
 
     /**
      * Unit element quadrature rule used for the plot.
      */
-    Quadrature< dim_ref > quad_plot_ ;
+    Quadrature< dim_ref > quad_plot_;
 
 
-    TensorSize<dim_ref> num_points_direction_ ;
+    TensorSize<dim_ref> num_points_direction_;
 
 
-    TensorSize<dim_ref> num_subelements_direction_ ;
+    TensorSize<dim_ref> num_subelements_direction_;
 
     /**
      * Number of VTK elements contained in each IGA element.
      */
-    Size n_vtk_elements_per_iga_element_ ;
+    Size n_vtk_elements_per_iga_element_;
 
     /**
      * Number of VTK elements handled by the Writer.
      */
-    Size n_vtk_elements_ ;
+    Size n_vtk_elements_;
 
 
     /**
      * Number of IGA elements handled by the Writer.
      */
-    Size n_iga_elements_ ;
+    Size n_iga_elements_;
 
     /**
      * Number of evaluation points in each IGA element.
      */
-    Size n_points_per_iga_element_ ;
+    Size n_points_per_iga_element_;
 
     /**
      * Number of VTK elements handled by the Writer.
      */
-    Size n_vtk_points_ ;
+    Size n_vtk_points_;
 
     /**
      * Coordinates of the evaluation points associated to each iga element.
      * \note The point coordinates are referred to the physical domain extended to 3D space.
      */
-    std::vector< std::vector< std::array<T,3> > > points_in_iga_elements_ ;
+    std::vector< std::vector< std::array<T,3> > > points_in_iga_elements_;
 
-    unsigned char vtk_element_type_ ;
+    unsigned char vtk_element_type_;
 
     /**
      * Connectivity of the vtk elements inside each iga element.
      */
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > > vtk_elements_connectivity_ ;
+    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > > vtk_elements_connectivity_;
 
 
     /**
@@ -280,7 +280,7 @@ private:
     void get_subelements(
         const typename Mapping< dim_ref, codim>::ElementIterator elem,
         std::vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-        std::vector< std::array<T,3> > &points_phys_iga_element) const ;
+        std::vector< std::array<T,3> > &points_phys_iga_element) const;
 
 
 private:
@@ -301,27 +301,27 @@ private:
             num_points_per_element_(num_points_per_element),
             num_components_(num_components),
             values_(values)
-        {} ;
+        {};
 
-        const std::string name_ ;
+        const std::string name_;
 
-        const std::string type_ ;
+        const std::string type_;
 
-        Size num_elements_ ;
+        Size num_elements_;
 
-        Size num_points_per_element_ ;
+        Size num_points_per_element_;
 
-        Size num_components_ ;
+        Size num_components_;
 
 
-        std::shared_ptr< std::vector<T> > values_ ;
-    } ;
+        std::shared_ptr< std::vector<T> > values_;
+    };
 
-    std::vector< PointData > fields_ ;
+    std::vector< PointData > fields_;
 
-    std::vector<std::string> names_point_data_scalar_ ;
-    std::vector<std::string> names_point_data_vector_ ;
-    std::vector<std::string> names_point_data_tensor_ ;
+    std::vector<std::string> names_point_data_scalar_;
+    std::vector<std::string> names_point_data_vector_;
+    std::vector<std::string> names_point_data_tensor_;
 
     template<class data_type>
     struct CellData
@@ -334,53 +334,53 @@ private:
             name_(name),
             type_("scalar"),
             num_components_(1)
-        {} ;
+        {};
 
-        std::shared_ptr< std::vector<data_type> > values_ ;
+        std::shared_ptr< std::vector<data_type> > values_;
 
-        const std::string name_ ;
+        const std::string name_;
 
-        const std::string type_ ;
+        const std::string type_;
 
-        iga::Size num_components_ ;
-    } ;
+        iga::Size num_components_;
+    };
 
-    std::vector< CellData<double> > cell_data_double_ ;
+    std::vector< CellData<double> > cell_data_double_;
 
-    std::vector< CellData<int> > cell_data_int_ ;
+    std::vector< CellData<int> > cell_data_int_;
 
-    std::vector<std::string> names_cell_data_scalar_ ;
-    std::vector<std::string> names_cell_data_vector_ ;
-    std::vector<std::string> names_cell_data_tensor_ ;
+    std::vector<std::string> names_cell_data_scalar_;
+    std::vector<std::string> names_cell_data_vector_;
+    std::vector<std::string> names_cell_data_tensor_;
 
     const int sizeof_Real_ = 0;
-    std::string string_Real_ ;
+    std::string string_Real_;
 
     const int sizeof_int_  = 0;
-    std::string string_int_ ;
+    std::string string_int_;
 
     const int sizeof_uchar_  = 0;
-    std::string string_uchar_ ;
+    std::string string_uchar_;
 
 
 
 
 
-    std::stringstream appended_data_ ;
+    std::stringstream appended_data_;
 
 
-    int offset_ ;
+    int offset_;
 
 
-    int precision_ ;
+    int precision_;
 
 
-    void save_ascii(const std::string &filename) const ;
+    void save_ascii(const std::string &filename) const;
 
-    void save_appended(const std::string &filename) const ;
+    void save_appended(const std::string &filename) const;
 
-    void fill_points_and_connectivity() ;
-} ;
+    void fill_points_and_connectivity();
+};
 
 
 IGA_NAMESPACE_CLOSE

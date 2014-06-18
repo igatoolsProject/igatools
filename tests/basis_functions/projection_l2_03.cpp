@@ -33,19 +33,23 @@
 #include <igatools/basis_functions/space_tools.h>
 
 
-template<int dim , int range ,int rank>
+template<int dim , int range=1 ,int rank = 1>
 void test_proj(const int p)
 {
-    using  space_ref_t = BSplineSpace<dim,range,rank> ;
+    using Space = BSplineSpace<dim,range,rank> ;
+    using Func = typename functions::ConstantFunction<dim,range, rank>;
 
     const int num_knots = 4;
     auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = space_ref_t::create(p, knots) ;
+    auto space = Space::create(p, knots);
 
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
 
-    functions::ConstantFunction<dim> f({iga::Real(3.)});
+    typename Func::ValueType val;
+    for (int i=0; i<range; ++i)
+        val[i] = i+3;
+    Func f(val);
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
@@ -53,12 +57,8 @@ void test_proj(const int p)
     const auto la_pack = LAPack::petsc;
 #endif
 
-    auto proj_values = space_tools::projection_l2
-                       <space_ref_t,la_pack>
-                       (f,const_pointer_cast<const space_ref_t>(space),quad);
-
+    auto proj_values = space_tools::projection_l2<Space,la_pack>(f,space, quad);
     proj_values.print(out);
-
 }
 
 
@@ -66,11 +66,12 @@ void test_proj(const int p)
 int main()
 {
     out.depth_console(20);
- //   test_proj<0,1,1>(1);
- //   test_proj<0,1,1>(2);
-    test_proj<1,1,1>(3);
-    test_proj<2,1,1>(3);
-    test_proj<3,1,1>(1);
+
+    test_proj<1>(3);
+    test_proj<2>(3);
+    test_proj<3>(1);
+
+    test_proj<2,3>(1);
 
     return 0;
 }
