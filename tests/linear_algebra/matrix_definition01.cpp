@@ -69,13 +69,13 @@ int main()
     auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
-    using VectorType = Vector<linear_algebra_package>;
-    using MatrixType = Matrix<linear_algebra_package>;
-    using LinSolverType = LinearSolver<linear_algebra_package>;
+    using VectorType = Vector<la_pack>;
+    using MatrixType = Matrix<la_pack>;
+    using LinSolverType = LinearSolver<la_pack>;
 
     MatrixType matrix(
         dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>>(bspline_space));

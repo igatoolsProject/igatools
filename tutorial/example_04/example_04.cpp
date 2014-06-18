@@ -42,7 +42,7 @@ void plot_basis(const int deg)
 
     // [init vec]
     const int n_basis = space->get_num_basis();
-    Vector<LinearAlgebraPackage::trilinos> coeffs(n_basis);
+    Vector<LAPack::trilinos> coeffs(n_basis);
     // [init vec]
 
     // [tensor to flat]

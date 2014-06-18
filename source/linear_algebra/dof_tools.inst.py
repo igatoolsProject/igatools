@@ -55,7 +55,7 @@ apply_boundary_values = ('template void dof_tools::apply_boundary_values('
 ############################################
 # TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
-f.write(apply_boundary_values.replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+f.write(apply_boundary_values.replace('LinAlgebra','LAPack::trilinos'))
 f.write('#endif\n')
 # TRILINOS' specific instantiations -- end
 ############################################
@@ -64,7 +64,7 @@ f.write('#endif\n')
 ############################################
 # PETSc specific instantiations -- begin
 f.write('#ifdef USE_PETSC\n')
-f.write(apply_boundary_values.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+f.write(apply_boundary_values.replace('LinAlgebra','LAPack::petsc'))
 f.write('#endif\n')
 # PETSc specific instantiations -- end
 ############################################

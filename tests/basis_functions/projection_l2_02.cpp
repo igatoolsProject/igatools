@@ -91,13 +91,13 @@ void do_test(const int p)
     BoundaryFunction<dim> f;
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
 
     auto proj_values = space_tools::projection_l2
-                       <space_t,linear_algebra_package>(
+                       <space_t,la_pack>(
                            f,const_pointer_cast<const space_t>(space),quad);
 
     proj_values.print(out);

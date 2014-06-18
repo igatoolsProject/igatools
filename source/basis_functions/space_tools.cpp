@@ -213,13 +213,13 @@ get_face_space(std::shared_ptr<const Space> space,
     return face_space;
 }
 
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack>
 Real
 integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
                      std::shared_ptr<const Space> space,
                      const Quadrature< Space::dim > &quad,
                      const Norm &norm_flag,
-                     const Vector<linear_algebra_package> &solution_coefs,
+                     const Vector<la_pack> &solution_coefs,
                      std::vector< Real > &element_error)
 {
     bool is_L2_norm     = contains(norm_flag, Norm::L2) ;
@@ -337,8 +337,8 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
 #endif
 
-template<class Space, LinearAlgebraPackage linear_algebra_package>
-Vector<linear_algebra_package>
+template<class Space, LAPack la_pack>
+Vector<la_pack>
 projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
               shared_ptr<const Space> space,
               const Quadrature<Space::dim> &quad)
@@ -348,11 +348,11 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
     static const int rank = Space::rank;
 
     const auto sparsity_pattern = dof_tools::get_sparsity_pattern(space) ;
-    Matrix<linear_algebra_package> matrix(sparsity_pattern);
+    Matrix<la_pack> matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs() ;
-    Vector<linear_algebra_package> rhs(space_dofs) ;
-    Vector<linear_algebra_package> sol(space_dofs) ;
+    Vector<la_pack> rhs(space_dofs) ;
+    Vector<la_pack> sol(space_dofs) ;
 
 
 
@@ -421,7 +421,7 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
 
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
-    using LinSolver = LinearSolver<linear_algebra_package>;
+    using LinSolver = LinearSolver<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter) ;
     solver.solve(matrix, rhs, sol);
 
@@ -430,9 +430,8 @@ projection_l2(const Function<Space::space_dim,Space::range,Space::rank> &func,
 
 
 
-// TODO (pauletti, Jun 12, 2014): LinearAlgebraPackage should have shorter name like LAPack
 
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack>
 void
 project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank> &func,
                         std::shared_ptr<const Space> space,
@@ -459,8 +458,8 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
         vector<Index> dof_map;
         auto face_space = space->get_face_space(face_id, dof_map);
 
-        Vector<linear_algebra_package> proj_on_face =
-            projection_l2<typename Space::FaceSpace,linear_algebra_package>(func, face_space, quad);
+        Vector<la_pack> proj_on_face =
+            projection_l2<typename Space::FaceSpace,la_pack>(func, face_space, quad);
 
         const int face_n_dofs = dof_map.size() ;
         for (Index i = 0 ; i< face_n_dofs ; ++i)
@@ -469,7 +468,7 @@ project_boundary_values(const Function<Space::space_dim,Space::range,Space::rank
 }
 
 
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack>
 void
 project_boundary_values(const Func<Space> &func,
                         std::shared_ptr<const Space> space,
@@ -477,7 +476,7 @@ project_boundary_values(const Func<Space> &func,
                         const boundary_id bdry_id,
                         std::map<Index,Real>  &boundary_values)
 {
-    project_boundary_values<Space,linear_algebra_package>(
+    project_boundary_values<Space,la_pack>(
     func, space, quad,std::set<boundary_id>({{bdry_id}}),boundary_values);
 }
 

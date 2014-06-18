@@ -87,13 +87,13 @@ void do_test(const int p)
     face_id.insert(dirichlet);
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
 
     std::map<Index,iga::Real> boundary_values;
-    space_tools::project_boundary_values<space_ref_t,linear_algebra_package>(
+    space_tools::project_boundary_values<space_ref_t,la_pack>(
         f, const_pointer_cast<const space_ref_t>(space), quad, face_id,
         boundary_values);
 

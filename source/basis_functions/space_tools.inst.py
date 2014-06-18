@@ -67,19 +67,19 @@ integrate_difference=('template Real space_tools::integrate_difference('
 # TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
 for sp in inst.PhysSpaces + inst.UserRefSpaces:
-    f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+    f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
 
 
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-   f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+   f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
   
  
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-    f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+    f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
  
 # 
 # for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
 f.write('#endif\n')
 # TRILINOS specific instantiations -- end
 ############################################
@@ -90,19 +90,19 @@ f.write('#endif\n')
 # PETSC specific instantiations -- begin
 f.write('#ifdef USE_PETSC\n')
 for sp in inst.PhysSpaces + inst.RefSpaces:
-    f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+    f.write(projection_l2.replace('Space',sp).replace('LinAlgebra','LAPack::petsc'))
 
 
 # for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-#     f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+#     f.write(project_boundary_values_1.replace('Space',sp).replace('LinAlgebra','LAPack::petsc'))
 # 
 # 
 # for sp in inst.UserFilteredRefSpaces + inst.UserPhysSpaces:
-#     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+#     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LAPack::petsc'))
 # 
 # 
 # for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LAPack::petsc'))
 f.write('#endif\n')
 # PETSC specific instantiations -- end
 ############################################

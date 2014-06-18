@@ -132,10 +132,10 @@ public:
      * \note The number of coefficients must be equal to the number of basis functions specified
      * by the space, otherwise an exception will be raised.
      */
-    template<class Space, LinearAlgebraPackage linear_algebra_package>
+    template<class Space, LAPack la_pack>
     void add_field(
         std::shared_ptr<Space> space,
-        const Vector<linear_algebra_package> &coefs,
+        const Vector<la_pack> &coefs,
         const std::string &name) ;
 
 

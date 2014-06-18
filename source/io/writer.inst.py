@@ -64,7 +64,7 @@ for row in inst.user_phy_sp_dims:
 # TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
 for s in unique(strings): # Removing repeated entries.
-    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+    f.write(s.replace('LinAlgebra','LAPack::trilinos'))
 f.write('#endif\n')
 # TRILINOS specific instantiations -- end
 ############################################
@@ -74,7 +74,7 @@ f.write('#endif\n')
 # PETSC specific instantiations -- begin
 f.write('#ifdef USE_PETSC\n')
 for s in unique(strings): # Removing repeated entries.
-    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+    f.write(s.replace('LinAlgebra','LAPack::petsc'))
 f.write('#endif\n')
 # PETSC specific instantiations -- end
 ############################################

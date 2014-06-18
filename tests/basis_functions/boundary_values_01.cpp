@@ -96,13 +96,13 @@ void do_test(const int p)
     face_id.insert(1);
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
 
     std::map<Index, Real> boundary_values;
-    space_tools::project_boundary_values<space_phys_t,linear_algebra_package>(
+    space_tools::project_boundary_values<space_phys_t,la_pack>(
         bc, phys_space, quad, face_id, boundary_values);
 
     for (auto entry: boundary_values)

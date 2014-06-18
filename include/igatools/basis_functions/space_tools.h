@@ -104,26 +104,26 @@ Index find_span(
  * @note mostly use to compute the convergence rates when the exact solution is known.
  * @todo document a little more
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack = LAPack::trilinos>
 Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
                           std::shared_ptr<const Space> space,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
-                          const Vector<linear_algebra_package> &solution_coefs,
+                          const Vector<la_pack> &solution_coefs,
                           std::vector< Real > &element_error);
 
 
 
 
-//TODO: pass vector as argument
+// TODO (pauletti, Jun 18, 2014):use space::Function
 /**
  * Perform an (L2)-Projection the function @p func
  * onto the space @p space using the quadrature rule @p quad.
  *  The projection is a numerical vector (the coefficients of
  *  the projected function)
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
-Vector<linear_algebra_package>
+template<class Space, LAPack la_pack = LAPack::trilinos>
+Vector<la_pack>
 projection_l2(
     const Function<Space::space_dim,Space::range,Space::rank> &func,
     std::shared_ptr<const Space> space,
@@ -141,7 +141,7 @@ projection_l2(
  * for this degree of freedom.
  *
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
     const Func<Space> &func,
     std::shared_ptr<const Space> space,
@@ -152,7 +152,7 @@ void project_boundary_values(
 /**
  * See documentation above.
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
     const Func<Space> &func,
     std::shared_ptr<const Space> space,

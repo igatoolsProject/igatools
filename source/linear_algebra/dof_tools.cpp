@@ -236,11 +236,11 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
 
 
 
-template <LinearAlgebraPackage linear_algebra_package>
+template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<linear_algebra_package> &matrix,
-                           Vector<linear_algebra_package> &rhs,
-                           Vector<linear_algebra_package> &solution)
+                           Matrix<la_pack> &matrix,
+                           Vector<la_pack> &rhs,
+                           Vector<la_pack> &solution)
 {
     std::vector<Index> constrained_rows;
 
@@ -277,9 +277,9 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
 template <>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<LinearAlgebraPackage::petsc> &matrix,
-                           Vector<LinearAlgebraPackage::petsc> &rhs,
-                           Vector<LinearAlgebraPackage::petsc> &solution)
+                           Matrix<LAPack::petsc> &matrix,
+                           Vector<LAPack::petsc> &rhs,
+                           Vector<LAPack::petsc> &solution)
 {
     PetscErrorCode ierr;
     /*

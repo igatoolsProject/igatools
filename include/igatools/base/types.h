@@ -294,7 +294,7 @@ enum class Norm
 /**
  * Type for specifying which linear algebra package to use.
  */
-enum class LinearAlgebraPackage : int
+enum class LAPack : int
 {
     /** Use the internal (igatools) linear algebra implementation.*/
     internal = 0,
