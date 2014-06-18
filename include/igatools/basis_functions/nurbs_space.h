@@ -72,6 +72,7 @@ public:
 
     static const std::array<int, dim> dims;
 public:
+    using Func = typename spline_space_t::Func;
     template <int order>
     using Derivative = typename spline_space_t::template Derivative<order>;
     using Point = typename spline_space_t::Point;

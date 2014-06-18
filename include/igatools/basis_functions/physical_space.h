@@ -70,10 +70,8 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
-private:
+public:
     using Func = Function<space_dim, range, rank>;
-public:
-public:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
     using Point = typename Func::PointType;

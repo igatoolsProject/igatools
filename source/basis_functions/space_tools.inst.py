@@ -35,26 +35,26 @@ data = Instantiation(include_files)
  
 projection_l2=('template Vector<LinAlgebra> '
         'space_tools::projection_l2<Space,LinAlgebra>('
-        'const Function<Space::space_dim,Space::range,Space::rank> &f,'
+        'const typename Space::Func &f,'
         'std::shared_ptr<const Space> phys_space,'
         'const Quadrature<Space::dim> & );\n')
 
 project_boundary_values_1=('template void space_tools::project_boundary_values<Space,LinAlgebra>('
-        'const Function<Space::space_dim,Space::range,Space::rank> &,'
+        'const typename Space::Func &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
         'const std::set<boundary_id>  &,'
         'std::map<Index, Real>  &);\n')
 
 project_boundary_values_2=('template void space_tools::project_boundary_values<Space,LinAlgebra>('
-        'const Func<Space> &,'
+        'const typename Space::Func &,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature<Space::dim-1> &,'
         'const boundary_id ,'
         'std::map<Index, Real>  &);\n')
 
 integrate_difference=('template Real space_tools::integrate_difference('
-        'std::shared_ptr<const Func<Space> > ,'
+        'std::shared_ptr<const typename Space::Func > ,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature< Space::dim > &,'
         'const Norm &,'

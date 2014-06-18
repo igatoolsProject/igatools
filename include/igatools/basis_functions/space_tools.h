@@ -37,24 +37,8 @@
 #include <memory>
 #include <map>
 
-
-
 IGA_NAMESPACE_OPEN
 
-#if 0
-/**
- * @todo document
- */
-template <class Space>
-using FaceSpace = PhysicalSpace<typename Space::RefFaceSpace,
-      PushForward<Transformation::h_grad, Space::dim-1, Space::codim + 1> >;
-#endif
-
-/**
- * @todo document
- */
-template <class Space>
-using Func = Function<Space::space_dim, Space::range, Space::rank>;
 
 /**
  * This namespace collect functions that work on the
@@ -83,20 +67,6 @@ Index find_span(
     const std::vector<Real> &U);
 
 
-
-///**
-// * Constructs and returns the trace space on the requested
-// * face @p face_id.
-// * It also returns a map from the face space dof indices to the
-// * corresponding dof indices in the patch space.
-// */
-//template <class Space>
-//std::shared_ptr< FaceSpace<Space> >
-//get_face_space(std::shared_ptr<const Space> space,
-//               const Index face_id,
-//               std::vector<Index> &face_to_element_dofs);
-
-
 //TODO the order of parameters should be consistent
 /**
  * Computes an integral norm of the difference between two functions.
@@ -105,7 +75,7 @@ Index find_span(
  * @todo document a little more
  */
 template<class Space, LAPack la_pack = LAPack::trilinos>
-Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
+Real integrate_difference(std::shared_ptr<const typename Space::Func> exact_solution,
                           std::shared_ptr<const Space> space,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
@@ -126,7 +96,7 @@ Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 template<class Space, LAPack la_pack = LAPack::trilinos>
 Vector<la_pack>
 projection_l2(
-    const Function<Space::space_dim,Space::range,Space::rank> &func,
+    const typename Space::Func &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim> &quad
 );
@@ -144,7 +114,7 @@ projection_l2(
  */
 template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
-    const Func<Space> &func,
+    const typename Space::Func &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim-1> &quad,
     const std::set<boundary_id>  &boundary_ids,
@@ -155,7 +125,7 @@ void project_boundary_values(
  */
 template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
-    const Func<Space> &func,
+        const typename Space::Func &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim-1> &quad,
     const boundary_id bdry_id,
