@@ -511,8 +511,8 @@ void
 PoissonProblem<dim,DerivedClass>::
 solve()
 {
-    const Real tol = 1.0e-13;
-    const Size max_iters = 100;
+    const Real tol = 1.0e-10;
+    const Size max_iters = 10000;
     LinearSolverType solver(
         LinearSolverType::SolverType::CG,
         LinearSolverType::PreconditionerType::ILU,
@@ -560,7 +560,7 @@ run()
     solve();
     end_poisson_ = Clock::now();
 
-//    output();
+    output();
 
 
     elapsed_time_total_ = end_poisson_ - start_poisson_;
@@ -793,37 +793,48 @@ int main(int argc,char **args)
 #endif
 
 
-    int degree_min = 21;
-    int degree_max = 25;
-    int n_elems_per_direction = 1;
+    int degree_min = 3;
+    int degree_max = 3;
+    int n_elems_per_direction = 32;
+
+    int num_ref_lvls = 1;
+
+    bool do_sum_factorization = true;
+    bool do_std_quadrature = false;
+
+    for (int ref_lvl=0 ; ref_lvl < num_ref_lvls ; ++ref_lvl, n_elems_per_direction *= 2)
+    {
+        if (do_sum_factorization)
+        {
+            cout << "-----------------------------------" << endl;
+            cout << "Sum-Factorization -- begin" << endl;
+//    do_test< PoissonProblemSumFactorization<1> >(degree_min,degree_max,n_elems_per_direction);
+
+//    do_test< PoissonProblemSumFactorization<2> >(degree_min,degree_max,n_elems_per_direction);
+
+            do_test< PoissonProblemSumFactorization<3> >(degree_min,degree_max,n_elems_per_direction);
+            cout << "Sum-Factorization -- end" << endl;
+            cout << "-----------------------------------" << endl;
+
+            cout << endl;
+        }
 
 
-    cout << "-----------------------------------" << endl;
-    cout << "Sum-Factorization -- begin" << endl;
-    do_test< PoissonProblemSumFactorization<1> >(degree_min,degree_max,n_elems_per_direction);
+        if (do_std_quadrature)
+        {
+            cout << "-----------------------------------" << endl;
+            cout << "Standard Quadrature -- begin" << endl;
+//    do_test< PoissonProblemStandardIntegration<1> >(degree_min,degree_max,n_elems_per_direction);
 
-    do_test< PoissonProblemSumFactorization<2> >(degree_min,degree_max,n_elems_per_direction);
+//    do_test< PoissonProblemStandardIntegration<2> >(degree_min,degree_max,n_elems_per_direction);
 
-    do_test< PoissonProblemSumFactorization<3> >(degree_min,degree_max,n_elems_per_direction);
-    cout << "Sum-Factorization -- end" << endl;
-    cout << "-----------------------------------" << endl;
+            do_test< PoissonProblemStandardIntegration<3> >(degree_min,degree_max,n_elems_per_direction);
+            cout << "Standard Quadrature -- end" << endl;
+            cout << "-----------------------------------" << endl;
 
-    cout << endl;
-
-
-
-    cout << "-----------------------------------" << endl;
-    cout << "Standard Quadrature -- begin" << endl;
-    do_test< PoissonProblemStandardIntegration<1> >(degree_min,degree_max,n_elems_per_direction);
-
-    do_test< PoissonProblemStandardIntegration<2> >(degree_min,degree_max,n_elems_per_direction);
-
-    do_test< PoissonProblemStandardIntegration<3> >(degree_min,degree_max,n_elems_per_direction);
-    cout << "Standard Quadrature -- end" << endl;
-    cout << "-----------------------------------" << endl;
-
-    cout << endl;
-
+            cout << endl;
+        }
+    }
     //*/
 #if defined(USE_PETSC)
     auto ierr = PetscFinalize();
