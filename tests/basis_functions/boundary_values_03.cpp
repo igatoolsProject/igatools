@@ -41,12 +41,12 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    void evaluate(const vector< Point<dim> > &points,
-                  std::vector<Point<1> > &values) const
+    void evaluate(const vector< Points<dim> > &points,
+                  std::vector<Points<1> > &values) const
     {
         for (int i =0; i<points.size(); i++)
         {
-            Point<dim> p = points[i];
+            Points<dim> p = points[i];
             values[i][0] = p[0];
         }
     };

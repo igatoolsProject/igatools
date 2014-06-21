@@ -39,7 +39,7 @@ void run_test()
     auto grid = CartesianGrid<dim>::create();
 
     Derivatives<dim,space_dim,1, 1> A;
-    Point<space_dim> b;
+    Points<space_dim> b;
     //Dilation
     for (int i=0; i<dim; ++i)
         A[i][i] = i+1;

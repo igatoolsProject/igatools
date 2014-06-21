@@ -113,7 +113,7 @@ struct UnitElement
 
 
     /** Gives the outer boundary normal for every face. */
-    static const Point<dim> face_normal[faces_per_element];
+    static const Points<dim> face_normal[faces_per_element];
 };
 
 IGA_NAMESPACE_CLOSE

@@ -100,10 +100,10 @@ private:
 
 public:
     /** Type of the mapping evaluation point. */
-    using PointType = Point<dim>;
+    using PointType = Points<dim>;
 
     /** Type of the mapping return value. */
-    using Value = Point<space_dim>;
+    using Value = Points<space_dim>;
 
     /** Type of the mapping gradient. */
     using Gradient = DerivativeType<1>;

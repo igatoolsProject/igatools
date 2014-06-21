@@ -53,7 +53,7 @@ template<int rank>
 void
 TensorProductArray<rank>::
 dilate_translate(const array<Real,rank> &dilate,
-                 const Point<rank> &translate)
+                 const Points<rank> &translate)
 {
     this->dilate(dilate) ;
     this->translate(translate) ;
@@ -74,7 +74,7 @@ dilate(const array<Real,rank> &dilate)
 template<int rank>
 void
 TensorProductArray<rank>::
-translate(const Point<rank> &translate)
+translate(const Points<rank> &translate)
 {
     const TensorSize<rank> size = this->tensor_size();
     for (int i=0; i<rank; ++i)

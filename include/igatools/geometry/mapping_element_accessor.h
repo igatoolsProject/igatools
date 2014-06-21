@@ -285,7 +285,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< ValueMap >
-    evaluate_values_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_values_at_points(const std::vector< Points<dim> > &points) const;
 
     /**
      * Returns the gradient of the map (i.e. the Jacobian)
@@ -296,7 +296,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< GradientMap >
-    evaluate_gradients_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_gradients_at_points(const std::vector< Points<dim> > &points) const;
 
 
     /**
@@ -308,7 +308,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< HessianMap >
-    evaluate_hessians_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_hessians_at_points(const std::vector< Points<dim> > &points) const;
 
     ///@}
 

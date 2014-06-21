@@ -604,14 +604,14 @@ using Values = Conditional<rank==0,
 
 
 /**
- * The <tt>Point</tt> class provides for a point or vector in a space with
+ * The <tt>Points</tt> class provides for a point or vector in a space with
  * arbitrary dimension <tt>dim</tt>.
  *
- * In igatools we use <tt>Point</tt> for:
+ * In igatools we use <tt>Points</tt> for:
  * - the type to evaluate a function
  * - the type for a vertex of the reference patch
  * - the return type for the values of mapping
- * @note technically  <tt>Point</tt> is not a class but
+ * @note technically  <tt>Points</tt> is not a class but
  * a template alias (or templated typedef).
  * @note In the dim==1 case the tensor is of rank 0, and in
  * all other cases of rank 1, this is so that we can use the
@@ -619,7 +619,7 @@ using Values = Conditional<rank==0,
  *
  */
 template< int dim >
-using Point = Tensor<dim, 1, tensor::contravariant, Tdouble>;
+using Points = Tensor<dim, 1, tensor::contravariant, Tdouble>;
 
 /**
  *  Returns the tensor product of two rank one tensors.

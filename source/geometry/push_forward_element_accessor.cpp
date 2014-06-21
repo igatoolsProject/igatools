@@ -329,7 +329,7 @@ transform_gradients(
     auto Dv_hat_iterator = D1v_hat.cbegin() ;
     auto  v_hat_iterator =  D0v_hat.cbegin() ;
 
-    Point<dim> D2F_invDFt_tmp ;
+    Points<dim> D2F_invDFt_tmp ;
     const int sizeof_D2F_invDFt_tmp = sizeof(D2F_invDFt_tmp) ;
     for (int i = 0; i < n_func; ++i)
         for (Index j_pt = 0; j_pt < num_points; ++j_pt)
@@ -342,7 +342,7 @@ transform_gradients(
             const auto DF_Dv_hat = compose(DF, (*Dv_hat_iterator)) ;
             const auto D2F_v_hat = action(D2F,(*v_hat_iterator)) ;
 
-            const auto DF_v_hat = action(DF, (*v_hat_iterator)) ;   // this is a Point<space_dim>
+            const auto DF_v_hat = action(DF, (*v_hat_iterator)) ;   // this is a Points<space_dim>
 
             const Tensor<dim,1,tensor::covariant, Tdouble> D2F_invDFt = contract_1(D2F,co_tensor(transpose(DF_inv))) ;
 
@@ -454,7 +454,7 @@ template < int dim_range, int rank, template<class T> class Container, Transform
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<Point<dim>> &points,
+    const std::vector<Points<dim>> &points,
     const Container< RefValue<dim_range, rank> > &phi_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
@@ -490,7 +490,7 @@ template < int dim_range, int rank, template<class T> class Container, Transform
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<Point<dim>> &points,
+    const std::vector<Points<dim>> &points,
     const Container< RefValue<dim_range, rank> > &phi_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
@@ -543,7 +543,7 @@ template < int dim_range, int rank, template<class T> class Container, Transform
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<Point<dim>> &points,
+    const std::vector<Points<dim>> &points,
     const Container< RefValue<dim_range, rank> > &phi_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,

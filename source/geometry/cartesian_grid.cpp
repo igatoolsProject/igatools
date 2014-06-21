@@ -301,9 +301,9 @@ get_boundary_id(const int face) const
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_normal(const int face_no) const -> Point<dim>
+get_face_normal(const int face_no) const -> Points<dim>
 {
-    Point<dim> normal;
+    Points<dim> normal;
     normal[UnitElement<dim>::face_to_component[face_no][0]] =
     UnitElement<dim>::face_normal_direction[face_no];
 
@@ -546,7 +546,7 @@ flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
 template <int dim_>
 Index
 CartesianGrid<dim_>::
-get_element_flat_id_from_point(const Point<dim> &point) const
+get_element_flat_id_from_point(const Points<dim> &point) const
 {
     const auto bounding_box = this->get_bounding_box();
 

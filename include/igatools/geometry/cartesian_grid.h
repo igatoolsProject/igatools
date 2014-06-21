@@ -318,7 +318,7 @@ public:
      * Returns the outward pointing
      * unit normal vector to the face number @p face_no.
      */
-    Point<dim> get_face_normal(const int face_no) const;
+    Points<dim> get_face_normal(const int face_no) const;
 
     /**
      * Returns the CartesianGrid on the @p face_id.
@@ -335,7 +335,7 @@ public:
      * @note If the point does not belong to the domain represented by the CartesianGrid object,
      * then an assertion will be raised (in Debug mode).
      */
-    Index get_element_flat_id_from_point(const Point<dim> &point) const;
+    Index get_element_flat_id_from_point(const Points<dim> &point) const;
 
 
     /**

@@ -41,13 +41,13 @@ void do_test()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
 
-    Point<dim> p_origin; // origin
+    Points<dim> p_origin; // origin
 
-    Point<dim> p_mid; // mid-point
+    Points<dim> p_mid; // mid-point
     for (int i=0 ; i < dim ; ++i)
         p_mid(i) = 0.5;
 
-    Point<dim> p_end; // end-point
+    Points<dim> p_end; // end-point
     for (int i=0 ; i < dim ; ++i)
         p_end(i) = 1.0;
 

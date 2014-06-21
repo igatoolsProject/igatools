@@ -75,7 +75,7 @@ public:
     /**
      * Type for the input argument of the function.
      */
-    using PointType = Point<dim>;
+    using PointType = Points<dim>;
 
     /**
      * Type for the return of the function.

@@ -67,7 +67,7 @@ void do_test()
     }
 
     QGauss< dim_domain > quad_scheme_1(2) ;
-    std::vector<Point<dim_domain>> eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
+    std::vector<Points<dim_domain>> eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
 
     auto element1 = space->begin();
 
@@ -81,7 +81,7 @@ void do_test()
     gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme_2(3) ;
-    std::vector<Point<dim_domain>> eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
+    std::vector<Points<dim_domain>> eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
 
     auto values2    = element1->evaluate_basis_values_at_points(eval_points_2);
     values2.print_info(out);

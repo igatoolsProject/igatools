@@ -170,7 +170,7 @@ public:
 private:
     static const int order = 3;
 
-    mutable std::vector<Point<dim>> points_;
+    mutable std::vector<Points<dim>> points_;
     mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
     mutable std::array<std::vector<std::array<double, dim> >, order> cos_val;
     mutable std::array<std::vector<std::array<double, dim> >, order> sin_val;
@@ -230,7 +230,7 @@ public:
 
 private:
     static const int order = 3;
-    mutable std::vector<Point<dim>> points_;
+    mutable std::vector<Points<dim>> points_;
     mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
     mutable std::array<std::vector<std::array<double, space_dim> >, order> cos_val;
     mutable std::array<std::vector<std::array<double, space_dim> >, order> sin_val;

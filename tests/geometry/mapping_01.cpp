@@ -36,7 +36,7 @@ void test_evaluate()
 {
     const int space_dim = dim + codim;
     Derivatives<dim,space_dim,1,1> A;
-    Point<space_dim> b;
+    Points<space_dim> b;
 
     //Dilation
     for (int i=0; i<dim; ++i)

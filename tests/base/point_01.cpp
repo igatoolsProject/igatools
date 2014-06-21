@@ -33,7 +33,7 @@ using std::endl ;
 template< int dim >
 void do_test()
 {
-    Point< dim > p0 ;
+    Points< dim > p0 ;
 
     out << p0 ;
     out << endl ;

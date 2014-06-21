@@ -221,7 +221,7 @@ public:
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points(const TopologyId<dim_> &topology_id
+    std::vector<Points<dim>> const get_points(const TopologyId<dim_> &topology_id
                                              = ElemTopology<dim_>()) const;
 
     /**
@@ -229,7 +229,7 @@ public:
      * values of the map at the evaluation points on the face specified
      * by @p face_id.
      */
-    std::vector<Point<dim>> const get_face_points(const Index face_id) const;
+    std::vector<Points<dim>> const get_face_points(const Index face_id) const;
 
     ///@}
 

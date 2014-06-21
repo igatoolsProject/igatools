@@ -205,7 +205,7 @@ public:
     template < int dim_range, int rank, template<class T> class Container, Transformation ttype=type >
     void
     transform_basis_derivatives_at_points(
-        const std::vector<Point<dim>> &points,
+        const std::vector<Points<dim>> &points,
         const Container< RefValue<dim_range, rank> > &phi_hat,
         const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
         const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
@@ -221,7 +221,7 @@ public:
     template < int dim_range, int rank,template<class T> class Container, Transformation ttype=type >
     void
     transform_basis_derivatives_at_points(
-        const std::vector<Point<dim>> &points,
+        const std::vector<Points<dim>> &points,
         const Container< RefValue<dim_range, rank> > &phi_hat,
         const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
         const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
@@ -237,7 +237,7 @@ public:
     template < int dim_range, int rank,template<class T> class Container, Transformation ttype=type >
     void
     transform_basis_derivatives_at_points(
-        const std::vector<Point<dim>> &points,
+        const std::vector<Points<dim>> &points,
         const Container< RefValue<dim_range, rank> > &phi_hat,
         const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
         const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,

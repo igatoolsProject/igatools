@@ -120,7 +120,7 @@ reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-vertex(const int i) const -> Point<dim>
+vertex(const int i) const -> Points<dim>
 {
     Assert(i < UnitElement<dim>::vertices_per_element,
     ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
@@ -140,8 +140,8 @@ auto
 CartesianGridElement<dim_>::
 get_coordinate_lengths() const -> array< Real, dim>
 {
-    const Point<dim> &p_origin = this->vertex(0);
-    const Point<dim> &p_end = this->vertex(UnitElement<dim>::vertices_per_element-1);
+    const Points<dim> &p_origin = this->vertex(0);
+    const Points<dim> &p_end = this->vertex(UnitElement<dim>::vertices_per_element-1);
 
     array<Real,dim> coord_length;
     for (int d = 0; d < dim ; ++d)
@@ -154,9 +154,9 @@ get_coordinate_lengths() const -> array< Real, dim>
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-center() const -> Point< dim >
+center() const -> Points< dim >
 {
-    Point<dim> center(vertex(0));
+    Points<dim> center(vertex(0));
     center += vertex(UnitElement<dim>::opposite_vertex[0]);
     center *= 0.5;
 
@@ -192,7 +192,7 @@ get_face_measure(const Index face_id) const
 template <int dim_>
 bool
 CartesianGridElement<dim_>::
-is_point_inside(const Point< dim > &point) const
+is_point_inside(const Points< dim > &point) const
 {
     const auto &knots_directions = this->get_grid()->get_knot_coordinates();
     const auto &tensor_index = this->get_tensor_index();
@@ -212,7 +212,7 @@ is_point_inside(const Point< dim > &point) const
 template <int dim_>
 bool
 CartesianGridElement<dim_>::
-is_point_on_boundary(const Point< dim > &point) const
+is_point_on_boundary(const Points< dim > &point) const
 {
     int n_coords_inside = 0;
     int n_coords_on_boundary = 0;
@@ -279,8 +279,8 @@ is_boundary(const Index face_id) const
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-transform_points_unit_to_reference(const vector<Point<dim>> &points_unit_domain) const ->
-vector<Point<dim>>
+transform_points_unit_to_reference(const vector<Points<dim>> &points_unit_domain) const ->
+vector<Points<dim>>
 {
     const int n_points = points_unit_domain.size();
     Assert(n_points > 0,ExcEmptyObject());
@@ -289,7 +289,7 @@ vector<Point<dim>>
     const auto translate = this->vertex(0);
     const auto dilate    = this->get_coordinate_lengths();
 
-    vector<Point<dim>> points_ref_domain(n_points);
+    vector<Points<dim>> points_ref_domain(n_points);
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_unit_domain = points_unit_domain[ipt];
@@ -311,8 +311,8 @@ vector<Point<dim>>
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-transform_points_reference_to_unit(const vector<Point<dim>> &points_ref_domain) const ->
-vector<Point<dim>>
+transform_points_reference_to_unit(const vector<Points<dim>> &points_ref_domain) const ->
+vector<Points<dim>>
 {
     const int n_points = points_ref_domain.size();
     Assert(n_points > 0,ExcEmptyObject());
@@ -321,7 +321,7 @@ vector<Point<dim>>
     const auto translate = this->vertex(0);
     const auto dilate    = this->get_coordinate_lengths();
 
-    vector<Point<dim>> points_unit_domain(n_points);
+    vector<Points<dim>> points_unit_domain(n_points);
 //    LogStream out ;
 //    using std::endl;
 //    out << "CartesianGridElement::transform_points_reference_to_unit" << endl;

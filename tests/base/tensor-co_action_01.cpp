@@ -46,7 +46,7 @@ void run_test()
 
     auto DF_inv_t = co_tensor(transpose(DF_inv));
 
-    Point<dim> n_hat;
+    Points<dim> n_hat;
     for (int i = 0; i < dim; ++i)
         n_hat[i] = double(i+1) ;
     auto n = action(DF,n_hat);

@@ -73,7 +73,7 @@ void nurb_geometry()
     auto space = Space::create(grid, deg);
     const int n_basis = space->get_num_basis();
     vector<Real> control_pts(n_basis);
-    DynamicMultiArray<Point<dim>, dim> c_points(deg-1+n_knots);
+    DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
     const Real eps = 0.2;
     c_points({0,0}) = {0.0, 0.0};
     c_points({1,0}) = {0.3, 0.0};

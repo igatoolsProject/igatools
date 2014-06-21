@@ -63,7 +63,7 @@ void test_evaluate()
 
     const int n_qpoints = 2;
     QGauss<dim> quad(n_qpoints);
-    vector<Point<dim>> eval_points = quad.get_points().get_flat_cartesian_product();
+    vector<Points<dim>> eval_points = quad.get_points().get_flat_cartesian_product();
 
     for (; elem != elem_end ; ++elem)
     {
@@ -99,7 +99,7 @@ void test_cylindircal_annulus()
 
     const int n_qpoints = 2;
     QGauss<3> quad(n_qpoints);
-    vector<Point<3>> eval_points = quad.get_points().get_flat_cartesian_product();
+    vector<Points<3>> eval_points = quad.get_points().get_flat_cartesian_product();
 
     for (; elem != elem_end ; ++elem)
     {

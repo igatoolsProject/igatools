@@ -146,9 +146,9 @@ set_face_element(const Index face_id,
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
 }
-//*/
 
 
+//TODO(pauletti, Jun 20, 2014): simplify the output
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
@@ -158,7 +158,7 @@ print_info(LogStream &out) const
 
     out.push("\t");
     out << "Direction = " << direction_ << endl ;
-    out << "ValueType = " << value_ << endl ;
+    out << "    ValueType = " << value_ << endl ;
 
     out << "Sliced Map:" << endl ;
     out.push("\t");
@@ -171,6 +171,3 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_slice.inst>
-
-
-

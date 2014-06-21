@@ -158,7 +158,7 @@ private:
      */
     using point_t = Conditional<std::is_arithmetic<T>::value,
           Conditional<std::is_floating_point<T>::value,
-          Point<rank>,
+          Points<rank>,
           TensorIndex<rank>>,
           std::array<T,rank> >;
 

@@ -43,7 +43,7 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    iga::Real value(Point<dim> x) const
+    iga::Real value(Points<dim> x) const
     {
         iga::Real f = 1;
         for (int i = 0; i<dim; ++i)
@@ -51,11 +51,11 @@ public:
         return f;
     }
 
-    void evaluate(const std::vector< Point<dim> > &points, std::vector<Point<1> > &values) const
+    void evaluate(const std::vector< Points<dim> > &points, std::vector<Points<1> > &values) const
     {
         for (int i = 0; i<points.size(); ++i)
         {
-            Point<dim> p = points[i];
+            Points<dim> p = points[i];
             values[i][0] = this->value(p);
         }
     }
@@ -74,7 +74,7 @@ void do_test(const int p)
     const int num_knots = 10;
     auto grid = CartesianGrid<dim>::create(num_knots);
     auto ref_space = space_ref_t::create(p, grid);
-    Point<spacedim> b;
+    Points<spacedim> b;
     Derivatives<dim, spacedim, 1, 1> A;
     for (int i = 0; i < dim; ++i)
     {

@@ -1004,7 +1004,7 @@ template <int dim, int range, int rank>
 template<int deriv_order>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_basis_derivatives_at_points(const vector<Point<dim>> &points) const ->
+evaluate_basis_derivatives_at_points(const vector<Points<dim>> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     using return_t = ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >;
@@ -1020,7 +1020,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     {
         for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
         {
-            const Point<dim> point = points[pt_id];
+            const Points<dim> point = points[pt_id];
 
             auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
 
@@ -1123,7 +1123,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
         for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
         {
-            const Point<dim> point = points[pt_id];
+            const Points<dim> point = points[pt_id];
 
             auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
 

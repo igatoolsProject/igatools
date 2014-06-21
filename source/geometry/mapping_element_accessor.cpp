@@ -484,7 +484,7 @@ fill_face_values(const Index face_id)
 //        Assert(false, ExcMessage("The computation of face normals must be tested before used."));
 //        AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
-        Point<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id];
+        Points<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id];
         for (Index i = 0; i < num_points; i++)
         {
             const auto DF_inv_t = co_tensor(transpose(face_values.inv_gradients_[i]));
@@ -701,7 +701,7 @@ transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
     Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());
 
     array<ValueVector<ValueMap>, codim> normals;
-    normals.fill(ValueVector<Point<space_dim>>(elem_values_.num_points_));
+    normals.fill(ValueVector<Points<space_dim>>(elem_values_.num_points_));
 
 
     for (Index i = 0; i < elem_values_.num_points_; i++)
@@ -731,13 +731,13 @@ get_num_points(const TopologyId<dim> &topology_id) const
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_values_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_values_at_points(const std::vector<Points<dim>> &points) const ->
 ValueVector< ValueMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Points<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<ValueMap> map_value(n_points);
 
@@ -749,13 +749,13 @@ ValueVector< ValueMap >
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_gradients_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_gradients_at_points(const std::vector<Points<dim>> &points) const ->
 ValueVector< GradientMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Points<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<GradientMap> map_gradient(n_points);
 
@@ -767,13 +767,13 @@ ValueVector< GradientMap >
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_hessians_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_hessians_at_points(const std::vector<Points<dim>> &points) const ->
 ValueVector< HessianMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Points<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<HessianMap> map_hessian(n_points);
 

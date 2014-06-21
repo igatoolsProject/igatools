@@ -112,7 +112,7 @@ void do_test1(const int p)
 
 
     Derivatives< dim_ref_domain,dim_phys_domain, 1, 1 > A ;
-    Point< dim_phys_domain > b;
+    Points< dim_phys_domain > b;
     for (int i=0; i<dim_ref_domain; ++i)
         A[i][i] = i+1;
     for (int i=0; i<dim_ref_domain; ++i)
