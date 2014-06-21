@@ -187,9 +187,9 @@ public:
      */
     enum class SolverType : int
     {
-    	LU = 0,
-		CG = 1,
-		GMRES = 2,
+        LU = 0,
+        CG = 1,
+        GMRES = 2,
 
         /** This entry tells how many elements we have in the current enum class */
         ENUM_SIZE = 3
@@ -197,9 +197,9 @@ public:
 
     enum class PreconditionerType : int
     {
-    	NONE = 0,
-		JACOBI = 1,
-		ILU = 2,
+        NONE = 0,
+        JACOBI = 1,
+        ILU = 2,
 
         /** This entry tells how many elements we have in the current enum class */
         ENUM_SIZE = 3

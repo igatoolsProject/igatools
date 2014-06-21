@@ -30,8 +30,8 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                 const SpaceDimensionTable &n_basis,
                 const SpaceDimensionTable &n_elem_basis,
                 DistributionPolicy pol)
-                :
-                element_loc_to_global_(grid->get_num_elements_dim())
+    :
+    element_loc_to_global_(grid->get_num_elements_dim())
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
@@ -58,7 +58,7 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
 
             auto comp_dofs = index_distribution_(comp).get_sub_array(origin, increment).get_data();
             element_loc_to_global_(index).insert
-                    (basis, comp_dofs.begin(), comp_dofs.end());
+            (basis, comp_dofs.begin(), comp_dofs.end());
             for (auto x : element_loc_to_global_)
                 basis = element_loc_to_global_(index).end();
         }

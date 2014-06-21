@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template <class T, int dim>
 inline
-std::array<T, dim> filled_array(const T& v)
+std::array<T, dim> filled_array(const T &v)
 {
     std::array<T,dim> res;
     res.fill(v);

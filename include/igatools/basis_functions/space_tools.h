@@ -125,7 +125,7 @@ void project_boundary_values(
  */
 template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
-        const typename Space::Func &func,
+    const typename Space::Func &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim-1> &quad,
     const boundary_id bdry_id,

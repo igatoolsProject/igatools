@@ -64,8 +64,8 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(const int degree,
            shared_ptr< GridType > knots,
            const WeightsTable &weights)
-           :
-           NURBSSpace(DegreeTable(TensorIndex<dim>(degree)), knots, weights)
+    :
+    NURBSSpace(DegreeTable(TensorIndex<dim>(degree)), knots, weights)
 {}
 
 
@@ -114,11 +114,11 @@ create(const DegreeTable &degree, shared_ptr<GridType> knots,
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(const DegreeTable &deg,
-		std::shared_ptr<GridType> knots,
-		std::shared_ptr<const MultiplicityTable> interior_mult,
-		const EndBehaviourTable &ends,
-		const WeightsTable &weights)
-   :
+           std::shared_ptr<GridType> knots,
+           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const EndBehaviourTable &ends,
+           const WeightsTable &weights)
+    :
     BaseSpace(knots),
     sp_space_(spline_space_t::create(deg, knots, interior_mult, ends)),
     weights_(weights)
@@ -134,10 +134,10 @@ template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
-		std::shared_ptr<GridType> knots,
-		std::shared_ptr<const MultiplicityTable> interior_mult,
-		const EndBehaviourTable &ends,
-		const WeightsTable &weights) -> shared_ptr<self_t>
+       std::shared_ptr<GridType> knots,
+       std::shared_ptr<const MultiplicityTable> interior_mult,
+       const EndBehaviourTable &ends,
+       const WeightsTable &weights) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends, weights));
 }
@@ -148,10 +148,10 @@ template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
            const WeightsTable &weights)
-           :
-           BaseSpace(bs_space->get_grid()),
-           sp_space_(bs_space),
-           weights_(weights)
+    :
+    BaseSpace(bs_space->get_grid()),
+    sp_space_(bs_space),
+    weights_(weights)
 {
     perform_post_construction_checks();
 }
@@ -238,9 +238,9 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
-        std::vector<Index> &face_to_element_dofs,
-        std::map<int, int> &elem_map) const
-        -> std::shared_ptr<RefFaceSpace>
+                   std::vector<Index> &face_to_element_dofs,
+                   std::map<int, int> &elem_map) const
+-> std::shared_ptr<RefFaceSpace>
 {
     auto f_space = sp_space_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
 
@@ -268,15 +268,15 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_face_space(const Index face_id,
-        std::vector<Index> &face_to_element_dofs) const
-        -> std::shared_ptr<FaceSpace>
+               std::vector<Index> &face_to_element_dofs) const
+-> std::shared_ptr<FaceSpace>
 {
     auto elem_map = std::make_shared<std::map<int,int> >();
     auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
     auto map  = get_push_forward()->get_mapping();
 
     auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
-            create(map, face_id, face_ref_sp->get_grid(), elem_map);
+    create(map, face_id, face_ref_sp->get_grid(), elem_map);
     auto fpf = FaceSpace::PushForwardType::create(fmap);
     auto face_space = FaceSpace::create(face_ref_sp,fpf);
 

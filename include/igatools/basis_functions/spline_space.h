@@ -53,7 +53,7 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-        public FunctionSpaceOnGrid<CartesianGrid<dim>>
+    public FunctionSpaceOnGrid<CartesianGrid<dim>>
 {
 
 private:
@@ -64,8 +64,8 @@ public:
     static const std::array<int, dim> dims;
 
     using FaceSpace = Conditional<(dim>0),
-                SplineSpace<dim-1, range, rank>,
-                SplineSpace<    0, range, rank> >;
+          SplineSpace<dim-1, range, rank>,
+          SplineSpace<    0, range, rank> >;
 public:
     using Func = Function<dim, range, rank>;
 
@@ -266,7 +266,7 @@ public:
     {
         using base_t = StaticMultiArray<T,range,rank>;
     public:
-       // using base_t::Entry;
+        // using base_t::Entry;
         /** Type of the const iterator. */
         using const_iterator =  MultiArrayIterator<const ComponentContainer<T>>;
     public:
@@ -275,7 +275,7 @@ public:
         using  ComponentMap = std::array <Index, n_entries>;
 
         ComponentContainer(const ComponentMap &comp_map =
-                sequence<n_entries>());
+                               sequence<n_entries>());
 
         /**
          * Construct a homogenous range table with val value
@@ -321,14 +321,18 @@ public:
 
         const Index active(const Index i) const
         {
-        	return comp_map_[i];
+            return comp_map_[i];
         }
 
         const std::vector<Index> &get_active_components() const
-        {return active_components_;}
+        {
+            return active_components_;
+        }
 
         const std::vector<Index> &get_inactive_components() const
-        {return inactive_components_;}
+        {
+            return inactive_components_;
+        }
 
         void
         print_info(LogStream &out) const
@@ -338,9 +342,9 @@ public:
         }
 
         const std::array <Index, n_entries> &get_comp_map() const
-		{
-        	return comp_map_;
-		}
+        {
+            return comp_map_;
+        }
 
     private:
         /** For each component return de index of the active component */
@@ -379,11 +383,11 @@ ComponentContainer(const ComponentMap &comp_map)
     active_components_(unique_container<Index, n_entries>(comp_map)),
     inactive_components_(n_entries)
 {
-	auto all = sequence<n_entries>();
-	auto it=std::set_difference (all.begin(), all.end(), active_components_.begin(),
-			active_components_.end(), inactive_components_.begin());
+    auto all = sequence<n_entries>();
+    auto it=std::set_difference(all.begin(), all.end(), active_components_.begin(),
+                                active_components_.end(), inactive_components_.begin());
 
-	inactive_components_.resize(it-inactive_components_.begin());
+    inactive_components_.resize(it-inactive_components_.begin());
 }
 
 
@@ -409,7 +413,7 @@ ComponentContainer(const T &val)
     active_components_(1,0),
     inactive_components_(n_entries-1)
 {
-    for(int i=1; i<n_entries; ++i)
+    for (int i=1; i<n_entries; ++i)
         inactive_components_[i-1] = i;
 
     base_t::operator()(0) = val;

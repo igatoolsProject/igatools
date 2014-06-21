@@ -139,8 +139,8 @@ public:
 public:
     /** Type for the reference face space.*/
     using RefFaceSpace = Conditional<(dim>0),
-            BSplineSpace<dim-1,range,rank>,
-            BSplineSpace<0,range,rank> >;
+          BSplineSpace<dim-1,range,rank>,
+          BSplineSpace<0,range,rank> >;
 
     using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
 
@@ -164,7 +164,7 @@ public:
         interpolatory, periodic, end_knots
     };
     using EndBehaviourTable = typename BaseSpace::template
-            ComponentContainer<std::array<EndBehaviour, dim> >;
+                              ComponentContainer<std::array<EndBehaviour, dim> >;
 
 public:
     /** @name Constructor and destructor */
@@ -260,11 +260,11 @@ public:
      * space.
      */
 
- //   bool is_range_homogeneous() const;
+//   bool is_range_homogeneous() const;
 
     const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
     {
-    	return basis_indices_.get_loc_to_global_indices(j);
+        return basis_indices_.get_loc_to_global_indices(j);
     }
 
     std::shared_ptr<const self_t >
@@ -276,7 +276,7 @@ public:
      * independent of the distribution policy in use.
      */
 
-  //  const IndexSpaceTable &get_index_space() const;
+    //  const IndexSpaceTable &get_index_space() const;
 
     ///@}
 
@@ -335,7 +335,7 @@ public:
     TensorIndex<dim>
     basis_flat_to_tensor(const Index index, const Index comp) const
     {
-    	return basis_indices_.basis_flat_to_tensor(index,comp);
+        return basis_indices_.basis_flat_to_tensor(index,comp);
     }
 
 
@@ -344,9 +344,9 @@ public:
      */
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-    		const Index comp) const
+                         const Index comp) const
     {
-    	return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
+        return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
     }
 
 private:
@@ -365,7 +365,7 @@ protected:
      * True if each component of the vector valued space belongs
      * to the same scalar valued space.
      */
-  //  const bool homogeneous_range_;
+    //  const bool homogeneous_range_;
 
     //TODO(pauletti, Apr 27, 2014): make this private w/getter
 

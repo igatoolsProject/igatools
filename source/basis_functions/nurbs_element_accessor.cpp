@@ -233,7 +233,7 @@ evaluate_nurbs_gradients(
     ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const
 {
 
-	Assert(bspline_cache.is_initialized(),ExcNotInitialized());
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
     Assert(D1_phi_hat.get_num_functions() == this->get_num_basis(),
            ExcDimensionMismatch(D1_phi_hat.get_num_functions(), this->get_num_basis()));
 
@@ -289,7 +289,7 @@ evaluate_nurbs_gradients(
         //----------------------------------------------------------------------------------------------
 
 
-      //  if ((this->space_)->is_range_homogeneous() == false)
+        //  if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -551,7 +551,7 @@ evaluate_nurbs_hessians(
         //----------------------------------------------------------------------------------------------
 
 
-     //   if ((this->space_)->is_range_homogeneous() == false)
+        //   if ((this->space_)->is_range_homogeneous() == false)
         {
             //------------------------------------------------------------------------------------------
             int dof_offset = 0;
@@ -962,10 +962,10 @@ evaluate_basis_derivatives_at_points(const vector<Point<dim>> &points) const
                     for (int i = 0 ; i < dim ; ++i)
                         for (int j = 0 ; j < dim ; ++j, ++der_entry_id)
                             D2R(der_entry_id)(comp) = (W/Q) *(D2P(der_entry_id)(comp)
-                                    - (P * D2Q(der_entry_id)(comp) +
-                                            DP(i)(comp) * DQ(j)(comp) +
-                                            DP(j)(comp) * DQ(i)(comp)) / Q +
-                                            DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                                                              - (P * D2Q(der_entry_id)(comp) +
+                                                                 DP(i)(comp) * DQ(j)(comp) +
+                                                                 DP(j)(comp) * DQ(i)(comp)) / Q +
+                                                              DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
                     ++P_it;
                     ++Q_it;
 

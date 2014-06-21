@@ -83,10 +83,10 @@ public:
            const int face_id,
            const std::shared_ptr<GridType > grid,
            const std::shared_ptr<std::map<int,int> > elem_map)
-     {
+    {
         AssertThrow(true, ExcImpossibleInDim(-1));
         return std::shared_ptr<base_t>();//Should never reach this
-     }
+    }
 
     void evaluate(std::vector<Value> &values) const override;
 

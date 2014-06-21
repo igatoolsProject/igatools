@@ -279,7 +279,7 @@ private:
          */
         ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
 
-       // ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+        // ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
 
         int max_deriv_order_ = 0;
 
@@ -375,7 +375,7 @@ private:
 
 protected:
     const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
-    &get_scalar_evaluators() const;
+            &get_scalar_evaluators() const;
 
 };
 

@@ -74,7 +74,7 @@ compute(const matrix &M_j_1,
     //k = 1,...,j-2
     for (int k = 1; k < j-1; ++k)
     {
-        M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1) );
+        M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1));
     }
     //k = j-1
     M_j(j-1, l) = M_j(j-1, l-1) + beta[j-1] * M_j_1(j-2, j-2);
@@ -125,7 +125,7 @@ fill_extraction(const int m,
 
         matrix M(1,1);
         M(0,0) = 1/(b-a);
-        for(int k = m-2; k>=0; --k)
+        for (int k = m-2; k>=0; --k)
         {
             const int s = acum_mult[n] + k;
 
@@ -151,9 +151,9 @@ fill_extraction(const int m,
 template<int dim, int range, int rank>
 BernsteinExtraction<dim, range, rank>::
 BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
-                   const KnotsTable &rep_knots,
-                   const MultiplicityTable &acum_mult,
-                   const DegreeTable &deg)
+                    const KnotsTable &rep_knots,
+                    const MultiplicityTable &acum_mult,
+                    const DegreeTable &deg)
 {
     for (const int &i : ext_operators.get_active_components())
     {
@@ -161,10 +161,10 @@ BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
         {
             const int m = deg(i)[j] + 1;
             auto opers =
-                    fill_extraction(m,
-                                    grid->get_knot_coordinates(j),
-                                    rep_knots(i).get_data_direction(j),
-                                    acum_mult(i).get_data_direction(j));
+                fill_extraction(m,
+                                grid->get_knot_coordinates(j),
+                                rep_knots(i).get_data_direction(j),
+                                acum_mult(i).get_data_direction(j));
             ext_operators(i).copy_data_direction(j,opers);
         }
     }

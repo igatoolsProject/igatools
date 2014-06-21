@@ -47,7 +47,7 @@ public:
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;
 
-    using ElemOper = std::array<matrix const*, dim>;
+    using ElemOper = std::array<matrix const *, dim>;
     using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
     using Operators = CartesianProductArray<matrix, dim>;
@@ -58,9 +58,9 @@ public:
      * Construct the extraction operators.
      */
     BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
-                       const KnotsTable &rep_knots,
-                       const MultiplicityTable &acum_mult,
-                       const DegreeTable &deg);
+                        const KnotsTable &rep_knots,
+                        const MultiplicityTable &acum_mult,
+                        const DegreeTable &deg);
 
     /**
      * Print the class content

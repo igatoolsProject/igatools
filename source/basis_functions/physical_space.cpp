@@ -161,7 +161,7 @@ get_face_space(const Index face_id,
     auto map  = push_forward_->get_mapping();
 
     auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
-            create(map, face_id, face_ref_sp->get_grid(), elem_map);
+    create(map, face_id, face_ref_sp->get_grid(), elem_map);
     auto fpf = FaceSpace::PushForwardType::create(fmap);
     auto face_space = FaceSpace::create(face_ref_sp,fpf);
 

@@ -79,7 +79,7 @@ SplineSpace(const DegreeTable &deg,
             const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
 
             int size = periodic_(iComp)[j]? 0 : deg + 1;
-            elem_n_basis_ (iComp)[j] = deg + 1;
+            elem_n_basis_(iComp)[j] = deg + 1;
 
             for (auto &n: mult)
                 size += n;
@@ -212,16 +212,16 @@ auto SplineSpace<dim, range, rank>::
 get_face_mult(const Index face_id) const
 -> shared_ptr<typename FaceSpace::MultiplicityTable>
 {
-	const auto &v_mult = *interior_mult_;
-	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
-	auto f_int_mult = make_shared<typename FaceSpace::MultiplicityTable> (v_mult.get_comp_map());
-	auto &f_mult = *f_int_mult;
-	for (int comp : f_mult.get_active_components())
-	{
-		for (auto j : FaceSpace::dims)
-			f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
-	}
-	return f_int_mult;
+    const auto &v_mult = *interior_mult_;
+    const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+    auto f_int_mult = make_shared<typename FaceSpace::MultiplicityTable> (v_mult.get_comp_map());
+    auto &f_mult = *f_int_mult;
+    for (int comp : f_mult.get_active_components())
+    {
+        for (auto j : FaceSpace::dims)
+            f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
+    }
+    return f_int_mult;
 }
 
 
@@ -231,14 +231,14 @@ auto SplineSpace<dim, range, rank>::
 get_face_degree(const Index face_id) const
 -> typename FaceSpace::DegreeTable
 {
-	const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
-	typename FaceSpace::DegreeTable f_degree(deg_.get_comp_map());
-	for (int comp : f_degree.get_active_components())
-	{
-		for (auto j : FaceSpace::dims)
-			f_degree(comp)[j] = deg_(comp)[active_dirs[j]];
-	}
-	return f_degree;
+    const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+    typename FaceSpace::DegreeTable f_degree(deg_.get_comp_map());
+    for (int comp : f_degree.get_active_components())
+    {
+        for (auto j : FaceSpace::dims)
+            f_degree(comp)[j] = deg_(comp)[active_dirs[j]];
+    }
+    return f_degree;
 }
 
 
@@ -331,7 +331,7 @@ print_info(LogStream &out) const
     out << std::endl;
     out << "Interior multiplicities:\n";
     for (const auto &v : *interior_mult_)
-    	v.print_info(out);
+        v.print_info(out);
     out << "Dimensionality Table:\n";
     space_dim_.print_info(out);
     out << std::endl;

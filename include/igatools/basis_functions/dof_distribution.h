@@ -51,10 +51,10 @@ public:
     };
 
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
-               const MultiplicityTable &accum_mult,
-               const SpaceDimensionTable &n_basis,
-               const SpaceDimensionTable &n_elem_basis,
-               DistributionPolicy pol = DistributionPolicy::standard);
+                    const MultiplicityTable &accum_mult,
+                    const SpaceDimensionTable &n_basis,
+                    const SpaceDimensionTable &n_elem_basis,
+                    DistributionPolicy pol = DistributionPolicy::standard);
 
     const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &j) const;
 
@@ -68,7 +68,7 @@ public:
 
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                   const Index comp) const
+                         const Index comp) const
     {
         return index_distribution_(comp).tensor_to_flat(tensor_index);
     }
@@ -81,7 +81,7 @@ private:
 
     // TODO (pauletti, May 28, 2014): this should be a temporary in the constructor
     using IndexDistributionTable =
-            typename Space::template ComponentContainer<DynamicMultiArray<Index,dim>>;
+        typename Space::template ComponentContainer<DynamicMultiArray<Index,dim>>;
     IndexDistributionTable index_distribution_;
 
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;

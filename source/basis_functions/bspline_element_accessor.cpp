@@ -495,7 +495,7 @@ reset(const Space &space,
             // quad points in [0,1]
             for (int deriv_order = 0; deriv_order <= max_deriv_order_; ++deriv_order)
                 bernstein_values[ deriv_order ] =
-                        BernsteinBasis::derivative(deriv_order, degree, pt_coords);
+                    BernsteinBasis::derivative(deriv_order, degree, pt_coords);
 
             const auto &bez_iComp_jDim = bezier_op_.get_operator(iComp,jDim);
             const auto &lengths_jDim = lengths.get_data_direction(jDim);
@@ -866,18 +866,18 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         for (int comp : scalar_evaluators_.get_inactive_components())
         {
-        	const auto n_basis = this->space_->get_num_basis_per_element(comp);
-        	const Size offset = this->comp_offset_(comp);
-        	const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
+            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const Size offset = this->comp_offset_(comp);
+            const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
 
-        	for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-        	{
-        		const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-        		auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
+                auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
 
-        		for (int qp = 0; qp < num_points; ++qp)
-        			values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](scalar_evaluators_.active(comp));
-        	}
+                for (int qp = 0; qp < num_points; ++qp)
+                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](scalar_evaluators_.active(comp));
+            }
         }
 
     } // end if (deriv_order == 0)
@@ -900,8 +900,8 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         for (int iComp : scalar_evaluators_.get_active_components())
         {
-        	auto n_basis = this->get_num_basis(iComp);
-        	const Size comp_offset_i = this->comp_offset_(iComp);
+            auto n_basis = this->get_num_basis(iComp);
+            const Size comp_offset_i = this->comp_offset_(iComp);
 
             DynamicMultiArray<Real,dim> derivative_scalar_component(n_points_direction);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
@@ -956,22 +956,22 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         for (int comp : scalar_evaluators_.get_inactive_components())
         {
-        	const Size n_ders = Derivative<deriv_order>::size;
+            const Size n_ders = Derivative<deriv_order>::size;
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
             const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
             const Size offset = this->comp_offset_(comp);
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
-            	const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-            	auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
-            	for (int qp = 0; qp < num_points; ++qp)
-            	{
-            		const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
-            		der_t &values = derivatives_phi_hat_copy_to[qp];
+                const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
+                auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
+                for (int qp = 0; qp < num_points; ++qp)
+                {
+                    const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
+                    der_t &values = derivatives_phi_hat_copy_to[qp];
 
-            		for (int der = 0; der < n_ders; ++der)
-            			values(der)(comp) = values_0(der)(scalar_evaluators_.active(comp));
-            	}
+                    for (int der = 0; der < n_ders; ++der)
+                        values(der)(comp) = values_0(der)(scalar_evaluators_.active(comp));
+                }
             } //end loop basis_i
         } // end loop comp
     } // end if (deriv_order > 0)
@@ -1036,7 +1036,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
                 array<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
-               // const TensorSize<dim> basis_component_t_size = this->n_basis_direction_(iComp);
+                // const TensorSize<dim> basis_component_t_size = this->n_basis_direction_(iComp);
                 for (int dir = 0 ; dir < dim ; ++dir)
                 {
 //                    const int n_basis_1D = n_basis(iComp)(dir);
@@ -1241,20 +1241,20 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             const Size act_offset = this->comp_offset_(bezier_op.active(comp));
 
             const Size offset = this->comp_offset_(comp);
-                for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
+                auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
+                for (int qp = 0; qp < n_points; ++qp)
                 {
-                    const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-                    auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
-                    for (int qp = 0; qp < n_points; ++qp)
-                    {
-                        const auto &values_0 = derivatives_phi_hat_copy_from[qp];
-                        auto &values = derivatives_phi_hat_copy_to[qp];
+                    const auto &values_0 = derivatives_phi_hat_copy_from[qp];
+                    auto &values = derivatives_phi_hat_copy_to[qp];
 
-                        for (int der = 0; der < n_ders; ++der)
-                            values(der)(comp) = values_0(der)(0);
-                    } // end loop qp
-                } //end loop basis_i
-            } // end loop comp
+                    for (int der = 0; der < n_ders; ++der)
+                        values(der)(comp) = values_0(der)(0);
+                } // end loop qp
+            } //end loop basis_i
+        } // end loop comp
 
     } // end if (deriv_order != 0)
 

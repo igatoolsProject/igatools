@@ -416,12 +416,12 @@ add_block(
         const auto row_local_matrix = local_matrix.get_row(i) ;
         for (int j = 0 ; j < n_cols ; ++j)
 //            row_values.push_back(row_local_matrix(j)) ;
-        	row_values.push_back(PetscScalar(local_matrix(i,j))) ;
+            row_values.push_back(PetscScalar(local_matrix(i,j))) ;
     }
 
     PetscErrorCode ierr;
     ierr = MatSetValues(matrix_,n_rows,rows_id.data(),n_cols,cols_id.data(),
-    		row_values.data(),ADD_VALUES); //CHKERRQ(ierr);
+                        row_values.data(),ADD_VALUES); //CHKERRQ(ierr);
 
 };
 
@@ -440,7 +440,7 @@ void
 Matrix<LAPack::petsc>::
 resume_fill()
 {
-/* todo:I think this is not necessary in PETSc. Must check in parallel computations */
+    /* todo:I think this is not necessary in PETSc. Must check in parallel computations */
 };
 
 
@@ -484,31 +484,31 @@ void
 Matrix<LAPack::petsc>::
 clear_row(const Index row)
 {
-	PetscErrorCode ierr;
+    PetscErrorCode ierr;
 
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-	const auto graph = matrix_->getGraph();
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+        const auto graph = matrix_->getGraph();
 
-    const auto row_map = graph->getRowMap();
-    const auto local_row = row_map->getLocalElement(row);
+        const auto row_map = graph->getRowMap();
+        const auto local_row = row_map->getLocalElement(row);
 
-    // Only do this on the rows owned locally on this processor.
-    if (local_row != Teuchos::OrdinalTraits<Index>::invalid())
-    {
-        auto n_entries_row = graph->getNumEntriesInLocalRow(local_row);
+        // Only do this on the rows owned locally on this processor.
+        if (local_row != Teuchos::OrdinalTraits<Index>::invalid())
+        {
+            auto n_entries_row = graph->getNumEntriesInLocalRow(local_row);
 
-        vector<Index> local_col_ids(n_entries_row);
+            vector<Index> local_col_ids(n_entries_row);
 
-        graph->getLocalRowCopy(local_row,local_col_ids,n_entries_row);
-        Assert(n_entries_row == graph->getNumEntriesInLocalRow(local_row),
-               ExcDimensionMismatch(n_entries_row,graph->getNumEntriesInLocalRow(local_row)));
+            graph->getLocalRowCopy(local_row,local_col_ids,n_entries_row);
+            Assert(n_entries_row == graph->getNumEntriesInLocalRow(local_row),
+                   ExcDimensionMismatch(n_entries_row,graph->getNumEntriesInLocalRow(local_row)));
 
-        vector<Real> zeros(n_entries_row,0.0);
-        matrix_->replaceLocalValues(local_row,local_col_ids,zeros);
-    }
- //*/
+            vector<Real> zeros(n_entries_row,0.0);
+            matrix_->replaceLocalValues(local_row,local_col_ids,zeros);
+        }
+     //*/
 }
 
 
@@ -517,35 +517,35 @@ void
 Matrix<LAPack::petsc>::
 print(LogStream &out) const
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    using std::endl;
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+        using std::endl;
 
-    const auto n_global_rows = this->get_num_rows();
+        const auto n_global_rows = this->get_num_rows();
 
-    out << "-----------------------------" << endl;
-    // Commented as different petsc version show different information here
-    //   out << *matrix_ ;
+        out << "-----------------------------" << endl;
+        // Commented as different petsc version show different information here
+        //   out << *matrix_ ;
 
-    out << "Row Index        Col Index        Value" << endl;
-    for (Index row_id = 0 ; row_id < n_global_rows ; ++row_id)
-    {
-        auto n_entries_row = matrix_->getNumEntriesInGlobalRow(row_id);
+        out << "Row Index        Col Index        Value" << endl;
+        for (Index row_id = 0 ; row_id < n_global_rows ; ++row_id)
+        {
+            auto n_entries_row = matrix_->getNumEntriesInGlobalRow(row_id);
 
-        vector<Index> columns_id(n_entries_row);
+            vector<Index> columns_id(n_entries_row);
 
-        vector<Real> values(n_entries_row) ;
+            vector<Real> values(n_entries_row) ;
 
-        matrix_->getGlobalRowCopy(row_id,columns_id,values,n_entries_row);
+            matrix_->getGlobalRowCopy(row_id,columns_id,values,n_entries_row);
 
-        for (uint row_entry = 0 ; row_entry < n_entries_row ; ++row_entry)
-            out << row_id << "       " <<
-                columns_id[row_entry] << "        " <<
-                values[row_entry] << endl;
-    }
-    out << "-----------------------------" << endl;
-//*/
+            for (uint row_entry = 0 ; row_entry < n_entries_row ; ++row_entry)
+                out << row_id << "       " <<
+                    columns_id[row_entry] << "        " <<
+                    values[row_entry] << endl;
+        }
+        out << "-----------------------------" << endl;
+    //*/
 }
 
 
@@ -556,24 +556,24 @@ auto
 Matrix<LAPack::petsc>::
 get_num_rows() const -> Index
 {
-	PetscErrorCode ierr;
-	PetscInt n_rows, n_cols;
+    PetscErrorCode ierr;
+    PetscInt n_rows, n_cols;
 
-	ierr = MatGetSize(matrix_, &n_rows, &n_cols);
+    ierr = MatGetSize(matrix_, &n_rows, &n_cols);
 
-	return n_rows;
+    return n_rows;
 }
 
 auto
 Matrix<LAPack::petsc>::
 get_num_columns() const -> Index
 {
-	PetscErrorCode ierr;
-	PetscInt n_rows, n_cols;
+    PetscErrorCode ierr;
+    PetscInt n_rows, n_cols;
 
-	ierr = MatGetSize(matrix_, &n_rows, &n_cols);
+    ierr = MatGetSize(matrix_, &n_rows, &n_cols);
 
-	return n_cols;
+    return n_cols;
 }
 
 
@@ -581,26 +581,26 @@ void
 Matrix<LAPack::petsc>::
 multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    matrix_->apply(*x.get_petsc_vector(),
-                   *y.get_petsc_vector(),
-                   Teuchos::NO_TRANS,alpha,beta);
-                   //*/
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+        matrix_->apply(*x.get_petsc_vector(),
+                       *y.get_petsc_vector(),
+                       Teuchos::NO_TRANS,alpha,beta);
+                       //*/
 }
 
 void
 Matrix<LAPack::petsc>::
 multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
-	Assert(false,ExcNotImplemented());
-	AssertThrow(false,ExcNotImplemented());
-/*
-    matrix_->apply(*x.get_petsc_vector(),
-                   *y.get_petsc_vector(),
-                   Teuchos::TRANS,alpha,beta);
-                   //*/
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    /*
+        matrix_->apply(*x.get_petsc_vector(),
+                       *y.get_petsc_vector(),
+                       Teuchos::TRANS,alpha,beta);
+                       //*/
 }
 
 #endif //#ifdef USE_PETSC

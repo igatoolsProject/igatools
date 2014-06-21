@@ -81,7 +81,7 @@ public:
      * Typedef for the PushForward on a face.
      */
     using FacePushForward =
-            PushForward<type,Map::FaceMapping::dim, Map::FaceMapping::codim>;
+        PushForward<type,Map::FaceMapping::dim, Map::FaceMapping::codim>;
 
     template <int range, int rank>
     using RefValue = Values<dim, range, rank>;

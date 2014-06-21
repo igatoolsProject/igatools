@@ -238,7 +238,7 @@ get_num_iterations() const
 LinearSolver<LAPack::petsc>::
 LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
 {
-	PetscErrorCode ierr;
+    PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
     std::string prec_name;
 
@@ -255,7 +255,7 @@ LinearSolver(const SolverType solver_type, const Real tolerance, const int max_n
     else
         prec_name = "none" ;
 
-	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPCreate(comm_, &ksp_);
     ierr = KSPGetPC(ksp_,&pc_);
 
     ierr = PCSetType(pc_,prec_name.c_str());
@@ -268,7 +268,7 @@ LinearSolver<LAPack::petsc>::
 LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
              const Real tolerance, const int max_num_iter)
 {
-	PetscErrorCode ierr;
+    PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
 
     // map the SolverType enum elements to the name aliases used by PETSc
@@ -287,7 +287,7 @@ LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
     if (solver_type == SolverType::LU)
         prec_name = "lu" ;
 
-	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPCreate(comm_, &ksp_);
     ierr = KSPGetPC(ksp_,&pc_);
 
     ierr = PCSetType(pc_,prec_name.c_str());
@@ -310,11 +310,11 @@ void
 LinearSolver<LAPack::petsc>::
 set_max_num_iterations(const int max_num_iter)
 {
-	PetscErrorCode ierr;
-	PetscReal rtol, abstol, dtol;
-	PetscInt maxits;
-	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
-	ierr = KSPSetTolerances(ksp_, rtol, abstol, dtol, max_num_iter);
+    PetscErrorCode ierr;
+    PetscReal rtol, abstol, dtol;
+    PetscInt maxits;
+    ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+    ierr = KSPSetTolerances(ksp_, rtol, abstol, dtol, max_num_iter);
 
 }
 
@@ -325,11 +325,11 @@ void
 LinearSolver<LAPack::petsc>::
 set_tolerance(const Real tolerance)
 {
-	PetscErrorCode ierr;
-	PetscReal rtol, abstol, dtol;
-	PetscInt maxits;
-	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
-	ierr = KSPSetTolerances(ksp_, tolerance, abstol, dtol, maxits);
+    PetscErrorCode ierr;
+    PetscReal rtol, abstol, dtol;
+    PetscInt maxits;
+    ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+    ierr = KSPSetTolerances(ksp_, tolerance, abstol, dtol, maxits);
 }
 
 
@@ -339,8 +339,8 @@ solve(Matrix<LAPack::petsc> &A,
       Vector<LAPack::petsc> &b,
       Vector<LAPack::petsc> &x)
 {
-	PetscErrorCode ierr;
-	ierr = KSPSetOperators(ksp_,A.get_petsc_matrix(),A.get_petsc_matrix(),SAME_NONZERO_PATTERN);
+    PetscErrorCode ierr;
+    ierr = KSPSetOperators(ksp_,A.get_petsc_matrix(),A.get_petsc_matrix(),SAME_NONZERO_PATTERN);
     ierr = KSPSolve(ksp_,b.get_petsc_vector(),x.get_petsc_vector());
 }
 
@@ -349,9 +349,9 @@ Real
 LinearSolver<LAPack::petsc>::
 get_achieved_tolerance() const
 {
-	PetscErrorCode ierr;
-	PetscReal achieved_tol;
-	ierr = KSPGetResidualNorm(ksp_, &achieved_tol);
+    PetscErrorCode ierr;
+    PetscReal achieved_tol;
+    ierr = KSPGetResidualNorm(ksp_, &achieved_tol);
 
     return achieved_tol;
 }
@@ -360,11 +360,11 @@ int
 LinearSolver<LAPack::petsc>::
 get_num_iterations() const
 {
-	PetscErrorCode ierr;
-	int num_iters;
-	ierr = KSPGetIterationNumber(ksp_, &num_iters);
+    PetscErrorCode ierr;
+    int num_iters;
+    ierr = KSPGetIterationNumber(ksp_, &num_iters);
 
-	return num_iters;
+    return num_iters;
 }
 
 #endif // #ifdef USE_PETSC

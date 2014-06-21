@@ -82,8 +82,8 @@ public:
 public:
     /** Type for the reference face space.*/
     using RefFaceSpace = Conditional<(dim>0),
-            NURBSSpace<dim-1, range, rank>,
-            NURBSSpace<0, range, rank> >;
+          NURBSSpace<dim-1, range, rank>,
+          NURBSSpace<0, range, rank> >;
 
     using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
 
@@ -155,10 +155,10 @@ public:
      * and for the given @p degree for each direction and for each component.
      */
     explicit  NURBSSpace(const DegreeTable &deg,
-    		std::shared_ptr<GridType> knots,
-    		std::shared_ptr<const MultiplicityTable> interior_mult,
-    		const EndBehaviourTable &ends,
-    		const WeightsTable &weights);
+                         std::shared_ptr<GridType> knots,
+                         std::shared_ptr<const MultiplicityTable> interior_mult,
+                         const EndBehaviourTable &ends,
+                         const WeightsTable &weights);
 
 
     /**
@@ -167,10 +167,10 @@ public:
      */
     static std::shared_ptr<self_t>
     create(const DegreeTable &deg,
-    		std::shared_ptr<GridType> knots,
-    		std::shared_ptr<const MultiplicityTable> interior_mult,
-    		const EndBehaviourTable &ends = EndBehaviourTable(),
-    		const WeightsTable &weights = WeightsTable());
+           std::shared_ptr<GridType> knots,
+           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const EndBehaviourTable &ends = EndBehaviourTable(),
+           const WeightsTable &weights = WeightsTable());
 
     explicit  NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
                          const WeightsTable &weights);
@@ -228,7 +228,7 @@ public:
 
     const SpaceDimensionTable get_num_basis_per_element_table() const
     {
-    	return sp_space_->get_num_basis_per_element_table();
+        return sp_space_->get_num_basis_per_element_table();
     }
     /**
      *  Return the number of dofs per element for the i-th space component.
@@ -249,7 +249,7 @@ public:
 
     const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
     {
-    	return sp_space_->get_loc_to_global(j);
+        return sp_space_->get_loc_to_global(j);
     }
     ///@}
 
@@ -351,8 +351,8 @@ public:
 
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs,
-                   std::map<int, int> &elem_map) const;
+                       std::vector<Index> &face_to_element_dofs,
+                       std::map<int, int> &elem_map) const;
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,

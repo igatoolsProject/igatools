@@ -537,7 +537,7 @@ protected:
 
 
     /** Number of scalar basis functions along each direction, for all space components. */
-   // const typename Space::SpaceDimensionTable &n_basis_direction_;
+    // const typename Space::SpaceDimensionTable &n_basis_direction_;
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
     ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;

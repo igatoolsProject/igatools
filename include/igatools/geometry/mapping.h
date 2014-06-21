@@ -76,8 +76,8 @@ public:
 
 
     using FaceMapping = Conditional<(dim>0),
-            Mapping<dim-1, codim+1>,
-            Mapping<0, codim> >;
+          Mapping<dim-1, codim+1>,
+          Mapping<0, codim> >;
 
     /** Dimension of the face.*/
     // TODO (pauletti, Jun 12, 2014): use FaceMapping::dim instead
