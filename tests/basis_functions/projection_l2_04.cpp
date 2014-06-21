@@ -17,8 +17,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for the l2_projection functio in other dimensions
+ *  Test for the l2_projection function in other dimensions
  *
  *  author: pauletti
  *  date: 2014-06-18
@@ -27,7 +28,6 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/function_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/io/writer.h>
@@ -91,7 +91,6 @@ void test_proj(const int p)
     auto proj_values = space_tools::projection_l2<Space,la_pack>(f,space, quad);
     proj_values.print(out);
 
-
     Writer<dim, range> writer(knots,4);
     writer.add_field(space, proj_values, "Function");
     writer.save("output");
@@ -100,8 +99,6 @@ void test_proj(const int p)
 
 int main()
 {
-    out.depth_console(20);
-
     test_proj<2,3>(1);
 
     return 0;

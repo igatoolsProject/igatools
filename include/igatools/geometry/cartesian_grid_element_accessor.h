@@ -222,7 +222,7 @@ public:
      * values of the map at the evaluation points.
      */
     std::vector<Points<dim>> const get_points(const TopologyId<dim_> &topology_id
-                                             = ElemTopology<dim_>()) const;
+                                              = ElemTopology<dim_>()) const;
 
     /**
      * Return a const reference to the one-dimensional container with the
