@@ -264,7 +264,7 @@ get_control_points_elem() const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate(vector<ValueType> &values) const
+evaluate(vector<Value> &values) const
 {
     values = cache_->evaluate_field(this->get_control_points_elem());
 }
@@ -274,7 +274,7 @@ evaluate(vector<ValueType> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients(std::vector<GradientType> &gradients) const
+evaluate_gradients(std::vector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem());
 }
@@ -283,7 +283,7 @@ evaluate_gradients(std::vector<GradientType> &gradients) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians(std::vector<HessianType> &hessians) const
+evaluate_hessians(std::vector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem());
 }
@@ -293,7 +293,7 @@ evaluate_hessians(std::vector<HessianType> &hessians) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face(const Index face_id, vector<ValueType> &values) const
+evaluate_face(const Index face_id, vector<Value> &values) const
 {
     values = cache_->evaluate_field(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -303,7 +303,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const
+evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -312,7 +312,7 @@ evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradient
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const
+evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -321,7 +321,7 @@ evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) 
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
 
@@ -367,7 +367,7 @@ evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> 
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
 
@@ -413,7 +413,7 @@ evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<G
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
 

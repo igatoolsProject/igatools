@@ -43,9 +43,9 @@ public:
     using typename base_t::GridType;
 
     using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
 
 private:
     using SupMap = Mapping<dim + 1, codim - 1>;
@@ -88,9 +88,9 @@ public:
         return std::shared_ptr<base_t>();//Should never reach this
      }
 
-    void evaluate(std::vector<ValueType> &values) const override;
+    void evaluate(std::vector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<GradientType> &gradients) const override;
+    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
     void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 

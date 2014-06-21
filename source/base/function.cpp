@@ -34,7 +34,7 @@ Function< dim, range, rank >::~Function()
 template< int dim, int range, int rank >
 void Function< dim, range, rank >::
 evaluate_gradients(const vector<PointType> & ,
-                   vector<GradientType> &) const
+                   vector<Gradient> &) const
 {
     Assert(false, ExcNotImplemented());
 }
@@ -44,7 +44,7 @@ evaluate_gradients(const vector<PointType> & ,
 template< int dim, int range, int rank >
 void Function< dim, range, rank >::
 evaluate_hessians(const vector<PointType> &,
-                  vector<HessianType> &) const
+                  vector<Hessian> &) const
 {
     Assert(false, ExcNotImplemented());
 }
@@ -55,8 +55,8 @@ template< int dim, int range, int rank >
 void Function< dim, range, rank >::
 evaluate_values_and_gradients(
     const vector<PointType> &points,
-    vector<ValueType> &values,
-    vector<GradientType> &gradients) const
+    vector<Value> &values,
+    vector<Gradient> &gradients) const
 {
     this->evaluate(points, values) ;
     this->evaluate_gradients(points, gradients) ;

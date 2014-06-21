@@ -109,9 +109,9 @@ void PoissonProblem<dim>::assemble()
     vector<Index> loc_dofs(n_basis);
 
     ConstantFunction<dim> f({5.});
-    using ValueType = typename Function<dim>::ValueType;
+    using Value = typename Function<dim>::Value;
     const int n_qp = elem_quad.get_num_points();
-    vector<ValueType> f_values(n_qp);
+    vector<Value> f_values(n_qp);
 
     auto elem = space->begin();
     const auto elem_end = space->end();

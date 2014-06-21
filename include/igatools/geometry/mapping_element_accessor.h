@@ -74,9 +74,9 @@ public:
     /**
      * see Mapping<dim, codim>::Value
      */
-    using ValueMap        = typename ContainerType::ValueType;
-    using GradientMap     = typename ContainerType::GradientType;
-    using HessianMap      = typename ContainerType::HessianType;
+    using ValueMap        = typename ContainerType::Value;
+    using GradientMap     = typename ContainerType::Gradient;
+    using HessianMap      = typename ContainerType::Hessian;
 
 public:
     /** Fill flags supported by this iterator */

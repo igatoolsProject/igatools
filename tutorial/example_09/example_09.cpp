@@ -64,7 +64,7 @@ private:
     using RefSpace  = BSplineSpace<dim>;
     using PushFw    = PushForward<Transformation::h_grad, dim>;
     using Space     = PhysicalSpace<RefSpace, PushFw>;
-    using ValueType = typename Function<dim>::ValueType;
+    using Value = typename Function<dim>::Value;
     // [type aliases]
 
     shared_ptr<Mapping<dim>> map;
@@ -117,7 +117,7 @@ void PoissonProblem<dim>::assemble()
 
     const int n_qp = elem_quad.get_num_points();
     ConstantFunction<dim> f({0.5});
-    vector<ValueType> f_values(n_qp);
+    vector<Value> f_values(n_qp);
 
     auto elem = space->begin();
     const auto elem_end = space->end();

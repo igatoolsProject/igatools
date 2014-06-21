@@ -34,7 +34,7 @@ class Func : public Function<dim, 1, 1 >
 {
 public:
     void evaluate(const vector< typename Func<dim>::PointType > &Points,
-                        vector< typename Func<dim>::ValueType > &ElementValues) const
+                        vector< typename Func<dim>::Value > &ElementValues) const
     {
         const int NumPoints = Points.size() ;
         for (int iPoint = 0 ; iPoint < NumPoints ; iPoint++)
@@ -57,7 +57,7 @@ run_test()
     Func<dim> F ;
     QUniform<dim> quad(n_pts);
     auto p = quad.get_points().get_flat_cartesian_product();
-    vector< typename Func<dim>::ValueType > v(p.size());
+    vector< typename Func<dim>::Value > v(p.size());
 
     F.evaluate(p,v);
     out << "Points = " << p << endl ;

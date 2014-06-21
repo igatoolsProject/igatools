@@ -50,9 +50,9 @@ private:
     using base_t::space_dim;
 
     using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
 
     using self_t = LinearMapping<dim, codim>;
@@ -60,20 +60,20 @@ private:
 public:
     LinearMapping() = delete;
 
-    LinearMapping(const GradientType &A, const ValueType &b);
+    LinearMapping(const Gradient &A, const Value &b);
 
     LinearMapping(const std::shared_ptr<GridType> grid,
-                  const GradientType &A,
-                  const ValueType &b);
+                  const Gradient &A,
+                  const Value &b);
     /**
      * This function creates a LinearMapping object
      * and wraps it into a shared_ptr.
      */
-    static std::shared_ptr<base_t> create(const GradientType &A, const ValueType &b);
+    static std::shared_ptr<base_t> create(const Gradient &A, const Value &b);
 
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<GridType> grid,
-           const GradientType &A, const ValueType &b);
+           const Gradient &A, const Value &b);
 
     ValueFlags required_flags() const;
 
@@ -82,21 +82,21 @@ public:
     void set_face_element(const Index face_id,
                           const CartesianGridElementAccessor<dim> &elem) const;
 
-    void evaluate(std::vector<ValueType> &values) const override;
+    void evaluate(std::vector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<GradientType> &gradients) const override;
+    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(std::vector<HessianType> &hessians) const override;
+    void evaluate_hessians(std::vector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id,std::vector<ValueType> &values) const override;
+    void evaluate_face(const Index face_id,std::vector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id,std::vector<GradientType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id,std::vector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id,std::vector<HessianType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id,std::vector<Hessian> &hessians) const override;
 
 private:
-    const GradientType A_;
-    const ValueType b_;
+    const Gradient A_;
+    const Value b_;
 
 
     // TODO (pauletti, Apr 23, 2014): why not have this in the base class?
@@ -129,9 +129,9 @@ private:
     using base_t::space_dim;
 
     using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
 
     using self_t = BallMapping<dim>;
@@ -148,23 +148,23 @@ public:
 
     void set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const;
 
-    void evaluate(std::vector<ValueType> &values) const override;
+    void evaluate(std::vector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<GradientType> &gradients) const override;
+    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(std::vector<HessianType> &hessians) const override;
+    void evaluate_hessians(std::vector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
+    void evaluate_face(const Index face_id, std::vector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const override;
 
 
     /** @name Evaluating the quantities related to BallMapping without the use of the cache. */
     ///@{
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
+    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 private:
@@ -198,9 +198,9 @@ private:
     using base_t::space_dim;
 
     using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
 
     using self_t = SphereMapping<dim>;
@@ -216,17 +216,17 @@ public:
 
     void set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const;
 
-    void evaluate(std::vector<ValueType> &values) const override;
+    void evaluate(std::vector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<GradientType> &gradients) const override;
+    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(std::vector<HessianType> &hessians) const override;
+    void evaluate_hessians(std::vector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, std::vector<ValueType> &values) const override;
+    void evaluate_face(const Index face_id, std::vector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const override;
 
 private:
     static const int order = 3;
@@ -277,9 +277,9 @@ private:
     using base_t::space_dim;
 
     using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
 
     using self_t = CylindricalAnnulus;
@@ -357,21 +357,21 @@ public:
 
     void evaluate(std::vector<PointType> &values) const override;
 
-    void evaluate_gradients(std::vector<GradientType> &gradients) const override;
+    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(std::vector<HessianType> &hessians) const override;
+    void evaluate_hessians(std::vector<Hessian> &hessians) const override;
 
     void evaluate_face(const Index face_id, std::vector<PointType> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const override;
 
     /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
+    void evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 private:

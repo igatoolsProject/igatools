@@ -40,9 +40,9 @@ private:
     using base_t::space_dim;
 
     using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
     using typename base_t::ElementIterator;
 
@@ -94,22 +94,22 @@ public:
 
     /** @name Mapping as a standard function */
     ///@{
-    virtual void evaluate(std::vector<ValueType> &values) const override;
+    virtual void evaluate(std::vector<Value> &values) const override;
 
     virtual void evaluate_gradients
-    (std::vector<GradientType> &gradients) const override;
+    (std::vector<Gradient> &gradients) const override;
 
     virtual void evaluate_hessians
-    (std::vector<HessianType> &hessians) const override;
+    (std::vector<Hessian> &hessians) const override;
 
     virtual void evaluate_face
-    (const Index face_id, std::vector<ValueType> &values) const override;
+    (const Index face_id, std::vector<Value> &values) const override;
 
     virtual void evaluate_face_gradients
-    (const Index face_id, std::vector<GradientType> &gradients) const override;
+    (const Index face_id, std::vector<Gradient> &gradients) const override;
 
     virtual void evaluate_face_hessians
-    (const Index face_id, std::vector<HessianType> &hessians) const override;
+    (const Index face_id, std::vector<Hessian> &hessians) const override;
 
     ///@}
 
@@ -156,9 +156,9 @@ public:
 
     /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
+    void evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 

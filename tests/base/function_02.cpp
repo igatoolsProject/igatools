@@ -19,66 +19,80 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for user defined linear function based on the virtual class Function.
+ *  Test for Function class, we define a linear function
+ *  author: pauletti
+ *  date: Jun 19, 2014
  */
 
 #include "../tests.h"
-
 #include <igatools/base/function.h>
 
 template<int dim, int range>
-class LinearFunction : public Function<dim, range, 1 >
+class LinearFunction : public Function<dim, range>
 {
-
-
 public:
-    LinearFunction()
-    {
+	using typename Function<dim, range>::PointType;
+	using typename Function<dim, range>::Value;
+	using typename Function<dim, range>::Gradient;
 
-        for (int i=0; i<range; i++)
+    LinearFunction(const Gradient &A, const Value &b)
+    :
+    	A_ {A},
+    	b_ {b}
+	{}
+
+    void evaluate(const vector<PointType> &points,
+    		vector<Value> &values) const
+    {
+    	auto point = points.begin();
+        for (auto &val : values)
         {
-            for (int j=0; j<dim; j++)
-                if (j == i)
-                    A[j][j] = 2.;
-
-            b[i] = i;
+        	val = action(A_, *point) + b_;
+        	++point;
         }
-
-    }
-
-    void evaluate(
-        const std::vector < typename LinearFunction<dim, range>::PointType >   &points,
-              std::vector < typename LinearFunction<dim, range>::ValueType >   &values) const
-    {
-
-        for (int i=0; i<points.size(); i++)
-            values[i] = action(A,points[i]) + b;
     }
 
 private:
-    typename LinearFunction<dim, range>::GradientType A;
-    typename LinearFunction<dim, range>::ValueType    b;
-
+    const Gradient A_;
+    const Value    b_;
 };
 
 
 
+template<int dim, int range>
+void test()
+{
+	const int n_points = 2;
+	using Function = LinearFunction<dim, range>;
+
+	typename Function::Value    b;
+	typename Function::Gradient A;
+	for (int i=0; i<range; i++)
+	{
+		for (int j=0; j<dim; j++)
+			if (j == i)
+				A[j][j] = 2.;
+		b[i] = i;
+	}
+
+
+	Function F(A,b);
+	vector<typename Function::PointType> x(n_points);
+	vector<typename Function::Value>     y(n_points);
+	x[1][0] = 1.;
+
+	F.evaluate(x,y);
+
+	out << x << endl;
+	out << y << endl;
+}
+
+
 int main()
 {
-    const int dim=2;
-    const int range=2;
+   test<2,2>();
+   test<3,3>();
 
-    LinearFunction< dim, range > F;
-
-    std::vector < LinearFunction< dim, range >::PointType > x(2);
-    std::vector < LinearFunction< dim, range >::ValueType > y(2);
-    x[1][0] = 1.;
-
-    F.evaluate(x,y);
-
-    out << x << endl;
-    out << y << endl;
-
-    return 0;
+   return 0;
 }
 

@@ -399,7 +399,7 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_points(const TopologyId<dim> &topology_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
+const ValueVector< typename Mapping<dim, codim>::Value > &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_map_values(topology_id);
@@ -409,7 +409,7 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_face_points(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
+const ValueVector< typename Mapping<dim, codim>::Value > &
 {
     return this->get_points(FaceTopology<dim>(face_id));
 }
@@ -419,7 +419,7 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_map_gradients(const TopologyId<dim> &topology_id) const ->
-const ValueVector< typename Mapping<dim, codim>::GradientType > &
+const ValueVector< typename Mapping<dim, codim>::Gradient > &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_gradients(topology_id);
@@ -432,7 +432,7 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_face_normals(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
+const ValueVector< typename Mapping<dim, codim>::Value > &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 //    Assert(this->face_values_[face_id].is_filled(), ExcCacheNotFilled());

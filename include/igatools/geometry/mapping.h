@@ -103,13 +103,13 @@ public:
     using PointType = Point<dim>;
 
     /** Type of the mapping return value. */
-    using ValueType = Point<space_dim>;
+    using Value = Point<space_dim>;
 
     /** Type of the mapping gradient. */
-    using GradientType = DerivativeType<1>;
+    using Gradient = DerivativeType<1>;
 
     /** Typedef for the mapping hessian. */
-    using HessianType = DerivativeType<2>;
+    using Hessian = DerivativeType<2>;
 
 public:
     /** @name Constructors and destructor */
@@ -139,27 +139,27 @@ public:
 
     /** @name Mapping as a standard function (using the cache).*/
     ///@{
-    virtual void evaluate(std::vector<ValueType> &values) const;
+    virtual void evaluate(std::vector<Value> &values) const;
 
-    virtual void evaluate_gradients(std::vector<GradientType> &gradients) const;
+    virtual void evaluate_gradients(std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians(std::vector<HessianType> &hessians) const;
+    virtual void evaluate_hessians(std::vector<Hessian> &hessians) const;
 
-    virtual void evaluate_face(const Index face_id, std::vector<ValueType> &values) const;
+    virtual void evaluate_face(const Index face_id, std::vector<Value> &values) const;
 
-    virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const;
+    virtual void evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const;
+    virtual void evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const;
     ///@}
 
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
-    virtual void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const ;
+    virtual void evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const ;
 
-    virtual void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const;
+    virtual void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const;
+    virtual void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const;
     ///@}
 
 
@@ -184,11 +184,11 @@ public:
                                   const CartesianGridElementAccessor<dim> &elem) const = 0;
 
 
-    virtual std::vector<ValueType> values() const;
+    virtual std::vector<Value> values() const;
 
-    virtual std::vector<GradientType> gradients() const;
+    virtual std::vector<Gradient> gradients() const;
 
-    virtual std::vector<HessianType> hessians() const;
+    virtual std::vector<Hessian> hessians() const;
     ///@}
 
     /** @name Dealing with the element-based iterator. */
@@ -223,7 +223,7 @@ private:
      * This is an interface for a function that compute the @p values of a Mapping at the @p points.
      * @warning This function must be implemented in any class derived from Mapping.
      */
-//    virtual void evaluate_impl(std::vector<PointType> &points, std::vector<ValueType> &values) const = 0;
+//    virtual void evaluate_impl(std::vector<PointType> &points, std::vector<Value> &values) const = 0;
 
 
     /**

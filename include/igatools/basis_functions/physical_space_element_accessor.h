@@ -253,14 +253,14 @@ public :
      * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    const ValueVector< typename Mapping<dim,codim>::Value > &
     get_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points on the face specified by @p face_id.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    const ValueVector< typename Mapping<dim,codim>::Value > &
     get_face_points(const Index face_id) const;
 
     /**

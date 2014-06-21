@@ -48,12 +48,12 @@ public:
     /**
      * Type for the return of the function.
      */
-    using ValueType = typename Function<dim, range, rank>::ValueType;
+    using Value = typename Function<dim, range, rank>::Value;
 
     /**
      * Construct a constant function with the given value.
      */
-    ConstantFunction(const ValueType value);
+    ConstantFunction(const Value value);
 
     /**
      * Destructor.
@@ -65,11 +65,11 @@ public:
      */
     void
     evaluate(const std::vector<PointType> &points,
-             std::vector<ValueType> &values) const;
+             std::vector<Value> &values) const;
 
 private:
     /** Constant given value that defines the function. */
-    const ValueType value_;
+    const Value value_;
 
 };
 

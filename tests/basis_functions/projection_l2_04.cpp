@@ -39,12 +39,9 @@ class TestFunc : public Function<dim, range, rank>
 public:
     using Base = Function<dim, range>;
     using typename Base::PointType;
-    using typename Base::ValueType;
-    using typename Base::GradientType;
-    using typename Base::HessianType;
-
-    void evaluate(const std::vector<PointType> &points,
-                  std::vector<ValueType> &values) const
+    using typename Base::Value;
+    using typename Base::Gradient  using typename Base::Hessian   void evaluate(const std::vector<PointType> &points,
+                  std::vector<Value> &values) const
     {
         auto pt = points.begin();
         auto val = values.begin();
@@ -59,12 +56,12 @@ public:
 
     void evaluate_gradients(
             const std::vector<PointType> &points,
-            std::vector<GradientType> &gradient) const
+            std::vector<GradGradientent) const
     {}
 
     void evaluate_hessians(
             const std::vector<PointType> &points,
-            std::vector<HessianType> &hessians) const
+            std::vector<HessHessianans) const
     {}
 };
 

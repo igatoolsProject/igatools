@@ -32,14 +32,14 @@ int main(int argc, char *argv[])
         typedef Function< 1, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 1, 1, 0 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v = 1.0 ;
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 1, 1, 0 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g = 2.0 ;
@@ -58,14 +58,14 @@ int main(int argc, char *argv[])
         typedef Function< 2, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 2, 1, 0 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v = 1.0 ;
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 2, 1, 0 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g[0][0] = 2.0 ;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
         typedef Function< 2, 2, 1 > Func ;
 
         out << "FunctionWithGradient< 2, 2, 1 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v[0] = 1.0 ;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 2, 2, 1 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g[0][0] = 3.0 ;
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
         typedef Function< 2, 2, 2 > Func ;
 
         out << "FunctionWithGradient< 2, 2, 2 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v[0][0] = 1.0 ;
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 2, 2, 2 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g[0][0][0] = 5.0 ;
@@ -152,14 +152,14 @@ int main(int argc, char *argv[])
         typedef Function< 3, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 3, 1, 0 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v = 1.0 ;
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 3, 1, 0 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g[0][0] = 2.0 ;
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
         typedef Function< 3, 3, 1 > Func ;
 
         out << "FunctionWithGradient< 3, 3, 0 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v[0] = 1.0 ;
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 3, 3, 0 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g[0][0] = 4.0 ;
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
         typedef Function< 3, 3, 2 > Func ;
 
         out << "FunctionWithGradient< 3, 3, 2 >::Value" << endl ;
-        Func::ValueType v ;
+        Func::Value v ;
         out << v << endl ;
 
         v[0][0] = 1.0 ;
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
         out << v << endl << endl ;
 
         out << "FunctionWithGradient< 3, 3, 2 >::Gradient" << endl ;
-        Func::GradientType g ;
+        Func::Gradient g ;
         out << g << endl ;
 
         g[0][0][0] = 10.0 ;

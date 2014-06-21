@@ -75,7 +75,7 @@ public:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
     using Point = typename Func::PointType;
-    using Value = typename Func::ValueType;
+    using Value = typename Func::Value;
     using Div   = typename Func::Div;
 
 

@@ -46,7 +46,7 @@ void test_proj(const int p)
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
 
-    typename Func::ValueType val;
+    typename Func::Value val;
     for (int i=0; i<range; ++i)
         val[i] = i+3;
     Func f(val);

@@ -264,8 +264,8 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
     }
 
 
-    typedef typename Func<Space>::ValueType ValuePhys_t;
-    typedef typename Func<Space>::GradientType GradientPhys_t;
+    typedef typename Func<Space>::Value ValuePhys_t;
+    typedef typename Func<Space>::Gradient GradientPhys_t;
 
     vector< ValuePhys_t > u(n_points);
     vector< GradientPhys_t > grad_u(n_points);
