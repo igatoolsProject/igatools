@@ -1096,7 +1096,7 @@ operator<<(LogStream &out, const Tensor<dim_,rank_,tensor_type,T > &tensor)
     }
     out << "] ";
 
-    return (out);
+    return out;
 }
 
 /**
@@ -1109,7 +1109,7 @@ LogStream &
 operator<<(LogStream &out, const Tdouble &tensor)
 {
     out << tensor[0];
-    return (out);
+    return out;
 }
 
 

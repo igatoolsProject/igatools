@@ -158,7 +158,7 @@ print_info(LogStream &out) const
 
     out.push("\t");
     out << "Direction = " << direction_ << endl ;
-    out << "    Value = " << value_ << endl ;
+    out << "ValueType = " << value_ << endl ;
 
     out << "Sliced Map:" << endl ;
     out.push("\t");
