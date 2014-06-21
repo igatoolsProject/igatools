@@ -51,41 +51,42 @@ IGA_NAMESPACE_OPEN
 
 //TODO: Add patch id as a cell field
 
-template< int dim_ref, int dim_phys, class T >
-Writer< dim_ref, dim_phys, T >::
-Writer(const shared_ptr< CartesianGrid< dim_ref > > grid)
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<Grid> grid)
     :
-    Writer(IdentityMapping<dim_ref, codim>::create(grid),
-           shared_ptr< QUniform<dim_ref> >(new QUniform<dim_ref>(2)))
+    Writer(IdentityMapping<dim, codim>::create(grid),
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
 {}
 
 
 
-template< int dim_ref, int dim_phys, class T >
-Writer< dim_ref, dim_phys, T >::
-Writer(const shared_ptr< CartesianGrid< dim_ref > > grid,
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<Grid> grid,
        const Index n_points_direction = 2)
     :
-    Writer(IdentityMapping<dim_ref, codim>::create(grid),
-           shared_ptr< QUniform<dim_ref> >(new QUniform<dim_ref>(n_points_direction)))
-{
-}
+    Writer(IdentityMapping<dim, codim>::create(grid),
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
+{}
 
-template< int dim_ref, int dim_phys, class T >
-Writer< dim_ref, dim_phys, T >::
-Writer(const shared_ptr< const Mapping< dim_ref, codim > > map,
+
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<const Map> map,
        const Index n_points_direction = 2)
     :
     Writer(map,
-           shared_ptr< QUniform<dim_ref> >(new QUniform<dim_ref>(n_points_direction)))
-{
-}
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
+{}
 
 
-template< int dim_ref, int dim_phys, class T >
-Writer< dim_ref, dim_phys, T >::
-Writer(const shared_ptr<const Mapping<dim_ref,codim> > map,
-       const shared_ptr<const Quadrature<dim_ref> > quadrature)
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<const Mapping<dim,codim> > map,
+       const shared_ptr<const Quadrature<dim> > quadrature)
     :
     grid_(map->get_grid()),
     map_(map),
@@ -144,22 +145,22 @@ Writer(const shared_ptr<const Mapping<dim_ref,codim> > map,
     //----------------------------------------------------------------------------------------------
 
 
-    if (dim_ref == 1)
+    if (dim == 1)
     {
         vtk_element_type_ = 3; // VTK_LINE
     }
-    else if (dim_ref == 2)
+    else if (dim == 2)
     {
         vtk_element_type_ = 9; // VTK_QUAD
     }
-    else if (dim_ref == 3)
+    else if (dim == 3)
     {
         vtk_element_type_ = 12; // VTK_HEXAHEDRON
     }
 
     //----------------------------------------------------------------------------------------------
     n_vtk_elements_per_iga_element_ = 1;
-    for (int i = 0; i < dim_ref; i++)
+    for (int i = 0; i < dim; i++)
     {
         Assert(num_points_direction_[i] >= 2, ExcLowerRange(num_points_direction_[i], 2));
 
@@ -180,42 +181,43 @@ Writer(const shared_ptr<const Mapping<dim_ref,codim> > map,
     //------------------------------------------------------------------------------------------
 }
 
-template< int dim_ref, int dim_phys, class T >
+
+
+template<int dim, int codim, class T>
 int
-Writer< dim_ref, dim_phys, T >::
+Writer<dim, codim, T>::
 get_num_iga_elements() const
 {
     return n_iga_elements_;
 }
 
-template< int dim_ref, int dim_phys, class T >
-int
-Writer< dim_ref, dim_phys, T >::
-get_num_vtk_elements() const
+
+
+template<int dim, int codim, class T>
+int Writer<dim, codim, T>::get_num_vtk_elements() const
 {
     return n_vtk_elements_;
 }
 
-template< int dim_ref, int dim_phys, class T >
-int
-Writer< dim_ref, dim_phys, T >::
-get_num_points_per_iga_element() const
+
+
+template<int dim, int codim, class T>
+int Writer<dim, codim, T>::get_num_points_per_iga_element() const
 {
     return n_points_per_iga_element_;
 }
 
-template< int dim_ref, int dim_phys, class T >
-int
-Writer< dim_ref, dim_phys, T >::
-get_num_vtk_elements_per_iga_element() const
+
+
+template<int dim, int codim, class T>
+int Writer<dim, codim, T>::get_num_vtk_elements_per_iga_element() const
 {
     return n_vtk_elements_per_iga_element_;
 }
 
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
 add_point_data(const int n_iga_elements,
                const int n_points_per_iga_element,
                const int n_values_per_point,
@@ -274,21 +276,19 @@ add_point_data(const int n_iga_elements,
 
 
 
-template< int dim_ref, int dim_phys, class T >
+template<int dim, int codim, class T>
 template<class Space, LAPack la_pack>
-void
-Writer< dim_ref, dim_phys, T >::
-add_field(
-    shared_ptr<Space> space_,
-    const Vector<la_pack> &coefs,
-    const string &name)
+void Writer<dim, codim, T>::
+add_field(shared_ptr<Space> space_,
+          const Vector<la_pack> &coefs,
+          const string &name)
 {
     // Compromise to keep type safe but avoid the user for writing
     // pedantically correct but comprehensible undesirable casting
     shared_ptr<const Space> space = std::const_pointer_cast<const Space> (space_);
 
     //--------------------------------------------------------------------------
-    Assert(dim_phys <= 3,
+    Assert(space_dim <= 3,
            ExcMessage("The maximum allowed physical domain for VTK file is 3."));
     Assert(space->get_num_basis() == coefs.size(),
            ExcDimensionMismatch(space->get_num_basis(), coefs.size()));
@@ -397,10 +397,10 @@ add_field(
     //----------------------------------------------------------------------------------------------
 }
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
-fill_points_and_connectivity()
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::fill_points_and_connectivity()
 {
 
     auto element = map_->begin();
@@ -421,21 +421,20 @@ fill_points_and_connectivity()
 
 
 
-template< int dim_ref, int dim_phys, class T >
+template<int dim, int codim, class T>
 const vector< vector< array<T,3> > > &
-Writer< dim_ref, dim_phys, T >::
-get_points_in_iga_elements() const
+Writer<dim, codim, T>::get_points_in_iga_elements() const
 {
     Assert(points_in_iga_elements_.empty() == false, ExcEmptyObject());
     return points_in_iga_elements_;
 }
 
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
 get_subelements(
-    const typename Mapping< dim_ref, codim>::ElementIterator elem,
+    const typename Mapping< dim, codim>::ElementIterator elem,
     vector< array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
     vector< array<T,3> > &points_phys_iga_element) const
 {
@@ -452,25 +451,25 @@ get_subelements(
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
     {
-        for (int i = 0; i < dim_phys; ++i)
+        for (int i = 0; i < space_dim; ++i)
             points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
 
-        for (int i = dim_phys; i < 3; ++i)
+        for (int i = space_dim; i < 3; ++i)
             points_phys_iga_element[ipt][i] = 0.0;
     }
 
 
     const int iga_element_id = elem->get_flat_index();
 
-    vector< array<int,dim_ref> > delta_idx(n_vertices_per_vtk_element_);
+    vector< array<int,dim> > delta_idx(n_vertices_per_vtk_element_);
 
 
-    if (dim_ref == 1)
+    if (dim == 1)
     {
         delta_idx[0][0] = 0;
         delta_idx[1][0] = 1;
     }
-    else if (dim_ref == 2)
+    else if (dim == 2)
     {
         delta_idx[0][0] = 0;
         delta_idx[0][1] = 0;
@@ -484,7 +483,7 @@ get_subelements(
         delta_idx[3][0] = 0;
         delta_idx[3][1] = 1;
     }
-    else if (dim_ref == 3)
+    else if (dim == 3)
     {
         delta_idx[0][0] = 0;
         delta_idx[0][1] = 0;
@@ -522,15 +521,15 @@ get_subelements(
 
 
 
-    TensorIndex<dim_ref> weight_points =
-        MultiArrayUtils< dim_ref >::compute_weight(num_points_direction_);
+    TensorIndex<dim> weight_points =
+        MultiArrayUtils< dim >::compute_weight(num_points_direction_);
 
 
 
     //----------------------------------------------------------------------------------------------
     // grid defining the vtk elements inside the iga element
 
-    const auto  vtk_elements_grid = CartesianGrid<dim_ref>::create(num_points_direction_);
+    const auto  vtk_elements_grid = CartesianGrid<dim>::create(num_points_direction_);
     auto vtk_elem = vtk_elements_grid->begin();
     const auto vtk_elem_end = vtk_elements_grid->end();
 
@@ -538,15 +537,15 @@ get_subelements(
     for (; vtk_elem != vtk_elem_end; ++vtk_elem)
     {
         int vtk_elem_flat_id = vtk_elem->get_flat_index();
-        array<Index,dim_ref> vtk_elem_tensor_idx = vtk_elem->get_tensor_index();
+        array<Index,dim> vtk_elem_tensor_idx = vtk_elem->get_tensor_index();
 
         for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
         {
-            TensorIndex<dim_ref> vtk_vertex_tensor_idx;
-            for (int i = 0; i < dim_ref; ++i)
+            TensorIndex<dim> vtk_vertex_tensor_idx;
+            for (int i = 0; i < dim; ++i)
                 vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i] + delta_idx[iVertex][i];
 
-            const int vtk_vertex_local_id = MultiArrayUtils<dim_ref>::tensor_to_flat_index(vtk_vertex_tensor_idx, weight_points);
+            const int vtk_vertex_local_id = MultiArrayUtils<dim>::tensor_to_flat_index(vtk_vertex_tensor_idx, weight_points);
 
             vtk_elements_connectivity[vtk_elem_flat_id][iVertex] = vtk_vertex_local_id + vtk_vertex_id_offset;
         }
@@ -554,12 +553,12 @@ get_subelements(
     //----------------------------------------------------------------------------------------------
 }
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
-add_element_data(
-    const std::vector<double> &element_data,
-    const std::string &name)
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
+add_element_data(const std::vector<double> &element_data,
+                 const std::string &name)
 {
     cell_data_double_.emplace_back(CellData<double>(element_data, name));
 
@@ -578,12 +577,12 @@ add_element_data(
     }
 }
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
-add_element_data(
-    const std::vector<int> &element_data,
-    const std::string &name)
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
+add_element_data(const std::vector<int> &element_data,
+                 const std::string &name)
 {
     cell_data_int_.emplace_back(CellData<int>(element_data, name));
 
@@ -604,11 +603,8 @@ add_element_data(
 
 
 
-
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
-save_ascii(const string &filename) const
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::save_ascii(const string &filename) const
 {
     ofstream file(filename);
     file.setf(ios::scientific);
@@ -760,19 +756,15 @@ save_ascii(const string &filename) const
     file << tab3 << "</CellData>" << endl;
     //-------------------------------------------------------------------------
 
-
-
     file << tab2 << "</Piece>" << endl;
-
     file << tab1 << "</UnstructuredGrid>" << endl;
-
     file << "</VTKFile>";
 }
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
-save_appended(const string &filename) const
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::save_appended(const string &filename) const
 {
     ofstream file(filename);
     file.setf(ios::scientific);
@@ -1006,17 +998,17 @@ save_appended(const string &filename) const
     file << "</VTKFile>";
 }
 
-template< int dim_ref, int dim_phys, class T >
-void
-Writer< dim_ref, dim_phys, T >::
-save(const string &filename, const string &format)
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::save(const string &filename, const string &format)
 {
     //TODO: fix the case when the format is appended
 //    AssertThrow(format != "appended", ExcNotImplemented());
 
-
     //----------------------------------------------------------------------------------------------
-    Assert(format == "ascii" || format == "appended", ExcMessage("Unsupported format."));
+    Assert(format == "ascii" || format == "appended",
+           ExcMessage("Unsupported format."));
     //----------------------------------------------------------------------------------------------
 
     this->fill_points_and_connectivity();
@@ -1035,9 +1027,6 @@ save(const string &filename, const string &format)
 
 }
 
-
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/writer.inst>
-
-

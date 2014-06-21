@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef __WRITER_H_
 #define __WRITER_H_
 
@@ -41,26 +40,29 @@ template< int dim_domain, int range, int rank >
 class NURBSSpace;
 
 
-
-
 //todo:add the add_celldata function
 
 /**
  * @todo This class needs to be documented, and explained with an example.
  */
-template< int dim_ref, int dim_phys=dim_ref, class T = double >
+template<int dim, int codim = 0, class T = double>
 class Writer
 {
+private:
+    using self_t = Writer<dim, codim, T>;
+    using Grid = CartesianGrid<dim>;
+    using Map  = Mapping<dim, codim>;
+
 public:
+    static const int space_dim = dim + codim;
+    // TODO (pauletti, Jun 18, 2014): document this constructors
+    //TODO(pauletti, Jun 21, 2014): should be a const Grid
+    Writer(const std::shared_ptr<Grid> grid);
 
-    static const int codim = dim_phys-dim_ref;
-// TODO (pauletti, Jun 18, 2014): document this constructors
-    Writer(const std::shared_ptr< CartesianGrid< dim_ref > > grid);
-
-    Writer(const std::shared_ptr< CartesianGrid< dim_ref > > grid,
+    Writer(const std::shared_ptr<Grid> grid,
            const Index num_points_direction);
 
-    Writer(const std::shared_ptr< const Mapping< dim_ref, codim > > mapping,
+    Writer(const std::shared_ptr<const Map> mapping,
            const Index num_points_direction);
 
 
@@ -82,9 +84,9 @@ public:
      * otherwise an exception will be raised.
      * \see add_field
      */
-//    Writer(const std::shared_ptr< const CartesianGrid< dim_ref > > grid,
-//           const std::shared_ptr< const Mapping< dim_ref, dim_phys > > mapping,
-//           const std::array< Index, dim_ref > &num_points_direction) {}
+//    Writer(const std::shared_ptr< const CartesianGrid< dim > > grid,
+//           const std::shared_ptr< const Mapping< dim, space_dim > > mapping,
+//           const std::array< Index, dim > &num_points_direction) {}
 
 
     /**
@@ -96,8 +98,8 @@ public:
      * otherwise an exception will be raised.
      * \see add_field
      */
-    Writer(const std::shared_ptr< const Mapping< dim_ref, codim > > mapping,
-           const std::shared_ptr< const Quadrature<dim_ref> > quadrature);
+    Writer(const std::shared_ptr<const Map> mapping,
+           const std::shared_ptr<const Quadrature<dim>> quadrature);
 
 
     /**
@@ -105,19 +107,15 @@ public:
      */
     Writer() = delete;
 
-
     /**
      * Copy constructor. Not allowed to be used.
      */
-    Writer(const Writer< dim_ref, codim > &writer) = delete;
-
+    Writer(const self_t &writer) = delete;
 
     /**
      * Assignment operator. Not allowed to be used.
      */
-    Writer< dim_ref, dim_phys > &
-    operator=(const Writer< dim_ref, dim_phys > &writer) = delete;
-
+    self_t &operator=(const self_t &writer) = delete;
 
     /**
      * \brief Add a field to the output file.
@@ -133,19 +131,16 @@ public:
      * by the space, otherwise an exception will be raised.
      */
     template<class Space, LAPack la_pack = LAPack::trilinos>
-    void add_field(
-        std::shared_ptr<Space> space,
-        const Vector<la_pack> &coefs,
-        const std::string &name);
+    void add_field(std::shared_ptr<Space> space,
+                   const Vector<la_pack> &coefs,
+                   const std::string &name);
 
-// TODO (pauletti, Jun 18, 2014):should be private
-    void add_element_data(
-        const std::vector<double> &element_data,
-        const std::string &name);
 
-    void add_element_data(
-        const std::vector<int> &element_data,
-        const std::string &name);
+    void add_element_data(const std::vector<double> &element_data,
+                          const std::string &name);
+
+    void add_element_data(const std::vector<int> &element_data,
+                          const std::string &name);
 
 
     /**
@@ -154,11 +149,10 @@ public:
      * \param[in] format - Output format. It can be "ascii" or "appended".
      * \note The .vtu extension should NOT part of the file name.
      */
-    void save(
-        const std::string &filename,
-        const std::string &format = "ascii");
+    void save(const std::string &filename,
+              const std::string &format = "ascii");
 
-
+private:
     /**
      * Get the points (in the 3D physical domain) associated to each iga element.
      * The first index refers to the iga element,
@@ -168,7 +162,8 @@ public:
      * //points[i][j] is the j-th point in the i-th iga element
      * \endcode
      */
-    const std::vector< std::vector< std::array<T,3> > > &get_points_in_iga_elements() const;
+    const std::vector< std::vector< std::array<T,3> > >
+    &get_points_in_iga_elements() const;
 
     /**
      * Returns the number of IGA elements handled by the Writer.
@@ -203,26 +198,24 @@ public:
 private:
     std::string byte_order_;
 
-    static const int n_vertices_per_vtk_element_ = UnitElement< dim_ref >::vertices_per_element;
+    static const int n_vertices_per_vtk_element_ = UnitElement< dim >::vertices_per_element;
 
     const std::string filename_;
 
-    std::shared_ptr< const CartesianGrid< dim_ref > > grid_;
+    std::shared_ptr<const Grid> grid_;
 
-
-    std::shared_ptr< const Mapping< dim_ref, codim > > map_;
-
+    std::shared_ptr<const Map> map_;
 
     /**
      * Unit element quadrature rule used for the plot.
      */
-    Quadrature< dim_ref > quad_plot_;
+    Quadrature< dim > quad_plot_;
 
 
-    TensorSize<dim_ref> num_points_direction_;
+    TensorSize<dim> num_points_direction_;
 
 
-    TensorSize<dim_ref> num_subelements_direction_;
+    TensorSize<dim> num_subelements_direction_;
 
     /**
      * Number of VTK elements contained in each IGA element.
@@ -278,7 +271,7 @@ private:
      * If the dimension of the physical domain is 1, then the points are located on the line with y=0 and z=0.
      */
     void get_subelements(
-        const typename Mapping< dim_ref, codim>::ElementIterator elem,
+        const typename Mapping< dim, codim>::ElementIterator elem,
         std::vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
         std::vector< std::array<T,3> > &points_phys_iga_element) const;
 
@@ -362,18 +355,11 @@ private:
     const int sizeof_uchar_  = 0;
     std::string string_uchar_;
 
-
-
-
-
     std::stringstream appended_data_;
-
 
     int offset_;
 
-
     int precision_;
-
 
     void save_ascii(const std::string &filename) const;
 
