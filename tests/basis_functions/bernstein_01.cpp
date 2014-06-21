@@ -34,9 +34,9 @@ int main()
     out.depth_console(10);
 
     const int n=5;
-    std::vector< iga::Real > points(n);
+    std::vector< Real > points(n);
     for (int i=0; i<n; ++i)
-        points[i] = iga::Real(i)/(n-1);
+        points[i] = Real(i)/(n-1);
 
     out << "points: " << points << endl;
 

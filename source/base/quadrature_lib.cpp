@@ -319,7 +319,7 @@ QGaussLobatto< dim >::QGaussLobatto(const Size num_points, const Real eps_scalin
     // Gauss-Lobatto schemes needs at least 2 points in each direction
     Assert(num_points >= 2, ExcLowerRange(num_points, 2)) ;
 
-    Assert(eps_scaling >= iga::Real(0.0) && eps_scaling < iga::Real(0.5),
+    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
     vector<Real> points(num_points);
@@ -344,7 +344,7 @@ template< int dim >
 QGaussLobatto< dim >::QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
     Quadrature< dim >(num_points)
 {
-    Assert(eps_scaling >= iga::Real(0.0) && eps_scaling < iga::Real(0.5),
+    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
     vector<Real> points;
@@ -392,7 +392,7 @@ QUniform<dim>::QUniform(const Size num_points, const Real eps_scaling)
     :
     Quadrature< dim >(num_points)
 {
-    Assert(eps_scaling >= iga::Real(0.0) && eps_scaling < iga::Real(0.5),
+    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
     vector<Real> points(num_points);
@@ -418,7 +418,7 @@ QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling
     :
     Quadrature< dim >(num_points)
 {
-    Assert(eps_scaling >= iga::Real(0.0) && eps_scaling < iga::Real(0.5),
+    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
     vector<Real> points;

@@ -45,14 +45,14 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    iga::Real value(Points<dim> P_) const
+    Real value(Points<dim> P_) const
     {
-        iga::Real  PI = numbers::PI;
+        Real  PI = numbers::PI;
 
-        iga::Real f = 1;
+        Real f = 1;
         for (int cnt = 0; cnt<dim; cnt++)
         {
-            f = f * cos(iga::Real(2*PI*P_[cnt]));
+            f = f * cos(Real(2*PI*P_[cnt]));
         }
 
         return f;

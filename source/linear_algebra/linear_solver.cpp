@@ -31,79 +31,79 @@
 namespace Teuchos
 {
 template<>
-iga::Real
-ScalarTraits<iga::Real>::zero()
+Real
+ScalarTraits<Real>::zero()
 {
-    return iga::Real(0.0);
+    return Real(0.0);
 }
 
 template<>
-iga::Real
-ScalarTraits<iga::Real>::one()
+Real
+ScalarTraits<Real>::one()
 {
-    return iga::Real(1.0);
+    return Real(1.0);
 }
 
 template<>
-iga::Real
-ScalarTraits<iga::Real>::eps()
+Real
+ScalarTraits<Real>::eps()
 {
-    return std::numeric_limits<iga::Real>::epsilon();
+    return std::numeric_limits<Real>::epsilon();
 }
 
 template<>
 string
-ScalarTraits<iga::Real>::name()
+ScalarTraits<Real>::name()
 {
-    return "iga::Real";
+    return "Real";
 }
 
 template<>
-iga::Real
-ScalarTraits<iga::Real>::rmax()
+Real
+ScalarTraits<Real>::rmax()
 {
-    return std::numeric_limits<iga::Real>::max();
+    return std::numeric_limits<Real>::max();
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::Real(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::Real(Real number) -> magnitudeType
 {
     return std::Real(number);
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::conjugate(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::conjugate(Real number) -> magnitudeType
 {
     return std::Real(number);
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::magnitude(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::magnitude(Real number) -> magnitudeType
 {
     return std::abs(number);
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::squareroot(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::squareroot(Real number) -> magnitudeType
 {
     return std::sqrt(number);
 }
 
 
 template<>
-iga::Real
-EnhancedNumberTraits<iga::Real>::defaultStep()
+Real
+EnhancedNumberTraits<Real>::defaultStep()
 {
-    return iga::Real(1.0);
+    return Real(1.0);
 }
 
 template<>
 unsigned short
-EnhancedNumberTraits<iga::Real>::defaultPrecision()
+EnhancedNumberTraits<Real>::defaultPrecision()
 {
     return 100;
 }

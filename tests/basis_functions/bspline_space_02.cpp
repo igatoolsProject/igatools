@@ -37,7 +37,7 @@ void do_test()
     out << " Range dim: " << dim_range << endl;
     const int n_knots = 4;
 
-    CartesianProductArray< iga::Real, dim_domain > coord(n_knots) ;
+    CartesianProductArray< Real, dim_domain > coord(n_knots) ;
 
     for (int i = 0 ; i < dim_domain ; ++i)
         for (int j = 0 ; j < n_knots ; ++j)

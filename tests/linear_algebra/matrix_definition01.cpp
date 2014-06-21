@@ -53,10 +53,10 @@ int main()
 
 
     int n_knots = 3;
-    CartesianProductArray<iga::Real , dim_domain> coord ;
+    CartesianProductArray<Real , dim_domain> coord ;
     for (int i = 0; i < dim_domain; ++i)
     {
-        vector<iga::Real> tmp_coord;
+        vector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coord.copy_data_direction(i,tmp_coord);

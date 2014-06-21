@@ -49,7 +49,7 @@ for s in unique(strings): # Removing repeated entries.
 strings = []
 for row in inst.user_phy_sp_dims:
     for writer_real_t in writer_real_types:
-        writer = 'Writer<%d, %d, %s>' %(row.dim, row.space_dim, writer_real_t)
+        writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
         for name in spaces:
             space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
             PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)

@@ -134,7 +134,7 @@ void run_test()
 
     string filename = "bspline_map-" + to_string(dim) + "d";
 
-    Writer<dim,dim> writer(map, 4);
+    Writer<dim> writer(map, 4);
     writer.save(filename);
 
 }

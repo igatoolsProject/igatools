@@ -26,9 +26,9 @@
 template< int dim, int range, int rank = 1>
 void do_test()
 {
-    vector<Real> coord_x{0,1,2,3,4};
-    vector<Real> coord_y{5,6,7,8};
-    vector<Real> coord_z{9, 10, 11};
+    vector<Real> coord_x {0,1,2,3,4};
+    vector<Real> coord_y {5,6,7,8};
+    vector<Real> coord_z {9, 10, 11};
 
     CartesianProductArray<Real, dim> coord;
     CartesianProductArray<Index , dim>  mult;

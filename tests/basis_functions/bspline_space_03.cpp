@@ -38,7 +38,7 @@ void do_test(const int p)
 
     const int n_knots = 4;
 
-    CartesianProductArray< iga::Real, dim_domain > coord(n_knots) ;
+    CartesianProductArray< Real, dim_domain > coord(n_knots) ;
 
     for (int i = 0 ; i < dim_domain ; ++i)
         for (int j = 0 ; j < n_knots ; ++j)
@@ -47,7 +47,7 @@ void do_test(const int p)
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create (p, knots) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 
     typename BSplineSpace< dim_domain, dim_range, rank >::ElementIterator

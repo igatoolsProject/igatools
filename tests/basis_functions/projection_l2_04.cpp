@@ -48,7 +48,7 @@ public:
         auto pt = points.begin();
         auto val = values.begin();
 
-        for (;pt != points.end(); ++pt, ++val)
+        for (; pt != points.end(); ++pt, ++val)
         {
             for (int i=0; i<dim; ++i)
                 (*val)[i] = (*pt)[i];
@@ -57,11 +57,11 @@ public:
     }
 
     void evaluate_gradients(
-            const std::vector<Point> &Point, std::vector<Gradient>&) const
+        const std::vector<Point> &Point, std::vector<Gradient> &) const
     {}
 
     void evaluate_hessians(
-            const std::vector<Point> &,std::vector<Hessian>&) const
+        const std::vector<Point> &,std::vector<Hessian> &) const
     {}
 };
 
@@ -91,9 +91,9 @@ void test_proj(const int p)
     auto proj_values = space_tools::projection_l2<Space,la_pack>(f,space, quad);
     proj_values.print(out);
 
-    Writer<dim, range> writer(knots,4);
-    writer.add_field(space, proj_values, "Function");
-    writer.save("output");
+//    Writer<dim> writer(knots,4);
+//    writer.add_field(space, proj_values, "Function");
+//    writer.save("output");
 }
 
 

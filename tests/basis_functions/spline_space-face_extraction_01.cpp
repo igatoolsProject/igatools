@@ -32,26 +32,26 @@
 template< int dim, int range, int rank >
 void run_test()
 {
-	using SplineSpace = SplineSpace<dim, range, rank>;
-	auto grid = CartesianGrid<dim>::create({3,4});
-	typename SplineSpace::DegreeTable deg{{1,3}};
-	SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
+    using SplineSpace = SplineSpace<dim, range, rank>;
+    auto grid = CartesianGrid<dim>::create( {3,4});
+    typename SplineSpace::DegreeTable deg {{1,3}};
+    SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
 
-	for (auto  f : UnitElement<dim>::faces)
-	{
-		out << "face: " << f << endl;
+    for (auto  f : UnitElement<dim>::faces)
+    {
+        out << "face: " << f << endl;
 
-		out << "Multiplicity:\n";
-		auto f_mult = space.get_face_mult(f);
-		for (auto x: *f_mult)
-			x.print_info(out);
+        out << "Multiplicity:\n";
+        auto f_mult = space.get_face_mult(f);
+        for (auto x: *f_mult)
+            x.print_info(out);
 
-		out << "Degree:\n";
-		auto f_deg = space.get_face_degree(f);
-		for (auto x: f_deg)
-			out << x;
-		out << endl;
-	}
+        out << "Degree:\n";
+        auto f_deg = space.get_face_degree(f);
+        for (auto x: f_deg)
+            out << x;
+        out << endl;
+    }
 }
 
 
@@ -60,9 +60,9 @@ int main()
 {
     out.depth_console(10);
 
- //   run_test<1,1,1>();
+//   run_test<1,1,1>();
     run_test<2,1,1>();
- //   run_test<3,1,1>();
+//   run_test<3,1,1>();
 
     return  0;
 }

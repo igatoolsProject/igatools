@@ -107,10 +107,6 @@ public:
 public:
     using FaceMapping = Conditional<(dim>0), Mapping<dim-1, codim+1>, self_t >;
 
-    /** Dimension of the face.*/
-    // TODO (pauletti, Jun 12, 2014): use FaceMapping::dim instead
-    static const auto face_dim = dim_>0 ? dim_-1 : 0 ;
-
     /** Type of the element accessor */
     using ElementAccessor = MappingElementAccessor<dim, codim>;
 

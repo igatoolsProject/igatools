@@ -61,16 +61,10 @@ public:
     /** Dimension of the deformed domain embedding space. */
     static const auto space_dim = ContainerType::space_dim;
 
-    // TODO (pauletti, Mar 21, 2014): why do we need this? should it be private?
-    /** Dimension of the face.*/
-    static const auto face_dim = ContainerType::face_dim ;
-
-    // TODO (pauletti, Mar 21, 2014): should this be private?
-    /**
-     * see UnitElement<dim_>::faces_per_element
-     */
+private:
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
+public:
     /**
      * see Mapping<dim, codim>::Value
      */

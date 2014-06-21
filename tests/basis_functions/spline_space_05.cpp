@@ -32,16 +32,16 @@ void test(const int deg1)
 {
     using SplineSpace = SplineSpace<dim, range, rank>;
 
-   	auto grid = CartesianGrid<dim>::create(4);
-	typename SplineSpace::Degrees deg2(deg1);
-	typename SplineSpace::DegreeTable deg(deg2);
+    auto grid = CartesianGrid<dim>::create(4);
+    typename SplineSpace::Degrees deg2(deg1);
+    typename SplineSpace::DegreeTable deg(deg2);
 
-	out << deg.get_active_components() << endl;
-	out << deg.get_inactive_components() << endl;
+    out << deg.get_active_components() << endl;
+    out << deg.get_inactive_components() << endl;
 
 
-	SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
-	sp_spec.print_info(out);
+    SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
+    sp_spec.print_info(out);
 }
 
 

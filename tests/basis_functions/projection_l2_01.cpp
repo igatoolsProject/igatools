@@ -42,9 +42,9 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    iga::Real value(Points<dim> x) const
+    Real value(Points<dim> x) const
     {
-        iga::Real f = 1;
+        Real f = 1;
         for (int i = 0; i<dim; ++i)
             f = f * cos(2*PI*x[i]);
         return f;
@@ -99,7 +99,7 @@ void do_test(const int p)
 int main()
 {
     out.depth_console(20);
-   // do_test<0,1,1>(1);
+    // do_test<0,1,1>(1);
     do_test<1,1,1>(3);
     do_test<2,1,1>(3);
     do_test<3,1,1>(1);

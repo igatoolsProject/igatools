@@ -116,7 +116,7 @@ void PoissonProblem<dim>::assemble()
     vector<Index> loc_dofs(n_basis);
 
     const int n_qp = elem_quad.get_num_points();
-    ConstantFunction<dim> f({0.5});
+    ConstantFunction<dim> f( {0.5});
     vector<Value> f_values(n_qp);
 
     auto elem = space->begin();
@@ -164,7 +164,7 @@ void PoissonProblem<dim>::assemble()
     matrix->fill_complete();
 
     // [dirichlet constraint]
-    ConstantFunction<dim> g({0.0});
+    ConstantFunction<dim> g( {0.0});
     std::map<Index, Real> values;
     project_boundary_values<Space,LAPack::trilinos>(g,space,face_quad,dir_id,values);
     apply_boundary_values(values, *matrix, *rhs, *solution);

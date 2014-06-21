@@ -66,37 +66,37 @@ void test()
     const auto points = quad_scheme.get_points().get_flat_cartesian_product();
 
     auto elem     = space->begin();
-        auto end = space->end();
+    auto end = space->end();
 
-        for (; elem != end; ++elem)
-        {
-            out << "Element: " << elem->get_flat_index()<< endl;
-
-            out << "Values basis functions:" << endl ;
-            const auto values = elem->evaluate_basis_values_at_points(points);
-            values.print_info(out) ;
-
-            out << "Gradients basis functions:" << endl ;
-            const auto gradients = elem->evaluate_basis_gradients_at_points(points);
-            gradients.print_info(out) ;
-
-            out << "Hessians basis functions:" << endl ;
-            const auto hessians = elem->evaluate_basis_hessians_at_points(points);
-            hessians.print_info(out) ;
-        }
-    }
-
-
-    int main()
+    for (; elem != end; ++elem)
     {
-        test<1, 1>();
-        test<1, 2>();
-        test<1, 3>();
-        test<2, 1>();
-        test<2, 2>();
-        test<2, 3>();
-        test<3, 1>();
-        test<3, 3>();
+        out << "Element: " << elem->get_flat_index()<< endl;
 
-        return 0;
+        out << "Values basis functions:" << endl ;
+        const auto values = elem->evaluate_basis_values_at_points(points);
+        values.print_info(out) ;
+
+        out << "Gradients basis functions:" << endl ;
+        const auto gradients = elem->evaluate_basis_gradients_at_points(points);
+        gradients.print_info(out) ;
+
+        out << "Hessians basis functions:" << endl ;
+        const auto hessians = elem->evaluate_basis_hessians_at_points(points);
+        hessians.print_info(out) ;
     }
+}
+
+
+int main()
+{
+    test<1, 1>();
+    test<1, 2>();
+    test<1, 3>();
+    test<2, 1>();
+    test<2, 2>();
+    test<2, 3>();
+    test<3, 1>();
+    test<3, 3>();
+
+    return 0;
+}

@@ -75,7 +75,7 @@ matrix<Real> compute(const matrix<Real> &M_j_1,
     //k = 1,...,j-2
     for (int k = 1; k < j-1; ++k)
     {
-        M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1) );
+        M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1));
     }
     //k = j-1
     M_j(j-1, l) = M_j(j-1, l-1) + beta[j-1] * M_j_1(j-2, j-2);
@@ -101,7 +101,7 @@ void fill_extraction(const int degree,
 
     matrix<Real> M(1,1);
     M(0,0) = 1/(b-a);
-    for(int j = 2; j<=m; ++j)
+    for (int j = 2; j<=m; ++j)
     {
         const int s = acum_mult[n+1] - j;
 
@@ -144,7 +144,7 @@ int main()
         vector<Real>    rep_knots = {0,0,0,1,1,1};
         vector<Index>   acum_mult = {0,3,6};
 
-        fill_extraction( degree,knots,rep_knots, acum_mult);
+        fill_extraction(degree,knots,rep_knots, acum_mult);
     }
 
 
@@ -154,7 +154,7 @@ int main()
         vector<Real>    rep_knots = {0,0,0,0,1,1,1,1};
         vector<Index>   acum_mult = {0,4,8};
 
-        fill_extraction( degree,knots,rep_knots, acum_mult);
+        fill_extraction(degree,knots,rep_knots, acum_mult);
     }
 
 

@@ -34,27 +34,27 @@
 template< int dim_domain, int dim_range, int rank >
 void do_test()
 {
-	vector< iga::Real > coord_x ;
+    vector< Real > coord_x ;
     coord_x.push_back(0.0) ;
     coord_x.push_back(1.0) ;
     coord_x.push_back(2.0) ;
     coord_x.push_back(3.0) ;
     coord_x.push_back(4.0) ;
 
-    vector< iga::Real > coord_y ;
+    vector< Real > coord_y ;
     coord_y.push_back(5.0) ;
     coord_y.push_back(6.0) ;
     coord_y.push_back(7.0) ;
     coord_y.push_back(8.0) ;
 
-    vector< iga::Real > coord_z ;
+    vector< Real > coord_z ;
     coord_z.push_back(9.0) ;
     coord_z.push_back(10.0) ;
     coord_z.push_back(11.0) ;
 
     using Space = BSplineSpace<dim_domain, dim_range, rank>;
 
-    CartesianProductArray< iga::Real, dim_domain > coord ;
+    CartesianProductArray< Real, dim_domain > coord ;
     TensorIndex<dim_domain> degree ;
 
 

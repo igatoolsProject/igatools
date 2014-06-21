@@ -68,7 +68,7 @@ void test_evaluate()
     hessians.print_info(out);
 
     string filename = "spherical_map-" + to_string(dim) + "d";
-    Writer<dim, dim+1> writer(map, 10);
+    Writer<dim, 1> writer(map, 10);
     writer.save(filename);
 }
 

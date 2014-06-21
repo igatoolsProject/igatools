@@ -58,25 +58,25 @@ void do_test(const int degree)
     }
 
     {
-    	auto elem = space->begin();
-    	elem->init_values(ValueFlags::gradient, quad) ;
+        auto elem = space->begin();
+        elem->init_values(ValueFlags::gradient, quad) ;
 
-    	for (; elem != space->end(); ++elem)
-    	{
-    		elem->fill_values();
-    		elem->get_basis_gradients().print_info(out);
-    	}
+        for (; elem != space->end(); ++elem)
+        {
+            elem->fill_values();
+            elem->get_basis_gradients().print_info(out);
+        }
     }
 
     {
-    	auto elem = space->begin();
-    	elem->init_values(ValueFlags::hessian, quad) ;
+        auto elem = space->begin();
+        elem->init_values(ValueFlags::hessian, quad) ;
 
-    	for (; elem != space->end(); ++elem)
-    	{
-    		elem->fill_values();
-    		elem->get_basis_hessians().print_info(out);
-    	}
+        for (; elem != space->end(); ++elem)
+        {
+            elem->fill_values();
+            elem->get_basis_hessians().print_info(out);
+        }
 
     }
 

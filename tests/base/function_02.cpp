@@ -31,24 +31,24 @@ template<int dim, int range>
 class LinearFunction : public Function<dim, range>
 {
 public:
-	using typename Function<dim, range>::Point;
-	using typename Function<dim, range>::Value;
-	using typename Function<dim, range>::Gradient;
+    using typename Function<dim, range>::Point;
+    using typename Function<dim, range>::Value;
+    using typename Function<dim, range>::Gradient;
 
     LinearFunction(const Gradient &A, const Value &b)
-    :
-    	A_ {A},
-    	b_ {b}
-	{}
+        :
+        A_ {A},
+       b_ {b}
+    {}
 
     void evaluate(const vector<Point> &points,
-    		vector<Value> &values) const
+                  vector<Value> &values) const
     {
-    	auto point = points.begin();
+        auto point = points.begin();
         for (auto &val : values)
         {
-        	val = action(A_, *point) + b_;
-        	++point;
+            val = action(A_, *point) + b_;
+            ++point;
         }
     }
 
@@ -62,37 +62,37 @@ private:
 template<int dim, int range>
 void test()
 {
-	const int n_points = 2;
-	using Function = LinearFunction<dim, range>;
+    const int n_points = 2;
+    using Function = LinearFunction<dim, range>;
 
-	typename Function::Value    b;
-	typename Function::Gradient A;
-	for (int i=0; i<range; i++)
-	{
-		for (int j=0; j<dim; j++)
-			if (j == i)
-				A[j][j] = 2.;
-		b[i] = i;
-	}
+    typename Function::Value    b;
+    typename Function::Gradient A;
+    for (int i=0; i<range; i++)
+    {
+        for (int j=0; j<dim; j++)
+            if (j == i)
+                A[j][j] = 2.;
+        b[i] = i;
+    }
 
 
-	Function F(A,b);
-	vector<typename Function::Point> x(n_points);
-	vector<typename Function::Value>     y(n_points);
-	x[1][0] = 1.;
+    Function F(A,b);
+    vector<typename Function::Point> x(n_points);
+    vector<typename Function::Value>     y(n_points);
+    x[1][0] = 1.;
 
-	F.evaluate(x,y);
+    F.evaluate(x,y);
 
-	out << x << endl;
-	out << y << endl;
+    out << x << endl;
+    out << y << endl;
 }
 
 
 int main()
 {
-   test<2,2>();
-   test<3,3>();
+    test<2,2>();
+    test<3,3>();
 
-   return 0;
+    return 0;
 }
 
