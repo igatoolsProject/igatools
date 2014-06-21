@@ -18,36 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- * This file contains the test for the instantiations of the Point type.
- * \author Massimiliano Martinelli (massimiliano.martinelli@gmail.com)
- * \date 08/04/2013
+/*
+ * Test for the Points alias
+ * author: pauletti
+ * date: Jun 21, 2014
+ *
  */
 
 #include "../tests.h"
-
 #include "igatools/base/tensor.h"
 
-using std::endl ;
-
-template< int dim >
-void do_test()
+template<int dim>
+void default_constructor()
 {
-    Points< dim > p0 ;
-
-    out << p0 ;
-    out << endl ;
+    Points<dim> p;
+    out << p << endl;
 }
 
+void init_list()
+{
+    Points<2> p2 = {1., 2.5};
+    Points<3> p3({1., 2.5, -4.3});
+    Points<3> p3a {1., 2.5, -4.3};
+    out << p2 << p3 << p3a  << endl;
+}
 
-
-int main(int argc, char *argv[])
+int main()
 {
 
-    do_test<0>() ;
-    do_test<1>() ;
-    do_test<2>() ;
-    do_test<3>() ;
+	default_constructor<0>();
+	default_constructor<1>();
+	default_constructor<2>();
+	default_constructor<3>();
 
-    return (0) ;
+    init_list();
+
+    return 0;
 }
