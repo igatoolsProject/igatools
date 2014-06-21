@@ -66,7 +66,7 @@ endif()
 # Set the igatools version 
 #
 set(IGATOOLS_MAJOR_VERSION 0)
-set(IGATOOLS_MINOR_VERSION 3)
+set(IGATOOLS_MINOR_VERSION 4)
 set(IGATOOLS_PATCH_VERSION 0)
 set(IGATOOLS_VERSION
   ${IGATOOLS_MAJOR_VERSION}.${IGATOOLS_MINOR_VERSION}.${IGATOOLS_PATCH_VERSION})
@@ -179,9 +179,6 @@ configure_file(
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}ConfigVersion.cmake.in 
   ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake @ONLY)
-
-
-
 
 
 # Create the instantiation files
