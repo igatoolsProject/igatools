@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 1, 1, 0 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p = 3.0 ;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 2, 1, 0 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p[0] = 4.0 ;
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 2, 2, 1 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p[0] = 7.0 ;
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 2, 2, 2 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p[0] = 13.0 ;
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 3, 1, 0 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p[0] = 5.0 ;
@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 3, 3, 0 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p[0] = 13.0 ;
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
         out << g << endl << endl ;
 
         out << "FunctionWithGradient< 3, 3, 2 >::Pt" << endl ;
-        Func::PointType p ;
+        Func::Point p ;
         out << p << endl ;
 
         p[0] = 37.0 ;

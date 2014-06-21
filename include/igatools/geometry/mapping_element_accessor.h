@@ -74,9 +74,12 @@ public:
     /**
      * see Mapping<dim, codim>::Value
      */
-    using ValueMap        = typename ContainerType::Value;
-    using GradientMap     = typename ContainerType::Gradient;
-    using HessianMap      = typename ContainerType::Hessian;
+    using Point       = typename ContainerType::Point;
+
+    //TODO(pauletti, Jun 21, 2014): we should use Value instead of ValueMap
+    using ValueMap    = typename ContainerType::Value;
+    using GradientMap = typename ContainerType::Gradient;
+    using HessianMap  = typename ContainerType::Hessian;
 
 public:
     /** Fill flags supported by this iterator */
@@ -285,7 +288,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< ValueMap >
-    evaluate_values_at_points(const std::vector< Points<dim> > &points) const;
+    evaluate_values_at_points(const std::vector<Point> &points) const;
 
     /**
      * Returns the gradient of the map (i.e. the Jacobian)
@@ -296,7 +299,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< GradientMap >
-    evaluate_gradients_at_points(const std::vector< Points<dim> > &points) const;
+    evaluate_gradients_at_points(const std::vector<Point> &points) const;
 
 
     /**
@@ -308,7 +311,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< HessianMap >
-    evaluate_hessians_at_points(const std::vector< Points<dim> > &points) const;
+    evaluate_hessians_at_points(const std::vector<Point> &points) const;
 
     ///@}
 

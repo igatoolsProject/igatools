@@ -35,7 +35,7 @@ void
 run_test(ConstantFunction<dim,rdim,rank> &fun)
 {
     using value_t = typename Function<dim,rdim,rank>::Value;
-    using point_t = typename Function<dim,rdim,rank>::PointType;
+    using point_t = typename Function<dim,rdim,rank>::Point;
 
 
     const int n_pts = 3;

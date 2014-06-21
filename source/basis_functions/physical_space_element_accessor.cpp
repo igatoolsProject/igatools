@@ -322,7 +322,7 @@ fill_face_values(const Index face_id)
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Points<space_dim> &
+get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return (PfElemAccessor::get_map_values(topology_id))[qp];
@@ -531,7 +531,7 @@ template< class PhysSpace >
 template <int deriv_order>
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_basis_derivatives_at_points(const std::vector<Points<dim>> &points) const ->
+evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     Assert(deriv_order >= 0 && deriv_order <= 2,ExcIndexRange(deriv_order,0,2));

@@ -42,7 +42,7 @@ private:
     using self_t = IdentityMapping<dim, codim>;
     using base_t = AnalyticalMapping<dim, codim>;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;
@@ -91,8 +91,8 @@ private:
     std::array<Gradient, UnitElement<dim>::faces_per_element> face_A_;
 
     //The cache
-    mutable std::vector<PointType> points_;
-    mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::vector<Point> points_;
+    mutable std::array<std::vector<Point>, UnitElement<dim>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

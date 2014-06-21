@@ -110,7 +110,10 @@ public :
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 
-    using Value = typename PhysSpace::Value;//PfElemAccessor::template PhysValue<RefSpace::range, RefSpace::rank>;
+    using Value = typename PhysSpace::Value;
+    using Point = typename PhysSpace::Point;
+    using RefPoint = typename RefSpace::Point;
+
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 
     /**
@@ -207,7 +210,7 @@ public :
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Points<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
 
     ///@}
 
@@ -246,7 +249,7 @@ public :
     /**
      * @todo Document this function
      */
-    const Points<space_dim> &
+    const Point &
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**

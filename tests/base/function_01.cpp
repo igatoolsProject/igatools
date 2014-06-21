@@ -33,7 +33,7 @@ template<int dim>
 class Func : public Function<dim, 1, 1 >
 {
 public:
-    void evaluate(const vector< typename Func<dim>::PointType > &Points,
+    void evaluate(const vector< typename Func<dim>::Point > &Points,
                         vector< typename Func<dim>::Value > &ElementValues) const
     {
         const int NumPoints = Points.size() ;

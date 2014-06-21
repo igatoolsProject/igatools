@@ -39,7 +39,7 @@ private:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;
@@ -156,9 +156,9 @@ public:
 
     /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const override final;
+    void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 

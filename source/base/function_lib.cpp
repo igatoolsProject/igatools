@@ -46,7 +46,7 @@ template<int dim, int range, int rank>
 void
 ConstantFunction<dim, range, rank>::
 evaluate(
-    const vector<PointType> &points,
+    const vector<Point> &points,
     vector<Value> &values) const
 {
     Assert(points.size() == values.size(),

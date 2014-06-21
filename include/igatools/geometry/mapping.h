@@ -48,7 +48,7 @@ template <int, int> class MappingElementAccessor;
  *
  * @ingroup containers
  *
- * @author M.S. Pauletti 2012, 2013
+ * @author M.S. Pauletti 2012, 2013, 2014
  * @author M. Martinelli 2013, 2014
  * @author P. Antolin 2014
  * @author N. Cavallini  2012
@@ -100,7 +100,7 @@ private:
 
 public:
     /** Type of the mapping evaluation point. */
-    using PointType = Points<dim>;
+    using Point = Points<dim>;
 
     /** Type of the mapping return value. */
     using Value = Points<space_dim>;
@@ -155,11 +155,11 @@ public:
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
-    virtual void evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const ;
+    virtual void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const ;
 
-    virtual void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const;
     ///@}
 
 
@@ -223,7 +223,7 @@ private:
      * This is an interface for a function that compute the @p values of a Mapping at the @p points.
      * @warning This function must be implemented in any class derived from Mapping.
      */
-//    virtual void evaluate_impl(std::vector<PointType> &points, std::vector<Value> &values) const = 0;
+//    virtual void evaluate_impl(std::vector<Point> &points, std::vector<Value> &values) const = 0;
 
 
     /**

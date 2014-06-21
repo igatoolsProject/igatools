@@ -43,7 +43,7 @@ public:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;

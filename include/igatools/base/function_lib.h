@@ -43,7 +43,7 @@ public:
     /**
      * Type for the input argument of the function.
      */
-    using PointType = typename Function<dim, range, rank>::PointType;
+    using Point = typename Function<dim, range, rank>::Point;
 
     /**
      * Type for the return of the function.
@@ -64,7 +64,7 @@ public:
      * Compute the @p values of Function at some @p points.
      */
     void
-    evaluate(const std::vector<PointType> &points,
+    evaluate(const std::vector<Point> &points,
              std::vector<Value> &values) const;
 
 private:

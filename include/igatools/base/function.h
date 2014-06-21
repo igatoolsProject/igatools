@@ -75,7 +75,7 @@ public:
     /**
      * Type for the input argument of the function.
      */
-    using PointType = Points<dim>;
+    using Point = Points<dim>;
 
     /**
      * Type for the return of the function.
@@ -112,23 +112,23 @@ public:
     /** @name Evaluations of the Function at some points */
     ///@{
     /** Compute the @p values of Function at some @p points. */
-    virtual void evaluate(const std::vector<PointType> &points,
+    virtual void evaluate(const std::vector<Point> &points,
                           std::vector<Value> &values) const = 0;
 
     /** Compute the @p gradients of Function at some @p points. */
     virtual void evaluate_gradients(
-        const std::vector<PointType> &points,
+        const std::vector<Point> &points,
         std::vector<Gradient> &gradient) const;
 
     /** Compute the @p hessians of Function at some @p points. */
     virtual void evaluate_hessians(
-        const std::vector<PointType> &points,
+        const std::vector<Point> &points,
         std::vector<Hessian> &hessians) const;
 
     /** Compute the @p values and the @p gradients of Function at some
      *  @p points. */
     virtual void evaluate_values_and_gradients(
-        const std::vector<PointType> &points,
+        const std::vector<Point> &points,
         std::vector<Value> &values,
         std::vector<Gradient> &gradients) const;
     ///@}

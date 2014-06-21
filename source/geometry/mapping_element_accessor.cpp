@@ -731,13 +731,13 @@ get_num_points(const TopologyId<dim> &topology_id) const
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_values_at_points(const std::vector<Points<dim>> &points) const ->
+evaluate_values_at_points(const std::vector<Point> &points) const ->
 ValueVector< ValueMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Points<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Point> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<ValueMap> map_value(n_points);
 
@@ -749,13 +749,13 @@ ValueVector< ValueMap >
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_gradients_at_points(const std::vector<Points<dim>> &points) const ->
+evaluate_gradients_at_points(const std::vector<Point> &points) const ->
 ValueVector< GradientMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Points<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Point> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<GradientMap> map_gradient(n_points);
 
@@ -767,13 +767,13 @@ ValueVector< GradientMap >
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_hessians_at_points(const std::vector<Points<dim>> &points) const ->
+evaluate_hessians_at_points(const std::vector<Point> &points) const ->
 ValueVector< HessianMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Points<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Point> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<HessianMap> map_hessian(n_points);
 

@@ -321,7 +321,7 @@ evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) cons
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const
+evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
 
@@ -347,7 +347,7 @@ evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &val
 
         //here we copy the points that belongs to the current element
         const auto point_it_end = point_it + (*elem_multiplicity_it++);
-        vector<PointType> points_current_element(point_it,point_it_end);
+        vector<Point> points_current_element(point_it,point_it_end);
         point_it = point_it_end;
 
         const auto points_unit_element =
@@ -367,7 +367,7 @@ evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &val
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
 
@@ -393,7 +393,7 @@ evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<G
 
         //here we copy the points that belongs to the current element
         const auto point_it_end = point_it + (*elem_multiplicity_it++);
-        vector<PointType> points_current_element(point_it,point_it_end);
+        vector<Point> points_current_element(point_it,point_it_end);
         point_it = point_it_end;
 
         const auto points_unit_element =
@@ -413,7 +413,7 @@ evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<G
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
 
@@ -439,7 +439,7 @@ evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<He
 
         //here we copy the points that belongs to the current element
         const auto point_it_end = point_it + (*elem_multiplicity_it++);
-        vector<PointType> points_current_element(point_it,point_it_end);
+        vector<Point> points_current_element(point_it,point_it_end);
         point_it = point_it_end;
 
         const auto points_unit_element =

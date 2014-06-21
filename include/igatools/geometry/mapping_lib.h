@@ -49,7 +49,7 @@ private:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;
@@ -100,8 +100,8 @@ private:
 
 
     // TODO (pauletti, Apr 23, 2014): why not have this in the base class?
-    mutable std::vector<PointType> points_;
-    mutable std::array<std::vector<PointType>, UnitElement<dim_>::faces_per_element> face_points_;
+    mutable std::vector<Point> points_;
+    mutable std::array<std::vector<Point>, UnitElement<dim_>::faces_per_element> face_points_;
 };
 
 
@@ -128,7 +128,7 @@ private:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;
@@ -163,15 +163,15 @@ public:
 
     /** @name Evaluating the quantities related to BallMapping without the use of the cache. */
     ///@{
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const override final;
+    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 private:
     static const int order = 3;
 
     mutable std::vector<Points<dim>> points_;
-    mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<std::vector<Point>, UnitElement<dim>::faces_per_element> face_points_;
     mutable std::array<std::vector<std::array<double, dim> >, order> cos_val;
     mutable std::array<std::vector<std::array<double, dim> >, order> sin_val;
     mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
@@ -197,7 +197,7 @@ private:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;
@@ -231,7 +231,7 @@ public:
 private:
     static const int order = 3;
     mutable std::vector<Points<dim>> points_;
-    mutable std::array<std::vector<PointType>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<std::vector<Point>, UnitElement<dim>::faces_per_element> face_points_;
     mutable std::array<std::vector<std::array<double, space_dim> >, order> cos_val;
     mutable std::array<std::vector<std::array<double, space_dim> >, order> sin_val;
     mutable std::array<std::array<std::vector<std::array<double, dim> >, order>,
@@ -276,7 +276,7 @@ private:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;
@@ -355,13 +355,13 @@ public:
 
     void set_face_element(const Index face_id, const CartesianGridElementAccessor<3> &elem) const;
 
-    void evaluate(std::vector<PointType> &values) const override;
+    void evaluate(std::vector<Point> &values) const override;
 
     void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
     void evaluate_hessians(std::vector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, std::vector<PointType> &values) const override;
+    void evaluate_face(const Index face_id, std::vector<Point> &values) const override;
 
     void evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const override;
 
@@ -369,9 +369,9 @@ public:
 
     /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<PointType> &points, std::vector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<Hessian> &hessians) const override final;
+    void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 private:
@@ -385,8 +385,8 @@ private:
     const Real dR_;
     const Real dT_;
     const Real dH_;
-    mutable std::vector<PointType> points_;
-    mutable std::array<std::vector<PointType>, UnitElement<3>::faces_per_element> face_points_;
+    mutable std::vector<Point> points_;
+    mutable std::array<std::vector<Point>, UnitElement<3>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

@@ -31,7 +31,7 @@ template<int dim, int range>
 class LinearFunction : public Function<dim, range>
 {
 public:
-	using typename Function<dim, range>::PointType;
+	using typename Function<dim, range>::Point;
 	using typename Function<dim, range>::Value;
 	using typename Function<dim, range>::Gradient;
 
@@ -41,7 +41,7 @@ public:
     	b_ {b}
 	{}
 
-    void evaluate(const vector<PointType> &points,
+    void evaluate(const vector<Point> &points,
     		vector<Value> &values) const
     {
     	auto point = points.begin();
@@ -77,7 +77,7 @@ void test()
 
 
 	Function F(A,b);
-	vector<typename Function::PointType> x(n_points);
+	vector<typename Function::Point> x(n_points);
 	vector<typename Function::Value>     y(n_points);
 	x[1][0] = 1.;
 

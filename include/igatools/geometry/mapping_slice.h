@@ -42,7 +42,7 @@ public:
 
     using typename base_t::GridType;
 
-    using typename base_t::PointType;
+    using typename base_t::Point;
     using typename base_t::Value;
     using typename base_t::Gradient;
     using typename base_t::Hessian;

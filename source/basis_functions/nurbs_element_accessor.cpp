@@ -230,7 +230,7 @@ void
 NURBSElementAccessor< dim, range, rank >::
 evaluate_nurbs_gradients(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
-    ValueTable< Derivatives< dim, range, rank, 1 > > &D1_phi_hat) const
+    ValueTable< Derivative<1> > &D1_phi_hat) const
 {
 
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
@@ -474,7 +474,7 @@ void
 NURBSElementAccessor< dim, range, rank >::
 evaluate_nurbs_hessians(
     const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
-    ValueTable< Derivatives< dim, range, rank, 2 > > &D2_phi_hat) const
+    ValueTable<Derivative<2>> &D2_phi_hat) const
 {
 
     Assert(bspline_cache.is_initialized(),ExcNotInitialized());
@@ -793,7 +793,7 @@ template <int dim, int range, int rank >
 template <int deriv_order>
 auto
 NURBSElementAccessor< dim, range, rank >::
-evaluate_basis_derivatives_at_points(const vector<Points<dim>> &points) const
+evaluate_basis_derivatives_at_points(const vector<Point> &points) const
 ->ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
 

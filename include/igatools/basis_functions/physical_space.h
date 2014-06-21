@@ -74,7 +74,7 @@ public:
     using Func = Function<space_dim, range, rank>;
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
-    using Point = typename Func::PointType;
+    using Point = typename Func::Point;
     using Value = typename Func::Value;
     using Div   = typename Func::Div;
 
