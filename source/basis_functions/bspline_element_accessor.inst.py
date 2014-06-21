@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid.h',
@@ -56,7 +55,7 @@ for i in range(len(acc_list)):
                acc_list[i] + '::Derivative<deriv_order> > > ' + 
                acc_list[i] + 
                '::evaluate_basis_derivatives_at_points<deriv_order>' +
-               '(const vector<Points<dim_domain>>&) const; \n')
+               '(const vector<Point>&) const; \n')
    f1 = function.replace('dim_domain', str(row.dim) );
    fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
    for s in fun_list:

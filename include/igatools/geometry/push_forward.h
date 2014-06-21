@@ -33,8 +33,9 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
 
 template < class PushForward > class PushForwardElementAccessor;
 
+//TODO(pauletti, Jun 21, 2014): this documentation is completely outdated
 /**
- * * The main use of mapping is the transformation of objects
+ * The main use of mapping is the transformation of objects
  * in the reference domain to the physical domain.
  * Such objects include:
  * - values and derivatives of basis functions
@@ -58,30 +59,28 @@ public:
     using Map = Mapping<dim_, codim_>;
 
     using GridType = typename Map::GridType;
-    /**
-     * see Mapping<dim_, codim_>::dim
-     */
+
     static const int dim       = Map::dim;
     static const int codim     = Map::codim;
     static const int space_dim = Map::space_dim;
 
 
-
-
     static const Transformation type = transformation_type_;
 
+    //TODO(pauletti, Jun 21, 2014): document
     template<int ref_range>
     struct PhysRange
     {
         static const int value = physical_range(ref_range, space_dim, type);
-
     };
 
     /**
-     * Typedef for the PushForward on a face.
+     * Face Space PushForward type
      */
     using FacePushForward =
-        PushForward<type,Map::FaceMapping::dim, Map::FaceMapping::codim>;
+        PushForward<type, Map::FaceMapping::dim, Map::FaceMapping::codim>;
+
+    using RefPoint = typename Map::Point;
 
     template <int range, int rank>
     using RefValue = Values<dim, range, rank>;
@@ -89,12 +88,12 @@ public:
     template <int range, int rank, int order>
     using RefDerivative = Derivatives<dim, range, rank, order>;
 
-
-    //
     template <int range, int rank, int order>
     using RefFaceDerivative = Conditional< dim == 0,
           Derivatives<0,     range, rank, order>,
           Derivatives<dim-1, range, rank, order> >;
+
+    using PhysPoint = typename Map::Value;
 
     template <int range, int rank>
     using PhysValue = Values<space_dim, PhysRange<range>::value, rank>;

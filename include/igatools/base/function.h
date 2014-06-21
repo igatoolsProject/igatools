@@ -84,6 +84,7 @@ public:
 
     template <int order>
     using Derivative = Derivatives<dim, range, rank, order>;
+
     /**
      * Type for the gradient of the function.
      */
