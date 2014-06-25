@@ -308,62 +308,6 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
-	auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
-	shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
-			make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
-	spline_space_previous_refinement_ =
-			shared_ptr<const BaseSpace>(
-					new BaseSpace(this->get_degree(),
-							grid_pre_refinement,
-							interior_mult_prev_refinement));
-
-    for (int direction_id = 0; direction_id < dim; ++direction_id)
-    {
-        if (refinement_directions[direction_id])
-        {
-            // knots in the refined grid along the selected direction
-            vector<Real> knots_new = this->get_grid()->get_knot_coordinates(direction_id);
-
-            // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
-
-            vector<Real> knots_added(knots_new.size());
-
-            // find the knots in the refined grid that are not present in the old grid
-            auto it = std::set_difference(
-                          knots_new.begin(),knots_new.end(),
-                          knots_old.begin(),knots_old.end(),
-                          knots_added.begin());
-
-            knots_added.resize(it-knots_added.begin());
-
-            for (int comp_id = 0; comp_id < self_t::n_components; ++comp_id)
-            {
-                //--------------------------------------------------------
-                // creating the new multiplicity
-            	auto & interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
-                const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
-                const int n_mult_old = mult_old.size();
-
-                const int n_mult_to_add = n_mult_old + 1;
-                const int n_mult_new = n_mult_old + n_mult_to_add;
-
-                vector<int> mult_new(n_mult_new);
-                for (int i = 0; i < n_mult_to_add; ++i)
-                {
-                    mult_new[2*i  ] = 1,
-                    mult_new[2*i+1] = mult_old[i];
-                }
-                mult_new[n_mult_new-1] = 1;
-
-                interior_mult(comp_id).copy_data_direction(direction_id,mult_new);
-                //--------------------------------------------------------
-            } // end loop comp_id
-        } // end if(refinement_directions[direction_id])
-    } // end loop direction_id
-
-    BaseSpace::init();
-
     basis_indices_ = DofDistribution<dim, range, rank>(
     		this->get_grid(),
     		BaseSpace::accumulated_interior_multiplicities(),

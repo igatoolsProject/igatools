@@ -26,6 +26,7 @@ using std::vector;
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
@@ -50,6 +51,12 @@ SplineSpace(const DegreeTable &deg,
     periodic_(periodic)
 {
 	this->init();
+
+    // create a signal and a connection for the grid refinement
+    this->connect_refinement_h_function(
+        std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
+                  std::placeholders::_1,std::placeholders::_2));
+
 }
 
 template<int dim, int range, int rank>
@@ -100,6 +107,74 @@ init()
     }
     space_dim_.total_dimension = total_dim;
     elem_n_basis_.total_dimension = elem_total;
+}
+
+
+
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
+refine_h_after_grid_refinement(
+    const std::array<bool,dim> &refinement_directions,
+    const GridType &grid_old)
+{
+	auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
+	shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
+			make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
+
+	spline_space_previous_refinement_ =
+			make_shared<const SplineSpace<dim,range,rank> >(
+					SplineSpace<dim,range,rank>(
+						this->get_degree(),
+						grid_pre_refinement,
+						interior_mult_prev_refinement));
+
+    for (int direction_id = 0; direction_id < dim; ++direction_id)
+    {
+        if (refinement_directions[direction_id])
+        {
+            // knots in the refined grid along the selected direction
+            vector<Real> knots_new = this->get_grid()->get_knot_coordinates(direction_id);
+
+            // knots in the original (unrefined) grid along the selected direction
+            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
+
+            vector<Real> knots_added(knots_new.size());
+
+            // find the knots in the refined grid that are not present in the old grid
+            auto it = std::set_difference(
+                          knots_new.begin(),knots_new.end(),
+                          knots_old.begin(),knots_old.end(),
+                          knots_added.begin());
+
+            knots_added.resize(it-knots_added.begin());
+
+            for (int comp_id = 0; comp_id < SplineSpace<dim,range,rank>::n_components; ++comp_id)
+            {
+                //--------------------------------------------------------
+                // creating the new multiplicity
+            	auto & interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+                const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
+                const int n_mult_old = mult_old.size();
+
+                const int n_mult_to_add = n_mult_old + 1;
+                const int n_mult_new = n_mult_old + n_mult_to_add;
+
+                vector<int> mult_new(n_mult_new);
+                for (int i = 0; i < n_mult_to_add; ++i)
+                {
+                    mult_new[2*i  ] = 1,
+                    mult_new[2*i+1] = mult_old[i];
+                }
+                mult_new[n_mult_new-1] = 1;
+
+                interior_mult(comp_id).copy_data_direction(direction_id,mult_new);
+                //--------------------------------------------------------
+            } // end loop comp_id
+        } // end if(refinement_directions[direction_id])
+    } // end loop direction_id
+
+    this->init();
 }
 
 template<int dim, int range, int rank>
@@ -214,7 +289,8 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
 
 
 template<int dim, int range, int rank>
-auto SplineSpace<dim, range, rank>::
+auto
+SplineSpace<dim, range, rank>::
 get_face_mult(const Index face_id) const
 -> shared_ptr<typename FaceSpace::MultiplicityTable>
 {

@@ -394,14 +394,6 @@ private:
         const GridType &grid_old) ;
 
 
-    //TODO(pauletti, Apr 27, 2014): make this private and use a getter
-//public:
-//    /** Knots with repetitions before refinement */
-//    KnotsTable knots_with_repetitions_pre_refinement_;
-
-	std::shared_ptr<const BaseSpace> spline_space_previous_refinement_;
-
-
 public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
