@@ -44,7 +44,6 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
             x = j++;
     }
 
-
     for (const auto elem : *grid)
     {
         const auto index = elem.get_tensor_index();

@@ -32,6 +32,7 @@ using std::array;
 using std::vector;
 using std::set;
 using std::shared_ptr;
+using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
@@ -348,6 +349,15 @@ get_num_knots_dim() const -> TensorSize<dim>
     return knot_coordinates_.tensor_size();
 }
 
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_grid_pre_refinement() const -> shared_ptr<const CartesianGrid<dim> >
+{
+	return grid_pre_refinement_;
+}
+
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -356,7 +366,7 @@ refine_directions(
     const array<Size,dim> &n_subdivisions)
 {
     // make a copy of the grid before the refinement
-    const auto grid_old = (*this);
+    grid_pre_refinement_ = shared_ptr<const CartesianGrid<dim>>(new CartesianGrid<dim>(*this));
 
     for (int i = 0 ; i < dim ; ++i)
         if (refinement_directions[i])
@@ -364,7 +374,7 @@ refine_directions(
 
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)
-    this->refine_signals_(refinement_directions,grid_old);
+    this->refine_signals_(refinement_directions,*grid_pre_refinement_);
 }
 
 template <int dim_>

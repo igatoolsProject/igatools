@@ -424,6 +424,13 @@ public:
      *  emitted whenever a refine() function is called by an object holding a CartesianGrid member.
      */
     boost::signals2::connection connect_refinement(const SignalRefineSlot &subscriber) ;
+
+
+    /**
+     * Returns the grid before the last refinement. If no refinement is performed,
+     * this function returns a null pointer.
+     */
+    std::shared_ptr<const CartesianGrid<dim> > get_grid_pre_refinement() const;
     ///@}
 
 
@@ -437,6 +444,12 @@ private:
      */
     void refine_knots_direction(const int direction_id,
                                 const Size n_subdivisions) ;
+
+    /**
+     * This class member is the grid before the last refinement. If no refinement is performed,
+     * this is a null pointer.
+     */
+    std::shared_ptr<const CartesianGrid<dim> > grid_pre_refinement_ = nullptr;
 
     /**
      * Signals for the h-refinement. It can be viewed as a FIFO list of function pointers.

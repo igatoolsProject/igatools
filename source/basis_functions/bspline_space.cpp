@@ -28,6 +28,7 @@ using std::array;
 using std::vector;
 using std::shared_ptr;
 using std::make_shared;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
@@ -81,8 +82,17 @@ BSplineSpace(const DegreeTable &deg,
                    BaseSpace::get_num_basis_table(),BaseSpace::get_num_basis_per_element_table()),
     operators_(knots, BaseSpace::compute_knots_with_repetition(BaseSpace::EndBehaviour::interpolatory),
                BaseSpace::accumulated_interior_multiplicities(), deg)
-
-{}
+{
+    // create a signal and a connection for the grid refinement
+    this->connect_refinement_h_function(
+        std::bind(&self_t::refine_h_after_grid_refinement, this,
+                  std::placeholders::_1,std::placeholders::_2));
+	spline_space_previous_refinement_ =
+			shared_ptr<const BaseSpace>(new BaseSpace(
+												deg,
+												const_pointer_cast<CartesianGrid<dim>>(knots->get_grid_pre_refinement()),
+												BaseSpace::InteriorReg::maximum));
+}
 
 
 
@@ -111,6 +121,16 @@ BSplineSpace(const DegreeTable &deg,
     operators_(knots, BaseSpace::compute_knots_with_repetition(BaseSpace::EndBehaviour::interpolatory),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
+    // create a signal and a connection for the grid refinement
+    this->connect_refinement_h_function(
+        std::bind(&self_t::refine_h_after_grid_refinement, this,
+                  std::placeholders::_1,std::placeholders::_2));
+	spline_space_previous_refinement_ =
+			shared_ptr<const BaseSpace>(
+					new BaseSpace(deg,
+							const_pointer_cast<CartesianGrid<dim>>(knots->get_grid_pre_refinement()),
+							make_shared<MultiplicityTable>(MultiplicityTable(*interior_mult))));
+
 }
 
 
@@ -269,7 +289,6 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_push_forward() -> shared_ptr<PushForwardType>
 {
-
     return
     PushForwardType::create(IdentityMapping<dim>::create(this->get_grid()));
 }
@@ -292,7 +311,7 @@ get_push_forward() const -> shared_ptr<const PushForwardType>
 }
 
 
-#if 0
+//#if 0
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
@@ -300,8 +319,14 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
-    // keeping the original knots (with repetitions) before the h-refinement
-    knots_with_repetitions_pre_refinement_ = knots_with_repetitions_;
+	auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
+	shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
+			make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
+	spline_space_previous_refinement_ =
+			shared_ptr<const BaseSpace>(
+					new BaseSpace(this->get_degree(),
+							grid_pre_refinement,
+							interior_mult_prev_refinement));
 
     for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
@@ -323,52 +348,45 @@ refine_h_after_grid_refinement(
 
             knots_added.resize(it-knots_added.begin());
 
-
-
             for (int comp_id = 0; comp_id < self_t::n_components; ++comp_id)
             {
                 //--------------------------------------------------------
                 // creating the new multiplicity
-                const vector<int> &mult_old = mult_(comp_id).get_data_direction(direction_id);
+            	auto & interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+                const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
                 const int n_mult_old = mult_old.size();
 
-                const int n_mult_to_add = n_mult_old - 1;
+                const int n_mult_to_add = n_mult_old + 1;
                 const int n_mult_new = n_mult_old + n_mult_to_add;
 
                 vector<int> mult_new(n_mult_new);
                 for (int i = 0; i < n_mult_to_add; ++i)
                 {
-                    mult_new[2*i  ] = mult_old[i];
-                    mult_new[2*i+1] = 1;
+                    mult_new[2*i  ] = 1,
+                    mult_new[2*i+1] = mult_old[i];
                 }
-                mult_new[n_mult_new-1] = mult_old[n_mult_old-1];
+                mult_new[n_mult_new-1] = 1;
 
-                mult_(comp_id).copy_data_direction(direction_id,mult_new);
-                //--------------------------------------------------------
-
-
-                //--------------------------------------------------------
-                const auto &knots_old =
-                    knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
-
-                // knots with repetitions after refinement
-                vector<Real> Ubar = knots_old;
-                Ubar.insert(Ubar.end(),
-                            knots_added.begin(),knots_added.end());
-
-                sort(Ubar.begin(),Ubar.end());
-
-                knots_with_repetitions_(comp_id).copy_data_direction(direction_id,Ubar);
+                interior_mult(comp_id).copy_data_direction(direction_id,mult_new);
                 //--------------------------------------------------------
             } // end loop comp_id
-
         } // end if(refinement_directions[direction_id])
-
     } // end loop direction_id
 
-    init_dofs();
+    BaseSpace::init();
+
+    basis_indices_ = DofDistribution<dim, range, rank>(
+    		this->get_grid(),
+    		BaseSpace::accumulated_interior_multiplicities(),
+            BaseSpace::get_num_basis_table(),
+            BaseSpace::get_num_basis_per_element_table());
+
+    operators_ = BernsteinExtraction<dim, range, rank>(
+    		this->get_grid(),
+    		BaseSpace::compute_knots_with_repetition(BaseSpace::EndBehaviour::interpolatory),
+            BaseSpace::accumulated_interior_multiplicities(),
+            this->get_degree());
 }
-#endif
 
 
 

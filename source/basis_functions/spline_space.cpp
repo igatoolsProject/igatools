@@ -49,6 +49,14 @@ SplineSpace(const DegreeTable &deg,
     deg_(deg),
     periodic_(periodic)
 {
+	this->init();
+}
+
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
+init()
+{
 #ifndef NDEBUG
     auto const knots_size = this->get_grid()->get_num_knots_dim();
     for (int iComp = 0; iComp < n_components; ++iComp)
@@ -93,8 +101,6 @@ SplineSpace(const DegreeTable &deg,
     space_dim_.total_dimension = total_dim;
     elem_n_basis_.total_dimension = elem_total;
 }
-
-
 
 template<int dim, int range, int rank>
 auto

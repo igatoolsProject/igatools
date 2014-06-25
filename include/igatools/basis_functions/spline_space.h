@@ -232,6 +232,8 @@ public:
 
     void print_info(LogStream &out) const;
 
+
+
 private:
     /**
      * Fill the multiplicy for the maximum possible regularity
@@ -257,6 +259,14 @@ private:
     PeriodicTable periodic_;
 
 public:
+
+    /** Returns the multiplicity of the internal knots that defines the space. */
+    std::shared_ptr<const MultiplicityTable> get_interior_mult()
+    {
+    	return interior_mult_;
+    }
+
+
     /**
      *  Class to manage the component quantities with the knowledge of
      * uniform range spaces
@@ -359,6 +369,11 @@ public:
 
     };
 
+
+    protected:
+
+    /** This function initialize the member variables from the constructor arguments or after an h-refinement. */
+    void init();
 };
 
 

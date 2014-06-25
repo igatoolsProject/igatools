@@ -377,27 +377,30 @@ private:
     friend class BSplineElementAccessor<dim, range, rank>;
 
 
-//    /**
-//     * Refines the function space after a grid uniform refinement.
-//     *
-//     * @param[in] refinement_directions Directions along which the refinement is performed.
-//     * @param[in] grid_old Grid before the refinement.
-//     *
-//     * @pre Before invoking this function, must be invoked the function grid_->refine().
-//     * @note This function is connected to the CartesianGrid's signal for the refinement, and
-//     * it is necessary in order to avoid infinite loops in the refine() function calls.
-//     *
-//     * @ingroup h_refinement
-//     */
-//    void refine_h_after_grid_refinement(
-//        const std::array<bool,dim> &refinement_directions,
-//        const GridType &grid_old) ;
+    /**
+     * Refines the function space after a grid uniform refinement.
+     *
+     * @param[in] refinement_directions Directions along which the refinement is performed.
+     * @param[in] grid_old Grid before the refinement.
+     *
+     * @pre Before invoking this function, must be invoked the function grid_->refine().
+     * @note This function is connected to the CartesianGrid's signal for the refinement, and
+     * it is necessary in order to avoid infinite loops in the refine() function calls.
+     *
+     * @ingroup h_refinement
+     */
+    void refine_h_after_grid_refinement(
+        const std::array<bool,dim> &refinement_directions,
+        const GridType &grid_old) ;
 
 
     //TODO(pauletti, Apr 27, 2014): make this private and use a getter
 //public:
 //    /** Knots with repetitions before refinement */
 //    KnotsTable knots_with_repetitions_pre_refinement_;
+
+	std::shared_ptr<const BaseSpace> spline_space_previous_refinement_;
+
 
 public:
     DeclException1(ExcScalarRange, int,
