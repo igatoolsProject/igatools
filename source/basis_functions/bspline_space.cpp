@@ -87,11 +87,6 @@ BSplineSpace(const DegreeTable &deg,
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
-	spline_space_previous_refinement_ =
-			shared_ptr<const BaseSpace>(new BaseSpace(
-												deg,
-												const_pointer_cast<CartesianGrid<dim>>(knots->get_grid_pre_refinement()),
-												BaseSpace::InteriorReg::maximum));
 }
 
 
@@ -125,12 +120,6 @@ BSplineSpace(const DegreeTable &deg,
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
-	spline_space_previous_refinement_ =
-			shared_ptr<const BaseSpace>(
-					new BaseSpace(deg,
-							const_pointer_cast<CartesianGrid<dim>>(knots->get_grid_pre_refinement()),
-							make_shared<MultiplicityTable>(MultiplicityTable(*interior_mult))));
-
 }
 
 
