@@ -154,73 +154,18 @@ Index find_span(
     }
     return mid;
 }
+#endif
 
 
-template <class Space>
-std::shared_ptr< FaceSpace<Space> >
-get_face_space(std::shared_ptr<const Space> space,
-               const Index face_id,
-               std::vector<Index> &face_to_element_dofs)
-{
-    using RefSpace = typename Space::RefSpace;
-
-    using FPF = typename Space::PushForwardType::FacePushForward;
-    auto ref_space = space->get_reference_space();
-
-
-    auto elem_map = std::make_shared<std::map<int,int> >();
-
-    auto face_ref_sp = create_face_ref_space<RefSpace>(ref_space, face_id, *elem_map);
-
-    auto pf   = space->get_push_forward();
-    auto map  = pf->get_mapping();
-    auto fmap = MappingSlice<Space::dim-1, Space::codim + 1>::
-                create(map, face_id, face_ref_sp->get_grid(), elem_map);
-
-    auto fpf = FPF::create(fmap);
-
-    auto face_space = FaceSpace<Space>::create(face_ref_sp,fpf);
-
-
-    const auto &active_dirs = UnitElement<Space::dim>::face_active_directions[face_id];
-    const auto const_dir = UnitElement<Space::dim>::face_constant_direction[face_id];
-    const auto face_side = UnitElement<Space::dim>::face_side[face_id];
-
-    TensorIndex<Space::dim> tensor_index;
-
-    face_to_element_dofs.resize(face_ref_sp->get_num_basis());
-    int k=0;
-    int offset=0;
-    for (int comp = 0; comp < Space::RefFaceSpace::n_components; ++comp)
-    {
-        const int face_n_basis = face_ref_sp->get_num_basis(comp);
-        for (Index i = 0; i < face_n_basis; ++i, ++k)
-        {
-            const auto f_tensor_idx = face_ref_sp->flat_to_tensor(i,comp);
-            const int fixed_idx =
-                face_side * (ref_space->get_num_basis(comp,const_dir) - 1);
-            for (int j = 0; j < Space::dim-1; ++j)
-                tensor_index[active_dirs[j]] =  f_tensor_idx[j];
-            tensor_index[const_dir] = fixed_idx;
-
-            const Index dof = ref_space->tensor_to_flat(tensor_index, comp);
-
-            face_to_element_dofs[k] = offset + dof;
-        }
-        offset += ref_space->get_num_basis(comp);
-    }
-
-    return face_space;
-}
 
 template<class Space, LAPack la_pack>
 Real
-integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
+integrate_difference(const typename Space::Func &exact_solution,
                      std::shared_ptr<const Space> space,
                      const Quadrature< Space::dim > &quad,
                      const Norm &norm_flag,
                      const Vector<la_pack> &solution_coefs,
-                     std::vector< Real > &element_error)
+                     std::vector<Real> &element_error)
 {
     bool is_L2_norm     = contains(norm_flag, Norm::L2);
     bool is_H1_norm     = contains(norm_flag, Norm::H1);
@@ -250,11 +195,8 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
     if (is_H1_seminorm)
         flag |= ValueFlags::gradient;
 
-
-
     const int n_points   =  quad.get_num_points();
     const int n_elements =  space->get_grid()->get_num_elements();
-
 
     Assert((element_error.size() == n_elements) || (element_error.size() == 0),
            ExcMessage("The size of the ouput vector is not correct."));
@@ -263,22 +205,21 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
         element_error.resize(n_elements);
     }
 
+    using Value = typename Space::Func::Value;
+    using Gradient = typename Space::Func::Gradient;
 
-    typedef typename Func<Space>::Value ValuePhys_t;
-    typedef typename Func<Space>::Gradient GradientPhys_t;
+    vector<Value>    u(n_points);
+    vector<Gradient> grad_u(n_points);
 
-    vector< ValuePhys_t > u(n_points);
-    vector< GradientPhys_t > grad_u(n_points);
-
-    ValuePhys_t err;
-    GradientPhys_t grad_err;
+    Value err;
+    Gradient grad_err;
 
     auto elem = space->begin();
     const auto end = space->end();
     elem->init_values(flag, quad);
 
-    vector< Real >     norm_err_L2_square(n_elements);
-    vector< Real > seminorm_err_H1_square(n_elements);
+    vector<Real>     norm_err_L2_square(n_elements);
+    vector<Real> seminorm_err_H1_square(n_elements);
 
     for (; elem != end; ++elem)
     {
@@ -294,7 +235,7 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
         if (is_L2_norm)
         {
             const auto &uh = elem->evaluate_field(solution_coefs_elem);
-            exact_solution->evaluate(map_at_points, u);
+            exact_solution.evaluate(map_at_points, u);
 
             Real element_err_L2_pow2 = 0.0;
             for (int iPt = 0; iPt < n_points; ++iPt)
@@ -309,7 +250,7 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
         if (is_H1_seminorm)
         {
             const auto &grad_uh = elem->evaluate_field_gradients(solution_coefs_elem);
-            exact_solution->evaluate_gradients(map_at_points, grad_u);
+            exact_solution.evaluate_gradients(map_at_points, grad_u);
 
             Real element_err_semiH1_pow2 = 0.0;
             for (int iPt = 0; iPt < n_points; ++iPt)
@@ -330,12 +271,10 @@ integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
 
     Real total_error = sqrt(err_pow2);
 
-    return (total_error);
+    return total_error;
 }
 
 
-
-#endif
 
 template<class Space, LAPack la_pack>
 Vector<la_pack>

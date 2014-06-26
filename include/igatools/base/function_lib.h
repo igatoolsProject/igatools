@@ -31,11 +31,10 @@ IGA_NAMESPACE_OPEN
  */
 namespace functions
 {
-
 /**
  * Constant scalar function.
  */
-template<int dim, int range=1, int rank=1>
+template<int dim, int range = 1, int rank = 1>
 class ConstantFunction
     : public Function<dim, range, rank>
 {

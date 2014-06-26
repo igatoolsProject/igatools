@@ -54,7 +54,7 @@ project_boundary_values_2=('template void space_tools::project_boundary_values<S
         'std::map<Index, Real>  &);\n')
 
 integrate_difference=('template Real space_tools::integrate_difference('
-        'std::shared_ptr<const typename Space::Func > ,'
+        'const typename Space::Func & ,'
         'std::shared_ptr<const Space> ,'
         'const Quadrature< Space::dim > &,'
         'const Norm &,'
@@ -77,9 +77,9 @@ for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
 for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
     f.write(project_boundary_values_2.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
  
-# 
-# for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
-#     f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
+for sp in inst.UserPhysSpaces + inst.UserRefSpaces:
+    f.write(integrate_difference.replace('Space',sp).replace('LinAlgebra','LAPack::trilinos'))
+
 f.write('#endif\n')
 # TRILINOS specific instantiations -- end
 ############################################

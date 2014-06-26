@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef __SPACE_TOOLS_H_
 #define __SPACE_TOOLS_H_
 
@@ -33,15 +32,13 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <boost/optional.hpp>
 
-
 #include <memory>
 #include <map>
 
 IGA_NAMESPACE_OPEN
 
-
 /**
- * This namespace collect functions that work on the
+ * This namespace collects functions that work on the
  * physical spaces and fields or functions.
  * Such as:
  * - projections
@@ -50,7 +47,6 @@ IGA_NAMESPACE_OPEN
  */
 namespace space_tools
 {
-
 /**
  * Determine the knot span index.
  *
@@ -69,18 +65,24 @@ Index find_span(
 
 //TODO the order of parameters should be consistent
 /**
- * Computes an integral norm of the difference between two functions.
- * In this case one function is a Function and the other one an IG field.
- * @note mostly use to compute the convergence rates when the exact solution is known.
+ * Computes the norm distance between a generic function and
+ * and an isogeometric type function.
+ * More precisely,
+ * res = | D^i(f-g) |_L2 with i=0 or i=1.
+ * It also stores the local norm of each grid element in
+ * the element error vector.
+ *
+ * @note mostly use to compute the convergence rates when the exact solution is
+ *       known.
  * @todo document a little more
  */
 template<class Space, LAPack la_pack = LAPack::trilinos>
-Real integrate_difference(std::shared_ptr<const typename Space::Func> exact_solution,
+Real integrate_difference(const typename Space::Func &exact_solution,
                           std::shared_ptr<const Space> space,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
                           const Vector<la_pack> &solution_coefs,
-                          std::vector< Real > &element_error);
+                          std::vector<Real> &element_error);
 
 
 
@@ -95,11 +97,9 @@ Real integrate_difference(std::shared_ptr<const typename Space::Func> exact_solu
  */
 template<class Space, LAPack la_pack = LAPack::trilinos>
 Vector<la_pack>
-projection_l2(
-    const typename Space::Func &func,
-    std::shared_ptr<const Space> space,
-    const Quadrature<Space::dim> &quad
-);
+projection_l2(const typename Space::Func &func,
+              std::shared_ptr<const Space> space,
+              const Quadrature<Space::dim> &quad);
 
 /**
  * Projects (using the L2 scalar product) a function to the whole or part
@@ -149,9 +149,6 @@ void reference_to_element(
 
 } ;
 
-
-
 IGA_NAMESPACE_CLOSE
 
-
-#endif /* __ERROR_EVALUATION_H_ */
+#endif
