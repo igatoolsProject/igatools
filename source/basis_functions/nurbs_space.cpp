@@ -169,14 +169,9 @@ void
 NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
-	LogStream out;
     // check that the number of weights is equal to the number of basis functions in the space
     for (auto comp : components)
     {
-    	out << "comp=" << comp << endl;
-    	out << "weights_(comp)=" << endl;
-    	weights_(comp).print_info(out);
-    	out << endl;
         Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
                ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
     }
@@ -292,7 +287,6 @@ refine_h_weights(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old1)
 {
-
 	auto grid = this->get_grid();
 	auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
@@ -338,16 +332,10 @@ refine_h_weights(
 
                 const int n = m-p-1;
 
-
                 const auto Pw = weights_(comp_id);
-                LogStream out;
-                out << "weights pre:" << endl;
-                weights_(comp_id).print_info(out);
-                out << endl;
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes(direction_id) == n+1,
                        ExcDimensionMismatch(old_sizes(direction_id), n+1));
-
 
                 auto new_sizes = old_sizes;
                 new_sizes(direction_id) += r+1; // r+1 new weights in the refinement direction
@@ -403,11 +391,7 @@ refine_h_weights(
                 } // end loop j
 
                 weights_(comp_id) = Qw;
-                out << "weights post:" << endl;
-                weights_(comp_id).print_info(out);
-                out << endl;
 
-//#endif
             } // end loop comp_id
 
         } // end if (refinement_directions[direction_id])

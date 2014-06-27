@@ -66,6 +66,7 @@ void test_evaluate()
 
 
     const int deg = 2;
+
     TensorIndex<1> component_map = {0};
     TensorSize<dim> n_weights_dir;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)

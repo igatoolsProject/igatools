@@ -349,13 +349,14 @@ public:
         return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
     }
 
+
+
 private:
 
     /** Container with the local to global basis indices */
     DofDistribution<dim, range, rank> basis_indices_;
 
     /** @name Bezier extraction operator. */
-
     BernsteinExtraction<dim, range, rank> operators_;
 
 
@@ -398,6 +399,15 @@ public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
+
+
+    /** Returns the container with the local to global basis indices. */
+    const DofDistribution<dim, range, rank> &
+    get_basis_indices() const
+    {
+    	return basis_indices_;
+    }
+
 };
 
 
