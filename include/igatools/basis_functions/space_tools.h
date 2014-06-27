@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __SPACE_TOOLS_H_
-#define __SPACE_TOOLS_H_
+#ifndef SPACE_TOOLS_H_
+#define SPACE_TOOLS_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
@@ -151,4 +151,5 @@ void reference_to_element(
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+#endif // #ifndef SPACE_TOOLS_H_
+

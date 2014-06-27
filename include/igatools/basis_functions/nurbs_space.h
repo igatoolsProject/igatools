@@ -402,7 +402,6 @@ private:
      */
     WeightsTable weights_;
 
-#if 0
     /**
      * Refines the NURBSSpace after the uniform refinement of the BSplineSpace.
      *
@@ -423,7 +422,8 @@ private:
      * Create a signal and a connection for the refinement.
      */
     void create_refinement_connection();
-#endif
+
+
     friend ElementAccessor;
 
     /**

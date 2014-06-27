@@ -126,7 +126,6 @@ create_face_ref_space(std::shared_ptr<const RefSpace> ref_space,
 
 namespace space_tools
 {
-#if 0
 Index find_span(
     const int p,
     const Real u,
@@ -154,7 +153,6 @@ Index find_span(
     }
     return mid;
 }
-#endif
 
 
 
