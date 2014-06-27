@@ -90,7 +90,7 @@ BernsteinExtraction<dim, range, rank>::
 print_info(LogStream &out) const
 {
     int c=0;
-    for (const auto &comp : ext_operators)
+    for (const auto &comp : ext_operators_)
     {
         out << "Component[" << c++ << "]: " << endl;
         for (int j = 0; j < dim; ++j)
@@ -155,7 +155,7 @@ BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
                     const MultiplicityTable &acum_mult,
                     const DegreeTable &deg)
 {
-    for (const int &i : ext_operators.get_active_components())
+    for (const int &i : ext_operators_.get_active_components())
     {
         for (int j = 0; j < dim; ++j)
         {
@@ -165,7 +165,7 @@ BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
                                 grid->get_knot_coordinates(j),
                                 rep_knots(i).get_data_direction(j),
                                 acum_mult(i).get_data_direction(j));
-            ext_operators(i).copy_data_direction(j,opers);
+            ext_operators_(i).copy_data_direction(j,opers);
         }
     }
 }

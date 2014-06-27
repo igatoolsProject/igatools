@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
  * the knots is a polynomial of order m.
  *
  * In particular each B-spline can be expressed a linear combination
- * of the Berstein polynomial.
+ * of the Bernstein polynomial.
  *
  * This class computes and stores theses coefficients.
  */
@@ -69,15 +69,15 @@ public:
 
     const std::vector<matrix> &get_operator(const int comp, const int  dir) const
     {
-        return ext_operators(comp).get_data_direction(dir);
+        return ext_operators_(comp).get_data_direction(dir);
     }
 
     ElemOperTable get_element_operators(TensorIndex<dim> idx) const
     {
-        ElemOperTable result(ext_operators.get_comp_map());
+        ElemOperTable result(ext_operators_.get_comp_map());
         for (auto comp : result.get_active_components())
             for (int dir = 0 ; dir < dim ; ++dir)
-                result(comp)[dir] = &(ext_operators(comp).get_data_direction(dir)[idx[dir]]);
+                result(comp)[dir] = &(ext_operators_(comp).get_data_direction(dir)[idx[dir]]);
         return result;
     }
 
@@ -94,7 +94,7 @@ private:
                    const Real b);
 
 private:
-    OperatorsTable ext_operators;
+    OperatorsTable ext_operators_;
 
 };
 

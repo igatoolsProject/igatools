@@ -180,7 +180,7 @@ refine_h_after_grid_refinement(
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots)
+compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
 -> KnotsTable
 {
 #ifndef NDEBUG
@@ -375,7 +375,8 @@ fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid
 
 template<int dim, int range, int rank>
 auto
-SplineSpace<dim, range, rank>::interpolatory_end_knots() -> BoundaryKnotsTable
+SplineSpace<dim, range, rank>::
+interpolatory_end_knots() const -> BoundaryKnotsTable
 {
     BoundaryKnotsTable result(deg_.get_comp_map());
 

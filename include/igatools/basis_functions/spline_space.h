@@ -103,7 +103,7 @@ public:
         Size total_dimension;
     };
 
-    // For the boundary kntos types
+    // For the boundary knots types
     // interpolatory (open knot)
     enum class EndBehaviour
     {
@@ -214,9 +214,9 @@ public:
     get_face_degree(const Index face_id) const;
 
 
-    KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots);
+    KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviour type)
+    KnotsTable compute_knots_with_repetition(const EndBehaviour type) const
     {
         return compute_knots_with_repetition(interpolatory_end_knots());
     }
@@ -241,7 +241,7 @@ private:
      */
     std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
 
-    BoundaryKnotsTable interpolatory_end_knots();
+    BoundaryKnotsTable interpolatory_end_knots() const;
 
 
 
@@ -357,7 +357,7 @@ public:
         }
 
     private:
-        /** For each component return de index of the active component */
+        /** For each component return the index of the active component */
         std::array <Index, n_entries> comp_map_;
 
         /** list of the active components */
@@ -387,6 +387,12 @@ public:
 
 	std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
+public:
+	std::shared_ptr<const SplineSpace<dim,range,rank> >
+	get_spline_space_previous_refinement() const
+	{
+		return spline_space_previous_refinement_;
+	}
 
 protected:
 

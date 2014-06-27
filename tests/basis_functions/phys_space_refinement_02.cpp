@@ -66,133 +66,133 @@ void test_evaluate()
 
 
     const int deg = 2;
-    TensorSize<dim> n_weights_comp;
+    TensorIndex<1> component_map = {0};
+    TensorSize<dim> n_weights_dir;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_comp(dir_id) = pow(deg+2,dim);
-//        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
+        n_weights_dir(dir_id) = (deg+2);
 
-    DynamicMultiArray<Real,dim> weights_comp(n_weights_comp);
+    typename RefSpace_t<dim>::WeightsTable weights(component_map);
     if (dim == 1)
     {
         Index id = 0;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0).resize(n_weights_dir);
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
     }
     else if (dim == 2)
     {
         Index id = 0;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0).resize(n_weights_dir);
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
     }
     else if (dim == 3)
     {
         Index id = 0;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0).resize(n_weights_dir);
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
     }
-    auto ref_space = RefSpace_t<dim>::create(deg,grid,weights_comp);
-
-    std::cout << "pippo" << std::endl;
-//    ref_space->reset_weights(ComponentTable<DynamicMultiArray<Real,dim>,dim>(weights_comp));
+    auto ref_space = RefSpace_t<dim>::create(deg,grid,weights);
 
     auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 

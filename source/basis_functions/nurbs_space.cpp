@@ -47,7 +47,6 @@ const std::array<int, NURBSSpace<dim_, range_, rank_>::dim>
 NURBSSpace<dim_, range_, rank_>::
 dims = sequence<dim>();
 
-#if 0
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
@@ -57,7 +56,6 @@ create_refinement_connection()
     this->connect_refinement_h_function(
         bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
 }
-#endif
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
@@ -93,7 +91,7 @@ NURBSSpace(const DegreeTable &degree,
     weights_(weights)
 {
 
-    //create_refinement_connection();
+    create_refinement_connection();
     perform_post_construction_checks();
 }
 
@@ -123,8 +121,7 @@ NURBSSpace(const DegreeTable &deg,
     sp_space_(spline_space_t::create(deg, knots, interior_mult, ends)),
     weights_(weights)
 {
-
-    //create_refinement_connection();
+    create_refinement_connection();
     perform_post_construction_checks();
 }
 
@@ -153,6 +150,7 @@ NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
     sp_space_(bs_space),
     weights_(weights)
 {
+    create_refinement_connection();
     perform_post_construction_checks();
 }
 
@@ -171,13 +169,17 @@ void
 NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
+	LogStream out;
     // check that the number of weights is equal to the number of basis functions in the space
     for (auto comp : components)
     {
+    	out << "comp=" << comp << endl;
+    	out << "weights_(comp)=" << endl;
+    	weights_(comp).print_info(out);
+    	out << endl;
         Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
                ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
     }
-
 }
 
 
@@ -283,23 +285,30 @@ get_face_space(const Index face_id,
     return face_space;
 }
 
-#if 0
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 refine_h_weights(
     const std::array<bool,dim> &refinement_directions,
-    const GridType &grid_old)
+    const GridType &grid_old1)
 {
+
+	auto grid = this->get_grid();
+	auto grid_old = this->get_grid()->get_grid_pre_refinement();
+
+	auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
+			->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+	auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+
     for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
         if (refinement_directions[direction_id])
         {
             // knots in the refined grid along the selected direction
-            vector<Real> knots_new = this->get_grid()->get_knot_coordinates(direction_id);
+            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
 
             // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
+            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
 
             vector<Real> knots_added(knots_new.size());
 
@@ -310,16 +319,17 @@ refine_h_weights(
                           knots_added.begin());
 
             knots_added.resize(it-knots_added.begin());
-
-
+/*
+        	Assert(false,ExcNotImplemented());
+        	AssertThrow(false,ExcNotImplemented());
+//*/
             for (int comp_id = 0; comp_id < n_components; ++comp_id)
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
-
-                const auto &U =
-                    sp_space_->knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
+                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = sp_space_->knots_with_repetitions_(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -330,6 +340,10 @@ refine_h_weights(
 
 
                 const auto Pw = weights_(comp_id);
+                LogStream out;
+                out << "weights pre:" << endl;
+                weights_(comp_id).print_info(out);
+                out << endl;
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes(direction_id) == n+1,
                        ExcDimensionMismatch(old_sizes(direction_id), n+1));
@@ -389,6 +403,11 @@ refine_h_weights(
                 } // end loop j
 
                 weights_(comp_id) = Qw;
+                out << "weights post:" << endl;
+                weights_(comp_id).print_info(out);
+                out << endl;
+
+//#endif
             } // end loop comp_id
 
         } // end if (refinement_directions[direction_id])
@@ -397,7 +416,6 @@ refine_h_weights(
 
     this->perform_post_construction_checks();
 }
-#endif
 
 template <int dim_, int range_, int rank_>
 void
