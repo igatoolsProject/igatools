@@ -37,7 +37,7 @@
  * (1/(p+1))^(n/p)
  */
 template<int dim>
-class ProductFunction : public Function<dim>
+class NormFunction : public Function<dim>
 {
 public:
     using Base = Function<dim>;
@@ -50,13 +50,10 @@ public:
                   std::vector<Value> &values) const
     {
         auto pt = points.begin();
-        auto val = values.begin();
-
-        for (;pt != points.end(); ++pt, ++val)
+        for (auto &val : values)
         {
-            *val = 1.;
-            for (int i=0; i<dim; ++i)
-                (*val) *= (*pt)[i];
+            val = pt->norm();
+            ++pt;
         }
     }
 
@@ -74,18 +71,18 @@ public:
 
 
 template<int dim, int range = 1, int rank = 1>
-void do_test(const int deg)
+void test(const int deg,  const int n_knots)
 {
     using Space = BSplineSpace<dim, range, rank>;
 
-    const int n_knots = 10;
+
     auto knots = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, knots);
 
-    const int n_qpoints = ceil((2*dim + 1)/2.);
+    const int n_qpoints = ceil((2*deg + 1)/2.);
     QGauss<dim> quad(n_qpoints);
 
-    ProductFunction<dim> f;
+    NormFunction<dim> f;
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
@@ -93,16 +90,15 @@ void do_test(const int deg)
     const auto la_pack = LAPack::petsc;
 #endif
 
-    const Real p=2;
+    auto coeffs = space_tools::projection_l2<Space,la_pack>(f,space, quad);
 
-    Vector<la_pack> coeffs(space->get_num_basis());
     vector<Real> elem_err(space->get_grid()->get_num_elements());
 
     Real err = space_tools::integrate_difference<Space,la_pack>
     (f, space, quad, Norm::L2, coeffs, elem_err);
 
-    out << std::pow(p+1, -dim/p) << "\t" << err << endl;
-   // out << elem_err << endl;;
+    out << err << endl;
+    //out << elem_err << endl;;
 
 //    Writer<dim> output(knots, 4);
 //    output.add_field(space, proj_values, "projected function");
@@ -115,10 +111,13 @@ void do_test(const int deg)
 int main()
 {
     out.depth_console(20);
-    // do_test<0,1,1>(1);
-    do_test<1,1,1>(3);
-    do_test<2,1,1>(3);
-    do_test<3,1,1>(1);
+
+    for (int n=2; n< std::pow(2,5); n*=2)
+    {
+        //    test<1,1,1>(1);
+        //    test<2,1,1>(1);
+        test<3,1,1>(1,n);
+    }
 
     return 0;
 }
