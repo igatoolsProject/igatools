@@ -34,8 +34,8 @@ include_files = ['basis_functions/bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces:
-   accessor = ('PhysicalSpaceElementAccessor<%s>' %space)
+for space in inst.PhysSpaces_v2:
+   accessor = ('PhysicalSpaceElementAccessor<%s>' %space.name)
    f.write('template class %s;\n' %accessor)
    f.write('template class GridForwardIterator<%s> ;\n' %accessor)
    function = ('template  ValueTable< Conditional< deriv_order==0,'+

@@ -31,7 +31,7 @@ output = []
 containers = ['ValueTable', 'ValueVector']
 
 
-igm_phy_sp_dims = unique( [ PhysSpaceTableRow([x.dim, 0, x.range, 1, 'h_grad'])
+igm_phy_sp_dims = unique( [ PhysSpaceSpecs([x.dim, 0, x.range, 1, 'h_grad'])
                                        for x in inst.igm_ref_sp_dims] )
 
 # Trasformation for values

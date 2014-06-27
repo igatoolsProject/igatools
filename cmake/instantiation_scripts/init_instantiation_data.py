@@ -18,8 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-#TODO: remove ref and phys space variables
-#TODO: remove table variable replace by userspaces
+
 
 """@package init_instantiation_data
 
@@ -60,8 +59,8 @@ def unique(seq):
          checked.append(e)
    return checked
 
-# Object to store a row containig the description of a physical space.
-class PhysSpaceTableRow:
+# Class specifying the description of a physical space.
+class PhysSpaceSpecs:
    # Constructor of the class.
    def __init__(self, arg_list):
       self.dim        = arg_list[0]
@@ -75,7 +74,7 @@ class PhysSpaceTableRow:
       self.phys_rank  = self.physical_rank(self.rank)
       return None
    def __eq__(self, other):
-        if isinstance(other, PhysSpaceTableRow):
+        if isinstance(other, PhysSpaceSpecs):
             return(self.dim == other.dim) and (self.codim == other.codim) and (self.range == other.range) and (self.rank == other.rank)and (self.trans_type == other.trans_type) 
         return NotImplemented
    def physical_range(self, ref_range, space_dim, trans_type):
@@ -87,6 +86,20 @@ class PhysSpaceTableRow:
    def physical_rank(self, ref_rank):
       return ref_rank
 
+
+class PhysSpace:
+    def __init__(self, specs, ref_space):
+       self.spec   = specs
+       self.name   = ( 'PhysicalSpace <' + ref_space + 
+                       '<%d,%d,%d>' % (specs.dim, specs.range, specs.rank) +
+                       ', PushForward<Transformation::%s, %d, %d> >' 
+                       %(specs.trans_type, specs.dim, specs.codim) )
+
+class RefSpace:
+    def __init__(self, specs, ref_space):
+       self.spec   = specs
+       self.name   = ref_space + '<%d,%d,%d>' % (specs.dim, specs.range, specs.rank)     
+
 class FunctionRow:
    #function dim, range and rank
    def __init__(self, arg_list):
@@ -94,6 +107,8 @@ class FunctionRow:
       self.range      = arg_list[1]  
       self.rank       = arg_list[2]
       return None
+
+
 
 class MappingRow:
    #mappings dim, codim and space_dim
@@ -103,6 +118,7 @@ class MappingRow:
       self.space_dim  = self.dim + self.codim
       return None
 
+
 class PForwRow:
    #mappings dim, codim and space_dim
    def __init__(self, arg_list):
@@ -110,7 +126,8 @@ class PForwRow:
       self.codim      = arg_list[1]  
       self.trans_type = arg_list[2]
       return None
-   
+
+  
 class RefSpaceRow:
     def __init__(self, arg_list):
       self.dim        = arg_list[0]
@@ -196,16 +213,16 @@ class InstantiationInfo:
     
       
       for row in user_spaces:
-         self.user_phy_sp_dims.append(PhysSpaceTableRow(row))
-         self.all_phy_sp_dims.append(PhysSpaceTableRow(row))
+         self.user_phy_sp_dims.append(PhysSpaceSpecs(row))
+         self.all_phy_sp_dims.append(PhysSpaceSpecs(row))
 
       #Add the spaces for the faces     
       face_spaces = unique ([ [sp.dim-1, sp.codim+1, sp.range, sp.rank, sp.trans_type]
                     for sp in self.user_phy_sp_dims ] )
 
       for row in face_spaces:
-         self.face_phy_sp_dims.append(PhysSpaceTableRow(row))
-         self.all_phy_sp_dims.append(PhysSpaceTableRow(row))
+         self.face_phy_sp_dims.append(PhysSpaceSpecs(row))
+         self.all_phy_sp_dims.append(PhysSpaceSpecs(row))
 
       self.all_phy_sp_dims = unique(self.all_phy_sp_dims)
             
@@ -264,9 +281,9 @@ class InstantiationInfo:
       self.really_all_ref_sp_dims=unique(self.all_ref_sp_dims + self.igm_ref_sp_dims)
      
       #self.all_phy_sp_dims.append(  
-      a= unique( [PhysSpaceTableRow([x.dim, 0, x.range, x.rank, 'h_grad'])
+      a= unique( [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
                                            for x in self.really_all_ref_sp_dims] +
-                                         [PhysSpaceTableRow([x.dim-1, 1, x.range, x.rank, 'h_grad'])
+                                         [PhysSpaceSpecs([x.dim-1, 1, x.range, x.rank, 'h_grad'])
                                           for x in self.user_ref_sp_dims])
                                     #)
       
@@ -301,6 +318,17 @@ class InstantiationInfo:
 
 
    def create_PhysSpaces(self):
+      
+      spaces =('BSplineSpace', 'NURBSSpace')
+      self.PhysSpaces_v2 = unique( [PhysSpace(x,sp)
+                                 for sp in spaces
+                                 for x in self.all_phy_sp_dims] )
+      
+      self.AllRefSpaces_v2 = unique( [RefSpace(x,sp)
+                                      for sp in spaces
+                                      for x in self.really_all_ref_sp_dims ] )
+      
+      
       self.AllPushForwards = unique(['PushForward<Transformation::%s, %d, %d>'
                                     %(x.trans_type, x.dim, x.codim) for x in self.all_phy_sp_dims] )
       

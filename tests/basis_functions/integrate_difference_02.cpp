@@ -33,8 +33,8 @@
 #include <igatools/io/writer.h>
 
 /**
- * The p-norm of this function on the unit square is
- * (1/(p+1))^(n/p)
+ * Norm Function
+ * F(x) = (sum x_i ^ p)^(1/p)
  */
 template<int dim>
 class NormFunction : public Function<dim>

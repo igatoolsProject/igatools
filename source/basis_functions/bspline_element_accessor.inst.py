@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Jun 27, 2014):
 from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid.h',
@@ -27,36 +28,27 @@ include_files = ['geometry/cartesian_grid.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-acc_list = ['BSplineElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-          for x in inst.really_all_ref_sp_dims ]
+accessors = [('BSplineElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
+             for x in inst.really_all_ref_sp_dims]
 
-for acc in acc_list:
-   f.write('template class %s ;\n' %acc)
-   f.write('template class GridForwardIterator<%s> ;\n' %acc)
+for acc in accessors:
+    f.write('template class %s ;\n' %acc[0])
+    f.write('template class GridForwardIterator<%s> ;\n' %acc[0])
 
+    fun = ('template void ' + acc[0] + '::evaluate_bspline_derivatives<order>' +
+           '(const ComponentContainer<std::array<const BasisValues1d *, %d' %acc[1] 
+           + '>> &,' +
+           'const ' + acc[0] + '::ValuesCache &,' +
+           'ValueTable<Conditional<order==0,Value,Derivative<order>>> &) const; \n')
+    fun_list = [fun.replace('order', str(d)) for d in inst.deriv_order]
+    for s in fun_list:
+        f.write(s)
 
-
-for i in range(len(acc_list)):
-   row = inst.all_ref_sp_dims[i]
-   function = ('template  void ' + acc_list[i] + '::evaluate_bspline_derivatives<deriv_order>' +
-               '(const ComponentContainer<std::array<const BasisValues1d *, dim_domain> > &,'+
-               'const ' + acc_list[i] + '::ValuesCache &,'+
-               'ValueTable< Conditional<deriv_order==0,Value,Derivative<deriv_order> > > &) const; \n')
-   f1 = function.replace('dim_domain', str(row.dim) ).replace('dim_range', str(row.range) ).replace('rank', str(row.rank) );
-   fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
-   for s in fun_list:
-      f.write(s)
-
-
-for i in range(len(acc_list)):
-   row = inst.all_ref_sp_dims[i]
-   function = ('template  ValueTable< Conditional< deriv_order==0,'+
-               acc_list[i] + '::Value,' +
-               acc_list[i] + '::Derivative<deriv_order> > > ' + 
-               acc_list[i] + 
-               '::evaluate_basis_derivatives_at_points<deriv_order>' +
+    function = ('template ValueTable< Conditional< order==0,'+
+               acc[0] + '::Value,' +
+               acc[0] + '::Derivative<order> > > ' + 
+               acc[0] + '::evaluate_basis_derivatives_at_points<order>' +
                '(const vector<Point>&) const; \n')
-   f1 = function.replace('dim_domain', str(row.dim) );
-   fun_list = [f1.replace('deriv_order', str(d)) for d in inst.deriv_order]
-   for s in fun_list:
-      f.write(s)
+    fun_list = [function.replace('order', str(d)) for d in inst.deriv_order]
+    for s in fun_list:
+        f.write(s)
