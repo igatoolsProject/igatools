@@ -355,7 +355,7 @@ auto
 CartesianGrid<dim_>::
 get_grid_pre_refinement() const -> shared_ptr<const CartesianGrid<dim> >
 {
-	return grid_pre_refinement_;
+    return grid_pre_refinement_;
 }
 
 template <int dim_>

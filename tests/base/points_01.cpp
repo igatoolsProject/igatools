@@ -38,7 +38,7 @@ void default_constructor()
 void init_list()
 {
     Points<2> p2 = {1., 2.5};
-    Points<3> p3({1., 2.5, -4.3});
+    Points<3> p3( {1., 2.5, -4.3});
     Points<3> p3a {1., 2.5, -4.3};
     out << p2 << p3 << p3a  << endl;
 }
@@ -46,10 +46,10 @@ void init_list()
 int main()
 {
 
-	default_constructor<0>();
-	default_constructor<1>();
-	default_constructor<2>();
-	default_constructor<3>();
+    default_constructor<0>();
+    default_constructor<1>();
+    default_constructor<2>();
+    default_constructor<3>();
 
     init_list();
 

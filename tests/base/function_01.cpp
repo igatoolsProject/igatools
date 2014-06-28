@@ -19,29 +19,32 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for user defined scalar valued function
+ *  Test for Function class, we define a linear function
+ *  author: pauletti
+ *  date: Jun 19, 2014
  */
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
-using namespace functions;
-
 
 template<int dim>
-class Func : public Function<dim, 1, 1 >
+class Func : public Function<dim>
 {
+    using typename Function<dim>::Point;
+    using typename Function<dim>::Value;
+
 public:
-    void evaluate(const vector< typename Func<dim>::Point > &Points,
-                  vector< typename Func<dim>::Value > &ElementValues) const
+    void evaluate(const vector<Point> &points,
+                  vector<Value> &values) const
     {
-        const int NumPoints = Points.size() ;
+        const int NumPoints = points.size() ;
         for (int iPoint = 0 ; iPoint < NumPoints ; iPoint++)
         {
-            ElementValues[ iPoint ] = 0.;
+            values[ iPoint ] = 0.;
             for (int j = 0; j < dim; ++j)
-                ElementValues[ iPoint ][0] += Points[ iPoint ][j];
+                values[ iPoint ][0] += points[ iPoint ][j];
         }
     }
 };

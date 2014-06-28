@@ -50,7 +50,7 @@ SplineSpace(const DegreeTable &deg,
     deg_(deg),
     periodic_(periodic)
 {
-	this->init();
+    this->init();
 
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
@@ -118,16 +118,16 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
-	auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
-	shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
-			make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
+    auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
+    shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
+        make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
 
-	spline_space_previous_refinement_ =
-			make_shared<const SplineSpace<dim,range,rank> >(
-					SplineSpace<dim,range,rank>(
-						this->get_degree(),
-						grid_pre_refinement,
-						interior_mult_prev_refinement));
+    spline_space_previous_refinement_ =
+        make_shared<const SplineSpace<dim,range,rank> >(
+            SplineSpace<dim,range,rank>(
+                this->get_degree(),
+                grid_pre_refinement,
+                interior_mult_prev_refinement));
 
     for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
@@ -153,7 +153,7 @@ refine_h_after_grid_refinement(
             {
                 //--------------------------------------------------------
                 // creating the new multiplicity
-            	auto & interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+                auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
                 const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
                 const int n_mult_old = mult_old.size();
 
@@ -164,7 +164,7 @@ refine_h_after_grid_refinement(
                 for (int i = 0; i < n_mult_to_add; ++i)
                 {
                     mult_new[2*i  ] = 1,
-                    mult_new[2*i+1] = mult_old[i];
+                                      mult_new[2*i+1] = mult_old[i];
                 }
                 mult_new[n_mult_new-1] = 1;
 
@@ -197,7 +197,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
             if (periodic_(iComp)[j])
             {
                 Assert((left_knts.size()==0) && (right_knts.size()==0),
-                ExcMessage("Periodic component has non zero size"));
+                       ExcMessage("Periodic component has non zero size"));
             }
             else
             {

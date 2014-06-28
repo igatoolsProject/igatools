@@ -52,7 +52,7 @@ public:
         auto pt = points.begin();
         auto val = values.begin();
 
-        for (;pt != points.end(); ++pt, ++val)
+        for (; pt != points.end(); ++pt, ++val)
         {
             *val = 1.;
             for (int i=0; i<dim; ++i)
@@ -61,13 +61,13 @@ public:
     }
 
     void evaluate_gradients(
-            const std::vector<Point> &points,
-            std::vector<Gradient> &gradient) const
+        const std::vector<Point> &points,
+        std::vector<Gradient> &gradient) const
     {}
 
     void evaluate_hessians(
-            const std::vector<Point> &points,
-            std::vector<Hessian> &hessians) const
+        const std::vector<Point> &points,
+        std::vector<Hessian> &hessians) const
     {}
 };
 
@@ -99,10 +99,10 @@ void do_test(const int deg)
     vector<Real> elem_err(space->get_grid()->get_num_elements());
 
     Real err = space_tools::integrate_difference<Space,la_pack>
-    (f, space, quad, Norm::L2, coeffs, elem_err);
+               (f, space, quad, Norm::L2, coeffs, elem_err);
 
     out << std::pow(p+1, -dim/p) << "\t" << err << endl;
-   // out << elem_err << endl;;
+    // out << elem_err << endl;;
 
 //    Writer<dim> output(knots, 4);
 //    output.add_field(space, proj_values, "projected function");

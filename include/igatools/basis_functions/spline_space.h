@@ -263,7 +263,7 @@ public:
     /** Returns the multiplicity of the internal knots that defines the space. */
     std::shared_ptr<const MultiplicityTable> get_interior_mult()
     {
-    	return interior_mult_;
+        return interior_mult_;
     }
 
 
@@ -385,14 +385,14 @@ public:
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
-	std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+    std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
 public:
-	std::shared_ptr<const SplineSpace<dim,range,rank> >
-	get_spline_space_previous_refinement() const
-	{
-		return spline_space_previous_refinement_;
-	}
+    std::shared_ptr<const SplineSpace<dim,range,rank> >
+    get_spline_space_previous_refinement() const
+    {
+        return spline_space_previous_refinement_;
+    }
 
 protected:
 

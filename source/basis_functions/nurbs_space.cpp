@@ -169,14 +169,14 @@ void
 NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
-	LogStream out;
+    LogStream out;
     // check that the number of weights is equal to the number of basis functions in the space
     for (auto comp : components)
     {
-    	out << "comp=" << comp << endl;
-    	out << "weights_(comp)=" << endl;
-    	weights_(comp).print_info(out);
-    	out << endl;
+        out << "comp=" << comp << endl;
+        out << "weights_(comp)=" << endl;
+        weights_(comp).print_info(out);
+        out << endl;
         Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
                ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
     }
@@ -293,12 +293,12 @@ refine_h_weights(
     const GridType &grid_old1)
 {
 
-	auto grid = this->get_grid();
-	auto grid_old = this->get_grid()->get_grid_pre_refinement();
+    auto grid = this->get_grid();
+    auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
-	auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
-			->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
-	auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
 
     for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
@@ -319,10 +319,10 @@ refine_h_weights(
                           knots_added.begin());
 
             knots_added.resize(it-knots_added.begin());
-/*
-        	Assert(false,ExcNotImplemented());
-        	AssertThrow(false,ExcNotImplemented());
-//*/
+            /*
+                        Assert(false,ExcNotImplemented());
+                        AssertThrow(false,ExcNotImplemented());
+            //*/
             for (int comp_id = 0; comp_id < n_components; ++comp_id)
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];

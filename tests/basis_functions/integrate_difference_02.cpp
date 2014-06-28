@@ -58,13 +58,13 @@ public:
     }
 
     void evaluate_gradients(
-            const std::vector<Point> &points,
-            std::vector<Gradient> &gradient) const
+        const std::vector<Point> &points,
+        std::vector<Gradient> &gradient) const
     {}
 
     void evaluate_hessians(
-            const std::vector<Point> &points,
-            std::vector<Hessian> &hessians) const
+        const std::vector<Point> &points,
+        std::vector<Hessian> &hessians) const
     {}
 };
 
@@ -95,7 +95,7 @@ void test(const int deg,  const int n_knots)
     vector<Real> elem_err(space->get_grid()->get_num_elements());
 
     Real err = space_tools::integrate_difference<Space,la_pack>
-    (f, space, quad, Norm::L2, coeffs, elem_err);
+               (f, space, quad, Norm::L2, coeffs, elem_err);
 
     out << err << endl;
     //out << elem_err << endl;;

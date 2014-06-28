@@ -30,7 +30,7 @@
 
 int main()
 {
-	Points<2> p2 = {1, 2.5};
+    Points<2> p2 = {1, 2.5};
 
     return 0;
 }
