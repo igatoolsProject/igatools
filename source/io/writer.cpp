@@ -604,12 +604,9 @@ add_element_data(const std::vector<int> &element_data,
 
 
 template<int dim, int codim, class T>
-void Writer<dim, codim, T>::save_ascii(const string &filename) const
+template<class Out>
+void Writer<dim, codim, T>::save_ascii(Out &file) const
 {
-    ofstream file(filename);
-    file.setf(ios::scientific);
-    file.precision(precision_);
-
     const string tab1("\t");
     const string tab2 = tab1 + tab1;
     const string tab3 = tab2 + tab1;
@@ -1018,14 +1015,24 @@ void Writer<dim, codim, T>::save(const string &filename, const string &format)
 
     if (format == "ascii")
     {
-        this->save_ascii(vtu_filename);
+    	ofstream file(vtu_filename);
+    	file.setf(ios::scientific);
+    	file.precision(precision_);
+        this->save_ascii(file);
     }
     else if (format == "appended")
     {
         this->save_appended(vtu_filename);
     }
-
 }
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::print_info(LogStream &out)
+{
+	this->save_ascii(out);
+}
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -22,6 +22,7 @@
 #define __WRITER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/linear_algebra/distributed_vector.h>
@@ -43,6 +44,9 @@ class NURBSSpace;
 //todo:add the add_celldata function
 
 /**
+ * This class is use to generate and save output in graphical
+ * format.
+ *
  * @todo This class needs to be documented, and explained with an example.
  */
 template<int dim, int codim = 0, class T = double>
@@ -65,33 +69,9 @@ public:
     Writer(const std::shared_ptr<const Map> mapping,
            const Index num_points_direction);
 
-
-    //TODO: can we remove this constructor?
     /**
-     * This constructor builds a Writer object with using a uniform distribution for the evaluation points.
-     * \param[in] grid Grid.
-     * \param[in] mapping Mapping used to transform the field(s) from the reference domain to the physical domain.
-     * \param[in] num_points_direction Number of plotting points along the coordinate directions.
-     * \param[in] eps This value is the amount of the displacement of the first and last point.
-     * \param[in] map_is_double_precision If true the map values will be written using double precision data.
-     * Default value is TRUE.
-     * (in each coordinate direction) of the quad rule on the unit element.
-     * This means that the element for the quad rule it will not [0,1]^dim but [eps,1.0-eps]^dim.
-     * Valid values for eps are the ones in the interval [0.0,0.5).
-     * \note Any field that will be added to the writer must refer to the same
-     * CartesianGrid used here, otherwise an exception will be raised.
-     * \note The number of points in each coordinate direction must be greater or equal than 2,
-     * otherwise an exception will be raised.
-     * \see add_field
-     */
-//    Writer(const std::shared_ptr< const CartesianGrid< dim > > grid,
-//           const std::shared_ptr< const Mapping< dim, space_dim > > mapping,
-//           const std::array< Index, dim > &num_points_direction) {}
-
-
-    /**
-     * This constructor builds a Writer object with using a distribution for the evaluation points
-     * given by the @p quadrature scheme.
+     * This constructor builds a Writer object using a distribution for
+     * the evaluation points given by the @p quadrature scheme.
      * \note Any field that will be added to the writer must refer to the same
      * CartesianGrid used here, otherwise an exception will be raised.
      * \note The number of points in each coordinate direction must be greater or equal than 2,
@@ -151,6 +131,8 @@ public:
      */
     void save(const std::string &filename,
               const std::string &format = "ascii");
+
+    void print_info(LogStream &out);
 
 private:
     /**
@@ -361,7 +343,8 @@ private:
 
     int precision_;
 
-    void save_ascii(const std::string &filename) const;
+    template<class Out>
+    void save_ascii(Out &file) const;
 
     void save_appended(const std::string &filename) const;
 
