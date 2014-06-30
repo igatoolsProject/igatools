@@ -186,7 +186,7 @@ private:
         ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
 
         /** Knots with repetitions PRE-refinement */
-        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+//        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
 
 
         /** Control mesh (the coordinates are in the projective space). */

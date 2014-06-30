@@ -61,14 +61,14 @@ template<int dim, int range, int rank>
 const BSplineSpace<dim,range,rank> &
 get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
 {
-	return *nurbs_space.get_spline_space();
+    return *nurbs_space.get_spline_space();
 }
 
 template<int dim, int range, int rank>
 const BSplineSpace<dim,range,rank> &
 get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
 {
-	return bspline_space;
+    return bspline_space;
 }
 
 };
@@ -102,24 +102,18 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     //----------------------------------
 
 
-    //----------------------------------
-    // copy the knots (with repetitions) that defines the RefSpace before any refinement
-    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
-    const bspline_space_t & bspline_space = get_bspline_space(*space);
-	data_->knots_with_repetitions_pre_refinement_ = bspline_space.get_spline_space_previous_refinement()
-				->compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
-    //----------------------------------
-
 
 
     //----------------------------------
     // copy the control mesh before any refinement
-    const auto & num_basis_table = bspline_space.get_num_basis_table();
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*space);
+    const auto &num_basis_table = bspline_space.get_num_basis_table();
 
     Index ctrl_pt_fid = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-    	const TensorSize<dim> & num_basis_comp = num_basis_table(comp_id);
+        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
 
         auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
 
@@ -348,7 +342,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
-    for (const auto & pt : points)
+    for (const auto &pt : points)
         elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
 
     // aggregate consecutive points on the same element
@@ -360,7 +354,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
     values.clear();
     auto point_it = points.cbegin();
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto & elem_fid : elem_fids_no_duplicates)
+    for (const auto &elem_fid : elem_fids_no_duplicates)
     {
         cache_->reset_flat_tensor_indices(elem_fid);
 
@@ -394,7 +388,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
-    for (const auto & pt : points)
+    for (const auto &pt : points)
         elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
 
     // aggregate consecutive points on the same element
@@ -406,7 +400,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
     gradients.clear();
     auto point_it = points.cbegin();
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto & elem_fid : elem_fids_no_duplicates)
+    for (const auto &elem_fid : elem_fids_no_duplicates)
     {
         cache_->reset_flat_tensor_indices(elem_fid);
 
@@ -440,7 +434,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessia
 
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
-    for (const auto & pt : points)
+    for (const auto &pt : points)
         elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
 
     // aggregate consecutive points on the same element
@@ -452,7 +446,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessia
     hessians.clear();
     auto point_it = points.cbegin();
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto & elem_fid : elem_fids_no_duplicates)
+    for (const auto &elem_fid : elem_fids_no_duplicates)
     {
         cache_->reset_flat_tensor_indices(elem_fid);
 
@@ -497,17 +491,17 @@ refine_h_control_mesh(
     const std::array<bool,dim> &refinement_directions,
     const typename base_t::GridType &grid_old1)
 {
-	auto grid = this->get_grid();
-	auto grid_old = this->get_grid()->get_grid_pre_refinement();
+    auto grid = this->get_grid();
+    auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
-	auto ref_space = data_->ref_space_;
+    auto ref_space = data_->ref_space_;
 
     using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
-    const bspline_space_t & bspline_space = get_bspline_space(*ref_space);
+    const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
 
-	auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
-			->compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
-	auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
 
     for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
     {
