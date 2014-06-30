@@ -82,6 +82,9 @@ public:
      */
     using Value = Values<dim, range, rank>;
 
+    /**
+     * Type for the derivative of the function.
+     */
     template <int order>
     using Derivative = Derivatives<dim, range, rank, order>;
 

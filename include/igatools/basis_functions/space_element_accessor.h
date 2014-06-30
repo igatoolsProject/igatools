@@ -68,18 +68,19 @@ public:
      * Typedef for specifying the value of the basis function.
      */
     using Value = typename Space::Value;
+
     using Point = typename Space::Point;
+
     /**
      * Typedef for specifying the divergence of the basis function.
      */
     using Div = typename Space::Div;
+
     /**
      * Typedef for specifying the derivatives of the basis function.
      */
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
-
-
 
 
     /**

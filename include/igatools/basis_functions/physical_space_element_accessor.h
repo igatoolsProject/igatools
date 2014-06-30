@@ -123,7 +123,7 @@ public :
     template <int order>
     using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
 
-    using Div = Values<dim, 1, 1>;
+    using Div = Values<1, 1>;
 
     /**
      * @name Constructors

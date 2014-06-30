@@ -49,8 +49,13 @@ public:
 
     using Space = NURBSSpace<dim,range,rank>;
 
+    /**
+     * Typedef for specifying the derivatives of the basis function in the
+     * reference domain.
+     */
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
+
     using typename parent_t::Point;
     using typename parent_t::Value;
 
