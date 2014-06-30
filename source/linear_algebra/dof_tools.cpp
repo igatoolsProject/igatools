@@ -51,7 +51,7 @@ get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
     Set_t empty_set;
 
     // adding the global dof keys to the map representing the dof connectivity
-    for (const auto & dof : dofs)
+    for (const auto &dof : dofs)
         sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
 
 
@@ -92,22 +92,22 @@ get_sparsity_pattern(const vector< shared_ptr< SpaceType > > &space_multipatch,
 
     // adding the global dof keys to the map representing the dof connectivity
     Set_t dofs_set;
-    for (const auto & space : space_multipatch)
+    for (const auto &space : space_multipatch)
     {
         const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto & dof : dofs_space)
+        for (const auto &dof : dofs_space)
             dofs_set.insert(dof);
     }
 
     Vec_t dofs_vector(dofs_set.begin(), dofs_set.end());
 
     SparsityPattern sparsity_pattern(dofs_vector, dofs_vector);
-    for (const auto & dof : dofs_vector)
+    for (const auto &dof : dofs_vector)
         sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
 
 
     // now the keys are initialized, then fill the set of dofs corresponding to each key
-    for (const auto & space : space_multipatch)
+    for (const auto &space : space_multipatch)
     {
 
         auto element     = space->begin();
@@ -155,19 +155,19 @@ get_sparsity_pattern(
 
     // adding the global dof keys to the map representing the dof connectivity
     Set_t row_dofs_set;
-    for (const auto & space : space_multipatch_rows)
+    for (const auto &space : space_multipatch_rows)
     {
         const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto & dof : dofs_space)
+        for (const auto &dof : dofs_space)
             row_dofs_set.insert(dof);
     }
 
 
     Set_t col_dofs_set;
-    for (const auto & space : space_multipatch_cols)
+    for (const auto &space : space_multipatch_cols)
     {
         const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto & dof : dofs_space)
+        for (const auto &dof : dofs_space)
             col_dofs_set.insert(dof);
     }
 
@@ -175,7 +175,7 @@ get_sparsity_pattern(
     Vec_t col_dofs_vector(col_dofs_set.begin(), col_dofs_set.end());
 
     SparsityPattern sparsity_pattern(row_dofs_vector, col_dofs_vector);
-    for (const auto & dof : row_dofs_vector)
+    for (const auto &dof : row_dofs_vector)
         sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
 
 
@@ -225,7 +225,7 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
     for (; element != element_end; ++element)
     {
         const vector< Index > &element_dofs = element->get_local_to_global();
-        for (const Index & dof : element_dofs)
+        for (const Index &dof : element_dofs)
             dofs_set.insert(dof);
     }
 
@@ -297,7 +297,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
     // Set the boundary value in the solution vector.
     ierr = VecSetValues(solution.get_petsc_vector(), rows.size(), rows.data(),
-                       values.data(), INSERT_VALUES);
+                        values.data(), INSERT_VALUES);
 
     // Getting the first diagonal value (of the constrained degrees of freedom),
     // this value is going to be written in the diagonal for all the removed

@@ -482,14 +482,19 @@ set_control_points(const std::vector<Real> &control_points)
     // Updating of the euclidean coordinates of the control_points.
     data_->control_points_ = control_points;
 
-    // Updating of the projective coordinates of the control_points.
-    const auto &index_space = data_->ref_space_->get_index_space();
 
+    Assert(data_->ref_space_ != nullptr, ExcNullPtr());
     const auto weights = get_weights_from_ref_space(*(data_->ref_space_));
 
+
+    // Updating of the euclidean (in case of BSpline) or projective (in case of NURBS)
+    // coordinates of the control_points .
+
+    Index ctrl_pt_fid = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const auto &index_space_comp = index_space(comp_id);
+//        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+
         auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
@@ -498,20 +503,21 @@ set_control_points(const std::vector<Real> &control_points)
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
-            const Index glob_id = index_space_comp(loc_id);
             if (RefSpace::has_weights)
             {
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
-                const Real& w = weights_after_refinement_comp(loc_id);
+                const Real &w = weights_after_refinement_comp(loc_id);
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[glob_id];
+                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[glob_id];
+                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
 
-        }
-    }
+            ++ctrl_pt_fid;
+
+        } // end loop loc_id
+    } // end loop comp_id
 }
 
 

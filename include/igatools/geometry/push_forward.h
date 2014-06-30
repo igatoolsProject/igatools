@@ -83,7 +83,7 @@ public:
     using RefPoint = typename Map::Point;
 
     template <int range, int rank>
-    using RefValue = Values<range, rank>;
+    using RefValue = Values<dim,range,rank>;
 
     template <int range, int rank, int order>
     using RefDerivative = Derivatives<dim, range, rank, order>;
@@ -96,7 +96,7 @@ public:
     using PhysPoint = typename Map::Value;
 
     template <int range, int rank>
-    using PhysValue = Values<PhysRange<range>::value, rank>;
+    using PhysValue = Values<space_dim,PhysRange<range>::value,rank>;
 
     template <int range, int rank, int order>
     using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;

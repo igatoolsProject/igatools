@@ -77,14 +77,14 @@ int main()
 
     push_fwd_accessor.fill_values() ;
 
-    typedef Values<1,1> Value_t ;
-    typedef Derivatives<3,1,1,1> Grad_t ;
+    typedef Values<1,1,1> Value ;
+    typedef Derivatives<3,1,1,1> Grad ;
 
-    ValueVector< Value_t > dummy ;
+    ValueVector< Value > dummy ;
 
-    ValueVector< Grad_t > grad_phi0_hat(num_pts) ;
-    ValueVector< Grad_t > grad_phi1_hat(num_pts) ;
-    ValueVector< Grad_t > grad_phi2_hat(num_pts) ;
+    ValueVector< Grad > grad_phi0_hat(num_pts) ;
+    ValueVector< Grad > grad_phi1_hat(num_pts) ;
+    ValueVector< Grad > grad_phi2_hat(num_pts) ;
 
     for (int iPt = 0 ; iPt < num_pts ; iPt++)
     {
@@ -100,9 +100,9 @@ int main()
         out << grad_phi2_hat[iPt] << endl ;
     }
 
-    ValueVector< Grad_t > grad_phi0(num_pts);
-    ValueVector< Grad_t > grad_phi1(num_pts);
-    ValueVector< Grad_t > grad_phi2(num_pts);
+    ValueVector< Grad > grad_phi0(num_pts);
+    ValueVector< Grad > grad_phi1(num_pts);
+    ValueVector< Grad > grad_phi2(num_pts);
 
 
     push_fwd_accessor.transform_gradients<1,1>(dummy,grad_phi0_hat,grad_phi0) ;

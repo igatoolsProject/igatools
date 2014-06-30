@@ -72,13 +72,13 @@ template < typename Accessor > class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
-public SpaceElementAccessor<
+    public SpaceElementAccessor<
     PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
     PhysSpace::RefSpace::dim,
     PhysSpace::PushForwardType::codim,
     PhysSpace::RefSpace::range,
     PhysSpace::RefSpace::rank>,
-private PhysSpace::PushForwardType::ElementAccessor
+    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
     using parent_t = SpaceElementAccessor<
@@ -123,7 +123,7 @@ public :
     template <int order>
     using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
 
-    using Div = Values<1, 1>;
+    using Div = typename PhysSpace::Div;
 
     /**
      * @name Constructors
