@@ -29,7 +29,7 @@
 
 #include "../tests.h"
 
-#include <igatools/utils/concatenated_forward_iterator.h>
+#include <igatools/utils/concatenated_iterator.h>
 #include <vector>
 
 using std::vector;

@@ -277,8 +277,11 @@ public:
         using base_t = StaticMultiArray<T,range,rank>;
     public:
         // using base_t::Entry;
+        /** Type of the iterator. */
+        using iterator =  MultiArrayIterator<ComponentContainer<T>>;
+
         /** Type of the const iterator. */
-        using const_iterator =  MultiArrayIterator<const ComponentContainer<T>>;
+        using const_iterator =  MultiArrayConstIterator<ComponentContainer<T>>;
     public:
         using base_t::n_entries;
 
@@ -317,6 +320,18 @@ public:
         end() const
         {
             return cend();
+        }
+
+        iterator
+        begin()
+        {
+            return iterator(*this,0);
+        }
+
+        iterator
+        end()
+        {
+            return iterator(*this,IteratorState::pass_the_end);
         }
 
         /**

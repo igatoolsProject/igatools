@@ -77,6 +77,11 @@ public:
      */
     void print_info(LogStream &out) const;
 
+
+    /** Add an @p offset to the dofs. */
+    void add_dofs_offset(const Index offset);
+
+
 private:
 
     // TODO (pauletti, May 28, 2014): this should be a temporary in the constructor
@@ -87,6 +92,14 @@ private:
 
     //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
+
+
+public:
+
+    const IndexDistributionTable &get_index_distribution() const
+    {
+        return index_distribution_;
+    }
 
 };
 

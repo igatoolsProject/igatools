@@ -421,6 +421,13 @@ public:
         return basis_indices_;
     }
 
+    /** Returns the container with the local to global basis indices. */
+    DofDistribution<dim, range, rank> &
+    get_basis_indices()
+    {
+        return basis_indices_;
+    }
+
 };
 
 

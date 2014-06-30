@@ -41,7 +41,7 @@ int main()
 
         DegreeTable deg {{2}};
         auto grid = CartesianGrid<dim>::create(4);
-        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1,3}} }));
+        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
         auto space = BSplineSpace::create(deg, grid, int_mult);
 
         space->print_info(out);
@@ -55,8 +55,8 @@ int main()
         using DegreeTable = typename BSplineSpace::DegreeTable;
 
         DegreeTable deg {{2,1}};
-        auto grid = CartesianGrid<dim>::create( {4,3});
-        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1,3},{1}} }));
+        auto grid = CartesianGrid<dim>::create({4,3});
+        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3},{1}} }));
         auto space = BSplineSpace::create(deg, grid, int_mult);
 
         space->print_info(out);
@@ -71,9 +71,9 @@ int main()
         using DegreeTable = typename BSplineSpace::DegreeTable;
 
         DegreeTable deg {{2,1},{1,3}};
-        auto grid = CartesianGrid<dim>::create( {4,3});
+        auto grid = CartesianGrid<dim>::create({4,3});
         auto int_mult = shared_ptr<MultiplicityTable>(
-        new MultiplicityTable( { {{1,3},{1}}, {{1,1},{2}}}));
+        new MultiplicityTable({ {{1,3},{1}}, {{1,1},{2}}}));
         auto space = BSplineSpace::create(deg, grid, int_mult);
 
         space->print_info(out);
@@ -88,7 +88,7 @@ int main()
         using DegreeTable = typename BSplineSpace::DegreeTable;
 
         DegreeTable deg {{2,1}};
-        auto grid = CartesianGrid<dim>::create( {4,3});
+        auto grid = CartesianGrid<dim>::create({4,3});
         auto space = BSplineSpace::create(deg, grid);
 
         space->print_info(out);
@@ -101,7 +101,7 @@ int main()
         using BSplineSpace = BSplineSpace<dim>;
 
         int deg=3;
-        auto grid = CartesianGrid<dim>::create( {4,3});
+        auto grid = CartesianGrid<dim>::create({4,3});
         auto space = BSplineSpace::create(deg, grid);
 
         space->print_info(out);

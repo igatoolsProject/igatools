@@ -30,7 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/utils/concatenated_forward_iterator.h>
+#include <igatools/utils/concatenated_iterator.h>
 
 #include <vector>
 #include <memory>
@@ -64,13 +64,13 @@ do_test_1()
 
         int degree = i_sp + 2;
 
-        ref_spaces[i_sp] = RefSpace::create(grid,degree);
+        ref_spaces[i_sp] = RefSpace::create(degree,grid);
 
         ref_spaces[i_sp]->add_dofs_offset(dofs_offset);
 
         dofs_offset += ref_spaces[i_sp]->get_num_basis();
 
-        const DMA &index_space = ref_spaces[i_sp]->get_index_space()(0);
+        const DMA &index_space = ref_spaces[i_sp]->get_basis_indices().get_index_distribution()(0);
 
         out << "Index space " << i_sp << " =" << endl;
         index_space.print_info(out);
@@ -81,8 +81,8 @@ do_test_1()
     }
 
 
-    ConcatenatedForwardConstIterator<VecView> dofs_iterator_begin(ranges,0);
-    ConcatenatedForwardConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedConstIterator<VecView> dofs_iterator_begin(ranges,0);
+    ConcatenatedConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
@@ -123,13 +123,13 @@ do_test_2()
 
         int degree = i_sp + 2;
 
-        ref_spaces[i_sp] = RefSpace::create(grid,degree);
+        ref_spaces[i_sp] = RefSpace::create(degree,grid);
 
         ref_spaces[i_sp]->add_dofs_offset(dofs_offset);
 
         dofs_offset += ref_spaces[i_sp]->get_num_basis();
 
-        const DMA &index_space = ref_spaces[i_sp]->get_index_space()(0);
+        const DMA &index_space = ref_spaces[i_sp]->get_basis_indices().get_index_distribution()(0);
 
         out << "Index space " << i_sp << " =" << endl;
         index_space.print_info(out);
@@ -141,8 +141,8 @@ do_test_2()
     }
 
 
-    ConcatenatedForwardConstIterator<VecView> dofs_iterator_begin(ranges,0);
-    ConcatenatedForwardConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedConstIterator<VecView> dofs_iterator_begin(ranges,0);
+    ConcatenatedConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)

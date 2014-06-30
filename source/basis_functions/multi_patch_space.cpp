@@ -162,13 +162,11 @@ arrangement_close()
 
         ref_space->print_info(out);
 
-        auto &index_space = ref_space->get_index_space();
+        auto &index_space = ref_space->get_basis_indices().get_index_distribution();
 
         vector<DofsComponentView> space_components_view;
-        for (int comp = 0 ; comp < RefSpace::n_components ; ++comp)
+        for (auto &index_space_comp : index_space)
         {
-            auto &index_space_comp = index_space(comp);
-
             vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
             DofsComponentView index_space_comp_view(
                 index_space_comp_data.begin(),index_space_comp_data.end());

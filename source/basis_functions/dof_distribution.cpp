@@ -80,6 +80,21 @@ get_loc_to_global_indices(const TensorIndex<dim> &j) const
 template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
+add_dofs_offset(const Index offset)
+{
+    for (auto &dofs_component : index_distribution_)
+        for (auto &dof_id : dofs_component)
+            dof_id += offset;
+
+    for (auto &dofs_element : element_loc_to_global_)
+        for (auto &dof_id : dofs_element)
+            dof_id += offset;
+}
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
     for (int comp = 0; comp < Space::n_components; ++comp)

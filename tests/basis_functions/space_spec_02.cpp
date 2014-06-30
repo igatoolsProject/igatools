@@ -61,7 +61,7 @@ void test_2d()
     const int dim=2;
     using SplineSpace = SplineSpace<dim>;
 
-    auto grid = CartesianGrid<dim>::create( {3,5});
+    auto grid = CartesianGrid<dim>::create({3,5});
     typename SplineSpace::DegreeTable deg {{1,3}};
 
 
@@ -87,7 +87,7 @@ void test_3d()
     const int dim=3;
     using SplineSpace = SplineSpace<dim>;
 
-    auto grid = CartesianGrid<dim>::create( {3,4,5});
+    auto grid = CartesianGrid<dim>::create({3,4,5});
     typename SplineSpace::DegreeTable deg {{1,3,0}};
     SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
     sp_spec.print_info(out);
@@ -115,7 +115,7 @@ void test_2d_2()
     const int range=2;
     using SplineSpace = SplineSpace<dim, range, 1>;
 
-    auto grid = CartesianGrid<dim>::create( {3,4});
+    auto grid = CartesianGrid<dim>::create({3,4});
     typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
     SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
     sp_spec.print_info(out);

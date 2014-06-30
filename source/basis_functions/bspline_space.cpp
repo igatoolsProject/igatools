@@ -330,16 +330,7 @@ void
 BSplineSpace<dim_, range_, rank_>::
 add_dofs_offset(const Index offset)
 {
-    for (int comp = 0 ; comp < n_components ; ++comp)
-    {
-        auto &dofs_component = index_space_(comp);
-        for (auto &dof_id : dofs_component)
-            dof_id += offset;
-    }
-
-    for (auto &dofs_element : element_global_dofs_)
-        for (auto &dof_id : dofs_element)
-            dof_id += offset;
+    basis_indices_.add_dofs_offset(offset);
 }
 
 

@@ -413,7 +413,8 @@ print_info(LogStream &out) const
     deg_.print_info(out);
     out << std::endl;
     out << "Interior multiplicities:\n";
-    for (const auto &v : *interior_mult_)
+    const MultiplicityTable &interior_mult_ref = *interior_mult_;
+    for (const auto &v : interior_mult_ref)
         v.print_info(out);
     out << "Dimensionality Table:\n";
     space_dim_.print_info(out);

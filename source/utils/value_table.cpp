@@ -41,7 +41,7 @@ ValueTable<T>::ValueTable(
     const Size num_functions,
     const Size num_points)
     :
-    DynamicMultiArray<T,2>(TensorSize<2>( {num_points,num_functions})),
+    DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions})),
                   num_functions_ {num_functions},
 num_points_ {num_points}
 {
@@ -65,7 +65,7 @@ resize(const Size num_functions, const Size num_points)
         num_functions_ = num_functions ;
         num_points_ = num_points ;
 
-        DynamicMultiArray<T,2>::resize(TensorSize<2>( {num_points_,num_functions_}));
+        DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points_,num_functions_}));
     }
 }
 
@@ -222,7 +222,7 @@ void
 ValueTable<T>::
 zero()
 {
-    for (auto & value : (*this))
+    for (auto &value : (*this))
         value = T() ;
 }
 

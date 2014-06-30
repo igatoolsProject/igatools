@@ -172,7 +172,7 @@ Writer(const shared_ptr<const Mapping<dim,codim> > map,
 
     //------------------------------------------------------------------------------------------
     vtk_elements_connectivity_.resize(n_iga_elements_);
-    for (auto & iga_elem_connectivity : vtk_elements_connectivity_)
+    for (auto &iga_elem_connectivity : vtk_elements_connectivity_)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
     //------------------------------------------------------------------------------------------
 
@@ -241,17 +241,17 @@ add_point_data(const int n_iga_elements,
     auto &data = *data_ptr;
 
     int pos = 0;
-    for (const auto & data_element : data_iga_elements)
+    for (const auto &data_element : data_iga_elements)
     {
         Assert(data_element.size() == n_points_per_iga_element,
                ExcDimensionMismatch(data_element.size(), n_points_per_iga_element));
 
-        for (const auto & data_point : data_element)
+        for (const auto &data_point : data_element)
         {
             Assert(data_point.size() == n_values_per_point,
                    ExcDimensionMismatch(data_point.size(), n_values_per_point));
 
-            for (const double & value : data_point)
+            for (const double &value : data_point)
             {
                 data[pos++] = value;
             }
@@ -623,8 +623,8 @@ void Writer<dim, codim, T>::save_ascii(Out &file) const
     file << tab3 << "<Points>" << endl;
     file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"ascii\">" << endl;
 
-    for (const auto & point_in_iga_element : points_in_iga_elements_)
-        for (const auto & point : point_in_iga_element)
+    for (const auto &point_in_iga_element : points_in_iga_elements_)
+        for (const auto &point : point_in_iga_element)
             file << tab5 << point[0] << " " << point[1] << " " << point[2] << endl;
 
     file << tab4 << "</DataArray>" << endl;
@@ -633,9 +633,9 @@ void Writer<dim, codim, T>::save_ascii(Out &file) const
     file << tab3 << "<Cells>" << endl;
     file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
     file << tab5;
-    for (const auto & iga_elem_connectivity : vtk_elements_connectivity_)
-        for (const auto & vtk_elem_connectivity : iga_elem_connectivity)
-            for (const auto & point_id : vtk_elem_connectivity)
+    for (const auto &iga_elem_connectivity : vtk_elements_connectivity_)
+        for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
+            for (const auto &point_id : vtk_elem_connectivity)
                 file << point_id << " ";
     file << endl;
     file << tab4 << "</DataArray>" << endl;
@@ -662,27 +662,27 @@ void Writer<dim, codim, T>::save_ascii(Out &file) const
     if (!names_point_data_scalar_.empty())
     {
         point_data_optional_attr += " Scalars=\"";
-        for (const string & name : names_point_data_scalar_)
+        for (const string &name : names_point_data_scalar_)
             point_data_optional_attr += name + " ";
         point_data_optional_attr+= "\"";
     }
     if (!names_point_data_vector_.empty())
     {
         point_data_optional_attr += " Vectors=\"";
-        for (const string & name : names_point_data_vector_)
+        for (const string &name : names_point_data_vector_)
             point_data_optional_attr += name + " ";
         point_data_optional_attr+= "\"";
     }
     if (!names_point_data_tensor_.empty())
     {
         point_data_optional_attr += " Tensors=\"";
-        for (const string & name : names_point_data_tensor_)
+        for (const string &name : names_point_data_tensor_)
             point_data_optional_attr += name + " ";
         point_data_optional_attr+= "\"";
     }
 
     file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
-    for (const auto & point_data : fields_)
+    for (const auto &point_data : fields_)
     {
         file << tab4 << "<DataArray Name=\"" << point_data.name_
              << "\" type=\"" << string_Real_
@@ -690,7 +690,7 @@ void Writer<dim, codim, T>::save_ascii(Out &file) const
              << "\" format=\"ascii\">" << endl;
 
         file << tab5;
-        for (const auto & v : *point_data.values_)
+        for (const auto &v : *point_data.values_)
             file << v << " ";
         file << endl;
 
@@ -706,46 +706,46 @@ void Writer<dim, codim, T>::save_ascii(Out &file) const
     if (!names_cell_data_scalar_.empty())
     {
         cell_data_optional_attr += " Scalars=\"";
-        for (const string & name : names_cell_data_scalar_)
+        for (const string &name : names_cell_data_scalar_)
             cell_data_optional_attr += name + " ";
         cell_data_optional_attr+= "\"";
     }
     if (!names_cell_data_vector_.empty())
     {
         cell_data_optional_attr += " Vectors=\"";
-        for (const string & name : names_cell_data_vector_)
+        for (const string &name : names_cell_data_vector_)
             cell_data_optional_attr += name + " ";
         cell_data_optional_attr+= "\"";
     }
     if (!names_cell_data_tensor_.empty())
     {
         cell_data_optional_attr += " Tensors=\"";
-        for (const string & name : names_cell_data_tensor_)
+        for (const string &name : names_cell_data_tensor_)
             cell_data_optional_attr += name + " ";
         cell_data_optional_attr+= "\"";
     }
 
     file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
-    for (const auto & cell_data : cell_data_double_)
+    for (const auto &cell_data : cell_data_double_)
     {
         file << tab4 << "<DataArray Name=\"" << cell_data.name_
              << "\" type=\"" << string_Real_
              << "\" NumberOfComponents=\""<< cell_data.num_components_
              << "\" format=\"ascii\">" << endl;
         file << tab5;
-        for (const double & v : *cell_data.values_)
+        for (const double &v : *cell_data.values_)
             file << v << " ";
         file << endl;
         file << tab4 << "</DataArray>" << endl;
     }
-    for (const auto & cell_data : cell_data_int_)
+    for (const auto &cell_data : cell_data_int_)
     {
         file << tab4 << "<DataArray Name=\"" << cell_data.name_
              << "\" type=\"" << string_int_
              << "\" NumberOfComponents=\""<< cell_data.num_components_
              << "\" format=\"ascii\">" << endl;
         file << tab5;
-        for (const int & v : *cell_data.values_)
+        for (const int &v : *cell_data.values_)
             file << v << " ";
         file << endl;
         file << tab4 << "</DataArray>" << endl;
@@ -813,28 +813,28 @@ void Writer<dim, codim, T>::save_appended(const string &filename) const
     if (!names_point_data_scalar_.empty())
     {
         point_data_optional_attr += " Scalars=\"";
-        for (const string & name : names_point_data_scalar_)
+        for (const string &name : names_point_data_scalar_)
             point_data_optional_attr += name + " ";
         point_data_optional_attr+= "\"";
     }
     if (!names_point_data_vector_.empty())
     {
         point_data_optional_attr += " Vectors=\"";
-        for (const string & name : names_point_data_vector_)
+        for (const string &name : names_point_data_vector_)
             point_data_optional_attr += name + " ";
         point_data_optional_attr+= "\"";
     }
     if (!names_point_data_tensor_.empty())
     {
         point_data_optional_attr += " Tensors=\"";
-        for (const string & name : names_point_data_tensor_)
+        for (const string &name : names_point_data_tensor_)
             point_data_optional_attr += name + " ";
         point_data_optional_attr+= "\"";
     }
 
     vector<int> n_bytes_point_data;
     file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
-    for (const auto & point_data : fields_)
+    for (const auto &point_data : fields_)
     {
 
         file << tab4 << "<DataArray Name=\"" << point_data.name_
@@ -855,21 +855,21 @@ void Writer<dim, codim, T>::save_appended(const string &filename) const
     if (!names_cell_data_scalar_.empty())
     {
         cell_data_optional_attr += " Scalars=\"";
-        for (const string & name : names_cell_data_scalar_)
+        for (const string &name : names_cell_data_scalar_)
             cell_data_optional_attr += name + " ";
         cell_data_optional_attr+= "\"";
     }
     if (!names_cell_data_vector_.empty())
     {
         cell_data_optional_attr += " Vectors=\"";
-        for (const string & name : names_cell_data_vector_)
+        for (const string &name : names_cell_data_vector_)
             cell_data_optional_attr += name + " ";
         cell_data_optional_attr+= "\"";
     }
     if (!names_cell_data_tensor_.empty())
     {
         cell_data_optional_attr += " Tensors=\"";
-        for (const string & name : names_cell_data_tensor_)
+        for (const string &name : names_cell_data_tensor_)
             cell_data_optional_attr += name + " ";
         cell_data_optional_attr+= "\"";
     }
@@ -877,7 +877,7 @@ void Writer<dim, codim, T>::save_appended(const string &filename) const
     file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
 
     vector<int> n_bytes_cell_data_double;
-    for (const auto & cell_data : cell_data_double_)
+    for (const auto &cell_data : cell_data_double_)
     {
         file << tab4 << "<DataArray Name=\"" << cell_data.name_
              << "\" type=\"" << string_Real_
@@ -889,7 +889,7 @@ void Writer<dim, codim, T>::save_appended(const string &filename) const
     }
 
     vector<int> n_bytes_cell_data_int;
-    for (const auto & cell_data : cell_data_int_)
+    for (const auto &cell_data : cell_data_int_)
     {
         file << tab4 << "<DataArray Name=\"" << cell_data.name_
              << "\" type=\"" << string_int_
@@ -915,16 +915,16 @@ void Writer<dim, codim, T>::save_appended(const string &filename) const
     //-------------------------------------------------------------------------
     // writing the points coordinate
     file.write((char *) &n_bytes_points, sizeof_int_);
-    for (const auto & point_in_iga_element : points_in_iga_elements_)
-        for (const auto & point : point_in_iga_element)
+    for (const auto &point_in_iga_element : points_in_iga_elements_)
+        for (const auto &point : point_in_iga_element)
             file.write((char *) &point[0], 3 * sizeof_Real_);
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
     // writing the element connectivity
     file.write((char *) &n_bytes_connectivity, sizeof_int_);
-    for (const auto & iga_elem_connectivity : vtk_elements_connectivity_)
-        for (const auto & vtk_elem_connectivity : iga_elem_connectivity)
+    for (const auto &iga_elem_connectivity : vtk_elements_connectivity_)
+        for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
             file.write((char *) vtk_elem_connectivity.data(), n_vertices_per_vtk_element_ * sizeof_int_);
     //-------------------------------------------------------------------------
 
@@ -1015,9 +1015,9 @@ void Writer<dim, codim, T>::save(const string &filename, const string &format)
 
     if (format == "ascii")
     {
-    	ofstream file(vtu_filename);
-    	file.setf(ios::scientific);
-    	file.precision(precision_);
+        ofstream file(vtu_filename);
+        file.setf(ios::scientific);
+        file.precision(precision_);
         this->save_ascii(file);
     }
     else if (format == "appended")
@@ -1030,7 +1030,7 @@ void Writer<dim, codim, T>::save(const string &filename, const string &format)
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out)
 {
-	this->save_ascii(out);
+    this->save_ascii(out);
 }
 
 

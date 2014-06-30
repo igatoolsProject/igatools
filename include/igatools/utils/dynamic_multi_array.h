@@ -188,7 +188,7 @@ operator*(const Real a, const DynamicMultiArray<T,rank> &B)
 {
     DynamicMultiArray<T,rank> res(B);
 
-    for (auto & r : res)
+    for (auto &r : res)
         r *= a;
 
     return res;
