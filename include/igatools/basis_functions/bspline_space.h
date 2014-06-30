@@ -405,7 +405,7 @@ public:
     const DofDistribution<dim, range, rank> &
     get_basis_indices() const
     {
-    	return basis_indices_;
+        return basis_indices_;
     }
 
 };
