@@ -155,7 +155,7 @@ BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
                     const MultiplicityTable &acum_mult,
                     const DegreeTable &deg)
 {
-    for (const int &i : ext_operators_.get_active_components())
+    for (const int &i : ext_operators_.get_active_components_id())
     {
         for (int j = 0; j < dim; ++j)
         {

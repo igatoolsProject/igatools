@@ -164,7 +164,7 @@ evaluate_nurbs_values(
     const auto &weights = this->get_local_weights();
     const auto &bspline_values = bspline_cache.get_values();
 
-    for (int iComp : w_table.get_active_components())
+    for (int iComp : w_table.get_active_components_id())
     {
         const int num_basis_comp = this->get_num_basis(iComp);
 
@@ -204,7 +204,7 @@ evaluate_nurbs_values(
         }
     }
 
-    for (int comp : w_table.get_inactive_components())
+    for (int comp : w_table.get_inactive_components_id())
     {
         const auto n_basis = this->space_->get_num_basis_per_element(comp);
         const Size offset = this->comp_offset_(comp);
@@ -279,7 +279,7 @@ evaluate_nurbs_gradients(
     const auto &bspline_values = bspline_cache.get_values();
     const auto &bspline_gradients = bspline_cache.get_gradients();
 
-    for (int iComp : w_table.get_active_components())
+    for (int iComp : w_table.get_active_components_id())
     {
         const int num_basis_comp = this->get_num_basis(iComp);
 
@@ -352,7 +352,7 @@ evaluate_nurbs_gradients(
         }
     }
 
-    for (int comp : w_table.get_inactive_components())
+    for (int comp : w_table.get_inactive_components_id())
     {
         const auto n_basis = this->space_->get_num_basis_per_element(comp);
         const Size offset = this->comp_offset_(comp);
@@ -442,7 +442,7 @@ evaluate_nurbs_hessians(
     const auto &bspline_hessians = bspline_cache.get_hessians();
 
 
-    for (int iComp : w_table.get_active_components())
+    for (int iComp : w_table.get_active_components_id())
     {
         const int num_basis_comp = this->get_num_basis(iComp);
 
@@ -543,7 +543,7 @@ evaluate_nurbs_hessians(
             }
         }
 
-        for (int comp : w_table.get_inactive_components())
+        for (int comp : w_table.get_inactive_components_id())
         {
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
             const Size offset = this->comp_offset_(comp);
@@ -591,7 +591,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
         auto R_it = result.begin();
         auto W_it = weights.cbegin();
 
-        for (int comp : w_table.get_active_components())
+        for (int comp : w_table.get_active_components_id())
         {
             const int n_basis_comp = this->get_num_basis(comp);
             for (int ifn = 0 ; ifn < n_basis_comp ; ++ifn)
@@ -614,7 +614,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
                 ++W_it;
             } // end loop ifn
         } // end loop comp
-        for (int comp : w_table.get_inactive_components())
+        for (int comp : w_table.get_inactive_components_id())
         {
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
             const Size offset = this->comp_offset_(comp);
@@ -642,7 +642,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
         auto DP_it = DP_table.cbegin();
         auto DR_it = result.begin();
         auto W_it = weights.cbegin();
-        for (int comp : w_table.get_active_components())
+        for (int comp : w_table.get_active_components_id())
         {
 
             const int n_basis_comp = this->get_num_basis(comp);
@@ -675,7 +675,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
                 ++W_it;
             } // end loop ifn
         } // end loop comp
-        for (int comp : w_table.get_inactive_components())
+        for (int comp : w_table.get_inactive_components_id())
         {
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
             const Size offset = this->comp_offset_(comp);
@@ -710,7 +710,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
 
 
 
-        for (int comp : w_table.get_active_components())
+        for (int comp : w_table.get_active_components_id())
         {
             const int n_basis_comp = this->get_num_basis(comp);
             for (int ifn = 0 ; ifn < n_basis_comp ; ++ifn)
@@ -754,7 +754,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
                 ++W_it;
             } // end loop ifn
         } // end loop comp
-        for (int comp : w_table.get_inactive_components())
+        for (int comp : w_table.get_inactive_components_id())
         {
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
             const Size offset = this->comp_offset_(comp);

@@ -55,6 +55,22 @@ get_weights_from_ref_space(const RefSpace &ref_space,
     StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1> weights;
     return weights;
 }
+
+
+template<int dim, int range, int rank>
+const BSplineSpace<dim,range,rank> &
+get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
+{
+    return *nurbs_space.get_spline_space();
+}
+
+template<int dim, int range, int rank>
+const BSplineSpace<dim,range,rank> &
+get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
+{
+    return bspline_space;
+}
+
 };
 
 
@@ -77,7 +93,6 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     Assert(RefSpace::rank == 1, ExcDimensionMismatch(RefSpace::rank,1));
 
-#if 0
     //----------------------------------
     // if RefSpace is NURBSSpace
     // save the weights in order to be used in the h-refinement algorithm
@@ -87,42 +102,40 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     //----------------------------------
 
 
-    //----------------------------------
-    // copy the knots (with repetitions) that defines the RefSpace before any refinement
-    data_->knots_with_repetitions_pre_refinement_ = space->get_knots_with_repetitions();
-    //----------------------------------
-
 
 
     //----------------------------------
     // copy the control mesh before any refinement
-    const auto &index_space = data_->ref_space_->get_index_space();
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*space);
+    const auto &num_basis_table = bspline_space.get_num_basis_table();
 
+    Index ctrl_pt_fid = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const auto &index_space_comp = index_space(comp_id);
+        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+
         auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
 
-        ctrl_mesh_comp.resize(index_space_comp.tensor_size());
+        ctrl_mesh_comp.resize(num_basis_comp);
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
-//        out << "n_dofs_comp["<<comp_id<<"]= " << n_dofs_comp << endl ;
 
         const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_(comp_id);
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
-            const Index glob_id = index_space_comp(loc_id);
             if (RefSpace::has_weights)
             {
                 // if NURBS, transform the control points from euclidean to projective coordinates
                 const Real w = weights_pre_refinement_comp(loc_id);
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[glob_id];
+                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[glob_id];
+                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
 
+            ++ctrl_pt_fid;
         }
     }
 
@@ -131,7 +144,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
             &IgMapping<RefSpace>::refine_h_control_mesh,
             this,
             std::placeholders::_1,std::placeholders::_2));
-#endif
+//#endif
 }
 
 
@@ -329,7 +342,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
-    for (const auto & pt : points)
+    for (const auto &pt : points)
         elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
 
     // aggregate consecutive points on the same element
@@ -341,7 +354,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
     values.clear();
     auto point_it = points.cbegin();
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto & elem_fid : elem_fids_no_duplicates)
+    for (const auto &elem_fid : elem_fids_no_duplicates)
     {
         cache_->reset_flat_tensor_indices(elem_fid);
 
@@ -375,7 +388,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
-    for (const auto & pt : points)
+    for (const auto &pt : points)
         elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
 
     // aggregate consecutive points on the same element
@@ -387,7 +400,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
     gradients.clear();
     auto point_it = points.cbegin();
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto & elem_fid : elem_fids_no_duplicates)
+    for (const auto &elem_fid : elem_fids_no_duplicates)
     {
         cache_->reset_flat_tensor_indices(elem_fid);
 
@@ -421,7 +434,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessia
 
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
-    for (const auto & pt : points)
+    for (const auto &pt : points)
         elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
 
     // aggregate consecutive points on the same element
@@ -433,7 +446,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessia
     hessians.clear();
     auto point_it = points.cbegin();
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto & elem_fid : elem_fids_no_duplicates)
+    for (const auto &elem_fid : elem_fids_no_duplicates)
     {
         cache_->reset_flat_tensor_indices(elem_fid);
 
@@ -470,24 +483,35 @@ set_control_points(const std::vector<Real> &control_points)
 
 
 
-#if 0
+//#if 0
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
 refine_h_control_mesh(
     const std::array<bool,dim> &refinement_directions,
-    const typename base_t::GridType &grid_old)
+    const typename base_t::GridType &grid_old1)
 {
+    auto grid = this->get_grid();
+    auto grid_old = this->get_grid()->get_grid_pre_refinement();
+
+    auto ref_space = data_->ref_space_;
+
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
+
+    auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
+
     for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
     {
         if (refinement_directions[direction_id])
         {
-
             // knots in the refined grid along the selected direction
-            vector<Real> knots_new = data_->ref_space_->get_grid()->get_knot_coordinates(direction_id);
+            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
 
             // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
+            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
 
             vector<Real> knots_added(knots_new.size());
 
@@ -502,12 +526,10 @@ refine_h_control_mesh(
 
             for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
             {
-
-                const int p = data_->ref_space_->get_degree()(comp_id)[direction_id];
-
-                const auto &U = data_->knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
+                const int p = ref_space->get_degree()(comp_id)[direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = data_->ref_space_->get_knots_with_repetitions()(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -515,7 +537,6 @@ refine_h_control_mesh(
                 const int b = space_tools::find_span(p,X[r],U)+1;
 
                 const int n = m-p-1;
-
 
                 const auto &Pw = data_->ctrl_mesh_(comp_id);
                 const auto old_sizes = Pw.tensor_size();
@@ -615,9 +636,12 @@ refine_h_control_mesh(
         }
     }
     //----------------------------------
+
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
-#endif
+//#endif
 
 
 template<class RefSpace>

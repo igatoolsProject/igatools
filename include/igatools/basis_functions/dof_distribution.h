@@ -56,7 +56,7 @@ public:
                     const SpaceDimensionTable &n_elem_basis,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
-    const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &j) const;
+    const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
 
 
     TensorIndex<dim>
@@ -80,10 +80,12 @@ public:
 private:
 
     // TODO (pauletti, May 28, 2014): this should be a temporary in the constructor
+    //TODO (martinelli, Jun 27, 2014): I think we need this member (in order to work with the DofsManager)
     using IndexDistributionTable =
         typename Space::template ComponentContainer<DynamicMultiArray<Index,dim>>;
     IndexDistributionTable index_distribution_;
 
+    //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
 
 };

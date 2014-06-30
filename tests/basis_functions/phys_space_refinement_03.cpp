@@ -50,41 +50,34 @@ template <int dim>
 void test_evaluate()
 {
 
-    const int p = 2;
     auto grid = CartesianGrid<dim>::create(2);
     grid->refine();
 
 
-    auto ref_space = ReferenceSpace<dim>::create(grid, p);
-
-    TensorSize<dim> n_weights_comp;
+    const int deg = 2;
+    TensorSize<dim> n_weights_dir;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
+        n_weights_dir(dir_id) = (deg+2);
 
-    DynamicMultiArray<Real,dim> weights_comp(n_weights_comp);
+    TensorIndex<dim> component_map;
+    for (int i = 0 ; i < dim ; ++i)
+        component_map[i] = i;
 
-    ComponentTable<DynamicMultiArray<Real,dim>,dim> weights(weights_comp);
-
-
-    vector<Real> control_pts(ref_space->get_num_basis());
+    typename NURBSSpace<dim,dim>::WeightsTable weights(component_map);
 
     if (dim == 1)
     {
+        weights(0).resize(n_weights_dir);
         weights(0)(0) = 1.0 ;
         weights(0)(1) = 0.853553390593274 ;
         weights(0)(2) = 0.853553390593274 ;
         weights(0)(3) = 1.0 ;
-
-        control_pts[0] = 1.0;
-        control_pts[1] = 1.0;
-        control_pts[2] = 0.414213562373095;
-        control_pts[3] = 0.0;
     }
     else if (dim == 2)
     {
-
         for (Index comp_id = 0 ; comp_id < 2 ; ++comp_id)
         {
+            weights(comp_id).resize(n_weights_dir);
             Index id = 0;
             for (Index i=0 ; i < 4 ; ++i)
             {
@@ -94,8 +87,36 @@ void test_evaluate()
                 weights(comp_id)(id++) = 1.0 ;
             }
         }
+    }
+    else if (dim == 3)
+    {
+        for (Index comp_id = 0 ; comp_id < 3 ; ++comp_id)
+        {
+            weights(comp_id).resize(n_weights_dir);
 
+            Index id = 0;
+            for (Index i=0 ; i < 16 ; ++i)
+            {
+                weights(comp_id)(id++) = 1.0 ;
+                weights(comp_id)(id++) = 0.853553390593274 ;
+                weights(comp_id)(id++) = 0.853553390593274 ;
+                weights(comp_id)(id++) = 1.0 ;
+            }
+        }
+    }
+    auto ref_space = ReferenceSpace<dim>::create(deg,grid,weights);
 
+    vector<Real> control_pts(ref_space->get_num_basis());
+
+    if (dim == 1)
+    {
+        control_pts[0] = 1.0;
+        control_pts[1] = 1.0;
+        control_pts[2] = 0.414213562373095;
+        control_pts[3] = 0.0;
+    }
+    else if (dim == 2)
+    {
         // 1st comp - 1st row
         control_pts[0] = 1.0;
         control_pts[1] = 1.0;
@@ -146,30 +167,11 @@ void test_evaluate()
     }
     else if (dim == 3)
     {
-        for (Index comp_id = 0 ; comp_id < 3 ; ++comp_id)
-        {
-            Index id = 0;
-            for (Index i=0 ; i < 16 ; ++i)
-            {
-                weights(comp_id)(id++) = 1.0 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 1.0 ;
-            }
-        }
-
-//       AssertThrow(false,ExcNotImplemented());
-
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
     }
 
-    ref_space->reset_weights(weights);
-
-//    ref_space->print_info(out);
-
-
     auto map = IgMapping<ReferenceSpace<dim>>::create(ref_space,control_pts);
-
-//    ref_space->print_info(out);
 
     auto push_fwd = PushFwd<dim>::create(map);
 
@@ -197,9 +199,9 @@ int main()
 {
     out.depth_console(10);
 
-    test_evaluate<1>();
+//    test_evaluate<1>();
     test_evaluate<2>();
-    test_evaluate<3>();
+//    test_evaluate<3>();
 
     return 0;
 }

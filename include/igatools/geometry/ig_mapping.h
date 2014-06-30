@@ -186,7 +186,7 @@ private:
         ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
 
         /** Knots with repetitions PRE-refinement */
-        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+//        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
 
 
         /** Control mesh (the coordinates are in the projective space). */
@@ -244,12 +244,10 @@ private:
      * @ingroup h_refinement
      *
      */
-#if 0
     void refine_h_control_mesh(
         const std::array<bool,dim> &refinement_directions,
         const typename base_t::GridType &grid_old);
 
-#endif
     /**
      * Returns the control points that are active on the element represented by the cache.
      */

@@ -149,11 +149,11 @@ refine_h_after_grid_refinement(
 
             knots_added.resize(it-knots_added.begin());
 
-            for (int comp_id = 0; comp_id < SplineSpace<dim,range,rank>::n_components; ++comp_id)
+            auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+            for (int comp_id : interior_mult.get_active_components_id())
             {
                 //--------------------------------------------------------
                 // creating the new multiplicity
-                auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
                 const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
                 const int n_mult_old = mult_old.size();
 
@@ -298,7 +298,7 @@ get_face_mult(const Index face_id) const
     const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
     auto f_int_mult = make_shared<typename FaceSpace::MultiplicityTable> (v_mult.get_comp_map());
     auto &f_mult = *f_int_mult;
-    for (int comp : f_mult.get_active_components())
+    for (int comp : f_mult.get_active_components_id())
     {
         for (auto j : FaceSpace::dims)
             f_mult(comp).copy_data_direction(j, v_mult(comp).get_data_direction(active_dirs[j]));
@@ -315,7 +315,7 @@ get_face_degree(const Index face_id) const
 {
     const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
     typename FaceSpace::DegreeTable f_degree(deg_.get_comp_map());
-    for (int comp : f_degree.get_active_components())
+    for (int comp : f_degree.get_active_components_id())
     {
         for (auto j : FaceSpace::dims)
             f_degree(comp)[j] = deg_(comp)[active_dirs[j]];
@@ -361,7 +361,7 @@ fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid
     auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
 
     auto const knots_size = grid->get_num_knots_dim();
-    for (int iComp : res->get_active_components())
+    for (int iComp : res->get_active_components_id())
         for (int j = 0; j < dim; ++j)
         {
             const auto size = knots_size[j]-2;
@@ -380,7 +380,7 @@ interpolatory_end_knots() const -> BoundaryKnotsTable
 {
     BoundaryKnotsTable result(deg_.get_comp_map());
 
-    for (int iComp : result.get_active_components())
+    for (int iComp : result.get_active_components_id())
     {
         BoundaryKnots bdry_knots;
         for (int j = 0; j < dim; ++j)

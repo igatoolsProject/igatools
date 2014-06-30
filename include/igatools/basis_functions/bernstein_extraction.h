@@ -75,7 +75,7 @@ public:
     ElemOperTable get_element_operators(TensorIndex<dim> idx) const
     {
         ElemOperTable result(ext_operators_.get_comp_map());
-        for (auto comp : result.get_active_components())
+        for (auto comp : result.get_active_components_id())
             for (int dir = 0 ; dir < dim ; ++dir)
                 result(comp)[dir] = &(ext_operators_(comp).get_data_direction(dir)[idx[dir]]);
         return result;
