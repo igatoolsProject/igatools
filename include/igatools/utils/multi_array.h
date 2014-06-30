@@ -94,6 +94,7 @@ IGA_NAMESPACE_OPEN
  * @author M. Martinelli
  * @date 31 Jan 2014
  */
+//TODO(pauletti, May 31, 2014): we should provide a tensorindex type for loop
 template<class STLContainer, int rank>
 class MultiArray : public TensorSizedContainer<rank>
 {
@@ -240,7 +241,6 @@ protected:
      */
     STLContainer data_;
 };
-
 
 
 IGA_NAMESPACE_CLOSE

@@ -22,6 +22,7 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/function.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
@@ -52,7 +53,9 @@ public:
     ///@{
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward_;
+
     using RefSpace = RefSpace_;
+
     using GridType = typename PushForwardType::GridType;
     ///@}
     static const int dim = PushForwardType::dim;
@@ -67,15 +70,25 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+public:
+    using Func = Function<space_dim, range, rank>;
+    template <int order>
+    using Derivative = typename Func::template Derivative<order>;
+    using Point = typename Func::Point;
+    using Value = typename Func::Value;
+    using Div   = typename Func::Div;
 
-    /** Container indexed by the components of the space */
+
+public:
     template< class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
+
+    using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 
 public:
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
-
+    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
     /**
      * Type for the element accessor.
      */
@@ -110,6 +123,15 @@ public:
      */
     int get_num_basis_per_element() const;
 
+    const SpaceDimensionTable get_num_basis_per_element_table() const
+    {
+        return ref_space_->get_num_basis_per_element_table();
+    }
+
+    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    {
+        return ref_space_->get_loc_to_global(j);
+    }
     /**
      * Returns a element iterator to the first element of the patch.
      */
@@ -129,13 +151,23 @@ public:
 
     std::shared_ptr<const RefSpace> get_reference_space() const;
 
+
+    std::shared_ptr<FaceSpace>
+    get_face_space(const Index face_id,
+                   std::vector<Index> &face_to_element_dofs) const;
+
+
     void print_info(LogStream &out) const;
 
-    void print_memory_info(LogStream &out) const;
 
 
     Index get_id() const;
 
+    // TODO (pauletti, Jun 12, 2014): if we are using this it should be
+    // implemented in all library classes
+    void print_memory_info(LogStream &out) const;
+
+#if 0
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
@@ -147,6 +179,7 @@ public:
      * @todo Missing documentation
      */
     const std::vector<std::vector<Index>> &get_element_global_dofs() const;
+#endif
 
 private:
     std::shared_ptr<RefSpace> ref_space_;

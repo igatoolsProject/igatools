@@ -31,79 +31,79 @@
 namespace Teuchos
 {
 template<>
-iga::Real
-ScalarTraits<iga::Real>::zero()
+Real
+ScalarTraits<Real>::zero()
 {
-    return iga::Real(0.0);
+    return Real(0.0);
 }
 
 template<>
-iga::Real
-ScalarTraits<iga::Real>::one()
+Real
+ScalarTraits<Real>::one()
 {
-    return iga::Real(1.0);
+    return Real(1.0);
 }
 
 template<>
-iga::Real
-ScalarTraits<iga::Real>::eps()
+Real
+ScalarTraits<Real>::eps()
 {
-    return std::numeric_limits<iga::Real>::epsilon();
+    return std::numeric_limits<Real>::epsilon();
 }
 
 template<>
 string
-ScalarTraits<iga::Real>::name()
+ScalarTraits<Real>::name()
 {
-    return "iga::Real";
+    return "Real";
 }
 
 template<>
-iga::Real
-ScalarTraits<iga::Real>::rmax()
+Real
+ScalarTraits<Real>::rmax()
 {
-    return std::numeric_limits<iga::Real>::max();
+    return std::numeric_limits<Real>::max();
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::Real(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::Real(Real number) -> magnitudeType
 {
     return std::Real(number);
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::conjugate(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::conjugate(Real number) -> magnitudeType
 {
     return std::Real(number);
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::magnitude(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::magnitude(Real number) -> magnitudeType
 {
     return std::abs(number);
 }
 
 template<>
 auto
-ScalarTraits<iga::Real>::squareroot(iga::Real number) -> magnitudeType
+ScalarTraits<Real>::squareroot(Real number) -> magnitudeType
 {
     return std::sqrt(number);
 }
 
 
 template<>
-iga::Real
-EnhancedNumberTraits<iga::Real>::defaultStep()
+Real
+EnhancedNumberTraits<Real>::defaultStep()
 {
-    return iga::Real(1.0);
+    return Real(1.0);
 }
 
 template<>
 unsigned short
-EnhancedNumberTraits<iga::Real>::defaultPrecision()
+EnhancedNumberTraits<Real>::defaultPrecision()
 {
     return 100;
 }
@@ -123,7 +123,7 @@ IGA_NAMESPACE_OPEN
 
 #ifdef USE_TRILINOS
 
-LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver<LAPack::trilinos>::
 LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
     :
     solver_params_(parameterList())
@@ -158,7 +158,7 @@ LinearSolver(const SolverType solver_type, const Real tolerance, const int max_n
 
 
 void
-LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver<LAPack::trilinos>::
 set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 {
     solver_params_ = solver_params;
@@ -166,7 +166,7 @@ set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 }
 
 void
-LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver<LAPack::trilinos>::
 set_max_num_iterations(const int max_num_iter)
 {
     solver_params_->set("Maximum Iterations", max_num_iter);
@@ -177,7 +177,7 @@ set_max_num_iterations(const int max_num_iter)
  * Set the level that residual norms must reach to decide convergence.
  */
 void
-LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver<LAPack::trilinos>::
 set_tolerance(const Real tolerance)
 {
     solver_params_->set("Convergence Tolerance", tolerance);
@@ -186,10 +186,10 @@ set_tolerance(const Real tolerance)
 
 
 void
-LinearSolver<LinearAlgebraPackage::trilinos>::
-solve(Matrix<LinearAlgebraPackage::trilinos> &A,
-      Vector<LinearAlgebraPackage::trilinos> &b,
-      Vector<LinearAlgebraPackage::trilinos> &x)
+LinearSolver<LAPack::trilinos>::
+solve(Matrix<LAPack::trilinos> &A,
+      Vector<LAPack::trilinos> &b,
+      Vector<LAPack::trilinos> &x)
 {
     // Create a LinearProblem struct with the problem to solve.
     // A, X, B, and M are passed by (smart) pointer, not copied.
@@ -212,14 +212,14 @@ solve(Matrix<LinearAlgebraPackage::trilinos> &A,
 
 
 Real
-LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver<LAPack::trilinos>::
 get_achieved_tolerance() const
 {
     return solver_->achievedTol() ;
 }
 
 int
-LinearSolver<LinearAlgebraPackage::trilinos>::
+LinearSolver<LAPack::trilinos>::
 get_num_iterations() const
 {
     return solver_->getNumIters() ;
@@ -235,10 +235,10 @@ get_num_iterations() const
 
 #ifdef USE_PETSC
 
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 LinearSolver(const SolverType solver_type, const Real tolerance, const int max_num_iter)
 {
-	PetscErrorCode ierr;
+    PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
     std::string prec_name;
 
@@ -255,7 +255,7 @@ LinearSolver(const SolverType solver_type, const Real tolerance, const int max_n
     else
         prec_name = "none" ;
 
-	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPCreate(comm_, &ksp_);
     ierr = KSPGetPC(ksp_,&pc_);
 
     ierr = PCSetType(pc_,prec_name.c_str());
@@ -264,11 +264,11 @@ LinearSolver(const SolverType solver_type, const Real tolerance, const int max_n
     ierr = KSPSetTolerances(ksp_,tolerance,PETSC_DEFAULT,PETSC_DEFAULT,max_num_iter);
 }
 
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
              const Real tolerance, const int max_num_iter)
 {
-	PetscErrorCode ierr;
+    PetscErrorCode ierr;
     comm_ = PETSC_COMM_WORLD;
 
     // map the SolverType enum elements to the name aliases used by PETSc
@@ -287,7 +287,7 @@ LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
     if (solver_type == SolverType::LU)
         prec_name = "lu" ;
 
-	ierr = KSPCreate(comm_, &ksp_);
+    ierr = KSPCreate(comm_, &ksp_);
     ierr = KSPGetPC(ksp_,&pc_);
 
     ierr = PCSetType(pc_,prec_name.c_str());
@@ -298,7 +298,7 @@ LinearSolver(const SolverType solver_type, const PreconditionerType prec_type,
 
 /*
 void
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 {
     solver_params_ = solver_params;
@@ -307,14 +307,14 @@ set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params)
 //*/
 
 void
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 set_max_num_iterations(const int max_num_iter)
 {
-	PetscErrorCode ierr;
-	PetscReal rtol, abstol, dtol;
-	PetscInt maxits;
-	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
-	ierr = KSPSetTolerances(ksp_, rtol, abstol, dtol, max_num_iter);
+    PetscErrorCode ierr;
+    PetscReal rtol, abstol, dtol;
+    PetscInt maxits;
+    ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+    ierr = KSPSetTolerances(ksp_, rtol, abstol, dtol, max_num_iter);
 
 }
 
@@ -322,49 +322,49 @@ set_max_num_iterations(const int max_num_iter)
  * Set the level that residual norms must reach to decide convergence.
  */
 void
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 set_tolerance(const Real tolerance)
 {
-	PetscErrorCode ierr;
-	PetscReal rtol, abstol, dtol;
-	PetscInt maxits;
-	ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
-	ierr = KSPSetTolerances(ksp_, tolerance, abstol, dtol, maxits);
+    PetscErrorCode ierr;
+    PetscReal rtol, abstol, dtol;
+    PetscInt maxits;
+    ierr = KSPGetTolerances(ksp_, &rtol, &abstol, &dtol, &maxits);
+    ierr = KSPSetTolerances(ksp_, tolerance, abstol, dtol, maxits);
 }
 
 
 void
-LinearSolver<LinearAlgebraPackage::petsc>::
-solve(Matrix<LinearAlgebraPackage::petsc> &A,
-      Vector<LinearAlgebraPackage::petsc> &b,
-      Vector<LinearAlgebraPackage::petsc> &x)
+LinearSolver<LAPack::petsc>::
+solve(Matrix<LAPack::petsc> &A,
+      Vector<LAPack::petsc> &b,
+      Vector<LAPack::petsc> &x)
 {
-	PetscErrorCode ierr;
-	ierr = KSPSetOperators(ksp_,A.get_petsc_matrix(),A.get_petsc_matrix(),SAME_NONZERO_PATTERN);
+    PetscErrorCode ierr;
+    ierr = KSPSetOperators(ksp_,A.get_petsc_matrix(),A.get_petsc_matrix(),SAME_NONZERO_PATTERN);
     ierr = KSPSolve(ksp_,b.get_petsc_vector(),x.get_petsc_vector());
 }
 
 
 Real
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 get_achieved_tolerance() const
 {
-	PetscErrorCode ierr;
-	PetscReal achieved_tol;
-	ierr = KSPGetResidualNorm(ksp_, &achieved_tol);
+    PetscErrorCode ierr;
+    PetscReal achieved_tol;
+    ierr = KSPGetResidualNorm(ksp_, &achieved_tol);
 
     return achieved_tol;
 }
 
 int
-LinearSolver<LinearAlgebraPackage::petsc>::
+LinearSolver<LAPack::petsc>::
 get_num_iterations() const
 {
-	PetscErrorCode ierr;
-	int num_iters;
-	ierr = KSPGetIterationNumber(ksp_, &num_iters);
+    PetscErrorCode ierr;
+    int num_iters;
+    ierr = KSPGetIterationNumber(ksp_, &num_iters);
 
-	return num_iters;
+    return num_iters;
 }
 
 #endif // #ifdef USE_PETSC

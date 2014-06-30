@@ -43,7 +43,7 @@ void do_test(const int degree)
     auto knots = CartesianGrid<dim_domain>::create(3);
 
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(knots, degree) ;
+    auto space = Space_t::create(degree, knots) ;
 
     const int n_points = 1;
     QGauss< dim_domain > quad(n_points) ;
@@ -58,25 +58,25 @@ void do_test(const int degree)
     }
 
     {
-    	auto elem = space->begin();
-    	elem->init_values(ValueFlags::gradient, quad) ;
+        auto elem = space->begin();
+        elem->init_values(ValueFlags::gradient, quad) ;
 
-    	for (; elem != space->end(); ++elem)
-    	{
-    		elem->fill_values();
-    		elem->get_basis_gradients().print_info(out);
-    	}
+        for (; elem != space->end(); ++elem)
+        {
+            elem->fill_values();
+            elem->get_basis_gradients().print_info(out);
+        }
     }
 
     {
-    	auto elem = space->begin();
-    	elem->init_values(ValueFlags::hessian, quad) ;
+        auto elem = space->begin();
+        elem->init_values(ValueFlags::hessian, quad) ;
 
-    	for (; elem != space->end(); ++elem)
-    	{
-    		elem->fill_values();
-    		elem->get_basis_hessians().print_info(out);
-    	}
+        for (; elem != space->end(); ++elem)
+        {
+            elem->fill_values();
+            elem->get_basis_hessians().print_info(out);
+        }
 
     }
 

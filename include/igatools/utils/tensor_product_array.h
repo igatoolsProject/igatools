@@ -112,14 +112,14 @@ public :
     ///@{
     /** Dilation followed by a translation of the TensorProductArray data. */
     void dilate_translate(const std::array<Real,rank> &dilate,
-                          const Point<rank> &translate) ;
+                          const Points<rank> &translate) ;
 
     /** Dilation of the TensorProductArray data.*/
     void dilate(const std::array<Real,rank> &dilate) ;
 
 
     /** Translation of the TensorProductArray data.*/
-    void translate(const Point<rank> &translate) ;
+    void translate(const Points<rank> &translate) ;
     ///@}
 
     /** @name Functions returning the tensor product entries */

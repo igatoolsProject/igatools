@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-template < LinearAlgebraPackage linear_algebra_package>
+template < LAPack la_pack>
 class Matrix;
 
 
@@ -52,14 +52,14 @@ class Matrix;
  *
  */
 template <>
-class Matrix<LinearAlgebraPackage::trilinos>
+class Matrix<LAPack::trilinos>
 {
 public:
     /** Typedef for the matrix type */
     using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
-    using self_t = Matrix<LinearAlgebraPackage::trilinos>;
-    using vector_t = Vector<LinearAlgebraPackage::trilinos>;
+    using self_t = Matrix<LAPack::trilinos>;
+    using vector_t = Vector<LAPack::trilinos>;
 
 public:
 
@@ -248,22 +248,22 @@ private:
     Teuchos::RCP<const Teuchos::Comm<int>> comm_ = Teuchos::createSerialComm<int>();
 
     void init(const SparsityPattern &sparsity_pattern);
-/*
-    DeclException2(ExcInvalidIndex,
-                   int, int,
-                   << "The entry with index <" << arg1 << ',' << arg2
-                   << "> does not exist.");
+    /*
+        DeclException2(ExcInvalidIndex,
+                       int, int,
+                       << "The entry with index <" << arg1 << ',' << arg2
+                       << "> does not exist.");
 
-    DeclException4(ExcAccessToNonLocalElement,
-                   int, int, int, int,
-                   << "You tried to access element (" << arg1
-                   << "/" << arg2 << ")"
-                   << " of a distributed matrix, but only rows "
-                   << arg3 << " through " << arg4
-                   << " are stored locally and can be accessed.");
+        DeclException4(ExcAccessToNonLocalElement,
+                       int, int, int, int,
+                       << "You tried to access element (" << arg1
+                       << "/" << arg2 << ")"
+                       << " of a distributed matrix, but only rows "
+                       << arg3 << " through " << arg4
+                       << " are stored locally and can be accessed.");
 
-    DeclException0(ExcNotQuadratic);
-//*/
+        DeclException0(ExcNotQuadratic);
+    //*/
 };
 #endif // #ifdef USE_TRILINOS
 
@@ -280,14 +280,14 @@ private:
  *
  */
 template <>
-class Matrix<LinearAlgebraPackage::petsc>
+class Matrix<LAPack::petsc>
 {
 public:
     /** Typedef for the matrix type */
 //    using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
-    using self_t = Matrix<LinearAlgebraPackage::petsc>;
-    using vector_t = Vector<LinearAlgebraPackage::petsc>;
+    using self_t = Matrix<LAPack::petsc>;
+    using vector_t = Vector<LAPack::petsc>;
 
 public:
 
@@ -477,22 +477,22 @@ private:
 //    Teuchos::RCP<const Teuchos::Comm<int>> comm_ = Teuchos::createSerialComm<int>();
 
     void init(const SparsityPattern &sparsity_pattern);
-/*
-    DeclException2(ExcInvalidIndex,
-                   int, int,
-                   << "The entry with index <" << arg1 << ',' << arg2
-                   << "> does not exist.");
+    /*
+        DeclException2(ExcInvalidIndex,
+                       int, int,
+                       << "The entry with index <" << arg1 << ',' << arg2
+                       << "> does not exist.");
 
-    DeclException4(ExcAccessToNonLocalElement,
-                   int, int, int, int,
-                   << "You tried to access element (" << arg1
-                   << "/" << arg2 << ")"
-                   << " of a distributed matrix, but only rows "
-                   << arg3 << " through " << arg4
-                   << " are stored locally and can be accessed.");
+        DeclException4(ExcAccessToNonLocalElement,
+                       int, int, int, int,
+                       << "You tried to access element (" << arg1
+                       << "/" << arg2 << ")"
+                       << " of a distributed matrix, but only rows "
+                       << arg3 << " through " << arg4
+                       << " are stored locally and can be accessed.");
 
-    DeclException0(ExcNotQuadratic);
-//*/
+        DeclException0(ExcNotQuadratic);
+    //*/
 };
 #endif // #ifdef USE_PETSC
 

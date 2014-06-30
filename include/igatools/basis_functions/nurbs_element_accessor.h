@@ -28,7 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
 template < int, int , int > class NURBSSpace ;
 
 
@@ -43,32 +42,22 @@ class NURBSElementAccessor :
     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
 {
 public:
-
-
     using parent_t = SpaceElementAccessor<
                      NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
 
     using ContainerType = const NURBSSpace< dim, range, rank>;
 
-
     using Space = NURBSSpace<dim,range,rank>;
-
-
-    /**
-     * Typedef for specifying the value of the basis function in the
-     * reference domain.
-     */
-    using Value = Values<dim, range, rank>;
 
     /**
      * Typedef for specifying the derivatives of the basis function in the
      * reference domain.
      */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim, range, rank, deriv_order>;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
 
-
-
+    using typename parent_t::Point;
+    using typename parent_t::Value;
 
 
     /** Number of faces of the element. */
@@ -231,7 +220,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<Point> &points) const;
 
     ///@}
 

@@ -32,8 +32,8 @@ template<int dim, int rdim>
 void test_tensor_product()
 {
 
-    Point<dim>  a;
-    Point<rdim> b;
+    Points<dim>  a;
+    Points<rdim> b;
 
     out << "The tensor product of:" << std::endl;
     out << a << endl;

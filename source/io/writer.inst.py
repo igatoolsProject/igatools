@@ -37,19 +37,21 @@ writer_real_types = ['double','float']
 
 
 
-for row in inst.user_table:
+for row in inst.user_phy_sp_dims:
     for writer_real_t in writer_real_types:
-        writer = 'Writer<%d, %d, %s>' %(row.dim, row.space_dim, writer_real_t)
+        writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
         strings.append('template class %s ;\n' % (writer))
+        strings.append('template void %s::save_ascii(ofstream &file) const;\n' % (writer))
+        strings.append('template void %s::save_ascii(LogStream &file) const;\n'% (writer))
 for s in unique(strings): # Removing repeated entries.
     f.write(s)
 
 
 
 strings = []
-for row in inst.user_table:
+for row in inst.user_phy_sp_dims:
     for writer_real_t in writer_real_types:
-        writer = 'Writer<%d, %d, %s>' %(row.dim, row.space_dim, writer_real_t)
+        writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
         for name in spaces:
             space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
             PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
@@ -64,7 +66,7 @@ for row in inst.user_table:
 # TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
 for s in unique(strings): # Removing repeated entries.
-    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+    f.write(s.replace('LinAlgebra','LAPack::trilinos'))
 f.write('#endif\n')
 # TRILINOS specific instantiations -- end
 ############################################
@@ -74,7 +76,7 @@ f.write('#endif\n')
 # PETSC specific instantiations -- begin
 f.write('#ifdef USE_PETSC\n')
 for s in unique(strings): # Removing repeated entries.
-    f.write(s.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+    f.write(s.replace('LinAlgebra','LAPack::petsc'))
 f.write('#endif\n')
 # PETSC specific instantiations -- end
 ############################################

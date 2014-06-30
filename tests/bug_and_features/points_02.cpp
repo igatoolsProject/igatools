@@ -18,36 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- * This file contains the test for the instantiations of the Point type.
- * \author Massimiliano Martinelli (massimiliano.martinelli@gmail.com)
- * \date 08/04/2013
+/*
+ * Should this compile?
+ * author: pauletti
+ * date: Jun 21, 2014
+ *
  */
 
 #include "../tests.h"
-
 #include "igatools/base/tensor.h"
 
-using std::endl ;
-
-template< int dim >
-void do_test()
+int main()
 {
-    Point< dim > p0 ;
+    Points<2> p2 = {1, 2.5};
 
-    out << p0 ;
-    out << endl ;
-}
-
-
-
-int main(int argc, char *argv[])
-{
-
-    do_test<0>() ;
-    do_test<1>() ;
-    do_test<2>() ;
-    do_test<3>() ;
-
-    return (0) ;
+    return 0;
 }

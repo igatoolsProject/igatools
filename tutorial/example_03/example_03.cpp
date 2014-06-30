@@ -76,7 +76,7 @@ void loop_on_space_with_cache()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
     const int degree = 2;
-    auto space = BSplineSpace<dim>::create(grid, degree);
+    auto space = BSplineSpace<dim>::create(degree, grid);
 
     auto elem = space->begin();
     const auto elem_end = space->end();

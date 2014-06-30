@@ -57,6 +57,7 @@ template <typename Accessor> class GridForwardIterator;
  * @author M. Martinelli
  * @date 13 May 2014
  */
+// TODO (pauletti, Jun 5, 2014): from space one can get dim, codim, range and rank
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
 class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
 {
@@ -66,25 +67,27 @@ public:
     /**
      * Typedef for specifying the value of the basis function.
      */
-    using Value = Values<dim+codim, range, rank>;
+    using Value = typename Space::Value;
 
-    /**
-     * Typedef for specifying the derivatives of the basis function.
-     */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim+codim, range, rank, deriv_order>;
+    using Point = typename Space::Point;
 
     /**
      * Typedef for specifying the divergence of the basis function.
      */
-    using Div = Values<dim+codim, 1, 1>;
+    using Div = typename Space::Div;
+
+    /**
+     * Typedef for specifying the derivatives of the basis function.
+     */
+    template <int order>
+    using Derivative = typename Space::template Derivative<order>;
 
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename Space::template ComponentContainer<T>;
 
     ///@}
 
@@ -161,7 +164,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable<Value>
-    evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_values_at_points(const std::vector<Point> &points) const;
 
 
     /**
@@ -173,7 +176,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_gradients_at_points(const std::vector<Point> &points) const;
 
 
     /**
@@ -185,7 +188,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_hessians_at_points(const std::vector<Point> &points) const;
 
 
     /**
@@ -200,7 +203,7 @@ public:
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
+        const std::vector<Point> &points) const;
 
 
     /**
@@ -214,7 +217,7 @@ public:
     ValueVector<Value>
     evaluate_field_values_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
+        const std::vector<Point> &points) const;
 
 
     /**
@@ -228,7 +231,7 @@ public:
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
+        const std::vector<Point> &points) const;
 
 
     /**
@@ -242,7 +245,7 @@ public:
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point<dim>> &points) const;
+        const std::vector<Point> &points) const;
     ///@}
 
 
@@ -535,13 +538,13 @@ protected:
 
 
     /** Number of scalar basis functions along each direction, for all space components. */
-    ComponentTable< TensorSize<dim> > n_basis_direction_;
+    // const typename Space::SpaceDimensionTable &n_basis_direction_;
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
-    ComponentTable<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
+    ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
 
     /** Basis function ID offset between the different components. */
-    ComponentTable<int> comp_offset_;
+    ComponentContainer<int> comp_offset_;
 
 
 
@@ -556,7 +559,7 @@ protected:
          * at quadrature points
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const StaticMultiArray<TensorSize<dim>,range,rank> &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim> &quad);
 
         /** Returns the values. */
@@ -599,7 +602,7 @@ protected:
          * at quadrature points
          */
         void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim> &quad);
 
     };
@@ -617,7 +620,7 @@ protected:
          */
         void reset(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim> &quad);
 
         /**
@@ -626,7 +629,7 @@ protected:
          */
         void reset(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const ComponentTable<TensorSize<dim> > &n_basis_direction,
+                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
                    const Quadrature<dim-1> &quad);
 
     };

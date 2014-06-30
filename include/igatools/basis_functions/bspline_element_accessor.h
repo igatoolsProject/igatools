@@ -23,21 +23,15 @@
 #define BSPLINE_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
-
 #include <igatools/basis_functions/space_element_accessor.h>
-
-//#include <igatools/utils/cartesian_product_indexer.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
-
-
 
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
-
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -64,11 +58,17 @@ public:
     /** Number of faces of the element. */
     using parent_t::n_faces;
 
-
     using ValuesCache = typename parent_t::ValuesCache;
 
-
     using parent_t::admisible_flag;
+
+
+public:
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    //using typename parent_t::Div;
 
 
 public:
@@ -161,19 +161,13 @@ public:
     void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
 
-
+#if 0
     /**
      * Typedef for specifying the value of the basis function in the
      * reference domain.
      */
-    using Value = Values<dim, range, rank>;
-
-    /**
-     * Typedef for specifying the derivatives of the basis function in the
-     * reference domain.
-     */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim, range, rank, deriv_order>;
+    using Value = Values<range, rank>;
+#endif
 
 protected:
 
@@ -192,7 +186,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<Point> &points) const;
 
     ///@}
 
@@ -203,10 +197,6 @@ public:
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
-
-
-
-
     /**
      * @name Containers for the cache of the element values and for the
      * cache of the face values
@@ -222,30 +212,27 @@ private:
      */
     using BasisValues1d = std::vector<DenseMatrix>;
 
+
 protected:
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename Space::BaseSpace::template ComponentContainer<T>;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentDirectionTable = ComponentTable<CartesianProductArray<T,dim> >;
-
-
-
+    using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim>>;
 
 private:
 
-    ComponentTable<
-    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+    ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
+    using univariate_values_t = ComponentContainer <std::array<const BasisValues1d *,dim>>;
 
     /**
      * Fills the cache (accordingly with the flags_handler status)
@@ -277,7 +264,7 @@ private:
      * an exception will be raised.
      */
     template <int deriv_order>
-    void evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
+    void evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValues1d *, dim> > &elem_values,
                                       const ValuesCache &cache,
                                       ValueTable<
                                       Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
@@ -297,10 +284,11 @@ private:
          */
         ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
 
-        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+        // ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
 
         int max_deriv_order_ = 0;
 
+        // TODO (pauletti, May 30, 2014): the type for intervals_id should be CartesianProductArray
     protected:
         void reset(const Space &space,
                    const Quadrature<dim> &quad,
@@ -377,10 +365,10 @@ private:
 
 protected:
 
-
+#if 0
     /** Returns the Bezier extraction operator relative to the current element. */
     ComponentTable< std::array< const DenseMatrix *,dim> > get_bezier_extraction_operator() const;
-
+#endif
 
 private:
 
@@ -391,15 +379,10 @@ private:
 
 
 protected:
-    const ComponentTable<
-    DynamicMultiArray<
-    std::shared_ptr<
-    BSplineElementScalarEvaluator<dim>>,dim> > &get_scalar_evaluators() const;
+    const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
+            &get_scalar_evaluators() const;
 
 };
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

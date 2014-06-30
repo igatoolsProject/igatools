@@ -19,7 +19,8 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/physical_space.h>
-
+#include <igatools/geometry/mapping_slice.h>
+using std::vector;
 using std::array;
 using std::shared_ptr;
 using std::const_pointer_cast;
@@ -153,6 +154,26 @@ get_reference_space() const -> shared_ptr<const RefSpace>
     return shared_ptr<const RefSpace>(ref_space_);
 }
 
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_face_space(const Index face_id,
+               vector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
+{
+    auto elem_map = std::make_shared<std::map<int,int> >();
+    auto face_ref_sp = ref_space_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+    auto map  = push_forward_->get_mapping();
+
+    auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
+    create(map, face_id, face_ref_sp->get_grid(), elem_map);
+    auto fpf = FaceSpace::PushForwardType::create(fmap);
+    auto face_space = FaceSpace::create(face_ref_sp,fpf);
+
+    return face_space;
+}
+
+#if 0
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
@@ -169,7 +190,7 @@ get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
 {
     return ref_space_->get_element_global_dofs();
 }
-
+#endif
 
 template <class RefSpace_, class PushForward_>
 Index

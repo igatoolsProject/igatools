@@ -103,7 +103,21 @@ template <int rank>
 bool
 operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2);
 
-
+/**
+ * Output operator for TensorIndex.
+ *
+ * @relates TensorIndex
+*/
+template <int rank>
+LogStream &
+operator<<(LogStream &out, const TensorSize<rank> &tensor_size)
+{
+    out << "[ ";
+    for (const auto &v : tensor_size)
+        out << v << " ";
+    out << "]";
+    return out;
+}
 
 IGA_NAMESPACE_CLOSE
 

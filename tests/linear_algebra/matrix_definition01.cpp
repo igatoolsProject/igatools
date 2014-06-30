@@ -27,7 +27,7 @@
  *  date: 2013-01-10
  *
  */
-
+// TODO (pauletti, Jun 3, 2014): the comment is not consistent with the test
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
@@ -39,7 +39,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
-int main(int argc, char *argv[])
+int main()
 {
 
     const int dim_domain = 2;
@@ -53,10 +53,10 @@ int main(int argc, char *argv[])
 
 
     int n_knots = 3;
-    CartesianProductArray<iga::Real , dim_domain> coord ;
+    CartesianProductArray<Real , dim_domain> coord ;
     for (int i = 0; i < dim_domain; ++i)
     {
-        vector<iga::Real> tmp_coord;
+        vector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coord.copy_data_direction(i,tmp_coord);
@@ -66,21 +66,16 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(knots, p) ;
-    bspline_space->print_info(out);
-    out << endl;
-    out << "Number of dofs: " << bspline_space->get_num_basis() << std::endl;
-
-
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
-    using VectorType = Vector<linear_algebra_package>;
-    using MatrixType = Matrix<linear_algebra_package>;
-    using LinSolverType = LinearSolver<linear_algebra_package>;
+    using VectorType = Vector<la_pack>;
+    using MatrixType = Matrix<la_pack>;
+    using LinSolverType = LinearSolver<la_pack>;
 
     MatrixType matrix(
         dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>>(bspline_space));

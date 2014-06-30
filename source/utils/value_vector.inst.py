@@ -26,7 +26,7 @@ inst = data.inst
 
 value_vectors=['ValueVector<Real>']
 
-for deriv in inst.derivatives + inst.values:
+for deriv in inst.derivatives + inst.values + inst.divs:
     value_vectors.append('ValueVector<%s>' % (deriv))
 
 for row in value_vectors:

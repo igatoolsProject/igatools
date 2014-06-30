@@ -63,7 +63,7 @@ create(const std::shared_ptr<GridType> grid) -> shared_ptr<base_t>
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate(vector<ValueType> &values) const
+evaluate(vector<Value> &values) const
 {
     const int num_points = points_.size();
     Assert(values.size() == num_points,
@@ -87,7 +87,7 @@ evaluate(vector<ValueType> &values) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_gradients(vector<GradientType> &gradients) const
+evaluate_gradients(vector<Gradient> &gradients) const
 {
     Assert(gradients.size() == points_.size(),
            ExcDimensionMismatch(gradients.size(),points_.size()));
@@ -103,7 +103,7 @@ evaluate_gradients(vector<GradientType> &gradients) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_hessians(vector<HessianType> &hessians) const
+evaluate_hessians(vector<Hessian> &hessians) const
 {
     const int num_points = points_.size();
     for (int i = 0; i<num_points; i++)
@@ -115,7 +115,7 @@ evaluate_hessians(vector<HessianType> &hessians) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face(const Index face_id, vector<ValueType> &values) const
+evaluate_face(const Index face_id, vector<Value> &values) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -142,7 +142,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -160,7 +160,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));

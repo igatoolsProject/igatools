@@ -61,22 +61,19 @@ public:
     /** Dimension of the deformed domain embedding space. */
     static const auto space_dim = ContainerType::space_dim;
 
-    // TODO (pauletti, Mar 21, 2014): why do we need this? should it be private?
-    /** Dimension of the face.*/
-    static const auto face_dim = ContainerType::face_dim ;
-
-    // TODO (pauletti, Mar 21, 2014): should this be private?
-    /**
-     * see UnitElement<dim_>::faces_per_element
-     */
+private:
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
+public:
     /**
      * see Mapping<dim, codim>::Value
      */
-    using ValueMap        = typename ContainerType::ValueType;
-    using GradientMap     = typename ContainerType::GradientType;
-    using HessianMap      = typename ContainerType::HessianType;
+    using Point       = typename ContainerType::Point;
+
+    //TODO(pauletti, Jun 21, 2014): we should use Value instead of ValueMap
+    using ValueMap    = typename ContainerType::Value;
+    using GradientMap = typename ContainerType::Gradient;
+    using HessianMap  = typename ContainerType::Hessian;
 
 public:
     /** Fill flags supported by this iterator */
@@ -285,7 +282,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< ValueMap >
-    evaluate_values_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_values_at_points(const std::vector<Point> &points) const;
 
     /**
      * Returns the gradient of the map (i.e. the Jacobian)
@@ -296,7 +293,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< GradientMap >
-    evaluate_gradients_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_gradients_at_points(const std::vector<Point> &points) const;
 
 
     /**
@@ -308,7 +305,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< HessianMap >
-    evaluate_hessians_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_hessians_at_points(const std::vector<Point> &points) const;
 
     ///@}
 

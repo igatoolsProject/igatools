@@ -1,5 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
+
 // Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
@@ -17,6 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
+// TODO (pauletti, Jun 11, 2014): put appropriate header or delete
+
 /*
  * Test to figure out gradient bug
  */
@@ -31,12 +35,6 @@
 
 #include <igatools/linear_algebra/dense_matrix.h>
 
-#include <boost/numeric/ublas/io.hpp>
-
-
-using namespace iga;
-using namespace std;
-
 
 template<int dim>
 void assemble_stiffness_matrix(const int n_knots, const int deg)
@@ -44,7 +42,7 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
 
     auto grid = CartesianGrid<dim>::create(n_knots);
     typedef BSplineSpace<dim> RefSpace;
-    auto ref_space = RefSpace::create(grid, deg) ;
+    auto ref_space = RefSpace::create(deg, grid) ;
 
     typedef PushForward<Transformation::h_grad,dim,0> PushForward ;
     auto push_forward = PushForward::create(IdentityMapping<dim>::create(grid)) ;
@@ -100,14 +98,6 @@ int main()
     const int deg = 1;
 
     assemble_stiffness_matrix<1>(n_knots, deg);
-
-
-//    Laplace<2> laplace_2d( n_knots, deg );
-//    laplace_2d.run();
-
-
-//   Laplace<3> laplace_3d( n_knots, deg );
-//  laplace_3d.run();
 
     return  0;
 }

@@ -26,6 +26,7 @@
  *
  */
 
+// TODO (pauletti, Jun 11, 2014): The comment of the test is not accurate
 
 #include "../tests.h"
 
@@ -45,7 +46,7 @@ void run_test()
     const int degree = 2;
     auto knots = CartesianGrid<dim>::create();
     typedef BSplineSpace< dim, range, rank > RefSpace_t;
-    auto ref_space = RefSpace_t::create(knots, degree);
+    auto ref_space = RefSpace_t::create(degree, knots);
 
     vector<Real> control_pts(ref_space->get_num_basis());
     if (dim == 2)
@@ -107,7 +108,7 @@ void run_test()
         elem->print_info(out);
 
 
-        vector<Point<dim>> unit_points_face(2);
+        vector<Points<dim>> unit_points_face(2);
         int face_id;
         if (elem->get_flat_index() == 0)
         {

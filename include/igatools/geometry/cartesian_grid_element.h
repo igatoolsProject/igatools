@@ -134,12 +134,12 @@ public:
     /**
      * Return the @p i-th vertex
      */
-    Point<dim> vertex(const int i) const;
+    Points<dim> vertex(const int i) const;
 
     /**
      * Return the center of the element.
      */
-    Point<dim> center() const;
+    Points<dim> center() const;
 
     /**
      * Returns the lengths of the coordinate sides of the cartesian element.
@@ -168,12 +168,12 @@ public:
     /**
      * Test if the point is inside the element.
      */
-    bool is_point_inside(const Point<dim> &point) const;
+    bool is_point_inside(const Points<dim> &point) const;
 
     /**
      * Test if the point is on the element boundary.
      */
-    bool is_point_on_boundary(const Point<dim> &point) const;
+    bool is_point_on_boundary(const Points<dim> &point) const;
 
     /**
      * Test if the element has a boundary face.
@@ -193,8 +193,8 @@ public:
      * and returns the points mapped over the domain (in the parametric coordinate system)
      * represented by this GridElementAccessor.
      */
-    std::vector<Point<dim> >
-    transform_points_unit_to_reference(const std::vector<Point<dim>> &point_unit_domain) const;
+    std::vector<Points<dim> >
+    transform_points_unit_to_reference(const std::vector<Points<dim>> &point_unit_domain) const;
 
     /**
      * This function takes as input argument a vector of points over the element
@@ -203,8 +203,8 @@ public:
      * and returns the points mapped over the
      * points unitary hypercube [0,1]^{dim}.
      */
-    std::vector<Point<dim> >
-    transform_points_reference_to_unit(const std::vector<Point<dim>> &point_reference_domain) const;
+    std::vector<Points<dim> >
+    transform_points_reference_to_unit(const std::vector<Points<dim>> &point_reference_domain) const;
 
 
     /**

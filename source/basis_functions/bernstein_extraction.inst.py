@@ -18,12 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
+# QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
-data = Instantiation()
-f = data.file_output
-inst = data.inst
 
-for dim in inst.ref_dom_dims:
-    f.write('template class Multiplicity<%d> ;\n' % (dim))
- 
+data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
+
+classes = ['BernsteinExtraction<%d, %d, %d>' %(x.dim, x.range, x.rank)  
+          for x in inst.really_all_ref_sp_dims]
+for c in classes:
+   f.write('template class %s ;\n' %c)

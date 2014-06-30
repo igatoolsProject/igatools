@@ -46,10 +46,12 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup h_refinement
  */
-template<class GridType>
+template<class Grid_>
 class GridWrapper
 {
 public:
+
+    using GridType = Grid_;
     /** @name Constructor and destructor. */
     ///@{
     /** Default constructor. Not allowed to be used. */

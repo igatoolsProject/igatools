@@ -29,13 +29,13 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/push_forward.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/geometry/identity_mapping.h>
 
 template <int dim>
-using RefSpace_t = NURBSSpace<dim>  ;
+using RefSpace_t = BSplineSpace<dim>  ;
 
 template <int dim>
 using PushForward_t = PushForward<Transformation::h_grad,dim,0> ;
@@ -51,7 +51,6 @@ using ComponentTable = StaticMultiArray<T, RefSpace_t<dim>::range, RefSpace_t<di
 template <int dim>
 void test_evaluate()
 {
-    const int deg = 2;
     auto grid = CartesianGrid<dim>::create();
     grid->refine();
     out << endl;
@@ -65,132 +64,17 @@ void test_evaluate()
 
     auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
 
-    auto ref_space = RefSpace_t<dim>::create(grid, deg);
 
+    const int deg = 2;
     TensorSize<dim> n_weights_comp;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
+        n_weights_comp(dir_id) = pow(deg+2,dim);
+//        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
 
-    DynamicMultiArray<Real,dim> weights_comp(n_weights_comp);
-    if (dim == 1)
-    {
-        Index id = 0;
+    auto ref_space = RefSpace_t<dim>::create(deg,grid);
 
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-    }
-    else if (dim == 2)
-    {
-        Index id = 0;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-    }
-    else if (dim == 3)
-    {
-        Index id = 0;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-
-        weights_comp(id++) = 1.0 ;
-        weights_comp(id++) = 0.4 ;
-        weights_comp(id++) = 0.65 ;
-        weights_comp(id++) = 1.0 ;
-    }
-
-    ref_space->reset_weights(ComponentTable<DynamicMultiArray<Real,dim>,dim>(weights_comp));
+    std::cout << "pippo 1" << std::endl;
+//    ref_space->reset_weights(ComponentTable<DynamicMultiArray<Real,dim>,dim>(weights_comp));
 
     auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 

@@ -60,7 +60,7 @@ void do_test()
 
 //Isotropic scaled
 template <int dim>
-void do_test_scaled(const iga::Real &eps_scale)
+void do_test_scaled(const Real &eps_scale)
 {
     out << "-------------------------------" << endl ;
     const int max_num_pts = 20;
@@ -103,7 +103,7 @@ void do_test_aniso()
 
 //Anisotropic
 template <int dim>
-void do_test_aniso_scaled(const iga::Real &eps_scale)
+void do_test_aniso_scaled(const Real &eps_scale)
 {
     out << "-------------------------------" << endl ;
     const int max_num_pts = 20;

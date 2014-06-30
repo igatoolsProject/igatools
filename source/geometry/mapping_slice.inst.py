@@ -26,6 +26,6 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 maps = ['template class MappingSlice<%d,%d> ;\n' %(row.dim, row.codim) 
-        for row in inst.face_table]
+        for row in inst.face_phy_sp_dims]
 for map in unique(maps): 
     f.write(map)

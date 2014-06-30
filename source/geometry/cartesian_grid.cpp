@@ -20,6 +20,7 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/base/exceptions.h>
+#include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
 
@@ -31,6 +32,7 @@ using std::array;
 using std::vector;
 using std::set;
 using std::shared_ptr;
+using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
@@ -59,7 +61,7 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const TensorSize<dim> &n)
     :
-    CartesianGrid(filled_array<array<Real,2>, dim>(array<Real,2> {{0,1}}), n)
+    CartesianGrid(filled_array<array<Real,2>,dim>(array<Real,2> {{0,1}}), n)
 {
     kind_ = Kind::direction_uniform ;
 }
@@ -300,9 +302,9 @@ get_boundary_id(const int face) const
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_normal(const int face_no) const -> Point<dim>
+get_face_normal(const int face_no) const -> Points<dim>
 {
-    Point<dim> normal;
+    Points<dim> normal;
     normal[UnitElement<dim>::face_to_component[face_no][0]] =
     UnitElement<dim>::face_normal_direction[face_no];
 
@@ -347,6 +349,15 @@ get_num_knots_dim() const -> TensorSize<dim>
     return knot_coordinates_.tensor_size();
 }
 
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_grid_pre_refinement() const -> shared_ptr<const CartesianGrid<dim> >
+{
+    return grid_pre_refinement_;
+}
+
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -355,7 +366,7 @@ refine_directions(
     const array<Size,dim> &n_subdivisions)
 {
     // make a copy of the grid before the refinement
-    const auto grid_old = (*this);
+    grid_pre_refinement_ = shared_ptr<const CartesianGrid<dim>>(new CartesianGrid<dim>(*this));
 
     for (int i = 0 ; i < dim ; ++i)
         if (refinement_directions[i])
@@ -363,7 +374,7 @@ refine_directions(
 
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)
-    this->refine_signals_(refinement_directions,grid_old);
+    this->refine_signals_(refinement_directions,*grid_pre_refinement_);
 }
 
 template <int dim_>
@@ -545,7 +556,7 @@ flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
 template <int dim_>
 Index
 CartesianGrid<dim_>::
-get_element_flat_id_from_point(const Point<dim> &point) const
+get_element_flat_id_from_point(const Points<dim> &point) const
 {
     const auto bounding_box = this->get_bounding_box();
 

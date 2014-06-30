@@ -92,7 +92,7 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate(std::vector<ValueType> &values) const
+evaluate(std::vector<Value> &values) const
 {
     values = element->get_map_values();
 }
@@ -102,7 +102,7 @@ evaluate(std::vector<ValueType> &values) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate_gradients(std::vector<GradientType> &gradients) const
+evaluate_gradients(std::vector<Gradient> &gradients) const
 {
     auto grad = element->get_map_gradients();
 
@@ -146,9 +146,9 @@ set_face_element(const Index face_id,
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
 }
-//*/
 
 
+//TODO(pauletti, Jun 20, 2014): simplify the output
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
@@ -171,6 +171,3 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_slice.inst>
-
-
-

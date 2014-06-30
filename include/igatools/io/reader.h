@@ -140,13 +140,13 @@ get_xml_tree(const std::string &filename);
  * Returns the number of nodes in the XML @p tree that have the tag @p tag_name.
  */
 Size count_xml_elements_same_tag(const boost::property_tree::ptree &tree,
-    const std::string &tag_name);
+                                 const std::string &tag_name);
 
 /**
  * Returns true if the XML @p tree has at least one node with the tag @p tag_name.
  */
 bool xml_element_is_present(const boost::property_tree::ptree &tree,
-    const std::string &tag_name);
+                            const std::string &tag_name);
 
 /**
  * Returns true if the XML @p tree has exactly one node with the tag @p tag_name.
@@ -154,7 +154,7 @@ bool xml_element_is_present(const boost::property_tree::ptree &tree,
  * an assertion (in Debug and Release mode) will be raised.
  */
 bool xml_element_is_unique(const boost::property_tree::ptree &tree,
-    const std::string &tag_name);
+                           const std::string &tag_name);
 
 /**
  * Extracts from the XML @tree, the subtrees corresponding to the tag @p tag_name.
@@ -163,7 +163,7 @@ bool xml_element_is_unique(const boost::property_tree::ptree &tree,
  */
 std::vector< boost::property_tree::ptree >
 get_xml_element_vector(const boost::property_tree::ptree &tree,
-    const std::string &tag_name);
+                       const std::string &tag_name);
 
 /**
  * Extracts from the XML @tree, the unique subtree corresponding to the tag @p tag_name.
@@ -172,7 +172,7 @@ get_xml_element_vector(const boost::property_tree::ptree &tree,
  * (in Debug and Release mode).
  */
 boost::property_tree::ptree get_xml_element(const boost::property_tree::ptree &tree,
-    const std::string &tag_name);
+                                            const std::string &tag_name);
 
 /**
  * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.

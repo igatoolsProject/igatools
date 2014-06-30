@@ -29,7 +29,7 @@ namespace functions
 {
 template<int dim, int range, int rank>
 ConstantFunction<dim, range, rank>::
-ConstantFunction(const ValueType value)
+ConstantFunction(const Value value)
     :value_ {value}
 {}
 
@@ -46,8 +46,8 @@ template<int dim, int range, int rank>
 void
 ConstantFunction<dim, range, rank>::
 evaluate(
-    const vector<PointType> &points,
-    vector<ValueType> &values) const
+    const vector<Point> &points,
+    vector<Value> &values) const
 {
     Assert(points.size() == values.size(),
            ExcDimensionMismatch(points.size(), values.size())) ;

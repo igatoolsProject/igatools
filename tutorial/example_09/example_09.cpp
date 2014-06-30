@@ -50,7 +50,7 @@ template<int dim>
 class PoissonProblem
 {
 public:
-    PoissonProblem(const TensorSize<dim> &n_knots, const int deg);
+    PoissonProblem(const int deg, const TensorSize<dim> &n_knots);
     void run();
 
 private:
@@ -64,7 +64,7 @@ private:
     using RefSpace  = BSplineSpace<dim>;
     using PushFw    = PushForward<Transformation::h_grad, dim>;
     using Space     = PhysicalSpace<RefSpace, PushFw>;
-    using ValueType = typename Function<dim>::ValueType;
+    using Value = typename Function<dim>::Value;
     // [type aliases]
 
     shared_ptr<Mapping<dim>> map;
@@ -75,16 +75,16 @@ private:
 
     const boundary_id dir_id = 0;
 
-    std::shared_ptr<Matrix<LinearAlgebraPackage::trilinos>> matrix;
-    std::shared_ptr<Vector<LinearAlgebraPackage::trilinos>> rhs;
-    std::shared_ptr<Vector<LinearAlgebraPackage::trilinos>> solution;
+    std::shared_ptr<Matrix<LAPack::trilinos>> matrix;
+    std::shared_ptr<Vector<LAPack::trilinos>> rhs;
+    std::shared_ptr<Vector<LAPack::trilinos>> solution;
 };
 
 
 
 template<int dim>
 PoissonProblem<dim>::
-PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
+PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     :
     elem_quad(QGauss<dim>(deg+1)),
     face_quad(QGauss<dim-1>(deg+1))
@@ -95,14 +95,14 @@ PoissonProblem(const TensorSize<dim> &n_knots, const int deg)
         box[i] = {{PI/4,PI/2}};
 
     auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto ref_space = RefSpace::create(grid, deg);
+    auto ref_space = RefSpace::create(deg, grid);
     map       = BallMapping<dim>::create(grid);
     space     = Space::create(ref_space, PushFw::create(map));
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LinearAlgebraPackage::trilinos>::create(get_sparsity_pattern<Space>(space));
-    rhs      = Vector<LinearAlgebraPackage::trilinos>::create(n_basis);
-    solution = Vector<LinearAlgebraPackage::trilinos>::create(n_basis);
+    matrix   = Matrix<LAPack::trilinos>::create(get_sparsity_pattern<Space>(space));
+    rhs      = Vector<LAPack::trilinos>::create(n_basis);
+    solution = Vector<LAPack::trilinos>::create(n_basis);
 }
 
 
@@ -116,8 +116,8 @@ void PoissonProblem<dim>::assemble()
     vector<Index> loc_dofs(n_basis);
 
     const int n_qp = elem_quad.get_num_points();
-    ConstantFunction<dim> f({0.5});
-    vector<ValueType> f_values(n_qp);
+    ConstantFunction<dim> f( {0.5});
+    vector<Value> f_values(n_qp);
 
     auto elem = space->begin();
     const auto elem_end = space->end();
@@ -164,9 +164,9 @@ void PoissonProblem<dim>::assemble()
     matrix->fill_complete();
 
     // [dirichlet constraint]
-    ConstantFunction<dim> g({0.0});
+    ConstantFunction<dim> g( {0.0});
     std::map<Index, Real> values;
-    project_boundary_values<Space,LinearAlgebraPackage::trilinos>(g,space,face_quad,dir_id,values);
+    project_boundary_values<Space,LAPack::trilinos>(g,space,face_quad,dir_id,values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
 }
@@ -176,7 +176,7 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolver<LinearAlgebraPackage::trilinos>;
+    using LinSolver = LinearSolver<LAPack::trilinos>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 }
@@ -211,13 +211,13 @@ int main()
     const int n_knots = 10;
     const int deg     = 1;
 
-    PoissonProblem<1> poisson_1d({n_knots}, deg);
+    PoissonProblem<1> poisson_1d(deg, {n_knots});
     poisson_1d.run();
 
-    PoissonProblem<2> poisson_2d({n_knots, n_knots}, deg);
+    PoissonProblem<2> poisson_2d(deg, {n_knots, n_knots});
     poisson_2d.run();
 
-    PoissonProblem<3> poisson_3d({n_knots, n_knots, n_knots}, deg);
+    PoissonProblem<3> poisson_3d(deg, {n_knots, n_knots, n_knots});
     poisson_3d.run();
 
     return  0;

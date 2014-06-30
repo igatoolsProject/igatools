@@ -42,7 +42,7 @@ void physical_space(const int deg)
 
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto ref_space = RefSpace::create(grid, deg);
+    auto ref_space = RefSpace::create(deg, grid);
 
     auto map  = BallMapping<dim>::create(grid);
     auto push_fordward = PushFw::create(map);

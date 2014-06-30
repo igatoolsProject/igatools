@@ -72,13 +72,13 @@ template < typename Accessor > class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
-public SpaceElementAccessor<
+    public SpaceElementAccessor<
     PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
     PhysSpace::RefSpace::dim,
     PhysSpace::PushForwardType::codim,
     PhysSpace::RefSpace::range,
     PhysSpace::RefSpace::rank>,
-private PhysSpace::PushForwardType::ElementAccessor
+    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
     using parent_t = SpaceElementAccessor<
@@ -110,7 +110,10 @@ public :
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 
-    using Value = typename PfElemAccessor::template PhysValue<RefSpace::range, RefSpace::rank>;
+    using Value = typename PhysSpace::Value;
+    using Point = typename PhysSpace::Point;
+    using RefPoint = typename RefSpace::Point;
+
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 
     /**
@@ -120,7 +123,7 @@ public :
     template <int order>
     using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
 
-    using Div = Values<dim, 1, 1>;
+    using Div = typename PhysSpace::Div;
 
     /**
      * @name Constructors
@@ -207,7 +210,7 @@ public :
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
 
     ///@}
 
@@ -246,21 +249,21 @@ public :
     /**
      * @todo Document this function
      */
-    const Point<space_dim> &
+    const Point &
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    const ValueVector< typename Mapping<dim,codim>::Value > &
     get_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points on the face specified by @p face_id.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    const ValueVector< typename Mapping<dim,codim>::Value > &
     get_face_points(const Index face_id) const;
 
     /**

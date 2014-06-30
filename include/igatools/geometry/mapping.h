@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/base/function.h>
 #include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
 
@@ -48,7 +49,7 @@ template <int, int> class MappingElementAccessor;
  *
  * @ingroup containers
  *
- * @author M.S. Pauletti 2012, 2013
+ * @author M.S. Pauletti 2012, 2013, 2014
  * @author M. Martinelli 2013, 2014
  * @author P. Antolin 2014
  * @author N. Cavallini  2012
@@ -60,51 +61,57 @@ class Mapping
    public GridWrapper<CartesianGrid<dim_>>
 {
 public:
+    /** Type of the Grid */
+    using typename GridWrapper<CartesianGrid<dim_>>::GridType;
+
     /** Dimension of the reference domain */
     static const int dim = dim_;
-
 
     /** Codimension of the deformed domain. */
     static const int codim = codim_;
 
-
     /** Dimension of the deformed domain embedding space. */
     static const int space_dim = dim + codim;
 
+private:
+    using self_t = Mapping<dim, codim>;
 
-    /** Dimension of the face.*/
-    static const auto face_dim = dim_>0 ? dim_-1 : 0 ;
+    /** Function type of the mapping as a Function */
+    using Func = Function<dim, space_dim>;
 
+private:
+    /** Type for the given order derivatives of the
+     *  the mapping. */
+    template<int order>
+    using Derivative = typename Func::template Derivative<order>;
 
-    /** Type of the Grid */
-    using GridType = CartesianGrid<dim>;
+    /** Type for the diferent order derivatives of the inverse of
+     * the mapping
+     */
+    template<int order>
+    using InvDerivative = Derivatives<space_dim, dim, 1, order>;
 
+public:
+    /** Type of the mapping evaluation point. */
+    using Point = typename Func::Point;
+
+    /** Type of the mapping return value. */
+    using Value = typename Func::Value;
+
+    /** Type of the mapping gradient. */
+    using Gradient = typename Func::Gradient;
+
+    /** Typedef for the mapping hessian. */
+    using Hessian = typename Func::Hessian;
+
+public:
+    using FaceMapping = Conditional<(dim>0), Mapping<dim-1, codim+1>, self_t >;
 
     /** Type of the element accessor */
     using ElementAccessor = MappingElementAccessor<dim, codim>;
 
-
     /** Type of the element iterator */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
-
-
-private:
-    /** Type of the different order derivates the mapping. */
-    template<int order>
-    using DerivativeType = Derivatives<dim, space_dim, 1, order>;
-
-public:
-    /** Type of the mapping evaluation point. */
-    using PointType = Point<dim>;
-
-    /** Type of the mapping return value. */
-    using ValueType = Point<space_dim>;
-
-    /** Type of the mapping gradient. */
-    using GradientType = DerivativeType<1>;
-
-    /** Typedef for the mapping hessian. */
-    using HessianType = DerivativeType<2>;
 
 public:
     /** @name Constructors and destructor */
@@ -134,27 +141,33 @@ public:
 
     /** @name Mapping as a standard function (using the cache).*/
     ///@{
-    virtual void evaluate(std::vector<ValueType> &values) const;
+    virtual void evaluate(std::vector<Value> &values) const;
 
-    virtual void evaluate_gradients(std::vector<GradientType> &gradients) const;
+    virtual void evaluate_gradients(std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians(std::vector<HessianType> &hessians) const;
+    virtual void evaluate_hessians(std::vector<Hessian> &hessians) const;
 
-    virtual void evaluate_face(const Index face_id, std::vector<ValueType> &values) const;
+    virtual void evaluate_face(const Index face_id,
+                               std::vector<Value> &values) const;
 
-    virtual void evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const;
+    virtual void evaluate_face_gradients(const Index face_id,
+                                         std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const;
+    virtual void evaluate_face_hessians(const Index face_id,
+                                        std::vector<Hessian> &hessians) const;
     ///@}
 
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
-    virtual void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const ;
+    virtual void evaluate_at_points(const std::vector<Point> &points,
+                                    std::vector<Value> &values) const ;
 
-    virtual void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const;
+    virtual void evaluate_gradients_at_points(const std::vector<Point> &points,
+                                              std::vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const;
+    virtual void evaluate_hessians_at_points(const std::vector<Point> &points,
+                                             std::vector<Hessian> &hessians) const;
     ///@}
 
 
@@ -163,7 +176,8 @@ public:
     /**
      * An element based mapping may require some initialization.
      *
-     * @warning This function must be reimplemented by in every concrete child class of Mapping.
+     * @warning This function must be reimplemented by in every concrete child
+     * class of Mapping.
      */
     virtual void init_element(const ValueFlags flag,
                               const Quadrature<dim> &quad) const = 0;
@@ -179,11 +193,11 @@ public:
                                   const CartesianGridElementAccessor<dim> &elem) const = 0;
 
 
-    virtual std::vector<ValueType> values() const;
+    virtual std::vector<Value> values() const;
 
-    virtual std::vector<GradientType> gradients() const;
+    virtual std::vector<Gradient> gradients() const;
 
-    virtual std::vector<HessianType> hessians() const;
+    virtual std::vector<Hessian> hessians() const;
     ///@}
 
     /** @name Dealing with the element-based iterator. */
@@ -214,16 +228,9 @@ public:
 
 private:
 
+    //TODO(pauletti, Jun 21, 2014): the reason of this functions is unclear
     /**
-     * This is an interface for a function that compute the @p values of a Mapping at the @p points.
-     * @warning This function must be implemented in any class derived from Mapping.
-     */
-//    virtual void evaluate_impl(std::vector<PointType> &points, std::vector<ValueType> &values) const = 0;
-
-
-    /**
-     * Return the flag required to evaluate this mapping.
-     *
+     * Returns the flag required to evaluate this mapping.
      * This is used from the mapping accessor.
      */
     virtual ValueFlags required_flags() const;

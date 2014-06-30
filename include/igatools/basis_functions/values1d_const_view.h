@@ -46,10 +46,12 @@ IGA_NAMESPACE_OPEN
    Real value_fn_pt = values(fn,pt); // value of the function fn at point pt
    @endcode
  *
- * This can be inefficient if we need to access the values on the point of a specific function more then one time
- * (e.g. in a loop). Then, the purpose of this class is to represent a single BSpline over an interval providing
- * the access operator operator(const Index point) that can be used to get the values of the function at the
- * different points.
+ * This can be inefficient if we need to access the values on the point of a
+ * specific function more then one time
+ * (e.g. in a loop). Then, the purpose of this class is to represent a single
+ * BSpline over an interval providing
+ * the access operator operator(const Index point) that can be used to get the
+ * values of the function at the different points.
  * The unique constructor Values1DConstView(const DenseMatrix &funcs,const Index func_id) takes the DenseMatrix
  * holding the values and the index of the function we want to represent and than the Values1DConstView
  * object is built using just the memory address of the DenseMatrix plus the fucntion index, resulting

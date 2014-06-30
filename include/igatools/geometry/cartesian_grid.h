@@ -85,8 +85,12 @@ public:
         uniform, direction_uniform, non_uniform
     };
 
-    /** Type for the face of the grid */
-    using FaceType = Conditional<(dim>0),CartesianGrid<dim-1>,CartesianGrid<0> >;
+    /** Type for the face of the grid
+     * @note for the case dim==0 (with non existent face type)
+     * we use CartesianGrid<0>, but any function dealing with face
+     * should generate an exception if called with dim=0.
+     */
+    using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
 
 
     /** Type for iterator over the elements.*/
@@ -314,7 +318,7 @@ public:
      * Returns the outward pointing
      * unit normal vector to the face number @p face_no.
      */
-    Point<dim> get_face_normal(const int face_no) const;
+    Points<dim> get_face_normal(const int face_no) const;
 
     /**
      * Returns the CartesianGrid on the @p face_id.
@@ -331,7 +335,7 @@ public:
      * @note If the point does not belong to the domain represented by the CartesianGrid object,
      * then an assertion will be raised (in Debug mode).
      */
-    Index get_element_flat_id_from_point(const Point<dim> &point) const;
+    Index get_element_flat_id_from_point(const Points<dim> &point) const;
 
 
     /**
@@ -420,6 +424,13 @@ public:
      *  emitted whenever a refine() function is called by an object holding a CartesianGrid member.
      */
     boost::signals2::connection connect_refinement(const SignalRefineSlot &subscriber) ;
+
+
+    /**
+     * Returns the grid before the last refinement. If no refinement is performed,
+     * this function returns a null pointer.
+     */
+    std::shared_ptr<const CartesianGrid<dim> > get_grid_pre_refinement() const;
     ///@}
 
 
@@ -433,6 +444,12 @@ private:
      */
     void refine_knots_direction(const int direction_id,
                                 const Size n_subdivisions) ;
+
+    /**
+     * This class member is the grid before the last refinement. If no refinement is performed,
+     * this is a null pointer.
+     */
+    std::shared_ptr<const CartesianGrid<dim> > grid_pre_refinement_ = nullptr;
 
     /**
      * Signals for the h-refinement. It can be viewed as a FIFO list of function pointers.

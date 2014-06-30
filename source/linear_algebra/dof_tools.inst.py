@@ -39,8 +39,8 @@ functions = [ ('template SparsityPattern dof_tools::get_sparsity_pattern'
 for s in functions: 
     f.write(s)
 
-f.write('template SparsityPattern dof_tools::get_sparsity_pattern'
-               + '(std::shared_ptr<const BSplineSpace<0,0,1> > ,void *) ;\n')
+# f.write('template SparsityPattern dof_tools::get_sparsity_pattern'
+#                + '(std::shared_ptr<const BSplineSpace<0,0,1> > ,void *) ;\n')
 
 
 
@@ -55,7 +55,7 @@ apply_boundary_values = ('template void dof_tools::apply_boundary_values('
 ############################################
 # TRILINOS specific instantiations -- begin
 f.write('#ifdef USE_TRILINOS\n')
-f.write(apply_boundary_values.replace('LinAlgebra','LinearAlgebraPackage::trilinos'))
+f.write(apply_boundary_values.replace('LinAlgebra','LAPack::trilinos'))
 f.write('#endif\n')
 # TRILINOS' specific instantiations -- end
 ############################################
@@ -64,7 +64,7 @@ f.write('#endif\n')
 ############################################
 # PETSc specific instantiations -- begin
 f.write('#ifdef USE_PETSC\n')
-f.write(apply_boundary_values.replace('LinAlgebra','LinearAlgebraPackage::petsc'))
+f.write(apply_boundary_values.replace('LinAlgebra','LAPack::petsc'))
 f.write('#endif\n')
 # PETSc specific instantiations -- end
 ############################################

@@ -21,157 +21,73 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/space_tools.h>
 
+#include <igatools/geometry/mapping_slice.h>
 #include <igatools/base/exceptions.h>
 
 using std::array;
 using std::vector;
 using std::endl;
 using std::shared_ptr;
+using std::bind;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 IGA_NAMESPACE_OPEN
 
 //TODO(pauletti, Jan 19, 2014): remove the is_bspline from this class
 
 template <int dim_, int range_, int rank_>
+const std::array<int, NURBSSpace<dim_, range_, rank_>::n_components>
+NURBSSpace<dim_, range_, rank_>::
+components = sequence<spline_space_t::n_components>();
+
+
+template <int dim_, int range_, int rank_>
+const std::array<int, NURBSSpace<dim_, range_, rank_>::dim>
+NURBSSpace<dim_, range_, rank_>::
+dims = sequence<dim>();
+
+template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 create_refinement_connection()
 {
-    //----------------------------------
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
-        std::bind(&self_t::refine_h_weights,
-                  this,
-                  std::placeholders::_1,std::placeholders::_2));
-    //----------------------------------
+        bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
 }
-
-
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(shared_ptr< GridType > knots, const int &degree)
+NURBSSpace(const int degree,
+           shared_ptr< GridType > knots,
+           const WeightsTable &weights)
     :
-    BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, degree))
-{
-    // initialize all the weights to 1.0 (then this space will have the same
-    // mathematical structure of a BSpline space)
-    const auto n_dofs = sp_space_->get_num_basis_table();
-    for (int comp_id = 0; comp_id < n_components; ++comp_id)
-    {
-        const auto n_dofs_component = n_dofs(comp_id);
-
-        weights_(comp_id).resize(n_dofs_component);
-        weights_(comp_id).fill(1.0);
-    }
-
-    create_refinement_connection();
-
-    perform_post_construction_checks();
-}
+    NURBSSpace(DegreeTable(TensorIndex<dim>(degree)), knots, weights)
+{}
 
 
 
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots,
-       const int &degree) -> shared_ptr< self_t >
+create(const int degree,
+       shared_ptr< GridType > knots,
+       const WeightsTable &weights) -> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knots, degree));
+    return shared_ptr<self_t>(new self_t(degree, knots,  weights));
 }
 
 
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(
-    shared_ptr<GridType> knots,
-    const DegreeTable &degree)
+NURBSSpace(const DegreeTable &degree,
+           shared_ptr<GridType> knots,
+           const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, degree))
-{
-
-    const auto n_dofs = sp_space_->get_num_basis_table();
-    for (int comp_id = 0; comp_id < n_components; ++comp_id)
-    {
-        const auto n_dofs_component = n_dofs(comp_id);
-
-        weights_(comp_id).resize(n_dofs_component);
-        weights_(comp_id).fill(1.0);
-    }
-    create_refinement_connection();
-
-    perform_post_construction_checks();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr<GridType> knots,
-       const DegreeTable &degree)
--> shared_ptr< self_t >
-{
-    return shared_ptr< self_t >(new self_t(knots, degree));
-}
-
-
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(
-    shared_ptr< GridType > knots,
-    const MultiplicityTable &mult_vector,
-    const DegreeTable &degree)
-    :
-    BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, mult_vector, degree))
-{
-    // initialize all the weights to 1.0 (then this space will have the
-    // same mathematical structure of a BSpline space)
-    const auto n_dofs = sp_space_->get_num_basis_table();
-    for (int comp_id = 0; comp_id < n_components; ++comp_id)
-    {
-        const auto n_dofs_component = n_dofs(comp_id);
-
-        weights_(comp_id).resize(n_dofs_component);
-        weights_(comp_id).fill(1.0);
-    }
-    //----------------------------------------------------------------------------------------------
-
-    create_refinement_connection();
-
-    perform_post_construction_checks();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(shared_ptr< GridType > knots,
-       const MultiplicityTable &mult_vector,
-       const DegreeTable &degree) -> shared_ptr< self_t >
-{
-    return (shared_ptr< self_t >(new self_t(knots, mult_vector, degree)));
-}
-
-
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(
-    std::shared_ptr< GridType > knots,
-    const MultiplicityTable &mult_vector,
-    const DegreeTable &degree,
-    const WeightsTable &weights)
-    :
-    BaseSpace(knots),
-    sp_space_(spline_space_t::create(knots, mult_vector, degree)),
+    sp_space_(spline_space_t::create(degree,knots)),
     weights_(weights)
 {
 
@@ -184,29 +100,83 @@ NURBSSpace(
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(std::shared_ptr< GridType > knots,
-       const MultiplicityTable &mult_vector,
-       const DegreeTable &degree,
-       const WeightsTable &weights) -> shared_ptr< self_t >
+create(const DegreeTable &degree, shared_ptr<GridType> knots,
+       const WeightsTable &weights)
+-> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knots, mult_vector, degree, weights));
+    return shared_ptr<self_t>(new self_t(degree, knots, weights));
 }
 
 
+
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
+NURBSSpace(const DegreeTable &deg,
+           std::shared_ptr<GridType> knots,
+           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const EndBehaviourTable &ends,
+           const WeightsTable &weights)
+    :
+    BaseSpace(knots),
+    sp_space_(spline_space_t::create(deg, knots, interior_mult, ends)),
+    weights_(weights)
+{
+    create_refinement_connection();
+    perform_post_construction_checks();
+}
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create(const DegreeTable &deg,
+       std::shared_ptr<GridType> knots,
+       std::shared_ptr<const MultiplicityTable> interior_mult,
+       const EndBehaviourTable &ends,
+       const WeightsTable &weights) -> shared_ptr<self_t>
+{
+    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends, weights));
+}
+
+
+
+template <int dim_, int range_, int rank_>
+NURBSSpace<dim_, range_, rank_>::
+NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
+           const WeightsTable &weights)
+    :
+    BaseSpace(bs_space->get_grid()),
+    sp_space_(bs_space),
+    weights_(weights)
+{
+    create_refinement_connection();
+    perform_post_construction_checks();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create(std::shared_ptr<spline_space_t> bs_space,
+       const WeightsTable &weights) -> shared_ptr<self_t>
+{
+    return shared_ptr<self_t>(new self_t(bs_space, weights));
+}
 
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 perform_post_construction_checks() const
 {
+#ifndef NDEBUG
     // check that the number of weights is equal to the number of basis functions in the space
-    using weights_container_t = StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>;
-    Size n_weights = 0;
-    for (int comp_id = 0; comp_id < weights_container_t::n_entries; ++comp_id)
-        n_weights += weights_(comp_id).flat_size();
-
-    Assert(sp_space_->get_num_basis() == n_weights,
-           ExcDimensionMismatch(sp_space_->get_num_basis(),n_weights));
+    for (auto comp : components)
+    {
+        Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
+               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
+    }
+#endif
 }
 
 
@@ -246,9 +216,9 @@ end() const -> ElementIterator
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_weights() const -> const StaticMultiArray<DynamicMultiArray<Real,dim>, range, rank >
+get_weights() const -> const WeightsTable &
 {
-    return (weights_);
+    return weights_;
 }
 
 
@@ -256,36 +226,85 @@ get_weights() const -> const StaticMultiArray<DynamicMultiArray<Real,dim>, range
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
-reset_weights(const StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> &weights)
+reset_weights(const WeightsTable &weights)
 {
-    //-------------------------------------------------------------------------
-    for (int i = 0; i < StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank>::n_entries; ++i)
-    {
-        Assert(sp_space_->get_num_basis(i) == int(weights(i).flat_size()),
-               ExcDimensionMismatch(sp_space_->get_num_basis(i), weights(i).flat_size()));
-    }
-    //-------------------------------------------------------------------------
     weights_ = weights;
+    perform_post_construction_checks();
 }
 
 
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_ref_face_space(const Index face_id,
+                   std::vector<Index> &face_to_element_dofs,
+                   std::map<int, int> &elem_map) const
+-> std::shared_ptr<RefFaceSpace>
+{
+    auto f_space = sp_space_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
+
+    // TODO (pauletti, Jun 11, 2014): this should be put and completed in
+    // get_face_weigjts()
+    const auto &v_weights = weights_;
+    //const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
+    typename RefFaceSpace::WeightsTable f_weights(v_weights.get_comp_map());
+
+    const auto n_basis = f_space->get_num_basis_table();
+    for (int comp : f_weights.get_active_components_id())
+    {
+        f_weights(comp).resize(n_basis(comp),1.0);
+        //        for (auto j : RefFaceSpace::dims)
+        //            f_weights(comp).copy_data_direction(j, v_weights(comp).get_data_direction(active_dirs[j]));
+    }
+
+
+    return RefFaceSpace::create(f_space, f_weights);
+}
+
+
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_face_space(const Index face_id,
+               std::vector<Index> &face_to_element_dofs) const
+-> std::shared_ptr<FaceSpace>
+{
+    auto elem_map = std::make_shared<std::map<int,int> >();
+    auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+    auto map  = get_push_forward()->get_mapping();
+
+    auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
+    create(map, face_id, face_ref_sp->get_grid(), elem_map);
+    auto fpf = FaceSpace::PushForwardType::create(fmap);
+    auto face_space = FaceSpace::create(face_ref_sp,fpf);
+
+    return face_space;
+}
 
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 refine_h_weights(
     const std::array<bool,dim> &refinement_directions,
-    const GridType &grid_old)
+    const GridType &grid_old1)
 {
+    auto grid = this->get_grid();
+    auto grid_old = this->get_grid()->get_grid_pre_refinement();
+
+    auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+
     for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
         if (refinement_directions[direction_id])
         {
             // knots in the refined grid along the selected direction
-            vector<Real> knots_new = this->get_grid()->get_knot_coordinates(direction_id);
+            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
 
             // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
+            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
 
             vector<Real> knots_added(knots_new.size());
 
@@ -296,16 +315,17 @@ refine_h_weights(
                           knots_added.begin());
 
             knots_added.resize(it-knots_added.begin());
-
-
+            /*
+                        Assert(false,ExcNotImplemented());
+                        AssertThrow(false,ExcNotImplemented());
+            //*/
             for (int comp_id = 0; comp_id < n_components; ++comp_id)
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
-
-                const auto &U =
-                    sp_space_->knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
+                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = sp_space_->knots_with_repetitions_(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -314,12 +334,10 @@ refine_h_weights(
 
                 const int n = m-p-1;
 
-
                 const auto Pw = weights_(comp_id);
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes(direction_id) == n+1,
                        ExcDimensionMismatch(old_sizes(direction_id), n+1));
-
 
                 auto new_sizes = old_sizes;
                 new_sizes(direction_id) += r+1; // r+1 new weights in the refinement direction
@@ -375,6 +393,7 @@ refine_h_weights(
                 } // end loop j
 
                 weights_(comp_id) = Qw;
+
             } // end loop comp_id
 
         } // end if (refinement_directions[direction_id])
@@ -383,7 +402,6 @@ refine_h_weights(
 
     this->perform_post_construction_checks();
 }
-
 
 template <int dim_, int range_, int rank_>
 void
@@ -394,12 +412,14 @@ print_info(LogStream &out) const
 
     sp_space_->print_info(out);
 
+//    for (auto w : weights_)
+//        w.print_info(out);
     out.push("\t");
     for (int comp_id = 0; comp_id < n_components; comp_id++)
     {
         const auto weights_component = weights_(comp_id).get_data();
         out << "weights[" << comp_id << "] = { ";
-        for (const Real & w : weights_component)
+        for (const Real &w : weights_component)
             out << w << " ";
         out << "}" << endl;
     }

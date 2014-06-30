@@ -31,10 +31,10 @@
 
 IGA_NAMESPACE_OPEN
 
-template <LinearAlgebraPackage linear_algebra_package>
+template <LAPack la_pack>
 class Vector;
 
-template <LinearAlgebraPackage linear_algebra_package>
+template <LAPack la_pack>
 class Matrix;
 
 /**
@@ -223,11 +223,11 @@ SparsityPattern get_sparsity_pattern(
  * to impose dirichlet constraints on the dofs.
  * todo: document more.
  */
-template <LinearAlgebraPackage linear_algebra_package>
+template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<linear_algebra_package> &matrix,
-                           Vector<linear_algebra_package> &rhs,
-                           Vector<linear_algebra_package> &solution);
+                           Matrix<la_pack> &matrix,
+                           Vector<la_pack> &rhs,
+                           Vector<la_pack> &solution);
 
 
 } // end of namespace dof_tools

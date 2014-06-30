@@ -72,19 +72,6 @@ template< class T, int dim >
 using vector_array = std::array< std::vector<T>, dim >;
 
 /**
- * This function is used to initialize  an array at
- * construction time to a uniform value.
- */
-template <class T, int dim>
-inline
-std::array<T,dim> filled_array(const T v)
-{
-    std::array<T,dim> res;
-    res.fill(v);
-    return res;
-}
-
-/**
  * Bounding Box, a dim-dimensional rectangular
  * box described by the intervals.
  * eg. BBox<2> box {{0,0.5},{1,2}}.
@@ -307,7 +294,7 @@ enum class Norm
 /**
  * Type for specifying which linear algebra package to use.
  */
-enum class LinearAlgebraPackage : int
+enum class LAPack : int
 {
     /** Use the internal (igatools) linear algebra implementation.*/
     internal = 0,
@@ -532,8 +519,6 @@ template<int dim, int range, int rank,RefSpaceType space_type>
 using RefSpace = Conditional<(space_type == RefSpaceType::bspline),
       BSplineSpace<dim,range,rank>,
       NURBSSpace<dim,range,rank> >;
-
-
 
 
 

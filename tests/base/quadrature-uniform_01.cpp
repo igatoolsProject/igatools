@@ -73,7 +73,7 @@ void do_test()
 template <int dim>
 void do_test_aniso()
 {
-    array<array<iga::Real,2>,dim> domain_coordinates_new ;
+    array<array<Real,2>,dim> domain_coordinates_new ;
     for (int j = 0; j < dim; ++j)
         domain_coordinates_new[j] = {{1.0,3.0}} ;
 

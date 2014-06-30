@@ -31,7 +31,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_>
 void
 Mapping<dim_, codim_>::
-evaluate(vector<ValueType> &values) const
+evaluate(vector<Value> &values) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
@@ -42,7 +42,7 @@ evaluate(vector<ValueType> &values) const
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_gradients(vector<GradientType> &gradients) const
+evaluate_gradients(vector<Gradient> &gradients) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
@@ -53,7 +53,7 @@ evaluate_gradients(vector<GradientType> &gradients) const
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_hessians(vector<HessianType> &hessians) const
+evaluate_hessians(vector<Hessian> &hessians) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
@@ -64,7 +64,7 @@ evaluate_hessians(vector<HessianType> &hessians) const
 template<int dim_, int codim_>
 void
 Mapping<dim_, codim_>::
-evaluate_face(const Index face_id, vector<ValueType> &values) const
+evaluate_face(const Index face_id, vector<Value> &values) const
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false, ExcNotImplemented());
@@ -75,7 +75,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false, ExcNotImplemented());
@@ -86,7 +86,7 @@ evaluate_face_gradients(const Index face_id, vector<GradientType> &gradients) co
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false, ExcNotImplemented());
@@ -96,7 +96,7 @@ evaluate_face_hessians(const Index face_id, vector<HessianType> &hessians) const
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
 {
     Assert(false,ExcMessage("This function must be implemented by the concrete class derived from Mapping")) ;
     AssertThrow(false, ExcMessage("This function must be implemented by the concrete class derived from Mapping"));
@@ -105,7 +105,7 @@ evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> 
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
 {
     Assert(false,ExcMessage("This function must be implemented by the concrete class derived from Mapping")) ;
     AssertThrow(false, ExcMessage("This function must be implemented by the concrete class derived from Mapping"));
@@ -114,7 +114,7 @@ evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<G
 template<int dim_, int codim_>
 void
 Mapping<dim_,codim_>::
-evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
 {
     Assert(false,ExcMessage("This function must be implemented by the concrete class derived from Mapping")) ;
     AssertThrow(false, ExcMessage("This function must be implemented by the concrete class derived from Mapping"));
@@ -157,11 +157,11 @@ required_flags() const
 template<int dim_, int codim_>
 auto
 Mapping<dim_,codim_>::
-values() const -> vector<ValueType>
+values() const -> vector<Value>
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
-    return (vector<ValueType>());
+    return (vector<Value>());
 }
 
 
@@ -169,11 +169,11 @@ values() const -> vector<ValueType>
 template<int dim_, int codim_>
 auto
 Mapping<dim_,codim_>::
-gradients() const -> vector<GradientType>
+gradients() const -> vector<Gradient>
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
-    return (vector<GradientType>());
+    return (vector<Gradient>());
 }
 
 
@@ -181,11 +181,11 @@ gradients() const -> vector<GradientType>
 template<int dim_, int codim_>
 auto
 Mapping<dim_,codim_>::
-hessians() const -> vector<HessianType>
+hessians() const -> vector<Hessian>
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
-    return (vector<HessianType>());
+    return (vector<Hessian>());
 }
 
 

@@ -65,7 +65,7 @@ void do_test()
     out << endl;
 
     out << "Testing the get_flat_cartesian_product() function" <<endl;
-    vector<Point<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
+    vector<Points<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
     out << flat_cartesian_product << endl << endl;
 
     out << "Testing the get_flat_tensor_product() function" <<endl;

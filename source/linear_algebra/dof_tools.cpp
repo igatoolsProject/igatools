@@ -51,7 +51,7 @@ get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
     Set_t empty_set;
 
     // adding the global dof keys to the map representing the dof connectivity
-    for (const auto & dof : dofs)
+    for (const auto &dof : dofs)
         sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
 
 
@@ -92,22 +92,22 @@ get_sparsity_pattern(const vector< shared_ptr< SpaceType > > &space_multipatch,
 
     // adding the global dof keys to the map representing the dof connectivity
     Set_t dofs_set;
-    for (const auto & space : space_multipatch)
+    for (const auto &space : space_multipatch)
     {
         const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto & dof : dofs_space)
+        for (const auto &dof : dofs_space)
             dofs_set.insert(dof);
     }
 
     Vec_t dofs_vector(dofs_set.begin(), dofs_set.end());
 
     SparsityPattern sparsity_pattern(dofs_vector, dofs_vector);
-    for (const auto & dof : dofs_vector)
+    for (const auto &dof : dofs_vector)
         sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
 
 
     // now the keys are initialized, then fill the set of dofs corresponding to each key
-    for (const auto & space : space_multipatch)
+    for (const auto &space : space_multipatch)
     {
 
         auto element     = space->begin();
@@ -155,19 +155,19 @@ get_sparsity_pattern(
 
     // adding the global dof keys to the map representing the dof connectivity
     Set_t row_dofs_set;
-    for (const auto & space : space_multipatch_rows)
+    for (const auto &space : space_multipatch_rows)
     {
         const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto & dof : dofs_space)
+        for (const auto &dof : dofs_space)
             row_dofs_set.insert(dof);
     }
 
 
     Set_t col_dofs_set;
-    for (const auto & space : space_multipatch_cols)
+    for (const auto &space : space_multipatch_cols)
     {
         const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto & dof : dofs_space)
+        for (const auto &dof : dofs_space)
             col_dofs_set.insert(dof);
     }
 
@@ -175,7 +175,7 @@ get_sparsity_pattern(
     Vec_t col_dofs_vector(col_dofs_set.begin(), col_dofs_set.end());
 
     SparsityPattern sparsity_pattern(row_dofs_vector, col_dofs_vector);
-    for (const auto & dof : row_dofs_vector)
+    for (const auto &dof : row_dofs_vector)
         sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
 
 
@@ -225,7 +225,7 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
     for (; element != element_end; ++element)
     {
         const vector< Index > &element_dofs = element->get_local_to_global();
-        for (const Index & dof : element_dofs)
+        for (const Index &dof : element_dofs)
             dofs_set.insert(dof);
     }
 
@@ -236,11 +236,11 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
 
 
 
-template <LinearAlgebraPackage linear_algebra_package>
+template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<linear_algebra_package> &matrix,
-                           Vector<linear_algebra_package> &rhs,
-                           Vector<linear_algebra_package> &solution)
+                           Matrix<la_pack> &matrix,
+                           Vector<la_pack> &rhs,
+                           Vector<la_pack> &solution)
 {
     std::vector<Index> constrained_rows;
 
@@ -277,35 +277,11 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
 template <>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<LinearAlgebraPackage::petsc> &matrix,
-                           Vector<LinearAlgebraPackage::petsc> &rhs,
-                           Vector<LinearAlgebraPackage::petsc> &solution)
+                           Matrix<LAPack::petsc> &matrix,
+                           Vector<LAPack::petsc> &rhs,
+                           Vector<LAPack::petsc> &solution)
 {
     PetscErrorCode ierr;
-    /*
-        // todo: try to make a unified version for PETSc and trilinos
-        auto dof = boundary_values.begin();
-        const auto dof_end = boundary_values.end();
-        for (; dof != dof_end; ++dof)
-        {
-            Index row_id = dof->first;
-            const Real bc_value  = dof->second;
-            const Real mat_value = matrix(row_id,row_id);
-
-            // set the matrix in write mode
-            matrix.resume_fill();
-
-            // set the diagonal element corresponding to the entry
-            // (row_id,row_id) to mat_value
-            ierr = VecSetValue(solution.get_petsc_vector(), row_id, bc_value, INSERT_VALUES);
-
-            ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), 1, &row_id, mat_value,
-                                      solution.get_petsc_vector(),rhs.get_petsc_vector());
-
-            // I am not sure whether this is necessary in PETSc
-            matrix.fill_complete();
-        }
-    //*/
 
     vector<Index> rows;
     vector<PetscScalar> values;
@@ -316,19 +292,36 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         values.push_back(bv.second);
     }
 
-    const PetscScalar *values_ptr = values.data();
-
+    // Set the matrix in write mode.
     matrix.resume_fill();
-    ierr = MatZeroRowsColumns(
-               matrix.get_petsc_matrix(),
-               rows.size(),
-               rows.data(),
-               *values_ptr,
-               solution.get_petsc_vector(),
-               rhs.get_petsc_vector()); //CHKERRQ(ierr);
+
+    // Set the boundary value in the solution vector.
+    ierr = VecSetValues(solution.get_petsc_vector(), rows.size(), rows.data(),
+                        values.data(), INSERT_VALUES);
+
+    // Getting the first diagonal value (of the constrained degrees of freedom),
+    // this value is going to be written in the diagonal for all the removed
+    // rows/columns.
+    // Note: It would be desirable to keep the correspoding values for
+    // every row/column, but the petsc function MatZeroRowsColumns only allows
+    // to specify a single value for the diagonal terms.
+    // This could be changed with multiple calls to this function (one for every
+    // degree of freedom constrained). Probably it would be expensive, but the
+    // condition number would be possibly improved.
+    const Real diagonal = matrix(rows[0], rows[0]);
+
+    // Setting to zero the rows and columns corresponding to rows.
+    // The diagonal terms will be set with the value of diagonal.
+    // The corresponding values or rhs will be set to be equal to
+    // diagonal * values (for every vector element).
+    ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), rows.size(),
+                              rows.data(), diagonal,
+                              solution.get_petsc_vector(),
+                              rhs.get_petsc_vector());
+
+    // Communicate the matrix values to the different processors.
     matrix.fill_complete();
 
-//*/
 }
 #endif //#ifdef USE_PETSC
 

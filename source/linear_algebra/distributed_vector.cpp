@@ -46,7 +46,7 @@ DeclException3(ExcVectorAccessToNonLocalElement,
 
 #ifdef USE_TRILINOS
 
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 Vector(const Index num_global_dofs)
     :
     comm_(Teuchos::createSerialComm<int>()),
@@ -59,7 +59,7 @@ Vector(const Index num_global_dofs)
 
 
 
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 Vector(const std::vector<Index> &dofs_id)
     :
     comm_(Teuchos::createSerialComm<int>()),
@@ -72,14 +72,14 @@ Vector(const std::vector<Index> &dofs_id)
 
 
 auto
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 create(const Index size) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(size));
 }
 
 auto
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
@@ -88,7 +88,7 @@ create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 
 
 void
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 add_entry(const Index i, const Real value)
 {
     Assert(!std::isnan(value),ExcNotANumber());
@@ -99,7 +99,7 @@ add_entry(const Index i, const Real value)
 
 
 const Real &
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 operator()(const Index global_id) const
 {
     Assert(global_id < Index(vector_->getGlobalLength()),
@@ -120,7 +120,7 @@ operator()(const Index global_id) const
 
 
 Real &
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 operator()(const Index global_id)
 {
     Assert(global_id < Index(vector_->getGlobalLength()),
@@ -140,28 +140,28 @@ operator()(const Index global_id)
 
 
 Index
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 size() const
 {
     return vector_->getGlobalLength() ;
 }
 
 auto
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 get_trilinos_vector() const -> Teuchos::RCP<const WrappedVectorType>
 {
     return vector_ ;
 }
 
 auto
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 get_trilinos_vector() -> Teuchos::RCP<WrappedVectorType>
 {
     return vector_ ;
 }
 
 void
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 add_block(
     const std::vector< Index > &local_to_global,
     const DenseVector &local_vector)
@@ -182,7 +182,7 @@ add_block(
 
 
 std::vector<Real>
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 {
     std::vector<Real> local_coefs;
@@ -194,7 +194,7 @@ get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 
 
 void
-Vector<LinearAlgebraPackage::trilinos>::
+Vector<LAPack::trilinos>::
 print(LogStream &out) const
 {
     using std::endl;
@@ -219,7 +219,7 @@ print(LogStream &out) const
 
 #ifdef USE_PETSC
 
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 Vector(const Index num_global_dofs)
 {
     PetscErrorCode ierr;
@@ -232,7 +232,7 @@ Vector(const Index num_global_dofs)
 
 
 
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 Vector(const std::vector<Index> &dofs_id)
 {
     Assert(false,ExcNotImplemented());
@@ -241,14 +241,14 @@ Vector(const std::vector<Index> &dofs_id)
 
 
 auto
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 create(const Index size) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(size));
 }
 
 auto
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
@@ -257,7 +257,7 @@ create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 
 
 void
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 add_entry(const Index i, const Real value)
 {
     Assert(!std::isnan(value),ExcNotANumber());
@@ -269,7 +269,7 @@ add_entry(const Index i, const Real value)
 
 
 const Real &
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 operator()(const Index global_id) const
 {
     Assert(false,ExcNotImplemented());
@@ -279,7 +279,7 @@ operator()(const Index global_id) const
 
 
 Real &
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 operator()(const Index global_id)
 {
     Assert(false,ExcNotImplemented());
@@ -288,7 +288,7 @@ operator()(const Index global_id)
 
 
 Index
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 size() const
 {
     PetscErrorCode ierr;
@@ -299,7 +299,7 @@ size() const
 }
 
 auto
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 get_petsc_vector() const -> Vec
 {
 //    Assert(false,ExcNotImplemented());
@@ -308,7 +308,7 @@ get_petsc_vector() const -> Vec
 }
 
 auto
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 get_petsc_vector() -> Vec
 {
 //    Assert(false,ExcNotImplemented());
@@ -318,7 +318,7 @@ get_petsc_vector() -> Vec
 //*/
 
 void
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 add_block(
     const std::vector< Index > &local_to_global,
     const DenseVector &local_vector)
@@ -345,7 +345,7 @@ add_block(
 
 
 std::vector<Real>
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 {
     std::vector<Real> local_coefs;
@@ -363,7 +363,7 @@ get_local_coefs(const std::vector<Index> &local_to_global_ids) const
 
 
 void
-Vector<LinearAlgebraPackage::petsc>::
+Vector<LAPack::petsc>::
 print(LogStream &out) const
 {
     Assert(false,ExcNotImplemented());

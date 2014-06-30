@@ -40,29 +40,21 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
 {
     Assert(space_ != nullptr, ExcNullPtr());
 
-
-    //--------------------------------------------------------------------------
     using Indexer = CartesianProductIndexer<dim>;
-
-    for (int comp_id = 0; comp_id < Space::n_components; ++comp_id)
+    auto n_basis = space->get_num_basis_per_element_table();
+    for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-        for (int j=0; j<dim; ++j)
-            n_basis_direction_(comp_id)[j] = this->space_->get_degree()(comp_id)[j]+1;
-
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) = std::shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
+        basis_functions_indexer_(comp_id) =
+            std::shared_ptr<Indexer>(new Indexer(n_basis(comp_id)));
     }
-    //--------------------------------------------------------------------------
 
-
-
-    //--------------------------------------------------------------------------
     comp_offset_(0) = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
-    //--------------------------------------------------------------------------
-};
+        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis.comp_dimension(comp_id);
+
+}
 
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -106,7 +98,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-evaluate_basis_values_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Value>
+evaluate_basis_values_at_points(const std::vector<Point> &points) const -> ValueTable<Value>
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
 }
@@ -115,7 +107,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-evaluate_basis_gradients_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Derivative<1> >
+evaluate_basis_gradients_at_points(const std::vector<Point> &points) const -> ValueTable<Derivative<1> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
 }
@@ -124,7 +116,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-evaluate_basis_hessians_at_points(const std::vector<Point<dim>> &points) const -> ValueTable<Derivative<2> >
+evaluate_basis_hessians_at_points(const std::vector<Point> &points) const -> ValueTable<Derivative<2> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
 }
@@ -138,7 +130,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_derivatives_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point<dim>> &points) const ->
+    const std::vector<Point> &points) const ->
 ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     const auto &derived_element_accessor = this->as_derived_element_accessor();
@@ -160,7 +152,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_values_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point<dim>> &points) const -> ValueVector<Value>
+    const std::vector<Point> &points) const -> ValueVector<Value>
 {
     return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
 }
@@ -171,7 +163,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_gradients_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point<dim>> &points) const -> ValueVector<Derivative<1> >
+    const std::vector<Point> &points) const -> ValueVector<Derivative<1> >
 {
     return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
 }
@@ -182,7 +174,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_hessians_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point<dim>> &points) const -> ValueVector<Derivative<2> >
+    const std::vector<Point> &points) const -> ValueVector<Derivative<2> >
 {
     return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
 }
@@ -443,7 +435,7 @@ void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim> &quad)
 {
     quad_ = quad;
@@ -540,7 +532,7 @@ void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 ElementValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim> &quad)
 {
     ValuesCache::reset(flags_handler, n_basis_direction,quad);
@@ -553,7 +545,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim> &quad1)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
@@ -572,7 +564,7 @@ SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 FaceValuesCache::
 reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
-      const ComponentTable<TensorSize<dim> > &n_basis_direction,
+      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
       const Quadrature<dim-1> &quad)
 {
     Assert(false,ExcNotImplemented()) ;
@@ -597,15 +589,16 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
            !face_flags_handler.fill_none(),
            ExcMessage("Nothing to reset"));
 
+    auto n_basis = space_->get_num_basis_per_element_table();
     if (!elem_flags_handler.fill_none())
-        this->elem_values_.reset(elem_flags_handler, this->n_basis_direction_, quad);
+        this->elem_values_.reset(elem_flags_handler, n_basis, quad);
 
 
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0 ;
-        for (auto& face_value : this->face_values_)
-            face_value.reset(face_id++, face_flags_handler, this->n_basis_direction_, quad);
+        for (auto &face_value : this->face_values_)
+            face_value.reset(face_id++, face_flags_handler, n_basis, quad);
     }
     //--------------------------------------------------------------------------
 }
@@ -791,12 +784,7 @@ int
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_num_basis(const int i) const
 {
-    const auto &degree_comp = this->space_->get_degree()(i);
-    int component_num_basis = 1;
-    for (int j = 0; j < dim; ++j)
-        component_num_basis *= degree_comp[j] + 1;
-
-    return component_num_basis;
+    return space_->get_num_basis_per_element(i);
 }
 
 
@@ -806,7 +794,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 get_local_to_global() const -> std::vector<Index> const &
 {
-    return space_->get_element_global_dofs()[this->get_flat_index()];
+    return space_->get_loc_to_global(this->get_tensor_index());
 }
 
 

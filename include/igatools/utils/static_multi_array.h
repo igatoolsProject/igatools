@@ -69,7 +69,8 @@ public:
 
 
     /**
-     * Construct a StaticMultiArray in which its elements are equal between different rank indices,
+     * Construct a StaticMultiArray in which its elements are equal between
+     * different rank indices,
      * and for a given rank are set to be equal to the argument values @p val.
      */
     explicit StaticMultiArray(const std::array<T,dim> &val);

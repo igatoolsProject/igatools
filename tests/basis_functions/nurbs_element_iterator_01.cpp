@@ -18,105 +18,81 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+/*
+ *  Test for the NURBS space iterator
+ *
+ *  author: pauletti
+ *  date: Jun 11, 2014
+ *
+ */
+
 #include "../tests.h"
 
-#include <igatools/base/exceptions.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 
-
-
-template< int dim_domain, int dim_range >
-void do_test()
+template< int dim, int range, int rank = 1>
+void test()
 {
-    out << "do_test<" << dim_domain << "," << dim_range << ">" << endl ;
+    const int r = 2;
+    out << "test<" << dim << "," << range << ">" << endl;
 
-    auto knots = CartesianGrid<dim_domain>::create();
+    using Space = NURBSSpace< dim, range, rank >;
+    using WeightsTable = typename Space::WeightsTable;
+    using DegreeTable = typename Space::DegreeTable;
+    auto  knots = CartesianGrid<dim>::create();
 
+    auto degree = TensorIndex<dim>(r);
+    DegreeTable deg(degree);
 
-    // and here we build the NURBSSpace
-    const int rank = 1;
+    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
+    WeightsTable weights;
+    const auto n_basis = bsp->get_num_basis_table();
+    for (auto comp : Space::components)
+        weights(comp).resize(n_basis(comp),1.0);
 
-    typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(knots, 2) ;
+    auto space = Space::create(deg, knots, weights);
 
-    space->print_info(out) ;
-    out << endl;
-    //----------------------------------------------------------------------------------------------
+    const int n_points = 3;
+    QGauss<dim> quad(n_points);
 
-
-    //----------------------------------------------------------------------------------------------
-    // for the basis functions evaluation we need a set of points (with tensor product structure)
-    // to do so, we get the points from a Gauss quadrature scheme with 3 points
-
-    const int n_points = 3 ;
-    QGauss< dim_domain > quad_scheme(n_points) ;
-
-    auto element     = space->begin();
+    auto elem     = space->begin();
     auto end_element = space->end();
 
+    const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
+    elem->init_values(flag, quad);
 
-    // initialize the cache of the NURBSSpaceElementAccessor
-    element->init_values(ValueFlags::value |
-                         ValueFlags::gradient |
-                         ValueFlags::hessian,
-                         quad_scheme) ;
-
-
-    out.push("\t") ;
-    for (int j = 0 ; element != end_element ; ++j, ++element)
+    for (; elem != end_element; ++elem)
     {
-        // fill the cache (with basis functions values, first and second derivatives) at the evaluation points
-        element->fill_values() ;
+        elem->fill_values();
+        out << "Element: " << elem->get_flat_index()<< endl;
 
+        out << "Values basis functions:" << endl;
+        auto values = elem->get_basis_values();
+        values.print_info(out);
 
-        out << "Element: " << j << endl ;
+        out << "Gradients basis functions:" << endl;
+        auto gradients = elem->get_basis_gradients();
+        gradients.print_info(out);
 
-        out.push("\t") ;
-
-
-        out << "Values basis functions:" << endl ;
-        auto values = element->get_basis_values() ;
-        values.print_info(out) ;
-        out << endl ;
-
-
-        out << "Gradients basis functions:" << endl ;
-        ValueTable< Derivatives<dim_domain, dim_range, rank, 1 > > gradients = element->get_basis_gradients() ;
-        gradients.print_info(out) ;
-        out << endl ;
-
-
-        out << "Hessians basis functions:" << endl ;
-        ValueTable< Derivatives<dim_domain, dim_range, rank, 2 > > hessians = element->get_basis_hessians() ;
-        hessians.print_info(out) ;
-        out << endl ;
-
-
-        out.pop() ;
+        out << "Hessians basis functions:" << endl;
+        auto hessians = elem->get_basis_hessians();
+        hessians.print_info(out);
     }
-    out.pop() ;
-
-    out << endl ;
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
-    do_test< 1, 1 >() ;
+    test<1, 1>();
+    test<1, 2>();
+    test<1, 3>();
+    test<2, 1>();
+    test<2, 2>();
+    test<2, 3>();
+    test<3, 1>();
+    test<3, 3>();
 
-    do_test< 1, 2 >() ;
-
-    do_test< 1, 3 >() ;
-
-    do_test< 2, 1 >() ;
-
-    do_test< 2, 2 >() ;
-    do_test< 2, 3 >() ;
-    do_test< 3, 1 >() ;
-//  do_test< 3, 2 >() ;
-    do_test< 3, 3 >() ;
-//*/
-    return (0) ;
+    return 0;
 }

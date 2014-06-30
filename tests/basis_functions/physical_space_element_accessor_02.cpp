@@ -133,14 +133,14 @@ void test_evaluate()
     const int p = 1 ;
     auto knots = CartesianGrid<dim>::create(num_knots);
 
-    auto ref_space = RefSpace_t<dim>::create(knots, p);
+    auto ref_space = RefSpace_t<dim>::create(p, knots);
     // ref_space->print_info(out);
 
     auto map = create_mapping<dim>(ref_space);
     auto push_forward=PushForward_t<dim>::create(map);
     // push_forward->print_info(out) ;
 
-    auto ref_space1 = RefSpace_t<dim>::create(knots, p);
+    auto ref_space1 = RefSpace_t<dim>::create(p, knots);
     auto physical_space = PhysicalSpace_t<dim>::create(ref_space1, push_forward) ;
     //physical_space.print_info(out) ;
 

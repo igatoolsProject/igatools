@@ -44,12 +44,13 @@ create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
 
-    StaticMultiArray<TensorIndex<2>,2,1> degree = { {{3,2}},
+    typename BSplineSpace<2,2,1>::DegreeTable degree = { {{3,2}},
         {{2,3}}
     } ;
 
-    return BSplineSpace<2,2,1>::create(knots, degree) ;
+    return BSplineSpace<2,2,1>::create(degree, knots) ;
 }
+
 
 template <>
 shared_ptr<BSplineSpace<3,3,1> >
@@ -57,12 +58,12 @@ create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
 
-    StaticMultiArray<TensorIndex<3>,3,1> degree = { {{3,2,2}},
+    typename BSplineSpace<3,3,1>::DegreeTable degree = { {{3,2,2}},
         {{2,3,2}},
         {{2,2,3}}
     } ;
 
-    return BSplineSpace<3,3,1>::create(knots, degree) ;
+    return BSplineSpace<3,3,1>::create(degree, knots) ;
 }
 
 

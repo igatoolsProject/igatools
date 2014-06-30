@@ -43,7 +43,7 @@ void do_test()
     const int degree = 2;
     const int rank =  1;
     typedef BSplineSpace< dim, range, rank > Space_t;
-    auto space = Space_t::create(knots, degree);
+    auto space = Space_t::create(degree, knots);
 
     const int n_points = 3;
     QGauss< dim > quad_scheme(n_points);

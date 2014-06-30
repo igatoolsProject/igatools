@@ -32,148 +32,170 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/geometry/ig_mapping.h>
+#include <igatools/geometry/identity_mapping.h>
 
 template <int dim>
-using ReferenceSpace = NURBSSpace<dim,dim>;
+using RefSpace_t = NURBSSpace<dim>  ;
 
 template <int dim>
-using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
+using PushForward_t = PushForward<Transformation::h_grad,dim,0> ;
 
 template <int dim>
-using PhysSpace = PhysicalSpace< ReferenceSpace<dim>, PushFwd<dim> > ;
+using PhysicalSpace_t = PhysicalSpace< RefSpace_t<dim>, PushForward_t<dim> > ;
+
 
 template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, ReferenceSpace<dim>::range, ReferenceSpace<dim>::rank >;
+using ComponentTable = StaticMultiArray<T, RefSpace_t<dim>::range, RefSpace_t<dim>::rank >;
+
 
 template <int dim>
 void test_evaluate()
 {
-
-    const int p = 2;
-    auto grid = CartesianGrid<dim>::create(2);
+    auto grid = CartesianGrid<dim>::create();
     grid->refine();
+    out << endl;
+
+    auto map = IdentityMapping<dim>::create(grid);
+//   map->refine();
+//    map->get_grid()->print_info(out);
+//    out << endl;
 
 
-    auto ref_space = ReferenceSpace<dim>::create(grid, p);
 
-    TensorSize<dim> n_weights_comp;
+    auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
+
+
+    const int deg = 2;
+
+    TensorIndex<1> component_map = {0};
+    TensorSize<dim> n_weights_dir;
     for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
+        n_weights_dir(dir_id) = (deg+2);
 
-    DynamicMultiArray<Real,dim> weights_comp(n_weights_comp);
-
-    ComponentTable<DynamicMultiArray<Real,dim>,dim> weights(weights_comp);
-
-
-    vector<Real> control_pts(ref_space->get_num_basis());
-
+    typename RefSpace_t<dim>::WeightsTable weights(component_map);
     if (dim == 1)
     {
-        weights(0)(0) = 1.0 ;
-        weights(0)(1) = 0.853553390593274 ;
-        weights(0)(2) = 0.853553390593274 ;
-        weights(0)(3) = 1.0 ;
+        Index id = 0;
 
-        control_pts[0] = 1.0;
-        control_pts[1] = 1.0;
-        control_pts[2] = 0.414213562373095;
-        control_pts[3] = 0.0;
+        weights(0).resize(n_weights_dir);
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
     }
     else if (dim == 2)
     {
+        Index id = 0;
 
-        for (Index comp_id = 0 ; comp_id < 2 ; ++comp_id)
-        {
-            Index id = 0;
-            for (Index i=0 ; i < 4 ; ++i)
-            {
-                weights(comp_id)(id++) = 1.0 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 1.0 ;
-            }
-        }
+        weights(0).resize(n_weights_dir);
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        // 1st comp - 1st row
-        control_pts[0] = 1.0;
-        control_pts[1] = 1.0;
-        control_pts[2] = 0.414213562373095;
-        control_pts[3] = 0.0;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
-        // 1st comp - 2nd row
-        control_pts[4] = 1.375;
-        control_pts[5] = 1.375;
-        control_pts[6] = 0.569543648263006;
-        control_pts[7] = 0.0;
-
-        // 1st comp - 3rd row
-        control_pts[8] = 2.125;
-        control_pts[9] = 2.125;
-        control_pts[10] = 0.880203820042827;
-        control_pts[11] = 0.0;
-
-        // 1st comp - 4th row
-        control_pts[12] = 2.5;
-        control_pts[13] = 2.5;
-        control_pts[14] = 1.03553390593274;
-        control_pts[15] = 0.0;
-
-        // 2nd comp - 1st row
-        control_pts[16] = 0.0;
-        control_pts[17] = 0.414213562373095;
-        control_pts[18] = 1.0;
-        control_pts[19] = 1.0;
-
-        // 2nd comp - 2nd row
-        control_pts[20] = 0.0;
-        control_pts[21] = 0.569543648263006;
-        control_pts[22] = 1.375;
-        control_pts[23] = 1.375;
-
-        // 2nd comp - 3rd row
-        control_pts[24] = 0.0;
-        control_pts[25] = 0.880203820042827;
-        control_pts[26] = 2.125;
-        control_pts[27] = 2.125;
-
-        // 2nd comp - 4th row
-        control_pts[28] = 0.0;
-        control_pts[29] = 1.035533905932738;
-        control_pts[30] = 2.5;
-        control_pts[31] = 2.5;
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
     }
     else if (dim == 3)
     {
-        for (Index comp_id = 0 ; comp_id < 3 ; ++comp_id)
-        {
-            Index id = 0;
-            for (Index i=0 ; i < 16 ; ++i)
-            {
-                weights(comp_id)(id++) = 1.0 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 1.0 ;
-            }
-        }
+        Index id = 0;
 
-//       AssertThrow(false,ExcNotImplemented());
+        weights(0).resize(n_weights_dir);
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
 
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
+
+        weights(0)(id++) = 1.0 ;
+        weights(0)(id++) = 0.4 ;
+        weights(0)(id++) = 0.65 ;
+        weights(0)(id++) = 1.0 ;
     }
+    auto ref_space = RefSpace_t<dim>::create(deg,grid,weights);
 
-    ref_space->reset_weights(weights);
-
-//    ref_space->print_info(out);
-
-
-    auto map = IgMapping<ReferenceSpace<dim>>::create(ref_space,control_pts);
-
-//    ref_space->print_info(out);
-
-    auto push_fwd = PushFwd<dim>::create(map);
-
-    auto phys_space = PhysSpace<dim>::create(ref_space,push_fwd);
+    auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
 
     out << endl;
@@ -198,8 +220,13 @@ int main()
     out.depth_console(10);
 
     test_evaluate<1>();
+    out << endl ;
+
     test_evaluate<2>();
+    out << endl ;
+
     test_evaluate<3>();
+    out << endl ;
 
     return 0;
 }
