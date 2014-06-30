@@ -61,14 +61,13 @@ void test_evaluate()
 
     TensorIndex<dim> component_map;
     for (int i = 0 ; i < dim ; ++i)
-    	component_map[i] = i;
+        component_map[i] = i;
 
-    typename ReferenceSpace<dim>::WeightsTable weights(component_map);
-
+    typename NURBSSpace<dim,dim>::WeightsTable weights(component_map);
 
     if (dim == 1)
     {
-    	weights(0).resize(n_weights_dir);
+        weights(0).resize(n_weights_dir);
         weights(0)(0) = 1.0 ;
         weights(0)(1) = 0.853553390593274 ;
         weights(0)(2) = 0.853553390593274 ;
@@ -78,7 +77,7 @@ void test_evaluate()
     {
         for (Index comp_id = 0 ; comp_id < 2 ; ++comp_id)
         {
-        	weights(comp_id).resize(n_weights_dir);
+            weights(comp_id).resize(n_weights_dir);
             Index id = 0;
             for (Index i=0 ; i < 4 ; ++i)
             {
@@ -93,9 +92,9 @@ void test_evaluate()
     {
         for (Index comp_id = 0 ; comp_id < 3 ; ++comp_id)
         {
-        	weights(comp_id).resize(n_weights_dir);
+            weights(comp_id).resize(n_weights_dir);
 
-        	Index id = 0;
+            Index id = 0;
             for (Index i=0 ; i < 16 ; ++i)
             {
                 weights(comp_id)(id++) = 1.0 ;
@@ -168,11 +167,11 @@ void test_evaluate()
     }
     else if (dim == 3)
     {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
     }
 
     auto map = IgMapping<ReferenceSpace<dim>>::create(ref_space,control_pts);
-
-//    ref_space->print_info(out);
 
     auto push_fwd = PushFwd<dim>::create(map);
 

@@ -637,8 +637,8 @@ refine_h_control_mesh(
     }
     //----------------------------------
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
 //#endif

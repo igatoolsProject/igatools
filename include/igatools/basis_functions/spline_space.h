@@ -263,7 +263,7 @@ public:
     /** Returns the multiplicity of the internal knots that defines the space. */
     std::shared_ptr<const MultiplicityTable> get_interior_mult()
     {
-    	return interior_mult_;
+        return interior_mult_;
     }
 
 
@@ -334,14 +334,14 @@ public:
             return comp_map_[i];
         }
 
-        const std::vector<Index> &get_active_components() const
+        const std::vector<Index> &get_active_components_id() const
         {
-            return active_components_;
+            return active_components_id_;
         }
 
-        const std::vector<Index> &get_inactive_components() const
+        const std::vector<Index> &get_inactive_components_id() const
         {
-            return inactive_components_;
+            return inactive_components_id_;
         }
 
         void
@@ -361,10 +361,10 @@ public:
         std::array <Index, n_entries> comp_map_;
 
         /** list of the active components */
-        std::vector<Index> active_components_;
+        std::vector<Index> active_components_id_;
 
         /** list of the inactive components */
-        std::vector<Index> inactive_components_;
+        std::vector<Index> inactive_components_id_;
 
 
     };
@@ -385,14 +385,14 @@ public:
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
-	std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+    std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
 public:
-	std::shared_ptr<const SplineSpace<dim,range,rank> >
-	get_spline_space_previous_refinement() const
-	{
-		return spline_space_previous_refinement_;
-	}
+    std::shared_ptr<const SplineSpace<dim,range,rank> >
+    get_spline_space_previous_refinement() const
+    {
+        return spline_space_previous_refinement_;
+    }
 
 protected:
 
@@ -419,14 +419,15 @@ ComponentContainer(const ComponentMap &comp_map)
     :
     base_t(),
     comp_map_(comp_map),
-    active_components_(unique_container<Index, n_entries>(comp_map)),
-    inactive_components_(n_entries)
+    active_components_id_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_id_(n_entries)
 {
     auto all = sequence<n_entries>();
-    auto it=std::set_difference(all.begin(), all.end(), active_components_.begin(),
-                                active_components_.end(), inactive_components_.begin());
+    auto it=std::set_difference(all.begin(), all.end(),
+                                active_components_id_.begin(),active_components_id_.end(),
+                                inactive_components_id_.begin());
 
-    inactive_components_.resize(it-inactive_components_.begin());
+    inactive_components_id_.resize(it-inactive_components_id_.begin());
 }
 
 
@@ -438,7 +439,7 @@ ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),
     comp_map_(sequence<n_entries>()),
-    active_components_(unique_container<Index, n_entries>(comp_map_))
+    active_components_id_(unique_container<Index, n_entries>(comp_map_))
 {}
 
 
@@ -449,11 +450,11 @@ SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(const T &val)
     :
     comp_map_(filled_array<Index, n_entries>(0)),
-    active_components_(1,0),
-    inactive_components_(n_entries-1)
+    active_components_id_(1,0),
+    inactive_components_id_(n_entries-1)
 {
     for (int i=1; i<n_entries; ++i)
-        inactive_components_[i-1] = i;
+        inactive_components_id_[i-1] = i;
 
     base_t::operator()(0) = val;
 }
@@ -463,7 +464,8 @@ ComponentContainer(const T &val)
 template<int dim, int range, int rank>
 template<class T>
 T &
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 operator()(const Index i)
 {
     return base_t::operator()(comp_map_[i]);
@@ -473,7 +475,8 @@ operator()(const Index i)
 template<int dim, int range, int rank>
 template<class T>
 const T &
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 operator()(const Index i) const
 {
     return base_t::operator()(comp_map_[i]);

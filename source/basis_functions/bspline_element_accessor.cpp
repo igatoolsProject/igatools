@@ -449,7 +449,7 @@ reset(const Space &space,
     // resizing the structures for the one dimensional splines
     const int max_der_plus_one = this->max_deriv_order_ + 1;
 
-    for (int iComp : splines1d_cache_data_.get_active_components())
+    for (int iComp : splines1d_cache_data_.get_active_components_id())
     {
         this->splines1d_cache_data_(iComp).resize(n_intervals_);
         for (int i = 0 ; i < dim ; ++i)
@@ -479,7 +479,7 @@ reset(const Space &space,
 
     const auto lengths = space.get_grid()->get_element_lengths();
     BasisValues1d bernstein_values(max_deriv_order_+1);
-    for (int iComp : splines1d_cache_data_.get_active_components())
+    for (int iComp : splines1d_cache_data_.get_active_components_id())
     {
         for (int jDim = 0; jDim < dim; ++jDim)
         {
@@ -834,7 +834,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
     if (deriv_order == 0)
     {
         TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
-        for (int iComp : scalar_evaluators_.get_active_components())
+        for (int iComp : scalar_evaluators_.get_active_components_id())
         {
             const int n_basis = this->get_num_basis(iComp);
             const Size comp_offset_i = this->comp_offset_(iComp);
@@ -864,7 +864,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         } // end iComp loop
 
-        for (int comp : scalar_evaluators_.get_inactive_components())
+        for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
             const Size offset = this->comp_offset_(comp);
@@ -898,7 +898,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         using der_t = Conditional<deriv_order==0,Values<dim,range,rank>,Derivatives<dim,range,rank,deriv_order>>;
 
-        for (int iComp : scalar_evaluators_.get_active_components())
+        for (int iComp : scalar_evaluators_.get_active_components_id())
         {
             auto n_basis = this->get_num_basis(iComp);
             const Size comp_offset_i = this->comp_offset_(iComp);
@@ -954,7 +954,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         } // end iComp loop
 
-        for (int comp : scalar_evaluators_.get_inactive_components())
+        for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
             const auto n_basis = this->space_->get_num_basis_per_element(comp);
@@ -1031,7 +1031,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 #endif
             auto n_basis = this->space_->get_num_basis_per_element_table();
             auto degree = this->space_->get_degree();
-            for (int iComp : bezier_op.get_active_components())
+            for (int iComp : bezier_op.get_active_components_id())
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
@@ -1087,7 +1087,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             } // end iComp loop
         } // end pt_id loop
 
-        for (int comp : bezier_op.get_inactive_components())
+        for (int comp : bezier_op.get_inactive_components_id())
         {
             const int n_basis = this->get_num_basis(comp);
             const Size offset = this->comp_offset_(comp);
@@ -1134,7 +1134,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 #endif
             auto n_basis = this->space_->get_num_basis_per_element_table();
             auto degree = this->space_->get_degree();
-            for (int iComp : bezier_op.get_active_components())
+            for (int iComp : bezier_op.get_active_components_id())
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
@@ -1234,7 +1234,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
         } // end pt_id loop
 
-        for (int comp : bezier_op.get_inactive_components())
+        for (int comp : bezier_op.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
             const auto n_basis = this->space_->get_num_basis_per_element(comp);

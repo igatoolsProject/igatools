@@ -42,7 +42,7 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
 
     using Indexer = CartesianProductIndexer<dim>;
     auto n_basis = space->get_num_basis_per_element_table();
-    for (int comp_id : basis_functions_indexer_.get_active_components())
+    for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
@@ -597,7 +597,7 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0 ;
-        for (auto& face_value : this->face_values_)
+        for (auto &face_value : this->face_values_)
             face_value.reset(face_id++, face_flags_handler, n_basis, quad);
     }
     //--------------------------------------------------------------------------

@@ -248,7 +248,7 @@ get_ref_face_space(const Index face_id,
     typename RefFaceSpace::WeightsTable f_weights(v_weights.get_comp_map());
 
     const auto n_basis = f_space->get_num_basis_table();
-    for (int comp : f_weights.get_active_components())
+    for (int comp : f_weights.get_active_components_id())
     {
         f_weights(comp).resize(n_basis(comp),1.0);
         //        for (auto j : RefFaceSpace::dims)
@@ -287,12 +287,12 @@ refine_h_weights(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old1)
 {
-	auto grid = this->get_grid();
-	auto grid_old = this->get_grid()->get_grid_pre_refinement();
+    auto grid = this->get_grid();
+    auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
-	auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
-			->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
-	auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
+    auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(spline_space_t::BaseSpace::EndBehaviour::interpolatory);
 
     for (int direction_id = 0; direction_id < dim; ++direction_id)
     {
@@ -313,10 +313,10 @@ refine_h_weights(
                           knots_added.begin());
 
             knots_added.resize(it-knots_added.begin());
-/*
-        	Assert(false,ExcNotImplemented());
-        	AssertThrow(false,ExcNotImplemented());
-//*/
+            /*
+                        Assert(false,ExcNotImplemented());
+                        AssertThrow(false,ExcNotImplemented());
+            //*/
             for (int comp_id = 0; comp_id < n_components; ++comp_id)
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
@@ -417,7 +417,7 @@ print_info(LogStream &out) const
     {
         const auto weights_component = weights_(comp_id).get_data();
         out << "weights[" << comp_id << "] = { ";
-        for (const Real & w : weights_component)
+        for (const Real &w : weights_component)
             out << w << " ";
         out << "}" << endl;
     }
