@@ -24,12 +24,13 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/utils/concatenated_iterator.h>
-
+#include <igatools/basis_functions/equality_constraint.h>
 //#include <boost/graph/adjacency_list.hpp>
 
 #include <memory>
 
 IGA_NAMESPACE_OPEN
+
 
 
 
@@ -90,20 +91,35 @@ public:
      */
     void dofs_arrangement_open();
 
-    /**
-     *
-     */
     void dofs_arrangement_close();
 
 
+    /**
+     * Sets the DofsManager in a state that can receive new equality constraints.
+     */
     void equality_constraints_open();
 
+    /**
+     * Coomunicate the DofsManager that the insertion of the equality constraints is
+     * completed.
+     */
     void equality_constraints_close();
 
+    /**
+     * Sets the DofsManager in a state that can receive new linear constraints.
+     */
     void linear_constraints_open();
 
+    /**
+     * Coomunicate the DofsManager that the insertion of the linear constraints is
+     * completed.
+     */
     void linear_constraints_close();
 
+    /**
+     * Add an equality constraint between @dof_id_master and @p dof_id_slave.
+     */
+    void add_equality_constraint(const Index dof_id_master,const Index dof_id_slave);
 
     /**
      * Adds the view to the dofs of a space to the vector of views held by the DofsManager.
@@ -141,6 +157,7 @@ public:
 
     /** Returns the number of equality constraints. */
     int get_num_equality_constraints() const;
+
 
 
 
@@ -183,13 +200,6 @@ private:
     std::vector<LinearConstraint> linear_constraints_;
 
 
-    class EqualityConstraint
-    {
-    public:
-    private:
-        Index dof_id_master_;
-        Index dof_id_slave_;
-    };
 
 
     std::vector<EqualityConstraint> equality_constraints_;

@@ -128,48 +128,100 @@ void test_evaluate()
 {
     out << "========== Test dim=" << dim << " --- begin ==========" << endl;
 
+    //---------------------------------------------------------------
+    const int n_patches = 4;
+
+    using PhysSpacePtr = shared_ptr<PhysicalSpace_t<dim>>;
+    vector<PhysSpacePtr> phys_spaces;
 
     const int num_knots = 2 ;
     out << "Dim: " << dim << endl ;
     const int p = 1 ;
-    auto knots = CartesianGrid<dim>::create(num_knots);
 
-    auto ref_space_0 = RefSpace_t<dim>::create(p,knots);
-    auto ref_space_1 = RefSpace_t<dim>::create(p,knots);
+    for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
+    {
+        auto grid = CartesianGrid<dim>::create(num_knots);
 
-    auto map_0 = create_mapping<dim>(ref_space_0);
-    auto map_1 = create_mapping<dim>(ref_space_1);
-    auto push_forward_0 = PushForward_t<dim>::create(map_0);
-    auto push_forward_1 = PushForward_t<dim>::create(map_1);
-    // push_forward->print_info(out) ;
+        auto ref_space = RefSpace_t<dim>::create(p,grid);
 
-//    auto ref_space1 = RefSpace_t<dim>::create(knots, p);
-    auto physical_space_0 = PhysicalSpace_t<dim>::create(ref_space_0, push_forward_0, 0) ;
-//    physical_space->print_info(out) ;
-    auto physical_space_1 = PhysicalSpace_t<dim>::create(ref_space_1, push_forward_1, 1) ;
+        auto map = create_mapping<dim>(ref_space);
+
+        auto push_fwd = PushForward_t<dim>::create(map);
+
+        phys_spaces.push_back(PhysicalSpace_t<dim>::create(ref_space,push_fwd,patch_id));
+    }
+    //---------------------------------------------------------------
 
 
+    //---------------------------------------------------------------
+    // adding the patches and the interfaces to the multi-patch space structure
     MultiPatchSpace<PhysicalSpace_t<dim>> multi_patch_space;
     multi_patch_space.arrangement_open();
 
-    multi_patch_space.add_patch(physical_space_0);
-    multi_patch_space.add_patch(physical_space_1);
+    for (auto phys_space : phys_spaces)
+        multi_patch_space.add_patch(phys_space);
 
-    multi_patch_space.add_interface(
-        InterfaceType::C0_strong,
-        physical_space_0,1,
-        physical_space_1,0);
+    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[0],1,phys_spaces[1],0);
+    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[2],1,phys_spaces[3],0);
+    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[0],2,phys_spaces[2],3);
+    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[1],2,phys_spaces[3],3);
 
     multi_patch_space.arrangement_close();
     multi_patch_space.print_info(out);
+    //---------------------------------------------------------------
 
 
-    const auto &dofs_manager = multi_patch_space.get_dofs_manager();
+    const auto dofs_manager = multi_patch_space.get_dofs_manager();
 
-    out << "The local_dof=3 for the space_id=0 corresponds to the global_dof="<< dofs_manager.get_global_dof(0,3) << endl;
-    out << "The local_dof=7 for the space_id=0 corresponds to the global_dof="<< dofs_manager.get_global_dof(0,7) << endl;
-    out << "The local_dof=3 for the space_id=1 corresponds to the global_dof="<< dofs_manager.get_global_dof(1,3) << endl;
-    out << "The local_dof=7 for the space_id=1 corresponds to the global_dof="<< dofs_manager.get_global_dof(1,7) << endl;
+    //---------------------------------------------------------------
+    // adding (manually) the equality constraints that ensures C0 strong continuity
+    dofs_manager->equality_constraints_open();
+
+    // patch 0, side 1 --- patch 1, side 0
+    dofs_manager->add_equality_constraint(1, 8);
+    dofs_manager->add_equality_constraint(3,10);
+    dofs_manager->add_equality_constraint(5,12);
+    dofs_manager->add_equality_constraint(7,14);
+
+    // patch 2, side 1 --- patch 3, side 0
+    dofs_manager->add_equality_constraint(17,24);
+    dofs_manager->add_equality_constraint(19,26);
+    dofs_manager->add_equality_constraint(21,28);
+    dofs_manager->add_equality_constraint(23,30);
+
+    // patch 0, side 3 --- patch 2, side 2
+    dofs_manager->add_equality_constraint(2,16);
+    dofs_manager->add_equality_constraint(3,17);
+    dofs_manager->add_equality_constraint(6,20);
+    dofs_manager->add_equality_constraint(7,21);
+
+    // patch 1, side 3 --- patch 3, side 2
+    dofs_manager->add_equality_constraint(10,24);
+    dofs_manager->add_equality_constraint(11,25);
+    dofs_manager->add_equality_constraint(14,28);
+    dofs_manager->add_equality_constraint(15,29);
+
+
+    dofs_manager->equality_constraints_close();
+    //---------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------
+
+    dofs_manager->print_info(out);
+
+    for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
+    {
+        out << "The local_dof=3 for the space_id="<< patch_id
+            << " corresponds to the global_dof="<< dofs_manager->get_global_dof(patch_id,3) << endl;
+        out << "The local_dof=7 for the space_id="<< patch_id
+            << " corresponds to the global_dof="<< dofs_manager->get_global_dof(patch_id,7) << endl;
+    }
+    //---------------------------------------------------------------
+
+
 
     out << "========== Test dim=" << dim << " --- end ==========" << endl;
     out << endl << endl;

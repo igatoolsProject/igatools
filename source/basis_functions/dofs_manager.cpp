@@ -168,9 +168,6 @@ equality_constraints_open()
     Assert(are_equality_constraints_open_ == false,
            ExcMessage("Equality constraints already opened."));
     are_equality_constraints_open_ = true;
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 }
 
 void
@@ -181,9 +178,21 @@ equality_constraints_close()
            ExcMessage("Equality constraints already closed."));
     are_equality_constraints_open_ = false;
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
+
+
+void
+DofsManager::
+add_equality_constraint(const Index dof_id_master,const Index dof_id_slave)
+{
+    Assert(are_equality_constraints_open_ == true,
+           ExcMessage("Equality constraints already closed."));
+
+    equality_constraints_.emplace_back(EqualityConstraint(dof_id_master,dof_id_slave));
+}
+
 
 
 void
@@ -225,6 +234,8 @@ print_info(LogStream &out) const
 
 
     Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+    Assert(are_equality_constraints_open_ == false,ExcInvalidState());
+    Assert(are_linear_constraints_open_ == false,ExcInvalidState());
 
     Assert(dofs_view_ != nullptr, ExcNullPtr())
     out << "DOFs = [ ";
@@ -234,7 +245,7 @@ print_info(LogStream &out) const
 
 
     Assert(!spaces_info_.empty(),ExcEmptyObject());
-    int i = 0;
+    Index i = 0;
     for (auto &space_info : spaces_info_)
     {
 
@@ -251,10 +262,19 @@ print_info(LogStream &out) const
         //*/
     }
 
-
-
-
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
+    out.push(tab);
+    i = 0;
+    for (const auto &eq_constr : equality_constraints_)
+    {
+        out << "Eq. constraint[" << i++ << "]: ";
+        eq_constr.print_info(out);
+        out << endl;
+    }
+    out.pop();
+
+
+
     out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
 
     out.pop();

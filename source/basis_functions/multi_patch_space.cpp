@@ -35,6 +35,14 @@ using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
+template <class PhysicalSpace>
+MultiPatchSpace<PhysicalSpace>::
+MultiPatchSpace(shared_ptr<DofsManager> dofs_manager)
+    :
+    dofs_manager_(dofs_manager)
+{
+    Assert(dofs_manager != nullptr,ExcNullPtr());
+}
 
 
 template <class PhysicalSpace>
@@ -151,7 +159,7 @@ arrangement_close()
 
     LogStream out;
 
-    dofs_manager_.dofs_arrangement_open();
+    dofs_manager_->dofs_arrangement_open();
 
 //    Index offset = 0;
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
@@ -160,7 +168,7 @@ arrangement_close()
         auto patch = multipatch_graph_[*vertex];
         shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
 
-        ref_space->print_info(out);
+//        ref_space->print_info(out);
 
         auto &index_space = ref_space->get_basis_indices().get_index_distribution();
 
@@ -179,10 +187,10 @@ arrangement_close()
         DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
         SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
 
-        dofs_manager_.add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
+        dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
 //        offset += ref_space->get_num_basis();
     }
-    dofs_manager_.dofs_arrangement_close();
+    dofs_manager_->dofs_arrangement_close();
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
     //---------------------------------------------------------------------------
     /*
@@ -242,7 +250,7 @@ get_num_interfaces() const
 }
 
 template <class PhysicalSpace>
-const DofsManager &
+shared_ptr<DofsManager>
 MultiPatchSpace<PhysicalSpace>::
 get_dofs_manager() const
 {
@@ -266,11 +274,10 @@ print_info(LogStream &out) const
     out << "Num. patches = " << this->get_num_patches() << endl;
 
     out.push(tab);
-    int patch_id = 0 ;
     for (const auto &patch : patches_)
     {
-        out << "Patch id = " << patch_id++ << endl;
-        patch->print_info(out);
+        out << "Patch id = " << patch->get_id() << endl;
+//        patch->print_info(out);
         out.push(tab);
     }
 
@@ -331,7 +338,7 @@ print_info(LogStream &out) const
     out.push(tab);
     out << "DOFs manager:" << endl;
     out.push(tab);
-    dofs_manager_.print_info(out);
+    dofs_manager_->print_info(out);
     out << endl;
     out.pop();
     //---------------------------------------------------------------------------
