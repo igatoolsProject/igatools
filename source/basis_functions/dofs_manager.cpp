@@ -160,6 +160,57 @@ get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
     return global_dofs;
 }
 
+
+void
+DofsManager::
+equality_constraints_open()
+{
+    Assert(are_equality_constraints_open_ == false,
+           ExcMessage("Equality constraints already opened."));
+    are_equality_constraints_open_ = true;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+void
+DofsManager::
+equality_constraints_close()
+{
+    Assert(are_equality_constraints_open_ == true,
+           ExcMessage("Equality constraints already closed."));
+    are_equality_constraints_open_ = false;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+void
+DofsManager::
+linear_constraints_open()
+{
+    Assert(are_linear_constraints_open_ == false,
+           ExcMessage("Linear constraints already opened."));
+    are_linear_constraints_open_ = true;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+void
+DofsManager::
+linear_constraints_close()
+{
+    Assert(are_linear_constraints_open_ == true,
+           ExcMessage("Linear constraints already closed."));
+    are_linear_constraints_open_ = false;
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
 void
 DofsManager::
 print_info(LogStream &out) const

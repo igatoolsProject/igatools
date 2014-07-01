@@ -56,8 +56,8 @@ void do_test_1_const()
     ranges.push_back(VecView(v3.begin(),v3.end()));
 
 
-    ConcatenatedForwardConstIterator<VecView> begin(ranges,0);
-    ConcatenatedForwardConstIterator<VecView> end(ranges,IteratorState::pass_the_end);
+    ConcatenatedConstIterator<VecView> begin(ranges,0);
+    ConcatenatedConstIterator<VecView> end(ranges,IteratorState::pass_the_end);
 
 
 
@@ -89,8 +89,8 @@ void do_test_1_nonconst()
     ranges.push_back(VecView(v3.begin(),v3.end()));
 
 
-    ConcatenatedForwardIterator<VecView> begin(ranges,0);
-    ConcatenatedForwardIterator<VecView> end(ranges,IteratorState::pass_the_end);
+    ConcatenatedIterator<VecView> begin(ranges,0);
+    ConcatenatedIterator<VecView> end(ranges,IteratorState::pass_the_end);
 
 
 
@@ -124,7 +124,7 @@ void do_test_2()
     ranges_a.push_back(VecView0(v1a.begin(),v1a.end()));
     ranges_a.push_back(VecView0(v2a.begin(),v2a.end()));
 
-    using ItType_1 = ConcatenatedForwardConstIterator<VecView0>;
+    using ItType_1 = ConcatenatedConstIterator<VecView0>;
     ItType_1 begin_a(ranges_a,0);
     ItType_1 end_a(ranges_a,IteratorState::pass_the_end);
 

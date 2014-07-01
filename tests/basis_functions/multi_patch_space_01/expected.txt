@@ -5,226 +5,202 @@ MultiPatchSpace infos:
       Patch id = 0
       PhysicalSpace info
       	Reference space:
-      	BSplineSpace<2,2>
-      		Reference Patch: CartesianGrid<2>
-      			Knot coordinates:
-      				Direction[0] = [ 0 1.00000 ]
-      				Direction[1] = [ 0 1.00000 ]
-      			Num elements: 1
-      				Direction[0] = 1
-      				Direction[1] = 1
-      		
-      			Space component[0]: 
-      				Direction[0]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      					Interval[0]
-      						Bezier extraction operator:
-      							1.00000 0 
-      							0 1.00000 
-      				Direction[1]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      					Interval[0]
-      						Bezier extraction operator:
-      							1.00000 0 
-      							0 1.00000 
-      			Space component[1]: 
-      				Direction[0]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      				Direction[1]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      		Num dofs: 8
-      		DOFs component 0 = [ 0 1 2 3 ]
-      		DOFs component 1 = [ 4 5 6 7 ]
-      		Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
-      
-      Push-forward:
-      PushForward info
-      	transformation type = 1
-      	Map info:
-      		Type = IgMapping
-      			Reference space info:
-      			BSplineSpace<2,2>
-      				Reference Patch: CartesianGrid<2>
+      	Knots without repetition:
+CartesianGrid<2>
+      		Knot coordinates:
+      			Direction[0] = [ 0 1.00000 ]
+      			Direction[1] = [ 0 1.00000 ]
+      		Num elements: 1
+      			Direction[0] = 1
+      			Direction[1] = 1
+      	Degrees:
+[1,1] [1,1] 
+      	Interior multiplicities:
+[ ]
+      	[ ]
+      	[ ]
+      	[ ]
+      	Dimensionality Table:
+[ 2 2 ] [ 2 2 ] 
+      	Component Dimension:
+4 4 
+      	Total Dimension: 8
+      	
+      	0 1 2 3 4 5 6 7 
+      	[ 0 1 2 3 4 5 6 7 ]
+      	Component[0]: 
+      	Direction[0]:
+      	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	Direction[1]:
+      	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	Component[1]: 
+      	Direction[0]:
+      	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	Direction[1]:
+      	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	
+      	Push-forward:
+      	PushForward info
+      		transformation type = 1
+      		Map info:
+      			Type = IgMapping
+      				Reference space info:
+      				Knots without repetition:
+CartesianGrid<2>
       					Knot coordinates:
       						Direction[0] = [ 0 1.00000 ]
       						Direction[1] = [ 0 1.00000 ]
       					Num elements: 1
       						Direction[0] = 1
       						Direction[1] = 1
+      				Degrees:
+[1,1] [1,1] 
+      				Interior multiplicities:
+[ ]
+      				[ ]
+      				[ ]
+      				[ ]
+      				Dimensionality Table:
+[ 2 2 ] [ 2 2 ] 
+      				Component Dimension:
+4 4 
+      				Total Dimension: 8
       				
-      					Space component[0]: 
-      						Direction[0]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      							Interval[0]
-      								Bezier extraction operator:
-      									1.00000 0 
-      									0 1.00000 
-      						Direction[1]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      							Interval[0]
-      								Bezier extraction operator:
-      									1.00000 0 
-      									0 1.00000 
-      					Space component[1]: 
-      						Direction[0]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      						Direction[1]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      				Num dofs: 8
-      				DOFs component 0 = [ 0 1 2 3 ]
-      				DOFs component 1 = [ 4 5 6 7 ]
-      				Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
-      		
-      			Control points info (projective coordinates):
-      				Control mesh[0] = 0 1.00000 0 1.00000 
-      				Control mesh[1] = 0 0 1.00000 1.00000 
-      				
-      			Control points info (euclidean coordinates): [ 0 1.00000 0 1.00000 0 0 1.00000 1.00000 ]
-      
-      Patch id = 1
-      PhysicalSpace info
-      	Reference space:
-      	BSplineSpace<2,2>
-      		Reference Patch: CartesianGrid<2>
-      			Knot coordinates:
-      				Direction[0] = [ 0 1.00000 ]
-      				Direction[1] = [ 0 1.00000 ]
-      			Num elements: 1
-      				Direction[0] = 1
-      				Direction[1] = 1
-      		
-      			Space component[0]: 
+      				0 1 2 3 4 5 6 7 
+      				[ 0 1 2 3 4 5 6 7 ]
+      				Component[0]: 
       				Direction[0]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      					Interval[0]
-      						Bezier extraction operator:
-      							1.00000 0 
-      							0 1.00000 
+      				[2,2]((1.00000,0.00000),(0.00000,1.00000))
       				Direction[1]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      					Interval[0]
-      						Bezier extraction operator:
-      							1.00000 0 
-      							0 1.00000 
-      			Space component[1]: 
+      				[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      				Component[1]: 
       				Direction[0]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
+      				[2,2]((1.00000,0.00000),(0.00000,1.00000))
       				Direction[1]:
-      					Degree = 1
-      					Knot multiplicities: [ 2 2 ]
-      					Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      		Num dofs: 8
-      		DOFs component 0 = [ 8 9 10 11 ]
-      		DOFs component 1 = [ 12 13 14 15 ]
-      		Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
-      
-      Push-forward:
-      PushForward info
-      	transformation type = 1
-      	Map info:
-      		Type = IgMapping
-      			Reference space info:
-      			BSplineSpace<2,2>
-      				Reference Patch: CartesianGrid<2>
-      					Knot coordinates:
-      						Direction[0] = [ 0 1.00000 ]
-      						Direction[1] = [ 0 1.00000 ]
-      					Num elements: 1
-      						Direction[0] = 1
-      						Direction[1] = 1
+      				[2,2]((1.00000,0.00000),(0.00000,1.00000))
       				
-      					Space component[0]: 
-      						Direction[0]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      							Interval[0]
-      								Bezier extraction operator:
-      									1.00000 0 
-      									0 1.00000 
-      						Direction[1]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      							Interval[0]
-      								Bezier extraction operator:
-      									1.00000 0 
-      									0 1.00000 
-      					Space component[1]: 
-      						Direction[0]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      						Direction[1]:
-      							Degree = 1
-      							Knot multiplicities: [ 2 2 ]
-      							Knots vectors (with repetitions): [ 0 0 1.00000 1.00000 ]
-      				Num dofs: 8
-      				DOFs component 0 = [ 8 9 10 11 ]
-      				DOFs component 1 = [ 12 13 14 15 ]
-      				Num overlapping funcs: [ 8 8 8 8 8 8 8 8 ]
+      					Control points info (projective coordinates):
+      						Control mesh[0] = 0 1.00000 0 1.00000 
+      						Control mesh[1] = 0 0 1.00000 1.00000 
+      						
+      					Control points info (euclidean coordinates): [ 0 1.00000 0 1.00000 0 0 1.00000 1.00000 ]
       		
-      			Control points info (projective coordinates):
-      				Control mesh[0] = 0 1.00000 0 1.00000 
-      				Control mesh[1] = 0 0 1.00000 1.00000 
-      				
-      			Control points info (euclidean coordinates): [ 0 1.00000 0 1.00000 0 0 1.00000 1.00000 ]
-      
-   Num. interfaces = 1
-   Interface id = 0
-   Interface type = 1
-      Patch 0 infos:
-         Patch id = 0
-         Side  id = 1
-      Patch 1 infos:
-         Patch id = 1
-         Side id = 0
-   Patches in the graph:
-      Patch ID = 0
-      Patch ID = 1
-   Interfaces in the graph:
-      Interface type = 1
-         Patch 0 infos:
-            Patch id = 0
-            Side  id = 1
-         Patch 1 infos:
-            Patch id = 1
-            Side id = 0
-   
-   DOFs manager:
-      DofsManager infos:
-          DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-          Space[0]:   ID=0   n_dofs=8   DOFs=[ 0 1 2 3 4 5 6 7 ]
-          Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
-          Num. linear   constraints = 0
-          Num. equality constraints = 0
-      
-The local_dof=3 for the space_id=0 corresponds to the global_dof=3
-The local_dof=7 for the space_id=0 corresponds to the global_dof=7
-The local_dof=3 for the space_id=1 corresponds to the global_dof=11
-The local_dof=7 for the space_id=1 corresponds to the global_dof=15
-========== Test dim=2 --- end ==========
-
-
+      	   Patch id = 1
+      	   PhysicalSpace info
+      	   	Reference space:
+      	   	Knots without repetition:
+CartesianGrid<2>
+      	   		Knot coordinates:
+      	   			Direction[0] = [ 0 1.00000 ]
+      	   			Direction[1] = [ 0 1.00000 ]
+      	   		Num elements: 1
+      	   			Direction[0] = 1
+      	   			Direction[1] = 1
+      	   	Degrees:
+[1,1] [1,1] 
+      	   	Interior multiplicities:
+[ ]
+      	   	[ ]
+      	   	[ ]
+      	   	[ ]
+      	   	Dimensionality Table:
+[ 2 2 ] [ 2 2 ] 
+      	   	Component Dimension:
+4 4 
+      	   	Total Dimension: 8
+      	   	
+      	   	8 9 10 11 12 13 14 15 
+      	   	[ 0 1 2 3 4 5 6 7 ]
+      	   	Component[0]: 
+      	   	Direction[0]:
+      	   	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   	Direction[1]:
+      	   	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   	Component[1]: 
+      	   	Direction[0]:
+      	   	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   	Direction[1]:
+      	   	[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   	
+      	   	Push-forward:
+      	   	PushForward info
+      	   		transformation type = 1
+      	   		Map info:
+      	   			Type = IgMapping
+      	   				Reference space info:
+      	   				Knots without repetition:
+CartesianGrid<2>
+      	   					Knot coordinates:
+      	   						Direction[0] = [ 0 1.00000 ]
+      	   						Direction[1] = [ 0 1.00000 ]
+      	   					Num elements: 1
+      	   						Direction[0] = 1
+      	   						Direction[1] = 1
+      	   				Degrees:
+[1,1] [1,1] 
+      	   				Interior multiplicities:
+[ ]
+      	   				[ ]
+      	   				[ ]
+      	   				[ ]
+      	   				Dimensionality Table:
+[ 2 2 ] [ 2 2 ] 
+      	   				Component Dimension:
+4 4 
+      	   				Total Dimension: 8
+      	   				
+      	   				8 9 10 11 12 13 14 15 
+      	   				[ 0 1 2 3 4 5 6 7 ]
+      	   				Component[0]: 
+      	   				Direction[0]:
+      	   				[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   				Direction[1]:
+      	   				[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   				Component[1]: 
+      	   				Direction[0]:
+      	   				[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   				Direction[1]:
+      	   				[2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   				
+      	   					Control points info (projective coordinates):
+      	   						Control mesh[0] = 0 1.00000 0 1.00000 
+      	   						Control mesh[1] = 0 0 1.00000 1.00000 
+      	   						
+      	   					Control points info (euclidean coordinates): [ 0 1.00000 0 1.00000 0 0 1.00000 1.00000 ]
+      	   		
+      	   	Num. interfaces = 1
+      	   	Interface id = 0
+      	   	Interface type = 1
+      	   	   Patch 0 infos:
+      	   	      Patch id = 0
+      	   	      Side  id = 1
+      	   	   Patch 1 infos:
+      	   	      Patch id = 1
+      	   	      Side id = 0
+      	      Patches in the graph:
+      	         Patch ID = 0
+      	         Patch ID = 1
+      	      Interfaces in the graph:
+      	         Interface type = 1
+      	            Patch 0 infos:
+      	               Patch id = 0
+      	               Side  id = 1
+      	            Patch 1 infos:
+      	               Patch id = 1
+      	               Side id = 0
+      	      
+      	      DOFs manager:
+      	         DofsManager infos:
+      	             DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+      	             Space[0]:   ID=0   n_dofs=8   DOFs=[ 0 1 2 3 4 5 6 7 ]
+      	             Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
+      	             Num. linear   constraints = 0
+      	             Num. equality constraints = 0
+      	         
+      	   The local_dof=3 for the space_id=0 corresponds to the global_dof=3
+      	   The local_dof=7 for the space_id=0 corresponds to the global_dof=7
+      	   The local_dof=3 for the space_id=1 corresponds to the global_dof=11
+      	   The local_dof=7 for the space_id=1 corresponds to the global_dof=15
+      	   ========== Test dim=2 --- end ==========
+      	   
+      	   

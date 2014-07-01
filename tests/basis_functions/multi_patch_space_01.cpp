@@ -134,8 +134,8 @@ void test_evaluate()
     const int p = 1 ;
     auto knots = CartesianGrid<dim>::create(num_knots);
 
-    auto ref_space_0 = RefSpace_t<dim>::create(knots, p);
-    auto ref_space_1 = RefSpace_t<dim>::create(knots, p);
+    auto ref_space_0 = RefSpace_t<dim>::create(p,knots);
+    auto ref_space_1 = RefSpace_t<dim>::create(p,knots);
 
     auto map_0 = create_mapping<dim>(ref_space_0);
     auto map_1 = create_mapping<dim>(ref_space_1);

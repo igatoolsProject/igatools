@@ -95,6 +95,16 @@ public:
      */
     void dofs_arrangement_close();
 
+
+    void equality_constraints_open();
+
+    void equality_constraints_close();
+
+    void linear_constraints_open();
+
+    void linear_constraints_close();
+
+
     /**
      * Adds the view to the dofs of a space to the vector of views held by the DofsManager.
      * @param[in] space_id The identifier of the space.
@@ -137,6 +147,9 @@ public:
 
 private:
     bool is_dofs_arrangement_open_ = false;
+
+    bool are_equality_constraints_open_ = false;
+    bool are_linear_constraints_open_ = false;
 
     std::vector<DofsComponentView> dofs_components_view_;
 
