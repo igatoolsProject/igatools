@@ -159,7 +159,10 @@ public:
     int get_num_equality_constraints() const;
 
 
-
+    /**
+     * Removes the equality constraints redundancies.
+     */
+    void remove_equality_constraints_redundancies();
 
 
 private:

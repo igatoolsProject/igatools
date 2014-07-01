@@ -22,6 +22,11 @@
 #include <igatools/basis_functions/dofs_manager.h>
 #include <igatools/base/exceptions.h>
 
+#include <map>
+#include <set>
+
+using std::map;
+using std::set;
 
 IGA_NAMESPACE_OPEN
 
@@ -222,6 +227,69 @@ linear_constraints_close()
 
 void
 DofsManager::
+remove_equality_constraints_redundancies()
+{
+    map<Index,set<Index>> upper_sparsity_pattern_pre;
+
+    for (const auto &eq_constr : equality_constraints_)
+    {
+        // retrieving the set of slaves dofs corresponding to the master dof
+        auto &set_slaves_id = upper_sparsity_pattern_pre[eq_constr.get_dof_id_master()];
+
+        // inserting the slave dof
+        set_slaves_id.insert(eq_constr.get_dof_id_slave());
+    }
+    equality_constraints_.clear();
+
+    map<Index,set<Index>> upper_sparsity_pattern_post;
+
+//  LogStream out;
+//  out <<"PRE" << std::endl;
+    for (const auto &row_m : upper_sparsity_pattern_pre)
+    {
+        const Index master_id = row_m.first;
+//      out << "Master = " << master_id << " ---- ";
+//      out << "Slaves = [ " ;
+        for (const auto &slave_id : row_m.second)
+        {
+//          out << slave_id << " ";
+
+            auto &set_slaves_id_post = upper_sparsity_pattern_post[master_id];
+            set_slaves_id_post.insert(slave_id);
+            if (upper_sparsity_pattern_pre.count(slave_id) > 0)
+            {
+                auto &row_s = upper_sparsity_pattern_pre[slave_id];
+
+                for (const auto &new_slave_id: row_s)
+                    set_slaves_id_post.insert(new_slave_id);
+
+                row_s.clear();
+            }
+        }
+//      out << "]" << std::endl;
+    }
+
+//  out << std::endl;
+//  out <<"POST" << std::endl;
+    for (const auto &row_m : upper_sparsity_pattern_post)
+    {
+        const Index master_id = row_m.first;
+//      out << "Master = " << master_id << " ---- ";
+//      out << "Slaves = [ " ;
+        for (const auto &slave_id : row_m.second)
+        {
+            equality_constraints_.emplace_back(EqualityConstraint(master_id,slave_id));
+//          out << slave_id << " ";
+        }
+//      out << "]" << std::endl;
+    }
+
+
+
+}
+
+void
+DofsManager::
 print_info(LogStream &out) const
 {
     using std::endl;
@@ -263,6 +331,10 @@ print_info(LogStream &out) const
     }
 
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
+
+
+
+    out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
     out.push(tab);
     i = 0;
     for (const auto &eq_constr : equality_constraints_)
@@ -273,9 +345,6 @@ print_info(LogStream &out) const
     }
     out.pop();
 
-
-
-    out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;
 
     out.pop();
 }

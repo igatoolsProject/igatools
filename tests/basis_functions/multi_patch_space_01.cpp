@@ -201,6 +201,7 @@ void test_evaluate()
     dofs_manager->add_equality_constraint(14,28);
     dofs_manager->add_equality_constraint(15,29);
 
+    dofs_manager->remove_equality_constraints_redundancies();
 
     dofs_manager->equality_constraints_close();
     //---------------------------------------------------------------
