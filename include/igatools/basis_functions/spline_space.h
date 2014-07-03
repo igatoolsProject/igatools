@@ -222,7 +222,7 @@ public:
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviour type,const EndBehaviourTable &ends) const;
+    KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial

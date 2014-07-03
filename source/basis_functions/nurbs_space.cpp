@@ -294,10 +294,8 @@ refine_h_weights(
 
     auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
                                                  ->compute_knots_with_repetition(
-                                                     spline_space_t::BaseSpace::EndBehaviour::interpolatory,
                                                      sp_space_->get_end_behaviour());
     auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(
-                                      spline_space_t::BaseSpace::EndBehaviour::interpolatory,
                                       sp_space_->get_end_behaviour());
 
     for (int direction_id = 0; direction_id < dim; ++direction_id)

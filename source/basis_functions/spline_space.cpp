@@ -434,7 +434,7 @@ interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProdu
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const EndBehaviour type,const EndBehaviourTable &ends) const -> KnotsTable
+compute_knots_with_repetition(const EndBehaviourTable &ends) const -> KnotsTable
 {
     BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
     for (int iComp : bdry_knots_table.get_active_components_id())

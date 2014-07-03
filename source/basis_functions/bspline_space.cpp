@@ -81,9 +81,7 @@ BSplineSpace(const DegreeTable &deg,
     basis_indices_(knots,BaseSpace::accumulated_interior_multiplicities(),
                    BaseSpace::get_num_basis_table(),BaseSpace::get_num_basis_per_element_table()),
     operators_(knots,
-               BaseSpace::compute_knots_with_repetition(
-                   BaseSpace::EndBehaviour::interpolatory,
-                   this->get_end_behaviour()),
+               BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
     // create a signal and a connection for the grid refinement
@@ -117,9 +115,7 @@ BSplineSpace(const DegreeTable &deg,
     basis_indices_(knots,BaseSpace::accumulated_interior_multiplicities(),
                    BaseSpace::get_num_basis_table(),BaseSpace::get_num_basis_per_element_table()),
     operators_(knots,
-               BaseSpace::compute_knots_with_repetition(
-                   BaseSpace::EndBehaviour::interpolatory,
-                   this->get_end_behaviour()),
+               BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
     // create a signal and a connection for the grid refinement
@@ -322,9 +318,7 @@ refine_h_after_grid_refinement(
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
-                     BaseSpace::compute_knots_with_repetition(
-                         BaseSpace::EndBehaviour::interpolatory,
-                         this->get_end_behaviour()),
+                     BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                      BaseSpace::accumulated_interior_multiplicities(),
                      this->get_degree());
 }

@@ -66,9 +66,7 @@ int main()
         SplineSpace sp_spec(deg,grid, SplineSpace::InteriorReg::maximum);
 
 
-        auto rep_knots = sp_spec.compute_knots_with_repetition(
-                             SplineSpace::EndBehaviour::interpolatory,
-                             sp_spec.get_end_behaviour());
+        auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
         auto n_basis = sp_spec.get_num_basis_table();
