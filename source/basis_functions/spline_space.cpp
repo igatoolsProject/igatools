@@ -410,6 +410,13 @@ interpolatory_end_knots() const -> BoundaryKnotsTable
     return result;
 }
 
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+compute_knots_with_repetition(const EndBehaviour type,const EndBehaviourTable &ends) const -> KnotsTable
+{
+    return compute_knots_with_repetition(interpolatory_end_knots());
+}
 
 
 template<int dim, int range, int rank>

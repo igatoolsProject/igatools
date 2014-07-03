@@ -40,7 +40,7 @@ int main()
 
         auto grid = CartesianGrid<dim>::create(4);
 
-        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1,3}} }));
+        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
         SplineSpace sp_spec(deg, grid, int_mult);
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
@@ -61,12 +61,14 @@ int main()
 
         typename SplineSpace::DegreeTable deg {{1,2}};
 
-        auto grid = CartesianGrid<dim>::create( {4,3});
+        auto grid = CartesianGrid<dim>::create({4,3});
 
         SplineSpace sp_spec(deg,grid, SplineSpace::InteriorReg::maximum);
 
 
-        auto rep_knots = sp_spec.compute_knots_with_repetition(SplineSpace::EndBehaviour::interpolatory);
+        auto rep_knots = sp_spec.compute_knots_with_repetition(
+                             SplineSpace::EndBehaviour::interpolatory,
+                             sp_spec.get_end_behaviour());
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
         auto n_basis = sp_spec.get_num_basis_table();

@@ -222,10 +222,7 @@ public:
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviour type) const
-    {
-        return compute_knots_with_repetition(interpolatory_end_knots());
-    }
+    KnotsTable compute_knots_with_repetition(const EndBehaviour type,const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial
@@ -236,8 +233,8 @@ public:
 
 
 
-    void print_info(LogStream &out) const;
 
+    void print_info(LogStream &out) const;
 
 
 private:
@@ -272,6 +269,11 @@ public:
     std::shared_ptr<const MultiplicityTable> get_interior_mult()
     {
         return interior_mult_;
+    }
+
+    const EndBehaviourTable &get_end_behaviour() const
+    {
+        return end_behaviour_;
     }
 
 
