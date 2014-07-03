@@ -31,7 +31,6 @@ IGA_NAMESPACE_OPEN
 template <class RefSpace>
 class IgMapping
     : public SplineMapping<RefSpace>
-//    : public Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>
 {
 private:
     using base_t = SplineMapping<RefSpace>;
