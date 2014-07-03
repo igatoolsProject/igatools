@@ -382,7 +382,7 @@ fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid
 }
 
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
@@ -409,13 +409,48 @@ interpolatory_end_knots() const -> BoundaryKnotsTable
     }
     return result;
 }
+#endif
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProductArray<Real,2>
+{
+    CartesianProductArray<Real,2> bdry_knots_dir;
+
+    const auto &knots = this->get_grid()->get_knot_coordinates(dir);
+    const auto deg = deg_(comp_id)[dir];
+    const auto order = deg + 1;
+    const Real a = knots.front();
+    const Real b = knots.back();
+    std::vector<Real> vec_left(order, a);
+    std::vector<Real> vec_right(order, b);
+    bdry_knots_dir.copy_data_direction(0, vec_left);
+    bdry_knots_dir.copy_data_direction(1, vec_right);
+
+    return bdry_knots_dir;
+}
 
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
 compute_knots_with_repetition(const EndBehaviour type,const EndBehaviourTable &ends) const -> KnotsTable
 {
-    return compute_knots_with_repetition(interpolatory_end_knots());
+    BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
+    for (int iComp : bdry_knots_table.get_active_components_id())
+    {
+        for (int j = 0; j < dim; ++j)
+        {
+            if (ends(iComp)[j] == EndBehaviour::interpolatory)
+                bdry_knots_table(iComp)[j] = interpolatory_end_knots(iComp,j);
+            else
+            {
+                Assert(false,ExcNotImplemented());
+                AssertThrow(false,ExcNotImplemented());
+            }
+        }
+    }
+    return compute_knots_with_repetition(bdry_knots_table);
 }
 
 

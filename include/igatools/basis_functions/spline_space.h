@@ -244,8 +244,11 @@ private:
      */
     std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
 
+#if 0
     BoundaryKnotsTable interpolatory_end_knots() const;
+#endif
 
+    CartesianProductArray<Real,2> interpolatory_end_knots(const int comp_id,const int dir) const;
 
 
 private:
