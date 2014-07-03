@@ -125,12 +125,12 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)));
+                         const PeriodicTable &periodic = PeriodicTable(filled_array<bool,dim>(false)));
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
-                         const InteriorReg interior_mult,
-                         const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)))
+                         const InteriorReg &interior_mult,
+                         const PeriodicTable &periodic = PeriodicTable(filled_array<bool,dim>(false)))
         :SplineSpace(deg, knots, fill_max_regularity(deg, knots), periodic)
     {}
 

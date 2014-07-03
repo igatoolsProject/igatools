@@ -43,7 +43,7 @@ SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
             shared_ptr<const MultiplicityTable> interior_mult,
-            const PeriodicTable periodic)
+            const PeriodicTable &periodic)
     :
     GridSpace(knots),
     interior_mult_(interior_mult),
