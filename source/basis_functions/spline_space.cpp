@@ -50,6 +50,16 @@ SplineSpace(const DegreeTable &deg,
     deg_(deg),
     periodic_(periodic)
 {
+
+    //-------------------
+    const auto comp_map = interior_mult_->get_comp_map();
+
+    end_behaviour_ = EndBehaviourTable(comp_map);
+    for (const auto &comp : end_behaviour_.get_active_components_id())
+        end_behaviour_(comp) = filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory);
+    //-------------------
+
+
     this->init();
 
     // create a signal and a connection for the grid refinement

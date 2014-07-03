@@ -103,12 +103,18 @@ public:
         Size total_dimension;
     };
 
-    // For the boundary knots types
-    // interpolatory (open knot)
     enum class EndBehaviour
     {
-        interpolatory
+        /**
+         * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+         */
+        interpolatory,
+
+        periodic,
+
+        end_knots
     };
+    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim> >;
 
     // For the interior multiplicities
     // maximum regularity
@@ -255,6 +261,8 @@ private:
 
     /** Table with the number of element non zero basis in each component and direction */
     SpaceDimensionTable elem_n_basis_;
+
+    EndBehaviourTable end_behaviour_;
 
     PeriodicTable periodic_;
 

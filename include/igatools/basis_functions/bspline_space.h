@@ -158,13 +158,9 @@ public:
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
     using typename BaseSpace::SpaceDimensionTable;
+    using typename BaseSpace::EndBehaviour;
+    using typename BaseSpace::EndBehaviourTable;
 
-    enum class EndBehaviour
-    {
-        interpolatory, periodic, end_knots
-    };
-    using EndBehaviourTable = typename BaseSpace::template
-                              ComponentContainer<std::array<EndBehaviour, dim> >;
 
 public:
     /** @name Constructor and destructor */
