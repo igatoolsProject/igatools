@@ -539,8 +539,10 @@ refine_h_control_mesh(
     const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
 
     auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
-                                                 ->compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
-    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(bspline_space_t::BaseSpace::EndBehaviour::interpolatory);
+                                                 ->compute_knots_with_repetition(
+                                                     bspline_space.get_end_behaviour());
+    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(
+                                      bspline_space.get_end_behaviour());
 
     for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
     {

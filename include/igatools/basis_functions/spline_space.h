@@ -103,12 +103,18 @@ public:
         Size total_dimension;
     };
 
-    // For the boundary knots types
-    // interpolatory (open knot)
     enum class EndBehaviour
     {
-        interpolatory
+        /**
+         * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+         */
+        interpolatory,
+
+        periodic,
+
+        end_knots
     };
+    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim> >;
 
     // For the interior multiplicities
     // maximum regularity
@@ -125,12 +131,12 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)));
+                         const PeriodicTable &periodic = PeriodicTable(filled_array<bool,dim>(false)));
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
-                         const InteriorReg interior_mult,
-                         const PeriodicTable periodic = PeriodicTable(filled_array<bool,dim>(false)))
+                         const InteriorReg &interior_mult,
+                         const PeriodicTable &periodic = PeriodicTable(filled_array<bool,dim>(false)))
         :SplineSpace(deg, knots, fill_max_regularity(deg, knots), periodic)
     {}
 
@@ -216,10 +222,7 @@ public:
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviour type) const
-    {
-        return compute_knots_with_repetition(interpolatory_end_knots());
-    }
+    KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial
@@ -230,8 +233,8 @@ public:
 
 
 
-    void print_info(LogStream &out) const;
 
+    void print_info(LogStream &out) const;
 
 
 private:
@@ -241,8 +244,11 @@ private:
      */
     std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
 
+#if 0
     BoundaryKnotsTable interpolatory_end_knots() const;
+#endif
 
+    CartesianProductArray<Real,2> interpolatory_end_knots(const int comp_id,const int dir) const;
 
 
 private:
@@ -256,6 +262,8 @@ private:
     /** Table with the number of element non zero basis in each component and direction */
     SpaceDimensionTable elem_n_basis_;
 
+    EndBehaviourTable end_behaviour_;
+
     PeriodicTable periodic_;
 
 public:
@@ -264,6 +272,11 @@ public:
     std::shared_ptr<const MultiplicityTable> get_interior_mult()
     {
         return interior_mult_;
+    }
+
+    const EndBehaviourTable &get_end_behaviour() const
+    {
+        return end_behaviour_;
     }
 
 

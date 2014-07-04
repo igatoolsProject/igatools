@@ -48,7 +48,7 @@ void test_1d()
     for (const auto &v : rep_knots)
         v.print_info(out);
 
-    auto rep_knots1 = sp_spec.compute_knots_with_repetition(SplineSpace::EndBehaviour::interpolatory);
+    auto rep_knots1 = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
     out << "Interpolatory Boundary knots:\n";
     out << "Repeated knots:\n";
     for (const auto &v : rep_knots1)
