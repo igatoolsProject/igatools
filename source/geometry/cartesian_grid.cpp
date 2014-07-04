@@ -33,6 +33,7 @@ using std::vector;
 using std::set;
 using std::shared_ptr;
 using std::unique_ptr;
+using std::make_shared;
 
 IGA_NAMESPACE_OPEN
 
@@ -366,7 +367,7 @@ refine_directions(
     const array<Size,dim> &n_subdivisions)
 {
     // make a copy of the grid before the refinement
-    grid_pre_refinement_ = shared_ptr<const CartesianGrid<dim>>(new CartesianGrid<dim>(*this));
+    grid_pre_refinement_ = make_shared<const CartesianGrid<dim>>(CartesianGrid<dim>(*this));
 
     for (int i = 0 ; i < dim ; ++i)
         if (refinement_directions[i])
