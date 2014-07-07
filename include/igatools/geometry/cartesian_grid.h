@@ -463,7 +463,7 @@ private:
     TensorIndex<dim> weight_elem_id_;
 
 
-    friend class CartesianGridElementAccessor< dim >;
+    friend class CartesianGridElementAccessor<dim>;
 };
 
 
