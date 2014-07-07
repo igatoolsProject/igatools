@@ -103,7 +103,7 @@ find_boost()
 #
 # Choose the precision for the real values
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
-
+option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
 option(submit_test "Allow test submition" OFF)
 
 # Optinal libraries
@@ -188,7 +188,7 @@ generate_instantiations()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Create install target
-create_install_target()
+create_install_target(${use_other_templates})
 #
 #-------------------------------------------------------------------------------
 
