@@ -27,10 +27,12 @@ macro(create_install_target)
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
     PATTERN ".*" EXCLUDE
     PATTERN "*.in" EXCLUDE)
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
-    PATTERN ".*" EXCLUDE
-    PATTERN "*.inst" EXCLUDE)
+  if(use_other_templates)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
+      DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
+      PATTERN ".*" EXCLUDE
+      PATTERN "*.inst" EXCLUDE)
+  endif(use_other_templates)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake 
