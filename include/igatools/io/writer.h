@@ -129,9 +129,16 @@ public:
      * \param[in] format - Output format. It can be "ascii" or "appended".
      * \note The .vtu extension should NOT part of the file name.
      */
+    //TODO(pauletti, Jul 8, 2014): this function should be const
     void save(const std::string &filename,
               const std::string &format = "ascii");
 
+    /**
+     * Writes the vtu into a LogStream, filtering it for uniform
+     * output across different systems.
+     * @note this function is only for testing purposes
+     */
+    //TODO(pauletti, Jul 8, 2014): this function should be const
     void print_info(LogStream &out);
 
 private:
@@ -238,19 +245,26 @@ private:
      */
     std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > > vtk_elements_connectivity_;
 
-
+//TODO(pauletti, Jul 8, 2014): this documentation is incorrect
     /**
-     * This function take as input an @p iga_element_id and a set of points in the [0,1]^dim domain, and maps
-     * those points to the reference domain and to the physical domain defined by the mapping used in the costructor.
+     * This function take as input an @p iga_element_id and a set of points in
+     * the [0,1]^dim domain, and maps
+     * those points to the reference domain and to the physical domain defined
+     * by the mapping used in the costructor.
      * Moreover it returns the connectivity of the points on the element.
      * @param[in] iga_element_id Element ID.
      * @param[in] elem_quad Evaluation points in the [0,1]^dim domain.
-     * @param[out] element_connectivity Connectivity of the points defined on the element.
-     * @param[out] points_phys_iga_element Coordinate of the points in the physical domain.
-     * \note Due to the fact that VTK needs always points in 3D, when we have the dimension of the physical space less than 3,
-     * we set the coordinate of the "missing dimension" to 0. In other words, if the dimension of the physical domain is 2, then the
+     * @param[out] element_connectivity Connectivity of the points defined on
+     * the element.
+     * @param[out] points_phys_iga_element Coordinate of the points in the
+     * physical domain.
+     * \note Due to the fact that VTK needs always points in 3D, when we have
+     *  the dimension of the physical space less than 3,
+     * we set the coordinate of the "missing dimension" to 0. In other words,
+     * if the dimension of the physical domain is 2, then the
      * points are located on the plane z=0.
-     * If the dimension of the physical domain is 1, then the points are located on the line with y=0 and z=0.
+     * If the dimension of the physical domain is 1, then the points are
+     * located on the line with y=0 and z=0.
      */
     void get_subelements(
         const typename Mapping< dim, codim>::ElementIterator elem,

@@ -998,7 +998,8 @@ void Writer<dim, codim, T>::save_appended(const string &filename) const
 
 
 template<int dim, int codim, class T>
-void Writer<dim, codim, T>::save(const string &filename, const string &format)
+void Writer<dim, codim, T>::
+save(const string &filename, const string &format)
 {
     //TODO: fix the case when the format is appended
 //    AssertThrow(format != "appended", ExcNotImplemented());
