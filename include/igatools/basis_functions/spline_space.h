@@ -146,6 +146,10 @@ public:
     }
 
 
+    const std::array<Index,n_components> &get_components_map() const
+    {
+        return interior_mult_->get_comp_map();
+    }
 
     /** @name Getting information about the space */
     ///@{

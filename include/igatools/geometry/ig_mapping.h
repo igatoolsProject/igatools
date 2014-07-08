@@ -25,6 +25,7 @@
 #include <igatools/geometry/spline_mapping.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/static_multi_array.h>
+#include <igatools/basis_functions/nurbs_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -181,10 +182,7 @@ private:
          * h-refinement algorithm (based on knot insertion) require them to be in
          * the projective space.
          */
-        ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
-
-        /** Knots with repetitions PRE-refinement */
-//        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+        typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
 
 
         /** Control mesh (the coordinates are in the projective space). */
