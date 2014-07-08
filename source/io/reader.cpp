@@ -561,16 +561,39 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     const auto &scalar_components_tree = get_xml_element(ref_space_tree,"BSplineSpaceScalarComponents");
     const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
     const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
-    AssertThrow(space_t::n_components == n_sc_components_from_file,
-                ExcDimensionMismatch(space_t::n_components,n_sc_components_from_file));
+    AssertThrow(n_sc_components_from_file >= 1 && n_sc_components_from_file <= space_t::n_components,
+                ExcIndexRange(n_sc_components_from_file,1,space_t::n_components+1));
+
+
+    //-----
+    // components_map
+    const auto &components_map_tree = get_xml_element(scalar_components_tree,"ComponentsMap");
+    const auto &components_map_attributes = get_xml_element_attributes(components_map_tree);
+    const int n_components_map_entries = components_map_attributes.get<int>("Size");
+    AssertThrow(space_t::n_components == n_components_map_entries,
+                ExcDimensionMismatch(space_t::n_components,n_components_map_entries));
+    vector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
+    array<Index,space_t::n_components> components_map;
+    for (Index i = 0 ; i < space_t::n_components ; ++i)
+        components_map[i] = components_map_vec[i];
+
+    set<Index> active_components_id(components_map_vec.begin(),components_map_vec.end());
+    const int n_active_components = active_components_id.size();
+    //-----
+
+
 
     const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"BSplineSpaceScalarComponent");
     AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
+    AssertThrow(scalar_component_vector.size() == n_active_components,
+                ExcDimensionMismatch(scalar_component_vector.size(),n_active_components));
 
+    using       DegreeTable = typename space_t::DegreeTable;
+    using MultiplicityTable = typename space_t::MultiplicityTable;
 
-    shared_ptr<typename  space_t::MultiplicityTable> multiplicities;
-    typename space_t::DegreeTable degrees;
+    DegreeTable degrees(components_map);
+    shared_ptr<MultiplicityTable> multiplicities(new MultiplicityTable(components_map));
 
     for (const auto &comp_element : scalar_component_vector)
     {
@@ -578,6 +601,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
         const int comp_id = component_attributes.get<int>("Id");
         AssertThrow(comp_id >=0 && comp_id < space_t::n_components,
                     ExcIndexRange(comp_id,0,space_t::n_components));
+
 
         //---------------------------------------------
         // getting the dofs tensor size
@@ -617,11 +641,18 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
         (*multiplicities)(comp_id) = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
 
-
     } // end loop over the scalar components
     //-------------------------------------------------------------------------
 
-    auto ref_space = space_t::create(degrees,grid,multiplicities);
+
+    typename space_t::EndBehaviourTable end_behaviour(components_map);
+    for (const auto comp_id : end_behaviour.get_active_components_id())
+    {
+        end_behaviour(comp_id)[0] = space_t::EndBehaviour::interpolatory;
+        end_behaviour(comp_id)[1] = space_t::EndBehaviour::interpolatory;
+    }
+
+    auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour);
 
     return ref_space;
 }
