@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
+
 # cmake macro to generate the template instantiations
 # We look for all *.inst.py files in the source directories
 # and we execute them to generate the *.inst in the build/include/...
@@ -45,7 +46,10 @@ macro(generate_instantiations)
 	COMMENT "Generating file ${dir}/${name}.inst")
       set_property(SOURCE ${PROJECT_SOURCE_DIR}/source/${dir}/${name}.cpp
 	PROPERTY OBJECT_DEPENDS ${inst_file})
-    endforeach() 
-  endforeach()
+      execute_process(COMMAND ${SED_EXECUTABLE} -e  \\,.inst,d
+	INPUT_FILE  ${PROJECT_SOURCE_DIR}/source/${dir}/${name}.cpp
+	OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/include/igatools/${dir}/${name}-template.h)
+    endforeach(py_file ${files}) 
+  endforeach(dir ${source_dirs})
 endmacro(generate_instantiations)
 

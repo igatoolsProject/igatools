@@ -120,21 +120,18 @@ public:
                           std::vector<Value> &values) const = 0;
 
     /** Compute the @p gradients of Function at some @p points. */
-    virtual void evaluate_gradients(
-        const std::vector<Point> &points,
-        std::vector<Gradient> &gradient) const;
+    virtual void evaluate_gradients(const std::vector<Point> &points,
+                                    std::vector<Gradient> &gradient) const;
 
     /** Compute the @p hessians of Function at some @p points. */
-    virtual void evaluate_hessians(
-        const std::vector<Point> &points,
-        std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians(const std::vector<Point> &points,
+                                   std::vector<Hessian> &hessians) const;
 
     /** Compute the @p values and the @p gradients of Function at some
      *  @p points. */
-    virtual void evaluate_values_and_gradients(
-        const std::vector<Point> &points,
-        std::vector<Value> &values,
-        std::vector<Gradient> &gradients) const;
+    virtual void evaluate_values_and_gradients(const std::vector<Point> &points,
+                                               std::vector<Value> &values,
+                                               std::vector<Gradient> &gradients) const;
     ///@}
 };
 
