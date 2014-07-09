@@ -400,7 +400,9 @@ int main()
     string filename = "poisson_problem_P0" ;
     writer.save(filename);
 	
+     
 	
+		out<<"Essai";
 	
 	
 	

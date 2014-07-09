@@ -1,5 +1,5 @@
 
-#include "../tests.h"
+//#include "../tests.h"
 
 
 #include <igatools/base/function_lib.h>
@@ -43,76 +43,76 @@ shared_ptr<Mapping<dim>> Create_geo0(){
 	auto knots     = CartesianGrid<dim>::create(2);
 	ref_space_map  = RefSpace_map::create(p,knots);
 	vector<Real>   control_pts(ref_space_map->get_num_basis());
-
-
+	
+	
 	if (dim == 1)
-		{
-			int id = 0 ;
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-		}
+	{
+		int id = 0 ;
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+	}
 	else if (dim == 2)
-		{
-			int id = 0 ;
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-		}
+	{
+		int id = 0 ;
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+	}
 	else if (dim == 3)
-		{
-			int id = 0 ;
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-		}
+	{
+		int id = 0 ;
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+	}
 	auto map = IgMapping<RefSpace_map>::create(ref_space_map, control_pts);
 	//auto map=IdentityMapping<dim,0>::create(knots);
 	return map;
-		
+	
 } 
-	
-	
+
+
 
 
 
@@ -129,69 +129,69 @@ shared_ptr<Mapping<dim>> Create_geo1(){
 	auto knots     = CartesianGrid<dim>::create(2);
 	ref_space_map  = RefSpace_map::create(p,knots);
 	vector<Real>   control_pts(ref_space_map->get_num_basis());
-
-		
+	
+	
 	if (dim == 1)
-		{
-			int id = 0 ;
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
-		}
+	{
+		int id = 0 ;
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
+	}
 	else if (dim == 2)
-		{
-			int id = 0 ;
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-		}
+	{
+		int id = 0 ;
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+	}
 	else if (dim == 3)
 	{
-			int id = 0 ;
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
+		int id = 0 ;
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
 		
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 2.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 0.0 ;
-			control_pts[id++] = 0.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-			control_pts[id++] = 1.0 ;
-			control_pts[id++] = 1.0 ;
-			
-		}
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 2.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 0.0 ;
+		control_pts[id++] = 0.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+		control_pts[id++] = 1.0 ;
+		control_pts[id++] = 1.0 ;
+		
+	}
 	auto map = IgMapping<RefSpace_map>::create(ref_space_map, control_pts);
 	//map->get_grid()->refine();
 	//auto map=IdentityMapping<dim,0>::create(knots);
@@ -248,7 +248,7 @@ public:
 			//auto pt_i = points[i];
 			values[i]= 1.0;//sin(5*pt_i[0])*cos(6*pt_i[1]);
 		}
-
+		
 	}
 };	
 
@@ -258,15 +258,15 @@ template <int dim>
 shared_ptr<Mapping<dim,0>> create_map(const vector<Real> &control_pts)
 {
 	auto knots  = CartesianGrid<dim>::create(2);
-
+	
 	using RefSpaceMap = BSplineSpace<dim,dim,1>;
-
+	
 	const int p = 1;
 	auto ref_space_map = RefSpaceMap::create(p,knots);
-
+	
 	Assert(control_pts.size() == ref_space_map->get_num_basis(),
-			ExcDimensionMismatch(control_pts.size(),ref_space_map->get_num_basis()));
-
+		   ExcDimensionMismatch(control_pts.size(),ref_space_map->get_num_basis()));
+	
 	return IgMapping<RefSpaceMap>::create(ref_space_map, control_pts);
 }
 
@@ -276,7 +276,7 @@ create_geo_0()
 {
 	const int n_basis = dim * std::pow(2,dim);
 	vector<Real> control_pts(n_basis);
-
+	
 	if (dim == 1)
 	{
 		control_pts[0] = 1.0 ;
@@ -286,13 +286,13 @@ create_geo_0()
 	{
 		control_pts[0] = 1.0 ;
 		control_pts[1] = 2.0 ;
-
+		
 		control_pts[2] = 1.0 ;
 		control_pts[3] = 2.0 ;
-
+		
 		control_pts[4] = 0.0 ;
 		control_pts[5] = 0.0 ;
-
+		
 		control_pts[6] = 1.0 ;
 		control_pts[7] = 1.0 ;
 	}
@@ -301,36 +301,36 @@ create_geo_0()
 		control_pts[0] = 1.0 ;
 		control_pts[1] = 2.0 ;
 		control_pts[2] = 1.0 ;
-
+		
 		control_pts[3] = 2.0 ;
 		control_pts[4] = 1.0 ;
 		control_pts[5] = 2.0 ;
-
+		
 		control_pts[6] = 1.0 ;
 		control_pts[7] = 2.0 ;
 		control_pts[8] = 0.0 ;
-
+		
 		control_pts[9] = 0.0 ;
 		control_pts[10] = 1.0 ;
 		control_pts[11] = 1.0 ;
-
+		
 		control_pts[12] = 0.0 ;
 		control_pts[13] = 0.0 ;
 		control_pts[14] = 1.0 ;
-
+		
 		control_pts[15] = 1.0 ;
 		control_pts[16] = 0.0 ;
 		control_pts[17] = 0.0 ;
-
+		
 		control_pts[18] = 0.0 ;
 		control_pts[19] = 0.0 ;
 		control_pts[20] = 1.0 ;
-
+		
 		control_pts[21] = 1.0 ;
 		control_pts[22] = 1.0 ;
 		control_pts[23] = 1.0 ;
 	}
-//*/
+	//*/
 	return create_map<dim>(control_pts);
 }
 
@@ -342,7 +342,7 @@ create_geo_1()
 {
 	const int n_basis = dim * std::pow(2,dim);
 	vector<Real> control_pts(n_basis);
-
+	
 	if (dim == 1)
 	{
 		control_pts[0] = 1.0 ;
@@ -352,13 +352,13 @@ create_geo_1()
 	{
 		control_pts[0] = 1.0 ;
 		control_pts[1] = 2.0 ;
-
+		
 		control_pts[2] = 1.0 ;
 		control_pts[3] = 2.0 ;
-
+		
 		control_pts[4] = 0.0 ;
 		control_pts[5] = 0.0 ;
-
+		
 		control_pts[6] = 1.0 ;
 		control_pts[7] = 1.0 ;
 	}
@@ -367,37 +367,37 @@ create_geo_1()
 		control_pts[0] = 1.0 ;
 		control_pts[1] = 2.0 ;
 		control_pts[2] = 1.0 ;
-
+		
 		control_pts[3] = 2.0 ;
 		control_pts[4] = 1.0 ;
 		control_pts[5] = 2.0 ;
-
+		
 		control_pts[6] = 1.0 ;
 		control_pts[7] = 2.0 ;
 		control_pts[8] = 0.0 ;
-
+		
 		control_pts[9] = 0.0 ;
 		control_pts[10] = 1.0 ;
 		control_pts[11] = 1.0 ;
-
+		
 		control_pts[12] = 0.0 ;
 		control_pts[13] = 0.0 ;
 		control_pts[14] = 1.0 ;
-
+		
 		control_pts[15] = 1.0 ;
 		control_pts[16] = 0.0 ;
 		control_pts[17] = 0.0 ;
-
+		
 		control_pts[18] = 0.0 ;
 		control_pts[19] = 0.0 ;
 		control_pts[20] = 1.0 ;
-
+		
 		control_pts[21] = 1.0 ;
 		control_pts[22] = 1.0 ;
 		control_pts[23] = 1.0 ;
 	}
-
-//*/
+	
+	//*/
 	return create_map<dim>(control_pts);
 }
 
@@ -409,24 +409,24 @@ void do_test()
 	const int dim_field(1);
 	auto map0 = create_geo_0<dim>();
 	auto map1 = create_geo_1<dim>();
-
+	
 	using RefSpaceField = BSplineSpace<dim,dim_field,1>;
-
+	
 	const int deg0 = 1;
 	const int deg1 = 1;
 	auto ref_space_field0 = RefSpaceField::create(deg0, map0->get_grid());
 	auto ref_space_field1 = RefSpaceField::create(deg1, map1->get_grid());
-
+	
     using PushFw   = PushForward<Transformation::h_grad, dim,0>;
     using PhySpace = PhysicalSpace<RefSpaceField, PushFw>;
-
+	
     auto space0 = PhySpace::create(ref_space_field0, PushFw::create(map0),0);
     auto space1 = PhySpace::create(ref_space_field1, PushFw::create(map1),0);
-
+	
 	space0->refine_h(2);
 	space1->refine_h(2);
-
-
+	
+	
 	space0->print_info(out);
 	space1->print_info(out);
 }
@@ -434,17 +434,17 @@ void do_test()
 
 int main()
 {
-
+	
 	do_test<1>();
-
-//	const int dim(1);
-//	const int dim_field(1);
-//	auto map0=Create_geo0<dim>();
-//	auto map1=Create_geo1<dim>();
+	
+	//	const int dim(1);
+	//	const int dim_field(1);
+	//	auto map0=Create_geo0<dim>();
+	//	auto map1=Create_geo1<dim>();
 	//auto map0=nurb_geometry_from_file0<dim>();
 	//auto map1=nurb_geometry_from_file1<dim>();
-
-
+	
+	
 #if 0
 	using RefSpace_field         = BSplineSpace<dim,dim_field,1>;
 	//using RefSpace_field         = NURBSSpace<dim,dim_field,1>;
@@ -459,29 +459,29 @@ int main()
     using PhySpace    = PhysicalSpace<RefSpace_field, PushFw>;
     auto space0     = PhySpace::create(ref_space_field0, PushFw::create(map0),0);
 	auto space1     = PhySpace::create(ref_space_field1, PushFw::create(map1),1);
-<<<<<<< HEAD:tutorial/example_test/example_test.cpp
+	<<<<<<< HEAD:tutorial/example_test/example_test.cpp
 	
 	//map0->get_grid()->refine();
-=======
+	=======
 #endif
 	LogStream out;
-//	auto grid=map0->get_grid();
+	//	auto grid=map0->get_grid();
 	// grid->refine();
-//	map0->get_grid()->refine();
-//	map0->get_grid()->print_info(out);
->>>>>>> mortar:tests/mortar/mortar_01.cpp
+	//	map0->get_grid()->refine();
+	//	map0->get_grid()->print_info(out);
+	>>>>>>> mortar:tests/mortar/mortar_01.cpp
 	//space0->refine_h(2);
 	//space1->refine_h(2);
-
+	
 	
 	MultiPatchSpace<PhySpace> domain_multip;
 	domain_multip.arrangement_open();
 	domain_multip.add_patch(space0);
-
+	
 	domain_multip.add_patch(space1);
 	domain_multip.add_interface(InterfaceType::C0_strong,
-									space0,1,
-									space1,0);
+								space0,1,
+								space1,0);
 	domain_multip.arrangement_close();
 	LogStream out;
 	domain_multip.print_info(out);
@@ -508,7 +508,7 @@ int main()
 	{
 		space0->get_grid()->set_boundary_id(*crr_d,d_id);
 	}
-
+	
 	
 	const Quadrature<dim>   elem_quad0(QGauss<dim>(deg0+1));
     const Quadrature<dim-1> face_quad0(QGauss<dim-1>(deg0+1));
@@ -581,13 +581,13 @@ int main()
 	project_boundary_values<PhySpace,LAPack::trilinos>(dfunction,space0,face_quad0,d_id,values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
 	solution->print(out);
-
+	
 	
     using LinSolver = LinearSolver<LAPack::trilinos>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 	solution->print(out);
-
+	
 	const int n_plot_points = 2;
     Writer<dim> writer(map0, n_plot_points);
 	
