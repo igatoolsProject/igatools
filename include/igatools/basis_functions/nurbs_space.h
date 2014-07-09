@@ -71,6 +71,9 @@ public:
     static const bool has_weights = true;
 
     static const std::array<int, dim> dims;
+
+
+
 public:
     using Func = typename spline_space_t::Func;
     template <int order>
@@ -100,6 +103,8 @@ public:
 
     using DegreeTable = typename spline_space_t::DegreeTable;
     using MultiplicityTable = typename spline_space_t::MultiplicityTable;
+
+    using EndBehaviour = typename spline_space_t::EndBehaviour;
     using EndBehaviourTable = typename spline_space_t::EndBehaviourTable;
     using InteriorReg= typename spline_space_t::InteriorReg;
     using SpaceDimensionTable = typename spline_space_t::SpaceDimensionTable;
@@ -387,7 +392,7 @@ public:
     /**
      * Get the weights of the NURBSSpace.
      */
-    const WeightsTable  &get_weights() const;
+    const WeightsTable &get_weights() const;
 
     /**
      * Reset the weights of the NURBSSpace.

@@ -161,15 +161,6 @@ public:
     void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
 
-#if 0
-    /**
-     * Typedef for specifying the value of the basis function in the
-     * reference domain.
-     */
-    using Value = Values<range, rank>;
-#endif
-
-protected:
 
 public:
 

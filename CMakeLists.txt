@@ -23,7 +23,6 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #TODO: Define the configure time variable for dimension compilation
-#TODO: split this CMakeList into modules to make it more understandable
 
 cmake_minimum_required(VERSION 2.8.10)
 
@@ -100,32 +99,30 @@ find_boost()
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Choose and find the package for the linear algebra
-option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
-option(USE_PETSC "Use the linear algebra packages from PETSc" OFF)
-
-if (USE_TRILINOS)
-  message("Using the linear algebra packages provided by Trilinos")
-  find_trilinos()
-endif()
-
-if (USE_PETSC)
-  message("Using the linear algebra packages provided by PETSc")
-  find_petsc()
-endif()
-#-------------------------------------------------------------------------------
-
-
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Optional features for building  igatools
 #
 # Choose the precision for the real values
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
-
+option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
 option(submit_test "Allow test submition" OFF)
 
+# Optinal libraries
+option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
+option(USE_PETSC "Use the linear algebra packages from PETSc" OFF)
 #
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Find optional libraries
+
+if (USE_TRILINOS)
+  find_trilinos()
+endif()
+
+if (USE_PETSC)
+  find_petsc()
+endif()
 #-------------------------------------------------------------------------------
 
 
@@ -191,7 +188,7 @@ generate_instantiations()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Create install target
-create_install_target()
+create_install_target(${use_other_templates})
 #
 #-------------------------------------------------------------------------------
 
