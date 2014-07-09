@@ -695,6 +695,22 @@ CartesianGrid<dim> build_cartesian_grid_union(
 
 
 
+template <int dim>
+bool
+CartesianGrid<dim>::
+operator==(const CartesianGrid<dim> &grid) const
+{
+    bool same_knots_coordinates = true;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
+        const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
+
+        same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
+    }
+    return same_knots_coordinates;
+}
+
 
 template <int dim_>
 const int
