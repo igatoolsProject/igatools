@@ -128,19 +128,16 @@ public:
      */
     Tdouble &operator=(const Tdouble &td) = default;
 
-
     /**
      * Move assignment operator.
      */
     Tdouble &operator=(Tdouble &&td) = default;
-
 
     /**
      * Assignment operator from a Real @p val1.
      */
     Tdouble &operator=(const value_t &val1);
     ///@}
-
 
     // TODO (pauletti, Feb 25, 2014): document and implementation in other file
     operator value_t &() noexcept
@@ -158,7 +155,6 @@ public:
      * Read write access operator
      */
     value_t &operator[](const int i) noexcept;
-
 
     /**
      * Read access operator
@@ -205,10 +201,8 @@ public:
      */
     int tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept;
 
-
 private:
     value_t val_;
-
 };
 
 
@@ -284,23 +278,24 @@ using ActionTensor = Conditional<
  *  The Tensor class is used to represent a mathematical tensor of
  *  given rank and type.
  *  This class is a core computational support for the library.
- *  It is used for storing and computations with values and derivatives
- *  of all orders of basis function, mapping and general functions.
- *
+ *  It is used for storage and computations of values and derivatives
+ *  of all orders of basis functions, mappings and general functions.
  *
  *  Mathematically, given a \f$ d \f$ -dimensional vector space \f$ V \f$,
  *  an (m,n)-tensor over  \f$ V \f$ is a scalar multilinear function
- *  of @p m one-forms and @p n vectors, i.e.
+ *  of @p m one-forms (co-vectors) and @p n vectors, i.e.
  *  \f[ A: \underbrace{V^* \times \dots \times V^*}_{m \mbox{ times }} \times
- *         \underbrace{V   \times \dots \times V  }_{n \mbox{ times }} \to \mathbb R \f]
- *  where \f$ V^* \f$ denotes the dual of \f$ V \f$.
- * It is usually refer to as an @p m times @e contravariant, @p n times @e covariant tensor.
+ *         \underbrace{V   \times \dots \times V  }_{n \mbox{ times }}
+ *         \to \mathbb R \f]
+ *  where \f$ V^* \f$ denotes the dual space of \f$ V \f$.
+ * It is usually refered to as an @p m times @e contravariant,
+ * @p n times @e covariant tensor.
  * The \e rank of \f$ A \f$ is m+n.
  *
  * For example, the bilinear form \f$ T: V \times V^* \to \mathbb R \f$
  * is a (1,1)-tensor or rank 1 covariant, rank 1 contravariant tensor.
  * In the language of the Tensor class it is
- * represented with the following code
+ * represented with the following code definition
  * \code
  * Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant> > T;
  * \endcode
@@ -310,18 +305,23 @@ using ActionTensor = Conditional<
  * Tensor<dim, 1, tensor::contravariant, Tensor<dim, 1, tensor::covariant> > S;
  * \endcode
  *
- * Once a basis for the vectors is selected and the corresponding dual basis for
- * the covectors
+ * Once a basis for the vector space V is selected and the corresponding
+ * dual basis of \f$V^*\f$
  * considered, we can talk about the components of a tensor.
- * Assume \f$ \mathbf{e}_1, \dots, \mathbf{e}_{dim} \f$ and \f$ \mathbf{e}^1, \dots, \mathbf{e}^{dim} \f$ are vector and co-vector
- * bases respectively then the tensor can be written in terms of its components \f$ T^{i}_{\phantom{i} j} \f$ as :
+ * More precisely, if we
+ * assume \f$ \mathbf{e}_1, \dots, \mathbf{e}_{dim} \f$
+ * and \f$ \mathbf{e}^1, \dots, \mathbf{e}^{dim} \f$ are vector and co-vector
+ * bases respectively then the tensor can be written in terms of
+ * its components \f$ T^{i}_{\phantom{i} j} \f$ as:
  * \f[
- * T = \sum_{i=1}^{d} \sum_{j=1}^{d} T^{i}_{\phantom{i} j} \mathbf{e}_i \otimes \mathbf{e}^j
+ * T = \sum_{i=1}^{d} \sum_{j=1}^{d} T^{i}_{\phantom{i} j}
+ * \mathbf{e}_i \otimes \mathbf{e}^j
  * \f]
- * where we have used the upper index for the contravariant components and the lower index for the covariant components.
+ * where we have used the upper index for the contravariant components and the
+ * lower index for the covariant components.
  *
- * In this case the bilinear function \f$ T(\mathbf{e}_i,\mathbf{e}^j) \f$ is given
- * by T[i][j] and the contravariant tensor \f$ T(\mathbf{e}_i) : V^* \to \mathbb R\f$
+ * In this case the bilinear function \f$ T(\mathbf{e}_i,\mathbf{e}^j) \f$ is
+ * given by T[i][j] and the contravariant tensor \f$ T(\mathbf{e}_i) : V^* \to \mathbb R\f$
  * is given by T[i].
  *
  * Now if we consider two vector spaces \f$ V \f$ and \f$ W \f$ of dimension m and
@@ -365,15 +365,15 @@ using ActionTensor = Conditional<
  * - entry flat index access ()
  * - entry tensor index access ()
  *
- * @note Usig metaprogramming techniques we have implemented the following differences
- * between the general tensor T and a rank 1 tensor:
+ * @note Usig metaprogramming techniques we have implemented the following
+ * differences between the general tensor T and a rank 1 tensor:
  * - if rank != 1, SubTensor<Tensor<dim,rank,tensor_type,value_type>> is Tensor<dim,rank-1,tensor_type,value_type>
  * - if rank == 1, SubTensor<Tensor<dim,rank,tensor_type,value_type>> is value_type
  *
  *
  * @author Martinelli 2012, 2013
  * @author Cavallini 2012
- * @author Pauletti 2012, 2013
+ * @author Pauletti 2012, 2013, 2014
  *
  */
 template<int dim_, int rank_, class tensor_type, class value_type>
@@ -392,7 +392,6 @@ public:
     /** Flat size of the tensor, i.e. total number of components of type value_type */
     static const int size = iga::constexpr_pow(dim_, rank_);
 
-
     using tensor_t = tensor_type;
 
     using value_t = value_type;
@@ -405,7 +404,6 @@ public:
      * @name Constructors
      */
     ///@{
-
     /**
      * Default constructor. Sets all entries to 0.
      */
@@ -420,32 +418,25 @@ public:
     /** Constructor from an initializer-list of value_type */
     Tensor(std::initializer_list<value_type> list);
 
-
     /** Destructor */
     ~Tensor() = default;
     ///@}
-
 
     /**
      * @name Assignment operators
      */
     ///@{
-
     /** Copy assignment operator */
     Tensor<dim_, rank_, tensor_type, value_type> &operator=(
         const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
-
-
 
     /** Move assignment operator */
     Tensor<dim_, rank_, tensor_type, value_type> &operator=(
         Tensor<dim_, rank_, tensor_type, value_type> &&tensor) = default;
 
-
     /** Initializer-list assignment */
     Tensor<dim_, rank_, tensor_type, value_type>
     &operator=(std::initializer_list<value_type>);
-
 
     /**
      * Assignment operator using a tensor entry value.
@@ -461,12 +452,10 @@ public:
     Tensor<dim_, rank_, tensor_type, value_type> &operator=(const Real value);
     ///@}
 
-
     /**
      * @name Flat- and Tensor-index access operators
      */
     ///@{
-
     /** Read write access operator using a tensor index */
     value_type &operator()(const TensorIndex<rank_>  &i);
 
@@ -480,7 +469,6 @@ public:
      * Read access operator using the flat index
      */
     const value_type &operator()(const int i) const;
-
     ///@}
 
     /**
@@ -497,7 +485,6 @@ public:
      */
     const SubTensor<self_t> &operator[](const int i) const;
     ///@}
-
 
     /**
      * @name Basic mathematical operations
@@ -532,7 +519,6 @@ public:
      */
     Tensor<dim_, rank_, tensor_type, value_type> &
     operator-();
-
     ///@}
 
     /**
@@ -557,7 +543,6 @@ public:
     ///@}
 
 public:
-
     /** @name Dealing with the indices
      * @todo maybe these functions could be outside
      * TODO: maybe these functions could be outside
@@ -574,72 +559,42 @@ public:
 
 private :
     SubTensor<self_t> tensor_[dim_== 0? 1: dim_];
-
 };
 
 
 
-
-
 /**
- * Specialization of the tensor class to handle Derivatives.
- * It fits the derivative of a function ... at a given point.
- * @todo complete the documentation.
+ * Value type for a scalar, vector valued function on R^dim
+ */
+template<int dim, int range, int rank>
+using Values = Conditional<rank==0,
+		Tensor<1, 1, tensor::contravariant, Tdouble>,
+		Tensor<range, rank, tensor::contravariant, Tdouble>>;
+
+//TODO(pauletti, Jul 9, 2014): the order 0 may not be necessary
+/**
+ * Type for the derivatives of order @order of a scalar, vector or
+ * tensored valued function at a point on R^dim.
+ * @note The first derivative of scalar function is a one form
+ * (not a vector)
  */
 template<int dim, int range, int rank, int order>
 using Derivatives =
-    Conditional<
-    order==0,
+    Conditional<order==0,
     Tensor<1,1,tensor::covariant,
     Tensor<range,rank,tensor::contravariant,Tdouble>>,
     Tensor<dim,order,tensor::covariant,
     Tensor<range,rank,tensor::contravariant,Tdouble>>
     >;
 
-
-template<int dim, int range, int rank>
-using Values = Conditional<rank==0,
-      Tensor<1, 1, tensor::contravariant, Tdouble>,
-      Tensor<range, rank, tensor::contravariant, Tdouble>>;
-
-
 /**
- * The <tt>Points</tt> class provides for a point or vector in a space with
- * arbitrary dimension <tt>dim</tt>.
- *
- * In igatools we use <tt>Points</tt> for:
- * - the type to evaluate a function
- * - the type for a vertex of the reference patch
- * - the return type for the values of mapping
- * @note technically  <tt>Points</tt> is not a class but
- * a template alias (or templated typedef).
- * @note In the dim==1 case the tensor is of rank 0, and in
- * all other cases of rank 1, this is so that we can use the
- * point as a Real in the dim ==1 case.
- *
+ * Points in R^dim.
+ * Examples of it use involve the type for the argument where
+ * functions and maps are evaluate or geometric quantities
+ * such as the vertices of o knot span.
  */
-template< int dim >
+template<int dim>
 using Points = Tensor<dim, 1, tensor::contravariant, Tdouble>;
-
-/**
- *  Returns the tensor product of two rank one tensors.
- *  Mathematically denoted by \f$ value\_type = a \otimes b \f$,
- *  and defined by \f$ T(u) = a (b \cdot u) \f$.
- *
- * @relates Tensor
- */
-template<class V1, class V2>
-Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble> >
-tensor_product(const V1 &a, const V2 &b)
-{
-    Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble>> R;
-
-    for (int u = 0; u < V2::dim; ++u)
-        R[u] = b[u] * a;
-
-    return R;
-}
-
 
 
 /** @name tensor_arith_oper Tensor arithmetic operators */
@@ -699,6 +654,27 @@ EnableIf<T::is_tensor,T>
 operator/(const T &A, const Real scalar) noexcept;
 /** @} */
 
+
+/**
+ *  Returns the tensor product of two rank one tensors.
+ *  Mathematically denoted by \f$ value\_type = a \otimes b \f$,
+ *  and defined by \f$ T(u) = a (b \cdot u) \f$.
+ *
+ * @relates Tensor
+ */
+template<class V1, class V2>
+Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble> >
+tensor_product(const V1 &a, const V2 &b)
+{
+    Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble>> R;
+
+    for (int u = 0; u < V2::dim; ++u)
+        R[u] = b[u] * a;
+
+    return R;
+}
+
+
 template<class T>
 EnableIf<T::is_tensor,T>
 action(const T &A, const Tdouble &x)
@@ -709,11 +685,10 @@ action(const T &A, const Tdouble &x)
 }
 
 
-
-
 /**
- * Computes the action of tensor A on x,
- * returning the tensor A(x).
+ * Computes the action of tensor A on x.
+ * More precisely, if A(.,.,.) the action(A,x)
+ * is the tensor A(x,.,.).
  */
 template <class A_t, class V_t>
 EnableIf<!std::is_same<V_t,Tdouble>::value,
@@ -748,15 +723,21 @@ compose(const T1 &S, const T2 &T)
 
 
 /**
- * Computes the transpose of a tensor.
+ * Computes the transpose of a tensor, in the following way
+ * - A(v1,v2,v3,v4) = A^t(v2,v3,v4,v1)
+ * - A(v1,v2) = A^t(v2,v1)
  * A   : V x W -> R, then
  * A^t : W x V -> R, and
  * A(v,w)=A^t(w,v).
  *
+ * @note for linear transformations A:V->W, A^t:W*->V*,
+ * so if you want to compute Aˆt * A in the "matrix sense" you
+ * need to use compose(co_tensor(traspose(A)), A).
+ *
  */
 template < class T >
 EnableIf<T::is_tensor,Transpose<T>>
-                                 transpose(const T &A)
+transpose(const T &A)
 {
     Transpose<T> B;
 
@@ -777,7 +758,7 @@ EnableIf<T::is_tensor,Transpose<T>>
 
 /**
  * Returns the symmetric tensor of A, i.e.
- * 0.5*(A+A^t)
+ * 0.5*(A+co_tensor(A^t))
  *
  * @relates Tensor
  */
