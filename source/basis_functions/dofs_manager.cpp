@@ -81,7 +81,7 @@ add_dofs_space_view(
 
 void
 DofsManager::
-dofs_arrangement_close()
+dofs_arrangement_close(const bool automatic_dofs_renumbering)
 {
     Assert(is_dofs_arrangement_open_ == true,ExcInvalidState());
 
@@ -90,18 +90,20 @@ dofs_arrangement_close()
     Index offset = 0;
     for (auto &space : spaces_info_)
     {
-//      auto space_id = space.first;
-        auto num_dofs = space.second.n_dofs_;
         auto &dofs_view = space.second.dofs_view_;
-        space.second.offset_ = offset;
 
-        for (Index &dof : dofs_view)
-            dof += offset;
+        if (automatic_dofs_renumbering)
+        {
+            auto num_dofs = space.second.n_dofs_;
+            space.second.offset_ = offset;
 
-        offset += num_dofs;
+            for (Index &dof : dofs_view)
+                dof += offset;
 
-        auto dofs_view_begin = dofs_view.begin();
-        auto view_ranges = dofs_view_begin.get_ranges();
+            offset += num_dofs;
+        }
+
+        auto view_ranges = dofs_view.begin().get_ranges();
         dofs_components_view_.insert(dofs_components_view_.end(),view_ranges.begin(),view_ranges.end());
     }
 

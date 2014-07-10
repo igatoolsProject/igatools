@@ -91,7 +91,17 @@ public:
      */
     void dofs_arrangement_open();
 
-    void dofs_arrangement_close();
+    /**
+     * Sets the DofsManager in a state that cannot receive anymore the views of the dofs by some spaces.
+     *
+     * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
+     * then the dofs in each space are renumbered by the DofsManager.
+     * The renumbering is made in ascending order processing the dofs space views as inserted
+     * using the function add_dofs_space_view.
+     *
+     * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
+     */
+    void dofs_arrangement_close(const bool automatic_dofs_renumbering = true);
 
 
     /**
