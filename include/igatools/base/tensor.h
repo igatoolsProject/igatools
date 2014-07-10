@@ -334,8 +334,9 @@ using ActionTensor = Conditional<
  *
  *
  * \section deriv Using tensors for derivatives
- * The main use of the Tensor class in igatools are derivatives of any
- * order (even the zero order).
+ * The main use of the Tensor class in igatools are the handling of
+ * derivatives of any order.
+ * With special interest in the domain transformation of them.
  *
  * Consider the function \f$ F: V \to W \f$, then the derivative of
  * \f$ F \f$ at \f$ p \f$ is a linear function from \f$ V \f$ to \f$ W \f$, i.e.  \f$ DF(p) \in L(V,W) \f$
