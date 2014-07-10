@@ -151,12 +151,17 @@ public:
     std::vector<Index> get_global_dofs(const int space_id, const std::vector<Index> &local_dof) const;
     ///@}
 
+
+    /** Return the number of unique dofs in the MultiPatchSpace. */
+    Index get_num_dofs() const;
+
+
     /** Returns the number of linear constraints. */
-    int get_num_linear_constraints() const;
+    Index get_num_linear_constraints() const;
 
 
     /** Returns the number of equality constraints. */
-    int get_num_equality_constraints() const;
+    Index get_num_equality_constraints() const;
 
 
     /**
@@ -208,6 +213,11 @@ private:
     std::vector<EqualityConstraint> equality_constraints_;
 
 
+    /** Counts and return the number of unique dofs in the MultiPatchSpace. */
+    Index count_unique_dofs() const;
+
+    /** Number of unique dofs in the MultiPatchSpace. */
+    Index num_unique_dofs_;
 };
 
 

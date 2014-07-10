@@ -156,6 +156,9 @@ public:
     ///@}
 
 
+    /** Returns the patches (i.e. the physical spaces) used to define the MultiPatchSpace. */
+    std::vector<PatchPtr> get_patches() const;
+
     /** Returns the number of patches used to define this space. */
     int get_num_patches() const;
 

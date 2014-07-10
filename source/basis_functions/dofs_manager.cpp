@@ -37,7 +37,8 @@ DofsManager::
 DofsManager()
     :
     is_dofs_arrangement_open_(false),
-    dofs_view_(nullptr)
+    dofs_view_(nullptr),
+    num_unique_dofs_(0)
 {}
 
 
@@ -111,6 +112,9 @@ dofs_arrangement_close()
     dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
 
     is_dofs_arrangement_open_ = false;
+
+
+    num_unique_dofs_ = this->count_unique_dofs();
 }
 
 auto
@@ -123,15 +127,22 @@ get_dofs_view() const -> const DofsView &
     return *dofs_view_;
 }
 
+Index
+DofsManager::
+get_num_dofs() const
+{
+    return num_unique_dofs_;
+}
 
-int
+
+Index
 DofsManager::
 get_num_linear_constraints() const
 {
     return linear_constraints_.size();
 }
 
-int
+Index
 DofsManager::
 get_num_equality_constraints() const
 {
@@ -283,10 +294,23 @@ remove_equality_constraints_redundancies()
         }
 //      out << "]" << std::endl;
     }
-
-
-
 }
+
+
+
+Index
+DofsManager::
+count_unique_dofs() const
+{
+    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+
+//    const auto &dofs = this->get_dofs_view();
+
+    set<Index> unique_dofs(dofs_view_->begin(),dofs_view_->end());
+
+    return unique_dofs.size();
+}
+
 
 void
 DofsManager::
@@ -330,6 +354,7 @@ print_info(LogStream &out) const
         //*/
     }
 
+    out << "Num. unique dofs          = " << this->get_num_dofs() << endl;
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
 
 

@@ -234,6 +234,14 @@ add_patch(PatchPtr patch)
 
 
 template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+get_patches() const -> vector<PatchPtr>
+{
+    return patches_;
+}
+
+template <class PhysicalSpace>
 int
 MultiPatchSpace<PhysicalSpace>::
 get_num_patches() const

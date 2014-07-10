@@ -84,6 +84,7 @@ MultiPatchSpace infos:
              Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
              Space[2]:   ID=2   n_dofs=8   DOFs=[ 16 17 18 19 20 21 22 23 ]
              Space[3]:   ID=3   n_dofs=8   DOFs=[ 24 25 26 27 28 29 30 31 ]
+             Num. unique dofs          = 32
              Num. linear   constraints = 0
              Num. equality constraints = 0
          
@@ -93,6 +94,7 @@ MultiPatchSpace infos:
        Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
        Space[2]:   ID=2   n_dofs=8   DOFs=[ 16 17 18 19 20 21 22 23 ]
        Space[3]:   ID=3   n_dofs=8   DOFs=[ 24 25 26 27 28 29 30 31 ]
+       Num. unique dofs          = 32
        Num. linear   constraints = 0
        Num. equality constraints = 14
            Eq. constraint[0]: [ master = 1 , slave = 8 ]
