@@ -147,6 +147,15 @@ public:
      */
     ElementIterator end() const;
 
+    /**
+     * Returns the element accessor with its flat id corresponding to @p elem_flat_id.
+     *
+     * @warning This function creates a new ElementAccessor object,
+     * so it could be computationally expensive.
+     */
+    ElementAccessor get_element(const Index elem_flat_id) const;
+
+
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
     std::shared_ptr<const RefSpace> get_reference_space() const;

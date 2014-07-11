@@ -114,6 +114,21 @@ end() const -> ElementIterator
                            IteratorState::pass_the_end);
 }
 
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_element(const Index elem_flat_id) const -> ElementAccessor
+{
+    Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_elements(),
+           ExcIndexRange(elem_flat_id,0,ref_space_->get_grid()->get_num_elements()));
+
+    auto elem = this->begin();
+    for (int i = 0 ; i < elem_flat_id ; ++i)
+        ++elem;
+
+    return *elem;
+}
+
 
 
 template <class RefSpace_, class PushForward_>
