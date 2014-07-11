@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Igatools FormatVersion="2.0">
+  <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
+    <NURBSSpace Dim="2" Range="2" Rank="1">
+      <CartesianGrid Dim="2">
+        <Knots Direction="0" Size="2">
+          0.000000 1.000000
+        </Knots>
+        <Knots Direction="1" Size="2">
+          0.000000 1.000000
+        </Knots>
+      </CartesianGrid>
+      <NURBSSpaceScalarComponents Size="1">
+        <ComponentsMap Size="2">
+          0 0
+        </ComponentsMap>
+        <NURBSSpaceScalarComponent Id="0">
+          <DofsTensorSize Dim="2">
+            3 3
+          </DofsTensorSize>
+          <Degrees Dim="2">
+            2 2
+          </Degrees>
+          <InteriorMultiplicities Dim="2">
+            <InteriorMultiplicity Direction="0"  Size="0">
+            </InteriorMultiplicity>
+            <InteriorMultiplicity Direction="1"  Size="0">
+            </InteriorMultiplicity>
+          </InteriorMultiplicities>
+          <Weights Size="9">
+              1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+          </Weights>
+        </NURBSSpaceScalarComponent>
+      </NURBSSpaceScalarComponents>
+    </NURBSSpace>
+    <ControlPoints Dim="1" Size="18">
+	  0.000000 0.500000 1.000000 0.000000 0.500000 1.000000 0.000000 0.500000 1.000000
+      0.000000 0.000000 0.000000 0.500000 0.500000 0.500000 1.000000 1.000000 1.000000
+    </ControlPoints>
+  </IgMapping>
+</Igatools>

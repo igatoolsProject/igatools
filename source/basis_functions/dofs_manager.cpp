@@ -175,6 +175,7 @@ equality_constraints_open()
     are_equality_constraints_open_ = true;
 }
 
+
 void
 DofsManager::
 equality_constraints_close()
@@ -199,7 +200,6 @@ add_equality_constraint(const Index dof_id_master,const Index dof_id_slave)
 }
 
 
-
 void
 DofsManager::
 linear_constraints_open()
@@ -211,6 +211,7 @@ linear_constraints_open()
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
 }
+
 
 void
 DofsManager::
