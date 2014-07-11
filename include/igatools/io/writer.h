@@ -129,31 +129,17 @@ public:
      * \param[in] format - Output format. It can be "ascii" or "appended".
      * \note The .vtu extension should NOT part of the file name.
      */
-    //TODO(pauletti, Jul 8, 2014): this function should be const
     void save(const std::string &filename,
-              const std::string &format = "ascii");
+              const std::string &format = "ascii") const;
 
     /**
      * Writes the vtu into a LogStream, filtering it for uniform
      * output across different systems.
      * @note this function is only for testing purposes
      */
-    //TODO(pauletti, Jul 8, 2014): this function should be const
-    void print_info(LogStream &out);
+    void print_info(LogStream &out) const;
 
 private:
-    /**
-     * Get the points (in the 3D physical domain) associated to each iga element.
-     * The first index refers to the iga element,
-     * the second index refers to the point within the iga element specified by the first index.
-     * \code
-     * auto points = writer.get_points_in_elements();
-     * //points[i][j] is the j-th point in the i-th iga element
-     * \endcode
-     */
-    const std::vector< std::vector< std::array<T,3> > >
-    &get_points_in_iga_elements() const;
-
     /**
      * Returns the number of IGA elements handled by the Writer.
      */
@@ -232,18 +218,7 @@ private:
      */
     Size n_vtk_points_;
 
-    /**
-     * Coordinates of the evaluation points associated to each iga element.
-     * \note The point coordinates are referred to the physical domain extended to 3D space.
-     */
-    std::vector< std::vector< std::array<T,3> > > points_in_iga_elements_;
-
     unsigned char vtk_element_type_;
-
-    /**
-     * Connectivity of the vtk elements inside each iga element.
-     */
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > > vtk_elements_connectivity_;
 
 //TODO(pauletti, Jul 8, 2014): this documentation is incorrect
     /**
@@ -358,11 +333,20 @@ private:
     int precision_;
 
     template<class Out>
-    void save_ascii(Out &file) const;
+    void save_ascii(Out &file,
+      const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+      const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+      &vtk_elements_connectivity) const;
 
-    void save_appended(const std::string &filename) const;
+    void save_appended(const std::string &filename,
+      const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+      const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+      &vtk_elements_connectivity) const;
 
-    void fill_points_and_connectivity();
+    void fill_points_and_connectivity(
+      std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+      std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+      &vtk_elements_connectivity) const;
 };
 
 
