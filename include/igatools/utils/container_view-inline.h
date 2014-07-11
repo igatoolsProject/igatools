@@ -49,6 +49,21 @@ get_num_entries() const
 }
 
 
+template <class IteratorType>
+inline
+ViewData<IteratorType> &
+ViewData<IteratorType>::
+operator=(const ViewData<IteratorType> &view_data)
+{
+    if (this != &view_data)
+    {
+        begin_ = view_data.begin_;
+        end_   = view_data.end_;
+    }
+    return *this;
+}
+
+
 template <class Iterator,class ConstIterator>
 inline
 View<Iterator,ConstIterator>::

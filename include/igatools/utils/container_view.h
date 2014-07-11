@@ -40,6 +40,13 @@ public:
     Size get_num_entries() const;
 
 protected:
+    /** @name Assignement operators.*/
+    ///@{
+    /**
+     * Default constructor. It does nothing.
+     */
+    ViewData() = default;
+
     /**
      * Builds a ViewData object from two IteratorType objects: one pointing to the beginning
      * of the view, and the other pointing to one-pass-end.
@@ -47,6 +54,33 @@ protected:
      * If it is not, an assertion will be raised.
      */
     explicit ViewData(const IteratorType begin, const IteratorType end);
+
+    /**
+     * Copy constructor.
+     */
+    ViewData(const ViewData<IteratorType> &view_data) = default;
+
+    /**
+     * Move constructor.
+     */
+    ViewData(ViewData<IteratorType> &&view_data) = default;
+    ///@}
+
+
+
+    /** @name Assignement operators.*/
+    ///@{
+    /**
+     * Copy assignment operator.
+     */
+    ViewData<IteratorType> &operator=(const ViewData<IteratorType> &view_data);
+
+    /**
+     * Move assignment operator.
+     */
+    ViewData<IteratorType> &operator=(ViewData<IteratorType> &&view_data) = default;
+    ///@}
+protected:
 
     /** Iterator pointing to the first element in the view. */
     IteratorType begin_;
@@ -72,6 +106,12 @@ public:
 
     /** @name Constructor & destructor */
     ///@{
+
+    /**
+     * Default constructor. It does nothing.
+     */
+    View() = default;
+
     /**
      * Construct a view defined by the iterator @p begin pointing to the first element,
      * and the iterator @p end pointing to one-past-the-end element
@@ -141,6 +181,12 @@ public:
 
     /** @name Constructor & destructor */
     ///@{
+
+    /**
+     * Default constructor. It does nothing.
+     */
+    ConstView() = default;
+
     /**
      * Construct a view defined by the const iterator @p begin pointing to the first element,
      * and the const iterator @p end pointing to one-past-the-end element
