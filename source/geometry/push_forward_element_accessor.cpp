@@ -417,8 +417,8 @@ transform_hessians(
                 {
                     const auto &e1 = DF_inv[v1];
                     const auto &e2 = DF_inv[v2];
-                    D2v[v2][v1] = action(action(D2v_hat, e1), e2) -
-                            action(D1v, action(action(D2F, e1), e2));
+                    D2v[v2][v1] = action(D2v_hat, e1, e2) -
+                            action(D1v, action(D2F, e1, e2));
                 }
 
                 for (int v2 = 0; v2 < v1; ++v2)
