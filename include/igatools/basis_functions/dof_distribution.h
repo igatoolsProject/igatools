@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/utils/concatenated_iterator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -84,7 +85,6 @@ public:
 
 private:
 
-    // TODO (pauletti, May 28, 2014): this should be a temporary in the constructor
     //TODO (martinelli, Jun 27, 2014): I think we need this member (in order to work with the DofsManager)
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
@@ -92,6 +92,32 @@ private:
 
     //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
+
+
+
+    /** Type alias for the dofs container used in each scalar component of a single-patch space. */
+    using DofsComponentContainer = std::vector<Index>;
+
+    /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+
+    /** Type alias for the ConstView on the dofs in each scalar component of a single-patch space. */
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+
+    /** Type alias for a concatenated iterator defined on several compoenent views. */
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
+
+    /** Type alias for a concatenated const-iterator defined on several compoenent views. */
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
+
+    /** Type alias for the View on the dofs held by each space in the DofsManager object. */
+    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
+
+    /** Type alias for the View on the dofs held by the DofsManager object. */
+    using DofsView = View<DofsIterator,DofsConstIterator>;
+
+    DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
+
 
     DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
         std::shared_ptr<const CartesianGrid<dim> > grid,
