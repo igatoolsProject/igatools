@@ -99,27 +99,11 @@ private:
 
 
 
-    /** Type alias for the dofs container used in each scalar component of a single-patch space. */
+
     using DofsComponentContainer = std::vector<Index>;
-
-    /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-
-    /** Type alias for the ConstView on the dofs in each scalar component of a single-patch space. */
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-
-    /** Type alias for a concatenated iterator defined on several compoenent views. */
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-
-    /** Type alias for a concatenated const-iterator defined on several compoenent views. */
     using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
-
-    /** Type alias for the View on the dofs held by each space in the DofsManager object. */
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
-    /** Type alias for the View on the dofs held by the DofsManager object. */
-    using DofsView = View<DofsIterator,DofsConstIterator>;
-
+    using DofsView = ConstView<DofsConstIterator>;
     DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
 
 

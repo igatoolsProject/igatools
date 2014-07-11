@@ -50,12 +50,12 @@ for eval in evaluators:
 
 # needed by DofDistribution
 Vec = 'vector<Index>'
-ContView = ('ContainerView<%s>' % Vec)
+#ContView = ('ContainerView<%s>' % Vec)
 ConstContView = ('ConstContainerView<%s>' % Vec)
-It = ('ConcatenatedIterator<%s>' % ContView)
+#It = ('ConcatenatedIterator<%s>' % ContView)
 ConstIt = ('ConcatenatedConstIterator<%s>' % ConstContView)
-View = ('View<%s,%s>' %(It,ConstIt))
-dof_views = set(['DynamicMultiArray<%s,%d>' %(View,dim)
+ConstView = ('ConstView<%s>' %(ConstIt))
+dof_views = set(['DynamicMultiArray<%s,%d>' %(ConstView,dim)
                      for dim in inst.domain_dims])
 for dof_view in dof_views:
    f.write('template class %s ;\n' %dof_view)

@@ -161,14 +161,11 @@ arrangement_close(const bool automatic_dofs_renumbering)
 
     dofs_manager_->dofs_arrangement_open();
 
-//    Index offset = 0;
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
     for (; vertex != vertex_end ; ++vertex)
     {
         auto patch = multipatch_graph_[*vertex];
         shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
-
-//        ref_space->print_info(out);
 
         auto &index_space = ref_space->get_basis_indices().get_index_distribution();
 
@@ -180,7 +177,6 @@ arrangement_close(const bool automatic_dofs_renumbering)
                 index_space_comp_data.begin(),index_space_comp_data.end());
 
             space_components_view.push_back(index_space_comp_view);
-//            dofs_manager_.add_dofs_component_view(index_space_comp_view,offset);
         }
 
         DofsIterator space_dofs_begin(space_components_view,0);
@@ -188,15 +184,10 @@ arrangement_close(const bool automatic_dofs_renumbering)
         SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
 
         dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
-//        offset += ref_space->get_num_basis();
     }
     dofs_manager_->dofs_arrangement_close(automatic_dofs_renumbering);
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
     //---------------------------------------------------------------------------
-    /*
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    //*/
 }
 
 

@@ -61,13 +61,95 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
                 auto comp_dofs = index_distribution_(comp).get_sub_array(origin, increment).get_data();
                 element_loc_to_global_(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
-                for (auto x : element_loc_to_global_)
-                    basis = element_loc_to_global_(index).end();
+                basis = element_loc_to_global_(index).end();
             }
         }
         //*/
     element_loc_to_global_ =
         this->create_element_loc_to_global_from_index_distribution(grid,accum_mult,n_elem_basis,index_distribution_);
+
+    for (const auto elem : *grid)
+    {
+        const auto index = elem.get_tensor_index();
+        auto &dofs_elem_view = element_loc_to_global_view_(index);
+
+
+
+        vector<DofsComponentConstView> dofs_elem_ranges;
+
+
+        for (int comp = 0; comp < Space::n_components; ++comp)
+        {
+            const auto &index_distribution_comp = index_distribution_(comp);
+
+            auto origin = accum_mult(comp).cartesian_product(index);
+            Index origin_flat_id = index_distribution_comp.tensor_to_flat(origin);
+
+            auto increment = n_elem_basis(comp);
+
+            using VecIt = vector<Index>::const_iterator;
+            const VecIt comp_dofs_begin = index_distribution_comp.get_data().begin() + origin_flat_id;
+
+            if (dim == 0)
+            {}
+            else if (dim == 1)
+            {
+                const VecIt comp_dofs_end = comp_dofs_begin+increment[0];
+
+                dofs_elem_ranges.emplace_back(DofsComponentConstView(comp_dofs_begin,comp_dofs_end));
+            }
+            else if (dim == 2)
+            {
+                TensorIndex<dim> incr_t_id;
+                for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                {
+                    TensorIndex<dim> pos_t_id = origin + incr_t_id;
+
+                    Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+
+                    const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
+                    const VecIt pos_end = pos_begin + increment(0);
+
+                    dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+                } // end loop incr_t_id(1)
+            }
+            else if (dim == 3)
+            {
+                TensorIndex<dim> incr_t_id;
+                for (incr_t_id(2) = 0 ; incr_t_id(2) < increment(2); ++incr_t_id(2))
+                {
+                    for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                    {
+                        TensorIndex<dim> pos_t_id = origin + incr_t_id;
+
+                        Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+
+                        const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
+                        const VecIt pos_end = pos_begin + increment(0);
+
+                        dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+
+                    } // end loop incr_t_id(1)
+                } // end loop incr_t_id(2)
+
+            }
+            else
+            {
+                Assert(false,ExcNotImplemented());
+                AssertThrow(false,ExcNotImplemented());
+            }
+
+        }
+        //*/
+
+        if (dim != 0)
+        {
+            dofs_elem_view = DofsView(
+                                 DofsConstIterator(dofs_elem_ranges,0),
+                                 DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
+        }
+//*/
+    }
 }
 
 template<int dim, int range, int rank>
@@ -93,8 +175,7 @@ create_element_loc_to_global_from_index_distribution(
 
             auto comp_dofs = index_distribution(comp).get_sub_array(origin, increment).get_data();
             element_loc_to_global(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
-            for (auto x : element_loc_to_global)
-                basis = element_loc_to_global(index).end();
+            basis = element_loc_to_global(index).end();
         }
     }
     return element_loc_to_global;
