@@ -77,6 +77,17 @@ get_loc_to_global_indices(const TensorIndex<dim> &j) const
 
 
 
+// TODO (antolin, Jul 11, 2014): inline this
+template<int dim, int range, int rank>
+const std::vector<Index> &
+DofDistribution<dim, range, rank>::
+get_loc_to_global_indices(const Index &j) const
+{
+    return element_loc_to_global_(j);
+}
+
+
+
 template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
