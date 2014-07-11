@@ -508,7 +508,7 @@ public:
       \endcode
      *
      */
-    std::vector<Index> const &get_local_to_global() const;
+    std::vector<Index> get_local_to_global() const;
 
     /**
      * Pointer to the BsplineSpace the accessor is iterating on.

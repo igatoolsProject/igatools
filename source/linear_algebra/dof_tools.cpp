@@ -59,7 +59,7 @@ get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
     const auto element_end = space->end();
     for (; element != element_end; ++element)
     {
-        const Vec_t &dofs_element = element->get_local_to_global();
+        const Vec_t dofs_element = element->get_local_to_global();
 
         typename Vec_t::const_iterator dofs_begin = dofs_element.cbegin();
         typename Vec_t::const_iterator dofs_end   = dofs_element.cend();
@@ -224,7 +224,7 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
 
     for (; element != element_end; ++element)
     {
-        const vector< Index > &element_dofs = element->get_local_to_global();
+        const vector< Index > element_dofs = element->get_local_to_global();
         for (const Index &dof : element_dofs)
             dofs_set.insert(dof);
     }

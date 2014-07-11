@@ -128,7 +128,7 @@ public:
         return ref_space_->get_num_basis_per_element_table();
     }
 
-    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return ref_space_->get_loc_to_global(j);
     }

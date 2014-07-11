@@ -15,7 +15,7 @@ Dimensionality Table:
 	Total Dimension: 1
 	
 	0 
-	[ 0 ]
+	[ ]
 	Component[0]: 
 	
 	Push-forward:
@@ -48,7 +48,7 @@ Dimensionality Table:
 		Total Dimension: 1
 		
 		0 
-		[ 0 ]
+		[ ]
 		Component[0]: 
 		
 		Push-forward:

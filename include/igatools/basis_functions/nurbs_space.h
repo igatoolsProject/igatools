@@ -252,7 +252,7 @@ public:
         return sp_space_->get_degree();
     }
 
-    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return sp_space_->get_loc_to_global(j);
     }

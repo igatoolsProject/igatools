@@ -59,9 +59,9 @@ public:
                     const SpaceDimensionTable &n_elem_basis,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
-    const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
 
-    const std::vector<Index> &get_loc_to_global_indices(const Index &elem_flat_id) const;
+    std::vector<Index> get_loc_to_global_indices(const Index &elem_flat_id) const;
 
 
     TensorIndex<dim>
@@ -89,14 +89,20 @@ public:
 
 private:
 
-    //TODO (martinelli, Jun 27, 2014): I think we need this member (in order to work with the DofsManager)
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
     IndexDistributionTable index_distribution_;
 
+#if 0
     //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
 
+    DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
+        std::shared_ptr<const CartesianGrid<dim> > grid,
+        const MultiplicityTable &accum_mult,
+        const SpaceDimensionTable &n_elem_basis,
+        const IndexDistributionTable &index_distribution) const;
+#endif
 
 
 
@@ -107,11 +113,6 @@ private:
     DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
 
 
-    DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
-        std::shared_ptr<const CartesianGrid<dim> > grid,
-        const MultiplicityTable &accum_mult,
-        const SpaceDimensionTable &n_elem_basis,
-        const IndexDistributionTable &index_distribution) const;
 
 public:
 
