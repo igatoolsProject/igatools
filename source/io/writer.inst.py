@@ -41,8 +41,6 @@ for row in inst.user_phy_sp_dims:
     for writer_real_t in writer_real_types:
         writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
         strings.append('template class %s ;\n' % (writer))
-        strings.append('template void %s::save_ascii(ofstream &file) const;\n' % (writer))
-        strings.append('template void %s::save_ascii(LogStream &file) const;\n'% (writer))
 for s in unique(strings): # Removing repeated entries.
     f.write(s)
 
