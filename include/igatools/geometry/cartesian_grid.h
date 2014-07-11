@@ -357,6 +357,10 @@ public:
     void print_info(LogStream &out) const;
 
 
+    /**
+     * Comparison operator. Returns true if the knot coordinates of two grid are identical.
+     */
+    bool operator==(const CartesianGrid<dim> &grid) const;
 
 private:
 

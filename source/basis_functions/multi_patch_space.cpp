@@ -56,7 +56,7 @@ arrangement_open()
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
-arrangement_close()
+arrangement_close(const bool automatic_dofs_renumbering)
 {
     is_arrangement_open_ = false;
 
@@ -190,7 +190,7 @@ arrangement_close()
         dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
 //        offset += ref_space->get_num_basis();
     }
-    dofs_manager_->dofs_arrangement_close();
+    dofs_manager_->dofs_arrangement_close(automatic_dofs_renumbering);
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
     //---------------------------------------------------------------------------
     /*
@@ -232,6 +232,14 @@ add_patch(PatchPtr patch)
     patches_.push_back(patch);
 }
 
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+get_patches() const -> vector<PatchPtr>
+{
+    return patches_;
+}
 
 template <class PhysicalSpace>
 int

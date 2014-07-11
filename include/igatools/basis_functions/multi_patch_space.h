@@ -131,10 +131,17 @@ public:
      * Moreover, performs the data analysis in order to set equality and linear constraints
      * for the degrees of freedom.
      *
+     * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
+     * then the dofs in each space are renumbered by the DofsManager.
+     * The renumbering is made in ascending order processing the dofs space views as inserted
+     * using the function add_dofs_space_view.
+     *
+     * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
+     *
      * @warning After calling this function, it will be not possible to add new patches/interfaces
      * to the MultiPatchSpace.
      */
-    void arrangement_close();
+    void arrangement_close(const bool automatic_dofs_renumbering = true);
 
     /**
      * Adds a patch to the space.
@@ -155,6 +162,9 @@ public:
                        PatchPtr patch_1,const int side_id_patch_1);
     ///@}
 
+
+    /** Returns the patches (i.e. the physical spaces) used to define the MultiPatchSpace. */
+    std::vector<PatchPtr> get_patches() const;
 
     /** Returns the number of patches used to define this space. */
     int get_num_patches() const;
