@@ -87,12 +87,17 @@ private:
     // TODO (pauletti, May 28, 2014): this should be a temporary in the constructor
     //TODO (martinelli, Jun 27, 2014): I think we need this member (in order to work with the DofsManager)
     using IndexDistributionTable =
-        typename Space::template ComponentContainer<DynamicMultiArray<Index,dim>>;
+        StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
     IndexDistributionTable index_distribution_;
 
     //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
 
+    DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
+        std::shared_ptr<const CartesianGrid<dim> > grid,
+        const MultiplicityTable &accum_mult,
+        const SpaceDimensionTable &n_elem_basis,
+        const IndexDistributionTable &index_distribution) const;
 
 public:
 

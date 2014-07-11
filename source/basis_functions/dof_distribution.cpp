@@ -21,11 +21,14 @@
 
 #include <igatools/basis_functions/dof_distribution.h>
 
+using std::vector;
+using std::shared_ptr;
+
 IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
-DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
+DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis,
                 const SpaceDimensionTable &n_elem_basis,
@@ -43,11 +46,43 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
         for (auto &x : index_distribution_(comp))
             x = j++;
     }
+    /*
+        for (const auto elem : *grid)
+        {
+            const auto index = elem.get_tensor_index();
+            auto &basis_list = element_loc_to_global_(index);
+            auto basis = basis_list.begin();
 
+            for (int comp = 0; comp < Space::n_components; ++comp)
+            {
+                auto origin = accum_mult(comp).cartesian_product(index);
+                auto increment = n_elem_basis(comp);
+
+                auto comp_dofs = index_distribution_(comp).get_sub_array(origin, increment).get_data();
+                element_loc_to_global_(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
+                for (auto x : element_loc_to_global_)
+                    basis = element_loc_to_global_(index).end();
+            }
+        }
+        //*/
+    element_loc_to_global_ =
+        this->create_element_loc_to_global_from_index_distribution(grid,accum_mult,n_elem_basis,index_distribution_);
+}
+
+template<int dim, int range, int rank>
+DynamicMultiArray<vector<Index>, dim>
+DofDistribution<dim, range, rank>::
+create_element_loc_to_global_from_index_distribution(
+    shared_ptr<const CartesianGrid<dim> > grid,
+    const MultiplicityTable &accum_mult,
+    const SpaceDimensionTable &n_elem_basis,
+    const IndexDistributionTable &index_distribution) const
+{
+    DynamicMultiArray<vector<Index>, dim> element_loc_to_global(grid->get_num_elements_dim());
     for (const auto elem : *grid)
     {
         const auto index = elem.get_tensor_index();
-        auto &basis_list = element_loc_to_global_(index);
+        auto &basis_list = element_loc_to_global(index);
         auto basis = basis_list.begin();
 
         for (int comp = 0; comp < Space::n_components; ++comp)
@@ -55,20 +90,19 @@ DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
             auto origin = accum_mult(comp).cartesian_product(index);
             auto increment = n_elem_basis(comp);
 
-            auto comp_dofs = index_distribution_(comp).get_sub_array(origin, increment).get_data();
-            element_loc_to_global_(index).insert
-            (basis, comp_dofs.begin(), comp_dofs.end());
-            for (auto x : element_loc_to_global_)
-                basis = element_loc_to_global_(index).end();
+            auto comp_dofs = index_distribution(comp).get_sub_array(origin, increment).get_data();
+            element_loc_to_global(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
+            for (auto x : element_loc_to_global)
+                basis = element_loc_to_global(index).end();
         }
     }
+    return element_loc_to_global;
 }
-
 
 
 // TODO (pauletti, May 28, 2014): inline this
 template<int dim, int range, int rank>
-const std::vector<Index> &
+const vector<Index> &
 DofDistribution<dim, range, rank>::
 get_loc_to_global_indices(const TensorIndex<dim> &j) const
 {
