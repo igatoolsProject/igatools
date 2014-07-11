@@ -58,6 +58,8 @@ public:
 
     const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
 
+    const std::vector<Index> &get_loc_to_global_indices(const Index &elem_flat_id) const;
+
 
     TensorIndex<dim>
     basis_flat_to_tensor(const Index index, const Index comp) const
