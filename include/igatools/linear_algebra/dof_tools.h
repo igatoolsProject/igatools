@@ -221,7 +221,7 @@ SparsityPattern get_sparsity_pattern(
 /**
  * Modifies the matrix, the unknown and rhs of a linear system
  * to impose dirichlet constraints on the dofs.
- * todo: document more.
+ * todo: //TODO: apply_dirichlet_constraint? and document more.
  */
 template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
