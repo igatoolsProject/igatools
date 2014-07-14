@@ -706,6 +706,17 @@ EnableIf<!std::is_same<V_t,Tdouble>::value,
 }
 
 
+template <typename A_t, typename V_t, typename... Rest>
+EnableIf<!std::is_same<V_t,Tdouble>::value,
+ActionTensor<ActionTensor<A_t>> >
+action(const A_t &A, const V_t &x, const Rest&... rest)
+{
+    auto B = action(A,x);
+    return action(B, rest...);
+}
+
+
+
 /**
  * Composition of two tensors for which is well defined.
  * R = S compose by T

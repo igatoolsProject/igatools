@@ -84,20 +84,26 @@ value_to_mapping_flag(
 
     if (transformation_type == Transformation::h_grad)
     {
-        if (contains(v_flag,ValueFlags::tran_value))
-            fill_flag |= (ValueFlags::point | ValueFlags::face_point);
-        if (contains(v_flag,ValueFlags::tran_gradient))
-            fill_flag |= (ValueFlags::map_gradient |
-                          ValueFlags::map_inv_gradient|
-                          ValueFlags::map_face_gradient |
-                          ValueFlags::map_face_inv_gradient);
+        auto flag = v_flag;
         if (contains(v_flag,ValueFlags::tran_hessian))
+        {
+            flag |= ValueFlags::tran_gradient;
             fill_flag |= (ValueFlags::map_hessian|
-                          ValueFlags::map_inv_hessian |
                           ValueFlags::map_inv_gradient|
                           ValueFlags::map_face_hessian|
                           ValueFlags::map_face_inv_hessian |
                           ValueFlags::map_face_inv_gradient);
+        }
+        if (contains(flag,ValueFlags::tran_value))
+            fill_flag |= (ValueFlags::point | ValueFlags::face_point);
+
+        if (contains(flag,ValueFlags::tran_gradient))
+            fill_flag |= (ValueFlags::map_gradient |
+                          ValueFlags::map_inv_gradient|
+                          ValueFlags::map_face_gradient |
+                          ValueFlags::map_face_inv_gradient);
+
+
     }
     else if (transformation_type == Transformation::h_div)
     {
@@ -384,46 +390,43 @@ transform_hessians(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
-    // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D2v.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D2v.size() / num_points;
+    const int n_func = D2v.get_num_functions();
 
 
-    const auto &inv_gradients_map = this->get_inv_gradients(topology_id);
-    const auto &inv_hessians_map = this->get_inv_hessians(topology_id);
+    const auto &inv_gradients = this->get_inv_gradients(topology_id);
+    const auto &hessians      = this->get_map_hessians(topology_id);
 
-    auto D1v_hat_iterator = D1v_hat.cbegin();
+    Container<PhysDerivative<dim_range, rank, 1>> D1v(n_func, num_points);
+    transform_gradients<dim_range, rank,Container, type> (D0v_hat, D1v_hat, D1v, topology_id);
+
     auto D2v_hat_iterator = D2v_hat.cbegin();
+    auto D1v_iterator = D1v.cbegin();
     auto D2v_iterator = D2v.begin();
 
     for (int ifn = 0; ifn < n_func; ++ifn)
         for (int jpt = 0; jpt < num_points; ++jpt)
         {
-
-            const auto &DF_inv  = inv_gradients_map[jpt];
-            const auto &D2F_inv = inv_hessians_map[jpt];
-
-            //TODO: create a tensor compose to get rid of for loop here
-            for (int u = 0; u < dim; u++)
+            const auto &DF_inv  = inv_gradients[jpt];
+            const auto &D2F     = hessians[jpt];
+            const auto &D2v_hat = *D2v_hat_iterator;
+            const auto &D1v     = *D1v_iterator;
+            auto &D2v           = *D2v_iterator;
+            for (int v1 = 0; v1 < dim; ++v1)
             {
-                const auto tmp_u = action((*D2v_hat_iterator),DF_inv[u]);
-                for (int v = 0; v < dim; v++)
+                for (int v2 = 0; v2 <= v1; ++v2)
                 {
-                    (*D2v_iterator)[u][v] = action((*D1v_hat_iterator),D2F_inv[u][v]) +
-                                            action(tmp_u,DF_inv[v]);
-                } // end loop v
-            } // end loop u
-            /*
-            for (int u = 0; u<dim; u++)
-            {
-                (*D2v_iterator)[u] =  compose((*D2v_hat_iterator)[u], DF_inv);
-                (*D2v_iterator)[u] += compose((*D1v_hat_iterator), D2F_inv[u]);
+                    const auto &e1 = DF_inv[v1];
+                    const auto &e2 = DF_inv[v2];
+                    D2v[v2][v1] = action(D2v_hat, e1, e2) -
+                            action(D1v, action(D2F, e1, e2));
+                }
+
+                for (int v2 = 0; v2 < v1; ++v2)
+                    D2v[v1][v2] = D2v[v2][v1];
             }
-            //*/
-            ++D1v_hat_iterator;
+
             ++D2v_hat_iterator;
+            ++D1v_iterator;
             ++D2v_iterator;
         } // end loop jpt
 }
