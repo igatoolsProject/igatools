@@ -35,7 +35,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 DistributionPolicy pol)
     :
 //    element_loc_to_global_(grid->get_num_elements_dim()),
-    element_loc_to_global_view_(grid->get_num_elements_dim())
+    element_loc_to_global_view_(grid->get_num_elements_dim()),
+    policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
@@ -47,11 +48,38 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         for (auto &x : index_distribution_(comp))
             x = j++;
     }
+
+
 #if 0
     element_loc_to_global_ =
         this->create_element_loc_to_global_from_index_distribution(grid,accum_mult,n_elem_basis,index_distribution_);
 #endif
 
+    this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
+
+}
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol)
+{
+    index_distribution_ = index_distribution;
+
+    policy_ = pol;
+}
+
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+create_element_loc_to_global_view(
+    std::shared_ptr<const CartesianGrid<dim> > grid,
+    const MultiplicityTable &accum_mult,
+    const SpaceDimensionTable &n_elem_basis)
+{
     for (const auto elem : *grid)
     {
         const auto index = elem.get_tensor_index();
@@ -74,19 +102,20 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
             if (dim == 0)
             {
-                const VecIt pos_begin = index_distribution_comp.get_data().begin() + origin_flat_id;
+                const VecIt pos_begin = comp_dofs_begin + origin_flat_id;
                 const VecIt pos_end   = pos_begin+1; // one dof for spaces with dim==0
 
                 dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
 
-            }
+            } // end if (dim == 0)
             else if (dim == 1)
             {
-                const VecIt pos_begin = index_distribution_comp.get_data().begin() + origin_flat_id;
+                const VecIt pos_begin = comp_dofs_begin + origin_flat_id;
                 const VecIt pos_end   = pos_begin+increment[0];
 
                 dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
-            }
+
+            } // end else if (dim == 1)
             else if (dim == 2)
             {
                 TensorIndex<dim> incr_t_id;
@@ -101,7 +130,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
                     dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
                 } // end loop incr_t_id(1)
-            }
+
+            } // end else if (dim == 2)
             else if (dim == 3)
             {
                 TensorIndex<dim> incr_t_id;
@@ -121,25 +151,22 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                     } // end loop incr_t_id(1)
                 } // end loop incr_t_id(2)
 
-            }
+            } // end else if (dim == 3)
             else
             {
                 Assert(false,ExcNotImplemented());
                 AssertThrow(false,ExcNotImplemented());
             }
 
-        }
-        //*/
+        } // end loop elem
 
-//        if (dim != 0)
-//        {
         dofs_elem_view = DofsView(
                              DofsConstIterator(dofs_elem_ranges,0),
                              DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
-//        }
-//*/
     }
 }
+
+
 
 #if 0
 template<int dim, int range, int rank>

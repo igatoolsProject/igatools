@@ -45,6 +45,8 @@ public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using IndexDistributionTable =
+        StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
     enum class DistributionPolicy
     {
@@ -58,6 +60,8 @@ public:
                     const SpaceDimensionTable &n_basis,
                     const SpaceDimensionTable &n_elem_basis,
                     DistributionPolicy pol = DistributionPolicy::standard);
+
+    void reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol);
 
     std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
 
@@ -89,8 +93,6 @@ public:
 
 private:
 
-    using IndexDistributionTable =
-        StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
     IndexDistributionTable index_distribution_;
 
 #if 0
@@ -105,6 +107,11 @@ private:
 #endif
 
 
+    void create_element_loc_to_global_view(
+        std::shared_ptr<const CartesianGrid<dim> > grid,
+        const MultiplicityTable &accum_mult,
+        const SpaceDimensionTable &n_elem_basis);
+
 
     using DofsComponentContainer = std::vector<Index>;
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
@@ -112,7 +119,7 @@ private:
     using DofsView = ConstView<DofsConstIterator>;
     DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
 
-
+    DistributionPolicy policy_;
 
 public:
 
