@@ -13,7 +13,7 @@ Component Dimension:
 Total Dimension: 1
 
 0 
-[ ]
+[ 0 ]
 Component[0]: 
 
 Initial degree = 1

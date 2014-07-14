@@ -73,7 +73,13 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
             const VecIt comp_dofs_begin = index_distribution_comp.get_data().begin();
 
             if (dim == 0)
-            {}
+            {
+                const VecIt pos_begin = index_distribution_comp.get_data().begin() + origin_flat_id;
+                const VecIt pos_end   = pos_begin+1; // one dof for spaces with dim==0
+
+                dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+
+            }
             else if (dim == 1)
             {
                 const VecIt pos_begin = index_distribution_comp.get_data().begin() + origin_flat_id;
@@ -125,12 +131,12 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         }
         //*/
 
-        if (dim != 0)
-        {
-            dofs_elem_view = DofsView(
-                                 DofsConstIterator(dofs_elem_ranges,0),
-                                 DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
-        }
+//        if (dim != 0)
+//        {
+        dofs_elem_view = DofsView(
+                             DofsConstIterator(dofs_elem_ranges,0),
+                             DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
+//        }
 //*/
     }
 }

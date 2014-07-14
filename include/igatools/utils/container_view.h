@@ -31,7 +31,10 @@
 
 IGA_NAMESPACE_OPEN
 
-
+/**
+ *
+ * @todo Document this class
+ */
 template <class IteratorType>
 class ViewData
 {

@@ -52,7 +52,10 @@ ConcatenatedIteratorData(
     for (int i = 0 ; i < n_ranges ; ++i)
     {
         //TODO (mm): maybe it is better to assert  ranges_[i].begin() < ranges_[i].end()
-        Assert(ranges_[i].begin() != ranges_[i].end(),ExcInvalidIterator());
+        Assert(ranges_[i].begin() < ranges_[i].end(),
+               ExcInvalidIterator());
+//        Assert(ranges_[i].begin() < ranges_[i].end() || ranges_[i].begin() == ranges_[i].end(),
+//              ExcInvalidIterator());
     }
 #endif
 

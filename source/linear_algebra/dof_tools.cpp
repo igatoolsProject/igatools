@@ -41,7 +41,8 @@ get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
                      EnableIf<is_function_space<SpaceType>() > *)
 {
     // build the dofs graph
-    const vector< Index > &dofs = get_dofs(space);
+    const vector<Index> &dofs = get_dofs(space);
+    Assert(!dofs.empty(),ExcEmptyObject());
 
     SparsityPattern sparsity_pattern(dofs, dofs);
 
@@ -217,6 +218,8 @@ template < class SpaceType >
 vector<Index>
 get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType>()> *)
 {
+//  LogStream out;
+//  space->print_info(out);
     auto element = space->begin();
     const auto element_end = space->end();
 
@@ -225,6 +228,8 @@ get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType
     for (; element != element_end; ++element)
     {
         const vector< Index > element_dofs = element->get_local_to_global();
+        Assert(!element_dofs.empty(),ExcEmptyObject());
+
         for (const Index &dof : element_dofs)
             dofs_set.insert(dof);
     }
