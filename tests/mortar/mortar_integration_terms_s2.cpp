@@ -230,15 +230,15 @@ int main()
 	mortar_faces.push_back({1});
 	mortar_faces.push_back({0});
 	
-
+	
 	for(uint i=0; i!=maps_d21.size(); ++i){
 		ref_spaces_field.push_back(RefSpaceField::create(degrees[i], maps_d21[i]->get_grid()));
 		spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps_d21[i]),i));
-//		spaces[i]->print_info(out);
+		//		spaces[i]->print_info(out);
 		if (i==1){
 			spaces[i]->refine_h(2); 
 		}// Problem here with a value different than 2
-		//spaces[i]->print_info(out);
+		spaces[i]->print_info(out);
 		////This should be done before:
 		auto tmp_mortar_faces=mortar_faces[i];
 		auto crr_mortar=tmp_mortar_faces.begin(), end_mortar=tmp_mortar_faces.end();
@@ -253,7 +253,7 @@ int main()
 	
 	domain_multip.arrangement_close();
 	
-
+	
 	// multiplier space 
 	const int degree_multiplier=1;
 	auto ref_space_multiplier = RefSpaceField::create(degree_multiplier,spaces[0]->get_grid());
@@ -289,8 +289,8 @@ int main()
 	auto tmp0_bd_id0_2=joint_grid[0]->get_boundary_id(2);
 	auto tmp0_bd_id0_3=joint_grid[0]->get_boundary_id(3);
 	out<< to_string(tmp0_bd_id0_0)<< to_string(tmp0_bd_id0_1)<< to_string(tmp0_bd_id0_2)<< to_string(tmp0_bd_id0_3)<<endl;
-
-
+	
+	
 	for(uint i=0; i!=joint_grid.size(); ++i){
 		auto tmp_mortar_faces=mortar_faces[i];
 		auto crr_mortar=tmp_mortar_faces.begin(), end_mortar=tmp_mortar_faces.end();
@@ -325,8 +325,6 @@ int main()
 	
 	vector<Index> elem_slave_id;
 	vector<Index> elem_master_id;
-	vector<vector<Points<dim>>> slave_quad_ref_points;
-	vector<vector<Points<dim>>> master_quad_ref_points;
 	auto elem_Jm=*joint_grid[1]->begin();
 	for(auto elem_Js: *joint_grid[0]){
 		if (elem_Js.is_boundary()){
@@ -338,7 +336,6 @@ int main()
 						auto elem_Js_id     = elem_Js.get_flat_index();
 						elem_slave_id.push_back(joint_to_slave[elem_Js_id]);
  						out<<"SLAVE ID"<<elem_Js_id<<joint_to_slave[elem_Js_id]<<endl;
-						slave_quad_ref_points.push_back(elem_Js.transform_points_unit_to_reference(slave_pts_unit_domain));
 					}
 				}
 				if (elem_Jm.is_boundary(face_id)){
@@ -348,7 +345,6 @@ int main()
 						auto elem_Jm_id     = elem_Js.get_flat_index();
 						elem_master_id.push_back(joint_to_master[elem_Jm_id]); 	
 						out<<"MASTER ID"<<elem_Jm_id<<joint_to_master[elem_Jm_id]<<endl;
-						master_quad_ref_points.push_back(elem_Jm.transform_points_unit_to_reference(master_pts_unit_domain));
 					}
 				}
 			}
@@ -363,97 +359,71 @@ int main()
  	DenseMatrix loc_mat1(nt_basism, nt_basis1);
 	loc_mat0.clear();
 	loc_mat1.clear();
-	out<<loc_mat0<<endl;
-	out<<loc_mat1<<endl;
-	
 	
 	int elem_nb(0);
 	for(auto elem_Js: *joint_grid[0]){
 		if (elem_Js.is_boundary()){
 			for (Index face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id){
 				if (elem_Js.is_boundary(face_id)){
+					auto loc_to_globm=elem_Js->get_loc_to_global();
+					auto loc_to_glob0=elem_Js->get_loc_to_global();
 					auto grid_tmp=elem_Js.get_grid();					
 					if (grid_tmp->get_boundary_id(face_id)==mortar_id){
 						
-						//auto slave_quad_ref_domain = elem_Js.transform_points_unit_to_reference(slave_pts_unit_domain);
-						auto slave_quad_ref_domain=slave_quad_ref_points[elem_nb];
-						out<<"SLAVE"<<slave_pts_unit_domain<<slave_quad_ref_domain<<endl;
-						//to correct below
-						//auto master_quad_ref_domain = elem_Js.transform_points_unit_to_reference(master_pts_unit_domain);
-						auto master_quad_ref_domain=master_quad_ref_points[elem_nb];
-						out<<"MASTER"<<master_pts_unit_domain<<master_quad_ref_domain<<endl;
+						auto quad_ref_domain = elem_Js.transform_points_unit_to_reference(slave_pts_unit_domain);
 						const auto w_meas=static_cast<CartesianGridElement<dim>&>(elem_Js).get_measure(FaceTopology<dim>(1));
 						out<<w_meas<<endl;
-	//
+						//
 						auto elem_slave     = spaces[0]->get_element(elem_slave_id[elem_nb]);
-						auto dofs_slave     = elem_slave.get_local_to_global();
 						auto elem_multiplier= multiplier_space->get_element(elem_slave_id[elem_nb]);
-						auto dofs_multiplier= elem_multiplier.get_local_to_global();
 						auto elem_master    = spaces[1]->get_element(elem_master_id[elem_nb]);
-						auto dofs_master    = elem_master.get_local_to_global();
-						out<<"dof_master"<<elem_master_id[elem_nb]<<dofs_master<<endl;
-						out<<"dof_slave"<<elem_slave_id[elem_nb]<<dofs_slave<<endl;
 						vector<Gradient> grad_0;
-						maps_d21[0]->evaluate_gradients_at_points(slave_quad_ref_domain,grad_0);//slave_pts_unit_domain, grad_0);
+						maps_d21[0]->evaluate_gradients_at_points(quad_ref_domain,grad_0);//slave_pts_unit_domain, grad_0);
 						auto det=determinant<dim,dim>(grad_0[0]);
 						out<<det<<"ICI"<<endl;
-	//					
-						auto temp_es=elem_slave.as_cartesian_grid_element_accessor();
-						auto temp_slave_quad=temp_es.transform_points_reference_to_unit(slave_quad_ref_domain);
-						auto temp_em=elem_master.as_cartesian_grid_element_accessor();
-						auto temp_master_quad=temp_em.transform_points_reference_to_unit(master_quad_ref_domain);
-	//					 
+						//					
+						//					 
+						auto basis_slave=elem_slave.evaluate_basis_values_at_points(slave_pts_unit_domain);
+						auto basis_multiplier=elem_multiplier.evaluate_basis_values_at_points(slave_pts_unit_domain);
+						auto basis_master=elem_master.evaluate_basis_values_at_points(slave_pts_unit_domain);
+						//					
 						
-						auto basis_slave=elem_slave.evaluate_basis_values_at_points(temp_slave_quad);
-						auto basis_multiplier=elem_multiplier.evaluate_basis_values_at_points(temp_slave_quad);
-						auto basis_master=elem_master.evaluate_basis_values_at_points(temp_master_quad);
-	//					
-						out<<"nb points"<<n_qp<<endl;
 						
 						for (int i = 0; i < n_basism; ++i){
 							auto phi_m = basis_multiplier.get_function_view(i);
+							loc_to_gbl_i=loc_to_gbl[i]; 
 							for (int j = 0; j < n_basis0; ++j){
 								auto phj_0 = basis_slave.get_function_view(j);
 								for (int qp = 0; qp < n_qp; ++qp){
-									//out<<"Fm"<<i<<phi_m[qp]<<"Fs"<<j<<phj_0[qp]<<endl;
-									//out<<w_meas<<w_unit_domain[qp]<<dofs_multiplier[i]<<dofs_slave[j]<<endl;
-									loc_mat0(dofs_multiplier[i],dofs_slave[j])=loc_mat0(dofs_multiplier[i],dofs_slave[j])
-																		+scalar_product(phi_m[qp],phj_0[qp])*w_meas*w_unit_domain[qp]*determinant<dim,dim>(grad_0[qp]);
-	//					auto phi_0 = basis0.get_function_view(0);
-	//					out<<phi_0[0]<<phi_0[1];
-	//					auto phi_1 = basis1.get_function_view(0);
-	//					out<<phi_1[0]<<phi_1[1];
-	//					
-	//					//		out<<"elem0"  <<to_string(elem_0_id) << endl;
+									out<<scalar_product(phi_m[qp],phj_0[qp])*w_meas*w_unit_domain[qp]*determinant<dim,dim>(grad_0[qp]);
+									//					auto phi_0 = basis0.get_function_view(0);
+									//					out<<phi_0[0]<<phi_0[1];
+									//					auto phi_1 = basis1.get_function_view(0);
+									//					out<<phi_1[0]<<phi_1[1];
+									//					
+									//					//		out<<"elem0"  <<to_string(elem_0_id) << endl;
 								}
 							}
 							for (int j = 0; j < n_basis1; ++j){
-								auto phj_1 = basis_master.get_function_view(j);
+								auto phj_0 = basis_master.get_function_view(j);
 								for (int qp = 0; qp < n_qp; ++qp){
-									out<<"Master"<<"Fm"<<i<<phi_m[qp]<<"Fmaster"<<j<<phj_1[qp]<<endl;
-									out<<w_meas<<w_unit_domain[qp]<<dofs_multiplier[i]<<dofs_master[j]<<endl;
-									loc_mat1(dofs_multiplier[i],dofs_master[j])=loc_mat1(dofs_multiplier[i],dofs_master[j]) 
-																		+scalar_product(phi_m[qp],phj_1[qp])*w_meas*w_unit_domain[qp]*determinant<dim,dim>(grad_0[qp]);
-							//					auto phi_0 = basis0.get_function_view(0);
-							//					out<<phi_0[0]<<phi_0[1];
-							//					auto phi_1 = basis1.get_function_view(0);
-							//					out<<phi_1[0]<<phi_1[1];
-							//					
-							//					//		out<<"elem0"  <<to_string(elem_0_id) << endl;
+									out<<scalar_product(phi_m[qp],phj_0[qp])*w_meas*w_unit_domain[qp]*determinant<dim,dim>(grad_0[qp]);
+									//					auto phi_0 = basis0.get_function_view(0);
+									//					out<<phi_0[0]<<phi_0[1];
+									//					auto phi_1 = basis1.get_function_view(0);
+									//					out<<phi_1[0]<<phi_1[1];
+									//					
+									//					//		out<<"elem0"  <<to_string(elem_0_id) << endl;
 								}
 							}
-	//					out<<"HERE";
-							
+							//					out<<"HERE";
 						}
-						elem_nb=elem_nb+1;
 					}
 				}
 			}
 		}
-		
+		elem_nb+=elem_nb;
 	}
-	out<<loc_mat0<<endl;
-	out<<loc_mat1<<endl;
 	//auto elem1=spaces[1]->get_element(1);
 	////out << elem1.get_flat_index();
 	
