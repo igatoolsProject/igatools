@@ -34,7 +34,9 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const SpaceDimensionTable &n_elem_basis,
                 DistributionPolicy pol)
     :
-    element_loc_to_global_(grid->get_num_elements_dim())
+//    element_loc_to_global_(grid->get_num_elements_dim()),
+    element_loc_to_global_view_(grid->get_num_elements_dim()),
+    policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
@@ -46,29 +48,127 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         for (auto &x : index_distribution_(comp))
             x = j++;
     }
-    /*
-        for (const auto elem : *grid)
-        {
-            const auto index = elem.get_tensor_index();
-            auto &basis_list = element_loc_to_global_(index);
-            auto basis = basis_list.begin();
 
-            for (int comp = 0; comp < Space::n_components; ++comp)
-            {
-                auto origin = accum_mult(comp).cartesian_product(index);
-                auto increment = n_elem_basis(comp);
 
-                auto comp_dofs = index_distribution_(comp).get_sub_array(origin, increment).get_data();
-                element_loc_to_global_(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
-                for (auto x : element_loc_to_global_)
-                    basis = element_loc_to_global_(index).end();
-            }
-        }
-        //*/
+#if 0
     element_loc_to_global_ =
         this->create_element_loc_to_global_from_index_distribution(grid,accum_mult,n_elem_basis,index_distribution_);
+#endif
+
+    this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
+
 }
 
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol)
+{
+    index_distribution_ = index_distribution;
+
+    policy_ = pol;
+}
+
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+create_element_loc_to_global_view(
+    std::shared_ptr<const CartesianGrid<dim> > grid,
+    const MultiplicityTable &accum_mult,
+    const SpaceDimensionTable &n_elem_basis)
+{
+    for (const auto elem : *grid)
+    {
+        const auto index = elem.get_tensor_index();
+        auto &dofs_elem_view = element_loc_to_global_view_(index);
+
+        vector<DofsComponentConstView> dofs_elem_ranges;
+
+
+        for (int comp = 0; comp < Space::n_components; ++comp)
+        {
+            const auto &index_distribution_comp = index_distribution_(comp);
+
+            auto origin = accum_mult(comp).cartesian_product(index);
+            Index origin_flat_id = index_distribution_comp.tensor_to_flat(origin);
+
+            auto increment = n_elem_basis(comp);
+
+            using VecIt = vector<Index>::const_iterator;
+            const VecIt comp_dofs_begin = index_distribution_comp.get_data().begin();
+
+            if (dim == 0)
+            {
+                const VecIt pos_begin = comp_dofs_begin + origin_flat_id;
+                const VecIt pos_end   = pos_begin+1; // one dof for spaces with dim==0
+
+                dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+
+            } // end if (dim == 0)
+            else if (dim == 1)
+            {
+                const VecIt pos_begin = comp_dofs_begin + origin_flat_id;
+                const VecIt pos_end   = pos_begin+increment[0];
+
+                dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+
+            } // end else if (dim == 1)
+            else if (dim == 2)
+            {
+                TensorIndex<dim> incr_t_id;
+                for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                {
+                    TensorIndex<dim> pos_t_id = origin + incr_t_id;
+
+                    Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+
+                    const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
+                    const VecIt pos_end = pos_begin + increment(0);
+
+                    dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+                } // end loop incr_t_id(1)
+
+            } // end else if (dim == 2)
+            else if (dim == 3)
+            {
+                TensorIndex<dim> incr_t_id;
+                for (incr_t_id(2) = 0 ; incr_t_id(2) < increment(2); ++incr_t_id(2))
+                {
+                    for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                    {
+                        TensorIndex<dim> pos_t_id = origin + incr_t_id;
+
+                        Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+
+                        const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
+                        const VecIt pos_end = pos_begin + increment(0);
+
+                        dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
+
+                    } // end loop incr_t_id(1)
+                } // end loop incr_t_id(2)
+
+            } // end else if (dim == 3)
+            else
+            {
+                Assert(false,ExcNotImplemented());
+                AssertThrow(false,ExcNotImplemented());
+            }
+
+        } // end loop elem
+
+        dofs_elem_view = DofsView(
+                             DofsConstIterator(dofs_elem_ranges,0),
+                             DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
+    }
+}
+
+
+
+#if 0
 template<int dim, int range, int rank>
 DynamicMultiArray<vector<Index>, dim>
 DofDistribution<dim, range, rank>::
@@ -92,32 +192,35 @@ create_element_loc_to_global_from_index_distribution(
 
             auto comp_dofs = index_distribution(comp).get_sub_array(origin, increment).get_data();
             element_loc_to_global(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
-            for (auto x : element_loc_to_global)
-                basis = element_loc_to_global(index).end();
+            basis = element_loc_to_global(index).end();
         }
     }
     return element_loc_to_global;
 }
-
+#endif
 
 // TODO (pauletti, May 28, 2014): inline this
 template<int dim, int range, int rank>
-const vector<Index> &
+vector<Index>
 DofDistribution<dim, range, rank>::
 get_loc_to_global_indices(const TensorIndex<dim> &j) const
 {
-    return element_loc_to_global_(j);
+    const auto &dofs_elem_view = element_loc_to_global_view_(j);
+
+    return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
 }
 
 
 
 // TODO (antolin, Jul 11, 2014): inline this
 template<int dim, int range, int rank>
-const std::vector<Index> &
+std::vector<Index>
 DofDistribution<dim, range, rank>::
 get_loc_to_global_indices(const Index &j) const
 {
-    return element_loc_to_global_(j);
+    const auto &dofs_elem_view = element_loc_to_global_view_(j);
+
+    return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
 }
 
 
@@ -130,10 +233,11 @@ add_dofs_offset(const Index offset)
     for (auto &dofs_component : index_distribution_)
         for (auto &dof_id : dofs_component)
             dof_id += offset;
-
+#if 0
     for (auto &dofs_element : element_loc_to_global_)
         for (auto &dof_id : dofs_element)
             dof_id += offset;
+#endif
 }
 
 
@@ -146,9 +250,22 @@ print_info(LogStream &out) const
         index_distribution_(comp).print_info(out);
     out << std::endl;
 
+#if 0
     for (auto x : element_loc_to_global_)
         out << x <<  std::endl;
+#endif
 
+    int i = 0;
+    for (auto dofs_elem : element_loc_to_global_view_)
+    {
+        out << this->get_loc_to_global_indices(i++) << std::endl;
+        /*
+        out << "[ ";
+        for (auto x : dofs_elem)
+            out << x << " ";
+        out << "]" << std::endl;
+        //*/
+    }
 }
 
 IGA_NAMESPACE_CLOSE

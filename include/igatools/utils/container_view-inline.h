@@ -37,6 +37,7 @@ ViewData(const IteratorType begin, const IteratorType end)
     end_(end)
 {
     Assert(begin_ < end_, ExcInvalidIterator());
+//    Assert(begin_ < end_ || begin_ == end_, ExcInvalidIterator());
 }
 
 template <class IteratorType>
@@ -46,6 +47,21 @@ ViewData<IteratorType>::
 get_num_entries() const
 {
     return end_ - begin_;
+}
+
+
+template <class IteratorType>
+inline
+ViewData<IteratorType> &
+ViewData<IteratorType>::
+operator=(const ViewData<IteratorType> &view_data)
+{
+    if (this != &view_data)
+    {
+        begin_ = view_data.begin_;
+        end_   = view_data.end_;
+    }
+    return *this;
 }
 
 

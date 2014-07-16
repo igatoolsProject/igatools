@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
  * See module on @ref accessors_iterators for a general overview.
  * @ingroup accessors
  */
-template< class PushForward_ >
+template<class PushForward_>
 class PushForwardElementAccessor
     : public MappingElementAccessor<PushForward_::dim, PushForward_::codim>
 {
@@ -68,10 +68,10 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    PushForwardElementAccessor() = delete ;
+    PushForwardElementAccessor() = delete;
 
     explicit PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
-                                        const int index) ;
+                                        const int index);
 
     /**
      * Copy constructor.
@@ -81,7 +81,7 @@ public:
     /**
      * Copy assignment operator.
      */
-    PushForwardElementAccessor<PushForward_> &operator=(const PushForwardElementAccessor<PushForward_> &element) = default ;
+    PushForwardElementAccessor<PushForward_> &operator=(const PushForwardElementAccessor<PushForward_> &element) = default;
 
     /**
      * Move constructor.
@@ -91,12 +91,12 @@ public:
     /**
      * Move assignment operator.
      */
-    PushForwardElementAccessor<PushForward_> &operator=(PushForwardElementAccessor<PushForward_> &&element) = default ;
+    PushForwardElementAccessor<PushForward_> &operator=(PushForwardElementAccessor<PushForward_> &&element) = default;
 
     /**
      * Destructor.
      */
-    ~PushForwardElementAccessor() = default ;
+    ~PushForwardElementAccessor() = default;
 
     /**
      * This function and fill_cache must be called before
@@ -108,11 +108,11 @@ public:
      *
      */
     void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad) ;
+                     const Quadrature<dim> &quad);
 
     void init_face_values(const Index face_id,
                           const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad) ;
+                          const Quadrature<dim-1> &quad);
 
     /** @name Mapping used for transforming quantities with the use of the cache  */
     ///@{
@@ -249,16 +249,12 @@ public:
 
     ///@}
 
+    void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
-    void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const ;
-
-    void print_memory_info(LogStream &out) const ;
+    void print_memory_info(LogStream &out) const;
 
 private:
-
-    std::shared_ptr<ContainerType> push_forward_ ;
-
-
+    std::shared_ptr<ContainerType> push_forward_;
 
     /**
      * MappingFillFlags activated by ValueFlags
@@ -270,12 +266,8 @@ private:
      * fill_dets:     (w_measure)
      *
      */
-    ValueFlags value_to_mapping_flag(const ValueFlags v_flag) const ;
-
-
-} ;
-
-
+    ValueFlags value_to_mapping_flag(const ValueFlags v_flag) const;
+};
 
 IGA_NAMESPACE_CLOSE
 

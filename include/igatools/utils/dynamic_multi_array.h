@@ -121,7 +121,14 @@ public:
     DynamicMultiArray<T,rank> get_sub_array(const TensorIndex<rank> &start,
                                             const TensorIndex<rank> &inc) const;
 
-
+#if 0
+    /**
+     * Extract a sub multi-array view from the array and return it
+     * in the tensor range start with the tensor increment inc.
+     */
+    get_sub_array_view(const TensorIndex<rank> &start,
+                       const TensorIndex<rank> &inc) const;
+#endif
 
     /** @name Functions to get/set slices of the DynamicMultiArray */
     ///@{

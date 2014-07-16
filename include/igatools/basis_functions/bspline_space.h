@@ -258,7 +258,7 @@ public:
 
 //   bool is_range_homogeneous() const;
 
-    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return basis_indices_.get_loc_to_global_indices(j);
     }

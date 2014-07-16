@@ -115,8 +115,17 @@ protected:
 
     ConcatenatedIteratorData(const std::vector<ViewType> &views,const Index index);
 
+    ConcatenatedIteratorData(const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
 
+    ConcatenatedIteratorData(ConcatenatedIteratorData<ViewType,DerivedClass> &&rhs) = default;
 
+    ConcatenatedIteratorData<ViewType,DerivedClass> &operator=(
+        const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
+
+    ConcatenatedIteratorData<ViewType,DerivedClass> &operator=(
+        ConcatenatedIteratorData<ViewType,DerivedClass> &&rhs) = default;
+
+    ~ConcatenatedIteratorData() = default;
 
     DerivedClass &as_derived_class();
 
@@ -356,6 +365,17 @@ public:
     ~ConcatenatedIterator() = default ;
     ///@}
 
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    ConcatenatedIterator<ViewType> &operator=(
+        const ConcatenatedIterator<ViewType> &it) = default;
+
+    /** Move assignment operator. */
+    ConcatenatedIterator<ViewType> &operator=(
+        ConcatenatedIterator<ViewType> &&it) = default;
+    ///@}
 
     /** @name Dereferencing operators (non-const version) */
     ///@{
