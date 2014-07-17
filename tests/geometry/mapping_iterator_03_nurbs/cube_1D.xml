@@ -8,6 +8,9 @@
         </Knots>
       </CartesianGrid>
       <NURBSSpaceScalarComponents Size="1">
+        <ComponentsMap Size="1">
+          0
+        </ComponentsMap>
         <NURBSSpaceScalarComponent Id="0">
           <DofsTensorSize Dim="1">
             4
@@ -15,11 +18,11 @@
           <Degrees Dim="1">
             2
           </Degrees>
-          <Multiplicities Dim="1">
-            <Multiplicity Direction="0"  Size="3">
-              3 1 3
+          <InteriorMultiplicities Dim="1">
+            <InteriorMultiplicity Direction="0"  Size="1">
+              1
             </Multiplicity>
-          </Multiplicities>
+          </InteriorMultiplicities>
           <Weights Size="4">
               1.000000 1.000000 1.000000 1.000000
           </Weights>

@@ -129,30 +129,15 @@ public:
      * \param[in] format - Output format. It can be "ascii" or "appended".
      * \note The .vtu extension should NOT part of the file name.
      */
-    //TODO(pauletti, Jul 8, 2014): this function should be const
     void save(const std::string &filename,
-              const std::string &format = "ascii");
+              const std::string &format = "ascii") const;
 
     /**
      * Writes the vtu into a LogStream, filtering it for uniform
      * output across different systems.
      * @note this function is only for testing purposes
      */
-    //TODO(pauletti, Jul 8, 2014): this function should be const
-    void print_info(LogStream &out);
-
-private:
-    /**
-     * Get the points (in the 3D physical domain) associated to each iga element.
-     * The first index refers to the iga element,
-     * the second index refers to the point within the iga element specified by the first index.
-     * \code
-     * auto points = writer.get_points_in_elements();
-     * //points[i][j] is the j-th point in the i-th iga element
-     * \endcode
-     */
-    const std::vector< std::vector< std::array<T,3> > >
-    &get_points_in_iga_elements() const;
+    void print_info(LogStream &out) const;
 
     /**
      * Returns the number of IGA elements handled by the Writer.
@@ -175,9 +160,26 @@ private:
     int get_num_points_per_iga_element() const;
 
 
-    void add_point_data(const int n_iga_elements,
-                        const int n_points_per_iga_element,
-                        const int n_values_per_point,
+    /**
+     * \brief Add data for every evaluation point to the output file.
+     * \param[in] n_values_per_point
+     * \param[in] type Type of add to be added. It can be scalar, vector
+     * or tensor.
+     * \param[in] name Name of the field.
+     * \param[in] data_iga_elements Data to be added. The different levels of
+     * the container are: the first vector level corresponds to the IGA
+     * elements; the second one to the evaluation points inside an IGA element;
+     * and the third one to the components of the data to be plotted.
+     * \note The number of entries of @p data_iga_elements must be equal to the
+     * number of IGA elements, otherwise an exception will be raised.
+     * \note The number of entries of eachy entry of @p data_iga_elements must
+     * be equal to the number of IGA elements, otherwise an exception will be
+     * raised.
+     * \note The number of values associated to every plot points that are
+     * specified in @p data_iga_elements must be equal to @ n_values_per_point,
+     * otherwise an exception will be raised.
+     */
+    void add_point_data(const int n_values_per_point,
                         const std::string &type,
                         const std::vector<std::vector<std::vector<T>>> &data_iga_elements,
                         const std::string &name);
@@ -232,18 +234,7 @@ private:
      */
     Size n_vtk_points_;
 
-    /**
-     * Coordinates of the evaluation points associated to each iga element.
-     * \note The point coordinates are referred to the physical domain extended to 3D space.
-     */
-    std::vector< std::vector< std::array<T,3> > > points_in_iga_elements_;
-
     unsigned char vtk_element_type_;
-
-    /**
-     * Connectivity of the vtk elements inside each iga element.
-     */
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > > vtk_elements_connectivity_;
 
 //TODO(pauletti, Jul 8, 2014): this documentation is incorrect
     /**
@@ -358,11 +349,20 @@ private:
     int precision_;
 
     template<class Out>
-    void save_ascii(Out &file) const;
+    void save_ascii(Out &file,
+      const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+      const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+      &vtk_elements_connectivity) const;
 
-    void save_appended(const std::string &filename) const;
+    void save_appended(const std::string &filename,
+      const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+      const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+      &vtk_elements_connectivity) const;
 
-    void fill_points_and_connectivity();
+    void fill_points_and_connectivity(
+      std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+      std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+      &vtk_elements_connectivity) const;
 };
 
 

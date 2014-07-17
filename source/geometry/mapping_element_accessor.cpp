@@ -321,7 +321,7 @@ init_values(const ValueFlags fill_flag,
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0;
-        for (auto& face_value : face_values_)
+        for (auto &face_value : face_values_)
         {
             // TODO: this is temporary and must be removed.
             if (contains(f_flag , ValueFlags::face_normal))

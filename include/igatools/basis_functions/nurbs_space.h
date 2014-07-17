@@ -71,6 +71,9 @@ public:
     static const bool has_weights = true;
 
     static const std::array<int, dim> dims;
+
+
+
 public:
     using Func = typename spline_space_t::Func;
     template <int order>
@@ -100,6 +103,8 @@ public:
 
     using DegreeTable = typename spline_space_t::DegreeTable;
     using MultiplicityTable = typename spline_space_t::MultiplicityTable;
+
+    using EndBehaviour = typename spline_space_t::EndBehaviour;
     using EndBehaviourTable = typename spline_space_t::EndBehaviourTable;
     using InteriorReg= typename spline_space_t::InteriorReg;
     using SpaceDimensionTable = typename spline_space_t::SpaceDimensionTable;
@@ -247,7 +252,7 @@ public:
         return sp_space_->get_degree();
     }
 
-    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return sp_space_->get_loc_to_global(j);
     }
@@ -272,18 +277,19 @@ public:
     {
         return sp_space_;
     }
-#if 0
-    /**
-     * Returns a reference to the dense multi array storing the global dofs.
-     * Each element has a statically defined zone to read their dofs from,
-     * independent of the distribution policy in use.
-     */
-    const typename spline_space_t::template ComponentTable<DynamicMultiArray<Index,dim>> &get_index_space() const
+
+    const DofDistribution<dim, range, rank> &get_basis_indices() const
     {
-        return sp_space_->get_index_space();
+        return sp_space_->get_basis_indices();
     }
 
 
+    DofDistribution<dim, range, rank> &get_basis_indices()
+    {
+        return sp_space_->get_basis_indices();
+    }
+
+#if 0
     /**
      * Transforms basis flat index of the component comp to a basis
      * tensor index.
@@ -359,6 +365,15 @@ public:
                    std::vector<Index> &face_to_element_dofs) const;
 
 
+
+    /**
+     * Adds an @p offset to the values of the dof ids.
+     */
+    void add_dofs_offset(const Index offset)
+    {
+        sp_space_->add_dofs_offset(offset);
+    }
+
     /**
     * Returns a element iterator to the first element of the patch
     */
@@ -377,7 +392,7 @@ public:
     /**
      * Get the weights of the NURBSSpace.
      */
-    const WeightsTable  &get_weights() const;
+    const WeightsTable &get_weights() const;
 
     /**
      * Reset the weights of the NURBSSpace.

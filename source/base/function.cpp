@@ -33,7 +33,7 @@ Function< dim, range, rank >::~Function()
 
 template< int dim, int range, int rank >
 void Function< dim, range, rank >::
-evaluate_gradients(const vector<Point> & ,
+evaluate_gradients(const vector<Point> &,
                    vector<Gradient> &) const
 {
     Assert(false, ExcNotImplemented());

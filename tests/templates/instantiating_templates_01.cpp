@@ -46,13 +46,13 @@ public:
     {}
 
     void evaluate_gradients(
-            const std::vector<Point> &points,
-            std::vector<Gradient> &gradient) const
+        const std::vector<Point> &points,
+        std::vector<Gradient> &gradient) const
     {}
 
     void evaluate_hessians(
-            const std::vector<Point> &points,
-            std::vector<Hessian> &hessians) const
+        const std::vector<Point> &points,
+        std::vector<Hessian> &hessians) const
     {}
 };
 

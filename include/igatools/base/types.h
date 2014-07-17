@@ -485,6 +485,28 @@ enum class RefSpaceType : int
 };
 
 
+/**
+ * Type for specifying the kind of interface between two patches.
+ * @sa MultiPatchSpace
+ */
+enum class InterfaceType : int
+{
+    /** No conditions on the interface.*/
+    none = 0,
+
+    /**
+     * The interface is defined as strong C0 gluing between one side of each patch.
+     * The dofs of the patches <em>will be not renumbered</em> in order to ensure this interface condition.
+     */
+    C0_strong = 1,
+
+    /**
+     * The interface is defined as strong C0 gluing between one side of each patch.
+     * The dofs of the patches <em>will be renumbered</em> in order to ensure this interface condition.
+     */
+    C0_strong_renumbering = 2
+};
+
 
 template<int dim, int range, int rank>
 class BSplineSpace;

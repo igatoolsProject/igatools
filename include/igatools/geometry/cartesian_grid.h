@@ -357,6 +357,10 @@ public:
     void print_info(LogStream &out) const;
 
 
+    /**
+     * Comparison operator. Returns true if the knot coordinates of two grid are identical.
+     */
+    bool operator==(const CartesianGrid<dim> &grid) const;
 
 private:
 
@@ -463,7 +467,7 @@ private:
     TensorIndex<dim> weight_elem_id_;
 
 
-    friend class CartesianGridElementAccessor< dim >;
+    friend class CartesianGridElementAccessor<dim>;
 };
 
 
@@ -511,7 +515,8 @@ build_map_elements_between_cartesian_grids(
  * @relates CartesianGrid
  */
 template <int dim>
-CartesianGrid<dim> build_cartesian_grid_union(
+CartesianGrid<dim>
+build_cartesian_grid_union(
     const CartesianGrid<dim> &grid_1,
     const CartesianGrid<dim> &grid_2,
     std::vector<Index> &map_elem_grid_union_to_elem_grid_1,

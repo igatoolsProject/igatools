@@ -479,7 +479,7 @@ transform_basis_derivatives_at_points(
            ExcMessage("The size of the container must be a multiple of num_points."));
 
     auto phi_iterator = phi.begin();
-    for (const auto & phi_hat_to_copy : phi_hat)
+    for (const auto &phi_hat_to_copy : phi_hat)
     {
         *phi_iterator = phi_hat_to_copy;
         ++phi_iterator;

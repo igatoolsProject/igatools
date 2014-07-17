@@ -21,7 +21,10 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['base/tensor.h','basis_functions/bspline_element_accessor.h']
+include_files = ['base/tensor.h',
+                 'basis_functions/bspline_element_accessor.h',
+                 'utils/container_view.h',
+                 'utils/concatenated_iterator.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -32,14 +35,28 @@ ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
 ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
            for deriv in inst.derivatives + inst.values + inst.divs]
 
+
 for row in ma_list:
     f.write('template class %s; \n' % (row))
     f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
     
 
-      
-      
+            
 evaluators = set(['DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<%d>>,%d>' %(x.dim,x.dim)
               for x in inst.all_ref_sp_dims])
 for eval in evaluators:
    f.write('template class %s ;\n' %eval)
+
+
+# needed by DofDistribution
+Vec = 'vector<Index>'
+#ContView = ('ContainerView<%s>' % Vec)
+ConstContView = ('ConstContainerView<%s>' % Vec)
+#It = ('ConcatenatedIterator<%s>' % ContView)
+ConstIt = ('ConcatenatedConstIterator<%s>' % ConstContView)
+ConstView = ('ConstView<%s>' %(ConstIt))
+dof_views = set(['DynamicMultiArray<%s,%d>' %(ConstView,dim)
+                     for dim in inst.domain_dims])
+for dof_view in dof_views:
+   f.write('template class %s ;\n' %dof_view)
+
