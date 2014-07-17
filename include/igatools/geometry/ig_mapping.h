@@ -18,22 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __IG_MAPPING_H_
-#define __IG_MAPPING_H_
+#ifndef IG_MAPPING_H_
+#define IG_MAPPING_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/spline_mapping.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/static_multi_array.h>
+#include <igatools/basis_functions/nurbs_space.h>
 
 IGA_NAMESPACE_OPEN
 
 template <class RefSpace>
 class IgMapping
-    : public Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>
+    : public SplineMapping<RefSpace>
 {
 private:
-    using base_t = Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>;
+    using base_t = SplineMapping<RefSpace>;
 
     using base_t::dim;
     using base_t::codim;
@@ -66,13 +67,11 @@ public:
 
 
     /**
-     *
-     *
      * It builds a Mapping object wrapped in a std::shared_ptr,
      * from a function space and a vector of control points.
      */
-    static std::shared_ptr<base_t>
-    create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
+    static std::shared_ptr<Mapping<dim,codim>>
+                                            create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
 
     /**
      * Copy constructor. Performs a deep copy of the object.
@@ -119,10 +118,10 @@ public:
      * Sets the control points defining the map.
      * @param[in] control_points - Coordinates of the control points in the Euclidean space.
      */
-    void set_control_points(const std::vector<Real> &control_points);
+    void set_control_points(const std::vector<Real> &control_points) override final;
     ///@}
 
-    std::shared_ptr<RefSpace> get_iga_space()
+    std::shared_ptr<RefSpace> get_iga_space() override final
     {
         return data_->ref_space_;
     }
@@ -154,7 +153,7 @@ public:
     ///@}
 
 
-    /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
+    /** @name Evaluating the quantities related to the IgMapping without the use of the cache. */
     ///@{
     void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
     void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
@@ -183,10 +182,7 @@ private:
          * h-refinement algorithm (based on knot insertion) require them to be in
          * the projective space.
          */
-        ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
-
-        /** Knots with repetitions PRE-refinement */
-//        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+        typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
 
 
         /** Control mesh (the coordinates are in the projective space). */
@@ -258,4 +254,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+#endif // #ifndef IG_MAPPING_

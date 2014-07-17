@@ -32,25 +32,41 @@ IGA_NAMESPACE_OPEN
 
 template <class Container>
 inline
-MultiArrayIterator<Container>::
-MultiArrayIterator(Container &container,const Index id,const Index stride)
+MultiArrayIteratorBase<Container>::
+MultiArrayIteratorBase()
+    :
+    container_(nullptr),
+    id_(IteratorState::invalid),
+    stride_(0)
+{}
+
+template <class Container>
+inline
+MultiArrayIteratorBase<Container>::
+MultiArrayIteratorBase(Container &container,const Index id,const Index stride)
     :
     container_(&container),
     id_(id),
     stride_(stride)
 {
+    Assert(container_ != nullptr,ExcNullPtr());
+
     //the iterator must not be built id the container is empty!
     Assert(container_->flat_size() > 0,ExcEmptyObject());
+
+    Assert(stride_ >= 1, ExcLowerRange(stride_,1));
 
     Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
     if (id_ == container_->flat_size())
         id_ = IteratorState::pass_the_end;
 }
 
+
+
 template <class Container>
 inline
-MultiArrayIterator<Container> &
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container> &
+MultiArrayIteratorBase<Container>::
 operator++()
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
@@ -65,8 +81,8 @@ operator++()
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
-operator*() const -> const_reference
+MultiArrayIteratorBase<Container>::
+operator*() const -> const reference
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     return (*container_)(id_);
@@ -75,7 +91,7 @@ operator*() const -> const_reference
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container>::
 operator*() -> reference
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
@@ -85,8 +101,8 @@ operator*() -> reference
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
-operator[](const Index i) const -> const_reference
+MultiArrayIteratorBase<Container>::
+operator[](const Index i) const -> const reference
 {
     Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
     return (*container_)(id_ + i*stride_);
@@ -95,7 +111,7 @@ operator[](const Index i) const -> const_reference
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container>::
 operator[](const Index i) -> reference
 {
     Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
@@ -106,7 +122,7 @@ operator[](const Index i) -> reference
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container>::
 operator->() const -> const pointer
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
@@ -117,7 +133,7 @@ operator->() const -> const pointer
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container>::
 operator->() -> pointer
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
@@ -127,8 +143,8 @@ operator->() -> pointer
 template <class Container>
 inline
 bool
-MultiArrayIterator<Container>::
-operator==(const MultiArrayIterator<Container> &it) const
+MultiArrayIteratorBase<Container>::
+operator==(const MultiArrayIteratorBase<Container> &it) const
 {
     return (id_ == it.id_ && stride_ == it.stride_ && container_ == it.container_)?true:false;
 }
@@ -136,8 +152,8 @@ operator==(const MultiArrayIterator<Container> &it) const
 template <class Container>
 inline
 bool
-MultiArrayIterator<Container>::
-operator!=(const MultiArrayIterator<Container> &it) const
+MultiArrayIteratorBase<Container>::
+operator!=(const MultiArrayIteratorBase<Container> &it) const
 {
     return (id_ != it.id_ || stride_ != it.stride_ || container_ != it.container_)?true:false;
 }
@@ -146,8 +162,8 @@ operator!=(const MultiArrayIterator<Container> &it) const
 template <class Container>
 inline
 bool
-MultiArrayIterator<Container>::
-operator<(const MultiArrayIterator<Container> &it) const
+MultiArrayIteratorBase<Container>::
+operator<(const MultiArrayIteratorBase<Container> &it) const
 {
     // check if the iterators are comparable
     Assert(stride_ == it.stride_ && container_ == it.container_,
@@ -165,8 +181,8 @@ operator<(const MultiArrayIterator<Container> &it) const
 template <class Container>
 inline
 bool
-MultiArrayIterator<Container>::
-operator<=(const MultiArrayIterator<Container> &it) const
+MultiArrayIteratorBase<Container>::
+operator<=(const MultiArrayIteratorBase<Container> &it) const
 {
     return ((*this) < it || (*this) == it)?true:false;
 }
@@ -174,30 +190,30 @@ operator<=(const MultiArrayIterator<Container> &it) const
 
 template <class Container>
 inline
-MultiArrayIterator<Container>
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container>
+MultiArrayIteratorBase<Container>::
 operator+(const Index n) const
 {
     Assert(id_ + n*stride_ < container_->flat_size(),ExcIteratorPastEnd());
-    return MultiArrayIterator<Container>(*container_,id_ + n*stride_,stride_);
+    return MultiArrayIteratorBase<Container>(*container_,id_ + n*stride_,stride_);
 }
 
 template <class Container>
 inline
-MultiArrayIterator<Container>
-MultiArrayIterator<Container>::
+MultiArrayIteratorBase<Container>
+MultiArrayIteratorBase<Container>::
 operator-(const Index n) const
 {
     Assert(id_ - n*stride_ >=0, ExcLowerRange(id_ - n*stride_,0));
-    return MultiArrayIterator<Container>(*container_,id_ - n*stride_,stride_);
+    return MultiArrayIteratorBase<Container>(*container_,id_ - n*stride_,stride_);
 }
 
 #if 0
 template <class Container>
 inline
 auto
-MultiArrayIterator<Container>::
-operator-(const MultiArrayIterator<Container> &a) const -> difference_type
+MultiArrayIteratorBase<Container>::
+operator-(const MultiArrayIteratorBase<Container> &a) const -> difference_type
 {
     // check if the iterators are comparable
     Assert(a.stride_ == stride_ && a.container_ == container_,
@@ -213,6 +229,37 @@ operator-(const MultiArrayIterator<Container> &a) const -> difference_type
     return n;
 }
 #endif
+
+
+
+
+
+
+
+template <class Container>
+inline
+MultiArrayConstIterator<Container>::
+MultiArrayConstIterator(const Container &container,const Index id,const Index stride)
+    :
+    MultiArrayIteratorBase<Container>(const_cast<Container &>(container),id,stride)
+{}
+
+
+template <class Container>
+inline
+MultiArrayIterator<Container>::
+MultiArrayIterator(Container &container,const Index id,const Index stride)
+    :
+    MultiArrayConstIterator<Container>(container,id,stride)
+{}
+
+
+
+
+
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/utils/concatenated_iterator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -44,11 +45,15 @@ public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using IndexDistributionTable =
+        StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
     enum class DistributionPolicy
     {
         standard, component, other
     };
+
+    DofDistribution() = delete;
 
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                     const MultiplicityTable &accum_mult,
@@ -56,7 +61,11 @@ public:
                     const SpaceDimensionTable &n_elem_basis,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
-    const std::vector<Index> &get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+    void reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol);
+
+    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+
+    std::vector<Index> get_loc_to_global_indices(const Index &elem_flat_id) const;
 
 
     TensorIndex<dim>
@@ -77,16 +86,47 @@ public:
      */
     void print_info(LogStream &out) const;
 
+
+    /** Add an @p offset to the dofs. */
+    void add_dofs_offset(const Index offset);
+
+
 private:
 
-    // TODO (pauletti, May 28, 2014): this should be a temporary in the constructor
-    //TODO (martinelli, Jun 27, 2014): I think we need this member (in order to work with the DofsManager)
-    using IndexDistributionTable =
-        typename Space::template ComponentContainer<DynamicMultiArray<Index,dim>>;
     IndexDistributionTable index_distribution_;
 
+#if 0
     //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
     DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
+
+    DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
+        std::shared_ptr<const CartesianGrid<dim> > grid,
+        const MultiplicityTable &accum_mult,
+        const SpaceDimensionTable &n_elem_basis,
+        const IndexDistributionTable &index_distribution) const;
+#endif
+
+
+    void create_element_loc_to_global_view(
+        std::shared_ptr<const CartesianGrid<dim> > grid,
+        const MultiplicityTable &accum_mult,
+        const SpaceDimensionTable &n_elem_basis);
+
+
+    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
+    using DofsView = ConstView<DofsConstIterator>;
+    DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
+
+    DistributionPolicy policy_;
+
+public:
+
+    const IndexDistributionTable &get_index_distribution() const
+    {
+        return index_distribution_;
+    }
 
 };
 

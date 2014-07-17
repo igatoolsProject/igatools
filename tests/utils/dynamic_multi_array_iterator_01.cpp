@@ -71,7 +71,7 @@ void do_test_1()
         out << *cit1_entry << " ";
 
     Index id = 0;
-    for (auto & d : data1)
+    for (auto &d : data1)
         d = id++;
 
     out << data1 << endl;
@@ -84,7 +84,7 @@ void do_test_1()
     out << "Size: " << data1.flat_size() << endl;
 
     id = 0;
-    for (auto & d : data1)
+    for (auto &d : data1)
         d = id++;
 
     out << data1 << endl;

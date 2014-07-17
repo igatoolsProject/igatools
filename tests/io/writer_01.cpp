@@ -32,22 +32,22 @@ template<int dim>
 void
 test()
 {
-	const int n_knots = 4;
-	auto grid = CartesianGrid<dim>::create(n_knots);
-	Writer<dim> writer(grid);
+    const int n_knots = 4;
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    Writer<dim> writer(grid);
 
-	string filename = "grid" + to_string(dim);
-	writer.save(filename);
-	writer.save(filename,"appended");
-	writer.print_info(out);
+    string filename = "grid" + to_string(dim);
+    writer.save(filename);
+    writer.save(filename,"appended");
+    writer.print_info(out);
 }
 
 
 int main()
 {
-	test<1>();
-	test<2>();
-	test<3>();
+    test<1>();
+    test<2>();
+    test<3>();
 
     return 0;
 }

@@ -101,7 +101,8 @@ public:
 
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward);
+                  std::shared_ptr<PushForwardType> push_forward,
+                  const Index id = 0);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
@@ -109,7 +110,8 @@ public:
 
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<PushForwardType> push_forward);
+        std::shared_ptr<PushForwardType> push_forward,
+        const Index id = 0);
 
     /**
      * Total number of dofs of the space.
@@ -126,7 +128,7 @@ public:
         return ref_space_->get_num_basis_per_element_table();
     }
 
-    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return ref_space_->get_loc_to_global(j);
     }
@@ -145,6 +147,15 @@ public:
      */
     ElementIterator end() const;
 
+    /**
+     * Returns the element accessor with its flat id corresponding to @p elem_flat_id.
+     *
+     * @warning This function creates a new ElementAccessor object,
+     * so it could be computationally expensive.
+     */
+    ElementAccessor get_element(const Index elem_flat_id) const;
+
+
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
     std::shared_ptr<const RefSpace> get_reference_space() const;
@@ -158,6 +169,8 @@ public:
     void print_info(LogStream &out) const;
 
 
+
+    Index get_id() const;
 
     // TODO (pauletti, Jun 12, 2014): if we are using this it should be
     // implemented in all library classes
@@ -182,6 +195,7 @@ private:
 
     std::shared_ptr<PushForwardType> push_forward_;
 
+    Index id_;
 
     friend ElementAccessor;
 };

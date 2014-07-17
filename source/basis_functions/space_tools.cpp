@@ -264,7 +264,7 @@ integrate_difference(const typename Space::Func &exact_solution,
     }
 
     Real err_pow2 = 0.0;
-    for (const Real & elem_err : element_error)
+    for (const Real &elem_err : element_error)
         err_pow2 += elem_err * elem_err;
 
     Real total_error = sqrt(err_pow2);
@@ -386,7 +386,7 @@ project_boundary_values(const typename Space::Func &func,
             faces.insert(face);
     }
 
-    for (const Index& face_id : faces)
+    for (const Index &face_id : faces)
     {
         vector<Index> dof_map;
         auto face_space = space->get_face_space(face_id, dof_map);
@@ -410,7 +410,7 @@ project_boundary_values(const typename Space::Func &func,
                         std::map<Index,Real>  &boundary_values)
 {
     project_boundary_values<Space,la_pack>(
-    func, space, quad,std::set<boundary_id>( {{bdry_id}}),boundary_values);
+    func, space, quad,std::set<boundary_id>({{bdry_id}}),boundary_values);
 }
 
 

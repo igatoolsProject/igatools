@@ -120,6 +120,8 @@ public:
 
 /**
  * Returns the tensor index with components given by the sum of @p index_a with @p index_b.
+ *
+ * @relates TensorIndex
  */
 template <int rank>
 TensorIndex<rank>

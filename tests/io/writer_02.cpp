@@ -33,23 +33,23 @@ template<int dim>
 void
 test()
 {
-	const int n_knots = 4;
-	auto grid = CartesianGrid<dim>::create(n_knots);
-	auto map  = BallMapping<dim>::create(grid);
-	Writer<dim> writer(map, 4);
+    const int n_knots = 4;
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto map  = BallMapping<dim>::create(grid);
+    Writer<dim> writer(map, 4);
 
-	string filename = "map" + to_string(dim);
-	writer.save(filename);
-	writer.save(filename,"appended");
-	writer.print_info(out);
+    string filename = "map" + to_string(dim);
+    writer.save(filename);
+    writer.save(filename,"appended");
+    writer.print_info(out);
 }
 
 
 int main()
 {
-	test<1>();
-	test<2>();
-	test<3>();
+    test<1>();
+    test<2>();
+    test<3>();
 
     return 0;
 }

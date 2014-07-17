@@ -128,7 +128,9 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
+    Assert(this->get_grid()->get_grid_pre_refinement()!=nullptr,ExcNullPtr());
     auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
+
     shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
         make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
 
@@ -165,18 +167,14 @@ refine_h_after_grid_refinement(
                 //--------------------------------------------------------
                 // creating the new multiplicity
                 const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
-                const int n_mult_old = mult_old.size();
 
-                const int n_mult_to_add = n_mult_old + 1;
-                const int n_mult_new = n_mult_old + n_mult_to_add;
-
-                vector<int> mult_new(n_mult_new);
-                for (int i = 0; i < n_mult_to_add; ++i)
+                vector<int> mult_new;
+                mult_new.push_back(1);
+                for (const int &m : mult_old)
                 {
-                    mult_new[2*i  ] = 1,
-                                      mult_new[2*i+1] = mult_old[i];
+                    mult_new.push_back(m);
+                    mult_new.push_back(1);
                 }
-                mult_new[n_mult_new-1] = 1;
 
                 interior_mult(comp_id).copy_data_direction(direction_id,mult_new);
                 //--------------------------------------------------------
@@ -465,7 +463,8 @@ print_info(LogStream &out) const
     deg_.print_info(out);
     out << std::endl;
     out << "Interior multiplicities:\n";
-    for (const auto &v : *interior_mult_)
+    const MultiplicityTable &interior_mult_ref = *interior_mult_;
+    for (const auto &v : interior_mult_ref)
         v.print_info(out);
     out << "Dimensionality Table:\n";
     space_dim_.print_info(out);

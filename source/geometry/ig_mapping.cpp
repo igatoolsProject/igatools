@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 template<class RefSpace>
-StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1>
+typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<RefSpace::has_weights> *hw = 0)
 {
@@ -47,12 +47,28 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 
 
 template<class RefSpace>
-StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1>
+typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<!RefSpace::has_weights> *hw = 0)
 {
-    //in the case of BSplineSpace do nothing
-    StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1> weights;
+    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
+    typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+    weights(ref_space.get_components_map());
+
+
+    const auto &basis_tensor_size_table = ref_space.get_num_basis_table();
+
+    for (Index comp_id : weights.get_active_components_id())
+    {
+        auto &weights_component = weights(comp_id);
+
+        weights_component.resize(basis_tensor_size_table(comp_id));
+
+        for (auto &w : weights_component)
+            w = 1.0;
+    }
+
+
     return weights;
 }
 
@@ -80,7 +96,7 @@ IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
           const std::vector<Real> &control_points)
     :
-    base_t::Mapping(space->get_grid()),
+    base_t::SplineMapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
     cache_(space->begin())
 {
@@ -110,8 +126,9 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     const bspline_space_t &bspline_space = get_bspline_space(*space);
     const auto &num_basis_table = bspline_space.get_num_basis_table();
 
+
     Index ctrl_pt_fid = 0;
-    for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+    for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
     {
         const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
 
@@ -154,7 +171,7 @@ template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const self_t &map)
     :
-    Mapping<dim,codim>(map),
+    base_t::SplineMapping(map),
     data_(shared_ptr<IgMappingData>(new IgMappingData(*map.data_))),
     cache_(map.cache_)
 {}
@@ -163,7 +180,7 @@ template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<IgMappingData> mapping_data)
     :
-    base_t::Mapping(mapping_data->ref_space_->get_grid()),
+    base_t::SplineMapping(mapping_data->ref_space_->get_grid()),
     data_(mapping_data),
     cache_(mapping_data->ref_space_->begin())
 {
@@ -251,7 +268,7 @@ template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const std::vector<Real> &control_points) -> shared_ptr<base_t>
+    const std::vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));

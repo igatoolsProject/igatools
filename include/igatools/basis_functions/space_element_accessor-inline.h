@@ -792,7 +792,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-get_local_to_global() const -> std::vector<Index> const &
+get_local_to_global() const -> std::vector<Index>
 {
     return space_->get_loc_to_global(this->get_tensor_index());
 }

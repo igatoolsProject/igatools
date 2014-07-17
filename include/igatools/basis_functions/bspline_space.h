@@ -258,7 +258,7 @@ public:
 
 //   bool is_range_homogeneous() const;
 
-    const std::vector<Index> &get_loc_to_global(const TensorIndex<dim> &j) const
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return basis_indices_.get_loc_to_global_indices(j);
     }
@@ -267,11 +267,16 @@ public:
     get_reference_space() const;
 
     /**
-     * Returns a reference to the dense multi array storing the global dofs.
+     * Returns a const reference to the dense multi array storing the global dofs.
      * Each element has a statically defined zone to read their dofs from,
      * independent of the distribution policy in use.
      */
 
+    /**
+     * Returns a reference to the dense multi array storing the global dofs.
+     * Each element has a statically defined zone to read their dofs from,
+     * independent of the distribution policy in use.
+     */
     //  const IndexSpaceTable &get_index_space() const;
 
     ///@}
@@ -324,6 +329,14 @@ public:
 
     /** Return the push forward (const version). */
     std::shared_ptr<const PushForwardType> get_push_forward() const;
+
+
+    /**
+     * Adds an @p offset to the values of the dof ids.
+     */
+    void add_dofs_offset(const Index offset);
+
+
 
     /**
      * @note try not to use as plans are to make it private
@@ -400,6 +413,13 @@ public:
     /** Returns the container with the local to global basis indices. */
     const DofDistribution<dim, range, rank> &
     get_basis_indices() const
+    {
+        return basis_indices_;
+    }
+
+    /** Returns the container with the local to global basis indices. */
+    DofDistribution<dim, range, rank> &
+    get_basis_indices()
     {
         return basis_indices_;
     }

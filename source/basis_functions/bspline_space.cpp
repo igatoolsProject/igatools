@@ -326,6 +326,17 @@ refine_h_after_grid_refinement(
 
 
 
+
+template<int dim_, int range_, int rank_>
+void
+BSplineSpace<dim_, range_, rank_>::
+add_dofs_offset(const Index offset)
+{
+    basis_indices_.add_dofs_offset(offset);
+}
+
+
+
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
@@ -337,8 +348,8 @@ print_info(LogStream &out) const
 
     operators_.print_info(out);
 
-#if 0
 
+#if 0
     //TODO: Do we need to call external functions from this output operator?
     out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl;
 
