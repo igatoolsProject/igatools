@@ -360,7 +360,7 @@ init_face_values(const Index face_id,
 }
 
 
-
+/*
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
@@ -371,6 +371,8 @@ reset_global_cache()
     for (int f = 0; f < n_faces; ++f)
         values_1d_faces_[f].reset();
 }
+//*/
+
 
 template <int dim, int range, int rank>
 void

@@ -139,7 +139,6 @@ public:
      */
     void print_info(LogStream &out) const;
 
-private:
     /**
      * Returns the number of IGA elements handled by the Writer.
      */
@@ -161,9 +160,26 @@ private:
     int get_num_points_per_iga_element() const;
 
 
-    void add_point_data(const int n_iga_elements,
-                        const int n_points_per_iga_element,
-                        const int n_values_per_point,
+    /**
+     * \brief Add data for every evaluation point to the output file.
+     * \param[in] n_values_per_point
+     * \param[in] type Type of add to be added. It can be scalar, vector
+     * or tensor.
+     * \param[in] name Name of the field.
+     * \param[in] data_iga_elements Data to be added. The different levels of
+     * the container are: the first vector level corresponds to the IGA
+     * elements; the second one to the evaluation points inside an IGA element;
+     * and the third one to the components of the data to be plotted.
+     * \note The number of entries of @p data_iga_elements must be equal to the
+     * number of IGA elements, otherwise an exception will be raised.
+     * \note The number of entries of eachy entry of @p data_iga_elements must
+     * be equal to the number of IGA elements, otherwise an exception will be
+     * raised.
+     * \note The number of values associated to every plot points that are
+     * specified in @p data_iga_elements must be equal to @ n_values_per_point,
+     * otherwise an exception will be raised.
+     */
+    void add_point_data(const int n_values_per_point,
                         const std::string &type,
                         const std::vector<std::vector<std::vector<T>>> &data_iga_elements,
                         const std::string &name);
