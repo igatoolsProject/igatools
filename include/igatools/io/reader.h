@@ -191,13 +191,13 @@ std::vector<ScalarType>
 get_vector_data_from_xml(const boost::property_tree::ptree &tree);
 
 /**
- * Extracts the multiplicity structure from the XML @p tree.
+ * Extracts the multiplicity of the internal knots from the XML @p tree.
  * The number of multiplicity vectors is determined by the template parameter
  * @p dim.
  */
 template <int dim>
-Multiplicity<dim>
-get_multiplicity_from_xml(const boost::property_tree::ptree &tree);
+CartesianProductArray<Size,dim>
+get_interior_multiplicity_from_xml(const boost::property_tree::ptree &tree);
 
 } // of namespace reader_utils.
 
