@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/equality_constraint.h>
 //#include <boost/graph/adjacency_list.hpp>
@@ -206,59 +207,6 @@ private:
 
 
 
-    class LinearConstraint : public std::pair< std::vector<std::pair<Index,Real> >,Real >
-    {
-    public:
-        LinearConstraint(const std::vector<Index> &dofs,const std::vector<Real> &coeffs,const Real rhs)
-        {
-            Assert(dofs.size() == coeffs.size(),ExcDimensionMismatch(dofs.size(),coeffs.size()));
-            Assert(!dofs.empty(),ExcEmptyObject());
-
-            const Index n_dofs = dofs.size();
-            for (Index i = 0 ; i < n_dofs ; ++i)
-            {
-                Assert(dofs[i] >= 0,ExcLowerRange(dofs[i],0));
-                this->first.emplace_back(std::make_pair(dofs[i],coeffs[i]));
-            }
-            this->second = rhs;
-        }
-
-        Real get_rhs() const
-        {
-            return this->second;
-        }
-
-        void set_rhs(const Real rhs)
-        {
-            this->second = rhs;
-        }
-
-        Index get_num_lhs_terms() const
-        {
-            Assert(!this->first.empty(),ExcEmptyObject());
-            return this->first.size();
-        }
-
-    private:
-
-        const std::pair<Index,Real> &get_lhs_term(const int i) const
-        {
-            Assert(i >= 0 && i < this->get_num_lhs_terms(),ExcIndexRange(i,0,this->get_num_lhs_terms()));
-            return this->first[i];
-        }
-
-    public:
-
-        Index get_dof_index(const int i) const
-        {
-            return this->get_lhs_term(i).first;
-        }
-
-        Real get_dof_coeff(const int i) const
-        {
-            return this->get_lhs_term(i).second;
-        }
-    };
 
     std::vector<LinearConstraint> linear_constraints_;
 
