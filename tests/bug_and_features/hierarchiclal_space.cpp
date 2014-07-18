@@ -50,15 +50,15 @@
  * 5. Computation of the active and inactive functions
  *    The algorithm works for any given mesh (either refining or coarsening)
  *
- *    N = number of levels
+ *    Prerequisite: All maximal boxes from 0 to N should have been computed
+ *    N = finest level after the adaptive modification
  *    Set Maxboxes(N+1) = empty;
  *
- *    for l=N:-1:1
+ *    for l=N:-1:0
  *      - Initialize all the functions to inactive
- *      - Pass Maxboxes(l+1) to level l (recompute the indices in the mesh)
- *      - Compute Maxboxes(l) (see point 4 above)
- *      - Activate functions in Maxboxes(l)
- *      - Deactivate functions in Maxboxes(l+1)
+ *      - Maxboxes_tmp[l+1] = transform index of Maxboxes[l+1] to level l
+ *      - Activate functions in V[l] using Maxboxes[l]
+ *      - Deactivate functions in V[l] using Maxboxes_tmp[l+1]
  *    end
  *
  */
@@ -81,7 +81,12 @@ public:
    *
    *
    */
-  void refine();
+  void refine()
+  {
+	  //1. activate, deactivate and mark influence on elements;
+	  //2. compute maximal boxes
+	  //3. activate/deactivate function
+  }
 
 private:
   SpaceElementIterator parent(const SpaceElementIterator &elem);
