@@ -24,7 +24,7 @@
  *     - get_local_to_global
  *     - get_values
  *
- * 3. Design of HSpace class and accessor
+ * 3. Design of HSpace class and accessor (starting from this file)
  *
  * 4. Design of the MaximalBox algorithm
  *  a) Given a CartesianGrid with the influence elements information, 
@@ -47,9 +47,19 @@
  *       elements at the corners defining the Box)
  *     }
  *
+ * 5. Computation of the active and inactive functions
+ *    The algorithm works for any given mesh (either refining or coarsening)
  *
+ *    N = number of levels
+ *    Set Maxboxes(N+1) = empty;
  *
- *
+ *    for l=N:-1:1
+ *      - Initialize all the functions to inactive
+ *      - Pass Maxboxes(l+1) to level l (recompute the indices in the mesh)
+ *      - Compute Maxboxes(l) (see point 4 above)
+ *      - Activate functions in Maxboxes(l)
+ *      - Deactivate functions in Maxboxes(l+1)
+ *    end
  *
  */
 template<typename Space>
