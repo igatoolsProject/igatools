@@ -41,12 +41,12 @@ void run_test()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     auto el1 = grid->begin();
-    el1->init_values(ValueFlags::w_measure, QGauss<dim>(2));
+    el1->init_cache(ValueFlags::w_measure, QGauss<dim>(2));
 
-    el1->init_values(ValueFlags::w_measure, QGauss<dim>(1));
+    el1->init_cache(ValueFlags::w_measure, QGauss<dim>(1));
 
     auto el2 = grid->begin();
-    el2->init_values(ValueFlags::w_measure, QGauss<dim>(1));
+    el2->init_cache(ValueFlags::w_measure, QGauss<dim>(1));
 }
 
 int main()

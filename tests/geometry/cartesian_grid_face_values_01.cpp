@@ -49,7 +49,7 @@ void run_test1()
                       ValueFlags::point|
                       ValueFlags::measure|
                       ValueFlags::w_measure;
-    elem->init_values(flag, QUniform<dim>(2));
+    elem->init_cache(flag, QUniform<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << "Element: "<< elem->get_flat_index() << endl;
@@ -58,7 +58,7 @@ void run_test1()
         {
             if (elem->is_boundary(face_id))
             {
-                elem->fill_face_values(face_id);
+                elem->fill_face_cache(face_id);
                 out << "face: " << face_id << endl;
                 out.push("  ");
                 out << "meas: "<< elem->get_face_measure(face_id) << endl;
@@ -99,7 +99,7 @@ void run_test2()
                       ValueFlags::point|
                       ValueFlags::measure|
                       ValueFlags::w_measure;
-    elem->init_values(flag, QUniform<dim>(2));
+    elem->init_cache(flag, QUniform<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << "Element: "<< elem->get_flat_index() << endl;
@@ -108,7 +108,7 @@ void run_test2()
         {
             if (elem->is_boundary(face_id))
             {
-                elem->fill_face_values(face_id);
+                elem->fill_face_cache(face_id);
                 out << "face: " << face_id << endl;
                 out.push("  ");
                 out << "meas: "<< elem->get_face_measure(face_id) << endl;

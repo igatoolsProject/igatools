@@ -49,11 +49,11 @@ void run_test()
     out << endl ;
 
     auto elem = grid->begin();
-    elem->init_values(ValueFlags::measure|ValueFlags::w_measure, QGauss<dim>(2));
+    elem->init_cache(ValueFlags::measure|ValueFlags::w_measure, QGauss<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << elem->get_flat_index() << "   ";
-        elem->fill_values();
+        elem->fill_cache();
         out << elem->get_measure() << endl;
         elem->get_w_measures().print_info(out);
     }
@@ -80,11 +80,11 @@ void run_test2()
 
     auto elem = grid->begin();
     ValueFlags flag = ValueFlags::point;
-    elem->init_values(flag, QGauss<dim>(2));
+    elem->init_cache(flag, QGauss<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << elem->get_flat_index() << "   ";
-        elem->fill_values();
+        elem->fill_cache();
         out << elem->get_points() << endl;
     }
 
