@@ -504,7 +504,14 @@ enum class InterfaceType : int
      * The interface is defined as strong C0 gluing between one side of each patch.
      * The dofs of the patches <em>will be renumbered</em> in order to ensure this interface condition.
      */
-    C0_strong_renumbering = 2
+    C0_strong_renumbering = 2,
+
+    /**
+     * This interface is defined using Mortar gluing.
+     *
+     * @todo Complete the documentation.
+     */
+    Mortar = 3
 };
 
 
