@@ -237,7 +237,7 @@ init_element(const ValueFlags flag,
         ref_space_flag |= ValueFlags::face_hessian;
     }
 
-    cache_->init_values(ref_space_flag, quad);
+    cache_->init_cache(ref_space_flag, quad);
 }
 
 
@@ -247,7 +247,7 @@ void IgMapping<RefSpace>::
 set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
     cache_->reset_flat_tensor_indices(elem.get_flat_index());
-    cache_->fill_values();
+    cache_->fill_cache();
 }
 
 
@@ -259,7 +259,7 @@ set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &e
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
     cache_->reset_flat_tensor_indices(elem.get_flat_index());
-    cache_->fill_face_values(face_id);
+    cache_->fill_face_cache(face_id);
 }
 
 

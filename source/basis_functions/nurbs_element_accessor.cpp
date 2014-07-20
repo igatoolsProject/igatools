@@ -51,7 +51,7 @@ NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
 template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
-init_values(const ValueFlags fill_flag,
+init_cache(const ValueFlags fill_flag,
             const Quadrature<dim> &quad)
 {
     Assert(contains(fill_flag, ValueFlags::none),
@@ -104,7 +104,7 @@ init_values(const ValueFlags fill_flag,
     Assert(max_der_order>=0, ExcMessage("Not a right ValueFlag"));
 
     // init the element values for the cache of the BSplineElementAccessor
-    bspline_element_accessor_.init_values(fill_flag_bspline,quad);
+    bspline_element_accessor_.init_cache(fill_flag_bspline,quad);
 
 
     this->reset_element_and_faces_cache(fill_flag, quad);
@@ -115,7 +115,7 @@ init_values(const ValueFlags fill_flag,
 template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
-init_face_values(const Index face_id,
+init_face_cache(const Index face_id,
                  const ValueFlags fill_flag,
                  const Quadrature<dim-1> &quad)
 {
@@ -776,7 +776,7 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
 template <int dim, int range, int rank >
 void
 NURBSElementAccessor< dim, range, rank >::
-fill_values(const TopologyId<dim> &topology_id)
+fill_cache(const TopologyId<dim> &topology_id)
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
@@ -786,7 +786,7 @@ fill_values(const TopologyId<dim> &topology_id)
 
 
     // fills the cache of the BSplineElementAccessor
-    bspline_element_accessor_.fill_values(topology_id);
+    bspline_element_accessor_.fill_cache(topology_id);
     const auto &bspline_cache = bspline_element_accessor_.get_values_cache(topology_id);
 
     if (cache.flags_handler_.fill_values())

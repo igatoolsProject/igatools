@@ -62,11 +62,11 @@ void test_evaluate()
     QGauss<dim> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::w_measure;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         elem->get_basis_values().print_info(out);
         elem->get_basis_gradients().print_info(out);
         // elem->get_basis_hessians().print_info(out);

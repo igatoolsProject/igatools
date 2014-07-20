@@ -271,7 +271,7 @@ reset(const Index face_id,
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-init_values(const ValueFlags fill_flag,
+init_cache(const ValueFlags fill_flag,
             const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
@@ -337,7 +337,7 @@ init_values(const ValueFlags fill_flag,
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-init_face_values(const Index face_id,
+init_face_cache(const Index face_id,
                  const ValueFlags fill_flag,
                  const Quadrature<dim-1> &quad)
 {
@@ -349,7 +349,7 @@ init_face_values(const Index face_id,
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-fill_values()
+fill_cache()
 {
     CartesianGridElementAccessor<dim_ref_>::fill_cache();
     mapping_->set_element(*this);
@@ -409,7 +409,7 @@ fill_values()
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 

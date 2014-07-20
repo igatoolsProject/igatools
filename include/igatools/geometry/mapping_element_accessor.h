@@ -154,7 +154,7 @@ public:
      * (i.e. the same for all elements).
      * @note This function should be called before fill_values()
      */
-    void init_values(const ValueFlags fill_flag,
+    void init_cache(const ValueFlags fill_flag,
                      const Quadrature<dim> &quadrature);
 
     /**
@@ -166,7 +166,7 @@ public:
      * (i.e. the same for all elements).
      * @note This function should be called before fill_face_values()
      */
-    void init_face_values(const Index face_id,
+    void init_face_cache(const Index face_id,
                           const ValueFlags fill_flag,
                           const Quadrature<dim-1> &quadrature);
 
@@ -176,7 +176,7 @@ public:
      *
      * Precondition Before invoking this function, you must call init_values().
      */
-    void fill_values();
+    void fill_cache();
 
     /**
      * Fills the cache in accordance with the flag specifications used in the
@@ -186,7 +186,7 @@ public:
      * Precondition Before invoking this function, you must call
      * init_face_values().
      */
-    void fill_face_values(const Index face_id);
+    void fill_face_cache(const Index face_id);
     ///@}
 
     /**

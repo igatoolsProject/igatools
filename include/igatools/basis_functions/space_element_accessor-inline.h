@@ -373,7 +373,7 @@ void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 fill_face_values(const Index face_id)
 {
-    this->as_derived_element_accessor().fill_values(FaceTopology<dim>(face_id));
+    this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
 }
 
 

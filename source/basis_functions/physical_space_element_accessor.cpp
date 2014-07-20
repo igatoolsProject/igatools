@@ -192,15 +192,15 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
-init_values(const ValueFlags fill_flag,
+init_cache(const ValueFlags fill_flag,
             const QuadratureType &quad)
 {
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
-    ref_space_element_accessor_.init_values(ref_sp_flag, quad);
+    ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
 
     const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
-    PfElemAccessor::init_values(pf_flag, quad);
+    PfElemAccessor::init_cache(pf_flag, quad);
 
 
     this->reset_element_and_faces_cache(fill_flag, quad);
@@ -211,7 +211,7 @@ init_values(const ValueFlags fill_flag,
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
-init_face_values(const Index face_id,
+init_face_cache(const Index face_id,
                  const ValueFlags fill_flag,
                  const QuadratureFaceType &quad)
 {
@@ -222,7 +222,7 @@ init_face_values(const Index face_id,
 
 template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
-fill_values(const TopologyId<dim> &topology_id)
+fill_cache(const TopologyId<dim> &topology_id)
 {
     auto &cache = parent_t::get_values_cache(topology_id);
 
@@ -231,15 +231,15 @@ fill_values(const TopologyId<dim> &topology_id)
     //TODO: remove this if
     if (topology_id.is_element())
     {
-        PfElemAccessor::fill_values();
-        ref_space_element_accessor_.fill_values();
+        PfElemAccessor::fill_cache();
+        ref_space_element_accessor_.fill_cache();
     }
     else
     {
-        //TODO: implement fill_values in PushForwardElementAccessor
+        //TODO: implement fill_cache in PushForwardElementAccessor
         // and RefSpaceElementAccessor accepting TopologyId
-        PfElemAccessor::fill_face_values(topology_id.get_id());
-        ref_space_element_accessor_.fill_face_values(topology_id.get_id());
+        PfElemAccessor::fill_face_cache(topology_id.get_id());
+        ref_space_element_accessor_.fill_face_cache(topology_id.get_id());
     }
 
     if (cache.flags_handler_.fill_values())
@@ -313,9 +313,9 @@ fill_values(const TopologyId<dim> &topology_id)
 
 template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
-    this->fill_values(FaceTopology<dim>(face_id));
+    this->fill_cache(FaceTopology<dim>(face_id));
 }
 
 

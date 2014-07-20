@@ -107,10 +107,10 @@ public:
      * before calling the transformations functions.
      *
      */
-    void init_values(const ValueFlags fill_flag,
+    void init_cache(const ValueFlags fill_flag,
                      const Quadrature<dim> &quad);
 
-    void init_face_values(const Index face_id,
+    void init_face_cache(const Index face_id,
                           const ValueFlags fill_flag,
                           const Quadrature<dim-1> &quad);
 

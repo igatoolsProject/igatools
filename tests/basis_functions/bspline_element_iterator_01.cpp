@@ -49,9 +49,9 @@ void do_test()
     QGauss< dim > quad_scheme(n_points);
 
     auto element = space->begin();
-    element->init_values(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
+    element->init_cache(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
                          quad_scheme);
-    element->fill_values();
+    element->fill_cache();
 
     auto values    = element->get_basis_values();
     auto gradients = element->get_basis_gradients();

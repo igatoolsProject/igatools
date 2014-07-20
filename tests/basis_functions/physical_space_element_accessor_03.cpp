@@ -68,12 +68,12 @@ void test_evaluate()
     const int n_qpoints = 1;
     QGauss<dim> quad(n_qpoints);
     ValueFlags flag = ValueFlags::map_gradient|ValueFlags::value;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values() ;
+        elem->fill_cache() ;
         elem->get_basis_values().print_info(out) ;
         elem_pf.get_map_gradients().print_info(out) ;
         elem_rs.get_basis_values().print_info(out) ;

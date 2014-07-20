@@ -168,10 +168,10 @@ value_to_mapping_flag(
 template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
-init_values(const ValueFlags fill_flag,
+init_cache(const ValueFlags fill_flag,
             const Quadrature<dim> &quad)
 {
-    base_t::init_values(value_to_mapping_flag(fill_flag), quad);
+    base_t::init_cache(value_to_mapping_flag(fill_flag), quad);
 }
 
 
@@ -179,7 +179,7 @@ init_values(const ValueFlags fill_flag,
 template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
-init_face_values(const Index face_id,
+init_face_cache(const Index face_id,
                  const ValueFlags fill_flag,
                  const Quadrature<dim-1> &quad)
 {

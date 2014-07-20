@@ -139,26 +139,26 @@ public:
      * the fill_flag on the given quadrature points.
      * This implies a uniform quadrature scheme
      * (i.e. the same for all elements).
-     * @note This function should be called before fill_values()
+     * @note This function should be called before fill_cache()
      */
-    void init_values(const ValueFlags fill_flag,
+    void init_cache(const ValueFlags fill_flag,
                      const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
-    void init_face_values(const Index face_id,
+    void init_face_cache(const Index face_id,
                           const ValueFlags fill_flag,
                           const Quadrature<dim-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
-     * and fill flags specifies in init_values.
+     * and fill flags specifies in init_cache.
      *
      * @note The topology for which the measure is computed is specified by
      * the input argument @p topology_id.
      */
-    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
 
 
@@ -171,7 +171,7 @@ public:
      * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
