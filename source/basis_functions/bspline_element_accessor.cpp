@@ -308,7 +308,7 @@ init_values(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_point;
         if (contains(fill_flag , ValueFlags::face_w_measure))
             grid_flag |= ValueFlags::face_w_measure;
-        CartesianGridElementAccessor<dim>::init_values(grid_flag,quad);
+        CartesianGridElementAccessor<dim>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
@@ -360,7 +360,7 @@ init_face_values(const Index face_id,
 }
 
 
-
+/*
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
@@ -371,6 +371,8 @@ reset_global_cache()
     for (int f = 0; f < n_faces; ++f)
         values_1d_faces_[f].reset();
 }
+//*/
+
 
 template <int dim, int range, int rank>
 void
@@ -745,7 +747,7 @@ fill_values(const TopologyId<dim> &topology_id)
     ComponentContainer<array<const BasisValues1d *, dim>> elem_univariate_values;
 
 
-    CartesianGridElementAccessor<dim>::fill_values(topology_id);
+    CartesianGridElementAccessor<dim>::fill_cache(topology_id);
 
     if (topology_id.is_element())
     {

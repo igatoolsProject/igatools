@@ -46,13 +46,13 @@ void loop_on_grid_with_cache()
     // [init cache]
     QGauss<dim> quad(2);
     ValueFlags fill_flag = ValueFlags::w_measure;
-    elem->init_values(fill_flag, quad);
+    elem->init_cache(fill_flag, quad);
     // [init cache]
 
     for (; elem != elem_end; ++elem)
     {
         // [fill cache]
-        elem->fill_values();
+        elem->fill_cache();
         // [fill cache]
         out << "The center of element: " << elem->get_flat_index();
         out << " is: "<< elem->center() << endl;

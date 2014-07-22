@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/equality_constraint.h>
 //#include <boost/graph/adjacency_list.hpp>
@@ -206,14 +207,6 @@ private:
 
 
 
-    class LinearConstraint
-    {
-    public:
-
-    private:
-        /** Vector of pairs dof_id/value defining the linear constraint.*/
-        std::vector<std::pair<Index,Real> > dofs_id_and_value_;
-    };
 
     std::vector<LinearConstraint> linear_constraints_;
 

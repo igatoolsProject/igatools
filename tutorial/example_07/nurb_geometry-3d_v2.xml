@@ -13,7 +13,10 @@
                     0.0 1.0
                 </Knots>
             </CartesianGrid>
-            <NURBSSpaceScalarComponents Size="3">
+            <NURBSSpaceScalarComponents Size="1">
+                <ComponentsMap Size="3">
+                   0 0 0
+                </ComponentsMap>
                 <NURBSSpaceScalarComponent Id="0">
                     <DofsTensorSize Dim="3">
                         3 3 2
@@ -21,61 +24,14 @@
                     <Degrees Dim="3">
                         2 2 1
                     </Degrees>
-                    <Multiplicities Dim="3">
-                        <Multiplicity Direction="0" Size="2">
-                            3 3
-                        </Multiplicity>
-                        <Multiplicity Direction="1" Size="2">
-                            3 3
-                        </Multiplicity>
-                        <Multiplicity Direction="2" Size="2">
-                            2 2
-                        </Multiplicity>
-                    </Multiplicities>
-                    <Weights Size="18">
-                       1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0 1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0
-                    </Weights>
-                </NURBSSpaceScalarComponent>
-                <NURBSSpaceScalarComponent Id="1">
-                    <DofsTensorSize Dim="3">
-                        3 3 2
-                    </DofsTensorSize>
-                    <Degrees Dim="3">
-                        2 2 1
-                    </Degrees>
-                    <Multiplicities Dim="3">
-                        <Multiplicity Direction="0" Size="2">
-                            3 3
-                        </Multiplicity>
-                        <Multiplicity Direction="1" Size="2">
-                            3 3
-                        </Multiplicity>
-                        <Multiplicity Direction="2" Size="2">
-                            2 2
-                        </Multiplicity>
-                    </Multiplicities>
-                    <Weights Size="18">
-                       1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0 1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0
-                    </Weights>
-                </NURBSSpaceScalarComponent>
-                <NURBSSpaceScalarComponent Id="2">
-                    <DofsTensorSize Dim="3">
-                        3 3 2
-                    </DofsTensorSize>
-                    <Degrees Dim="3">
-                        2 2 1
-                    </Degrees>
-                    <Multiplicities Dim="3">
-                        <Multiplicity Direction="0" Size="2">
-                            3 3
-                        </Multiplicity>
-                        <Multiplicity Direction="1" Size="2">
-                            3 3
-                        </Multiplicity>
-                        <Multiplicity Direction="2" Size="2">
-                            2 2
-                        </Multiplicity>
-                    </Multiplicities>
+                    <InteriorMultiplicities Dim="3">
+                        <InteriorMultiplicity Direction="0" Size="0">
+                        </InteriorMultiplicity>
+                        <InteriorMultiplicity Direction="1" Size="0">
+                        </InteriorMultiplicity>
+                        <InteriorMultiplicity Direction="2" Size="0">
+                        </InteriorMultiplicity>
+                    </InteriorMultiplicities>
                     <Weights Size="18">
                        1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0 1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0
                     </Weights>

@@ -70,7 +70,7 @@ void nurb_geometry()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
     using Space = BSplineSpace<dim,dim>;
-    auto space = Space::create(grid, deg);
+    auto space = Space::create(deg, grid);
     const int n_basis = space->get_num_basis();
     vector<Real> control_pts(n_basis);
     DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);

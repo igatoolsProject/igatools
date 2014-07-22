@@ -136,35 +136,35 @@ public:
      * cache, i.e. it is like using a projected quadrature on
      * the faces.
      */
-    void init_values(const ValueFlags flag,
-                     const Quadrature<dim_> &quad);
+    void init_cache(const ValueFlags flag,
+                    const Quadrature<dim_> &quad);
 
     /**
      * Initializes the internal cache for the efficient
      * computation of the values requested in
      * the @p fill_flag when no quadrature point is necessary
      */
-    void init_values(const ValueFlags flag);
+    void init_cache(const ValueFlags flag);
 
     /**
      * To use a different quadrature on the face instead of
      * the projected element quadrature
      */
-    void init_face_values(const Index face_id,
-                          const ValueFlags flag,
-                          const Quadrature<dim_-1> &quad);
+    void init_face_cache(const Index face_id,
+                         const ValueFlags flag,
+                         const Quadrature<dim_-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_values(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
+    void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Fills the i-th face values cache according to the evaluation points
      * and fill flags specified in init_values.
      */
-    void fill_face_values(const Index face_id);
+    void fill_face_cache(const Index face_id);
     ///@}
 
 
@@ -266,7 +266,7 @@ private:
         /**
          * Allocates space for the cache
          */
-        void reset(const CartesianGrid<dim_> &grid);
+        void resize(const CartesianGrid<dim_> &grid);
 
         /** pointer to the current entry of of length,
          *  it could be used for optimization of uniform grid
@@ -288,8 +288,8 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_> &quad);
+        void resize(const GridElemValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_> &quad);
 
         /**
          * Fill the cache member.
@@ -325,8 +325,8 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_> &quad);
+        void resize(const GridElemValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_> &quad);
 
         /**
          * Prints internal information about the ElementValuesCache.
@@ -341,13 +341,13 @@ private:
     class FaceValuesCache : public ValuesCache
     {
     public:
-        void reset(const GridFaceValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_> &quad,
-                   const Index face_id);
+        void resize(const GridFaceValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_> &quad,
+                    const Index face_id);
 
-        void reset(const GridFaceValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_-1> &quad,
-                   const Index face_id);
+        void resize(const GridFaceValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_-1> &quad,
+                    const Index face_id);
     };
 
     /**
