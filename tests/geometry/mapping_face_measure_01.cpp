@@ -42,7 +42,7 @@ void test_evaluate()
     auto elem     = map->begin();
     auto elem_end = map->end();
     ValueFlags flag = ValueFlags::face_w_measure|ValueFlags::face_point;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     std::array<Real, UnitElement<dim>::faces_per_element> face_area ;
     std::fill(face_area.begin(), face_area.end(), 0.0) ;
@@ -55,7 +55,7 @@ void test_evaluate()
             {
                 if (elem->is_boundary(face_id))
                 {
-                    elem->fill_face_values(face_id);
+                    elem->fill_face_cache(face_id);
                     auto &w_meas = elem->get_face_w_measures(face_id);
                     for (int q = 0; q < w_meas.size(); ++q)
                         face_area[face_id] += w_meas[q] ;

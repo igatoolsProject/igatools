@@ -43,8 +43,8 @@ void test_evaluate()
                       |ValueFlags::map_hessian;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
     auto values    = elem->get_map_values();
     auto gradients = elem->get_map_gradients();

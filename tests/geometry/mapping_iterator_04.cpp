@@ -146,7 +146,7 @@ void run_test()
         out << endl;
 
         out << "Points evaluated at the face id " << face_id << " using the cache" << endl;
-        elem->fill_face_values(face_id);
+        elem->fill_face_cache(face_id);
         auto points_face = elem->get_face_values(face_id);
         points_face.print_info(out);
         out << endl;

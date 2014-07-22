@@ -371,7 +371,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
     this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
 }

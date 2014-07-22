@@ -132,10 +132,10 @@ void do_test1(const int p)
 
     typename space_phys_t::ElementIterator elem = phys_space->begin() ;
     typename space_phys_t::ElementIterator endc = phys_space->end();
-    elem->init_values(flags, quad);
+    elem->init_cache(flags, quad);
     for (; elem != endc; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
 
         out << "Element: " << elem->get_flat_index() << endl;
 

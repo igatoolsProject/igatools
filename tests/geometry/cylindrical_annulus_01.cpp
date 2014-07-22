@@ -44,8 +44,8 @@ int main()
 
     auto elem = map->begin();
     ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
     auto values = elem->get_map_values();
     auto gradients = elem->get_map_gradients();
@@ -71,9 +71,9 @@ int main()
 
     PushForwardElementAccessor<push_fwd_t> push_fwd_accessor(push_forward, 0) ;
 
-    push_fwd_accessor.init_values(ValueFlags::tran_value | ValueFlags::tran_gradient, quad) ;
+    push_fwd_accessor.init_cache(ValueFlags::tran_value | ValueFlags::tran_gradient, quad) ;
 
-    push_fwd_accessor.fill_values() ;
+    push_fwd_accessor.fill_cache() ;
 
     typedef Values<1,1,1> Value ;
     typedef Derivatives<3,1,1,1> Grad ;

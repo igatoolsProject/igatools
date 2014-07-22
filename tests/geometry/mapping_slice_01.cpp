@@ -51,11 +51,11 @@ void run_test()
         QGauss<dim-1> face_quad(1);
         auto face_elem = face_map->begin();
         auto end = face_map->end();
-        face_elem->init_values(ValueFlags::point|ValueFlags::map_gradient, face_quad);
+        face_elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, face_quad);
         for (; face_elem != end; ++face_elem)
         {
             out << "face element: " <<  face_elem->get_flat_index() << endl;
-            face_elem->fill_values();
+            face_elem->fill_cache();
             face_elem->get_map_values().print_info(out);
             //face_elem->get_gradients().print_info(out);
         }

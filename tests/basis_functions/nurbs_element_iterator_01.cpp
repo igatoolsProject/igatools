@@ -61,11 +61,11 @@ void test()
     auto end_element = space->end();
 
     const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != end_element; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         out << "Element: " << elem->get_flat_index()<< endl;
 
         out << "Values basis functions:" << endl;
