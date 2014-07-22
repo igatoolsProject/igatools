@@ -559,7 +559,9 @@ Index
 CartesianGrid<dim_>::
 get_element_flat_id_from_point(const Points<dim> &point) const
 {
+#ifndef NDEBUG
     const auto bounding_box = this->get_bounding_box();
+#endif
 
     TensorIndex<dim> elem_t_id;
     for (int i = 0 ; i < dim ; ++i)
@@ -609,7 +611,9 @@ build_map_elements_between_cartesian_grids(
         const auto &coords_coarse = grid_coarse.get_knot_coordinates(i);
         const auto &coords_fine = grid_fine.get_knot_coordinates(i);
 
+#ifndef NDEBUG
         const int n_intervals_coarse = coords_coarse.size() - 1;
+#endif
         const int n_intervals_fine = coords_fine.size() - 1;
 
         for (int fid_fine = 0 ; fid_fine < n_intervals_fine ; ++fid_fine)
