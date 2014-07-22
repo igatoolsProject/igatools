@@ -37,15 +37,39 @@
  *       - list = list - Box
  *     until(list == empty)
  *
- *     MaximalBox(\Omega_e)
- *     {
- *       Move L and R(\Omega_e) -> elem_list_0
- *       Move U and D elem_list_0 -> elem_list_1
- *       .....
- *       .....
- *       return a Box (i.e. the tensor indices of the opposite 
- *       elements at the corners defining the Box)
- *     }
+ * A box is passed and returned as the tensor indices of two opposite corners
+ * I will move a list of elements (elems_to_move) that has to be initialized
+ *  twice for every direction (moving left and right), and is overwritten at
+ *  every step.
+ * The difficulties in igatools may be how to move inside the list of
+ *  elems_to_move, to store the new element in the right position (in the 
+ *  pseudo-code the indices [i,j,k]); and how to compute elem_new, moving 
+ *  with the tensor index ti inside the grid.
+ *
+ *   MaximalBox(indices)
+ *   {
+ *    for idim = 1:ndim
+ *      for dir = {-1, 1} (left-right, up-down, front-rear, back-forth)
+ *        initialize elems_to_move  (from indices, idim and dir)
+ *        intialize ti (from idim and idir, {1,0,0},{-1,0,0},{0,1,0}...)
+ *        add_line = true;
+ *        while (add_line)
+ *          for (elem in elems_to_move)
+ *            elem_new = elem++; (using ti)
+ *            if (!is_influence(elem_new) .or. is_null(elem_new))
+ *              add_line = false;
+ *              break;
+ *            else
+ *              elems_to_move[i,j,k] = elem_new;
+ *            endif
+ *          endfor
+ *          if (add_line)
+ *            indices[idim,max-min] += dir; (max or min, depending on dir)
+ *          endif
+ *        endwhile
+ *      endfor
+ *    endfor
+ *   }
  *
  * 5. Computation of the active and inactive functions
  *    The algorithm works for any given mesh (either refining or coarsening)
