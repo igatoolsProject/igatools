@@ -1,0 +1,45 @@
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.500000 1.00000 ]
+	Num elements: 4
+		Direction[0] = 2
+		Direction[1] = 2
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.500000 1.00000 ]
+	Num elements: 4
+		Direction[0] = 2
+		Direction[1] = 2
+Number of multiplier dof3
+Number of primal dof7
+mult dof nb: 0, primal dof index: 0, primal dof nb: 2, primal dof coef val: 0.200000
+mult dof nb: 0, primal dof index: 1, primal dof nb: 5, primal dof coef val: 0.100000
+mult dof nb: 0, primal dof index: 2, primal dof nb: 8, primal dof coef val: 0.0333333
+mult dof nb: 0, primal dof index: 3, primal dof nb: 9, primal dof coef val: 0.129167
+mult dof nb: 0, primal dof index: 4, primal dof nb: 13, primal dof coef val: 0.141667
+mult dof nb: 0, primal dof index: 5, primal dof nb: 17, primal dof coef val: 0.0583333
+mult dof nb: 0, primal dof index: 6, primal dof nb: 21, primal dof coef val: 0.00416667
+, in the rhs: 0
+-----------
+Number of primal dof7
+mult dof nb: 1, primal dof index: 0, primal dof nb: 2, primal dof coef val: 0.100000
+mult dof nb: 1, primal dof index: 1, primal dof nb: 5, primal dof coef val: 0.133333
+mult dof nb: 1, primal dof index: 2, primal dof nb: 8, primal dof coef val: 0.100000
+mult dof nb: 1, primal dof index: 3, primal dof nb: 9, primal dof coef val: 0.0333333
+mult dof nb: 1, primal dof index: 4, primal dof nb: 13, primal dof coef val: 0.133333
+mult dof nb: 1, primal dof index: 5, primal dof nb: 17, primal dof coef val: 0.133333
+mult dof nb: 1, primal dof index: 6, primal dof nb: 21, primal dof coef val: 0.0333333
+, in the rhs: 0
+-----------
+Number of primal dof7
+mult dof nb: 2, primal dof index: 0, primal dof nb: 2, primal dof coef val: 0.0333333
+mult dof nb: 2, primal dof index: 1, primal dof nb: 5, primal dof coef val: 0.100000
+mult dof nb: 2, primal dof index: 2, primal dof nb: 8, primal dof coef val: 0.200000
+mult dof nb: 2, primal dof index: 3, primal dof nb: 9, primal dof coef val: 0.00416667
+mult dof nb: 2, primal dof index: 4, primal dof nb: 13, primal dof coef val: 0.0583333
+mult dof nb: 2, primal dof index: 5, primal dof nb: 17, primal dof coef val: 0.141667
+mult dof nb: 2, primal dof index: 6, primal dof nb: 21, primal dof coef val: 0.129167
+, in the rhs: 0
+-----------

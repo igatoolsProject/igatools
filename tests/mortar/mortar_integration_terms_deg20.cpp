@@ -159,7 +159,7 @@ void Mortar_Interface<dim, dim_field>::integration(){
 	
 	
 	//LogStream out;
-	const int int_pts(degree_multiplier_+1);
+	const int int_pts(degree_multiplier_+3);
 	
 	
 	
@@ -493,8 +493,8 @@ int main()
 	//LogStream out;
 	const int dim(2);
 	const int dim_field(1);
-	vector<int> degrees(2,1);
-	const int deg(1);
+	vector<int> degrees(2,2);
+	const int deg(0);
 	
 	
 	// Mapping $\R^2 \rightarrow \R^2$, scalar field

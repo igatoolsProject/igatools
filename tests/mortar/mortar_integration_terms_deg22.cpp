@@ -493,8 +493,8 @@ int main()
 	//LogStream out;
 	const int dim(2);
 	const int dim_field(1);
-	vector<int> degrees(2,1);
-	const int deg(1);
+	vector<int> degrees(2,2);
+	const int deg(2);
 	
 	
 	// Mapping $\R^2 \rightarrow \R^2$, scalar field
