@@ -221,13 +221,6 @@ add_point_data(const int n_values_per_point,
     Assert(type == "scalar" || type == "vector" || type == "tensor",
            ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
 
-    Assert((type == "scalar" && n_values_per_point == 1) ||
-           (type == "vector" && n_values_per_point == 3) ||
-           (type == "tensor" && n_values_per_point == 9),
-           ExcMessage("For the data with name \"" + name + "\", the number of values per point (" +
-                      to_string(n_values_per_point) +
-                      ") does not match the point_data type (" + type + ")."));
-
     shared_ptr<vector<T>> data_ptr(new vector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
     auto &data = *data_ptr;
 
@@ -303,16 +296,15 @@ add_field(shared_ptr<Space> space_,
     const int n_pts_per_elem = quad_plot_.get_num_points();
 
     static const int dim_phys_range = Space::range;
+    static const int rank = Space::rank;
 
 
     const int n_values_per_pt =
-        Space::range == 1? 1 : std::pow(3, Space::rank);
+        dim_phys_range == 1 ? 1 : std::pow(dim_phys_range, rank);
     shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
     auto &data = *data_ptr;
-    if (Space::range==1)
+    if (rank == 0)
     {
-        Assert(n_values_per_pt == 1, ExcDimensionMismatch(n_values_per_pt, 1));
-
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
@@ -324,13 +316,11 @@ add_field(shared_ptr<Space> space_,
                 data[pos++] = field_values[iPt][0];
         }
 
-        fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, 1, data_ptr));
+        fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
         names_point_data_scalar_.emplace_back(name);
     }
-    else if (Space::rank == 1)
+    else if (rank == 1)
     {
-        Assert(n_values_per_pt == 3, ExcDimensionMismatch(n_values_per_pt, 3));
-
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
@@ -344,19 +334,14 @@ add_field(shared_ptr<Space> space_,
                 const auto &field_value_ipt = field_values[ iPt ];
                 for (int i = 0; i < dim_phys_range; ++i)
                     data[pos++] = field_value_ipt[i];
-
-                for (int i = dim_phys_range; i < 3; ++i)
-                    data[pos++] = 0.0;
             }
         }
 
-        fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, 3, data_ptr));
+        fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
         names_point_data_vector_.emplace_back(name);
     }
-    else if (Space::rank == 2)
+    else if (rank == 2)
     {
-        Assert(n_values_per_pt == 9, ExcDimensionMismatch(n_values_per_pt, 9));
-
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
@@ -374,17 +359,11 @@ add_field(shared_ptr<Space> space_,
 
                     for (int j = 0; j < dim_phys_range; ++j)
                         data[pos++] = field_value_ipt_i[j];
-
-                    for (int j = dim_phys_range; j < 3; ++j)
-                        data[pos++] = 0.0;
                 }
-                for (int i = dim_phys_range; i < 3; ++i)
-                    for (int j = 0; j < 3; ++j)
-                        data[pos++] = 0.0;
             }
         }
 
-        fields_.emplace_back(PointData(name,"tensor",n_elements,n_pts_per_elem,9,data_ptr));
+        fields_.emplace_back(PointData(name,"tensor",n_elements,n_pts_per_elem,n_values_per_pt,data_ptr));
         names_point_data_tensor_.emplace_back(name);
     }
 
@@ -435,6 +414,8 @@ get_subelements(
 
     auto element_vertices_tmp = elem->get_map_values();
 
+    const T zero = T(0.0);
+
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
     {
@@ -442,7 +423,7 @@ get_subelements(
             points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
 
         for (int i = space_dim; i < 3; ++i)
-            points_phys_iga_element[ipt][i] = 0.0;
+            points_phys_iga_element[ipt][i] = zero;
     }
 
 

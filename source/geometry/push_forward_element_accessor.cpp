@@ -464,7 +464,9 @@ transform_basis_derivatives_at_points(
     Container< PhysValue<dim_range,rank> > &phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
+#ifndef NDEBUG
     const int num_points = points.size();
+#endif
     Assert(num_points > 0, ExcEmptyObject());
 
 
