@@ -188,8 +188,12 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> & maps, vector<int> degrees, Log
 	for(int i=0; i!=maps.size(); ++i){
 		ref_spaces_field.push_back(RefSpaceField::create(degrees[i], maps[i]->get_grid()));
 		spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i]),i));
+		spaces[i]->get_grid()->print_info(out);
+		spaces[i]->get_grid()->refine(3);
+		spaces[i]->get_grid()->print_info(out);
+		//spaces[i]->get_reference_space()->refine_h(3);
 		spaces[i]->print_info(out);
-		spaces[i]->refine_h(2); // Problem here with a value different than 2
+		//spaces[i]->refine_h(3); // Problem here with a value different than 2
 		spaces[i]->print_info(out);
 	}
 }

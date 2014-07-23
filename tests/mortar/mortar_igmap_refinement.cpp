@@ -50,7 +50,7 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> & maps, vector<int> degrees, Log
 		ref_spaces_field.push_back(RefSpaceField::create(degrees[i], maps[i]->get_grid()));
 		spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i]),i));
 		spaces[i]->print_info(out);
-		//spaces[i]->refine_h(); //Problem for the refinement
+		spaces[i]->refine_h(2); //Problem for the refinement
 		spaces[i]->print_info(out);
 	}
 }

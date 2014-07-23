@@ -42,12 +42,15 @@ public:
 	using RefSpaceField         = BSplineSpace<dim,dim_field,1>;
 	using RefSpaceField_ptr     = shared_ptr<RefSpaceField>;
 	using PushFw                = PushForward<Transformation::h_grad, dim,0>;
+	using PushFwt                = PushForward<Transformation::h_grad, dim-1,0>;
 	using PhySpace              = PhysicalSpace<RefSpaceField, PushFw>;
 	using PhySpace_ptr          = shared_ptr<PhySpace>;	   
 	
 	using FuncMap = Function<dim, dim>;
 	using GradientMap = typename FuncMap::Gradient;
 	
+	using FuncMapt = Function<dim-1, dim>;
+	using GradientMapt = typename FuncMapt::Gradient;
 private:
 	boundary_id mortar_id_;
 	int degree_multiplier_;
@@ -189,8 +192,8 @@ void Mortar_Interface<dim, dim_field>::integration(){
 	joint_grid.push_back(make_shared<CartesianGrid<dim>>(build_cartesian_grid_union(*slave_grid, *master_grid, joint_grid_to_slave, joint_grid_to_master))); 	
 	joint_grid.push_back(make_shared<CartesianGrid<dim>>(build_cartesian_grid_union(*slave_grid, *master_grid, joint_grid_to_slave, joint_grid_to_master)));
 	
-	joint_grid[0]->print_info(out);
-	joint_grid[1]->print_info(out);
+	//joint_grid[0]->print_info(out);
+	//joint_grid[1]->print_info(out);
 	
 	// Apply the boundary id on the slave and master version of the joint grid
 	for(uint j=0; j!=2*dim; ++j){
@@ -198,8 +201,6 @@ void Mortar_Interface<dim, dim_field>::integration(){
 		joint_grid[1]->set_boundary_id(j,master_grid->get_boundary_id(j));
 	}
 	
-	
-
 	
 	
 	
@@ -214,13 +215,15 @@ void Mortar_Interface<dim, dim_field>::integration(){
 	
 	
 	
-	
 	vector<Index>      elem_slave_ids;
 	vector<double>     elem_slave_w_meas;
 	vector<Index>      elem_master_ids;
 	vector<vector<Points<dim>>>  vec_slave_quad_pts_ref_domain;
 	vector<vector<Points<dim>>>  vec_master_quad_pts_ref_domain;
-	// Loop on the joint grid elements 
+	
+	
+	
+	// Loop on the joint grid elements
 	auto elem_jm=*joint_grid[1]->begin();
 	for(auto elem_js: *joint_grid[0]){
 		if (elem_js.is_boundary()){
@@ -250,7 +253,79 @@ void Mortar_Interface<dim, dim_field>::integration(){
 	} // for elem_js
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Face joint grid construction
+	vector< Index >  joint_face_grid_to_slave;
+	vector< Index >  joint_face_grid_to_master;
+	auto slave_grid_to_face  = make_shared<map<int,int> >();
+	auto master_grid_to_face = make_shared<map<int,int> >();
+	auto face_slave_grid     = slave_grid->get_face_grid(slave_mortar_face_nb_,*slave_grid_to_face);
+	auto face_master_grid    = master_grid->get_face_grid(master_mortar_face_nb_,*master_grid_to_face);
+	
+	vector<shared_ptr<CartesianGrid<dim-1>>> face_joint_grid;
+	face_joint_grid.push_back(make_shared<CartesianGrid<dim-1>>(build_cartesian_grid_union(*face_slave_grid, *face_master_grid, joint_face_grid_to_slave, 
+																						   joint_face_grid_to_master))); 	
+	face_joint_grid.push_back(make_shared<CartesianGrid<dim-1>>(build_cartesian_grid_union(*face_slave_grid, *face_master_grid, joint_face_grid_to_slave, 
+																						   joint_face_grid_to_master)));
+	
+	face_joint_grid[0]->print_info(out);
+	face_joint_grid[1]->print_info(out);
+	
+	
 
+	vector< Index >   	slave_space_to_face_dof; 
+	vector< Index >   	master_space_to_face_dof; 
+	auto slave_space_face  = slave_space_->get_face_space(slave_mortar_face_nb_, slave_space_to_face_dof);
+	auto master_space_face = master_space_->get_face_space(master_mortar_face_nb_, master_space_to_face_dof);
+	
+	auto  face_slave_quad_pts_unit_domain        = joint_face_quad.get_points().get_flat_cartesian_product();
+	auto  face_master_quad_pts_unit_domain       = joint_face_quad.get_points().get_flat_cartesian_product();
+	// no extention to have all the unit coordinates
+	//auto  face_slave_quad_pts_unit_domain        = slave_joint_face_quad_gbl.get_points().get_flat_cartesian_product();
+	//auto  face_master_quad_pts_unit_domain       = master_joint_face_quad_gbl.get_points().get_flat_cartesian_product();
+	
+	
+
+	// Optimal loop:
+	auto felem_jm=*face_joint_grid[1]->begin();
+	for (auto felem_js: *face_joint_grid[0]){
+		auto felem_js_grid = felem_js.get_grid();					
+			auto felem_js_id     = felem_js.get_flat_index();
+		    auto face_slave_quad_pts_ref = felem_js.transform_points_unit_to_reference(face_slave_quad_pts_unit_domain);
+		
+			auto face_meas=static_cast<CartesianGridElement<dim-1>&>(felem_js).get_measure(FaceTopology<dim-1>(slave_mortar_face_nb_));
+			out<<"face_meas"<<face_meas<<endl;
+			
+		
+			auto felem_slave  = slave_space_face->get_element(joint_face_grid_to_slave[felem_js_id]);
+			auto elem_slave   = slave_space_->get_element(joint_grid_to_slave[slave_space_to_face_dof[felem_js_id]]);
+			auto dofs_face_slave    = felem_slave.get_local_to_global();
+		
+		
+			vector<GradientMapt> face_slave_map_grad;
+			//get the slave mapping from the slave physical space
+			auto temp_face_slave_map=slave_space_face->get_push_forward()->get_mapping();
+			//NON FUNZIONNA
+			//temp_face_slave_map->evaluate_gradients_at_points(face_slave_quad_pts_ref, face_slave_map_grad);
+       
+		
+			auto tmp_face_elem_slave          = felem_slave.as_cartesian_grid_element_accessor();
+			auto temp_slave_face_pts_unit   = tmp_face_elem_slave.transform_points_reference_to_unit(face_slave_quad_pts_ref);
+				
+			//NON FUNZIONNA		
+			//auto basis_slave      = felem_slave.evaluate_basis_values_at_points(temp_slave_face_pts_unit);
+		
+		
+		++felem_jm;
+	} // for elem_js
+	// Pb: it is not possible to get the gradients at points, as the basis function value
 	
 
 		
@@ -275,7 +350,7 @@ void Mortar_Interface<dim, dim_field>::integration(){
 		//get the slave mapping from the slave physical space
 		auto temp_slave_map=const_pointer_cast<PushFw>(slave_space_->get_push_forward())->get_mapping();
 		temp_slave_map->evaluate_gradients_at_points(slave_quad_pts_ref_domain, slave_map_grad);
-        auto w_meas = elem_slave_w_meas[elem_nb];
+        auto w_meas = elem_slave_w_meas[elem_nb]; 
 							
 		auto tmp_elem_slave       = elem_slave.as_cartesian_grid_element_accessor();
 		auto temp_slave_pts_unit  = tmp_elem_slave.transform_points_reference_to_unit(slave_quad_pts_ref_domain);
@@ -287,7 +362,8 @@ void Mortar_Interface<dim, dim_field>::integration(){
 		auto basis_multiplier = elem_multiplier.evaluate_basis_values_at_points(temp_slave_pts_unit);
 		auto basis_master     = elem_master.evaluate_basis_values_at_points(temp_master_pts_unit);
 						
-		
+		out<<"ss"<<basis_slave.size()<<"ms"<<basis_multiplier.size()<<"ms"<<basis_master.size()<<endl;
+		out<<"ns"<<n_slave_basis<<"nm"<<n_multiplier_basis<<"nm"<<n_master_basis<<endl;
 
 		for (int i = 0; i < n_multiplier_basis; ++i){
 			auto phi_m = basis_multiplier.get_function_view(i);
@@ -564,5 +640,6 @@ int main()
 		out<<", in the rhs: "<<my_lc_sol[i].second<<endl;
 		out<<"-----------"<<endl;
 	}
+	cout<<"la"<<get<0>(my_lc_sol[0].first[0])<<get<1>(my_lc_sol[0].first[0])<<my_lc_sol[0].second<<endl;
 	return  0;
 }
