@@ -49,18 +49,18 @@
  *   MaximalBox(indices)
  *   {
  *    for idim = 1:ndim
- *      for dir = {-1, 1} (left-right, up-down, front-rear, back-forth)
+ *      for dir = {-1, 1} (left-right, up-down, front-rear, back-forth...)
  *        initialize elems_to_move  (from indices, idim and dir)
  *        intialize ti (from idim and idir, {1,0,0},{-1,0,0},{0,1,0}...)
  *        add_line = true;
  *        while (add_line)
  *          for (elem in elems_to_move)
- *            elem_new = elem++; (using ti)
+ *            elem_new = elem++; (elem->move, using ti)
  *            if (!is_influence(elem_new) .or. is_null(elem_new))
  *              add_line = false;
  *              break;
  *            else
- *              elems_to_move[i,j,k] = elem_new;
+ *              elems_to_move[i,j,k] = elem_new;  (overwrite, if possible)
  *            endif
  *          endfor
  *          if (add_line)
