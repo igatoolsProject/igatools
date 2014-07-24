@@ -80,7 +80,7 @@ void  PoissonPreparation<dim>::local_assemble()
                             ValueFlags::w_measure;
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem->init_values(fill_flags, quad);
+    elem->init_cache(fill_flags, quad);
 
     const int n_qp = quad.get_num_points();
     for (; elem != elem_end; ++elem)
@@ -90,7 +90,7 @@ void  PoissonPreparation<dim>::local_assemble()
         loc_rhs = 0.;
 
         // [get the values]
-        elem->fill_values();
+        elem->fill_cache();
         auto values = elem->get_basis_values();
         auto grads  = elem->get_basis_gradients();
         auto w_meas = elem->get_w_measures();

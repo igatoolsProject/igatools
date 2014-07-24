@@ -289,7 +289,7 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-init_values(const ValueFlags fill_flag,
+init_cache(const ValueFlags fill_flag,
             const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
@@ -352,7 +352,7 @@ init_values(const ValueFlags fill_flag,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-init_face_values(const Index face_id,
+init_face_cache(const Index face_id,
                  const ValueFlags fill_flag,
                  const Quadrature<dim-1> &quad)
 {
@@ -735,7 +735,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-fill_values(const TopologyId<dim> &topology_id)
+fill_cache(const TopologyId<dim> &topology_id)
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));

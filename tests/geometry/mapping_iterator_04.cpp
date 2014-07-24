@@ -90,7 +90,7 @@ void run_test()
     auto elem     = map->begin();
     auto elem_end = map->end();
     ValueFlags fill_flags = ValueFlags::map_value | ValueFlags::face_point;
-    elem->init_values(fill_flags, *quad);
+    elem->init_cache(fill_flags, *quad);
 
 
 //*/
@@ -135,7 +135,7 @@ void run_test()
         }
 
         out << "Points evaluated at the element using the cache" << endl;
-        elem->fill_values();
+        elem->fill_cache();
         auto points = elem->get_map_values();
         points.print_info(out);
         out << endl;
@@ -146,7 +146,7 @@ void run_test()
         out << endl;
 
         out << "Points evaluated at the face id " << face_id << " using the cache" << endl;
-        elem->fill_face_values(face_id);
+        elem->fill_face_cache(face_id);
         auto points_face = elem->get_face_values(face_id);
         points_face.print_info(out);
         out << endl;

@@ -57,9 +57,9 @@ void test_iterator()
 
     ValueFlags flag = ValueFlags::point;
     flag |= ValueFlags::measure| ValueFlags::w_measure|ValueFlags::map_gradient|ValueFlags::map_hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
-    elem->fill_values();
+    elem->fill_cache();
 
     auto values = elem->get_map_values();
     auto dets = elem->get_measures();

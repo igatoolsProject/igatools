@@ -122,7 +122,7 @@ void
 MappingSlice<dim_, codim_>::
 init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 {
-    element->init_values(flag, build_extended_quadrature(quad));
+    element->init_cache(flag, build_extended_quadrature(quad));
 }
 
 
@@ -133,7 +133,7 @@ MappingSlice<dim_, codim_>::
 set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
     element->reset_flat_tensor_indices((*elem_map_)[elem.get_flat_index()]);
-    element->fill_values();
+    element->fill_cache();
 }
 
 

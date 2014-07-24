@@ -123,13 +123,13 @@ void PoissonProblem<dim>::assemble()
     const auto elem_end = space->end();
     ValueFlags fill_flags = ValueFlags::value | ValueFlags::gradient |
                             ValueFlags::w_measure | ValueFlags::point;
-    elem->init_values(fill_flags, elem_quad);
+    elem->init_cache(fill_flags, elem_quad);
 
     for (; elem != elem_end; ++elem)
     {
         loc_mat.clear();
         loc_rhs.clear();
-        elem->fill_values();
+        elem->fill_cache();
 
         auto points  = elem->get_points();
         auto phi     = elem->get_basis_values();

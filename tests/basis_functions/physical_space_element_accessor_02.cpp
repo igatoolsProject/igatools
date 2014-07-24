@@ -151,13 +151,13 @@ void test_evaluate()
     QGauss<dim> quad(3);
     const int n_qpoints = quad.get_num_points();
 
-    element->init_values(ValueFlags::value |
+    element->init_cache(ValueFlags::value |
                          ValueFlags::gradient |
                          ValueFlags::w_measure,
                          quad) ;
     for (; element != element_end ; ++element)
     {
-        element->fill_values() ;
+        element->fill_cache() ;
 
         const int n_basis = element->get_num_basis() ;
 

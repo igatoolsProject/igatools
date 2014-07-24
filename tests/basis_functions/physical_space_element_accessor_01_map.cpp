@@ -63,11 +63,11 @@ void test_evaluate()
     QGauss<dim> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
 
         out << "Basis values: " << endl;
         elem->get_basis_values().print_info(out);
@@ -102,11 +102,11 @@ void test_cylindircal_annulus()
     QGauss<3> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
 
         out << "Basis values: " << endl;
         elem->get_basis_values().print_info(out);

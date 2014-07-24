@@ -48,8 +48,8 @@ void test_evaluate()
                       |ValueFlags::map_hessian;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
     auto values    = elem->get_map_values();
     auto gradients = elem->get_map_gradients();
@@ -90,11 +90,11 @@ void test_gradients()
     auto elem = map->begin();
     const auto end = map->end();
 
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
     double measure = 0.;
     for (; elem != end; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         auto w_meas = elem->get_w_measures();
         for (int qp = 0; qp < n_qp; ++qp)
             measure += w_meas[qp];

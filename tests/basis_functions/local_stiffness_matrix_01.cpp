@@ -62,12 +62,12 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
 
     auto elem           = phys_space->begin();
     const auto elem_end = phys_space->end();
-    elem->init_values(flag, elem_quad);
+    elem->init_cache(flag, elem_quad);
 
     for (; elem != elem_end; ++elem)
     {
-        elem->fill_values();
-        loc_mat.clear();
+        elem->fill_cache();
+        loc_mat = 0.0;
 
         const auto w_meas = elem->get_w_measures();
 

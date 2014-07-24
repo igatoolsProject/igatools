@@ -56,10 +56,10 @@ void run_test(std::string &file_name)
     auto sp_elem     = ref_space->begin();
     auto sp_elem_end = ref_space->end();
 
-    sp_elem->init_values(ValueFlags::value, quad);
+    sp_elem->init_cache(ValueFlags::value, quad);
     for (; sp_elem != sp_elem_end; ++sp_elem)
     {
-        sp_elem->fill_values();
+        sp_elem->fill_cache();
 
         out << "Element id: " << sp_elem->get_flat_index() << endl;
 
@@ -78,10 +78,10 @@ void run_test(std::string &file_name)
     auto map_elem     = map->begin();
     auto map_elem_end = map->end();
 
-    map_elem->init_values(ValueFlags::point, quad);
+    map_elem->init_cache(ValueFlags::point, quad);
     for (; map_elem != map_elem_end; ++map_elem)
     {
-        map_elem->fill_values();
+        map_elem->fill_cache();
         out << "Element id: " << map_elem->get_flat_index() << endl;
 
         auto points = map_elem->get_map_values();

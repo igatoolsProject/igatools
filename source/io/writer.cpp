@@ -288,7 +288,7 @@ add_field(shared_ptr<Space> space_,
     auto element     = space->begin();
     auto element_end = space->end();
 
-    element->init_values(ValueFlags::value, quad_plot_);
+    element->init_cache(ValueFlags::value, quad_plot_);
 
 
 
@@ -308,7 +308,7 @@ add_field(shared_ptr<Space> space_,
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
-            element->fill_values();
+            element->fill_cache();
             const auto field_values = element->evaluate_field(
                                           coefs.get_local_coefs(element->get_local_to_global()));
 
@@ -324,7 +324,7 @@ add_field(shared_ptr<Space> space_,
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
-            element->fill_values();
+            element->fill_cache();
 
             const auto field_values = element->evaluate_field(
                                           coefs.get_local_coefs(element->get_local_to_global()));
@@ -345,7 +345,7 @@ add_field(shared_ptr<Space> space_,
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
-            element->fill_values();
+            element->fill_cache();
 
             const auto field_values = element->evaluate_field(
                                           coefs.get_local_coefs(element->get_local_to_global()));
@@ -382,13 +382,13 @@ void Writer<dim, codim, T>::fill_points_and_connectivity(
     auto element = map_->begin();
     const auto element_end = map_->end();
 
-    element->init_values(ValueFlags::map_value, quad_plot_);
+    element->init_cache(ValueFlags::map_value, quad_plot_);
 
     for (; element != element_end; ++element)
     {
         const int iga_elem_id = element->get_flat_index();
 
-        element->fill_values();
+        element->fill_cache();
         get_subelements(element,
                         vtk_elements_connectivity[iga_elem_id],
                         points_in_iga_elements[iga_elem_id]);

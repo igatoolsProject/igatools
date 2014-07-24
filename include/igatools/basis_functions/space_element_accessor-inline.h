@@ -121,6 +121,34 @@ evaluate_basis_hessians_at_points(const std::vector<Point> &points) const -> Val
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
 }
 
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_basis_values(const Quadrature<dim> &quad) const -> ValueTable< Value >
+{
+	this->evaluate_basis_values_at_points(quad.get_points());
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_basis_gradients(const Quadrature<dim> &quad) const -> ValueTable< Derivative<1> >
+{
+	this->evaluate_basis_gradients_at_points(quad.get_points());
+}
+
+template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
+inline
+auto
+SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
+get_basis_hessians(const Quadrature<dim> &quad) const -> ValueTable< Derivative<2> >
+{
+	this->evaluate_basis_hessians_at_points(quad.get_points());
+}
+
+
 
 
 template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
@@ -371,9 +399,9 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 void
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
-    this->as_derived_element_accessor().fill_values(FaceTopology<dim>(face_id));
+    this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
 }
 
 

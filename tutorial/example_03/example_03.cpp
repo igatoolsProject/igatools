@@ -80,10 +80,10 @@ void loop_on_space_with_cache()
 
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem->init_values(ValueFlags::value, QGauss<dim>(1));
+    elem->init_cache(ValueFlags::value, QGauss<dim>(1));
     for (; elem != elem_end; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         out << "Element: " << elem->get_flat_index();
         out << " has global basis: " << elem->get_local_to_global() << endl;
         elem->get_basis_values().print_info(out);

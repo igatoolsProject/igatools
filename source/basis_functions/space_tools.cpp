@@ -214,14 +214,14 @@ integrate_difference(const typename Space::Func &exact_solution,
 
     auto elem = space->begin();
     const auto end = space->end();
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     vector<Real>     norm_err_L2_square(n_elements);
     vector<Real> seminorm_err_H1_square(n_elements);
 
     for (; elem != end; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         const int elem_id = elem->get_flat_index();
         element_error[ elem_id ] = 0.0;
 
@@ -297,14 +297,14 @@ projection_l2(const typename Space::Func &func,
 
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
     const int n_basis = elem->get_num_basis();
     DenseVector local_rhs(n_basis);
     DenseMatrix local_matrix(n_basis,n_basis);
 
     for (; elem != elem_end; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
 
         const auto eval_points = elem->get_points();
         func.evaluate(eval_points, func_at_eval_pts);

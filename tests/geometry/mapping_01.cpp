@@ -54,8 +54,8 @@ void test_evaluate()
     QTrapez<dim> quad;
 
     auto elem = map->begin();
-    elem->init_values(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
-    elem->fill_values();
+    elem->init_cache(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
+    elem->fill_cache();
     auto values=elem->get_map_values();
     auto gradients = elem->get_map_gradients();
     auto hessians = elem->get_map_hessians();

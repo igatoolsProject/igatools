@@ -125,13 +125,13 @@ public:
      * (i.e. the same for all elements).
      * @note This function should be called before fill_values()
      */
-    void init_values(const ValueFlags fill_flag,
+    void init_cache(const ValueFlags fill_flag,
                      const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
-    void init_face_values(const Index face_id,
+    void init_face_cache(const Index face_id,
                           const ValueFlags fill_flag,
                           const Quadrature<dim-1> &quad);
 
@@ -142,7 +142,7 @@ public:
      * @note The topology for which the measure is computed is specified by
      * the input argument @p topology_id.
      */
-    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
 
     /**

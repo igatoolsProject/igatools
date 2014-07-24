@@ -70,9 +70,9 @@ void do_test()
     QGauss< dim_domain > quad_scheme1(2) ;
 
     auto element1 = space->begin();
-    element1->init_values(ValueFlags::value | ValueFlags::gradient,
+    element1->init_cache(ValueFlags::value | ValueFlags::gradient,
                           quad_scheme1);
-    element1->fill_values() ;
+    element1->fill_cache() ;
 
     auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
@@ -82,9 +82,9 @@ void do_test()
     gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme2(3) ;
-    element1->init_values(ValueFlags::value | ValueFlags::gradient,
+    element1->init_cache(ValueFlags::value | ValueFlags::gradient,
                           quad_scheme2);
-    element1->fill_values() ;
+    element1->fill_cache() ;
 
     auto values2    = element1->get_basis_values();
     values2.print_info(out);
