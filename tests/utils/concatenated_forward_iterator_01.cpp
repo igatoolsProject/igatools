@@ -46,8 +46,9 @@ void do_test_1_const()
     vector<int> v2 = {10,11,12};
     vector<int> v3 = {13};
 
-    using VecIterator = vector<int>::const_iterator;
-    using VecView = ConstView<VecIterator>;
+    using VecIterator = vector<int>::iterator;
+    using VecConstIterator = vector<int>::const_iterator;
+    using VecView = ConstView<VecIterator,VecConstIterator>;
 
     std::vector<VecView> ranges;
     ranges.push_back(VecView(v0.begin(),v0.end()));
@@ -117,7 +118,8 @@ void do_test_2()
     vector<int> v1b = {13};
 
     using ItType_0 = vector<int>::iterator;
-    using VecView0 = ConstView<ItType_0>;
+    using ConstItType_0 = vector<int>::iterator;
+    using VecView0 = ConstView<ItType_0,ConstItType_0>;
 
     std::vector<VecView0> ranges_a;
     ranges_a.push_back(VecView0(v0a.begin(),v0a.end()));

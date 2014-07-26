@@ -26,6 +26,7 @@
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/equality_constraint.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 //#include <boost/graph/adjacency_list.hpp>
 
 #include <memory>
@@ -73,6 +74,8 @@ public:
 
     /** Type alias for the View on the dofs held by the DofsManager object. */
     using DofsView = View<DofsIterator,DofsConstIterator>;
+
+    using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
 
     /** Default constructor. */
@@ -147,7 +150,10 @@ public:
 
     /** @name Functions for querying dofs information */
     ///@{
-    const DofsView &get_dofs_view() const;
+    DofsView &get_dofs_view();
+
+    DofsConstView get_dofs_view() const;
+
 
     /**
      * Returns the global dof corresponding to the @p local_dof
@@ -175,11 +181,15 @@ public:
     Index get_num_equality_constraints() const;
 
 
+
     /**
      * Removes the equality constraints redundancies.
      */
     void remove_equality_constraints_redundancies();
 
+
+    /** Returns the sparsity pattern of the dofs handled by the DofsManager. */
+    SparsityPattern get_sparsity_pattern() const;
 
 private:
     bool is_dofs_arrangement_open_ = false;
@@ -205,6 +215,8 @@ private:
 
     std::unique_ptr<DofsView> dofs_view_;
 
+
+    std::vector<DofsConstView> elements_dofs_view_;
 
 
 

@@ -114,9 +114,11 @@ private:
 
 
     using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
     using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
-    using DofsView = ConstView<DofsConstIterator>;
+    using DofsView = ConstView<DofsIterator,DofsConstIterator>;
     DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
 
     DistributionPolicy policy_;

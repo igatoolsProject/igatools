@@ -47,8 +47,9 @@ do_test_1()
     using Grid = CartesianGrid<dim>;
     using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
-    using VecIt = typename DMA::const_iterator;
-    using VecView = ConstView<VecIt>;
+    using VecIt = typename DMA::iterator;
+    using VecConstIt = typename DMA::const_iterator;
+    using VecView = ConstView<VecIt,VecConstIt>;
 
     std::vector<VecView> ranges;
 
@@ -106,8 +107,9 @@ do_test_2()
     using Grid = CartesianGrid<dim>;
     using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
-    using VecIt = typename vector<Index>::const_iterator;
-    using VecView = ConstView<VecIt>;
+    using VecIt = typename vector<Index>::iterator;
+    using VecConstIt = typename vector<Index>::const_iterator;
+    using VecView = ConstView<VecIt,VecConstIt>;
 
     std::vector<VecView> ranges;
 

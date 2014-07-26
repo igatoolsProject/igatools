@@ -25,8 +25,10 @@
 #include <map>
 #include <set>
 
+using std::vector;
 using std::map;
 using std::set;
+using std::pair;
 
 IGA_NAMESPACE_OPEN
 
@@ -121,13 +123,25 @@ dofs_arrangement_close(const bool automatic_dofs_renumbering)
 
 auto
 DofsManager::
-get_dofs_view() const -> const DofsView &
+get_dofs_view() -> DofsView &
 {
     Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
 
     Assert(dofs_view_ != nullptr, ExcNullPtr())
     return *dofs_view_;
 }
+
+auto
+DofsManager::
+get_dofs_view() const -> DofsConstView
+{
+    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+
+    Assert(dofs_view_ != nullptr, ExcNullPtr())
+
+    return DofsConstView(*dofs_view_);
+}
+
 
 Index
 DofsManager::
@@ -312,6 +326,42 @@ count_unique_dofs() const
 
     return unique_dofs.size();
 }
+
+
+SparsityPattern
+DofsManager::
+get_sparsity_pattern() const
+{
+    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+
+
+    // build the dofs graph
+    const auto & dofs_view = this->get_dofs_view();
+
+    vector<Index> dofs_copy;
+    for (const auto &dof : dofs_view)
+    	dofs_copy.push_back(dof);
+
+    Assert(!dofs_copy.empty(),ExcEmptyObject());
+
+    SparsityPattern sparsity_pattern(dofs_copy, dofs_copy);
+
+    using DofsInRow = set<Index>;
+    DofsInRow empty_set;
+
+    // adding the global dof keys to the map representing the dof connectivity
+    for (const auto &dof : dofs_copy)
+        sparsity_pattern.insert(pair<Index,DofsInRow>(dof,empty_set));
+
+    for (const auto element_dofs : elements_dofs_view_)
+    	for (const auto &dof : element_dofs)
+    		sparsity_pattern[dof].insert(element_dofs.begin(),element_dofs.end());
+
+    return (sparsity_pattern);
+
+	Assert(false,ExcNotImplemented());
+}
+
 
 
 void
