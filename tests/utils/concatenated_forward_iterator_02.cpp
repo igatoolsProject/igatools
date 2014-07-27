@@ -49,9 +49,10 @@ do_test_1()
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename DMA::iterator;
     using VecConstIt = typename DMA::const_iterator;
-    using VecView = ConstView<VecIt,VecConstIt>;
+    using VecView = View<VecIt,VecConstIt>;
+    using VecConstView = ConstView<VecIt,VecConstIt>;
 
-    std::vector<VecView> ranges;
+    std::vector<VecConstView> ranges;
 
     int n_spaces = 3;
     vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
@@ -78,12 +79,12 @@ do_test_1()
         out << endl;
 
         ranges.push_back(
-            VecView(index_space.begin(),index_space.end()));
+            VecConstView(index_space.begin(),index_space.end()));
     }
 
 
-    ConcatenatedConstIterator<VecView> dofs_iterator_begin(ranges,0);
-    ConcatenatedConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedConstIterator<VecView,VecConstView> dofs_iterator_begin(ranges,0);
+    ConcatenatedConstIterator<VecView,VecConstView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
@@ -109,9 +110,10 @@ do_test_2()
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename vector<Index>::iterator;
     using VecConstIt = typename vector<Index>::const_iterator;
-    using VecView = ConstView<VecIt,VecConstIt>;
+    using VecView = View<VecIt,VecConstIt>;
+    using VecConstView = ConstView<VecIt,VecConstIt>;
 
-    std::vector<VecView> ranges;
+    std::vector<VecConstView> ranges;
 
     int n_spaces = 3;
     vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
@@ -139,12 +141,12 @@ do_test_2()
 
 
         ranges.push_back(
-            VecView(index_space.get_data().begin(),index_space.get_data().end()));
+            VecConstView(index_space.get_data().begin(),index_space.get_data().end()));
     }
 
 
-    ConcatenatedConstIterator<VecView> dofs_iterator_begin(ranges,0);
-    ConcatenatedConstIterator<VecView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
+    ConcatenatedConstIterator<VecView,VecConstView> dofs_iterator_begin(ranges,0);
+    ConcatenatedConstIterator<VecView,VecConstView> dofs_iterator_end(ranges,IteratorState::pass_the_end);
 
     out << "DOFs = [ ";
     for (; dofs_iterator_begin != dofs_iterator_end ; ++dofs_iterator_begin)
