@@ -22,6 +22,7 @@
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/linear_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 
 #include <math.h>
 
@@ -30,7 +31,6 @@ using namespace std;
 using functions::ConstantFunction;
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
-using dof_tools::get_sparsity_pattern;
 
 
 

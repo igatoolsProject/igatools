@@ -26,7 +26,7 @@
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/equality_constraint.h>
-#include <igatools/linear_algebra/sparsity_pattern.h>
+//#include <igatools/linear_algebra/sparsity_pattern.h>
 //#include <boost/graph/adjacency_list.hpp>
 
 #include <memory>
@@ -75,11 +75,18 @@ public:
     /** Type alias for the View on the dofs held by the DofsManager object. */
     using DofsView = View<DofsIterator,DofsConstIterator>;
 
+    /** Type alias for the ConstView on the dofs held by the DofsManager object. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
 
     /** Default constructor. */
     DofsManager();
+
+    /** Copy constructor. */
+    DofsManager(const DofsManager &dofs_manager) = default;
+
+    /** Move constructor. */
+    DofsManager(DofsManager &&dofs_manager) = default;
 
     /**
      * Prints internal information about the DofsManager.
@@ -233,7 +240,7 @@ private:
 
 
 
-    std::unique_ptr<DofsView> dofs_view_;
+    DofsView dofs_view_;
 
 
     std::vector<DofsConstView> elements_dofs_view_;

@@ -33,7 +33,7 @@
 #include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/geometry/unit_element.h>
 
-#include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
 int main(int argc, char *argv[])
@@ -84,8 +84,7 @@ int main(int argc, char *argv[])
     using MatrixType = Matrix<la_pack>;
 
 
-    MatrixType A(
-        dof_tools::get_sparsity_pattern(
+    MatrixType A(SparsityPattern(
         		*bspline_space_rows->get_dofs_manager(),
         		*bspline_space_cols->get_dofs_manager()));
 

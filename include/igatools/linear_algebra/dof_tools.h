@@ -45,37 +45,13 @@ class Matrix;
  */
 namespace dof_tools
 {
+#if 0
 /**
  * Construct the sparsity pattern associated with the DofsManager of one space.
  */
 SparsityPattern
 get_sparsity_pattern(const DofsManager &dofs_manager);
 
-#if 0
-/**
- * Returns the dof ids of the space.
- * @note This function is called when SpaceType is derived from FunctionSpace.
- */
-template < class SpaceType >
-std::vector<Index>
-get_dofs(std::shared_ptr<const SpaceType> space,
-         EnableIf<is_function_space<SpaceType>()> *fs = nullptr);
-
-
-/**
- * Returns the dof ids of the space.
- * @note This function is called when SpaceType is not derived from FunctionSpace.
- */
-template < class SpaceType >
-std::vector<Index>
-get_dofs(std::shared_ptr<const SpaceType> space,
-         EnableIf<!is_function_space<SpaceType>()> *fs = nullptr)
-{
-    AssertThrow(false,ExcMessage("The function argument is not a function space."));
-    std::vector<Index> vec;
-    return vec;
-}
-#endif
 
 /**
  * Construct the sparsity pattern associated with the DofsManager of two space.
@@ -84,6 +60,7 @@ get_dofs(std::shared_ptr<const SpaceType> space,
  */
 SparsityPattern
 get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols);
+#endif
 
 /**
  * Modifies the matrix, the unknown and rhs of a linear system

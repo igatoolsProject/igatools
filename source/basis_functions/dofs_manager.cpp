@@ -39,7 +39,7 @@ DofsManager::
 DofsManager()
     :
     is_dofs_view_open_(false),
-    dofs_view_(nullptr),
+//    dofs_view_(nullptr),
     num_unique_dofs_(0)
 {}
 
@@ -112,8 +112,9 @@ dofs_view_close(const bool automatic_dofs_renumbering)
     DofsIterator dofs_begin(dofs_components_view_,0);;
     DofsIterator dofs_end(dofs_components_view_,IteratorState::pass_the_end);
 
-    Assert(dofs_view_ == nullptr, ExcInvalidState())
-    dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
+//    Assert(dofs_view_ == nullptr, ExcInvalidState())
+//    dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
+    dofs_view_ = DofsView(dofs_begin,dofs_end);
 
     is_dofs_view_open_ = false;
 
@@ -127,8 +128,8 @@ get_dofs_view() -> DofsView &
 {
     Assert(is_dofs_view_open_ == false,ExcInvalidState());
 
-    Assert(dofs_view_ != nullptr, ExcNullPtr())
-    return *dofs_view_;
+//    Assert(dofs_view_ != nullptr, ExcNullPtr())
+    return dofs_view_;
 }
 
 auto
@@ -137,9 +138,8 @@ get_dofs_view() const -> DofsConstView
 {
     Assert(is_dofs_view_open_ == false,ExcInvalidState());
 
-    Assert(dofs_view_ != nullptr, ExcNullPtr())
-
-    return DofsConstView(*dofs_view_);
+//    Assert(dofs_view_ != nullptr, ExcNullPtr())
+    return DofsConstView(dofs_view_);
 }
 
 
@@ -373,7 +373,7 @@ count_unique_dofs() const
 
 //    const auto &dofs = this->get_dofs_view();
 
-    set<Index> unique_dofs(dofs_view_->begin(),dofs_view_->end());
+    set<Index> unique_dofs(dofs_view_.begin(),dofs_view_.end());
 
     return unique_dofs.size();
 }
@@ -399,9 +399,9 @@ print_info(LogStream &out) const
     Assert(are_equality_constraints_open_ == false,ExcInvalidState());
     Assert(are_linear_constraints_open_ == false,ExcInvalidState());
 
-    Assert(dofs_view_ != nullptr, ExcNullPtr())
+//    Assert(dofs_view_ != nullptr, ExcNullPtr())
     out << "DOFs = [ ";
-    for (Index &dof : *dofs_view_)
+    for (const Index &dof : dofs_view_)
         out << dof << " ";
     out << "]" << endl;
 

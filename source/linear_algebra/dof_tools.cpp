@@ -34,6 +34,7 @@ IGA_NAMESPACE_OPEN
 
 namespace dof_tools
 {
+#if 0
 SparsityPattern
 get_sparsity_pattern(const DofsManager &dofs_manager)
 {
@@ -118,34 +119,8 @@ get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dof
     }
     return (sparsity_pattern);
 }
-
-
-#if 0
-template < class SpaceType >
-vector<Index>
-get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType>()> *)
-{
-//  LogStream out;
-//  space->print_info(out);
-    auto element = space->begin();
-    const auto element_end = space->end();
-
-    set<Index> dofs_set;
-
-    for (; element != element_end; ++element)
-    {
-        const vector< Index > element_dofs = element->get_local_to_global();
-        Assert(!element_dofs.empty(),ExcEmptyObject());
-
-        for (const Index &dof : element_dofs)
-            dofs_set.insert(dof);
-    }
-
-    vector<Index> space_dofs(dofs_set.begin(), dofs_set.end());
-
-    return space_dofs;
-}
 #endif
+
 
 
 template <LAPack la_pack>

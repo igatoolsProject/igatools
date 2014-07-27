@@ -31,6 +31,7 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/io/writer.h>
 // [old includes]
@@ -41,7 +42,6 @@ using namespace std;
 using functions::ConstantFunction;
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
-using dof_tools::get_sparsity_pattern;
 using numbers::PI;
 // [unqualified names]
 
@@ -100,7 +100,7 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     space     = Space::create(ref_space, PushFw::create(map));
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LAPack::trilinos>::create(get_sparsity_pattern(*space->get_dofs_manager()));
+    matrix   = Matrix<LAPack::trilinos>::create(SparsityPattern(*space->get_dofs_manager()));
     rhs      = Vector<LAPack::trilinos>::create(n_basis);
     solution = Vector<LAPack::trilinos>::create(n_basis);
 }

@@ -36,7 +36,7 @@
 #include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/geometry/unit_element.h>
 
-#include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
 int main()
@@ -77,8 +77,7 @@ int main()
     using MatrixType = Matrix<la_pack>;
     using LinSolverType = LinearSolver<la_pack>;
 
-    MatrixType matrix(
-        dof_tools::get_sparsity_pattern(*bspline_space->get_dofs_manager()));
+    MatrixType matrix(SparsityPattern(*bspline_space->get_dofs_manager()));
 
 
     const Index num_rows = matrix.get_num_rows() ;
