@@ -25,6 +25,7 @@
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/dofs_manager.h>
 
 
 #include <memory>
@@ -44,6 +45,12 @@ class Matrix;
  */
 namespace dof_tools
 {
+/**
+ * Construct the sparsity pattern associated with the DofsManager of one space.
+ */
+SparsityPattern
+get_sparsity_pattern(const DofsManager &dofs_manager);
+#if 0
 /**
  * Construct the sparsity pattern associated with the degrees
  * of freedom of the space.
@@ -92,7 +99,7 @@ get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
     SparsityPattern graph;
     return graph;
 }
-
+#endif
 
 /**
  * Returns the dof ids of the space.

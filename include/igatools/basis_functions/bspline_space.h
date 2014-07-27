@@ -27,6 +27,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
+#include <igatools/basis_functions/dofs_manager.h>
 
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
@@ -357,6 +358,9 @@ public:
     {
         return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
     }
+
+
+    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
 
 

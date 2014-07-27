@@ -405,6 +405,15 @@ refine_h_weights(
     this->perform_post_construction_checks();
 }
 
+
+template <int dim_, int range_, int rank_>
+std::shared_ptr<DofsManager>
+NURBSSpace<dim_, range_, rank_>::
+get_dofs_manager() const
+{
+	return this->get_spline_space()->get_dofs_manager();
+}
+
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::

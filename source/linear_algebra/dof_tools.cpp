@@ -34,7 +34,40 @@ IGA_NAMESPACE_OPEN
 
 namespace dof_tools
 {
+SparsityPattern
+get_sparsity_pattern(const DofsManager &dofs_manager)
+{
+    Assert(dofs_manager.is_dofs_view_open() == false,ExcInvalidState());
 
+    // build the dofs graph
+    const auto & dofs_view = dofs_manager.get_dofs_view();
+
+    vector<Index> dofs_copy;
+    for (const auto &dof : dofs_view)
+    	dofs_copy.push_back(dof);
+
+    Assert(!dofs_copy.empty(),ExcEmptyObject());
+
+    SparsityPattern sparsity_pattern(dofs_copy, dofs_copy);
+
+    using DofsInRow = set<Index>;
+    DofsInRow empty_set;
+
+    // adding the global dof keys to the map representing the dof connectivity
+    for (const auto &dof : dofs_copy)
+        sparsity_pattern.insert(pair<Index,DofsInRow>(dof,empty_set));
+
+    Assert(dofs_manager.are_elements_dofs_view_open() == false,ExcInvalidState());
+    Assert(!dofs_manager.get_elements_dofs_view().empty(),
+    		ExcEmptyObject());
+    for (const auto element_dofs : dofs_manager.get_elements_dofs_view())
+    	for (const auto &dof : element_dofs)
+    		sparsity_pattern[dof].insert(element_dofs.begin(),element_dofs.end());
+
+    return (sparsity_pattern);
+}
+
+#if 0
 template < class SpaceType >
 SparsityPattern
 get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
@@ -132,7 +165,7 @@ get_sparsity_pattern(const vector< shared_ptr< SpaceType > > &space_multipatch,
     return (sparsity_pattern);
 }
 
-
+#endif
 
 
 template < class SpaceType >

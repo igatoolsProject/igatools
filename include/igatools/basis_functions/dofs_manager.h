@@ -67,7 +67,7 @@ public:
     using DofsIterator = ConcatenatedIterator<DofsComponentView>;
 
     /** Type alias for a concatenated const-iterator defined on several compoenent views. */
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
     /** Type alias for the View on the dofs held by each space in the DofsManager object. */
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
@@ -93,7 +93,7 @@ public:
     /**
      * Sets the DofsManager in a state that can receive the views of the dofs by some spaces.
      */
-    void dofs_arrangement_open();
+    void dofs_view_open();
 
     /**
      * Sets the DofsManager in a state that cannot receive anymore the views of the dofs by some spaces.
@@ -105,8 +105,17 @@ public:
      *
      * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      */
-    void dofs_arrangement_close(const bool automatic_dofs_renumbering = true);
+    void dofs_view_close(const bool automatic_dofs_renumbering = true);
 
+    /**
+     * Sets the DofsManager in a state that can receive the views of the dofs in each element.
+     */
+    void elements_dofs_view_open();
+
+    /**
+     * Sets the DofsManager in a state that cannot receive anymore the views of the dofs in each element.
+     */
+    void elements_dofs_view_close();
 
     /**
      * Sets the DofsManager in a state that can receive new equality constraints.
@@ -187,13 +196,24 @@ public:
      */
     void remove_equality_constraints_redundancies();
 
+    /**
+     * Returns true if the dofs view is open.
+     */
+    bool is_dofs_view_open() const;
 
-    /** Returns the sparsity pattern of the dofs handled by the DofsManager. */
-    SparsityPattern get_sparsity_pattern() const;
+    /**
+     * Returns true if the elements dofs views are open.
+     */
+    bool are_elements_dofs_view_open() const;
+
+    const std::vector<DofsConstView> & get_elements_dofs_view() const;
+
+
+    void add_element_dofs_view(const DofsConstView &element_dofs_view);
 
 private:
-    bool is_dofs_arrangement_open_ = false;
-
+    bool is_dofs_view_open_ = false;
+    bool are_elements_dofs_view_open_ = false;
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 

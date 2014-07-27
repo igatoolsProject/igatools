@@ -335,6 +335,58 @@ add_dofs_offset(const Index offset)
     basis_indices_.add_dofs_offset(offset);
 }
 
+template<int dim_, int range_, int rank_>
+std::shared_ptr<DofsManager>
+BSplineSpace<dim_, range_, rank_>::
+get_dofs_manager() const
+{
+	shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
+
+    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
+    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
+
+    //---------------------------------------------------------------------------------------------
+    dofs_manager->dofs_view_open();
+    auto &index_space = this->get_basis_indices().get_index_distribution();
+
+    vector<DofsComponentView> space_components_view;
+    for (auto &index_space_comp : index_space)
+    {
+        vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
+        DofsComponentView index_space_comp_view(
+            index_space_comp_data.begin(),index_space_comp_data.end());
+
+        space_components_view.push_back(index_space_comp_view);
+    }
+
+    DofsIterator space_dofs_begin(space_components_view,0);
+    DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
+    SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
+
+    const Index space_id = 0;
+    dofs_manager->add_dofs_space_view(space_id,this->get_num_basis(),dofs_space_view);
+    dofs_manager->dofs_view_close(false);
+    //---------------------------------------------------------------------------------------------
+
+
+    //---------------------------------------------------------------------------------------------
+    // getting the views of the dofs on each element of the space
+    dofs_manager->elements_dofs_view_open();
+
+    const auto &elements_view = this->get_basis_indices().get_elements_view();
+    for (const auto &elem_view : elements_view)
+    	dofs_manager->add_element_dofs_view(elem_view);
+
+    dofs_manager->elements_dofs_view_close();
+    //---------------------------------------------------------------------------------------------
+
+
+	return dofs_manager;
+}
 
 
 template<int dim_, int range_, int rank_>

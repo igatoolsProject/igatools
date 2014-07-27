@@ -82,6 +82,24 @@ get_ranges() const -> std::vector<ViewType>
     return this->ranges_;
 }
 
+template <class ViewType,class DerivedClass>
+inline
+int
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+get_range_id() const
+{
+	return range_id_;
+}
+
+template <class ViewType,class DerivedClass>
+inline
+auto
+ConcatenatedIteratorData<ViewType,DerivedClass>::
+get_iterator_current() const -> Iterator
+{
+	return iterator_current_;
+}
+
 
 
 template <class ViewType,class DerivedClass>
@@ -362,24 +380,36 @@ operator->() const -> const value_type *
 }
 
 
-template <class ConstViewType>
+template <class ViewType,class ConstViewType>
 inline
-ConcatenatedConstIterator<ConstViewType>::
+ConcatenatedConstIterator<ViewType,ConstViewType>::
 ConcatenatedConstIterator(
     const std::vector<ConstViewType> &ranges,
     const Index index)
     :
     ConcatenatedIteratorData<
     ConstViewType,
-    ConcatenatedConstIterator<ConstViewType>
+    ConcatenatedConstIterator<ViewType,ConstViewType>
     >(ranges,index)
 {}
 
+template <class ViewType,class ConstViewType>
+inline
+ConcatenatedConstIterator<ViewType,ConstViewType>::
+ConcatenatedConstIterator(const ConcatenatedIterator<ViewType> &it)
+{
+	for (const auto & rng : it.get_ranges())
+		this->ranges_.emplace_back(ConstViewType(rng)) ;
 
-template <class ConstViewType>
+	this->range_id_ = it.get_range_id();
+	this->iterator_current_ = it.get_iterator_current();
+}
+
+
+template <class ViewType,class ConstViewType>
 inline
 auto
-ConcatenatedConstIterator<ConstViewType>::
+ConcatenatedConstIterator<ViewType,ConstViewType>::
 operator[](const Index id) const -> const typename ConstViewType::reference
 {
     return this->get_entry_const_reference(id);

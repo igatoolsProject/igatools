@@ -78,7 +78,7 @@ int main()
     using LinSolverType = LinearSolver<la_pack>;
 
     MatrixType matrix(
-        dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>>(bspline_space));
+        dof_tools::get_sparsity_pattern(*bspline_space->get_dofs_manager()));
 
 
     const Index num_rows = matrix.get_num_rows() ;

@@ -152,14 +152,14 @@ arrangement_close(const bool automatic_dofs_renumbering)
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
 
     using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
 
 
     LogStream out;
 
-    dofs_manager_->dofs_arrangement_open();
+    dofs_manager_->dofs_view_open();
 
     boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
     for (; vertex != vertex_end ; ++vertex)
@@ -185,7 +185,7 @@ arrangement_close(const bool automatic_dofs_renumbering)
 
         dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
     }
-    dofs_manager_->dofs_arrangement_close(automatic_dofs_renumbering);
+    dofs_manager_->dofs_view_close(automatic_dofs_renumbering);
     // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
     //---------------------------------------------------------------------------
 }

@@ -53,7 +53,7 @@ Vec = 'vector<Index>'
 ContView = ('ContainerView<%s>' % Vec)
 ConstContView = ('ConstContainerView<%s>' % Vec)
 It = ('ConcatenatedIterator<%s>' % ContView)
-ConstIt = ('ConcatenatedConstIterator<%s>' % ConstContView)
+ConstIt = ('ConcatenatedConstIterator<%s,%s>' %(ContView,ConstContView))
 ConstView = ('ConstView<%s,%s>' %(It,ConstIt))
 dof_views = set(['DynamicMultiArray<%s,%d>' %(ConstView,dim)
                      for dim in inst.domain_dims])
