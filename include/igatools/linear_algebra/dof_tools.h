@@ -50,57 +50,8 @@ namespace dof_tools
  */
 SparsityPattern
 get_sparsity_pattern(const DofsManager &dofs_manager);
+
 #if 0
-/**
- * Construct the sparsity pattern associated with the degrees
- * of freedom of the space.
- * @note This function is called when SpaceType is derived from FunctionSpace.
- */
-template < class SpaceType >
-SparsityPattern
-get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
-                     EnableIf<is_function_space<SpaceType>()> *fs = nullptr);
-
-/**
- * Construct the sparsity pattern associated with the degrees
- * of freedom of the space.
- * @note This function is called when SpaceType is not derived from FunctionSpace.
- */
-template < class SpaceType >
-SparsityPattern
-get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
-                     EnableIf<!is_function_space<SpaceType>()> * = nullptr)
-{
-    AssertThrow(false,ExcMessage("The function argument is not a function space."));
-    SparsityPattern graph(std::vector< Index >(),std::vector< Index >());
-    return graph;
-}
-
-
-/**
- * @todo document this function
- * @note This function is called when SpaceType is derived from FunctionSpace.
- */
-template < class SpaceType >
-SparsityPattern
-get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     EnableIf<is_function_space<SpaceType>()> *fs = nullptr);
-
-/**
- * @todo document this function
- * @note This function is called when SpaceType is derived from FunctionSpace.
- */
-template < class SpaceType >
-SparsityPattern
-get_sparsity_pattern(const std::vector< std::shared_ptr< SpaceType > > &space,
-                     EnableIf<!is_function_space<SpaceType>()> *fs = nullptr)
-{
-    AssertThrow(false,ExcMessage("The function argument is not a function space."));
-    SparsityPattern graph;
-    return graph;
-}
-#endif
-
 /**
  * Returns the dof ids of the space.
  * @note This function is called when SpaceType is derived from FunctionSpace.
@@ -124,106 +75,15 @@ get_dofs(std::shared_ptr<const SpaceType> space,
     std::vector<Index> vec;
     return vec;
 }
-
-
+#endif
 
 /**
+ * Construct the sparsity pattern associated with the DofsManager of two space.
  *
- * @warning This function only works when both spaces have the same cartesian grid.
- * @note This function is called when SpaceType is derived from FunctionSpace.
- * @todo document this function
+ * @warning This function only works when both spaces have the same number of elements.
  */
-template < class Space1, class Space2 >
-inline
 SparsityPattern
-get_sparsity_pattern(std::shared_ptr<const Space1> space_rows,
-                     std::shared_ptr<const Space2>space_cols,
-                     EnableIf<
-                     is_function_space<Space1>()  &&is_function_space<Space2>() > *fs= nullptr)
-{
-    const auto &row_dofs = get_dofs(space_rows);
-    const auto &col_dofs = get_dofs(space_cols);
-
-    SparsityPattern sparsity_pattern(row_dofs, col_dofs);
-
-    // adding the global dof keys to the map representing the dof connectivity
-    using set_t = std::set<Index>;
-    const set_t empty;
-    for (const auto &dof : row_dofs)
-        sparsity_pattern.insert(std::pair<Index, set_t>(dof, empty));
-
-    auto element_rows     = space_rows->begin() ;
-    const auto element_rows_end = space_rows->end() ;
-    auto element_cols     = space_cols->begin() ;
-
-    for (; element_rows != element_rows_end ; ++element_rows, ++element_cols)
-    {
-        const auto &dofs_element_rows = element_rows->get_local_to_global() ;
-        const auto &dofs_element_cols = element_cols->get_local_to_global() ;
-
-        auto dofs_rows_begin = dofs_element_rows.cbegin() ;
-        auto dofs_rows_end   = dofs_element_rows.cend() ;
-
-        auto dofs_cols_begin = dofs_element_cols.cbegin() ;
-        auto dofs_cols_end   = dofs_element_cols.cend() ;
-
-
-        for (auto dofs_it = dofs_rows_begin ; dofs_it != dofs_rows_end ; ++dofs_it)
-        {
-            // get the map element corresponding to the current dof in the
-            // current element
-            sparsity_pattern[ *dofs_it ].insert(dofs_cols_begin, dofs_cols_end) ;
-        }
-    }
-
-    return sparsity_pattern;
-}
-
-/**
- *
- * @note This function is called when SpaceType is not derived from FunctionSpace.
- * @todo document this function
- */
-template < class Space1, class Space2 >
-inline
-SparsityPattern
-get_sparsity_pattern(const Space1 &space_rows,
-                     const Space2 &space_cols,
-                     EnableIf<
-                     !(is_function_space<Space1>() &&is_function_space<Space2>())> *fs = nullptr)
-{
-    AssertThrow(false,ExcMessage("At least one function argument is not a function space."));
-    SparsityPattern graph(std::vector< Index >(),std::vector< Index >());
-    return graph;
-}
-
-
-/**
- * @warning This function only works when both spaces have the same cartesian grid.
- * @note This function is called when SpaceType is derived from FunctionSpace.
- * @todo document this function
- */
-template < class SpaceType >
-SparsityPattern get_sparsity_pattern(
-    const std::vector< std::shared_ptr< SpaceType > > &space_rows,
-    const std::vector< std::shared_ptr< SpaceType > > &space_cols,
-    EnableIf<is_function_space<SpaceType>()> *fs = nullptr);
-
-/**
- * @warning This function only works when both spaces have the same cartesian grid.
- * @note This function is called when SpaceType is not derived from FunctionSpace.
- * @todo document this function
- */
-template < class SpaceType >
-SparsityPattern get_sparsity_pattern(
-    const std::vector< std::shared_ptr< SpaceType > > &space_rows,
-    const std::vector< std::shared_ptr< SpaceType > > &space_cols,
-    EnableIf<!is_function_space<SpaceType>()>* = nullptr)
-{
-    AssertThrow(false,ExcMessage("The function arguments are not function space."));
-    SparsityPattern graph;
-    return graph;
-}
+get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols);
 
 /**
  * Modifies the matrix, the unknown and rhs of a linear system

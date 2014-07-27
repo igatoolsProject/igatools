@@ -85,8 +85,9 @@ int main(int argc, char *argv[])
 
 
     MatrixType A(
-        dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>,
-        BSplineSpace<dim_domain,dim_range,rank>>(bspline_space_rows, bspline_space_cols));
+        dof_tools::get_sparsity_pattern(
+        		*bspline_space_rows->get_dofs_manager(),
+        		*bspline_space_cols->get_dofs_manager()));
 
 
     const auto num_rows = n_basis_sp_rows ;
