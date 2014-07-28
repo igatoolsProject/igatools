@@ -44,6 +44,12 @@ CartesianGrid(const Size n)
     CartesianGrid(TensorSize<dim>(n))
 {
     kind_ = Kind::uniform;
+
+    influence_flags_container_.resize(n-1);
+    influence_flags_container_.fill(true);
+
+    active_flags_container_.resize(n-1);
+    active_flags_container_.fill(true);
 }
 
 
@@ -65,6 +71,19 @@ CartesianGrid(const TensorSize<dim> &n)
     CartesianGrid(filled_array<array<Real,2>,dim>(array<Real,2> {{0,1}}), n)
 {
     kind_ = Kind::direction_uniform ;
+
+    //-----------------------------------------------
+    // initializing the influence and activity flags
+    TensorSize<dim> n_elems;
+    for (int i = 0 ; i < dim ; ++i)
+        n_elems(i) = n(i) - 1;
+
+    influence_flags_container_.resize(n_elems);
+    influence_flags_container_.fill(true);
+
+    active_flags_container_.resize(n_elems);
+    active_flags_container_.fill(true);
+    //-----------------------------------------------
 }
 
 
@@ -84,7 +103,14 @@ CartesianGrid<dim_>::
 CartesianGrid(const BBox<dim> &end_points, const Size n_knots)
     :
     CartesianGrid(end_points, TensorSize<dim>(n_knots))
-{}
+{
+
+    influence_flags_container_.resize(n_knots-1);
+    influence_flags_container_.fill(true);
+
+    active_flags_container_.resize(n_knots-1);
+    active_flags_container_.fill(true);
+}
 
 
 template<int dim_>
@@ -124,6 +150,21 @@ CartesianGrid(const BBox<dim> &end_points,
 
 
     weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
+
+
+    //-----------------------------------------------
+    // initializing the influence and activity flags
+    TensorSize<dim> n_elems;
+    for (int i = 0 ; i < dim ; ++i)
+        n_elems(i) = n(i) - 1;
+
+    influence_flags_container_.resize(n_elems);
+    influence_flags_container_.fill(true);
+
+    active_flags_container_.resize(n_elems);
+    active_flags_container_.fill(true);
+    //-----------------------------------------------
+
 }
 
 
@@ -170,6 +211,19 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates)
 
 
     weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
+
+
+    //-----------------------------------------------
+    // initializing the influence and activity flags
+    TensorSize<dim> n_elems = this->get_num_elements_dim();
+
+    influence_flags_container_.resize(n_elems);
+    influence_flags_container_.fill(true);
+
+    active_flags_container_.resize(n_elems);
+    active_flags_container_.fill(true);
+    //-----------------------------------------------
+
 }
 
 
@@ -208,7 +262,9 @@ CartesianGrid(const CartesianGrid<dim_> &grid)
     kind_ {grid.kind_},
       boundary_id_(grid.boundary_id_),
       knot_coordinates_(grid.knot_coordinates_),
-      weight_elem_id_(grid.weight_elem_id_)
+      weight_elem_id_(grid.weight_elem_id_),
+      influence_flags_container_(grid.influence_flags_container_),
+      active_flags_container_(grid.active_flags_container_)
 {}
 
 //TODO: inline this function

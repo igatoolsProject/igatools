@@ -349,6 +349,80 @@ vector<Points<dim>>
 }
 
 template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_valid() const
+{
+    return (flat_index_ >= 0 && flat_index_ < grid_->get_num_elements())?true:false;
+}
+
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_influence() const
+{
+    return grid_->influence_flags_container_(flat_index_);
+}
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_active() const
+{
+    return grid_->active_flags_container_(flat_index_);
+}
+
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+set_influence(const bool influence_flag)
+{
+    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
+                                             influence_flags_container_(flat_index_) = influence_flag;
+}
+
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+set_active(const bool active_flag)
+{
+    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
+                                             active_flags_container_(flat_index_) = active_flag;
+}
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+move(const TensorIndex<dim> &increment)
+{
+    tensor_index_ += increment;
+
+    const auto n_elems = grid_->get_num_elements_dim();
+    bool valid_tensor_index = true;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        if (tensor_index_(i) < 0 || tensor_index_(i) >= n_elems(i))
+        {
+            valid_tensor_index = false;
+            flat_index_ = IteratorState::invalid;
+            break;
+        }
+    }
+
+    if (valid_tensor_index)
+    {
+        using Utils = MultiArrayUtils<dim>;
+
+        flat_index_ = Utils::tensor_to_flat_index(
+                          tensor_index_,
+                          Utils::compute_weight(n_elems));
+    }
+
+    return valid_tensor_index;
+}
+
+template <int dim_>
 void
 CartesianGridElement<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const

@@ -27,6 +27,7 @@
 #include <igatools/base/logstream.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/utils/dynamic_multi_array.h>
 
 #include <array>
 #include <vector>
@@ -36,6 +37,7 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int> class CartesianGridElement;
 template <int> class CartesianGridElementAccessor;
 
 /**
@@ -467,7 +469,20 @@ private:
     TensorIndex<dim> weight_elem_id_;
 
 
+    friend class CartesianGridElement<dim>;
     friend class CartesianGridElementAccessor<dim>;
+
+
+    /**
+     * Container for the flags indicating the elements with influence (used to define hierarchical spaces).
+     */
+    DynamicMultiArray<bool,dim> influence_flags_container_;
+
+
+    /**
+     * Container for the flags indicating the active elements (used to define hierarchical spaces).
+     */
+    DynamicMultiArray<bool,dim> active_flags_container_;
 };
 
 
