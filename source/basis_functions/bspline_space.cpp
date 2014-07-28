@@ -84,6 +84,9 @@ BSplineSpace(const DegreeTable &deg,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
+    this->create_dofs_manager();
+
+
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
@@ -118,6 +121,8 @@ BSplineSpace(const DegreeTable &deg,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
+    this->create_dofs_manager();
+
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
@@ -140,23 +145,6 @@ create(const DegreeTable &deg,
 
 
 
-
-//template<int dim_, int range_, int rank_>
-//void
-//BSplineSpace<dim_, range_, rank_>::
-//init()
-//{
-//    init_dofs();
-//
-//    // create a signal and a connection for the grid refinement
-//    this->connect_refinement_h_function(
-//        std::bind(&self_t::refine_h_after_grid_refinement, this,
-//                  std::placeholders::_1,std::placeholders::_2));
-//}
-
-
-
-
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
@@ -165,18 +153,6 @@ get_reference_space() const -> shared_ptr<const self_t>
     return this->shared_from_this();
 }
 
-
-
-
-
-
-//template<int dim_, int range_, int rank_>
-//bool
-//BSplineSpace<dim_, range_, rank_>::
-//is_range_homogeneous() const
-//{
-//    return homogeneous_range_;
-//}
 
 
 
@@ -321,6 +297,10 @@ refine_h_after_grid_refinement(
                      BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                      BaseSpace::accumulated_interior_multiplicities(),
                      this->get_degree());
+
+
+    dofs_manager_.reset();
+    this->create_dofs_manager();
 }
 
 
@@ -336,11 +316,12 @@ add_dofs_offset(const Index offset)
 }
 
 template<int dim_, int range_, int rank_>
-std::shared_ptr<DofsManager>
+void
 BSplineSpace<dim_, range_, rank_>::
-get_dofs_manager() const
+create_dofs_manager()
 {
-	shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
+    Assert(dofs_manager_ == nullptr,ExcInvalidState());
+    dofs_manager_ = make_shared<DofsManager>(DofsManager());
 
     using DofsComponentContainer = std::vector<Index>;
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -350,7 +331,7 @@ get_dofs_manager() const
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
 
     //---------------------------------------------------------------------------------------------
-    dofs_manager->dofs_view_open();
+    dofs_manager_->dofs_view_open();
     auto &index_space = this->get_basis_indices().get_index_distribution();
 
     vector<DofsComponentView> space_components_view;
@@ -368,24 +349,30 @@ get_dofs_manager() const
     SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
 
     const Index space_id = 0;
-    dofs_manager->add_dofs_space_view(space_id,this->get_num_basis(),dofs_space_view);
-    dofs_manager->dofs_view_close(false);
+    dofs_manager_->add_dofs_space_view(space_id,this->get_num_basis(),dofs_space_view);
+    dofs_manager_->dofs_view_close(false);
     //---------------------------------------------------------------------------------------------
 
 
     //---------------------------------------------------------------------------------------------
     // getting the views of the dofs on each element of the space
-    dofs_manager->elements_dofs_view_open();
+    dofs_manager_->elements_dofs_view_open();
 
     const auto &elements_view = this->get_basis_indices().get_elements_view();
     for (const auto &elem_view : elements_view)
-    	dofs_manager->add_element_dofs_view(elem_view);
+        dofs_manager_->add_element_dofs_view(elem_view);
 
-    dofs_manager->elements_dofs_view_close();
+    dofs_manager_->elements_dofs_view_close();
     //---------------------------------------------------------------------------------------------
+}
 
 
-	return dofs_manager;
+template<int dim_, int range_, int rank_>
+std::shared_ptr<DofsManager>
+BSplineSpace<dim_, range_, rank_>::
+get_dofs_manager() const
+{
+    return dofs_manager_;
 }
 
 

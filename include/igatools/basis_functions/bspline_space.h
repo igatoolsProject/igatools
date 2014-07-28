@@ -408,6 +408,9 @@ private:
         const GridType &grid_old) ;
 
 
+    void create_dofs_manager();
+    std::shared_ptr<DofsManager> dofs_manager_;
+
 public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
