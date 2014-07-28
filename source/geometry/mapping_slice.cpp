@@ -148,6 +148,137 @@ set_face_element(const Index face_id,
 }
 
 
+template<int dim_, int codim_>
+auto
+MappingSlice<dim_,codim_>::
+inject_points(const std::vector<Point> &points) const -> std::vector<typename SupMap::Point>
+{
+    Assert(!points.empty(),ExcEmptyObject());
+
+    const Size n_points = points.size();
+
+    using SupMapPoint = typename SupMap::Point;
+    vector<SupMapPoint> sup_map_points(n_points);
+    if (dim_ == 1)
+    {
+        if (direction_ == 0)
+        {
+            for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+            {
+                // constant along direction 0
+                sup_map_points[ipt][0] = value_;
+                sup_map_points[ipt][1] = points[ipt][0];
+            }
+        }
+        else if (direction_ == 1)
+        {
+            for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+            {
+                // constant along direction 1
+                sup_map_points[ipt][0] = points[ipt][0];
+                sup_map_points[ipt][1] = value_;
+            }
+        }
+    }
+    else if (dim_ == 2)
+    {
+        if (direction_ == 0)
+        {
+            for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+            {
+                // constant along direction 0
+                sup_map_points[ipt][0] = value_;
+                sup_map_points[ipt][1] = points[ipt][0];
+                sup_map_points[ipt][2] = points[ipt][1];
+            }
+        }
+        else if (direction_ == 1)
+        {
+            for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+            {
+                // constant along direction 1
+                sup_map_points[ipt][0] = points[ipt][0];
+                sup_map_points[ipt][1] = value_;
+                sup_map_points[ipt][2] = points[ipt][1];
+            }
+        }
+        else if (direction_ == 2)
+        {
+            for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+            {
+                // constant along direction 2
+                sup_map_points[ipt][0] = points[ipt][0];
+                sup_map_points[ipt][1] = points[ipt][1];
+                sup_map_points[ipt][2] = value_;
+            }
+        }
+    }
+    else
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    return sup_map_points;
+}
+
+template<int dim_, int codim_>
+void
+MappingSlice<dim_,codim_>::
+evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
+{
+    Assert(!points.empty(),ExcEmptyObject());
+    Assert(values.size() == points.size(),ExcDimensionMismatch(values.size(),points.size()))
+
+    using SupMapPoint = typename SupMap::Point;
+    vector<SupMapPoint> sup_map_points = this->inject_points(points);
+
+    map_->evaluate_at_points(sup_map_points,values);
+}
+
+
+
+
+template<int dim_, int codim_>
+void
+MappingSlice<dim_,codim_>::
+evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+{
+    Assert(!points.empty(),ExcEmptyObject());
+    Assert(gradients.size() == points.size(),ExcDimensionMismatch(gradients.size(),points.size()))
+
+    const Size n_points = points.size();
+
+    using SupMapPoint = typename SupMap::Point;
+    vector<SupMapPoint> sup_map_points = this->inject_points(points);
+
+    using SupMapGrad  = typename SupMap::Gradient;
+    vector<SupMapGrad> sup_map_gradients(n_points);
+    map_->evaluate_gradients_at_points(sup_map_points,sup_map_gradients);
+
+
+    using UnitElem = UnitElement<dim_+1>;
+    for (int current_dir = 0 ; current_dir < dim_ ; ++current_dir)
+    {
+        // getting the active direction id form the current one
+        const int active_direction_id = UnitElem::active_directions[direction_][current_dir];
+
+        for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+            for (int i = 0 ; i <= dim_ ; ++i)
+                gradients[ipt][current_dir][i] = sup_map_gradients[ipt][active_direction_id][i];
+    }
+    Assert(dim_ == 1 || dim_ == 2,ExcNotImplemented());
+}
+
+template<int dim_, int codim_>
+void
+MappingSlice<dim_,codim_>::
+evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+{
+    Assert(false,ExcNotImplemented());
+}
+
+
+
 //TODO(pauletti, Jun 20, 2014): simplify the output
 template<int dim_, int codim_>
 void
