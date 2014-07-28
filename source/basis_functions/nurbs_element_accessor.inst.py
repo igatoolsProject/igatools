@@ -37,7 +37,7 @@ for accessor in accessors:
                accessor + '::Derivative<deriv_order> > > ' + 
                accessor + 
                '::evaluate_basis_derivatives_at_points<deriv_order>' +
-               '(const vector<Point>&) const; \n')
+               '(const vector<RefPoint>&) const; \n')
    fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
    for s in fun_list:
       f.write(s)

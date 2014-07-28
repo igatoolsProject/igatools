@@ -98,7 +98,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-evaluate_basis_values_at_points(const std::vector<Point> &points) const -> ValueTable<Value>
+evaluate_basis_values_at_points(const std::vector<RefPoint> &points) const -> ValueTable<Value>
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
 }
@@ -107,7 +107,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-evaluate_basis_gradients_at_points(const std::vector<Point> &points) const -> ValueTable<Derivative<1> >
+evaluate_basis_gradients_at_points(const std::vector<RefPoint> &points) const -> ValueTable<Derivative<1> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
 }
@@ -116,7 +116,7 @@ template<class DerivedElementAccessor,class Space,int dim,int codim,int range,in
 inline
 auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
-evaluate_basis_hessians_at_points(const std::vector<Point> &points) const -> ValueTable<Derivative<2> >
+evaluate_basis_hessians_at_points(const std::vector<RefPoint> &points) const -> ValueTable<Derivative<2> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
 }
@@ -130,7 +130,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_derivatives_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point> &points) const ->
+    const std::vector<RefPoint> &points) const ->
 ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     const auto &derived_element_accessor = this->as_derived_element_accessor();
@@ -152,7 +152,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_values_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point> &points) const -> ValueVector<Value>
+    const std::vector<RefPoint> &points) const -> ValueVector<Value>
 {
     return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
 }
@@ -163,7 +163,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_gradients_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point> &points) const -> ValueVector<Derivative<1> >
+    const std::vector<RefPoint> &points) const -> ValueVector<Derivative<1> >
 {
     return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
 }
@@ -174,7 +174,7 @@ auto
 SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank>::
 evaluate_field_hessians_at_points(
     const std::vector<Real> &local_coefs,
-    const std::vector<Point> &points) const -> ValueVector<Derivative<2> >
+    const std::vector<RefPoint> &points) const -> ValueVector<Derivative<2> >
 {
     return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
 }

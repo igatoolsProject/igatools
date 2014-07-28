@@ -334,7 +334,7 @@ void Mortar_Interface<dim, dim_field>::integration()
         auto temp_slave_face_pts_unit   = tmp_face_elem_slave.transform_points_reference_to_unit(face_slave_quad_pts_ref);
 
         //NON FUNZIONA
-        //auto basis_slave      = felem_slave.evaluate_basis_values_at_points(temp_slave_face_pts_unit);
+        auto basis_slave      = felem_slave.evaluate_basis_values_at_points(temp_slave_face_pts_unit);
 
 
         ++felem_jm;
