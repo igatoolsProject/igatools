@@ -92,6 +92,16 @@ public:
 
     void evaluate_gradients(std::vector<Gradient> &gradients) const override;
 
+
+    /** @name Evaluating the quantities related to the MappingSlice without the use of the cache. */
+    ///@{
+    void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
+    ///@}
+
+
+
     void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 
     void set_element(const CartesianGridElementAccessor<dim> &elem) const override ;
@@ -120,6 +130,11 @@ private:
 
     const std::shared_ptr<std::map<int,int> > elem_map_;
 
+    /**
+     * This function injects the points belonging to the domain of MappingSlice (that has dimension == dim_)
+     * to the domain of the Mapping from which the MappingSlice is obtained (that has dimension == dim_+1).
+     */
+    std::vector<typename SupMap::Point> inject_points(const std::vector<Point> &points) const;
 };
 
 IGA_NAMESPACE_CLOSE
