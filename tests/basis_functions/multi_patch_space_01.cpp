@@ -214,7 +214,8 @@ void test_evaluate()
 
     //---------------------------------------------------------------
 
-    dofs_manager->print_info(out);
+//    dofs_manager->print_info(out);
+    multi_patch_space.print_info(out);
 
     for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
     {

@@ -306,6 +306,7 @@ print_info(LogStream &out) const
     out<< "MultiPatchSpace infos:" << endl;
     out.push(tab);
 
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
     out << "Num. patches = " << this->get_num_patches() << endl;
 
     out.push(tab);
@@ -320,23 +321,29 @@ print_info(LogStream &out) const
 
     out.pop();
 
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
     out << "Num. interfaces = " << this->get_num_interfaces() << endl;
     int interface_id = 0 ;
     for (const auto &interfaces_same_type : interfaces_)
     {
-        out << "Interfaces of type " << to_integral(interfaces_same_type.first) << ":" << endl;
+        out << "Interfaces of type " << to_integral(interfaces_same_type.first)
+            << " --- num=" << interfaces_same_type.second.size() << endl;
+
+        out.push(tab);
         for (const auto &interface : interfaces_same_type.second)
         {
             out << "Interface id = " << interface_id++ << endl;
             interface->print_info(out);
             out.push(tab);
         }
+        out.pop();
     }
 
 
 
 
     //---------------------------------------------------------------------------
+    Assert(is_graph_built_ == true,ExcInvalidState());
     out << "Patches in the graph:" << endl;
     using vertex_iterator = typename boost::graph_traits<Graph>::vertex_iterator;
     vertex_iterator vertex;
