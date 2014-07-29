@@ -1,19 +1,27 @@
-CartesianGrid<2>
++++++++++++++++++++++++++++++++++++++++++++++++++
+Face joint grid info
+CartesianGrid<1>
 	Knot coordinates:
 		Direction[0] = [ 0 0.500000 1.00000 ]
-		Direction[1] = [ 0 0.500000 1.00000 ]
-	Num elements: 4
+	Num elements: 2
 		Direction[0] = 2
-		Direction[1] = 2
-CartesianGrid<2>
-	Knot coordinates:
-		Direction[0] = [ 0 0.500000 1.00000 ]
-		Direction[1] = [ 0 0.500000 1.00000 ]
-	Num elements: 4
-		Direction[0] = 2
-		Direction[1] = 2
-Number of multiplier dof1
-Number of primal dof7
++++++++++++++++++++++++++++++++++++++++++++++++++
+face joint grid element nb:0
+face_meas0.500000
+All slave dofs: [ 2 5 8 ], current face slave dofs[ 0 1 2 ]
+All master dofs: [ 9 13 17 21 ], current face master dofs[ 0 1 2 ]
+All multiplier dofs: [ 0 ], current face multiplier dofs[ 0 ]
+--------------------
+face joint grid element nb:1
+face_meas0.500000
+All slave dofs: [ 2 5 8 ], current face slave dofs[ 0 1 2 ]
+All master dofs: [ 9 13 17 21 ], current face master dofs[ 1 2 3 ]
+All multiplier dofs: [ 0 ], current face multiplier dofs[ 0 ]
+--------------------
++++++++++++++++++++++++++++++++++++++++++++++++++
+Number of multiplier dof:1
+-----------
+Line nb 0, Number of primal dof :7
 mult dof nb: 0, primal dof index: 0, primal dof nb: 2, primal dof coef val: 0.333333
 mult dof nb: 0, primal dof index: 1, primal dof nb: 5, primal dof coef val: 0.333333
 mult dof nb: 0, primal dof index: 2, primal dof nb: 8, primal dof coef val: 0.333333
@@ -23,3 +31,4 @@ mult dof nb: 0, primal dof index: 5, primal dof nb: 17, primal dof coef val: 0.3
 mult dof nb: 0, primal dof index: 6, primal dof nb: 21, primal dof coef val: 0.166667
 , in the rhs: 0
 -----------
++++++++++++++++++++++++++++++++++++++++++++++++++
