@@ -281,7 +281,7 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                        const int index)
     :
     SpaceElementAccessor<
-    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>(space,index)
+    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>>(space,index)
 {}
 
 
@@ -290,7 +290,7 @@ template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
 init_cache(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+           const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
@@ -353,8 +353,8 @@ template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented()) ;
 }

@@ -42,8 +42,8 @@ NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
                      const int elem_index)
     :
     SpaceElementAccessor<
-    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>(space,elem_index),
-    bspline_element_accessor_(space->get_spline_space(), elem_index)
+    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>>(space,elem_index),
+            bspline_element_accessor_(space->get_spline_space(), elem_index)
 {}
 
 
@@ -52,7 +52,7 @@ template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
 init_cache(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+           const Quadrature<dim> &quad)
 {
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("Nothing to reset"));
@@ -116,8 +116,8 @@ template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented());
 }

@@ -39,11 +39,10 @@ template < int, int , int > class NURBSSpace ;
 template <int dim, int range, int rank >
 class NURBSElementAccessor :
     public SpaceElementAccessor<
-    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
+    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>>
 {
 public:
-    using parent_t = SpaceElementAccessor<
-                     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
+    using parent_t = SpaceElementAccessor<NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>>;
 
     using ContainerType = const NURBSSpace< dim, range, rank>;
 
@@ -126,14 +125,14 @@ public:
      * @note This function should be called before fill_values()
      */
     void init_cache(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+                    const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points

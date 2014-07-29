@@ -72,21 +72,11 @@ template < typename Accessor > class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
-    public SpaceElementAccessor<
-    PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
-    PhysSpace::RefSpace::dim,
-    PhysSpace::PushForwardType::codim,
-    PhysSpace::RefSpace::range,
-    PhysSpace::RefSpace::rank>,
+    public SpaceElementAccessor<PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace>,
     private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using parent_t = SpaceElementAccessor<
-                     PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
-                     PhysSpace::RefSpace::dim,
-                     PhysSpace::PushForwardType::codim,
-                     PhysSpace::RefSpace::range,
-                     PhysSpace::RefSpace::rank>;
+    using parent_t = SpaceElementAccessor<PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace>;
 
 
     /** Type required by the GridForwardIterator templated iterator */
@@ -183,11 +173,11 @@ public :
      */
     ///@{
     void init_cache(const ValueFlags fill_flag,
-                     const QuadratureType &quad);
+                    const QuadratureType &quad);
 
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const QuadratureFaceType &quad);
+                         const ValueFlags fill_flag,
+                         const QuadratureFaceType &quad);
 
     void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 

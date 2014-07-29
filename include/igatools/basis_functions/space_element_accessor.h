@@ -57,9 +57,8 @@ template <typename Accessor> class GridForwardIterator;
  * @author M. Martinelli
  * @date 13 May 2014
  */
-// TODO (pauletti, Jun 5, 2014): from space one can get dim, codim, range and rank
-template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
-class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
+template<class DerivedElementAccessor,class Space>
+class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
 {
 public:
     /** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
@@ -82,6 +81,11 @@ public:
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
 
+
+    static const int dim = Space::dim;
+    static const int codim = Space::codim;
+    static const int range = Space::range;
+    static const int rank = Space::rank;
 
     /**
      * For each component gives a product array of the dimension
@@ -135,13 +139,13 @@ public:
      * creates a new element cache, but it shares
      * the one dimensional cache with the copied element.
      */
-    SpaceElementAccessor(const SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank> &elem)
+    SpaceElementAccessor(const SpaceElementAccessor<DerivedElementAccessor,Space> &elem)
         = default;
 
     /**
      * Move constructor.
      */
-    SpaceElementAccessor(SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank> &&elem)
+    SpaceElementAccessor(SpaceElementAccessor<DerivedElementAccessor,Space> &&elem)
         = default;
 
     /**

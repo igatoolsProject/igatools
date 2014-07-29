@@ -33,12 +33,7 @@ PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
                              const Index index)
     :
     SpaceElementAccessor<
-    PhysicalSpaceElementAccessor<PhysSpace>,
-    PhysSpace,
-    PhysSpace::RefSpace::dim,
-    PhysSpace::PushForwardType::codim,
-    PhysSpace::RefSpace::range,
-    PhysSpace::RefSpace::rank>(phys_space,index),
+    PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace>(phys_space,index),
     PfElemAccessor(phys_space->get_push_forward(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}
@@ -193,7 +188,7 @@ template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
 init_cache(const ValueFlags fill_flag,
-            const QuadratureType &quad)
+           const QuadratureType &quad)
 {
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
@@ -212,8 +207,8 @@ template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const QuadratureFaceType &quad)
+                const ValueFlags fill_flag,
+                const QuadratureFaceType &quad)
 {
     AssertThrow(false,ExcNotImplemented());
 }
