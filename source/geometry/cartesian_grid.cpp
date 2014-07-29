@@ -376,7 +376,6 @@ CartesianGrid<dim_>::
 get_num_elements() const
 {
     const TensorSize<dim> n_elements_dim = this->get_num_elements_dim();
-
     return n_elements_dim.flat_size();
 }
 
@@ -516,7 +515,6 @@ print_info(LogStream &out) const
 
     out.push("\t");
     out << "Knot coordinates:" << endl;
-
 
     out.push("\t");
     for (int i = 0; i < dim; i++)

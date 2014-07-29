@@ -127,8 +127,6 @@ public:
     explicit CartesianGrid(const BBox<dim> &end_points,
                            const TensorSize<dim> &n_knots);
 
-
-
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -365,24 +363,9 @@ public:
     bool operator==(const CartesianGrid<dim> &grid) const;
 
 private:
-
-    Kind kind_ = Kind::non_uniform;
-
-    /**
-     * Boundary ids, one id per face
-     */
-    std::array< boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
-
-    /**
-     *  Knot coordinates along each coordinate direction.
-     *  For each direction the knot coordinates are sorted in an increasing
-     *  order and does not contain duplicate values.
-     */
-    CartesianProductArray<Real,dim> knot_coordinates_;
-
     /** Type for the refinement signal. */
     using signal_refine_t = boost::signals2::signal<
-                            void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
+            void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
 
 public:
 
@@ -439,8 +422,40 @@ public:
     std::shared_ptr<const CartesianGrid<dim> > get_grid_pre_refinement() const;
     ///@}
 
-
 private:
+
+    Kind kind_ = Kind::non_uniform;
+
+    /**
+     * Boundary ids, one id per face
+     */
+    std::array< boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
+
+    /**
+     *  Knot coordinates along each coordinate direction.
+     *  For each direction the knot coordinates are sorted in an increasing
+     *  order and does not contain duplicate values.
+     */
+    CartesianProductArray<Real,dim> knot_coordinates_;
+
+    /**
+     * Weights used for fast conversion of element index (flat-to-tensor and tensor-to-flat);
+     */
+    TensorIndex<dim> weight_elem_id_;
+
+    /**
+     * Container for the flags indicating the elements with influence (used to define hierarchical spaces).
+     */
+    DynamicMultiArray<bool,dim> influence_flags_container_;
+
+    /**
+     * Container for the flags indicating the active elements (used to define hierarchical spaces).
+     */
+    DynamicMultiArray<bool,dim> active_flags_container_;
+
+
+
+
     /**
      * Perform a uniform refinement of the knots along the @p direction_id direction,
      * dividing each interval in the knot vector into @p n_subdivisions intervals.
@@ -462,27 +477,9 @@ private:
      */
     signal_refine_t refine_signals_;
 
-
-    /**
-     * Weights used for fast conversion of element index (flat-to-tensor and tensor-to-flat);
-     */
-    TensorIndex<dim> weight_elem_id_;
-
-
     friend class CartesianGridElement<dim>;
+
     friend class CartesianGridElementAccessor<dim>;
-
-
-    /**
-     * Container for the flags indicating the elements with influence (used to define hierarchical spaces).
-     */
-    DynamicMultiArray<bool,dim> influence_flags_container_;
-
-
-    /**
-     * Container for the flags indicating the active elements (used to define hierarchical spaces).
-     */
-    DynamicMultiArray<bool,dim> active_flags_container_;
 };
 
 
