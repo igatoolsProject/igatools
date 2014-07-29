@@ -188,11 +188,20 @@ void test_evaluate()
     out << endl;
 
     out << "===============================================================" << endl;
-    out << "R E F I N E D     S P A C E" << endl;
+    out << "R E F I N E D     S P A C E (2 elements each old element)" << endl;
     phys_space->refine_h();
     phys_space->print_info(out);
     out << "===============================================================" << endl;
     out << endl;
+
+
+    out << "===============================================================" << endl;
+    out << "R E F I N E D     S P A C E (6 elements each old element)" << endl;
+    phys_space->refine_h(3);
+    phys_space->print_info(out);
+    out << "===============================================================" << endl;
+    out << endl;
+
 }
 
 int main()

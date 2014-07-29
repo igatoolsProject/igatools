@@ -131,8 +131,16 @@ public:
 
     /**
      * Communicates that the insertion of patches is completed.
+     *
+     * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
+     * then the dofs in each space are renumbered by the DofsManager.
+     * The renumbering is made in ascending order processing the dofs space views as inserted
+     * using the function add_dofs_space_view.
+     *
+     * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
+     *
      */
-    void patch_insertion_close();
+    void patch_insertion_close(const bool automatic_dofs_renumbering = true);
 
     /**
      * Adds a patch to the space.
@@ -184,13 +192,6 @@ public:
      * This function performs the data analysis in order to set equality and linear constraints
      * for the degrees of freedom.
      *
-     * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
-     * then the dofs in each space are renumbered by the DofsManager.
-     * The renumbering is made in ascending order processing the dofs space views as inserted
-     * using the function add_dofs_space_view.
-     *
-     * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
-     *
      * @pre In order to call this function the MultiPatchSpace object must have the internal variables
      * is_patch_insertion_open_ and is_interface_insertion_open_ both set to FALSE (e.g. using the functions
      * patch_insertion_close() and interface_insertion_close().
@@ -202,7 +203,7 @@ public:
      * by build_multipatch_graph(). If the graph is not already built, it will be built as first
      * task of this function.
      */
-    void compute_constraints(const bool automatic_dofs_renumbering = true);
+    void compute_constraints();
 
 
     /** Returns the patches (i.e. the physical spaces) used to define the MultiPatchSpace. */
@@ -265,6 +266,8 @@ private:
     bool is_interface_insertion_open_ = false;
 
     bool is_graph_built_ = false;
+
+    bool is_dofs_manager_built_ = false;
 
     bool are_constraints_computed_ = false;
 
