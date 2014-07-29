@@ -34,210 +34,92 @@ IGA_NAMESPACE_OPEN
 
 namespace dof_tools
 {
-
-template < class SpaceType >
+#if 0
 SparsityPattern
-get_sparsity_pattern(std::shared_ptr<const SpaceType> space,
-                     EnableIf<is_function_space<SpaceType>() > *)
+get_sparsity_pattern(const DofsManager &dofs_manager)
 {
+    Assert(dofs_manager.is_dofs_view_open() == false,ExcInvalidState());
+
     // build the dofs graph
-    const vector<Index> &dofs = get_dofs(space);
-    Assert(!dofs.empty(),ExcEmptyObject());
+    const auto & dofs_view = dofs_manager.get_dofs_view();
 
-    SparsityPattern sparsity_pattern(dofs, dofs);
+    vector<Index> dofs_copy;
+    for (const auto &dof : dofs_view)
+    	dofs_copy.push_back(dof);
 
-    typedef set< Index > Set_t;
-    typedef vector< Index > Vec_t;
+    Assert(!dofs_copy.empty(),ExcEmptyObject());
 
-    Set_t empty_set;
+    SparsityPattern sparsity_pattern(dofs_copy, dofs_copy);
+
+    using DofsInRow = set<Index>;
+    DofsInRow empty_set;
 
     // adding the global dof keys to the map representing the dof connectivity
-    for (const auto &dof : dofs)
-        sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
+    for (const auto &dof : dofs_copy)
+        sparsity_pattern.insert(pair<Index,DofsInRow>(dof,empty_set));
 
-
-    auto element     = space->begin();
-    const auto element_end = space->end();
-    for (; element != element_end; ++element)
-    {
-        const Vec_t dofs_element = element->get_local_to_global();
-
-        typename Vec_t::const_iterator dofs_begin = dofs_element.cbegin();
-        typename Vec_t::const_iterator dofs_end   = dofs_element.cend();
-
-
-        for (auto dofs_it = dofs_begin; dofs_it != dofs_end; ++dofs_it)
-        {
-            // get the map element corresponding to the current dof
-            sparsity_pattern[ *dofs_it ].insert(dofs_begin, dofs_end);
-        }
-    }
+    Assert(dofs_manager.are_elements_dofs_view_open() == false,ExcInvalidState());
+    Assert(!dofs_manager.get_elements_dofs_view().empty(),
+    		ExcEmptyObject());
+    for (const auto element_dofs : dofs_manager.get_elements_dofs_view())
+    	for (const auto &dof : element_dofs)
+    		sparsity_pattern[dof].insert(element_dofs.begin(),element_dofs.end());
 
     return (sparsity_pattern);
 }
-
-
-template < class SpaceType >
 SparsityPattern
-get_sparsity_pattern(const vector< shared_ptr< SpaceType > > &space_multipatch,
-                     EnableIf<is_function_space<SpaceType>()> *)
+get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols)
 {
+    Assert(dofs_manager_rows.is_dofs_view_open() == false,ExcInvalidState());
+    Assert(dofs_manager_cols.is_dofs_view_open() == false,ExcInvalidState());
 
-    //--------------------------------------------------------------------------
     // build the dofs graph
+    const auto & dofs_view_rows = dofs_manager_rows.get_dofs_view();
+    const auto & dofs_view_cols = dofs_manager_cols.get_dofs_view();
 
-    typedef set< Index > Set_t;
-    typedef vector< Index > Vec_t;
+    vector<Index> dofs_copy_rows;
+    for (const auto &dof : dofs_view_rows)
+    	dofs_copy_rows.push_back(dof);
+    Assert(!dofs_copy_rows.empty(),ExcEmptyObject());
 
-    Set_t empty_set;
+    vector<Index> dofs_copy_cols;
+    for (const auto &dof : dofs_view_cols)
+    	dofs_copy_cols.push_back(dof);
+    Assert(!dofs_copy_cols.empty(),ExcEmptyObject());
+
+    SparsityPattern sparsity_pattern(dofs_copy_rows, dofs_copy_cols);
+
+    using DofsInRow = set<Index>;
+    DofsInRow empty_set;
 
     // adding the global dof keys to the map representing the dof connectivity
-    Set_t dofs_set;
-    for (const auto &space : space_multipatch)
+    for (const auto &dof : dofs_copy_rows)
+        sparsity_pattern.insert(pair<Index,DofsInRow>(dof,empty_set));
+
+
+    Assert(dofs_manager_rows.are_elements_dofs_view_open() == false,ExcInvalidState());
+    const auto & elements_dofs_rows = dofs_manager_rows.get_elements_dofs_view();
+    Assert(!elements_dofs_rows.empty(),ExcEmptyObject());
+
+    Assert(dofs_manager_cols.are_elements_dofs_view_open() == false,ExcInvalidState());
+    const auto & elements_dofs_cols = dofs_manager_cols.get_elements_dofs_view();
+    Assert(!elements_dofs_cols.empty(),ExcEmptyObject());
+
+    Assert(elements_dofs_rows.size() == elements_dofs_cols.size(),
+    		ExcDimensionMismatch(elements_dofs_rows.size(),elements_dofs_cols.size()));
+
+    const Index n_elements = elements_dofs_rows.size();
+    for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
     {
-        const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto &dof : dofs_space)
-            dofs_set.insert(dof);
+    	const auto &dofs_rows = elements_dofs_rows[ielem];
+    	const auto &dofs_cols = elements_dofs_cols[ielem];
+
+    	for (const auto & dof_row : dofs_rows)
+    		sparsity_pattern[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
     }
-
-    Vec_t dofs_vector(dofs_set.begin(), dofs_set.end());
-
-    SparsityPattern sparsity_pattern(dofs_vector, dofs_vector);
-    for (const auto &dof : dofs_vector)
-        sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
-
-
-    // now the keys are initialized, then fill the set of dofs corresponding to each key
-    for (const auto &space : space_multipatch)
-    {
-
-        auto element     = space->begin();
-        const auto element_end = space->end();
-        for (; element != element_end; ++element)
-        {
-            const Vec_t &dofs_element = element->get_local_to_global();
-
-            typename Vec_t::const_iterator dofs_begin = dofs_element.cbegin();
-            typename Vec_t::const_iterator dofs_end   = dofs_element.cend();
-
-
-            for (auto dofs_it = dofs_begin; dofs_it != dofs_end; ++dofs_it)
-            {
-                // get the map element corresponding to the current dof
-                sparsity_pattern[ *dofs_it ].insert(dofs_begin, dofs_end);
-            }
-        }
-    }
-
     return (sparsity_pattern);
 }
-
-
-
-
-template < class SpaceType >
-SparsityPattern
-get_sparsity_pattern(
-    const vector< shared_ptr<SpaceType> > &space_multipatch_rows,
-    const vector< shared_ptr<SpaceType> > &space_multipatch_cols,
-    EnableIf<is_function_space<SpaceType>()> *)
-{
-    Assert(space_multipatch_rows.size() == space_multipatch_cols.size(),
-           ExcDimensionMismatch(space_multipatch_rows.size(), space_multipatch_cols.size()));
-
-
-    //--------------------------------------------------------------------------
-    // build the dofs graph
-
-    typedef set< Index > Set_t;
-    typedef vector< Index > Vec_t;
-
-    Set_t empty_set;
-
-    // adding the global dof keys to the map representing the dof connectivity
-    Set_t row_dofs_set;
-    for (const auto &space : space_multipatch_rows)
-    {
-        const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto &dof : dofs_space)
-            row_dofs_set.insert(dof);
-    }
-
-
-    Set_t col_dofs_set;
-    for (const auto &space : space_multipatch_cols)
-    {
-        const vector< Index > &dofs_space = get_dofs(*space);
-        for (const auto &dof : dofs_space)
-            col_dofs_set.insert(dof);
-    }
-
-    Vec_t row_dofs_vector(row_dofs_set.begin(), row_dofs_set.end());
-    Vec_t col_dofs_vector(col_dofs_set.begin(), col_dofs_set.end());
-
-    SparsityPattern sparsity_pattern(row_dofs_vector, col_dofs_vector);
-    for (const auto &dof : row_dofs_vector)
-        sparsity_pattern.insert(pair< Index, Set_t >(dof, empty_set));
-
-
-    // now the keys are initialized, then fill the set of dofs corresponding to each key
-
-    auto space_rows     = space_multipatch_rows.begin();
-    const auto space_rows_end = space_multipatch_rows.end();
-    auto space_cols     = space_multipatch_cols.begin();
-
-    for (; space_rows != space_rows_end; ++space_rows, ++space_cols)
-    {
-        auto element_rows     = (*space_rows)->begin();
-        auto element_rows_end = (*space_rows)->end();
-        auto element_cols     = (*space_cols)->begin();
-        for (; element_rows != element_rows_end; ++element_rows, ++element_cols)
-        {
-            const Vec_t &dofs_rows_element = element_rows->get_local_to_global();
-            const Vec_t &dofs_cols_element = element_cols->get_local_to_global();
-
-            typename Vec_t::const_iterator dofs_rows_begin = dofs_rows_element.cbegin();
-            typename Vec_t::const_iterator dofs_rows_end   = dofs_rows_element.cend();
-            typename Vec_t::const_iterator dofs_cols_begin = dofs_cols_element.cbegin();
-            typename Vec_t::const_iterator dofs_cols_end   = dofs_cols_element.cend();
-
-
-            for (auto dofs = dofs_rows_begin; dofs != dofs_rows_end; ++dofs)
-            {
-                // get the map element corresponding to the current dof
-                sparsity_pattern[ *dofs ].insert(dofs_cols_begin, dofs_cols_end);
-            }
-        }
-    }
-
-    return (sparsity_pattern);
-}
-
-
-template < class SpaceType >
-vector<Index>
-get_dofs(shared_ptr<const SpaceType> space, EnableIf<is_function_space<SpaceType>()> *)
-{
-//  LogStream out;
-//  space->print_info(out);
-    auto element = space->begin();
-    const auto element_end = space->end();
-
-    set<Index> dofs_set;
-
-    for (; element != element_end; ++element)
-    {
-        const vector< Index > element_dofs = element->get_local_to_global();
-        Assert(!element_dofs.empty(),ExcEmptyObject());
-
-        for (const Index &dof : element_dofs)
-            dofs_set.insert(dof);
-    }
-
-    vector<Index> space_dofs(dofs_set.begin(), dofs_set.end());
-
-    return space_dofs;
-}
+#endif
 
 
 

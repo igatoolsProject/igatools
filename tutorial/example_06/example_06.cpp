@@ -40,6 +40,7 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/dof_tools.h>
 // [linear system]
 
@@ -50,7 +51,6 @@ using namespace std;
 using functions::ConstantFunction;
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
-using dof_tools::get_sparsity_pattern;
 // [short names]
 
 // [class functions]
@@ -93,7 +93,7 @@ PoissonProblem(const int n_knots, const int deg)
     face_quad(QGauss<dim-1>(deg+1))
 {
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LAPack::trilinos>::create(get_sparsity_pattern<Space>(space));
+    matrix   = Matrix<LAPack::trilinos>::create(SparsityPattern(*space->get_dofs_manager()));
     rhs      = Vector<LAPack::trilinos>::create(n_basis);
     solution = Vector<LAPack::trilinos>::create(n_basis);
 }
@@ -117,13 +117,13 @@ void PoissonProblem<dim>::assemble()
     const auto elem_end = space->end();
     ValueFlags fill_flags = ValueFlags::value | ValueFlags::gradient |
                             ValueFlags::w_measure | ValueFlags::point;
-    elem->init_values(fill_flags, elem_quad);
+    elem->init_cache(fill_flags, elem_quad);
 
     for (; elem != elem_end; ++elem)
     {
         loc_mat = 0.;
         loc_rhs = 0.;
-        elem->fill_values();
+        elem->fill_cache();
 
         auto points  = elem->get_points();
         auto phi     = elem->get_basis_values();

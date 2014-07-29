@@ -27,6 +27,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/dofs_manager.h>
 #include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
@@ -177,6 +178,8 @@ public:
     // TODO (pauletti, Jun 12, 2014): if we are using this it should be
     // implemented in all library classes
     void print_memory_info(LogStream &out) const;
+
+    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
 #if 0
     /**

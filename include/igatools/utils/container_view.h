@@ -151,11 +151,17 @@ public:
     /** Returns a const-iterator pointing to the first element in the view. */
     const_iterator begin() const;
 
+    /** Returns a const-iterator pointing to the first element in the view. */
+    const_iterator cbegin() const;
+
     /** Returns an iterator pointing to one-pass-the end element in the view. */
     iterator end();
 
     /** Returns a const-iterator pointing to one-pass-the end element in the view. */
     const_iterator end() const;
+
+    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+    const_iterator cend() const;
     ///@}
 
     /** @name Dereference offset operators */
@@ -169,7 +175,7 @@ public:
 };
 
 
-template <class ConstIterator>
+template <class Iterator, class ConstIterator>
 class ConstView : public ViewData<ConstIterator>
 {
 public:
@@ -197,12 +203,16 @@ public:
      */
     explicit ConstView(const const_iterator begin, const const_iterator end);
 
+    /**
+     * Construct a ConstView from a View.
+     */
+    explicit ConstView(const View<Iterator,ConstIterator> &view);
 
     /** Copy constructor. */
-    ConstView(const ConstView<ConstIterator> &view) = default;
+    ConstView(const ConstView<Iterator,ConstIterator> &view) = default;
 
     /** Move constructor. */
-    ConstView(ConstView<ConstIterator> &&view) = default;
+    ConstView(ConstView<Iterator,ConstIterator> &&view) = default;
 
     /** Destructor. */
     ~ConstView() = default;
@@ -211,10 +221,10 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    ConstView<ConstIterator> &operator=(const ConstView<ConstIterator> &view) = default;
+    ConstView<Iterator,ConstIterator> &operator=(const ConstView<Iterator,ConstIterator> &view) = default;
 
     /** Move assignment operator. */
-    ConstView<ConstIterator> &operator=(ConstView<ConstIterator> &&view) = default;
+    ConstView<Iterator,ConstIterator> &operator=(ConstView<Iterator,ConstIterator> &&view) = default;
     ///@}
 
 
@@ -246,9 +256,9 @@ public:
  * @date 2014
  */
 template <class Container>
-class ConstContainerView : public ConstView<typename Container::const_iterator>
+class ConstContainerView : public ConstView<typename Container::iterator,typename Container::const_iterator>
 {
-    using ConstView<typename Container::const_iterator>::ConstView;
+    using ConstView<typename Container::iterator,typename Container::const_iterator>::ConstView;
 };
 
 

@@ -27,6 +27,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
+#include <igatools/basis_functions/dofs_manager.h>
 
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
@@ -361,6 +362,9 @@ public:
     }
 
 
+    std::shared_ptr<DofsManager> get_dofs_manager() const;
+
+
 
 private:
 
@@ -405,6 +409,9 @@ private:
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
+
+    void create_dofs_manager();
+    std::shared_ptr<DofsManager> dofs_manager_;
 
 public:
     DeclException1(ExcScalarRange, int,

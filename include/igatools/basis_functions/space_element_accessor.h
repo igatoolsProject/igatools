@@ -57,13 +57,15 @@ template <typename Accessor> class GridForwardIterator;
  * @author M. Martinelli
  * @date 13 May 2014
  */
-// TODO (pauletti, Jun 5, 2014): from space one can get dim, codim, range and rank
-template<class DerivedElementAccessor,class Space,int dim,int codim,int range,int rank>
-class SpaceElementAccessor : public CartesianGridElementAccessor<dim>
+template<class Space>
+class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
 {
 public:
     /** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
     ///@{
+
+    using DerivedElementAccessor = typename Space::ElementAccessor;
+
     /**
      * Typedef for specifying the value of the basis function.
      */
@@ -83,6 +85,11 @@ public:
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
 
+
+    static const int dim = Space::dim;
+    static const int codim = Space::codim;
+    static const int range = Space::range;
+    static const int rank = Space::rank;
 
     /**
      * For each component gives a product array of the dimension
@@ -136,13 +143,13 @@ public:
      * creates a new element cache, but it shares
      * the one dimensional cache with the copied element.
      */
-    SpaceElementAccessor(const SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank> &elem)
+    SpaceElementAccessor(const SpaceElementAccessor<Space> &elem)
         = default;
 
     /**
      * Move constructor.
      */
-    SpaceElementAccessor(SpaceElementAccessor<DerivedElementAccessor,Space,dim,codim,range,rank> &&elem)
+    SpaceElementAccessor(SpaceElementAccessor<Space> &&elem)
         = default;
 
     /**
@@ -160,7 +167,7 @@ public:
      * Returns a ValueTable with the values of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -169,10 +176,20 @@ public:
 
 
     /**
+     * Returns a ValueTable with the values of all local basis function
+     * at the quadrature points specified by the input argument <tt>quad</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_cache()/fill_cache().
+     */
+    ValueTable<Value>
+    get_basis_values(const Quadrature<dim> &quad) const;
+
+
+    /**
      * Returns a ValueTable with the gradients of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -181,10 +198,20 @@ public:
 
 
     /**
+     * Returns a ValueTable with the gradients of all local basis function
+     * at the quadrature points specified by the input argument <tt>quad</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_cache()/fill_cache().
+     */
+    ValueTable< Derivative<1> >
+    get_basis_gradients(const Quadrature<dim> &quad) const;
+
+
+    /**
      * Returns a ValueTable with the hessians of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -193,10 +220,19 @@ public:
 
 
     /**
+     * Returns a ValueTable with the hessians of all local basis function
+     * at the quadrature points specified by the input argument <tt>quad</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_cache()/fill_cache().
+     */
+    ValueTable< Derivative<2> >
+    get_basis_hessians(const Quadrature<dim> &quad) const;
+
+    /**
      * Returns a ValueVector with the <tt>deriv_order</tt>-th derivatives of the field
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -211,7 +247,7 @@ public:
      * Returns a ValueVector with the values of the field
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -225,7 +261,7 @@ public:
      * Returns a ValueVector with the gradients of the field
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -239,7 +275,7 @@ public:
      * Returns a ValueVector with the hessians of the field
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
@@ -664,7 +700,7 @@ public:
      * Fills the values cache of the <tt>face_id</tt>-th face, according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_face_values(const Index face_id);
+    void fill_face_cache(const Index face_id);
 
 
     /**

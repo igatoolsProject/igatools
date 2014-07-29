@@ -89,7 +89,16 @@ auto
 View<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
-    return this->begin_;
+    return ConstIterator(this->begin_);
+}
+
+template <class Iterator,class ConstIterator>
+inline
+auto
+View<Iterator,ConstIterator>::
+cbegin() const -> const_iterator
+{
+    return ConstIterator(this->begin_);
 }
 
 template <class Iterator,class ConstIterator>
@@ -107,7 +116,16 @@ auto
 View<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
-    return this->end_;
+    return ConstIterator(this->end_);
+}
+
+template <class Iterator,class ConstIterator>
+inline
+auto
+View<Iterator,ConstIterator>::
+cend() const -> const_iterator
+{
+    return ConstIterator(this->end_);
 }
 
 template <class Iterator,class ConstIterator>
@@ -137,37 +155,48 @@ operator[](const Index n) const -> const reference
     return this->begin_[n];
 }
 
-template <class ConstIterator>
+template <class Iterator,class ConstIterator>
 inline
-ConstView<ConstIterator>::
+ConstView<Iterator,ConstIterator>::
 ConstView(const const_iterator begin, const const_iterator end)
     :
     ViewData<ConstIterator>(begin,end)
 {}
 
 
-template <class ConstIterator>
+template <class Iterator,class ConstIterator>
+inline
+ConstView<Iterator,ConstIterator>::
+ConstView(const View<Iterator,ConstIterator> &view)
+:
+ViewData<ConstIterator>(view.begin(),view.end())
+{
+//	this->begin_ = view.begin();
+//	this->end_   = view.end();
+}
+
+template <class Iterator,class ConstIterator>
 inline
 auto
-ConstView<ConstIterator>::
+ConstView<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
     return this->begin_;
 }
 
-template <class ConstIterator>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ConstView<ConstIterator>::
+ConstView<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
     return this->end_;
 }
 
-template <class ConstIterator>
+template <class Iterator,class ConstIterator>
 inline
 auto
-ConstView<ConstIterator>::
+ConstView<Iterator,ConstIterator>::
 operator[](const Index n) const -> const reference
 {
     Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());

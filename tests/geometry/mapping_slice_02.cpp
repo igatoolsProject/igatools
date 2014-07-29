@@ -56,9 +56,9 @@ void run_test()
 
     QGauss<dim> quad(1);
     auto elem = map->begin();
-    elem->init_values(ValueFlags::point|ValueFlags::map_gradient, quad);
+    elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, quad);
 
-    elem->fill_values();
+    elem->fill_cache();
     elem->get_map_values().print_info(out);
     elem->get_map_gradients().print_info(out);
 
@@ -73,9 +73,9 @@ void run_test()
 
         QGauss<dim-1> face_quad(1);
         auto face_elem = face_map->begin();
-        face_elem->init_values(ValueFlags::point|ValueFlags::map_gradient, face_quad);
+        face_elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, face_quad);
 
-        face_elem->fill_values();
+        face_elem->fill_cache();
         face_elem->get_map_values().print_info(out);
         face_elem->get_map_gradients().print_info(out);
     }

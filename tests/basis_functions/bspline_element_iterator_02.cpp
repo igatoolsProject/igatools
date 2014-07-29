@@ -49,32 +49,32 @@ void do_test(const int degree)
     QGauss< dim_domain > quad(n_points) ;
 
     auto elem = space->begin();
-    elem->init_values(ValueFlags::value, quad);
+    elem->init_cache(ValueFlags::value, quad);
 
     for (; elem != space->end(); ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         elem->get_basis_values().print_info(out);
     }
 
     {
         auto elem = space->begin();
-        elem->init_values(ValueFlags::gradient, quad) ;
+        elem->init_cache(ValueFlags::gradient, quad) ;
 
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_values();
+            elem->fill_cache();
             elem->get_basis_gradients().print_info(out);
         }
     }
 
     {
         auto elem = space->begin();
-        elem->init_values(ValueFlags::hessian, quad) ;
+        elem->init_cache(ValueFlags::hessian, quad) ;
 
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_values();
+            elem->fill_cache();
             elem->get_basis_hessians().print_info(out);
         }
 

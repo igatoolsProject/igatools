@@ -72,15 +72,15 @@ void StokesProblem<dim>::assemble_Bt()
 
     ValueFlags vel_flag = ValueFlags::divergence | ValueFlags::w_measure;
     ValueFlags pre_flag = ValueFlags::value;
-    vel_el->init_values(vel_flag,elem_quad_);
-    pre_el->init_values(pre_flag,elem_quad_);
+    vel_el->init_cache(vel_flag,elem_quad_);
+    pre_el->init_cache(pre_flag,elem_quad_);
 
     const int n_qp = elem_quad_.get_num_points();
     for (; vel_el != end_el; ++vel_el, ++pre_el)
     {
         loc_mat.clear();
-        vel_el->fill_values();
-        pre_el->fill_values();
+        vel_el->fill_cache();
+        pre_el->fill_cache();
 
         auto q      = pre_el->get_basis_values();
         auto div_v  = vel_el->get_basis_divergences();
@@ -146,10 +146,7 @@ StokesProblem(const int deg, const int n_knots)
 
     vel_space_ = VelSpace::create(vel_deg, grid,vel_m);
 
-    const auto sparsity_pattern =
-        dof_tools::get_sparsity_pattern<VelSpace, PreSpace>(
-            vel_space_->get_reference_space(),
-            pre_space_->get_reference_space());
+    const SparsityPattern sparsity_pattern(*vel_space_->get_dofs_manager(),*pre_space_->get_dofs_manager());
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;

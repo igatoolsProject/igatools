@@ -291,6 +291,9 @@ public:
         return sp_space_->get_basis_indices();
     }
 
+    std::shared_ptr<DofsManager> get_dofs_manager() const;
+
+
 #if 0
     /**
      * Transforms basis flat index of the component comp to a basis

@@ -280,8 +280,7 @@ BSplineElementAccessor<dim, range, rank>::
 BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                        const int index)
     :
-    SpaceElementAccessor<
-    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>(space,index)
+    SpaceElementAccessor<BSplineSpace<dim,range,rank>>(space,index)
 {}
 
 
@@ -289,8 +288,8 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-init_values(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+init_cache(const ValueFlags fill_flag,
+           const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
@@ -352,9 +351,9 @@ init_values(const ValueFlags fill_flag,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-init_face_values(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+init_face_cache(const Index face_id,
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented()) ;
 }
@@ -735,7 +734,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-fill_values(const TopologyId<dim> &topology_id)
+fill_cache(const TopologyId<dim> &topology_id)
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));

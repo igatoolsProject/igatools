@@ -26,6 +26,7 @@
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/equality_constraint.h>
+//#include <igatools/linear_algebra/sparsity_pattern.h>
 //#include <boost/graph/adjacency_list.hpp>
 
 #include <memory>
@@ -66,7 +67,7 @@ public:
     using DofsIterator = ConcatenatedIterator<DofsComponentView>;
 
     /** Type alias for a concatenated const-iterator defined on several compoenent views. */
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentConstView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
     /** Type alias for the View on the dofs held by each space in the DofsManager object. */
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
@@ -74,9 +75,18 @@ public:
     /** Type alias for the View on the dofs held by the DofsManager object. */
     using DofsView = View<DofsIterator,DofsConstIterator>;
 
+    /** Type alias for the ConstView on the dofs held by the DofsManager object. */
+    using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
+
 
     /** Default constructor. */
     DofsManager();
+
+    /** Copy constructor. */
+    DofsManager(const DofsManager &dofs_manager) = default;
+
+    /** Move constructor. */
+    DofsManager(DofsManager &&dofs_manager) = default;
 
     /**
      * Prints internal information about the DofsManager.
@@ -90,7 +100,7 @@ public:
     /**
      * Sets the DofsManager in a state that can receive the views of the dofs by some spaces.
      */
-    void dofs_arrangement_open();
+    void dofs_view_open();
 
     /**
      * Sets the DofsManager in a state that cannot receive anymore the views of the dofs by some spaces.
@@ -102,8 +112,17 @@ public:
      *
      * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      */
-    void dofs_arrangement_close(const bool automatic_dofs_renumbering = true);
+    void dofs_view_close(const bool automatic_dofs_renumbering = true);
 
+    /**
+     * Sets the DofsManager in a state that can receive the views of the dofs in each element.
+     */
+    void elements_dofs_view_open();
+
+    /**
+     * Sets the DofsManager in a state that cannot receive anymore the views of the dofs in each element.
+     */
+    void elements_dofs_view_close();
 
     /**
      * Sets the DofsManager in a state that can receive new equality constraints.
@@ -147,7 +166,10 @@ public:
 
     /** @name Functions for querying dofs information */
     ///@{
-    const DofsView &get_dofs_view() const;
+    DofsView &get_dofs_view();
+
+    DofsConstView get_dofs_view() const;
+
 
     /**
      * Returns the global dof corresponding to the @p local_dof
@@ -175,15 +197,30 @@ public:
     Index get_num_equality_constraints() const;
 
 
+
     /**
      * Removes the equality constraints redundancies.
      */
     void remove_equality_constraints_redundancies();
 
+    /**
+     * Returns true if the dofs view is open.
+     */
+    bool is_dofs_view_open() const;
+
+    /**
+     * Returns true if the elements dofs views are open.
+     */
+    bool are_elements_dofs_view_open() const;
+
+    const std::vector<DofsConstView> & get_elements_dofs_view() const;
+
+
+    void add_element_dofs_view(const DofsConstView &element_dofs_view);
 
 private:
-    bool is_dofs_arrangement_open_ = false;
-
+    bool is_dofs_view_open_ = false;
+    bool are_elements_dofs_view_open_ = false;
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 
@@ -203,8 +240,10 @@ private:
 
 
 
-    std::unique_ptr<DofsView> dofs_view_;
+    DofsView dofs_view_;
 
+
+    std::vector<DofsConstView> elements_dofs_view_;
 
 
 

@@ -114,8 +114,8 @@ void run_test()
     ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
     auto values = elem->get_map_values();
     auto gradients = elem->get_map_gradients();

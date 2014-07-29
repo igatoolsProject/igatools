@@ -25,8 +25,10 @@
 #include <map>
 #include <set>
 
+using std::vector;
 using std::map;
 using std::set;
+using std::pair;
 
 IGA_NAMESPACE_OPEN
 
@@ -36,17 +38,17 @@ IGA_NAMESPACE_OPEN
 DofsManager::
 DofsManager()
     :
-    is_dofs_arrangement_open_(false),
-    dofs_view_(nullptr),
+    is_dofs_view_open_(false),
+//    dofs_view_(nullptr),
     num_unique_dofs_(0)
 {}
 
 
 void
 DofsManager::
-dofs_arrangement_open()
+dofs_view_open()
 {
-    is_dofs_arrangement_open_ = true;
+    is_dofs_view_open_ = true;
 }
 
 DofsManager::
@@ -81,9 +83,9 @@ add_dofs_space_view(
 
 void
 DofsManager::
-dofs_arrangement_close(const bool automatic_dofs_renumbering)
+dofs_view_close(const bool automatic_dofs_renumbering)
 {
-    Assert(is_dofs_arrangement_open_ == true,ExcInvalidState());
+    Assert(is_dofs_view_open_ == true,ExcInvalidState());
 
     Assert(!spaces_info_.empty(),ExcEmptyObject());
 
@@ -110,10 +112,11 @@ dofs_arrangement_close(const bool automatic_dofs_renumbering)
     DofsIterator dofs_begin(dofs_components_view_,0);;
     DofsIterator dofs_end(dofs_components_view_,IteratorState::pass_the_end);
 
-    Assert(dofs_view_ == nullptr, ExcInvalidState())
-    dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
+//    Assert(dofs_view_ == nullptr, ExcInvalidState())
+//    dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
+    dofs_view_ = DofsView(dofs_begin,dofs_end);
 
-    is_dofs_arrangement_open_ = false;
+    is_dofs_view_open_ = false;
 
 
     num_unique_dofs_ = this->count_unique_dofs();
@@ -121,13 +124,24 @@ dofs_arrangement_close(const bool automatic_dofs_renumbering)
 
 auto
 DofsManager::
-get_dofs_view() const -> const DofsView &
+get_dofs_view() -> DofsView &
 {
-    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+    Assert(is_dofs_view_open_ == false,ExcInvalidState());
 
-    Assert(dofs_view_ != nullptr, ExcNullPtr())
-    return *dofs_view_;
+//    Assert(dofs_view_ != nullptr, ExcNullPtr())
+    return dofs_view_;
 }
+
+auto
+DofsManager::
+get_dofs_view() const -> DofsConstView
+{
+    Assert(is_dofs_view_open_ == false,ExcInvalidState());
+
+//    Assert(dofs_view_ != nullptr, ExcNullPtr())
+    return DofsConstView(dofs_view_);
+}
+
 
 Index
 DofsManager::
@@ -155,7 +169,7 @@ Index
 DofsManager::
 get_global_dof(const int space_id, const Index local_dof) const
 {
-    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+    Assert(is_dofs_view_open_ == false,ExcInvalidState());
 
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
@@ -176,6 +190,57 @@ get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
         global_dofs.emplace_back(this->get_global_dof(space_id,local_dof));
 
     return global_dofs;
+}
+
+
+bool
+DofsManager::
+is_dofs_view_open() const
+{
+    return is_dofs_view_open_;
+}
+
+bool
+DofsManager::
+are_elements_dofs_view_open() const
+{
+    return are_elements_dofs_view_open_;
+}
+
+auto
+DofsManager::
+get_elements_dofs_view() const -> const std::vector<DofsConstView> &
+{
+    return elements_dofs_view_;
+}
+
+void
+DofsManager::
+elements_dofs_view_open()
+{
+    Assert(are_elements_dofs_view_open_ == false,
+           ExcMessage("Element dofs view already opened."));
+    are_elements_dofs_view_open_ = true;
+}
+
+void
+DofsManager::
+elements_dofs_view_close()
+{
+    Assert(are_elements_dofs_view_open_ == true,
+           ExcMessage("Element dofs view already closed."));
+    are_elements_dofs_view_open_ = false;
+}
+
+void
+DofsManager::
+add_element_dofs_view(const DofsConstView &element_dofs_view)
+{
+    Assert(is_dofs_view_open_ == false,ExcInvalidState());
+
+    Assert(are_elements_dofs_view_open_ == true,ExcInvalidState());
+
+    elements_dofs_view_.push_back(element_dofs_view);
 }
 
 
@@ -305,14 +370,17 @@ Index
 DofsManager::
 count_unique_dofs() const
 {
-    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+    Assert(is_dofs_view_open_ == false,ExcInvalidState());
 
 //    const auto &dofs = this->get_dofs_view();
 
-    set<Index> unique_dofs(dofs_view_->begin(),dofs_view_->end());
+    set<Index> unique_dofs(dofs_view_.begin(),dofs_view_.end());
 
     return unique_dofs.size();
 }
+
+
+
 
 
 void
@@ -328,13 +396,13 @@ print_info(LogStream &out) const
     out.push(tab);
 
 
-    Assert(is_dofs_arrangement_open_ == false,ExcInvalidState());
+    Assert(is_dofs_view_open_ == false,ExcInvalidState());
     Assert(are_equality_constraints_open_ == false,ExcInvalidState());
     Assert(are_linear_constraints_open_ == false,ExcInvalidState());
 
-    Assert(dofs_view_ != nullptr, ExcNullPtr())
+//    Assert(dofs_view_ != nullptr, ExcNullPtr())
     out << "DOFs = [ ";
-    for (Index &dof : *dofs_view_)
+    for (const Index &dof : dofs_view_)
         out << dof << " ";
     out << "]" << endl;
 
