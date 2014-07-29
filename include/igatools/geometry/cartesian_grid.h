@@ -250,7 +250,7 @@ public:
     ///@name Getting grid information
     ///@{
     /**
-     * Query the total number of elements.
+     * Total number of active elements.
      */
     Size get_num_elements() const;
 
@@ -274,7 +274,6 @@ public:
      * Returns the knot coordinates along all the directions (const version).
      */
     CartesianProductArray<Real, dim> const &get_knot_coordinates() const;
-
 
     /**
      * Returns the knot coordinates along the direction @p i.
@@ -451,7 +450,7 @@ private:
     /**
      * Container for the flags indicating the active elements (used to define hierarchical spaces).
      */
-    DynamicMultiArray<bool,dim> active_flags_container_;
+    DynamicMultiArray<bool,dim> active_elems_;
 
 
 

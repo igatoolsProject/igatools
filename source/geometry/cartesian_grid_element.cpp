@@ -370,7 +370,7 @@ bool
 CartesianGridElement<dim_>::
 is_active() const
 {
-    return grid_->active_flags_container_(flat_index_);
+    return grid_->active_elems_(flat_index_);
 }
 
 template <int dim_>
@@ -388,7 +388,7 @@ CartesianGridElement<dim_>::
 set_active(const bool active_flag)
 {
     std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             active_flags_container_(flat_index_) = active_flag;
+                                             active_elems_(flat_index_) = active_flag;
 }
 
 template <int dim_>

@@ -48,8 +48,8 @@ CartesianGrid(const Size n)
     influence_flags_container_.resize(n-1);
     influence_flags_container_.fill(true);
 
-    active_flags_container_.resize(n-1);
-    active_flags_container_.fill(true);
+    active_elems_.resize(n-1);
+    active_elems_.fill(true);
 }
 
 
@@ -81,8 +81,8 @@ CartesianGrid(const TensorSize<dim> &n)
     influence_flags_container_.resize(n_elems);
     influence_flags_container_.fill(true);
 
-    active_flags_container_.resize(n_elems);
-    active_flags_container_.fill(true);
+    active_elems_.resize(n_elems);
+    active_elems_.fill(true);
     //-----------------------------------------------
 }
 
@@ -108,8 +108,8 @@ CartesianGrid(const BBox<dim> &end_points, const Size n_knots)
     influence_flags_container_.resize(n_knots-1);
     influence_flags_container_.fill(true);
 
-    active_flags_container_.resize(n_knots-1);
-    active_flags_container_.fill(true);
+    active_elems_.resize(n_knots-1);
+    active_elems_.fill(true);
 }
 
 
@@ -161,8 +161,8 @@ CartesianGrid(const BBox<dim> &end_points,
     influence_flags_container_.resize(n_elems);
     influence_flags_container_.fill(true);
 
-    active_flags_container_.resize(n_elems);
-    active_flags_container_.fill(true);
+    active_elems_.resize(n_elems);
+    active_elems_.fill(true);
     //-----------------------------------------------
 
 }
@@ -220,8 +220,8 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates)
     influence_flags_container_.resize(n_elems);
     influence_flags_container_.fill(true);
 
-    active_flags_container_.resize(n_elems);
-    active_flags_container_.fill(true);
+    active_elems_.resize(n_elems);
+    active_elems_.fill(true);
     //-----------------------------------------------
 
 }
@@ -264,7 +264,7 @@ CartesianGrid(const CartesianGrid<dim_> &grid)
       knot_coordinates_(grid.knot_coordinates_),
       weight_elem_id_(grid.weight_elem_id_),
       influence_flags_container_(grid.influence_flags_container_),
-      active_flags_container_(grid.active_flags_container_)
+      active_elems_(grid.active_elems_)
 {}
 
 //TODO: inline this function
@@ -375,8 +375,8 @@ Size
 CartesianGrid<dim_>::
 get_num_elements() const
 {
-    const TensorSize<dim> n_elements_dim = this->get_num_elements_dim();
-    return n_elements_dim.flat_size();
+    // TODO (pauletti, Jul 29, 2014): this should work but it doesn't something wrong in the container?
+    return std::count(active_elems_.begin(), active_elems_.end(), true);
 }
 
 
