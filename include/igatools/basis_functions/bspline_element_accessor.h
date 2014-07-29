@@ -68,6 +68,7 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
     using typename parent_t::Point;
     using typename parent_t::Value;
+    using typename parent_t::RefPoint;
     //using typename parent_t::Div;
 
 
@@ -177,7 +178,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
 
     ///@}
 

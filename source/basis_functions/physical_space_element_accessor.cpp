@@ -322,7 +322,7 @@ fill_face_values(const Index face_id)
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point &
+get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const PhysPoint &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return (PfElemAccessor::get_map_values(topology_id))[qp];
