@@ -72,6 +72,7 @@ public:
     using Value = typename Space::Value;
 
     using Point = typename Space::Point;
+    using RefPoint = typename Space::RefPoint;
 
     /**
      * Typedef for specifying the divergence of the basis function.
@@ -171,7 +172,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable<Value>
-    evaluate_basis_values_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_values_at_points(const std::vector<RefPoint> &points) const;
 
 
     /**
@@ -193,7 +194,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_gradients_at_points(const std::vector<RefPoint> &points) const;
 
 
     /**
@@ -215,7 +216,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_hessians_at_points(const std::vector<RefPoint> &points) const;
 
 
     /**
@@ -239,7 +240,7 @@ public:
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const std::vector<RefPoint> &points) const;
 
 
     /**
@@ -253,7 +254,7 @@ public:
     ValueVector<Value>
     evaluate_field_values_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const std::vector<RefPoint> &points) const;
 
 
     /**
@@ -267,7 +268,7 @@ public:
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const std::vector<RefPoint> &points) const;
 
 
     /**
@@ -281,7 +282,7 @@ public:
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
         const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const std::vector<RefPoint> &points) const;
     ///@}
 
 

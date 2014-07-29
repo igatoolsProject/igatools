@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XMLFile>
+   <Patch DimPhysicalDomain="2" DimReferenceDomain="2" ID="0">
+      <KnotVector Degree="2" Direction="0" NumBreakPoints="2">
+         <BreakPoints Num="2">    0.000000e+00    1.000000e+00</BreakPoints>
+         <Multiplicities Num="2"> 3 3</Multiplicities>
+      </KnotVector>
+      <KnotVector Degree="2" Direction="1" NumBreakPoints="2">
+         <BreakPoints Num="2">    0.000000e+00    1.000000e+00</BreakPoints>
+         <Multiplicities Num="2"> 3 3</Multiplicities>
+      </KnotVector>
+      <ControlPoints Num="9">
+         <NumDir>3 3</NumDir>
+         <Coordinates Dir="0" Num="9">    0.000000e+00    0.000000e+00    0.000000e+00    0.500000e+00    0.500000e+00   0.500000e+00   1.000000e+00   1.000000e+00   1.000000e+00</Coordinates>
+         <Coordinates Dir="1" Num="9">    0.000000e+00    0.500000e+00    1.000000e+00    0.000000e+00    0.500000e+00   1.000000e+00   0.000000e+00   0.500000e+00   1.000000e+00</Coordinates>
+         <Weights Num="9">                1.000000e+00    1.000000e+00    1.000000e+00    1.000000e+00    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00</Weights>
+      </ControlPoints>
+   </Patch>
+</XMLFile>

@@ -566,7 +566,7 @@ template <int dim, int range, int rank >
 template <int deriv_order>
 auto
 NURBSElementAccessor< dim, range, rank >::
-evaluate_basis_derivatives_at_points(const vector<Point> &points) const
+evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const
 ->ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
 

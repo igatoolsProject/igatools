@@ -137,6 +137,8 @@ public:
     using typename BaseSpace::Value;
     using typename BaseSpace::Div;
 
+    using RefPoint = Point;
+
 public:
     /** Type for the reference face space.*/
     using RefFaceSpace = Conditional<(dim>0),

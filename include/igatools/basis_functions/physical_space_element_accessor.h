@@ -102,7 +102,7 @@ public :
 
 
     using Value = typename PhysSpace::Value;
-    using Point = typename PhysSpace::Point;
+    using PhysPoint = typename PhysSpace::Point;
     using RefPoint = typename RefSpace::Point;
 
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
@@ -240,7 +240,7 @@ public :
     /**
      * @todo Document this function
      */
-    const Point &
+    const PhysPoint &
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**

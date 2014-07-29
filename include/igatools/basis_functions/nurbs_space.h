@@ -82,6 +82,8 @@ public:
     using Value = typename spline_space_t::Value;
     using Div   = typename spline_space_t::Div;
 
+    using RefPoint = typename spline_space_t::RefPoint;
+
 public:
     /** Type for the reference face space.*/
     using RefFaceSpace = Conditional<(dim>0),
