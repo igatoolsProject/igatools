@@ -197,39 +197,39 @@ bool
 DofsManager::
 is_dofs_view_open() const
 {
-	return is_dofs_view_open_;
+    return is_dofs_view_open_;
 }
 
 bool
 DofsManager::
 are_elements_dofs_view_open() const
 {
-	return are_elements_dofs_view_open_;
+    return are_elements_dofs_view_open_;
 }
 
 auto
 DofsManager::
 get_elements_dofs_view() const -> const std::vector<DofsConstView> &
 {
-	return elements_dofs_view_;
+    return elements_dofs_view_;
 }
 
 void
 DofsManager::
 elements_dofs_view_open()
 {
-	Assert(are_elements_dofs_view_open_ == false,
-			ExcMessage("Element dofs view already opened."));
-	are_elements_dofs_view_open_ = true;
+    Assert(are_elements_dofs_view_open_ == false,
+           ExcMessage("Element dofs view already opened."));
+    are_elements_dofs_view_open_ = true;
 }
 
 void
 DofsManager::
 elements_dofs_view_close()
 {
-	Assert(are_elements_dofs_view_open_ == true,
-			ExcMessage("Element dofs view already closed."));
-	are_elements_dofs_view_open_ = false;
+    Assert(are_elements_dofs_view_open_ == true,
+           ExcMessage("Element dofs view already closed."));
+    are_elements_dofs_view_open_ = false;
 }
 
 void
