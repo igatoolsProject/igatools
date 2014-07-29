@@ -29,9 +29,9 @@ IGA_NAMESPACE_OPEN
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 SpaceElementAccessor(const std::shared_ptr<const Space> space,
                      const int elem_index)
     :
@@ -57,92 +57,92 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 as_cartesian_grid_element_accessor() -> CartesianGridElementAccessor<dim> &
 {
     return static_cast<CartesianGridElementAccessor<dim> &>(*this);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 as_cartesian_grid_element_accessor() const -> const CartesianGridElementAccessor<dim> &
 {
     return static_cast<const CartesianGridElementAccessor<dim> &>(*this);
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
-DerivedElementAccessor &
-SpaceElementAccessor<DerivedElementAccessor,Space>::
-as_derived_element_accessor()
+auto
+SpaceElementAccessor<Space>::
+as_derived_element_accessor() -> DerivedElementAccessor &
 {
     return static_cast<DerivedElementAccessor &>(*this);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
-const DerivedElementAccessor &
-SpaceElementAccessor<DerivedElementAccessor,Space>::
-as_derived_element_accessor() const
+auto
+SpaceElementAccessor<Space>::
+as_derived_element_accessor() const -> const DerivedElementAccessor &
 {
     return static_cast<const DerivedElementAccessor &>(*this);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_basis_values_at_points(const std::vector<Point> &points) const -> ValueTable<Value>
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_basis_gradients_at_points(const std::vector<Point> &points) const -> ValueTable<Derivative<1> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_basis_hessians_at_points(const std::vector<Point> &points) const -> ValueTable<Derivative<2> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_values(const Quadrature<dim> &quad) const -> ValueTable< Value >
 {
     this->evaluate_basis_values_at_points(quad.get_points());
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_gradients(const Quadrature<dim> &quad) const -> ValueTable< Derivative<1> >
 {
     this->evaluate_basis_gradients_at_points(quad.get_points());
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_hessians(const Quadrature<dim> &quad) const -> ValueTable< Derivative<2> >
 {
     this->evaluate_basis_hessians_at_points(quad.get_points());
@@ -151,11 +151,11 @@ get_basis_hessians(const Quadrature<dim> &quad) const -> ValueTable< Derivative<
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 template <int deriv_order>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_derivatives_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point> &points) const ->
@@ -174,10 +174,10 @@ ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_values_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point> &points) const -> ValueVector<Value>
@@ -185,10 +185,10 @@ evaluate_field_values_at_points(
     return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_gradients_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point> &points) const -> ValueVector<Derivative<1> >
@@ -196,10 +196,10 @@ evaluate_field_gradients_at_points(
     return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_hessians_at_points(
     const std::vector<Real> &local_coefs,
     const std::vector<Point> &points) const -> ValueVector<Derivative<2> >
@@ -208,10 +208,10 @@ evaluate_field_hessians_at_points(
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
@@ -221,10 +221,10 @@ get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> 
     return cache.phi_;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
 {
     return this->get_basis_values(FaceTopology<dim>(face_id));
@@ -232,19 +232,19 @@ get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_values(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Value>::const_view
 {
     return this->get_basis_values(topology_id).get_function_view(i);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
@@ -255,10 +255,10 @@ get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topolog
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<1>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
@@ -268,10 +268,10 @@ get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Deri
     return cache.D1phi_;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_face_basis_gradients(const Index face_id) const -> ValueTable<Derivative<1>> const &
 {
     return this->get_basis_gradients(FaceTopology<dim>(face_id));
@@ -279,19 +279,19 @@ get_face_basis_gradients(const Index face_id) const -> ValueTable<Derivative<1>>
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_gradients(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Derivative<1>>::const_view
 {
     return this->get_basis_gradients(topology_id).get_function_view(i);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<1> const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
@@ -303,10 +303,10 @@ get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topo
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<2>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
@@ -316,10 +316,10 @@ get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Deriv
     return cache.D2phi_;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_face_basis_hessians(const Index face_id) const -> ValueTable<Derivative<2>> const &
 {
     return this->get_basis_hessians(FaceTopology<dim>(face_id));
@@ -327,19 +327,19 @@ get_face_basis_hessians(const Index face_id) const -> ValueTable<Derivative<2>> 
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_hessians(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Derivative<2>>::const_view
 {
     return this->get_basis_hessians(topology_id).get_function_view(i);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<2> const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
@@ -350,10 +350,10 @@ get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topol
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_divergences(const TopologyId<dim> &topology_id) const -> ValueTable<Div> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
@@ -363,10 +363,10 @@ get_basis_divergences(const TopologyId<dim> &topology_id) const -> ValueTable<Di
     return cache.div_phi_;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_face_basis_divergences(const Index face_id) const -> ValueTable<Div> const &
 {
     return this->get_basis_divergences(FaceTopology<dim>(face_id));
@@ -374,19 +374,19 @@ get_face_basis_divergences(const Index face_id) const -> ValueTable<Div> const &
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_divergences(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Div>::const_view
 {
     return this->get_basis_divergences(topology_id).get_function_view(i);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Div const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
@@ -395,20 +395,20 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &to
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 void
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 fill_face_cache(const Index face_id)
 {
     this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
@@ -431,10 +431,10 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
@@ -457,10 +457,10 @@ get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 void
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 ValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
       const ComponentContainer<TensorSize<dim> > &n_basis_direction,
@@ -554,10 +554,10 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 void
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 ElementValuesCache::
 reset(const BasisElemValueFlagsHandler &flags_handler,
       const ComponentContainer<TensorSize<dim> > &n_basis_direction,
@@ -566,10 +566,10 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     ValuesCache::reset(flags_handler, n_basis_direction,quad);
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 void
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 FaceValuesCache::
 reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
@@ -585,10 +585,10 @@ reset(const Index face_id,
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 void
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 FaceValuesCache::
 reset(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
@@ -601,10 +601,10 @@ reset(const Index face_id,
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 void
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 reset_element_and_faces_cache(const ValueFlags fill_flag,
                               const Quadrature<dim> &quad)
 {
@@ -633,20 +633,20 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 ValuesCache::
 get_values() const -> const ValueTable<Value> &
 {
     return phi_;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 ValuesCache::
 get_gradients() const -> const ValueTable<Derivative<1>> &
 {
@@ -654,20 +654,20 @@ get_gradients() const -> const ValueTable<Derivative<1>> &
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 ValuesCache::
 get_hessians() const -> const ValueTable<Derivative<2>> &
 {
     return D2phi_;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 ValuesCache::
 get_divergences() const -> const ValueTable<Div> &
 {
@@ -675,10 +675,10 @@ get_divergences() const -> const ValueTable<Div> &
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
@@ -694,10 +694,10 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
     return D0phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
 -> ValueVector<Value>
 {
@@ -705,10 +705,10 @@ evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) c
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector< Derivative<1> >
 {
@@ -724,20 +724,20 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
     return D1phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const
 -> ValueVector< Derivative<1> >
 {
     return this->evaluate_field_gradients(local_coefs,FaceTopology<dim>(face_id));
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_divergences(
     const std::vector<Real> &local_coefs,
     const TopologyId<dim> &topology_id) const -> ValueVector<Div>
@@ -754,20 +754,20 @@ evaluate_field_divergences(
     return div_phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const
 -> ValueVector<Div>
 {
     return this->evaluate_field_divergences(local_coefs,FaceTopology<dim>(face_id));
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -782,10 +782,10 @@ evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<di
     return D2phi_hat.evaluate_linear_combination(local_coefs) ;
 }
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const
 -> ValueVector< Derivative<2> >
 {
@@ -796,50 +796,50 @@ evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local
 
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 Size
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_num_basis() const
 {
     return this->space_->get_num_basis_per_element();
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 int
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_num_basis(const int i) const
 {
     return space_->get_num_basis_per_element(i);
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_local_to_global() const -> std::vector<Index>
 {
     return space_->get_loc_to_global(this->get_tensor_index());
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_space() const -> std::shared_ptr<const Space>
 {
     return space_;
 }
 
 
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 inline
 auto
-SpaceElementAccessor<DerivedElementAccessor,Space>::
+SpaceElementAccessor<Space>::
 get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<dim> &
 {
     const auto &cache = this->get_values_cache(topology_id);

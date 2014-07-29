@@ -41,9 +41,8 @@ NURBSElementAccessor< dim, range, rank >::
 NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
                      const int elem_index)
     :
-    SpaceElementAccessor<
-    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>>(space,elem_index),
-            bspline_element_accessor_(space->get_spline_space(), elem_index)
+    SpaceElementAccessor<NURBSSpace<dim,range,rank>>(space,elem_index),
+                                                  bspline_element_accessor_(space->get_spline_space(), elem_index)
 {}
 
 

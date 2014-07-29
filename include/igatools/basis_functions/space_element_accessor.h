@@ -57,12 +57,15 @@ template <typename Accessor> class GridForwardIterator;
  * @author M. Martinelli
  * @date 13 May 2014
  */
-template<class DerivedElementAccessor,class Space>
+template<class Space>
 class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
 {
 public:
     /** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
     ///@{
+
+    using DerivedElementAccessor = typename Space::ElementAccessor;
+
     /**
      * Typedef for specifying the value of the basis function.
      */
@@ -139,13 +142,13 @@ public:
      * creates a new element cache, but it shares
      * the one dimensional cache with the copied element.
      */
-    SpaceElementAccessor(const SpaceElementAccessor<DerivedElementAccessor,Space> &elem)
+    SpaceElementAccessor(const SpaceElementAccessor<Space> &elem)
         = default;
 
     /**
      * Move constructor.
      */
-    SpaceElementAccessor(SpaceElementAccessor<DerivedElementAccessor,Space> &&elem)
+    SpaceElementAccessor(SpaceElementAccessor<Space> &&elem)
         = default;
 
     /**

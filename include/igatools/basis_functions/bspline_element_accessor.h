@@ -39,12 +39,10 @@ template <typename Accessor> class GridForwardIterator;
  */
 template <int dim, int range, int rank>
 class BSplineElementAccessor :
-    public SpaceElementAccessor<
-    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim,range,rank>>
+    public SpaceElementAccessor<BSplineSpace<dim,range,rank>>
 {
 public:
-    using parent_t = SpaceElementAccessor<
-                     BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>>;
+    using parent_t = SpaceElementAccessor<BSplineSpace<dim,range,rank>>;
 
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElementAccessor<dim>;

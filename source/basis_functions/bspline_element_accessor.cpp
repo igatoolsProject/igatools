@@ -280,8 +280,7 @@ BSplineElementAccessor<dim, range, rank>::
 BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                        const int index)
     :
-    SpaceElementAccessor<
-    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>>(space,index)
+    SpaceElementAccessor<BSplineSpace<dim,range,rank>>(space,index)
 {}
 
 
