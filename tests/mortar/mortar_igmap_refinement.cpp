@@ -49,7 +49,7 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees, LogS
 
     for (int i=0; i!=maps.size(); ++i)
     {
-    	cout << "Map[" << i << "]" <<endl;
+        cout << "Map[" << i << "]" <<endl;
         auto grid = maps[i]->get_grid();
         auto ref_spaces_field = RefSpaceField::create(degrees[i], grid);
         spaces.push_back(PhySpace::create(ref_spaces_field, PushFw::create(maps[i]),i));
