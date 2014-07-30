@@ -414,6 +414,130 @@ get_dofs_manager() const
     return this->get_spline_space()->get_dofs_manager();
 }
 
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis() const
+{
+    return sp_space_->get_num_basis();
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis(const int i) const
+{
+    return sp_space_->get_num_basis(i);
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis(const int comp, const int dir) const
+{
+    return sp_space_->get_num_basis(comp, dir);
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis_per_element() const
+{
+    return sp_space_->get_num_basis_per_element();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis_per_element_table() const -> const SpaceDimensionTable
+{
+    return sp_space_->get_num_basis_per_element_table();
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis_per_element(int i) const
+{
+    return sp_space_->get_num_basis_per_element(i);
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_degree() const -> const DegreeTable &
+{
+    return sp_space_->get_degree();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_loc_to_global(const TensorIndex<dim> &j) const -> std::vector<Index>
+{
+    return sp_space_->get_loc_to_global(j);
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_spline_space() const -> const std::shared_ptr<spline_space_t>
+{
+    return sp_space_;
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_basis_indices();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_basis_indices() -> DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_basis_indices();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_push_forward() -> std::shared_ptr<PushForwardType>
+{
+    return sp_space_->get_push_forward();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_push_forward() const -> std::shared_ptr<const PushForwardType>
+{
+    return sp_space_->get_push_forward();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_reference_space() const -> std::shared_ptr<const self_t >
+{
+    return this->shared_from_this();
+}
+
+template <int dim_, int range_, int rank_>
+void
+NURBSSpace<dim_, range_, rank_>::
+add_dofs_offset(const Index offset)
+{
+    sp_space_->add_dofs_offset(offset);
+}
+
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::

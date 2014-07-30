@@ -205,158 +205,61 @@ public:
      * Total number of dofs (i.e number of basis functions aka dimensionality)
      * of the space.
      */
-    Size get_num_basis() const
-    {
-        return sp_space_->get_num_basis();
-    }
+    Size get_num_basis() const;
 
     /** Return the total number of dofs for the i-th space component. */
-    Size get_num_basis(const int i) const
-    {
-        return sp_space_->get_num_basis(i);
-    }
+    Size get_num_basis(const int i) const;
+
     /**
      *  Return the total number of dofs for the i-th space component
      *  and the j-th direction.
      */
-    Size get_num_basis(const int comp, const int dir) const
-    {
-        return sp_space_->get_num_basis(comp, dir);
-    }
+    Size get_num_basis(const int comp, const int dir) const;
+
     /**
      * Returns the number of dofs per element.
      */
-    Size get_num_basis_per_element() const
-    {
-        return sp_space_->get_num_basis_per_element();
-    }
+    Size get_num_basis_per_element() const;
 
-    const SpaceDimensionTable get_num_basis_per_element_table() const
-    {
-        return sp_space_->get_num_basis_per_element_table();
-    }
+    const SpaceDimensionTable get_num_basis_per_element_table() const;
+
     /**
      *  Return the number of dofs per element for the i-th space component.
      */
-    Size get_num_basis_per_element(int i) const
-    {
-        return sp_space_->get_num_basis_per_element(i);
-    }
+    Size get_num_basis_per_element(int i) const;
+
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
-    const DegreeTable &get_degree() const
-    {
-        return sp_space_->get_degree();
-    }
+    const DegreeTable &get_degree() const;
 
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
-    {
-        return sp_space_->get_loc_to_global(j);
-    }
-    ///@}
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
-    /** @name Getting the space data */
-    ///@{
-    /**
-     * Return the knots with repetitions, in each direction, for each component of the space.
-     */
-#if 0
-    const typename spline_space_t::template ComponentTable<CartesianProductArray<Real,dim> > &
-    get_knots_with_repetitions() const
-    {
-        return sp_space_->get_knots_with_repetitions();
-    }
-#endif
     ///@}
 
 
-    const std::shared_ptr<spline_space_t> get_spline_space() const
-    {
-        return sp_space_;
-    }
 
-    const DofDistribution<dim, range, rank> &get_basis_indices() const
-    {
-        return sp_space_->get_basis_indices();
-    }
+    const std::shared_ptr<spline_space_t> get_spline_space() const;
+
+    const DofDistribution<dim, range, rank> &get_basis_indices() const;
 
 
-    DofDistribution<dim, range, rank> &get_basis_indices()
-    {
-        return sp_space_->get_basis_indices();
-    }
+    DofDistribution<dim, range, rank> &get_basis_indices();
 
     std::shared_ptr<DofsManager> get_dofs_manager() const;
 
 
-#if 0
-    /**
-     * Transforms basis flat index of the component comp to a basis
-     * tensor index.
-     */
-    TensorIndex<dim>
-    flat_to_tensor(const Index index, const Index comp = 0) const
-    {
-        return sp_space_->flat_to_tensor(index, comp);
-    }
-    /**
-     * Transforms a basis tensor index of the component comp to the
-     * corresponding basis flat index.
-     */
-    Index
-    tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                   const Index comp = 0) const
-    {
-        return sp_space_->tensor_to_flat(tensor_index, comp);
-    }
-#endif
     /** Return the push forward (non-const version). */
-    std::shared_ptr<PushForwardType> get_push_forward()
-    {
-        return sp_space_->get_push_forward();
-    }
+    std::shared_ptr<PushForwardType> get_push_forward();
 
     /** Return the push forward (const version). */
-    std::shared_ptr<const PushForwardType> get_push_forward() const
-    {
-        return sp_space_->get_push_forward();
-    }
+    std::shared_ptr<const PushForwardType> get_push_forward() const;
 
     std::shared_ptr<const self_t >
-    get_reference_space() const
-    {
-        return this->shared_from_this();
-    }
+    get_reference_space() const;
 
-#if 0
-    /**
-     * Return the knot multiplicities for each component of the space.
-     */
-    const MultiplicityTable &
-    get_multiplicities() const
-    {
-        return sp_space_->get_multiplicities();
-    }
-#endif
-#if 0
-    const SpaceDimensionTable &get_num_basis_table() const
-    {
-        return sp_space_->get_num_basis_table();
-    }
-
-
-
-    /**
-     * @todo Missing documentation
-     */
-    const std::vector<std::vector<Index>> &get_element_global_dofs() const
-    {
-        return sp_space_->get_element_global_dofs();
-    }
-#endif
 
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
@@ -372,10 +275,7 @@ public:
     /**
      * Adds an @p offset to the values of the dof ids.
      */
-    void add_dofs_offset(const Index offset)
-    {
-        sp_space_->add_dofs_offset(offset);
-    }
+    void add_dofs_offset(const Index offset);
 
     /**
     * Returns a element iterator to the first element of the patch
