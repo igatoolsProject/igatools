@@ -1,11 +1,11 @@
 ========================================================================
 Output for function run_test<1>()
 
-CartesianGrid<1>
-	Knot coordinates:
-		Direction[0] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-	Num elements: 4
-		Direction[0] = 4
+Number of active elements: 4
+Number of intervals per direction: [ 4 ]
+Knot coordinates:
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
 
 0   0.250000
 ValueVector (num_points=2) :
@@ -24,13 +24,12 @@ ValueVector (num_points=2) :
 ========================================================================
 Output for function run_test<2>()
 
-CartesianGrid<2>
-	Knot coordinates:
-		Direction[0] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-		Direction[1] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-	Num elements: 16
-		Direction[0] = 4
-		Direction[1] = 4
+Number of active elements: 16
+Number of intervals per direction: [ 4 4 ]
+Knot coordinates:
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
 
 0   0.0625000
 ValueVector (num_points=4) :
@@ -85,15 +84,13 @@ ValueVector (num_points=4) :
 ========================================================================
 Output for function run_test<3>()
 
-CartesianGrid<3>
-	Knot coordinates:
-		Direction[0] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-		Direction[1] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-		Direction[2] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-	Num elements: 64
-		Direction[0] = 4
-		Direction[1] = 4
-		Direction[2] = 4
+Number of active elements: 64
+Number of intervals per direction: [ 4 4 4 ]
+Knot coordinates:
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
 
 0   0.0156250
 ValueVector (num_points=8) :
@@ -292,11 +289,11 @@ ValueVector (num_points=8) :
 ========================================================================
 Output for function run_test2<1>()
 
-CartesianGrid<1>
-	Knot coordinates:
-		Direction[0] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-	Num elements: 4
-		Direction[0] = 4
+Number of active elements: 4
+Number of intervals per direction: [ 4 ]
+Knot coordinates:
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
 
 0   [ [ 0.0528312 ]  [ 0.197169 ]  ]
 1   [ [ 0.302831 ]  [ 0.447169 ]  ]
@@ -307,13 +304,12 @@ CartesianGrid<1>
 ========================================================================
 Output for function run_test2<2>()
 
-CartesianGrid<2>
-	Knot coordinates:
-		Direction[0] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-		Direction[1] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-	Num elements: 16
-		Direction[0] = 4
-		Direction[1] = 4
+Number of active elements: 16
+Number of intervals per direction: [ 4 4 ]
+Knot coordinates:
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
 
 0   [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
 1   [ [ 0.302831 0.0528312 ]  [ 0.447169 0.0528312 ]  [ 0.302831 0.197169 ]  [ 0.447169 0.197169 ]  ]
@@ -336,15 +332,13 @@ CartesianGrid<2>
 ========================================================================
 Output for function run_test2<3>()
 
-CartesianGrid<3>
-	Knot coordinates:
-		Direction[0] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-		Direction[1] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-		Direction[2] = [ 0 0.250000 0.500000 0.750000 1.00000 ]
-	Num elements: 64
-		Direction[0] = 4
-		Direction[1] = 4
-		Direction[2] = 4
+Number of active elements: 64
+Number of intervals per direction: [ 4 4 4 ]
+Knot coordinates:
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
 
 0   [ [ 0.0528312 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 0.0528312 ]  [ 0.0528312 0.197169 0.0528312 ]  [ 0.197169 0.197169 0.0528312 ]  [ 0.0528312 0.0528312 0.197169 ]  [ 0.197169 0.0528312 0.197169 ]  [ 0.0528312 0.197169 0.197169 ]  [ 0.197169 0.197169 0.197169 ]  ]
 1   [ [ 0.302831 0.0528312 0.0528312 ]  [ 0.447169 0.0528312 0.0528312 ]  [ 0.302831 0.197169 0.0528312 ]  [ 0.447169 0.197169 0.0528312 ]  [ 0.302831 0.0528312 0.197169 ]  [ 0.447169 0.0528312 0.197169 ]  [ 0.302831 0.197169 0.197169 ]  [ 0.447169 0.197169 0.197169 ]  ]
