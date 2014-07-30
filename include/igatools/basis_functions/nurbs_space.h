@@ -112,19 +112,11 @@ public:
     using Weights = DynamicMultiArray<Real,dim>;
     using WeightsTable = ComponentContainer<Weights>;
 
+
+
 public:
-    /** @name Constructor and destructor */
+    /** @name Creators*/
     ///@{
-
-    /**
-     * Constructs a maximum regularity NURBSSpace over CartesianGrid
-     * @p knots for the given @p degree in all directions and homogeneous in all components.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    explicit NURBSSpace(const int degree,
-                        std::shared_ptr< GridType > knots,
-                        const WeightsTable &weights);
-
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
      * @p knots for the given @p degree in all directions and homogeneous in all components.
@@ -134,15 +126,6 @@ public:
     create(const int degree,
            std::shared_ptr< GridType > knots,
            const WeightsTable &weights);
-
-    /**
-     * Constructs a maximum regularity NURBSSpace over CartesianGrid
-     * @p knots for the given @p degree for each direction and for each component.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    explicit NURBSSpace(const DegreeTable &degree,
-                        std::shared_ptr<GridType> knots,
-                        const WeightsTable &weights);
 
     /**
      * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
@@ -155,6 +138,55 @@ public:
            const WeightsTable &weights);
 
     /**
+     * Returns a shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
+     * the given multiplicity vector @p mult_vector for each component
+     * and for the given @p degree for each direction and for each component.
+     */
+    static std::shared_ptr<self_t>
+    create(const DegreeTable &deg,
+           std::shared_ptr<GridType> knots,
+           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const EndBehaviourTable &ends = EndBehaviourTable(),
+           const WeightsTable &weights = WeightsTable());
+
+    /**
+     * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a table of weights.
+     */
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<spline_space_t> bs_space,
+           const WeightsTable &weights);
+
+    ///@}
+
+    /** Destructor */
+    ~NURBSSpace() = default;
+
+
+
+
+protected:
+    /** @name Constructor */
+    ///@{
+
+    /**
+     * Constructs a maximum regularity NURBSSpace over CartesianGrid
+     * @p knots for the given @p degree in all directions and homogeneous in all components.
+     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
+     */
+    explicit NURBSSpace(const int degree,
+                        std::shared_ptr< GridType > knots,
+                        const WeightsTable &weights);
+
+    /**
+     * Constructs a maximum regularity NURBSSpace over CartesianGrid
+     * @p knots for the given @p degree for each direction and for each component.
+     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
+     */
+    explicit NURBSSpace(const DegreeTable &degree,
+                        std::shared_ptr<GridType> knots,
+                        const WeightsTable &weights);
+
+    /**
      * Construct a NURBSSpace over the CartesianGrid @p knots with
      * the given multiplicity vector @p mult_vector for each component
      * and for the given @p degree for each direction and for each component.
@@ -165,42 +197,16 @@ public:
                          const EndBehaviourTable &ends,
                          const WeightsTable &weights);
 
-
     /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
+     * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
-    static std::shared_ptr<self_t>
-    create(const DegreeTable &deg,
-           std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends = EndBehaviourTable(),
-           const WeightsTable &weights = WeightsTable());
-
     explicit  NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
                          const WeightsTable &weights);
-
-    static std::shared_ptr<self_t>
-    create(std::shared_ptr<spline_space_t> bs_space,
-           const WeightsTable &weights);
-
-    /** Destructor */
-    ~NURBSSpace() = default;
-
     ///@}
 
+public:
     /** @name Getting information about the space */
     ///@{
-    /**
-     * Returns true if all component belong to the same scalar valued
-     * space.
-     */
-#if 0
-    bool is_range_homogeneous() const
-    {
-        return sp_space_->is_range_homogeneous();
-    }
-#endif
     /**
      * Total number of dofs (i.e number of basis functions aka dimensionality)
      * of the space.

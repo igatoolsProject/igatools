@@ -164,7 +164,58 @@ public:
 
 
 public:
-    /** @name Constructor and destructor */
+    /**
+     * @name Creators.
+     */
+    ///@{
+    /**
+     * Builds and returns a maximum regularity BSpline space
+     * over CartesianGrid
+     * @p knots for the given @p degree in all directions and homogeneous
+     * in all components.
+     */
+    static std::shared_ptr<self_t>
+    create(const int degree, std::shared_ptr<GridType> knots);
+
+
+    /**
+     * Builds and returns a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree[i] in the i-th direction and homogeneous
+     * in all components.
+     */
+    static std::shared_ptr<self_t>
+    create(const TensorIndex<dim> &degree, std::shared_ptr<GridType> knots);
+
+
+    /**
+     * Builds and returns a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree for each direction and for each
+     * component.
+     */
+    static std::shared_ptr<self_t>
+    create(const DegreeTable &degree,
+           std::shared_ptr<GridType> knots,
+           const bool homogeneous_range = false);
+
+    /**
+     * Builds and returns a BSpline space over the CartesianGrid
+     * @p knots with the given multiplicity vector @p mult_vectors
+     * for each component
+     * and the given @p degree for each direction and for each
+     * component.
+     */
+    static std::shared_ptr<self_t>
+    create(const DegreeTable &deg,
+           std::shared_ptr<GridType> knots,
+           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const EndBehaviourTable &ends = EndBehaviourTable());
+    ///@}
+
+    /** Destructor. */
+    ~BSplineSpace() = default;
+
+protected:
+    /** @name Constructors */
     ///@{
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -173,12 +224,6 @@ public:
      */
     explicit BSplineSpace(const int degree, std::shared_ptr<GridType> knots);
 
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const int degree, std::shared_ptr<GridType> knots);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -187,13 +232,6 @@ public:
      */
     explicit BSplineSpace(const TensorIndex<dim> &degree,
                           std::shared_ptr<GridType> knots);
-
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const TensorIndex<dim> &degree, std::shared_ptr<GridType> knots);
 
 
     /**
@@ -205,14 +243,6 @@ public:
                           std::shared_ptr<GridType> knots,
                           const bool homogeneous_range = false);
 
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const DegreeTable &degree,
-           std::shared_ptr<GridType> knots,
-           const bool homogeneous_range = false);
 
     /**
      * Constructs a BSpline space over the CartesianGrid
@@ -225,20 +255,6 @@ public:
                           std::shared_ptr<GridType> knots,
                           std::shared_ptr<const MultiplicityTable> interior_mult,
                           const EndBehaviourTable &ends);
-
-
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const DegreeTable &deg,
-           std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends = EndBehaviourTable());
-
-    /** Destructor */
-    ~BSplineSpace() = default;
     ///@}
 
 
@@ -250,15 +266,9 @@ public:
     operator=(const self_t &space) = delete;
     ///@}
 
+public:
     /** @name Getting information about the space */
     ///@{
-    /**
-     * Returns true if all component belong to the same scalar valued
-     * space.
-     */
-
-//   bool is_range_homogeneous() const;
-
     std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
     {
         return basis_indices_.get_loc_to_global_indices(j);
@@ -266,12 +276,6 @@ public:
 
     std::shared_ptr<const self_t >
     get_reference_space() const;
-
-    /**
-     * Returns a const reference to the dense multi array storing the global dofs.
-     * Each element has a statically defined zone to read their dofs from,
-     * independent of the distribution policy in use.
-     */
 
     /**
      * Returns a reference to the dense multi array storing the global dofs.
