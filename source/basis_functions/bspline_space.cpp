@@ -381,25 +381,19 @@ void
 BSplineSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
+    out.begin_item("Spline Space:");
     BaseSpace::print_info(out);
+    out.end_item();
 
+    out.begin_item("Basis Indices:");
     basis_indices_.print_info(out);
+    out.end_item();
 
+    out.begin_item("Bernstein Extraction:");
     operators_.print_info(out);
-
-
-#if 0
-    //TODO: Do we need to call external functions from this output operator?
-    out << "Dofs: " << dof_tools::get_dofs(this->shared_from_this())  << endl;
-
-    const SparsityPattern &sparsity_pattern =
-        dof_tools::get_sparsity_pattern(this->shared_from_this());
-    out << "Num overlapping funcs: ";
-    out << sparsity_pattern.get_num_overlapping_funcs() << endl;
-#endif
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_space.inst>
-

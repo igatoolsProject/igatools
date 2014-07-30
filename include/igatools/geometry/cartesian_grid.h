@@ -428,7 +428,7 @@ public:
      * Returns the grid before the last refinement. If no refinement is performed,
      * this function returns a null pointer.
      */
-    std::shared_ptr<const CartesianGrid<dim> > get_grid_pre_refinement() const;
+    std::shared_ptr<const self_t > get_grid_pre_refinement() const;
     ///@}
 
 private:

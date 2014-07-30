@@ -193,9 +193,9 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-create(const CartesianProductArray<Real,dim> &knot_coordinates) -> shared_ptr<self_t>
+create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knot_coordinates, Kind::non_uniform));
+    return shared_ptr<self_t>(new self_t(knot_coordinates, Kind::non_uniform));
 }
 
 
@@ -229,8 +229,8 @@ CartesianGrid(const self_t &grid)
     knot_coordinates_(grid.knot_coordinates_),
     weight_elem_id_(grid.weight_elem_id_),
     num_elem_(grid.num_elem_),
-    influent_(grid.influent_),
-    active_elems_(grid.active_elems_)
+    active_elems_(grid.active_elems_),
+    influent_(grid.influent_)
 {}
 
 
@@ -381,7 +381,7 @@ get_num_knots_dim() const -> TensorSize<dim>
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-get_grid_pre_refinement() const -> shared_ptr<const CartesianGrid<dim> >
+get_grid_pre_refinement() const -> shared_ptr<const self_t>
 {
     return grid_pre_refinement_;
 }
@@ -396,7 +396,7 @@ refine_directions(
     const array<Size,dim> &n_subdivisions)
 {
     // make a copy of the grid before the refinement
-    grid_pre_refinement_ = make_shared<const CartesianGrid<dim>>(CartesianGrid<dim>(*this));
+    grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
 
     for (int i = 0 ; i < dim ; ++i)
         if (refinement_directions[i])
@@ -422,7 +422,8 @@ void
 CartesianGrid<dim_>::
 refine_direction(const int direction_id, const Size n_subdivisions)
 {
-    Assert(direction_id >= 0 && direction_id < dim, ExcIndexRange(direction_id,0,dim));
+    Assert(direction_id >= 0 && direction_id < dim,
+           ExcIndexRange(direction_id, 0, dim));
 
     array<bool,dim> refinement_directions = filled_array<bool,dim>(false);
     refinement_directions[direction_id] = true;
@@ -499,29 +500,12 @@ void
 CartesianGrid<dim_>::
 print_info(LogStream &out) const
 {
-    out << "CartesianGrid<" << dim << ">" << endl;
+    out << "Number of active elements: " << get_num_elements() << endl;
+    out << "Number of intervals per direction: " << num_elem_ << endl;
 
-    out.push("\t");
-    out << "Knot coordinates:" << endl;
-
-    out.push("\t");
-    for (int i = 0; i < dim; i++)
-    {
-        std::vector <Real> vec = this->get_knot_coordinates(i);
-        out << "Direction[" << i << "] = " <<  vec << endl;
-    }
-    out.pop();
-
-
-    const int num_elements = this->get_num_elements();
-    out << "Num elements: " << num_elements << endl;
-
-    auto num_elements_dim = this->get_num_elements_dim();
-    out.push("\t");
-    for (int i = 0; i < dim; i++)
-        out << "Direction[" << i << "] = " << num_elements_dim(i) << endl;
-    out.pop();
-    out.pop();
+    out.begin_item("Knot coordinates:");
+    knot_coordinates_.print_info(out);
+    out.end_item();
 }
 
 
@@ -529,7 +513,8 @@ print_info(LogStream &out) const
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> shared_ptr<FaceType>
+get_face_grid(const int face_id, std::map<int,int> &elem_map) const
+-> shared_ptr<FaceType>
 {
     Assert(dim > 0, ExcLowerRange(dim,1));
 
@@ -653,6 +638,13 @@ operator==(const CartesianGrid<dim> &grid) const
 
 
 
+// TODO (pauletti, Jul 30, 2014): why is this necessary?
+template <int dim_>
+const int
+CartesianGrid<dim_>::dim ;
+
+
+
 template <int dim>
 vector<Index>
 build_map_elements_between_cartesian_grids(
@@ -690,7 +682,8 @@ build_map_elements_between_cartesian_grids(
             Assert(fid_coarse < n_intervals_coarse,
                    ExcMessage("Impossible to find an interval "
                               "on the coarse grid that fully contains the interval " +
-                              std::to_string(fid_fine) + " along the direction " + std::to_string(i) +
+                              std::to_string(fid_fine) + " along the direction "
+                              + std::to_string(i) +
                               "of the fine grid."));
 
             map_interv_fid_fine_coarse[i].push_back(fid_coarse);
@@ -701,13 +694,15 @@ build_map_elements_between_cartesian_grids(
     vector<int> map_elem_fine_to_elem_coarse(n_elems_fine);
     for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
     {
-        TensorIndex<dim> elem_fine_tid = grid_fine.flat_to_tensor_element_index(elem_fine_fid);
+        TensorIndex<dim> elem_fine_tid =
+                grid_fine.flat_to_tensor_element_index(elem_fine_fid);
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
             elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][elem_fine_tid[i]];
 
-        const int elem_coarse_fid = grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
+        const int elem_coarse_fid =
+                grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
 
         map_elem_fine_to_elem_coarse[elem_fine_fid] = elem_coarse_fid;
     }
@@ -746,29 +741,22 @@ CartesianGrid<dim> build_cartesian_grid_union(
         std::copy(coords_grid_2.begin(), coords_grid_2.end(),
                   std::inserter(coords_unique, coords_unique.end()));
 
-        std::copy(coords_unique.begin(),coords_unique.end(),std::back_inserter(knots_union[i]));
+        std::copy(coords_unique.begin(),coords_unique.end(),
+                  std::back_inserter(knots_union[i]));
     }
     CartesianGrid<dim> grid_union(knots_union);
     //---------------------------------------------------------
 
 
     //---------------------------------------------------------
-    map_elem_grid_union_to_elem_grid_1 = build_map_elements_between_cartesian_grids(grid_union,grid_1);
-    map_elem_grid_union_to_elem_grid_2 = build_map_elements_between_cartesian_grids(grid_union,grid_2);
+    map_elem_grid_union_to_elem_grid_1 =
+            build_map_elements_between_cartesian_grids(grid_union,grid_1);
+    map_elem_grid_union_to_elem_grid_2 =
+            build_map_elements_between_cartesian_grids(grid_union,grid_2);
     //---------------------------------------------------------
 
     return grid_union;
 }
-
-
-
-
-
-
-// TODO (pauletti, Jul 30, 2014): why is this necessary?
-template <int dim_>
-const int
-CartesianGrid<dim_>::dim ;
 
 IGA_NAMESPACE_CLOSE
 

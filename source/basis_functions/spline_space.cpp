@@ -457,24 +457,29 @@ void
 SplineSpace<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    out << "Knots without repetition:\n";
+    out.begin_item("Knots without repetition:");
     this->get_grid()->print_info(out);
-    out << "Degrees:\n";
+    out.end_item();
+
+    out.begin_item("Degrees:");
     deg_.print_info(out);
-    out << std::endl;
-    out << "Interior multiplicities:\n";
+    out.end_item();
+
+    out.begin_item("Interior multiplicities:");
     const MultiplicityTable &interior_mult_ref = *interior_mult_;
     for (const auto &v : interior_mult_ref)
         v.print_info(out);
-    out << "Dimensionality Table:\n";
+    out.end_item();
+
+    out.begin_item("Dimensionality Table:");
     space_dim_.print_info(out);
-    out << std::endl;
-    out << "Component Dimension:\n";
+    out.end_item();
+
+    out.begin_item("Component Dimension:");
     space_dim_.comp_dimension.print_info(out);
-    out << std::endl;
-    out << "Total Dimension: ";
-    out << space_dim_.total_dimension << std::endl;
-    out << std::endl;
+    out.end_item();
+
+    out << "Total Dimension: " << space_dim_.total_dimension << std::endl;
 }
 
 IGA_NAMESPACE_CLOSE

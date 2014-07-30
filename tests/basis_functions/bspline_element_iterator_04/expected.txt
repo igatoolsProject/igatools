@@ -1,12 +1,10 @@
 domain, range and rank: 2,2,1
 Knots without repetition:
-CartesianGrid<2>
-	Knot coordinates:
-		Direction[0] = [ 0 0.500000 1.00000 ]
-		Direction[1] = [ 0 0.500000 1.00000 ]
-	Num elements: 4
-		Direction[0] = 2
-		Direction[1] = 2
+Number of active elements: 4
+Number of intervals per direction: [ 2 2 ]
+Knot coordinates:
+[ 0 0.500000 1.00000 ]
+[ 0 0.500000 1.00000 ]
 Degrees:
 [3,2] [2,3] 
 Interior multiplicities:
@@ -353,15 +351,12 @@ ValueTable (num_functions=24,num_points=4) :
 	Function[23] : [ [ [ 0 0.0754991 ]  [ 0 0.226497 ]  ]  [ [ 0 0.226497 ]  [ 0 0.226497 ]  ]  ]  [ [ [ 0 0.0754991 ]  [ 0 0.845300 ]  ]  [ [ 0 0.845300 ]  [ 0 3.15470 ]  ]  ]  [ [ [ 0 3.92450 ]  [ 0 3.15470 ]  ]  [ [ 0 3.15470 ]  [ 0 0.845300 ]  ]  ]  [ [ [ 0 3.92450 ]  [ 0 11.7735 ]  ]  [ [ 0 11.7735 ]  [ 0 11.7735 ]  ]  ]  
 domain, range and rank: 3,3,1
 Knots without repetition:
-CartesianGrid<3>
-	Knot coordinates:
-		Direction[0] = [ 0 0.500000 1.00000 ]
-		Direction[1] = [ 0 0.500000 1.00000 ]
-		Direction[2] = [ 0 0.500000 1.00000 ]
-	Num elements: 8
-		Direction[0] = 2
-		Direction[1] = 2
-		Direction[2] = 2
+Number of active elements: 8
+Number of intervals per direction: [ 2 2 2 ]
+Knot coordinates:
+[ 0 0.500000 1.00000 ]
+[ 0 0.500000 1.00000 ]
+[ 0 0.500000 1.00000 ]
 Degrees:
 [3,2,2] [2,3,2] [2,2,3] 
 Interior multiplicities:
