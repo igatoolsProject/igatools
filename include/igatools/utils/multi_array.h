@@ -100,7 +100,7 @@ class MultiArray : public TensorSizedContainer<rank>
 {
 public:
     /** Type of the entries stored in the STL container. */
-    using Entry = typename STLContainer::value_type;
+    using value_type = typename STLContainer::value_type;
 
     using reference = typename STLContainer::reference;
     using const_reference = typename STLContainer::const_reference;
@@ -216,11 +216,11 @@ public:
     /**
      * Fills the multiarray with an arithmetic progression starting with the value @p init_value.
      */
-    void fill_progression(const Entry &init_value = {});
+    void fill_progression(const value_type &init_value = {});
 
 
     /** Fills the multiarray copying in each entry the content of @p value. */
-    void fill(const Entry &value);
+    void fill(const value_type &value);
     ///@}
 
 
