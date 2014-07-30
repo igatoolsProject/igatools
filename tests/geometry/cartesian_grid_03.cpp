@@ -31,13 +31,13 @@
 template <int dim>
 void test_face_outer_normal()
 {
-    CartesianGrid< dim > cartesian_grid ;
+    auto cartesian_grid = CartesianGrid< dim >::create() ;
     out << endl << "Cartesian Grid Dimension: " << dim << endl;
 
     for (int j = 0; j < UnitElement<dim>::faces_per_element; ++j)
     {
         out << "Face number : " << j << endl;
-        out << "Outer normal: " << cartesian_grid.get_face_normal(j) << endl;
+        out << "Outer normal: " << cartesian_grid->get_face_normal(j) << endl;
     }
 
 }

@@ -31,22 +31,22 @@
 template <int dim>
 void test_face_id()
 {
-    CartesianGrid< dim > cartesian_grid;
+    auto cartesian_grid = CartesianGrid<dim>::create();
     out << endl << "CartesianGrid Dimension: " << dim << endl;
 
     for (int j = 0; j < UnitElement<dim>::faces_per_element; ++j)
     {
         out << "Face number: " << j << endl;
-        out << "Face boundary id: " << cartesian_grid.get_boundary_id(j) << endl;
+        out << "Face boundary id: " << cartesian_grid->get_boundary_id(j) << endl;
     }
 
     for (int j = 0; j < UnitElement<dim>::faces_per_element; ++j)
-        cartesian_grid.set_boundary_id(j,j);
+        cartesian_grid->set_boundary_id(j,j);
 
     for (int j = 0; j < UnitElement<dim>::faces_per_element; ++j)
     {
         out << "Face number: " << j << endl;
-        out << "Face boundary id: " << cartesian_grid.get_boundary_id(j) << endl;
+        out << "Face boundary id: " << cartesian_grid->get_boundary_id(j) << endl;
     }
 }
 

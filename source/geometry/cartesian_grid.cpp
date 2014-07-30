@@ -712,8 +712,8 @@ build_map_elements_between_cartesian_grids(
     return map_elem_fine_to_elem_coarse;
 }
 
-
-
+// TODO (pauletti, Jul 30, 2014): this should return a smart pointer not an instance
+#if 0
 template <int dim>
 CartesianGrid<dim> build_cartesian_grid_union(
     const CartesianGrid<dim> &grid_1,
@@ -757,6 +757,7 @@ CartesianGrid<dim> build_cartesian_grid_union(
 
     return grid_union;
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 

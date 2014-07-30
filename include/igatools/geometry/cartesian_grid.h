@@ -45,9 +45,11 @@ template <int> class CartesianGridElementAccessor;
  *
  *
  * ### Getting a CartesianGrid by an XML structure.
- * A CartesianGrid object can be obtained by a Boost XML structure using the function
+ * A CartesianGrid object can be obtained by a Boost XML structure using the
+ * function
  * get_cartesian_grid_from_xml().
- * An example of valid XML structure for a 2-dimensional CartesianGrid is given by the following
+ * An example of valid XML structure for a 2-dimensional CartesianGrid is given
+ * by the following
  * XML block
  * @code{.xml}
    <CartesianGrid Dim="2">
@@ -59,8 +61,10 @@ template <int> class CartesianGridElementAccessor;
      </Knots>
    </CartesianGrid>
  * @endcode
- * where the <tt>Dim</tt> attribute in the <tt>"CartesianGrid"</tt> tag is the dimensionality of the CartesianGrid
- * and the <tt>Size</tt> attribute in each <tt>"Knots"</tt> tag is the number of unique knots values (also called
+ * where the <tt>Dim</tt> attribute in the <tt>"CartesianGrid"</tt> tag is the
+ * dimensionality of the CartesianGrid
+ * and the <tt>Size</tt> attribute in each <tt>"Knots"</tt> tag is the number
+ *  of unique knots values (also called
  * "breakpoints") along each coordinate direction.
  *
  * @author M. Martinelli 2012, 2013, 2014
@@ -111,6 +115,7 @@ public:
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
+protected:
     explicit CartesianGrid(const Size n = 2);
 
     /**
@@ -161,7 +166,7 @@ public:
     explicit
     CartesianGrid(const std::array<std::vector<Real>,dim> &knot_coordinates);
 
-
+public:
     /**
      * Copy constructor.
      * Perform a deep copy of the member variables except the
