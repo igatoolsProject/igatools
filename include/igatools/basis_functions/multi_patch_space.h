@@ -59,6 +59,10 @@ IGA_NAMESPACE_OPEN
  * - each PushFwd object must be build by one and only one Mapping object
  * (i.e. a given Mapping object cannot be used to define more than one PushFwd).
  *
+ * Once the patches and the interfaces are inserted into the MultiPatchSpace object, we can proceed
+ * to the interface processing, i.e. the computation (and storage) of the constraints (linear or equality)
+ * that arise from the different interface definition.
+ *
  * @ingroup containers
  */
 template <class PhysicalSpace>
@@ -116,20 +120,17 @@ public:
     MultiPatchSpace<PhysicalSpace> &operator=(MultiPatchSpace<PhysicalSpace> &&multi_patch_space) = delete;
     ///@}
 
-    /** @name Functions for the management of the patches and/or interfaces addition. */
+    /** @name Functions for the patch insertion management. */
     ///@{
 
     /**
-     * Sets the object in a state that permits the user to add new patches/interfaces.
+     * Sets the MultiPatchSpace object in a state that permits the user to add new patches.
      */
-    void arrangement_open();
+    void patch_insertion_open();
 
 
     /**
-     * Communicates that the insertion of patches/interfaces is completed.
-     *
-     * Moreover, performs the data analysis in order to set equality and linear constraints
-     * for the degrees of freedom.
+     * Communicates that the insertion of patches is completed.
      *
      * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
      * then the dofs in each space are renumbered by the DofsManager.
@@ -138,10 +139,8 @@ public:
      *
      * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      *
-     * @warning After calling this function, it will be not possible to add new patches/interfaces
-     * to the MultiPatchSpace.
      */
-    void arrangement_close(const bool automatic_dofs_renumbering = true);
+    void patch_insertion_close(const bool automatic_dofs_renumbering = true);
 
     /**
      * Adds a patch to the space.
@@ -150,6 +149,21 @@ public:
      * (for example using the function arrangement_open()).
      */
     void add_patch(PatchPtr patch);
+    ///@}
+
+
+    /** @name Functions for the interface insertion management. */
+    ///@{
+    /**
+     * Sets the MultiPatchSpace object in a state that permits the user to add new interfaces.
+     */
+    void interface_insertion_open();
+
+
+    /**
+     * Communicates that the insertion of patches is completed.
+     */
+    void interface_insertion_close();
 
     /**
      * Adds an interface between two different patches.
@@ -163,6 +177,35 @@ public:
     ///@}
 
 
+    /**
+     * This function builds the undirected graph representing the MultiPatchSpace:
+     * - each <em>node</em> of the graph represents a <em>Patch</em>
+     * - each <em>edge</em>  of the graph represents an <em>Interface</em>
+     *
+     * @pre In order to call this function the MultiPatchSpace object must have the internal variables
+     * is_patch_insertion_open_ and is_interface_insertion_open_ both set to FALSE (e.g. using the functions
+     * patch_insertion_close() and interface_insertion_close().
+     */
+    void build_graph();
+
+    /**
+     * This function performs the data analysis in order to set equality and linear constraints
+     * for the degrees of freedom.
+     *
+     * @pre In order to call this function the MultiPatchSpace object must have the internal variables
+     * is_patch_insertion_open_ and is_interface_insertion_open_ both set to FALSE (e.g. using the functions
+     * patch_insertion_close() and interface_insertion_close().
+     *
+     * @warning After calling this function, it will be not possible to add new patches/interfaces
+     * to the MultiPatchSpace.
+     *
+     * @note This function internally needs the undirected graph representing the MultiPatchSpace as built
+     * by build_multipatch_graph(). If the graph is not already built, it will be built as first
+     * task of this function.
+     */
+    void compute_constraints();
+
+
     /** Returns the patches (i.e. the physical spaces) used to define the MultiPatchSpace. */
     std::vector<PatchPtr> get_patches() const;
 
@@ -173,10 +216,40 @@ public:
     /** Returns the number of interfaces used to define this space. */
     int get_num_interfaces() const;
 
+    /**
+     * Returns the number of interfaces with the same type as <tt>interface_type</tt>.
+     */
+    int get_num_interfaces(const InterfaceType interface_type) const;
+
+
+
+    /**
+     * Builds the equality constraints interfaces of the type InterfaceType::C0_strong.
+     */
+    void process_interfaces_C0_strong();
+
+    /**
+     * Builds the equality constraints interfaces of the type InterfaceType::C0_strong_renumbering.
+     */
+    void process_interfaces_C0_strong_renumbering();
+
+    /**
+     * Builds the equality constraints interfaces of the type InterfaceType::Mortar.
+     */
+    void process_interfaces_mortar();
+
+    /**
+     * Builds the constraints (linear or equality) of all interfaces.
+     */
+    void process_interfaces();
+
 
 
     /** Returns the DofsManager used in the MultiPatchSpace. */
     std::shared_ptr<DofsManager> get_dofs_manager() const;
+
+
+
 
 
     /**
@@ -188,7 +261,15 @@ public:
 private:
 
 
-    bool is_arrangement_open_ = false;
+    bool is_patch_insertion_open_ = false;
+
+    bool is_interface_insertion_open_ = false;
+
+    bool is_graph_built_ = false;
+
+    bool is_dofs_manager_built_ = false;
+
+    bool are_constraints_computed_ = false;
 
     /** Vector of patches defining the MultiPatchSpace. */
     std::vector< PatchPtr > patches_;
@@ -274,8 +355,13 @@ private:
     /** Type alias for the pointer to an interface. */
     using InterfacePtr = std::shared_ptr<const Interface>;
 
-    std::vector<InterfacePtr> interfaces_;
-
+    /**
+     * Interfaces between patches.
+     *
+     * The map key represent the InterfaceType, the value associated to each key is a set of
+     * interfaces of the same type.
+     */
+    std::map<InterfaceType,std::set<InterfacePtr>> interfaces_;
 
 
 
@@ -309,6 +395,13 @@ private:
 
 
     std::shared_ptr<DofsManager> dofs_manager_;
+
+public:
+
+    /**
+     * Returns the set of interfaces with the type defined by <tt>interface_type</tt>.
+     */
+    std::set<InterfacePtr> get_interfaces_same_type(const InterfaceType interface_type);
 };
 
 

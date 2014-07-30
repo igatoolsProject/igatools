@@ -112,8 +112,6 @@ dofs_view_close(const bool automatic_dofs_renumbering)
     DofsIterator dofs_begin(dofs_components_view_,0);;
     DofsIterator dofs_end(dofs_components_view_,IteratorState::pass_the_end);
 
-//    Assert(dofs_view_ == nullptr, ExcInvalidState())
-//    dofs_view_ = std::unique_ptr<DofsView>(new DofsView(dofs_begin,dofs_end));
     dofs_view_ = DofsView(dofs_begin,dofs_end);
 
     is_dofs_view_open_ = false;
@@ -172,8 +170,6 @@ get_global_dof(const int space_id, const Index local_dof) const
     Assert(is_dofs_view_open_ == false,ExcInvalidState());
 
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
-
-//    const auto &space = spaces_info_.at(space_id);
 
     return spaces_info_.at(space_id).dofs_view_[local_dof];
 }
@@ -322,17 +318,11 @@ remove_equality_constraints_redundancies()
 
     map<Index,set<Index>> upper_sparsity_pattern_post;
 
-//  LogStream out;
-//  out <<"PRE" << std::endl;
     for (const auto &row_m : upper_sparsity_pattern_pre)
     {
         const Index master_id = row_m.first;
-//      out << "Master = " << master_id << " ---- ";
-//      out << "Slaves = [ " ;
         for (const auto &slave_id : row_m.second)
         {
-//          out << slave_id << " ";
-
             auto &set_slaves_id_post = upper_sparsity_pattern_post[master_id];
             set_slaves_id_post.insert(slave_id);
             if (upper_sparsity_pattern_pre.count(slave_id) > 0)
@@ -345,22 +335,13 @@ remove_equality_constraints_redundancies()
                 row_s.clear();
             }
         }
-//      out << "]" << std::endl;
     }
 
-//  out << std::endl;
-//  out <<"POST" << std::endl;
     for (const auto &row_m : upper_sparsity_pattern_post)
     {
         const Index master_id = row_m.first;
-//      out << "Master = " << master_id << " ---- ";
-//      out << "Slaves = [ " ;
         for (const auto &slave_id : row_m.second)
-        {
             equality_constraints_.emplace_back(EqualityConstraint(master_id,slave_id));
-//          out << slave_id << " ";
-        }
-//      out << "]" << std::endl;
     }
 }
 

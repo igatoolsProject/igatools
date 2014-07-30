@@ -48,19 +48,18 @@ MultiPatchSpace(shared_ptr<DofsManager> dofs_manager)
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
-arrangement_open()
+patch_insertion_open()
 {
-    is_arrangement_open_ = true;
+    is_patch_insertion_open_ = true;
+
+    dofs_manager_->dofs_view_open();
 }
 
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
-arrangement_close(const bool automatic_dofs_renumbering)
+patch_insertion_close(const bool automatic_dofs_renumbering)
 {
-    is_arrangement_open_ = false;
-
-
     //------------------------------------------------------------------------
     // check that each reference space is used in only one physical space -- begin
     vector<shared_ptr<const RefSpace>> ref_spaces;
@@ -96,17 +95,22 @@ arrangement_close(const bool automatic_dofs_renumbering)
     //------------------------------------------------------------------------
 
 
-    //------------------------------------------------------------------------
-    // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- begin
-//    this->perform_ref_spaces_add_dofs_offset();
-    // Renumber the dofs in the reference spaces in order to avoid same dof ids between different spaces -- end
-    //------------------------------------------------------------------------
+    dofs_manager_->dofs_view_close(automatic_dofs_renumbering);
 
+    is_patch_insertion_open_ = false;
+}
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+build_graph()
+{
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
 
 
     //------------------------------------------------------------------------
     // creating the graph representing the multipatch structure -- begin
-
     // the vertices of the graph represents the patches
     std::map<PatchPtr,Index> map_patch_id;
     Index id = 0;
@@ -119,75 +123,51 @@ arrangement_close(const bool automatic_dofs_renumbering)
 
 
     // the edges of the graph represents the interfaces
-    for (const auto &interface : interfaces_)
+    for (const auto &interfaces_same_type : interfaces_)
     {
-        const Index id_patch_0 = map_patch_id.at(interface->patch_and_side_[0].first);
-        const Index id_patch_1 = map_patch_id.at(interface->patch_and_side_[1].first);
+        for (const auto &interface : interfaces_same_type.second)
+        {
+            const Index id_patch_0 = map_patch_id.at(interface->patch_and_side_[0].first);
+            const Index id_patch_1 = map_patch_id.at(interface->patch_and_side_[1].first);
 
-        boost::add_edge(
-            boost::vertex(id_patch_0,multipatch_graph_),
-            boost::vertex(id_patch_1,multipatch_graph_),
-            interface,
-            multipatch_graph_);
+            boost::add_edge(
+                boost::vertex(id_patch_0,multipatch_graph_),
+                boost::vertex(id_patch_1,multipatch_graph_),
+                interface,
+                multipatch_graph_);
+        }
     }
     Assert(patches_.size() == boost::num_vertices(multipatch_graph_),
            ExcDimensionMismatch(patches_.size(),boost::num_vertices(multipatch_graph_)));
-    Assert(interfaces_.size() == boost::num_edges(multipatch_graph_),
-           ExcDimensionMismatch(interfaces_.size(),boost::num_edges(multipatch_graph_)));
+    Assert(get_num_interfaces() == boost::num_edges(multipatch_graph_),
+           ExcDimensionMismatch(get_num_interfaces(),boost::num_edges(multipatch_graph_)));
 
     // creating the graph representing the multipatch structure -- end
     //------------------------------------------------------------------------
 
+    is_graph_built_ = true;
+}
 
-
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+compute_constraints()
+{
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(are_constraints_computed_ == false,ExcInvalidState());
 
     //---------------------------------------------------------------------------
-    // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- begin
-    using vertex_iterator = typename boost::graph_traits<Graph>::vertex_iterator;
-    vertex_iterator vertex;
-    vertex_iterator vertex_end;
-
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
-
-    LogStream out;
-
-    dofs_manager_->dofs_view_open();
-
-    boost::tie(vertex, vertex_end) = boost::vertices(multipatch_graph_);
-    for (; vertex != vertex_end ; ++vertex)
-    {
-        auto patch = multipatch_graph_[*vertex];
-        shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
-
-        auto &index_space = ref_space->get_basis_indices().get_index_distribution();
-
-        vector<DofsComponentView> space_components_view;
-        for (auto &index_space_comp : index_space)
-        {
-            vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
-            DofsComponentView index_space_comp_view(
-                index_space_comp_data.begin(),index_space_comp_data.end());
-
-            space_components_view.push_back(index_space_comp_view);
-        }
-
-        DofsIterator space_dofs_begin(space_components_view,0);
-        DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
-        SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
-
-        dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
-    }
-    dofs_manager_->dofs_view_close(automatic_dofs_renumbering);
-    // loop over the patches and fill the DofsManager with the dofs from the reference spaces --- end
+    if (is_graph_built_ == false)
+        this->build_graph();
     //---------------------------------------------------------------------------
+
+
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+
+    are_constraints_computed_ = true;
 }
 
 
@@ -211,7 +191,7 @@ void
 MultiPatchSpace<PhysicalSpace>::
 add_patch(PatchPtr patch)
 {
-    Assert(is_arrangement_open_,ExcInvalidState());
+    Assert(is_patch_insertion_open_ == true,ExcInvalidState());
 
     //------------------------------------------------------------------------
     // check if the patch is already present in the vector of patches -- begin
@@ -221,6 +201,43 @@ add_patch(PatchPtr patch)
     //------------------------------------------------------------------------
 
     patches_.push_back(patch);
+
+
+
+
+    //------------------------------------------------------------------------
+    // adding the dofs view of the patch to the DofsManager -- begin
+    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
+
+    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
+
+    shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
+
+    auto &index_space = ref_space->get_basis_indices().get_index_distribution();
+
+    vector<DofsComponentView> space_components_view;
+    for (auto &index_space_comp : index_space)
+    {
+        vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
+        DofsComponentView index_space_comp_view(
+            index_space_comp_data.begin(),index_space_comp_data.end());
+
+        space_components_view.push_back(index_space_comp_view);
+    }
+
+    DofsIterator space_dofs_begin(space_components_view,0);
+    DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
+    SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
+
+    dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
+    // adding the dofs view of the patch to the DofsManager -- end
+    //------------------------------------------------------------------------
+
 }
 
 
@@ -243,9 +260,24 @@ get_num_patches() const
 template <class PhysicalSpace>
 int
 MultiPatchSpace<PhysicalSpace>::
+get_num_interfaces(const InterfaceType interface_type) const
+{
+    return const_cast<std::map<InterfaceType,std::set<InterfacePtr>> &>(interfaces_)[interface_type].size();
+}
+
+
+template <class PhysicalSpace>
+int
+MultiPatchSpace<PhysicalSpace>::
 get_num_interfaces() const
 {
-    return interfaces_.size();
+    Index n_interfaces = 0;
+    for (const auto &interfaces_same_type : interfaces_)
+    {
+        n_interfaces += interfaces_same_type.second.size();
+    }
+
+    return n_interfaces;
 }
 
 template <class PhysicalSpace>
@@ -253,8 +285,12 @@ shared_ptr<DofsManager>
 MultiPatchSpace<PhysicalSpace>::
 get_dofs_manager() const
 {
-    Assert(is_arrangement_open_ == false,ExcInvalidState());
-
+    /*
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(is_graph_built_ == true,ExcInvalidState());
+    Assert(are_constraints_computed_ == true,ExcInvalidState());
+    //*/
     return dofs_manager_;
 }
 
@@ -270,6 +306,7 @@ print_info(LogStream &out) const
     out<< "MultiPatchSpace infos:" << endl;
     out.push(tab);
 
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
     out << "Num. patches = " << this->get_num_patches() << endl;
 
     out.push(tab);
@@ -284,19 +321,29 @@ print_info(LogStream &out) const
 
     out.pop();
 
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
     out << "Num. interfaces = " << this->get_num_interfaces() << endl;
     int interface_id = 0 ;
-    for (const auto &interface : interfaces_)
+    for (const auto &interfaces_same_type : interfaces_)
     {
-        out << "Interface id = " << interface_id++ << endl;
-        interface->print_info(out);
+        out << "Interfaces of type " << to_integral(interfaces_same_type.first)
+            << " --- num=" << interfaces_same_type.second.size() << endl;
+
         out.push(tab);
+        for (const auto &interface : interfaces_same_type.second)
+        {
+            out << "Interface id = " << interface_id++ << endl;
+            interface->print_info(out);
+            out.push(tab);
+        }
+        out.pop();
     }
 
 
 
 
     //---------------------------------------------------------------------------
+    Assert(is_graph_built_ == true,ExcInvalidState());
     out << "Patches in the graph:" << endl;
     using vertex_iterator = typename boost::graph_traits<Graph>::vertex_iterator;
     vertex_iterator vertex;
@@ -349,11 +396,28 @@ print_info(LogStream &out) const
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
+interface_insertion_open()
+{
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    is_interface_insertion_open_ = true;
+}
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+interface_insertion_close()
+{
+    is_interface_insertion_open_ = false;
+}
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
 add_interface(const InterfaceType &type,
               PatchPtr patch_0,const int side_id_patch_0,
               PatchPtr patch_1,const int side_id_patch_1)
 {
-    Assert(is_arrangement_open_,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == true,ExcInvalidState());
 
     //------------------------------------------------------------------------
     // Verify that patch 0 is present in the vector of patches -- begin
@@ -375,11 +439,11 @@ add_interface(const InterfaceType &type,
         new Interface(type,patch_0,side_id_patch_0,patch_1,side_id_patch_1));
 
 #ifndef NDEBUG
-    for (const auto &interface : interfaces_)
+    for (const auto &interface : interfaces_[type])
         Assert(*interface_to_be_added != *interface, ExcMessage("Interface already added."));
 #endif
 
-    interfaces_.push_back(interface_to_be_added);
+    interfaces_[type].insert(interface_to_be_added);
 }
 
 
@@ -425,6 +489,68 @@ operator!=(const Interface &interface_to_compare) const
 }
 
 
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+process_interfaces_C0_strong()
+{
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(is_graph_built_ == true,ExcInvalidState());
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+process_interfaces_C0_strong_renumbering()
+{
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(is_graph_built_ == true,ExcInvalidState());
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+process_interfaces_mortar()
+{
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(is_graph_built_ == true,ExcInvalidState());
+
+    this->process_interfaces_C0_strong();
+    this->process_interfaces_C0_strong_renumbering();
+    this->process_interfaces_mortar();
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+process_interfaces()
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+get_interfaces_same_type(const InterfaceType interface_type) -> std::set<InterfacePtr>
+{
+    return interfaces_[interface_type];
+}
 
 template <class PhysicalSpace>
 void

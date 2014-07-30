@@ -318,7 +318,7 @@ refine_h_weights(
 
             knots_added.resize(it-knots_added.begin());
 
-            for (int comp_id = 0; comp_id < n_components; ++comp_id)
+            for (const auto comp_id : weights_.get_active_components_id())
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
                 const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);

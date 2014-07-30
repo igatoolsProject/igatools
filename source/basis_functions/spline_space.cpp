@@ -178,9 +178,9 @@ refine_h_after_grid_refinement(
                 vector<int> mult_new(n_extra_multiplicities,1);
                 for (const int &m : mult_old)
                 {
-                    mult_new.push_back(m);
+                    mult_new.push_back(m); // adding the old multiplicity value
 
-                    mult_new.insert(mult_new.end(),n_extra_multiplicities,1);
+                    mult_new.insert(mult_new.end(),n_extra_multiplicities,1); // adding the new multiplicity values
                 }
 
                 interior_mult(comp_id).copy_data_direction(direction_id,mult_new);
