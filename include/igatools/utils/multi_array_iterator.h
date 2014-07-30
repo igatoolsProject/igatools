@@ -64,7 +64,7 @@ public:
     using value_type = typename Container::Entry;
 
     /** Type for the reference. */
-    using reference = value_type &;
+    using reference = typename Container::reference;
 
 
     /** Type for the pointer. */
