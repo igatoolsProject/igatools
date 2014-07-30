@@ -339,7 +339,13 @@ get_num_elements() const
     return std::count(active_elems_.begin(), active_elems_.end(), true);
 }
 
-
+template<>
+Size
+CartesianGrid<0>::
+get_num_elements() const
+{
+    return 1;
+}
 
 template<int dim_>
 auto
@@ -382,10 +388,20 @@ refine_directions(
         if (refinement_directions[i])
             this->refine_knots_direction(i,n_subdivisions[i]);
 
+    num_elem_ = knot_coordinates_.tensor_size();
+    num_elem_ -= 1;
+    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
+
+    // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
+    influence_flags_container_.resize(num_elem_, true);
+    active_elems_.resize(num_elem_, true);
+
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)
     this->refine_signals_(refinement_directions,*grid_pre_refinement_);
 }
+
+
 
 template <int dim_>
 void
@@ -403,6 +419,8 @@ refine_direction(const int direction_id, const Size n_subdivisions)
     this->refine_directions(refinement_directions,n_subdiv);
 }
 
+
+
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -414,6 +432,8 @@ refine(const Size n_subdivisions)
         filled_array<bool,dim>(true),
         filled_array<Size,dim>(n_subdivisions));
 }
+
+
 
 template <int dim_>
 boost::signals2::connection
@@ -454,9 +474,7 @@ refine_knots_direction(const int direction_id,
     knots_new[n_knots_new-1] = knots_old[n_knots_old-1];
 
     knot_coordinates_.copy_data_direction(direction_id,knots_new);
-    num_elem_ = knot_coordinates_.tensor_size();
-    num_elem_ -= 1;
-    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
+
 
 }
 
