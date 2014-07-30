@@ -427,17 +427,6 @@ print_info(LogStream &out) const
     for (auto w : weights_)
         w.print_info(out);
     out.end_item();
-
-//    out.push("\t");
-//    for (int comp_id = 0; comp_id < n_components; comp_id++)
-//    {
-//        const auto weights_component = weights_(comp_id).get_data();
-//        out << "weights[" << comp_id << "] = { ";
-//        for (const Real &w : weights_component)
-//            out << w << " ";
-//        out << "}" << endl;
-//    }
-//    out.pop();
 }
 
 
