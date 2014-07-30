@@ -37,104 +37,18 @@ using std::make_shared;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_>
-CartesianGrid<dim_>::
-CartesianGrid(const Size n)
-    :
-    CartesianGrid(TensorSize<dim>(n))
+namespace
 {
-    kind_ = Kind::uniform;
-
-    influence_flags_container_.resize(n-1);
-    influence_flags_container_.fill(true);
-
-    active_elems_.resize(n-1);
-    active_elems_.fill(true);
-}
-
-
-
-template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
-CartesianGrid<dim_>::
-create(const Size n)
+template <int dim>
+CartesianProductArray<Real,dim>
+filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
 {
-    return (shared_ptr< CartesianGrid<dim_> >(new CartesianGrid<dim_>(n)));
-}
+    CartesianProductArray<Real,dim> knot_coordinates(n_knots);
 
-
-
-template<int dim_>
-CartesianGrid<dim_>::
-CartesianGrid(const TensorSize<dim> &n)
-    :
-    CartesianGrid(filled_array<array<Real,2>,dim>(array<Real,2> {{0,1}}), n)
-{
-    kind_ = Kind::direction_uniform ;
-
-    //-----------------------------------------------
-    // initializing the influence and activity flags
-    TensorSize<dim> n_elems;
-    for (int i = 0 ; i < dim ; ++i)
-        n_elems(i) = n(i) - 1;
-
-    influence_flags_container_.resize(n_elems);
-    influence_flags_container_.fill(true);
-
-    active_elems_.resize(n_elems);
-    active_elems_.fill(true);
-    //-----------------------------------------------
-}
-
-
-
-template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
-CartesianGrid<dim_>::
-create(const TensorSize<dim> &n)
-{
-    return (shared_ptr< CartesianGrid<dim_> >(new CartesianGrid<dim_>(n)));
-}
-
-
-
-template<int dim_>
-CartesianGrid<dim_>::
-CartesianGrid(const BBox<dim> &end_points, const Size n_knots)
-    :
-    CartesianGrid(end_points, TensorSize<dim>(n_knots))
-{
-
-    influence_flags_container_.resize(n_knots-1);
-    influence_flags_container_.fill(true);
-
-    active_elems_.resize(n_knots-1);
-    active_elems_.fill(true);
-}
-
-
-template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
-CartesianGrid<dim_>::
-create(const BBox<dim> &end_points, const Size n_knots)
-{
-    return (shared_ptr< CartesianGrid<dim_> >(new CartesianGrid<dim_>(end_points, n_knots)));
-}
-
-
-template<int dim_>
-CartesianGrid<dim_>::
-CartesianGrid(const BBox<dim> &end_points,
-              const TensorSize<dim> &n)
-    :
-    kind_ {Kind::direction_uniform},
-      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
-      knot_coordinates_(n)
-{
     vector<Real> knots_1d;
     for (int i = 0; i < dim; ++i)
     {
-        const Size n_i = n(i);
+        const Size n_i = n_knots(i);
         Assert(n_i > 1, ExcLowerRange(n_i,2));
 
         knots_1d.resize(n_i);
@@ -145,27 +59,79 @@ CartesianGrid(const BBox<dim> &end_points,
         for (int j = 1; j < n_i; ++j)
             knots_1d[ j ] = knots_1d[ j-1 ] + h;
 
-        knot_coordinates_.copy_data_direction(i,knots_1d);
+        knot_coordinates.copy_data_direction(i,knots_1d);
     }
-
-
-    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
-
-
-    //-----------------------------------------------
-    // initializing the influence and activity flags
-    TensorSize<dim> n_elems;
-    for (int i = 0 ; i < dim ; ++i)
-        n_elems(i) = n(i) - 1;
-
-    influence_flags_container_.resize(n_elems);
-    influence_flags_container_.fill(true);
-
-    active_elems_.resize(n_elems);
-    active_elems_.fill(true);
-    //-----------------------------------------------
-
+    return knot_coordinates;
 }
+}
+
+
+
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const Size n)
+    :
+    CartesianGrid(TensorSize<dim>(n), Kind::uniform)
+{}
+
+
+
+template<int dim_>
+shared_ptr< CartesianGrid<dim_> >
+CartesianGrid<dim_>::
+create(const Size n)
+{
+    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(n));
+}
+
+
+
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const TensorSize<dim> &n, const Kind kind)
+    :
+    CartesianGrid(filled_array<array<Real,2>,dim>(array<Real,2> {{0,1}}), n, kind)
+{}
+
+
+
+template<int dim_>
+shared_ptr< CartesianGrid<dim_> >
+CartesianGrid<dim_>::
+create(const TensorSize<dim> &n)
+{
+    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(n, Kind::direction_uniform));
+}
+
+
+
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const BBox<dim> &end_points, const Size n_knots, const Kind kind)
+    :
+    CartesianGrid(end_points, TensorSize<dim>(n_knots), kind)
+{}
+
+
+
+template<int dim_>
+shared_ptr< CartesianGrid<dim_> >
+CartesianGrid<dim_>::
+create(const BBox<dim> &end_points, const Size n_knots)
+{
+    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(end_points, n_knots, Kind::uniform));
+}
+
+
+
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const BBox<dim> &end_points,
+              const TensorSize<dim> &n,
+              const Kind kind)
+    :
+              CartesianGrid(filled_progression<dim>(end_points, n), kind)
+              {}
 
 
 
@@ -175,18 +141,19 @@ CartesianGrid<dim_>::
 create(const BBox<dim> &end_points,
        const TensorSize<dim> &n)
 {
-    return (shared_ptr< CartesianGrid<dim_> >(new CartesianGrid<dim_>(end_points, n)));
+    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(end_points, n, Kind::direction_uniform));
 }
 
 
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates)
+CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates,
+              const Kind kind)
     :
-    kind_ {Kind::non_uniform},
-      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
-      knot_coordinates_(knot_coordinates)
+    kind_ {kind},
+    boundary_id_ (filled_array<int,UnitElement<dim>::faces_per_element>(0)),
+    knot_coordinates_ {knot_coordinates}
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
@@ -209,21 +176,12 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates)
     }
 #endif
 
+    num_elem_ = knot_coordinates_.tensor_size();
+    num_elem_ -= 1;
+    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
 
-    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
-
-
-    //-----------------------------------------------
-    // initializing the influence and activity flags
-    TensorSize<dim> n_elems = this->get_num_elements_dim();
-
-    influence_flags_container_.resize(n_elems);
-    influence_flags_container_.fill(true);
-
-    active_elems_.resize(n_elems);
-    active_elems_.fill(true);
-    //-----------------------------------------------
-
+    influence_flags_container_.resize(num_elem_, true);
+    active_elems_.resize(num_elem_, true);
 }
 
 
@@ -234,7 +192,7 @@ CartesianGrid<dim_>::
 create(const CartesianProductArray<Real,dim> &knot_coordinates)
 {
     return (shared_ptr< CartesianGrid<dim_> >(
-                new CartesianGrid<dim_>(knot_coordinates)));
+                new CartesianGrid<dim_>(knot_coordinates, Kind::non_uniform)));
 }
 
 
@@ -242,7 +200,7 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const array<vector<Real>,dim> &knot_coordinates)
     :
-    CartesianGrid<dim_>(CartesianProductArray<Real,dim>(knot_coordinates))
+    CartesianGrid<dim_>(CartesianProductArray<Real,dim>(knot_coordinates), Kind::direction_uniform)
 {}
 
 template<int dim_>
@@ -260,12 +218,15 @@ CartesianGrid<dim_>::
 CartesianGrid(const CartesianGrid<dim_> &grid)
     :
     kind_ {grid.kind_},
-      boundary_id_(grid.boundary_id_),
-      knot_coordinates_(grid.knot_coordinates_),
-      weight_elem_id_(grid.weight_elem_id_),
-      influence_flags_container_(grid.influence_flags_container_),
-      active_elems_(grid.active_elems_)
-{}
+    boundary_id_(grid.boundary_id_),
+    knot_coordinates_(grid.knot_coordinates_),
+    weight_elem_id_(grid.weight_elem_id_),
+    num_elem_(grid.num_elem_),
+    influence_flags_container_(grid.influence_flags_container_),
+    active_elems_(grid.active_elems_)
+    {}
+
+
 
 //TODO: inline this function
 template<int dim_>
@@ -375,7 +336,6 @@ Size
 CartesianGrid<dim_>::
 get_num_elements() const
 {
-    // TODO (pauletti, Jul 29, 2014): this should work but it doesn't something wrong in the container?
     return std::count(active_elems_.begin(), active_elems_.end(), true);
 }
 
@@ -386,13 +346,7 @@ auto
 CartesianGrid<dim_>::
 get_num_elements_dim() const -> TensorSize<dim>
 {
-    // the number of elements in each coordinate direction
-    // is equal to the number of knot coordinates - 1
-    TensorSize<dim> num_elements_dim = knot_coordinates_.tensor_size();
-    for (int i = 0 ; i < dim ; ++i)
-        num_elements_dim(i) -= 1;
-
-    return (num_elements_dim);
+    return num_elem_;
 }
 
 
@@ -500,8 +454,10 @@ refine_knots_direction(const int direction_id,
     knots_new[n_knots_new-1] = knots_old[n_knots_old-1];
 
     knot_coordinates_.copy_data_direction(direction_id,knots_new);
+    num_elem_ = knot_coordinates_.tensor_size();
+    num_elem_ -= 1;
+    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
 
-    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(this->get_num_elements_dim());
 }
 
 

@@ -73,8 +73,12 @@ template <int> class CartesianGridElementAccessor;
  */
 template< int dim_ >
 class CartesianGrid :
-    public std::enable_shared_from_this<CartesianGrid<dim_> >
+        public std::enable_shared_from_this<CartesianGrid<dim_>>
 {
+private:
+    /** Type for current class. */
+    using self_t = CartesianGrid<dim_>;
+
 public:
     /** Dimensionality of the grid. */
     static const int dim = dim_ ;
@@ -113,19 +117,21 @@ public:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    explicit CartesianGrid(const TensorSize<dim> &n_knots);
+    explicit CartesianGrid(const TensorSize<dim> &n_knots, const Kind kind);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim> &end_points,
-                           const Size n_knots);
+                           const Size n_knots,
+                           const Kind kind);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim> &end_points,
-                           const TensorSize<dim> &n_knots);
+                           const TensorSize<dim> &n_knots,
+                           const Kind kind);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -137,7 +143,8 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates);
+    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates,
+                  const Kind kind);
 
 
     /**
@@ -255,7 +262,8 @@ public:
     Size get_num_elements() const;
 
     /**
-     * Query the total number of elements along each coordinate direction.
+     * Total number of one dimensional intervals along each
+     * coordinate direction.
      */
     TensorSize<dim> get_num_elements_dim() const;
 
@@ -438,9 +446,15 @@ private:
     CartesianProductArray<Real,dim> knot_coordinates_;
 
     /**
-     * Weights used for fast conversion of element index (flat-to-tensor and tensor-to-flat);
+     * Weights used for fast conversion of element index
+     * (flat-to-tensor and tensor-to-flat);
      */
     TensorIndex<dim> weight_elem_id_;
+
+    /**
+     * Number of grid elements in tensor size type
+     */
+    TensorSize<dim> num_elem_;
 
     /**
      * Container for the flags indicating the elements with influence (used to define hierarchical spaces).
