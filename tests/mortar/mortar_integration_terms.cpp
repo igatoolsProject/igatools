@@ -218,9 +218,10 @@ void Mortar_Interface<dim, dim_field>::integration()
 		auto felem_j_id   = felem_j.get_flat_index();
 		
         auto face_quad_pts_ref = felem_j.transform_points_unit_to_reference(face_quad_pts_unit_domain);
-
+		
 
 		out<<"face joint grid element nb:"<<felem_j_id<<endl;
+		out<<felem_j.is_boundary()<<endl;
         auto face_meas=static_cast<CartesianGridElement<dim-1>&>(felem_j).get_measure();
 		out<<"face_meas"<<face_meas<<endl;
 
