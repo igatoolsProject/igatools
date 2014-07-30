@@ -64,7 +64,7 @@ template <int> class CartesianGridElementAccessor;
  * "breakpoints") along each coordinate direction.
  *
  * @author M. Martinelli 2012, 2013, 2014
- * @author pauletti 2012, 2013
+ * @author pauletti 2012, 2013, 2014
  *
  * @see get_cartesian_grid_from_xml()
  * @ingroup h_refinement
@@ -83,6 +83,8 @@ public:
     /** Dimensionality of the grid. */
     static const int dim = dim_ ;
 
+
+    using KnotCoordinates = CartesianProductArray<Real,dim>;
     /**
      * Types of grid for future optimization
      */
@@ -165,10 +167,10 @@ public:
      * Perform a deep copy of the member variables except the
      * signal_refine_ variable, that is not copied at all.
      */
-    CartesianGrid(const CartesianGrid<dim_> &grid);
+    CartesianGrid(const self_t &grid);
 
     /**  Move constructor */
-    CartesianGrid(CartesianGrid<dim_> &&grid) = default;
+    CartesianGrid(self_t &&grid) = default;
 
     /** Destructor */
     ~CartesianGrid() = default;
@@ -186,7 +188,7 @@ public:
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
-    static std::shared_ptr<CartesianGrid<dim_> > create(const Index n = 2);
+    static std::shared_ptr<self_t > create(const Index n = 2);
 
 
     /**
@@ -195,7 +197,7 @@ public:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    static std::shared_ptr< CartesianGrid<dim_> > create(const TensorSize<dim> &n);
+    static std::shared_ptr< self_t > create(const TensorSize<dim> &n);
 
 
     /**
@@ -207,7 +209,7 @@ public:
      * @note In Debug mode, a check for this precondition (up to machine precision)
      * is perform and if not satistified an exception is raised.
      */
-    static std::shared_ptr< CartesianGrid<dim_> >
+    static std::shared_ptr< self_t >
     create(const CartesianProductArray<Real,dim> &knot_coordinates) ;
 
     /**
@@ -219,18 +221,18 @@ public:
      * @note In Debug mode, a check for this precondition (up to machine precision)
      * is perform and if not satistified an exception is raised.
      */
-    static std::shared_ptr< CartesianGrid<dim_> >
+    static std::shared_ptr< self_t >
     create(const std::array<std::vector<Real>,dim> &knot_coordinates) ;
 
 
-    static std::shared_ptr< CartesianGrid<dim_> >
+    static std::shared_ptr< self_t >
     create(const BBox<dim> &end_points,
            const Size n_knots);
 
     /**
      * @todo document me
      */
-    static std::shared_ptr< CartesianGrid<dim_> >
+    static std::shared_ptr< self_t >
     create(const BBox<dim> &end_points,
            const TensorSize<dim> &n);
     ///@}
@@ -244,12 +246,12 @@ public:
     /**
      * Copy assignment operator.
      */
-    CartesianGrid<dim_> &operator=(const CartesianGrid<dim_> &grid) = default;
+    self_t &operator=(const self_t &grid) = default;
 
     /**
      * Move assignment operator.
      */
-    CartesianGrid<dim_> &operator=(CartesianGrid<dim_> &&grid) = default;
+    self_t &operator=(self_t &&grid) = default;
 
     ///@}
 
@@ -443,7 +445,7 @@ private:
      *  For each direction the knot coordinates are sorted in an increasing
      *  order and does not contain duplicate values.
      */
-    CartesianProductArray<Real,dim> knot_coordinates_;
+    KnotCoordinates knot_coordinates_;
 
     /**
      * Weights used for fast conversion of element index
@@ -457,17 +459,16 @@ private:
     TensorSize<dim> num_elem_;
 
     /**
-     * Container for the flags indicating the elements with influence (used to define hierarchical spaces).
-     */
-    DynamicMultiArray<bool,dim> influence_flags_container_;
-
-    /**
-     * Container for the flags indicating the active elements (used to define hierarchical spaces).
+     * Active elements indicators (used for example in hierarchical spaces).
      */
     DynamicMultiArray<bool,dim> active_elems_;
 
 
-
+    /**
+     * In the hierarchical spaces elements are characterized as influent or not
+     * this is the place where this information is stored.
+     */
+    DynamicMultiArray<bool,dim> influent_;
 
     /**
      * Perform a uniform refinement of the knots along the @p direction_id direction,

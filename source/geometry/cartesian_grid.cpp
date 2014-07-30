@@ -39,6 +39,10 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
+
+/**
+ * Returns a uniform filled knots
+ */
 template <int dim>
 CartesianProductArray<Real,dim>
 filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
@@ -77,11 +81,11 @@ CartesianGrid(const Size n)
 
 
 template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
+auto
 CartesianGrid<dim_>::
-create(const Size n)
+create(const Size n) -> shared_ptr<self_t>
 {
-    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(n));
+    return shared_ptr<self_t>(new self_t(n));
 }
 
 
@@ -96,11 +100,11 @@ CartesianGrid(const TensorSize<dim> &n, const Kind kind)
 
 
 template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
+auto
 CartesianGrid<dim_>::
-create(const TensorSize<dim> &n)
+create(const TensorSize<dim> &n) -> shared_ptr<self_t>
 {
-    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(n, Kind::direction_uniform));
+    return shared_ptr<self_t>(new self_t(n, Kind::direction_uniform));
 }
 
 
@@ -115,11 +119,11 @@ CartesianGrid(const BBox<dim> &end_points, const Size n_knots, const Kind kind)
 
 
 template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
+auto
 CartesianGrid<dim_>::
-create(const BBox<dim> &end_points, const Size n_knots)
+create(const BBox<dim> &end_points, const Size n_knots) -> shared_ptr<self_t>
 {
-    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(end_points, n_knots, Kind::uniform));
+    return shared_ptr<self_t>(new self_t(end_points, n_knots, Kind::uniform));
 }
 
 
@@ -136,24 +140,24 @@ CartesianGrid(const BBox<dim> &end_points,
 
 
 template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
+auto
 CartesianGrid<dim_>::
 create(const BBox<dim> &end_points,
-       const TensorSize<dim> &n)
+       const TensorSize<dim> &n) -> shared_ptr<self_t>
 {
-    return shared_ptr<CartesianGrid<dim_>>(new CartesianGrid<dim_>(end_points, n, Kind::direction_uniform));
+    return shared_ptr<self_t>(new self_t(end_points, n, Kind::direction_uniform));
 }
 
 
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates,
+CartesianGrid(const KnotCoordinates &knot_coordinates,
               const Kind kind)
     :
-    kind_ {kind},
-      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
-knot_coordinates_ {knot_coordinates}
+    kind_(kind),
+    boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
+    knot_coordinates_(knot_coordinates)
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
@@ -163,7 +167,7 @@ knot_coordinates_ {knot_coordinates}
         // each coordinate direction
 
         AssertThrow(knots_i.size() > 1,
-        ExcLowerRange(knots_i.size(), 2));
+                    ExcLowerRange(knots_i.size(), 2));
 
 
         // check if the array is sorted and does not contains duplicates
@@ -171,7 +175,7 @@ knot_coordinates_ {knot_coordinates}
         std::sort(vec.begin(), vec.end());
         vec.erase(unique(vec.begin(), vec.end()), vec.end());
         AssertThrow(knots_i == vec,
-        ExcMessage("The knot coordinate vector is not sorted and/or contains duplicates"));
+                    ExcMessage("The knot coordinate vector is not sorted and/or contains duplicates"));
 
     }
 #endif
@@ -180,50 +184,53 @@ knot_coordinates_ {knot_coordinates}
     num_elem_ -= 1;
     weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
 
-    influence_flags_container_.resize(num_elem_, true);
+    influent_.resize(num_elem_, true);
     active_elems_.resize(num_elem_, true);
 }
 
 
 
 template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
+auto
 CartesianGrid<dim_>::
-create(const CartesianProductArray<Real,dim> &knot_coordinates)
+create(const CartesianProductArray<Real,dim> &knot_coordinates) -> shared_ptr<self_t>
 {
-    return (shared_ptr< CartesianGrid<dim_> >(
-                new CartesianGrid<dim_>(knot_coordinates, Kind::non_uniform)));
+    return shared_ptr< self_t >(new self_t(knot_coordinates, Kind::non_uniform));
 }
+
 
 
 template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const array<vector<Real>,dim> &knot_coordinates)
     :
-    CartesianGrid<dim_>(CartesianProductArray<Real,dim>(knot_coordinates), Kind::direction_uniform)
+    self_t(CartesianProductArray<Real,dim>(knot_coordinates),
+           Kind::direction_uniform)
 {}
 
+
+
 template<int dim_>
-shared_ptr< CartesianGrid<dim_> >
+auto
 CartesianGrid<dim_>::
-create(const array<vector<Real>,dim> &knot_coordinates)
+create(const array<vector<Real>,dim> &knot_coordinates) -> shared_ptr<self_t>
 {
-    return (shared_ptr< CartesianGrid<dim_> >(
-                new CartesianGrid<dim_>(knot_coordinates)));
+    return shared_ptr< self_t >(new self_t(knot_coordinates));
 }
 
 
+
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const CartesianGrid<dim_> &grid)
+CartesianGrid(const self_t &grid)
     :
-    kind_ {grid.kind_},
-      boundary_id_(grid.boundary_id_),
-      knot_coordinates_(grid.knot_coordinates_),
-      weight_elem_id_(grid.weight_elem_id_),
-      num_elem_(grid.num_elem_),
-      influence_flags_container_(grid.influence_flags_container_),
-      active_elems_(grid.active_elems_)
+    kind_(grid.kind_),
+    boundary_id_(grid.boundary_id_),
+    knot_coordinates_(grid.knot_coordinates_),
+    weight_elem_id_(grid.weight_elem_id_),
+    num_elem_(grid.num_elem_),
+    influent_(grid.influent_),
+    active_elems_(grid.active_elems_)
 {}
 
 
@@ -253,10 +260,10 @@ get_knot_coordinates() const -> CartesianProductArray<Real,dim> const &
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-get_element_lengths() const -> CartesianProductArray<Real,dim>
+get_element_lengths() const -> KnotCoordinates
 {
     auto const &size = get_num_elements_dim();
-    CartesianProductArray<Real, dim> length(size);
+    KnotCoordinates length(size);
     for (int i = 0; i < dim; ++i)
     {
         const auto &knots_i = knot_coordinates_.get_data_direction(i);
@@ -339,6 +346,9 @@ get_num_elements() const
     return std::count(active_elems_.begin(), active_elems_.end(), true);
 }
 
+
+
+// TODO (pauletti, Jul 30, 2014): this should not be necesary to specialize
 template<>
 Size
 CartesianGrid<0>::
@@ -346,6 +356,8 @@ get_num_elements() const
 {
     return 1;
 }
+
+
 
 template<int dim_>
 auto
@@ -374,6 +386,8 @@ get_grid_pre_refinement() const -> shared_ptr<const CartesianGrid<dim> >
     return grid_pre_refinement_;
 }
 
+
+
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -393,7 +407,7 @@ refine_directions(
     weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
-    influence_flags_container_.resize(num_elem_, true);
+    influent_.resize(num_elem_, true);
     active_elems_.resize(num_elem_, true);
 
     // refining the objects that's are attached to the CartesianGrid
@@ -548,6 +562,7 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const -> shared_pt
 }
 
 
+
 template <int dim_>
 auto
 CartesianGrid<dim_>::
@@ -573,6 +588,8 @@ tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const
     return MultiArrayUtils<dim>::tensor_to_flat_index(tensor_id,weight_elem_id_);
 }
 
+
+
 template <int dim_>
 auto
 CartesianGrid<dim_>::
@@ -580,6 +597,7 @@ flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
 {
     return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
 }
+
 
 
 template <int dim_>
@@ -615,6 +633,23 @@ get_element_flat_id_from_point(const Points<dim> &point) const
     return this->tensor_to_flat_element_index(elem_t_id);
 }
 
+
+
+template <int dim>
+bool
+CartesianGrid<dim>::
+operator==(const CartesianGrid<dim> &grid) const
+{
+    bool same_knots_coordinates = true;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
+        const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
+
+        same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
+    }
+    return same_knots_coordinates;
+}
 
 
 
@@ -727,30 +762,13 @@ CartesianGrid<dim> build_cartesian_grid_union(
 
 
 
-template <int dim>
-bool
-CartesianGrid<dim>::
-operator==(const CartesianGrid<dim> &grid) const
-{
-    bool same_knots_coordinates = true;
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
-        const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
-
-        same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
-    }
-    return same_knots_coordinates;
-}
 
 
+
+// TODO (pauletti, Jul 30, 2014): why is this necessary?
 template <int dim_>
 const int
 CartesianGrid<dim_>::dim ;
-
-
-
-
 
 IGA_NAMESPACE_CLOSE
 
