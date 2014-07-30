@@ -49,10 +49,11 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees, LogS
 
     for (int i=0; i!=maps.size(); ++i)
     {
-        ref_spaces_field.push_back(RefSpaceField::create(degrees[i], maps[i]->get_grid()));
+        auto grid = maps[i]->get_grid();
+        ref_spaces_field.push_back(RefSpaceField::create(degrees[i], grid));
         spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i]),i));
         spaces[i]->print_info(out);
-        spaces[i]->refine_h(3); //Problem for the refinement
+        grid->refine(3); //Problem for the refinement
         spaces[i]->print_info(out);
     }
 }

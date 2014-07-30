@@ -317,17 +317,13 @@ refine_h_weights(
                           knots_added.begin());
 
             knots_added.resize(it-knots_added.begin());
-            /*
-                        Assert(false,ExcNotImplemented());
-                        AssertThrow(false,ExcNotImplemented());
-            //*/
+
             for (int comp_id = 0; comp_id < n_components; ++comp_id)
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
                 const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
                 const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
-
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -337,6 +333,7 @@ refine_h_weights(
                 const int n = m-p-1;
 
                 const auto Pw = weights_(comp_id);
+
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes(direction_id) == n+1,
                        ExcDimensionMismatch(old_sizes(direction_id), n+1));
@@ -411,7 +408,7 @@ std::shared_ptr<DofsManager>
 NURBSSpace<dim_, range_, rank_>::
 get_dofs_manager() const
 {
-	return this->get_spline_space()->get_dofs_manager();
+    return this->get_spline_space()->get_dofs_manager();
 }
 
 template <int dim_, int range_, int rank_>
