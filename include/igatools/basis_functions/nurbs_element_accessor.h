@@ -38,12 +38,10 @@ template < int, int , int > class NURBSSpace ;
  */
 template <int dim, int range, int rank >
 class NURBSElementAccessor :
-    public SpaceElementAccessor<
-    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
+    public SpaceElementAccessor<NURBSSpace<dim,range,rank>>
 {
 public:
-    using parent_t = SpaceElementAccessor<
-                     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
+    using parent_t = SpaceElementAccessor<NURBSSpace<dim,range,rank>>;
 
     using ContainerType = const NURBSSpace< dim, range, rank>;
 

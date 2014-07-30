@@ -147,9 +147,16 @@ refine_h_after_grid_refinement(
         {
             // knots in the refined grid along the selected direction
             vector<Real> knots_new = this->get_grid()->get_knot_coordinates(direction_id);
+            const int n_elements_new = knots_new.size() - 1;
 
             // knots in the original (unrefined) grid along the selected direction
             vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
+            const int n_elements_old = knots_old.size() - 1;
+
+            Assert(n_elements_new % n_elements_old == 0,
+                   ExcMessage("The number of new elements along one direction is not an integer multiple of the number of old elements."))
+            const int refine_factor = n_elements_new / n_elements_old;
+            const int n_extra_multiplicities = refine_factor - 1;
 
             vector<Real> knots_added(knots_new.size());
 
@@ -168,12 +175,12 @@ refine_h_after_grid_refinement(
                 // creating the new multiplicity
                 const vector<int> &mult_old = interior_mult(comp_id).get_data_direction(direction_id);
 
-                vector<int> mult_new;
-                mult_new.push_back(1);
+                vector<int> mult_new(n_extra_multiplicities,1);
                 for (const int &m : mult_old)
                 {
-                    mult_new.push_back(m);
-                    mult_new.push_back(1);
+                    mult_new.push_back(m); // adding the old multiplicity value
+
+                    mult_new.insert(mult_new.end(),n_extra_multiplicities,1); // adding the new multiplicity values
                 }
 
                 interior_mult(comp_id).copy_data_direction(direction_id,mult_new);

@@ -375,6 +375,48 @@ get_dofs_manager() const
     return dofs_manager_;
 }
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+{
+    return basis_indices_;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_basis_indices() -> DofDistribution<dim, range, rank> &
+{
+    return basis_indices_;
+}
+
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
+{
+    return basis_indices_.basis_flat_to_tensor(index,comp);
+}
+
+
+template<int dim_, int range_, int rank_>
+Index
+BSplineSpace<dim_, range_, rank_>::
+basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
+                     const Index comp) const
+{
+    return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
+}
+
+template<int dim_, int range_, int rank_>
+std::vector<Index>
+BSplineSpace<dim_, range_, rank_>::
+get_loc_to_global(const TensorIndex<dim> &j) const
+{
+    return basis_indices_.get_loc_to_global_indices(j);
+}
 
 template<int dim_, int range_, int rank_>
 void

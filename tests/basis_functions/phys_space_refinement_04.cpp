@@ -35,16 +35,13 @@
 #include <igatools/geometry/ig_mapping.h>
 
 template <int dim>
-using ReferenceSpace = NURBSSpace<dim,dim>;
-
-template <int dim>
 using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
 
 template <int dim>
-using PhysSpace = PhysicalSpace< ReferenceSpace<dim>, PushFwd<dim> > ;
+using PhysSpace = PhysicalSpace< BSplineSpace<dim,dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, ReferenceSpace<dim>::range, ReferenceSpace<dim>::rank >;
+using ComponentTable = StaticMultiArray<T,dim,1>;
 
 template <int dim>
 void test_evaluate()
@@ -104,9 +101,9 @@ void test_evaluate()
             }
         }
     }
-    auto ref_space = ReferenceSpace<dim>::create(deg,grid,weights);
+    auto nurbs_space = NURBSSpace<dim,dim>::create(deg,grid,weights);
 
-    vector<Real> control_pts(ref_space->get_num_basis());
+    vector<Real> control_pts(nurbs_space->get_num_basis());
 
     if (dim == 1)
     {
@@ -171,9 +168,10 @@ void test_evaluate()
         AssertThrow(false,ExcNotImplemented());
     }
 
-    auto map = IgMapping<ReferenceSpace<dim>>::create(ref_space,control_pts);
-
+    auto map = IgMapping<NURBSSpace<dim,dim>>::create(nurbs_space,control_pts);
     auto push_fwd = PushFwd<dim>::create(map);
+
+    auto ref_space = BSplineSpace<dim,dim>::create(deg,grid);
 
     auto phys_space = PhysSpace<dim>::create(ref_space,push_fwd);
 
@@ -193,7 +191,7 @@ void test_evaluate()
     phys_space->print_info(out);
     out << "===============================================================" << endl;
     out << endl;
-
+//*/
 
     out << "===============================================================" << endl;
     out << "R E F I N E D     S P A C E (6 elements each old element)" << endl;

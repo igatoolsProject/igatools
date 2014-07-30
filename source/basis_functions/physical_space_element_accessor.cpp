@@ -32,13 +32,7 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
                              const Index index)
     :
-    SpaceElementAccessor<
-    PhysicalSpaceElementAccessor<PhysSpace>,
-    PhysSpace,
-    PhysSpace::RefSpace::dim,
-    PhysSpace::PushForwardType::codim,
-    PhysSpace::RefSpace::range,
-    PhysSpace::RefSpace::rank>(phys_space,index),
+    SpaceElementAccessor<PhysSpace>(phys_space,index),
     PfElemAccessor(phys_space->get_push_forward(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}

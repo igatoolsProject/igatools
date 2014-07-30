@@ -34,7 +34,6 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const SpaceDimensionTable &n_elem_basis,
                 DistributionPolicy pol)
     :
-//    element_loc_to_global_(grid->get_num_elements_dim()),
     element_loc_to_global_view_(grid->get_num_elements_dim()),
     policy_(pol)
 {
@@ -50,13 +49,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     }
 
 
-#if 0
-    element_loc_to_global_ =
-        this->create_element_loc_to_global_from_index_distribution(grid,accum_mult,n_elem_basis,index_distribution_);
-#endif
-
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
-
 }
 
 
@@ -168,36 +161,6 @@ create_element_loc_to_global_view(
 
 
 
-#if 0
-template<int dim, int range, int rank>
-DynamicMultiArray<vector<Index>, dim>
-DofDistribution<dim, range, rank>::
-create_element_loc_to_global_from_index_distribution(
-    shared_ptr<const CartesianGrid<dim> > grid,
-    const MultiplicityTable &accum_mult,
-    const SpaceDimensionTable &n_elem_basis,
-    const IndexDistributionTable &index_distribution) const
-{
-    DynamicMultiArray<vector<Index>, dim> element_loc_to_global(grid->get_num_elements_dim());
-    for (const auto elem : *grid)
-    {
-        const auto index = elem.get_tensor_index();
-        auto &basis_list = element_loc_to_global(index);
-        auto basis = basis_list.begin();
-
-        for (int comp = 0; comp < Space::n_components; ++comp)
-        {
-            auto origin = accum_mult(comp).cartesian_product(index);
-            auto increment = n_elem_basis(comp);
-
-            auto comp_dofs = index_distribution(comp).get_sub_array(origin, increment).get_data();
-            element_loc_to_global(index).insert(basis, comp_dofs.begin(), comp_dofs.end());
-            basis = element_loc_to_global(index).end();
-        }
-    }
-    return element_loc_to_global;
-}
-#endif
 
 // TODO (pauletti, May 28, 2014): inline this
 template<int dim, int range, int rank>
@@ -233,11 +196,6 @@ add_dofs_offset(const Index offset)
     for (auto &dofs_component : index_distribution_)
         for (auto &dof_id : dofs_component)
             dof_id += offset;
-#if 0
-    for (auto &dofs_element : element_loc_to_global_)
-        for (auto &dof_id : dofs_element)
-            dof_id += offset;
-#endif
 }
 
 
@@ -249,11 +207,6 @@ print_info(LogStream &out) const
     for (int comp = 0; comp < Space::n_components; ++comp)
         index_distribution_(comp).print_info(out);
     out << std::endl;
-
-#if 0
-    for (auto x : element_loc_to_global_)
-        out << x <<  std::endl;
-#endif
 
     int i = 0;
     for (auto dofs_elem : element_loc_to_global_view_)

@@ -247,7 +247,7 @@ private:
 
 
 
-    std::vector<LinearConstraint> linear_constraints_;
+    std::vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
 
 
 

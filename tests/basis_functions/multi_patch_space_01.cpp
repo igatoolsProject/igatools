@@ -156,20 +156,23 @@ void test_evaluate()
     //---------------------------------------------------------------
     // adding the patches and the interfaces to the multi-patch space structure
     MultiPatchSpace<PhysicalSpace_t<dim>> multi_patch_space;
-    multi_patch_space.arrangement_open();
+    multi_patch_space.patch_insertion_open();
 
     for (auto phys_space : phys_spaces)
         multi_patch_space.add_patch(phys_space);
 
+    multi_patch_space.patch_insertion_close();
+
+    multi_patch_space.interface_insertion_open();
     multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[0],1,phys_spaces[1],0);
     multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[2],1,phys_spaces[3],0);
     multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[0],2,phys_spaces[2],3);
     multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[1],2,phys_spaces[3],3);
-
-    multi_patch_space.arrangement_close();
-    multi_patch_space.print_info(out);
+    multi_patch_space.interface_insertion_close();
     //---------------------------------------------------------------
 
+
+    multi_patch_space.build_graph();
 
     const auto dofs_manager = multi_patch_space.get_dofs_manager();
 
@@ -211,7 +214,8 @@ void test_evaluate()
 
     //---------------------------------------------------------------
 
-    dofs_manager->print_info(out);
+//    dofs_manager->print_info(out);
+    multi_patch_space.print_info(out);
 
     for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
     {

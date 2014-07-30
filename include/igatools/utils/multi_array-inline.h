@@ -163,9 +163,9 @@ template<class STLContainer, int rank>
 inline
 void
 MultiArray<STLContainer,rank>::
-fill_progression(const Entry &init)
+fill_progression(const value_type &init)
 {
-    Entry val = init;
+    auto val = init;
     for (auto &d : data_)
         d = val++;
 }
@@ -176,7 +176,7 @@ template<class STLContainer, int rank>
 inline
 void
 MultiArray<STLContainer,rank>::
-fill(const Entry &value)
+fill(const value_type &value)
 {
     std::fill(this->data_.begin(),this->data_.end(),value);
 }
