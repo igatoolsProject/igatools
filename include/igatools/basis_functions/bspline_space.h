@@ -269,21 +269,10 @@ protected:
 public:
     /** @name Getting information about the space */
     ///@{
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
-    {
-        return basis_indices_.get_loc_to_global_indices(j);
-    }
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
     std::shared_ptr<const self_t >
     get_reference_space() const;
-
-    /**
-     * Returns a reference to the dense multi array storing the global dofs.
-     * Each element has a statically defined zone to read their dofs from,
-     * independent of the distribution policy in use.
-     */
-    //  const IndexSpaceTable &get_index_space() const;
-
     ///@}
 
     /** @name Functions involving the element iterator */
@@ -347,10 +336,7 @@ public:
      * @note try not to use as plans are to make it private
      */
     TensorIndex<dim>
-    basis_flat_to_tensor(const Index index, const Index comp) const
-    {
-        return basis_indices_.basis_flat_to_tensor(index,comp);
-    }
+    basis_flat_to_tensor(const Index index, const Index comp) const;
 
 
     /**
@@ -358,11 +344,7 @@ public:
      */
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                         const Index comp) const
-    {
-        return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
-    }
-
+                         const Index comp) const;
 
     std::shared_ptr<DofsManager> get_dofs_manager() const;
 
@@ -375,21 +357,6 @@ private:
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
-
-
-    ///@{
-protected:
-    /**
-     * True if each component of the vector valued space belongs
-     * to the same scalar valued space.
-     */
-    //  const bool homogeneous_range_;
-
-    //TODO(pauletti, Apr 27, 2014): make this private w/getter
-
-
-private:
-    ///@}
 
 
     friend class BSplineElementAccessor<dim, range, rank>;
@@ -421,19 +388,13 @@ public:
                    << " space.");
 
 
-    /** Returns the container with the local to global basis indices. */
+    /** Returns the container with the local to global basis indices (const version). */
     const DofDistribution<dim, range, rank> &
-    get_basis_indices() const
-    {
-        return basis_indices_;
-    }
+    get_basis_indices() const;
 
-    /** Returns the container with the local to global basis indices. */
+    /** Returns the container with the local to global basis indices (non-const version). */
     DofDistribution<dim, range, rank> &
-    get_basis_indices()
-    {
-        return basis_indices_;
-    }
+    get_basis_indices();
 
 };
 
