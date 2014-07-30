@@ -213,7 +213,7 @@ public:
      */
     bool are_elements_dofs_view_open() const;
 
-    const std::vector<DofsConstView> & get_elements_dofs_view() const;
+    const std::vector<DofsConstView> &get_elements_dofs_view() const;
 
 
     void add_element_dofs_view(const DofsConstView &element_dofs_view);

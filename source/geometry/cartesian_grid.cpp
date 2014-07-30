@@ -130,8 +130,8 @@ CartesianGrid(const BBox<dim> &end_points,
               const TensorSize<dim> &n,
               const Kind kind)
     :
-              CartesianGrid(filled_progression<dim>(end_points, n), kind)
-              {}
+    CartesianGrid(filled_progression<dim>(end_points, n), kind)
+{}
 
 
 
@@ -152,8 +152,8 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates,
               const Kind kind)
     :
     kind_ {kind},
-    boundary_id_ (filled_array<int,UnitElement<dim>::faces_per_element>(0)),
-    knot_coordinates_ {knot_coordinates}
+      boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
+knot_coordinates_ {knot_coordinates}
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
@@ -163,7 +163,7 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates,
         // each coordinate direction
 
         AssertThrow(knots_i.size() > 1,
-                    ExcLowerRange(knots_i.size(), 2));
+        ExcLowerRange(knots_i.size(), 2));
 
 
         // check if the array is sorted and does not contains duplicates
@@ -171,7 +171,7 @@ CartesianGrid(const CartesianProductArray<Real, dim> &knot_coordinates,
         std::sort(vec.begin(), vec.end());
         vec.erase(unique(vec.begin(), vec.end()), vec.end());
         AssertThrow(knots_i == vec,
-                    ExcMessage("The knot coordinate vector is not sorted and/or contains duplicates"));
+        ExcMessage("The knot coordinate vector is not sorted and/or contains duplicates"));
 
     }
 #endif
@@ -218,13 +218,13 @@ CartesianGrid<dim_>::
 CartesianGrid(const CartesianGrid<dim_> &grid)
     :
     kind_ {grid.kind_},
-    boundary_id_(grid.boundary_id_),
-    knot_coordinates_(grid.knot_coordinates_),
-    weight_elem_id_(grid.weight_elem_id_),
-    num_elem_(grid.num_elem_),
-    influence_flags_container_(grid.influence_flags_container_),
-    active_elems_(grid.active_elems_)
-    {}
+      boundary_id_(grid.boundary_id_),
+      knot_coordinates_(grid.knot_coordinates_),
+      weight_elem_id_(grid.weight_elem_id_),
+      num_elem_(grid.num_elem_),
+      influence_flags_container_(grid.influence_flags_container_),
+      active_elems_(grid.active_elems_)
+{}
 
 
 

@@ -73,7 +73,7 @@ template <int> class CartesianGridElementAccessor;
  */
 template< int dim_ >
 class CartesianGrid :
-        public std::enable_shared_from_this<CartesianGrid<dim_>>
+    public std::enable_shared_from_this<CartesianGrid<dim_>>
 {
 private:
     /** Type for current class. */
@@ -372,7 +372,7 @@ public:
 private:
     /** Type for the refinement signal. */
     using signal_refine_t = boost::signals2::signal<
-            void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
+                            void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
 
 public:
 

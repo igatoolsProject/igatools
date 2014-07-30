@@ -168,11 +168,11 @@ template <class Iterator,class ConstIterator>
 inline
 ConstView<Iterator,ConstIterator>::
 ConstView(const View<Iterator,ConstIterator> &view)
-:
-ViewData<ConstIterator>(view.begin(),view.end())
+    :
+    ViewData<ConstIterator>(view.begin(),view.end())
 {
-//	this->begin_ = view.begin();
-//	this->end_   = view.end();
+//  this->begin_ = view.begin();
+//  this->end_   = view.end();
 }
 
 template <class Iterator,class ConstIterator>

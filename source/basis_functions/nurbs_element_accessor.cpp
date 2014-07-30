@@ -52,7 +52,7 @@ template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
 init_cache(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+           const Quadrature<dim> &quad)
 {
     Assert(contains(fill_flag, ValueFlags::none),
            ExcMessage("Nothing to reset"));
@@ -116,8 +116,8 @@ template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented());
 }

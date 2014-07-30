@@ -126,14 +126,14 @@ public:
      * @note This function should be called before fill_values()
      */
     void init_cache(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+                    const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points

@@ -183,11 +183,11 @@ public :
      */
     ///@{
     void init_cache(const ValueFlags fill_flag,
-                     const QuadratureType &quad);
+                    const QuadratureType &quad);
 
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const QuadratureFaceType &quad);
+                         const ValueFlags fill_flag,
+                         const QuadratureFaceType &quad);
 
     void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 

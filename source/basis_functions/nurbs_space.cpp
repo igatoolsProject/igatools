@@ -411,7 +411,7 @@ std::shared_ptr<DofsManager>
 NURBSSpace<dim_, range_, rank_>::
 get_dofs_manager() const
 {
-	return this->get_spline_space()->get_dofs_manager();
+    return this->get_spline_space()->get_dofs_manager();
 }
 
 template <int dim_, int range_, int rank_>

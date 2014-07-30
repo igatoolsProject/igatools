@@ -108,11 +108,11 @@ public:
      *
      */
     void init_cache(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+                    const Quadrature<dim> &quad);
 
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad);
 
     /** @name Mapping used for transforming quantities with the use of the cache  */
     ///@{

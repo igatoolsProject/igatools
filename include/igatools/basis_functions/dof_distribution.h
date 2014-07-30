@@ -130,10 +130,10 @@ public:
         return index_distribution_;
     }
 
-    const DynamicMultiArray<DofsView, dim> & get_elements_view() const
-	{
-    	return element_loc_to_global_view_;
-	}
+    const DynamicMultiArray<DofsView, dim> &get_elements_view() const
+    {
+        return element_loc_to_global_view_;
+    }
 
 };
 

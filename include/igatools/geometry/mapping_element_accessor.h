@@ -155,7 +155,7 @@ public:
      * @note This function should be called before fill_values()
      */
     void init_cache(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quadrature);
+                    const Quadrature<dim> &quadrature);
 
     /**
      * Initializes the internal cache for the efficient
@@ -167,8 +167,8 @@ public:
      * @note This function should be called before fill_face_values()
      */
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quadrature);
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quadrature);
 
     /**
      * Fills the cache in accordance with the flag specifications used in the

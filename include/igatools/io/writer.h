@@ -350,19 +350,19 @@ private:
 
     template<class Out>
     void save_ascii(Out &file,
-      const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-      const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-      &vtk_elements_connectivity) const;
+                    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                    &vtk_elements_connectivity) const;
 
     void save_appended(const std::string &filename,
-      const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-      const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-      &vtk_elements_connectivity) const;
+                       const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                       const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                       &vtk_elements_connectivity) const;
 
     void fill_points_and_connectivity(
-      std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-      std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-      &vtk_elements_connectivity) const;
+        std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+        std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+        &vtk_elements_connectivity) const;
 };
 
 

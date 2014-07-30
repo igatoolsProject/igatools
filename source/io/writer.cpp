@@ -574,9 +574,9 @@ add_element_data(const std::vector<int> &element_data,
 template<int dim, int codim, class T>
 template<class Out>
 void Writer<dim, codim, T>::save_ascii(Out &file,
-    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-    &vtk_elements_connectivity) const
+                                       const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                                       const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                                       &vtk_elements_connectivity) const
 {
     const string tab1("\t");
     const string tab2 = tab1 + tab1;
@@ -733,9 +733,9 @@ void Writer<dim, codim, T>::save_ascii(Out &file,
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::save_appended(const string &filename,
-    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-    &vtk_elements_connectivity) const
+                                          const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                                          const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                                          &vtk_elements_connectivity) const
 {
     ofstream file(filename);
     file.setf(ios::scientific);

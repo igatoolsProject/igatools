@@ -240,7 +240,7 @@ std::shared_ptr<DofsManager>
 PhysicalSpace<RefSpace_,PushForward_>::
 get_dofs_manager() const
 {
-	return this->get_reference_space()->get_dofs_manager();
+    return this->get_reference_space()->get_dofs_manager();
 }
 
 
