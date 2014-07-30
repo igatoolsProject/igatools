@@ -102,6 +102,8 @@ public:
     /** Type of the entries stored in the STL container. */
     using Entry = typename STLContainer::value_type;
 
+    using reference = typename STLContainer::reference;
+    using const_reference = typename STLContainer::const_reference;
 
     /** @name Constructors and destructor */
     ///@{
@@ -146,23 +148,23 @@ public:
     /**
      *  Flat index access operator (non-const version).
      */
-    Entry &operator()(const Index i);
+    reference operator()(const Index i);
 
     /**
      *  Flat index access operator (const version).
      */
-    const Entry &operator()(const Index i) const;
+    const_reference operator()(const Index i) const;
 
 
     /**
      *  Tensor index access operator (non-const version).
      */
-    Entry &operator()(const TensorIndex<rank> &i);
+    reference operator()(const TensorIndex<rank> &i);
 
     /**
      *  Tensor index access operator (const version).
      */
-    const Entry &operator()(const TensorIndex<rank> &i) const;
+    const_reference operator()(const TensorIndex<rank> &i) const;
 
     /** Return the entries of the multiarray as unidimensional std::vector. */
     const STLContainer &get_data() const;
