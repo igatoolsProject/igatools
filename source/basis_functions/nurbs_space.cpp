@@ -321,7 +321,7 @@ refine_h_weights(
                         Assert(false,ExcNotImplemented());
                         AssertThrow(false,ExcNotImplemented());
             //*/
-            for (int comp_id = 0; comp_id < n_components; ++comp_id)
+            for (const int comp_id : weights_.get_active_components_id())
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
                 const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
@@ -411,7 +411,7 @@ std::shared_ptr<DofsManager>
 NURBSSpace<dim_, range_, rank_>::
 get_dofs_manager() const
 {
-	return this->get_spline_space()->get_dofs_manager();
+    return this->get_spline_space()->get_dofs_manager();
 }
 
 template <int dim_, int range_, int rank_>
