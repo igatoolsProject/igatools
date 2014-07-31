@@ -444,26 +444,26 @@ private:
     KnotCoordinates knot_coordinates_;
 
     /**
+     * Number of grid elements in tensor size type
+     */
+    TensorSize<dim> num_elem_;
+
+    /**
      * Weights used for fast conversion of element index
      * (flat-to-tensor and tensor-to-flat);
      */
     TensorIndex<dim> weight_elem_id_;
 
     /**
-     * Number of grid elements in tensor size type
+     * In the hierarchical spaces elements are characterized as influent or not
+     * this is the place where this information is stored.
      */
-    TensorSize<dim> num_elem_;
+    DynamicMultiArray<bool,dim> influent_;
 
     /**
      * Active elements indicators (used for example in hierarchical spaces).
      */
     DynamicMultiArray<bool,dim> active_elems_;
-
-    /**
-     * In the hierarchical spaces elements are characterized as influent or not
-     * this is the place where this information is stored.
-     */
-    DynamicMultiArray<bool,dim> influent_;
 
     /**
      * Perform a uniform refinement of the knots along the @p direction_id direction,

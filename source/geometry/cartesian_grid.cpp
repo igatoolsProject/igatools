@@ -24,6 +24,7 @@
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
 
+#include <algorithm>
 using std::endl;
 using std::array;
 using std::vector;
@@ -152,7 +153,11 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     :
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
-    knot_coordinates_(knot_coordinates)
+    knot_coordinates_(knot_coordinates),
+    num_elem_(knot_coordinates_.tensor_size().operator -=(1)),
+    weight_elem_id_(MultiArrayUtils<dim>::compute_weight(num_elem_)),
+    influent_(num_elem_, true),
+    active_elems_(num_elem_, true)
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
@@ -160,13 +165,10 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
         const auto &knots_i = knot_coordinates.get_data_direction(i);
         // checks that we have at least two knot values (i.e. one knot span) in
         // each coordinate direction
-
-        AssertThrow(knots_i.size() > 1,
-                    ExcLowerRange(knots_i.size(), 2));
-
+        AssertThrow(knots_i.size() > 1, ExcLowerRange(knots_i.size(), 2));
 
         // check if the array is sorted and does not contains duplicates
-        vector< Real > vec = knots_i ;
+        vector<Real> vec = knots_i ;
         std::sort(vec.begin(), vec.end());
         vec.erase(unique(vec.begin(), vec.end()), vec.end());
         AssertThrow(knots_i == vec,
@@ -174,13 +176,6 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
 
     }
 #endif
-
-    num_elem_ = knot_coordinates_.tensor_size().operator -=(1);
-    //num_elem_ -= 1;
-    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
-
-    influent_.resize(num_elem_, true);
-    active_elems_.resize(num_elem_, true);
 }
 
 
@@ -222,10 +217,10 @@ CartesianGrid(const self_t &grid)
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
-    weight_elem_id_(grid.weight_elem_id_),
     num_elem_(grid.num_elem_),
-    active_elems_(grid.active_elems_),
-    influent_(grid.influent_)
+    weight_elem_id_(grid.weight_elem_id_),
+    influent_(grid.influent_),
+    active_elems_(grid.active_elems_)
 {}
 
 
@@ -279,9 +274,13 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::begin() const -> ElementIterator
 {
-    auto start = 0;
-    while(!active_elems_(start))
-        ++start;
+    auto it = std::find(active_elems_.get_data().begin(), active_elems_.get_data().end(), true);
+    if (it==active_elems_.get_data().end())
+        return ElementIterator(this->shared_from_this(),
+                               IteratorState::pass_the_end);
+
+    auto start = std::distance(active_elems_.get_data().begin(),it);
+
     return ElementIterator(this->shared_from_this(), start);
 }
 

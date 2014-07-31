@@ -41,16 +41,10 @@ int main ()
 
     out.depth_console(10);
 
-    DynamicMultiArray<bool, 0> data1;
-    out << data1 << endl;
-    TensorSize<0> num_elem_;
-    out << num_elem_.flat_size()<< endl;
-    data1.resize(num_elem_);
-    data1(0) = true;
-    out << data1 << endl;
-
-
-//    test<0>();
+    test<0>();
+    test<1>();
+    test<2>();
+    test<3>();
 
     return 0;
 }

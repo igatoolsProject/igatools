@@ -64,6 +64,8 @@ public:
      */
     DynamicMultiArray(const TensorSize<rank> &dim);
 
+    DynamicMultiArray(const TensorSize<rank> &dim, const T& val);
+
     /** Copy constructor. */
     DynamicMultiArray(const DynamicMultiArray<T,rank> &data) = default;
 
