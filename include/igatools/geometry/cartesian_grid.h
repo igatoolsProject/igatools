@@ -263,8 +263,9 @@ public:
     /**
      * Total number of active elements.
      */
-    Size get_num_elements() const;
+    Size get_num_active_elems() const;
 
+    Size get_num_all_elems() const;
     /**
      * Total number of one dimensional intervals along each
      * coordinate direction.

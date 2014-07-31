@@ -101,7 +101,7 @@ PhysicalSpace<RefSpace_,PushForward_>::
 last() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-                           ref_space_->get_grid()->get_num_elements() - 1);
+                           ref_space_->get_grid()->get_num_active_elems() - 1);
 }
 
 
@@ -120,8 +120,8 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 get_element(const Index elem_flat_id) const -> ElementAccessor
 {
-    Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_elements(),
-           ExcIndexRange(elem_flat_id,0,ref_space_->get_grid()->get_num_elements()));
+    Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_active_elems(),
+           ExcIndexRange(elem_flat_id,0,ref_space_->get_grid()->get_num_active_elems()));
 
     auto elem = this->begin();
     for (int i = 0 ; i < elem_flat_id ; ++i)

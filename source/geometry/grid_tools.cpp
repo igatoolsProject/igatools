@@ -72,7 +72,7 @@ build_map_elements_between_cartesian_grids(
         }
     }
 
-    const int n_elems_fine = grid_fine.get_num_elements();
+    const int n_elems_fine = grid_fine.get_num_active_elems();
     vector<int> map_elem_fine_to_elem_coarse(n_elems_fine);
     for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
     {

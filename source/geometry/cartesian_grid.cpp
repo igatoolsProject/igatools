@@ -175,8 +175,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     }
 #endif
 
-    num_elem_ = knot_coordinates_.tensor_size();
-    num_elem_ -= 1;
+    num_elem_ = knot_coordinates_.tensor_size().operator -=(1);
+    //num_elem_ -= 1;
     weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
 
     influent_.resize(num_elem_, true);
@@ -279,7 +279,10 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::begin() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(), 0);
+    auto start = 0;
+    while(!active_elems_(start))
+        ++start;
+    return ElementIterator(this->shared_from_this(), start);
 }
 
 
@@ -336,9 +339,19 @@ get_face_normal(const int face_no) const -> Points<dim>
 template<int dim_>
 Size
 CartesianGrid<dim_>::
-get_num_elements() const
+get_num_active_elems() const
 {
     return std::count(active_elems_.begin(), active_elems_.end(), true);
+}
+
+
+
+template<int dim_>
+Size
+CartesianGrid<dim_>::
+get_num_all_elems() const
+{
+    return num_elem_.flat_size();
 }
 
 
@@ -347,7 +360,7 @@ get_num_elements() const
 template<>
 Size
 CartesianGrid<0>::
-get_num_elements() const
+get_num_active_elems() const
 {
     return 1;
 }
@@ -495,7 +508,7 @@ void
 CartesianGrid<dim_>::
 print_info(LogStream &out) const
 {
-    out << "Number of active elements: " << get_num_elements() << endl;
+    out << "Number of active elements: " << get_num_active_elems() << endl;
     out << "Number of intervals per direction: " << num_elem_ << endl;
 
     out.begin_item("Knot coordinates:");

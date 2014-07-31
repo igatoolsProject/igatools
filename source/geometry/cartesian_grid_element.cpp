@@ -79,8 +79,8 @@ CartesianGridElement<dim_>::
 reset_flat_tensor_indices(const Index flat_index)
 {
     Assert((flat_index == IteratorState::pass_the_end) ||
-           ((flat_index >= 0) && (flat_index < grid_->get_num_elements())),
-           ExcIndexRange(flat_index, 0, grid_->get_num_elements()));
+           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
+           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
 
     flat_index_ = flat_index ;
 
@@ -111,8 +111,8 @@ reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
                       Utils::compute_weight(grid_->get_num_elements_dim()));
 
     Assert((flat_index_ == IteratorState::pass_the_end) ||
-           ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_elements())),
-           ExcIndexRange(flat_index_, 0, grid_->get_num_elements()));
+           ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
+           ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
 }
 
 
@@ -353,7 +353,7 @@ bool
 CartesianGridElement<dim_>::
 is_valid() const
 {
-    return (flat_index_ >= 0 && flat_index_ < grid_->get_num_elements())?true:false;
+    return (flat_index_ >= 0 && flat_index_ < grid_->get_num_active_elems())?true:false;
 }
 
 

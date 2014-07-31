@@ -239,7 +239,7 @@ public:
      */
     bool move(const TensorIndex<dim> &increment);
 
-private:
+protected:
     /** Cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> grid_;
 

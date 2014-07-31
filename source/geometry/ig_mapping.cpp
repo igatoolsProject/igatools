@@ -722,10 +722,10 @@ last() const -> ElementIterator
 {
 //    return ElementIterator(
 //               const_cast<self_t &>(*(new self_t(this->get_data()))),
-//               this->get_grid()->get_num_elements() - 1);
+//               this->get_grid()->get_num_active_elems() - 1);
     return ElementIterator(
                const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
-               this->get_grid()->get_num_elements() - 1);
+               this->get_grid()->get_num_active_elems() - 1);
 }
 
 

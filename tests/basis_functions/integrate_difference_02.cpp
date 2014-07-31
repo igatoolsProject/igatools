@@ -92,7 +92,7 @@ void test(const int deg,  const int n_knots)
 
     auto coeffs = space_tools::projection_l2<Space,la_pack>(f,space, quad);
 
-    vector<Real> elem_err(space->get_grid()->get_num_elements());
+    vector<Real> elem_err(space->get_grid()->get_num_active_elems());
 
     Real err = space_tools::integrate_difference<Space,la_pack>
                (f, space, quad, Norm::L2, coeffs, elem_err);
