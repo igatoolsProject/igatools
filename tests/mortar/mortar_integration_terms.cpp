@@ -261,7 +261,8 @@ void Mortar_Interface<dim, dim_field>::integration()
         auto basis_multiplier = felem_multiplier.evaluate_basis_values_at_points(curr_slave_face_quad_pts_unit);
         auto basis_master     = felem_master.evaluate_basis_values_at_points(curr_master_face_quad_pts_unit);
 
-        auto deriv = felem_slave.template evaluate_basis_derivatives_at_points<0>(curr_slave_face_quad_pts_unit);
+        auto deriv = felem_slave.get_ref_space_accessor().
+                     template evaluate_basis_derivatives_at_points<2>(curr_slave_face_quad_pts_unit);
 
         //add the contributions of the current element
         for (int i = 0; i < n_multiplier_basis; ++i)
