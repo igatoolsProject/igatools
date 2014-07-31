@@ -234,7 +234,9 @@ add_patch(PatchPtr patch)
     DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
     SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
 
-    dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
+//    dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
+
+    dofs_manager_->add_space(std::const_pointer_cast<PhysicalSpace>(patch));
     // adding the dofs view of the patch to the DofsManager -- end
     //------------------------------------------------------------------------
 
