@@ -254,7 +254,6 @@ public:
 
     DofDistribution<dim, range, rank> &get_basis_indices();
 
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
 
     /** Return the push forward (non-const version). */

@@ -270,6 +270,7 @@ private:
 
     PeriodicTable periodic_;
 
+
 public:
 
     /** Returns the multiplicity of the internal knots that defines the space. */

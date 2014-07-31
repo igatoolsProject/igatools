@@ -27,13 +27,11 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
-//#include <igatools/basis_functions/dofs_manager.h>
 #include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
 
 
-class DofsManager;
 
 //Forward declaration to avoid including the header
 template < class > class PhysicalSpaceElementAccessor;
@@ -180,7 +178,6 @@ public:
     // implemented in all library classes
     void print_memory_info(LogStream &out) const;
 
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
 #if 0
     /**

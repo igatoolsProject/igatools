@@ -235,14 +235,6 @@ print_info(LogStream &out) const
     out.pop();
 }
 
-template <class RefSpace_, class PushForward_>
-std::shared_ptr<DofsManager>
-PhysicalSpace<RefSpace_,PushForward_>::
-get_dofs_manager() const
-{
-	return this->get_reference_space()->get_dofs_manager();
-}
-
 
 template <class RefSpace_, class PushForward_>
 void

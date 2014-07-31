@@ -35,7 +35,8 @@ IGA_NAMESPACE_OPEN
 
 
 
-DofsManager::
+template<int space_dim>
+DofsManager<space_dim>::
 DofsManager()
     :
     is_space_insertion_open_(false),
@@ -44,15 +45,17 @@ DofsManager()
 {}
 
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 space_insertion_open()
 {
     is_space_insertion_open_ = true;
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 space_insertion_close(const bool automatic_dofs_renumbering)
 {
     Assert(is_space_insertion_open_ == true,ExcInvalidState());
@@ -90,7 +93,8 @@ space_insertion_close(const bool automatic_dofs_renumbering)
     num_unique_dofs_ = this->count_unique_dofs();
 }
 
-DofsManager::
+template<int space_dim>
+DofsManager<space_dim>::
 SpaceInfo::
 SpaceInfo(const Index n_dofs, const SpaceDofsView &dofs_view)
     :
@@ -101,8 +105,9 @@ SpaceInfo(const Index n_dofs, const SpaceDofsView &dofs_view)
     Assert(n_dofs > 0,ExcEmptyObject());
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 add_dofs_space_view(
     const int space_id,
     const Index num_dofs_space,
@@ -122,8 +127,9 @@ add_dofs_space_view(
 
 
 
+template<int space_dim>
 auto
-DofsManager::
+DofsManager<space_dim>::
 get_dofs_view() -> DofsView &
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -132,8 +138,9 @@ get_dofs_view() -> DofsView &
     return dofs_view_;
 }
 
+template<int space_dim>
 auto
-DofsManager::
+DofsManager<space_dim>::
 get_dofs_view() const -> DofsConstView
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -143,30 +150,34 @@ get_dofs_view() const -> DofsConstView
 }
 
 
+template<int space_dim>
 Index
-DofsManager::
+DofsManager<space_dim>::
 get_num_dofs() const
 {
     return num_unique_dofs_;
 }
 
 
+template<int space_dim>
 Index
-DofsManager::
+DofsManager<space_dim>::
 get_num_linear_constraints() const
 {
     return linear_constraints_.size();
 }
 
+template<int space_dim>
 Index
-DofsManager::
+DofsManager<space_dim>::
 get_num_equality_constraints() const
 {
     return equality_constraints_.size();
 }
 
+template<int space_dim>
 Index
-DofsManager::
+DofsManager<space_dim>::
 get_global_dof(const int space_id, const Index local_dof) const
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -176,8 +187,9 @@ get_global_dof(const int space_id, const Index local_dof) const
     return spaces_info_.at(space_id).dofs_view_[local_dof];
 }
 
+template<int space_dim>
 std::vector<Index>
-DofsManager::
+DofsManager<space_dim>::
 get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
 {
     Assert(!local_dofs.empty(),ExcEmptyObject());
@@ -191,29 +203,33 @@ get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
 }
 
 
+template<int space_dim>
 bool
-DofsManager::
+DofsManager<space_dim>::
 is_space_insertion_open() const
 {
     return is_space_insertion_open_;
 }
 
+template<int space_dim>
 bool
-DofsManager::
+DofsManager<space_dim>::
 are_elements_dofs_view_open() const
 {
     return are_elements_dofs_view_open_;
 }
 
+template<int space_dim>
 auto
-DofsManager::
+DofsManager<space_dim>::
 get_elements_dofs_view() const -> const std::vector<DofsConstView> &
 {
     return elements_dofs_view_;
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 elements_dofs_view_open()
 {
     Assert(are_elements_dofs_view_open_ == false,
@@ -221,8 +237,9 @@ elements_dofs_view_open()
     are_elements_dofs_view_open_ = true;
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 elements_dofs_view_close()
 {
     Assert(are_elements_dofs_view_open_ == true,
@@ -230,11 +247,12 @@ elements_dofs_view_close()
     are_elements_dofs_view_open_ = false;
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 add_element_dofs_view(const DofsConstView &element_dofs_view)
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+//    Assert(is_space_insertion_open_ == false,ExcInvalidState());
 
     Assert(are_elements_dofs_view_open_ == true,ExcInvalidState());
 
@@ -242,8 +260,9 @@ add_element_dofs_view(const DofsConstView &element_dofs_view)
 }
 
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 equality_constraints_open()
 {
     Assert(are_equality_constraints_open_ == false,
@@ -251,8 +270,9 @@ equality_constraints_open()
     are_equality_constraints_open_ = true;
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 equality_constraints_close()
 {
     Assert(are_equality_constraints_open_ == true,
@@ -264,8 +284,9 @@ equality_constraints_close()
 }
 
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 add_equality_constraint(const Index dof_id_master,const Index dof_id_slave)
 {
     Assert(are_equality_constraints_open_ == true,
@@ -276,8 +297,9 @@ add_equality_constraint(const Index dof_id_master,const Index dof_id_slave)
 
 
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 linear_constraints_open()
 {
     Assert(are_linear_constraints_open_ == false,
@@ -288,8 +310,9 @@ linear_constraints_open()
     AssertThrow(false,ExcNotImplemented());
 }
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 linear_constraints_close()
 {
     Assert(are_linear_constraints_open_ == true,
@@ -301,8 +324,9 @@ linear_constraints_close()
 }
 
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 remove_equality_constraints_redundancies()
 {
     map<Index,set<Index>> upper_sparsity_pattern_pre;
@@ -348,8 +372,9 @@ remove_equality_constraints_redundancies()
 
 
 
+template<int space_dim>
 Index
-DofsManager::
+DofsManager<space_dim>::
 count_unique_dofs() const
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -365,8 +390,9 @@ count_unique_dofs() const
 
 
 
+template<int space_dim>
 void
-DofsManager::
+DofsManager<space_dim>::
 print_info(LogStream &out) const
 {
     using std::endl;
@@ -428,7 +454,10 @@ print_info(LogStream &out) const
 }
 
 
-
+template class DofsManager<0>;
+template class DofsManager<1>;
+template class DofsManager<2>;
+template class DofsManager<3>;
 
 
 IGA_NAMESPACE_CLOSE

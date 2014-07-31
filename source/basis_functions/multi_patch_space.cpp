@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
-MultiPatchSpace(shared_ptr<DofsManager> dofs_manager)
+MultiPatchSpace(shared_ptr<DofsManager<space_dim>> dofs_manager)
     :
     dofs_manager_(dofs_manager)
 {
@@ -203,43 +203,7 @@ add_patch(PatchPtr patch)
     patches_.push_back(patch);
 
 
-
-
-    //------------------------------------------------------------------------
-    // adding the dofs view of the patch to the DofsManager -- begin
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
-    shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
-
-    auto &index_space = ref_space->get_basis_indices().get_index_distribution();
-
-    vector<DofsComponentView> space_components_view;
-    for (auto &index_space_comp : index_space)
-    {
-        vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
-        DofsComponentView index_space_comp_view(
-            index_space_comp_data.begin(),index_space_comp_data.end());
-
-        space_components_view.push_back(index_space_comp_view);
-    }
-
-    DofsIterator space_dofs_begin(space_components_view,0);
-    DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
-    SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
-
-//    dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
-
     dofs_manager_->add_space(std::const_pointer_cast<PhysicalSpace>(patch));
-    // adding the dofs view of the patch to the DofsManager -- end
-    //------------------------------------------------------------------------
-
 }
 
 
@@ -283,9 +247,9 @@ get_num_interfaces() const
 }
 
 template <class PhysicalSpace>
-shared_ptr<DofsManager>
+auto
 MultiPatchSpace<PhysicalSpace>::
-get_dofs_manager() const
+get_dofs_manager() const -> shared_ptr<DofsManager<space_dim>>
 {
     /*
     Assert(is_patch_insertion_open_ == false,ExcInvalidState());
