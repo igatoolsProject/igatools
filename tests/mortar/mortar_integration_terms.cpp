@@ -12,6 +12,7 @@
 
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/basis_functions/multi_patch_space.h>
@@ -75,11 +76,15 @@ private:
     vector<Index> multiplier_face_dof_num_;
 
     shared_ptr<PhySpace> multiplier_space_;
+	
+	bool active_crosspoint_;
 
     using pair_coef_value  = pair<Index, Real>;
     using LinearConstraint = pair<vector<pair_coef_value>, Real>;
 
-
+    const int hdirch_boundary_id_val=2;
+	const int dirch_boundary_id_val=3;
+	const int mortar_boundary_id_val=7;
 
     //check_quad_pt_nb() const {
     //}
@@ -87,7 +92,10 @@ private:
     vector<LinearConstraint> LCs_;
 	
     void integration();
-
+	
+	void get_loc_face_crosspoint_modif(shared_ptr<CartesianGrid<dim>> slave_grid);
+	vector<int> loc_face_crosspoint_;
+    
 
 public:
     /** @name Constructors and destructor */
@@ -97,7 +105,7 @@ public:
 
     /** Constructor. */
     Mortar_Interface(const boundary_id &mortar_id, const int &degree_multiplier, const int &slave_patch_nb, const int &slave_mortar_face_nb, shared_ptr<PhySpace> slave_space,
-                     const int &master_patch_nb, const int &master_mortar_face_nb, shared_ptr<PhySpace> master_space, shared_ptr<DofsManager> dof_manager)
+                     const int &master_patch_nb, const int &master_mortar_face_nb, shared_ptr<PhySpace> master_space, shared_ptr<DofsManager> dof_manager, bool active_crosspoint)
         :
         mortar_id_(mortar_id),
         degree_multiplier_(degree_multiplier),
@@ -112,7 +120,8 @@ public:
 										   RefSpaceField::create(degree_multiplier_,slave_space_->get_grid()),
 										   const_pointer_cast<PushFw>(slave_space_->get_push_forward()),
 										   1)
-						  )
+						  ),
+		active_crosspoint_(active_crosspoint)
     {
         cout<<"A LC Interface built"<<endl;
         slave_face_space_=slave_space_->get_face_space(slave_mortar_face_nb_, slave_face_dof_num_);
@@ -129,6 +138,12 @@ public:
         }
 
         multiplier_face_space_=multiplier_space_->get_face_space(slave_mortar_face_nb_, multiplier_face_dof_num_);
+		
+		
+		//auto au=slave_face_space_->get_reference_space();
+		//auto a=au->get_degree();
+		//out<<a(1)[0]<<endl;
+		//a.print_info(out);
     }
 
 
@@ -164,11 +179,45 @@ public:
 
 
 template<int dim, int dim_field>
+void Mortar_Interface<dim, dim_field>::get_loc_face_crosspoint_modif(shared_ptr<CartesianGrid<dim>> slave_grid){
+
+	vector<int> temp_list;
+	if (active_crosspoint_){
+			if (dim==2){
+				if ((slave_mortar_face_nb_==0) | (slave_mortar_face_nb_==1)) 
+					temp_list=vector<int> {2,3};
+				else 
+					temp_list=vector<int> {0,1};
+			}
+			else if (dim==3){
+				if ((slave_mortar_face_nb_==0) | (slave_mortar_face_nb_==1)) 
+					temp_list=vector<int> {2,3,4,5};
+				else if ((slave_mortar_face_nb_==2) | (slave_mortar_face_nb_==3)) 
+					temp_list=vector<int> {0,1,4,5};
+				else 
+					temp_list=vector<int> {0,1,2,3};
+
+			}
+			else {
+				Assert(false,ExcNotImplemented());
+			}
+	
+	
+			for (int i=0; i<temp_list.size(); ++i){
+				auto temp_bnd_id=slave_grid->get_boundary_id(temp_list[i]);
+				if ((temp_bnd_id==hdirch_boundary_id_val) | (temp_bnd_id==dirch_boundary_id_val) | (temp_bnd_id==mortar_boundary_id_val))
+					loc_face_crosspoint_.push_back(i) ;
+			}
+	}
+}
+
+
+
+template<int dim, int dim_field>
 void Mortar_Interface<dim, dim_field>::integration()
 {
 
-    
-	
+		
     // Get the function number living on one face element of each face space
     const int n_slave_basis      = slave_face_space_->get_num_basis_per_element();
     const int n_master_basis     = master_face_space_->get_num_basis_per_element();
@@ -187,7 +236,11 @@ void Mortar_Interface<dim, dim_field>::integration()
 
     // Face joint grid construction -> parametric joint mesh
     auto slave_grid  = slave_space_->get_grid();
-    auto master_grid = master_space_->get_grid();
+	
+	this->get_loc_face_crosspoint_modif(slave_grid);
+	//out<<"slave face"<<slave_mortar_face_nb_<<endl;
+    //out<<"loc_face_crosspoint_"<<loc_face_crosspoint_<<endl;
+	auto master_grid = master_space_->get_grid();
 
     vector< Index >  joint_face_grid_to_joint_grid_slave;
 	vector< Index >  joint_face_grid_to_joint_grid_master;
@@ -209,6 +262,19 @@ void Mortar_Interface<dim, dim_field>::integration()
 	DenseMatrix loc_e(multiplier_face_dof_num_.size(),face_dof_num_.size());
 	loc_e.clear();
 
+	
+	
+	//Local mortar correction matrix
+	DenseMatrix loc_ce(multiplier_face_dof_num_.size(),face_dof_num_.size());
+	loc_ce.clear();
+	vector<vector<Index>> loc_face_crosspoint_dof;
+	for (int i=0; i<loc_face_crosspoint_.size(); ++i){
+		vector<Index> temp_num;
+		auto temp=multiplier_face_space_->get_face_space(loc_face_crosspoint_[i],temp_num);
+		loc_face_crosspoint_dof.push_back(temp_num);
+	}
+	out<<"LISTE DOF"<<loc_face_crosspoint_dof[0]<<endl;
+	//using 	Derivative = Derivatives< dim, 1, 1, 1>;
 
 	
 	// Loop on the face joint grid to lead the integration on the slave side
@@ -221,9 +287,9 @@ void Mortar_Interface<dim, dim_field>::integration()
 		
 
 		out<<"face joint grid element nb:"<<felem_j_id<<endl;
-		out<<felem_j.is_boundary()<<endl;
         auto face_meas=static_cast<CartesianGridElement<dim-1>&>(felem_j).get_measure();
 		out<<"face_meas"<<face_meas<<endl;
+		
 
 
 		
@@ -260,6 +326,48 @@ void Mortar_Interface<dim, dim_field>::integration()
         auto basis_slave      = felem_slave.evaluate_basis_values_at_points(curr_slave_face_quad_pts_unit);
 		auto basis_multiplier = felem_multiplier.evaluate_basis_values_at_points(curr_slave_face_quad_pts_unit);
 		auto basis_master     = felem_master.evaluate_basis_values_at_points(curr_master_face_quad_pts_unit);
+		
+		
+		//out<<felem_j.is_boundary(0)<<felem_j.is_boundary(1)<<endl;
+		//out<<"is bound"<<felem_j.is_boundary()<<endl;
+		//out<<"is bound"<<felem_j.is_boundary(0)<<endl;
+		
+		auto felem_slave_ref=felem_slave.get_ref_space_accessor();
+		////auto basis_slave_ref=felem_slave_ref.evaluate_basis_values_at_points(curr_slave_face_quad_pts_unit);
+		////out<<basis_slave.get_function_view(0)[0]<<basis_slave_ref.get_function_view(0)[0];
+		
+		if (!loc_face_crosspoint_.empty()){
+			for (int i=0; i<loc_face_crosspoint_.size(); ++i) {
+				if (felem_j.is_boundary(loc_face_crosspoint_[i]){
+					if (degree_multiplier_==1)
+						auto deri_slave=felem_slave_ref. template evaluate_basis_derivatives_at_points<1>(curr_slave_face_quad_pts_unit);
+					else if (degree_multiplier_==2)
+						auto deri_slave=felem_slave_ref. template evaluate_basis_derivatives_at_points<2>(curr_slave_face_quad_pts_unit);
+					else if (degree_multiplier_==3)
+						auto deri_slave=felem_slave_ref. template evaluate_basis_derivatives_at_points<3>(curr_slave_face_quad_pts_unit);
+					else if (degree_multiplier_==4)
+						auto deri_slave=felem_slave_ref. template evaluate_basis_derivatives_at_points<4>(curr_slave_face_quad_pts_unit);
+					else if (degree_multiplier_==5)
+						auto deri_slave=felem_slave_ref. template evaluate_basis_derivatives_at_points<5>(curr_slave_face_quad_pts_unit);
+					else 
+						Assert(false,ExcNotImplemented());
+				}
+			}	
+		////auto deri_slave_ref=felem_slave_ref. template evaluate_basis_derivatives_at_points<degree_multiplier_>(curr_slave_face_quad_pts_unit);
+		////out<<deri_slave.get_function_view(0)[20]<<endl;
+		}
+		
+		
+		//if (!loc_face_crosspoint_.empty()){
+		//	for (int i=0; i<loc_face_crosspoint_.size(); ++i) {
+		//		if (felem_j.is_boundary(loc_face_crosspoint_[i])
+		//			
+		//		}
+		//}
+		//else {
+		//	
+		//}
+		
 		
 		
 		//add the contributions of the current element
@@ -474,8 +582,8 @@ int main()
     //LogStream out;
     const int dim(2);
     const int dim_field(1);
-    vector<int> degrees(2,3);
-    const int deg(3);
+    vector<int> degrees(2,2);
+    const int deg(2);
 
 
     // Mapping $\R^2 \rightarrow \R^2$, scalar field
@@ -497,7 +605,7 @@ int main()
     vector<PhySpace_ptr>        spaces;
 
     MultiPatchSpace<PhySpace> domain_multip;
-    domain_multip.arrangement_open();
+    domain_multip.patch_insertion_open();
     ////////
     const boundary_id mortar_id = 7;
     ////////
@@ -513,6 +621,9 @@ int main()
 		if (i==1){
 			spaces[i]->refine_h(2); 
 		}// Problem here with a value different than 2
+		if (i==0){
+			spaces[i]->refine_h(3); 
+		}// Problem here with a value different than 2
 		if(i==0){
 			spaces[i]->get_grid()->set_boundary_id(2,3);
 		}
@@ -527,13 +638,13 @@ int main()
 		domain_multip.add_patch(spaces[i]);
 	}
 	
-	domain_multip.arrangement_close();
+	domain_multip.patch_insertion_close();
 	auto dof_manager=domain_multip.get_dofs_manager();
 	
+	//spaces[0]->get_grid()->set_boundary_id(2,2)
 	
 	
-	
-	auto my_lc=Mortar_Interface<dim,dim_field>(mortar_id, deg, 0, 1, spaces[0], 1, 0, spaces[1], dof_manager);
+	auto my_lc=Mortar_Interface<dim,dim_field>(mortar_id, deg, 0, 1, spaces[0], 1, 0, spaces[1], dof_manager,true);
 	//my_lc.integration();
 	auto my_lc_sol=my_lc.get_LCs();
 	out<<"+++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;

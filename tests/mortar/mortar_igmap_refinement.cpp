@@ -34,7 +34,7 @@ shared_ptr<Mapping<dim>> geometry_from_file(int patch_nb)
 
 
 template <int dim, int dim_field>
-void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees, LogStream &out)
+void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees)
 {
 
     using RefSpaceField         = BSplineSpace<dim,dim_field,1>;
@@ -43,19 +43,21 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees, LogS
     using PhySpace              = PhysicalSpace<RefSpaceField, PushFw>;
     using PhySpace_ptr          = shared_ptr<PhySpace>;
 
-//    vector<RefSpaceField_ptr>   ref_spaces_field;
+    vector<RefSpaceField_ptr>   ref_spaces_field;
     vector<PhySpace_ptr>        spaces;
 
 
     for (int i=0; i!=maps.size(); ++i)
     {
-        cout << "Map[" << i << "]" <<endl;
+        //cout << "Map[" << i << "]" <<endl;
         auto grid = maps[i]->get_grid();
-        auto ref_spaces_field = RefSpaceField::create(degrees[i], grid);
-        spaces.push_back(PhySpace::create(ref_spaces_field, PushFw::create(maps[i]),i));
-        spaces[i]->print_info(out);
-        grid->refine(3); 
-        spaces[i]->print_info(out);
+        ref_spaces_field.push_back(RefSpaceField::create(degrees[i], grid));
+        spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i]),i));
+        //spaces[i]->print_info(out);
+		grid->print_info(out);
+        grid->refine(5); 
+		grid->print_info(out);
+        //spaces[i]->print_info(out);
     }
 }
 
@@ -74,7 +76,7 @@ int main()
     {
         maps_d22.push_back(geometry_from_file<dim2>(i));
     }
-    do_test<dim2,2>(maps_d22, degrees,out);
+    do_test<dim2,2>(maps_d22, degrees);
 
     // Mapping $\R^2 \rightarrow \R^2$, scalar field
     vector<shared_ptr<Mapping<dim2,0>>> maps_d21;
@@ -82,6 +84,6 @@ int main()
     {
         maps_d21.push_back(geometry_from_file<dim2>(i));
     }
-    do_test<dim2,1>(maps_d21, degrees,out);
+    do_test<dim2,1>(maps_d21, degrees);
 
 }

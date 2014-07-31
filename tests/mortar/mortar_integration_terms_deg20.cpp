@@ -496,7 +496,7 @@ int main()
     vector<PhySpace_ptr>        spaces;
 
     MultiPatchSpace<PhySpace> domain_multip;
-    domain_multip.arrangement_open();
+    domain_multip.patch_insertion_open();
     ////////
     const boundary_id mortar_id = 7;
     ////////
@@ -526,7 +526,7 @@ int main()
 		domain_multip.add_patch(spaces[i]);
 	}
 	
-	domain_multip.arrangement_close();
+	domain_multip.patch_insertion_close();
 	auto dof_manager=domain_multip.get_dofs_manager();
 	
 	

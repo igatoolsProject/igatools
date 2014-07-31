@@ -1,0 +1,56 @@
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 1.00000 ]
+		Direction[1] = [ 0 1.00000 ]
+	Num elements: 1
+		Direction[0] = 1
+		Direction[1] = 1
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+		Direction[1] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+	Num elements: 25
+		Direction[0] = 5
+		Direction[1] = 5
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 1.00000 ]
+		Direction[1] = [ 0 1.00000 ]
+	Num elements: 1
+		Direction[0] = 1
+		Direction[1] = 1
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+		Direction[1] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+	Num elements: 25
+		Direction[0] = 5
+		Direction[1] = 5
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 1.00000 ]
+		Direction[1] = [ 0 1.00000 ]
+	Num elements: 1
+		Direction[0] = 1
+		Direction[1] = 1
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+		Direction[1] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+	Num elements: 25
+		Direction[0] = 5
+		Direction[1] = 5
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 1.00000 ]
+		Direction[1] = [ 0 1.00000 ]
+	Num elements: 1
+		Direction[0] = 1
+		Direction[1] = 1
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+		Direction[1] = [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+	Num elements: 25
+		Direction[0] = 5
+		Direction[1] = 5
