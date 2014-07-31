@@ -22,6 +22,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/identity_mapping.h>
 #include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/dofs_manager.h>
 
 using std::endl;
 using std::array;

@@ -26,8 +26,13 @@
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/equality_constraint.h>
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/physical_space.h>
 //#include <igatools/linear_algebra/sparsity_pattern.h>
 //#include <boost/graph/adjacency_list.hpp>
+
+
+#include <boost/variant.hpp>
 
 #include <memory>
 
@@ -239,7 +244,6 @@ private:
     std::map<int,SpaceInfo> spaces_info_;
 
 
-
     DofsView dofs_view_;
 
 
@@ -255,11 +259,30 @@ private:
     std::vector<EqualityConstraint> equality_constraints_;
 
 
-    /** Counts and return the number of unique dofs in the MultiPatchSpace. */
+    /** Counts and return the number of unique dofs in the DofsManager. */
     Index count_unique_dofs() const;
 
-    /** Number of unique dofs in the MultiPatchSpace. */
+    /** Number of unique dofs in the DofsManager. */
     Index num_unique_dofs_;
+
+
+
+    template<class RefSpace,class PushFwd>
+    using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
+
+    static const int rank = 1;
+
+    template<int dim_phys>
+    using SpacePtrVariant = boost::variant<
+                            PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,dim_phys-1>>,
+                            PhysSpacePtr<BSplineSpace<2,1,rank>,PushForward<Transformation::h_grad,2,dim_phys-2>>,
+                            PhysSpacePtr<BSplineSpace<2,2,rank>,PushForward<Transformation::h_grad,2,dim_phys-2>>,
+                            PhysSpacePtr<BSplineSpace<3,1,rank>,PushForward<Transformation::h_grad,3,dim_phys-3>>,
+                            PhysSpacePtr<BSplineSpace<3,3,rank>,PushForward<Transformation::h_grad,3,dim_phys-3>>
+                            >;
+
+
+    std::vector<SpacePtrVariant<3>> spaces_;
 };
 
 
