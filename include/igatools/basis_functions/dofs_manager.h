@@ -103,12 +103,12 @@ public:
     /** @name Functions for changing the internal state of the DofsManager */
     ///@{
     /**
-     * Sets the DofsManager in a state that can receive the views of the dofs by some spaces.
+     * Sets the DofsManager in a state that can receive the insertion of new spaces.
      */
-    void dofs_view_open();
+    void space_insertion_open();
 
     /**
-     * Sets the DofsManager in a state that cannot receive anymore the views of the dofs by some spaces.
+     * Sets the DofsManager in a state that cannot receive any new space.
      *
      * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
      * then the dofs in each space are renumbered by the DofsManager.
@@ -117,7 +117,7 @@ public:
      *
      * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      */
-    void dofs_view_close(const bool automatic_dofs_renumbering = true);
+    void space_insertion_close(const bool automatic_dofs_renumbering = true);
 
     /**
      * Sets the DofsManager in a state that can receive the views of the dofs in each element.
@@ -209,9 +209,9 @@ public:
     void remove_equality_constraints_redundancies();
 
     /**
-     * Returns true if the dofs view is open.
+     * Returns true if the space insertion is open.
      */
-    bool is_dofs_view_open() const;
+    bool is_space_insertion_open() const;
 
     /**
      * Returns true if the elements dofs views are open.
@@ -224,7 +224,7 @@ public:
     void add_element_dofs_view(const DofsConstView &element_dofs_view);
 
 private:
-    bool is_dofs_view_open_ = false;
+    bool is_space_insertion_open_ = false;
     bool are_elements_dofs_view_open_ = false;
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;

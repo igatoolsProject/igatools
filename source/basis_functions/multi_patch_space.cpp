@@ -52,7 +52,7 @@ patch_insertion_open()
 {
     is_patch_insertion_open_ = true;
 
-    dofs_manager_->dofs_view_open();
+    dofs_manager_->space_insertion_open();
 }
 
 template <class PhysicalSpace>
@@ -95,7 +95,7 @@ patch_insertion_close(const bool automatic_dofs_renumbering)
     //------------------------------------------------------------------------
 
 
-    dofs_manager_->dofs_view_close(automatic_dofs_renumbering);
+    dofs_manager_->space_insertion_close(automatic_dofs_renumbering);
 
     is_patch_insertion_open_ = false;
 }

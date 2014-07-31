@@ -332,7 +332,7 @@ create_dofs_manager()
     using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
 
     //---------------------------------------------------------------------------------------------
-    dofs_manager_->dofs_view_open();
+    dofs_manager_->space_insertion_open();
     auto &index_space = this->get_basis_indices().get_index_distribution();
 
     vector<DofsComponentView> space_components_view;
@@ -351,7 +351,7 @@ create_dofs_manager()
 
     const Index space_id = 0;
     dofs_manager_->add_dofs_space_view(space_id,this->get_num_basis(),dofs_space_view);
-    dofs_manager_->dofs_view_close(false);
+    dofs_manager_->space_insertion_close(false);
     //---------------------------------------------------------------------------------------------
 
 
