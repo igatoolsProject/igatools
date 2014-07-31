@@ -212,7 +212,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 }
 #endif //#ifdef USE_PETSC
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

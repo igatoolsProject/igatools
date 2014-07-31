@@ -27,39 +27,36 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/cartesian_grid.h>
-
-
-
+#include <igatools/geometry/grid_tools.h>
 
 template<int dim>
 void do_test()
 {
     out << "=============== Dimension " << dim << " -- begin ===============" << endl ;
 
-    CartesianGrid<dim> grid_1(3);
+    auto grid_1 = CartesianGrid<dim>::create(3);
     out << "------------------------------------------" << endl;
     out << "Grid 1" << endl;
-    grid_1.print_info(out);
+    grid_1->print_info(out);
     out << "------------------------------------------" << endl;
 
     out << endl;
 
-    CartesianGrid<dim> grid_2(4);
+    auto grid_2 = CartesianGrid<dim>::create(4);
     out << "------------------------------------------" << endl;
     out << "Grid 2" << endl;
-    grid_2.print_info(out);
+    grid_2->print_info(out);
     out << "------------------------------------------" << endl;
 
     out << endl;
 
     vector<int> map_elem_grid_union_to_elem_grid_1;
     vector<int> map_elem_grid_union_to_elem_grid_2;
-    CartesianGrid<dim> grid_union = build_cartesian_grid_union(grid_1,grid_2,
-                                                               map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);
+    auto grid_union = grid_tools::build_cartesian_grid_union(*grid_1, *grid_2,
+                                                 map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);
     out << "------------------------------------------" << endl;
     out << "Grid union" << endl;
-    grid_union.print_info(out);
+    grid_union->print_info(out);
 
     out << "map_elem_grid_union_to_elem_grid_1 = " << map_elem_grid_union_to_elem_grid_1 << endl;
     out << "map_elem_grid_union_to_elem_grid_2 = " << map_elem_grid_union_to_elem_grid_2 << endl;
