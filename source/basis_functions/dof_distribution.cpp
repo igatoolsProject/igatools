@@ -54,6 +54,25 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
 
 template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
+{
+    return index_distribution_(comp).flat_to_tensor(index);
+}
+
+
+template<int dim, int range, int rank>
+Index
+DofDistribution<dim, range, rank>::
+basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
+                     const Index comp) const
+{
+    return index_distribution_(comp).tensor_to_flat(tensor_index);
+}
+
+
+template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
 reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol)
@@ -196,6 +215,22 @@ add_dofs_offset(const Index offset)
     for (auto &dofs_component : index_distribution_)
         for (auto &dof_id : dofs_component)
             dof_id += offset;
+}
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_index_distribution() const -> const IndexDistributionTable &
+{
+    return index_distribution_;
+}
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_elements_view() const -> const DynamicMultiArray<DofsView, dim> &
+{
+    return element_loc_to_global_view_;
 }
 
 

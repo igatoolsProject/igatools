@@ -69,18 +69,13 @@ public:
 
 
     TensorIndex<dim>
-    basis_flat_to_tensor(const Index index, const Index comp) const
-    {
-        return index_distribution_(comp).flat_to_tensor(index);
-    }
+    basis_flat_to_tensor(const Index index, const Index comp) const;
 
 
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                         const Index comp) const
-    {
-        return index_distribution_(comp).tensor_to_flat(tensor_index);
-    }
+                         const Index comp) const;
+
     /**
      * Print the class content
      */
@@ -94,17 +89,6 @@ public:
 private:
 
     IndexDistributionTable index_distribution_;
-
-#if 0
-    //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
-    DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
-
-    DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
-        std::shared_ptr<const CartesianGrid<dim> > grid,
-        const MultiplicityTable &accum_mult,
-        const SpaceDimensionTable &n_elem_basis,
-        const IndexDistributionTable &index_distribution) const;
-#endif
 
 
     void create_element_loc_to_global_view(
@@ -125,16 +109,9 @@ private:
 
 public:
 
-    const IndexDistributionTable &get_index_distribution() const
-    {
-        return index_distribution_;
-    }
+    const IndexDistributionTable &get_index_distribution() const;
 
-    const DynamicMultiArray<DofsView, dim> & get_elements_view() const
-	{
-    	return element_loc_to_global_view_;
-	}
-
+    const DynamicMultiArray<DofsView, dim> &get_elements_view() const;
 };
 
 IGA_NAMESPACE_CLOSE
