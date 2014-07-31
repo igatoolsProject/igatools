@@ -73,9 +73,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<la_pack> &rhs,
                            Vector<la_pack> &solution);
 
-
 } // end of namespace dof_tools
-
 
 IGA_NAMESPACE_CLOSE
 
