@@ -372,13 +372,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_dofs_manager() const -> std::shared_ptr<const DofsManager>
 {
-    shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
-
-    dofs_manager->space_insertion_open();
-    dofs_manager->add_space(const_pointer_cast<self_t>(this->shared_from_this()));
-    dofs_manager->space_insertion_close();
-
-    return dofs_manager;
+    return const_cast<self_t &>(*this).get_dofs_manager();
 }
 
 template<int dim_, int range_, int rank_>

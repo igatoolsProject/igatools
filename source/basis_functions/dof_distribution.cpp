@@ -63,9 +63,6 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         components_views.emplace_back(
             DofsComponentView(dofs_comp_data.begin(),dofs_comp_data.end()));
     }
-
-//    DofsIterator space_dofs_begin(components_views,0);
-//    DofsIterator space_dofs_end(components_views,IteratorState::pass_the_end);
     dofs_view_ = DofsView(
                      DofsIterator(components_views,0),
                      DofsIterator(components_views,IteratorState::pass_the_end));
