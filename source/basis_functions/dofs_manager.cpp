@@ -108,11 +108,12 @@ SpaceInfo(const SpacePtrVariant &space,
           const DofsView &dofs_view)
     :
     space_(space),
+    n_dofs_(n_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view)
 {
-    Assert(n_dofs > 0,ExcEmptyObject());
+    Assert(n_dofs_ > 0,ExcEmptyObject());
 }
 
 

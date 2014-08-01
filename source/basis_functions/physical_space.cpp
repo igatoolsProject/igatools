@@ -36,8 +36,7 @@ PhysicalSpace(
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
-    push_forward_(push_forward),
-    id_(id)
+    push_forward_(push_forward)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
@@ -46,6 +45,7 @@ PhysicalSpace(
     Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 
+    ref_space_->set_id(id);
 }
 
 
@@ -63,7 +63,7 @@ clone() const -> shared_ptr<self_t>
         new self_t(
             shared_ptr<RefSpace>(new RefSpace(*ref_space_)),
             shared_ptr<PushForwardType>(new PushForwardType(*push_forward_)),
-            id_)
+            this->get_id())
     );
 };
 
@@ -188,31 +188,13 @@ get_face_space(const Index face_id,
     return face_space;
 }
 
-#if 0
-template <class RefSpace_, class PushForward_>
-auto
-PhysicalSpace<RefSpace_,PushForward_>::
-get_degree() const -> const ComponentTable<TensorIndex<dim>> &
-{
-    return ref_space_->get_degree();
-}
-
-
-template <class RefSpace_, class PushForward_>
-auto
-PhysicalSpace<RefSpace_,PushForward_>::
-get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
-{
-    return ref_space_->get_element_global_dofs();
-}
-#endif
 
 template <class RefSpace_, class PushForward_>
 Index
 PhysicalSpace<RefSpace_,PushForward_>::
 get_id() const
 {
-    return id_;
+    return ref_space_->get_id();
 }
 
 template <class RefSpace_, class PushForward_>

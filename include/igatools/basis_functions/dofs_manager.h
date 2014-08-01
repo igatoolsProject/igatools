@@ -317,19 +317,6 @@ private:
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 
-#if 0
-    /**
-     * Adds the view to the dofs of a space to the vector of views held by the DofsManager.
-     * @param[in] space_id The identifier of the space.
-     * @param[in] num_dofs_space Number of dofs that are represented by the view that is added by this function.
-     * @param[in] dofs_space_view View of the dofs that must be added to the DofsManager.
-     * @pre In order to call this function, the DofsManager must be be in the state that permits to receive
-     * the dofs view. In other words, the user should call dofs_arrangement_open().
-     */
-    void add_dofs_space_view(const int space_id,
-                             const Index num_dofs_space,
-                             const DofsView &dofs_space_view);
-#endif
 
     struct SpaceInfo
     {

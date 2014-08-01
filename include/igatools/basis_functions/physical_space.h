@@ -195,26 +195,13 @@ public:
     }
 
 
-#if 0
-    /**
-     * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * The first index of the returned object is the component id, the second index is the direction id.
-     */
-    const ComponentTable<TensorIndex<dim>> &get_degree() const;
-
-
-    /**
-     * @todo Missing documentation
-     */
-    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
-#endif
 
 private:
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;
 
-    Index id_;
+//    Index id_;
 
     friend ElementAccessor;
 };

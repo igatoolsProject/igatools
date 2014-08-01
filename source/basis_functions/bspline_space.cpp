@@ -22,6 +22,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/identity_mapping.h>
 #include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/dofs_manager.h>
 
 using std::endl;
 using std::array;
@@ -355,11 +356,15 @@ get_loc_to_global(const TensorIndex<dim> &j) const
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_dofs_manager() -> std::shared_ptr<DofsManager>
+get_dofs_manager() -> shared_ptr<DofsManager>
 {
-    Assert(false,ExcNotImplemented());
+    shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
 
-    return nullptr;
+    dofs_manager->space_insertion_open();
+    dofs_manager->add_space(this->shared_from_this());
+    dofs_manager->space_insertion_close();
+
+    return dofs_manager;
 }
 
 template<int dim_, int range_, int rank_>
@@ -367,9 +372,13 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_dofs_manager() const -> std::shared_ptr<const DofsManager>
 {
-    Assert(false,ExcNotImplemented());
+    shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
 
-    return nullptr;
+    dofs_manager->space_insertion_open();
+    dofs_manager->add_space(const_pointer_cast<self_t>(this->shared_from_this()));
+    dofs_manager->space_insertion_close();
+
+    return dofs_manager;
 }
 
 template<int dim_, int range_, int rank_>
