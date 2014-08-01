@@ -20,9 +20,12 @@
 
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/dofs_manager.h>
+
 using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
@@ -196,6 +199,37 @@ get_id() const
 {
     return ref_space_->get_id();
 }
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dofs_manager() -> shared_ptr<DofsManager>
+{
+    shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
+
+    dofs_manager->space_insertion_open();
+    dofs_manager->add_space(this->shared_from_this());
+    dofs_manager->space_insertion_close();
+
+    return dofs_manager;
+}
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dofs_manager() const -> std::shared_ptr<const DofsManager>
+{
+    shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
+
+    dofs_manager->space_insertion_open();
+    dofs_manager->add_space(const_pointer_cast<self_t>(this->shared_from_this()));
+    dofs_manager->space_insertion_close();
+
+    return dofs_manager;
+}
+
 
 template <class RefSpace_, class PushForward_>
 void

@@ -180,19 +180,9 @@ public:
     void print_memory_info(LogStream &out) const;
 
 
-    std::shared_ptr<DofsManager> get_dofs_manager()
-    {
-        Assert(false,ExcNotImplemented());
+    std::shared_ptr<DofsManager> get_dofs_manager();
 
-        return nullptr;
-    }
-
-    std::shared_ptr<const DofsManager> get_dofs_manager() const
-    {
-        Assert(false,ExcNotImplemented());
-
-        return nullptr;
-    }
+    std::shared_ptr<const DofsManager> get_dofs_manager() const;
 
 
 
