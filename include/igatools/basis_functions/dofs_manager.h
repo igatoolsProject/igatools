@@ -32,6 +32,7 @@
 //#include <boost/graph/adjacency_list.hpp>
 
 
+#include <igatools/contrib/variant.h>
 #include <boost/variant.hpp>
 
 #include <memory>
@@ -45,7 +46,7 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 static const int rank = 1;
 
 using PhysSpacePtrVariant_space_dim_0 =
-    boost::variant<
+    Variant<
     PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,0>>,
     PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,0>>,
     PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,0>>,
@@ -55,7 +56,7 @@ using PhysSpacePtrVariant_space_dim_0 =
 
 
 using PhysSpacePtrVariant_space_dim_1 =
-    boost::variant<
+    Variant<
     PhysSpacePtr<BSplineSpace<1,1,1>,PushForward<Transformation::h_grad,1,0>>,
     PhysSpacePtr<BSplineSpace<0,1,1>,PushForward<Transformation::h_grad,0,1>>,
     PhysSpacePtr<BSplineSpace<1,2,1>,PushForward<Transformation::h_grad,1,0>>,
@@ -71,7 +72,7 @@ using PhysSpacePtrVariant_space_dim_1 =
 
 
 using PhysSpacePtrVariant_space_dim_2 =
-    boost::variant<
+    Variant<
     PhysSpacePtr<BSplineSpace<1,1,1>,PushForward<Transformation::h_grad,1,1>>,
     PhysSpacePtr<BSplineSpace<1,2,1>,PushForward<Transformation::h_grad,1,1>>,
     PhysSpacePtr<BSplineSpace<2,1,1>,PushForward<Transformation::h_grad,2,0>>,
@@ -91,7 +92,7 @@ using PhysSpacePtrVariant_space_dim_2 =
 
 
 using PhysSpacePtrVariant_space_dim_3 =
-    boost::variant<
+    Variant<
     PhysSpacePtr<BSplineSpace<1,1,1>,PushForward<Transformation::h_grad,1,2>>,
     PhysSpacePtr<BSplineSpace<1,3,1>,PushForward<Transformation::h_grad,1,2>>,
     PhysSpacePtr<BSplineSpace<2,1,1>,PushForward<Transformation::h_grad,2,1>>,
@@ -377,7 +378,7 @@ add_space(std::shared_ptr<Space> space)
     // check that the input space is not already added
     for (const auto &space_variant : spaces_)
     {
-        Assert(space != boost::get<std::shared_ptr<Space>>(space_variant),
+        Assert(space != get<std::shared_ptr<Space>>(space_variant),
                ExcMessage("Space already added in the DofsManager."));
     }
 #endif
