@@ -282,8 +282,10 @@ projection_l2(const typename Space::Func &func,
 {
     DofsManager<Space::space_dim> dofs_manager;
     dofs_manager.space_insertion_open();
-    dofs_manager.add_space(space);
+//    dofs_manager.add_space(space);
     dofs_manager.space_insertion_close();
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
 
     const SparsityPattern sparsity_pattern(dofs_manager);
     Matrix<la_pack> matrix(sparsity_pattern);
