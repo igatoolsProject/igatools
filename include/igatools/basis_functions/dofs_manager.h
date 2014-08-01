@@ -217,17 +217,6 @@ public:
     ///@}
 
 
-
-    /**
-     * Sets the DofsManager in a state that can receive the views of the dofs in each element.
-     */
-    void elements_dofs_view_open();
-
-    /**
-     * Sets the DofsManager in a state that cannot receive anymore the views of the dofs in each element.
-     */
-    void elements_dofs_view_close();
-
     /**
      * Sets the DofsManager in a state that can receive new equality constraints.
      */
@@ -301,10 +290,6 @@ public:
      */
     bool is_space_insertion_open() const;
 
-    /**
-     * Returns true if the elements dofs views are open.
-     */
-    bool are_elements_dofs_view_open() const;
 
     const std::vector<DofsConstView> &get_elements_dofs_view() const;
 
@@ -313,7 +298,7 @@ public:
 
 private:
     bool is_space_insertion_open_ = false;
-    bool are_elements_dofs_view_open_ = false;
+//    bool are_elements_dofs_view_open_ = false;
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 
@@ -325,13 +310,15 @@ private:
                   const Index n_dofs,
                   const Index min_dofs_id,
                   const Index max_dofs_id,
-                  const DofsView &dofs_view);
+                  const DofsView &dofs_view,
+                  const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view);
 
         SpacePtrVariant space_;
         Index n_dofs_ = 0;
         Index min_dofs_id_ = -1;
         Index max_dofs_id_ = -1;
         DofsView dofs_view_;
+        std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view_;
     };
 
     std::map<int,SpaceInfo> spaces_info_;
@@ -340,6 +327,7 @@ private:
     DofsView dofs_view_;
 
 
+    //TODO: this vector should be removed and instead use SpaceInfo::elements_dofs_view_
     std::vector<DofsConstView> elements_dofs_view_;
 
 
@@ -387,20 +375,8 @@ add_space(std::shared_ptr<Space> space)
                   ref_space->get_num_basis(),
                   dofs_distribution.get_min_dof_id(),
                   dofs_distribution.get_max_dof_id(),
-                  dofs_distribution.get_dofs_view());
-    //---------------------------------------------------------------------------------------------
-
-
-
-    //---------------------------------------------------------------------------------------------
-    // getting the views of the dofs on each element of the space
-    this->elements_dofs_view_open();
-
-    const auto &elements_view = ref_space->get_basis_indices().get_elements_view();
-    for (const auto &elem_view : elements_view)
-        this->add_element_dofs_view(elem_view);
-
-    this->elements_dofs_view_close();
+                  dofs_distribution.get_dofs_view(),
+                  dofs_distribution.get_elements_view());
     //---------------------------------------------------------------------------------------------
 }
 

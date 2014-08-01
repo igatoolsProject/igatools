@@ -84,13 +84,22 @@ space_insertion_close(const bool automatic_dofs_renumbering)
 
         auto view_ranges = dofs_view.begin().get_ranges();
         dofs_components_view.insert(dofs_components_view.end(),view_ranges.begin(),view_ranges.end());
+
+
+        // copying the element dofs views
+        elements_dofs_view_.insert(
+            elements_dofs_view_.end(),
+            space_info.second.elements_dofs_view_->begin(),
+            space_info.second.elements_dofs_view_->end());
     }
     //--------------------------------------------------------------------------
 
-    DofsIterator dofs_begin(dofs_components_view,0);;
-    DofsIterator dofs_end(dofs_components_view,IteratorState::pass_the_end);
+//    DofsIterator dofs_begin(dofs_components_view,0);;
+//    DofsIterator dofs_end(dofs_components_view,IteratorState::pass_the_end);
 
-    dofs_view_ = DofsView(dofs_begin,dofs_end);
+    dofs_view_ = DofsView(
+                     DofsIterator(dofs_components_view,0),
+                     DofsIterator(dofs_components_view,IteratorState::pass_the_end));
 
     is_space_insertion_open_ = false;
 
@@ -105,15 +114,18 @@ SpaceInfo(const SpacePtrVariant &space,
           const Index n_dofs,
           const Index min_dofs_id,
           const Index max_dofs_id,
-          const DofsView &dofs_view)
+          const DofsView &dofs_view,
+          const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view)
     :
     space_(space),
     n_dofs_(n_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
-    dofs_view_(dofs_view)
+    dofs_view_(dofs_view),
+    elements_dofs_view_(elements_dofs_view)
 {
     Assert(n_dofs_ > 0,ExcEmptyObject());
+    Assert(elements_dofs_view_ != nullptr,ExcNullPtr());
 }
 
 
@@ -202,51 +214,11 @@ is_space_insertion_open() const
 }
 
 
-bool
-DofsManager::
-are_elements_dofs_view_open() const
-{
-    return are_elements_dofs_view_open_;
-}
-
-
 auto
 DofsManager::
 get_elements_dofs_view() const -> const std::vector<DofsConstView> &
 {
     return elements_dofs_view_;
-}
-
-
-void
-DofsManager::
-elements_dofs_view_open()
-{
-    Assert(are_elements_dofs_view_open_ == false,
-           ExcMessage("Element dofs view already opened."));
-    are_elements_dofs_view_open_ = true;
-}
-
-
-void
-DofsManager::
-elements_dofs_view_close()
-{
-    Assert(are_elements_dofs_view_open_ == true,
-           ExcMessage("Element dofs view already closed."));
-    are_elements_dofs_view_open_ = false;
-}
-
-
-void
-DofsManager::
-add_element_dofs_view(const DofsConstView &element_dofs_view)
-{
-//    Assert(is_space_insertion_open_ == false,ExcInvalidState());
-
-    Assert(are_elements_dofs_view_open_ == true,ExcInvalidState());
-
-    elements_dofs_view_.push_back(element_dofs_view);
 }
 
 
@@ -268,9 +240,6 @@ equality_constraints_close()
     Assert(are_equality_constraints_open_ == true,
            ExcMessage("Equality constraints already closed."));
     are_equality_constraints_open_ = false;
-
-//    Assert(false,ExcNotImplemented());
-//    AssertThrow(false,ExcNotImplemented());
 }
 
 

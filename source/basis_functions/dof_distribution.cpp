@@ -36,7 +36,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_elements_dim()),
-    elements_loc_to_global_tensor_view_(grid->get_num_elements_dim()),
+//    elements_loc_to_global_tensor_view_(grid->get_num_elements_dim()),
     elements_loc_to_global_flat_view_(
         make_shared<vector<DofsConstView>>(vector<DofsConstView>(grid->get_num_elements()))),
     policy_(pol)
@@ -213,7 +213,7 @@ create_element_loc_to_global_view(
         const auto element_loc_to_global_view = DofsConstView(DofsConstIterator(dofs_elem_ranges,0),
                                                               DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
 
-        elements_loc_to_global_tensor_view_(t_index) = element_loc_to_global_view;
+//        elements_loc_to_global_tensor_view_(t_index) = element_loc_to_global_view;
 
         const auto f_index = elem.get_flat_index();
         (*elements_loc_to_global_flat_view_)[f_index] = element_loc_to_global_view;
@@ -263,13 +263,22 @@ get_index_distribution() const -> const IndexDistributionTable &
 {
     return index_distribution_;
 }
-
+/*
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
 get_elements_view() const -> const DynamicMultiArray<DofsConstView, dim> &
 {
     return elements_loc_to_global_tensor_view_;
+}
+//*/
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_elements_view() const -> std::shared_ptr<const std::vector<DofsConstView>>
+{
+    return elements_loc_to_global_flat_view_;
 }
 
 
@@ -301,7 +310,7 @@ print_info(LogStream &out) const
     out << std::endl;
 
     int i = 0;
-    for (auto dofs_elem : elements_loc_to_global_tensor_view_)
+    for (auto dofs_elem : *elements_loc_to_global_flat_view_)
     {
         out << this->get_loc_to_global_indices(i++) << std::endl;
         /*

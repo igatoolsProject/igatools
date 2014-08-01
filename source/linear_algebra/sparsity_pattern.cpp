@@ -47,7 +47,6 @@ SparsityPattern(const DofsManager &dofs_manager)
     for (const auto &dof : dofs_view)
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
-    Assert(dofs_manager.are_elements_dofs_view_open() == false,ExcInvalidState());
     Assert(!dofs_manager.get_elements_dofs_view().empty(),
            ExcEmptyObject());
     for (const auto element_dofs : dofs_manager.get_elements_dofs_view())
@@ -80,11 +79,11 @@ SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_man
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
 
-    Assert(dofs_manager_rows.are_elements_dofs_view_open() == false,ExcInvalidState());
+//    Assert(dofs_manager_rows.are_elements_dofs_view_open() == false,ExcInvalidState());
     const auto &elements_dofs_rows = dofs_manager_rows.get_elements_dofs_view();
     Assert(!elements_dofs_rows.empty(),ExcEmptyObject());
 
-    Assert(dofs_manager_cols.are_elements_dofs_view_open() == false,ExcInvalidState());
+//    Assert(dofs_manager_cols.are_elements_dofs_view_open() == false,ExcInvalidState());
     const auto &elements_dofs_cols = dofs_manager_cols.get_elements_dofs_view();
     Assert(!elements_dofs_cols.empty(),ExcEmptyObject());
 

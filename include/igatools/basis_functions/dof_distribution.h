@@ -128,7 +128,7 @@ private:
         const MultiplicityTable &accum_mult,
         const SpaceDimensionTable &n_elem_basis);
 
-    DynamicMultiArray<DofsConstView,dim> elements_loc_to_global_tensor_view_;
+//    DynamicMultiArray<DofsConstView,dim> elements_loc_to_global_tensor_view_;
 
     std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
 
@@ -142,7 +142,10 @@ public:
     const DofsView &get_dofs_view() const;
 
 
-    const DynamicMultiArray<DofsConstView, dim> &get_elements_view() const;
+//    const DynamicMultiArray<DofsConstView, dim> &get_elements_view() const;
+
+    std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
+
 };
 
 IGA_NAMESPACE_CLOSE
