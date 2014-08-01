@@ -52,16 +52,14 @@ public:
     /**
      * Constructs the SparsityPattern associated with the DofsManager of one space.
      */
-    template<int space_dim>
-    SparsityPattern(const DofsManager<space_dim> &dofs_manager);
+    SparsityPattern(const DofsManager &dofs_manager);
 
     /**
      * Construct the sparsity pattern associated with the DofsManager of two space.
      *
      * @warning This function only works when both spaces have the same number of elements.
      */
-    template<int space_dim>
-    SparsityPattern(const DofsManager<space_dim> &dofs_manager_rows,const DofsManager<space_dim> &dofs_manager_cols);
+    SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols);
     /*
         SparsityPattern(const std::vector< Index > row_dofs,
                         const std::vector< Index > col_dofs) ;

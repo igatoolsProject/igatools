@@ -34,6 +34,7 @@
 
 IGA_NAMESPACE_OPEN
 
+class DofsManager;
 
 template < int, int, int> class BSplineElementAccessor;
 
@@ -347,6 +348,9 @@ public:
                          const Index comp) const;
 
 
+    std::shared_ptr<DofsManager> get_dofs_manager();
+
+    std::shared_ptr<const DofsManager> get_dofs_manager() const;
 
 private:
 

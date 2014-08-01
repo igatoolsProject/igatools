@@ -21,6 +21,7 @@
 
 #include <igatools/basis_functions/multi_patch_space.h>
 #include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/dofs_manager.h>
 #include <igatools/utils/vector_tools.h>
 
 #include <igatools/utils/dynamic_multi_array.h>
@@ -37,7 +38,7 @@ IGA_NAMESPACE_OPEN
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
-MultiPatchSpace(shared_ptr<DofsManager<space_dim>> dofs_manager)
+MultiPatchSpace(shared_ptr<DofsManager> dofs_manager)
     :
     dofs_manager_(dofs_manager)
 {
@@ -249,7 +250,21 @@ get_num_interfaces() const
 template <class PhysicalSpace>
 auto
 MultiPatchSpace<PhysicalSpace>::
-get_dofs_manager() const -> shared_ptr<DofsManager<space_dim>>
+get_dofs_manager() -> shared_ptr<DofsManager>
+{
+    /*
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(is_graph_built_ == true,ExcInvalidState());
+    Assert(are_constraints_computed_ == true,ExcInvalidState());
+    //*/
+    return dofs_manager_;
+}
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+get_dofs_manager() const -> shared_ptr<const DofsManager>
 {
     /*
     Assert(is_patch_insertion_open_ == false,ExcInvalidState());

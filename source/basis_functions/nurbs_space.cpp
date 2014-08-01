@@ -531,6 +531,22 @@ add_dofs_offset(const Index offset)
 }
 
 template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dofs_manager() -> std::shared_ptr<DofsManager>
+{
+    return sp_space_->get_dofs_manager();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dofs_manager() const -> std::shared_ptr<const DofsManager>
+{
+    return sp_space_->get_dofs_manager();
+}
+
+template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const

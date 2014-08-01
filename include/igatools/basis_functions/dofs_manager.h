@@ -45,81 +45,83 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
 static const int rank = 1;
 
-using PhysSpacePtrVariant_space_dim_0 =
+using PhysSpacePtrVariant =
     Variant<
+    std::shared_ptr<BSplineSpace<0,1,rank>>,
+    std::shared_ptr<BSplineSpace<1,1,rank>>,
+    std::shared_ptr<BSplineSpace<2,1,rank>>,
+    std::shared_ptr<BSplineSpace<3,1,rank>>,
+    std::shared_ptr<BSplineSpace<0,2,rank>>,
+    std::shared_ptr<BSplineSpace<1,2,rank>>,
+    std::shared_ptr<BSplineSpace<2,2,rank>>,
+    std::shared_ptr<BSplineSpace<3,2,rank>>,
+    std::shared_ptr<BSplineSpace<0,3,rank>>,
+    std::shared_ptr<BSplineSpace<1,3,rank>>,
+    std::shared_ptr<BSplineSpace<2,3,rank>>,
+    std::shared_ptr<BSplineSpace<3,3,rank>>,
+    std::shared_ptr<NURBSSpace<0,1,rank>>,
+    std::shared_ptr<NURBSSpace<1,1,rank>>,
+    std::shared_ptr<NURBSSpace<2,1,rank>>,
+    std::shared_ptr<NURBSSpace<3,1,rank>>,
+    std::shared_ptr<NURBSSpace<0,2,rank>>,
+    std::shared_ptr<NURBSSpace<1,2,rank>>,
+    std::shared_ptr<NURBSSpace<2,2,rank>>,
+    std::shared_ptr<NURBSSpace<3,2,rank>>,
+    std::shared_ptr<NURBSSpace<0,3,rank>>,
+    std::shared_ptr<NURBSSpace<1,3,rank>>,
+    std::shared_ptr<NURBSSpace<2,3,rank>>,
+    std::shared_ptr<NURBSSpace<3,3,rank>>,
     PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,0>>,
     PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,0>>,
     PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,0>>,
     PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,0>>,
     PhysSpacePtr<NURBSSpace<0,2,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,0>>>;
+    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,0>>,
+    PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,0>>,
+    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,1>>,
+    PhysSpacePtr<BSplineSpace<1,2,rank>,PushForward<Transformation::h_grad,1,0>>,
+    PhysSpacePtr<BSplineSpace<1,3,rank>,PushForward<Transformation::h_grad,1,0>>,
+    PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,1>>,
+    PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,1>>,
+    PhysSpacePtr<NURBSSpace<1,1,rank>,PushForward<Transformation::h_grad,1,0>>,
+    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,1>>,
+    PhysSpacePtr<NURBSSpace<1,2,rank>,PushForward<Transformation::h_grad,1,0>>,
+    PhysSpacePtr<NURBSSpace<1,3,rank>,PushForward<Transformation::h_grad,1,0>>,
+    PhysSpacePtr<NURBSSpace<0,2,rank>,PushForward<Transformation::h_grad,0,1>>,
+    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,1>>,
+    PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,1>>,
+    PhysSpacePtr<BSplineSpace<1,2,rank>,PushForward<Transformation::h_grad,1,1>>,
+    PhysSpacePtr<BSplineSpace<2,1,rank>,PushForward<Transformation::h_grad,2,0>>,
+    PhysSpacePtr<BSplineSpace<2,2,rank>,PushForward<Transformation::h_grad,2,0>>,
+    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,2>>,
+    PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,2>>,
+    PhysSpacePtr<BSplineSpace<2,3,rank>,PushForward<Transformation::h_grad,2,0>>,
+    PhysSpacePtr<BSplineSpace<1,3,rank>,PushForward<Transformation::h_grad,1,1>>,
+    PhysSpacePtr<NURBSSpace<1,1,rank>,PushForward<Transformation::h_grad,1,1>>,
+    PhysSpacePtr<NURBSSpace<1,2,rank>,PushForward<Transformation::h_grad,1,1>>,
+    PhysSpacePtr<NURBSSpace<2,1,rank>,PushForward<Transformation::h_grad,2,0>>,
+    PhysSpacePtr<NURBSSpace<2,2,rank>,PushForward<Transformation::h_grad,2,0>>,
+    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,2>>,
+    PhysSpacePtr<NURBSSpace<0,2,rank>,PushForward<Transformation::h_grad,0,2>>,
+    PhysSpacePtr<NURBSSpace<2,3,rank>,PushForward<Transformation::h_grad,2,0>>,
+    PhysSpacePtr<NURBSSpace<1,3,rank>,PushForward<Transformation::h_grad,1,1>>,
+    PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,2>>,
+    PhysSpacePtr<BSplineSpace<1,3,rank>,PushForward<Transformation::h_grad,1,2>>,
+    PhysSpacePtr<BSplineSpace<2,1,rank>,PushForward<Transformation::h_grad,2,1>>,
+    PhysSpacePtr<BSplineSpace<2,3,rank>,PushForward<Transformation::h_grad,2,1>>,
+    PhysSpacePtr<BSplineSpace<3,1,rank>,PushForward<Transformation::h_grad,3,0>>,
+    PhysSpacePtr<BSplineSpace<3,3,rank>,PushForward<Transformation::h_grad,3,0>>,
+    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,3>>,
+    PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,3>>,
+    PhysSpacePtr<NURBSSpace<1,1,rank>,PushForward<Transformation::h_grad,1,2>>,
+    PhysSpacePtr<NURBSSpace<1,3,rank>,PushForward<Transformation::h_grad,1,2>>,
+    PhysSpacePtr<NURBSSpace<2,1,rank>,PushForward<Transformation::h_grad,2,1>>,
+    PhysSpacePtr<NURBSSpace<2,3,rank>,PushForward<Transformation::h_grad,2,1>>,
+    PhysSpacePtr<NURBSSpace<3,1,rank>,PushForward<Transformation::h_grad,3,0>>,
+    PhysSpacePtr<NURBSSpace<3,3,rank>,PushForward<Transformation::h_grad,3,0>>,
+    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,3>>,
+    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,3>>>;
 
-
-using PhysSpacePtrVariant_space_dim_1 =
-    Variant<
-    PhysSpacePtr<BSplineSpace<1,1,1>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<BSplineSpace<0,1,1>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<BSplineSpace<1,2,1>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<BSplineSpace<1,3,1>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<BSplineSpace<0,2,1>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<BSplineSpace<0,3,1>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<NURBSSpace<1,1,1>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,1>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<NURBSSpace<1,2,1>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<NURBSSpace<1,3,1>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<NURBSSpace<0,2,1>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<NURBSSpace<0,3,1>,PushForward<Transformation::h_grad,0,1>>>;
-
-
-using PhysSpacePtrVariant_space_dim_2 =
-    Variant<
-    PhysSpacePtr<BSplineSpace<1,1,1>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<BSplineSpace<1,2,1>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<BSplineSpace<2,1,1>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<BSplineSpace<2,2,1>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<BSplineSpace<0,1,1>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<BSplineSpace<0,2,1>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<BSplineSpace<2,3,1>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<BSplineSpace<1,3,1>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<NURBSSpace<1,1,1>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<NURBSSpace<1,2,1>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<NURBSSpace<2,1,1>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<NURBSSpace<2,2,1>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,1>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<NURBSSpace<0,2,1>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<NURBSSpace<2,3,1>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<NURBSSpace<1,3,1>,PushForward<Transformation::h_grad,1,1>>>;
-
-
-using PhysSpacePtrVariant_space_dim_3 =
-    Variant<
-    PhysSpacePtr<BSplineSpace<1,1,1>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<BSplineSpace<1,3,1>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<BSplineSpace<2,1,1>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<BSplineSpace<2,3,1>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<BSplineSpace<3,1,1>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<BSplineSpace<3,3,1>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<BSplineSpace<0,1,1>,PushForward<Transformation::h_grad,0,3>>,
-    PhysSpacePtr<BSplineSpace<0,3,1>,PushForward<Transformation::h_grad,0,3>>,
-    PhysSpacePtr<NURBSSpace<1,1,1>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<NURBSSpace<1,3,1>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<NURBSSpace<2,1,1>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<NURBSSpace<2,3,1>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<NURBSSpace<3,1,1>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<NURBSSpace<3,3,1>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,1>,PushForward<Transformation::h_grad,0,3>>,
-    PhysSpacePtr<NURBSSpace<0,3,1>,PushForward<Transformation::h_grad,0,3>>>;
-
-
-template <int space_dim>
-using PhysSpacePtrVariant =
-    Conditional<(space_dim==0),PhysSpacePtrVariant_space_dim_0,
-    Conditional<(space_dim==1),PhysSpacePtrVariant_space_dim_1,
-    Conditional<(space_dim==2),PhysSpacePtrVariant_space_dim_2,
-    PhysSpacePtrVariant_space_dim_3
-    >
-    >
-    >;
 
 
 /**
@@ -137,7 +139,6 @@ using PhysSpacePtrVariant =
  * @author M. Martinelli
  * @date 10 Jun 2014
  */
-template <int space_dim>
 class DofsManager
 {
 public:
@@ -173,10 +174,10 @@ public:
     DofsManager();
 
     /** Copy constructor. */
-    DofsManager(const DofsManager<space_dim> &dofs_manager) = default;
+    DofsManager(const DofsManager &dofs_manager) = default;
 
     /** Move constructor. */
-    DofsManager(DofsManager<space_dim> &&dofs_manager) = default;
+    DofsManager(DofsManager &&dofs_manager) = default;
 
     /**
      * Prints internal information about the DofsManager.
@@ -358,20 +359,17 @@ private:
 
 
 
-    std::vector<PhysSpacePtrVariant<space_dim>> spaces_;
+    std::vector<PhysSpacePtrVariant> spaces_;
 };
 
 
 
-template<int space_dim>
 template<class Space>
 inline
 void
-DofsManager<space_dim>::
+DofsManager::
 add_space(std::shared_ptr<Space> space)
 {
-    Assert(Space::space_dim == space_dim,ExcDimensionMismatch(space_dim,space_dim));
-
     Assert(space != nullptr,ExcNullPtr());
 
 #ifndef NDEBUG

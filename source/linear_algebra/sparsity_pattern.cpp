@@ -26,9 +26,8 @@ using std::pair;
 
 IGA_NAMESPACE_OPEN
 
-template <int space_dim>
 SparsityPattern::
-SparsityPattern(const DofsManager<space_dim> &dofs_manager)
+SparsityPattern(const DofsManager &dofs_manager)
 {
     Assert(dofs_manager.is_space_insertion_open() == false,ExcInvalidState());
 
@@ -56,9 +55,8 @@ SparsityPattern(const DofsManager<space_dim> &dofs_manager)
             (*this)[dof].insert(element_dofs.begin(),element_dofs.end());
 }
 
-template <int space_dim>
 SparsityPattern::
-SparsityPattern(const DofsManager<space_dim> &dofs_manager_rows,const DofsManager<space_dim> &dofs_manager_cols)
+SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols)
 {
     Assert(dofs_manager_rows.is_space_insertion_open() == false,ExcInvalidState());
     Assert(dofs_manager_cols.is_space_insertion_open() == false,ExcInvalidState());
@@ -161,11 +159,6 @@ SparsityPattern::get_num_overlapping_funcs() const
 
     return (num_overlapping_funcs) ;
 }
-
-template SparsityPattern::SparsityPattern(const DofsManager<0> &);
-template SparsityPattern::SparsityPattern(const DofsManager<1> &);
-template SparsityPattern::SparsityPattern(const DofsManager<2> &);
-template SparsityPattern::SparsityPattern(const DofsManager<3> &);
 
 IGA_NAMESPACE_CLOSE
 

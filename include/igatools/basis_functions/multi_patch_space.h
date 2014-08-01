@@ -100,8 +100,8 @@ public:
      * Default constructor. A DofsManager can be used as input argument in order to work with multiple
      * MultiPatchSpace and unique dof numbering.
      */
-    MultiPatchSpace(std::shared_ptr<DofsManager<space_dim>> dofs_manager =
-                        std::make_shared<DofsManager<space_dim>>(DofsManager<space_dim>()));
+    MultiPatchSpace(std::shared_ptr<DofsManager> dofs_manager =
+                        std::make_shared<DofsManager>(DofsManager()));
 
     /** Copy constructor. */
     MultiPatchSpace(const MultiPatchSpace<PhysicalSpace> &multi_patch_space) = delete;
@@ -249,8 +249,11 @@ public:
 
 
     /** Returns the DofsManager used in the MultiPatchSpace. */
-    std::shared_ptr<DofsManager<space_dim>> get_dofs_manager() const;
+    std::shared_ptr<DofsManager> get_dofs_manager();
 
+
+    /** Returns the DofsManager used in the MultiPatchSpace. */
+    std::shared_ptr<const DofsManager> get_dofs_manager() const;
 
 
 
@@ -397,7 +400,7 @@ private:
     ///*}
 
 
-    std::shared_ptr<DofsManager<space_dim>> dofs_manager_;
+    std::shared_ptr<DofsManager> dofs_manager_;
 
 public:
 

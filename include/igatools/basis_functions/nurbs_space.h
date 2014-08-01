@@ -162,6 +162,9 @@ public:
     ~NURBSSpace() = default;
 
 
+    std::shared_ptr<DofsManager> get_dofs_manager();
+
+    std::shared_ptr<const DofsManager> get_dofs_manager() const;
 
 
 protected:

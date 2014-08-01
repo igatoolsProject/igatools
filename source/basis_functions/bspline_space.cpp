@@ -353,6 +353,26 @@ get_loc_to_global(const TensorIndex<dim> &j) const
 }
 
 template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_dofs_manager() -> std::shared_ptr<DofsManager>
+{
+    Assert(false,ExcNotImplemented());
+
+    return nullptr;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_dofs_manager() const -> std::shared_ptr<const DofsManager>
+{
+    Assert(false,ExcNotImplemented());
+
+    return nullptr;
+}
+
+template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
