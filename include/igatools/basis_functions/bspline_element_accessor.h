@@ -82,7 +82,10 @@ public:
      * BsplineSpace space.
      */
     BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
-                           const int elem_index);
+                           const Index elem_index);
+
+    BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
+                           const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.

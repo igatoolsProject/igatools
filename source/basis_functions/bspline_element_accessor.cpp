@@ -278,7 +278,17 @@ private:
 template <int dim, int range, int rank>
 BSplineElementAccessor<dim, range, rank>::
 BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
-                       const int index)
+                       const Index index)
+    :
+    SpaceElementAccessor<BSplineSpace<dim,range,rank>>(space,index)
+{}
+
+
+
+template <int dim, int range, int rank>
+BSplineElementAccessor<dim, range, rank>::
+BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
+                       const TensorIndex<dim> &index)
     :
     SpaceElementAccessor<BSplineSpace<dim,range,rank>>(space,index)
 {}

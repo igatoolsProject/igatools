@@ -133,7 +133,11 @@ public:
      * BsplineSpace space.
      */
     SpaceElementAccessor(const std::shared_ptr<const Space> space,
-                         const int elem_index);
+                         const Index elem_index);
+
+
+    SpaceElementAccessor(const std::shared_ptr<const Space> space,
+                         const TensorIndex<dim> &elem_index);
 
 
     /**

@@ -66,6 +66,9 @@ public:
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index);
 
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+                         const TensorIndex<dim> &elem_index);
+
     /**
      * Copy constructor.
      */

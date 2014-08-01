@@ -45,6 +45,17 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 
 
 template <int dim_>
+CartesianGridElementAccessor<dim_>::
+CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
+                             const TensorIndex<dim> index)
+    :
+    CartesianGridElement<dim>(grid, index),
+    length_cache_ {new LengthCache}
+{}
+
+
+
+template <int dim_>
 bool
 CartesianGridElementAccessor<dim_>::
 operator== (const CartesianGridElementAccessor<dim_> &a) const

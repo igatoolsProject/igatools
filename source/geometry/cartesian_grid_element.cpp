@@ -39,8 +39,21 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
     :
     grid_(grid)
 {
-    this->reset_flat_tensor_indices(index);
+    reset_flat_tensor_indices(index);
 }
+
+
+
+template <int dim_>
+CartesianGridElement<dim_>::
+CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+                     const TensorIndex<dim> &index)
+    :
+    grid_(grid)
+{
+    reset_flat_tensor_indices(index);
+}
+
 
 
 template <int dim_>

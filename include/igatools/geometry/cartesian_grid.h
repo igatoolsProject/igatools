@@ -157,7 +157,6 @@ protected:
     CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates,
                   const Kind kind);
 
-
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as std::array of std::vector<Real>.
