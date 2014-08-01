@@ -204,7 +204,11 @@ public:
     ///@{
     /** Copy assignment operator. */
     GridForwardIterator<Accessor> &
-    operator=(const GridForwardIterator<Accessor> &) = default;
+    operator=(const GridForwardIterator<Accessor> &it)
+    {
+        accessor_ = it.accessor_;
+        return *this;
+    }
 
     /** Move assignment operator. */
     GridForwardIterator<Accessor> &
@@ -256,6 +260,8 @@ public:
      *  a reference to <tt>*this</tt>.
      */
     GridForwardIterator<Accessor> &operator++();
+
+
     ///@}
 
 protected:

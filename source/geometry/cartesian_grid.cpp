@@ -520,7 +520,8 @@ print_info(LogStream &out) const
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_grid(const int face_id, std::map<int,int> &elem_map) const
+get_face_grid(const int face_id,
+              std::map<typename FaceType::ElementIterator, ElementIterator> &elem_map) const
 -> shared_ptr<FaceType>
 {
     Assert(dim > 0, ExcLowerRange(dim,1));
@@ -547,7 +548,7 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const
         for (int j=0; j<dim-1; ++j)
             v_index[active_dirs[j]] = f_index[j];
         v_elem->move_to(v_index);
-        elem_map[f_elem->get_flat_index()]=v_elem->get_flat_index();
+        elem_map[f_elem] = v_elem;
     }
 
     return face_grid;

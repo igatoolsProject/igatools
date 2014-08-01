@@ -339,15 +339,19 @@ public:
      */
     Points<dim> get_face_normal(const int face_no) const;
 
-
-    // TODO (pauletti, Aug 1, 2014): should be replaced by get_element_from_point
     /**
-     * Returns the CartesianGrid on the @p face_id.
+     * Construct a cartesian grid of dim-1 conforming to
+     * the grid face face_id and a map from the elements of
+     * the face grid to the corresponding element of the current
+     * grid.
      */
     std::shared_ptr<FaceType>
-    get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
+    get_face_grid(const int face_id,
+                  std::map<typename FaceType::ElementIterator, ElementIterator> &elem_map) const;
 
     ///@}
+
+    // TODO (pauletti, Aug 1, 2014): should be replaced by get_element_from_point
     Index get_element_flat_id_from_point(const Points<dim> &point) const;
 
 
