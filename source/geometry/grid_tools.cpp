@@ -77,14 +77,14 @@ build_map_elements_between_cartesian_grids(
     for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
     {
         TensorIndex<dim> elem_fine_tid =
-                grid_fine.flat_to_tensor_element_index(elem_fine_fid);
+            grid_fine.flat_to_tensor_element_index(elem_fine_fid);
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
             elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][elem_fine_tid[i]];
 
         const int elem_coarse_fid =
-                grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
+            grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
 
         map_elem_fine_to_elem_coarse[elem_fine_fid] = elem_coarse_fid;
     }
@@ -96,11 +96,11 @@ build_map_elements_between_cartesian_grids(
 
 template <int dim>
 std::shared_ptr<CartesianGrid<dim>>
-build_cartesian_grid_union(
-    const CartesianGrid<dim> &grid_1,
-    const CartesianGrid<dim> &grid_2,
-    vector<Index> &map_elem_grid_union_to_elem_grid_1,
-    vector<Index> &map_elem_grid_union_to_elem_grid_2)
+                                 build_cartesian_grid_union(
+                                     const CartesianGrid<dim> &grid_1,
+                                     const CartesianGrid<dim> &grid_2,
+                                     vector<Index> &map_elem_grid_union_to_elem_grid_1,
+                                     vector<Index> &map_elem_grid_union_to_elem_grid_2)
 {
     //---------------------------------------------------------
     // checks that the grid are on the same domain
@@ -131,9 +131,9 @@ build_cartesian_grid_union(
 
     //---------------------------------------------------------
     map_elem_grid_union_to_elem_grid_1 =
-            build_map_elements_between_cartesian_grids(*grid_union,grid_1);
+        build_map_elements_between_cartesian_grids(*grid_union,grid_1);
     map_elem_grid_union_to_elem_grid_2 =
-            build_map_elements_between_cartesian_grids(*grid_union,grid_2);
+        build_map_elements_between_cartesian_grids(*grid_union,grid_2);
     //---------------------------------------------------------
 
     return grid_union;

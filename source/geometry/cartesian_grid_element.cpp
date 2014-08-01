@@ -90,7 +90,7 @@ reset_flat_tensor_indices(const Index flat_index)
         using Utils = MultiArrayUtils<dim>;
         tensor_index_ = Utils::flat_to_tensor_index(
                             flat_index_,
-                            Utils::compute_weight(grid_->get_num_elements_dim()));
+                            Utils::compute_weight(grid_->get_num_intervals()));
     }
     else
         tensor_index_.fill(IteratorState::pass_the_end);
@@ -108,7 +108,7 @@ reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
     using Utils = MultiArrayUtils<dim>;
     flat_index_ = Utils::tensor_to_flat_index(
                       tensor_index_,
-                      Utils::compute_weight(grid_->get_num_elements_dim()));
+                      Utils::compute_weight(grid_->get_num_intervals()));
 
     Assert((flat_index_ == IteratorState::pass_the_end) ||
            ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
@@ -246,7 +246,7 @@ template <int dim_>
 bool CartesianGridElement<dim_>::
 is_boundary() const
 {
-    const auto num_elements_dim = this->get_grid()->get_num_elements_dim();
+    const auto num_elements_dim = this->get_grid()->get_num_intervals();
 
     const auto &element_index = this->get_tensor_index() ;
 
@@ -269,7 +269,7 @@ is_boundary(const Index face_id) const
     const int face_side = UnitElement<dim>::face_side[face_id];
 
     const auto element_id_dir = this->get_tensor_index()[const_direction] ;
-    const auto num_elements_dir = this->get_grid()->get_num_elements_dim()(const_direction);
+    const auto num_elements_dir = this->get_grid()->get_num_intervals()(const_direction);
 
     return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
 }
@@ -398,7 +398,7 @@ move(const TensorIndex<dim> &increment)
 {
     tensor_index_ += increment;
 
-    const auto n_elems = grid_->get_num_elements_dim();
+    const auto n_elems = grid_->get_num_intervals();
     bool valid_tensor_index = true;
     for (int i = 0 ; i < dim ; ++i)
     {

@@ -74,9 +74,11 @@ operator++()
 {
     const auto n_elem = this->grid_->num_elem_.flat_size();
     Index index = this->get_flat_index();
-    do{
+    do
+    {
         ++index;
-    } while (index<n_elem && (!this->grid_->active_elems_(index)) );
+    }
+    while (index<n_elem && (!this->grid_->active_elems_(index)));
 
     if (index >= n_elem)
         index = IteratorState::pass_the_end;

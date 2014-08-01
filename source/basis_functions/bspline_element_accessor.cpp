@@ -441,7 +441,7 @@ reset(const Space &space,
     {
         n_intervals_(i) = intervals_id[i].size();
 
-        Assert(n_intervals_(i) == space.get_grid()->get_num_elements_dim()(i) ||
+        Assert(n_intervals_(i) == space.get_grid()->get_num_intervals()(i) ||
                n_intervals_(i) == 1,
                ExcMessage("Invalid number of intervals along the direction " + std::to_string(i)));
     }
@@ -542,7 +542,7 @@ reset(const Space &space,
     {
         auto &intervals_id_direction = intervals_id[i];
 
-        const int n_intervals = grid->get_num_elements_dim()(i);
+        const int n_intervals = grid->get_num_intervals()(i);
 
         intervals_id_direction.resize(n_intervals);
 
@@ -554,8 +554,8 @@ reset(const Space &space,
 
 #ifndef NDEBUG
     for (int i = 0 ; i < dim ; ++i)
-        Assert(this->n_intervals_(i) == grid->get_num_elements_dim()(i),
-               ExcDimensionMismatch(this->n_intervals_(i),grid->get_num_elements_dim()(i)));
+        Assert(this->n_intervals_(i) == grid->get_num_intervals()(i),
+               ExcDimensionMismatch(this->n_intervals_(i),grid->get_num_intervals()(i)));
 #endif
     //------------------------------------------------------------------------------------------
 
@@ -583,7 +583,7 @@ reset(const Space &space,
         auto &intervals_id_direction = intervals_id[i];
         if (i != const_dir)
         {
-            const int n_intervals = space.get_grid()->get_num_elements_dim()(i);
+            const int n_intervals = space.get_grid()->get_num_intervals()(i);
 
             intervals_id_direction.resize(n_intervals);
             for (int id = 0 ; id < n_intervals ; ++id)
@@ -595,7 +595,7 @@ reset(const Space &space,
             if (face_id % 2 == 0)
                 intervals_id_direction.push_back(0);
             else
-                intervals_id_direction.push_back(space.get_grid()->get_num_elements_dim()(i)-1);
+                intervals_id_direction.push_back(space.get_grid()->get_num_intervals()(i)-1);
 
             Assert(intervals_id_direction.size() == 1,
                    ExcDimensionMismatch(intervals_id_direction.size(),1));
@@ -609,8 +609,8 @@ reset(const Space &space,
     {
         if (i != const_dir)
         {
-            Assert(this->n_intervals_(i) == space.get_grid()->get_num_elements_dim()(i),
-                   ExcDimensionMismatch(this->n_intervals_(i),space.get_grid()->get_num_elements_dim()(i)));
+            Assert(this->n_intervals_(i) == space.get_grid()->get_num_intervals()(i),
+                   ExcDimensionMismatch(this->n_intervals_(i),space.get_grid()->get_num_intervals()(i)));
         }
         else
         {

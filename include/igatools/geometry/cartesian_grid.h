@@ -43,6 +43,8 @@ template <int> class CartesianGridElementAccessor;
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
+ * Vector of knot vectors without repetition interpreted as a tensor product
+ * cartesian grid.
  *
  * ### Getting a CartesianGrid by an XML structure.
  * A CartesianGrid object can be obtained by a Boost XML structure using the
@@ -87,7 +89,8 @@ public:
     /** Dimensionality of the grid. */
     static const int dim = dim_;
 
-    using KnotCoordinates = CartesianProductArray<Real,dim>;
+    /** Type for the vector of knot vectors */
+    using KnotCoordinates = CartesianProductArray<Real, dim>;
 
     /**
      * Types of grid for future optimization
@@ -104,16 +107,19 @@ public:
      */
     using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
 
-    /** Type for iterator over the elements.*/
-    using ElementIterator = GridForwardIterator<CartesianGridElementAccessor<dim> >;
+    /** Type for the element accessor. */
+    using ElementAccessor = CartesianGridElementAccessor<dim>;
+
+    /** Type for iterator over the elements.  */
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
     /** @name Constructors*/
     ///@{
+protected:
     /**
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
-protected:
     explicit CartesianGrid(const Size n = 2);
 
     /**
@@ -265,12 +271,14 @@ public:
      */
     Size get_num_active_elems() const;
 
+    /** Total number of elements, including active and non-active */
     Size get_num_all_elems() const;
+
     /**
      * Total number of one dimensional intervals along each
      * coordinate direction.
      */
-    TensorSize<dim> get_num_elements_dim() const;
+    TensorSize<dim> get_num_intervals() const;
 
     /**
      * Query the number of knot values along each coordinate direction
@@ -294,8 +302,8 @@ public:
     CartesianProductArray<Real, dim> get_element_lengths() const;
 
     /**
-     * Returns the smallest <tt>dim</tt>-dimensional bounding box enclosing the domain represented
-     * by the CartesianGrid object.
+     * Returns the smallest <tt>dim</tt>-dimensional bounding box enclosing the
+     * domain represented by the CartesianGrid object.
      */
     BBox<dim> get_bounding_box() const;
     ///@}
@@ -335,45 +343,52 @@ public:
     /**
      * Returns the CartesianGrid on the @p face_id.
      */
-    std::shared_ptr<FaceType> get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
+    std::shared_ptr<FaceType>
+    get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
 
     ///@}
 
     /**
      * Returns the flat id of the element that contains the <tt>point</tt>.
-     * @note If the points belongs to the boundaries of two elements, then the owner will be the
-     * element with smaller id.
-     * @note If the point does not belong to the domain represented by the CartesianGrid object,
-     * then an assertion will be raised (in Debug mode).
+     * @note If the points belongs to the boundaries of two elements, then the
+     * owner will be the element with smaller id.
+     * @note If the point does not belong to the domain represented by the
+     * CartesianGrid object, then an assertion will be raised (in Debug mode).
      */
     Index get_element_flat_id_from_point(const Points<dim> &point) const;
 
     /**
-     * Returns the flat representation of an element index from its tensor-like representation.
-     * @note In Debug mode, the element index is checked for its validity in the CartesianGrid.
+     * Returns the flat representation of an element index from its tensor-like
+     * representation.
+     * @note In Debug mode, the element index is checked for its validity in
+     * the CartesianGrid.
      */
     Index tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const;
 
     /**
-     * Returns the tensor-like representation of an element index from its flat representation.
-     * @note In Debug mode, the element index is checked for its validity in the CartesianGrid.
+     * Returns the tensor-like representation of an element index from its flat
+     * representation.
+     * @note In Debug mode, the element index is checked for its validity in the
+     * CartesianGrid.
      */
     TensorIndex<dim> flat_to_tensor_element_index(const Index flat_id) const;
 
     /**
-     * Prints the CartesianGrid on a LogStream.
+     * Prints debug information of the CartesianGrid to a LogStream.
      */
     void print_info(LogStream &out) const;
 
     /**
-     * Comparison operator. Returns true if the knot coordinates of two grid are identical.
+     * Comparison operator. Returns true if the knot coordinates of two grid
+     * are identical.
      */
     bool operator==(const CartesianGrid<dim> &grid) const;
 
 private:
     /** Type for the refinement signal. */
-    using signal_refine_t = boost::signals2::signal<
-                            void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
+    using signal_refine_t =
+        boost::signals2::signal<
+        void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
 
 public:
 
@@ -383,10 +398,13 @@ public:
     /** @name Functions for performing grid refinement */
     ///@{
     /**
-     * Perform a uniform refinement of the grid along the @p direction_id direction,
+     * Perform a uniform refinement of the grid along the @p direction_id
+     * direction,
      * dividing each interval into @p n_subdivisions intervals.
-     * @param[in] direction_id Direction along which the refinement is performed.
-     * @param[in] n_subdivisions Number of subdivision in which each interval in the grid
+     * @param[in] direction_id Direction along which the refinement is
+     * performed.
+     * @param[in] n_subdivisions Number of subdivision in which each interval
+     * in the grid
      * along the specified direction is divided. This value must be >= 2.
      */
     void refine_direction(const int direction_id, const Size n_subdivisions);
@@ -396,7 +414,8 @@ public:
      * e.g. maps, spaces, etc.
      * along the directions specified by the true values in the entries of the
      * array of bools @p refinement_directions,
-     * and with a number of subdivisions for each interval (along each direction)
+     * and with a number of subdivisions for each interval
+     * (along each direction)
      * specified by @p n_subdivisions.
      *
      * @note If the i-th direction is not active for the refinement
@@ -411,20 +430,23 @@ public:
      * Refine the cartesian grid and the objects connected to it (if any),
      * e.g. maps, spaces, etc.
      *
-     * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
-     * sub-intervals.
+     * Each interval in the unrefined grid is uniformly divided
+     * in @p n_subdivisions sub-intervals.
      */
     void refine(const Size n_subdivisions = 2);
 
     /**
-     *  Connect a slot (i.e. a function pointer) to the refinement signals which will be
-     *  emitted whenever a refine() function is called by an object holding a CartesianGrid member.
+     *  Connect a slot (i.e. a function pointer) to the refinement signals
+     *  which will be
+     *  emitted whenever a refine() function is called by an object holding
+     *  a CartesianGrid member.
      */
-    boost::signals2::connection connect_refinement(const SignalRefineSlot &subscriber);
+    boost::signals2::connection
+    connect_refinement(const SignalRefineSlot &subscriber);
 
     /**
-     * Returns the grid before the last refinement. If no refinement is performed,
-     * this function returns a null pointer.
+     * Returns the grid before the last refinement. If no refinement is
+     * performed, this function returns a null pointer.
      */
     std::shared_ptr<const self_t > get_grid_pre_refinement() const;
     ///@}
@@ -466,23 +488,28 @@ private:
     DynamicMultiArray<bool,dim> active_elems_;
 
     /**
-     * Perform a uniform refinement of the knots along the @p direction_id direction,
-     * dividing each interval in the knot vector into @p n_subdivisions intervals.
-     * @param[in] direction_id Direction along which the refinement is performed.
-     * @param[in] n_subdivisions Number of subdivision in which each interval in the knot vector is
+     * Perform a uniform refinement of the knots along the @p direction_id
+     * direction,
+     * dividing each interval in the knot vector into @p n_subdivisions
+     * intervals.
+     * @param[in] direction_id Direction along which the refinement is
+     * performed.
+     * @param[in] n_subdivisions Number of subdivision in which each interval
+     * in the knot vector is
      * divided. This value must be >= 2.
      */
     void refine_knots_direction(const int direction_id,
                                 const Size n_subdivisions);
 
     /**
-     * This class member is the grid before the last refinement. If no refinement is performed,
-     * this is a null pointer.
+     * This class member is the grid before the last refinement. If no
+     * refinement is performed, this is a null pointer.
      */
     std::shared_ptr<const self_t> grid_pre_refinement_ = nullptr;
 
     /**
-     * Signals for the h-refinement. It can be viewed as a FIFO list of function pointers.
+     * Signals for the h-refinement. It can be viewed as a FIFO list of
+     * function pointers.
      */
     signal_refine_t refine_signals_;
 
@@ -490,11 +517,6 @@ private:
 
     friend class CartesianGridElementAccessor<dim>;
 };
-
-
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

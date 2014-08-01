@@ -34,7 +34,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const SpaceDimensionTable &n_elem_basis,
                 DistributionPolicy pol)
     :
-    element_loc_to_global_view_(grid->get_num_elements_dim()),
+    element_loc_to_global_view_(grid->get_num_intervals()),
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());

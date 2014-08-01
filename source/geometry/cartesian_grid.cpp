@@ -252,7 +252,7 @@ auto
 CartesianGrid<dim_>::
 get_element_lengths() const -> KnotCoordinates
 {
-    auto const &size = get_num_elements_dim();
+    auto const &size = get_num_intervals();
     KnotCoordinates length(size);
     for (int i = 0; i < dim; ++i)
     {
@@ -369,7 +369,7 @@ get_num_active_elems() const
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-get_num_elements_dim() const -> TensorSize<dim>
+get_num_intervals() const -> TensorSize<dim>
 {
     return num_elem_;
 }
