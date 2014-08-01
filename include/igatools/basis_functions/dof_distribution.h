@@ -22,6 +22,7 @@
 #define DOF_DISTRIBUTION_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/tensor_sized_container.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 #include <igatools/utils/concatenated_iterator.h>
@@ -39,7 +40,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int range = 1, int rank = 1>
-class DofDistribution
+class DofDistribution : public TensorSizedContainer<dim>
 {
 public:
     using Space = SplineSpace<dim, range, rank>;
@@ -127,7 +128,9 @@ private:
         const MultiplicityTable &accum_mult,
         const SpaceDimensionTable &n_elem_basis);
 
-    DynamicMultiArray<DofsConstView, dim> element_loc_to_global_view_;
+    DynamicMultiArray<DofsConstView,dim> elements_loc_to_global_tensor_view_;
+
+    std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
 
     DistributionPolicy policy_;
 
