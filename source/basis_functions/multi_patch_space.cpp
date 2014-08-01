@@ -204,7 +204,7 @@ add_patch(PatchPtr patch)
     patches_.push_back(patch);
 
 
-    dofs_manager_->add_space(std::const_pointer_cast<PhysicalSpace>(patch));
+    dofs_manager_->add_space(patch);
 }
 
 

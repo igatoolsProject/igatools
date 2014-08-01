@@ -39,17 +39,57 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
+    //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
     // by direction x moves faster
-    for (int comp = 0, j = 0; comp < Space::n_components; ++comp)
+    Index dof_id = 0;
+    for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
         index_distribution_(comp).resize(n_basis(comp));
         for (auto &x : index_distribution_(comp))
-            x = j++;
+            x = dof_id++;
     }
+    //-----------------------------------------------------------------------
+
+
+
+    //-----------------------------------------------------------------------
+    // creating the dofs view from the dofs components views -- begin
+    vector<DofsComponentView> components_views;
+    for (auto &dofs_distribution_comp : index_distribution_)
+    {
+        vector<Index> &dofs_comp_data =
+            const_cast<vector<Index> &>(dofs_distribution_comp.get_data());
+        components_views.emplace_back(
+            DofsComponentView(dofs_comp_data.begin(),dofs_comp_data.end()));
+    }
+
+//    DofsIterator space_dofs_begin(components_views,0);
+//    DofsIterator space_dofs_end(components_views,IteratorState::pass_the_end);
+    dofs_view_ = DofsView(
+                     DofsIterator(components_views,0),
+                     DofsIterator(components_views,IteratorState::pass_the_end));
+    // creating the dofs view from the dofs components views -- end
+    //-----------------------------------------------------------------------
 
 
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
+}
+
+template<int dim, int range, int rank>
+Index
+DofDistribution<dim, range, rank>::
+get_min_dof_id() const
+{
+    return *std::min_element(dofs_view_.begin(),dofs_view_.end());
+}
+
+template<int dim, int range, int rank>
+Index
+DofDistribution<dim, range, rank>::
+get_max_dof_id() const
+{
+    return *std::max_element(dofs_view_.begin(),dofs_view_.end());
 }
 
 
@@ -172,7 +212,7 @@ create_element_loc_to_global_view(
 
         } // end loop elem
 
-        dofs_elem_view = DofsView(
+        dofs_elem_view = DofsConstView(
                              DofsConstIterator(dofs_elem_ranges,0),
                              DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
     }
@@ -228,10 +268,28 @@ get_index_distribution() const -> const IndexDistributionTable &
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_elements_view() const -> const DynamicMultiArray<DofsView, dim> &
+get_elements_view() const -> const DynamicMultiArray<DofsConstView, dim> &
 {
     return element_loc_to_global_view_;
 }
+
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_dofs_view() -> DofsView &
+{
+    return dofs_view_;
+}
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_dofs_view() const -> const DofsView &
+{
+    return dofs_view_;
+}
+
 
 
 template<int dim, int range, int rank>

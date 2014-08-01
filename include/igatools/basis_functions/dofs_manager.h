@@ -45,7 +45,7 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
 static const int rank = 1;
 
-using PhysSpacePtrVariant =
+using SpacePtrVariant =
     Variant<
     std::shared_ptr<BSplineSpace<0,1,rank>>,
     std::shared_ptr<BSplineSpace<1,1,rank>>,
@@ -157,9 +157,6 @@ public:
     /** Type alias for a concatenated const-iterator defined on several compoenent views. */
     using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
-    /** Type alias for the View on the dofs held by each space in the DofsManager object. */
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
     /** Type alias for the View on the dofs held by the DofsManager object. */
     using DofsView = View<DofsIterator,DofsConstIterator>;
 
@@ -167,17 +164,20 @@ public:
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
 
-
-
-
+    /** @name Constructors */
+    ///@{
     /** Default constructor. */
     DofsManager();
 
     /** Copy constructor. */
-    DofsManager(const DofsManager &dofs_manager) = default;
+    DofsManager(const DofsManager &dofs_manager) = delete;
 
     /** Move constructor. */
     DofsManager(DofsManager &&dofs_manager) = default;
+    ///@}
+
+    /** Destructor. */
+    ~DofsManager() = default;
 
     /**
      * Prints internal information about the DofsManager.
@@ -186,7 +186,7 @@ public:
     void print_info(LogStream &out) const;
 
 
-    /** @name Functions for changing the internal state of the DofsManager */
+    /** @name Functions for managing the spaces in the DofsManager */
     ///@{
     /**
      * Sets the DofsManager in a state that can receive the insertion of new spaces.
@@ -204,6 +204,19 @@ public:
      * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      */
     void space_insertion_close(const bool automatic_dofs_renumbering = true);
+
+
+    /**
+     * Adds a space to the DofsManager.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the passed <p>space</p> is already present in the DofsManager.
+     */
+    template<class Space>
+    void add_space(std::shared_ptr<Space> space);
+    ///@}
+
+
 
     /**
      * Sets the DofsManager in a state that can receive the views of the dofs in each element.
@@ -243,9 +256,6 @@ public:
     void add_equality_constraint(const Index dof_id_master,const Index dof_id_slave);
 
 
-    template<class Space>
-    void add_space(std::shared_ptr<Space> space);
-    ///@}
 
     /** @name Functions for querying dofs information */
     ///@{
@@ -307,7 +317,7 @@ private:
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 
-
+#if 0
     /**
      * Adds the view to the dofs of a space to the vector of views held by the DofsManager.
      * @param[in] space_id The identifier of the space.
@@ -318,18 +328,23 @@ private:
      */
     void add_dofs_space_view(const int space_id,
                              const Index num_dofs_space,
-                             const SpaceDofsView &dofs_space_view);
-
-    std::vector<DofsComponentView> dofs_components_view_;
+                             const DofsView &dofs_space_view);
+#endif
 
     struct SpaceInfo
     {
-        SpaceInfo() = delete;
-        SpaceInfo(const Index n_dofs, const SpaceDofsView &dofs_view);
+        SpaceInfo() = default;
+        SpaceInfo(const SpacePtrVariant &space,
+                  const Index n_dofs,
+                  const Index min_dofs_id,
+                  const Index max_dofs_id,
+                  const DofsView &dofs_view);
 
-        Index n_dofs_;
-        Index offset_;
-        SpaceDofsView dofs_view_;
+        SpacePtrVariant space_;
+        Index n_dofs_ = 0;
+        Index min_dofs_id_ = -1;
+        Index max_dofs_id_ = -1;
+        DofsView dofs_view_;
     };
 
     std::map<int,SpaceInfo> spaces_info_;
@@ -341,10 +356,7 @@ private:
     std::vector<DofsConstView> elements_dofs_view_;
 
 
-
     std::vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
-
-
 
 
     std::vector<EqualityConstraint> equality_constraints_;
@@ -355,11 +367,6 @@ private:
 
     /** Number of unique dofs in the DofsManager. */
     Index num_unique_dofs_;
-
-
-
-
-    std::vector<PhysSpacePtrVariant> spaces_;
 };
 
 
@@ -374,53 +381,28 @@ add_space(std::shared_ptr<Space> space)
 
 #ifndef NDEBUG
     // check that the input space is not already added
-    for (const auto &space_variant : spaces_)
+    for (const auto &space_info : spaces_info_)
     {
-        Assert(space != get<std::shared_ptr<Space>>(space_variant),
+        Assert(space != get<std::shared_ptr<Space>>(space_info.second.space_),
                ExcMessage("Space already added in the DofsManager."));
     }
 #endif
-//    PhysSpacePtrVariant<space_dim> tmp = space;
-    spaces_.emplace_back(space);
-
-
 
     //------------------------------------------------------------------------
     // adding the dofs view of the space to the DofsManager -- begin
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
     using RefSpace = typename Space::RefSpace;
     auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
 
-    auto &index_space = ref_space->get_basis_indices().get_index_distribution();
+    auto &dofs_distribution = ref_space->get_basis_indices();
 
-    std::vector<DofsComponentView> space_components_view;
-    for (auto &index_space_comp : index_space)
-    {
-        std::vector<Index> &index_space_comp_data = const_cast<std::vector<Index> &>(index_space_comp.get_data());
-        DofsComponentView index_space_comp_view(
-            index_space_comp_data.begin(),index_space_comp_data.end());
+    spaces_info_[ref_space->get_id()] =
+        SpaceInfo(space,
+                  ref_space->get_num_basis(),
+                  dofs_distribution.get_min_dof_id(),
+                  dofs_distribution.get_max_dof_id(),
+                  dofs_distribution.get_dofs_view());
+    //---------------------------------------------------------------------------------------------
 
-        space_components_view.push_back(index_space_comp_view);
-    }
-
-    DofsIterator space_dofs_begin(space_components_view,0);
-    DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
-    SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
-
-    this->add_dofs_space_view(space->get_id(),
-                              space->get_num_basis(),
-                              dofs_space_view);
-
-    // adding the dofs view of the patch to the DofsManager -- end
-    //------------------------------------------------------------------------
 
 
     //---------------------------------------------------------------------------------------------

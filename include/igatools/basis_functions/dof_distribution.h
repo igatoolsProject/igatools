@@ -48,6 +48,31 @@ public:
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
+
+    /** Type alias for the dofs container used in each scalar component of a single-patch space. */
+    using DofsComponentContainer = std::vector<Index>;
+
+    /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+
+    /** Type alias for the ConstView on the dofs in each scalar component of a single-patch space. */
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+
+    /** Type alias for a concatenated iterator defined on several compoenent views. */
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
+
+    /** Type alias for a concatenated const-iterator defined on several compoenent views. */
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
+
+    /** Type alias for the View on the dofs held by the single-patch space. */
+    using DofsView = View<DofsIterator,DofsConstIterator>;
+
+    /** Type alias for the ConstView on the dofs held by the single-patch space. */
+    using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
+
+
+
+
     enum class DistributionPolicy
     {
         standard, component, other
@@ -85,25 +110,24 @@ public:
     /** Add an @p offset to the dofs. */
     void add_dofs_offset(const Index offset);
 
+    /** Returns the minimum dof id. */
+    Index get_min_dof_id() const;
+
+    /** Returns the maximum dof id. */
+    Index get_max_dof_id() const;
 
 private:
 
     IndexDistributionTable index_distribution_;
 
+    DofsView dofs_view_;
 
     void create_element_loc_to_global_view(
         std::shared_ptr<const CartesianGrid<dim> > grid,
         const MultiplicityTable &accum_mult,
         const SpaceDimensionTable &n_elem_basis);
 
-
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-    using DofsView = ConstView<DofsIterator,DofsConstIterator>;
-    DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
+    DynamicMultiArray<DofsConstView, dim> element_loc_to_global_view_;
 
     DistributionPolicy policy_;
 
@@ -111,7 +135,11 @@ public:
 
     const IndexDistributionTable &get_index_distribution() const;
 
-    const DynamicMultiArray<DofsView, dim> &get_elements_view() const;
+    DofsView &get_dofs_view();
+    const DofsView &get_dofs_view() const;
+
+
+    const DynamicMultiArray<DofsConstView, dim> &get_elements_view() const;
 };
 
 IGA_NAMESPACE_CLOSE
