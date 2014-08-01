@@ -339,6 +339,8 @@ public:
      */
     Points<dim> get_face_normal(const int face_no) const;
 
+
+    // TODO (pauletti, Aug 1, 2014): should be replaced by get_element_from_point
     /**
      * Returns the CartesianGrid on the @p face_id.
      */
@@ -352,6 +354,8 @@ public:
     std::vector<ElementIterator>
     get_element_from_point(const std::vector<Points<dim>> &points) const;
 
+
+    // TODO (pauletti, Aug 1, 2014): should be private
     /**
      * Returns the flat representation of an element index from its tensor-like
      * representation.
@@ -360,6 +364,7 @@ public:
      */
     Index tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const;
 
+    // TODO (pauletti, Aug 1, 2014): should be private
     /**
      * Returns the tensor-like representation of an element index from its flat
      * representation.

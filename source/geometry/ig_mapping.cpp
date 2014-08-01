@@ -246,7 +246,7 @@ template<class RefSpace>
 void IgMapping<RefSpace>::
 set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
-    cache_->reset_flat_tensor_indices(elem.get_flat_index());
+    cache_->move_to(elem.get_flat_index());
     cache_->fill_cache();
 }
 
@@ -258,7 +258,7 @@ set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &e
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-    cache_->reset_flat_tensor_indices(elem.get_flat_index());
+    cache_->move_to(elem.get_flat_index());
     cache_->fill_face_cache(face_id);
 }
 
@@ -374,7 +374,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
     for (const auto &elem_fid : elem_fids_no_duplicates)
     {
-        cache_->reset_flat_tensor_indices(elem_fid);
+        cache_->move_to(elem_fid);
 
         //here we copy the points that belongs to the current element
         const auto point_it_end = point_it + (*elem_multiplicity_it++);
@@ -420,7 +420,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
     for (const auto &elem_fid : elem_fids_no_duplicates)
     {
-        cache_->reset_flat_tensor_indices(elem_fid);
+        cache_->move_to(elem_fid);
 
         //here we copy the points that belongs to the current element
         const auto point_it_end = point_it + (*elem_multiplicity_it++);
@@ -466,7 +466,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessia
     auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
     for (const auto &elem_fid : elem_fids_no_duplicates)
     {
-        cache_->reset_flat_tensor_indices(elem_fid);
+        cache_->move_to(elem_fid);
 
         //here we copy the points that belongs to the current element
         const auto point_it_end = point_it + (*elem_multiplicity_it++);

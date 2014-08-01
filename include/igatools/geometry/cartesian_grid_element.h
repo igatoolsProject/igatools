@@ -112,26 +112,9 @@ public:
 
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
-
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void reset_flat_tensor_indices(const Index flat_index);
-
-    /**
-     * Sets the index of the element using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
     ///@}
 
+public:
     /** @name Query geometrical/topological information without use of cache */
     ///@{
     /**
@@ -240,7 +223,26 @@ public:
      * If the resulting position after the movement is valid (i.e. within the grid), then the function
      * returns true, otherwise it returns false.
      */
-    bool move(const TensorIndex<dim> &increment);
+    bool jump(const TensorIndex<dim> &increment);
+
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index);
+
+
+    /**
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const TensorIndex<dim> &tensor_index);
 
 protected:
     /** Cartesian grid from which the element belongs.*/

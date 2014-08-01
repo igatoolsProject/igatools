@@ -39,7 +39,7 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
     :
     grid_(grid)
 {
-    reset_flat_tensor_indices(index);
+    move_to(index);
 }
 
 
@@ -51,7 +51,7 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
     :
     grid_(grid)
 {
-    reset_flat_tensor_indices(index);
+    move_to(index);
 }
 
 
@@ -89,7 +89,7 @@ get_tensor_index() const -> TensorIndex<dim>
 template <int dim_>
 void
 CartesianGridElement<dim_>::
-reset_flat_tensor_indices(const Index flat_index)
+move_to(const Index flat_index)
 {
     Assert((flat_index == IteratorState::pass_the_end) ||
            ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
@@ -114,7 +114,7 @@ reset_flat_tensor_indices(const Index flat_index)
 template <int dim_>
 void
 CartesianGridElement<dim_>::
-reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
+move_to(const TensorIndex<dim> &tensor_index)
 {
     tensor_index_= tensor_index;
 
@@ -407,7 +407,7 @@ set_active(const bool active_flag)
 template <int dim_>
 bool
 CartesianGridElement<dim_>::
-move(const TensorIndex<dim> &increment)
+jump(const TensorIndex<dim> &increment)
 {
     tensor_index_ += increment;
 

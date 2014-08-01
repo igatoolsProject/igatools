@@ -132,7 +132,7 @@ void
 MappingSlice<dim_, codim_>::
 set_element(const CartesianGridElementAccessor<dim> &elem) const
 {
-    element->reset_flat_tensor_indices((*elem_map_)[elem.get_flat_index()]);
+    element->move_to((*elem_map_)[elem.get_flat_index()]);
     element->fill_cache();
 }
 

@@ -94,7 +94,7 @@ operator++()
     if (index >= n_elem)
         index = IteratorState::pass_the_end;
 
-    this->reset_flat_tensor_indices(index);
+    this->move_to(index);
 }
 
 

@@ -192,7 +192,7 @@ public:
      * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
      * (i.e. must have the same element-index) after an index update/reset.
      */
-    void reset_flat_tensor_indices(const Index flat_index);
+    void move_to(const Index flat_index);
 
     /**
      * Sets the index of the element using the tensor representation.
@@ -205,7 +205,7 @@ public:
      * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
      * (i.e. must have the same element-index) after an index update/reset.
      */
-    void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
+    void move_to(const TensorIndex<dim> &tensor_index);
     ///@}
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
