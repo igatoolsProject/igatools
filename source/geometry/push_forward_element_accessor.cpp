@@ -169,7 +169,7 @@ template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
 init_cache(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+           const Quadrature<dim> &quad)
 {
     base_t::init_cache(value_to_mapping_flag(fill_flag), quad);
 }
@@ -180,8 +180,8 @@ template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     AssertThrow(false,ExcNotImplemented());
 }
@@ -418,7 +418,7 @@ transform_hessians(
                     const auto &e1 = DF_inv[v1];
                     const auto &e2 = DF_inv[v2];
                     D2v[v2][v1] = action(D2v_hat, e1, e2) -
-                            action(D1v, action(D2F, e1, e2));
+                                  action(D1v, action(D2F, e1, e2));
                 }
 
                 for (int v2 = 0; v2 < v1; ++v2)

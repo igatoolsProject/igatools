@@ -27,6 +27,7 @@ using std::array;
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
+using std::endl;
 
 IGA_NAMESPACE_OPEN
 
@@ -238,19 +239,13 @@ void
 PhysicalSpace<RefSpace_,PushForward_>::
 print_info(LogStream &out) const
 {
-    using std::endl;
-    out << "PhysicalSpace info" << endl;
-
-    out.push("\t");
-    out << "Reference space:" << endl;
+    out.begin_item("Reference space:");
     ref_space_->print_info(out);
-    out << endl;
+    out.end_item();
 
-    out << "Push-forward:" << endl;
+    out.begin_item("Push-forward:");
     push_forward_->print_info(out);
-    out << endl;
-
-    out.pop();
+    out.end_item();
 }
 
 

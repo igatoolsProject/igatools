@@ -344,7 +344,7 @@ operator=(const Real value)
     Assert(!std::isnan(value),ExcNotANumber());
     Assert(!std::isinf(value),ExcNumberNotFinite());
 
-    for (auto & tensor_component : tensor_)
+    for (auto &tensor_component : tensor_)
         tensor_component = value ;
 
     return *this;
@@ -389,7 +389,7 @@ operator*=(const Real value)
     Assert(!std::isnan(value),ExcNotANumber());
     Assert(!std::isinf(value),ExcNumberNotFinite());
 
-    for (auto & tensor_component : tensor_)
+    for (auto &tensor_component : tensor_)
         tensor_component *= value ;
 
     return *this ;
@@ -407,7 +407,7 @@ operator/=(const Real value)
     Assert(!std::isinf(value),ExcNumberNotFinite());
     Assert(value != Real(0.0),ExcDivideByZero());
 
-    for (auto & tensor_component : tensor_)
+    for (auto &tensor_component : tensor_)
         tensor_component /= value ;
 
     return *this ;
@@ -420,7 +420,7 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator-()
 {
-    for (auto & tensor_component : tensor_)
+    for (auto &tensor_component : tensor_)
         tensor_component = -tensor_component ;
 
     return *this ;

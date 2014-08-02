@@ -145,7 +145,6 @@ public:
 //    const DynamicMultiArray<DofsConstView, dim> &get_elements_view() const;
 
     std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
-
 };
 
 IGA_NAMESPACE_CLOSE

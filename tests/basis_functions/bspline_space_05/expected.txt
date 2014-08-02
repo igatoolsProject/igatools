@@ -1,102 +1,128 @@
 Initial degree = 0
-Knots without repetition:
-CartesianGrid<0>
-	Knot coordinates:
-	Num elements: 1
-Degrees:
-[] 
-Interior multiplicities:
-Dimensionality Table:
-[ ] 
-Component Dimension:
-1 
-Total Dimension: 1
+Spline Space:
+   Knots without repetition:
+      Number of active elements: 1
+      Number of intervals per direction: [ ]
+      Knot coordinates:
+      
+   
+   Degrees:
+   [] 
+   Interior multiplicities:
+   
+   Dimensionality Table:
+   [ ] 
+   Component Dimension:
+   1 
+   Total Dimension: 1
 
-0 
-[ 0 ]
-Component[0]: 
+Basis Indices:
+   0 
+   [ 0 ]
+
+Bernstein Extraction:
+   Component[0]: 
+
 
 Initial degree = 1
-Knots without repetition:
-CartesianGrid<1>
-	Knot coordinates:
-		Direction[0] = [ 0 1.00000 ]
-	Num elements: 1
-		Direction[0] = 1
-Degrees:
-[1] 
-Interior multiplicities:
-[ ]
-Dimensionality Table:
-[ 2 ] 
-Component Dimension:
-2 
-Total Dimension: 2
+Spline Space:
+   Knots without repetition:
+      Number of active elements: 1
+      Number of intervals per direction: [ 1 ]
+      Knot coordinates:
+         [ 0 1.00000 ]
+      
+   
+   Degrees:
+   [1] 
+   Interior multiplicities:
+      [ ]
+   
+   Dimensionality Table:
+   [ 2 ] 
+   Component Dimension:
+   2 
+   Total Dimension: 2
 
-0 1 
-[ 0 1 ]
-Component[0]: 
-Direction[0]:
-[2,2]((1.00000,0.00000),(0.00000,1.00000))
+Basis Indices:
+   0 1 
+   [ 0 1 ]
+
+Bernstein Extraction:
+   Component[0]: 
+   Direction[0]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+
 
 Initial degree = 2
-Knots without repetition:
-CartesianGrid<2>
-	Knot coordinates:
-		Direction[0] = [ 0 1.00000 ]
-		Direction[1] = [ 0 1.00000 ]
-	Num elements: 1
-		Direction[0] = 1
-		Direction[1] = 1
-Degrees:
-[2,3] 
-Interior multiplicities:
-[ ]
-[ ]
-Dimensionality Table:
-[ 3 4 ] 
-Component Dimension:
-12 
-Total Dimension: 12
+Spline Space:
+   Knots without repetition:
+      Number of active elements: 1
+      Number of intervals per direction: [ 1 1 ]
+      Knot coordinates:
+         [ 0 1.00000 ]
+         [ 0 1.00000 ]
+      
+   
+   Degrees:
+   [2,3] 
+   Interior multiplicities:
+      [ ]
+      [ ]
+   
+   Dimensionality Table:
+   [ 3 4 ] 
+   Component Dimension:
+   12 
+   Total Dimension: 12
 
-0 1 2 3 4 5 6 7 8 9 10 11 
-[ 0 1 2 3 4 5 6 7 8 9 10 11 ]
-Component[0]: 
-Direction[0]:
-[3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-Direction[1]:
-[4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+Basis Indices:
+   0 1 2 3 4 5 6 7 8 9 10 11 
+   [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+
+Bernstein Extraction:
+   Component[0]: 
+   Direction[0]:
+   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+   Direction[1]:
+   [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+
 
 Initial degree = 3
-Knots without repetition:
-CartesianGrid<3>
-	Knot coordinates:
-		Direction[0] = [ 0 1.00000 ]
-		Direction[1] = [ 0 1.00000 ]
-		Direction[2] = [ 0 1.00000 ]
-	Num elements: 1
-		Direction[0] = 1
-		Direction[1] = 1
-		Direction[2] = 1
-Degrees:
-[3,4,5] 
-Interior multiplicities:
-[ ]
-[ ]
-[ ]
-Dimensionality Table:
-[ 4 5 6 ] 
-Component Dimension:
-120 
-Total Dimension: 120
+Spline Space:
+   Knots without repetition:
+      Number of active elements: 1
+      Number of intervals per direction: [ 1 1 1 ]
+      Knot coordinates:
+         [ 0 1.00000 ]
+         [ 0 1.00000 ]
+         [ 0 1.00000 ]
+      
+   
+   Degrees:
+   [3,4,5] 
+   Interior multiplicities:
+      [ ]
+      [ ]
+      [ ]
+   
+   Dimensionality Table:
+   [ 4 5 6 ] 
+   Component Dimension:
+   120 
+   Total Dimension: 120
 
-0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 
-[ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 ]
-Component[0]: 
-Direction[0]:
-[4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
-Direction[1]:
-[5,5]((1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000))
-Direction[2]:
-[6,6]((1.00000,0.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,0.00000,1.00000))
+Basis Indices:
+   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 
+   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 ]
+
+Bernstein Extraction:
+   Component[0]: 
+   Direction[0]:
+   [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+   Direction[1]:
+   [5,5]((1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000))
+   Direction[2]:
+   [6,6]((1.00000,0.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,0.00000,1.00000))
+
 

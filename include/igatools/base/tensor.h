@@ -569,8 +569,8 @@ private :
  */
 template<int dim, int range, int rank>
 using Values = Conditional<rank==0,
-		Tensor<1, 1, tensor::contravariant, Tdouble>,
-		Tensor<range, rank, tensor::contravariant, Tdouble>>;
+      Tensor<1, 1, tensor::contravariant, Tdouble>,
+      Tensor<range, rank, tensor::contravariant, Tdouble>>;
 
 //TODO(pauletti, Jul 9, 2014): the order 0 may not be necessary
 /**
@@ -708,8 +708,8 @@ EnableIf<!std::is_same<V_t,Tdouble>::value,
 
 template <typename A_t, typename V_t, typename... Rest>
 EnableIf<!std::is_same<V_t,Tdouble>::value,
-ActionTensor<ActionTensor<A_t>> >
-action(const A_t &A, const V_t &x, const Rest&... rest)
+         ActionTensor<ActionTensor<A_t>> >
+         action(const A_t &A, const V_t &x, const Rest &... rest)
 {
     auto B = action(A,x);
     return action(B, rest...);
@@ -749,7 +749,7 @@ compose(const T1 &S, const T2 &T)
  */
 template < class T >
 EnableIf<T::is_tensor,Transpose<T>>
-transpose(const T &A)
+                                 transpose(const T &A)
 {
     Transpose<T> B;
 

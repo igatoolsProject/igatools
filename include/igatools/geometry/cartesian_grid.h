@@ -27,6 +27,7 @@
 #include <igatools/base/logstream.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/utils/dynamic_multi_array.h>
 
 #include <array>
 #include <vector>
@@ -36,6 +37,7 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int> class CartesianGridElement;
 template <int> class CartesianGridElementAccessor;
 
 /**
@@ -43,9 +45,11 @@ template <int> class CartesianGridElementAccessor;
  *
  *
  * ### Getting a CartesianGrid by an XML structure.
- * A CartesianGrid object can be obtained by a Boost XML structure using the function
+ * A CartesianGrid object can be obtained by a Boost XML structure using the
+ * function
  * get_cartesian_grid_from_xml().
- * An example of valid XML structure for a 2-dimensional CartesianGrid is given by the following
+ * An example of valid XML structure for a 2-dimensional CartesianGrid is given
+ * by the following
  * XML block
  * @code{.xml}
    <CartesianGrid Dim="2">
@@ -57,25 +61,33 @@ template <int> class CartesianGridElementAccessor;
      </Knots>
    </CartesianGrid>
  * @endcode
- * where the <tt>Dim</tt> attribute in the <tt>"CartesianGrid"</tt> tag is the dimensionality of the CartesianGrid
- * and the <tt>Size</tt> attribute in each <tt>"Knots"</tt> tag is the number of unique knots values (also called
+ * where the <tt>Dim</tt> attribute in the <tt>"CartesianGrid"</tt> tag is the
+ * dimensionality of the CartesianGrid
+ * and the <tt>Size</tt> attribute in each <tt>"Knots"</tt> tag is the number
+ *  of unique knots values (also called
  * "breakpoints") along each coordinate direction.
  *
  * @author M. Martinelli 2012, 2013, 2014
- * @author pauletti 2012, 2013
+ * @author pauletti 2012, 2013, 2014
  *
  * @see get_cartesian_grid_from_xml()
  * @ingroup h_refinement
  * @ingroup containers
  * @todo document more
  */
-template< int dim_ >
+template<int dim_>
 class CartesianGrid :
-    public std::enable_shared_from_this<CartesianGrid<dim_> >
+    public std::enable_shared_from_this<CartesianGrid<dim_>>
 {
+private:
+    /** Type for current class. */
+    using self_t = CartesianGrid<dim_>;
+
 public:
     /** Dimensionality of the grid. */
-    static const int dim = dim_ ;
+    static const int dim = dim_;
+
+    using KnotCoordinates = CartesianProductArray<Real,dim>;
 
     /**
      * Types of grid for future optimization
@@ -92,10 +104,8 @@ public:
      */
     using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
 
-
     /** Type for iterator over the elements.*/
     using ElementIterator = GridForwardIterator<CartesianGridElementAccessor<dim> >;
-
 
     /** @name Constructors*/
     ///@{
@@ -103,6 +113,7 @@ public:
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
+protected:
     explicit CartesianGrid(const Size n = 2);
 
     /**
@@ -111,21 +122,21 @@ public:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    explicit CartesianGrid(const TensorSize<dim> &n_knots);
+    explicit CartesianGrid(const TensorSize<dim> &n_knots, const Kind kind);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim> &end_points,
-                           const Size n_knots);
+                           const Size n_knots,
+                           const Kind kind);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim> &end_points,
-                           const TensorSize<dim> &n_knots);
-
-
+                           const TensorSize<dim> &n_knots,
+                           const Kind kind);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -137,7 +148,8 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates);
+    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates,
+                  const Kind kind);
 
 
     /**
@@ -152,21 +164,20 @@ public:
     explicit
     CartesianGrid(const std::array<std::vector<Real>,dim> &knot_coordinates);
 
-
+public:
     /**
      * Copy constructor.
      * Perform a deep copy of the member variables except the
      * signal_refine_ variable, that is not copied at all.
      */
-    CartesianGrid(const CartesianGrid<dim_> &grid);
+    CartesianGrid(const self_t &grid);
 
     /**  Move constructor */
-    CartesianGrid(CartesianGrid<dim_> &&grid) = default;
+    CartesianGrid(self_t &&grid) = default;
 
     /** Destructor */
     ~CartesianGrid() = default;
     ///@}
-
 
     /**
      * @name Creators
@@ -179,7 +190,7 @@ public:
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
-    static std::shared_ptr<CartesianGrid<dim_> > create(const Index n = 2);
+    static std::shared_ptr<self_t> create(const Index n = 2);
 
 
     /**
@@ -188,7 +199,7 @@ public:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    static std::shared_ptr< CartesianGrid<dim_> > create(const TensorSize<dim> &n);
+    static std::shared_ptr<self_t> create(const TensorSize<dim> &n);
 
 
     /**
@@ -200,8 +211,8 @@ public:
      * @note In Debug mode, a check for this precondition (up to machine precision)
      * is perform and if not satistified an exception is raised.
      */
-    static std::shared_ptr< CartesianGrid<dim_> >
-    create(const CartesianProductArray<Real,dim> &knot_coordinates) ;
+    static std::shared_ptr<self_t>
+    create(const CartesianProductArray<Real,dim> &knot_coordinates);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -212,18 +223,18 @@ public:
      * @note In Debug mode, a check for this precondition (up to machine precision)
      * is perform and if not satistified an exception is raised.
      */
-    static std::shared_ptr< CartesianGrid<dim_> >
-    create(const std::array<std::vector<Real>,dim> &knot_coordinates) ;
+    static std::shared_ptr<self_t>
+    create(const std::array<std::vector<Real>,dim> &knot_coordinates);
 
 
-    static std::shared_ptr< CartesianGrid<dim_> >
+    static std::shared_ptr<self_t>
     create(const BBox<dim> &end_points,
            const Size n_knots);
 
     /**
      * @todo document me
      */
-    static std::shared_ptr< CartesianGrid<dim_> >
+    static std::shared_ptr<self_t>
     create(const BBox<dim> &end_points,
            const TensorSize<dim> &n);
     ///@}
@@ -237,12 +248,12 @@ public:
     /**
      * Copy assignment operator.
      */
-    CartesianGrid<dim_> &operator=(const CartesianGrid<dim_> &grid) = default;
+    self_t &operator=(const self_t &grid) = default;
 
     /**
      * Move assignment operator.
      */
-    CartesianGrid<dim_> &operator=(CartesianGrid<dim_> &&grid) = default;
+    self_t &operator=(self_t &&grid) = default;
 
     ///@}
 
@@ -250,12 +261,13 @@ public:
     ///@name Getting grid information
     ///@{
     /**
-     * Query the total number of elements.
+     * Total number of active elements.
      */
     Size get_num_elements() const;
 
     /**
-     * Query the total number of elements along each coordinate direction.
+     * Total number of one dimensional intervals along each
+     * coordinate direction.
      */
     TensorSize<dim> get_num_elements_dim() const;
 
@@ -275,11 +287,10 @@ public:
      */
     CartesianProductArray<Real, dim> const &get_knot_coordinates() const;
 
-
     /**
      * Returns the knot coordinates along the direction @p i.
      */
-    CartesianProductArray<Real, dim> get_element_lengths() const ;
+    CartesianProductArray<Real, dim> get_element_lengths() const;
 
     /**
      * Returns the smallest <tt>dim</tt>-dimensional bounding box enclosing the domain represented
@@ -327,7 +338,6 @@ public:
 
     ///@}
 
-
     /**
      * Returns the flat id of the element that contains the <tt>point</tt>.
      * @note If the points belongs to the boundaries of two elements, then the owner will be the
@@ -336,7 +346,6 @@ public:
      * then an assertion will be raised (in Debug mode).
      */
     Index get_element_flat_id_from_point(const Points<dim> &point) const;
-
 
     /**
      * Returns the flat representation of an element index from its tensor-like representation.
@@ -350,12 +359,10 @@ public:
      */
     TensorIndex<dim> flat_to_tensor_element_index(const Index flat_id) const;
 
-
     /**
      * Prints the CartesianGrid on a LogStream.
      */
     void print_info(LogStream &out) const;
-
 
     /**
      * Comparison operator. Returns true if the knot coordinates of two grid are identical.
@@ -363,21 +370,6 @@ public:
     bool operator==(const CartesianGrid<dim> &grid) const;
 
 private:
-
-    Kind kind_ = Kind::non_uniform;
-
-    /**
-     * Boundary ids, one id per face
-     */
-    std::array< boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
-
-    /**
-     *  Knot coordinates along each coordinate direction.
-     *  For each direction the knot coordinates are sorted in an increasing
-     *  order and does not contain duplicate values.
-     */
-    CartesianProductArray<Real,dim> knot_coordinates_;
-
     /** Type for the refinement signal. */
     using signal_refine_t = boost::signals2::signal<
                             void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
@@ -412,7 +404,7 @@ public:
      */
     void refine_directions(
         const std::array<bool,dim> &refinement_directions,
-        const std::array<Size,dim> &n_subdivisions) ;
+        const std::array<Size,dim> &n_subdivisions);
 
     /**
      * Refine the cartesian grid and the objects connected to it (if any),
@@ -427,18 +419,51 @@ public:
      *  Connect a slot (i.e. a function pointer) to the refinement signals which will be
      *  emitted whenever a refine() function is called by an object holding a CartesianGrid member.
      */
-    boost::signals2::connection connect_refinement(const SignalRefineSlot &subscriber) ;
-
+    boost::signals2::connection connect_refinement(const SignalRefineSlot &subscriber);
 
     /**
      * Returns the grid before the last refinement. If no refinement is performed,
      * this function returns a null pointer.
      */
-    std::shared_ptr<const CartesianGrid<dim> > get_grid_pre_refinement() const;
+    std::shared_ptr<const self_t > get_grid_pre_refinement() const;
     ///@}
 
-
 private:
+    /** Flag for optimization use */
+    Kind kind_ = Kind::non_uniform;
+
+    /** Boundary ids, one id per face */
+    std::array< boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
+
+    /**
+     *  Knot coordinates along each coordinate direction.
+     *  For each direction the knot coordinates are sorted in an increasing
+     *  order and does not contain duplicate values.
+     */
+    KnotCoordinates knot_coordinates_;
+
+    /**
+     * Weights used for fast conversion of element index
+     * (flat-to-tensor and tensor-to-flat);
+     */
+    TensorIndex<dim> weight_elem_id_;
+
+    /**
+     * Number of grid elements in tensor size type
+     */
+    TensorSize<dim> num_elem_;
+
+    /**
+     * Active elements indicators (used for example in hierarchical spaces).
+     */
+    DynamicMultiArray<bool,dim> active_elems_;
+
+    /**
+     * In the hierarchical spaces elements are characterized as influent or not
+     * this is the place where this information is stored.
+     */
+    DynamicMultiArray<bool,dim> influent_;
+
     /**
      * Perform a uniform refinement of the knots along the @p direction_id direction,
      * dividing each interval in the knot vector into @p n_subdivisions intervals.
@@ -447,80 +472,27 @@ private:
      * divided. This value must be >= 2.
      */
     void refine_knots_direction(const int direction_id,
-                                const Size n_subdivisions) ;
+                                const Size n_subdivisions);
 
     /**
      * This class member is the grid before the last refinement. If no refinement is performed,
      * this is a null pointer.
      */
-    std::shared_ptr<const CartesianGrid<dim> > grid_pre_refinement_ = nullptr;
+    std::shared_ptr<const self_t> grid_pre_refinement_ = nullptr;
 
     /**
      * Signals for the h-refinement. It can be viewed as a FIFO list of function pointers.
      */
     signal_refine_t refine_signals_;
 
-
-    /**
-     * Weights used for fast conversion of element index (flat-to-tensor and tensor-to-flat);
-     */
-    TensorIndex<dim> weight_elem_id_;
-
+    friend class CartesianGridElement<dim>;
 
     friend class CartesianGridElementAccessor<dim>;
 };
 
 
 
-/**
- * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
- * this function builds and returns the one-to-one mapping between the elements on the
- * fine and the elements on the coarse.
- * @code{.cpp}
-   fine_to_coarse_elements = build_map_elements_between_cartesian_grids(grid_fine,grid_coarse);
-   // fine_to_coarse_elements[i] is the flat id of the element on the coarse grid that fully contains the
-   // element on the fine grid with flat_id equal to i.
-   @endcode
- *
- * @warning The grid must be defined on the same domain and each element on the fine grid must be
- * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
- * (in Debug mode).
- *
- * @relates CartesianGrid
- */
-template <int dim>
-std::vector<Index>
-build_map_elements_between_cartesian_grids(
-    const CartesianGrid<dim> &grid_fine,
-    const CartesianGrid<dim> &grid_coarse);
 
-
-/**
- * Given two grids <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
- * this function returns the grid that contains both. Moreover, this function gives back
- * the one-to-one mapping between the flat id of the elements in the CartesianGrid union with the
- * elements in the two starting grids.
- *
- * @param[in] grid_1 First grid.
- * @param[in] grid_2 Second grid.
- * @param[out] map_elem_grid_union_to_elem_grid_1 One-to-one mapping between the elements in the
- * CartesianGrid union and the elements in the first grid.
- * @param[out] map_elem_grid_union_to_elem_grid_2 One-to-one mapping between the elements in the
- * CartesianGrid union and the elements in the second grid.
- * @return The CartesianGrid that contains the all the knots from <tt>grid_1</tt> and <tt>grid_2</tt>.
- *
- * @warning In Debug mode an assertion will be raised if
- * the two grids <tt>grid_1</tt> and <tt>grid_2</tt> are not defined on the same domain.
- *
- * @relates CartesianGrid
- */
-template <int dim>
-CartesianGrid<dim>
-build_cartesian_grid_union(
-    const CartesianGrid<dim> &grid_1,
-    const CartesianGrid<dim> &grid_2,
-    std::vector<Index> &map_elem_grid_union_to_elem_grid_1,
-    std::vector<Index> &map_elem_grid_union_to_elem_grid_2);
 
 
 IGA_NAMESPACE_CLOSE

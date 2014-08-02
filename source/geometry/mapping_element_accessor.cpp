@@ -272,7 +272,7 @@ template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 init_cache(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+           const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
@@ -338,8 +338,8 @@ template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());

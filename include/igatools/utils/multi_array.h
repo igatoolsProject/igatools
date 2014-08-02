@@ -102,7 +102,11 @@ public:
     /** Type of the entries stored in the STL container. */
     using value_type = typename STLContainer::value_type;
 
+
+    /** Type for the reference in the STL container. */
     using reference = typename STLContainer::reference;
+
+    /** Type for the const_reference in the STL container. */
     using const_reference = typename STLContainer::const_reference;
 
     /** @name Constructors and destructor */

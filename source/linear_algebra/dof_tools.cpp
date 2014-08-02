@@ -41,11 +41,11 @@ get_sparsity_pattern(const DofsManager &dofs_manager)
     Assert(dofs_manager.is_dofs_view_open() == false,ExcInvalidState());
 
     // build the dofs graph
-    const auto & dofs_view = dofs_manager.get_dofs_view();
+    const auto &dofs_view = dofs_manager.get_dofs_view();
 
     vector<Index> dofs_copy;
     for (const auto &dof : dofs_view)
-    	dofs_copy.push_back(dof);
+        dofs_copy.push_back(dof);
 
     Assert(!dofs_copy.empty(),ExcEmptyObject());
 
@@ -60,10 +60,10 @@ get_sparsity_pattern(const DofsManager &dofs_manager)
 
     Assert(dofs_manager.are_elements_dofs_view_open() == false,ExcInvalidState());
     Assert(!dofs_manager.get_elements_dofs_view().empty(),
-    		ExcEmptyObject());
+           ExcEmptyObject());
     for (const auto element_dofs : dofs_manager.get_elements_dofs_view())
-    	for (const auto &dof : element_dofs)
-    		sparsity_pattern[dof].insert(element_dofs.begin(),element_dofs.end());
+        for (const auto &dof : element_dofs)
+            sparsity_pattern[dof].insert(element_dofs.begin(),element_dofs.end());
 
     return (sparsity_pattern);
 }
@@ -74,17 +74,17 @@ get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dof
     Assert(dofs_manager_cols.is_dofs_view_open() == false,ExcInvalidState());
 
     // build the dofs graph
-    const auto & dofs_view_rows = dofs_manager_rows.get_dofs_view();
-    const auto & dofs_view_cols = dofs_manager_cols.get_dofs_view();
+    const auto &dofs_view_rows = dofs_manager_rows.get_dofs_view();
+    const auto &dofs_view_cols = dofs_manager_cols.get_dofs_view();
 
     vector<Index> dofs_copy_rows;
     for (const auto &dof : dofs_view_rows)
-    	dofs_copy_rows.push_back(dof);
+        dofs_copy_rows.push_back(dof);
     Assert(!dofs_copy_rows.empty(),ExcEmptyObject());
 
     vector<Index> dofs_copy_cols;
     for (const auto &dof : dofs_view_cols)
-    	dofs_copy_cols.push_back(dof);
+        dofs_copy_cols.push_back(dof);
     Assert(!dofs_copy_cols.empty(),ExcEmptyObject());
 
     SparsityPattern sparsity_pattern(dofs_copy_rows, dofs_copy_cols);
@@ -98,24 +98,24 @@ get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dof
 
 
     Assert(dofs_manager_rows.are_elements_dofs_view_open() == false,ExcInvalidState());
-    const auto & elements_dofs_rows = dofs_manager_rows.get_elements_dofs_view();
+    const auto &elements_dofs_rows = dofs_manager_rows.get_elements_dofs_view();
     Assert(!elements_dofs_rows.empty(),ExcEmptyObject());
 
     Assert(dofs_manager_cols.are_elements_dofs_view_open() == false,ExcInvalidState());
-    const auto & elements_dofs_cols = dofs_manager_cols.get_elements_dofs_view();
+    const auto &elements_dofs_cols = dofs_manager_cols.get_elements_dofs_view();
     Assert(!elements_dofs_cols.empty(),ExcEmptyObject());
 
     Assert(elements_dofs_rows.size() == elements_dofs_cols.size(),
-    		ExcDimensionMismatch(elements_dofs_rows.size(),elements_dofs_cols.size()));
+           ExcDimensionMismatch(elements_dofs_rows.size(),elements_dofs_cols.size()));
 
     const Index n_elements = elements_dofs_rows.size();
     for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
     {
-    	const auto &dofs_rows = elements_dofs_rows[ielem];
-    	const auto &dofs_cols = elements_dofs_cols[ielem];
+        const auto &dofs_rows = elements_dofs_rows[ielem];
+        const auto &dofs_cols = elements_dofs_cols[ielem];
 
-    	for (const auto & dof_row : dofs_rows)
-    		sparsity_pattern[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
+        for (const auto &dof_row : dofs_rows)
+            sparsity_pattern[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
     }
     return (sparsity_pattern);
 }
@@ -212,7 +212,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 }
 #endif //#ifdef USE_PETSC
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

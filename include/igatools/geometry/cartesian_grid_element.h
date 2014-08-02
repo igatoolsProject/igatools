@@ -214,6 +214,31 @@ public:
     void print_info(LogStream &out,
                     const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
+
+    bool is_influence() const;
+    void set_influence(const bool influence_flag);
+
+    bool is_active() const;
+    void set_active(const bool active_flag);
+
+
+    /**
+     * True if the element index valid (i.e. inside the grid from which the element belongs from).
+     *
+     * @note A typical case in which this function returns false is when the element is moved outside
+     * the grid from which belongs from.
+     */
+    bool is_valid() const;
+
+    /**
+     * Moves the element to the position that differs from the current one
+     * for the quantity given by @p increment.
+     *
+     * If the resulting position after the movement is valid (i.e. within the grid), then the function
+     * returns true, otherwise it returns false.
+     */
+    bool move(const TensorIndex<dim> &increment);
+
 private:
     /** Cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> grid_;
