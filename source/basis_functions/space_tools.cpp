@@ -194,7 +194,7 @@ integrate_difference(const typename Space::Func &exact_solution,
         flag |= ValueFlags::gradient;
 
     const int n_points   =  quad.get_num_points();
-    const int n_elements =  space->get_grid()->get_num_elements();
+    const int n_elements =  space->get_grid()->get_num_active_elems();
 
     Assert((element_error.size() == n_elements) || (element_error.size() == 0),
            ExcMessage("The size of the ouput vector is not correct."));

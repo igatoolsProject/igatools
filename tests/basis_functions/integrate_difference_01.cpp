@@ -96,7 +96,7 @@ void do_test(const int deg)
     const Real p=2;
 
     Vector<la_pack> coeffs(space->get_num_basis());
-    vector<Real> elem_err(space->get_grid()->get_num_elements());
+    vector<Real> elem_err(space->get_grid()->get_num_active_elems());
 
     Real err = space_tools::integrate_difference<Space,la_pack>
                (f, space, quad, Norm::L2, coeffs, elem_err);

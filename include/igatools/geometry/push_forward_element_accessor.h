@@ -70,8 +70,14 @@ public:
      */
     PushForwardElementAccessor() = delete;
 
-    explicit PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
-                                        const int index);
+    explicit
+    PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
+                               const Index index);
+
+    explicit
+    PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
+                               const TensorIndex<dim> &index);
+
 
     /**
      * Copy constructor.

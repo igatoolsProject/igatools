@@ -82,7 +82,7 @@ void test_accessor3()
 
     GridForwardIterator<CartesianGridElementAccessor<dim> > element(grid, 0);
 
-    const int n_elements = grid->get_num_elements();
+    const int n_elements = grid->get_num_active_elems();
     for (int j = 0; j < n_elements; ++j, ++element)
     {
         out << "Element: " << j << endl;

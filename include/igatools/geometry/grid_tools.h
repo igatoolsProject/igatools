@@ -1,4 +1,4 @@
- //-+--------------------------------------------------------------------
+//-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
 // Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
 //
@@ -71,11 +71,11 @@ build_map_elements_between_cartesian_grids(
  */
 template <int dim>
 std::shared_ptr<CartesianGrid<dim>>
-build_cartesian_grid_union(
-    const CartesianGrid<dim> &grid_1,
-    const CartesianGrid<dim> &grid_2,
-    std::vector<Index> &map_elem_grid_union_to_elem_grid_1,
-    std::vector<Index> &map_elem_grid_union_to_elem_grid_2);
+                                 build_cartesian_grid_union(
+                                     const CartesianGrid<dim> &grid_1,
+                                     const CartesianGrid<dim> &grid_2,
+                                     std::vector<Index> &map_elem_grid_union_to_elem_grid_1,
+                                     std::vector<Index> &map_elem_grid_union_to_elem_grid_2);
 }
 
 IGA_NAMESPACE_CLOSE

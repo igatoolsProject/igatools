@@ -128,6 +128,11 @@ public :
     PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
                                  const Index index);
 
+
+    PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
+                                 const TensorIndex<dim> &index);
+
+
     /**
      * Copy constructor.
      * @note Performs a deep copy of the PhysicalSpaceElementAccessor<PhysSpace> @p in,

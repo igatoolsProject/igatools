@@ -166,7 +166,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::last() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-                           this->get_grid()->get_num_elements() - 1);
+                           this->get_grid()->get_num_active_elems() - 1);
 }
 
 

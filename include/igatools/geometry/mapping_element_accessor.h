@@ -107,7 +107,10 @@ public:
      * Mapping.
      */
     MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
-                           const int index);
+                           const Index index);
+
+    MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
+                           const TensorIndex<dim> &index);
 
     /**
      * Copy constructor.

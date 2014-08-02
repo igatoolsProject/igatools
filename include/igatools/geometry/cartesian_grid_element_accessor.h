@@ -87,6 +87,9 @@ public:
     CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                                  const Index elem_index);
 
+    CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
+                                 const TensorIndex<dim> elem_index);
+
     /**
      * Copy constructor.
      * @note For the constructed object it

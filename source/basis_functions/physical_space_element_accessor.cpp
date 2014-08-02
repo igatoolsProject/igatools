@@ -39,7 +39,15 @@ PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
 
 
 
-
+template< class PhysSpace >
+PhysicalSpaceElementAccessor<PhysSpace>::
+PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
+                             const TensorIndex<dim> &index)
+    :
+    SpaceElementAccessor<PhysSpace>(phys_space,index),
+    PfElemAccessor(phys_space->get_push_forward(), index),
+    ref_space_element_accessor_(phys_space->get_reference_space(),index)
+{}
 
 
 

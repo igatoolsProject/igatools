@@ -35,10 +35,9 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const SpaceDimensionTable &n_elem_basis,
                 DistributionPolicy pol)
     :
-    TensorSizedContainer<dim>(grid->get_num_elements_dim()),
-//    elements_loc_to_global_tensor_view_(grid->get_num_elements_dim()),
+    TensorSizedContainer<dim>(grid->get_num_intervals()),
     elements_loc_to_global_flat_view_(
-        make_shared<vector<DofsConstView>>(vector<DofsConstView>(grid->get_num_elements()))),
+        make_shared<vector<DofsConstView>>(vector<DofsConstView>(grid->get_num_intervals().flat_size()))),
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());

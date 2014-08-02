@@ -66,6 +66,9 @@ public:
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index);
 
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+                         const TensorIndex<dim> &elem_index);
+
     /**
      * Copy constructor.
      */
@@ -239,7 +242,7 @@ public:
      */
     bool move(const TensorIndex<dim> &increment);
 
-private:
+protected:
     /** Cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> grid_;
 
