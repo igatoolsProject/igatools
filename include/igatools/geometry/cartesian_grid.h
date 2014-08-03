@@ -346,15 +346,11 @@ public:
     get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
 
     ///@}
-
-    /**
-     * Returns the flat id of the element that contains the <tt>point</tt>.
-     * @note If the points belongs to the boundaries of two elements, then the
-     * owner will be the element with smaller id.
-     * @note If the point does not belong to the domain represented by the
-     * CartesianGrid object, then an assertion will be raised (in Debug mode).
-     */
     Index get_element_flat_id_from_point(const Points<dim> &point) const;
+
+
+    std::vector<ElementIterator>
+    get_element_from_point(const std::vector<Points<dim>> &points) const;
 
     /**
      * Returns the flat representation of an element index from its tensor-like

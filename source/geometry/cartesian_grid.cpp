@@ -590,8 +590,6 @@ flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
     return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
 }
 
-
-
 template <int dim_>
 Index
 CartesianGrid<dim_>::
@@ -603,7 +601,7 @@ get_element_flat_id_from_point(const Points<dim> &point) const
 
     TensorIndex<dim> elem_t_id;
     for (int i = 0 ; i < dim ; ++i)
-    {
+     {
         Assert(point[i] >= bounding_box[i][0] && point[i] <= bounding_box[i][1],
                ExcMessage("Point " +
                           std::to_string(point[i]) +
@@ -613,16 +611,43 @@ get_element_flat_id_from_point(const Points<dim> &point) const
                           "]"));
 
         const auto &knots = knot_coordinates_.get_data_direction(i);
+            //find the index j in the knots for which knots[j] <= point[i]
+            const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
+            const Index j = low - knots.begin();
 
-        //find the index j in the knots for which knots[j] <= point[i]
-        const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
-        const Index j = low - knots.begin();
+            elem_t_id[i] = (j>0) ? j-1 : 0;
 
-        elem_t_id[i] = (j>0) ? j-1 : 0;
-    }
-
+     }
 
     return this->tensor_to_flat_element_index(elem_t_id);
+
+}
+
+
+template <int dim_>
+auto
+CartesianGrid<dim_>::
+get_element_from_point(const std::vector<Points<dim>> &points) const
+-> std::vector<ElementIterator>
+{
+    std::vector<ElementIterator> res;
+
+    for (const auto point : points)
+    {
+        TensorIndex<dim> elem_t_id;
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            const auto &knots = knot_coordinates_.get_data_direction(i);
+
+            //find the index j in the knots for which knots[j] <= point[i]
+            const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
+            const Index j = low - knots.begin();
+
+            elem_t_id[i] = (j>0) ? j-1 : 0;
+            res.push_back(ElementIterator(this->shared_from_this(), elem_t_id));
+        }
+    }
+    return res;
 }
 
 
