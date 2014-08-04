@@ -59,10 +59,10 @@ public:
     /** Type alias for the ConstView on the dofs in each scalar component of a single-patch space. */
     using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
 
-    /** Type alias for a concatenated iterator defined on several compoenent views. */
+    /** Type alias for a concatenated iterator defined on several component views. */
     using DofsIterator = ConcatenatedIterator<DofsComponentView>;
 
-    /** Type alias for a concatenated const-iterator defined on several compoenent views. */
+    /** Type alias for a concatenated const-iterator defined on several component views. */
     using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
     /** Type alias for the View on the dofs held by the single-patch space. */
@@ -120,8 +120,7 @@ public:
 private:
 
     /**
-     * This private memeber is the table used to store the dofs ids of each component of a single
-     * patch space.
+     * Container used to store the dofs ids of each component of a single patch space.
      *
      * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
      * use the associated View instead!
@@ -154,6 +153,12 @@ private:
 
 public:
 
+    /**
+     * Returns the container used to store the dofs ids of each component of a single patch space.
+     *
+     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
+     * use the associated View instead!
+     */
     const IndexDistributionTable &get_index_distribution() const;
 
     /**
@@ -169,6 +174,11 @@ public:
 
 
 
+    /**
+     * Returns a pointer to a vector in which each entry is a const view to the global dofs
+     * on a single element of a space.
+     * The size of the vector is equal to the number of active elements in the space.
+     */
     std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
 };
 
