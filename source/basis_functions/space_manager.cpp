@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/dofs_manager.h>
+#include <igatools/basis_functions/space_manager.h>
 #include <igatools/base/exceptions.h>
 
 #include <map>
@@ -36,8 +36,8 @@ IGA_NAMESPACE_OPEN
 
 
 
-DofsManager::
-DofsManager()
+SpaceManager::
+SpaceManager()
     :
     is_space_insertion_open_(false),
     num_unique_dofs_(0)
@@ -46,7 +46,7 @@ DofsManager()
 
 
 void
-DofsManager::
+SpaceManager::
 space_insertion_open()
 {
     is_space_insertion_open_ = true;
@@ -54,7 +54,7 @@ space_insertion_open()
 
 
 void
-DofsManager::
+SpaceManager::
 space_insertion_close(const bool automatic_dofs_renumbering)
 {
     Assert(is_space_insertion_open_ == true,ExcInvalidState());
@@ -93,7 +93,7 @@ space_insertion_close(const bool automatic_dofs_renumbering)
 }
 
 
-DofsManager::
+SpaceManager::
 SpaceInfo::
 SpaceInfo()
     :
@@ -102,7 +102,7 @@ SpaceInfo()
     max_dofs_id_(-1)
 {}
 
-DofsManager::
+SpaceManager::
 SpaceInfo::
 SpaceInfo(const SpacePtrVariant &space,
           const Index num_dofs,
@@ -124,7 +124,7 @@ SpaceInfo(const SpacePtrVariant &space,
 }
 
 void
-DofsManager::
+SpaceManager::
 SpaceInfo::
 add_dofs_offset(const Index offset)
 {
@@ -138,7 +138,7 @@ add_dofs_offset(const Index offset)
 
 
 Index
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_num_dofs() const
 {
@@ -146,7 +146,7 @@ get_num_dofs() const
 }
 
 Index
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_min_dofs_id() const
 {
@@ -154,7 +154,7 @@ get_min_dofs_id() const
 }
 
 Index
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_max_dofs_id() const
 {
@@ -162,7 +162,7 @@ get_max_dofs_id() const
 }
 
 auto
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_space_variant() -> SpacePtrVariant &
 {
@@ -170,7 +170,7 @@ get_space_variant() -> SpacePtrVariant &
 }
 
 auto
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_dofs_view() -> DofsView &
 {
@@ -178,7 +178,7 @@ get_dofs_view() -> DofsView &
 }
 
 auto
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_dofs_view() const -> const DofsView &
 {
@@ -187,7 +187,7 @@ get_dofs_view() const -> const DofsView &
 
 
 auto
-DofsManager::
+SpaceManager::
 get_dofs_view() -> DofsView &
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -198,7 +198,7 @@ get_dofs_view() -> DofsView &
 
 
 auto
-DofsManager::
+SpaceManager::
 get_dofs_view() const -> DofsConstView
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -210,7 +210,7 @@ get_dofs_view() const -> DofsConstView
 
 
 Index
-DofsManager::
+SpaceManager::
 get_num_dofs() const
 {
     return num_unique_dofs_;
@@ -219,7 +219,7 @@ get_num_dofs() const
 
 
 Index
-DofsManager::
+SpaceManager::
 get_num_linear_constraints() const
 {
     return linear_constraints_.size();
@@ -227,7 +227,7 @@ get_num_linear_constraints() const
 
 
 Index
-DofsManager::
+SpaceManager::
 get_num_equality_constraints() const
 {
     return equality_constraints_.size();
@@ -235,7 +235,7 @@ get_num_equality_constraints() const
 
 
 Index
-DofsManager::
+SpaceManager::
 get_global_dof(const int space_id, const Index local_dof) const
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -247,7 +247,7 @@ get_global_dof(const int space_id, const Index local_dof) const
 
 
 std::vector<Index>
-DofsManager::
+SpaceManager::
 get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
 {
     Assert(!local_dofs.empty(),ExcEmptyObject());
@@ -263,7 +263,7 @@ get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
 
 
 bool
-DofsManager::
+SpaceManager::
 is_space_insertion_open() const
 {
     return is_space_insertion_open_;
@@ -271,7 +271,7 @@ is_space_insertion_open() const
 
 
 auto
-DofsManager::
+SpaceManager::
 SpaceInfo::
 get_elements_dofs_view() const -> const std::vector<DofsConstView> &
 {
@@ -280,14 +280,14 @@ get_elements_dofs_view() const -> const std::vector<DofsConstView> &
 
 
 auto
-DofsManager::
+SpaceManager::
 get_spaces_info() const -> const std::map<int,SpaceInfo> &
 {
     return spaces_info_;
 }
 
 void
-DofsManager::
+SpaceManager::
 equality_constraints_open()
 {
     Assert(are_equality_constraints_open_ == false,
@@ -297,7 +297,7 @@ equality_constraints_open()
 
 
 void
-DofsManager::
+SpaceManager::
 equality_constraints_close()
 {
     Assert(are_equality_constraints_open_ == true,
@@ -308,7 +308,7 @@ equality_constraints_close()
 
 
 void
-DofsManager::
+SpaceManager::
 add_equality_constraint(const Index dof_id_master,const Index dof_id_slave)
 {
     Assert(are_equality_constraints_open_ == true,
@@ -321,7 +321,7 @@ add_equality_constraint(const Index dof_id_master,const Index dof_id_slave)
 
 
 void
-DofsManager::
+SpaceManager::
 linear_constraints_open()
 {
     Assert(are_linear_constraints_open_ == false,
@@ -334,7 +334,7 @@ linear_constraints_open()
 
 
 void
-DofsManager::
+SpaceManager::
 linear_constraints_close()
 {
     Assert(are_linear_constraints_open_ == true,
@@ -348,7 +348,7 @@ linear_constraints_close()
 
 
 void
-DofsManager::
+SpaceManager::
 remove_equality_constraints_redundancies()
 {
     map<Index,set<Index>> upper_sparsity_pattern_pre;
@@ -396,7 +396,7 @@ remove_equality_constraints_redundancies()
 
 
 Index
-DofsManager::
+SpaceManager::
 count_unique_dofs() const
 {
     Assert(is_space_insertion_open_ == false,ExcInvalidState());
@@ -414,14 +414,14 @@ count_unique_dofs() const
 
 
 void
-DofsManager::
+SpaceManager::
 print_info(LogStream &out) const
 {
     using std::endl;
 
     std::string tab("    ");
 
-    out << "DofsManager infos:" << endl;
+    out << "SpaceManager infos:" << endl;
 
     out.push(tab);
 

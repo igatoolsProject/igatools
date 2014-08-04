@@ -27,12 +27,12 @@ using std::pair;
 IGA_NAMESPACE_OPEN
 
 SparsityPattern::
-SparsityPattern(const DofsManager &dofs_manager)
+SparsityPattern(const SpaceManager &space_manager)
 {
-    Assert(dofs_manager.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager.is_space_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
-    const auto &dofs_view = dofs_manager.get_dofs_view();
+    const auto &dofs_view = space_manager.get_dofs_view();
 
     for (const auto &dof : dofs_view)
         row_dofs_.push_back(dof);
@@ -47,7 +47,7 @@ SparsityPattern(const DofsManager &dofs_manager)
     for (const auto &dof : dofs_view)
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
-    const auto &spaces_info = dofs_manager.get_spaces_info();
+    const auto &spaces_info = space_manager.get_spaces_info();
     Assert(!spaces_info.empty(),ExcEmptyObject());
     for (const auto &space : spaces_info)
         for (const auto element_dofs : space.second.get_elements_dofs_view())
@@ -56,14 +56,14 @@ SparsityPattern(const DofsManager &dofs_manager)
 }
 
 SparsityPattern::
-SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols)
+SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols)
 {
-    Assert(dofs_manager_rows.is_space_insertion_open() == false,ExcInvalidState());
-    Assert(dofs_manager_cols.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_rows.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_cols.is_space_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
-    const auto &dofs_view_rows = dofs_manager_rows.get_dofs_view();
-    const auto &dofs_view_cols = dofs_manager_cols.get_dofs_view();
+    const auto &dofs_view_rows = space_manager_rows.get_dofs_view();
+    const auto &dofs_view_cols = space_manager_cols.get_dofs_view();
 
     for (const auto &dof : dofs_view_rows)
         row_dofs_.push_back(dof);
@@ -81,10 +81,10 @@ SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_man
 
 
 
-    const auto &spaces_rows_info = dofs_manager_rows.get_spaces_info();
+    const auto &spaces_rows_info = space_manager_rows.get_spaces_info();
     Assert(!spaces_rows_info.empty(),ExcEmptyObject());
 
-    const auto &spaces_cols_info = dofs_manager_cols.get_spaces_info();
+    const auto &spaces_cols_info = space_manager_cols.get_spaces_info();
     Assert(!spaces_cols_info.empty(),ExcEmptyObject());
 
     //check the equality of num. patches on each space

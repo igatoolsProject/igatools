@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef DOFS_MANAGER_H_
-#define DOFS_MANAGER_H_
+#ifndef SPACE_MANAGER_H_
+#define SPACE_MANAGER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -28,8 +28,6 @@
 #include <igatools/basis_functions/equality_constraint.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
-//#include <igatools/linear_algebra/sparsity_pattern.h>
-//#include <boost/graph/adjacency_list.hpp>
 
 
 #include <igatools/contrib/variant.h>
@@ -139,7 +137,7 @@ using SpacePtrVariant =
  * @author M. Martinelli
  * @date 10 Jun 2014
  */
-class DofsManager
+class SpaceManager
 {
 public:
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
@@ -157,47 +155,47 @@ public:
     /** Type alias for a concatenated const-iterator defined on several compoenent views. */
     using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
-    /** Type alias for the View on the dofs held by the DofsManager object. */
+    /** Type alias for the View on the dofs held by the SpaceManager object. */
     using DofsView = View<DofsIterator,DofsConstIterator>;
 
-    /** Type alias for the ConstView on the dofs held by the DofsManager object. */
+    /** Type alias for the ConstView on the dofs held by the SpaceManager object. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
 
     /** @name Constructors */
     ///@{
     /** Default constructor. */
-    DofsManager();
+    SpaceManager();
 
     /** Copy constructor. */
-    DofsManager(const DofsManager &dofs_manager) = delete;
+    SpaceManager(const SpaceManager &space_manager) = delete;
 
     /** Move constructor. */
-    DofsManager(DofsManager &&dofs_manager) = default;
+    SpaceManager(SpaceManager &&space_manager) = default;
     ///@}
 
     /** Destructor. */
-    ~DofsManager() = default;
+    ~SpaceManager() = default;
 
     /**
-     * Prints internal information about the DofsManager.
+     * Prints internal information about the SpaceManager.
      * @note Mostly used for debugging and testing.
      */
     void print_info(LogStream &out) const;
 
 
-    /** @name Functions for managing the spaces in the DofsManager */
+    /** @name Functions for managing the spaces in the SpaceManager */
     ///@{
     /**
-     * Sets the DofsManager in a state that can receive the insertion of new spaces.
+     * Sets the SpaceManager in a state that can receive the insertion of new spaces.
      */
     void space_insertion_open();
 
     /**
-     * Sets the DofsManager in a state that cannot receive any new space.
+     * Sets the SpaceManager in a state that cannot receive any new space.
      *
      * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
-     * then the dofs in each space are renumbered by the DofsManager.
+     * then the dofs in each space are renumbered by the SpaceManager.
      * The renumbering is made in ascending order processing the dofs space views as inserted
      * using the function add_dofs_space_view.
      *
@@ -207,10 +205,10 @@ public:
 
 
     /**
-     * Adds a space to the DofsManager.
+     * Adds a space to the SpaceManager.
      *
      * @note An assertion will be raised (in DEBUG mode)
-     * if the passed <p>space</p> is already present in the DofsManager.
+     * if the passed <p>space</p> is already present in the SpaceManager.
      */
     template<class Space>
     void add_space(std::shared_ptr<Space> space);
@@ -218,23 +216,23 @@ public:
 
 
     /**
-     * Sets the DofsManager in a state that can receive new equality constraints.
+     * Sets the SpaceManager in a state that can receive new equality constraints.
      */
     void equality_constraints_open();
 
     /**
-     * Coomunicate the DofsManager that the insertion of the equality constraints is
+     * Coomunicate the SpaceManager that the insertion of the equality constraints is
      * completed.
      */
     void equality_constraints_close();
 
     /**
-     * Sets the DofsManager in a state that can receive new linear constraints.
+     * Sets the SpaceManager in a state that can receive new linear constraints.
      */
     void linear_constraints_open();
 
     /**
-     * Coomunicate the DofsManager that the insertion of the linear constraints is
+     * Coomunicate the SpaceManager that the insertion of the linear constraints is
      * completed.
      */
     void linear_constraints_close();
@@ -398,7 +396,7 @@ private:
     };
 
     /**
-     * Map containing the pointers to the spaces handled by the DofsManager,
+     * Map containing the pointers to the spaces handled by the SpaceManager,
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
@@ -406,7 +404,7 @@ private:
 
 
     /**
-     * View to the active dofs ids of all single-patch spaces handled by the DofsManager.
+     * View to the active dofs ids of all single-patch spaces handled by the SpaceManager.
      */
     DofsView dofs_view_;
 
@@ -417,16 +415,16 @@ private:
     std::vector<EqualityConstraint> equality_constraints_;
 
 
-    /** Counts and return the number of unique dofs in the DofsManager. */
+    /** Counts and return the number of unique dofs in the SpaceManager. */
     Index count_unique_dofs() const;
 
-    /** Number of unique dofs in the DofsManager. */
+    /** Number of unique dofs in the SpaceManager. */
     Index num_unique_dofs_;
 
 
 public:
     /**
-     * Returns a map containing the pointers to the spaces handled by the DofsManager,
+     * Returns a map containing the pointers to the spaces handled by the SpaceManager,
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
@@ -438,7 +436,7 @@ public:
 template<class Space>
 inline
 void
-DofsManager::
+SpaceManager::
 add_space(std::shared_ptr<Space> space)
 {
     Assert(space != nullptr,ExcNullPtr());
@@ -448,12 +446,11 @@ add_space(std::shared_ptr<Space> space)
     for (auto &space_info : spaces_info_)
     {
         Assert(space != get<std::shared_ptr<Space>>(space_info.second.get_space_variant()),
-               ExcMessage("Space already added in the DofsManager."));
+               ExcMessage("Space already added in the SpaceManager."));
     }
 #endif
 
     //------------------------------------------------------------------------
-    // adding the dofs view of the space to the DofsManager -- begin
     using RefSpace = typename Space::RefSpace;
     auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
 
@@ -473,4 +470,4 @@ add_space(std::shared_ptr<Space> space)
 IGA_NAMESPACE_CLOSE
 
 
-#endif // #ifndef DOFS_MANAGER_H_
+#endif // #ifndef SPACE_MANAGER_H_

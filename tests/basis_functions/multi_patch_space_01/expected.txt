@@ -40,8 +40,8 @@ MultiPatchSpace infos:
                         Patch 1 infos:
                            Patch id = 3
                            Side id = 3
-                  DOFs manager:
-                     DofsManager infos:
+                  Space manager:
+                     SpaceManager infos:
                          DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
                          Space[0]:   ID=0   n_dofs=8   DOFs=[ 0 1 2 3 4 5 6 7 ]
                          Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
