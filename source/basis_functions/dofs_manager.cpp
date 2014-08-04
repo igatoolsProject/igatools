@@ -40,7 +40,6 @@ DofsManager::
 DofsManager()
     :
     is_space_insertion_open_(false),
-//    dofs_view_(nullptr),
     num_unique_dofs_(0)
 {}
 
@@ -67,35 +66,21 @@ space_insertion_close(const bool automatic_dofs_renumbering)
     std::vector<DofsComponentView> dofs_components_view;
 
     Index offset = 0;
-    for (auto &space_info : spaces_info_)
+    for (auto &space_info_map_entry : spaces_info_)
     {
-        space_info.second.min_dofs_id_ += offset;
-        space_info.second.max_dofs_id_ += offset;
-
-        auto &dofs_view = space_info.second.dofs_view_;
+        auto &space_info = space_info_map_entry.second;
 
         if (automatic_dofs_renumbering)
         {
-            for (Index &dof : dofs_view)
-                dof += offset;
+            space_info.add_dofs_offset(offset);
 
-            offset += space_info.second.n_dofs_;
+            offset += space_info.get_num_dofs();
         }
 
-        auto view_ranges = dofs_view.begin().get_ranges();
+        auto view_ranges = space_info.get_dofs_view().begin().get_ranges();
         dofs_components_view.insert(dofs_components_view.end(),view_ranges.begin(),view_ranges.end());
-
-
-        // copying the element dofs views
-        elements_dofs_view_.insert(
-            elements_dofs_view_.end(),
-            space_info.second.elements_dofs_view_->begin(),
-            space_info.second.elements_dofs_view_->end());
     }
     //--------------------------------------------------------------------------
-
-//    DofsIterator dofs_begin(dofs_components_view,0);;
-//    DofsIterator dofs_end(dofs_components_view,IteratorState::pass_the_end);
 
     dofs_view_ = DofsView(
                      DofsIterator(dofs_components_view,0),
@@ -110,24 +95,95 @@ space_insertion_close(const bool automatic_dofs_renumbering)
 
 DofsManager::
 SpaceInfo::
+SpaceInfo()
+    :
+    num_dofs_(0),
+    min_dofs_id_(-1),
+    max_dofs_id_(-1)
+{}
+
+DofsManager::
+SpaceInfo::
 SpaceInfo(const SpacePtrVariant &space,
-          const Index n_dofs,
+          const Index num_dofs,
           const Index min_dofs_id,
           const Index max_dofs_id,
           const DofsView &dofs_view,
           const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view)
     :
     space_(space),
-    n_dofs_(n_dofs),
+    num_dofs_(num_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view),
     elements_dofs_view_(elements_dofs_view)
 {
-    Assert(n_dofs_ > 0,ExcEmptyObject());
+    Assert(num_dofs_ > 0,ExcEmptyObject());
     Assert(elements_dofs_view_ != nullptr,ExcNullPtr());
+    Assert(!elements_dofs_view_->empty(), ExcEmptyObject());
 }
 
+void
+DofsManager::
+SpaceInfo::
+add_dofs_offset(const Index offset)
+{
+    Assert(offset >= 0,ExcLowerRange(offset,0));
+    min_dofs_id_ += offset;
+    max_dofs_id_ += offset;
+
+    for (Index &dof : dofs_view_)
+        dof += offset;
+}
+
+
+Index
+DofsManager::
+SpaceInfo::
+get_num_dofs() const
+{
+    return num_dofs_;
+}
+
+Index
+DofsManager::
+SpaceInfo::
+get_min_dofs_id() const
+{
+    return min_dofs_id_;
+}
+
+Index
+DofsManager::
+SpaceInfo::
+get_max_dofs_id() const
+{
+    return max_dofs_id_;
+}
+
+auto
+DofsManager::
+SpaceInfo::
+get_space_variant() -> SpacePtrVariant &
+{
+    return space_;
+}
+
+auto
+DofsManager::
+SpaceInfo::
+get_dofs_view() -> DofsView &
+{
+    return dofs_view_;
+}
+
+auto
+DofsManager::
+SpaceInfo::
+get_dofs_view() const -> const DofsView &
+{
+    return dofs_view_;
+}
 
 
 auto
@@ -186,7 +242,7 @@ get_global_dof(const int space_id, const Index local_dof) const
 
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
-    return spaces_info_.at(space_id).dofs_view_[local_dof];
+    return spaces_info_.at(space_id).get_dofs_view()[local_dof];
 }
 
 
@@ -216,12 +272,19 @@ is_space_insertion_open() const
 
 auto
 DofsManager::
+SpaceInfo::
 get_elements_dofs_view() const -> const std::vector<DofsConstView> &
 {
-    return elements_dofs_view_;
+    return *elements_dofs_view_;
 }
 
 
+auto
+DofsManager::
+get_spaces_info() const -> const std::map<int,SpaceInfo> &
+{
+    return spaces_info_;
+}
 
 void
 DofsManager::
@@ -376,15 +439,15 @@ print_info(LogStream &out) const
 
     Assert(!spaces_info_.empty(),ExcEmptyObject());
     Index i = 0;
-    for (auto &space_info : spaces_info_)
+    for (const auto &space_info : spaces_info_)
     {
 
         out << "Space["<< i <<"]:   ID=" << space_info.first
-            << "   n_dofs=" << space_info.second.n_dofs_
+            << "   n_dofs=" << space_info.second.get_num_dofs()
             << "   DOFs=[ ";
 
-        DofsView &dofs_space_view = const_cast<DofsView &>(space_info.second.dofs_view_);
-        for (Index &dof : dofs_space_view)
+        const DofsView &dofs_space_view = space_info.second.get_dofs_view();
+        for (const Index &dof : dofs_space_view)
             out << dof << " ";
         out << "]" << endl;
 

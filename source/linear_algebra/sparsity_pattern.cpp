@@ -47,11 +47,12 @@ SparsityPattern(const DofsManager &dofs_manager)
     for (const auto &dof : dofs_view)
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
-    Assert(!dofs_manager.get_elements_dofs_view().empty(),
-           ExcEmptyObject());
-    for (const auto element_dofs : dofs_manager.get_elements_dofs_view())
-        for (const auto &dof : element_dofs)
-            (*this)[dof].insert(element_dofs.begin(),element_dofs.end());
+    const auto &spaces_info = dofs_manager.get_spaces_info();
+    Assert(!spaces_info.empty(),ExcEmptyObject());
+    for (const auto &space : spaces_info)
+        for (const auto element_dofs : space.second.get_elements_dofs_view())
+            for (const auto &dof : element_dofs)
+                (*this)[dof].insert(element_dofs.begin(),element_dofs.end());
 }
 
 SparsityPattern::
@@ -79,24 +80,55 @@ SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_man
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
 
-    const auto &elements_dofs_rows = dofs_manager_rows.get_elements_dofs_view();
-    Assert(!elements_dofs_rows.empty(),ExcEmptyObject());
 
-    const auto &elements_dofs_cols = dofs_manager_cols.get_elements_dofs_view();
-    Assert(!elements_dofs_cols.empty(),ExcEmptyObject());
+    const auto &spaces_rows_info = dofs_manager_rows.get_spaces_info();
+    Assert(!spaces_rows_info.empty(),ExcEmptyObject());
 
-    Assert(elements_dofs_rows.size() == elements_dofs_cols.size(),
-           ExcDimensionMismatch(elements_dofs_rows.size(),elements_dofs_cols.size()));
+    const auto &spaces_cols_info = dofs_manager_cols.get_spaces_info();
+    Assert(!spaces_cols_info.empty(),ExcEmptyObject());
 
-    const Index n_elements = elements_dofs_rows.size();
-    for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
+    //check the equality of num. patches on each space
+    Assert(spaces_rows_info.size() == spaces_cols_info.size(),
+           ExcDimensionMismatch(spaces_rows_info.size(),spaces_cols_info.size()));
+
+    auto space_row_iterator = spaces_rows_info.cbegin();
+    auto space_row_iterator_end = spaces_rows_info.cend();
+    auto space_col_iterator = spaces_cols_info.cbegin();
+    for (; space_row_iterator != space_row_iterator_end ; ++space_row_iterator, ++space_col_iterator)
     {
-        const auto &dofs_rows = elements_dofs_rows[ielem];
-        const auto &dofs_cols = elements_dofs_cols[ielem];
+        const auto &space_row = space_row_iterator->second;
+        const auto dofs_elements_view_space_row = space_row.get_elements_dofs_view();
 
-        for (const auto &dof_row : dofs_rows)
-            (*this)[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
+        const auto &space_col = space_col_iterator->second;
+        const auto dofs_elements_view_space_col = space_col.get_elements_dofs_view();
+
+        //check the equality of num. elements on each patch
+        Assert(dofs_elements_view_space_row.size() == dofs_elements_view_space_col.size(),
+               ExcDimensionMismatch(dofs_elements_view_space_row.size(),dofs_elements_view_space_col.size()));
+
+        auto dofs_row_iterator     = dofs_elements_view_space_row.cbegin();
+        auto dofs_row_iterator_end = dofs_elements_view_space_row.end();
+        auto dofs_col_iterator = dofs_elements_view_space_col.cbegin();
+
+        for (; dofs_row_iterator != dofs_row_iterator_end ; ++dofs_row_iterator, ++dofs_col_iterator)
+        {
+            for (const auto &dof_row : *dofs_row_iterator)
+                (*this)[dof_row].insert(dofs_col_iterator->cbegin(),dofs_col_iterator->cend());
+
+        }
     }
+
+    /*
+        const Index n_elements = elements_dofs_rows.get_num_elements();
+        for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
+        {
+            const auto &dofs_rows = elements_dofs_rows[ielem];
+            const auto &dofs_cols = elements_dofs_cols[ielem];
+
+            for (const auto &dof_row : dofs_rows)
+                (*this)[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
+        }
+        //*/
 }
 
 /*

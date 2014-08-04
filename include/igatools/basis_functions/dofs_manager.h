@@ -291,44 +291,124 @@ public:
     bool is_space_insertion_open() const;
 
 
-    const std::vector<DofsConstView> &get_elements_dofs_view() const;
-
-
     void add_element_dofs_view(const DofsConstView &element_dofs_view);
+
 
 private:
     bool is_space_insertion_open_ = false;
-//    bool are_elements_dofs_view_open_ = false;
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 
 
-    struct SpaceInfo
+    /**
+     * This is an helper class in order to store a pointer to a certain space variant,
+     * and store some useful space information, without the necessity to know the template parameters
+     * defining the space.
+     *
+     * This is useful for instance, if the type of space is not known at compile time
+     * (e.g. loading the space from a file) and/or use the space in a class that is
+     * non templatized w.r.t. the space type.
+     *
+     * All data in this class (except the pointer to the space itself, that is managed by the class Variant),
+     * does not depends on the template parameters defining the space.
+     */
+    class SpaceInfo
     {
-        SpaceInfo() = default;
+    public:
+        SpaceInfo();
         SpaceInfo(const SpacePtrVariant &space,
-                  const Index n_dofs,
+                  const Index num_dofs,
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
                   const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view);
 
+        /** Returns the number of dofs of the space. */
+        Index get_num_dofs() const ;
+
+
+        /*
+         * Returns a View to the dofs active on the space (non-const version).
+         */
+        DofsView &get_dofs_view();
+
+        /*
+         * Returns a View to the dofs active on the space (const version).
+         */
+        const DofsView &get_dofs_view() const;
+
+        /**
+         * Returns a vector of size equal to the number of elements in the single-patch space,
+         * for which each entry is a view of the global dofs ids active on the element.
+         */
+        const std::vector<DofsConstView> &get_elements_dofs_view() const;
+
+
+
+
+        /** Returns the minimum dof id present in the space.*/
+        Index get_min_dofs_id() const;
+
+        /** Returns the maximum dof id present in the space.*/
+        Index get_max_dofs_id() const;
+
+        /**
+         * Addas an @p offset to all dofs present in the space.
+         */
+        void add_dofs_offset(const Index offset);
+
+        /**
+         * Return an object containing a variant of a shared_pointer pointing to a certain single-patch space.
+         * The allowed space type can be any valid BSplineSpace, NURBSSpace or PhysicalSpace.
+         */
+        SpacePtrVariant &get_space_variant();
+
+    private:
+        /**
+         * Pointer to a generic single-patch space (it can be any of the type allowed for BSplineSpace,
+         * NURBSSpace and PhysicalSpace).
+         */
         SpacePtrVariant space_;
-        Index n_dofs_ = 0;
-        Index min_dofs_id_ = -1;
-        Index max_dofs_id_ = -1;
+
+        /**
+         * Nuber of active dofs in the space.
+         */
+        Index num_dofs_;
+
+        /** Minumum dof id in the space. */
+        Index min_dofs_id_;
+
+        /** Maximum dof id in the space. */
+        Index max_dofs_id_;
+
+        /**
+         * View of the dofs ids active on the space.
+         */
         DofsView dofs_view_;
+
+        /**
+         * Vector of size equal to the number of elements in the single-patch space,
+         * for which each entry is a view of the global dofs ids active on the element.
+         *
+         * @note We use a std:shared_ptr because this container can be very big and
+         * it is already present
+         * the the DofDistribution class instantiated in the space itself.
+         */
         std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view_;
     };
 
+    /**
+     * Map containing the pointers to the spaces handled by the DofsManager,
+     * and some useful informations that does not depends on the template
+     * parameters needed to instantiate the spaces.
+     */
     std::map<int,SpaceInfo> spaces_info_;
 
 
+    /**
+     * View to the active dofs ids of all single-patch spaces handled by the DofsManager.
+     */
     DofsView dofs_view_;
-
-
-    //TODO: this vector should be removed and instead use SpaceInfo::elements_dofs_view_
-    std::vector<DofsConstView> elements_dofs_view_;
 
 
     std::vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
@@ -342,6 +422,15 @@ private:
 
     /** Number of unique dofs in the DofsManager. */
     Index num_unique_dofs_;
+
+
+public:
+    /**
+     * Returns a map containing the pointers to the spaces handled by the DofsManager,
+     * and some useful informations that does not depends on the template
+     * parameters needed to instantiate the spaces.
+     */
+    const std::map<int,SpaceInfo> &get_spaces_info() const;
 };
 
 
@@ -356,9 +445,9 @@ add_space(std::shared_ptr<Space> space)
 
 #ifndef NDEBUG
     // check that the input space is not already added
-    for (const auto &space_info : spaces_info_)
+    for (auto &space_info : spaces_info_)
     {
-        Assert(space != get<std::shared_ptr<Space>>(space_info.second.space_),
+        Assert(space != get<std::shared_ptr<Space>>(space_info.second.get_space_variant()),
                ExcMessage("Space already added in the DofsManager."));
     }
 #endif
