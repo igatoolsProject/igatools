@@ -32,7 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 
-class DofsManager;
+class SpaceManager;
 
 //Forward declaration to avoid including the header
 template < class > class PhysicalSpaceElementAccessor;
@@ -178,9 +178,9 @@ public:
     void print_memory_info(LogStream &out) const;
 
 
-    std::shared_ptr<DofsManager> get_dofs_manager();
+    std::shared_ptr<SpaceManager> get_space_manager();
 
-    std::shared_ptr<const DofsManager> get_dofs_manager() const;
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
 

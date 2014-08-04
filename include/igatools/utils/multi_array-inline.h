@@ -204,6 +204,25 @@ get_const_view() const
 
 template<class STLContainer, int rank>
 inline
+ContainerView<STLContainer>
+MultiArray<STLContainer,rank>::
+get_flat_view()
+{
+    return ContainerView<STLContainer>(this->data_.begin(),this->data_.end());
+}
+
+template<class STLContainer, int rank>
+inline
+ConstContainerView<STLContainer>
+MultiArray<STLContainer,rank>::
+get_flat_const_view() const
+{
+    return ConstContainerView<STLContainer>(this->data_.cbegin(),this->data_.cend());
+}
+
+
+template<class STLContainer, int rank>
+inline
 void
 MultiArray<STLContainer,rank>::
 print_info(LogStream &out) const

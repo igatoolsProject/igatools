@@ -60,12 +60,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
     for (auto &dofs_distribution_comp : index_distribution_)
-    {
-        vector<Index> &dofs_comp_data =
-            const_cast<vector<Index> &>(dofs_distribution_comp.get_data());
-        components_views.emplace_back(
-            DofsComponentView(dofs_comp_data.begin(),dofs_comp_data.end()));
-    }
+        components_views.emplace_back(dofs_distribution_comp.get_flat_view());
+
     dofs_view_ = DofsView(
                      DofsIterator(components_views,0),
                      DofsIterator(components_views,IteratorState::pass_the_end));
@@ -81,7 +77,7 @@ Index
 DofDistribution<dim, range, rank>::
 get_min_dof_id() const
 {
-    return *std::min_element(dofs_view_.begin(),dofs_view_.end());
+    return *std::min_element(dofs_view_.cbegin(),dofs_view_.cend());
 }
 
 template<int dim, int range, int rank>
@@ -89,7 +85,7 @@ Index
 DofDistribution<dim, range, rank>::
 get_max_dof_id() const
 {
-    return *std::max_element(dofs_view_.begin(),dofs_view_.end());
+    return *std::max_element(dofs_view_.cbegin(),dofs_view_.cend());
 }
 
 
@@ -209,13 +205,11 @@ create_element_loc_to_global_view(
 
         } // end loop elem
 
-        const auto element_loc_to_global_view = DofsConstView(DofsConstIterator(dofs_elem_ranges,0),
-                                                              DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
-
-//        elements_loc_to_global_tensor_view_(t_index) = element_loc_to_global_view;
-
         const auto f_index = elem.get_flat_index();
-        (*elements_loc_to_global_flat_view_)[f_index] = element_loc_to_global_view;
+
+        (*elements_loc_to_global_flat_view_)[f_index] =
+            DofsConstView(DofsConstIterator(dofs_elem_ranges,0),
+                          DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
     }
 }
 
@@ -262,15 +256,6 @@ get_index_distribution() const -> const IndexDistributionTable &
 {
     return index_distribution_;
 }
-/*
-template<int dim, int range, int rank>
-auto
-DofDistribution<dim, range, rank>::
-get_elements_view() const -> const DynamicMultiArray<DofsConstView, dim> &
-{
-    return elements_loc_to_global_tensor_view_;
-}
-//*/
 
 template<int dim, int range, int rank>
 auto

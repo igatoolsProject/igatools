@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/geometry/mapping_slice.h>
-#include <igatools/basis_functions/dofs_manager.h>
+#include <igatools/basis_functions/space_manager.h>
 
 using std::vector;
 using std::array;
@@ -214,23 +214,23 @@ get_loc_to_global(const TensorIndex<dim> &j) const
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-get_dofs_manager() -> shared_ptr<DofsManager>
+get_space_manager() -> shared_ptr<SpaceManager>
 {
-    shared_ptr<DofsManager> dofs_manager = make_shared<DofsManager>(DofsManager());
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
 
-    dofs_manager->space_insertion_open();
-    dofs_manager->add_space(this->shared_from_this());
-    dofs_manager->space_insertion_close();
+    space_manager->space_insertion_open();
+    space_manager->add_space(this->shared_from_this());
+    space_manager->space_insertion_close();
 
-    return dofs_manager;
+    return space_manager;
 }
 
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-get_dofs_manager() const -> std::shared_ptr<const DofsManager>
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
-    return const_cast<self_t &>(*this).get_dofs_manager();
+    return const_cast<self_t &>(*this).get_space_manager();
 }
 
 

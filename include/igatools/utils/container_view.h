@@ -235,6 +235,13 @@ public:
 
     /** Returns a const-iterator pointing to one-pass-the end element in the view. */
     const_iterator end() const;
+
+
+    /** Returns a const-iterator pointing to the first element in the view. */
+    const_iterator cbegin() const;
+
+    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+    const_iterator cend() const;
     ///@}
 
     /** @name Dereference offset operators */
