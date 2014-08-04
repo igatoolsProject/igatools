@@ -79,6 +79,7 @@ template <int> class CartesianGridElementAccessor;
  */
 template<int dim_>
 class CartesianGrid :
+    protected TensorSizedContainer<dim_>,
     public std::enable_shared_from_this<CartesianGrid<dim_>>
 {
 private:
@@ -464,16 +465,6 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-    /**
-     * Number of grid elements in tensor size type
-     */
-    TensorSize<dim> num_elem_;
-
-    /**
-     * Weights used for fast conversion of element index
-     * (flat-to-tensor and tensor-to-flat);
-     */
-    TensorIndex<dim> weight_elem_id_;
 
     /**
      * In the hierarchical spaces elements are characterized as influent or not

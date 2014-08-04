@@ -151,13 +151,12 @@ CartesianGrid<dim_>::
 CartesianGrid(const KnotCoordinates &knot_coordinates,
               const Kind kind)
     :
+    TensorSizedContainer<dim_>(knot_coordinates.tensor_size().operator -=(1)),
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
     knot_coordinates_(knot_coordinates),
-    num_elem_(knot_coordinates_.tensor_size().operator -=(1)),
-    weight_elem_id_(MultiArrayUtils<dim>::compute_weight(num_elem_)),
-    influent_(num_elem_, true),
-    active_elems_(num_elem_, true)
+    influent_(this->tensor_size(), true),
+    active_elems_(this->tensor_size(), true)
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
@@ -214,11 +213,10 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const self_t &grid)
     :
+    TensorSizedContainer<dim_>(grid),
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
-    num_elem_(grid.num_elem_),
-    weight_elem_id_(grid.weight_elem_id_),
     influent_(grid.influent_),
     active_elems_(grid.active_elems_)
 {}
@@ -261,9 +259,7 @@ get_element_lengths() const -> KnotCoordinates
         const Size size_i = size(i);
 
         for (int j = 0 ; j < size_i ; ++j)
-        {
             length.entry(i,j) = knots_i[j+1] - knots_i[j];
-        }
     }
     return length;
 }
@@ -350,7 +346,7 @@ Size
 CartesianGrid<dim_>::
 get_num_all_elems() const
 {
-    return num_elem_.flat_size();
+    return this->flat_size();
 }
 
 
@@ -371,7 +367,7 @@ auto
 CartesianGrid<dim_>::
 get_num_intervals() const -> TensorSize<dim>
 {
-    return num_elem_;
+    return this->tensor_size();
 }
 
 
@@ -409,13 +405,11 @@ refine_directions(
         if (refinement_directions[i])
             this->refine_knots_direction(i,n_subdivisions[i]);
 
-    num_elem_ = knot_coordinates_.tensor_size();
-    num_elem_ -= 1;
-    weight_elem_id_ = MultiArrayUtils<dim>::compute_weight(num_elem_);
+    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size(). operator -=(1));
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
-    influent_.resize(num_elem_, true);
-    active_elems_.resize(num_elem_, true);
+    influent_.resize(this->tensor_size(), true);
+    active_elems_.resize(this->tensor_size(), true);
 
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)
@@ -508,7 +502,7 @@ CartesianGrid<dim_>::
 print_info(LogStream &out) const
 {
     out << "Number of active elements: " << get_num_active_elems() << endl;
-    out << "Number of intervals per direction: " << num_elem_ << endl;
+    out << "Number of intervals per direction: " << this->tensor_size() << endl;
 
     out.begin_item("Knot coordinates:");
     knot_coordinates_.print_info(out);
@@ -577,7 +571,8 @@ Index
 CartesianGrid<dim_>::
 tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const
 {
-    return MultiArrayUtils<dim>::tensor_to_flat_index(tensor_id,weight_elem_id_);
+    return this->tensor_to_flat(tensor_id);
+//    return MultiArrayUtils<dim>::tensor_to_flat_index(tensor_id,weight_elem_id_);
 }
 
 
@@ -587,7 +582,8 @@ auto
 CartesianGrid<dim_>::
 flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
 {
-    return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
+    return this->flat_to_tensor(flat_id);
+//    return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
 }
 
 
