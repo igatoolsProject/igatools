@@ -119,17 +119,35 @@ public:
 
 private:
 
+    /**
+     * This private memeber is the table used to store the dofs ids of each component of a single
+     * patch space.
+     *
+     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
+     * use the associated View instead!
+     */
     IndexDistributionTable index_distribution_;
 
+    /**
+     * View of the active dofs ids on a given single-patch space.
+     */
     DofsView dofs_view_;
+
+
 
     void create_element_loc_to_global_view(
         std::shared_ptr<const CartesianGrid<dim> > grid,
         const MultiplicityTable &accum_mult,
         const SpaceDimensionTable &n_elem_basis);
 
-//    DynamicMultiArray<DofsConstView,dim> elements_loc_to_global_tensor_view_;
-
+    /**
+     * Pointer to a vector in which each entry is a const view to the global dofs on a single element
+     * of a space.
+     * The size of the vector is equal to the number of active elements in the space.
+     *
+     * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
+     * and we want to keep the syncronization of the element views without the expense of successive copies.
+     */
     std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
 
     DistributionPolicy policy_;
@@ -138,11 +156,18 @@ public:
 
     const IndexDistributionTable &get_index_distribution() const;
 
+    /**
+     * Returns a view of the active dofs ids on a given single-patch space (non-const version).
+     */
     DofsView &get_dofs_view();
+
+
+    /**
+     * Returns a view of the active dofs ids on a given single-patch space (const version).
+     */
     const DofsView &get_dofs_view() const;
 
 
-//    const DynamicMultiArray<DofsConstView, dim> &get_elements_view() const;
 
     std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
 };
