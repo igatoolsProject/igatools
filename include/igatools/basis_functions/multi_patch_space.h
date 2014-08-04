@@ -180,6 +180,7 @@ public:
     ///@}
 
 
+#ifdef USE_GRAPH
     /**
      * This function builds the undirected graph representing the MultiPatchSpace:
      * - each <em>node</em> of the graph represents a <em>Patch</em>
@@ -190,6 +191,7 @@ public:
      * patch_insertion_close() and interface_insertion_close().
      */
     void build_graph();
+#endif
 
     /**
      * This function performs the data analysis in order to set equality and linear constraints
@@ -372,7 +374,7 @@ private:
 
 
 
-
+#ifdef USE_GRAPH
     /** @name Stuff related to the multipatch graph(implemented with the boost::graph library) */
     ///@{
     /** Type of container used to hold the edges of the graph. */
@@ -398,7 +400,7 @@ private:
     /** Graph container used to represent the tree of the elements. */
     Graph multipatch_graph_;
     ///*}
-
+#endif
 
     std::shared_ptr<DofsManager> dofs_manager_;
 

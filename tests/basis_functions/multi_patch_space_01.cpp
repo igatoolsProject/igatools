@@ -171,8 +171,9 @@ void test_evaluate()
     multi_patch_space.interface_insertion_close();
     //---------------------------------------------------------------
 
-
+#ifdef USE_GRAPH
     multi_patch_space.build_graph();
+#endif
 
     const auto dofs_manager = multi_patch_space.get_dofs_manager();
 

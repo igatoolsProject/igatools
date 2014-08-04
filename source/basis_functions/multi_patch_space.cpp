@@ -101,6 +101,7 @@ patch_insertion_close(const bool automatic_dofs_renumbering)
     is_patch_insertion_open_ = false;
 }
 
+#ifdef USE_GRAPH
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
@@ -148,6 +149,7 @@ build_graph()
 
     is_graph_built_ = true;
 }
+#endif
 
 template <class PhysicalSpace>
 void
@@ -159,8 +161,10 @@ compute_constraints()
     Assert(are_constraints_computed_ == false,ExcInvalidState());
 
     //---------------------------------------------------------------------------
+#ifdef USE_GRAPH
     if (is_graph_built_ == false)
         this->build_graph();
+#endif
     //---------------------------------------------------------------------------
 
 
@@ -314,15 +318,15 @@ print_info(LogStream &out) const
         for (const auto &interface : interfaces_same_type.second)
         {
             out << "Interface id = " << interface_id++ << endl;
-            interface->print_info(out);
             out.push(tab);
+            interface->print_info(out);
         }
         out.pop();
     }
 
 
 
-
+#ifdef USE_GRAPH
     //---------------------------------------------------------------------------
     Assert(is_graph_built_ == true,ExcInvalidState());
     out << "Patches in the graph:" << endl;
@@ -358,7 +362,7 @@ print_info(LogStream &out) const
     }
     out.pop();
     //---------------------------------------------------------------------------
-
+#endif
 
 
     //---------------------------------------------------------------------------

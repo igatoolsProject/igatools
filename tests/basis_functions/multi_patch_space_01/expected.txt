@@ -9,108 +9,70 @@ MultiPatchSpace infos:
                Num. interfaces = 4
                Interfaces of type 1 --- num=4
                   Interface id = 0
-                  Interface type = 1
-                     Patch 0 infos:
-                        Patch id = 0
-                        Side  id = 1
-                     Patch 1 infos:
-                        Patch id = 1
-                        Side id = 0
+                     Interface type = 1
+                        Patch 0 infos:
+                           Patch id = 1
+                           Side  id = 2
+                        Patch 1 infos:
+                           Patch id = 3
+                           Side id = 3
                   Interface id = 1
-                  Interface type = 1
-                     Patch 0 infos:
-                        Patch id = 2
-                        Side  id = 1
-                     Patch 1 infos:
-                        Patch id = 3
-                        Side id = 0
+                     Interface type = 1
+                        Patch 0 infos:
+                           Patch id = 0
+                           Side  id = 2
+                        Patch 1 infos:
+                           Patch id = 2
+                           Side id = 3
                   Interface id = 2
-                  Interface type = 1
-                     Patch 0 infos:
-                        Patch id = 0
-                        Side  id = 2
-                     Patch 1 infos:
-                        Patch id = 2
-                        Side id = 3
+                     Interface type = 1
+                        Patch 0 infos:
+                           Patch id = 0
+                           Side  id = 1
+                        Patch 1 infos:
+                           Patch id = 1
+                           Side id = 0
                   Interface id = 3
-                  Interface type = 1
-                     Patch 0 infos:
-                        Patch id = 1
-                        Side  id = 2
-                     Patch 1 infos:
-                        Patch id = 3
-                        Side id = 3
-               Patches in the graph:
-                  Patch ID = 0
-                  Patch ID = 1
-                  Patch ID = 2
-                  Patch ID = 3
-               Interfaces in the graph:
-                  Interface type = 1
-                     Patch 0 infos:
-                        Patch id = 0
-                        Side  id = 1
-                     Patch 1 infos:
-                        Patch id = 1
-                        Side id = 0
+                     Interface type = 1
+                        Patch 0 infos:
+                           Patch id = 2
+                           Side  id = 1
+                        Patch 1 infos:
+                           Patch id = 3
+                           Side id = 0
+                  DOFs manager:
+                     DofsManager infos:
+                         DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
+                         Space[0]:   ID=0   n_dofs=8   DOFs=[ 0 1 2 3 4 5 6 7 ]
+                         Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
+                         Space[2]:   ID=2   n_dofs=8   DOFs=[ 16 17 18 19 20 21 22 23 ]
+                         Space[3]:   ID=3   n_dofs=8   DOFs=[ 24 25 26 27 28 29 30 31 ]
+                         Num. unique dofs          = 32
+                         Num. linear   constraints = 0
+                         Num. equality constraints = 14
+                             Eq. constraint[0]: [ master = 1 , slave = 8 ]
+                             Eq. constraint[1]: [ master = 2 , slave = 16 ]
+                             Eq. constraint[2]: [ master = 3 , slave = 10 ]
+                             Eq. constraint[3]: [ master = 3 , slave = 17 ]
+                             Eq. constraint[4]: [ master = 3 , slave = 24 ]
+                             Eq. constraint[5]: [ master = 5 , slave = 12 ]
+                             Eq. constraint[6]: [ master = 6 , slave = 20 ]
+                             Eq. constraint[7]: [ master = 7 , slave = 14 ]
+                             Eq. constraint[8]: [ master = 7 , slave = 21 ]
+                             Eq. constraint[9]: [ master = 7 , slave = 28 ]
+                             Eq. constraint[10]: [ master = 11 , slave = 25 ]
+                             Eq. constraint[11]: [ master = 15 , slave = 29 ]
+                             Eq. constraint[12]: [ master = 19 , slave = 26 ]
+                             Eq. constraint[13]: [ master = 23 , slave = 30 ]
+                     
+               The local_dof=3 for the space_id=0 corresponds to the global_dof=3
+               The local_dof=7 for the space_id=0 corresponds to the global_dof=7
+               The local_dof=3 for the space_id=1 corresponds to the global_dof=11
+               The local_dof=7 for the space_id=1 corresponds to the global_dof=15
+               The local_dof=3 for the space_id=2 corresponds to the global_dof=19
+               The local_dof=7 for the space_id=2 corresponds to the global_dof=23
+               The local_dof=3 for the space_id=3 corresponds to the global_dof=27
+               The local_dof=7 for the space_id=3 corresponds to the global_dof=31
+               ========== Test dim=2 --- end ==========
                
-               Interface type = 1
-                  Patch 0 infos:
-                     Patch id = 2
-                     Side  id = 1
-                  Patch 1 infos:
-                     Patch id = 3
-                     Side id = 0
-            
-            Interface type = 1
-               Patch 0 infos:
-                  Patch id = 0
-                  Side  id = 2
-               Patch 1 infos:
-                  Patch id = 2
-                  Side id = 3
-         
-         Interface type = 1
-            Patch 0 infos:
-               Patch id = 1
-               Side  id = 2
-            Patch 1 infos:
-               Patch id = 3
-               Side id = 3
-      
-      DOFs manager:
-         DofsManager infos:
-             DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
-             Space[0]:   ID=0   n_dofs=8   DOFs=[ 0 1 2 3 4 5 6 7 ]
-             Space[1]:   ID=1   n_dofs=8   DOFs=[ 8 9 10 11 12 13 14 15 ]
-             Space[2]:   ID=2   n_dofs=8   DOFs=[ 16 17 18 19 20 21 22 23 ]
-             Space[3]:   ID=3   n_dofs=8   DOFs=[ 24 25 26 27 28 29 30 31 ]
-             Num. unique dofs          = 32
-             Num. linear   constraints = 0
-             Num. equality constraints = 14
-                 Eq. constraint[0]: [ master = 1 , slave = 8 ]
-                 Eq. constraint[1]: [ master = 2 , slave = 16 ]
-                 Eq. constraint[2]: [ master = 3 , slave = 10 ]
-                 Eq. constraint[3]: [ master = 3 , slave = 17 ]
-                 Eq. constraint[4]: [ master = 3 , slave = 24 ]
-                 Eq. constraint[5]: [ master = 5 , slave = 12 ]
-                 Eq. constraint[6]: [ master = 6 , slave = 20 ]
-                 Eq. constraint[7]: [ master = 7 , slave = 14 ]
-                 Eq. constraint[8]: [ master = 7 , slave = 21 ]
-                 Eq. constraint[9]: [ master = 7 , slave = 28 ]
-                 Eq. constraint[10]: [ master = 11 , slave = 25 ]
-                 Eq. constraint[11]: [ master = 15 , slave = 29 ]
-                 Eq. constraint[12]: [ master = 19 , slave = 26 ]
-                 Eq. constraint[13]: [ master = 23 , slave = 30 ]
-         
-   The local_dof=3 for the space_id=0 corresponds to the global_dof=3
-   The local_dof=7 for the space_id=0 corresponds to the global_dof=7
-   The local_dof=3 for the space_id=1 corresponds to the global_dof=11
-   The local_dof=7 for the space_id=1 corresponds to the global_dof=15
-   The local_dof=3 for the space_id=2 corresponds to the global_dof=19
-   The local_dof=7 for the space_id=2 corresponds to the global_dof=23
-   The local_dof=3 for the space_id=3 corresponds to the global_dof=27
-   The local_dof=7 for the space_id=3 corresponds to the global_dof=31
-   ========== Test dim=2 --- end ==========
-   
-   
+               
