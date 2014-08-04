@@ -124,9 +124,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor
      */
-    SpaceElementAccessor() = delete;
+    SpaceElementAccessor() = default;
 
     /**
      * Constructs an accessor to element number index of a

@@ -182,7 +182,7 @@ public:
     virtual void init_element(const ValueFlags flag,
                               const Quadrature<dim> &quad) const = 0;
 
-    virtual void set_element(const CartesianGridElementAccessor<dim> &elem) const = 0;
+    virtual void set_element(const typename GridType::ElementIterator &elem) const = 0;
 
     /**
      *
@@ -190,7 +190,7 @@ public:
      * or GridElement iterator
      */
     virtual void set_face_element(const Index face_id,
-                                  const CartesianGridElementAccessor<dim> &elem) const = 0;
+                                  const typename GridType::ElementIterator &elem) const = 0;
 
 
     virtual std::vector<Value> values() const;

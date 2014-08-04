@@ -76,9 +76,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor.
      */
-    CartesianGridElementAccessor() = delete;
+    CartesianGridElementAccessor() = default;
 
     /**
      * Construct an accessor pointing to the element with

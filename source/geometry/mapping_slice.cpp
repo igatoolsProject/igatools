@@ -34,7 +34,7 @@ MappingSlice<dim_, codim_>::
 MappingSlice(const std::shared_ptr<const SupMap> map,
              const int face_id,
              const std::shared_ptr<GridType > grid,
-             const std::shared_ptr<std::map<int,int> > elem_map)
+             const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map)
     :
     base_t::Mapping(grid),
     map_(map),
@@ -65,7 +65,7 @@ MappingSlice<dim_, codim_>::
 create(const std::shared_ptr<const SupMap> map,
        const int face_id,
        const std::shared_ptr<GridType > grid,
-       const std::shared_ptr<std::map<int,int> > elem_map) -> shared_ptr<base_t>
+       const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map) -> shared_ptr<base_t>
 {
     return shared_ptr<base_t>(new self_t(map, face_id, grid, elem_map));
 }
@@ -130,9 +130,9 @@ init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const typename GridType::ElementIterator &elem) const
 {
-    element->move_to((*elem_map_)[elem.get_flat_index()]);
+    element->move_to((*elem_map_)[elem]->get_flat_index());
     element->fill_cache();
 }
 
@@ -141,7 +141,7 @@ template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem) const
+                 const typename GridType::ElementIterator &elem) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());

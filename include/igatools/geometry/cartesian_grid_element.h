@@ -55,9 +55,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor.
      */
-    CartesianGridElement() = delete;
+    CartesianGridElement() = default;
 
     /**
      * Construct an object pointing to the element with
@@ -253,7 +253,7 @@ public:
 
 protected:
     /** Cartesian grid from which the element belongs.*/
-    const std::shared_ptr<ContainerType> grid_;
+    std::shared_ptr<ContainerType> grid_;
 
     /** Flat (linear) index assigned to the current (sub)-element. */
     Index flat_index_;

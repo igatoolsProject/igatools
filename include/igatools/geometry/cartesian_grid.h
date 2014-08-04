@@ -339,6 +339,7 @@ public:
      */
     Points<dim> get_face_normal(const int face_no) const;
 
+    using FaceGridMap = std::map<typename FaceType::ElementIterator, ElementIterator>;
     /**
      * Construct a cartesian grid of dim-1 conforming to
      * the grid face face_id and a map from the elements of
@@ -346,8 +347,7 @@ public:
      * grid.
      */
     std::shared_ptr<FaceType>
-    get_face_grid(const int face_id,
-                  std::map<typename FaceType::ElementIterator, ElementIterator> &elem_map) const;
+    get_face_grid(const int face_id, FaceGridMap &elem_map) const;
 
     ///@}
 

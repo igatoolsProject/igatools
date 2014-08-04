@@ -60,7 +60,7 @@ public:
     MappingSlice(const std::shared_ptr<const SupMap> map,
                  const int face_id,
                  const std::shared_ptr<GridType> grid,
-                 const std::shared_ptr<std::map<int,int> > elem_map);
+                 const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map);
 
     /**
      * Copy constructor
@@ -75,14 +75,14 @@ public:
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<const SupMap> map,
            const int face_id,
-           const std::shared_ptr<GridType > grid,
-           const std::shared_ptr<std::map<int,int> > elem_map);
+           const std::shared_ptr<GridType> grid,
+           const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map);
 
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<const base_t> map,
            const int face_id,
            const std::shared_ptr<GridType > grid,
-           const std::shared_ptr<std::map<int,int> > elem_map)
+           const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map)
     {
         AssertThrow(true, ExcImpossibleInDim(-1));
         return std::shared_ptr<base_t>();//Should never reach this
@@ -94,10 +94,10 @@ public:
 
     void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) const override ;
+    void set_element(const typename GridType::ElementIterator &elem) const override ;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) const override;
+                          const typename GridType::ElementIterator &elem) const override;
 
     /**
      * Prints internal information about the mapping.
@@ -118,7 +118,7 @@ private:
     // the cache
     mutable typename SupMap::ElementIterator element;
 
-    const std::shared_ptr<std::map<int,int> > elem_map_;
+    const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map_;
 
 };
 

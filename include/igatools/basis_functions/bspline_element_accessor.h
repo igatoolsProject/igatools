@@ -75,7 +75,7 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    BSplineElementAccessor() = delete;
+    BSplineElementAccessor() = default;
 
     /**
      * Constructs an accessor to element number index of a

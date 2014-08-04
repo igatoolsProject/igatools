@@ -190,7 +190,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
                    std::vector<Index> &face_to_element_dofs,
-                   std::map<int, int> &elem_map) const
+                   typename GridType::FaceGridMap &elem_map) const
 -> std::shared_ptr<RefFaceSpace>
 {
 
@@ -238,7 +238,7 @@ get_face_space(const Index face_id,
                std::vector<Index> &face_to_element_dofs) const
 -> std::shared_ptr<FaceSpace>
 {
-    auto elem_map = std::make_shared<std::map<int,int> >();
+    auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
     auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
     auto map  = get_push_forward()->get_mapping();
 

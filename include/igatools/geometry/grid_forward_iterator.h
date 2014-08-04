@@ -174,7 +174,7 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    GridForwardIterator() = delete;
+    GridForwardIterator() = default;
 
     /**
      * Construct an iterator on a grid-type container
@@ -269,6 +269,18 @@ protected:
     Accessor accessor_ ;
 };
 
+
+template <typename Accessor>
+bool operator> (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
+{
+    return it1->get_flat_index() > it2->get_flat_index();
+}
+
+template <typename Accessor>
+bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
+{
+    return it1->get_flat_index() < it2->get_flat_index();
+}
 IGA_NAMESPACE_CLOSE
 
 #endif /* PATCH_ITERATORS_H_ */
