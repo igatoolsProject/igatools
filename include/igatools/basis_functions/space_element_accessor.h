@@ -124,7 +124,7 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor
+     * Default constructor.
      */
     SpaceElementAccessor() = default;
 
@@ -139,7 +139,7 @@ public:
     SpaceElementAccessor(const std::shared_ptr<const Space> space,
                          const TensorIndex<dim> &elem_index);
 
-
+    SpaceElementAccessor<Space> &operator=(const SpaceElementAccessor<Space> &elem) = default;
     /**
      * Copy constructor.
      * @note For the constructed object it

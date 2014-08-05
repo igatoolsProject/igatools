@@ -132,7 +132,8 @@ void
 MappingSlice<dim_, codim_>::
 set_element(const GridIterator &elem) const
 {
-    element->move_to((*elem_map_)[elem].get_flat_index());
+    typename CartesianGrid<dim_>::ElementIterator el_tmp(this->get_grid(),elem.get_flat_index());
+    element->move_to((*elem_map_)[el_tmp]->get_flat_index());
     element->fill_cache();
 }
 

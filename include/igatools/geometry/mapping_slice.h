@@ -83,7 +83,7 @@ public:
     create(const std::shared_ptr<const base_t> map,
            const int face_id,
            const std::shared_ptr<GridType > grid,
-           const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map)
+           const std::shared_ptr<typename base_t::GridType::FaceGridMap> elem_map)
     {
         AssertThrow(true, ExcImpossibleInDim(-1));
         return std::shared_ptr<base_t>();//Should never reach this
@@ -122,6 +122,8 @@ private:
     const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map_;
 
 };
+
+
 
 IGA_NAMESPACE_CLOSE
 
