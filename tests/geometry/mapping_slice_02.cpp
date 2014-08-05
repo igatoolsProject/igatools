@@ -65,7 +65,7 @@ void run_test()
 
     for (int face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
     {
-        auto elem_map = std::make_shared<std::map<int,int> >();
+        auto elem_map = std::make_shared<typename CartesianGrid<dim>::FaceGridMap>();
         auto face_grid = grid->get_face_grid(face_id, *elem_map);
         auto face_map =
             MappingSlice<dim-1,codim+1>::create(map, face_id, face_grid, elem_map);

@@ -521,7 +521,7 @@ template <int dim_>
 auto
 CartesianGrid<dim_>::
 get_face_grid(const int face_id,
-              std::map<typename FaceType::ElementIterator, ElementIterator> &elem_map) const
+              FaceGridMap &elem_map) const
 -> shared_ptr<FaceType>
 {
     Assert(dim > 0, ExcLowerRange(dim,1));
@@ -548,7 +548,9 @@ get_face_grid(const int face_id,
         for (int j=0; j<dim-1; ++j)
             v_index[active_dirs[j]] = f_index[j];
         v_elem->move_to(v_index);
-        elem_map[f_elem] = v_elem;
+        //auto ret =
+        elem_map.emplace(f_elem, v_elem);
+        //  elem_map[f_elem] = v_elem;
     }
 
     return face_grid;
