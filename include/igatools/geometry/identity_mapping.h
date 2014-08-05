@@ -47,6 +47,7 @@ private:
     using typename base_t::Gradient;
     using typename base_t::Hessian;
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
 
 public:
     IdentityMapping() = delete;
@@ -63,10 +64,10 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) const;
+    void set_element(const GridIterator &elem) const;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) const;
+                          const GridIterator &elem) const;
 
     void evaluate(std::vector<Value> &values) const override;
 

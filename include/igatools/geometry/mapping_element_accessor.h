@@ -52,6 +52,7 @@ public:
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const Mapping<dim_ref_,codim_>;
 
+    using GridIterator = typename ContainerType::GridIterator;
     /** Dimension of the reference domain */
     using CartesianGridElementAccessor<dim_ref_>::dim;
 

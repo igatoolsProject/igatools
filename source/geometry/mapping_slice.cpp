@@ -130,9 +130,9 @@ init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-set_element(const typename GridType::ElementIterator &elem) const
+set_element(const GridIterator &elem) const
 {
-    element->move_to((*elem_map_)[elem]->get_flat_index());
+    element->move_to((*elem_map_)[elem].get_flat_index());
     element->fill_cache();
 }
 
@@ -141,7 +141,7 @@ template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
 set_face_element(const Index face_id,
-                 const typename GridType::ElementIterator &elem) const
+                 const GridIterator &elem) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());

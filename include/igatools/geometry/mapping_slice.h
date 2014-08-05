@@ -41,6 +41,7 @@ public:
     using base_t::space_dim;
 
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
 
     using typename base_t::Point;
     using typename base_t::Value;
@@ -94,10 +95,10 @@ public:
 
     void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 
-    void set_element(const typename GridType::ElementIterator &elem) const override ;
+    void set_element(const GridIterator &elem) const override ;
 
     void set_face_element(const Index face_id,
-                          const typename GridType::ElementIterator &elem) const override;
+                          const GridIterator &elem) const override;
 
     /**
      * Prints internal information about the mapping.

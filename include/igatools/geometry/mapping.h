@@ -62,9 +62,15 @@ class Mapping
 {
 public:
     /** Type of the Grid */
-    using typename GridWrapper<CartesianGrid<dim_>>::GridType;
+	//TODO(pauletti, Aug 4, 2014): for some reason the current compiler doesn't
+	// understand something like GridIterator if the
+	// following commneted using is used
+    //using typename GridWrapper<CartesianGrid<dim_>>::GridType;
+	using GridType = CartesianGrid<dim_>;
 
-    /** Dimension of the reference domain */
+	using GridIterator = typename GridType::ElementAccessor;
+
+	/** Dimension of the reference domain */
     static const int dim = dim_;
 
     /** Codimension of the deformed domain. */
@@ -182,7 +188,7 @@ public:
     virtual void init_element(const ValueFlags flag,
                               const Quadrature<dim> &quad) const = 0;
 
-    virtual void set_element(const typename GridType::ElementIterator &elem) const = 0;
+    virtual void set_element(const GridIterator &elem) const = 0;
 
     /**
      *
@@ -190,7 +196,7 @@ public:
      * or GridElement iterator
      */
     virtual void set_face_element(const Index face_id,
-                                  const typename GridType::ElementIterator &elem) const = 0;
+                                  const GridIterator &elem) const = 0;
 
 
     virtual std::vector<Value> values() const;

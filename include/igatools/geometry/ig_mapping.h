@@ -45,6 +45,8 @@ private:
     using typename base_t::Gradient;
     using typename base_t::Hessian;
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
+
     using typename base_t::ElementIterator;
 
     using self_t = IgMapping<RefSpace>;
@@ -86,10 +88,10 @@ public:
     void init_element(const ValueFlags flag,
                       const Quadrature<dim> &quad) const override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) const override;
+    void set_element(const GridIterator &elem) const override;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) const override;
+                          const GridIterator &elem) const override;
 
     /** @name Mapping as a standard function */
     ///@{

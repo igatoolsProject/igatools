@@ -84,7 +84,7 @@ required_flags() const
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
     points_ = elem.get_points();
 }
@@ -95,7 +95,7 @@ template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem) const
+                 const GridIterator &elem) const
 {
     face_points_[face_id] = elem.get_points(FaceTopology<dim_>(face_id));
 }
@@ -219,7 +219,7 @@ BallMapping<dim_>::required_flags() const
 
 template<int dim_>
 void
-BallMapping<dim_>::set_element(const CartesianGridElementAccessor<dim> &elem) const
+BallMapping<dim_>::set_element(const GridIterator &elem) const
 {
     points_ = elem.get_points();
     const int n_points = points_.size();
@@ -261,7 +261,7 @@ BallMapping<dim_>::set_element(const CartesianGridElementAccessor<dim> &elem) co
 template<int dim_>
 void
 BallMapping<dim_>::set_face_element(const Index face_id,
-                                    const CartesianGridElementAccessor<dim> &elem) const
+                                    const GridIterator &elem) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -801,7 +801,7 @@ SphereMapping<dim_>::required_flags() const
 
 template<int dim_>
 void
-SphereMapping<dim_>::set_element(const CartesianGridElementAccessor<dim> &elem) const
+SphereMapping<dim_>::set_element(const GridIterator &elem) const
 {
     points_ = elem.get_points();
     const int n_points = points_.size();
@@ -842,7 +842,7 @@ SphereMapping<dim_>::set_element(const CartesianGridElementAccessor<dim> &elem) 
 template<int dim_>
 void
 SphereMapping<dim_>::set_face_element(const Index face_id,
-                                      const CartesianGridElementAccessor<dim> &elem) const
+                                      const GridIterator &elem) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -1253,7 +1253,7 @@ required_flags() const
 
 void
 CylindricalAnnulus::
-set_element(const CartesianGridElementAccessor<3> &elem) const
+set_element(const GridIterator &elem) const
 {
     points_ = elem.get_points();
 }
@@ -1263,7 +1263,7 @@ set_element(const CartesianGridElementAccessor<3> &elem) const
 void
 CylindricalAnnulus::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<3> &elem) const
+                 const GridIterator &elem) const
 {
     face_points_[face_id] = elem.get_points(FaceTopology<3>(face_id));
 }

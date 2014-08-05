@@ -395,7 +395,7 @@ MappingElementAccessor<dim_ref_,codim_>::
 fill_cache()
 {
     CartesianGridElementAccessor<dim_ref_>::fill_cache();
-    mapping_->set_element(*this);
+    mapping_->set_element(GridIterator(*this));
 
     Assert(elem_values_.is_initialized(), ExcNotInitialized());
 

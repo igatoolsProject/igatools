@@ -244,7 +244,7 @@ init_element(const ValueFlags flag,
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
     cache_->move_to(elem.get_flat_index());
     cache_->fill_cache();
@@ -254,7 +254,7 @@ set_element(const CartesianGridElementAccessor<dim> &elem) const
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const
+set_face_element(const Index face_id, const GridIterator &elem) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
