@@ -88,15 +88,7 @@ count_and_remove_duplicates(
 
     Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == vec_with_duplicates.size(),
            ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
-    /*
-    //------------------------------------------------------------------------------------------
-    // now we count how many entries with the same values (==>multiplicity)
-    multiplicities.clear() ;
-    for (const auto & v : vec_without_duplicates)
-        multiplicities.push_back(count(vec_with_duplicates_begin, vec_with_duplicates_end, v)) ;
-    //------------------------------------------------------------------------------------------
-    //*/
-}
+    }
 
 } ;
 

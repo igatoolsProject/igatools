@@ -574,23 +574,6 @@ get_bounding_box() const -> BBox<dim>
 }
 
 
-template <int dim_>
-Index
-CartesianGrid<dim_>::
-tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const
-{
-    return MultiArrayUtils<dim>::tensor_to_flat_index(tensor_id,weight_elem_id_);
-}
-
-
-
-template <int dim_>
-auto
-CartesianGrid<dim_>::
-flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
-{
-    return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
-}
 
 template <int dim_>
 Index
@@ -621,7 +604,7 @@ get_element_flat_id_from_point(const Points<dim> &point) const
 
      }
 
-    return this->tensor_to_flat_element_index(elem_t_id);
+    return 0;//this->tensor_to_flat_element_index(elem_t_id);
 
 }
 
@@ -630,9 +613,9 @@ template <int dim_>
 auto
 CartesianGrid<dim_>::
 get_element_from_point(const std::vector<Points<dim>> &points) const
--> std::vector<ElementIterator>
+-> std::map<ElementIterator, std::vector<Points<dim>> >
 {
-    std::vector<ElementIterator> res;
+    std::map<ElementIterator, std::vector<Points<dim>> > res;
 
     for (const auto point : points)
     {
@@ -646,7 +629,12 @@ get_element_from_point(const std::vector<Points<dim>> &points) const
             const Index j = low - knots.begin();
 
             elem_t_id[i] = (j>0) ? j-1 : 0;
-            res.push_back(ElementIterator(this->shared_from_this(), elem_t_id));
+
+            auto ans =
+                    res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
+                                std::vector<Points<dim>>(1,point));
+            if (!ans.second)
+                (ans.first)->second.push_back(point);
         }
     }
     return res;

@@ -355,9 +355,30 @@ IgMapping<RefSpace>::
 evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
+    values.clear();
 
     const auto grid = this->get_grid();
 
+    auto elem_list = grid->get_element_from_point(points);
+
+    for (auto p : elem_list)
+    {
+        auto &elem = cache_;
+        elem->move_to(p.first->get_flat_index());
+        auto pts = p.second;
+
+        const auto points_unit_element =
+                elem->transform_points_reference_to_unit(pts);
+
+        const auto values_current_element =
+                elem->evaluate_field_values_at_points(
+                        this->get_control_points_elem(),points_unit_element);
+
+        for (const auto &v : values_current_element)
+            values.push_back(v);
+    }
+
+#if 0
     // for each point: get the flat-id of the element on which the point belongs from
     vector<int> elem_fids;
     for (const auto &pt : points)
@@ -392,6 +413,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
             values.push_back(v);
 
     }
+#endif
     Assert(values.size() == points.size(),ExcDimensionMismatch(values.size(),points.size()));
 }
 
