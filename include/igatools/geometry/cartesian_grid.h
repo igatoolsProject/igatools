@@ -244,7 +244,6 @@ public:
            const TensorSize<dim> &n);
     ///@}
 
-
     /**
      * @name Assignment operators
      */
@@ -259,7 +258,6 @@ public:
      * Move assignment operator.
      */
     self_t &operator=(self_t &&grid) = default;
-
     ///@}
 
 
@@ -348,17 +346,15 @@ public:
      */
     std::shared_ptr<FaceType>
     get_face_grid(const int face_id, FaceGridMap &elem_map) const;
-
     ///@}
 
     // TODO (pauletti, Aug 1, 2014): should be replaced by get_element_from_point
     Index get_element_flat_id_from_point(const Points<dim> &point) const;
 
-
     std::vector<ElementIterator>
     get_element_from_point(const std::vector<Points<dim>> &points) const;
 
-
+public:
     // TODO (pauletti, Aug 1, 2014): should be private
     /**
      * Returns the flat representation of an element index from its tensor-like
@@ -377,6 +373,7 @@ public:
      */
     TensorIndex<dim> flat_to_tensor_element_index(const Index flat_id) const;
 
+public:
     /**
      * Prints debug information of the CartesianGrid to a LogStream.
      */

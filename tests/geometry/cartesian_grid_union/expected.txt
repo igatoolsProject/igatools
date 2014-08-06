@@ -21,8 +21,8 @@ Number of active elements: 1
 Number of intervals per direction: [ ]
 Knot coordinates:
 
-map_elem_grid_union_to_elem_grid_1 = [ 0 ]
-map_elem_grid_union_to_elem_grid_2 = [ 0 ]
+map_elem_grid_union_to_elem_grid_1 = 0 
+map_elem_grid_union_to_elem_grid_2 = 0 
 ------------------------------------------
 =============== Dimension 0 -- end =================
 
@@ -53,8 +53,8 @@ Number of intervals per direction: [ 4 ]
 Knot coordinates:
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
-map_elem_grid_union_to_elem_grid_1 = [ 0 0 1 1 ]
-map_elem_grid_union_to_elem_grid_2 = [ 0 1 1 2 ]
+map_elem_grid_union_to_elem_grid_1 = 0 0 1 1 
+map_elem_grid_union_to_elem_grid_2 = 0 1 1 2 
 ------------------------------------------
 =============== Dimension 1 -- end =================
 
@@ -88,8 +88,8 @@ Knot coordinates:
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
-map_elem_grid_union_to_elem_grid_1 = [ 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 ]
-map_elem_grid_union_to_elem_grid_2 = [ 0 1 1 2 3 4 4 5 3 4 4 5 6 7 7 8 ]
+map_elem_grid_union_to_elem_grid_1 = 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 
+map_elem_grid_union_to_elem_grid_2 = 0 1 1 2 3 4 4 5 3 4 4 5 6 7 7 8 
 ------------------------------------------
 =============== Dimension 2 -- end =================
 
@@ -126,8 +126,8 @@ Knot coordinates:
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
-map_elem_grid_union_to_elem_grid_1 = [ 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 4 4 5 5 4 4 5 5 6 6 7 7 6 6 7 7 4 4 5 5 4 4 5 5 6 6 7 7 6 6 7 7 ]
-map_elem_grid_union_to_elem_grid_2 = [ 0 1 1 2 3 4 4 5 3 4 4 5 6 7 7 8 9 10 10 11 12 13 13 14 12 13 13 14 15 16 16 17 9 10 10 11 12 13 13 14 12 13 13 14 15 16 16 17 18 19 19 20 21 22 22 23 21 22 22 23 24 25 25 26 ]
+map_elem_grid_union_to_elem_grid_1 = 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 4 4 5 5 4 4 5 5 6 6 7 7 6 6 7 7 4 4 5 5 4 4 5 5 6 6 7 7 6 6 7 7 
+map_elem_grid_union_to_elem_grid_2 = 0 1 1 2 3 4 4 5 3 4 4 5 6 7 7 8 9 10 10 11 12 13 13 14 12 13 13 14 15 16 16 17 9 10 10 11 12 13 13 14 12 13 13 14 15 16 16 17 18 19 19 20 21 22 22 23 21 22 22 23 24 25 25 26 
 ------------------------------------------
 =============== Dimension 3 -- end =================
 

@@ -25,9 +25,11 @@
  *  date: 2014-05-14
  */
 
+// TODO (pauletti, Aug 6, 2014): put some numbear like _01 to filename
 #include "../tests.h"
 
 #include <igatools/geometry/grid_tools.h>
+#include <igatools/geometry/cartesian_grid_element_accessor.h>
 
 template<int dim>
 void do_test()
@@ -50,16 +52,23 @@ void do_test()
 
     out << endl;
 
-    vector<int> map_elem_grid_union_to_elem_grid_1;
-    vector<int> map_elem_grid_union_to_elem_grid_2;
-    auto grid_union = grid_tools::build_cartesian_grid_union(*grid_1, *grid_2,
-                                                 map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);
+    grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_1;
+    grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_2;
+    auto grid_union = grid_tools::build_cartesian_grid_union
+            (*grid_1, *grid_2,
+             map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);
     out << "------------------------------------------" << endl;
     out << "Grid union" << endl;
     grid_union->print_info(out);
 
-    out << "map_elem_grid_union_to_elem_grid_1 = " << map_elem_grid_union_to_elem_grid_1 << endl;
-    out << "map_elem_grid_union_to_elem_grid_2 = " << map_elem_grid_union_to_elem_grid_2 << endl;
+    out << "map_elem_grid_union_to_elem_grid_1 = ";
+    for (auto map : map_elem_grid_union_to_elem_grid_1)
+        out << map.second->get_flat_index() << " ";
+    out << endl;
+    out << "map_elem_grid_union_to_elem_grid_2 = ";
+    for (auto map : map_elem_grid_union_to_elem_grid_2)
+            out << map.second->get_flat_index() << " ";
+    out << endl;
 
     out << "------------------------------------------" << endl;
     out << "=============== Dimension " << dim << " -- end =================" << endl ;

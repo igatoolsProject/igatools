@@ -520,8 +520,7 @@ print_info(LogStream &out) const
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_grid(const int face_id,
-              FaceGridMap &elem_map) const
+get_face_grid(const int face_id, FaceGridMap &elem_map) const
 -> shared_ptr<FaceType>
 {
     Assert(dim > 0, ExcLowerRange(dim,1));

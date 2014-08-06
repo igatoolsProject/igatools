@@ -27,6 +27,10 @@ IGA_NAMESPACE_OPEN
 
 namespace grid_tools
 {
+
+template<int dim>
+using InterGridMap = std::map<typename CartesianGrid<dim>::ElementIterator,
+        typename CartesianGrid<dim>::ElementIterator>;
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
  * this function builds and returns the one-to-one mapping between the elements on the
@@ -44,10 +48,9 @@ namespace grid_tools
  * @relates CartesianGrid
  */
 template <int dim>
-std::vector<Index>
-build_map_elements_between_cartesian_grids(
-    const CartesianGrid<dim> &grid_fine,
-    const CartesianGrid<dim> &grid_coarse);
+InterGridMap<dim>
+build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                           const CartesianGrid<dim> &grid_coarse);
 
 
 /**
@@ -70,12 +73,12 @@ build_map_elements_between_cartesian_grids(
  * @relates CartesianGrid
  */
 template <int dim>
-std::shared_ptr<CartesianGrid<dim>>
-                                 build_cartesian_grid_union(
-                                     const CartesianGrid<dim> &grid_1,
-                                     const CartesianGrid<dim> &grid_2,
-                                     std::vector<Index> &map_elem_grid_union_to_elem_grid_1,
-                                     std::vector<Index> &map_elem_grid_union_to_elem_grid_2);
+std::shared_ptr<CartesianGrid<dim> >
+build_cartesian_grid_union(
+        const CartesianGrid<dim> &grid_1,
+        const CartesianGrid<dim> &grid_2,
+        InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
+        InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2);
 }
 
 IGA_NAMESPACE_CLOSE
