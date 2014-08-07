@@ -359,7 +359,7 @@ public:
      * @endcode
      */
     std::map<ElementIterator, std::vector<int> >
-    get_element_from_point(const std::vector<Points<dim>> &points) const;
+    find_elements_of_points(const std::vector<Points<dim>> &points) const;
 
 public:
     /**

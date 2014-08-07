@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for CartesianGrid::get_element_from_point
+ *  Test for CartesianGrid::find_elements_of_points
  *
  *  author: pauletti
  *  date: 2014-08-07
@@ -53,7 +53,7 @@ void do_test()
     points.push_back(p_mid);
     points.push_back(p_end);
 
-    auto elem_list = grid->get_element_from_point(points);
+    auto elem_list = grid->find_elements_of_points(points);
     for (auto el : elem_list)
     {
         out << "The element: " << el.first->get_flat_index();

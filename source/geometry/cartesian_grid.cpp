@@ -576,7 +576,7 @@ get_bounding_box() const -> BBox<dim>
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-get_element_from_point(const std::vector<Points<dim>> &points) const
+find_elements_of_points(const std::vector<Points<dim>> &points) const
 -> std::map<ElementIterator, std::vector<int> >
 {
     std::map<ElementIterator, std::vector<int> > res;

@@ -361,7 +361,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
     Assert(values.size() == points.size(),
            ExcDimensionMismatch(values.size(),points.size()));
 
-    auto elem_list = this->get_grid()->get_element_from_point(points);
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
     auto &elem = cache_;
 
     for (auto p : elem_list)
@@ -394,7 +394,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points,
     Assert(gradients.size() == points.size(),
            ExcDimensionMismatch(gradients.size(),points.size()));
 
-    auto elem_list = this->get_grid()->get_element_from_point(points);
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
     auto &elem = cache_;
 
     for (auto p : elem_list)
@@ -428,7 +428,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points,
     Assert(hessians.size() == points.size(),
            ExcDimensionMismatch(hessians.size(),points.size()));
 
-    auto elem_list = this->get_grid()->get_element_from_point(points);
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
     auto &elem = cache_;
 
     for (auto p : elem_list)
