@@ -34,7 +34,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/multi_patch_space.h>
+#include <igatools/basis_functions/multi_patch_space-template.h>
 
 template <int dim>
 using RefSpace_t = BSplineSpace<dim,dim,1>  ;
