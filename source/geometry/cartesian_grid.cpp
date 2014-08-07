@@ -488,7 +488,7 @@ refine_knots_direction(const int direction_id,
     Index i_new = 0;
     for (Index i_old = 0 ; i_old < n_knots_old - 1 ; ++i_old)
     {
-        const Real h = (knots_old[i_old+1] - knots_old[i_old]) / n_subdivisions ;
+        const Real h = (knots_old[i_old+1] - knots_old[i_old]) / n_subdivisions;
 
         for (Index j = 0 ; j < n_subdivisions ; ++j, ++i_new)
             knots_new[i_new] = knots_old[i_old] + j * h;
@@ -496,8 +496,6 @@ refine_knots_direction(const int direction_id,
     knots_new[n_knots_new-1] = knots_old[n_knots_old-1];
 
     knot_coordinates_.copy_data_direction(direction_id,knots_new);
-
-
 }
 
 
@@ -609,6 +607,7 @@ get_element_flat_id_from_point(const Points<dim> &point) const
 }
 
 
+
 template <int dim_>
 auto
 CartesianGrid<dim_>::
@@ -629,13 +628,12 @@ get_element_from_point(const std::vector<Points<dim>> &points) const
             const Index j = low - knots.begin();
 
             elem_t_id[i] = (j>0) ? j-1 : 0;
-
-            auto ans =
-                    res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
-                                std::vector<Points<dim>>(1,point));
-            if (!ans.second)
-                (ans.first)->second.push_back(point);
         }
+        auto ans =
+        		res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
+        				std::vector<Points<dim>>(1,point));
+        if (!ans.second)
+        	(ans.first)->second.push_back(point);
     }
     return res;
 }
