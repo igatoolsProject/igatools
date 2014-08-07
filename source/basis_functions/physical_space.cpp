@@ -20,9 +20,12 @@
 
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/space_manager.h>
+
 using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::const_pointer_cast;
 using std::endl;
 
@@ -37,8 +40,7 @@ PhysicalSpace(
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
-    push_forward_(push_forward),
-    id_(id)
+    push_forward_(push_forward)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
@@ -47,6 +49,7 @@ PhysicalSpace(
     Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 
+    ref_space_->set_id(id);
 }
 
 
@@ -64,7 +67,7 @@ clone() const -> shared_ptr<self_t>
         new self_t(
             shared_ptr<RefSpace>(new RefSpace(*ref_space_)),
             shared_ptr<PushForwardType>(new PushForwardType(*push_forward_)),
-            id_)
+            this->get_id())
     );
 };
 
@@ -189,32 +192,47 @@ get_face_space(const Index face_id,
     return face_space;
 }
 
-#if 0
-template <class RefSpace_, class PushForward_>
-auto
-PhysicalSpace<RefSpace_,PushForward_>::
-get_degree() const -> const ComponentTable<TensorIndex<dim>> &
-{
-    return ref_space_->get_degree();
-}
-
-
-template <class RefSpace_, class PushForward_>
-auto
-PhysicalSpace<RefSpace_,PushForward_>::
-get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
-{
-    return ref_space_->get_element_global_dofs();
-}
-#endif
 
 template <class RefSpace_, class PushForward_>
 Index
 PhysicalSpace<RefSpace_,PushForward_>::
 get_id() const
 {
-    return id_;
+    return ref_space_->get_id();
 }
+
+
+template <class RefSpace_, class PushForward_>
+std::vector<Index>
+PhysicalSpace<RefSpace_,PushForward_>::
+get_loc_to_global(const TensorIndex<dim> &j) const
+{
+    return ref_space_->get_loc_to_global(j);
+}
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_space_manager() -> shared_ptr<SpaceManager>
+{
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->space_insertion_open();
+    space_manager->add_space(this->shared_from_this());
+    space_manager->space_insertion_close();
+
+    return space_manager;
+}
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
+{
+    return const_cast<self_t &>(*this).get_space_manager();
+}
+
 
 template <class RefSpace_, class PushForward_>
 void
@@ -228,16 +246,6 @@ print_info(LogStream &out) const
     out.begin_item("Push-forward:");
     push_forward_->print_info(out);
     out.end_item();
-}
-
-
-
-template <class RefSpace_, class PushForward_>
-std::shared_ptr<DofsManager>
-PhysicalSpace<RefSpace_,PushForward_>::
-get_dofs_manager() const
-{
-    return this->get_reference_space()->get_dofs_manager();
 }
 
 

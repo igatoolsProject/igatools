@@ -27,13 +27,14 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include <igatools/basis_functions/dofs_manager.h>
 
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
+
+class SpaceManager;
 
 template < int, int, int> class BSplineElementAccessor;
 
@@ -346,9 +347,10 @@ public:
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                          const Index comp) const;
 
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
+    std::shared_ptr<SpaceManager> get_space_manager();
 
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 private:
 
@@ -378,9 +380,6 @@ private:
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
-
-    void create_dofs_manager();
-    std::shared_ptr<DofsManager> dofs_manager_;
 
 public:
     DeclException1(ExcScalarRange, int,

@@ -28,6 +28,7 @@ using std::array;
 using std::vector;
 using std::endl;
 using std::shared_ptr;
+using std::make_shared;
 using std::bind;
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -406,14 +407,6 @@ refine_h_weights(
 }
 
 
-template <int dim_, int range_, int rank_>
-std::shared_ptr<DofsManager>
-NURBSSpace<dim_, range_, rank_>::
-get_dofs_manager() const
-{
-    return this->get_spline_space()->get_dofs_manager();
-}
-
 
 template <int dim_, int range_, int rank_>
 Size
@@ -537,6 +530,31 @@ add_dofs_offset(const Index offset)
 {
     sp_space_->add_dofs_offset(offset);
 }
+
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_space_manager() -> shared_ptr<SpaceManager>
+{
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->space_insertion_open();
+    space_manager->add_space(this->shared_from_this());
+    space_manager->space_insertion_close();
+
+    return space_manager;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
+{
+    return const_cast<self_t &>(*this).get_space_manager();
+}
+
+
 
 template <int dim_, int range_, int rank_>
 void

@@ -206,13 +206,25 @@ public:
     ///@}
 
 
-    /** @name Getting a view */
+    /** @name Getting a view of the data*/
     ///@{
     /** Returns a ContainerView of the MultiArray. */
     ContainerView<MultiArray<STLContainer,rank>> get_view();
 
     /** Returns a ConstContainerView of the MultiArray. */
     ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;
+
+    /**
+     * Returns a ContainerView of the underlying STLContainer
+     * used to store the entries of the MultiArray.
+     */
+    ContainerView<STLContainer> get_flat_view();
+
+    /**
+     * Returns a ConstContainerView of the underlying STLContainer
+     * used to store the entries of the MultiArray.
+     */
+    ConstContainerView<STLContainer> get_flat_const_view() const;
     ///@}
 
     /** @name Functions to easily fill the multiarray */

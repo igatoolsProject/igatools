@@ -83,7 +83,7 @@ void
 CartesianGridElementAccessor<dim_>::
 operator++()
 {
-    const auto n_elem = this->grid_->num_elem_.flat_size();
+    const auto n_elem = this->grid_->get_num_all_elems();
     Index index = this->get_flat_index();
     do
     {

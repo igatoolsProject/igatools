@@ -171,42 +171,43 @@ void test_evaluate()
     multi_patch_space.interface_insertion_close();
     //---------------------------------------------------------------
 
-
+#ifdef USE_GRAPH
     multi_patch_space.build_graph();
+#endif
 
-    const auto dofs_manager = multi_patch_space.get_dofs_manager();
+    const auto space_manager = multi_patch_space.get_space_manager();
 
     //---------------------------------------------------------------
     // adding (manually) the equality constraints that ensures C0 strong continuity
-    dofs_manager->equality_constraints_open();
+    space_manager->equality_constraints_open();
 
     // patch 0, side 1 --- patch 1, side 0
-    dofs_manager->add_equality_constraint(1, 8);
-    dofs_manager->add_equality_constraint(3,10);
-    dofs_manager->add_equality_constraint(5,12);
-    dofs_manager->add_equality_constraint(7,14);
+    space_manager->add_equality_constraint(1, 8);
+    space_manager->add_equality_constraint(3,10);
+    space_manager->add_equality_constraint(5,12);
+    space_manager->add_equality_constraint(7,14);
 
     // patch 2, side 1 --- patch 3, side 0
-    dofs_manager->add_equality_constraint(17,24);
-    dofs_manager->add_equality_constraint(19,26);
-    dofs_manager->add_equality_constraint(21,28);
-    dofs_manager->add_equality_constraint(23,30);
+    space_manager->add_equality_constraint(17,24);
+    space_manager->add_equality_constraint(19,26);
+    space_manager->add_equality_constraint(21,28);
+    space_manager->add_equality_constraint(23,30);
 
     // patch 0, side 3 --- patch 2, side 2
-    dofs_manager->add_equality_constraint(2,16);
-    dofs_manager->add_equality_constraint(3,17);
-    dofs_manager->add_equality_constraint(6,20);
-    dofs_manager->add_equality_constraint(7,21);
+    space_manager->add_equality_constraint(2,16);
+    space_manager->add_equality_constraint(3,17);
+    space_manager->add_equality_constraint(6,20);
+    space_manager->add_equality_constraint(7,21);
 
     // patch 1, side 3 --- patch 3, side 2
-    dofs_manager->add_equality_constraint(10,24);
-    dofs_manager->add_equality_constraint(11,25);
-    dofs_manager->add_equality_constraint(14,28);
-    dofs_manager->add_equality_constraint(15,29);
+    space_manager->add_equality_constraint(10,24);
+    space_manager->add_equality_constraint(11,25);
+    space_manager->add_equality_constraint(14,28);
+    space_manager->add_equality_constraint(15,29);
 
-    dofs_manager->remove_equality_constraints_redundancies();
+    space_manager->remove_equality_constraints_redundancies();
 
-    dofs_manager->equality_constraints_close();
+    space_manager->equality_constraints_close();
     //---------------------------------------------------------------
 
 
@@ -220,9 +221,9 @@ void test_evaluate()
     for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
     {
         out << "The local_dof=3 for the space_id="<< patch_id
-            << " corresponds to the global_dof="<< dofs_manager->get_global_dof(patch_id,3) << endl;
+            << " corresponds to the global_dof="<< space_manager->get_global_dof(patch_id,3) << endl;
         out << "The local_dof=7 for the space_id="<< patch_id
-            << " corresponds to the global_dof="<< dofs_manager->get_global_dof(patch_id,7) << endl;
+            << " corresponds to the global_dof="<< space_manager->get_global_dof(patch_id,7) << endl;
     }
     //---------------------------------------------------------------
 

@@ -27,12 +27,12 @@ using std::pair;
 IGA_NAMESPACE_OPEN
 
 SparsityPattern::
-SparsityPattern(const DofsManager &dofs_manager)
+SparsityPattern(const SpaceManager &space_manager)
 {
-    Assert(dofs_manager.is_dofs_view_open() == false,ExcInvalidState());
+    Assert(space_manager.is_space_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
-    const auto &dofs_view = dofs_manager.get_dofs_view();
+    const auto &dofs_view = space_manager.get_dofs_view();
 
     for (const auto &dof : dofs_view)
         row_dofs_.push_back(dof);
@@ -47,23 +47,23 @@ SparsityPattern(const DofsManager &dofs_manager)
     for (const auto &dof : dofs_view)
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
-    Assert(dofs_manager.are_elements_dofs_view_open() == false,ExcInvalidState());
-    Assert(!dofs_manager.get_elements_dofs_view().empty(),
-           ExcEmptyObject());
-    for (const auto element_dofs : dofs_manager.get_elements_dofs_view())
-        for (const auto &dof : element_dofs)
-            (*this)[dof].insert(element_dofs.begin(),element_dofs.end());
+    const auto &spaces_info = space_manager.get_spaces_info();
+    Assert(!spaces_info.empty(),ExcEmptyObject());
+    for (const auto &space : spaces_info)
+        for (const auto element_dofs : space.second.get_elements_dofs_view())
+            for (const auto &dof : element_dofs)
+                (*this)[dof].insert(element_dofs.begin(),element_dofs.end());
 }
 
 SparsityPattern::
-SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols)
+SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols)
 {
-    Assert(dofs_manager_rows.is_dofs_view_open() == false,ExcInvalidState());
-    Assert(dofs_manager_cols.is_dofs_view_open() == false,ExcInvalidState());
+    Assert(space_manager_rows.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_cols.is_space_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
-    const auto &dofs_view_rows = dofs_manager_rows.get_dofs_view();
-    const auto &dofs_view_cols = dofs_manager_cols.get_dofs_view();
+    const auto &dofs_view_rows = space_manager_rows.get_dofs_view();
+    const auto &dofs_view_cols = space_manager_cols.get_dofs_view();
 
     for (const auto &dof : dofs_view_rows)
         row_dofs_.push_back(dof);
@@ -80,26 +80,55 @@ SparsityPattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_man
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
 
-    Assert(dofs_manager_rows.are_elements_dofs_view_open() == false,ExcInvalidState());
-    const auto &elements_dofs_rows = dofs_manager_rows.get_elements_dofs_view();
-    Assert(!elements_dofs_rows.empty(),ExcEmptyObject());
 
-    Assert(dofs_manager_cols.are_elements_dofs_view_open() == false,ExcInvalidState());
-    const auto &elements_dofs_cols = dofs_manager_cols.get_elements_dofs_view();
-    Assert(!elements_dofs_cols.empty(),ExcEmptyObject());
+    const auto &spaces_rows_info = space_manager_rows.get_spaces_info();
+    Assert(!spaces_rows_info.empty(),ExcEmptyObject());
 
-    Assert(elements_dofs_rows.size() == elements_dofs_cols.size(),
-           ExcDimensionMismatch(elements_dofs_rows.size(),elements_dofs_cols.size()));
+    const auto &spaces_cols_info = space_manager_cols.get_spaces_info();
+    Assert(!spaces_cols_info.empty(),ExcEmptyObject());
 
-    const Index n_elements = elements_dofs_rows.size();
-    for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
+    //check the equality of num. patches on each space
+    Assert(spaces_rows_info.size() == spaces_cols_info.size(),
+           ExcDimensionMismatch(spaces_rows_info.size(),spaces_cols_info.size()));
+
+    auto space_row_iterator = spaces_rows_info.cbegin();
+    auto space_row_iterator_end = spaces_rows_info.cend();
+    auto space_col_iterator = spaces_cols_info.cbegin();
+    for (; space_row_iterator != space_row_iterator_end ; ++space_row_iterator, ++space_col_iterator)
     {
-        const auto &dofs_rows = elements_dofs_rows[ielem];
-        const auto &dofs_cols = elements_dofs_cols[ielem];
+        const auto &space_row = space_row_iterator->second;
+        const auto dofs_elements_view_space_row = space_row.get_elements_dofs_view();
 
-        for (const auto &dof_row : dofs_rows)
-            (*this)[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
+        const auto &space_col = space_col_iterator->second;
+        const auto dofs_elements_view_space_col = space_col.get_elements_dofs_view();
+
+        //check the equality of num. elements on each patch
+        Assert(dofs_elements_view_space_row.size() == dofs_elements_view_space_col.size(),
+               ExcDimensionMismatch(dofs_elements_view_space_row.size(),dofs_elements_view_space_col.size()));
+
+        auto dofs_row_iterator     = dofs_elements_view_space_row.cbegin();
+        auto dofs_row_iterator_end = dofs_elements_view_space_row.end();
+        auto dofs_col_iterator = dofs_elements_view_space_col.cbegin();
+
+        for (; dofs_row_iterator != dofs_row_iterator_end ; ++dofs_row_iterator, ++dofs_col_iterator)
+        {
+            for (const auto &dof_row : *dofs_row_iterator)
+                (*this)[dof_row].insert(dofs_col_iterator->cbegin(),dofs_col_iterator->cend());
+
+        }
     }
+
+    /*
+        const Index n_elements = elements_dofs_rows.get_num_elements();
+        for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
+        {
+            const auto &dofs_rows = elements_dofs_rows[ielem];
+            const auto &dofs_cols = elements_dofs_cols[ielem];
+
+            for (const auto &dof_row : dofs_rows)
+                (*this)[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
+        }
+        //*/
 }
 
 /*

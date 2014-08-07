@@ -146,7 +146,7 @@ StokesProblem(const int deg, const int n_knots)
 
     vel_space_ = VelSpace::create(vel_deg, grid,vel_m);
 
-    const SparsityPattern sparsity_pattern(*vel_space_->get_dofs_manager(),*pre_space_->get_dofs_manager());
+    const SparsityPattern sparsity_pattern(*vel_space_->get_space_manager(),*pre_space_->get_space_manager());
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;

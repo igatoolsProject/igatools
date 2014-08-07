@@ -235,6 +235,13 @@ public:
 
     /** Returns a const-iterator pointing to one-pass-the end element in the view. */
     const_iterator end() const;
+
+
+    /** Returns a const-iterator pointing to the first element in the view. */
+    const_iterator cbegin() const;
+
+    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+    const_iterator cend() const;
     ///@}
 
     /** @name Dereference offset operators */
@@ -258,7 +265,10 @@ public:
 template <class Container>
 class ConstContainerView : public ConstView<typename Container::iterator,typename Container::const_iterator>
 {
+public:
     using ConstView<typename Container::iterator,typename Container::const_iterator>::ConstView;
+//    ConstContainerView(const ConstContainerView<Container> &view) = default;
+//    ConstContainerView(ConstContainerView<Container> &&view) = default;
 };
 
 
@@ -283,7 +293,10 @@ class ConstContainerView : public ConstView<typename Container::iterator,typenam
 template <class Container>
 class ContainerView : public View<typename Container::iterator,typename Container::const_iterator>
 {
+public:
     using View<typename Container::iterator,typename Container::const_iterator>::View;
+//  ContainerView(const ContainerView<Container> &view) = default;
+//  ContainerView(ContainerView<Container> &&view) = default;
 };
 
 

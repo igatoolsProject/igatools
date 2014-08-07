@@ -27,10 +27,12 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
-#include <igatools/basis_functions/dofs_manager.h>
 #include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
+
+
+class SpaceManager;
 
 //Forward declaration to avoid including the header
 template < class > class PhysicalSpaceElementAccessor;
@@ -129,10 +131,8 @@ public:
         return ref_space_->get_num_basis_per_element_table();
     }
 
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
-    {
-        return ref_space_->get_loc_to_global(j);
-    }
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
+
     /**
      * Returns a element iterator to the first element of the patch.
      */
@@ -177,28 +177,19 @@ public:
     // implemented in all library classes
     void print_memory_info(LogStream &out) const;
 
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
-#if 0
-    /**
-     * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * The first index of the returned object is the component id, the second index is the direction id.
-     */
-    const ComponentTable<TensorIndex<dim>> &get_degree() const;
+    std::shared_ptr<SpaceManager> get_space_manager();
+
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
-    /**
-     * @todo Missing documentation
-     */
-    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
-#endif
 
 private:
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;
 
-    Index id_;
+//    Index id_;
 
     friend ElementAccessor;
 };

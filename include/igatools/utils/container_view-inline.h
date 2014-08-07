@@ -197,6 +197,24 @@ template <class Iterator,class ConstIterator>
 inline
 auto
 ConstView<Iterator,ConstIterator>::
+cbegin() const -> const_iterator
+{
+    return this->begin_;
+}
+
+template <class Iterator,class ConstIterator>
+inline
+auto
+ConstView<Iterator,ConstIterator>::
+cend() const -> const_iterator
+{
+    return this->end_;
+}
+
+template <class Iterator,class ConstIterator>
+inline
+auto
+ConstView<Iterator,ConstIterator>::
 operator[](const Index n) const -> const reference
 {
     Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());

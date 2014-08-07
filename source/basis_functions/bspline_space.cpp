@@ -22,6 +22,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/identity_mapping.h>
 #include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/space_manager.h>
 
 using std::endl;
 using std::array;
@@ -84,9 +85,6 @@ BSplineSpace(const DegreeTable &deg,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
-    this->create_dofs_manager();
-
-
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
@@ -121,8 +119,6 @@ BSplineSpace(const DegreeTable &deg,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
 {
-    this->create_dofs_manager();
-
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
@@ -297,10 +293,6 @@ refine_h_after_grid_refinement(
                      BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                      BaseSpace::accumulated_interior_multiplicities(),
                      this->get_degree());
-
-
-    dofs_manager_.reset();
-    this->create_dofs_manager();
 }
 
 
@@ -315,65 +307,8 @@ add_dofs_offset(const Index offset)
     basis_indices_.add_dofs_offset(offset);
 }
 
-template<int dim_, int range_, int rank_>
-void
-BSplineSpace<dim_, range_, rank_>::
-create_dofs_manager()
-{
-    Assert(dofs_manager_ == nullptr,ExcInvalidState());
-    dofs_manager_ = make_shared<DofsManager>(DofsManager());
-
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
-    //---------------------------------------------------------------------------------------------
-    dofs_manager_->dofs_view_open();
-    auto &index_space = this->get_basis_indices().get_index_distribution();
-
-    vector<DofsComponentView> space_components_view;
-    for (auto &index_space_comp : index_space)
-    {
-        vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
-        DofsComponentView index_space_comp_view(
-            index_space_comp_data.begin(),index_space_comp_data.end());
-
-        space_components_view.push_back(index_space_comp_view);
-    }
-
-    DofsIterator space_dofs_begin(space_components_view,0);
-    DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
-    SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
-
-    const Index space_id = 0;
-    dofs_manager_->add_dofs_space_view(space_id,this->get_num_basis(),dofs_space_view);
-    dofs_manager_->dofs_view_close(false);
-    //---------------------------------------------------------------------------------------------
 
 
-    //---------------------------------------------------------------------------------------------
-    // getting the views of the dofs on each element of the space
-    dofs_manager_->elements_dofs_view_open();
-
-    const auto &elements_view = this->get_basis_indices().get_elements_view();
-    for (const auto &elem_view : elements_view)
-        dofs_manager_->add_element_dofs_view(elem_view);
-
-    dofs_manager_->elements_dofs_view_close();
-    //---------------------------------------------------------------------------------------------
-}
-
-
-template<int dim_, int range_, int rank_>
-std::shared_ptr<DofsManager>
-BSplineSpace<dim_, range_, rank_>::
-get_dofs_manager() const
-{
-    return dofs_manager_;
-}
 
 template<int dim_, int range_, int rank_>
 auto
@@ -416,6 +351,28 @@ BSplineSpace<dim_, range_, rank_>::
 get_loc_to_global(const TensorIndex<dim> &j) const
 {
     return basis_indices_.get_loc_to_global_indices(j);
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_space_manager() -> shared_ptr<SpaceManager>
+{
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->space_insertion_open();
+    space_manager->add_space(this->shared_from_this());
+    space_manager->space_insertion_close();
+
+    return space_manager;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
+{
+    return const_cast<self_t &>(*this).get_space_manager();
 }
 
 template<int dim_, int range_, int rank_>

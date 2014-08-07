@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/basis_functions/dofs_manager.h>
+#include <igatools/basis_functions/space_manager.h>
 
 #include <boost/graph/adjacency_list.hpp>
 
@@ -84,21 +84,24 @@ public:
     using Patch = PhysicalSpace;
 
     /** Type alias for the pointer to a patch . */
-    using PatchPtr = std::shared_ptr<const Patch>;
+    using PatchPtr = std::shared_ptr<Patch>;
 
     /** Dimensionality of the reference domain. */
     static const int dim = PhysicalSpace::dim;
+
+    /** Dimensionality of the embedding domain. */
+    static const int space_dim = PhysicalSpace::space_dim;
     ///@}
 
 
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. A DofsManager can be used as input argument in order to work with multiple
+     * Default constructor. A SpaceManager can be used as input argument in order to work with multiple
      * MultiPatchSpace and unique dof numbering.
      */
-    MultiPatchSpace(std::shared_ptr<DofsManager> dofs_manager =
-                        std::make_shared<DofsManager>(DofsManager()));
+    MultiPatchSpace(std::shared_ptr<SpaceManager> dofs_manager =
+                        std::make_shared<SpaceManager>(SpaceManager()));
 
     /** Copy constructor. */
     MultiPatchSpace(const MultiPatchSpace<PhysicalSpace> &multi_patch_space) = delete;
@@ -133,7 +136,7 @@ public:
      * Communicates that the insertion of patches is completed.
      *
      * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
-     * then the dofs in each space are renumbered by the DofsManager.
+     * then the dofs in each space are renumbered by the SpaceManager.
      * The renumbering is made in ascending order processing the dofs space views as inserted
      * using the function add_dofs_space_view.
      *
@@ -177,6 +180,7 @@ public:
     ///@}
 
 
+#ifdef USE_GRAPH
     /**
      * This function builds the undirected graph representing the MultiPatchSpace:
      * - each <em>node</em> of the graph represents a <em>Patch</em>
@@ -187,6 +191,7 @@ public:
      * patch_insertion_close() and interface_insertion_close().
      */
     void build_graph();
+#endif
 
     /**
      * This function performs the data analysis in order to set equality and linear constraints
@@ -245,9 +250,12 @@ public:
 
 
 
-    /** Returns the DofsManager used in the MultiPatchSpace. */
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
+    /** Returns the SpaceManager used in the MultiPatchSpace. */
+    std::shared_ptr<SpaceManager> get_space_manager();
 
+
+    /** Returns the SpaceManager used in the MultiPatchSpace. */
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
 
@@ -366,7 +374,7 @@ private:
 
 
 
-
+#ifdef USE_GRAPH
     /** @name Stuff related to the multipatch graph(implemented with the boost::graph library) */
     ///@{
     /** Type of container used to hold the edges of the graph. */
@@ -392,9 +400,9 @@ private:
     /** Graph container used to represent the tree of the elements. */
     Graph multipatch_graph_;
     ///*}
+#endif
 
-
-    std::shared_ptr<DofsManager> dofs_manager_;
+    std::shared_ptr<SpaceManager> space_manager_;
 
 public:
 

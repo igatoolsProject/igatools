@@ -162,6 +162,9 @@ public:
     ~NURBSSpace() = default;
 
 
+    std::shared_ptr<SpaceManager> get_space_manager();
+
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
 protected:
@@ -254,7 +257,6 @@ public:
 
     DofDistribution<dim, range, rank> &get_basis_indices();
 
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
 
 
     /** Return the push forward (non-const version). */

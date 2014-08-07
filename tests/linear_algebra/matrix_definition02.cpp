@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
 
 
     MatrixType A(SparsityPattern(
-        		*bspline_space_rows->get_dofs_manager(),
-        		*bspline_space_cols->get_dofs_manager()));
+                     *bspline_space_rows->get_space_manager(),
+                     *bspline_space_cols->get_space_manager()));
 
 
     const auto num_rows = n_basis_sp_rows ;

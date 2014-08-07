@@ -280,7 +280,9 @@ projection_l2(const typename Space::Func &func,
               shared_ptr<const Space> space,
               const Quadrature<Space::dim> &quad)
 {
-    const SparsityPattern sparsity_pattern(*space->get_dofs_manager());
+    const auto space_manager = space->get_space_manager();
+
+    const SparsityPattern sparsity_pattern(*space_manager);
     Matrix<la_pack> matrix(sparsity_pattern);
 
     const auto space_dofs = sparsity_pattern.get_row_dofs();
