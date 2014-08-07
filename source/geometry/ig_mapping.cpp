@@ -349,14 +349,18 @@ evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) cons
 }
 
 
+
+// TODO (pauletti, Aug 7, 2014): evaluate_at_points, evaluate_gradients_at_points, etc
+// should eventually be a template function template<order> eval_derivative_at_point
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
 evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
+    Assert(values.size() == points.size(),
+           ExcDimensionMismatch(values.size(),points.size()));
 
-    values.clear();
     auto elem_list = this->get_grid()->get_element_from_point(points);
     auto &elem = cache_;
 
@@ -369,17 +373,13 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 
         const auto points_unit_element =
                 elem->transform_points_reference_to_unit(pts);
-
-        const auto values_current_element =
+        const auto elem_val =
                 elem->evaluate_field_values_at_points(
-                        this->get_control_points_elem(),points_unit_element);
+                        get_control_points_elem(), points_unit_element);
 
-        for (const auto &v : values_current_element)
-            values.push_back(v);
+        for(int j=0; j<p.second.size(); ++j)
+            values[p.second[j]] = elem_val[j];
     }
-
-    Assert(values.size() == points.size(),
-    		ExcDimensionMismatch(values.size(),points.size()));
 }
 
 
@@ -390,32 +390,30 @@ IgMapping<RefSpace>::
 evaluate_gradients_at_points(const std::vector<Point> &points,
 		std::vector<Gradient> &gradients) const
 {
-	Assert(points.size() > 0, ExcEmptyObject());
-
-	gradients.clear();
-	auto elem_list = this->get_grid()->get_element_from_point(points);
-	auto &elem = cache_;
-
-	for (auto p : elem_list)
-	{
-		elem->move_to(p.first->get_flat_index());
-		std::vector<Point> pts(p.second.size());
-		for(int j=0; j<p.second.size(); ++j)
-			pts[j] = points[p.second[j]];
-
-		const auto points_unit_element =
-				elem->transform_points_reference_to_unit(pts);
-
-		const auto values_current_element =
-				elem->evaluate_field_gradients_at_points(
-						this->get_control_points_elem(),points_unit_element);
-
-		for (const auto &v : values_current_element)
-			gradients.push_back(v);
-	}
-
+    Assert(points.size() > 0, ExcEmptyObject());
     Assert(gradients.size() == points.size(),
-    		ExcDimensionMismatch(gradients.size(),points.size()));
+           ExcDimensionMismatch(gradients.size(),points.size()));
+
+    auto elem_list = this->get_grid()->get_element_from_point(points);
+    auto &elem = cache_;
+
+    for (auto p : elem_list)
+    {
+        elem->move_to(p.first->get_flat_index());
+        std::vector<Point> pts(p.second.size());
+        for(int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
+
+        const auto points_unit_element =
+                elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+                elem->evaluate_field_values_at_points(
+                        get_control_points_elem(), points_unit_element);
+
+        for(int j=0; j<p.second.size(); ++j)
+            gradients[p.second[j]] = elem_val[j];
+    }
+
 }
 
 
@@ -426,32 +424,30 @@ IgMapping<RefSpace>::
 evaluate_hessians_at_points(const std::vector<Point> &points,
 		std::vector<Hessian> &hessians) const
 {
-	Assert(points.size() > 0, ExcEmptyObject());
+    Assert(points.size() > 0, ExcEmptyObject());
+    Assert(hessians.size() == points.size(),
+           ExcDimensionMismatch(hessians.size(),points.size()));
 
-	hessians.clear();
-	auto elem_list = this->get_grid()->get_element_from_point(points);
-	auto &elem = cache_;
+    auto elem_list = this->get_grid()->get_element_from_point(points);
+    auto &elem = cache_;
 
-	for (auto p : elem_list)
-	{
-		elem->move_to(p.first->get_flat_index());
-		std::vector<Point> pts(p.second.size());
-		for(int j=0; j<p.second.size(); ++j)
-			pts[j] = points[p.second[j]];
+    for (auto p : elem_list)
+    {
+        elem->move_to(p.first->get_flat_index());
+        std::vector<Point> pts(p.second.size());
+        for(int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
 
-		const auto points_unit_element =
-				elem->transform_points_reference_to_unit(pts);
+        const auto points_unit_element =
+                elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+                elem->evaluate_field_values_at_points(
+                        get_control_points_elem(), points_unit_element);
 
-		const auto values_current_element =
-				elem->evaluate_field_hessians_at_points(
-						this->get_control_points_elem(),points_unit_element);
+        for(int j=0; j<p.second.size(); ++j)
+            hessians[p.second[j]] = elem_val[j];
+    }
 
-		for (const auto &v : values_current_element)
-			hessians.push_back(v);
-	}
-
-	Assert(hessians.size() == points.size(),
-			ExcDimensionMismatch(hessians.size(),points.size()));
 }
 
 
