@@ -612,12 +612,14 @@ template <int dim_>
 auto
 CartesianGrid<dim_>::
 get_element_from_point(const std::vector<Points<dim>> &points) const
--> std::map<ElementIterator, std::vector<Points<dim>> >
+-> std::map<ElementIterator, std::vector<int> >
 {
-    std::map<ElementIterator, std::vector<Points<dim>> > res;
+    std::map<ElementIterator, std::vector<int> > res;
 
-    for (const auto point : points)
+    const int n_points = points.size();
+    for (int k=0; k<n_points; ++k)
     {
+    	const auto &point = points[k];
         TensorIndex<dim> elem_t_id;
         for (int i = 0 ; i < dim ; ++i)
         {
@@ -631,9 +633,9 @@ get_element_from_point(const std::vector<Points<dim>> &points) const
         }
         auto ans =
         		res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
-        				std::vector<Points<dim>>(1,point));
+        				std::vector<int>(1,k));
         if (!ans.second)
-        	(ans.first)->second.push_back(point);
+        	(ans.first)->second.push_back(k);
     }
     return res;
 }

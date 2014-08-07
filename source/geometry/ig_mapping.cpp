@@ -363,7 +363,9 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
     for (auto p : elem_list)
     {
     	elem->move_to(p.first->get_flat_index());
-        auto pts = p.second;
+    	std::vector<Point> pts(p.second.size());
+    	for(int j=0; j<p.second.size(); ++j)
+    		pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
                 elem->transform_points_reference_to_unit(pts);
@@ -376,7 +378,8 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
             values.push_back(v);
     }
 
-    Assert(values.size() == points.size(),ExcDimensionMismatch(values.size(),points.size()));
+    Assert(values.size() == points.size(),
+    		ExcDimensionMismatch(values.size(),points.size()));
 }
 
 
@@ -396,7 +399,9 @@ evaluate_gradients_at_points(const std::vector<Point> &points,
 	for (auto p : elem_list)
 	{
 		elem->move_to(p.first->get_flat_index());
-		auto pts = p.second;
+		std::vector<Point> pts(p.second.size());
+		for(int j=0; j<p.second.size(); ++j)
+			pts[j] = points[p.second[j]];
 
 		const auto points_unit_element =
 				elem->transform_points_reference_to_unit(pts);
@@ -430,7 +435,9 @@ evaluate_hessians_at_points(const std::vector<Point> &points,
 	for (auto p : elem_list)
 	{
 		elem->move_to(p.first->get_flat_index());
-		auto pts = p.second;
+		std::vector<Point> pts(p.second.size());
+		for(int j=0; j<p.second.size(); ++j)
+			pts[j] = points[p.second[j]];
 
 		const auto points_unit_element =
 				elem->transform_points_reference_to_unit(pts);
@@ -440,7 +447,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points,
 						this->get_control_points_elem(),points_unit_element);
 
 		for (const auto &v : values_current_element)
-			values.push_back(v);
+			hessians.push_back(v);
 	}
 
 	Assert(hessians.size() == points.size(),

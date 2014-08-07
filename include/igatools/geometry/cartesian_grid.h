@@ -351,7 +351,7 @@ public:
     // TODO (pauletti, Aug 1, 2014): should be replaced by get_element_from_point
     Index get_element_flat_id_from_point(const Points<dim> &point) const;
 
-    std::map<ElementIterator, std::vector<Points<dim>> >
+    std::map<ElementIterator, std::vector<int> >
     get_element_from_point(const std::vector<Points<dim>> &points) const;
 
 public:
