@@ -348,9 +348,16 @@ public:
     get_face_grid(const int face_id, FaceGridMap &elem_map) const;
     ///@}
 
-    // TODO (pauletti, Aug 1, 2014): should be replaced by get_element_from_point
-    Index get_element_flat_id_from_point(const Points<dim> &point) const;
-
+    /**
+     * Given a vector of points, this function return a map with
+     * entries indexed by the grid element each point belongs to
+     * containing a list of indices of the points that belong to
+     * this element.
+     * For ex.
+     * @code
+     *
+     * @endcode
+     */
     std::map<ElementIterator, std::vector<int> >
     get_element_from_point(const std::vector<Points<dim>> &points) const;
 

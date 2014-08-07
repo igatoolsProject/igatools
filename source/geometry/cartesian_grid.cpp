@@ -574,41 +574,6 @@ get_bounding_box() const -> BBox<dim>
 
 
 template <int dim_>
-Index
-CartesianGrid<dim_>::
-get_element_flat_id_from_point(const Points<dim> &point) const
-{
-#ifndef NDEBUG
-    const auto bounding_box = this->get_bounding_box();
-#endif
-
-    TensorIndex<dim> elem_t_id;
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        Assert(point[i] >= bounding_box[i][0] && point[i] <= bounding_box[i][1],
-               ExcMessage("Point " +
-                          std::to_string(point[i]) +
-                          " outside the domain [" +
-                          std::to_string(bounding_box[i][0]) + "," +
-                          std::to_string(bounding_box[i][1])+
-                          "]"));
-
-        const auto &knots = knot_coordinates_.get_data_direction(i);
-        //find the index j in the knots for which knots[j] <= point[i]
-        const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
-        const Index j = low - knots.begin();
-
-        elem_t_id[i] = (j>0) ? j-1 : 0;
-
-    }
-
-    return 0;//this->tensor_to_flat_element_index(elem_t_id);
-
-}
-
-
-
-template <int dim_>
 auto
 CartesianGrid<dim_>::
 get_element_from_point(const std::vector<Points<dim>> &points) const
