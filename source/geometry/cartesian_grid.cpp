@@ -584,7 +584,7 @@ get_element_flat_id_from_point(const Points<dim> &point) const
 
     TensorIndex<dim> elem_t_id;
     for (int i = 0 ; i < dim ; ++i)
-     {
+    {
         Assert(point[i] >= bounding_box[i][0] && point[i] <= bounding_box[i][1],
                ExcMessage("Point " +
                           std::to_string(point[i]) +
@@ -594,13 +594,13 @@ get_element_flat_id_from_point(const Points<dim> &point) const
                           "]"));
 
         const auto &knots = knot_coordinates_.get_data_direction(i);
-            //find the index j in the knots for which knots[j] <= point[i]
-            const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
-            const Index j = low - knots.begin();
+        //find the index j in the knots for which knots[j] <= point[i]
+        const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
+        const Index j = low - knots.begin();
 
-            elem_t_id[i] = (j>0) ? j-1 : 0;
+        elem_t_id[i] = (j>0) ? j-1 : 0;
 
-     }
+    }
 
     return 0;//this->tensor_to_flat_element_index(elem_t_id);
 
@@ -619,7 +619,7 @@ get_element_from_point(const std::vector<Points<dim>> &points) const
     const int n_points = points.size();
     for (int k=0; k<n_points; ++k)
     {
-    	const auto &point = points[k];
+        const auto &point = points[k];
         TensorIndex<dim> elem_t_id;
         for (int i = 0 ; i < dim ; ++i)
         {
@@ -632,10 +632,10 @@ get_element_from_point(const std::vector<Points<dim>> &points) const
             elem_t_id[i] = (j>0) ? j-1 : 0;
         }
         auto ans =
-        		res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
-        				std::vector<int>(1,k));
+            res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
+                        std::vector<int>(1,k));
         if (!ans.second)
-        	(ans.first)->second.push_back(k);
+            (ans.first)->second.push_back(k);
     }
     return res;
 }

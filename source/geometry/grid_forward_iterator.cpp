@@ -37,10 +37,10 @@ template <typename Accessor>
 inline
 GridForwardIterator<Accessor>::
 GridForwardIterator(std::shared_ptr<ContainerType> grid,
-                        const TensorIndex<dim> &index)
+                    const TensorIndex<dim> &index)
     :
-                        accessor_(grid, index)
-                        {}
+    accessor_(grid, index)
+{}
 
 
 template <typename Accessor>

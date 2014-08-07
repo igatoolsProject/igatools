@@ -78,7 +78,7 @@ public:
                          const Index elem_index);
 
     NURBSElementAccessor(const std::shared_ptr<const Space> space,
-                             const TensorIndex<dim> &elem_index);
+                         const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.

@@ -95,10 +95,10 @@ public:
     CartesianGridElement<dim>
     &operator=(const CartesianGridElement<dim_> &elem)
     {
-      Assert( grid_ == elem.grid_, ExcMessage("should be same mesh"));
-      flat_index_ = elem.flat_index_;
-      tensor_index_ = elem.tensor_index_;
-      return *this;
+        Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
+        flat_index_ = elem.flat_index_;
+        tensor_index_ = elem.tensor_index_;
+        return *this;
     }
 
 

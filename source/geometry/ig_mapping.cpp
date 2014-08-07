@@ -366,18 +366,18 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 
     for (auto p : elem_list)
     {
-    	elem->move_to(p.first->get_flat_index());
-    	std::vector<Point> pts(p.second.size());
-    	for(int j=0; j<p.second.size(); ++j)
-    		pts[j] = points[p.second[j]];
+        elem->move_to(p.first->get_flat_index());
+        std::vector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
-                elem->transform_points_reference_to_unit(pts);
+            elem->transform_points_reference_to_unit(pts);
         const auto elem_val =
-                elem->evaluate_field_values_at_points(
-                        get_control_points_elem(), points_unit_element);
+            elem->evaluate_field_values_at_points(
+                get_control_points_elem(), points_unit_element);
 
-        for(int j=0; j<p.second.size(); ++j)
+        for (int j=0; j<p.second.size(); ++j)
             values[p.second[j]] = elem_val[j];
     }
 }
@@ -388,7 +388,7 @@ template<class RefSpace>
 void
 IgMapping<RefSpace>::
 evaluate_gradients_at_points(const std::vector<Point> &points,
-		std::vector<Gradient> &gradients) const
+                             std::vector<Gradient> &gradients) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
     Assert(gradients.size() == points.size(),
@@ -401,16 +401,16 @@ evaluate_gradients_at_points(const std::vector<Point> &points,
     {
         elem->move_to(p.first->get_flat_index());
         std::vector<Point> pts(p.second.size());
-        for(int j=0; j<p.second.size(); ++j)
+        for (int j=0; j<p.second.size(); ++j)
             pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
-                elem->transform_points_reference_to_unit(pts);
+            elem->transform_points_reference_to_unit(pts);
         const auto elem_val =
-                elem->evaluate_field_values_at_points(
-                        get_control_points_elem(), points_unit_element);
+            elem->evaluate_field_gradients_at_points(
+                get_control_points_elem(), points_unit_element);
 
-        for(int j=0; j<p.second.size(); ++j)
+        for (int j=0; j<p.second.size(); ++j)
             gradients[p.second[j]] = elem_val[j];
     }
 
@@ -422,7 +422,7 @@ template<class RefSpace>
 void
 IgMapping<RefSpace>::
 evaluate_hessians_at_points(const std::vector<Point> &points,
-		std::vector<Hessian> &hessians) const
+                            std::vector<Hessian> &hessians) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
     Assert(hessians.size() == points.size(),
@@ -435,16 +435,16 @@ evaluate_hessians_at_points(const std::vector<Point> &points,
     {
         elem->move_to(p.first->get_flat_index());
         std::vector<Point> pts(p.second.size());
-        for(int j=0; j<p.second.size(); ++j)
+        for (int j=0; j<p.second.size(); ++j)
             pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
-                elem->transform_points_reference_to_unit(pts);
+            elem->transform_points_reference_to_unit(pts);
         const auto elem_val =
-                elem->evaluate_field_values_at_points(
-                        get_control_points_elem(), points_unit_element);
+            elem->evaluate_field_hessians_at_points(
+                get_control_points_elem(), points_unit_element);
 
-        for(int j=0; j<p.second.size(); ++j)
+        for (int j=0; j<p.second.size(); ++j)
             hessians[p.second[j]] = elem_val[j];
     }
 

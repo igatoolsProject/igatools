@@ -88,7 +88,7 @@ count_and_remove_duplicates(
 
     Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == vec_with_duplicates.size(),
            ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
-    }
+}
 
 } ;
 

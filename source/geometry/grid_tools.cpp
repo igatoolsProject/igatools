@@ -107,10 +107,10 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
 template <int dim>
 std::shared_ptr<CartesianGrid<dim> >
 build_cartesian_grid_union(
-        const CartesianGrid<dim> &grid_1,
-        const CartesianGrid<dim> &grid_2,
-        InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
-        InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2)
+    const CartesianGrid<dim> &grid_1,
+    const CartesianGrid<dim> &grid_2,
+    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
+    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2)
 {
     //---------------------------------------------------------
     // checks that the grid are on the same domain
