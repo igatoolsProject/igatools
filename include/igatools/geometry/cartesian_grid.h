@@ -23,11 +23,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
-#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/base/logstream.h>
-#include <igatools/geometry/grid_forward_iterator.h>
-#include <igatools/geometry/unit_element.h>
+#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/geometry/unit_element.h>
+#include <igatools/geometry/grid_forward_iterator.h>
 
 #include <array>
 #include <vector>

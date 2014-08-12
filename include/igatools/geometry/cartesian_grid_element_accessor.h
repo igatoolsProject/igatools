@@ -32,8 +32,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
 /**
  * @brief Element accessor for the CartesianGrid.
  *
