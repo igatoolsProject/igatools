@@ -30,12 +30,12 @@ GridUniformQuadCache<dim_>::
 GridUniformQuadCache(shared_ptr<const GridType> grid,
                      const ValueFlags flag,
                      const Quadrature<dim> &quad)
-:
-                     grid_(grid),
-                     flags_(flag),
-                     lengths_(grid->get_element_lengths()),
-                     quad_(quad)
-                     {}
+    :
+    grid_(grid),
+    flags_(flag),
+    lengths_(grid->get_element_lengths()),
+    quad_(quad)
+{}
 
 
 
