@@ -27,65 +27,36 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid.h>
 
+IGA_NAMESPACE_OPEN
+
+/**
+ * @brief Global CartesianGrid uniform quadrature
+ * computational optimization cache, storing the interval length
+ * in each direction.
+ *
+ */
 template <int dim_>
 class GridUniformQuadCache : public CacheStatus
 {
     using GridType = CartesianGrid<dim_>;
     using ElementIterator = typename GridType::ElementIterator;
 
-    /**
-     * @brief Global CartesianGrid cache, storing the interval length
-     * in each direction.
-     *
-     * For now only a uniform quad is taken care of.
-     */
+
 public:
     static const int dim = dim_;
 
     //Allocates and fill the (global) cache
     GridUniformQuadCache(std::shared_ptr<const GridType> grid,
                          const ValueFlags flag,
-                         const Quadrature<dim> &quad)
-:
-    grid_(grid),
-    flags_(flag),
-    length_(grid->get_element_lengths())
-{}
+                         const Quadrature<dim> &quad);
 
     //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem)
-    {
-        const auto n_points_direction = quad.get_num_points_direction();
-        const Size n_points = n_points_direction.flat_size();
-
-        flags_handler_ = flags_handler;
-
-        if (flags_handler_.fill_points())
-        {
-            this->unit_points_ = quad.get_points();
-            flags_handler_.set_points_filled(true);
-        }
-
-        if (flags_handler_.fill_w_measures())
-        {
-            if (this->w_measure_.size() != n_points)
-                this->w_measure_.resize(n_points);
-
-            this->unit_weights_ = quad.get_weights().get_flat_tensor_product();
-        }
-        else
-        {
-            Assert(True, ExcMessage("Should not get here"));
-            this->w_measure_.clear() ;
-            this->unit_weights_.clear() ;
-        }
-    }
+    void init_element_cache(ElementIterator &elem);
 
     //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem)
-    {
+    void fill_element_cache(ElementIterator &elem);
 
-    }
+    void print_info(LogStream &out) const;
 
 private:
     std::shared_ptr<const GridType> grid_;
@@ -97,6 +68,6 @@ private:
     Quadrature<dim> quad_;
 };
 
-
+IGA_NAMESPACE_CLOSE
 
 #endif /* GRID_UNIFORM_QUAD_CACHE_H_ */

@@ -27,6 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/topology.h>
 #include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
 
@@ -382,6 +383,7 @@ private:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
+    friend class GridUniformQuadCache<dim>;
 
 protected:
     /**
