@@ -44,29 +44,9 @@ void
 GridUniformQuadCache<dim_>::
 init_element_cache(ElementIterator &elem)
 {
-    auto acc = elem.get_accessor().elem_values_;
-    const auto n_points_direction = quad_.get_num_points_direction();
-    const Size n_points = n_points_direction.flat_size();
-
-    if (flags_.fill_points())
-    {
-        acc.unit_points_ = quad_.get_points();
-        flags_.set_points_filled(true);
-    }
-
-    if (flags_.fill_w_measures())
-    {
-        if (acc.w_measure_.size() != n_points)
-            acc.w_measure_.resize(n_points);
-
-        acc.unit_weights_ = quad_.get_weights().get_flat_tensor_product();
-    }
-    else
-    {
-        Assert(false, ExcMessage("Should not get here"));
-        acc.w_measure_.clear() ;
-        acc.unit_weights_.clear() ;
-    }
+    // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
+    auto &cache = elem.get_accessor().elem_values_;
+    cache.resize(flags_, quad_);
 }
 
 
@@ -76,7 +56,10 @@ void
 GridUniformQuadCache<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
-
+    auto &cache = elem.get_accessor().elem_values_;
+    auto meas = lengths_.tensor_product(elem->get_tensor_index());
+    cache.fill(meas);
+    cache.set_filled(true);
 }
 
 

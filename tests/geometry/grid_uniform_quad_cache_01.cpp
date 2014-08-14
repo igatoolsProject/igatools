@@ -30,7 +30,6 @@
 
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
-//#include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
 
@@ -48,6 +47,13 @@ void run_test()
 
     auto elem = grid->begin();
     cache.init_element_cache(elem);
+
+    auto end = grid->end();
+    for (;elem != end; ++elem)
+    {
+        cache.fill_element_cache(elem);
+        out << "Measure: " << elem->get_measure() << endl;
+    }
 }
 
 

@@ -25,6 +25,7 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN
@@ -63,7 +64,7 @@ private:
 
     GridElemValueFlagsHandler flags_;
 
-    CartesianProductArray<Real, dim> lengths_;
+    TensorProductArray<dim> lengths_;
 
     Quadrature<dim> quad_;
 };
