@@ -19,16 +19,18 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the CartesianGrid element iterator init_value
+ *  Test for the CartesianGrid ElementIterator using
+ *  UniformQuadCache
  *
  *  author: pauletti
- *  date: apr 4, 2014
+ *  date: 2014-08-15
  *
  */
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
@@ -40,18 +42,26 @@ void run_test()
     const int n_knots = 5;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    auto el1 = grid->begin();
-    el1->init_cache(ValueFlags::w_measure, QGauss<dim>(2));
+    QGauss<dim> q1(2);
+    GridUniformQuadCache<dim> cache1(grid, ValueFlags::w_measure, q1);
 
-    el1->init_cache(ValueFlags::w_measure, QGauss<dim>(1));
+    QGauss<dim> q2(1);
+    GridUniformQuadCache<dim> cache2(grid, ValueFlags::w_measure, q2);
+
+
+
+    auto el1 = grid->begin();
+    cache1.init_element_cache(el1);
+    cache2.init_element_cache(el1);
 
     auto el2 = grid->begin();
-    el2->init_cache(ValueFlags::w_measure, QGauss<dim>(1));
+    cache2.init_element_cache(el2);
 }
+
 
 int main()
 {
-    out.depth_console(10);
+
     run_test<1>();
     run_test<2>();
     run_test<3>();

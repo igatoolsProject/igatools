@@ -142,35 +142,35 @@ public:
      * cache, i.e. it is like using a projected quadrature on
      * the faces.
      */
-    void init_cache(const ValueFlags flag,
-                    const Quadrature<dim_> &quad);
+  //  void init_cache(const ValueFlags flag,
+  //                  const Quadrature<dim_> &quad);
 
     /**
      * Initializes the internal cache for the efficient
      * computation of the values requested in
      * the @p fill_flag when no quadrature point is necessary
      */
-    void init_cache(const ValueFlags flag);
+ //   void init_cache(const ValueFlags flag);
 
     /**
      * To use a different quadrature on the face instead of
      * the projected element quadrature
      */
-    void init_face_cache(const Index face_id,
-                         const ValueFlags flag,
-                         const Quadrature<dim_-1> &quad);
+//    void init_face_cache(const Index face_id,
+//                         const ValueFlags flag,
+//                         const Quadrature<dim_-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
+  //  void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Fills the i-th face values cache according to the evaluation points
      * and fill flags specified in init_values.
      */
-    void fill_face_cache(const Index face_id);
+//    void fill_face_cache(const Index face_id);
     ///@}
 
 
@@ -187,7 +187,7 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-    std::array<Real,dim_> get_coordinate_lengths() const;
+  //  std::array<Real,dim_> get_coordinate_lengths() const;
 
 
     /**
@@ -260,29 +260,29 @@ public:
 
 private:
 
-    /**
-     * @brief Global CartesianGrid cache, storing the interval length
-     * in each direction.
-     *
-     * For now only a uniform quad is taken care of.
-     */
-    class LengthCache : public CacheStatus
-    {
-    public:
-        /**
-         * Allocates space for the cache
-         */
-        void resize(const CartesianGrid<dim_> &grid);
-
-        /** pointer to the current entry of of length,
-         *  it could be used for optimization of uniform grid
-         */
-        CartesianProductArray<Real *, dim_> length_;
-
-        /** stores the interval length */
-        CartesianProductArray<Real , dim_> length_data_;
-
-    };
+//    /**
+//     * @brief Global CartesianGrid cache, storing the interval length
+//     * in each direction.
+//     *
+//     * For now only a uniform quad is taken care of.
+//     */
+//    class LengthCache : public CacheStatus
+//    {
+//    public:
+//        /**
+//         * Allocates space for the cache
+//         */
+//        void resize(const CartesianGrid<dim_> &grid);
+//
+//        /** pointer to the current entry of of length,
+//         *  it could be used for optimization of uniform grid
+//         */
+//        CartesianProductArray<Real *, dim_> length_;
+//
+//        /** stores the interval length */
+//        CartesianProductArray<Real , dim_> length_data_;
+//
+//    };
 
 
     /**
@@ -367,13 +367,13 @@ private:
      */
     ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
-    /**
-     * Grid (global) lengths cache.
-     *
-     * @note The use of the shared_pointer is mandatory for the correct
-     * management of the global cache.
-     */
-    std::shared_ptr<LengthCache> length_cache_;
+//    /**
+//     * Grid (global) lengths cache.
+//     *
+//     * @note The use of the shared_pointer is mandatory for the correct
+//     * management of the global cache.
+//     */
+//    std::shared_ptr<LengthCache> length_cache_;
 
     /** Element values cache */
     ElementValuesCache elem_values_;

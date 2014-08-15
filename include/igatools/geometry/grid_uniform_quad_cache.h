@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template <int dim_>
-class GridUniformQuadCache : public CacheStatus
+class GridUniformQuadCache
 {
     using GridType = CartesianGrid<dim_>;
     using ElementIterator = typename GridType::ElementIterator;

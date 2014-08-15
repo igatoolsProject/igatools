@@ -3,12 +3,32 @@ Lengths:
    [ 0.250000 0.250000 0.250000 0.250000 ]
 
 
+Measure: 0.250000
+Measure: 0.250000
+Measure: 0.250000
+Measure: 0.250000
 dim = 2
 Lengths:
    [ 0.250000 0.250000 0.250000 0.250000 ]
    [ 0.250000 0.250000 0.250000 0.250000 ]
 
 
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
+Measure: 0.0625000
 dim = 3
 Lengths:
    [ 0.250000 0.250000 0.250000 0.250000 ]
@@ -16,3 +36,67 @@ Lengths:
    [ 0.250000 0.250000 0.250000 0.250000 ]
 
 
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
+Measure: 0.0156250
