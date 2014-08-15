@@ -248,7 +248,7 @@ public:
     void print_info(LogStream &out, const VerbosityLevel verbosity =
                         VerbosityLevel::normal) const;
 
-
+    void print_cache_info(LogStream &out) const;
 
 public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
@@ -297,6 +297,15 @@ private:
         void resize(const GridElemValueFlagsHandler &flags_handler,
                     const Quadrature<dim_> &quad);
 
+        void print_info(LogStream &out) const
+        {
+            flags_handler_.print_info(out);
+            out << measure_;
+            w_measure_.print_info(out);
+            unit_weights_.print_info(out);
+            unit_points_.print_info(out);
+        }
+
         /**
          * Fill the cache member.
          * @note The @p measure is an input argument because of the different
@@ -333,12 +342,6 @@ private:
          */
         void resize(const GridElemValueFlagsHandler &flags_handler,
                     const Quadrature<dim_> &quad);
-
-        /**
-         * Prints internal information about the ElementValuesCache.
-         * Its main use is for testing and debugging.
-         */
-        void print_info(LogStream &out) const;
     };
 
     /**

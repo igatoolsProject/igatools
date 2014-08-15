@@ -68,14 +68,10 @@ void
 ValueVector<T>::
 print_info(LogStream &out) const
 {
-    const int num_points = this->size() ;
-    out << "ValueVector (num_points=" << num_points << ") :" << std::endl ;
-
-    for (int iPt = 0 ; iPt < num_points ; iPt++)
-        out << (*this)[ iPt ] << " " ;
-
-    out << std::endl ;
+    out << std::vector<T>(*this);
 }
+
+
 
 template <class T>
 void

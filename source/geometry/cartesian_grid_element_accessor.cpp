@@ -427,50 +427,28 @@ void
 CartesianGridElementAccessor<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
-    using std::endl;
-
-    const std::string tab = "   ";
-
-
-    out << "CartesianGridElementAccessor<" << dim_ << "> info:" << endl;
-    out.push(tab);
-
-    if (contains(verbosity,VerbosityLevel::debug))
-        out << "Memory address = " << &(*this) << endl;
-
     CartesianGridElement<dim_>::print_info(out,verbosity);
-
-    if (contains(verbosity,VerbosityLevel::debug))
-    {
-        out << "Element cache memory address = " << &elem_values_ << endl;
-        elem_values_.print_info(out);
-
-        for (int i = 0 ; i < n_faces ; ++i)
-            out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
-    }
-    out.pop();
-
 }
+
 
 
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-ElementValuesCache::
-print_info(LogStream &out) const
+print_cache_info(LogStream &out) const
 {
-    using std::endl;
+    out.begin_item("Element Cache:");
+    elem_values_.print_info(out);
+    out.end_item();
 
-    const std::string tab = "   ";
+    for (int i = 0 ; i < n_faces ; ++i)
+    {
+        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+        face_values_[i].print_info(out);
+        out.end_item();
+    }
 
-    out << "ElementValuesCache info: (memory address = " << &(*this) << ")" << endl;
-    out.push(tab);
-
-    this->flags_handler_.print_info(out);
-
-    out.pop();
 }
-
 
 IGA_NAMESPACE_CLOSE
 

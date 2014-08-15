@@ -17,12 +17,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for the CartesianGrid element iterator
- *  using its cache features
+ *  Test for the CartesianGrid ElementIterator using UniformQuadCache
  *
  *  author: pauletti
- *  date: Aug 21, 2013
+ *  date: 2014-08-15
  *
  */
 
@@ -30,38 +30,38 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
 
 template <int dim>
-void run_test()
+void elem_measure(const int n_knots = 5)
 {
-    out << "========================================================================" << endl ;
-    out << "Output for function run_test<" << dim << ">()" << endl ;
-    out << endl ;
+    OUTSTART
 
-
-    const int n_knots = 5;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    grid->print_info(out);
-
-    out << endl ;
-
+    auto flag = ValueFlags::measure|ValueFlags::w_measure;
+    QGauss<dim> quad(2);
+    GridUniformQuadCache<dim> cache(grid, flag, quad);
     auto elem = grid->begin();
-    elem->init_cache(ValueFlags::measure|ValueFlags::w_measure, QGauss<dim>(2));
+    cache.init_element_cache(elem);
+
     for (; elem != grid->end(); ++elem)
     {
-        out << elem->get_flat_index() << "   ";
-        elem->fill_cache();
-        out << elem->get_measure() << endl;
+        elem->print_info(out);
+
+        cache.fill_element_cache(elem);
+        out << "Measure: " << elem->get_measure() << endl;
+        out.begin_item("Weighted Measure:");
         elem->get_w_measures().print_info(out);
+        out.end_item();
     }
 
-
-    out << "========================================================================" << endl ;
-    out << endl ;
+    OUTEND
 }
+
+
 
 template <int dim>
 void run_test2()
@@ -74,17 +74,17 @@ void run_test2()
     const int n_knots = 5;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    grid->print_info(out);
 
-    out << endl ;
-
+    auto flag = ValueFlags::point;
+    QGauss<dim> quad(2);
+    GridUniformQuadCache<dim> cache(grid, flag, quad);
     auto elem = grid->begin();
-    ValueFlags flag = ValueFlags::point;
-    elem->init_cache(flag, QGauss<dim>(2));
+    cache.init_element_cache(elem);
+
     for (; elem != grid->end(); ++elem)
     {
         out << elem->get_flat_index() << "   ";
-        elem->fill_cache();
+        cache.fill_element_cache(elem);
         out << elem->get_points() << endl;
     }
 
@@ -93,16 +93,16 @@ void run_test2()
     out << endl ;
 }
 
+
 int main()
 {
-    out.depth_console(10);
-    run_test<1>();
-    run_test<2>();
-    run_test<3>();
+    elem_measure<1>();
+    elem_measure<2>();
+    elem_measure<3>();
 
-    run_test2<1>();
-    run_test2<2>();
-    run_test2<3>();
+  //  run_test2<1>();
+  //  run_test2<2>();
+  //  run_test2<3>();
 
     return  0;
 }
