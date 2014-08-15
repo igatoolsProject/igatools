@@ -63,46 +63,11 @@ void elem_measure(const int n_knots = 5)
 
 
 
-template <int dim>
-void run_test2()
-{
-    out << "========================================================================" << endl ;
-    out << "Output for function run_test2<" << dim << ">()" << endl ;
-    out << endl ;
-
-
-    const int n_knots = 5;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-
-
-    auto flag = ValueFlags::point;
-    QGauss<dim> quad(2);
-    GridUniformQuadCache<dim> cache(grid, flag, quad);
-    auto elem = grid->begin();
-    cache.init_element_cache(elem);
-
-    for (; elem != grid->end(); ++elem)
-    {
-        out << elem->get_flat_index() << "   ";
-        cache.fill_element_cache(elem);
-        out << elem->get_points() << endl;
-    }
-
-
-    out << "========================================================================" << endl ;
-    out << endl ;
-}
-
-
 int main()
 {
     elem_measure<1>();
     elem_measure<2>();
     elem_measure<3>();
-
-  //  run_test2<1>();
-  //  run_test2<2>();
-  //  run_test2<3>();
 
     return  0;
 }

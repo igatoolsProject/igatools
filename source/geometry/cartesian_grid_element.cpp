@@ -443,7 +443,7 @@ void
 CartesianGridElement<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
-    out << "Flat id = "   << flat_index_ << endl;
+    out << "Flat id = "   << flat_index_ << "    ";
     out << "Tensor id = " << tensor_index_ << endl;
 }
 
