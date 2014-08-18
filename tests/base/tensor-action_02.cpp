@@ -33,7 +33,7 @@ void test_action()
 {
     const int order = 2;
     Derivatives <dim, rdim, 1, order> D2F;
-    Point<dim> u;
+    Points<dim> u;
 //
 //  for (int i = 0; i < cdim; i++)
 //  {

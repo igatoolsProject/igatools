@@ -43,11 +43,12 @@ public:
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Point;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
 
     /** @name Constructor and destructor */
     ///@{

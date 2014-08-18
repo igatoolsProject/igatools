@@ -45,10 +45,10 @@ void test_evaluate()
     //----------------------------------------------------------------------------------------------
     out << "Dim: " << dim << endl ;
     int n_knots = 2;
-    CartesianProductArray<iga::Real , dim> coord ;
+    CartesianProductArray<Real , dim> coord ;
     for (int i = 0; i < dim; ++i)
     {
-        vector<iga::Real> tmp_coord;
+        vector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coord.copy_data_direction(i,tmp_coord);
@@ -62,7 +62,7 @@ void test_evaluate()
 
     typedef BSplineSpace<dim,dim,rank> Space_t ;
 
-    shared_ptr< Space_t > bspline_space = Space_t::create(knots, p)  ;
+    shared_ptr< Space_t > bspline_space = Space_t::create(p, knots)  ;
     //----------------------------------------------------------------------------------------------
 
 
@@ -219,12 +219,12 @@ void test_evaluate()
 
     QGauss<dim> quad(3);
     auto elem = map->begin();
-    elem->init_values(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
-    elem->fill_values();
+    elem->init_cache(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
+    elem->fill_cache();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     values.print_info(out);
     gradients.print_info(out);

@@ -65,33 +65,24 @@ template < typename Accessor > class GridForwardIterator;
  *   good performances are requested.
  *
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @tparam PhysSpace - type for the space in the physical domain
  */
 template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
-public SpaceElementAccessor<
-    PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
-    PhysSpace::RefSpace::dim,
-    PhysSpace::PushForwardType::codim,
-    PhysSpace::RefSpace::range,
-    PhysSpace::RefSpace::rank>,
-private PhysSpace::PushForwardType::ElementAccessor
+    public SpaceElementAccessor<PhysSpace>,
+    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using parent_t = SpaceElementAccessor<
-                     PhysicalSpaceElementAccessor<PhysSpace>,PhysSpace,
-                     PhysSpace::RefSpace::dim,
-                     PhysSpace::PushForwardType::codim,
-                     PhysSpace::RefSpace::range,
-                     PhysSpace::RefSpace::rank>;
+    using parent_t = SpaceElementAccessor<PhysSpace>;
 
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const PhysSpace;
 
+    using Space = PhysSpace;
     using RefSpace = typename PhysSpace::RefSpace;
     using PushForwardType = typename PhysSpace::PushForwardType;
     using PfElemAccessor = typename PushForwardType::ElementAccessor;
@@ -110,7 +101,10 @@ public :
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
 
-    using Value = typename PfElemAccessor::template PhysValue<RefSpace::range, RefSpace::rank>;
+    using Value = typename PhysSpace::Value;
+    using Point = typename PhysSpace::Point;
+    using RefPoint = typename RefSpace::Point;
+
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 
     /**
@@ -120,7 +114,7 @@ public :
     template <int order>
     using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
 
-    using Div = Values<dim, 1, 1>;
+    using Div = typename PhysSpace::Div;
 
     /**
      * @name Constructors
@@ -133,6 +127,11 @@ public :
 
     PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
                                  const Index index);
+
+
+    PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
+                                 const TensorIndex<dim> &index);
+
 
     /**
      * Copy constructor.
@@ -179,16 +178,16 @@ public :
      * @name Management of the cache used in PhysicalSpaceElementAccessor
      */
     ///@{
-    void init_values(const ValueFlags fill_flag,
-                     const QuadratureType &quad);
+    void init_cache(const ValueFlags fill_flag,
+                    const QuadratureType &quad);
 
-    void init_face_values(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const QuadratureFaceType &quad);
+    void init_face_cache(const Index face_id,
+                         const ValueFlags fill_flag,
+                         const QuadratureFaceType &quad);
 
-    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
 
-    void fill_face_values(const Index face_id);
+    void fill_face_cache(const Index face_id);
     ///@}
 
 
@@ -207,7 +206,7 @@ public :
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
 
     ///@}
 
@@ -220,51 +219,47 @@ public :
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points.
      */
-    const ValueVector< Real > &
-    get_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_measures;
 
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points
      * on the face specified by @p face_id.
      */
-    const ValueVector< Real > &
-    get_face_measures(const Index face_id) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_face_measures;
 
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points.
      */
-    const ValueVector<Real> &
-    get_w_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points
      * on the face specified by @p face_id.
      */
-    const ValueVector<Real> &
-    get_face_w_measures(const Index face_id) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_face_w_measures;
 
 
     /**
      * @todo Document this function
      */
-    const Point<space_dim> &
+    const Point &
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    const ValueVector< typename Mapping<dim,codim>::Value > &
     get_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns a const reference to the one-dimensional container with the values
      * of the map at the evaluation points on the face specified by @p face_id.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
+    const ValueVector< typename Mapping<dim,codim>::Value > &
     get_face_points(const Index face_id) const;
 
     /**
@@ -273,16 +268,13 @@ public :
      * \author M.Martinelli
      * \date 03 Jun 2013
      */
-    const ValueVector< typename Mapping<dim,codim>::GradientType > &
-    get_map_gradient_at_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
+    using PhysSpace::PushForwardType::ElementAccessor::get_map_gradients;
 
 
     /**
      * Return a const reference to the one-dimensional container with the normals at the face evaluation points.
      */
-    const ValueVector< typename Mapping<dim,codim>::ValueType > &
-    get_face_normals(const Index face_id) const;
+    using PhysSpace::PushForwardType::ElementAccessor::get_face_normals;
 
     /**
      * Test if the element has a boundary face.
@@ -316,7 +308,7 @@ public :
     /**
      * Return a pointer to the physical space on which the element is defined.
      */
-    std::shared_ptr<const PhysSpace>get_physical_space() const;
+    std::shared_ptr<const PhysSpace> get_physical_space() const;
 
 
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
@@ -347,7 +339,6 @@ public :
 
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const ;
-
 
 
 protected:

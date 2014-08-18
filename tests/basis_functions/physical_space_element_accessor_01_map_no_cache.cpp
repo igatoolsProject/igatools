@@ -55,7 +55,7 @@ void test_evaluate()
     auto map = BallMapping<dim>::create(grid);
 
     auto push_forward = PushForward<Transformation::h_grad,dim>::create(map);
-    auto ref_space = BSplineSpace<dim>::create(grid, deg);
+    auto ref_space = BSplineSpace<dim>::create(deg, grid);
     auto space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;
@@ -63,7 +63,7 @@ void test_evaluate()
 
     const int n_qpoints = 2;
     QGauss<dim> quad(n_qpoints);
-    vector<Point<dim>> eval_points = quad.get_points().get_flat_cartesian_product();
+    vector<Points<dim>> eval_points = quad.get_points().get_flat_cartesian_product();
 
     for (; elem != elem_end ; ++elem)
     {
@@ -91,7 +91,7 @@ void test_cylindircal_annulus()
     auto map = CylindricalAnnulus::create(grid,1.0,2.0,1.0,numbers::PI/3.0);
 
     auto push_forward = PushForward<Transformation::h_grad,3>::create(map);
-    auto ref_space = BSplineSpace<3>::create(grid, deg);
+    auto ref_space = BSplineSpace<3>::create(deg, grid);
     auto space = PhysicalSpace_t<3>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;
@@ -99,7 +99,7 @@ void test_cylindircal_annulus()
 
     const int n_qpoints = 2;
     QGauss<3> quad(n_qpoints);
-    vector<Point<3>> eval_points = quad.get_points().get_flat_cartesian_product();
+    vector<Points<3>> eval_points = quad.get_points().get_flat_cartesian_product();
 
     for (; elem != elem_end ; ++elem)
     {

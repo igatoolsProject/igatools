@@ -44,7 +44,7 @@ void run_test(const int num_knots, const int p)
     using space_t = PhysicalSpace<ref_space_t, pf_t>;
 
     auto grid = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = ref_space_t::create(grid, p);
+    auto ref_space = ref_space_t::create(p, grid);
     auto map = IdentityMapping<dim>::create(grid);
     auto space = space_t::create(ref_space, pf_t::create(map));
 
@@ -56,7 +56,7 @@ void run_test(const int num_knots, const int p)
     auto elem = space->begin();
     auto end =  space->end();
 
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != end; ++elem)
     {
@@ -69,7 +69,7 @@ void run_test(const int num_knots, const int p)
                 if (elem->is_boundary(face))
                 {
                     out << "Face " << face << endl;
-                    elem->fill_face_values(face);
+                    elem->fill_face_cache(face);
                     out << "values: " << endl;
                     elem->get_face_basis_values(face).print_info(out);
                     out << endl;

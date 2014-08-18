@@ -23,34 +23,26 @@
 #define BSPLINE_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
-
 #include <igatools/basis_functions/space_element_accessor.h>
-
-//#include <igatools/utils/cartesian_product_indexer.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
-
-
 
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
-
 /**
  * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template <int dim, int range, int rank>
 class BSplineElementAccessor :
-    public SpaceElementAccessor<
-    BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim,range,rank>,dim,0,range,rank>
+    public SpaceElementAccessor<BSplineSpace<dim,range,rank>>
 {
 public:
-    using parent_t = SpaceElementAccessor<
-                     BSplineElementAccessor<dim,range,rank>,BSplineSpace<dim, range, rank>,dim,0,range,rank>;
+    using parent_t = SpaceElementAccessor<BSplineSpace<dim,range,rank>>;
 
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElementAccessor<dim>;
@@ -64,11 +56,17 @@ public:
     /** Number of faces of the element. */
     using parent_t::n_faces;
 
-
     using ValuesCache = typename parent_t::ValuesCache;
 
-
     using parent_t::admisible_flag;
+
+
+public:
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    //using typename parent_t::Div;
 
 
 public:
@@ -77,14 +75,17 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    BSplineElementAccessor() = delete;
+    BSplineElementAccessor() = default;
 
     /**
      * Constructs an accessor to element number index of a
      * BsplineSpace space.
      */
     BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
-                           const int elem_index);
+                           const Index elem_index);
+
+    BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
+                           const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.
@@ -139,43 +140,28 @@ public:
      * the fill_flag on the given quadrature points.
      * This implies a uniform quadrature scheme
      * (i.e. the same for all elements).
-     * @note This function should be called before fill_values()
+     * @note This function should be called before fill_cache()
      */
-    void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+    void init_cache(const ValueFlags fill_flag,
+                    const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
-    void init_face_values(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
+    void init_face_cache(const Index face_id,
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
-     * and fill flags specifies in init_values.
+     * and fill flags specifies in init_cache.
      *
      * @note The topology for which the measure is computed is specified by
      * the input argument @p topology_id.
      */
-    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
 
-
-    /**
-     * Typedef for specifying the value of the basis function in the
-     * reference domain.
-     */
-    using Value = Values<dim, range, rank>;
-
-    /**
-     * Typedef for specifying the derivatives of the basis function in the
-     * reference domain.
-     */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim, range, rank, deriv_order>;
-
-protected:
 
 public:
 
@@ -186,13 +172,13 @@ public:
      * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
+     * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<Point> &points) const;
 
     ///@}
 
@@ -203,10 +189,6 @@ public:
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
-
-
-
-
     /**
      * @name Containers for the cache of the element values and for the
      * cache of the face values
@@ -222,30 +204,27 @@ private:
      */
     using BasisValues1d = std::vector<DenseMatrix>;
 
+
 protected:
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename Space::BaseSpace::template ComponentContainer<T>;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentDirectionTable =
-        StaticMultiArray<CartesianProductArray<T,dim>, range, rank>;
-
-
+    using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim>>;
 
 private:
 
-    ComponentTable<
-    DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+    ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentTable<std::array<const BasisValues1d *,dim>>;
+    using univariate_values_t = ComponentContainer <std::array<const BasisValues1d *,dim>>;
 
     /**
      * Fills the cache (accordingly with the flags_handler status)
@@ -277,7 +256,7 @@ private:
      * an exception will be raised.
      */
     template <int deriv_order>
-    void evaluate_bspline_derivatives(const ComponentTable<std::array<const BasisValues1d *, dim> > &elem_values,
+    void evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValues1d *, dim> > &elem_values,
                                       const ValuesCache &cache,
                                       ValueTable<
                                       Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
@@ -290,7 +269,25 @@ private:
     class GlobalCache : public CacheStatus
     {
     public:
+        /**
+         * univariate B-splines values and derivatives at
+         * quadrature points
+         * splines1d_cache_data_[comp][dir][interval][order][function][point]
+         */
+        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
+
+        // ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
+
         int max_deriv_order_ = 0;
+
+        // TODO (pauletti, May 30, 2014): the type for intervals_id should be CartesianProductArray
+    protected:
+        void reset(const Space &space,
+                   const Quadrature<dim> &quad,
+                   const int max_der,
+                   const std::array<std::vector<int>,dim> &intervals_id);
+
+        TensorSize<dim> n_intervals_;
     };
 
     /**
@@ -310,16 +307,6 @@ private:
         void reset(const Space &space,
                    const Quadrature<dim> &quad,
                    const int max_der);
-
-        /**
-         * univariate B-splines values and derivatives at
-         * quadrature points
-         * splines1d_cache_data_[comp][dir][interval][order][function][point]
-         */
-        ComponentDirectionTable<BasisValues1d> splines1d_cache_data_;
-
-        ComponentDirectionTable<const BasisValues1d *> splines1d_cache_;
-
     };
 
     class GlobalFaceCache : public GlobalCache
@@ -336,16 +323,6 @@ private:
                    const Quadrature<dim> &quad1,
                    const Index face_id,
                    const int max_der);
-
-        /**
-         * univariate B-splines values and derivatives at
-         * quadrature points
-         * splines1d_cache_data_[comp][interval][order][function][point]
-         */
-        ComponentTable<BasisValues1d> splines1d_cache_data_;
-
-        ComponentTable<const BasisValues1d *> splines1d_cache_;
-
     };
 
 
@@ -380,10 +357,10 @@ private:
 
 protected:
 
-
+#if 0
     /** Returns the Bezier extraction operator relative to the current element. */
     ComponentTable< std::array< const DenseMatrix *,dim> > get_bezier_extraction_operator() const;
-
+#endif
 
 private:
 
@@ -394,15 +371,9 @@ private:
 
 
 public:
-    const ComponentTable<
-    DynamicMultiArray<
-    std::shared_ptr<
-    BSplineElementScalarEvaluator<dim>>,dim> > &get_scalar_evaluators() const;
-
+    const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
+            &get_scalar_evaluators() const;
 };
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

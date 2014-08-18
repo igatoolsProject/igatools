@@ -37,17 +37,17 @@ void plot_basis(const int deg)
 {
     const int n_knots = deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = BSplineSpace<dim>::create(grid, deg);
+    auto space = BSplineSpace<dim>::create(deg, grid);
     // [plot function]
 
     // [init vec]
     const int n_basis = space->get_num_basis();
-    Vector<LinearAlgebraPackage::trilinos> coeffs(n_basis);
+    Vector<LAPack::trilinos> coeffs(n_basis);
     // [init vec]
 
     // [tensor to flat]
     TensorIndex<dim> basis_t_index(deg);
-    auto basis_index = space->tensor_to_flat(basis_t_index);
+    auto basis_index = space->basis_tensor_to_flat(basis_t_index, 0);
     coeffs(basis_index) = 1.;
     // [tensor to flat]
 

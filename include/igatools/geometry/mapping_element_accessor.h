@@ -37,7 +37,7 @@ template <int,int> class Mapping;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  *
  * @todo document me
  */
@@ -52,6 +52,7 @@ public:
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const Mapping<dim_ref_,codim_>;
 
+    using GridIterator = typename ContainerType::GridIterator;
     /** Dimension of the reference domain */
     using CartesianGridElementAccessor<dim_ref_>::dim;
 
@@ -61,22 +62,19 @@ public:
     /** Dimension of the deformed domain embedding space. */
     static const auto space_dim = ContainerType::space_dim;
 
-    // TODO (pauletti, Mar 21, 2014): why do we need this? should it be private?
-    /** Dimension of the face.*/
-    static const auto face_dim = ContainerType::face_dim ;
-
-    // TODO (pauletti, Mar 21, 2014): should this be private?
-    /**
-     * see UnitElement<dim_>::faces_per_element
-     */
+private:
     static const Size n_faces = UnitElement<dim>::faces_per_element;
 
+public:
     /**
      * see Mapping<dim, codim>::Value
      */
-    using ValueMap        = typename ContainerType::ValueType;
-    using GradientMap     = typename ContainerType::GradientType;
-    using HessianMap      = typename ContainerType::HessianType;
+    using Point       = typename ContainerType::Point;
+
+    //TODO(pauletti, Jun 21, 2014): we should use Value instead of ValueMap
+    using ValueMap    = typename ContainerType::Value;
+    using GradientMap = typename ContainerType::Gradient;
+    using HessianMap  = typename ContainerType::Hessian;
 
 public:
     /** Fill flags supported by this iterator */
@@ -110,7 +108,10 @@ public:
      * Mapping.
      */
     MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
-                           const int index);
+                           const Index index);
+
+    MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
+                           const TensorIndex<dim> &index);
 
     /**
      * Copy constructor.
@@ -157,8 +158,8 @@ public:
      * (i.e. the same for all elements).
      * @note This function should be called before fill_values()
      */
-    void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quadrature);
+    void init_cache(const ValueFlags fill_flag,
+                    const Quadrature<dim> &quadrature);
 
     /**
      * Initializes the internal cache for the efficient
@@ -169,9 +170,9 @@ public:
      * (i.e. the same for all elements).
      * @note This function should be called before fill_face_values()
      */
-    void init_face_values(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quadrature);
+    void init_face_cache(const Index face_id,
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quadrature);
 
     /**
      * Fills the cache in accordance with the flag specifications used in the
@@ -179,7 +180,7 @@ public:
      *
      * Precondition Before invoking this function, you must call init_values().
      */
-    void fill_values();
+    void fill_cache();
 
     /**
      * Fills the cache in accordance with the flag specifications used in the
@@ -189,7 +190,7 @@ public:
      * Precondition Before invoking this function, you must call
      * init_face_values().
      */
-    void fill_face_values(const Index face_id);
+    void fill_face_cache(const Index face_id);
     ///@}
 
     /**
@@ -200,7 +201,7 @@ public:
     ///@{
     /** Returns the value of the map at the dilated quadrature points.*/
     const ValueVector<ValueMap> &
-    get_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the value of the map at the dilated quadrature points
@@ -211,11 +212,11 @@ public:
 
     /** Returns the gradient of the map at the dilated quadrature points.*/
     const ValueVector<GradientMap> &
-    get_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_gradients(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the hessian of the map at the dilated quadrature points. */
     const ValueVector<HessianMap> &
-    get_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_map_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /** Returns the inverse of the gradient of the map at the dilated quadrature points. */
     const ValueVector< Derivatives< space_dim, dim,1,1 > > &
@@ -227,7 +228,13 @@ public:
 
     /** Returns the gradient determinant of the map at the dilated quadrature points. */
     const ValueVector< Real > &
-    get_dets(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_measures(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
+    /**
+     * Returns the gradient determinant of the map at the dilated quadrature points
+     * on the face specified by @p face_id.
+     */
+    const ValueVector<Real> &get_face_measures(const Index face_id) const;
 
     /**
      * Returns the quadrature weights multiplied by the
@@ -279,7 +286,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< ValueMap >
-    evaluate_values_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_values_at_points(const std::vector<Point> &points) const;
 
     /**
      * Returns the gradient of the map (i.e. the Jacobian)
@@ -290,7 +297,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< GradientMap >
-    evaluate_gradients_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_gradients_at_points(const std::vector<Point> &points) const;
 
 
     /**
@@ -302,7 +309,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< HessianMap >
-    evaluate_hessians_at_points(const std::vector< Point<dim> > &points) const;
+    evaluate_hessians_at_points(const std::vector<Point> &points) const;
 
     ///@}
 

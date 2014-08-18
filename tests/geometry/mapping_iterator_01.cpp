@@ -36,7 +36,7 @@ void test_iterator()
 {
     const int space_dim = dim + codim;
     Derivatives<dim,space_dim,1,1> A;
-    Point<space_dim> b;
+    Points<space_dim> b;
 
     //Dilation
     for (int i=0; i<dim; ++i)
@@ -57,15 +57,15 @@ void test_iterator()
 
     ValueFlags flag = ValueFlags::point;
     flag |= ValueFlags::measure| ValueFlags::w_measure|ValueFlags::map_gradient|ValueFlags::map_hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
-    elem->fill_values();
+    elem->fill_cache();
 
-    auto values = elem->get_values();
-    auto dets = elem->get_dets();
+    auto values = elem->get_map_values();
+    auto dets = elem->get_measures();
     auto wdets = elem->get_w_measures();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "x = " << endl << quad.get_points().get_flat_cartesian_product() << endl;
     out << "F(x)     = " << endl;

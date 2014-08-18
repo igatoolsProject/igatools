@@ -1,0 +1,85 @@
+[ 0 ]
+[ ]
+Knots without repetition:
+   Number of active elements: 3
+   Number of intervals per direction: [ 3 ]
+   Knot coordinates:
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+
+Degrees:
+[1] 
+Interior multiplicities:
+   [ 1 1 ]
+
+Dimensionality Table:
+[ 4 ] 
+Component Dimension:
+4 
+Total Dimension: 4
+[ 0 ]
+[ 1 ]
+Knots without repetition:
+   Number of active elements: 3
+   Number of intervals per direction: [ 3 ]
+   Knot coordinates:
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+
+Degrees:
+[1] [1] 
+Interior multiplicities:
+   [ 1 1 ]
+   [ 1 1 ]
+
+Dimensionality Table:
+[ 4 ] [ 4 ] 
+Component Dimension:
+4 4 
+Total Dimension: 8
+[ 0 ]
+[ 1 ]
+Knots without repetition:
+   Number of active elements: 9
+   Number of intervals per direction: [ 3 3 ]
+   Knot coordinates:
+      [ 0 0.333333 0.666667 1.00000 ]
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+
+Degrees:
+[3,3] [3,3] 
+Interior multiplicities:
+   [ 1 1 ]
+   [ 1 1 ]
+   [ 1 1 ]
+   [ 1 1 ]
+
+Dimensionality Table:
+[ 6 6 ] [ 6 6 ] 
+Component Dimension:
+36 36 
+Total Dimension: 72
+[ 0 ]
+[ 1 ]
+Knots without repetition:
+   Number of active elements: 9
+   Number of intervals per direction: [ 3 3 ]
+   Knot coordinates:
+      [ 0 0.333333 0.666667 1.00000 ]
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+
+Degrees:
+[2,2] [2,2] 
+Interior multiplicities:
+   [ 1 1 ]
+   [ 1 1 ]
+   [ 1 1 ]
+   [ 1 1 ]
+
+Dimensionality Table:
+[ 5 5 ] [ 5 5 ] 
+Component Dimension:
+25 25 
+Total Dimension: 50

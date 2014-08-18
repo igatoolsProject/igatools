@@ -44,15 +44,15 @@ int main()
 
     auto elem = map->begin();
     ValueFlags flag = ValueFlags::face_normal;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (Index face_id = 0 ; face_id < UnitElement<3>::faces_per_element ; face_id++)
     {
-    	elem->fill_face_values(face_id);
-    	auto normals = elem->get_face_normals(face_id);
-    	out << "Face: " << face_id << endl;
+        elem->fill_face_cache (face_id);
+        auto normals = elem->get_face_normals(face_id);
+        out << "Face: " << face_id << endl;
         out << "  Normal vector: " << endl ;;
-        	normals.print_info(out);
+        normals.print_info(out);
     }
 
     return (0) ;

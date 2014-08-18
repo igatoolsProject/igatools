@@ -18,32 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __IG_MAPPING_H_
-#define __IG_MAPPING_H_
+#ifndef IG_MAPPING_H_
+#define IG_MAPPING_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/spline_mapping.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/static_multi_array.h>
+#include <igatools/basis_functions/nurbs_space.h>
 
 IGA_NAMESPACE_OPEN
 
 template <class RefSpace>
 class IgMapping
-    : public Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>
+    : public SplineMapping<RefSpace>
 {
 private:
-    using base_t = Mapping<RefSpace::dim, RefSpace::range - RefSpace::dim>;
+    using base_t = SplineMapping<RefSpace>;
 
     using base_t::dim;
     using base_t::codim;
     using base_t::space_dim;
 
-    using typename base_t::PointType;
-    using typename base_t::ValueType;
-    using typename base_t::GradientType;
-    using typename base_t::HessianType;
+    using typename base_t::Point;
+    using typename base_t::Value;
+    using typename base_t::Gradient;
+    using typename base_t::Hessian;
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
+
     using typename base_t::ElementIterator;
 
     using self_t = IgMapping<RefSpace>;
@@ -66,13 +69,11 @@ public:
 
 
     /**
-     *
-     *
      * It builds a Mapping object wrapped in a std::shared_ptr,
      * from a function space and a vector of control points.
      */
-    static std::shared_ptr<base_t>
-    create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
+    static std::shared_ptr<Mapping<dim,codim>>
+                                            create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
 
     /**
      * Copy constructor. Performs a deep copy of the object.
@@ -87,29 +88,29 @@ public:
     void init_element(const ValueFlags flag,
                       const Quadrature<dim> &quad) const override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) const override;
+    void set_element(const GridIterator &elem) const override;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) const override;
+                          const GridIterator &elem) const override;
 
     /** @name Mapping as a standard function */
     ///@{
-    virtual void evaluate(std::vector<ValueType> &values) const override;
+    virtual void evaluate(std::vector<Value> &values) const override;
 
     virtual void evaluate_gradients
-    (std::vector<GradientType> &gradients) const override;
+    (std::vector<Gradient> &gradients) const override;
 
     virtual void evaluate_hessians
-    (std::vector<HessianType> &hessians) const override;
+    (std::vector<Hessian> &hessians) const override;
 
     virtual void evaluate_face
-    (const Index face_id, std::vector<ValueType> &values) const override;
+    (const Index face_id, std::vector<Value> &values) const override;
 
     virtual void evaluate_face_gradients
-    (const Index face_id, std::vector<GradientType> &gradients) const override;
+    (const Index face_id, std::vector<Gradient> &gradients) const override;
 
     virtual void evaluate_face_hessians
-    (const Index face_id, std::vector<HessianType> &hessians) const override;
+    (const Index face_id, std::vector<Hessian> &hessians) const override;
 
     ///@}
 
@@ -119,10 +120,10 @@ public:
      * Sets the control points defining the map.
      * @param[in] control_points - Coordinates of the control points in the Euclidean space.
      */
-    void set_control_points(const std::vector<Real> &control_points);
+    void set_control_points(const std::vector<Real> &control_points) override final;
     ///@}
 
-    std::shared_ptr<RefSpace> get_iga_space()
+    std::shared_ptr<RefSpace> get_iga_space() override final
     {
         return data_->ref_space_;
     }
@@ -154,11 +155,11 @@ public:
     ///@}
 
 
-    /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
+    /** @name Evaluating the quantities related to the IgMapping without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const override final;
+    void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
     ///@}
 
 
@@ -183,10 +184,7 @@ private:
          * h-refinement algorithm (based on knot insertion) require them to be in
          * the projective space.
          */
-        ComponentTable<DynamicMultiArray<Real,dim>> weights_pre_refinement_;
-
-        /** Knots with repetitions PRE-refinement */
-        ComponentTable<CartesianProductArray<Real,dim>> knots_with_repetitions_pre_refinement_;
+        typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
 
 
         /** Control mesh (the coordinates are in the projective space). */
@@ -248,7 +246,6 @@ private:
         const std::array<bool,dim> &refinement_directions,
         const typename base_t::GridType &grid_old);
 
-
     /**
      * Returns the control points that are active on the element represented by the cache.
      */
@@ -259,4 +256,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+#endif // #ifndef IG_MAPPING_

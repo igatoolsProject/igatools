@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-template < LinearAlgebraPackage linear_algebra_package>
+template < LAPack la_pack>
 class Matrix;
 
 
@@ -52,14 +52,14 @@ class Matrix;
  *
  */
 template <>
-class Matrix<LinearAlgebraPackage::trilinos>
+class Matrix<LAPack::trilinos>
 {
 public:
     /** Typedef for the matrix type */
     using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
-    using self_t = Matrix<LinearAlgebraPackage::trilinos>;
-    using vector_t = Vector<LinearAlgebraPackage::trilinos>;
+    using self_t = Matrix<LAPack::trilinos>;
+    using vector_t = Vector<LAPack::trilinos>;
 
 public:
 
@@ -280,14 +280,14 @@ private:
  *
  */
 template <>
-class Matrix<LinearAlgebraPackage::petsc>
+class Matrix<LAPack::petsc>
 {
 public:
     /** Typedef for the matrix type */
 //    using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
-    using self_t = Matrix<LinearAlgebraPackage::petsc>;
-    using vector_t = Vector<LinearAlgebraPackage::petsc>;
+    using self_t = Matrix<LAPack::petsc>;
+    using vector_t = Vector<LAPack::petsc>;
 
 public:
 

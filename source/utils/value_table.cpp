@@ -222,7 +222,7 @@ void
 ValueTable<T>::
 zero()
 {
-    for (auto & value : (*this))
+    for (auto &value : (*this))
         value = T() ;
 }
 

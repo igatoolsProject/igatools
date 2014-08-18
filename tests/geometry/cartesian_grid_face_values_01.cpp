@@ -49,22 +49,25 @@ void run_test1()
                       ValueFlags::point|
                       ValueFlags::measure|
                       ValueFlags::w_measure;
-    elem->init_values(flag, QUniform<dim>(2));
+    elem->init_cache(flag, QUniform<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << "Element: "<< elem->get_flat_index() << endl;
         out.push("  ");
         for (int face_id=0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
         {
-            elem->fill_face_values(face_id);
-            out << "face: " << face_id << endl;
-            out.push("  ");
-            out << "meas: "<< elem->get_face_measure(face_id) << endl;
-            out << "w_meas: "<< endl;
-            elem->get_face_w_measures(face_id).print_info(out);
-            out << endl;
-            out << "points: " << elem->get_face_points(face_id) << endl;
-            out.pop();
+            if (elem->is_boundary(face_id))
+            {
+                elem->fill_face_cache(face_id);
+                out << "face: " << face_id << endl;
+                out.push("  ");
+                out << "meas: "<< elem->get_face_measure(face_id) << endl;
+                out << "w_meas: "<< endl;
+                elem->get_face_w_measures(face_id).print_info(out);
+                out << endl;
+                out << "points: " << elem->get_face_points(face_id) << endl;
+                out.pop();
+            }
         }
         out.pop();
     }
@@ -96,22 +99,25 @@ void run_test2()
                       ValueFlags::point|
                       ValueFlags::measure|
                       ValueFlags::w_measure;
-    elem->init_values(flag, QUniform<dim>(2));
+    elem->init_cache(flag, QUniform<dim>(2));
     for (; elem != grid->end(); ++elem)
     {
         out << "Element: "<< elem->get_flat_index() << endl;
         out.push("  ");
         for (int face_id=0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
         {
-            elem->fill_face_values(face_id);
-            out << "face: " << face_id << endl;
-            out.push("  ");
-            out << "meas: "<< elem->get_face_measure(face_id) << endl;
-            out << "w_meas: "<< endl;
-            elem->get_face_w_measures(face_id).print_info(out);
-            out << endl;
-            out << "points: " << elem->get_face_points(face_id) << endl;
-            out.pop();
+            if (elem->is_boundary(face_id))
+            {
+                elem->fill_face_cache(face_id);
+                out << "face: " << face_id << endl;
+                out.push("  ");
+                out << "meas: "<< elem->get_face_measure(face_id) << endl;
+                out << "w_meas: "<< endl;
+                elem->get_face_w_measures(face_id).print_info(out);
+                out << endl;
+                out << "points: " << elem->get_face_points(face_id) << endl;
+                out.pop();
+            }
         }
         out.pop();
     }

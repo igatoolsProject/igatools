@@ -33,7 +33,6 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
-#include <igatools/contrib/table_handler.h>
 
 #include <igatools/operators/elliptic_operators_std_integration.h>
 #include <igatools/operators/elliptic_operators_sf_integration.h>
@@ -54,7 +53,6 @@ using namespace std::chrono;
 using functions::ConstantFunction;
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
-using dof_tools::get_sparsity_pattern;
 using numbers::PI;
 // [unqualified names]
 
@@ -108,13 +106,14 @@ protected:
 
     const boundary_id dir_id = 0;
 
-#if defined(USE_PETSC)
-    const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::petsc;
-#elif defined(USE_TRILINOS)
-    const static LinearAlgebraPackage linear_algebra_package = LinearAlgebraPackage::trilinos;
+#if defined(USE_TRILINOS)
+    static const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    static const auto la_pack = LAPack::petsc;
 #endif
-    using MatrixType = Matrix<linear_algebra_package>;
-    using VectorType = Vector<linear_algebra_package>;
+
+    using MatrixType = Matrix<la_pack>;
+    using VectorType = Vector<la_pack>;
 
 
     std::shared_ptr<MatrixType> matrix;
@@ -226,13 +225,13 @@ PoissonProblem(const int n_knots, const int deg)
     box[0][1] = 0.5;
 
     auto grid = CartesianGrid<dim>::create(box,TensorSize<dim>(n_knots));
-    auto ref_space = RefSpace::create(grid, deg);
+    auto ref_space = RefSpace::create(deg,grid);
     map       = BallMapping<dim>::create(grid);
 //    map       = IdentityMapping<dim,0>::create(grid);
     space     = Space::create(ref_space, PushFw::create(map));
 
     num_dofs_ = space->get_num_basis();
-    matrix   = MatrixType::create(get_sparsity_pattern(const_pointer_cast<const Space>(space)));
+    matrix   = MatrixType::create(SparsityPattern(*space->get_space_manager()));
     rhs      = VectorType::create(num_dofs_);
     solution = VectorType::create(num_dofs_);
     out_screen << "PoissonProblem constructor -- end" << endl;
@@ -259,7 +258,8 @@ assemble()
 
     const Size n_qp = this->elem_quad.get_num_points();
     ConstantFunction<dim> f({0.5});
-    vector< typename Function<dim>::ValueType > f_values(n_qp);
+    using Value = typename Function<dim>::Value;
+    vector<Value> f_values(n_qp);
 
 
 
@@ -268,8 +268,7 @@ assemble()
      * Initialization of the container for the values of the function
      * that must be projected.
      */
-    using ValueType = typename Function<dim>::ValueType;
-    vector<ValueType> f_values_proj(this->elem_quad.get_num_points());
+    vector<Value> f_values_proj(this->elem_quad.get_num_points());
     //-----------------------------------------------------------------
 
 
@@ -283,7 +282,7 @@ assemble()
                             ValueFlags::w_measure |
                             ValueFlags::point;
 
-    elem->init_values(fill_flags, this->elem_quad);
+    elem->init_cache(fill_flags, this->elem_quad);
 
 
 
@@ -303,7 +302,7 @@ assemble()
 
         //----------------------------------------------------
         const TimePoint start_eval_basis = Clock::now();
-        elem->fill_values();
+        elem->fill_cache();
         const TimePoint end_eval_basis = Clock::now();
         this->elapsed_time_eval_basis_ += end_eval_basis - start_eval_basis;
 
@@ -402,7 +401,7 @@ assemble()
     ConstantFunction<dim> g({0.0});
     std::map<Index, Real> values;
     const int dir_id = 0 ;
-    project_boundary_values<Space,linear_algebra_package>(g, this->space, this->face_quad, dir_id, values);
+    project_boundary_values<Space,la_pack>(g, this->space, this->face_quad, dir_id, values);
 
 
     TimePoint start_apply_bc = Clock::now();

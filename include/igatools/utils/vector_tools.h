@@ -38,6 +38,7 @@ namespace vector_tools
 
 /**
  * This function counts and removes the duplicates values from a std::vector.
+ * @pre Before calling this function, the entries in the vector @vec_with_duplicates must be sorted.
  * @param[in] vec_with_duplicates Vector with duplicates
  * @param[out] vec_without_duplicates Vector without duplicates
  * @param[out] multiplicities Multiplicities of the values in the
@@ -63,3 +64,6 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif // VECTOR_TOOLS_H_
+
+
+#include <igatools/utils/vector_tools-inline.h>

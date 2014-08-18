@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
@@ -34,5 +33,5 @@ include_files = ['basis_functions/bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces:
-    f.write( 'template class %s;\n' %space)
+for space in inst.PhysSpaces_v2:
+    f.write( 'template class %s;\n' %space.name)

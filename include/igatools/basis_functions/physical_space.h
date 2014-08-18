@@ -22,6 +22,7 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/function.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
@@ -30,6 +31,9 @@
 
 IGA_NAMESPACE_OPEN
 
+
+class SpaceManager;
+
 //Forward declaration to avoid including the header
 template < class > class PhysicalSpaceElementAccessor;
 
@@ -37,6 +41,7 @@ template < class > class PhysicalSpaceElementAccessor;
  *
  * @sa FunctionSpace
  *
+ * @ingroup containers
  */
 template <class RefSpace_, class PushForward_>
 class PhysicalSpace :
@@ -51,7 +56,9 @@ public:
     ///@{
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = PushForward_;
+
     using RefSpace = RefSpace_;
+
     using GridType = typename PushForwardType::GridType;
     ///@}
     static const int dim = PushForwardType::dim;
@@ -66,15 +73,25 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+public:
+    using Func = Function<space_dim, range, rank>;
+    template <int order>
+    using Derivative = typename Func::template Derivative<order>;
+    using Point = typename Func::Point;
+    using Value = typename Func::Value;
+    using Div   = typename Func::Div;
 
-    /** Container indexed by the components of the space */
+
+public:
     template< class T>
-    using ComponentTable = StaticMultiArray<T,range,rank>;
+    using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
+
+    using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 
 public:
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
-
+    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
     /**
      * Type for the element accessor.
      */
@@ -87,7 +104,8 @@ public:
 
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward);
+                  std::shared_ptr<PushForwardType> push_forward,
+                  const Index id = 0);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
@@ -95,7 +113,8 @@ public:
 
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<PushForwardType> push_forward);
+        std::shared_ptr<PushForwardType> push_forward,
+        const Index id = 0);
 
     /**
      * Total number of dofs of the space.
@@ -106,6 +125,13 @@ public:
      * Returns the number of dofs per element.
      */
     int get_num_basis_per_element() const;
+
+    const SpaceDimensionTable get_num_basis_per_element_table() const
+    {
+        return ref_space_->get_num_basis_per_element_table();
+    }
+
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
     /**
      * Returns a element iterator to the first element of the patch.
@@ -122,37 +148,48 @@ public:
      */
     ElementIterator end() const;
 
+    /**
+     * Returns the element accessor with its flat id corresponding to @p elem_flat_id.
+     *
+     * @warning This function creates a new ElementAccessor object,
+     * so it could be computationally expensive.
+     */
+    ElementAccessor get_element(const Index elem_flat_id) const;
+
+
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
     std::shared_ptr<const RefSpace> get_reference_space() const;
 
+
+    std::shared_ptr<FaceSpace>
+    get_face_space(const Index face_id,
+                   std::vector<Index> &face_to_element_dofs) const;
+
+
     void print_info(LogStream &out) const;
 
+
+
+    Index get_id() const;
+
+    // TODO (pauletti, Jun 12, 2014): if we are using this it should be
+    // implemented in all library classes
     void print_memory_info(LogStream &out) const;
 
 
-    /**
-     * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * The first index of the returned object is the component id, the second index is the direction id.
-     */
-    const ComponentTable<TensorIndex<dim>> &get_degree() const;
+    std::shared_ptr<SpaceManager> get_space_manager();
+
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
-    /**
-     * @todo Missing documentation
-     */
-    const std::vector<std::vector<Index>> &get_element_global_dofs() const;
 
 private:
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;
 
-    /**
-     * Map between the element accessors defined by the reference space and the element accessors defined by the push-forward.
-     */
-    std::vector<int> map_elements_;
-
+//    Index id_;
 
     friend ElementAccessor;
 };

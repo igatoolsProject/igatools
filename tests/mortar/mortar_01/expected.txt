@@ -1,0 +1,148 @@
+Reference space:
+   Spline Space:
+      Knots without repetition:
+         Number of active elements: 2
+         Number of intervals per direction: [ 2 ]
+         Knot coordinates:
+            [ 0 0.500000 1.00000 ]
+         
+      
+      Degrees:
+      [1] 
+      Interior multiplicities:
+         [ 1 ]
+      
+      Dimensionality Table:
+      [ 3 ] 
+      Component Dimension:
+      3 
+      Total Dimension: 3
+   
+   Basis Indices:
+      0 1 2 
+      [ 0 1 ]
+      [ 1 2 ]
+   
+   Bernstein Extraction:
+      Component[0]: 
+      Direction[0]:
+      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   
+
+Push-forward:
+   Transformation type: 1
+   Mapping:
+      Type = IgMapping
+      	Reference space info:
+      	Spline Space:
+      	   Knots without repetition:
+      	      Number of active elements: 2
+      	      Number of intervals per direction: [ 2 ]
+      	      Knot coordinates:
+      	         [ 0 0.500000 1.00000 ]
+      	      
+      	   
+      	   Degrees:
+      	   [1] 
+      	   Interior multiplicities:
+      	      [ 1 ]
+      	   
+      	   Dimensionality Table:
+      	   [ 3 ] 
+      	   Component Dimension:
+      	   3 
+      	   Total Dimension: 3
+      	
+      	Basis Indices:
+      	   0 1 2 
+      	   [ 0 1 ]
+      	   [ 1 2 ]
+      	
+      	Bernstein Extraction:
+      	   Component[0]: 
+      	   Direction[0]:
+      	   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      	
+      	
+      		Control points info (projective coordinates):
+      			Control mesh[0] = 1.00000 1.50000 2.00000 
+      			
+      		Control points info (euclidean coordinates): [ 1.00000 1.50000 2.00000 ]
+      
+   
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of active elements: 2
+            Number of intervals per direction: [ 2 ]
+            Knot coordinates:
+               [ 0 0.500000 1.00000 ]
+            
+         
+         Degrees:
+         [1] 
+         Interior multiplicities:
+            [ 1 ]
+         
+         Dimensionality Table:
+         [ 3 ] 
+         Component Dimension:
+         3 
+         Total Dimension: 3
+      
+      Basis Indices:
+         0 1 2 
+         [ 0 1 ]
+         [ 1 2 ]
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+   Push-forward:
+      Transformation type: 1
+      Mapping:
+         Type = IgMapping
+         	Reference space info:
+         	Spline Space:
+         	   Knots without repetition:
+         	      Number of active elements: 2
+         	      Number of intervals per direction: [ 2 ]
+         	      Knot coordinates:
+         	         [ 0 0.500000 1.00000 ]
+         	      
+         	   
+         	   Degrees:
+         	   [1] 
+         	   Interior multiplicities:
+         	      [ 1 ]
+         	   
+         	   Dimensionality Table:
+         	   [ 3 ] 
+         	   Component Dimension:
+         	   3 
+         	   Total Dimension: 3
+         	
+         	Basis Indices:
+         	   0 1 2 
+         	   [ 0 1 ]
+         	   [ 1 2 ]
+         	
+         	Bernstein Extraction:
+         	   Component[0]: 
+         	   Direction[0]:
+         	   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         	   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         	
+         	
+         		Control points info (projective coordinates):
+         			Control mesh[0] = 1.00000 1.50000 2.00000 
+         			
+         		Control points info (euclidean coordinates): [ 1.00000 1.50000 2.00000 ]
+         
+      

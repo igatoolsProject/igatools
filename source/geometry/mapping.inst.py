@@ -25,7 +25,7 @@ include_files = ['geometry/mapping_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-mappings = ['Mapping<%d, %d>' %(x.dim, x.codim) for x in inst.mapping_dims]
+mappings = ['Mapping<%d, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
 mappings = mappings + ['Mapping<0, 0>'] #todo use porper ref to phys dims
 for row in mappings:
     f.write('template class %s; \n' % (row))

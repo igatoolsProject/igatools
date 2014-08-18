@@ -18,9 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#ifndef __SPACE_TOOLS_H_
-#define __SPACE_TOOLS_H_
+#ifndef SPACE_TOOLS_H_
+#define SPACE_TOOLS_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
@@ -33,30 +32,13 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <boost/optional.hpp>
 
-
 #include <memory>
 #include <map>
 
-
-
 IGA_NAMESPACE_OPEN
 
-
 /**
- * @todo document
- */
-template <class Space>
-using FaceSpace = PhysicalSpace<typename Space::RefFaceSpace,
-      PushForward<Transformation::h_grad, Space::dim-1, Space::codim + 1> >;
-
-/**
- * @todo document
- */
-template <class Space>
-using Func = Function<Space::space_dim, Space::range, Space::rank>;
-
-/**
- * This namespace collect functions that work on the
+ * This namespace collects functions that work on the
  * physical spaces and fields or functions.
  * Such as:
  * - projections
@@ -65,7 +47,6 @@ using Func = Function<Space::space_dim, Space::range, Space::rank>;
  */
 namespace space_tools
 {
-
 /**
  * Determine the knot span index.
  *
@@ -82,52 +63,43 @@ Index find_span(
     const std::vector<Real> &U);
 
 
-
-/**
- * Constructs and returns the trace space on the requested
- * face @p face_id.
- * It also returns a map from the face space dof indices to the
- * corresponding dof indices in the patch space.
- */
-template <class Space>
-std::shared_ptr< FaceSpace<Space> >
-get_face_space(std::shared_ptr<const Space> space,
-               const Index face_id,
-               std::vector<Index> &face_to_element_dofs);
-
-
 //TODO the order of parameters should be consistent
 /**
- * Computes an integral norm of the difference between two functions.
- * In this case one function is a Function and the other one an IG field.
- * @note mostly use to compute the convergence rates when the exact solution is known.
+ * Computes the norm distance between a generic function and
+ * and an isogeometric type function.
+ * More precisely,
+ * res = | D^i(f-g) |_L2 with i=0 or i=1.
+ * It also stores the local norm of each grid element in
+ * the element error vector.
+ *
+ * @note mostly use to compute the convergence rates when the exact solution is
+ *       known.
  * @todo document a little more
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
-Real integrate_difference(std::shared_ptr<const Func<Space> > exact_solution,
+template<class Space, LAPack la_pack = LAPack::trilinos>
+Real integrate_difference(const typename Space::Func &exact_solution,
                           std::shared_ptr<const Space> space,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
-                          const Vector<linear_algebra_package> &solution_coefs,
-                          std::vector< Real > &element_error);
+                          const Vector<la_pack> &solution_coefs,
+                          std::vector<Real> &element_error);
 
 
 
 
-//TODO: pass vector as argument
+// TODO (pauletti, Jun 18, 2014):use space::Function
+// TODO (pauletti, Jun 18, 2014): use a quadrature table, and use a default quad if none provided
 /**
  * Perform an (L2)-Projection the function @p func
  * onto the space @p space using the quadrature rule @p quad.
  *  The projection is a numerical vector (the coefficients of
  *  the projected function)
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
-Vector<linear_algebra_package>
-projection_l2(
-    const Function<Space::space_dim,Space::range,Space::rank> &func,
-    std::shared_ptr<const Space> space,
-    const Quadrature<Space::dim> &quad
-);
+template<class Space, LAPack la_pack = LAPack::trilinos>
+Vector<la_pack>
+projection_l2(const typename Space::Func &func,
+              std::shared_ptr<const Space> space,
+              const Quadrature<Space::dim> &quad);
 
 /**
  * Projects (using the L2 scalar product) a function to the whole or part
@@ -140,9 +112,9 @@ projection_l2(
  * for this degree of freedom.
  *
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
-    const Func<Space> &func,
+    const typename Space::Func &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim-1> &quad,
     const std::set<boundary_id>  &boundary_ids,
@@ -151,9 +123,9 @@ void project_boundary_values(
 /**
  * See documentation above.
  */
-template<class Space, LinearAlgebraPackage linear_algebra_package>
+template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
-    const Func<Space> &func,
+    const typename Space::Func &func,
     std::shared_ptr<const Space> space,
     const Quadrature<Space::dim-1> &quad,
     const boundary_id bdry_id,
@@ -177,9 +149,7 @@ void reference_to_element(
 
 } ;
 
-
-
 IGA_NAMESPACE_CLOSE
 
+#endif // #ifndef SPACE_TOOLS_H_
 
-#endif /* __ERROR_EVALUATION_H_ */

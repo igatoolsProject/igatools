@@ -43,7 +43,7 @@ void run_test()
 
     const int p = 1;
     auto knots = CartesianGrid<dim>::create(2);
-    auto bspline_space = Space_t::create(knots, p);
+    auto bspline_space = Space_t::create(p, knots);
 
     vector<Real> control_pts(bspline_space->get_num_basis());
     if (dim == 1)
@@ -134,7 +134,7 @@ void run_test()
 
     string filename = "bspline_map-" + to_string(dim) + "d";
 
-    Writer<dim,dim> writer(map, 4);
+    Writer<dim> writer(map, 4);
     writer.save(filename);
 
 }

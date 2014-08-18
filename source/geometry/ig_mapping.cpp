@@ -22,6 +22,7 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
+#include <igatools/utils/vector_tools.h>
 
 using std::vector;
 using std::array;
@@ -35,7 +36,7 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 template<class RefSpace>
-StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1>
+typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<RefSpace::has_weights> *hw = 0)
 {
@@ -46,14 +47,46 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 
 
 template<class RefSpace>
-StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1>
+typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<!RefSpace::has_weights> *hw = 0)
 {
-    //in the case of BSplineSpace do nothing
-    StaticMultiArray<DynamicMultiArray<Real,RefSpace::dim>,RefSpace::range,1> weights;
+    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
+    typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+    weights(ref_space.get_components_map());
+
+
+    const auto &basis_tensor_size_table = ref_space.get_num_basis_table();
+
+    for (Index comp_id : weights.get_active_components_id())
+    {
+        auto &weights_component = weights(comp_id);
+
+        weights_component.resize(basis_tensor_size_table(comp_id));
+
+        for (auto &w : weights_component)
+            w = 1.0;
+    }
+
+
     return weights;
 }
+
+
+template<int dim, int range, int rank>
+const BSplineSpace<dim,range,rank> &
+get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
+{
+    return *nurbs_space.get_spline_space();
+}
+
+template<int dim, int range, int rank>
+const BSplineSpace<dim,range,rank> &
+get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
+{
+    return bspline_space;
+}
+
 };
 
 
@@ -63,7 +96,7 @@ IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
           const std::vector<Real> &control_points)
     :
-    base_t::Mapping(space->get_grid()),
+    base_t::SplineMapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
     cache_(space->begin())
 {
@@ -76,7 +109,6 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     Assert(RefSpace::rank == 1, ExcDimensionMismatch(RefSpace::rank,1));
 
-
     //----------------------------------
     // if RefSpace is NURBSSpace
     // save the weights in order to be used in the h-refinement algorithm
@@ -86,42 +118,42 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     //----------------------------------
 
 
-    //----------------------------------
-    // copy the knots (with repetitions) that defines the RefSpace before any refinement
-    data_->knots_with_repetitions_pre_refinement_ = space->get_knots_with_repetitions();
-    //----------------------------------
-
 
 
     //----------------------------------
     // copy the control mesh before any refinement
-    const auto &index_space = data_->ref_space_->get_index_space();
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*space);
+    const auto &num_basis_table = bspline_space.get_num_basis_table();
 
-    for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+
+    Index ctrl_pt_fid = 0;
+    for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const auto &index_space_comp = index_space(comp_id);
+        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+
         auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
 
-        ctrl_mesh_comp.resize(index_space_comp.tensor_size());
+        ctrl_mesh_comp.resize(num_basis_comp);
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
-//        out << "n_dofs_comp["<<comp_id<<"]= " << n_dofs_comp << endl ;
 
         const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_(comp_id);
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
-            const Index glob_id = index_space_comp(loc_id);
             if (RefSpace::has_weights)
             {
-                // if NURBS, transform the control points from euclidean to projective coordinates
+                // If NURBS, transform the control points from euclidean to
+                // projective coordinates.
                 const Real w = weights_pre_refinement_comp(loc_id);
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[glob_id];
+                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[glob_id];
+                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
 
+            ++ctrl_pt_fid;
         }
     }
 
@@ -130,6 +162,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
             &IgMapping<RefSpace>::refine_h_control_mesh,
             this,
             std::placeholders::_1,std::placeholders::_2));
+//#endif
 }
 
 
@@ -138,7 +171,7 @@ template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const self_t &map)
     :
-    Mapping<dim,codim>(map),
+    base_t::SplineMapping(map),
     data_(shared_ptr<IgMappingData>(new IgMappingData(*map.data_))),
     cache_(map.cache_)
 {}
@@ -147,7 +180,7 @@ template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<IgMappingData> mapping_data)
     :
-    base_t::Mapping(mapping_data->ref_space_->get_grid()),
+    base_t::SplineMapping(mapping_data->ref_space_->get_grid()),
     data_(mapping_data),
     cache_(mapping_data->ref_space_->begin())
 {
@@ -204,29 +237,29 @@ init_element(const ValueFlags flag,
         ref_space_flag |= ValueFlags::face_hessian;
     }
 
-    cache_->init_values(ref_space_flag, quad);
+    cache_->init_cache(ref_space_flag, quad);
 }
 
 
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
-    cache_->reset_flat_tensor_indices(elem.get_flat_index());
-    cache_->fill_values();
+    cache_->move_to(elem.get_flat_index());
+    cache_->fill_cache();
 }
 
 
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const
+set_face_element(const Index face_id, const GridIterator &elem) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-    cache_->reset_flat_tensor_indices(elem.get_flat_index());
-    cache_->fill_face_values(face_id);
+    cache_->move_to(elem.get_flat_index());
+    cache_->fill_face_cache(face_id);
 }
 
 
@@ -235,7 +268,7 @@ template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const std::vector<Real> &control_points) -> shared_ptr<base_t>
+    const std::vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));
@@ -262,7 +295,7 @@ get_control_points_elem() const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate(vector<ValueType> &values) const
+evaluate(vector<Value> &values) const
 {
     values = cache_->evaluate_field(this->get_control_points_elem());
 }
@@ -272,7 +305,7 @@ evaluate(vector<ValueType> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients(std::vector<GradientType> &gradients) const
+evaluate_gradients(std::vector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem());
 }
@@ -281,7 +314,7 @@ evaluate_gradients(std::vector<GradientType> &gradients) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians(std::vector<HessianType> &hessians) const
+evaluate_hessians(std::vector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem());
 }
@@ -291,7 +324,7 @@ evaluate_hessians(std::vector<HessianType> &hessians) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face(const Index face_id, vector<ValueType> &values) const
+evaluate_face(const Index face_id, vector<Value> &values) const
 {
     values = cache_->evaluate_field(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -301,7 +334,7 @@ evaluate_face(const Index face_id, vector<ValueType> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradients) const
+evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -310,34 +343,111 @@ evaluate_face_gradients(const Index face_id, std::vector<GradientType> &gradient
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_hessians(const Index face_id, std::vector<HessianType> &hessians) const
+evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
 
 
+
+// TODO (pauletti, Aug 7, 2014): evaluate_at_points, evaluate_gradients_at_points, etc
+// should eventually be a template function template<order> eval_derivative_at_point
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_at_points(const std::vector<PointType> &points, std::vector<ValueType> &values) const
+evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
 {
-    values = cache_->evaluate_field_values_at_points(this->get_control_points_elem(),points);
+    Assert(points.size() > 0, ExcEmptyObject());
+    Assert(values.size() == points.size(),
+           ExcDimensionMismatch(values.size(),points.size()));
+
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
+    auto &elem = cache_;
+
+    for (auto p : elem_list)
+    {
+        elem->move_to(p.first->get_flat_index());
+        std::vector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
+
+        const auto points_unit_element =
+            elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+            elem->evaluate_field_values_at_points(
+                get_control_points_elem(), points_unit_element);
+
+        for (int j=0; j<p.second.size(); ++j)
+            values[p.second[j]] = elem_val[j];
+    }
 }
+
+
 
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients_at_points(const std::vector<PointType> &points, std::vector<GradientType> &gradients) const
+evaluate_gradients_at_points(const std::vector<Point> &points,
+                             std::vector<Gradient> &gradients) const
 {
-    gradients = cache_->evaluate_field_gradients_at_points(this->get_control_points_elem(),points);
+    Assert(points.size() > 0, ExcEmptyObject());
+    Assert(gradients.size() == points.size(),
+           ExcDimensionMismatch(gradients.size(),points.size()));
+
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
+    auto &elem = cache_;
+
+    for (auto p : elem_list)
+    {
+        elem->move_to(p.first->get_flat_index());
+        std::vector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
+
+        const auto points_unit_element =
+            elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+            elem->evaluate_field_gradients_at_points(
+                get_control_points_elem(), points_unit_element);
+
+        for (int j=0; j<p.second.size(); ++j)
+            gradients[p.second[j]] = elem_val[j];
+    }
+
 }
+
+
 
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians_at_points(const std::vector<PointType> &points, std::vector<HessianType> &hessians) const
+evaluate_hessians_at_points(const std::vector<Point> &points,
+                            std::vector<Hessian> &hessians) const
 {
-    hessians = cache_->evaluate_field_hessians_at_points(this->get_control_points_elem(),points);
+    Assert(points.size() > 0, ExcEmptyObject());
+    Assert(hessians.size() == points.size(),
+           ExcDimensionMismatch(hessians.size(),points.size()));
+
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
+    auto &elem = cache_;
+
+    for (auto p : elem_list)
+    {
+        elem->move_to(p.first->get_flat_index());
+        std::vector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
+
+        const auto points_unit_element =
+            elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+            elem->evaluate_field_hessians_at_points(
+                get_control_points_elem(), points_unit_element);
+
+        for (int j=0; j<p.second.size(); ++j)
+            hessians[p.second[j]] = elem_val[j];
+    }
+
 }
 
 
@@ -349,29 +459,80 @@ set_control_points(const std::vector<Real> &control_points)
     Assert(data_->control_points_.size() == control_points.size(),
            ExcDimensionMismatch(data_->control_points_.size(), control_points.size()));
 
+    // Updating of the euclidean coordinates of the control_points.
     data_->control_points_ = control_points;
+
+
+    Assert(data_->ref_space_ != nullptr, ExcNullPtr());
+    const auto weights = get_weights_from_ref_space(*(data_->ref_space_));
+
+
+    // Updating of the euclidean (in case of BSpline) or projective (in case of NURBS)
+    // coordinates of the control_points .
+
+    Index ctrl_pt_fid = 0;
+    for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+    {
+//        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+
+        auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
+
+        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+
+        const auto &weights_after_refinement_comp = weights(comp_id);
+
+        for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
+        {
+            if (RefSpace::has_weights)
+            {
+                // If NURBS, transform the control points from euclidean to
+                // projective coordinates.
+                const Real &w = weights_after_refinement_comp(loc_id);
+
+                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
+            }
+            else
+                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
+
+            ++ctrl_pt_fid;
+
+        } // end loop loc_id
+    } // end loop comp_id
 }
 
 
 
-
+//#if 0
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
 refine_h_control_mesh(
     const std::array<bool,dim> &refinement_directions,
-    const typename base_t::GridType &grid_old)
+    const typename base_t::GridType &grid_old1)
 {
+    auto grid = this->get_grid();
+    auto grid_old = this->get_grid()->get_grid_pre_refinement();
+
+    auto ref_space = data_->ref_space_;
+
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
+
+    auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(
+                                                     bspline_space.get_end_behaviour());
+    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(
+                                      bspline_space.get_end_behaviour());
+
     for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
     {
         if (refinement_directions[direction_id])
         {
-
             // knots in the refined grid along the selected direction
-            vector<Real> knots_new = data_->ref_space_->get_grid()->get_knot_coordinates(direction_id);
+            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
 
             // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
+            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
 
             vector<Real> knots_added(knots_new.size());
 
@@ -386,12 +547,10 @@ refine_h_control_mesh(
 
             for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
             {
-
-                const int p = data_->ref_space_->get_degree()(comp_id)[direction_id];
-
-                const auto &U = data_->knots_with_repetitions_pre_refinement_(comp_id).get_data_direction(direction_id);
+                const int p = ref_space->get_degree()(comp_id)[direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = data_->ref_space_->get_knots_with_repetitions()(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -399,7 +558,6 @@ refine_h_control_mesh(
                 const int b = space_tools::find_span(p,X[r],U)+1;
 
                 const int n = m-p-1;
-
 
                 const auto &Pw = data_->ctrl_mesh_(comp_id);
                 const auto old_sizes = Pw.tensor_size();
@@ -499,9 +657,12 @@ refine_h_control_mesh(
         }
     }
     //----------------------------------
+
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
-
+//#endif
 
 
 template<class RefSpace>
@@ -524,10 +685,10 @@ last() const -> ElementIterator
 {
 //    return ElementIterator(
 //               const_cast<self_t &>(*(new self_t(this->get_data()))),
-//               this->get_grid()->get_num_elements() - 1);
+//               this->get_grid()->get_num_active_elems() - 1);
     return ElementIterator(
                const_pointer_cast<const self_t>(make_shared<self_t>(this->get_data())),
-               this->get_grid()->get_num_elements() - 1);
+               this->get_grid()->get_num_active_elems() - 1);
 }
 
 
@@ -572,7 +733,7 @@ print_info(LogStream &out) const
     out << "Control points info (euclidean coordinates): [ ";
     for (const auto &ctrl_pt : data_->control_points_)
         out << ctrl_pt << " ";
-    out << endl;
+    out << "]" << endl;
     out.pop();
 }
 

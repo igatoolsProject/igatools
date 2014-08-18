@@ -33,12 +33,53 @@ using std::vector;
 using std::shared_ptr;
 using std::static_pointer_cast;
 using std::dynamic_pointer_cast;
+
 IGA_NAMESPACE_OPEN
 
 template<int dim_ref_, int codim_ >
 MappingElementAccessor<dim_ref_,codim_>::
 MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const Index index)
+    :
+    CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
+    mapping_(mapping)
+{
+    using BSplineSp = BSplineSpace<dim,dim+codim,1>;
+    using BSplineMapping = IgMapping<BSplineSp>;
+    if (dynamic_pointer_cast<const BSplineMapping>(mapping_))
+    {
+        auto ig_mapping = dynamic_pointer_cast<const BSplineMapping>(mapping_);
+        mapping_.reset(new BSplineMapping(ig_mapping->get_data()));
+    }
+
+
+
+    using NURBSSp = NURBSSpace<dim,dim+codim,1>;
+    using NURBSMapping = IgMapping<NURBSSp>;
+    if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
+    {
+        auto ig_mapping = dynamic_pointer_cast<const NURBSMapping>(mapping_);
+        mapping_ .reset(new NURBSMapping(ig_mapping->get_data()));
+    }
+
+    Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
+}
+
+template<>
+MappingElementAccessor<0, 0>::
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
                        const int index)
+    :
+    CartesianGridElementAccessor<0>(mapping->get_grid(), index),
+    mapping_(mapping)
+{}
+
+
+
+template<int dim_ref_, int codim_ >
+MappingElementAccessor<dim_ref_,codim_>::
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const TensorIndex<dim> &index)
     :
     CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
     mapping_(mapping)
@@ -66,6 +107,16 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
 
 
 
+template<>
+MappingElementAccessor<0, 0>::
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const TensorIndex<0> &index)
+    :
+    CartesianGridElementAccessor<0>(mapping->get_grid(), index),
+    mapping_(mapping)
+{}
+
+
 
 template<int dim_ref_, int codim_ >
 auto
@@ -82,6 +133,11 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
     {
         Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
                ExcIndexRange(topology_id.get_id(),0,n_faces));
+
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
         return face_values_[topology_id.get_id()];
     }
 }
@@ -253,27 +309,13 @@ reset(const Index face_id,
     Assert(false, ExcNotImplemented());
 }
 
-/*
-template< int dim_ref_, int codim_ >
-shared_ptr<MappingFaceValueFlagsHandler>
-MappingElementAccessor<dim_ref_,codim_>::
-FaceValuesCache::
-get_flags_handler() const
-{
-    shared_ptr<MappingFaceValueFlagsHandler> flags_handler =
-        static_pointer_cast<MappingFaceValueFlagsHandler>(this->flags_handler_);
-    Assert(flags_handler.get() != nullptr,ExcNullPtr());
-
-    return flags_handler;
-}
-//*/
 
 
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-init_values(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+init_cache(const ValueFlags fill_flag,
+           const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
@@ -291,7 +333,7 @@ init_values(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_w_measure;
         if (contains(fill_flag , ValueFlags::face_normal))
             grid_flag |= ValueFlags::face_point;
-        CartesianGridElementAccessor<dim_ref_>::init_values(grid_flag,quad);
+        CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
@@ -322,7 +364,7 @@ init_values(const ValueFlags fill_flag,
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0;
-        for (auto& face_value : face_values_)
+        for (auto &face_value : face_values_)
         {
             // TODO: this is temporary and must be removed.
             if (contains(f_flag , ValueFlags::face_normal))
@@ -338,9 +380,9 @@ init_values(const ValueFlags fill_flag,
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-init_face_values(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+init_face_cache(const Index face_id,
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
@@ -350,10 +392,10 @@ init_face_values(const Index face_id,
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-fill_values()
+fill_cache()
 {
-    CartesianGridElementAccessor<dim_ref_>::fill_values();
-    mapping_->set_element(*this);
+    CartesianGridElementAccessor<dim_ref_>::fill_cache();
+    mapping_->set_element(GridIterator(*this));
 
     Assert(elem_values_.is_initialized(), ExcNotInitialized());
 
@@ -410,11 +452,11 @@ fill_values()
 template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    CartesianGridElementAccessor<dim_ref_>::fill_face_values(face_id);
+    CartesianGridElementAccessor<dim_ref_>::fill_face_cache(face_id);
     mapping_->set_face_element(face_id, *this);
 
     auto &face_values = face_values_[face_id];
@@ -485,7 +527,7 @@ fill_face_values(const Index face_id)
 //        Assert(false, ExcMessage("The computation of face normals must be tested before used."));
 //        AssertThrow(false, ExcMessage("The computation of face normals must be tested before used."));
         // Obtain n_hat from UnitElement
-        Point<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id];
+        Points<dim_ref_> n_hat = UnitElement<dim_ref_>::face_normal[face_id];
         for (Index i = 0; i < num_points; i++)
         {
             const auto DF_inv_t = co_tensor(transpose(face_values.inv_gradients_[i]));
@@ -508,7 +550,9 @@ fill_composite_values()
     {
         Assert(flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
         for (Index i = 0; i < num_points_; i++)
-            MappingElementAccessor<dim_ref_,codim_>::evaluate_inverse_gradient(gradients_[i],inv_gradients_[i]);
+            MappingElementAccessor<dim_ref_,codim_>::evaluate_inverse_gradient(
+                gradients_[i],
+                inv_gradients_[i]);
 
         flags_handler_.set_inv_gradients_filled(true);
     }
@@ -520,24 +564,6 @@ fill_composite_values()
 
         for (Index i = 0; i < num_points_; i++)
         {
-#if 0
-            /*
-             * To fill the hessian of F{^-1}, we use the formula
-             * D2F{^-1} [u] = DF{^-1} * D2F[u] * DF{^-1},
-             * This formula can be obtained by differentiating the identity
-             * DF * DF{^-1} = I
-             */
-            /*
-            const auto &DF_inv = inv_gradients_[i];
-            const auto &D2F = hessians_[i];
-            for (int u=0; u<dim; ++u) //TODO: should we define a compose in tensor for this?
-            {
-                const auto temp = compose(DF_inv, D2F[u]);
-                inv_hessians_[i][u] = compose(temp, DF_inv);
-            }
-            //*/
-#endif
-
             /*
              * To fill the hessian of F{^-1}, we use the formula
              * D2F{^-1} [u][v] = - DF{^-1}[ D2F[ DF{^-1}[u] ][ DF{^-1}[v] ] ],
@@ -587,7 +613,7 @@ evaluate_inverse_gradient(const GradientMap &DF, Derivatives<space_dim,dim,1,1> 
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_values(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
+get_map_values(const TopologyId<dim> &topology_id) const -> const ValueVector<ValueMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -600,14 +626,14 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_face_values(const Index face_id) const -> const ValueVector<ValueMap> &
 {
-    return this->get_values(FaceTopology<dim>(face_id));
+    return this->get_map_values(FaceTopology<dim>(face_id));
 }
 
 
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
+get_map_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<GradientMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -620,7 +646,7 @@ get_gradients(const TopologyId<dim> &topology_id) const -> const ValueVector<Gra
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
+get_map_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<HessianMap> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -659,7 +685,7 @@ get_inv_hessians(const TopologyId<dim> &topology_id) const -> const ValueVector<
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-get_dets(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
+get_measures(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled(), ExcCacheNotFilled());
@@ -667,6 +693,13 @@ get_dets(const TopologyId<dim> &topology_id) const -> const ValueVector<Real> &
     return cache.measures_;
 }
 
+template< int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+get_face_measures(const Index face_id) const -> const ValueVector<Real> &
+{
+    return this->get_measures(FaceTopology<dim>(face_id));
+}
 
 
 template< int dim_ref_, int codim_ >
@@ -711,7 +744,7 @@ transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
     Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());
 
     array<ValueVector<ValueMap>, codim> normals;
-    normals.fill(ValueVector<Point<space_dim>>(elem_values_.num_points_));
+    normals.fill(ValueVector<Points<space_dim>>(elem_values_.num_points_));
 
 
     for (Index i = 0; i < elem_values_.num_points_; i++)
@@ -741,13 +774,13 @@ get_num_points(const TopologyId<dim> &topology_id) const
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_values_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_values_at_points(const std::vector<Point> &points) const ->
 ValueVector< ValueMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Point> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<ValueMap> map_value(n_points);
 
@@ -759,13 +792,13 @@ ValueVector< ValueMap >
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_gradients_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_gradients_at_points(const std::vector<Point> &points) const ->
 ValueVector< GradientMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Point> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<GradientMap> map_gradient(n_points);
 
@@ -777,13 +810,13 @@ ValueVector< GradientMap >
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-evaluate_hessians_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_hessians_at_points(const std::vector<Point> &points) const ->
 ValueVector< HessianMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    vector<Point<dim>> points_ref_domain = this->transform_points_unit_to_reference(points);
+    vector<Point> points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<HessianMap> map_hessian(n_points);
 
@@ -800,9 +833,15 @@ MappingElementAccessor<dim_ref_,codim_>::
 print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 {
     using std::endl;
+
+    std::string tab = "   ";
+
     out << "MappingElementAccessor info" << endl;
 
-    out.push("\t");
+    out.push(tab);
+
+
+    CartesianGridElementAccessor<dim_ref_>::print_info(out);
     out << "num. points = " << elem_values_.num_points_ << endl;
 
 

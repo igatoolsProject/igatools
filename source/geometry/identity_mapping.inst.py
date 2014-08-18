@@ -28,6 +28,6 @@ data = Instantiation(include_files)
 # we need the identity mapping for the user spaces and
 # for all reference spaces
 dims = [ '<%d, %d>' %(x.dim, x.codim) for x in inst.user_mapping_dims]
-dims = dims + unique(['<%d, 0>' %(x.dim) for x in inst.all_ref_sp_dims])
+dims = dims + unique(['<%d, 0>' %(x.dim) for x in inst.really_all_ref_sp_dims])
 for row in unique(dims):
     f.write('template class IdentityMapping%s ;\n' %row)

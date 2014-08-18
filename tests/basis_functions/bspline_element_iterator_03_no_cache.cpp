@@ -43,14 +43,14 @@ void do_test()
     const int degree = 1;
     const int rank =  1 ;
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(grid, degree);
+    auto space = Space_t::create(degree, grid);
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
-    Vector<linear_algebra_package> u(space->get_num_basis());
+    Vector<la_pack> u(space->get_num_basis());
     {
         int id = 0 ;
         u(id++) = 0.0 ;
@@ -67,7 +67,7 @@ void do_test()
     }
 
     QGauss< dim_domain > quad_scheme_1(2) ;
-    std::vector<Point<dim_domain>> eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
+    std::vector<Points<dim_domain>> eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
 
     auto element1 = space->begin();
 
@@ -81,7 +81,7 @@ void do_test()
     gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme_2(3) ;
-    std::vector<Point<dim_domain>> eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
+    std::vector<Points<dim_domain>> eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
 
     auto values2    = element1->evaluate_basis_values_at_points(eval_points_2);
     values2.print_info(out);

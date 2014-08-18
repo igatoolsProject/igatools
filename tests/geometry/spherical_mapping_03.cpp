@@ -48,12 +48,12 @@ void test_evaluate()
                       |ValueFlags::map_hessian;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
-    auto values    = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians  = elem->get_hessians();
+    auto values    = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians  = elem->get_map_hessians();
 
     out << "Points: (r,phi1,...,phi_n) :" << endl;
     out << quad.get_points().get_flat_cartesian_product() << endl;
@@ -68,7 +68,7 @@ void test_evaluate()
     hessians.print_info(out);
 
     string filename = "spherical_map-" + to_string(dim) + "d";
-    Writer<dim, dim+1> writer(map, 10);
+    Writer<dim, 1> writer(map, 10);
     writer.save(filename);
 }
 
@@ -90,11 +90,11 @@ void test_gradients()
     auto elem = map->begin();
     const auto end = map->end();
 
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
     double measure = 0.;
     for (; elem != end; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         auto w_meas = elem->get_w_measures();
         for (int qp = 0; qp < n_qp; ++qp)
             measure += w_meas[qp];

@@ -20,96 +20,82 @@
 
 #include "../tests.h"
 
-#include <igatools/base/exceptions.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 
+/*
+ *  Test for the NURBS space iterator using the no cache evaluations
+ *
+ *  author: pauletti
+ *  date: Jun 11, 2014
+ *
+ */
 
-
-template< int dim_domain, int dim_range >
-void do_test()
+template< int dim, int range, int rank = 1>
+void test()
 {
-    out << "do_test<" << dim_domain << "," << dim_range << ">" << endl ;
+    const int r = 2;
+    out << "test<" << dim << "," << range << ">" << endl;
 
-    auto knots = CartesianGrid<dim_domain>::create();
+    using Space = NURBSSpace< dim, range, rank >;
+    using WeightsTable = typename Space::WeightsTable;
+    using DegreeTable = typename Space::DegreeTable;
+    auto  knots = CartesianGrid<dim>::create();
 
+    auto degree = TensorIndex<dim>(r);
+    DegreeTable deg(degree);
 
-    // and here we build the NURBSSpace
-    const int rank = 1;
+    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
+    WeightsTable weights;
+    const auto n_basis = bsp->get_num_basis_table();
+    for (auto comp : Space::components)
+        weights(comp).resize(n_basis(comp),1.0);
 
-    typedef NURBSSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(knots, 2) ;
-
-    space->print_info(out) ;
-    out << endl;
-    //----------------------------------------------------------------------------------------------
+    auto space = Space::create(deg, knots, weights);
 
 
     //----------------------------------------------------------------------------------------------
     // for the basis functions evaluation we need a set of points (with tensor product structure)
     // to do so, we get the points from a Gauss quadrature scheme with 3 points
 
-    const int n_points = 3 ;
-    QGauss< dim_domain > quad_scheme(n_points) ;
-    const auto points = quad_scheme.get_points().get_flat_cartesian_product();
+    const int n_points = 3;
+    QGauss<dim> quad(n_points);
+    const auto points = quad.get_points().get_flat_cartesian_product();
 
 
-    auto element     = space->begin();
-    auto end_element = space->end();
+    auto elem     = space->begin();
+    auto end = space->end();
 
-
-
-
-    out.push("\t") ;
-    for (int j = 0 ; element != end_element ; ++j, ++element)
+    for (; elem != end; ++elem)
     {
-        out << "Element: " << j << endl ;
-
-        out.push("\t") ;
-
+        out << "Element: " << elem->get_flat_index()<< endl;
 
         out << "Values basis functions:" << endl ;
-        const auto values = element->evaluate_basis_values_at_points(points);
+        const auto values = elem->evaluate_basis_values_at_points(points);
         values.print_info(out) ;
-        out << endl ;
-
 
         out << "Gradients basis functions:" << endl ;
-        const auto gradients = element->evaluate_basis_gradients_at_points(points);
+        const auto gradients = elem->evaluate_basis_gradients_at_points(points);
         gradients.print_info(out) ;
-        out << endl ;
-
 
         out << "Hessians basis functions:" << endl ;
-        const auto hessians = element->evaluate_basis_hessians_at_points(points);
+        const auto hessians = elem->evaluate_basis_hessians_at_points(points);
         hessians.print_info(out) ;
-        out << endl ;
-
-
-        out.pop() ;
     }
-    out.pop() ;
-
-    out << endl ;
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
-    do_test< 1, 1 >() ;
+    test<1, 1>();
+    test<1, 2>();
+    test<1, 3>();
+    test<2, 1>();
+    test<2, 2>();
+    test<2, 3>();
+    test<3, 1>();
+    test<3, 3>();
 
-    do_test< 1, 2 >() ;
-
-    do_test< 1, 3 >() ;
-
-    do_test< 2, 1 >() ;
-
-    do_test< 2, 2 >() ;
-    do_test< 2, 3 >() ;
-    do_test< 3, 1 >() ;
-//  do_test< 3, 2 >() ;
-    do_test< 3, 3 >() ;
-//*/
-    return (0) ;
+    return 0;
 }

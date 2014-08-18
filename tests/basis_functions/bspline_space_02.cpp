@@ -21,7 +21,7 @@
  * todo: Header please
  * author: Max?
  */
-
+//TODO(pauletti, May 31, 2014): update this test code to current standards
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
@@ -37,7 +37,7 @@ void do_test()
     out << " Range dim: " << dim_range << endl;
     const int n_knots = 4;
 
-    CartesianProductArray< iga::Real, dim_domain > coord(n_knots) ;
+    CartesianProductArray< Real, dim_domain > coord(n_knots) ;
 
     for (int i = 0 ; i < dim_domain ; ++i)
         for (int j = 0 ; j < n_knots ; ++j)
@@ -48,7 +48,7 @@ void do_test()
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto  bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create(knots, p) ;
+    auto  bspline_space = BSplineSpace< dim_domain, dim_range, rank >::create(p, knots) ;
 
 
     typename BSplineSpace< dim_domain, dim_range, rank >::ElementIterator

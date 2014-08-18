@@ -43,15 +43,15 @@ void do_test()
     const int degree = 2;
     const int rank =  1;
     typedef BSplineSpace< dim, range, rank > Space_t;
-    auto space = Space_t::create(knots, degree);
+    auto space = Space_t::create(degree, knots);
 
     const int n_points = 3;
     QGauss< dim > quad_scheme(n_points);
 
     auto element = space->begin();
-    element->init_values(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
+    element->init_cache(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
                          quad_scheme);
-    element->fill_values();
+    element->fill_cache();
 
     auto values    = element->get_basis_values();
     auto gradients = element->get_basis_gradients();

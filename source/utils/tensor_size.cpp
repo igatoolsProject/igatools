@@ -44,7 +44,7 @@ TensorSize(const std::array<Size,rank> &arr) noexcept
 TensorIndex<rank>::TensorIndex(arr)
 {
 #ifndef NDEBUG
-    for (const auto & size_dir : *this)
+    for (const auto &size_dir : *this)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
@@ -58,7 +58,7 @@ TensorSize(const TensorIndex<rank> &arr) noexcept
 TensorIndex<rank>::TensorIndex(arr)
 {
 #ifndef NDEBUG
-    for (const auto & size_dir : *this)
+    for (const auto &size_dir : *this)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
@@ -73,7 +73,7 @@ TensorSize(std::initializer_list<Size> list) noexcept
 TensorIndex<rank>::TensorIndex(list)
 {
 #ifndef NDEBUG
-    for (const auto & size_dir : *this)
+    for (const auto &size_dir : *this)
         Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
 #endif
 }
@@ -86,7 +86,7 @@ TensorSize<rank>::
 flat_size() const noexcept
 {
     Size res=1;
-    for (const auto & size_dir : *this)
+    for (const auto &size_dir : *this)
         res *= size_dir;
     return res;
 }

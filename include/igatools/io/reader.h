@@ -125,6 +125,83 @@ std::shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree);
 
 
+/**
+ * Collection of useful functions for reading xml trees.
+ */
+namespace reader_utils
+{
+/**
+ * Returns the XML tree contained in the file @p filename.
+ */
+boost::property_tree::ptree
+get_xml_tree(const std::string &filename);
+
+/**
+ * Returns the number of nodes in the XML @p tree that have the tag @p tag_name.
+ */
+Size count_xml_elements_same_tag(const boost::property_tree::ptree &tree,
+                                 const std::string &tag_name);
+
+/**
+ * Returns true if the XML @p tree has at least one node with the tag @p tag_name.
+ */
+bool xml_element_is_present(const boost::property_tree::ptree &tree,
+                            const std::string &tag_name);
+
+/**
+ * Returns true if the XML @p tree has exactly one node with the tag @p tag_name.
+ * @note If no node with the tag @p tag_name are present,
+ * an assertion (in Debug and Release mode) will be raised.
+ */
+bool xml_element_is_unique(const boost::property_tree::ptree &tree,
+                           const std::string &tag_name);
+
+/**
+ * Extracts from the XML @tree, the subtrees corresponding to the tag @p tag_name.
+ * @note If any element is present in the tree, an assertion will be raised
+ * (in Debug and Release mode).
+ */
+std::vector< boost::property_tree::ptree >
+get_xml_element_vector(const boost::property_tree::ptree &tree,
+                       const std::string &tag_name);
+
+/**
+ * Extracts from the XML @tree, the unique subtree corresponding to the tag @p tag_name.
+ * @note The must be only one element in the @p tree with the given @p tag_name,
+ * otherwise (more than one element on no element present) an assertion will be raised
+ * (in Debug and Release mode).
+ */
+boost::property_tree::ptree get_xml_element(const boost::property_tree::ptree &tree,
+                                            const std::string &tag_name);
+
+/**
+ * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.
+ * @note If any element is present in the tree, an assertion will be raised
+ * (in Debug and Release mode).
+ */
+boost::property_tree::ptree get_xml_element_attributes(
+    const boost::property_tree::ptree &element);
+
+/**
+ * Extracts a vector of scalars from the XML @p tree.
+ * The type of scalars is determined by the template parameter @p ScalarType.
+ */
+template <class ScalarType>
+std::vector<ScalarType>
+get_vector_data_from_xml(const boost::property_tree::ptree &tree);
+
+/**
+ * Extracts the multiplicity of the internal knots from the XML @p tree.
+ * The number of multiplicity vectors is determined by the template parameter
+ * @p dim.
+ */
+template <int dim>
+CartesianProductArray<Size,dim>
+get_interior_multiplicity_from_xml(const boost::property_tree::ptree &tree);
+
+} // of namespace reader_utils.
+
+
 IGA_NAMESPACE_CLOSE
 
 

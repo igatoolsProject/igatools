@@ -71,7 +71,7 @@ void do_test_1()
         out << *cit1_entry << " ";
 
     Index id = 0;
-    for (auto & d : data1)
+    for (auto &d : data1)
         d = id++;
 
     out << data1 << endl;
@@ -84,7 +84,7 @@ void do_test_1()
     out << "Size: " << data1.flat_size() << endl;
 
     id = 0;
-    for (auto & d : data1)
+    for (auto &d : data1)
         d = id++;
 
     out << data1 << endl;
@@ -130,7 +130,7 @@ void do_test_3()
         increment[i] = 3-i;
 
     const auto end = origin + increment;
-    out << "Flat view: " << data1.get_sub_array(origin, end).get_data() << endl;
+    out << "Flat view: " << data1.get_sub_array(origin, increment).get_data() << endl;
 }
 
 

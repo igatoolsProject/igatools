@@ -75,6 +75,7 @@ template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
+    using EntryType = T;
     /**
      * Type for the <tt>rank-1</tt> CartesianProductArray
      */
@@ -157,7 +158,7 @@ private:
      */
     using point_t = Conditional<std::is_arithmetic<T>::value,
           Conditional<std::is_floating_point<T>::value,
-          Point<rank>,
+          Points<rank>,
           TensorIndex<rank>>,
           std::array<T,rank> >;
 
@@ -173,6 +174,8 @@ public:
      */
     T &entry(const int i, const int j) ;
 
+    T const &entry(const int i, const int j) const;
+
     /**
      * Copy input @p data to the data relative to the @p i-th direction.
      * @note The CartesianProductArray object will be internally resized (if needed)
@@ -184,6 +187,7 @@ public:
      * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
      */
     const std::vector<T> &get_data_direction(const int i) const ;
+
     ///@}
 
     /** @name Functions returning rank-1 and rank+1 objects */

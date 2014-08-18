@@ -28,47 +28,34 @@
 
 IGA_NAMESPACE_OPEN
 
-
 template < int, int , int > class NURBSSpace ;
 
 
 
 /**
  * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * @ingroup accessors
  */
 template <int dim, int range, int rank >
 class NURBSElementAccessor :
-    public SpaceElementAccessor<
-    NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>
+    public SpaceElementAccessor<NURBSSpace<dim,range,rank>>
 {
 public:
-
-
-    using parent_t = SpaceElementAccessor<
-                     NURBSElementAccessor<dim,range,rank>,NURBSSpace<dim,range,rank>,dim,0,range,rank>;
+    using parent_t = SpaceElementAccessor<NURBSSpace<dim,range,rank>>;
 
     using ContainerType = const NURBSSpace< dim, range, rank>;
 
-
     using Space = NURBSSpace<dim,range,rank>;
-
-
-    /**
-     * Typedef for specifying the value of the basis function in the
-     * reference domain.
-     */
-    using Value = Values<dim, range, rank>;
 
     /**
      * Typedef for specifying the derivatives of the basis function in the
      * reference domain.
      */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim, range, rank, deriv_order>;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
 
-
-
+    using typename parent_t::Point;
+    using typename parent_t::Value;
 
 
     /** Number of faces of the element. */
@@ -88,7 +75,10 @@ public:
      * \todo Missing documentation.
      */
     NURBSElementAccessor(const std::shared_ptr<const Space> space,
-                         const int elem_index);
+                         const Index elem_index);
+
+    NURBSElementAccessor(const std::shared_ptr<const Space> space,
+                         const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.
@@ -136,15 +126,15 @@ public:
      * (i.e. the same for all elements).
      * @note This function should be called before fill_values()
      */
-    void init_values(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+    void init_cache(const ValueFlags fill_flag,
+                    const Quadrature<dim> &quad);
 
     /**
      * For a given face quadrature.
      */
-    void init_face_values(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
+    void init_face_cache(const Index face_id,
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
@@ -153,7 +143,7 @@ public:
      * @note The topology for which the measure is computed is specified by
      * the input argument @p topology_id.
      */
-    void fill_values(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
 
     /**
@@ -162,15 +152,61 @@ public:
     std::vector<Real> get_local_weights() const ;
 
 
-
-
+    /**
+     * @name Functions reimplemented from CartesianGridElement.
+     */
+    ///@{
+    /**
+     * Compare for equality.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be
+     * also used in the comparison.
+     */
     bool operator==(const NURBSElementAccessor<dim,range,rank> &a) const;
 
+    /**
+     * Compare for inequality.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be
+     * also used in the comparison.
+     */
     bool operator!=(const NURBSElementAccessor<dim,range,rank> &a) const;
 
+    /**
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
+     * (i.e. must have the same element-index) after an index update/reset.
+     */
     void operator++();
 
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
+     * (i.e. must have the same element-index) after an index update/reset.
+     */
+    void move_to(const Index flat_index);
 
+    /**
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     *
+     * @note This functions is reimplemented from CartesianGridElement because
+     * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
+     * (i.e. must have the same element-index) after an index update/reset.
+     */
+    void move_to(const TensorIndex<dim> &tensor_index);
+    ///@}
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
     ///@{
@@ -185,7 +221,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const;
+    evaluate_basis_derivatives_at_points(const std::vector<Point> &points) const;
 
     ///@}
 

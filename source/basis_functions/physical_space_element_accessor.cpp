@@ -32,20 +32,22 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
                              const Index index)
     :
-    SpaceElementAccessor<
-    PhysicalSpaceElementAccessor<PhysSpace>,
-    PhysSpace,
-    PhysSpace::RefSpace::dim,
-    PhysSpace::PushForwardType::codim,
-    PhysSpace::RefSpace::range,
-    PhysSpace::RefSpace::rank>(phys_space,index),
+    SpaceElementAccessor<PhysSpace>(phys_space,index),
     PfElemAccessor(phys_space->get_push_forward(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}
 
 
 
-
+template< class PhysSpace >
+PhysicalSpaceElementAccessor<PhysSpace>::
+PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
+                             const TensorIndex<dim> &index)
+    :
+    SpaceElementAccessor<PhysSpace>(phys_space,index),
+    PfElemAccessor(phys_space->get_push_forward(), index),
+    ref_space_element_accessor_(phys_space->get_reference_space(),index)
+{}
 
 
 
@@ -195,15 +197,15 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
-init_values(const ValueFlags fill_flag,
-            const QuadratureType &quad)
+init_cache(const ValueFlags fill_flag,
+           const QuadratureType &quad)
 {
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
-    ref_space_element_accessor_.init_values(ref_sp_flag, quad);
+    ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
 
     const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
-    PfElemAccessor::init_values(pf_flag, quad);
+    PfElemAccessor::init_cache(pf_flag, quad);
 
 
     this->reset_element_and_faces_cache(fill_flag, quad);
@@ -214,9 +216,9 @@ init_values(const ValueFlags fill_flag,
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
-init_face_values(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const QuadratureFaceType &quad)
+init_face_cache(const Index face_id,
+                const ValueFlags fill_flag,
+                const QuadratureFaceType &quad)
 {
     AssertThrow(false,ExcNotImplemented());
 }
@@ -225,7 +227,7 @@ init_face_values(const Index face_id,
 
 template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
-fill_values(const TopologyId<dim> &topology_id)
+fill_cache(const TopologyId<dim> &topology_id)
 {
     auto &cache = parent_t::get_values_cache(topology_id);
 
@@ -234,15 +236,15 @@ fill_values(const TopologyId<dim> &topology_id)
     //TODO: remove this if
     if (topology_id.is_element())
     {
-        PfElemAccessor::fill_values();
-        ref_space_element_accessor_.fill_values();
+        PfElemAccessor::fill_cache();
+        ref_space_element_accessor_.fill_cache();
     }
     else
     {
-        //TODO: implement fill_values in PushForwardElementAccessor
+        //TODO: implement fill_cache in PushForwardElementAccessor
         // and RefSpaceElementAccessor accepting TopologyId
-        PfElemAccessor::fill_face_values(topology_id.get_id());
-        ref_space_element_accessor_.fill_face_values(topology_id.get_id());
+        PfElemAccessor::fill_face_cache(topology_id.get_id());
+        ref_space_element_accessor_.fill_face_cache(topology_id.get_id());
     }
 
     if (cache.flags_handler_.fill_values())
@@ -316,53 +318,19 @@ fill_values(const TopologyId<dim> &topology_id)
 
 template< class PhysSpace >
 void PhysicalSpaceElementAccessor<PhysSpace>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
-    this->fill_values(FaceTopology<dim>(face_id));
-}
-
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_measures(const TopologyId<dim> &topology_id) const
-{
-    return PfElemAccessor::get_dets(topology_id);
-}
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_measures(const Index face_id) const
-{
-    return this->get_measures(FaceTopology<dim>(face_id));
-}
-
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_w_measures(const TopologyId<dim> &topology_id) const
-{
-    return PfElemAccessor::get_w_measures(topology_id);
-}
-
-template< class PhysSpace >
-const ValueVector<Real> &
-PhysicalSpaceElementAccessor<PhysSpace>::
-get_face_w_measures(const Index face_id) const
-{
-    return this->get_w_measures(FaceTopology<dim>(face_id));
+    this->fill_cache(FaceTopology<dim>(face_id));
 }
 
 
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point<space_dim> &
+get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return (PfElemAccessor::get_values(topology_id))[qp];
+    return (PfElemAccessor::get_map_values(topology_id))[qp];
 }
 
 
@@ -436,47 +404,46 @@ template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_points(const TopologyId<dim> &topology_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
+const ValueVector< typename Mapping<dim, codim>::Value > &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
-    return PfElemAccessor::get_values(topology_id);
+    return PfElemAccessor::get_map_values(topology_id);
 }
 
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_face_points(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
+const ValueVector< typename Mapping<dim, codim>::Value > &
 {
     return this->get_points(FaceTopology<dim>(face_id));
 }
 
-
+/*
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_map_gradient_at_points(const TopologyId<dim> &topology_id) const ->
-const ValueVector< typename Mapping<dim, codim>::GradientType > &
+get_map_gradients(const TopologyId<dim> &topology_id) const ->
+const ValueVector< typename Mapping<dim, codim>::Gradient > &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_gradients(topology_id);
 }
+//*/
 
 
-
-
+/*
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
 get_face_normals(const Index face_id) const ->
-const ValueVector< typename Mapping<dim, codim>::ValueType > &
+const ValueVector< typename Mapping<dim, codim>::Value > &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 //    Assert(this->face_values_[face_id].is_filled(), ExcCacheNotFilled());
     return PfElemAccessor::get_face_normals(face_id);
 }
-
-
+//*/
 
 template< class PhysSpace >
 bool
@@ -485,6 +452,7 @@ is_boundary() const
 {
     return PfElemAccessor::is_boundary();
 }
+//*/
 
 
 template< class PhysSpace >
@@ -494,7 +462,7 @@ is_boundary(const Index face) const
 {
     return PfElemAccessor::is_boundary(face);
 }
-
+//*/
 
 template< class PhysSpace >
 Index
@@ -503,7 +471,7 @@ get_flat_index() const
 {
     return parent_t::get_flat_index();
 }
-
+//*/
 
 template< class PhysSpace >
 auto
@@ -568,7 +536,7 @@ template< class PhysSpace >
 template <int deriv_order>
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_basis_derivatives_at_points(const std::vector<Point<dim>> &points) const ->
+evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     Assert(deriv_order >= 0 && deriv_order <= 2,ExcIndexRange(deriv_order,0,2));

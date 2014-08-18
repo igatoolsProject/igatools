@@ -40,7 +40,7 @@ void def_const(const int &degree_0 = 0)
     {
         degree[i] = degree_0 + i ;
     }
-    auto space = BSplineSpace<dim>::create(grid, degree) ;
+    auto space = BSplineSpace<dim>::create(degree, grid) ;
 
     out << "Initial degree = " << degree_0 << std::endl;
     space->print_info(out) ;

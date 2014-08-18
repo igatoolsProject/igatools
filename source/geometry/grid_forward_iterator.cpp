@@ -25,21 +25,28 @@ IGA_NAMESPACE_OPEN
 template <typename Accessor>
 inline
 GridForwardIterator<Accessor>::
-GridForwardIterator(std::shared_ptr<ContainerType> patch,
+GridForwardIterator(std::shared_ptr<ContainerType> grid,
                     const Index index)
     :
-    accessor_(patch, index)
+    accessor_(grid, index)
 {}
 
 
+
+template <typename Accessor>
+inline
+GridForwardIterator<Accessor>::
+GridForwardIterator(std::shared_ptr<ContainerType> grid,
+                    const TensorIndex<dim> &index)
+    :
+    accessor_(grid, index)
+{}
 
 
 template <typename Accessor>
 inline
 GridForwardIterator<Accessor> &GridForwardIterator<Accessor>::operator++()
 {
-    //TODO: is an assert needed here? If so, implement.
-    //Assert ();
     ++accessor_;
     return *this;
 }

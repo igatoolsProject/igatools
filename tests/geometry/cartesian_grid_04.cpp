@@ -27,6 +27,7 @@
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/cartesian_grid_element_accessor.h>
 
 template<int dim>
 void face_uniform(const int n_knots)
@@ -49,19 +50,20 @@ void face_uniform(const int n_knots)
 template<int dim>
 void face_non_uniform()
 {
+    using Grid =  CartesianGrid<dim>;
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
         n_knots(i) = 2+i;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto grid = Grid::create(n_knots);
     grid->print_info(out);
     for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)
     {
         out << "Face: " << i << endl;
-        map<int, int> elem_map;
+        typename Grid::FaceGridMap elem_map;
         auto face_grid = grid->get_face_grid(i, elem_map);
         face_grid->print_info(out);
         for (auto x : elem_map)
-            out << x.first << " " << x.second << endl;
+            out << x.first->get_flat_index() << " " << x.second->get_flat_index() << endl;
     }
     out << endl;
 }

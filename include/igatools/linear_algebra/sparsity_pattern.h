@@ -22,6 +22,7 @@
 #define SPARSITY_PATTERN_H_
 
 #include <igatools/base/config.h>
+#include <igatools/basis_functions/space_manager.h>
 
 #include <set>
 #include <vector>
@@ -46,9 +47,23 @@ class SparsityPattern
 {
 public:
 
-    SparsityPattern(const std::vector< Index > row_dofs,
-                    const std::vector< Index > col_dofs) ;
+    SparsityPattern() = delete;
 
+    /**
+     * Constructs the SparsityPattern associated with the SpaceManager of one space.
+     */
+    SparsityPattern(const SpaceManager &space_manager);
+
+    /**
+     * Construct the sparsity pattern associated with the SpaceManager of two space.
+     *
+     * @warning This function only works when both spaces have the same number of elements.
+     */
+    SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols);
+    /*
+        SparsityPattern(const std::vector< Index > row_dofs,
+                        const std::vector< Index > col_dofs) ;
+    //*/
     SparsityPattern(const SparsityPattern &) ;
 
     /**
@@ -86,8 +101,8 @@ private:
      */
     SparsityPattern &operator=(const SparsityPattern &) ;
 
-    const std::vector< Index > row_dofs_ ;
-    const std::vector< Index > col_dofs_ ;
+    std::vector< Index > row_dofs_ ;
+    std::vector< Index > col_dofs_ ;
 
 
 };

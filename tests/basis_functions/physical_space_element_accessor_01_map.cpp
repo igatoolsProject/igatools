@@ -53,7 +53,7 @@ void test_evaluate()
     auto map = BallMapping<dim>::create(grid);
 
     auto push_forward = PushForward<Transformation::h_grad,dim>::create(map);
-    auto ref_space = BSplineSpace<dim>::create(grid, deg);
+    auto ref_space = BSplineSpace<dim>::create(deg, grid);
     auto space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;
@@ -63,11 +63,11 @@ void test_evaluate()
     QGauss<dim> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
 
         out << "Basis values: " << endl;
         elem->get_basis_values().print_info(out);
@@ -92,7 +92,7 @@ void test_cylindircal_annulus()
     auto map = CylindricalAnnulus::create(grid,1.0,2.0,1.0,numbers::PI/3.0);
 
     auto push_forward = PushForward<Transformation::h_grad,3>::create(map);
-    auto ref_space = BSplineSpace<3>::create(grid, deg);
+    auto ref_space = BSplineSpace<3>::create(deg, grid);
     auto space = PhysicalSpace_t<3>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;
@@ -102,11 +102,11 @@ void test_cylindircal_annulus()
     QGauss<3> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
 
         out << "Basis values: " << endl;
         elem->get_basis_values().print_info(out);

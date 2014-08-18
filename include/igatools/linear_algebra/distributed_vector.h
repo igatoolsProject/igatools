@@ -42,7 +42,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template < LinearAlgebraPackage linear_algebra_package>
+template < LAPack la_pack>
 class Vector;
 
 
@@ -60,10 +60,10 @@ class Vector;
  *
  */
 template <>
-class Vector<LinearAlgebraPackage::trilinos>
+class Vector<LAPack::trilinos>
 {
 public:
-    using self_t = Vector<LinearAlgebraPackage::trilinos>;
+    using self_t = Vector<LAPack::trilinos>;
 
 
     /** @name Constructor and destructor */
@@ -264,10 +264,10 @@ private:
  *
  */
 template <>
-class Vector<LinearAlgebraPackage::petsc>
+class Vector<LAPack::petsc>
 {
 public:
-    using self_t = Vector<LinearAlgebraPackage::petsc>;
+    using self_t = Vector<LAPack::petsc>;
 
 
     /** @name Constructor and destructor */

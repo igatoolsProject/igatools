@@ -50,7 +50,7 @@ DeclException0(ExcNotQuadratic);
 #ifdef USE_TRILINOS
 
 
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 Matrix(const SparsityPattern &sparsity_pattern)
 {
     init(sparsity_pattern) ;
@@ -58,7 +58,7 @@ Matrix(const SparsityPattern &sparsity_pattern)
 
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 init(const SparsityPattern &sparsity_pattern)
 {
     //-------------------------------------------------------------------------------------
@@ -103,15 +103,15 @@ init(const SparsityPattern &sparsity_pattern)
 //*/
 
 
-shared_ptr<Matrix<LinearAlgebraPackage::trilinos> >
-Matrix<LinearAlgebraPackage::trilinos>::
+shared_ptr<Matrix<LAPack::trilinos> >
+Matrix<LAPack::trilinos>::
 create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<Matrix>(Matrix(sparsity_pattern));
 }
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 add_entry(const Index row_id, const Index column_id, const Real value)
 {
     Teuchos::Array<Index> columns_id(1,column_id) ;
@@ -123,7 +123,7 @@ add_entry(const Index row_id, const Index column_id, const Real value)
 
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 add_block(
     const vector<Index> &rows_id,
     const vector<Index> &cols_id,
@@ -154,14 +154,14 @@ add_block(
 
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 fill_complete()
 {
     matrix_->fillComplete();
 };
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 resume_fill()
 {
     matrix_->resumeFill();
@@ -169,14 +169,14 @@ resume_fill()
 
 
 auto
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 get_trilinos_matrix() -> Teuchos::RCP<WrappedMatrixType>
 {
     return matrix_;
 };
 
 auto
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
 {
     return matrix_;
@@ -184,7 +184,7 @@ get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
 
 
 Real
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 operator()(const Index row, const Index col) const
 {
     const auto graph = matrix_->getGraph();
@@ -227,7 +227,7 @@ operator()(const Index row, const Index col) const
 
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 clear_row(const Index row)
 {
     const auto graph = matrix_->getGraph();
@@ -254,7 +254,7 @@ clear_row(const Index row)
 
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 print(LogStream &out) const
 {
     using std::endl;
@@ -290,14 +290,14 @@ print(LogStream &out) const
 
 
 auto
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 get_num_rows() const -> Index
 {
     return matrix_->getGlobalNumRows() ;
 }
 
 auto
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 get_num_columns() const -> Index
 {
     return matrix_->getGlobalNumCols() ;
@@ -305,7 +305,7 @@ get_num_columns() const -> Index
 
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
@@ -314,7 +314,7 @@ multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Re
 }
 
 void
-Matrix<LinearAlgebraPackage::trilinos>::
+Matrix<LAPack::trilinos>::
 multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
@@ -334,7 +334,7 @@ multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Rea
 #ifdef USE_PETSC
 
 
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 Matrix(const SparsityPattern &sparsity_pattern)
 {
     init(sparsity_pattern) ;
@@ -342,7 +342,7 @@ Matrix(const SparsityPattern &sparsity_pattern)
 
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 init(const SparsityPattern &sparsity_pattern)
 {
     PetscErrorCode ierr;
@@ -375,15 +375,15 @@ init(const SparsityPattern &sparsity_pattern)
 };
 
 
-shared_ptr<Matrix<LinearAlgebraPackage::petsc> >
-Matrix<LinearAlgebraPackage::petsc>::
+shared_ptr<Matrix<LAPack::petsc> >
+Matrix<LAPack::petsc>::
 create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<self_t>(self_t(sparsity_pattern));
 }
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 add_entry(const Index row_id, const Index column_id, const Real value)
 {
     PetscErrorCode ierr;
@@ -393,7 +393,7 @@ add_entry(const Index row_id, const Index column_id, const Real value)
 
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 add_block(
     const vector<Index> &rows_id,
     const vector<Index> &cols_id,
@@ -428,7 +428,7 @@ add_block(
 
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 fill_complete()
 {
     PetscErrorCode ierr;
@@ -437,7 +437,7 @@ fill_complete()
 };
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 resume_fill()
 {
     /* todo:I think this is not necessary in PETSc. Must check in parallel computations */
@@ -445,14 +445,14 @@ resume_fill()
 
 
 auto
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 get_petsc_matrix() -> Mat
 {
     return matrix_;
 };
 
 auto
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 get_petsc_matrix() const -> Mat
 {
     return matrix_;
@@ -460,7 +460,7 @@ get_petsc_matrix() const -> Mat
 
 
 Real
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 operator()(const Index row, const Index col) const
 {
     PetscErrorCode ierr;
@@ -481,7 +481,7 @@ operator()(const Index row, const Index col) const
 
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 clear_row(const Index row)
 {
     PetscErrorCode ierr;
@@ -514,7 +514,7 @@ clear_row(const Index row)
 
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 print(LogStream &out) const
 {
     Assert(false,ExcNotImplemented());
@@ -553,7 +553,7 @@ print(LogStream &out) const
 
 
 auto
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 get_num_rows() const -> Index
 {
     PetscErrorCode ierr;
@@ -565,7 +565,7 @@ get_num_rows() const -> Index
 }
 
 auto
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 get_num_columns() const -> Index
 {
     PetscErrorCode ierr;
@@ -578,7 +578,7 @@ get_num_columns() const -> Index
 
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     Assert(false,ExcNotImplemented());
@@ -591,7 +591,7 @@ multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Re
 }
 
 void
-Matrix<LinearAlgebraPackage::petsc>::
+Matrix<LAPack::petsc>::
 multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     Assert(false,ExcNotImplemented());

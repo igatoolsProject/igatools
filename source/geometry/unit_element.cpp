@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/unit_element.h>
+#include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -86,6 +87,12 @@ UnitElement<4>::vertex_to_component[vertices_per_element][4]
     { 0, 1, 1, 1},
     { 1, 1, 1, 1}
 };
+
+
+
+template <int dim>
+const std::array<int, UnitElement<dim>::faces_per_element>
+UnitElement<dim>::faces = sequence<UnitElement<dim>::faces_per_element>();
 
 
 template <>
@@ -348,53 +355,53 @@ UnitElement<4>::opposite_vertex[vertices_per_element]
     = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
 
 template <>
-const Point<0>
+const Points<0>
 UnitElement<0>::face_normal[faces_per_element]=
     {};
 
 
 template <>
-const Point<1>
+const Points<1>
 UnitElement<1>::face_normal[faces_per_element]=
 {
-    Point<1>({Real(-1.0)}),
-    Point<1>({Real(1.0)})
+    Points<1>({Real(-1.0)}),
+    Points<1>({Real(1.0)})
 };
 
 template <>
-const Point<2>
+const Points<2>
 UnitElement<2>::face_normal[faces_per_element]=
 {
-    Point<2>({Real(-1.0),Real(0.0)}),
-    Point<2>({Real(1.0),Real(0.0)}),
-    Point<2>({Real(0.0),Real(-1.0)}),
-    Point<2>({Real(0.0),Real(1.0)})
+    Points<2>({Real(-1.0),Real(0.0)}),
+    Points<2>({Real(1.0),Real(0.0)}),
+    Points<2>({Real(0.0),Real(-1.0)}),
+    Points<2>({Real(0.0),Real(1.0)})
 };
 
 template <>
-const Point<3>
+const Points<3>
 UnitElement<3>::face_normal[faces_per_element]=
 {
-    Point<3>({Real(-1.0),Real(0.0),Real(0.0)}),
-    Point<3>({Real(1.0),Real(0.0),Real(0.0)}),
-    Point<3>({Real(0.0),Real(-1.0),Real(0.0)}),
-    Point<3>({Real(0.0),Real(1.0),Real(0.0)}),
-    Point<3>({Real(0.0),Real(0.0),Real(-1.0)}),
-    Point<3>({Real(0.0),Real(0.0),Real(1.0)})
+    Points<3>({Real(-1.0),Real(0.0),Real(0.0)}),
+    Points<3>({Real(1.0),Real(0.0),Real(0.0)}),
+    Points<3>({Real(0.0),Real(-1.0),Real(0.0)}),
+    Points<3>({Real(0.0),Real(1.0),Real(0.0)}),
+    Points<3>({Real(0.0),Real(0.0),Real(-1.0)}),
+    Points<3>({Real(0.0),Real(0.0),Real(1.0)})
 };
 
 template <>
-const Point<4>
+const Points<4>
 UnitElement<4>::face_normal[faces_per_element]=
 {
-    Point<4>({Real(-1.0),Real(0.0),Real(0.0),Real(0.0)}),
-    Point<4>({Real(1.0),Real(0.0),Real(0.0),Real(0.0)}),
-    Point<4>({Real(0.0),Real(-1.0),Real(0.0),Real(0.0)}),
-    Point<4>({Real(0.0),Real(1.0),Real(0.0),Real(0.0)}),
-    Point<4>({Real(0.0),Real(0.0),Real(-1.0),Real(0.0)}),
-    Point<4>({Real(0.0),Real(0.0),Real(1.0),Real(0.0)}),
-    Point<4>({Real(0.0),Real(0.0),Real(0.0),Real(1.0)}),
-    Point<4>({Real(0.0),Real(0.0),Real(0.0),Real(-1.0)})
+    Points<4>({Real(-1.0),Real(0.0),Real(0.0),Real(0.0)}),
+    Points<4>({Real(1.0),Real(0.0),Real(0.0),Real(0.0)}),
+    Points<4>({Real(0.0),Real(-1.0),Real(0.0),Real(0.0)}),
+    Points<4>({Real(0.0),Real(1.0),Real(0.0),Real(0.0)}),
+    Points<4>({Real(0.0),Real(0.0),Real(-1.0),Real(0.0)}),
+    Points<4>({Real(0.0),Real(0.0),Real(1.0),Real(0.0)}),
+    Points<4>({Real(0.0),Real(0.0),Real(0.0),Real(1.0)}),
+    Points<4>({Real(0.0),Real(0.0),Real(0.0),Real(-1.0)})
 };
 
 

@@ -43,12 +43,12 @@ void test_evaluate()
                       |ValueFlags::map_hessian;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
-    auto values    = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians  = elem->get_hessians();
+    auto values    = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians  = elem->get_map_hessians();
 
     out << "Points: (r,phi1,...,phi_n) :" << endl;
     out << quad.get_points().get_flat_cartesian_product() << endl;

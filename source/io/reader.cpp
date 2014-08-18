@@ -23,7 +23,7 @@
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/ig_mapping.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/utils/vector_tools.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -31,20 +31,21 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <set>
 
 using std::vector;
 using std::array;
+using std::set;
 using std::shared_ptr;
 using std::make_shared;
 using std::string;
+using namespace iga::reader_utils;
 
 IGA_NAMESPACE_OPEN
 
-namespace
+namespace reader_utils
 {
-/**
- * Returns the XML tree contained in the file @p filename.
- */
+
 boost::property_tree::ptree
 get_xml_tree(const std::string &filename)
 {
@@ -57,9 +58,7 @@ get_xml_tree(const std::string &filename)
 }
 
 
-/**
- * Returns the number of nodes in the XML @p tree that have the tag @p tag_name.
- */
+
 Size
 count_xml_elements_same_tag(
     const boost::property_tree::ptree &tree,
@@ -67,16 +66,15 @@ count_xml_elements_same_tag(
 {
     Size counter = 0;
 
-    for (const auto & leaf : tree)
+    for (const auto &leaf : tree)
         if (boost::iequals(leaf.first,tag_name))
             counter++;
 
     return counter;
 }
 
-/**
- * Returns true if the XML @p tree has at least one node with the tag @p tag_name.
- */
+
+
 bool
 xml_element_is_present(
     const boost::property_tree::ptree &tree,
@@ -85,11 +83,8 @@ xml_element_is_present(
     return (count_xml_elements_same_tag(tree,tag_name) > 0) ? true:false;
 }
 
-/**
- * Returns true if the XML @p tree has exactly one node with the tag @p tag_name.
- * @note If no node with the tag @p tag_name are present,
- * an assertion (in Debug and Release mode) will be raised.
- */
+
+
 bool
 xml_element_is_unique(
     const boost::property_tree::ptree &tree,
@@ -102,11 +97,7 @@ xml_element_is_unique(
 }
 
 
-/**
- * Extracts from the XML @tree, the subtrees corresponding to the tag @p tag_name.
- * @note If any element is present in the tree, an assertion will be raised
- * (in Debug and Release mode).
- */
+
 vector< boost::property_tree::ptree >
 get_xml_element_vector(
     const boost::property_tree::ptree &tree,
@@ -115,7 +106,7 @@ get_xml_element_vector(
     vector<boost::property_tree::ptree> element;
 
 //    std::cout << "tag_name= " << tag_name << std::endl ;
-    for (const auto & leaf : tree)
+    for (const auto &leaf : tree)
         if (boost::iequals(leaf.first,tag_name))
             element.push_back(leaf.second);
 
@@ -126,12 +117,6 @@ get_xml_element_vector(
 
 
 
-/**
- * Extracts from the XML @tree, the unique subtree corresponding to the tag @p tag_name.
- * @note The must be only one element in the @p tree with the given @p tag_name,
- * otherwise (more than one element on no element present) an assertion will be raised
- * (in Debug and Release mode).
- */
 boost::property_tree::ptree
 get_xml_element(
     const boost::property_tree::ptree &tree,
@@ -146,12 +131,6 @@ get_xml_element(
 
 
 
-
-/**
- * Extracts from the XML @element tree, the subtrees corresponding to the tag attributes.
- * @note If any element is present in the tree, an assertion will be raised
- * (in Debug and Release mode).
- */
 boost::property_tree::ptree
 get_xml_element_attributes(const boost::property_tree::ptree &element)
 {
@@ -160,10 +139,6 @@ get_xml_element_attributes(const boost::property_tree::ptree &element)
 
 
 
-/**
- * Extracts a vector of scalars from the XML @p tree.
- * The type of scalars is determined by the template parameter @p ScalarType.
- */
 template <class ScalarType>
 vector<ScalarType>
 get_vector_data_from_xml(const boost::property_tree::ptree &tree)
@@ -178,7 +153,46 @@ get_vector_data_from_xml(const boost::property_tree::ptree &tree)
     return data;
 }
 
-};
+
+
+template <int dim>
+CartesianProductArray<Size,dim>
+get_interior_multiplicity_from_xml(const boost::property_tree::ptree &tree)
+{
+    //-------------------------------------------------------------------------
+    // reading the Multiplicity attributes
+    const auto &mult_attributes = get_xml_element_attributes(tree);
+
+    const int dim_from_file = mult_attributes.get<int>("Dim");
+    AssertThrow(dim == dim_from_file,
+                ExcDimensionMismatch(dim,dim_from_file));
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------------------
+    // reading the multiplicity along each direction
+    const auto &mult_elements = get_xml_element_vector(tree,"InteriorMultiplicity");
+    AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
+
+    array<vector<Size>,dim> mlt_data;
+    for (const auto mlt_element : mult_elements)
+    {
+        const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
+
+        const int direction_id = mlt_attributes.get<int>("Direction");
+        mlt_data[direction_id] = get_vector_data_from_xml<Size>(mlt_element);
+
+        const int n_mlt_from_file = mlt_attributes.get<int>("Size");
+        AssertThrow(mlt_data[direction_id].size() == n_mlt_from_file,
+                    ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
+    }
+    //-------------------------------------------------------------------------
+    CartesianProductArray<Size,dim> mult(mlt_data);
+
+    return mult;
+}
+
+}; // of namespace reader_utils.
 
 
 
@@ -232,7 +246,7 @@ get_xml_input_file_format(const std::string &filename)
 
     const auto &xml_tree = get_xml_tree(filename);
 
-    for (const auto & leaf : xml_tree)
+    for (const auto &leaf : xml_tree)
     {
         if (boost::iequals(leaf.first,"XMLFile"))
         {
@@ -254,55 +268,15 @@ get_xml_input_file_format(const std::string &filename)
 }
 
 
-
-namespace
-{
-template <int dim>
-Multiplicity<dim>
-get_multiplicity_from_xml(const boost::property_tree::ptree &tree)
-{
-    //-------------------------------------------------------------------------
-    // reading the Multiplicity attributes
-    const auto &mult_attributes = get_xml_element_attributes(tree);
-
-    const int dim_from_file = mult_attributes.get<int>("Dim");
-    AssertThrow(dim == dim_from_file,
-                ExcDimensionMismatch(dim,dim_from_file));
-    //-------------------------------------------------------------------------
-
-
-    //-------------------------------------------------------------------------
-    // reading the multiplicity along each direction
-    const auto &mult_elements = get_xml_element_vector(tree,"Multiplicity");
-    AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
-
-    array<vector<Size>,dim> mlt_data;
-    for (const auto mlt_element : mult_elements)
-    {
-        const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
-
-        const int direction_id = mlt_attributes.get<int>("Direction");
-        mlt_data[direction_id] = get_vector_data_from_xml<Size>(mlt_element);
-
-        const int n_mlt_from_file = mlt_attributes.get<int>("Size");
-        AssertThrow(mlt_data[direction_id].size() == n_mlt_from_file,
-                    ExcDimensionMismatch(mlt_data[direction_id].size(),n_mlt_from_file));
-    }
-    //-------------------------------------------------------------------------
-    Multiplicity<dim> mult(mlt_data);
-
-    return mult;
-}
-
-
-};
-
-
-
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
 ig_mapping_reader_version_1_0(const std::string &filename)
 {
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+
+#if 0
     const int dim_phys = dim + codim;
 
     const auto &xml_tree = get_xml_tree(filename);
@@ -310,7 +284,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
     LogStream out ;
     TensorIndex<dim> degree;
     CartesianProductArray<Real,dim> knots_unique_values;
-    Multiplicity<dim> multiplicities;
+    CartesianProductArray<Size, dim> multiplicities;
 
     TensorSize<dim> n_ctrl_points_dim;
     array<vector<Real>,dim_phys> control_pts_coords;
@@ -318,7 +292,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
     bool is_nurbs_mapping = false;
 
-    for (const auto & patch : xml_tree.get_child("XMLFile.Patch"))
+    for (const auto &patch : xml_tree.get_child("XMLFile.Patch"))
     {
         if (boost::iequals(patch.first,"<xmlattr>"))
         {
@@ -340,7 +314,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
             vector<Real> knots_unique_values_dir;
             vector<Index> multiplicities_dir;
-            for (const auto & knot : patch.second)
+            for (const auto &knot : patch.second)
             {
                 if (boost::iequals(knot.first,"<xmlattr>"))
                 {
@@ -361,7 +335,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> knt)
                         knots_unique_values_dir.push_back(knt);
 
-                    for (const auto & brk : knot.second)
+                    for (const auto &brk : knot.second)
                         if (boost::iequals(brk.first,"<xmlattr>"))
                         {
                             const Index n_brk = brk.second.get<Index>("Num");
@@ -377,7 +351,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> m)
                         multiplicities_dir.push_back(m);
 
-                    for (const auto & mlt : knot.second)
+                    for (const auto &mlt : knot.second)
                         if (boost::iequals(mlt.first,"<xmlattr>"))
                         {
                             const Index n_mlt = mlt.second.get<Index>("Num");
@@ -434,7 +408,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> v)
                         control_pts_coord_dir.push_back(v);
 
-                    for (const auto & coord : cp.second)
+                    for (const auto &coord : cp.second)
                         if (boost::iequals(coord.first,"<xmlattr>"))
                         {
                             const Index n_coord = coord.second.get<Index>("Num");
@@ -459,7 +433,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     while (line_stream >> w)
                         weights_vec.push_back(w);
 
-                    for (const auto & wght : cp.second)
+                    for (const auto &wght : cp.second)
                         if (boost::iequals(wght.first,"<xmlattr>"))
                         {
                             const Index n_weights = wght.second.get<Index>("Num");
@@ -473,7 +447,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                                 ExcDimensionMismatch(weights_vec.size(),weights.flat_size()));
 
                     Index flat_id = 0;
-                    for (auto & w : weights)
+                    for (auto &w : weights)
                         w =  weights_vec[flat_id++];
                 }
                 //*/
@@ -503,12 +477,19 @@ ig_mapping_reader_version_1_0(const std::string &filename)
         control_pts.insert(control_pts.end(),control_pts_coords[i].begin(),control_pts_coords[i].end());
 
 
+    using SpSpace = SplineSpace<dim,dim_phis,1>;
+    using DegreeTable = typename SpSpace::DegreeTable;
+    using MultiplicityTable = typename SpSpace::MultiplicityTable;
+    using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
     auto grid = CartesianGrid<dim>::create(knots_unique_values);
     shared_ptr< Mapping<dim,codim> > map;
 
     if (is_nurbs_mapping)
     {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+#if 0
         using space_t = NURBSSpace<dim,dim_phys,1>;
         auto space = space_t::create(
                          grid,
@@ -517,6 +498,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                          StaticMultiArray<DynamicMultiArray<Real,dim>,dim_phys,1>(weights));
 
         map = IgMapping<space_t>::create(space,control_pts);
+#endif
     }
     else
     {
@@ -525,15 +507,17 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                          grid,
                          StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
                          StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree));
+//      BSplineSpace (const DegreeTable &deg, std::shared_ptr< GridType > knots, std::shared_ptr< const MultiplicityTable > interior_mult, const EndBehaviourTable &ends)
 
         map = IgMapping<space_t>::create(space,control_pts);
     }
 //    map->print_info(out);
 
-
     return map;
-}
 
+#endif
+
+}
 
 
 
@@ -542,7 +526,7 @@ shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
-                ExcMessage("The NURBSSpace tag is not unique."));
+                ExcMessage("The BSplineSpace tag is not unique."));
 
     const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
 
@@ -577,23 +561,47 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     const auto &scalar_components_tree = get_xml_element(ref_space_tree,"BSplineSpaceScalarComponents");
     const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
     const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
-    AssertThrow(space_t::n_components == n_sc_components_from_file,
-                ExcDimensionMismatch(space_t::n_components,n_sc_components_from_file));
+    AssertThrow(n_sc_components_from_file >= 1 && n_sc_components_from_file <= space_t::n_components,
+                ExcIndexRange(n_sc_components_from_file,1,space_t::n_components+1));
+
+
+    //-----
+    // components_map
+    const auto &components_map_tree = get_xml_element(scalar_components_tree,"ComponentsMap");
+    const auto &components_map_attributes = get_xml_element_attributes(components_map_tree);
+    const int n_components_map_entries = components_map_attributes.get<int>("Size");
+    AssertThrow(space_t::n_components == n_components_map_entries,
+                ExcDimensionMismatch(space_t::n_components,n_components_map_entries));
+    vector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
+    array<Index,space_t::n_components> components_map;
+    for (Index i = 0 ; i < space_t::n_components ; ++i)
+        components_map[i] = components_map_vec[i];
+
+    set<Index> active_components_id(components_map_vec.begin(),components_map_vec.end());
+    const int n_active_components = active_components_id.size();
+    //-----
+
+
 
     const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"BSplineSpaceScalarComponent");
     AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
+    AssertThrow(scalar_component_vector.size() == n_active_components,
+                ExcDimensionMismatch(scalar_component_vector.size(),n_active_components));
 
+    using       DegreeTable = typename space_t::DegreeTable;
+    using MultiplicityTable = typename space_t::MultiplicityTable;
 
-    typename space_t::template ComponentTable<Multiplicity<dim>> multiplicities;
-    typename space_t::DegreeTable degrees;
+    DegreeTable degrees(components_map);
+    shared_ptr<MultiplicityTable> multiplicities(new MultiplicityTable(components_map));
 
-    for (const auto & comp_element : scalar_component_vector)
+    for (const auto &comp_element : scalar_component_vector)
     {
         const auto &component_attributes = get_xml_element_attributes(comp_element);
         const int comp_id = component_attributes.get<int>("Id");
         AssertThrow(comp_id >=0 && comp_id < space_t::n_components,
                     ExcIndexRange(comp_id,0,space_t::n_components));
+
 
         //---------------------------------------------
         // getting the dofs tensor size
@@ -629,15 +637,22 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
         //---------------------------------------------
         // getting the multiplicities
-        const auto &comp_multiplicities_element = get_xml_element(comp_element,"Multiplicities");
-        multiplicities(comp_id) = get_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        const auto &comp_multiplicities_element = get_xml_element(comp_element,"InteriorMultiplicities");
+        (*multiplicities)(comp_id) = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
-
 
     } // end loop over the scalar components
     //-------------------------------------------------------------------------
 
-    auto ref_space = space_t::create(grid,multiplicities,degrees);
+
+    typename space_t::EndBehaviourTable end_behaviour(components_map);
+    for (const auto comp_id : end_behaviour.get_active_components_id())
+    {
+        end_behaviour(comp_id)[0] = space_t::EndBehaviour::interpolatory;
+        end_behaviour(comp_id)[1] = space_t::EndBehaviour::interpolatory;
+    }
+
+    auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour);
 
     return ref_space;
 }
@@ -673,7 +688,6 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     //-------------------------------------------------------------------------
     // reading the CartesianGrid
-//    const auto &grid_tree = get_xml_element(ref_space_tree,"CartesianGrid");
     auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
     //-------------------------------------------------------------------------
 
@@ -683,24 +697,49 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     const auto &scalar_components_tree = get_xml_element(ref_space_tree,"NURBSSpaceScalarComponents");
     const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
     const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
-    AssertThrow(space_t::n_components == n_sc_components_from_file,
-                ExcDimensionMismatch(space_t::n_components,n_sc_components_from_file));
+    AssertThrow(n_sc_components_from_file >= 1 && n_sc_components_from_file <= space_t::n_components,
+                ExcIndexRange(n_sc_components_from_file,1,space_t::n_components+1));
+
+
+    //-----
+    // components_map
+    const auto &components_map_tree = get_xml_element(scalar_components_tree,"ComponentsMap");
+    const auto &components_map_attributes = get_xml_element_attributes(components_map_tree);
+    const int n_components_map_entries = components_map_attributes.get<int>("Size");
+    AssertThrow(space_t::n_components == n_components_map_entries,
+                ExcDimensionMismatch(space_t::n_components,n_components_map_entries));
+    vector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
+    array<Index,space_t::n_components> components_map;
+    for (Index i = 0 ; i < space_t::n_components ; ++i)
+        components_map[i] = components_map_vec[i];
+
+    set<Index> active_components_id(components_map_vec.begin(),components_map_vec.end());
+    const int n_active_components = active_components_id.size();
+    //-----
+
+
 
     const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"NURBSSpaceScalarComponent");
     AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
                 ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
+    AssertThrow(scalar_component_vector.size() == n_active_components,
+                ExcDimensionMismatch(scalar_component_vector.size(),n_active_components));
 
+    using       DegreeTable = typename space_t::DegreeTable;
+    using      WeightsTable = typename space_t::WeightsTable;
+    using MultiplicityTable = typename space_t::MultiplicityTable;
 
-    typename space_t::MultiplicityTable multiplicities;
-    typename space_t::DegreeTable degrees;
-    StaticMultiArray<DynamicMultiArray<Real,dim>,range,rank> weights;
+    DegreeTable degrees(components_map);
+    WeightsTable weights(components_map);
+    shared_ptr<MultiplicityTable> multiplicities(new MultiplicityTable(components_map));
 
-    for (const auto & comp_element : scalar_component_vector)
+    for (const auto &comp_element : scalar_component_vector)
     {
         const auto &component_attributes = get_xml_element_attributes(comp_element);
         const int comp_id = component_attributes.get<int>("Id");
         AssertThrow(comp_id >=0 && comp_id < space_t::n_components,
                     ExcIndexRange(comp_id,0,space_t::n_components));
+
 
         //---------------------------------------------
         // getting the dofs tensor size
@@ -736,8 +775,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
         //---------------------------------------------
         // getting the multiplicities
-        const auto &comp_multiplicities_element = get_xml_element(comp_element,"Multiplicities");
-        multiplicities(comp_id) = get_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        const auto &comp_multiplicities_element = get_xml_element(comp_element,"InteriorMultiplicities");
+        (*multiplicities)(comp_id) = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
 
 
@@ -753,8 +792,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
 
-        weights(comp_id).resize(dofs_size);
         auto &w_comp = weights(comp_id);
+        w_comp.resize(dofs_size);
         for (int flat_id = 0 ; flat_id < n_weights ; ++flat_id)
             w_comp(flat_id) = weights_vec[flat_id];
         //-------------------------------------------------------------------------
@@ -762,7 +801,15 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     } // end loop over the scalar components
     //-------------------------------------------------------------------------
 
-    auto ref_space = space_t::create(grid,multiplicities,degrees,weights);
+
+    typename space_t::EndBehaviourTable end_behaviour(components_map);
+    for (const auto comp_id : end_behaviour.get_active_components_id())
+    {
+        end_behaviour(comp_id)[0] = space_t::EndBehaviour::interpolatory;
+        end_behaviour(comp_id)[1] = space_t::EndBehaviour::interpolatory;
+    }
+
+    auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour,weights);
 
     return ref_space;
 }

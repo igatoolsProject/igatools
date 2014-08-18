@@ -45,7 +45,7 @@ void run_test()
 
     const int p = 2;
     auto knots = CartesianGrid<dim>::create(2);
-    auto bspline_space = Space_t::create(knots, p);
+    auto bspline_space = Space_t::create(p, knots);
 
     vector<Real> control_pts(bspline_space->get_num_basis());
     if (dim == 1)
@@ -176,12 +176,12 @@ void run_test()
     ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
 
     auto elem = map->begin();
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;
@@ -198,7 +198,7 @@ void run_test()
     out << endl;
 
     string filename = "bspline_map-" + to_string(dim) + "d";
-    Writer<dim,dim> writer(map, 4);
+    Writer<dim> writer(map, 4);
     writer.save(filename);
 }
 

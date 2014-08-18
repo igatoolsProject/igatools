@@ -37,7 +37,7 @@
 IGA_NAMESPACE_OPEN
 
 
-template < LinearAlgebraPackage linear_algebra_package>
+template < LAPack la_pack>
 class LinearSolver;
 
 
@@ -62,7 +62,7 @@ class LinearSolver;
  * (Trilinos, PETSc,etc.)
  */
 template<>
-class LinearSolver<LinearAlgebraPackage::trilinos>
+class LinearSolver<LAPack::trilinos>
 {
 public:
     /**
@@ -112,9 +112,9 @@ public:
      *
      * @note A and b should be const but Belos expects non const
      */
-    void solve(Matrix<LinearAlgebraPackage::trilinos> &A,
-               Vector<LinearAlgebraPackage::trilinos> &b,
-               Vector<LinearAlgebraPackage::trilinos> &x);
+    void solve(Matrix<LAPack::trilinos> &A,
+               Vector<LAPack::trilinos> &b,
+               Vector<LAPack::trilinos> &x);
 
 
     /** Return the tolerance achieved by the last solve() invocation. */
@@ -177,7 +177,7 @@ private:
  * @todo (MM, May 2014) fill the missing implementations complete the documentation
  */
 template<>
-class LinearSolver<LinearAlgebraPackage::petsc>
+class LinearSolver<LAPack::petsc>
 {
 public:
     /**
@@ -248,9 +248,9 @@ public:
     /**
      * Solves the linear system.
      */
-    void solve(Matrix<LinearAlgebraPackage::petsc> &A,
-               Vector<LinearAlgebraPackage::petsc> &b,
-               Vector<LinearAlgebraPackage::petsc> &x);
+    void solve(Matrix<LAPack::petsc> &A,
+               Vector<LAPack::petsc> &b,
+               Vector<LAPack::petsc> &x);
 
 
     /** Return the tolerance achieved by the last solve() invocation. */

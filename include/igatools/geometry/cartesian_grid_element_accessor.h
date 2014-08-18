@@ -32,6 +32,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * @brief Element accessor for the CartesianGrid.
  *
@@ -41,8 +43,8 @@ IGA_NAMESPACE_OPEN
  * that are obtained through a cache mechanism
  *
  *
- * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors_iterators
+ * See module (and the submodules) on \ref accessors_iterators for a general overview.
+ * @ingroup accessors
  *
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014
@@ -67,13 +69,16 @@ public:
         ValueFlags::face_w_measure |
         ValueFlags::face_normal;
 
+    /** Number of faces of the element. */
+    static const Size n_faces = UnitElement<dim_>::faces_per_element;
+
 public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor.
      */
-    CartesianGridElementAccessor() = delete;
+    CartesianGridElementAccessor() = default;
 
     /**
      * Construct an accessor pointing to the element with
@@ -81,6 +86,9 @@ public:
      */
     CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                                  const Index elem_index);
+
+    CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
+                                 const TensorIndex<dim> elem_index);
 
     /**
      * Copy constructor.
@@ -111,13 +119,17 @@ public:
      * the one dimensional length cache with the copied element.
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(const CartesianGridElementAccessor<dim_> &elem) = delete;
+    &operator=(const CartesianGridElementAccessor<dim_> &elem)
+    {
+        parent_t::operator=(elem);
+        return *this;
+    }
 
     /**
      * Move assignment operator.
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(CartesianGridElementAccessor<dim_> &&elem) = delete;
+    &operator=(CartesianGridElementAccessor<dim_> &&elem) = default;
     ///@}
 
     /** @name Functions for the cache initialization and filling. */
@@ -131,35 +143,35 @@ public:
      * cache, i.e. it is like using a projected quadrature on
      * the faces.
      */
-    void init_values(const ValueFlags flag,
-                     const Quadrature<dim_> &quad);
+    void init_cache(const ValueFlags flag,
+                    const Quadrature<dim_> &quad);
 
     /**
      * Initializes the internal cache for the efficient
      * computation of the values requested in
      * the @p fill_flag when no quadrature point is necessary
      */
-    void init_values(const ValueFlags flag);
+    void init_cache(const ValueFlags flag);
 
     /**
      * To use a different quadrature on the face instead of
      * the projected element quadrature
      */
-    void init_face_values(const Index face_id,
-                          const ValueFlags flag,
-                          const Quadrature<dim_-1> &quad);
+    void init_face_cache(const Index face_id,
+                         const ValueFlags flag,
+                         const Quadrature<dim_-1> &quad);
 
     /**
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-    void fill_values(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
+    void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Fills the i-th face values cache according to the evaluation points
      * and fill flags specified in init_values.
      */
-    void fill_face_values(const Index face_id);
+    void fill_face_cache(const Index face_id);
     ///@}
 
 
@@ -216,15 +228,15 @@ public:
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    std::vector<Point<dim>> const get_points(const TopologyId<dim_> &topology_id
-                                             = ElemTopology<dim_>()) const;
+    std::vector<Points<dim>> const get_points(const TopologyId<dim_> &topology_id
+                                              = ElemTopology<dim_>()) const;
 
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points on the face specified
      * by @p face_id.
      */
-    std::vector<Point<dim>> const get_face_points(const Index face_id) const;
+    std::vector<Points<dim>> const get_face_points(const Index face_id) const;
 
     ///@}
 
@@ -238,7 +250,6 @@ public:
                         VerbosityLevel::normal) const;
 
 
-    static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
 public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
@@ -250,6 +261,7 @@ public:
      * CartesianGrid, otherwise an exception will be raised (in Debug mode).
      */
     bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
+
 
     void operator++();
 
@@ -267,7 +279,7 @@ private:
         /**
          * Allocates space for the cache
          */
-        void reset(const CartesianGrid<dim_> &grid);
+        void resize(const CartesianGrid<dim_> &grid);
 
         /** pointer to the current entry of of length,
          *  it could be used for optimization of uniform grid
@@ -289,8 +301,8 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_> &quad);
+        void resize(const GridElemValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_> &quad);
 
         /**
          * Fill the cache member.
@@ -326,8 +338,8 @@ private:
         /**
          * Allocate space for the values at quadrature points
          */
-        void reset(const GridElemValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_> &quad);
+        void resize(const GridElemValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_> &quad);
 
         /**
          * Prints internal information about the ElementValuesCache.
@@ -342,13 +354,13 @@ private:
     class FaceValuesCache : public ValuesCache
     {
     public:
-        void reset(const GridFaceValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_> &quad,
-                   const Index face_id);
+        void resize(const GridFaceValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_> &quad,
+                    const Index face_id);
 
-        void reset(const GridFaceValueFlagsHandler &flags_handler,
-                   const Quadrature<dim_-1> &quad,
-                   const Index face_id);
+        void resize(const GridFaceValueFlagsHandler &flags_handler,
+                    const Quadrature<dim_-1> &quad,
+                    const Index face_id);
     };
 
     /**

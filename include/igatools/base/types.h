@@ -72,19 +72,6 @@ template< class T, int dim >
 using vector_array = std::array< std::vector<T>, dim >;
 
 /**
- * This function is used to initialize  an array at
- * construction time to a uniform value.
- */
-template <class T, int dim>
-inline
-std::array<T,dim> filled_array(const T v)
-{
-    std::array<T,dim> res;
-    res.fill(v);
-    return res;
-}
-
-/**
  * Bounding Box, a dim-dimensional rectangular
  * box described by the intervals.
  * eg. BBox<2> box {{0,0.5},{1,2}}.
@@ -307,7 +294,7 @@ enum class Norm
 /**
  * Type for specifying which linear algebra package to use.
  */
-enum class LinearAlgebraPackage : int
+enum class LAPack : int
 {
     /** Use the internal (igatools) linear algebra implementation.*/
     internal = 0,
@@ -498,6 +485,35 @@ enum class RefSpaceType : int
 };
 
 
+/**
+ * Type for specifying the kind of interface between two patches.
+ * @sa MultiPatchSpace
+ */
+enum class InterfaceType : int
+{
+    /** No conditions on the interface.*/
+    none = 0,
+
+    /**
+     * The interface is defined as strong C0 gluing between one side of each patch.
+     * The dofs of the patches <em>will be not renumbered</em> in order to ensure this interface condition.
+     */
+    C0_strong = 1,
+
+    /**
+     * The interface is defined as strong C0 gluing between one side of each patch.
+     * The dofs of the patches <em>will be renumbered</em> in order to ensure this interface condition.
+     */
+    C0_strong_renumbering = 2,
+
+    /**
+     * This interface is defined using Mortar gluing.
+     *
+     * @todo Complete the documentation.
+     */
+    Mortar = 3
+};
+
 
 template<int dim, int range, int rank>
 class BSplineSpace;
@@ -510,8 +526,6 @@ template<int dim, int range, int rank,RefSpaceType space_type>
 using RefSpace = Conditional<(space_type == RefSpaceType::bspline),
       BSplineSpace<dim,range,rank>,
       NURBSSpace<dim,range,rank> >;
-
-
 
 
 

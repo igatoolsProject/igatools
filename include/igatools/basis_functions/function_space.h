@@ -94,10 +94,12 @@ class FunctionSpaceOnGrid :
     public FunctionSpace,
     public GridWrapper<Grid_>
 {
-public:
-    using GridType = Grid_;
+
 private:
-    using self_t = FunctionSpaceOnGrid<GridType>;
+    using self_t = FunctionSpaceOnGrid<Grid_>;
+
+public:
+    using typename GridWrapper<Grid_>::GridType;
 
 public:
     /** @name Constructor and destructor. */
@@ -109,10 +111,10 @@ public:
     FunctionSpaceOnGrid(std::shared_ptr<GridType> grid);
 
     /** Copy constructor. */
-    FunctionSpaceOnGrid(const FunctionSpaceOnGrid<GridType> &grid) = default;
+    FunctionSpaceOnGrid(const self_t &grid) = default;
 
     /** Move constructor. */
-    FunctionSpaceOnGrid(FunctionSpaceOnGrid<GridType> &&grid) = default;
+    FunctionSpaceOnGrid(self_t &&grid) = default;
 
     /** Destructor. */
     ~FunctionSpaceOnGrid() = default;
@@ -126,6 +128,20 @@ public:
     /** Move assignment operator. Not allowed to be used. */
     self_t &operator=(self_t &&) = delete;
     ///@}
+
+    Index get_id() const
+    {
+        return id_;
+    }
+
+    void set_id(const Index id)
+    {
+        Assert(id >= 0,ExcLowerRange(id,0));
+        id_ = id;
+    }
+
+protected:
+    Index id_ = 0;
 };
 
 

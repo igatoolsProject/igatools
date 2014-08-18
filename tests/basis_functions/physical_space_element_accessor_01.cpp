@@ -52,7 +52,7 @@ void test_evaluate()
     auto map = IdentityMapping<dim>::create(grid);
 
     auto push_forward = PushForward<Transformation::h_grad,dim>::create(map);
-    auto ref_space = BSplineSpace<dim>::create(grid, deg);
+    auto ref_space = BSplineSpace<dim>::create(deg, grid);
     auto space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;
@@ -62,11 +62,11 @@ void test_evaluate()
     QGauss<dim> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::w_measure;
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         elem->get_basis_values().print_info(out);
         elem->get_basis_gradients().print_info(out);
         // elem->get_basis_hessians().print_info(out);

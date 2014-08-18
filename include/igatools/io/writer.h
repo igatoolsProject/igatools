@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef __WRITER_H_
 #define __WRITER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/linear_algebra/distributed_vector.h>
@@ -35,89 +35,67 @@
 IGA_NAMESPACE_OPEN
 
 template < class RefSpace, class PushForward >
-class PhysicalSpace ;
+class PhysicalSpace;
 
 template< int dim_domain, int range, int rank >
-class NURBSSpace ;
-
-
+class NURBSSpace;
 
 
 //todo:add the add_celldata function
 
 /**
+ * This class is use to generate and save output in graphical
+ * format.
+ *
  * @todo This class needs to be documented, and explained with an example.
  */
-template< int dim_ref, int dim_phys=dim_ref, class T = double >
+template<int dim, int codim = 0, class T = double>
 class Writer
 {
+private:
+    using self_t = Writer<dim, codim, T>;
+    using Grid = CartesianGrid<dim>;
+    using Map  = Mapping<dim, codim>;
+
 public:
+    static const int space_dim = dim + codim;
+    // TODO (pauletti, Jun 18, 2014): document this constructors
+    //TODO(pauletti, Jun 21, 2014): should be a const Grid
+    Writer(const std::shared_ptr<Grid> grid);
 
-    static const int codim = dim_phys-dim_ref;
-
-    Writer(const std::shared_ptr< CartesianGrid< dim_ref > > grid);
-
-    Writer(const std::shared_ptr< CartesianGrid< dim_ref > > grid,
+    Writer(const std::shared_ptr<Grid> grid,
            const Index num_points_direction);
 
-    Writer(const std::shared_ptr< const Mapping< dim_ref, codim > > mapping,
+    Writer(const std::shared_ptr<const Map> mapping,
            const Index num_points_direction);
 
-
-    //TODO: can we remove this constructor?
     /**
-     * This constructor builds a Writer object with using a uniform distribution for the evaluation points.
-     * \param[in] grid Grid.
-     * \param[in] mapping Mapping used to transform the field(s) from the reference domain to the physical domain.
-     * \param[in] num_points_direction Number of plotting points along the coordinate directions.
-     * \param[in] eps This value is the amount of the displacement of the first and last point.
-     * \param[in] map_is_double_precision If true the map values will be written using double precision data.
-     * Default value is TRUE.
-     * (in each coordinate direction) of the quad rule on the unit element.
-     * This means that the element for the quad rule it will not [0,1]^dim but [eps,1.0-eps]^dim.
-     * Valid values for eps are the ones in the interval [0.0,0.5).
+     * This constructor builds a Writer object using a distribution for
+     * the evaluation points given by the @p quadrature scheme.
      * \note Any field that will be added to the writer must refer to the same
      * CartesianGrid used here, otherwise an exception will be raised.
      * \note The number of points in each coordinate direction must be greater or equal than 2,
      * otherwise an exception will be raised.
      * \see add_field
      */
-//    Writer(const std::shared_ptr< const CartesianGrid< dim_ref > > grid,
-//           const std::shared_ptr< const Mapping< dim_ref, dim_phys > > mapping,
-//           const std::array< Index, dim_ref > &num_points_direction) {}
-
-
-    /**
-     * This constructor builds a Writer object with using a distribution for the evaluation points
-     * given by the @p quadrature scheme.
-     * \note Any field that will be added to the writer must refer to the same
-     * CartesianGrid used here, otherwise an exception will be raised.
-     * \note The number of points in each coordinate direction must be greater or equal than 2,
-     * otherwise an exception will be raised.
-     * \see add_field
-     */
-    Writer(const std::shared_ptr< const Mapping< dim_ref, codim > > mapping,
-           const std::shared_ptr< const Quadrature<dim_ref> > quadrature) ;
+    Writer(const std::shared_ptr<const Map> mapping,
+           const std::shared_ptr<const Quadrature<dim>> quadrature);
 
 
     /**
      * Default constructor. Not allowed to be used.
      */
-    Writer() = delete ;
-
+    Writer() = delete;
 
     /**
      * Copy constructor. Not allowed to be used.
      */
-    Writer(const Writer< dim_ref, codim > &writer) = delete ;
-
+    Writer(const self_t &writer) = delete;
 
     /**
      * Assignment operator. Not allowed to be used.
      */
-    Writer< dim_ref, dim_phys > &
-    operator=(const Writer< dim_ref, dim_phys > &writer) = delete ;
-
+    self_t &operator=(const self_t &writer) = delete;
 
     /**
      * \brief Add a field to the output file.
@@ -132,20 +110,17 @@ public:
      * \note The number of coefficients must be equal to the number of basis functions specified
      * by the space, otherwise an exception will be raised.
      */
-    template<class Space, LinearAlgebraPackage linear_algebra_package>
-    void add_field(
-        std::shared_ptr<Space> space,
-        const Vector<linear_algebra_package> &coefs,
-        const std::string &name) ;
+    template<class Space, LAPack la_pack = LAPack::trilinos>
+    void add_field(std::shared_ptr<Space> space,
+                   const Vector<la_pack> &coefs,
+                   const std::string &name);
 
 
-    void add_element_data(
-        const std::vector<double> &element_data,
-        const std::string &name) ;
+    void add_element_data(const std::vector<double> &element_data,
+                          const std::string &name);
 
-    void add_element_data(
-        const std::vector<int> &element_data,
-        const std::string &name) ;
+    void add_element_data(const std::vector<int> &element_data,
+                          const std::string &name);
 
 
     /**
@@ -154,133 +129,138 @@ public:
      * \param[in] format - Output format. It can be "ascii" or "appended".
      * \note The .vtu extension should NOT part of the file name.
      */
-    void save(
-        const std::string &filename,
-        const std::string &format = "ascii") ;
-
+    void save(const std::string &filename,
+              const std::string &format = "ascii") const;
 
     /**
-     * Get the points (in the 3D physical domain) associated to each iga element.
-     * The first index refers to the iga element,
-     * the second index refers to the point within the iga element specified by the first index.
-     * \code
-     * auto points = writer.get_points_in_elements() ;
-     * //points[i][j] is the j-th point in the i-th iga element
-     * \endcode
+     * Writes the vtu into a LogStream, filtering it for uniform
+     * output across different systems.
+     * @note this function is only for testing purposes
      */
-    const std::vector< std::vector< std::array<T,3> > > &get_points_in_iga_elements() const ;
+    void print_info(LogStream &out) const;
 
     /**
      * Returns the number of IGA elements handled by the Writer.
      */
-    int get_num_iga_elements() const ;
+    int get_num_iga_elements() const;
 
     /**
      * Returns the number of VTK elements handled by the Writer.
      */
-    int get_num_vtk_elements() const ;
+    int get_num_vtk_elements() const;
 
     /**
      * Returns the number of VTK elements used for each IGA element.
      */
-    int get_num_vtk_elements_per_iga_element() const ;
+    int get_num_vtk_elements_per_iga_element() const;
 
     /**
      * Returns the number of evaluation points used for each IGA element.
      */
-    int get_num_points_per_iga_element() const ;
+    int get_num_points_per_iga_element() const;
 
 
-    void add_point_data(const int n_iga_elements,
-                        const int n_points_per_iga_element,
-                        const int n_values_per_point,
+    /**
+     * \brief Add data for every evaluation point to the output file.
+     * \param[in] n_values_per_point
+     * \param[in] type Type of add to be added. It can be scalar, vector
+     * or tensor.
+     * \param[in] name Name of the field.
+     * \param[in] data_iga_elements Data to be added. The different levels of
+     * the container are: the first vector level corresponds to the IGA
+     * elements; the second one to the evaluation points inside an IGA element;
+     * and the third one to the components of the data to be plotted.
+     * \note The number of entries of @p data_iga_elements must be equal to the
+     * number of IGA elements, otherwise an exception will be raised.
+     * \note The number of entries of eachy entry of @p data_iga_elements must
+     * be equal to the number of IGA elements, otherwise an exception will be
+     * raised.
+     * \note The number of values associated to every plot points that are
+     * specified in @p data_iga_elements must be equal to @ n_values_per_point,
+     * otherwise an exception will be raised.
+     */
+    void add_point_data(const int n_values_per_point,
                         const std::string &type,
                         const std::vector<std::vector<std::vector<T>>> &data_iga_elements,
-                        const std::string &name) ;
+                        const std::string &name);
 
 
 
 private:
-    std::string byte_order_ ;
+    std::string byte_order_;
 
-    static const int n_vertices_per_vtk_element_ = UnitElement< dim_ref >::vertices_per_element ;
+    static const int n_vertices_per_vtk_element_ = UnitElement< dim >::vertices_per_element;
 
-    const std::string filename_ ;
+    const std::string filename_;
 
-    std::shared_ptr< const CartesianGrid< dim_ref > > grid_ ;
+    std::shared_ptr<const Grid> grid_;
 
-
-    std::shared_ptr< const Mapping< dim_ref, codim > > map_ ;
-
+    std::shared_ptr<const Map> map_;
 
     /**
      * Unit element quadrature rule used for the plot.
      */
-    Quadrature< dim_ref > quad_plot_ ;
+    Quadrature< dim > quad_plot_;
 
 
-    TensorSize<dim_ref> num_points_direction_ ;
+    TensorSize<dim> num_points_direction_;
 
 
-    TensorSize<dim_ref> num_subelements_direction_ ;
+    TensorSize<dim> num_subelements_direction_;
 
     /**
      * Number of VTK elements contained in each IGA element.
      */
-    Size n_vtk_elements_per_iga_element_ ;
+    Size n_vtk_elements_per_iga_element_;
 
     /**
      * Number of VTK elements handled by the Writer.
      */
-    Size n_vtk_elements_ ;
+    Size n_vtk_elements_;
 
 
     /**
      * Number of IGA elements handled by the Writer.
      */
-    Size n_iga_elements_ ;
+    Size n_iga_elements_;
 
     /**
      * Number of evaluation points in each IGA element.
      */
-    Size n_points_per_iga_element_ ;
+    Size n_points_per_iga_element_;
 
     /**
      * Number of VTK elements handled by the Writer.
      */
-    Size n_vtk_points_ ;
+    Size n_vtk_points_;
 
+    unsigned char vtk_element_type_;
+
+//TODO(pauletti, Jul 8, 2014): this documentation is incorrect
     /**
-     * Coordinates of the evaluation points associated to each iga element.
-     * \note The point coordinates are referred to the physical domain extended to 3D space.
-     */
-    std::vector< std::vector< std::array<T,3> > > points_in_iga_elements_ ;
-
-    unsigned char vtk_element_type_ ;
-
-    /**
-     * Connectivity of the vtk elements inside each iga element.
-     */
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > > vtk_elements_connectivity_ ;
-
-
-    /**
-     * This function take as input an @p iga_element_id and a set of points in the [0,1]^dim domain, and maps
-     * those points to the reference domain and to the physical domain defined by the mapping used in the costructor.
+     * This function take as input an @p iga_element_id and a set of points in
+     * the [0,1]^dim domain, and maps
+     * those points to the reference domain and to the physical domain defined
+     * by the mapping used in the costructor.
      * Moreover it returns the connectivity of the points on the element.
      * @param[in] iga_element_id Element ID.
      * @param[in] elem_quad Evaluation points in the [0,1]^dim domain.
-     * @param[out] element_connectivity Connectivity of the points defined on the element.
-     * @param[out] points_phys_iga_element Coordinate of the points in the physical domain.
-     * \note Due to the fact that VTK needs always points in 3D, when we have the dimension of the physical space less than 3,
-     * we set the coordinate of the "missing dimension" to 0. In other words, if the dimension of the physical domain is 2, then the
+     * @param[out] element_connectivity Connectivity of the points defined on
+     * the element.
+     * @param[out] points_phys_iga_element Coordinate of the points in the
+     * physical domain.
+     * \note Due to the fact that VTK needs always points in 3D, when we have
+     *  the dimension of the physical space less than 3,
+     * we set the coordinate of the "missing dimension" to 0. In other words,
+     * if the dimension of the physical domain is 2, then the
      * points are located on the plane z=0.
-     * If the dimension of the physical domain is 1, then the points are located on the line with y=0 and z=0.
+     * If the dimension of the physical domain is 1, then the points are
+     * located on the line with y=0 and z=0.
      */
     void get_subelements(
-        const typename Mapping< dim_ref, codim>::ElementIterator elem,
+        const typename Mapping< dim, codim>::ElementIterator elem,
         std::vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-        std::vector< std::array<T,3> > &points_phys_iga_element) const ;
+        std::vector< std::array<T,3> > &points_phys_iga_element) const;
 
 
 private:
@@ -301,27 +281,27 @@ private:
             num_points_per_element_(num_points_per_element),
             num_components_(num_components),
             values_(values)
-        {} ;
+        {};
 
-        const std::string name_ ;
+        const std::string name_;
 
-        const std::string type_ ;
+        const std::string type_;
 
-        Size num_elements_ ;
+        Size num_elements_;
 
-        Size num_points_per_element_ ;
+        Size num_points_per_element_;
 
-        Size num_components_ ;
+        Size num_components_;
 
 
-        std::shared_ptr< std::vector<T> > values_ ;
-    } ;
+        std::shared_ptr< std::vector<T> > values_;
+    };
 
-    std::vector< PointData > fields_ ;
+    std::vector< PointData > fields_;
 
-    std::vector<std::string> names_point_data_scalar_ ;
-    std::vector<std::string> names_point_data_vector_ ;
-    std::vector<std::string> names_point_data_tensor_ ;
+    std::vector<std::string> names_point_data_scalar_;
+    std::vector<std::string> names_point_data_vector_;
+    std::vector<std::string> names_point_data_tensor_;
 
     template<class data_type>
     struct CellData
@@ -334,53 +314,56 @@ private:
             name_(name),
             type_("scalar"),
             num_components_(1)
-        {} ;
+        {};
 
-        std::shared_ptr< std::vector<data_type> > values_ ;
+        std::shared_ptr< std::vector<data_type> > values_;
 
-        const std::string name_ ;
+        const std::string name_;
 
-        const std::string type_ ;
+        const std::string type_;
 
-        iga::Size num_components_ ;
-    } ;
+        iga::Size num_components_;
+    };
 
-    std::vector< CellData<double> > cell_data_double_ ;
+    std::vector< CellData<double> > cell_data_double_;
 
-    std::vector< CellData<int> > cell_data_int_ ;
+    std::vector< CellData<int> > cell_data_int_;
 
-    std::vector<std::string> names_cell_data_scalar_ ;
-    std::vector<std::string> names_cell_data_vector_ ;
-    std::vector<std::string> names_cell_data_tensor_ ;
+    std::vector<std::string> names_cell_data_scalar_;
+    std::vector<std::string> names_cell_data_vector_;
+    std::vector<std::string> names_cell_data_tensor_;
 
     const int sizeof_Real_ = 0;
-    std::string string_Real_ ;
+    std::string string_Real_;
 
     const int sizeof_int_  = 0;
-    std::string string_int_ ;
+    std::string string_int_;
 
     const int sizeof_uchar_  = 0;
-    std::string string_uchar_ ;
+    std::string string_uchar_;
 
+    std::stringstream appended_data_;
 
+    int offset_;
 
+    int precision_;
 
+    template<class Out>
+    void save_ascii(Out &file,
+                    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                    &vtk_elements_connectivity) const;
 
-    std::stringstream appended_data_ ;
+    void save_appended(const std::string &filename,
+                       const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                       const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                       &vtk_elements_connectivity) const;
 
-
-    int offset_ ;
-
-
-    int precision_ ;
-
-
-    void save_ascii(const std::string &filename) const ;
-
-    void save_appended(const std::string &filename) const ;
-
-    void fill_points_and_connectivity() ;
-} ;
+    void fill_points_and_connectivity(
+        std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+        std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+        &vtk_elements_connectivity) const;
+};
 
 
 IGA_NAMESPACE_CLOSE

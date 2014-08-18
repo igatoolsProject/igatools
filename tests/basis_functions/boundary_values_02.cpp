@@ -41,24 +41,24 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    iga::Real value(Point<dim> P_) const
+    Real value(Points<dim> P_) const
     {
-        iga::Real  PI = numbers::PI;
+        Real  PI = numbers::PI;
 
-        iga::Real f = 1;
+        Real f = 1;
         for (int cnt = 0; cnt<dim; cnt++)
         {
-            f = f * cos(iga::Real(2*PI*P_[cnt]));
+            f = f * cos(Real(2*PI*P_[cnt]));
         }
 
         return f;
     }
 
-    void evaluate(const std::vector< Point<dim> > &points, std::vector<Point<1> > &values) const
+    void evaluate(const std::vector< Points<dim> > &points, std::vector<Points<1> > &values) const
     {
         for (int i =0; i<points.size(); i++)
         {
-            Point<dim> p = points[i];
+            Points<dim> p = points[i];
             values[i][0] = this->value(p);
         }
     };
@@ -74,7 +74,7 @@ void do_test(const int p)
 
     const int num_knots = 10;
     auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = space_ref_t::create(knots, p) ;
+    auto space = space_ref_t::create(p, knots) ;
 
     const int n_qpoints = 4;
     QGauss<dim-1> quad(n_qpoints);
@@ -87,13 +87,13 @@ void do_test(const int p)
     face_id.insert(dirichlet);
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
 
-    std::map<Index,iga::Real> boundary_values;
-    space_tools::project_boundary_values<space_ref_t,linear_algebra_package>(
+    std::map<Index,Real> boundary_values;
+    space_tools::project_boundary_values<space_ref_t,la_pack>(
         f, const_pointer_cast<const space_ref_t>(space), quad, face_id,
         boundary_values);
 

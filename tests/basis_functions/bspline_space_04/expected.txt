@@ -1,28 +1,26 @@
-CartesianGrid<0>
-	Knot coordinates:
-	Num elements: 1
+Number of active elements: 1
+Number of intervals per direction: [ ]
+Knot coordinates:
 
-CartesianGrid<1>
-	Knot coordinates:
-		Direction[0] = [ 0 1.00000 ]
-	Num elements: 1
-		Direction[0] = 1
 
-CartesianGrid<2>
-	Knot coordinates:
-		Direction[0] = [ 0 1.00000 ]
-		Direction[1] = [ 0 1.00000 ]
-	Num elements: 1
-		Direction[0] = 1
-		Direction[1] = 1
+Number of active elements: 1
+Number of intervals per direction: [ 1 ]
+Knot coordinates:
+   [ 0 1.00000 ]
 
-CartesianGrid<3>
-	Knot coordinates:
-		Direction[0] = [ 0 1.00000 ]
-		Direction[1] = [ 0 1.00000 ]
-		Direction[2] = [ 0 1.00000 ]
-	Num elements: 1
-		Direction[0] = 1
-		Direction[1] = 1
-		Direction[2] = 1
+
+Number of active elements: 1
+Number of intervals per direction: [ 1 1 ]
+Knot coordinates:
+   [ 0 1.00000 ]
+   [ 0 1.00000 ]
+
+
+Number of active elements: 1
+Number of intervals per direction: [ 1 1 1 ]
+Knot coordinates:
+   [ 0 1.00000 ]
+   [ 0 1.00000 ]
+   [ 0 1.00000 ]
+
 

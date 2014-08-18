@@ -46,12 +46,12 @@ int main()
 
     auto elem = map->begin();
     ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian;
-    elem->init_values(flag, quad);
-    elem->fill_values();
+    elem->init_cache(flag, quad);
+    elem->fill_cache();
 
-    auto values = elem->get_values();
-    auto gradients = elem->get_gradients();
-    auto hessians = elem->get_hessians();
+    auto values = elem->get_map_values();
+    auto gradients = elem->get_map_gradients();
+    auto hessians = elem->get_map_hessians();
 
     out << "Points:" << endl;
     out << quad.get_points().get_flat_cartesian_product() << endl;
@@ -73,18 +73,18 @@ int main()
 
     PushForwardElementAccessor<push_fwd_t> push_fwd_accessor(push_forward, 0) ;
 
-    push_fwd_accessor.init_values(ValueFlags::tran_value | ValueFlags::tran_gradient, quad) ;
+    push_fwd_accessor.init_cache(ValueFlags::tran_value | ValueFlags::tran_gradient, quad) ;
 
-    push_fwd_accessor.fill_values() ;
+    push_fwd_accessor.fill_cache() ;
 
-    typedef Values<3,1,1> Value_t ;
-    typedef Derivatives<3,1,1,1> Grad_t ;
+    typedef Values<1,1,1> Value ;
+    typedef Derivatives<3,1,1,1> Grad ;
 
-    ValueVector< Value_t > dummy ;
+    ValueVector< Value > dummy ;
 
-    ValueVector< Grad_t > grad_phi0_hat(num_pts) ;
-    ValueVector< Grad_t > grad_phi1_hat(num_pts) ;
-    ValueVector< Grad_t > grad_phi2_hat(num_pts) ;
+    ValueVector< Grad > grad_phi0_hat(num_pts) ;
+    ValueVector< Grad > grad_phi1_hat(num_pts) ;
+    ValueVector< Grad > grad_phi2_hat(num_pts) ;
 
     for (int iPt = 0 ; iPt < num_pts ; iPt++)
     {
@@ -100,9 +100,9 @@ int main()
         out << grad_phi2_hat[iPt] << endl ;
     }
 
-    ValueVector< Grad_t > grad_phi0(num_pts);
-    ValueVector< Grad_t > grad_phi1(num_pts);
-    ValueVector< Grad_t > grad_phi2(num_pts);
+    ValueVector< Grad > grad_phi0(num_pts);
+    ValueVector< Grad > grad_phi1(num_pts);
+    ValueVector< Grad > grad_phi2(num_pts);
 
 
     push_fwd_accessor.transform_gradients<1,1>(dummy,grad_phi0_hat,grad_phi0) ;

@@ -43,14 +43,14 @@ void do_test()
     const int degree = 1;
     const int rank =  1 ;
     typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(grid, degree);
+    auto space = Space_t::create(degree, grid);
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
-    Vector<linear_algebra_package> u(space->get_num_basis());
+    Vector<la_pack> u(space->get_num_basis());
 
     {
         int id = 0 ;
@@ -70,9 +70,9 @@ void do_test()
     QGauss< dim_domain > quad_scheme1(2) ;
 
     auto element1 = space->begin();
-    element1->init_values(ValueFlags::value | ValueFlags::gradient,
+    element1->init_cache(ValueFlags::value | ValueFlags::gradient,
                           quad_scheme1);
-    element1->fill_values() ;
+    element1->fill_cache() ;
 
     auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
@@ -82,9 +82,9 @@ void do_test()
     gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme2(3) ;
-    element1->init_values(ValueFlags::value | ValueFlags::gradient,
+    element1->init_cache(ValueFlags::value | ValueFlags::gradient,
                           quad_scheme2);
-    element1->fill_values() ;
+    element1->fill_cache() ;
 
     auto values2    = element1->get_basis_values();
     values2.print_info(out);

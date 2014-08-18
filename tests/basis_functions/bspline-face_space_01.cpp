@@ -41,14 +41,16 @@ void run_test()
         n[i]=2+i;
     }
     auto grid = CartesianGrid<dim_domain>::create(n);
-    auto space = space_t::create(grid,degree);
+    auto space = space_t::create(degree, grid);
+
+
 
     vector<Index> dof_map;
 
     for (int i = 0; i < UnitElement<dim_domain>::faces_per_element; ++i)
     {
         out << "Face space: " << i << endl;
-        auto face_space = space_tools::get_face_space<space_t>(space, i,dof_map);
+        auto face_space = space->get_face_space(i, dof_map);
         face_space->print_info(out);
 
         out << "Dofs face to space mapping: " << endl;

@@ -22,19 +22,29 @@
 #define GRID_FORWARD_ITERATOR_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/tensor_index.h>
 
 #include <iterator>
 #include <memory>
-IGA_NAMESPACE_OPEN
 
+IGA_NAMESPACE_OPEN
 
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
  *
- * It fulfills the requirements of a
- * forward iterator as intended by the Standard Template Library.
- * See the C++ documentation for further
- * details of iterator specification and usage.
+ *
+ * Its main features are:
+ * - it takes an accessor's type as template parameter;
+ * - can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element
+ * in the container;
+ * - when dereferenced (using the dereferencing operator <tt>*</tt> or <tt>-></tt>),
+ * it returns an accessor object.
+ *
+ * It not fulfills all the requirements to be an
+ * <a href="http://www.cplusplus.com/reference/iterator/ForwardIterator/">STL forward iterator</a>
+ * because:
+ * - it is not default constructible;
+ * - the postfix operator <tt>++</tt> is not defined.
  *
  * The object pointed to the GridForwardIterator is called <em>accessor</em>
  * and its type is passed as template argument <tt>Accessor</tt>
@@ -142,6 +152,7 @@ IGA_NAMESPACE_OPEN
  *
  * @tparam Accessor Type of the accessor.
  *
+ * @ingroup iterators
  * @author M.Martinelli, S.Pauletti
  * @date 2012,2013,2014
  */
@@ -156,20 +167,28 @@ public:
     /** Type of the grid-like container . */
     using ContainerType = typename Accessor::ContainerType;
 
+    static const int dim = ContainerType::dim;
+
     /** @name Constructors & destructor */
     ///@{
     /**
      * Default constructor. Not allowed to be used.
      */
-    GridForwardIterator() = delete;
+    GridForwardIterator() = default;
 
     /**
-     * Construct a forward iterator on a cartesian grid container
-     * like type pointed to by patch and the index of the
-     * object pointed to by the iterator.
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
      */
-    GridForwardIterator(std::shared_ptr<ContainerType> patch,
+    GridForwardIterator(std::shared_ptr<ContainerType> grid,
                         const Index index);
+
+    /**
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
+     */
+    GridForwardIterator(std::shared_ptr<ContainerType> grid,
+                        const TensorIndex<dim> &index);
 
     /** Copy constructor. */
     GridForwardIterator(const GridForwardIterator<Accessor> &it) = default;
@@ -185,7 +204,11 @@ public:
     ///@{
     /** Copy assignment operator. */
     GridForwardIterator<Accessor> &
-    operator=(const GridForwardIterator<Accessor> &) = default;
+    operator=(const GridForwardIterator<Accessor> &it)
+    {
+        accessor_ = it.accessor_;
+        return *this;
+    }
 
     /** Move assignment operator. */
     GridForwardIterator<Accessor> &
@@ -237,6 +260,8 @@ public:
      *  a reference to <tt>*this</tt>.
      */
     GridForwardIterator<Accessor> &operator++();
+
+
     ///@}
 
 protected:
@@ -244,6 +269,18 @@ protected:
     Accessor accessor_ ;
 };
 
+
+template <typename Accessor>
+bool operator> (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
+{
+    return it1->get_flat_index() > it2->get_flat_index();
+}
+
+template <typename Accessor>
+bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
+{
+    return it1->get_flat_index() < it2->get_flat_index();
+}
 IGA_NAMESPACE_CLOSE
 
 #endif /* PATCH_ITERATORS_H_ */

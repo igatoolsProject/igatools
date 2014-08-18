@@ -19,10 +19,15 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/physical_space.h>
+#include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/space_manager.h>
 
+using std::vector;
 using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::const_pointer_cast;
+using std::endl;
 
 IGA_NAMESPACE_OPEN
 
@@ -30,7 +35,8 @@ template <class RefSpace_, class PushForward_>
 PhysicalSpace<RefSpace_,PushForward_>::
 PhysicalSpace(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward)
+    shared_ptr<PushForwardType> push_forward,
+    const Index id)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
@@ -43,6 +49,7 @@ PhysicalSpace(
     Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 
+    ref_space_->set_id(id);
 }
 
 
@@ -59,7 +66,9 @@ clone() const -> shared_ptr<self_t>
     return shared_ptr<self_t>(
         new self_t(
             shared_ptr<RefSpace>(new RefSpace(*ref_space_)),
-            shared_ptr<PushForwardType>(new PushForwardType(*push_forward_))));
+            shared_ptr<PushForwardType>(new PushForwardType(*push_forward_)),
+            this->get_id())
+    );
 };
 
 
@@ -69,11 +78,12 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 create(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward) -> shared_ptr<self_t>
+    shared_ptr<PushForwardType> push_forward,
+    const Index id) -> shared_ptr<self_t>
 {
     Assert(ref_space != nullptr, ExcNullPtr());
     Assert(push_forward != nullptr, ExcNullPtr());
-    return shared_ptr<self_t>(new self_t(ref_space,push_forward));
+    return shared_ptr<self_t>(new self_t(ref_space,push_forward,id));
 }
 
 
@@ -94,7 +104,7 @@ PhysicalSpace<RefSpace_,PushForward_>::
 last() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-                           ref_space_->get_grid()->get_num_elements() - 1);
+                           ref_space_->get_grid()->get_num_active_elems() - 1);
 }
 
 
@@ -106,6 +116,21 @@ end() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
                            IteratorState::pass_the_end);
+}
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_element(const Index elem_flat_id) const -> ElementAccessor
+{
+    Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_active_elems(),
+           ExcIndexRange(elem_flat_id,0,ref_space_->get_grid()->get_num_active_elems()));
+
+    auto elem = this->begin();
+    for (int i = 0 ; i < elem_flat_id ; ++i)
+        ++elem;
+
+    return *elem;
 }
 
 
@@ -148,21 +173,64 @@ get_reference_space() const -> shared_ptr<const RefSpace>
     return shared_ptr<const RefSpace>(ref_space_);
 }
 
+
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-get_degree() const -> const ComponentTable<TensorIndex<dim>> &
+get_face_space(const Index face_id,
+               vector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
-    return ref_space_->get_degree();
+    auto elem_map = std::make_shared<typename GridType::FaceGridMap >();
+    auto face_ref_sp = ref_space_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+    auto map  = push_forward_->get_mapping();
+
+    auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
+    create(map, face_id, face_ref_sp->get_grid(), elem_map);
+    auto fpf = FaceSpace::PushForwardType::create(fmap);
+    auto face_space = FaceSpace::create(face_ref_sp,fpf);
+
+    return face_space;
+}
+
+
+template <class RefSpace_, class PushForward_>
+Index
+PhysicalSpace<RefSpace_,PushForward_>::
+get_id() const
+{
+    return ref_space_->get_id();
+}
+
+
+template <class RefSpace_, class PushForward_>
+std::vector<Index>
+PhysicalSpace<RefSpace_,PushForward_>::
+get_loc_to_global(const TensorIndex<dim> &j) const
+{
+    return ref_space_->get_loc_to_global(j);
 }
 
 
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-get_element_global_dofs() const -> const std::vector<std::vector<Index>> &
+get_space_manager() -> shared_ptr<SpaceManager>
 {
-    return ref_space_->get_element_global_dofs();
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->space_insertion_open();
+    space_manager->add_space(this->shared_from_this());
+    space_manager->space_insertion_close();
+
+    return space_manager;
+}
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
+{
+    return const_cast<self_t &>(*this).get_space_manager();
 }
 
 
@@ -171,21 +239,14 @@ void
 PhysicalSpace<RefSpace_,PushForward_>::
 print_info(LogStream &out) const
 {
-    using std::endl;
-    out << "PhysicalSpace info" << endl;
-
-    out.push("\t");
-    out << "Reference space:" << endl;
+    out.begin_item("Reference space:");
     ref_space_->print_info(out);
-    out << endl;
+    out.end_item();
 
-    out << "Push-forward:" << endl;
+    out.begin_item("Push-forward:");
     push_forward_->print_info(out);
-    out << endl;
-
-    out.pop();
+    out.end_item();
 }
-
 
 
 template <class RefSpace_, class PushForward_>

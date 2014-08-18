@@ -55,9 +55,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor.
      */
-    CartesianGridElement() = delete;
+    CartesianGridElement() = default;
 
     /**
      * Construct an object pointing to the element with
@@ -65,6 +65,9 @@ public:
      */
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index);
+
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+                         const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.
@@ -90,13 +93,20 @@ public:
      * Copy assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(const CartesianGridElement<dim_> &elem) = delete;
+    &operator=(const CartesianGridElement<dim_> &elem)
+    {
+        Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
+        flat_index_ = elem.flat_index_;
+        tensor_index_ = elem.tensor_index_;
+        return *this;
+    }
+
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(CartesianGridElement<dim_> &&elem) = delete;
+    &operator=(CartesianGridElement<dim_> &&elem) = default;
     ///@}
 
     /** Return the cartesian grid from which the element belongs.*/
@@ -109,37 +119,20 @@ public:
 
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
-
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void reset_flat_tensor_indices(const Index flat_index);
-
-    /**
-     * Sets the index of the element using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
     ///@}
 
+public:
     /** @name Query geometrical/topological information without use of cache */
     ///@{
     /**
      * Return the @p i-th vertex
      */
-    Point<dim> vertex(const int i) const;
+    Points<dim> vertex(const int i) const;
 
     /**
      * Return the center of the element.
      */
-    Point<dim> center() const;
+    Points<dim> center() const;
 
     /**
      * Returns the lengths of the coordinate sides of the cartesian element.
@@ -168,7 +161,12 @@ public:
     /**
      * Test if the point is inside the element.
      */
-    bool is_point_inside(const Point<dim> &point) const;
+    bool is_point_inside(const Points<dim> &point) const;
+
+    /**
+     * Test if the point is on the element boundary.
+     */
+    bool is_point_on_boundary(const Points<dim> &point) const;
 
     /**
      * Test if the element has a boundary face.
@@ -188,8 +186,8 @@ public:
      * and returns the points mapped over the domain (in the parametric coordinate system)
      * represented by this GridElementAccessor.
      */
-    std::vector<Point<dim> >
-    transform_points_unit_to_reference(const std::vector<Point<dim>> &point_unit_domain) const;
+    std::vector<Points<dim> >
+    transform_points_unit_to_reference(const std::vector<Points<dim>> &point_unit_domain) const;
 
     /**
      * This function takes as input argument a vector of points over the element
@@ -198,8 +196,8 @@ public:
      * and returns the points mapped over the
      * points unitary hypercube [0,1]^{dim}.
      */
-    std::vector<Point<dim> >
-    transform_points_reference_to_unit(const std::vector<Point<dim>> &point_reference_domain) const;
+    std::vector<Points<dim> >
+    transform_points_reference_to_unit(const std::vector<Points<dim>> &point_reference_domain) const;
 
 
     /**
@@ -209,9 +207,53 @@ public:
     void print_info(LogStream &out,
                     const VerbosityLevel verbosity = VerbosityLevel::normal) const;
 
-private:
+
+    bool is_influence() const;
+    void set_influence(const bool influence_flag);
+
+    bool is_active() const;
+    void set_active(const bool active_flag);
+
+
+    /**
+     * True if the element index valid (i.e. inside the grid from which the element belongs from).
+     *
+     * @note A typical case in which this function returns false is when the element is moved outside
+     * the grid from which belongs from.
+     */
+    bool is_valid() const;
+
+    /**
+     * Moves the element to the position that differs from the current one
+     * for the quantity given by @p increment.
+     *
+     * If the resulting position after the movement is valid (i.e. within the grid), then the function
+     * returns true, otherwise it returns false.
+     */
+    bool jump(const TensorIndex<dim> &increment);
+
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index);
+
+
+    /**
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const TensorIndex<dim> &tensor_index);
+
+protected:
     /** Cartesian grid from which the element belongs.*/
-    const std::shared_ptr<ContainerType> grid_;
+    std::shared_ptr<ContainerType> grid_;
 
     /** Flat (linear) index assigned to the current (sub)-element. */
     Index flat_index_;

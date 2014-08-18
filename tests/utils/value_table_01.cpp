@@ -35,7 +35,7 @@ void do_test(Size n_funcs, Size n_pts)
     out << "========== BEGIN do_test (n_funcs=" << n_funcs
         << ",n_pts=" << n_pts <<") ==========" << endl ;
 
-    using Grad = typename Function<1,1,1>::GradientType;
+    using Grad = typename Function<1,1,1>::Gradient;
     using ClassToTest = ValueTable<Grad>;
 
     out << "Default constructor" << endl;
@@ -51,7 +51,7 @@ void do_test(Size n_funcs, Size n_pts)
 
     Real val = 0.0;
     out << "Filling the table with the iterator" << endl;
-    for (auto & v : table2)
+    for (auto &v : table2)
     {
         v = val;
         val += 1.0;

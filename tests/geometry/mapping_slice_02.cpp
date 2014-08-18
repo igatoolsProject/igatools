@@ -39,7 +39,7 @@ void run_test()
     auto grid = CartesianGrid<dim>::create();
 
     Derivatives<dim,space_dim,1, 1> A;
-    Point<space_dim> b;
+    Points<space_dim> b;
     //Dilation
     for (int i=0; i<dim; ++i)
         A[i][i] = i+1;
@@ -56,16 +56,16 @@ void run_test()
 
     QGauss<dim> quad(1);
     auto elem = map->begin();
-    elem->init_values(ValueFlags::point|ValueFlags::map_gradient, quad);
+    elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, quad);
 
-    elem->fill_values();
-    elem->get_values().print_info(out);
-    elem->get_gradients().print_info(out);
+    elem->fill_cache();
+    elem->get_map_values().print_info(out);
+    elem->get_map_gradients().print_info(out);
 
 
     for (int face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
     {
-        auto elem_map = std::make_shared<std::map<int,int> >();
+        auto elem_map = std::make_shared<typename CartesianGrid<dim>::FaceGridMap>();
         auto face_grid = grid->get_face_grid(face_id, *elem_map);
         auto face_map =
             MappingSlice<dim-1,codim+1>::create(map, face_id, face_grid, elem_map);
@@ -73,11 +73,11 @@ void run_test()
 
         QGauss<dim-1> face_quad(1);
         auto face_elem = face_map->begin();
-        face_elem->init_values(ValueFlags::point|ValueFlags::map_gradient, face_quad);
+        face_elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, face_quad);
 
-        face_elem->fill_values();
-        face_elem->get_values().print_info(out);
-        face_elem->get_gradients().print_info(out);
+        face_elem->fill_cache();
+        face_elem->get_map_values().print_info(out);
+        face_elem->get_map_gradients().print_info(out);
     }
 }
 

@@ -64,6 +64,8 @@ public:
      */
     DynamicMultiArray(const TensorSize<rank> &dim);
 
+    DynamicMultiArray(const TensorSize<rank> &dim, const T &val);
+
     /** Copy constructor. */
     DynamicMultiArray(const DynamicMultiArray<T,rank> &data) = default;
 
@@ -101,6 +103,7 @@ public:
      */
     void resize(const TensorSize<rank> &dim);
 
+    void resize(const TensorSize<rank> &dim, const T &val);
 
     /**
      * Reshape the multiarray, i.e. change the size along each coordinate direction without
@@ -113,20 +116,21 @@ public:
     void reshape(const TensorSize<rank> &new_sizes);
     ///@}
 
-
-
-
-
-    //TODO: where do we need this function? (MM 22 Feb 2014)
     /**
      * Extract a sub multi-array from the array and return it
-     * as a flat vector.
-     * @todo: where do we need this function? (MM 22 Feb 2014)
+     * in the tensor range start with the tensor increment inc.
      */
     DynamicMultiArray<T,rank> get_sub_array(const TensorIndex<rank> &start,
-                                            const TensorIndex<rank> &end) const;
+                                            const TensorIndex<rank> &inc) const;
 
-
+#if 0
+    /**
+     * Extract a sub multi-array view from the array and return it
+     * in the tensor range start with the tensor increment inc.
+     */
+    get_sub_array_view(const TensorIndex<rank> &start,
+                       const TensorIndex<rank> &inc) const;
+#endif
 
     /** @name Functions to get/set slices of the DynamicMultiArray */
     ///@{
@@ -193,7 +197,7 @@ operator*(const Real a, const DynamicMultiArray<T,rank> &B)
 {
     DynamicMultiArray<T,rank> res(B);
 
-    for (auto & r : res)
+    for (auto &r : res)
         r *= a;
 
     return res;

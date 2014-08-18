@@ -58,6 +58,10 @@ public :
      */
     explicit ValueVector(const Index num_points) ;
 
+    // TODO (pauletti, Jul 11, 2014): it should be deleted after return by value in pf_accessor
+    explicit ValueVector(const Size num_functions, const Size num_points)
+        :ValueVector(num_points)
+    {}
     /**
      * Constructor from a std::vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
@@ -108,8 +112,20 @@ public :
 
     ///@}
 
-
-
+    /**
+     * Returns the number of points.
+     */
+    Size get_num_points() const noexcept
+    {
+        return this->size();
+    }
+    /**
+     * Returns the number of functions.
+     */
+    Size get_num_functions() const noexcept
+    {
+        return 1;
+    }
     /**
      * @name Values initialization
      */

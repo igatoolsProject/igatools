@@ -55,8 +55,8 @@ public:
      * Typedef for specifying the derivatives of the scalar basis function in the
      * reference domain.
      */
-    template <int deriv_order>
-    using Derivative = Derivatives<dim,1,1,deriv_order>;
+    template <int order>
+    using Derivative = Derivatives<dim,1,1,order>;
 
 
     /** @name Constructors */

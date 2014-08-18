@@ -1,0 +1,119 @@
+Knots without repetition:
+   Number of active elements: 3
+   Number of intervals per direction: [ 3 ]
+   Knot coordinates:
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+
+Degrees:
+[2] 
+Interior multiplicities:
+   [ 1 1 ]
+
+Dimensionality Table:
+[ 5 ] 
+Component Dimension:
+5 
+Total Dimension: 5
+Boundary knots:
+[ -0.500000 0 0 ]
+[ 1.10000 1.20000 1.30000 ]
+Repeated knots:
+[ -0.500000 0 0 0.333333 0.666667 1.10000 1.20000 1.30000 ]
+Interpolatory Boundary knots:
+Repeated knots:
+[ 0 0 0 0.333333 0.666667 1.00000 1.00000 1.00000 ]
+Knots without repetition:
+   Number of active elements: 8
+   Number of intervals per direction: [ 2 4 ]
+   Knot coordinates:
+      [ 0 0.500000 1.00000 ]
+      [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   
+
+Degrees:
+[1,3] 
+Interior multiplicities:
+   [ 1 ]
+   [ 1 1 1 ]
+
+Dimensionality Table:
+[ 3 7 ] 
+Component Dimension:
+21 
+Total Dimension: 21
+Boundary knots:
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.10000 1.60000 1.60000 ]
+Repeated knots:
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+[ -0.600000 0 0 0 0.250000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
+Knots without repetition:
+   Number of active elements: 24
+   Number of intervals per direction: [ 2 3 4 ]
+   Knot coordinates:
+      [ 0 0.500000 1.00000 ]
+      [ 0 0.333333 0.666667 1.00000 ]
+      [ 0 0.250000 0.500000 0.750000 1.00000 ]
+   
+
+Degrees:
+[1,3,0] 
+Interior multiplicities:
+   [ 1 ]
+   [ 1 1 ]
+   [ 1 1 1 ]
+
+Dimensionality Table:
+[ 3 6 4 ] 
+Component Dimension:
+72 
+Total Dimension: 72
+Boundary knots:
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 ]
+[ 1.60000 ]
+Repeated knots:
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+[ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
+Knots without repetition:
+   Number of active elements: 6
+   Number of intervals per direction: [ 2 3 ]
+   Knot coordinates:
+      [ 0 0.500000 1.00000 ]
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+
+Degrees:
+[1,3] [3,1] 
+Interior multiplicities:
+   [ 1 ]
+   [ 1 1 ]
+   [ 1 ]
+   [ 1 1 ]
+
+Dimensionality Table:
+[ 3 6 ] [ 5 4 ] 
+Component Dimension:
+18 20 
+Total Dimension: 38
+Boundary knots:
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 0 0 0 ]
+[ 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.500000 0 ]
+[ 1.20000 1.30000 ]
+Repeated knots:
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+[ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
+[ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]

@@ -44,12 +44,13 @@ create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
 
-    StaticMultiArray<TensorIndex<2>,2,1> degree = { {{3,2}},
+    typename BSplineSpace<2,2,1>::DegreeTable degree = { {{3,2}},
         {{2,3}}
     } ;
 
-    return BSplineSpace<2,2,1>::create(knots, degree) ;
+    return BSplineSpace<2,2,1>::create(degree, knots) ;
 }
+
 
 template <>
 shared_ptr<BSplineSpace<3,3,1> >
@@ -57,12 +58,12 @@ create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
 
-    StaticMultiArray<TensorIndex<3>,3,1> degree = { {{3,2,2}},
+    typename BSplineSpace<3,3,1>::DegreeTable degree = { {{3,2,2}},
         {{2,3,2}},
         {{2,2,3}}
     } ;
 
-    return BSplineSpace<3,3,1>::create(knots, degree) ;
+    return BSplineSpace<3,3,1>::create(degree, knots) ;
 }
 
 
@@ -81,22 +82,22 @@ void do_test()
     QGauss< dim_domain > quad(n_points) ;
 
     auto elem = space->begin();
-    elem->init_values(ValueFlags::value, quad);
+    elem->init_cache(ValueFlags::value, quad);
 
     for (; elem != space->end(); ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         out << "Values:" << endl ;
         elem->get_basis_values().print_info(out);
     }
 
     {
         auto elem = space->begin();
-        elem->init_values(ValueFlags::gradient, quad) ;
+        elem->init_cache(ValueFlags::gradient, quad) ;
 
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_values();
+            elem->fill_cache();
             out << "Gradients:" << endl ;
             elem->get_basis_gradients().print_info(out);
         }
@@ -104,11 +105,11 @@ void do_test()
 
     {
         auto elem = space->begin();
-        elem->init_values(ValueFlags::hessian, quad) ;
+        elem->init_cache(ValueFlags::hessian, quad) ;
 
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_values();
+            elem->fill_cache();
             out << "Hessians:" << endl ;
             elem->get_basis_hessians().print_info(out);
         }

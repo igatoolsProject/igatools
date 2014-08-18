@@ -27,7 +27,7 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_sized_container.h>
 #include <igatools/utils/multi_array_iterator.h>
-
+#include <igatools/utils/container_view.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -77,18 +77,36 @@ IGA_NAMESPACE_OPEN
  * MultiArray::cend() (const version).
  *
  *
+ * ## View
+ * Another way to access the elements of a MultiArray is using a ContainerView
+ * (or its <tt>const</tt> counterpart ConstContainerView).
+ * A ContainerView is basically an object that:
+ * - store two iterators (one pointing the begin of the container
+ * and the other pointing to one-pass-end the container;
+ * - have some methods for accessing the entries of the container.
+ * It is important to note that a ContainerView is a lightweight object
+ * (compared to the container from which the View refers from) because the memory used to store
+ * the data is allocated on the container and not on the ContainerView,
+ * and that the entry access are managed by the iterators.
+ *
  * @ingroup multi_array_containers
  *
  * @author M. Martinelli
  * @date 31 Jan 2014
  */
+//TODO(pauletti, May 31, 2014): we should provide a tensorindex type for loop
 template<class STLContainer, int rank>
 class MultiArray : public TensorSizedContainer<rank>
 {
 public:
     /** Type of the entries stored in the STL container. */
-    using Entry = typename STLContainer::value_type;
+    using value_type = typename STLContainer::value_type;
 
+    /** Type for the reference in the STL container. */
+    using reference = typename STLContainer::reference;
+
+    /** Type for the const_reference in the STL container. */
+    using const_reference = typename STLContainer::const_reference;
 
     /** @name Constructors and destructor */
     ///@{
@@ -133,23 +151,23 @@ public:
     /**
      *  Flat index access operator (non-const version).
      */
-    Entry &operator()(const Index i);
+    reference operator()(const Index i);
 
     /**
      *  Flat index access operator (const version).
      */
-    const Entry &operator()(const Index i) const;
+    const_reference operator()(const Index i) const;
 
 
     /**
      *  Tensor index access operator (non-const version).
      */
-    Entry &operator()(const TensorIndex<rank> &i);
+    reference operator()(const TensorIndex<rank> &i);
 
     /**
      *  Tensor index access operator (const version).
      */
-    const Entry &operator()(const TensorIndex<rank> &i) const;
+    const_reference operator()(const TensorIndex<rank> &i) const;
 
     /** Return the entries of the multiarray as unidimensional std::vector. */
     const STLContainer &get_data() const;
@@ -160,7 +178,7 @@ public:
     ///@{
 
     /** Type of the const iterator. */
-    using const_iterator = MultiArrayIterator<const MultiArray<STLContainer,rank>>;
+    using const_iterator = MultiArrayConstIterator<MultiArray<STLContainer,rank>>;
 
     /** Type of the iterator. */
     using iterator = MultiArrayIterator<MultiArray<STLContainer,rank>>;
@@ -187,16 +205,37 @@ public:
     ///@}
 
 
+    /** @name Getting a view of the data*/
+    ///@{
+    /** Returns a ContainerView of the MultiArray. */
+    ContainerView<MultiArray<STLContainer,rank>> get_view();
+
+    /** Returns a ConstContainerView of the MultiArray. */
+    ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;
+
+    /**
+     * Returns a ContainerView of the underlying STLContainer
+     * used to store the entries of the MultiArray.
+     */
+    ContainerView<STLContainer> get_flat_view();
+
+    /**
+     * Returns a ConstContainerView of the underlying STLContainer
+     * used to store the entries of the MultiArray.
+     */
+    ConstContainerView<STLContainer> get_flat_const_view() const;
+    ///@}
+
     /** @name Functions to easily fill the multiarray */
     ///@{
     /**
      * Fills the multiarray with an arithmetic progression starting with the value @p init_value.
      */
-    void fill_progression(const Entry &init_value = {});
+    void fill_progression(const value_type &init_value = {});
 
 
     /** Fills the multiarray copying in each entry the content of @p value. */
-    void fill(const Entry &value);
+    void fill(const value_type &value);
     ///@}
 
 
@@ -219,7 +258,6 @@ protected:
      */
     STLContainer data_;
 };
-
 
 
 IGA_NAMESPACE_CLOSE

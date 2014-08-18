@@ -20,7 +20,7 @@
 
 /*
  *  Test for arithmetic tensor operators: +, -, *, /.
- *  
+ *
  *  author: pauletti
  *  date: Feb 25, 2014
  *
@@ -32,35 +32,35 @@
 template <int dim, int range, int rank, int order>
 void run_test()
 {
-  using Tensor = Derivatives<dim, range, rank, order>;
-  Tensor A, B;
-  Real alpha = 1.;
-  
-  out << "Testing Derivatives<" << dim << ",";
-  out << range << "," << rank << "," << order << ">" << endl;
+    using Tensor = Derivatives<dim, range, rank, order>;
+    Tensor A, B;
+    Real alpha = 1.;
 
-  out<< "A =" << endl;
-  out << A << endl;
+    out << "Testing Derivatives<" << dim << ",";
+    out << range << "," << rank << "," << order << ">" << endl;
 
-  out<< "B =" << endl;
-  out << B << endl;
+    out<< "A =" << endl;
+    out << A << endl;
 
-  out<< "alpha = " << alpha << endl;
+    out<< "B =" << endl;
+    out << B << endl;
 
-  out<< "A + B =" << endl;
-  out << A + B << endl;
+    out<< "alpha = " << alpha << endl;
 
-  out<< "A - B =" << endl;
-  out << A - B << endl;
+    out<< "A + B =" << endl;
+    out << A + B << endl;
 
-  out<< "alpha * A =" << endl;
-  out << alpha * A  << endl;
- 
-  out<< " A * alpha " << endl;
-  out << A * alpha  << endl;
+    out<< "A - B =" << endl;
+    out << A - B << endl;
 
-  out<< " A / alpha " << endl;
-  out << A / alpha  << endl;
+    out<< "alpha * A =" << endl;
+    out << alpha *A  << endl;
+
+    out<< " A * alpha " << endl;
+    out << A *alpha  << endl;
+
+    out<< " A / alpha " << endl;
+    out << A / alpha  << endl;
 }
 
 
@@ -71,6 +71,6 @@ int main()
     out << "Test for tensor arithmetic operators" << endl;
     run_test<2, 2, 1, 1>();
     run_test<3, 3, 1, 1>();
-   
+
     return  0;
 }

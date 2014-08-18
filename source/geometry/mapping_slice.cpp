@@ -34,7 +34,7 @@ MappingSlice<dim_, codim_>::
 MappingSlice(const std::shared_ptr<const SupMap> map,
              const int face_id,
              const std::shared_ptr<GridType > grid,
-             const std::shared_ptr<std::map<int,int> > elem_map)
+             const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map)
     :
     base_t::Mapping(grid),
     map_(map),
@@ -65,7 +65,7 @@ MappingSlice<dim_, codim_>::
 create(const std::shared_ptr<const SupMap> map,
        const int face_id,
        const std::shared_ptr<GridType > grid,
-       const std::shared_ptr<std::map<int,int> > elem_map) -> shared_ptr<base_t>
+       const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map) -> shared_ptr<base_t>
 {
     return shared_ptr<base_t>(new self_t(map, face_id, grid, elem_map));
 }
@@ -92,9 +92,9 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate(std::vector<ValueType> &values) const
+evaluate(std::vector<Value> &values) const
 {
-    values = element->get_values();
+    values = element->get_map_values();
 }
 
 
@@ -102,9 +102,9 @@ evaluate(std::vector<ValueType> &values) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate_gradients(std::vector<GradientType> &gradients) const
+evaluate_gradients(std::vector<Gradient> &gradients) const
 {
-    auto grad = element->get_gradients();
+    auto grad = element->get_map_gradients();
 
     const auto active_dir = UnitElement<dim+1>::active_directions[direction_];
 
@@ -122,7 +122,7 @@ void
 MappingSlice<dim_, codim_>::
 init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 {
-    element->init_values(flag, build_extended_quadrature(quad));
+    element->init_cache(flag, build_extended_quadrature(quad));
 }
 
 
@@ -130,10 +130,11 @@ init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
-    element->reset_flat_tensor_indices((*elem_map_)[elem.get_flat_index()]);
-    element->fill_values();
+    typename CartesianGrid<dim_>::ElementIterator el_tmp(this->get_grid(),elem.get_flat_index());
+    element->move_to((*elem_map_)[el_tmp]->get_flat_index());
+    element->fill_cache();
 }
 
 
@@ -141,14 +142,14 @@ template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem) const
+                 const GridIterator &elem) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());
 }
-//*/
 
 
+//TODO(pauletti, Jun 20, 2014): simplify the output
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
@@ -171,6 +172,3 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_slice.inst>
-
-
-

@@ -31,11 +31,10 @@ IGA_NAMESPACE_OPEN
  */
 namespace functions
 {
-
 /**
  * Constant scalar function.
  */
-template<int dim, int range=1, int rank=1>
+template<int dim, int range = 1, int rank = 1>
 class ConstantFunction
     : public Function<dim, range, rank>
 {
@@ -43,17 +42,17 @@ public:
     /**
      * Type for the input argument of the function.
      */
-    using PointType = typename Function<dim, range, rank>::PointType;
+    using Point = typename Function<dim, range, rank>::Point;
 
     /**
      * Type for the return of the function.
      */
-    using ValueType = typename Function<dim, range, rank>::ValueType;
+    using Value = typename Function<dim, range, rank>::Value;
 
     /**
      * Construct a constant function with the given value.
      */
-    ConstantFunction(const ValueType value);
+    ConstantFunction(const Value value);
 
     /**
      * Destructor.
@@ -64,12 +63,12 @@ public:
      * Compute the @p values of Function at some @p points.
      */
     void
-    evaluate(const std::vector<PointType> &points,
-             std::vector<ValueType> &values) const;
+    evaluate(const std::vector<Point> &points,
+             std::vector<Value> &values) const;
 
 private:
     /** Constant given value that defines the function. */
-    const ValueType value_;
+    const Value value_;
 
 };
 

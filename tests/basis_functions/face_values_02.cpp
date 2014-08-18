@@ -36,7 +36,7 @@ void run_test(const int num_knots, const int p)
     using space_t = BSplineSpace<dim>;
 
     auto grid = CartesianGrid<dim>::create(num_knots);
-    auto space = space_t::create(grid, p);
+    auto space = space_t::create(p, grid);
 
     const int num_faces = UnitElement<dim>::faces_per_element;
     QGauss<dim> quad(2);
@@ -45,13 +45,13 @@ void run_test(const int num_knots, const int p)
 
     auto elem = space->begin();
     auto end =  space->end();
-    elem->init_values(flag, quad);
+    elem->init_cache(flag, quad);
 
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
         {
-            elem->fill_values();
+            elem->fill_cache();
             out << "Element" << elem->get_flat_index() << endl;
             elem->get_basis_values().print_info(out);
 
@@ -59,7 +59,7 @@ void run_test(const int num_knots, const int p)
             {
                 if (elem->is_boundary(face))
                 {
-                    elem->fill_face_values(face);
+                    elem->fill_face_cache(face);
                     out << "Face " << face << endl;
                     out << "values: " << endl;
                     elem->get_face_basis_values(face).print_info(out);

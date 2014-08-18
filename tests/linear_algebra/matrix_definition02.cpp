@@ -33,7 +33,7 @@
 #include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/geometry/unit_element.h>
 
-#include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
 int main(int argc, char *argv[])
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     CartesianProductArray<Real,dim_domain> coord ;
     for (int i = 0; i < dim_domain; ++i)
     {
-        vector<iga::Real> tmp_coord;
+        vector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coord.copy_data_direction(i,tmp_coord);
@@ -65,34 +65,28 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(knots, p_r) ;
-    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(knots, p_c) ;
+    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
+    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
 
     const auto n_basis_sp_rows = bspline_space_rows->get_num_basis();
     const auto n_basis_sp_cols = bspline_space_cols->get_num_basis();
-    out << endl;
-    out << "Rows space:" << endl;
-    bspline_space_rows->print_info(out);
-    out << endl;
-    out << "Columns space:" << endl;
-    bspline_space_cols->print_info(out);
     out << endl;
     out << "Number of dofs of rows space: " << n_basis_sp_rows << std::endl;
     out << "Number of dofs of columns space: " << n_basis_sp_cols << std::endl;
     out << endl;
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
-    using VectorType = Vector<linear_algebra_package>;
-    using MatrixType = Matrix<linear_algebra_package>;
+    using VectorType = Vector<la_pack>;
+    using MatrixType = Matrix<la_pack>;
 
 
-    MatrixType A(
-        dof_tools::get_sparsity_pattern<BSplineSpace<dim_domain,dim_range,rank>,
-        BSplineSpace<dim_domain,dim_range,rank>>(bspline_space_rows, bspline_space_cols));
+    MatrixType A(SparsityPattern(
+                     *bspline_space_rows->get_space_manager(),
+                     *bspline_space_cols->get_space_manager()));
 
 
     const auto num_rows = n_basis_sp_rows ;

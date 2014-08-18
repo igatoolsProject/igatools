@@ -46,13 +46,13 @@ void loop_on_grid_with_cache()
     // [init cache]
     QGauss<dim> quad(2);
     ValueFlags fill_flag = ValueFlags::w_measure;
-    elem->init_values(fill_flag, quad);
+    elem->init_cache(fill_flag, quad);
     // [init cache]
 
     for (; elem != elem_end; ++elem)
     {
         // [fill cache]
-        elem->fill_values();
+        elem->fill_cache();
         // [fill cache]
         out << "The center of element: " << elem->get_flat_index();
         out << " is: "<< elem->center() << endl;
@@ -76,14 +76,14 @@ void loop_on_space_with_cache()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
     const int degree = 2;
-    auto space = BSplineSpace<dim>::create(grid, degree);
+    auto space = BSplineSpace<dim>::create(degree, grid);
 
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem->init_values(ValueFlags::value, QGauss<dim>(1));
+    elem->init_cache(ValueFlags::value, QGauss<dim>(1));
     for (; elem != elem_end; ++elem)
     {
-        elem->fill_values();
+        elem->fill_cache();
         out << "Element: " << elem->get_flat_index();
         out << " has global basis: " << elem->get_local_to_global() << endl;
         elem->get_basis_values().print_info(out);

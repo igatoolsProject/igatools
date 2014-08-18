@@ -42,19 +42,19 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    iga::Real value(Point<dim> x) const
+    Real value(Points<dim> x) const
     {
-        iga::Real f = 1;
+        Real f = 1;
         for (int i = 0; i<dim; ++i)
             f = f * cos(2*PI*x[i]);
         return f;
     }
 
-    void evaluate(const std::vector< Point<dim> > &points, std::vector<Point<1> > &values) const
+    void evaluate(const std::vector< Points<dim> > &points, std::vector<Points<1> > &values) const
     {
         for (int i = 0; i<points.size(); ++i)
         {
-            Point<dim> p = points[i];
+            Points<dim> p = points[i];
             values[i][0] = this->value(p);
         }
     }
@@ -69,7 +69,7 @@ void do_test(const int p)
 
     const int num_knots = 10;
     auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = space_ref_t::create(knots, p) ;
+    auto space = space_ref_t::create(p, knots) ;
 
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
@@ -77,13 +77,13 @@ void do_test(const int p)
     BoundaryFunction<dim> f;
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
 
     auto proj_values = space_tools::projection_l2
-                       <space_ref_t,linear_algebra_package>
+                       <space_ref_t,la_pack>
                        (f,const_pointer_cast<const space_ref_t>(space),quad);
 
     proj_values.print(out);
@@ -99,7 +99,7 @@ void do_test(const int p)
 int main()
 {
     out.depth_console(20);
-    do_test<0,1,1>(1);
+    // do_test<0,1,1>(1);
     do_test<1,1,1>(3);
     do_test<2,1,1>(3);
     do_test<3,1,1>(1);

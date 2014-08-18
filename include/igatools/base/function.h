@@ -29,26 +29,31 @@
 IGA_NAMESPACE_OPEN
 
 /**
- *  @brief This class represents a function
+ *  @brief Scalar, vector or tensor valued function
+ *
+ *  Function
  *  \f$ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r_{times}}}. \f$
  *
  *  For example:
- *  - Function<n,m,1> is an m-vector valued function from <i> R <sup> n </sup> </i>.
- *  - Function<n,m,0> is a scalar function for any m.
+ *  - Function<n> is a scalar valued function on <i> R <sup> n </sup> </i>.
+ *  - Function<n,m> is an m-dimensional vector valued function on
+ *    <i> R <sup> n </sup> </i>.
+ *  - Function<n,m,2> is a tensor valued function on <i> R <sup> n </sup> </i>.
  *
  *  This is a pure abstract class and cannot be instantiated.
  *  Its purpose is to give an unified interface for concrete classes implementing
  *  function evaluation through the specialization of Function::evaluate().
  *
- *  For example to define a liner function from R^m to R^n
+ *  For example to define a linear function from R^m to R^n
  *  \code
  *  template<int m, int n>
- *  class LinearFunction : public Function<m, n, 1 >
+ *  class LinearFunction : public Function<m, n>
  *  {
  *  public:
+ *  using Function<m, n>::
  *    LinearFunction();
  *    void evaluate(std::vector < typename LinearFunction<dim, rdim>::Point >  & points,
- *                  std::vector     < typename LinearFunction<dim, rdim>::ValueType >  & values
+ *                  std::vector     < typename LinearFunction<dim, rdim>::Value >  & values
  *                 ) const
  *    {
  *      for (int i=0; i<points.size(); i++)
@@ -61,7 +66,7 @@ IGA_NAMESPACE_OPEN
  *  \endcode
  */
 
-template<int dim, int dim_range = 1, int rank = 1>
+template<int dim, int range = 1, int rank = 1>
 class Function
 {
 public:
@@ -70,22 +75,33 @@ public:
     /**
      * Type for the input argument of the function.
      */
-    using PointType = Point<dim>;
+    using Point = Points<dim>;
 
     /**
      * Type for the return of the function.
      */
-    using ValueType = Values<dim, dim_range, rank>;
+    using Value = Values<dim, range, rank>;
+
+    /**
+     * Type for the derivative of the function.
+     */
+    template <int order>
+    using Derivative = Derivatives<dim, range, rank, order>;
 
     /**
      * Type for the gradient of the function.
      */
-    using GradientType = Derivatives<dim, dim_range, rank, 1>;
+    using Gradient = Derivative<1>;
 
     /**
      * Type for the hessian of the function.
      */
-    using HessianType = Derivatives<dim, dim_range, rank, 2>;
+    using Hessian = Derivative<2>;
+
+    /**
+     * Typedef for specifying the divergence of the basis function.
+     */
+    using Div = Values<dim, range, rank-1>;
     ///@}
 
     /** @name Constructors and destructor. */
@@ -100,25 +116,22 @@ public:
     /** @name Evaluations of the Function at some points */
     ///@{
     /** Compute the @p values of Function at some @p points. */
-    virtual void evaluate(const std::vector<PointType> &points,
-                          std::vector<ValueType> &values) const = 0;
+    virtual void evaluate(const std::vector<Point> &points,
+                          std::vector<Value> &values) const = 0;
 
     /** Compute the @p gradients of Function at some @p points. */
-    virtual void evaluate_gradients(
-        const std::vector<PointType> &points,
-        std::vector<GradientType> &gradient) const;
+    virtual void evaluate_gradients(const std::vector<Point> &points,
+                                    std::vector<Gradient> &gradient) const;
 
     /** Compute the @p hessians of Function at some @p points. */
-    virtual void evaluate_hessians(
-        const std::vector<PointType> &points,
-        std::vector<HessianType> &hessians) const;
+    virtual void evaluate_hessians(const std::vector<Point> &points,
+                                   std::vector<Hessian> &hessians) const;
 
     /** Compute the @p values and the @p gradients of Function at some
      *  @p points. */
-    virtual void evaluate_values_and_gradients(
-        const std::vector<PointType> &points,
-        std::vector<ValueType> &values,
-        std::vector<GradientType> &gradients) const;
+    virtual void evaluate_values_and_gradients(const std::vector<Point> &points,
+                                               std::vector<Value> &values,
+                                               std::vector<Gradient> &gradients) const;
     ///@}
 };
 

@@ -45,6 +45,17 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 
 
 template <int dim_>
+CartesianGridElementAccessor<dim_>::
+CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
+                             const TensorIndex<dim> index)
+    :
+    CartesianGridElement<dim>(grid, index),
+    length_cache_ {new LengthCache}
+{}
+
+
+
+template <int dim_>
 bool
 CartesianGridElementAccessor<dim_>::
 operator== (const CartesianGridElementAccessor<dim_> &a) const
@@ -58,7 +69,7 @@ operator== (const CartesianGridElementAccessor<dim_> &a) const
 template <int dim_>
 bool
 CartesianGridElementAccessor<dim_>::
-operator!= (const CartesianGridElementAccessor<dim_> &a) const
+operator!=(const CartesianGridElementAccessor<dim_> &a) const
 {
     Assert(this->get_grid() == a.get_grid(), ExcMessage("Cannot Compare Iterators."));
     return (this->get_flat_index() != a.get_flat_index());
@@ -70,14 +81,20 @@ operator!= (const CartesianGridElementAccessor<dim_> &a) const
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-operator ++ ()
+operator++()
 {
+    const auto n_elem = this->grid_->get_num_all_elems();
     Index index = this->get_flat_index();
-    ++index;
-    if (index >= this->get_grid()->get_num_elements())
+    do
+    {
+        ++index;
+    }
+    while (index<n_elem && (!this->grid_->active_elems_(index)));
+
+    if (index >= n_elem)
         index = IteratorState::pass_the_end;
 
-    this->reset_flat_tensor_indices(index);
+    this->move_to(index);
 }
 
 
@@ -87,7 +104,7 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 LengthCache::
-reset(const CartesianGrid<dim_> &grid)
+resize(const CartesianGrid<dim_> &grid)
 {
     length_data_ = grid.get_element_lengths();
 
@@ -118,6 +135,11 @@ get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache
     }
     else
     {
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
+
         return face_values_[topology_id.get_id()];
     }
 }
@@ -135,6 +157,11 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
     }
     else
     {
+        Assert(this->is_boundary(topology_id.get_id()),
+        ExcMessage("The requested face_id=" +
+        std::to_string(topology_id.get_id()) +
+        " is not a boundary for the element"));
+
         return face_values_[topology_id.get_id()];
     }
 }
@@ -143,24 +170,24 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-init_values(const ValueFlags flag,
-            const Quadrature<dim_> &quad)
+init_cache(const ValueFlags flag,
+           const Quadrature<dim_> &quad)
 {
     Assert((flag|admisible_flag) == admisible_flag,
            ExcFillFlagNotSupported(admisible_flag, flag));
     Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()));
 
 
-    length_cache_->reset(*this->get_grid());
+    length_cache_->resize(*this->get_grid());
 
     GridElemValueFlagsHandler elem_flags_handler(flag);
     GridFaceValueFlagsHandler face_flags_handler(flag);
 
-    elem_values_.reset(elem_flags_handler, quad);
+    elem_values_.resize(elem_flags_handler, quad);
 
     Index face_id = 0 ;
-    for (auto& face_value : face_values_)
-        face_value.reset(face_flags_handler, quad, face_id++);
+    for (auto &face_value : face_values_)
+        face_value.resize(face_flags_handler, quad, face_id++);
 }
 
 
@@ -168,9 +195,9 @@ init_values(const ValueFlags flag,
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-init_values(const ValueFlags flag)
+init_cache(const ValueFlags flag)
 {
-    length_cache_->reset(*this->get_grid());
+    length_cache_->resize(*this->get_grid());
 
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
@@ -207,9 +234,9 @@ get_face_measure(const Index face_id) const
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-init_face_values(const Index face_id,
-                 const ValueFlags flag,
-                 const Quadrature<dim_-1> &quad)
+init_face_cache(const Index face_id,
+                const ValueFlags flag,
+                const Quadrature<dim_-1> &quad)
 {
     Assert(false, ExcNotImplemented());
 }
@@ -219,7 +246,7 @@ init_face_values(const Index face_id,
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-fill_values(const TopologyId<dim_> &topology_id)
+fill_cache(const TopologyId<dim_> &topology_id)
 {
     auto &cache = get_values_cache(topology_id);
 
@@ -233,9 +260,9 @@ fill_values(const TopologyId<dim_> &topology_id)
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-fill_face_values(const Index face_id)
+fill_face_cache(const Index face_id)
 {
-    fill_values(FaceTopology<dim_>(face_id));
+    fill_cache(FaceTopology<dim_>(face_id));
 }
 
 
@@ -264,7 +291,7 @@ get_face_w_measures(const Index face_id) const
 template <int dim_>
 auto
 CartesianGridElementAccessor<dim_>::
-get_points(const TopologyId<dim_> &topology_id) const -> vector<Point<dim>> const
+get_points(const TopologyId<dim_> &topology_id) const -> vector<Points<dim>> const
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
@@ -281,7 +308,7 @@ get_points(const TopologyId<dim_> &topology_id) const -> vector<Point<dim>> cons
 template <int dim_>
 auto
 CartesianGridElementAccessor<dim_>::
-get_face_points(const Index face_id) const -> vector<Point<dim>> const
+get_face_points(const Index face_id) const -> vector<Points<dim>> const
 {
     return this->get_points(FaceTopology<dim_>(face_id));
 }
@@ -310,7 +337,7 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 ValuesCache::
-reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
+resize(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
 {
     const auto n_points_direction = quad.get_num_points_direction();
     const Size n_points = n_points_direction.flat_size();
@@ -365,9 +392,9 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 ElementValuesCache::
-reset(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
+resize(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
 {
-    ValuesCache::reset(flags_handler,quad);
+    ValuesCache::resize(flags_handler,quad);
     this->set_initialized(true);
 }
 
@@ -377,11 +404,11 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 FaceValuesCache::
-reset(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad1, const Index face_id)
+resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad1, const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     const auto quad = quad1.collapse_to_face(face_id);
-    ValuesCache::reset(flags_handler,quad);
+    ValuesCache::resize(flags_handler,quad);
     this->set_initialized(true);
 }
 
@@ -391,7 +418,7 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 FaceValuesCache::
-reset(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_-1> &quad1, const Index face_id)
+resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_-1> &quad1, const Index face_id)
 {
     Assert(false, ExcNotImplemented());
 }

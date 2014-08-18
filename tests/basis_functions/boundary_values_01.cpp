@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
  *  Test for the boundary projection function.
  *  This test ....
@@ -44,24 +45,24 @@ class BoundaryFunction : public Function<dim,1,1>
 public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
-    iga::Real value(Point<dim> P_) const
+    Real value(Points<dim> P_) const
     {
-        iga::Real  PI = numbers::PI;
+        Real  PI = numbers::PI;
 
-        iga::Real f = 1;
+        Real f = 1;
         for (int cnt = 0; cnt<dim; cnt++)
         {
-            f = f * cos(iga::Real(2*PI*P_[cnt]));
+            f = f * cos(Real(2*PI*P_[cnt]));
         }
 
         return f;
     }
 
-    void evaluate(const std::vector< Point<dim> > &points, std::vector<Point<1> > &values) const
+    void evaluate(const std::vector< Points<dim> > &points, std::vector<Points<1> > &values) const
     {
         for (int i =0; i<points.size(); i++)
         {
-            Point<dim> p = points[i];
+            Points<dim> p = points[i];
             values[i][0] = this->value(p);
         }
     };
@@ -69,43 +70,40 @@ public:
 };
 
 
-template<int dim_ref_domain ,int dim_phys_domain,int dim_range ,int rank>
+template<int dim, int space_dim, int range, int rank=1>
 void do_test(const int p)
 {
-    const int codim = dim_phys_domain - dim_ref_domain;
-    typedef BSplineSpace<dim_ref_domain,dim_range,rank> space_ref_t ;
-    typedef PushForward<Transformation::h_grad,dim_ref_domain,codim> PushForward ;
-    typedef PhysicalSpace<space_ref_t,PushForward> space_phys_t ;
+    const int codim = space_dim - dim;
+    using RefSpace = BSplineSpace<dim,range,rank>;
+
+    typedef PushForward<Transformation::h_grad,dim,codim> PushForward ;
+    typedef PhysicalSpace<RefSpace, PushForward> space_phys_t ;
 
     const int num_knots = 10;
-    auto knots = CartesianGrid<dim_ref_domain>::create(num_knots);
-    auto space = space_ref_t::create(knots, p) ;
-    auto map = IdentityMapping<dim_ref_domain,codim>::create(knots);
+    auto knots = CartesianGrid<dim>::create(num_knots);
+    auto space = RefSpace::create(p, knots) ;
+    auto map = IdentityMapping<dim,codim>::create(knots);
     auto phys_space = space_phys_t::create(space, PushForward::create(map));
 
     //Quadrature
     const int n_qpoints = 4;
-    QGauss<dim_ref_domain-1> quad(n_qpoints);
+    QGauss<dim-1> quad(n_qpoints);
 
-    BoundaryFunction<dim_phys_domain> bc;
+    BoundaryFunction<space_dim> bc;
 
     knots->set_boundary_id(0,1);
     std::set<boundary_id> face_id;
     face_id.insert(1);
 
 #if defined(USE_TRILINOS)
-    const auto linear_algebra_package = LinearAlgebraPackage::trilinos;
+    const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
-    const auto linear_algebra_package = LinearAlgebraPackage::petsc;
+    const auto la_pack = LAPack::petsc;
 #endif
 
-    std::map<Index,iga::Real> boundary_values;
-    space_tools::project_boundary_values<space_phys_t,linear_algebra_package>(
-        bc,
-        phys_space,
-        quad,
-        face_id,
-        boundary_values);
+    std::map<Index, Real> boundary_values;
+    space_tools::project_boundary_values<space_phys_t,la_pack>(
+        bc, phys_space, quad, face_id, boundary_values);
 
     for (auto entry: boundary_values)
         out << entry.first << "\t" << entry.second << endl;
@@ -116,7 +114,7 @@ void do_test(const int p)
 int main()
 {
     out.depth_console(20);
-    do_test<2,2,1,1>(3);
+    do_test<2,2,1>(3);
 
     //do_test<3,3,1,1>(3);
 
