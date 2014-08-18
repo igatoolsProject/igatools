@@ -33,7 +33,6 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
-#include <igatools/io/writer.h>
 #include <igatools/contrib/table_handler.h>
 
 #include <igatools/operators/elliptic_operators_std_integration.h>
@@ -71,24 +70,15 @@ public:
     PoissonProblem(const int n_knots, const int deg);
 
 
-    void run();
-
-
     Real get_elapsed_time_eval_basis() const;
     Real get_elapsed_time_eval_mass_matrix() const;
     Real get_elapsed_time_eval_stiffness_matrix() const;
     Real get_elapsed_time_eval_rhs() const;
     Real get_elapsed_time_assemble_stiffness_matrix() const;
     Real get_elapsed_time_fill_complete() const;
-    Real get_elapsed_time_total() const;
 
     int get_num_dofs() const;
-    int get_num_iters() const;
-    Real get_achieved_tol() const;
 
-    static std::string get_filename();
-
-private:
     void assemble();
     // [Problem class]
 
@@ -103,8 +93,6 @@ protected:
     using Duration = chrono::duration<Real>;
     using Clock = chrono::high_resolution_clock;
     using TimePoint = chrono::time_point<Clock>;
-
-//    using Value     = typename Function<dim>::Value;
     // [type aliases]
 
     TimePoint start_poisson_;
@@ -134,8 +122,6 @@ protected:
     std::shared_ptr<VectorType> solution;
 
 
-    Duration elapsed_time_total_;
-
     Duration elapsed_time_eval_basis_;
 
     Duration elapsed_time_eval_mass_matrix_;
@@ -149,29 +135,8 @@ protected:
     Duration elapsed_time_fill_complete_;
 
     int num_dofs_;
-
-    int num_iters_;
-
-    Real achieved_tol_;
 };
 
-
-
-template<int dim,class DerivedClass>
-Real
-PoissonProblem<dim,DerivedClass>::
-get_achieved_tol() const
-{
-    return achieved_tol_;
-}
-
-template<int dim,class DerivedClass>
-Real
-PoissonProblem<dim,DerivedClass>::
-get_elapsed_time_total() const
-{
-    return elapsed_time_total_.count();
-}
 
 template<int dim,class DerivedClass>
 Real
@@ -230,21 +195,6 @@ get_num_dofs() const
     return num_dofs_;
 }
 
-template<int dim,class DerivedClass>
-int
-PoissonProblem<dim,DerivedClass>::
-get_num_iters() const
-{
-    return num_iters_;
-}
-
-template<int dim,class DerivedClass>
-std::string
-PoissonProblem<dim,DerivedClass>::
-get_filename()
-{
-    return "poisson_problem-" + to_string(dim) + "D";
-}
 
 
 template<int dim,class DerivedClass>
@@ -255,7 +205,6 @@ PoissonProblem(const int n_knots, const int deg)
     deg_(deg),
     elem_quad(QGauss<dim>(deg+1)),
     face_quad(QGauss<dim-1>(deg+1)),
-    elapsed_time_total_(0),
     elapsed_time_eval_basis_(0),
     elapsed_time_eval_mass_matrix_(0),
     elapsed_time_eval_stiffness_matrix_(0),
@@ -298,7 +247,6 @@ void
 PoissonProblem<dim,DerivedClass>::
 assemble()
 {
-
     LogStream out_screen;
 
     Duration elapsed_time_assemble;
@@ -494,23 +442,7 @@ assemble()
 
     out << "==========================================================" << endl;
     out << endl;
-
-    // AssertThrow(false,ExcNotImplemented());
 }
-
-
-
-template<int dim,class DerivedClass>
-void
-PoissonProblem<dim,DerivedClass>::
-run()
-{
-    static_cast<DerivedClass &>(*this).assemble();
-    end_poisson_ = Clock::now();
-
-    elapsed_time_total_ = end_poisson_ - start_poisson_;
-}
-
 
 
 template<int dim>
@@ -530,22 +462,11 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
-    static std::string get_filename();
-
 private:
 
     EllipticOperatorsType elliptic_operators_std_;
 
 };
-
-//*/
-template<int dim>
-std::string
-PoissonProblemStandardIntegration<dim>::
-get_filename()
-{
-    return base_t::get_filename() + "-std";
-}
 
 
 template<int dim>
@@ -595,29 +516,10 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
-    static std::string get_filename();
-
 private:
     EllipticOperatorsSFIntegration<SpaceTest,SpaceTrial>
     elliptic_operators_sf_;
 };
-/*
-template<int dim>
-PoissonProblemSumFactorization<dim>::
-PoissonProblemSumFactorization(const TensorSize<dim> &n_knots,const int space_deg)
-    :
-    base_t(n_knots,space_deg)
-{}
-//*/
-template<int dim>
-std::string
-PoissonProblemSumFactorization<dim>::
-get_filename()
-{
-    return base_t::get_filename() + "-sf";
-}
-
-
 
 template<int dim>
 auto
@@ -632,89 +534,13 @@ template <class PoissonProblemSolver >
 void
 do_test(const int degree_min, const int degree_max,const int n_elems_per_direction)
 {
-    using std::cout;
-    using std::endl;
-
     const int n_knots = n_elems_per_direction+1;
-
-    TableHandler time_table;
-
-    string time_eval_basis = "Basis";
-
-    string time_eval_rhs = "RHS";
-
-    string time_mass = "Mass";
-
-    string time_stiff = "Stiffness";
-
-    string time_assemble = "Loc-to-glob assemble";
-
-    string time_fill_complete = "Fill-complete";
-
-    string time_total = "Total";
-
-    string achieved_tol = "Tol";
 
     for (int degree = degree_min ; degree <= degree_max ; ++degree)
     {
         PoissonProblemSolver poisson(n_knots,degree);
-        poisson.run();
-
-
-        //*/
-        time_table.add_value("Degree",degree);
-        time_table.add_value(time_eval_basis,poisson.get_elapsed_time_eval_basis());
-
-        time_table.add_value(time_eval_rhs,poisson.get_elapsed_time_eval_rhs());
-
-        time_table.add_value(time_mass,poisson.get_elapsed_time_eval_mass_matrix());
-        time_table.add_value(time_stiff,poisson.get_elapsed_time_eval_stiffness_matrix());
-
-        time_table.add_value(time_assemble,poisson.get_elapsed_time_assemble_stiffness_matrix());
-        time_table.add_value(time_fill_complete,poisson.get_elapsed_time_fill_complete());
-
-        time_table.add_value(time_total,poisson.get_elapsed_time_total());
-
-        time_table.add_value("Num dofs",poisson.get_num_dofs());
-        time_table.add_value("Num iters",poisson.get_num_iters());
-        time_table.add_value(achieved_tol,poisson.get_achieved_tol());
-
+        poisson.assemble();
     }
-    time_table.set_precision(time_eval_basis,10);
-    time_table.set_scientific(time_eval_basis,true);
-
-    time_table.set_precision(time_eval_rhs,10);
-    time_table.set_scientific(time_eval_rhs,true);
-
-    time_table.set_precision(time_mass,10);
-    time_table.set_scientific(time_mass,true);
-
-    time_table.set_precision(time_stiff,10);
-    time_table.set_scientific(time_stiff,true);
-
-    time_table.set_precision(time_assemble,10);
-    time_table.set_scientific(time_assemble,true);
-
-    time_table.set_precision(time_fill_complete,10);
-    time_table.set_scientific(time_fill_complete,true);
-
-    time_table.set_precision(time_total,10);
-    time_table.set_scientific(time_total,true);
-
-    time_table.set_precision(achieved_tol,10);
-    time_table.set_scientific(achieved_tol,true);
-
-
-
-
-    ofstream elapsed_time_file(
-        "time_" + PoissonProblemSolver::get_filename() +
-        "_" + std::to_string(degree_min) +
-        "_" + std::to_string(degree_max) +
-        "_" + std::to_string(n_elems_per_direction) +
-        ".txt");
-    time_table.write_text(elapsed_time_file);
-
 }
 
 
