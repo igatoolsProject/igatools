@@ -116,7 +116,7 @@ auto
 MultiArray<STLContainer,rank>::
 operator()(const TensorIndex<rank> &tensor_index) const -> const_reference
 {
-	return MultiArray<STLContainer,rank>::operator()(tensor_index);
+	return const_cast<MultiArray<STLContainer,rank> &>(*this)(tensor_index);
 /*
 #ifndef NDEBUG
     const TensorSize<rank> tensor_size = this->tensor_size();

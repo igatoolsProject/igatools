@@ -1,63 +1,87 @@
+========== do_test<1>() --- begin ==========
 Default constructor 
 
 Uniform constructor 
 0 0 0 
 Rectangular constructor 
 0 0 
+========== do_test<1>() --- end ==========
+========== do_test<2>() --- begin ==========
 Default constructor 
 
 Uniform constructor 
 0 0 0 0 0 0 0 0 0 
 Rectangular constructor 
 0 0 0 0 0 0 
+========== do_test<2>() --- end ==========
+========== do_test<3>() --- begin ==========
 Default constructor 
 
 Uniform constructor 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 Rectangular constructor 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+========== do_test<3>() --- end ==========
+========== do_test_1<1>() --- begin ==========
 Default constructor 
 
 Size: 3
 0 0 0 0 1 2 
 Size: 2
 0 1 
+========== do_test_1<1>() --- end ==========
+========== do_test_1<2>() --- begin ==========
 Default constructor 
 
 Size: 9
 0 0 0 0 0 0 0 0 0 0 1 2 3 4 5 6 7 8 
 Size: 6
 0 1 2 3 4 5 
+========== do_test_1<2>() --- end ==========
+========== do_test_1<3>() --- begin ==========
 Default constructor 
 
 Size: 27
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 
 Size: 24
 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 
+========== do_test_1<3>() --- end ==========
+========== do_test_2<1>() --- begin ==========
 Default constructor 
 Size: 3
 0 1 2 
 Size: 2
 10 11 
+========== do_test_2<1>() --- end ==========
+========== do_test_2<2>() --- begin ==========
 Default constructor 
 Size: 9
 0 1 2 3 4 5 6 7 8 
 Size: 6
 10 11 12 13 14 15 
+========== do_test_2<2>() --- end ==========
+========== do_test_2<3>() --- begin ==========
 Default constructor 
 Size: 27
 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 
 Size: 24
 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 
+========== do_test_2<3>() --- end ==========
+========== do_test_3<1>() --- begin ==========
 Default constructor 
 Size: 4
 0 1 2 3 
 Flat view: [ 1 2 3 ]
+========== do_test_3<1>() --- end ==========
+========== do_test_3<2>() --- begin ==========
 Default constructor 
 Size: 16
 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
 Flat view: [ 5 6 7 9 10 11 ]
+========== do_test_3<2>() --- end ==========
+========== do_test_3<3>() --- begin ==========
 Default constructor 
 Size: 64
 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 
 Flat view: [ 21 22 23 25 26 27 ]
+========== do_test_3<3>() --- end ==========
