@@ -131,7 +131,6 @@ protected:
 #endif
     using MatrixType = Matrix<linear_algebra_package>;
     using VectorType = Vector<linear_algebra_package>;
-    using LinearSolverType = LinearSolver<linear_algebra_package>;
 
 
     std::shared_ptr<MatrixType> matrix;
@@ -521,50 +520,13 @@ void
 PoissonProblem<dim,DerivedClass>::
 solve()
 {
-    const Real tol = 1.0e-10;
-    const Size max_iters = 10000;
-#if defined(USE_PETSC)
-    LinearSolverType solver(
-        LinearSolverType::SolverType::CG,
-        LinearSolverType::PreconditionerType::ILU,
-        tol,
-        max_iters);
-#elif defined(USE_TRILINOS)
-    LinearSolverType solver(
-        LinearSolverType::SolverType::CG,
-        tol,
-        max_iters);
-#endif
-//    LinearSolverType solver(LinearSolverType::SolverType::LU,tol,max_iters);
-
     const TimePoint start_solve_linear_system = Clock::now();
-
-    solver.solve(*matrix, *rhs, *solution);
-
-    num_iters_ = solver.get_num_iterations();
-//    achieved_tol_ = solver.get_achieved_tolerance();
-
-    const TimePoint end_solve_linear_system = Clock::now();
+    const TimePoint   end_solve_linear_system = Clock::now();
     this->elapsed_time_solve_linear_system_ =
         end_solve_linear_system - start_solve_linear_system;
-
-
 }
 
 
-
-template<int dim,class DerivedClass>
-void
-PoissonProblem<dim,DerivedClass>::
-output()
-{
-    const int n_plot_points = deg_+1;
-    Writer<dim> writer(map, n_plot_points);
-
-    writer.add_field(space, *solution, "solution");
-//    string filename = "poisson_problem-" + to_string(dim) + "d" ;
-    writer.save(PoissonProblem<dim,DerivedClass>::get_filename(),"appended");
-}
 
 
 
@@ -576,9 +538,6 @@ run()
     static_cast<DerivedClass &>(*this).assemble();
     solve();
     end_poisson_ = Clock::now();
-
-    output();
-
 
     elapsed_time_total_ = end_poisson_ - start_poisson_;
 }
@@ -609,13 +568,7 @@ private:
     EllipticOperatorsType elliptic_operators_std_;
 
 };
-/*
-template<int dim>
-PoissonProblemStandardIntegration<dim>::
-PoissonProblemStandardIntegration(const TensorSize<dim> &n_knots,const int space_deg)
-    :
-    base_t(n_knots,space_deg)
-{}
+
 //*/
 template<int dim>
 std::string
