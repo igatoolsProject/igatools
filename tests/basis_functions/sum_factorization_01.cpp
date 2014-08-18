@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 // [old includes]
+#include "../tests.h"
+
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/mapping_lib.h>
@@ -278,8 +280,8 @@ PoissonProblem(const int n_knots, const int deg)
 {
 
 
-    LogStream out;
-    out << "PoissonProblem constructor -- begin" << endl;
+    LogStream out_screen;
+    out_screen << "PoissonProblem constructor -- begin" << endl;
 
     BBox<dim> box;
     for (int i=0 ; i < dim ; ++i)
@@ -299,7 +301,7 @@ PoissonProblem(const int n_knots, const int deg)
     matrix   = MatrixType::create(get_sparsity_pattern(const_pointer_cast<const Space>(space)));
     rhs      = VectorType::create(num_dofs_);
     solution = VectorType::create(num_dofs_);
-    out << "PoissonProblem constructor -- end" << endl;
+    out_screen << "PoissonProblem constructor -- end" << endl;
 
 }
 
@@ -312,7 +314,7 @@ PoissonProblem<dim,DerivedClass>::
 assemble()
 {
 
-    LogStream out;
+    LogStream out_screen;
 
     Duration elapsed_time_assemble;
     TimePoint start_assemble = Clock::now();
@@ -488,19 +490,27 @@ assemble()
 
     elapsed_time_assemble += end_assemble - start_assemble;
 
+    out << "==========================================================" << endl;
     out << "Dim=" << dim << "         space_deg=" << this->deg_ << endl;
-    out << "Elapsed seconds eval mass matrix = "
-        << this->elapsed_time_eval_mass_matrix_.count() << endl;
-    out << "Elapsed seconds eval stiffness matrix = "
-        << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
-    out << "Elapsed seconds apply bc = "
-        << elapsed_time_apply_bc.count() << endl;
-    out << "Elapsed seconds boundary conditions = "
-        << elapsed_time_boundary_conditions.count() << endl;
-    out << "Elapsed seconds assemble() function = "
-        << elapsed_time_assemble.count() << endl;
-    out << endl;
 
+    out_screen << "Dim=" << dim << "         space_deg=" << this->deg_ << endl;
+    out_screen << "Elapsed seconds eval mass matrix = "
+        << this->elapsed_time_eval_mass_matrix_.count() << endl;
+    out_screen << "Elapsed seconds eval stiffness matrix = "
+        << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
+    out_screen << "Elapsed seconds apply bc = "
+        << elapsed_time_apply_bc.count() << endl;
+    out_screen << "Elapsed seconds boundary conditions = "
+        << elapsed_time_boundary_conditions.count() << endl;
+    out_screen << "Elapsed seconds assemble() function = "
+        << elapsed_time_assemble.count() << endl;
+    out_screen << endl;
+
+
+    this->matrix->print(out);
+
+    out << "==========================================================" << endl;
+    out << endl;
 
     // AssertThrow(false,ExcNotImplemented());
 }
@@ -532,7 +542,7 @@ solve()
     solver.solve(*matrix, *rhs, *solution);
 
     num_iters_ = solver.get_num_iterations();
-    achieved_tol_ = solver.get_achieved_tolerance();
+//    achieved_tol_ = solver.get_achieved_tolerance();
 
     const TimePoint end_solve_linear_system = Clock::now();
     this->elapsed_time_solve_linear_system_ =
@@ -807,7 +817,7 @@ int main(int argc,char **args)
     int num_ref_lvls = 1;
 
     bool do_sum_factorization = true;
-    bool do_std_quadrature = false;
+    bool do_std_quadrature = true;
 
     for (int ref_lvl=0 ; ref_lvl < num_ref_lvls ; ++ref_lvl, n_elems_per_direction *= 2)
     {
@@ -815,9 +825,9 @@ int main(int argc,char **args)
         {
             cout << "-----------------------------------" << endl;
             cout << "Sum-Factorization -- begin" << endl;
-//    do_test< PoissonProblemSumFactorization<1> >(degree_min,degree_max,n_elems_per_direction);
+            do_test< PoissonProblemSumFactorization<1> >(degree_min,degree_max,n_elems_per_direction);
 
-//    do_test< PoissonProblemSumFactorization<2> >(degree_min,degree_max,n_elems_per_direction);
+            do_test< PoissonProblemSumFactorization<2> >(degree_min,degree_max,n_elems_per_direction);
 
             do_test< PoissonProblemSumFactorization<3> >(degree_min,degree_max,n_elems_per_direction);
             cout << "Sum-Factorization -- end" << endl;
@@ -831,9 +841,9 @@ int main(int argc,char **args)
         {
             cout << "-----------------------------------" << endl;
             cout << "Standard Quadrature -- begin" << endl;
-//    do_test< PoissonProblemStandardIntegration<1> >(degree_min,degree_max,n_elems_per_direction);
+            do_test< PoissonProblemStandardIntegration<1> >(degree_min,degree_max,n_elems_per_direction);
 
-//    do_test< PoissonProblemStandardIntegration<2> >(degree_min,degree_max,n_elems_per_direction);
+            do_test< PoissonProblemStandardIntegration<2> >(degree_min,degree_max,n_elems_per_direction);
 
             do_test< PoissonProblemStandardIntegration<3> >(degree_min,degree_max,n_elems_per_direction);
             cout << "Standard Quadrature -- end" << endl;
