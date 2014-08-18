@@ -32,7 +32,6 @@
 #include <igatools/linear_algebra/dense_vector.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
-#include <igatools/linear_algebra/linear_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/io/writer.h>
 #include <igatools/contrib/table_handler.h>
@@ -80,7 +79,6 @@ public:
     Real get_elapsed_time_eval_stiffness_matrix() const;
     Real get_elapsed_time_eval_rhs() const;
     Real get_elapsed_time_assemble_stiffness_matrix() const;
-    Real get_elapsed_time_solve_linear_system() const;
     Real get_elapsed_time_fill_complete() const;
     Real get_elapsed_time_total() const;
 
@@ -92,8 +90,6 @@ public:
 
 private:
     void assemble();
-    void solve();
-    void output();
     // [Problem class]
 
     // [type aliases]
@@ -151,8 +147,6 @@ protected:
     Duration elapsed_time_assemble_stiffness_matrix_;
 
     Duration elapsed_time_fill_complete_;
-
-    Duration elapsed_time_solve_linear_system_;
 
     int num_dofs_;
 
@@ -219,13 +213,6 @@ get_elapsed_time_assemble_stiffness_matrix() const
     return elapsed_time_assemble_stiffness_matrix_.count();
 }
 
-template<int dim,class DerivedClass>
-Real
-PoissonProblem<dim,DerivedClass>::
-get_elapsed_time_solve_linear_system() const
-{
-    return elapsed_time_solve_linear_system_.count();
-}
 
 template<int dim,class DerivedClass>
 Real
@@ -274,8 +261,7 @@ PoissonProblem(const int n_knots, const int deg)
     elapsed_time_eval_stiffness_matrix_(0),
     elapsed_time_eval_rhs_(0),
     elapsed_time_assemble_stiffness_matrix_(0),
-    elapsed_time_fill_complete_(0),
-    elapsed_time_solve_linear_system_(0)
+    elapsed_time_fill_complete_(0)
 {
 
 
@@ -357,10 +343,8 @@ assemble()
     TensorSize<dim> n_quad_points = this->elem_quad.get_num_points_direction();
 
 
-
     DenseMatrix loc_mass_matrix(n_basis, n_basis);
     DenseMatrix loc_stiffness_matrix(n_basis, n_basis);
-
 
     const auto &elliptic_operators = static_cast<const DerivedClass &>(*this).get_elliptic_operators();
 
@@ -515,20 +499,6 @@ assemble()
 }
 
 
-template<int dim,class DerivedClass>
-void
-PoissonProblem<dim,DerivedClass>::
-solve()
-{
-    const TimePoint start_solve_linear_system = Clock::now();
-    const TimePoint   end_solve_linear_system = Clock::now();
-    this->elapsed_time_solve_linear_system_ =
-        end_solve_linear_system - start_solve_linear_system;
-}
-
-
-
-
 
 template<int dim,class DerivedClass>
 void
@@ -536,7 +506,6 @@ PoissonProblem<dim,DerivedClass>::
 run()
 {
     static_cast<DerivedClass &>(*this).assemble();
-    solve();
     end_poisson_ = Clock::now();
 
     elapsed_time_total_ = end_poisson_ - start_poisson_;
@@ -682,8 +651,6 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
 
     string time_fill_complete = "Fill-complete";
 
-    string time_solve_lin_system = "Solve lin.system";
-
     string time_total = "Total";
 
     string achieved_tol = "Tol";
@@ -705,7 +672,6 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
 
         time_table.add_value(time_assemble,poisson.get_elapsed_time_assemble_stiffness_matrix());
         time_table.add_value(time_fill_complete,poisson.get_elapsed_time_fill_complete());
-        time_table.add_value(time_solve_lin_system,poisson.get_elapsed_time_solve_linear_system());
 
         time_table.add_value(time_total,poisson.get_elapsed_time_total());
 
@@ -732,9 +698,6 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
     time_table.set_precision(time_fill_complete,10);
     time_table.set_scientific(time_fill_complete,true);
 
-    time_table.set_precision(time_solve_lin_system,10);
-    time_table.set_scientific(time_solve_lin_system,true);
-
     time_table.set_precision(time_total,10);
     time_table.set_scientific(time_total,true);
 
@@ -758,11 +721,6 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
 int main(int argc,char **args)
 
 {
-#if defined(USE_PETSC)
-    PetscInitialize(&argc,&args,(char *)0,"Sum factorization example");
-#endif
-
-
     int degree_min = 3;
     int degree_max = 3;
     int n_elems_per_direction = 2;
@@ -784,11 +742,8 @@ int main(int argc,char **args)
 
             do_test< PoissonProblemSumFactorization<3> >(degree_min,degree_max,n_elems_per_direction);
             cout << "Sum-Factorization -- end" << endl;
-            cout << "-----------------------------------" << endl;
-
-            cout << endl;
+            cout << "-----------------------------------" << endl << endl;
         }
-
 
         if (do_std_quadrature)
         {
@@ -800,15 +755,9 @@ int main(int argc,char **args)
 
             do_test< PoissonProblemStandardIntegration<3> >(degree_min,degree_max,n_elems_per_direction);
             cout << "Standard Quadrature -- end" << endl;
-            cout << "-----------------------------------" << endl;
-
-            cout << endl;
+            cout << "-----------------------------------" << endl << endl;
         }
     }
-    //*/
-#if defined(USE_PETSC)
-    auto ierr = PetscFinalize();
-#endif
 
     return  0;
 }
