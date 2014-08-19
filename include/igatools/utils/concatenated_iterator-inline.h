@@ -239,37 +239,15 @@ operator-(const ConcatenatedIteratorData<ViewType,DerivedClass> &a) const
     Assert(this->is_comparable(a), ExcMessage("Iterators are not comparable."));
     Assert(a <= (*this),ExcInvalidIterator());
 
-    /*
-    using std::cout;
-    using std::endl;
-    //*/
-
     Size n_entries = 0;
     for (Index i = a.range_id_ ; i < this->range_id_ ; ++i)
-    {
         n_entries += this->ranges_[i].get_num_entries();
-        /*
-        cout << "i=" << i
-             << "    ranges_[i].get_num_entries()=" << this->ranges_[i].get_num_entries()
-             << "    n_entries=" << n_entries << endl;
-             //*/
-    }
+
     n_entries -= a.iterator_current_ - a.ranges_[a.range_id_].begin();
 
-
     for (auto it = ranges_[range_id_].begin() ; it != this->iterator_current_ ; ++it)
-    {
         ++n_entries;
-//       cout << "    n_entries=" << n_entries << endl;
-    }
 
-    /*
-        cout << "range_diff=" << this->range_id_ - a.range_id_ << endl;
-        cout << "n_entries=" << n_entries << endl;
-
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    //*/
     return n_entries;
 }
 

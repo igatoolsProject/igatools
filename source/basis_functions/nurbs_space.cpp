@@ -431,7 +431,7 @@ get_num_basis(const int comp, const int dir) const
 {
     return sp_space_->get_num_basis(comp, dir);
 }
-
+#if 0
 template <int dim_, int range_, int rank_>
 Size
 NURBSSpace<dim_, range_, rank_>::
@@ -455,6 +455,7 @@ get_num_basis_per_element(int i) const
 {
     return sp_space_->get_num_basis_per_element(i);
 }
+#endif
 
 template <int dim_, int range_, int rank_>
 auto

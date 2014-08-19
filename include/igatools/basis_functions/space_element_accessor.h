@@ -542,8 +542,8 @@ public:
      * For example:
      * \code
        auto loc_to_glob = elem->get_local_to_global();
-       // loc_to_glob[0] is the global id of the first element basis function
-       // loc_to_glob[1] is the global id of the second element basis function
+       // loc_to_glob[0] is the global id of the first basis function on the element
+       // loc_to_glob[1] is the global id of the second basis function on the element
        // ...
       \endcode
      *
@@ -578,7 +578,7 @@ protected:
 
 
     /** Number of scalar basis functions along each direction, for all space components. */
-    // const typename Space::SpaceDimensionTable &n_basis_direction_;
+    typename Space::SpaceDimensionTable n_basis_direction_;
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
     ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;

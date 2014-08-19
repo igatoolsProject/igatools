@@ -32,7 +32,7 @@ DofDistribution<dim, range, rank>::
 DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis,
-                const SpaceDimensionTable &n_elem_basis,
+                const DegreeTable &degree_table,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
@@ -69,7 +69,15 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
 
 
+    //-----------------------------------------------------------------------
+    SpaceDimensionTable n_elem_basis;
+    for(int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
+    {
+    	n_elem_basis(iComp) = degree_table(iComp);
+    	n_elem_basis(iComp) += 1;
+    }
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
+    //-----------------------------------------------------------------------
 }
 
 template<int dim, int range, int rank>
@@ -282,6 +290,51 @@ get_dofs_view() const -> const DofsView &
     return dofs_view_;
 }
 
+
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_num_dofs_per_element_table(const Index elem_flat_id) const -> DofsPerElementTable
+{
+	DofsPerElementTable dofs_per_element_table;
+	const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(elem_flat_id);
+
+	LogStream out;
+	out << dofs_element_view;
+
+	const auto &ranges = dofs_element_view.begin().get_ranges();
+	Assert(ranges.size() == Space::n_components,
+			ExcDimensionMismatch(ranges.size(), Space::n_components));
+
+	for (int iComp = 0 ; iComp < Space::n_components ; ++iComp)
+	{
+		Assert(ranges[iComp].get_num_entries() > 0, ExcEmptyObject());
+		dofs_per_element_table(iComp) = ranges[iComp].get_num_entries();
+	}
+	return dofs_per_element_table;
+}
+
+template<int dim, int range, int rank>
+Size
+DofDistribution<dim, range, rank>::
+get_num_dofs_per_element(const Index elem_flat_id) const
+{
+	const auto num_dofs_per_element_table = this->get_num_dofs_per_element_table(elem_flat_id);
+	Index total_dimension = 0;
+	for (const auto &n_dofs_component : num_dofs_per_element_table)
+		total_dimension += n_dofs_component;
+
+    return total_dimension;
+}
+
+template<int dim, int range, int rank>
+Size
+DofDistribution<dim, range, rank>::
+get_num_dofs_per_element(const Index elem_flat_id,const int i) const
+{
+    return this->get_num_dofs_per_element_table(elem_flat_id)(i);
+}
 
 
 template<int dim, int range, int rank>

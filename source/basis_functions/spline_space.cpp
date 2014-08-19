@@ -94,8 +94,7 @@ init()
         }
     }
 #endif
-    int elem_total = 0;
-    int total_dim = 0;
+    Index total_dim = 0;
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
         for (int j = 0; j < dim; ++j)
@@ -103,8 +102,7 @@ init()
             const auto deg = deg_(iComp)[j];
             const auto &mult = (*interior_mult_)(iComp).get_data_direction(j);
 
-            int size = periodic_(iComp)[j]? 0 : deg + 1;
-            elem_n_basis_(iComp)[j] = deg + 1;
+            Index size = periodic_(iComp)[j]? 0 : deg + 1;
 
             for (auto &n: mult)
                 size += n;
@@ -112,11 +110,8 @@ init()
         }
         space_dim_.comp_dimension(iComp) = space_dim_(iComp).flat_size();
         total_dim += space_dim_.comp_dimension(iComp);
-        elem_n_basis_.comp_dimension(iComp) = elem_n_basis_(iComp).flat_size();
-        elem_total += elem_n_basis_.comp_dimension(iComp);
     }
     space_dim_.total_dimension = total_dim;
-    elem_n_basis_.total_dimension = elem_total;
 }
 
 

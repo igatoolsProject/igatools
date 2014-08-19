@@ -877,7 +877,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const auto n_basis = this->get_num_basis(comp);
             const Size offset = this->comp_offset_(comp);
             const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
 
@@ -968,7 +968,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
         for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const auto n_basis = this->get_num_basis(comp);
             const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
             const Size offset = this->comp_offset_(comp);
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -1038,7 +1038,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-            auto n_basis = this->space_->get_num_basis_per_element_table();
+            auto n_basis = this->space_->get_basis_indices().get_num_dofs_per_element_table(this->get_flat_index());
             auto degree = this->space_->get_degree();
             for (int iComp : bezier_op.get_active_components_id())
             {
@@ -1141,7 +1141,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-            auto n_basis = this->space_->get_num_basis_per_element_table();
+            auto n_basis = this->space_->get_basis_indices().get_num_dofs_per_element_table(this->get_flat_index());
             auto degree = this->space_->get_degree();
             for (int iComp : bezier_op.get_active_components_id())
             {
@@ -1246,7 +1246,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         for (int comp : bezier_op.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const auto n_basis = this->space_->get_basis_indices().get_num_dofs_per_element(this->get_flat_index(),comp);
             const Size act_offset = this->comp_offset_(bezier_op.active(comp));
 
             const Size offset = this->comp_offset_(comp);

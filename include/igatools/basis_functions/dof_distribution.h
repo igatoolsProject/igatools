@@ -45,7 +45,9 @@ class DofDistribution : public TensorSizedContainer<dim>
 public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
+    using DegreeTable = typename Space::DegreeTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
@@ -84,7 +86,7 @@ public:
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
-                    const SpaceDimensionTable &n_elem_basis,
+                    const DegreeTable &degree_table,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     void reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol);
@@ -116,6 +118,28 @@ public:
 
     /** Returns the maximum dof id. */
     Index get_max_dof_id() const;
+
+
+
+    /** @name Getting information of a specific element */
+    ///@{
+    /**
+     * Returns the number of dofs in each component, for each direction, relative to the element @p elem_flat_id.
+     *
+     * @note This make sense only for elements in which the dofs have (component-wise) a tensor-product structure.
+     */
+    DofsPerElementTable get_num_dofs_per_element_table(const Index elem_flat_id) const;
+
+    /**
+     * Returns the number of dofs of the element @p elem_flat_id.
+     */
+    Size get_num_dofs_per_element(const Index elem_flat_id) const;
+
+    /**
+     *  Return the number of dofs of the element @p elem_flat_id, for the i-th space component.
+     */
+    Size get_num_dofs_per_element(const Index elem_flat_id,const int i) const;
+    ///@}
 
 private:
 

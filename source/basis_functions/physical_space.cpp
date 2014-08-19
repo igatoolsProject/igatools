@@ -144,7 +144,7 @@ get_num_basis() const
 }
 
 
-
+#if 0
 template <class RefSpace_, class PushForward_>
 int
 PhysicalSpace<RefSpace_,PushForward_>::
@@ -152,7 +152,7 @@ get_num_basis_per_element() const
 {
     return ref_space_->get_num_basis_per_element();
 }
-
+#endif
 
 
 template <class RefSpace_, class PushForward_>
@@ -231,6 +231,23 @@ PhysicalSpace<RefSpace_,PushForward_>::
 get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
+}
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+{
+	return ref_space_->get_basis_indices();
+}
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_degree() const -> const DegreeTable &
+{
+	return ref_space_->get_degree();
 }
 
 
