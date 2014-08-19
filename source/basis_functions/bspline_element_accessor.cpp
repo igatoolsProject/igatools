@@ -1038,20 +1038,15 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-            auto n_basis = this->space_->get_basis_indices().get_num_dofs_per_element_table(this->get_flat_index());
+//            auto n_basis = this->n_basis_direction_;
             auto degree = this->space_->get_degree();
             for (int iComp : bezier_op.get_active_components_id())
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
                 array<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
-                // const TensorSize<dim> basis_component_t_size = this->n_basis_direction_(iComp);
                 for (int dir = 0 ; dir < dim ; ++dir)
-                {
-//                    const int n_basis_1D = n_basis(iComp)(dir);
-//                    const int degree = n_basis_1D - 1 ;
                     bernstein_values[dir] = BernsteinBasis::derivative(0,degree(iComp)[dir],point[dir]);
-                }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
                 //------------------------------------------------------------------------------
 
@@ -1141,7 +1136,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-            auto n_basis = this->space_->get_basis_indices().get_num_dofs_per_element_table(this->get_flat_index());
+//            auto n_basis = this->n_basis_direction_;
             auto degree = this->space_->get_degree();
             for (int iComp : bezier_op.get_active_components_id())
             {
@@ -1154,8 +1149,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     {
                         const Real scaling_coef = pow(1.0/elem_lengths[dir],order);
 
-//                        const int n_basis_1D = basis_component_t_size(dir);
-//                        const int degree = n_basis_1D - 1 ;
                         bernstein_values[order][dir] =
                         scaling_coef * BernsteinBasis::derivative(order,degree(iComp)[dir],point[dir]);
                     }
@@ -1246,7 +1239,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         for (int comp : bezier_op.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = this->space_->get_basis_indices().get_num_dofs_per_element(this->get_flat_index(),comp);
+            const auto n_basis =  this->get_num_basis(comp);
             const Size act_offset = this->comp_offset_(bezier_op.active(comp));
 
             const Size offset = this->comp_offset_(comp);

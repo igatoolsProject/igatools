@@ -124,21 +124,9 @@ public:
     /** @name Getting information of a specific element */
     ///@{
     /**
-     * Returns the number of dofs in each component, for each direction, relative to the element @p elem_flat_id.
-     *
-     * @note This make sense only for elements in which the dofs have (component-wise) a tensor-product structure.
-     */
-    DofsPerElementTable get_num_dofs_per_element_table(const Index elem_flat_id) const;
-
-    /**
      * Returns the number of dofs of the element @p elem_flat_id.
      */
     Size get_num_dofs_per_element(const Index elem_flat_id) const;
-
-    /**
-     *  Return the number of dofs of the element @p elem_flat_id, for the i-th space component.
-     */
-    Size get_num_dofs_per_element(const Index elem_flat_id,const int i) const;
     ///@}
 
 private:
