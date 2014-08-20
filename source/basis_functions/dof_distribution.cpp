@@ -49,8 +49,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     Index dof_id = 0;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
-        index_distribution_(comp).resize(n_basis(comp));
-        for (auto &x : index_distribution_(comp))
+        index_table_(comp).resize(n_basis(comp));
+        for (auto &x : index_table_(comp))
             x = dof_id++;
     }
     //-----------------------------------------------------------------------
@@ -60,7 +60,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
-    for (auto &dofs_distribution_comp : index_distribution_)
+    for (auto &dofs_distribution_comp : index_table_)
         components_views.emplace_back(dofs_distribution_comp.get_flat_view());
 
     dofs_view_ = DofsView(
@@ -103,7 +103,7 @@ auto
 DofDistribution<dim, range, rank>::
 basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
 {
-    return index_distribution_(comp).flat_to_tensor(index);
+    return index_table_(comp).flat_to_tensor(index);
 }
 
 
@@ -113,7 +113,7 @@ DofDistribution<dim, range, rank>::
 basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                      const Index comp) const
 {
-    return index_distribution_(comp).tensor_to_flat(tensor_index);
+    return index_table_(comp).tensor_to_flat(tensor_index);
 }
 
 
@@ -132,15 +132,15 @@ create_element_loc_to_global_view(
         vector<DofsComponentConstView> dofs_elem_ranges;
         for (int comp = 0; comp < Space::n_components; ++comp)
         {
-            const auto &index_distribution_comp = index_distribution_(comp);
+            const auto &index_table_comp = index_table_(comp);
 
             auto origin = accum_mult(comp).cartesian_product(t_index);
-            Index origin_flat_id = index_distribution_comp.tensor_to_flat(origin);
+            Index origin_flat_id = index_table_comp.tensor_to_flat(origin);
 
             auto increment = n_elem_basis(comp);
 
             using VecIt = vector<Index>::const_iterator;
-            const VecIt comp_dofs_begin = index_distribution_comp.get_data().begin();
+            const VecIt comp_dofs_begin = index_table_comp.get_data().begin();
 
             if (dim == 0)
             {
@@ -165,7 +165,7 @@ create_element_loc_to_global_view(
                 {
                     TensorIndex<dim> pos_t_id = origin + incr_t_id;
 
-                    Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+                    Index pos_flat_id = index_table_comp.tensor_to_flat(pos_t_id);
 
                     const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
                     const VecIt pos_end = pos_begin + increment(0);
@@ -183,7 +183,7 @@ create_element_loc_to_global_view(
                     {
                         TensorIndex<dim> pos_t_id = origin + incr_t_id;
 
-                        Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+                        Index pos_flat_id = index_table_comp.tensor_to_flat(pos_t_id);
 
                         const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
                         const VecIt pos_end = pos_begin + increment(0);
@@ -239,7 +239,7 @@ void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    for (auto &dofs_component : index_distribution_)
+    for (auto &dofs_component : index_table_)
         for (auto &dof_id : dofs_component)
             dof_id += offset;
 }
@@ -247,9 +247,9 @@ add_dofs_offset(const Index offset)
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_index_distribution() const -> const IndexDistributionTable &
+get_index_table() const -> const IndexDistributionTable &
 {
-    return index_distribution_;
+    return index_table_;
 }
 
 template<int dim, int range, int rank>
@@ -297,7 +297,7 @@ DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
     for (int comp = 0; comp < Space::n_components; ++comp)
-        index_distribution_(comp).print_info(out);
+        index_table_(comp).print_info(out);
     out << std::endl;
 
     int i = 0;

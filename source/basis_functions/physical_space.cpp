@@ -237,9 +237,9 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+get_dofs_distribution() const -> const DofDistribution<dim, range, rank> &
 {
-	return ref_space_->get_basis_indices();
+	return ref_space_->get_dofs_distribution();
 }
 
 template <class RefSpace_, class PushForward_>

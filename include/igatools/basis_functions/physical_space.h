@@ -126,21 +126,10 @@ public:
 
     /** Returns the container with the local to global basis indices (const version). */
     const DofDistribution<dim, range, rank> &
-    get_basis_indices() const;
+    get_dofs_distribution() const;
 
     const DegreeTable &get_degree() const;
 
-#if 0
-    /**
-     * Returns the number of dofs per element.
-     */
-    int get_num_basis_per_element() const;
-
-    const SpaceDimensionTable get_num_basis_per_element_table() const
-    {
-        return ref_space_->get_num_basis_per_element_table();
-    }
-#endif
     std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
     /**

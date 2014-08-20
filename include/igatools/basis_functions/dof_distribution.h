@@ -94,30 +94,31 @@ public:
     /** Default constructor. Not allowed to be used. */
     DofDistribution() = delete;
 
+    //TODO: document this constructor
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
-    /** Copy constructor. Not allowed to be used. */
-//    DofDistribution(const DofDistribution &dof_ditribution) = default;
+    /** Copy constructor.*/
+    DofDistribution(const DofDistribution &dof_ditribution) = default;
 
-    /** Move constructor. Not allowed to be used. */
-//    DofDistribution(DofDistribution &&dof_ditribution) = default;
+    /** Move constructor.*/
+    DofDistribution(DofDistribution &&dof_ditribution) = default;
 
     /** Destructor. */
-//    ~DofDistribution() = default;
+    ~DofDistribution() = default;
     //@}
 
 
     /** Assignment operators */
     ///@{
     /** Copy assignment operator. Not allowed to be used. */
-//    DofDistribution& operator=(const DofDistribution &dof_distribution) = default;
+    DofDistribution& operator=(const DofDistribution &dof_distribution) = delete;
 
-    /** Move assignment operator. Not allowed to be used. */
-//    DofDistribution& operator=(DofDistribution &&dof_distribution) = default;
+    /** Move assignment operator.*/
+    DofDistribution& operator=(DofDistribution &&dof_distribution) = default;
     ///@}
 
 
@@ -162,6 +163,35 @@ public:
     std::vector<Index> get_loc_to_global_indices(const Index elem_flat_id) const;
     ///@}
 
+
+    /**
+     * Returns the container used to store the dofs ids of each component of a single patch space.
+     *
+     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
+     * use the associated View instead!
+     */
+    const IndexDistributionTable &get_index_table() const;
+
+    /**
+     * Returns a view of the active dofs ids on a given single-patch space (non-const version).
+     */
+    DofsView &get_dofs_view();
+
+
+    /**
+     * Returns a view of the active dofs ids on a given single-patch space (const version).
+     */
+    const DofsView &get_dofs_view() const;
+
+
+
+    /**
+     * Returns a pointer to a std::map in which the key is the element flat_id and the value
+     * is a const view to the global dofs on a single element of a space.
+     * The size of the map is equal to the number of active elements in the space.
+     */
+    std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
+
 private:
 
     /**
@@ -170,7 +200,7 @@ private:
      * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
      * use the associated View instead!
      */
-    IndexDistributionTable index_distribution_;
+    IndexDistributionTable index_table_;
 
     /**
      * View of the active dofs ids on a given single-patch space.
@@ -199,35 +229,6 @@ private:
 
     DistributionPolicy policy_;
 
-public:
-
-    /**
-     * Returns the container used to store the dofs ids of each component of a single patch space.
-     *
-     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
-     * use the associated View instead!
-     */
-    const IndexDistributionTable &get_index_distribution() const;
-
-    /**
-     * Returns a view of the active dofs ids on a given single-patch space (non-const version).
-     */
-    DofsView &get_dofs_view();
-
-
-    /**
-     * Returns a view of the active dofs ids on a given single-patch space (const version).
-     */
-    const DofsView &get_dofs_view() const;
-
-
-
-    /**
-     * Returns a pointer to a std::map in which the key is the element flat_id and the value
-     * is a const view to the global dofs on a single element of a space.
-     * The size of the map is equal to the number of active elements in the space.
-     */
-    std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
 };
 
 IGA_NAMESPACE_CLOSE

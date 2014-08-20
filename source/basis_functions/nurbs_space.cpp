@@ -352,14 +352,10 @@ refine_h_weights(
                 DynamicMultiArray<Real,dim> Qw(new_sizes);
 
                 for (Index j = 0; j <= a-p; ++j)
-                {
                     Qw.copy_slice(direction_id,j,Pw.get_slice(direction_id,j));
-                }
 
                 for (Index j = b-1; j <= n; ++j)
-                {
                     Qw.copy_slice(direction_id,j+r+1,Pw.get_slice(direction_id,j));
-                }
 
                 Index i = b + p - 1;
                 Index k = b + p + r;
@@ -431,31 +427,6 @@ get_num_basis(const int comp, const int dir) const
 {
     return sp_space_->get_num_basis(comp, dir);
 }
-#if 0
-template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis_per_element() const
-{
-    return sp_space_->get_num_basis_per_element();
-}
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis_per_element_table() const -> const SpaceDimensionTable
-{
-    return sp_space_->get_num_basis_per_element_table();
-}
-
-template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis_per_element(int i) const
-{
-    return sp_space_->get_num_basis_per_element(i);
-}
-#endif
 
 template <int dim_, int range_, int rank_>
 auto
@@ -485,18 +456,18 @@ get_spline_space() const -> const std::shared_ptr<spline_space_t>
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+get_dofs_distribution() const -> const DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_basis_indices();
+    return sp_space_->get_dofs_distribution();
 }
 
 
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_basis_indices() -> DofDistribution<dim, range, rank> &
+get_dofs_distribution() -> DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_basis_indices();
+    return sp_space_->get_dofs_distribution();
 }
 
 

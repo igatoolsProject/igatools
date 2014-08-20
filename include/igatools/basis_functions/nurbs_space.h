@@ -225,19 +225,6 @@ public:
      */
     Size get_num_basis(const int comp, const int dir) const;
 
-#if 0
-    /**
-     * Returns the number of dofs per element.
-     */
-    Size get_num_basis_per_element() const;
-
-    const SpaceDimensionTable get_num_basis_per_element_table() const;
-
-    /**
-     *  Return the number of dofs per element for the i-th space component.
-     */
-    Size get_num_basis_per_element(int i) const;
-#endif
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
@@ -254,10 +241,10 @@ public:
 
     const std::shared_ptr<spline_space_t> get_spline_space() const;
 
-    const DofDistribution<dim, range, rank> &get_basis_indices() const;
+    const DofDistribution<dim, range, rank> &get_dofs_distribution() const;
 
 
-    DofDistribution<dim, range, rank> &get_basis_indices();
+    DofDistribution<dim, range, rank> &get_dofs_distribution();
 
 
 

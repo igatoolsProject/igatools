@@ -744,12 +744,15 @@ evaluate_basis_derivatives_at_points(const vector<Point> &points) const
 
                     int der_entry_id = 0;
                     for (int i = 0 ; i < dim ; ++i)
+                    {
+                    	const auto &DP_i_comp = DP(i)(comp);
+                    	const auto &DQ_i_comp = DQ(i)(comp);
+
                         for (int j = 0 ; j < dim ; ++j, ++der_entry_id)
                             D2R(der_entry_id)(comp) = (W/Q) *(D2P(der_entry_id)(comp)
-                                                              - (P * D2Q(der_entry_id)(comp) +
-                                                                 DP(i)(comp) * DQ(j)(comp) +
-                                                                 DP(j)(comp) * DQ(i)(comp)) / Q +
-                                                              DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                                - (P * D2Q(der_entry_id)(comp) + DP_i_comp * DQ(j)(comp) + DP(j)(comp) * DQ_i_comp) / Q +
+                                  DQ_i_comp * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                    } // end loop i
                     ++P_it;
                     ++Q_it;
 
