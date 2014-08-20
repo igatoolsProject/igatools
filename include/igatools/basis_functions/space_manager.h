@@ -319,7 +319,7 @@ private:
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
-                  const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view);
+                  const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view);
 
         /** Returns the number of dofs of the space. */
         Index get_num_dofs() const ;
@@ -339,7 +339,7 @@ private:
          * Returns a vector of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
          */
-        const std::vector<DofsConstView> &get_elements_dofs_view() const;
+        const std::map<Index,DofsConstView> &get_elements_dofs_view() const;
 
 
 
@@ -392,7 +392,7 @@ private:
          * it is already present
          * the the DofDistribution class instantiated in the space itself.
          */
-        std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view_;
+        std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view_;
     };
 
     /**

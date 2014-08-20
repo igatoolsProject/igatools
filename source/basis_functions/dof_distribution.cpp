@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/dof_distribution.h>
 
 using std::vector;
+using std::map;
 using std::shared_ptr;
 using std::make_shared;
 
@@ -37,7 +38,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
     elements_loc_to_global_flat_view_(
-        make_shared<vector<DofsConstView>>(vector<DofsConstView>(grid->get_num_intervals().flat_size()))),
+        make_shared<map<Index,DofsConstView>>(map<Index,DofsConstView>())),
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
@@ -114,18 +115,6 @@ basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
 {
     return index_distribution_(comp).tensor_to_flat(tensor_index);
 }
-
-
-template<int dim, int range, int rank>
-void
-DofDistribution<dim, range, rank>::
-reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol)
-{
-    index_distribution_ = index_distribution;
-
-    policy_ = pol;
-}
-
 
 
 template<int dim, int range, int rank>
@@ -224,7 +213,6 @@ create_element_loc_to_global_view(
 
 
 
-// TODO (pauletti, May 28, 2014): inline this
 template<int dim, int range, int rank>
 vector<Index>
 DofDistribution<dim, range, rank>::
@@ -235,13 +223,12 @@ get_loc_to_global_indices(const TensorIndex<dim> &t_id) const
 
 
 
-// TODO (antolin, Jul 11, 2014): inline this
 template<int dim, int range, int rank>
 std::vector<Index>
 DofDistribution<dim, range, rank>::
-get_loc_to_global_indices(const Index &f_id) const
+get_loc_to_global_indices(const Index f_id) const
 {
-    const auto &dofs_elem_view = (*elements_loc_to_global_flat_view_)[f_id];
+    const auto &dofs_elem_view = elements_loc_to_global_flat_view_->at(f_id);
     return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
 }
 
@@ -268,7 +255,7 @@ get_index_distribution() const -> const IndexDistributionTable &
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_elements_view() const -> std::shared_ptr<const std::vector<DofsConstView>>
+get_elements_view() const -> std::shared_ptr<const std::map<Index,DofsConstView>>
 {
     return elements_loc_to_global_flat_view_;
 }
@@ -295,7 +282,7 @@ get_dofs_view() const -> const DofsView &
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_num_dofs_per_element(const Index elem_flat_id) const -> Size
+get_num_dofs_element(const Index elem_flat_id) const -> Size
 {
 	DofsPerElementTable dofs_per_element_table;
 	const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(elem_flat_id);

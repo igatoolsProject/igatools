@@ -36,7 +36,14 @@ IGA_NAMESPACE_OPEN
  *
  * It is a helper class for the BSplineSpace.
  *
+ * This class basically has two main (private) member:
+ * - index_distribution_ that is the container for the basis function indices of a single-patch space
+ * - elements_loc_to_global_flat_view_ that represent the views of the dofs that are active on each element of the space.
+ *
+ *
+ *
  * @author pauletti, 2014
+ * @author M.Martinelli, 2014
  *
  */
 template<int dim, int range = 1, int rank = 1>
@@ -81,6 +88,10 @@ public:
         standard, component, other
     };
 
+
+    /** @name Constructors */
+    ///@{
+    /** Default constructor. Not allowed to be used. */
     DofDistribution() = delete;
 
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
@@ -89,11 +100,27 @@ public:
                     const DegreeTable &degree_table,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
-    void reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol);
+    /** Copy constructor. Not allowed to be used. */
+//    DofDistribution(const DofDistribution &dof_ditribution) = default;
 
-    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+    /** Move constructor. Not allowed to be used. */
+//    DofDistribution(DofDistribution &&dof_ditribution) = default;
 
-    std::vector<Index> get_loc_to_global_indices(const Index &elem_flat_id) const;
+    /** Destructor. */
+//    ~DofDistribution() = default;
+    //@}
+
+
+    /** Assignment operators */
+    ///@{
+    /** Copy assignment operator. Not allowed to be used. */
+//    DofDistribution& operator=(const DofDistribution &dof_distribution) = default;
+
+    /** Move assignment operator. Not allowed to be used. */
+//    DofDistribution& operator=(DofDistribution &&dof_distribution) = default;
+    ///@}
+
+
 
 
     TensorIndex<dim>
@@ -124,9 +151,15 @@ public:
     /** @name Getting information of a specific element */
     ///@{
     /**
-     * Returns the number of dofs of the element @p elem_flat_id.
+     * Returns the number of active dofs of the element @p elem_flat_id.
      */
-    Size get_num_dofs_per_element(const Index elem_flat_id) const;
+    Size get_num_dofs_element(const Index elem_flat_id) const;
+
+    /** Returns the active dofs of the element @p elem_tensor_id.*/
+    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+
+    /** Returns the active dofs of the element @p elem_flat_id.*/
+    std::vector<Index> get_loc_to_global_indices(const Index elem_flat_id) const;
     ///@}
 
 private:
@@ -145,21 +178,24 @@ private:
     DofsView dofs_view_;
 
 
-
+    /**
+     * This functions uses the indices stored in the index_distribution_ member variable and
+     * creates the views relative to the elements in the space.
+     */
     void create_element_loc_to_global_view(
         std::shared_ptr<const CartesianGrid<dim> > grid,
         const MultiplicityTable &accum_mult,
         const SpaceDimensionTable &n_elem_basis);
 
     /**
-     * Pointer to a vector in which each entry is a const view to the global dofs on a single element
-     * of a space.
-     * The size of the vector is equal to the number of active elements in the space.
+     * Pointer to a std::map in which the key is the element flat_id and the value
+     * is a const view to the global dofs on a single element of a space.
+     * The size of the map is equal to the number of active elements in the space.
      *
      * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
-     * and we want to keep the syncronization of the element views without the expense of successive copies.
+     * and we want to keep the synchronization of the element views without the expense of successive copies.
      */
-    std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
+    std::shared_ptr<std::map<Index,DofsConstView>> elements_loc_to_global_flat_view_;
 
     DistributionPolicy policy_;
 
@@ -187,11 +223,11 @@ public:
 
 
     /**
-     * Returns a pointer to a vector in which each entry is a const view to the global dofs
-     * on a single element of a space.
-     * The size of the vector is equal to the number of active elements in the space.
+     * Returns a pointer to a std::map in which the key is the element flat_id and the value
+     * is a const view to the global dofs on a single element of a space.
+     * The size of the map is equal to the number of active elements in the space.
      */
-    std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
+    std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
 };
 
 IGA_NAMESPACE_CLOSE

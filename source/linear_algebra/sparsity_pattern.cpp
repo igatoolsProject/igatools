@@ -51,8 +51,8 @@ SparsityPattern(const SpaceManager &space_manager)
     Assert(!spaces_info.empty(),ExcEmptyObject());
     for (const auto &space : spaces_info)
         for (const auto element_dofs : space.second.get_elements_dofs_view())
-            for (const auto &dof : element_dofs)
-                (*this)[dof].insert(element_dofs.begin(),element_dofs.end());
+            for (const auto &dof : element_dofs.second)
+                (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
 }
 
 SparsityPattern::
@@ -111,35 +111,10 @@ SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space
         auto dofs_col_iterator = dofs_elements_view_space_col.cbegin();
 
         for (; dofs_row_iterator != dofs_row_iterator_end ; ++dofs_row_iterator, ++dofs_col_iterator)
-        {
-            for (const auto &dof_row : *dofs_row_iterator)
-                (*this)[dof_row].insert(dofs_col_iterator->cbegin(),dofs_col_iterator->cend());
-
-        }
+            for (const auto &dof_row : dofs_row_iterator->second)
+                (*this)[dof_row].insert(dofs_col_iterator->second.cbegin(),dofs_col_iterator->second.cend());
     }
-
-    /*
-        const Index n_elements = elements_dofs_rows.get_num_elements();
-        for (Index ielem = 0 ; ielem < n_elements ; ++ielem)
-        {
-            const auto &dofs_rows = elements_dofs_rows[ielem];
-            const auto &dofs_cols = elements_dofs_cols[ielem];
-
-            for (const auto &dof_row : dofs_rows)
-                (*this)[dof_row].insert(dofs_cols.begin(),dofs_cols.end());
-        }
-        //*/
 }
-
-/*
-SparsityPattern::SparsityPattern(const std::vector< Index > row_dofs,
-                                 const std::vector< Index > col_dofs)
-    :
-    map< Index, set< Index > >(),
-    row_dofs_(row_dofs),
-    col_dofs_(col_dofs)
-{}
-//*/
 
 SparsityPattern::SparsityPattern(const SparsityPattern &sparsity_pattern)
     :
