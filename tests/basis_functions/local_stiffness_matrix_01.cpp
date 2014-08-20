@@ -51,9 +51,6 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
     auto phys_space = PhysSpace::create(ref_space, push_forward) ;
 
     const Quadrature<dim> elem_quad(QGauss<dim>(deg+1)) ;
-    const int n_basis = phys_space->get_num_basis_per_element();
-
-    DenseMatrix loc_mat(n_basis,n_basis);
 
     ValueFlags flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
 
@@ -67,6 +64,10 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
     for (; elem != elem_end; ++elem)
     {
         elem->fill_cache();
+
+        const int n_basis = elem->get_num_basis();
+
+        DenseMatrix loc_mat(n_basis,n_basis);
         loc_mat = 0.0;
 
         const auto w_meas = elem->get_w_measures();

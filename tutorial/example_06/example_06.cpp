@@ -103,10 +103,6 @@ PoissonProblem(const int n_knots, const int deg)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-    const int n_basis = space->get_num_basis_per_element();
-    DenseMatrix loc_mat(n_basis, n_basis);
-    DenseVector loc_rhs(n_basis);
-    vector<Index> loc_dofs(n_basis);
 
     ConstantFunction<dim> f({5.});
     using Value = typename Function<dim>::Value;
@@ -121,8 +117,14 @@ void PoissonProblem<dim>::assemble()
 
     for (; elem != elem_end; ++elem)
     {
-        loc_mat = 0.;
-        loc_rhs = 0.;
+        const int n_basis = elem->get_num_basis();
+
+        DenseMatrix loc_mat(n_basis, n_basis);
+        loc_mat = 0.0;
+
+        DenseVector loc_rhs(n_basis);
+        loc_rhs = 0.0;
+
         elem->fill_cache();
 
         auto points  = elem->get_points();
@@ -150,7 +152,7 @@ void PoissonProblem<dim>::assemble()
                               * w_meas[qp];
         }
 
-        loc_dofs = elem->get_local_to_global();
+        vector<Index> loc_dofs = elem->get_local_to_global();
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }

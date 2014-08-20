@@ -242,9 +242,6 @@ private:
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
 
-    /** Table with the number of element non zero basis in each component and direction */
-//    SpaceDimensionTable elem_n_basis_;
-
     EndBehaviourTable end_behaviour_;
 
     PeriodicTable periodic_;

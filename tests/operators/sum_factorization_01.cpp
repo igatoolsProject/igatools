@@ -252,9 +252,6 @@ assemble()
     TimePoint start_assemble = Clock::now();
 
 
-    const Size n_basis = this->space->get_num_basis_per_element();
-    DenseVector loc_rhs(n_basis);
-    vector<Index> loc_dofs(n_basis);
 
     const Size n_qp = this->elem_quad.get_num_points();
     ConstantFunction<dim> f({0.5});
@@ -290,15 +287,22 @@ assemble()
     TensorSize<dim> n_quad_points = this->elem_quad.get_num_points_direction();
 
 
-    DenseMatrix loc_mass_matrix(n_basis, n_basis);
-    DenseMatrix loc_stiffness_matrix(n_basis, n_basis);
-
     const auto &elliptic_operators = static_cast<const DerivedClass &>(*this).get_elliptic_operators();
 
     for (; elem != elem_end; ++elem)
     {
+        //----------------------------------------------------
+        const Size n_basis = elem->get_num_basis();
+        DenseVector loc_rhs(n_basis);
+        loc_rhs = 0.0;
 
-        loc_rhs.clear();
+        DenseMatrix loc_mass_matrix(n_basis, n_basis);
+        local_mass_matrix = 0.0;
+
+        DenseMatrix loc_stiffness_matrix(n_basis, n_basis);
+        loc_stiffness_matrix = 0.0;
+        //----------------------------------------------------
+
 
         //----------------------------------------------------
         const TimePoint start_eval_basis = Clock::now();
@@ -378,7 +382,7 @@ assemble()
         //----------------------------------------------------
 
 
-        loc_dofs = elem->get_local_to_global();
+        auto loc_dofs = elem->get_local_to_global();
 
 
         const TimePoint start_assemblying_matrix = Clock::now();

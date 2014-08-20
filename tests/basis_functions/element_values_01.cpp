@@ -58,7 +58,7 @@ void do_test(const int p, const int num_knots)
                        ValueFlags::w_measure ;
 
 
-    const int n_basis = space->get_num_basis_per_element();
+//    const int n_basis = space->get_num_basis_per_element();
 
     typename space_phys_t::ElementIterator elem = phys_space->begin() ;
     typename space_phys_t::ElementIterator endc = phys_space->end();
@@ -69,6 +69,8 @@ void do_test(const int p, const int num_knots)
         elem->fill_cache();
 
         out << "Element" << elem->get_flat_index() << endl;
+
+        const int n_basis = elem->get_num_basis();
 
         for (int i=0; i<n_basis; ++i)
         {
@@ -128,7 +130,6 @@ void do_test1(const int p)
                        ValueFlags::gradient |
                        ValueFlags::w_measure ;
 
-    const int n_basis = space->get_num_basis_per_element();
 
     typename space_phys_t::ElementIterator elem = phys_space->begin() ;
     typename space_phys_t::ElementIterator endc = phys_space->end();
@@ -138,6 +139,8 @@ void do_test1(const int p)
         elem->fill_cache();
 
         out << "Element: " << elem->get_flat_index() << endl;
+
+        const int n_basis = elem->get_num_basis();
 
         for (int i=0; i<n_basis; ++i)
         {

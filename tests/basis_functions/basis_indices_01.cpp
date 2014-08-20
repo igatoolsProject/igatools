@@ -49,9 +49,9 @@ int main()
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
         auto n_basis = sp_spec.get_num_basis_table();
-        auto n_basis_elem = sp_spec.get_num_basis_per_element_table();
+        auto degree = sp_spec.get_degree();
 
-        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, n_basis_elem);
+        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree);
         basis_index.print_info(out);
     }
 
@@ -70,9 +70,9 @@ int main()
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
         auto n_basis = sp_spec.get_num_basis_table();
-        auto n_basis_elem = sp_spec.get_num_basis_per_element_table();
+        auto degree = sp_spec.get_degree();
 
-        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, n_basis_elem);
+        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree);
         basis_index.print_info(out);
     }
 

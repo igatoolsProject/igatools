@@ -52,6 +52,13 @@ public:
 
     /** We inherith the constructors of the base class. */
     using BoostMatrix::BoostMatrix;
+#if 0
+    DenseMatrix(const Index n, const bool init_to_zero = true);
+    DenseMatrix(const Index n_rows, const Index n_cols, const bool init_to_zero = true);
+
+    DenseMatrix(const DenseMatrix &matrix) = default;
+    DenseMatrix(DenseMatrix &&matrix) = default;
+#endif
 
     /**
      * Assignment operator for assigning zeros to all entries of the matrix
