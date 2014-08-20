@@ -297,7 +297,7 @@ assemble()
         loc_rhs = 0.0;
 
         DenseMatrix loc_mass_matrix(n_basis, n_basis);
-        local_mass_matrix = 0.0;
+        loc_mass_matrix = 0.0;
 
         DenseMatrix loc_stiffness_matrix(n_basis, n_basis);
         loc_stiffness_matrix = 0.0;
