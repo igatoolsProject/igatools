@@ -40,7 +40,7 @@ void space_cache(const int n_knots = 5, const int deg=1)
     auto grid = CartesianGrid<dim>::create(n_knots);
     auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
 
-    auto flag = ValueFlags::values;
+    auto flag = ValueFlags::value;
     auto quad = QGauss<dim>(2);
     BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
     cache.print_info(out);
@@ -53,7 +53,7 @@ void space_cache(const int n_knots = 5, const int deg=1)
     for (;elem != end; ++elem)
     {
         cache.fill_element_cache(elem);
-        elem->get_values().print_info(out);
+      //  elem->get_basis_values().print_info(out);
     }
 }
 

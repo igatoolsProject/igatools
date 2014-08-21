@@ -25,7 +25,7 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
-#include <igatools/utils/tensor_product_array.h>
+#include <igatools/utils/cartesian_product_array-template.h>
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/basis_functions/bspline_space.h>
 
@@ -40,6 +40,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 {
+    using base_t = GridUniformQuadCache<dim_>;
     using Space = BSplineSpace<dim_,range_,rank_>;
     using ElementIterator = typename Space::ElementIterator;
 
@@ -67,6 +68,8 @@ public:
     class BasisValues1d
     {
     public:
+        BasisValues1d()
+    {}
         BasisValues1d(const int max_der_order, const int n_func, const int n_points)
             :
             values_(max_der_order, DenseMatrix(n_func, n_points))
@@ -77,6 +80,11 @@ public:
             values_.resize(max_der_order);
             for (auto matrix: values_)
                 matrix.resize(n_func, n_points);
+        }
+
+        void print_info(LogStream &out) const
+        {
+            out << values_;
         }
     private:
         std::vector<DenseMatrix> values_;
