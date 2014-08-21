@@ -54,6 +54,7 @@ class CartesianGridElementAccessor :
 {
 private:
     using parent_t = CartesianGridElement<dim_>;
+
 public:
     using typename parent_t::ContainerType;
     using parent_t::dim;
@@ -250,6 +251,9 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
+    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
+    // someone made them public due to hackish code in NURBSelementaccessor
+    // we must rethink that code
 public:
     bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
 

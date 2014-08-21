@@ -115,15 +115,11 @@ public:
 
     using GridType = typename PushForwardType::GridType;
 
-    static const int dim = PushForwardType::dim;
-
-    static const int codim = PushForwardType::codim;
-
+    static const int dim       = PushForwardType::dim;
+    static const int codim     = PushForwardType::codim;
     static const int space_dim = PushForwardType::space_dim;
-
-    static const int range = range_;
-
-    static const int rank = rank_;
+    static const int range     = range_;
+    static const int rank      = rank_;
 
     using BaseSpace::n_components;
     using BaseSpace::components;
@@ -133,9 +129,9 @@ public:
 
 public:
     using typename BaseSpace::Func;
-    using typename BaseSpace::Derivative;
     using typename BaseSpace::Point;
     using typename BaseSpace::Value;
+    using typename BaseSpace::Derivative;
     using typename BaseSpace::Div;
 
 public:
@@ -144,7 +140,8 @@ public:
           BSplineSpace<dim-1,range,rank>,
           BSplineSpace<0,range,rank> >;
 
-    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
+    using FaceSpace = PhysicalSpace<RefFaceSpace,
+            typename PushForwardType::FacePushForward>;
 
 
     /** Type for the element accessor. */
