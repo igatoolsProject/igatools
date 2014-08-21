@@ -26,6 +26,7 @@
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
+#include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/basis_functions/bspline_space.h>
 
 IGA_NAMESPACE_OPEN
@@ -37,11 +38,15 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class BSplineUniformQuadCache
+class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 {
     using Space = BSplineSpace<dim_,range_,rank_>;
     using ElementIterator = typename Space::ElementIterator;
 
+    template<class T>
+    using ComponentContainer = typename Space::template ComponentContainer<T>;
+    template<class T>
+    using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
 
 public:
     static const int dim = dim_;
@@ -59,14 +64,37 @@ public:
 
     void print_info(LogStream &out) const;
 
+    class BasisValues1d
+    {
+    public:
+        BasisValues1d(const int max_der_order, const int n_func, const int n_points)
+            :
+            values_(max_der_order, DenseMatrix(n_func, n_points))
+        {}
+
+        void resize(const int max_der_order, const int n_func, const int n_points)
+        {
+            values_.resize(max_der_order);
+            for (auto matrix: values_)
+                matrix.resize(n_func, n_points);
+        }
+    private:
+        std::vector<DenseMatrix> values_;
+    };
+
 private:
-    std::shared_ptr<const GridType> grid_;
+    std::shared_ptr<const Space> space_;
 
     BasisElemValueFlagsHandler flags_;
 
-    TensorProductArray<dim> lengths_;
-
     Quadrature<dim> quad_;
+
+    /**
+     * univariate B-splines values and derivatives at
+     * quadrature points
+     * splines1d_[comp][dir][interval][order][function][point]
+     */
+    ComponentDirectionTable<BasisValues1d> splines1d_;
 };
 
 IGA_NAMESPACE_CLOSE

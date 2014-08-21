@@ -26,52 +26,73 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ , int rank_>
-BsplineUniformQuadCache<dim_, range_, rank_>::
-BsplineUniformQuadCache(shared_ptr<const GridType> grid,
-                     const ValueFlags flag,
-                     const Quadrature<dim> &quad)
+BSplineUniformQuadCache<dim_, range_, rank_>::
+BSplineUniformQuadCache(shared_ptr<const Space> space,
+                        const ValueFlags flag,
+                        const Quadrature<dim> &quad)
     :
-    grid_(grid),
+    GridUniformQuadCache<dim_>(space->get_grid(), flag, quad),
+    space_(space),
     flags_(flag),
-    lengths_(grid->get_element_lengths()),
-    quad_(quad)
-{}
+    quad_(quad),
+    splines1d_(space->get_components_map(), space->get_grid()->get_num_intervals())
+{
+    const int n_derivatives = 3;
+    const auto grid = space->get_grid();
+    const auto n_intervals = grid->get_num_intervals();
+    const auto n_funcs = space->get_num_basis_per_element_table();
+    const auto n_points = quad->get_num_points_direction();
+    for (auto comp : splines1d_.get_active_components_id())
+    {
+        auto &splines1d = splines1d_(comp);
+        const auto size = splines1d.tensor_size();
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            auto n_fun = n_funcs(comp)[dir];
+            auto n_pts = n_points[dir];
+            for (int j = 0 ; j < size[dir] ; ++j)
+                splines1d.entry(dir,j).resize(n_derivatives, n_fun, n_pts);
+        }
+    }
+
+
+}
 
 
 
 template<int dim_, int range_ , int rank_>
 void
-BsplineUniformQuadCache<dim_, range_, rank_>::
+BSplineUniformQuadCache<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-    // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
-    auto &cache = elem.get_accessor().elem_values_;
-    cache.resize(flags_, quad_);
+//    // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
+//    auto &cache = elem.get_accessor().elem_values_;
+//    cache.resize(flags_, quad_);
 }
 
 
 
 template<int dim_, int range_ , int rank_>
 void
-BsplineUniformQuadCache<dim_, range_, rank_>::
+BSplineUniformQuadCache<dim_, range_, rank_>::
 fill_element_cache(ElementIterator &elem)
 {
-    auto &cache = elem.get_accessor().elem_values_;
-    auto meas = lengths_.tensor_product(elem->get_tensor_index());
-    cache.fill(meas);
-    cache.set_filled(true);
+//    auto &cache = elem.get_accessor().elem_values_;
+//    auto meas = lengths_.tensor_product(elem->get_tensor_index());
+//    cache.fill(meas);
+//    cache.set_filled(true);
 }
 
 
 
 template<int dim_, int range_ , int rank_>
 void
-BsplineUniformQuadCache<dim_, range_, rank_>::
+BSplineUniformQuadCache<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-    out.begin_item("Lengths:");
-    lengths_.print_info(out);
-    out.end_item();
+//    out.begin_item("Lengths:");
+//    lengths_.print_info(out);
+//    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

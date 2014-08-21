@@ -143,15 +143,15 @@ public:
      * cache, i.e. it is like using a projected quadrature on
      * the faces.
      */
-  //  void init_cache(const ValueFlags flag,
-  //                  const Quadrature<dim_> &quad);
+    //  void init_cache(const ValueFlags flag,
+    //                  const Quadrature<dim_> &quad);
 
     /**
      * Initializes the internal cache for the efficient
      * computation of the values requested in
      * the @p fill_flag when no quadrature point is necessary
      */
- //   void init_cache(const ValueFlags flag);
+//   void init_cache(const ValueFlags flag);
 
     /**
      * To use a different quadrature on the face instead of
@@ -165,7 +165,7 @@ public:
      * Fills the element values cache according to the evaluation points
      * and fill flags specifies in init_values.
      */
-  //  void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
+    //  void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
     /**
      * Fills the i-th face values cache according to the evaluation points
@@ -188,7 +188,7 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-  //  std::array<Real,dim_> get_coordinate_lengths() const;
+    //  std::array<Real,dim_> get_coordinate_lengths() const;
 
 
     /**

@@ -308,6 +308,8 @@ public:
         ComponentContainer(const ComponentMap &comp_map =
                                sequence<n_entries>());
 
+        ComponentContainer(const ComponentMap &comp_map, const T &val);
+
         /**
          * Construct a homogenous range table with val value
          */
@@ -461,6 +463,29 @@ ComponentContainer(const ComponentMap &comp_map)
                                 inactive_components_id_.begin());
 
     inactive_components_id_.resize(it-inactive_components_id_.begin());
+}
+
+
+
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
+ComponentContainer(const ComponentMap &comp_map, const T &val)
+    :
+    base_t(),
+    comp_map_(comp_map),
+    active_components_id_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_id_(n_entries)
+{
+    auto all = sequence<n_entries>();
+    auto it=std::set_difference(all.begin(), all.end(),
+                                active_components_id_.begin(),active_components_id_.end(),
+                                inactive_components_id_.begin());
+
+    inactive_components_id_.resize(it-inactive_components_id_.begin());
+
+    for (auto i : active_components_id_)
+        base_t::operator()(i) = val;
 }
 
 
