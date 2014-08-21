@@ -436,16 +436,6 @@ get_degree() const -> const DegreeTable &
     return sp_space_->get_degree();
 }
 
-#if 0
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_loc_to_global(const TensorIndex<dim> &j) const -> std::vector<Index>
-{
-    return sp_space_->get_loc_to_global(j);
-}
-#endif
-
 
 template <int dim_, int range_, int rank_>
 auto

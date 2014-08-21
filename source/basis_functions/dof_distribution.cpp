@@ -212,26 +212,6 @@ create_element_loc_to_global_view(
 
 
 
-#if 0
-template<int dim, int range, int rank>
-vector<Index>
-DofDistribution<dim, range, rank>::
-get_loc_to_global_indices(const TensorIndex<dim> &t_id) const
-{
-    return this->get_loc_to_global_indices(this->tensor_to_flat(t_id));
-}
-
-
-
-template<int dim, int range, int rank>
-std::vector<Index>
-DofDistribution<dim, range, rank>::
-get_loc_to_global_indices(const Index f_id) const
-{
-    const auto &dofs_elem_view = elements_loc_to_global_flat_view_->at(f_id);
-    return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
-}
-#endif
 
 template<int dim, int range, int rank>
 std::vector<Index>
@@ -287,7 +267,7 @@ get_dofs_view() const -> const DofsView &
 }
 
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
@@ -295,6 +275,18 @@ get_num_dofs_element(const Index elem_flat_id) const -> Size
 {
 	DofsPerElementTable dofs_per_element_table;
 	const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(elem_flat_id);
+
+	return dofs_element_view.get_num_entries();
+}
+#endif
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_num_dofs_element(const CartesianGridElement<dim> &element) const -> Size
+{
+//	DofsPerElementTable dofs_per_element_table;
+	const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
 
 	return dofs_element_view.get_num_entries();
 }

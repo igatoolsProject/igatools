@@ -201,15 +201,6 @@ get_id() const
     return ref_space_->get_id();
 }
 
-#if 0
-template <class RefSpace_, class PushForward_>
-std::vector<Index>
-PhysicalSpace<RefSpace_,PushForward_>::
-get_loc_to_global(const TensorIndex<dim> &j) const
-{
-    return ref_space_->get_loc_to_global(j);
-}
-#endif
 
 template <class RefSpace_, class PushForward_>
 std::vector<Index>

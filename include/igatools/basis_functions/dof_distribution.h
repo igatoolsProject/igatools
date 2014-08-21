@@ -152,17 +152,11 @@ public:
     /** @name Getting information of a specific element */
     ///@{
     /**
-     * Returns the number of active dofs of the element @p elem_flat_id.
+     * Returns the number of active dofs of the @p element.
      */
-    Size get_num_dofs_element(const Index elem_flat_id) const;
+    Size get_num_dofs_element(const CartesianGridElement<dim> &element) const;
+//    Size get_num_dofs_element(const Index elem_flat_id) const;
 
-#if 0
-    /** Returns the active dofs of the element @p elem_tensor_id.*/
-    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
-
-    /** Returns the active dofs of the element @p elem_flat_id.*/
-    std::vector<Index> get_loc_to_global_indices(const Index elem_flat_id) const;
-#endif
 
     /** Returns the active dofs of the @p element.*/
     std::vector<Index> get_loc_to_global_indices(const CartesianGridElement<dim> &element) const;
