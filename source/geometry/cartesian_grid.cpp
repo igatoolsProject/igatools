@@ -156,7 +156,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
     knot_coordinates_(knot_coordinates),
     influent_(this->tensor_size(), true),
-    active_elems_(this->tensor_size(), true)
+    active_elems_(this->tensor_size(), true),
+    weight_index_(MultiArrayUtils<dim>::compute_weight(this->tensor_size()))
 {
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
@@ -218,12 +219,12 @@ CartesianGrid(const self_t &grid)
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
     influent_(grid.influent_),
-    active_elems_(grid.active_elems_)
+    active_elems_(grid.active_elems_),
+    weight_index_(grid.weight_index_)
 {}
 
 
 
-//TODO: inline this function
 template<int dim_>
 vector< Real > const &
 CartesianGrid<dim_>::
@@ -234,7 +235,6 @@ get_knot_coordinates(const int i) const
 
 
 
-//TODO: inline this function
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -410,6 +410,7 @@ refine_directions(
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
     influent_.resize(this->tensor_size(), true);
     active_elems_.resize(this->tensor_size(), true);
+    weight_index_ = MultiArrayUtils<dim>::compute_weight(this->tensor_size());
 
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)

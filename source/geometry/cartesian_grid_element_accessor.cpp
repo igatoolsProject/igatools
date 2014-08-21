@@ -56,31 +56,6 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 
 
 
-
-
-
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-operator++()
-{
-    const auto n_elem = this->grid_->get_num_all_elems();
-    Index index = this->get_flat_index();
-    do
-    {
-        ++index;
-    }
-    while (index<n_elem && (!this->grid_->active_elems_(index)));
-
-    if (index >= n_elem)
-        index = IteratorState::pass_the_end;
-
-    this->move_to(index);
-}
-
-
-
-
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::

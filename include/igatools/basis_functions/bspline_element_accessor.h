@@ -224,7 +224,7 @@ private:
     ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentContainer <std::array<const BasisValues1d *,dim>>;
+    using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
     /**
      * Fills the cache (accordingly with the flags_handler status)
@@ -239,10 +239,6 @@ private:
     void fill_values_cache_from_univariate(const int max_deriv_order,
                                            const univariate_values_t &values_1D,
                                            ValuesCache &cache);
-
-
-
-
     ///@}
 
 

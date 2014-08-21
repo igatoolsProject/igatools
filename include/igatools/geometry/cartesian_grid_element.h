@@ -223,6 +223,8 @@ public:
      */
     bool is_valid() const;
 
+    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+    ///@{
     /**
      * Moves the element to the position that differs from the current one
      * for the quantity given by @p increment.
@@ -251,6 +253,9 @@ public:
      */
     void move_to(const TensorIndex<dim> &tensor_index);
 
+    /** Moves the element to the next valid element in the CartesianGrid. */
+    void operator++();
+    ///@}
 
     /** @name Comparison operators*/
     ///@{

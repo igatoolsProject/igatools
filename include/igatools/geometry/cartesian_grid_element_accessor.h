@@ -250,12 +250,6 @@ public:
                         VerbosityLevel::normal) const;
 
 
-
-public:
-
-
-    void operator++();
-
 private:
 
     /**

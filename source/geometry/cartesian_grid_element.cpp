@@ -101,9 +101,7 @@ move_to(const Index flat_index)
     if (flat_index_ != IteratorState::pass_the_end)
     {
         using Utils = MultiArrayUtils<dim>;
-        tensor_index_ = Utils::flat_to_tensor_index(
-                            flat_index_,
-                            Utils::compute_weight(grid_->get_num_intervals()));
+        tensor_index_ = Utils::flat_to_tensor_index(flat_index_,grid_->weight_index_);
     }
     else
         tensor_index_.fill(IteratorState::pass_the_end);
@@ -119,9 +117,7 @@ move_to(const TensorIndex<dim> &tensor_index)
     tensor_index_= tensor_index;
 
     using Utils = MultiArrayUtils<dim>;
-    flat_index_ = Utils::tensor_to_flat_index(
-                      tensor_index_,
-                      Utils::compute_weight(grid_->get_num_intervals()));
+    flat_index_ = Utils::tensor_to_flat_index(tensor_index_,grid_->weight_index_);
 
     Assert((flat_index_ == IteratorState::pass_the_end) ||
            ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
@@ -335,27 +331,16 @@ vector<Points<dim>>
     const auto dilate    = this->get_coordinate_lengths();
 
     vector<Points<dim>> points_unit_domain(n_points);
-//    LogStream out ;
-//    using std::endl;
-//    out << "CartesianGridElement::transform_points_reference_to_unit" << endl;
-//    this->print_info(out);
-//    out <<endl;
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_ref_domain = points_ref_domain[ipt];
-//        out << "point_ref_domain="<<point_ref_domain<<endl;
         Assert(this->is_point_inside(point_ref_domain) || this->is_point_on_boundary(point_ref_domain),
         ExcMessage("The point " + std::to_string(ipt) +
         " is outside this CartesianGridElement."));
 
         auto &point_unit_domain = points_unit_domain[ipt];
         for (int i = 0 ; i < dim ; ++i)
-        {
-//            out << "dilate["<<i<<"]=" <<dilate[i] << endl;
-//            out << "translate["<<i<<"]=" <<translate[i] << endl;
-
             point_unit_domain[i] = (point_ref_domain[i] - translate[i]) / dilate[i] ;
-        }
     }
 
     return points_unit_domain;
@@ -426,13 +411,30 @@ jump(const TensorIndex<dim> &increment)
     if (valid_tensor_index)
     {
         using Utils = MultiArrayUtils<dim>;
-
-        flat_index_ = Utils::tensor_to_flat_index(
-                          tensor_index_,
-                          Utils::compute_weight(n_elems));
+        flat_index_ = Utils::tensor_to_flat_index(tensor_index_,grid_->weight_index_);
     }
 
     return valid_tensor_index;
+}
+
+
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+operator++()
+{
+    const auto n_elem = this->grid_->get_num_all_elems();
+    Index index = this->get_flat_index();
+    do
+    {
+        ++index;
+    }
+    while (index<n_elem && (!this->grid_->active_elems_(index)));
+
+    if (index >= n_elem)
+        index = IteratorState::pass_the_end;
+
+    this->move_to(index);
 }
 
 
