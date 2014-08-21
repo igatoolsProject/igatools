@@ -435,6 +435,28 @@ jump(const TensorIndex<dim> &increment)
     return valid_tensor_index;
 }
 
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+operator==(const CartesianGridElement<dim_> &elem) const
+{
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_flat_index() == elem.get_flat_index());
+}
+
+
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+operator!=(const CartesianGridElement<dim_> &elem) const
+{
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_flat_index() != elem.get_flat_index());
+}
+
+
 template <int dim_>
 void
 CartesianGridElement<dim_>::

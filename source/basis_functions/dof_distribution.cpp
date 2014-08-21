@@ -212,7 +212,7 @@ create_element_loc_to_global_view(
 
 
 
-
+#if 0
 template<int dim, int range, int rank>
 vector<Index>
 DofDistribution<dim, range, rank>::
@@ -231,7 +231,16 @@ get_loc_to_global_indices(const Index f_id) const
     const auto &dofs_elem_view = elements_loc_to_global_flat_view_->at(f_id);
     return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
 }
+#endif
 
+template<int dim, int range, int rank>
+std::vector<Index>
+DofDistribution<dim, range, rank>::
+get_loc_to_global_indices(const CartesianGridElement<dim> &element) const
+{
+    const auto &dofs_elem_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
+    return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
+}
 
 
 template<int dim, int range, int rank>
@@ -300,13 +309,13 @@ print_info(LogStream &out) const
         index_table_(comp).print_info(out);
     out << std::endl;
 
-    int i = 0;
-    for (auto dofs_elem : *elements_loc_to_global_flat_view_)
+//    int i = 0;
+    for (const auto &dofs_elem : *elements_loc_to_global_flat_view_)
     {
-        out << this->get_loc_to_global_indices(i++) << std::endl;
-        /*
+//        out << this->get_loc_to_global_indices(dofs_elem.first) << std::endl;
+
         out << "[ ";
-        for (auto x : dofs_elem)
+        for (auto x : dofs_elem.second)
             out << x << " ";
         out << "]" << std::endl;
         //*/

@@ -859,7 +859,7 @@ auto
 SpaceElementAccessor<Space>::
 get_local_to_global() const -> std::vector<Index>
 {
-    return space_->get_loc_to_global(this->get_tensor_index());
+    return space_->get_loc_to_global(*this);
 }
 
 

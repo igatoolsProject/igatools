@@ -130,7 +130,10 @@ public:
 
     const DegreeTable &get_degree() const;
 
+#if 0
     std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
+#endif
+    std::vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     /**
      * Returns a element iterator to the first element of the patch.

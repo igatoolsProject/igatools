@@ -55,25 +55,6 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 
 
 
-template <int dim_>
-bool
-CartesianGridElementAccessor<dim_>::
-operator== (const CartesianGridElementAccessor<dim_> &a) const
-{
-    Assert(this->get_grid() == a.get_grid(), ExcMessage("Cannot compare iterators on different grid."));
-    return (this->get_flat_index() == a.get_flat_index());
-}
-
-
-
-template <int dim_>
-bool
-CartesianGridElementAccessor<dim_>::
-operator!=(const CartesianGridElementAccessor<dim_> &a) const
-{
-    Assert(this->get_grid() == a.get_grid(), ExcMessage("Cannot Compare Iterators."));
-    return (this->get_flat_index() != a.get_flat_index());
-}
 
 
 

@@ -252,15 +252,6 @@ public:
 
 
 public:
-    bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
-
-    /**
-     * Returns true if the the CartesianGridIterator @p a has a different flat index w.r.t.
-     * the calling object.
-     * @note The calling object and the CartesianGridIterator @p a must refers to the same
-     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
-     */
-    bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
 
 
     void operator++();

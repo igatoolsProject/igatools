@@ -348,6 +348,7 @@ basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
     return dofs_distribution_.basis_tensor_to_flat(tensor_index, comp);
 }
 
+#if 0
 template<int dim_, int range_, int rank_>
 std::vector<Index>
 BSplineSpace<dim_, range_, rank_>::
@@ -355,6 +356,16 @@ get_loc_to_global(const TensorIndex<dim> &j) const
 {
     return dofs_distribution_.get_loc_to_global_indices(j);
 }
+#endif
+
+template<int dim_, int range_, int rank_>
+std::vector<Index>
+BSplineSpace<dim_, range_, rank_>::
+get_loc_to_global(const CartesianGridElement<dim> &element) const
+{
+    return dofs_distribution_.get_loc_to_global_indices(element);
+}
+
 
 template<int dim_, int range_, int rank_>
 auto

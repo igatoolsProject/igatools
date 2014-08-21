@@ -251,6 +251,20 @@ public:
      */
     void move_to(const TensorIndex<dim> &tensor_index);
 
+
+    /** @name Comparison operators*/
+    ///@{
+    bool operator==(const CartesianGridElement<dim_> &elem) const;
+
+    /**
+     * Returns true if the the CartesianGridElement @p elem has a different flat index w.r.t.
+     * the calling object.
+     * @note The calling object and the CartesianGridElement @p elem must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
+    bool operator!=(const CartesianGridElement<dim_> &elem) const;
+    ///@}
+
 protected:
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;
