@@ -207,8 +207,9 @@ void
 CartesianProductArray<T,rank>::
 print_info(LogStream &out) const
 {
-    for (int i = 0 ; i < rank ; i++)
-        out << data_[i] << std::endl;
+    for (auto &vec : data_)
+        for (auto &entry : vec)
+            out << entry << std::endl;
 }
 
 
