@@ -79,7 +79,7 @@ void do_test()
 
     const int n_points = 2;
     QGauss< dim_domain > quad(n_points) ;
-    vector<Points<dim_domain>> eval_points = quad.get_points().get_flat_cartesian_product();
+    const auto eval_points = quad.get_points().get_flat_cartesian_product();
 
     auto elem = space->begin();
     for (; elem != space->end(); ++elem)
