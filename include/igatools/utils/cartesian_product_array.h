@@ -27,6 +27,7 @@
 #include <igatools/base/logstream.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/tensor_sized_container.h>
+#include <igatools/utils/value_vector.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -241,7 +242,9 @@ public:
      * \{(1,4), (1,3), (2,4), (2, 3)\}
      * \f]
      */
-    std::vector< point_t > get_flat_cartesian_product() const;
+
+    Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >
+    get_flat_cartesian_product() const;
     ///@}
 
     /**

@@ -1,5 +1,6 @@
 Points: (r,phi1,...,phi_n) :
-[ [ 0.500000 ]  ]
+ValueVector (num_points=1) :
+[ 0.500000 ]  
 Values (x1,x2,...):
 ValueVector (num_points=1) :
 [ 0 1.00000 ]  
@@ -10,7 +11,8 @@ Hessians:
 ValueVector (num_points=1) :
 [ [ [ 0 -1.00000 ]  ]  ]  
 Points: (r,phi1,...,phi_n) :
-[ [ 0.500000 0.500000 ]  ]
+ValueVector (num_points=1) :
+[ 0.500000 0.500000 ]  
 Values (x1,x2,...):
 ValueVector (num_points=1) :
 [ 0 0 1.00000 ]  

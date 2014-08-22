@@ -92,7 +92,7 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate(std::vector<Value> &values) const
+evaluate(ValueVector<Value> &values) const
 {
     values = element->get_map_values();
 }
@@ -102,7 +102,7 @@ evaluate(std::vector<Value> &values) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate_gradients(std::vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     auto grad = element->get_map_gradients();
 

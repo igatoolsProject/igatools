@@ -67,7 +67,8 @@ void test_iterator()
     auto gradients = elem->get_map_gradients();
     auto hessians = elem->get_map_hessians();
 
-    out << "x = " << endl << quad.get_points().get_flat_cartesian_product() << endl;
+    out << "x = " << endl;
+    quad.get_points().get_flat_cartesian_product().print_info(out);
     out << "F(x)     = " << endl;
     values.print_info(out);
     out << endl;

@@ -288,8 +288,8 @@ is_boundary(const Index face_id) const
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-transform_points_unit_to_reference(const vector<Points<dim>> &points_unit_domain) const ->
-vector<Points<dim>>
+transform_points_unit_to_reference(const ValueVector<Points<dim>> &points_unit_domain) const ->
+ValueVector<Points<dim>>
 {
     const int n_points = points_unit_domain.size();
     Assert(n_points > 0,ExcEmptyObject());
@@ -298,7 +298,7 @@ vector<Points<dim>>
     const auto translate = this->vertex(0);
     const auto dilate    = this->get_coordinate_lengths();
 
-    vector<Points<dim>> points_ref_domain(n_points);
+    ValueVector<Points<dim>> points_ref_domain(n_points);
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_unit_domain = points_unit_domain[ipt];
@@ -320,8 +320,8 @@ vector<Points<dim>>
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-transform_points_reference_to_unit(const vector<Points<dim>> &points_ref_domain) const ->
-vector<Points<dim>>
+transform_points_reference_to_unit(const ValueVector<Points<dim>> &points_ref_domain) const ->
+ValueVector<Points<dim>>
 {
     const int n_points = points_ref_domain.size();
     Assert(n_points > 0,ExcEmptyObject());
@@ -330,7 +330,7 @@ vector<Points<dim>>
     const auto translate = this->vertex(0);
     const auto dilate    = this->get_coordinate_lengths();
 
-    vector<Points<dim>> points_unit_domain(n_points);
+    ValueVector<Points<dim>> points_unit_domain(n_points);
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_ref_domain = points_ref_domain[ipt];

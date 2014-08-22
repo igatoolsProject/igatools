@@ -47,7 +47,7 @@ for row in unique(inst.all_phy_sp_dims + igm_phy_sp_dims):
     gradient_phys = ("Derivatives<%d,%d,%d,1>" %(row.space_dim, row.phys_range, row.phys_rank)) 
     hessian_phys = ("Derivatives<%d,%d,%d,2>" %(row.space_dim, row.phys_range, row.phys_rank)) 
     topology_id = ("const TopologyId<%d> &" %(row.dim))
-    pts = 'const vector<RefPoint> &'
+    pts = 'const ValueVector<RefPoint> &'
     for container in containers:
         v_ref  = 'const %s<%s> &' %(container, value_ref)
         d1v_ref  = 'const %s<%s> &' %(container, gradient_ref)

@@ -135,8 +135,6 @@ CartesianProductArray<T,rank>::
 copy_data_direction(const int i, const vector<T> &data)
 {
     Assert(i>=0 && i<rank, ExcIndexRange(i,0,rank));
-    //TODO(pauletti, Jun 8, 2014): why the next assertion?
-    //Assert(data.size()>0, ExcLowerRange(data.size(),0));
     data_[i] = data;
     TensorSize<rank> size = this->tensor_size();
     if (data_[i].size() != size(i))
@@ -167,10 +165,14 @@ cartesian_product(const TensorIndex<rank> &index) const -> point_t
 template< class T, int rank>
 auto
 CartesianProductArray<T,rank>::
-get_flat_cartesian_product() const -> vector<point_t>
+get_flat_cartesian_product() const ->
+Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >
 {
+	using Container = Conditional<
+			std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >;
+
     const Size flat_size = this->flat_size();
-    vector<point_t> result(flat_size);
+    Container result(flat_size);
     for (Size i = 0; i < flat_size; ++i)
     {
         const auto comp_index = this->flat_to_tensor(i);

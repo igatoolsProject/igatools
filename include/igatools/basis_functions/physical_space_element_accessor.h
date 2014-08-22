@@ -206,7 +206,7 @@ public :
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
+    evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const;
 
     ///@}
 

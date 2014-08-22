@@ -105,7 +105,7 @@ set_face_element(const Index face_id,
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-evaluate(vector<Value> &values) const
+evaluate(ValueVector<Value> &values) const
 {
     const int num_points = points_.size();
     for (int i = 0; i<num_points; i++)
@@ -121,7 +121,7 @@ evaluate(vector<Value> &values) const
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-evaluate_gradients(vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     const int num_points = points_.size();
     for (int i = 0; i<num_points; i++)
@@ -133,7 +133,7 @@ evaluate_gradients(vector<Gradient> &gradients) const
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-evaluate_hessians(vector<Hessian> &hessians) const
+evaluate_hessians(ValueVector<Hessian> &hessians) const
 {
     const int num_points = points_.size();
     for (int i = 0; i<num_points; i++)
@@ -145,7 +145,7 @@ evaluate_hessians(vector<Hessian> &hessians) const
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-evaluate_face(const Index face_id, vector<Value> &values) const
+evaluate_face(const Index face_id, ValueVector<Value> &values) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -164,7 +164,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -178,7 +178,7 @@ evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 template<int dim_, int codim_>
 void
 LinearMapping<dim_, codim_>::
-evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -309,7 +309,7 @@ BallMapping<dim_>::set_face_element(const Index face_id,
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const
 {
     const int n_points = points.size();
     Assert(n_points > 0, ExcEmptyObject());
@@ -377,7 +377,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const
 {
     const int n_points = points.size();
     Assert(n_points > 0, ExcEmptyObject());
@@ -490,7 +490,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessia
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate(vector<Value> &values) const
+evaluate(ValueVector<Value> &values) const
 {
     const int der = 0;
     const auto &s = sin_val[der];
@@ -514,7 +514,7 @@ evaluate(vector<Value> &values) const
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_gradients(vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     const auto &s = sin_val[0];
     const auto &c = cos_val[0];
@@ -554,7 +554,7 @@ evaluate_gradients(vector<Gradient> &gradients) const
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_hessians(vector<Hessian> &hessians) const
+evaluate_hessians(ValueVector<Hessian> &hessians) const
 {
     const auto &s = sin_val[0];
     const auto &c = cos_val[0];
@@ -630,7 +630,7 @@ evaluate_hessians(vector<Hessian> &hessians) const
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_face(const Index face_id, vector<Value> &values) const
+evaluate_face(const Index face_id, ValueVector<Value> &values) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -657,7 +657,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const
 {
     const auto &s = face_sin_val[face_id][0];
     const auto &c = face_cos_val[face_id][0];
@@ -697,7 +697,7 @@ evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const
 {
     const auto &s = face_sin_val[face_id][0];
     const auto &c = face_cos_val[face_id][0];
@@ -889,7 +889,7 @@ SphereMapping<dim_>::set_face_element(const Index face_id,
 
 template<int dim_>
 void
-SphereMapping<dim_>::evaluate(vector<Value> &values) const
+SphereMapping<dim_>::evaluate(ValueVector<Value> &values) const
 {
     const int der = 0;
     const auto &s = sin_val[der];
@@ -912,7 +912,7 @@ SphereMapping<dim_>::evaluate(vector<Value> &values) const
 template<int dim_>
 void
 SphereMapping<dim_>::
-evaluate_gradients(vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     const auto &s = sin_val[0];
     const auto &c = cos_val[0];
@@ -951,7 +951,7 @@ evaluate_gradients(vector<Gradient> &gradients) const
 template<int dim_>
 void
 SphereMapping<dim_>::
-evaluate_hessians(vector <Hessian> &hessians) const
+evaluate_hessians(ValueVector<Hessian> &hessians) const
 {
     const auto &s = sin_val[0];
     const auto &c = cos_val[0];
@@ -1027,7 +1027,7 @@ evaluate_hessians(vector <Hessian> &hessians) const
 template<int dim_>
 void
 SphereMapping<dim_>::
-evaluate_face(const Index face_id, vector<Value> &values) const
+evaluate_face(const Index face_id, ValueVector<Value> &values) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -1054,7 +1054,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 template<int dim_>
 void
 SphereMapping<dim_>::
-evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -1097,7 +1097,7 @@ evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 template<int dim_>
 void
 SphereMapping<dim_>::
-evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const
 {
     Assert(face_id < UnitElement<dim_>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim_>::faces_per_element));
@@ -1270,7 +1270,7 @@ set_face_element(const Index face_id,
 
 
 
-void CylindricalAnnulus::evaluate(vector<Value> &values) const
+void CylindricalAnnulus::evaluate(ValueVector<Value> &values) const
 {
     this->evaluate_at_points(points_,values);
 }
@@ -1278,14 +1278,14 @@ void CylindricalAnnulus::evaluate(vector<Value> &values) const
 
 
 void CylindricalAnnulus::
-evaluate_gradients(vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     this->evaluate_gradients_at_points(points_,gradients);
 }
 
 
 void CylindricalAnnulus::
-evaluate_hessians(vector<Hessian> &hessians) const
+evaluate_hessians(ValueVector<Hessian> &hessians) const
 {
     this->evaluate_hessians_at_points(points_,hessians);
 }
@@ -1293,7 +1293,7 @@ evaluate_hessians(vector<Hessian> &hessians) const
 
 
 void CylindricalAnnulus::
-evaluate_face(const Index face_id, vector<Value> &values) const
+evaluate_face(const Index face_id, ValueVector<Value> &values) const
 {
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
@@ -1304,7 +1304,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 
 
 void CylindricalAnnulus::
-evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const
 {
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
@@ -1315,7 +1315,7 @@ evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 
 
 void CylindricalAnnulus::
-evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const
 {
     Assert(face_id < UnitElement<3>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<3>::faces_per_element));
@@ -1327,7 +1327,7 @@ evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
 
 void
 CylindricalAnnulus::
-evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
+evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const
 {
     const Size num_points = points.size();
 
@@ -1351,7 +1351,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 
 void
 CylindricalAnnulus::
-evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const
 {
     const Size num_points = points.size();
     Assert(num_points > 0, ExcEmptyObject());
@@ -1384,7 +1384,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 
 void
 CylindricalAnnulus::
-evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const
 {
     const Size num_points = points.size();
     Assert(num_points > 0, ExcEmptyObject());

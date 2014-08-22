@@ -122,7 +122,7 @@ print_info(LogStream &out) const
     out << endl;
 
     out << "coordinates (flat cartesian_product):" << endl;
-    out << get_points().get_flat_cartesian_product() << endl;
+    get_points().get_flat_cartesian_product().print_info(out);
 
     out << endl;
 }

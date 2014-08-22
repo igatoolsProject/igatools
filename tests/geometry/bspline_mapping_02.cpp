@@ -184,7 +184,7 @@ void run_test()
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;
     out << "Points: " << endl;
-    out << quad.get_points().get_flat_cartesian_product() << endl;
+    quad.get_points().get_flat_cartesian_product().print_info(out);
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
     out << endl;

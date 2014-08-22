@@ -536,7 +536,7 @@ template< class PhysSpace >
 template <int deriv_order>
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const ->
+evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     Assert(deriv_order >= 0 && deriv_order <= 2,ExcIndexRange(deriv_order,0,2));
