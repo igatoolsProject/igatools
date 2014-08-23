@@ -200,12 +200,12 @@ init_face_cache(const Index face_id,
 
 
 template< class PushForward >
-template < int dim_range, int rank,template<class T> class Container, Transformation ttype >
+template < int dim_range, int rank,Transformation ttype >
 void
 PushForwardElementAccessor<PushForward>::
 transform_values(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    Container< PhysValue<dim_range, rank> > &D0v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    ValueContainer< PhysValue<dim_range, rank> > &D0v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
@@ -224,12 +224,12 @@ transform_values(
 
 
 template< class PushForward >
-template < int dim_range, int rank,template<class T> class Container, Transformation ttype >
+template < int dim_range, int rank,Transformation ttype >
 void
 PushForwardElementAccessor<PushForward>::
 transform_values(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    Container< PhysValue<dim_range, rank> > &D0v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    ValueContainer< PhysValue<dim_range, rank> > &D0v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_div>::type *) const
 {
@@ -241,7 +241,7 @@ transform_values(
     const Size num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // if Container is ValueVector, n_func will be equal to 1.
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
     const int n_func = D0v_hat.get_num_functions();
 
 
@@ -268,13 +268,13 @@ transform_values(
 
 
 template< class PushForward >
-template <int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template <int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_gradients(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-    Container< PhysDerivative<dim_range, rank, 1> > &D1v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1v_hat,
+    ValueContainer< PhysDerivative<dim_range, rank, 1> > &D1v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
@@ -284,7 +284,7 @@ transform_gradients(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // if Container is ValueVector, n_func will be equal to 1.
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
     const int n_func = D1v_hat.get_num_functions();
 
     auto D1v_iterator     = D1v.begin();
@@ -306,13 +306,13 @@ transform_gradients(
 
 
 template< class PushForward >
-template <int dim_range, int rank, template<class T> class Container, Transformation ttype >
+template <int dim_range, int rank,Transformation ttype >
 void
 PushForwardElementAccessor<PushForward>::
 transform_gradients(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-    Container< PhysDerivative<dim_range, rank, 1> > &D1v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1v_hat,
+    ValueContainer< PhysDerivative<dim_range, rank, 1> > &D1v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_div>::type *) const
 {
@@ -325,7 +325,7 @@ transform_gradients(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // if Container is ValueVector, n_func will be equal to 1.
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
     const int n_func = D1v_hat.get_num_functions();
 
     const auto &gradients_map = this->get_gradients(topology_id);
@@ -374,14 +374,14 @@ transform_gradients(
 
 
 template< class PushForward >
-template <int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template <int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_hessians(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
-    Container< PhysDerivative<dim_range, rank, 2> > &D2v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2v_hat,
+    ValueContainer< PhysDerivative<dim_range, rank, 2> > &D2v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
@@ -398,8 +398,8 @@ transform_hessians(
     const auto &inv_gradients = this->get_inv_gradients(topology_id);
     const auto &hessians      = this->get_map_hessians(topology_id);
 
-    Container<PhysDerivative<dim_range, rank, 1>> D1v(n_func, num_points);
-    transform_gradients<dim_range, rank,Container, type> (D0v_hat, D1v_hat, D1v, topology_id);
+    ValueContainer<PhysDerivative<dim_range, rank, 1>> D1v(n_func, num_points);
+    transform_gradients<dim_range, rank, type> (D0v_hat, D1v_hat, D1v, topology_id);
 
     auto D2v_hat_iterator = D2v_hat.cbegin();
     auto D1v_iterator = D1v.cbegin();
@@ -455,15 +455,15 @@ transform_face_measure(const Index face_id) const
 
 
 template< class PushForward >
-template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template < int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
     const ValueVector<RefPoint> &points,
-    const Container< RefValue<dim_range, rank> > &phi_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
-    Container< PhysValue<dim_range,rank> > &phi,
+    const ValueContainer< RefValue<dim_range, rank> > &phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    ValueContainer< PhysValue<dim_range,rank> > &phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
@@ -483,15 +483,15 @@ transform_basis_derivatives_at_points(
 
 
 template< class PushForward >
-template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template < int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
     const ValueVector<RefPoint> &points,
-    const Container< RefValue<dim_range, rank> > &phi_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
-    Container< PhysDerivative<dim_range,rank,1> > &D1phi,
+    const ValueContainer< RefValue<dim_range, rank> > &phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    ValueContainer< PhysDerivative<dim_range,rank,1> > &D1phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     const int num_points = points.size();
@@ -502,7 +502,7 @@ transform_basis_derivatives_at_points(
            ExcDimensionMismatch(D1phi.size(), D1phi_hat.size()));
 
 
-    // if Container is ValueVector, n_func will be equal to 1.
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
     const int n_func = D1phi_hat.get_num_functions();
 
 
@@ -530,15 +530,15 @@ transform_basis_derivatives_at_points(
 
 
 template< class PushForward >
-template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template < int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
     const ValueVector<RefPoint> &points,
-    const Container< RefValue<dim_range, rank> > &phi_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
-    Container< PhysDerivative<dim_range,rank,2> > &D2phi,
+    const ValueContainer< RefValue<dim_range, rank> > &phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    ValueContainer< PhysDerivative<dim_range,rank,2> > &D2phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     const int num_points = points.size();
@@ -548,7 +548,7 @@ transform_basis_derivatives_at_points(
     Assert(D2phi.size() == D1phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D1phi_hat.size()));
     Assert(D2phi.size() == D2phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D2phi_hat.size()));
 
-    // if Container is ValueVector, n_func will be equal to 1.
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
     const int n_func = D2phi.get_num_functions();
 
     const auto gradients_map = this->evaluate_gradients_at_points(points);
