@@ -65,11 +65,11 @@ void do_test()
     out << endl;
 
     out << "Testing the get_flat_cartesian_product() function" <<endl;
-    vector<Points<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
+    const auto flat_cartesian_product = data3.get_flat_cartesian_product();
     out << flat_cartesian_product << endl << endl;
 
     out << "Testing the get_flat_tensor_product() function" <<endl;
-    vector<Real> flat_tensor_product = data3.get_flat_tensor_product();
+    const auto flat_tensor_product = data3.get_flat_tensor_product();
     out << flat_tensor_product << endl << endl;
 
     out<< "Testing the get_sub_product() function" << endl;

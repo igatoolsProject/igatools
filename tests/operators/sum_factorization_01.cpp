@@ -256,7 +256,7 @@ assemble()
     const Size n_qp = this->elem_quad.get_num_points();
     ConstantFunction<dim> f({0.5});
     using Value = typename Function<dim>::Value;
-    vector<Value> f_values(n_qp);
+    ValueVector<Value> f_values(n_qp);
 
 
 

@@ -63,8 +63,8 @@ public:
      * Compute the @p values of Function at some @p points.
      */
     void
-    evaluate(const std::vector<Point> &points,
-             std::vector<Value> &values) const;
+    evaluate(const ValueVector<Point> &points,
+             ValueVector<Value> &values) const;
 
 private:
     /** Constant given value that defines the function. */

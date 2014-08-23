@@ -39,8 +39,8 @@ run_test(ConstantFunction<dim,rdim,rank> &fun)
 
 
     const int n_pts = 3;
-    vector<point_t> points(n_pts);
-    vector<value_t> values(n_pts);
+    ValueVector<point_t> points(n_pts);
+    ValueVector<value_t> values(n_pts);
 
     fun.evaluate(points, values);
     out << points << endl;

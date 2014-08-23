@@ -91,7 +91,7 @@ public:
     virtual void eval_operator_u_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const std::vector<Real> &c,
+        const ValueVector<Real> &c,
         DenseMatrix &operator_u_v) const override final;
 
     /**
@@ -120,7 +120,7 @@ EllipticOperatorsStdIntegration<PhysSpaceTest,PhysSpaceTrial>::
 eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const std::vector<Real> &coeffs,
+    const ValueVector<Real> &coeffs,
     DenseMatrix &operator_u_v) const
 {
     //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that

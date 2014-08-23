@@ -115,7 +115,8 @@ print_info(LogStream &out) const
     out << endl;
 
     out << "weights (flat tensor product):" << endl;
-    out << get_weights().get_flat_tensor_product() << endl;
+    get_weights().get_flat_tensor_product().print_info(out);
+    out << endl;
 
     out << "coordinates:" << endl;
     this->get_points().print_info(out);

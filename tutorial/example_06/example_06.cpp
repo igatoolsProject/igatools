@@ -107,7 +107,7 @@ void PoissonProblem<dim>::assemble()
     ConstantFunction<dim> f({5.});
     using Value = typename Function<dim>::Value;
     const int n_qp = elem_quad.get_num_points();
-    vector<Value> f_values(n_qp);
+    ValueVector<Value> f_values(n_qp);
 
     auto elem = space->begin();
     const auto elem_end = space->end();

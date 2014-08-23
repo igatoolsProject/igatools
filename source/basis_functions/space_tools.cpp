@@ -212,8 +212,8 @@ integrate_difference(const typename Space::Func &exact_solution,
     using Value = typename Space::Func::Value;
     using Gradient = typename Space::Func::Gradient;
 
-    vector<Value>    u(n_points);
-    vector<Gradient> grad_u(n_points);
+    ValueVector<Value>    u(n_points);
+    ValueVector<Gradient> grad_u(n_points);
 
     Value err;
     Gradient grad_err;
@@ -300,8 +300,8 @@ projection_l2(const typename Space::Func &func,
     ValueFlags flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure;
     const int n_qpoints = quad.get_num_points();
 
-    vector< typename Space::Point> eval_points(n_qpoints);
-    vector< typename Space::Value> func_at_eval_pts(n_qpoints);
+    ValueVector< typename Space::Point> eval_points(n_qpoints);
+    ValueVector< typename Space::Value> func_at_eval_pts(n_qpoints);
 
     auto elem = space->begin();
     const auto elem_end = space->end();

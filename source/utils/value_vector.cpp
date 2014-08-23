@@ -22,7 +22,6 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/exceptions.h>
-//#include <boost/multi_array.hpp>
 
 using std::vector ;
 
@@ -37,21 +36,27 @@ ValueVector() : ValueVector<T>(0)
 template <class T>
 ValueVector<T>::
 ValueVector(const Index num_points)
-    : std::vector<T>(num_points,T {})
-{}
+    : ValueContainer<T>(1,num_points)
+{
+	this->zero();
+}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const vector<T> &vector_in)
-    : std::vector<T> {vector_in}
-{}
+    : ValueVector<T>(vector_in.size())
+{
+	std::copy(vector_in.begin(),vector_in.end(),this->end());
+}
+
 
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : std::vector<T>(list)
+    : ValueVector(std::vector<T>(list))
 {}
-
+//*/
+/*
 template <class T>
 ValueVector<T> &
 ValueVector<T>::
@@ -60,8 +65,23 @@ operator=(const std::vector<T> &vector)
     std::vector<T>::operator=(vector);
     return (*this);
 }
+//*/
 
+template <class T>
+void
+ValueVector<T>::
+resize(const Size num_points)
+{
+	ValueContainer<T>::resize(1,num_points);
+}
 
+template <class T>
+void
+ValueVector<T>::
+clear() noexcept
+{
+	ValueContainer<T>::resize(1,0);
+}
 
 template <class T>
 void
@@ -77,14 +97,6 @@ print_info(LogStream &out) const
     out << std::endl ;
 }
 
-template <class T>
-void
-ValueVector<T>::
-zero()
-{
-    for (auto &value : (*this))
-        value = T() ;
-}
 
 
 template< class T>
@@ -120,7 +132,7 @@ ValueVector<T>::
 operator[](const Index i)
 {
 	Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
-	return vector<T>::operator[](i);
+	return this->data_[i];
 }
 
 template< class T>
@@ -129,7 +141,16 @@ ValueVector<T>::
 operator[](const Index i) const
 {
 	Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
-	return vector<T>::operator[](i);
+	return this->data_[i];
+}
+
+template <class T>
+LogStream &
+operator<<(LogStream &out, const ValueVector<T> &vector)
+{
+	std::vector<T> v = vector.get_data();
+	out << v;
+    return out;
 }
 
 IGA_NAMESPACE_CLOSE

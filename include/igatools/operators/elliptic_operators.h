@@ -111,7 +111,7 @@ public:
     virtual void eval_operator_u_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const std::vector<Real> &c,
+        const ValueVector<Real> &c,
         DenseMatrix &operator_u_v) const = 0;
 
     /**

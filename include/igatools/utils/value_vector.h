@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-
+#include <igatools/utils/value_container.h>
 
 #include <vector>
 
@@ -43,7 +43,7 @@ IGA_NAMESPACE_OPEN
  */
 template< class T >
 class ValueVector :
-    public std::vector<T>
+    public ValueContainer<T>
 {
 public :
     /**
@@ -60,8 +60,10 @@ public :
 
     // TODO (pauletti, Jul 11, 2014): it should be deleted after return by value in pf_accessor
     explicit ValueVector(const Size num_functions, const Size num_points)
-        :ValueVector(num_points)
-    {}
+        :ValueContainer<T>(num_functions,num_points)
+    {
+    	Assert(num_functions==1,ExcDimensionMismatch(num_functions,1));
+    }
     /**
      * Constructor from a std::vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
@@ -103,7 +105,7 @@ public :
     /**
      * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
      */
-    ValueVector<T> &operator=(const std::vector<T> &vector);
+//    ValueVector<T> &operator=(const std::vector<T> &vector);
 
     /**
      * Move assignment operator.
@@ -113,27 +115,19 @@ public :
     ///@}
 
     /**
-     * Returns the number of points.
-     */
-    Size get_num_points() const noexcept
-    {
-        return this->size();
-    }
-    /**
-     * Returns the number of functions.
-     */
-    Size get_num_functions() const noexcept
-    {
-        return 1;
-    }
-    /**
-     * @name Values initialization
+     * @name Functions for resizing
      */
     ///@{
+    /**
+     * Resize the ValueTable in order to allocate space for @p num_functions functions and
+     * @p num_points points.
+     */
+    void resize(const Size num_points);
 
-    /** Set all the values of the vector to zero. */
-    void zero() ;
-
+    /**
+     * Removes all elements from the ValueVector, leaving the container with a size of 0.
+     */
+    void clear() noexcept;
     ///@}
 
 
@@ -178,6 +172,16 @@ operator*(const ValueVector<T> &a, const Real scalar) ;
 template< class T>
 ValueVector<T>
 operator*(const Real scalar, const ValueVector<T> &a) ;
+
+
+/**
+ * Output operator for ValueVector.
+ *
+ * @relates ValueVector
+*/
+template <class T>
+LogStream &
+operator<<(LogStream &out, const ValueVector<T> &vector);
 
 IGA_NAMESPACE_CLOSE
 

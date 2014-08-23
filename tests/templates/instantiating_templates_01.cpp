@@ -29,7 +29,6 @@
 #include "../tests.h"
 #include "igatools/base/function-template.h"
 
-
 template <int dim, int space_dim>
 class MyFun : public Function<dim, space_dim, 2>
 {
@@ -41,18 +40,18 @@ public:
     using typename Base::Hessian;
 
 
-    void evaluate(const std::vector<Point> &points,
-                  std::vector<Value> &values) const
+    void evaluate(const ValueVector<Point> &points,
+    		ValueVector<Value> &values) const
     {}
 
     void evaluate_gradients(
-        const std::vector<Point> &points,
-        std::vector<Gradient> &gradient) const
+        const ValueVector<Point> &points,
+        ValueVector<Gradient> &gradient) const
     {}
 
     void evaluate_hessians(
-        const std::vector<Point> &points,
-        std::vector<Hessian> &hessians) const
+        const ValueVector<Point> &points,
+        ValueVector<Hessian> &hessians) const
     {}
 };
 
