@@ -138,6 +138,18 @@ public :
 
 
     /**
+     * Read/write access operator. Returns the reference to the <p>i</p>-th entry.
+     * @note In Debug mode an exception will be raised if the index @p i is out-of-bounds.
+     */
+    T& operator[](const Index i);
+
+    /**
+     * Read access operator. Returns the const-reference to the <p>i</p>-th entry.
+     * @note In Debug mode an exception will be raised if the index @p i is out-of-bounds.
+     */
+    const T& operator[](const Index i) const;
+
+    /**
      * @name Printing info
      */
     ///@{

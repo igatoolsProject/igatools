@@ -114,6 +114,23 @@ operator*(const Real scalar, const ValueVector<T> &a)
     return result ;
 }
 
+template< class T>
+T&
+ValueVector<T>::
+operator[](const Index i)
+{
+	Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+	return vector<T>::operator[](i);
+}
+
+template< class T>
+const T&
+ValueVector<T>::
+operator[](const Index i) const
+{
+	Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+	return vector<T>::operator[](i);
+}
 
 IGA_NAMESPACE_CLOSE
 

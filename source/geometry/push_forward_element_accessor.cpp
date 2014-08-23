@@ -241,11 +241,8 @@ transform_values(
     const Size num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
     // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D0v_hat.size() % num_points) == 0, ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D0v_hat.size() / num_points;
+    const int n_func = D0v_hat.get_num_functions();
 
 
     auto D0v_iterator     = D0v.begin();
@@ -287,11 +284,8 @@ transform_gradients(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
     // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D1v_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D1v_hat.size() / num_points;
+    const int n_func = D1v_hat.get_num_functions();
 
     auto D1v_iterator     = D1v.begin();
     auto D1v_hat_iterator = D1v_hat.cbegin();
@@ -331,11 +325,8 @@ transform_gradients(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
     // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D1v_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D1v_hat.size() / num_points;
+    const int n_func = D1v_hat.get_num_functions();
 
     const auto &gradients_map = this->get_gradients(topology_id);
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id);
@@ -475,21 +466,11 @@ transform_basis_derivatives_at_points(
     Container< PhysValue<dim_range,rank> > &phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
-#ifndef NDEBUG
-    const int num_points = points.size();
-#endif
-    Assert(num_points > 0, ExcEmptyObject());
-
-
+    Assert(points.size() > 0, ExcEmptyObject());
     Assert(phi_hat.size() > 0, ExcEmptyObject());
 
     Assert(phi.size() == phi_hat.size(),
            ExcDimensionMismatch(phi.size(), phi_hat.size()));
-
-    // if Container is ValueTable, phi_hat.size() is a multiple of num_points
-    // if Container is ValueVector, phi_hat.size() is equal to num_points
-    Assert((phi_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
 
     auto phi_iterator = phi.begin();
     for (const auto &phi_hat_to_copy : phi_hat)
@@ -515,20 +496,14 @@ transform_basis_derivatives_at_points(
 {
     const int num_points = points.size();
     Assert(num_points > 0, ExcEmptyObject());
-
-
     Assert(D1phi_hat.size() > 0, ExcEmptyObject());
 
     Assert(D1phi.size() == D1phi_hat.size(),
            ExcDimensionMismatch(D1phi.size(), D1phi_hat.size()));
 
 
-    // the next two lines are written to retrieve the number of basis function
-    // in the case Container is a ValueTable object.
     // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D1phi_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D1phi_hat.size() / num_points;
+    const int n_func = D1phi_hat.get_num_functions();
 
 
     auto D1phi_iterator     = D1phi.begin();
@@ -573,11 +548,8 @@ transform_basis_derivatives_at_points(
     Assert(D2phi.size() == D1phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D1phi_hat.size()));
     Assert(D2phi.size() == D2phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D2phi_hat.size()));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
     // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D2phi.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D2phi.size() / num_points;
+    const int n_func = D2phi.get_num_functions();
 
     const auto gradients_map = this->evaluate_gradients_at_points(points);
     const auto hessians_map = this->evaluate_hessians_at_points(points);
