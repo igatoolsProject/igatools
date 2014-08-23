@@ -229,6 +229,13 @@ copy_slice(const int direction, const Index index,
 }
 
 
+template<class T, int rank>
+void
+DynamicMultiArray<T,rank>::
+clear() noexcept
+{
+    this->data_.clear();
+}
 
 template<class T, int rank>
 LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)

@@ -114,6 +114,12 @@ public:
      * not verified).
      */
     void reshape(const TensorSize<rank> &new_sizes);
+
+
+    /**
+     * Removes all elements from the DynamicMultiArray, leaving the container with a size of 0.
+     */
+    void clear() noexcept ;
     ///@}
 
     /**
