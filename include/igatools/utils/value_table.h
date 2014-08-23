@@ -65,39 +65,7 @@ public:
         Assert(num_points >= 0, ExcLowerRange(num_points,0));
     }
 
-    /**
-     * @name Functions for resizing
-     */
-    ///@{
-    /**
-     * Resize the ValueTable in order to allocate space for @p num_functions functions and
-     * @p num_points points.
-     */
-    void resize(const Size num_functions, const Size num_points)
-    {
-        Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
-        Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-        if (num_functions_ != num_functions ||
-            num_points_ != num_points)
-        {
-            num_functions_ = num_functions;
-            num_points_ = num_points;
-
-            DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points_,num_functions_}));
-        }
-    }
-
-    /**
-     * Removes all elements from the ValueTable, leaving the container with a size of 0.
-     */
-    void clear() noexcept
-    {
-        num_functions_ = 0;
-        num_points_ = 0;
-        DynamicMultiArray<T,2>::clear();
-    }
-    ///@}
 
 
     /**
@@ -150,6 +118,40 @@ public:
     ///@}
 
 protected:
+
+    /**
+     * @name Functions for resizing
+     */
+    ///@{
+    /**
+     * Resize the ValueTable in order to allocate space for @p num_functions functions and
+     * @p num_points points.
+     */
+    void resize(const Size num_functions, const Size num_points)
+    {
+        Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
+        Assert(num_points >= 0, ExcLowerRange(num_points,0));
+
+        if (num_functions_ != num_functions ||
+            num_points_ != num_points)
+        {
+            num_functions_ = num_functions;
+            num_points_ = num_points;
+
+            DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points_,num_functions_}));
+        }
+    }
+
+    /**
+     * Removes all elements from the ValueTable, leaving the container with a size of 0.
+     */
+    void clear() noexcept
+    {
+        num_functions_ = 0;
+        num_points_ = 0;
+        DynamicMultiArray<T,2>::clear();
+    }
+    ///@}
     /**
      * Number of functions for which the objects in the ValueTable refers to.
      */
@@ -315,6 +317,23 @@ public :
      * points-index range.
      */
     const_view get_point_view(const int i) const;
+    ///@}
+
+    /**
+     * @name Functions for resizing
+     */
+    ///@{
+    /**
+     * Resize the ValueTable in order to allocate space for @p num_functions functions and
+     * @p num_points points.
+     */
+    void resize(const Size num_functions, const Size num_points);
+
+    /**
+     * Removes all elements from the ValueTable, leaving the container with a size of 0.
+     */
+    void clear() noexcept;
+
     ///@}
 
 
