@@ -51,27 +51,40 @@ void do_test()
 
 #include <type_traits>
 
-template<class>
-struct sfinae_true : std::true_type{};
+template<class T>
+using mytype = decltype(declval<T>().print_info(declval<LogStream &>()));
 
-namespace detail{
-  template<class T, class A0>
-  static auto test_print_info(int)
-      -> sfinae_true<decltype(std::declval<T>().print_info(std::declval<A0>()))>;
-  template<class, class A0>
-  static auto test_stream(long) -> std::false_type;
-} // detail::
+template<class T>
+EnableIf<std::is_void<mytype<T>>::value, bool >
+test(int)
+{
+	return true;
+}
 
-template<class T, class Arg>
-struct has_print_info : decltype(detail::test_print_info<T, Arg>(0)){};
+template<class T>
+bool
+test(long)
+{
+	return false;
+}
+
+class A
+{
+public:
+	void print_info(LogStream & )
+	{
+
+	}
+};
+
+
+class B
+{};
 
 int main()
 {
-
-   // do_test<0>();
-   // do_test<1>();
-    //do_test<2>();
-    //do_test<3>();
+	out << test<A>(0) << endl;
+	out << test<B>(0) << endl;
 
     return 0;
 }
