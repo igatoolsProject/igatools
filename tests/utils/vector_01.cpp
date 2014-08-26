@@ -33,9 +33,6 @@ void do_test()
 {
     iga::vector<Real> vec(5);
     vec.print_info(out);
-
-    out << vec[6];
-
 }
 
 

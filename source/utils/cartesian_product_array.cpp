@@ -209,8 +209,13 @@ print_info(LogStream &out) const
 {
     TensorSizedContainer<rank>::print_info(out);
     out << std::endl;
+    int i=0;
     for (const auto& entry : data_)
+    {
+        out.begin_item("Direction: " + std::to_string(i++));
         entry.print_info(out);
+        out.end_item();
+    }
 }
 
 

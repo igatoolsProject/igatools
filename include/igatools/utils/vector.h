@@ -83,7 +83,7 @@ private:
         {
             out << entry << " ";
         }
-        out << "] ";
+        out << "]";
     }
 
 public:
