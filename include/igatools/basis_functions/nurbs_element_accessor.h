@@ -149,7 +149,7 @@ public:
     /**
      * Get the NURBS weights associated to the element.
      */
-    std::vector<Real> get_local_weights() const ;
+    vector<Real> get_local_weights() const ;
 
 
     /**
@@ -221,7 +221,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_derivatives_at_points(const vector<Point> &points) const;
 
     ///@}
 

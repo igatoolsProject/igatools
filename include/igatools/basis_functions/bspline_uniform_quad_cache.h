@@ -84,10 +84,10 @@ public:
 
         void print_info(LogStream &out) const
         {
-            out << values_;
+            values_.print_info(out);
         }
     private:
-        std::vector<DenseMatrix> values_;
+        vector<DenseMatrix> values_;
     };
 
 private:

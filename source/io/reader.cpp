@@ -33,7 +33,7 @@
 #include <array>
 #include <set>
 
-using std::vector;
+
 using std::array;
 using std::set;
 using std::shared_ptr;

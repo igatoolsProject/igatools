@@ -118,7 +118,7 @@ private:
 private:
   Tree<dim> refinement_tree_;
   
-  std::vector<Space> spaces_;
+  vector<Space> spaces_;
 }
 
 

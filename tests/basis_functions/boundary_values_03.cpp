@@ -42,7 +42,7 @@ public:
     BoundaryFunction() : Function<dim,1,1>() {}
 
     void evaluate(const vector< Points<dim> > &points,
-                  std::vector<Points<1> > &values) const
+                  vector<Points<1> > &values) const
     {
         for (int i =0; i<points.size(); i++)
         {

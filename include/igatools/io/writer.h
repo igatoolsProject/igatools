@@ -116,10 +116,10 @@ public:
                    const std::string &name);
 
 
-    void add_element_data(const std::vector<double> &element_data,
+    void add_element_data(const vector<double> &element_data,
                           const std::string &name);
 
-    void add_element_data(const std::vector<int> &element_data,
+    void add_element_data(const vector<int> &element_data,
                           const std::string &name);
 
 
@@ -181,7 +181,7 @@ public:
      */
     void add_point_data(const int n_values_per_point,
                         const std::string &type,
-                        const std::vector<std::vector<std::vector<T>>> &data_iga_elements,
+                        const vector<vector<vector<T>>> &data_iga_elements,
                         const std::string &name);
 
 
@@ -259,8 +259,8 @@ private:
      */
     void get_subelements(
         const typename Mapping< dim, codim>::ElementIterator elem,
-        std::vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-        std::vector< std::array<T,3> > &points_phys_iga_element) const;
+        vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
+        vector< std::array<T,3> > &points_phys_iga_element) const;
 
 
 private:
@@ -273,7 +273,7 @@ private:
             const Size num_elements,
             const Size num_points_per_element,
             const Size num_components,
-            std::shared_ptr< std::vector<T> > values)
+            std::shared_ptr< vector<T> > values)
             :
             name_(name),
             type_(type),
@@ -294,29 +294,29 @@ private:
         Size num_components_;
 
 
-        std::shared_ptr< std::vector<T> > values_;
+        std::shared_ptr< vector<T> > values_;
     };
 
-    std::vector< PointData > fields_;
+    vector< PointData > fields_;
 
-    std::vector<std::string> names_point_data_scalar_;
-    std::vector<std::string> names_point_data_vector_;
-    std::vector<std::string> names_point_data_tensor_;
+    vector<std::string> names_point_data_scalar_;
+    vector<std::string> names_point_data_vector_;
+    vector<std::string> names_point_data_tensor_;
 
     template<class data_type>
     struct CellData
     {
         CellData(
-            const std::vector<data_type> &values,
+            const vector<data_type> &values,
             const std::string &name)
             :
-            values_(new std::vector<data_type>(values)),
+            values_(new vector<data_type>(values)),
             name_(name),
             type_("scalar"),
             num_components_(1)
         {};
 
-        std::shared_ptr< std::vector<data_type> > values_;
+        std::shared_ptr< vector<data_type> > values_;
 
         const std::string name_;
 
@@ -325,13 +325,13 @@ private:
         iga::Size num_components_;
     };
 
-    std::vector< CellData<double> > cell_data_double_;
+    vector< CellData<double> > cell_data_double_;
 
-    std::vector< CellData<int> > cell_data_int_;
+    vector< CellData<int> > cell_data_int_;
 
-    std::vector<std::string> names_cell_data_scalar_;
-    std::vector<std::string> names_cell_data_vector_;
-    std::vector<std::string> names_cell_data_tensor_;
+    vector<std::string> names_cell_data_scalar_;
+    vector<std::string> names_cell_data_vector_;
+    vector<std::string> names_cell_data_tensor_;
 
     const int sizeof_Real_ = 0;
     std::string string_Real_;
@@ -350,18 +350,18 @@ private:
 
     template<class Out>
     void save_ascii(Out &file,
-                    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-                    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                    const vector< vector< std::array<T,3> > > &points_in_iga_elements,
+                    const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
                     &vtk_elements_connectivity) const;
 
     void save_appended(const std::string &filename,
-                       const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-                       const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                       const vector< vector< std::array<T,3> > > &points_in_iga_elements,
+                       const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
                        &vtk_elements_connectivity) const;
 
     void fill_points_and_connectivity(
-        std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-        std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+        vector< vector< std::array<T,3> > > &points_in_iga_elements,
+        vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
         &vtk_elements_connectivity) const;
 };
 

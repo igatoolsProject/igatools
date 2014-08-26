@@ -26,6 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/base/tensor.h>
+#include <igatools/utils/vector.h>
 #include <igatools/utils/tensor_sized_container.h>
 
 
@@ -114,7 +115,7 @@ public:
      * Constructor. Construct a rank-dimensional CartesianProductArray where the
      * the i-th direction is initialized to be equal to @p data_directions[i]
      */
-    explicit CartesianProductArray(const std::array<std::vector<T>,rank> &data_directions) ;
+    explicit CartesianProductArray(const std::array<vector<T>,rank> &data_directions) ;
 
 
     /**
@@ -181,12 +182,12 @@ public:
      * @note The CartesianProductArray object will be internally resized (if needed)
      * in order to contains all the entries in the input @p data.
      */
-    void copy_data_direction(const int i, const std::vector<T> &data) ;
+    void copy_data_direction(const int i, const vector<T> &data) ;
 
     /**
      * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
      */
-    const std::vector<T> &get_data_direction(const int i) const ;
+    const vector<T> &get_data_direction(const int i) const ;
 
     ///@}
 
@@ -241,7 +242,7 @@ public:
      * \{(1,4), (1,3), (2,4), (2, 3)\}
      * \f]
      */
-    std::vector< point_t > get_flat_cartesian_product() const;
+    vector< point_t > get_flat_cartesian_product() const;
     ///@}
 
     /**
@@ -261,7 +262,7 @@ protected:
      * data_[i][j] refers to the j-th data element  along the
      * i-th coordinate direction.
      */
-    std::array<std::vector<T>,rank> data_ ;
+    std::array<vector<T>,rank> data_ ;
 };
 
 
@@ -274,7 +275,7 @@ template <class T, int rank>
 CartesianProductArray<T, rank+1>
 insert(const CartesianProductArray<T, rank> &orig,
        const int index,
-       const std::vector<T> &new_vector)
+       const vector<T> &new_vector)
 {
     Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 

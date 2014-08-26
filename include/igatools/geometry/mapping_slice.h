@@ -89,9 +89,9 @@ public:
         return std::shared_ptr<base_t>();//Should never reach this
     }
 
-    void evaluate(std::vector<Value> &values) const override;
+    void evaluate(vector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
+    void evaluate_gradients(vector<Gradient> &gradients) const override;
 
     void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 

@@ -27,7 +27,7 @@
 #include <algorithm>
 
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 
 
@@ -468,7 +468,7 @@ template < int dim_range, int rank, template<class T> class Container, Transform
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<RefPoint> &points,
+    const vector<RefPoint> &points,
     const Container< RefValue<dim_range, rank> > &phi_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
@@ -506,7 +506,7 @@ template < int dim_range, int rank, template<class T> class Container, Transform
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<RefPoint> &points,
+    const vector<RefPoint> &points,
     const Container< RefValue<dim_range, rank> > &phi_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
@@ -559,7 +559,7 @@ template < int dim_range, int rank, template<class T> class Container, Transform
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<RefPoint> &points,
+    const vector<RefPoint> &points,
     const Container< RefValue<dim_range, rank> > &phi_hat,
     const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
     const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,

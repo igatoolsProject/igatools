@@ -133,7 +133,7 @@ public :
      * Returns a flat vector with the component of the tensor generated
      * through the tensor product operation.
      */
-    std::vector<Real> get_flat_tensor_product() const;
+    vector<Real> get_flat_tensor_product() const;
     ///@}
 
 

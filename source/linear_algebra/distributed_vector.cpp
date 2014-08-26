@@ -60,7 +60,7 @@ Vector(const Index num_global_dofs)
 
 
 Vector<LAPack::trilinos>::
-Vector(const std::vector<Index> &dofs_id)
+Vector(const vector<Index> &dofs_id)
     :
     comm_(Teuchos::createSerialComm<int>()),
     vector_(Tpetra::createMultiVector<Real,Index,Index>(
@@ -80,7 +80,7 @@ create(const Index size) -> std::shared_ptr<self_t>
 
 auto
 Vector<LAPack::trilinos>::
-create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
+create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
 }
@@ -163,7 +163,7 @@ get_trilinos_vector() -> Teuchos::RCP<WrappedVectorType>
 void
 Vector<LAPack::trilinos>::
 add_block(
-    const std::vector< Index > &local_to_global,
+    const vector< Index > &local_to_global,
     const DenseVector &local_vector)
 {
     Assert(!local_to_global.empty(), ExcEmptyObject()) ;
@@ -181,11 +181,11 @@ add_block(
 }
 
 
-std::vector<Real>
+vector<Real>
 Vector<LAPack::trilinos>::
-get_local_coefs(const std::vector<Index> &local_to_global_ids) const
+get_local_coefs(const vector<Index> &local_to_global_ids) const
 {
-    std::vector<Real> local_coefs;
+    vector<Real> local_coefs;
     for (const auto &global_id : local_to_global_ids)
         local_coefs.emplace_back((*this)(global_id));
 
@@ -233,7 +233,7 @@ Vector(const Index num_global_dofs)
 
 
 Vector<LAPack::petsc>::
-Vector(const std::vector<Index> &dofs_id)
+Vector(const vector<Index> &dofs_id)
 {
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
@@ -249,7 +249,7 @@ create(const Index size) -> std::shared_ptr<self_t>
 
 auto
 Vector<LAPack::petsc>::
-create(const std::vector<Index> &dof_ids) -> std::shared_ptr<self_t>
+create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
 }
@@ -320,7 +320,7 @@ get_petsc_vector() -> Vec
 void
 Vector<LAPack::petsc>::
 add_block(
-    const std::vector< Index > &local_to_global,
+    const vector< Index > &local_to_global,
     const DenseVector &local_vector)
 {
     PetscErrorCode ierr;
@@ -331,7 +331,7 @@ add_block(
     Assert(Index(local_vector.size()) == num_dofs,
            ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
 
-    std::vector<PetscScalar> values;
+    vector<PetscScalar> values;
 
     for (Index i = 0 ; i < num_dofs ; ++i)
     {
@@ -344,11 +344,11 @@ add_block(
 }
 
 
-std::vector<Real>
+vector<Real>
 Vector<LAPack::petsc>::
-get_local_coefs(const std::vector<Index> &local_to_global_ids) const
+get_local_coefs(const vector<Index> &local_to_global_ids) const
 {
-    std::vector<Real> local_coefs;
+    vector<Real> local_coefs;
 
     int num_local_dofs = local_to_global_ids.size();
     PetscScalar values[num_local_dofs];

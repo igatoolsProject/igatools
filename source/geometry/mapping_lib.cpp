@@ -23,7 +23,7 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
-using std::vector;
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
@@ -309,7 +309,7 @@ BallMapping<dim_>::set_face_element(const Index face_id,
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const vector<Point> &points, vector<Gradient> &gradients) const
 {
     const int n_points = points.size();
     Assert(n_points > 0, ExcEmptyObject());
@@ -377,7 +377,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 template<int dim_>
 void
 BallMapping<dim_>::
-evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const vector<Point> &points, vector<Hessian> &hessians) const
 {
     const int n_points = points.size();
     Assert(n_points > 0, ExcEmptyObject());
@@ -1327,7 +1327,7 @@ evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
 
 void
 CylindricalAnnulus::
-evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
+evaluate_at_points(const vector<Point> &points, vector<Value> &values) const
 {
     const Size num_points = points.size();
 
@@ -1351,7 +1351,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 
 void
 CylindricalAnnulus::
-evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const vector<Point> &points, vector<Gradient> &gradients) const
 {
     const Size num_points = points.size();
     Assert(num_points > 0, ExcEmptyObject());
@@ -1384,7 +1384,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 
 void
 CylindricalAnnulus::
-evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const vector<Point> &points, vector<Hessian> &hessians) const
 {
     const Size num_points = points.size();
     Assert(num_points > 0, ExcEmptyObject());

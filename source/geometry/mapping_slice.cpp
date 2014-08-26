@@ -23,7 +23,7 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 using std::endl;
 
@@ -81,8 +81,8 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
     const auto weights = quad.get_weights();
 
     auto ext_quad = Quadrature<dim+1>(
-                        insert(points, direction_,std::vector<Real>(1,value_)),
-                        insert(weights,direction_,std::vector<Real>(1,1.0))) ;
+                        insert(points, direction_,vector<Real>(1,value_)),
+                        insert(weights,direction_,vector<Real>(1,1.0))) ;
 
     return ext_quad;
 }
@@ -92,7 +92,7 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate(std::vector<Value> &values) const
+evaluate(vector<Value> &values) const
 {
     values = element->get_map_values();
 }
@@ -102,7 +102,7 @@ evaluate(std::vector<Value> &values) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate_gradients(std::vector<Gradient> &gradients) const
+evaluate_gradients(vector<Gradient> &gradients) const
 {
     auto grad = element->get_map_gradients();
 

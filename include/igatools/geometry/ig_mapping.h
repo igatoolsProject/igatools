@@ -65,7 +65,7 @@ public:
      * of the function space used to represents the mapping.
      */
     IgMapping(const std::shared_ptr<RefSpace> space,
-              const std::vector<Real> &control_points);
+              const vector<Real> &control_points);
 
 
     /**
@@ -73,7 +73,7 @@ public:
      * from a function space and a vector of control points.
      */
     static std::shared_ptr<Mapping<dim,codim>>
-                                            create(const std::shared_ptr<RefSpace> space, const std::vector<Real> &control_points);
+                                            create(const std::shared_ptr<RefSpace> space, const vector<Real> &control_points);
 
     /**
      * Copy constructor. Performs a deep copy of the object.
@@ -95,22 +95,22 @@ public:
 
     /** @name Mapping as a standard function */
     ///@{
-    virtual void evaluate(std::vector<Value> &values) const override;
+    virtual void evaluate(vector<Value> &values) const override;
 
     virtual void evaluate_gradients
-    (std::vector<Gradient> &gradients) const override;
+    (vector<Gradient> &gradients) const override;
 
     virtual void evaluate_hessians
-    (std::vector<Hessian> &hessians) const override;
+    (vector<Hessian> &hessians) const override;
 
     virtual void evaluate_face
-    (const Index face_id, std::vector<Value> &values) const override;
+    (const Index face_id, vector<Value> &values) const override;
 
     virtual void evaluate_face_gradients
-    (const Index face_id, std::vector<Gradient> &gradients) const override;
+    (const Index face_id, vector<Gradient> &gradients) const override;
 
     virtual void evaluate_face_hessians
-    (const Index face_id, std::vector<Hessian> &hessians) const override;
+    (const Index face_id, vector<Hessian> &hessians) const override;
 
     ///@}
 
@@ -120,7 +120,7 @@ public:
      * Sets the control points defining the map.
      * @param[in] control_points - Coordinates of the control points in the Euclidean space.
      */
-    void set_control_points(const std::vector<Real> &control_points) override final;
+    void set_control_points(const vector<Real> &control_points) override final;
     ///@}
 
     std::shared_ptr<RefSpace> get_iga_space() override final
@@ -157,9 +157,9 @@ public:
 
     /** @name Evaluating the quantities related to the IgMapping without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
+    void evaluate_at_points(const vector<Point> &points, vector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const vector<Point> &points, vector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const vector<Point> &points, vector<Hessian> &hessians) const override final;
     ///@}
 
 
@@ -174,7 +174,7 @@ private:
     {
     public:
         /** Coordinates of the control points in the Euclidean space. */
-        std::vector<Real> control_points_;
+        vector<Real> control_points_;
 
         /**
          * Weights associated with the control points (if NURBSpace is used).
@@ -249,7 +249,7 @@ private:
     /**
      * Returns the control points that are active on the element represented by the cache.
      */
-    std::vector<Real> get_control_points_elem() const;
+    vector<Real> get_control_points_elem() const;
 
 
 };

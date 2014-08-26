@@ -51,14 +51,14 @@ has_print_info(long)
 }
 
 ///**
-// * Ouput for std::vector onto a LogStream.
+// * Ouput for vector onto a LogStream.
 // * Mostly use for debugging.
 // *
 // * @relates LogStream
 // */
 //template <class T>
 //EnableIf<has_print_info<T>(0), LogStream &>
-//operator<<(LogStream &out, const std::vector<T> &vec)
+//operator<<(LogStream &out, const vector<T> &vec)
 //{
 //    out << "Vector with: " << vec.size() << " entries." << std::endl;
 //    for (auto &entry : vec)
@@ -71,7 +71,7 @@ has_print_info(long)
 
 //template <class T>
 //EnableIf<!has_print_info<T>(0), LogStream &>
-//operator<<(LogStream &out, const std::vector<T> &vector)
+//operator<<(LogStream &out, const vector<T> &vector)
 //{
 //    out << "[ ";
 //    for (auto &i:vector)

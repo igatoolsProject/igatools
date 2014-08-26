@@ -25,7 +25,11 @@
 #include <igatools/base/logstream.h>
 #include <fstream>
 
-using namespace std;
+using std::endl;
+using std::array;
+using std::string;
+using std::ofstream;
+
 using namespace iga;
 
 class IgaTestOutput : public LogStream

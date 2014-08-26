@@ -23,7 +23,7 @@
 
 
 using std::array;
-using std::vector;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -84,7 +84,7 @@ translate(const Points<rank> &translate)
 
 
 template<int rank>
-std::vector< Real >
+vector< Real >
 TensorProductArray<rank>::
 get_flat_tensor_product() const
 {

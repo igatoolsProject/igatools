@@ -132,8 +132,8 @@ public:
      * local_to_global vector, otherwise an exception will be raised.
      */
     void add_block(
-        const std::vector<Index> &row_glob_ids,
-        const std::vector<Index> &cln_glob_ids,
+        const vector<Index> &row_glob_ids,
+        const vector<Index> &cln_glob_ids,
         const DenseMatrix &local_matrix) ;
 
     /**
@@ -323,8 +323,8 @@ public:
      * local_to_global vector, otherwise an exception will be raised.
      */
     void add_block(
-        const std::vector<Index> &row_glob_ids,
-        const std::vector<Index> &cln_glob_ids,
+        const vector<Index> &row_glob_ids,
+        const vector<Index> &cln_glob_ids,
         const DenseMatrix &local_matrix) ;
 
     /**

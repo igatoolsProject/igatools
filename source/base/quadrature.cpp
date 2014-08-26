@@ -24,7 +24,7 @@
 
 #include <vector>
 
-using std::vector;
+
 using std::array;
 using std::endl;
 
@@ -114,15 +114,19 @@ print_info(LogStream &out) const
     get_weights().print_info(out);
     out << endl;
 
+    // TODO (pauletti, Aug 26, 2014): redundant info, remove
     out << "weights (flat tensor product):" << endl;
-    out << get_weights().get_flat_tensor_product() << endl;
+    get_weights().get_flat_tensor_product().print_info(out);
+    out << endl;
 
     out << "coordinates:" << endl;
     this->get_points().print_info(out);
     out << endl;
 
+    // TODO (pauletti, Aug 26, 2014): redundant info, remove
     out << "coordinates (flat cartesian_product):" << endl;
-    out << get_points().get_flat_cartesian_product() << endl;
+    get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
 
     out << endl;
 }
@@ -185,7 +189,7 @@ Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
             points_new.copy_data_direction(
                 i,
                 vector<Real>(1,UnitElement<dim>::face_constant_coordinate[face_id]));
-            weights_new.copy_data_direction(i,std::vector<Real>(1,1.0));
+            weights_new.copy_data_direction(i,vector<Real>(1,1.0));
             --j;
         }
     }

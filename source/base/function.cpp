@@ -21,8 +21,6 @@
 #include <igatools/base/function.h>
 #include <igatools/base/exceptions.h>
 
-using std::vector;
-
 IGA_NAMESPACE_OPEN
 
 template< int dim, int range, int rank >

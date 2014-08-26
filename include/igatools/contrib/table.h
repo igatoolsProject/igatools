@@ -397,7 +397,7 @@ private:
  * it is two then it is a matrix, and so on.
  *
  * Previously, this data type was emulated in this library by
- * constructs like <tt>std::vector<std::vector<T>></tt>, or even higher
+ * constructs like <tt>vector<vector<T>></tt>, or even higher
  * nested constructs.  However, this has the disadvantage that it is
  * hard to initialize, and most importantly that it is very
  * inefficient if all rows have the same size (which is the usual
@@ -427,7 +427,7 @@ private:
  * The second problem is that we would like to allow access through a
  * sequence of <tt>operator[]</tt> calls. This mostly because, as said,
  * this class is a replacement for previous use of nested
- * <tt>std::vector</tt> objects, where we had to use the <tt>operator[]</tt>
+ * <tt>vector</tt> objects, where we had to use the <tt>operator[]</tt>
  * access function recursively until we were at the innermost
  * object. Emulating this behavior without losing the ability to do
  * index checks, and in particular without losing performance is

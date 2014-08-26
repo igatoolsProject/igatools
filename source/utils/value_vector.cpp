@@ -22,12 +22,8 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/exceptions.h>
-//#include <boost/multi_array.hpp>
-
-using std::vector ;
 
 IGA_NAMESPACE_OPEN
-
 
 template <class T>
 ValueVector<T>::
@@ -37,39 +33,39 @@ ValueVector() : ValueVector<T>(0)
 template <class T>
 ValueVector<T>::
 ValueVector(const Index num_points)
-    : std::vector<T>(num_points,T {})
+    : vector<T>(num_points,T {})
 {}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const vector<T> &vector_in)
-    : std::vector<T> {vector_in}
+    : vector<T> {vector_in}
 {}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : std::vector<T>(list)
+    : vector<T>(list)
 {}
 
 template <class T>
 ValueVector<T> &
 ValueVector<T>::
-operator=(const std::vector<T> &vector)
+operator=(const vector<T> &vec)
 {
-    std::vector<T>::operator=(vector);
+    vector<T>::operator=(vec);
     return (*this);
 }
 
 
 
-template <class T>
-void
-ValueVector<T>::
-print_info(LogStream &out) const
-{
-    out << std::vector<T>(*this);
-}
+//template <class T>
+//void
+//ValueVector<T>::
+//print_info(LogStream &out) const
+//{
+//    out << vector<T>(*this);
+//}
 
 
 

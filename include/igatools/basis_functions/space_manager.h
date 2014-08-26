@@ -141,7 +141,7 @@ class SpaceManager
 {
 public:
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentContainer = vector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -261,7 +261,7 @@ public:
      * Returns the global dofs corresponding to the @p local_dofs
      * in the space with id equal to @p space_id.
      */
-    std::vector<Index> get_global_dofs(const int space_id, const std::vector<Index> &local_dof) const;
+    vector<Index> get_global_dofs(const int space_id, const vector<Index> &local_dof) const;
     ///@}
 
 
@@ -319,7 +319,7 @@ private:
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
-                  const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view);
+                  const std::shared_ptr<const vector<DofsConstView>> elements_dofs_view);
 
         /** Returns the number of dofs of the space. */
         Index get_num_dofs() const ;
@@ -339,7 +339,7 @@ private:
          * Returns a vector of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
          */
-        const std::vector<DofsConstView> &get_elements_dofs_view() const;
+        const vector<DofsConstView> &get_elements_dofs_view() const;
 
 
 
@@ -392,7 +392,7 @@ private:
          * it is already present
          * the the DofDistribution class instantiated in the space itself.
          */
-        std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view_;
+        std::shared_ptr<const vector<DofsConstView>> elements_dofs_view_;
     };
 
     /**
@@ -409,10 +409,10 @@ private:
     DofsView dofs_view_;
 
 
-    std::vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
+    vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
 
 
-    std::vector<EqualityConstraint> equality_constraints_;
+    vector<EqualityConstraint> equality_constraints_;
 
 
     /** Counts and return the number of unique dofs in the SpaceManager. */

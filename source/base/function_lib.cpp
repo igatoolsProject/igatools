@@ -23,7 +23,6 @@
 
 IGA_NAMESPACE_OPEN
 
-using std::vector;
 
 namespace functions
 {

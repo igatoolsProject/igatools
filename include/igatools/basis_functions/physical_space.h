@@ -131,7 +131,7 @@ public:
         return ref_space_->get_num_basis_per_element_table();
     }
 
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
+    vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
     /**
      * Returns a element iterator to the first element of the patch.
@@ -164,7 +164,7 @@ public:
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs) const;
+                   vector<Index> &face_to_element_dofs) const;
 
 
     void print_info(LogStream &out) const;

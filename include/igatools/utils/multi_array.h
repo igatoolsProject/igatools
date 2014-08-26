@@ -25,6 +25,7 @@
 #define MULTI_ARRAY_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/print_info_utils.h>
 #include <igatools/utils/tensor_sized_container.h>
 #include <igatools/utils/multi_array_iterator.h>
 #include <igatools/utils/container_view.h>
@@ -170,7 +171,7 @@ public:
      */
     const_reference operator()(const TensorIndex<rank> &i) const;
 
-    /** Return the entries of the multiarray as unidimensional std::vector. */
+    /** Return the entries of the multiarray as unidimensional vector. */
     const STLContainer &get_data() const;
     ///@}
 
@@ -244,11 +245,30 @@ public:
      * @name Printing info
      */
     ///@{
+private:
+    template <class A>
+    EnableIf<has_print_info<A>(0), void>
+    t_print_info(LogStream &out) const
+    {
+        data_.print_info(out);
+    }
+
+    template <class A>
+    EnableIf<(!has_print_info<A>(0)), void>
+    t_print_info(LogStream &out) const
+    {
+        for (const auto &v : data_)
+            out << v << " ";
+    }
+public:
     /**
      * Prints the content of the MultiArray on the LogStream @p out.
      * Its use is intended mainly for testing and debugging purpose.
      */
-    void print_info(LogStream &out) const ;
+    void print_info(LogStream &out) const
+    {
+        t_print_info<STLContainer>(out);
+    }
     ///@}
 
 protected:

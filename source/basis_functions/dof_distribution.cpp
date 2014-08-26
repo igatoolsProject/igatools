@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/dof_distribution.h>
 
-using std::vector;
+
 using std::shared_ptr;
 using std::make_shared;
 
@@ -229,7 +229,7 @@ get_loc_to_global_indices(const TensorIndex<dim> &t_id) const
 
 // TODO (antolin, Jul 11, 2014): inline this
 template<int dim, int range, int rank>
-std::vector<Index>
+vector<Index>
 DofDistribution<dim, range, rank>::
 get_loc_to_global_indices(const Index &f_id) const
 {
@@ -260,7 +260,7 @@ get_index_distribution() const -> const IndexDistributionTable &
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_elements_view() const -> std::shared_ptr<const std::vector<DofsConstView>>
+get_elements_view() const -> std::shared_ptr<const vector<DofsConstView>>
 {
     return elements_loc_to_global_flat_view_;
 }
@@ -293,10 +293,12 @@ print_info(LogStream &out) const
         index_distribution_(comp).print_info(out);
     out << std::endl;
 
+    // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
     int i = 0;
     for (auto dofs_elem : *elements_loc_to_global_flat_view_)
     {
-        out << this->get_loc_to_global_indices(i++) << std::endl;
+        this->get_loc_to_global_indices(i++).print_info(out);
+        out << std::endl;
         /*
         out << "[ ";
         for (auto x : dofs_elem)

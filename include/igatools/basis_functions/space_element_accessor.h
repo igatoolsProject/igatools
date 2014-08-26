@@ -162,7 +162,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable<Value>
-    evaluate_basis_values_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_values_at_points(const vector<Point> &points) const;
 
 
     /**
@@ -184,7 +184,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_gradients_at_points(const vector<Point> &points) const;
 
 
     /**
@@ -206,7 +206,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const std::vector<Point> &points) const;
+    evaluate_basis_hessians_at_points(const vector<Point> &points) const;
 
 
     /**
@@ -229,8 +229,8 @@ public:
     template <int deriv_order>
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const vector<Real> &local_coefs,
+        const vector<Point> &points) const;
 
 
     /**
@@ -243,8 +243,8 @@ public:
      */
     ValueVector<Value>
     evaluate_field_values_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const vector<Real> &local_coefs,
+        const vector<Point> &points) const;
 
 
     /**
@@ -257,8 +257,8 @@ public:
      */
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const vector<Real> &local_coefs,
+        const vector<Point> &points) const;
 
 
     /**
@@ -271,8 +271,8 @@ public:
      */
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
-        const std::vector<Real> &local_coefs,
-        const std::vector<Point> &points) const;
+        const vector<Real> &local_coefs,
+        const vector<Point> &points) const;
     ///@}
 
 
@@ -440,7 +440,7 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Value>
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
     /**
@@ -448,7 +448,7 @@ public:
      * points on the face specified by @p face_id.
      */
     ValueVector<Value>
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field(const Index face_id, const vector<Real> &local_coefs) const;
 
     /**
      * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
@@ -459,14 +459,14 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
      * points on the face specified by @p face_id.
      */
     ValueVector<Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field_gradients(const Index face_id, const vector<Real> &local_coefs) const;
 
     /**
      * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
@@ -477,14 +477,14 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_hessians(const vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
      * points on the face specified by @p face_id.
      */
     ValueVector<Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field_hessians(const Index face_id, const vector<Real> &local_coefs) const;
 
     /**
      * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
@@ -495,14 +495,14 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Div>
-    evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_divergences(const vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
      * points on the face specified by @p face_id.
      */
     ValueVector<Div>
-    evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field_divergences(const Index face_id, const vector<Real> &local_coefs) const;
     ///@}
 
 
@@ -535,7 +535,7 @@ public:
       \endcode
      *
      */
-    std::vector<Index> get_local_to_global() const;
+    vector<Index> get_local_to_global() const;
 
     /**
      * Pointer to the BsplineSpace the accessor is iterating on.

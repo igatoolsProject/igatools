@@ -369,12 +369,12 @@ public:
             return comp_map_[i];
         }
 
-        const std::vector<Index> &get_active_components_id() const
+        const vector<Index> &get_active_components_id() const
         {
             return active_components_id_;
         }
 
-        const std::vector<Index> &get_inactive_components_id() const
+        const vector<Index> &get_inactive_components_id() const
         {
             return inactive_components_id_;
         }
@@ -396,10 +396,10 @@ public:
         std::array <Index, n_entries> comp_map_;
 
         /** list of the active components */
-        std::vector<Index> active_components_id_;
+        vector<Index> active_components_id_;
 
         /** list of the inactive components */
-        std::vector<Index> inactive_components_id_;
+        vector<Index> inactive_components_id_;
 
 
     };
@@ -438,11 +438,11 @@ protected:
 
 template <class T, int dim>
 inline
-std::vector<T>
+vector<T>
 unique_container(std::array <T, dim> a)
 {
     auto it = std::unique(a.begin(), a.end());
-    return std::vector<T>(a.begin(), it);
+    return vector<T>(a.begin(), it);
 }
 
 

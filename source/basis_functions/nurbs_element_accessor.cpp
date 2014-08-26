@@ -25,7 +25,7 @@
 using std::endl;
 
 using std::array;
-using std::vector;
+
 using std::accumulate;
 
 using std::make_shared;

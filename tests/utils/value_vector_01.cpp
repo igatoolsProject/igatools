@@ -51,7 +51,7 @@ void do_test()
 
 
     out << "Initializer-list constructor" << endl ;
-    std::vector<Real> vec = {1.0,2.0,3.0};
+    vector<Real> vec = {1.0,2.0,3.0};
     ClassToTest data3(vec);
     data3.print_info(out);
     out << endl ;

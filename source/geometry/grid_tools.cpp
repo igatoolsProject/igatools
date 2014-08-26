@@ -21,7 +21,7 @@
 #include <igatools/geometry/grid_tools.h>
 #include <set>
 
-using std::vector;
+
 using std::array;
 using std::set;
 

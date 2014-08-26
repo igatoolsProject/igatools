@@ -48,7 +48,7 @@ void do_test()
     for (int i=0 ; i < dim ; ++i)
         p_end(i) = 1.0;
 
-    std::vector<Points<dim>> points;
+    vector<Points<dim>> points;
     points.push_back(p_origin);
     points.push_back(p_mid);
     points.push_back(p_end);

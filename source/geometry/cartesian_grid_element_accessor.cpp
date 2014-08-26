@@ -24,7 +24,7 @@
 #include <algorithm>
 
 using std::array;
-using std::vector;
+
 
 IGA_NAMESPACE_OPEN
 

@@ -24,7 +24,7 @@
 
 
 using std::array;
-using std::vector;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -207,9 +207,10 @@ void
 CartesianProductArray<T,rank>::
 print_info(LogStream &out) const
 {
-    for (auto &vec : data_)
-        for (auto &entry : vec)
-            out << entry << std::endl;
+    TensorSizedContainer<rank>::print_info(out);
+    out << std::endl;
+    for (const auto& entry : data_)
+        entry.print_info(out);
 }
 
 

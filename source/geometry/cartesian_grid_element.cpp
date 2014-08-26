@@ -26,7 +26,7 @@
 #include <algorithm>
 
 using std::array;
-using std::vector;
+
 using std::endl;
 
 IGA_NAMESPACE_OPEN

@@ -100,9 +100,11 @@ public:
     Size flat_size() const;
     ///@}
 
-
-
-
+    void print_info(LogStream &out) const
+    {
+        out << "Size: " << size_;
+        out << "  Weights: "<< weight_;
+    }
     /** @name Functions for the index transformations */
     ///@{
     /**
@@ -128,16 +130,13 @@ protected:
 
 
 private:
-
     /** Size of the container along the different directions. */
     TensorSize<rank> size_;
-
 
     /**
      * Weights for the index conversion.
      */
     TensorIndex<rank> weight_;
-
 };
 
 

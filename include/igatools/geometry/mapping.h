@@ -148,33 +148,33 @@ public:
 
     /** @name Mapping as a standard function (using the cache).*/
     ///@{
-    virtual void evaluate(std::vector<Value> &values) const;
+    virtual void evaluate(vector<Value> &values) const;
 
-    virtual void evaluate_gradients(std::vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients(vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians(std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians(vector<Hessian> &hessians) const;
 
     virtual void evaluate_face(const Index face_id,
-                               std::vector<Value> &values) const;
+                               vector<Value> &values) const;
 
     virtual void evaluate_face_gradients(const Index face_id,
-                                         std::vector<Gradient> &gradients) const;
+                                         vector<Gradient> &gradients) const;
 
     virtual void evaluate_face_hessians(const Index face_id,
-                                        std::vector<Hessian> &hessians) const;
+                                        vector<Hessian> &hessians) const;
     ///@}
 
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
-    virtual void evaluate_at_points(const std::vector<Point> &points,
-                                    std::vector<Value> &values) const ;
+    virtual void evaluate_at_points(const vector<Point> &points,
+                                    vector<Value> &values) const ;
 
-    virtual void evaluate_gradients_at_points(const std::vector<Point> &points,
-                                              std::vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients_at_points(const vector<Point> &points,
+                                              vector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians_at_points(const std::vector<Point> &points,
-                                             std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians_at_points(const vector<Point> &points,
+                                             vector<Hessian> &hessians) const;
     ///@}
 
 
@@ -200,11 +200,11 @@ public:
                                   const GridIterator &elem) const = 0;
 
 
-    virtual std::vector<Value> values() const;
+    virtual vector<Value> values() const;
 
-    virtual std::vector<Gradient> gradients() const;
+    virtual vector<Gradient> gradients() const;
 
-    virtual std::vector<Hessian> hessians() const;
+    virtual vector<Hessian> hessians() const;
     ///@}
 
     /** @name Dealing with the element-based iterator. */

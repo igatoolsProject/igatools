@@ -32,7 +32,7 @@
 #include <fstream>
 #include <utility>
 
-using std::vector;
+
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -213,7 +213,7 @@ template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 add_point_data(const int n_values_per_point,
                const std::string &type,
-               const std::vector<std::vector<std::vector<T>>> &data_iga_elements,
+               const vector<vector<vector<T>>> &data_iga_elements,
                const std::string &name)
 {
     Assert(data_iga_elements.size() == n_iga_elements_,
@@ -374,8 +374,8 @@ add_field(shared_ptr<Space> space_,
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::fill_points_and_connectivity(
-    std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+    vector< vector< std::array<T,3> > > &points_in_iga_elements,
+    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
     &vtk_elements_connectivity) const
 {
 
@@ -525,7 +525,7 @@ get_subelements(
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
-add_element_data(const std::vector<double> &element_data,
+add_element_data(const vector<double> &element_data,
                  const std::string &name)
 {
     cell_data_double_.emplace_back(CellData<double>(element_data, name));
@@ -549,7 +549,7 @@ add_element_data(const std::vector<double> &element_data,
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
-add_element_data(const std::vector<int> &element_data,
+add_element_data(const vector<int> &element_data,
                  const std::string &name)
 {
     cell_data_int_.emplace_back(CellData<int>(element_data, name));
@@ -574,8 +574,8 @@ add_element_data(const std::vector<int> &element_data,
 template<int dim, int codim, class T>
 template<class Out>
 void Writer<dim, codim, T>::save_ascii(Out &file,
-                                       const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-                                       const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                                       const vector< vector< std::array<T,3> > > &points_in_iga_elements,
+                                       const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
                                        &vtk_elements_connectivity) const
 {
     const string tab1("\t");
@@ -733,8 +733,8 @@ void Writer<dim, codim, T>::save_ascii(Out &file,
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::save_appended(const string &filename,
-                                          const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-                                          const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                                          const vector< vector< std::array<T,3> > > &points_in_iga_elements,
+                                          const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
                                           &vtk_elements_connectivity) const
 {
     ofstream file(filename);
@@ -980,10 +980,10 @@ save(const string &filename, const string &format) const
            ExcMessage("Unsupported format."));
     //--------------------------------------------------------------------------
 
-    std::vector< std::vector< std::array<T,3> > >
+    vector< vector< std::array<T,3> > >
     points_in_iga_elements(n_iga_elements_, vector< array<T,3> >(n_points_per_iga_element_));
 
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
@@ -1011,10 +1011,10 @@ template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
 
-    std::vector< std::vector< std::array<T,3> > >
+    vector< vector< std::array<T,3> > >
     points_in_iga_elements(n_iga_elements_, vector< array<T,3> >(n_points_per_iga_element_));
 
-    std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);

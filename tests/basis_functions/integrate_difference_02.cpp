@@ -46,8 +46,8 @@ public:
     using typename Base::Gradient;
     using typename Base::Hessian;
 
-    void evaluate(const std::vector<Point> &points,
-                  std::vector<Value> &values) const
+    void evaluate(const vector<Point> &points,
+                  vector<Value> &values) const
     {
         auto pt = points.begin();
         for (auto &val : values)
@@ -58,13 +58,13 @@ public:
     }
 
     void evaluate_gradients(
-        const std::vector<Point> &points,
-        std::vector<Gradient> &gradient) const
+        const vector<Point> &points,
+        vector<Gradient> &gradient) const
     {}
 
     void evaluate_hessians(
-        const std::vector<Point> &points,
-        std::vector<Hessian> &hessians) const
+        const vector<Point> &points,
+        vector<Hessian> &hessians) const
     {}
 };
 

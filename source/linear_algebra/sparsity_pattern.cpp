@@ -21,7 +21,7 @@
 #include <igatools/linear_algebra/sparsity_pattern.h>
 
 using std::set;
-using std::vector;
+
 using std::pair;
 
 IGA_NAMESPACE_OPEN
@@ -132,8 +132,8 @@ SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space
 }
 
 /*
-SparsityPattern::SparsityPattern(const std::vector< Index > row_dofs,
-                                 const std::vector< Index > col_dofs)
+SparsityPattern::SparsityPattern(const vector< Index > row_dofs,
+                                 const vector< Index > col_dofs)
     :
     map< Index, set< Index > >(),
     row_dofs_(row_dofs),

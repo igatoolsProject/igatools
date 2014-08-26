@@ -24,7 +24,7 @@
 #include <igatools/base/exceptions.h>
 
 #include <iostream>
-using std::vector ;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -169,7 +169,7 @@ get_point_view(const int i) const -> const_view
 template <class T>
 ValueVector<T>
 ValueTable<T>::
-evaluate_linear_combination(const std::vector<Real> &coefficients) const
+evaluate_linear_combination(const vector<Real> &coefficients) const
 {
     Assert(num_points_ > 0, ExcLowerRange(num_points_,0));
     Assert(num_functions_ > 0, ExcLowerRange(num_functions_,0));

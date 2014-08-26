@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief Utility functions for std::vector
+ * @brief Utility functions for vector
  * @author M.Martinelli
  * @date 2012
  */
@@ -37,7 +37,7 @@ namespace vector_tools
 {
 
 /**
- * This function counts and removes the duplicates values from a std::vector.
+ * This function counts and removes the duplicates values from a vector.
  * @pre Before calling this function, the entries in the vector @vec_with_duplicates must be sorted.
  * @param[in] vec_with_duplicates Vector with duplicates
  * @param[out] vec_without_duplicates Vector without duplicates
@@ -52,9 +52,9 @@ namespace vector_tools
 template< class T >
 void
 count_and_remove_duplicates(
-    const std::vector<T> &vec_with_duplicates,
-    std::vector<T> &vec_without_duplicates,
-    std::vector<int> &multiplicities) ;
+    const vector<T> &vec_with_duplicates,
+    vector<T> &vec_without_duplicates,
+    vector<int> &multiplicities) ;
 
 } ;
 

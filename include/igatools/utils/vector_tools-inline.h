@@ -23,10 +23,7 @@
 
 
 #include <igatools/utils/vector_tools.h>
-
 #include <algorithm>
-
-using std::vector ;
 
 
 IGA_NAMESPACE_OPEN

@@ -23,16 +23,14 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-
-
-#include <vector>
+#include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
  * @brief Container for objects of type T that refers to different evaluation points.
  *
- * This container class is derived from std::vector<T> with added a
+ * This container class is derived from vector<T> with added a
  * function for printing its elements and a function for the reset of the element entries
  * using the proper default constructor.
  *
@@ -43,7 +41,7 @@ IGA_NAMESPACE_OPEN
  */
 template< class T >
 class ValueVector :
-    public std::vector<T>
+    public vector<T>
 {
 public :
     /**
@@ -63,10 +61,10 @@ public :
         :ValueVector(num_points)
     {}
     /**
-     * Constructor from a std::vector<T> object.
+     * Constructor from a vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
      */
-    explicit ValueVector(const std::vector<T> &vector_in) ;
+    explicit ValueVector(const vector<T> &vector_in) ;
 
 
     /**
@@ -103,7 +101,7 @@ public :
     /**
      * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
      */
-    ValueVector<T> &operator=(const std::vector<T> &vector);
+    ValueVector<T> &operator=(const vector<T> &vector);
 
     /**
      * Move assignment operator.
@@ -137,16 +135,16 @@ public :
     ///@}
 
 
-    /**
-     * @name Printing info
-     */
-    ///@{
-    /**
-     * Prints the content of the ValueVector on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-    void print_info(LogStream &out) const ;
-    ///@}
+//    /**
+//     * @name Printing info
+//     */
+//    ///@{
+//    /**
+//     * Prints the content of the ValueVector on the LogStream @p out.
+//     * Its use is intended mainly for testing and debugging purpose.
+//     */
+//    void print_info(LogStream &out) const ;
+//    ///@}
 
 } ;
 

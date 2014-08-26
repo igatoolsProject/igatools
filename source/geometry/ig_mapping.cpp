@@ -24,7 +24,7 @@
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/utils/vector_tools.h>
 
-using std::vector;
+
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -94,7 +94,7 @@ get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
 template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
-          const std::vector<Real> &control_points)
+          const vector<Real> &control_points)
     :
     base_t::SplineMapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
@@ -268,7 +268,7 @@ template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const std::vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
+    const vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));
@@ -305,7 +305,7 @@ evaluate(vector<Value> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients(std::vector<Gradient> &gradients) const
+evaluate_gradients(vector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem());
 }
@@ -314,7 +314,7 @@ evaluate_gradients(std::vector<Gradient> &gradients) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians(std::vector<Hessian> &hessians) const
+evaluate_hessians(vector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem());
 }
@@ -334,7 +334,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -343,7 +343,7 @@ evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) c
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -355,7 +355,7 @@ evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) cons
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
+evaluate_at_points(const vector<Point> &points, vector<Value> &values) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
     Assert(values.size() == points.size(),
@@ -367,7 +367,7 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
     for (auto p : elem_list)
     {
         elem->move_to(p.first->get_flat_index());
-        std::vector<Point> pts(p.second.size());
+        vector<Point> pts(p.second.size());
         for (int j=0; j<p.second.size(); ++j)
             pts[j] = points[p.second[j]];
 
@@ -387,8 +387,8 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients_at_points(const std::vector<Point> &points,
-                             std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const vector<Point> &points,
+                             vector<Gradient> &gradients) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
     Assert(gradients.size() == points.size(),
@@ -400,7 +400,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points,
     for (auto p : elem_list)
     {
         elem->move_to(p.first->get_flat_index());
-        std::vector<Point> pts(p.second.size());
+        vector<Point> pts(p.second.size());
         for (int j=0; j<p.second.size(); ++j)
             pts[j] = points[p.second[j]];
 
@@ -421,8 +421,8 @@ evaluate_gradients_at_points(const std::vector<Point> &points,
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians_at_points(const std::vector<Point> &points,
-                            std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const vector<Point> &points,
+                            vector<Hessian> &hessians) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
     Assert(hessians.size() == points.size(),
@@ -434,7 +434,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points,
     for (auto p : elem_list)
     {
         elem->move_to(p.first->get_flat_index());
-        std::vector<Point> pts(p.second.size());
+        vector<Point> pts(p.second.size());
         for (int j=0; j<p.second.size(); ++j)
             pts[j] = points[p.second[j]];
 
@@ -454,7 +454,7 @@ evaluate_hessians_at_points(const std::vector<Point> &points,
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-set_control_points(const std::vector<Real> &control_points)
+set_control_points(const vector<Real> &control_points)
 {
     Assert(data_->control_points_.size() == control_points.size(),
            ExcDimensionMismatch(data_->control_points_.size(), control_points.size()));
@@ -724,8 +724,14 @@ print_info(LogStream &out) const
     out << "Control points info (projective coordinates):" << endl;
 
     out.push("\t");
+
+    // TODO (pauletti, Aug 26, 2014): does not satisfy printinfo standards, correct
     for (Index comp_id = 0 ; comp_id < space_dim ; ++comp_id)
-        out << "Control mesh["<<comp_id<<"] = " <<  data_->ctrl_mesh_(comp_id) << endl;
+    {
+        out << "Control mesh["<<comp_id<<"] = ";
+        data_->ctrl_mesh_(comp_id).print_info(out);
+        out << endl;
+    }
     out << endl;
     out.pop();
 

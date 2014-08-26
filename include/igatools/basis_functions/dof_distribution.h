@@ -51,7 +51,7 @@ public:
 
 
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentContainer = vector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -89,9 +89,9 @@ public:
 
     void reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol);
 
-    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+    vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
 
-    std::vector<Index> get_loc_to_global_indices(const Index &elem_flat_id) const;
+    vector<Index> get_loc_to_global_indices(const Index &elem_flat_id) const;
 
 
     TensorIndex<dim>
@@ -147,7 +147,7 @@ private:
      * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
      * and we want to keep the syncronization of the element views without the expense of successive copies.
      */
-    std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
+    std::shared_ptr<vector<DofsConstView>> elements_loc_to_global_flat_view_;
 
     DistributionPolicy policy_;
 
@@ -179,7 +179,7 @@ public:
      * on a single element of a space.
      * The size of the vector is equal to the number of active elements in the space.
      */
-    std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
+    std::shared_ptr<const vector<DofsConstView>> get_elements_view() const;
 };
 
 IGA_NAMESPACE_CLOSE

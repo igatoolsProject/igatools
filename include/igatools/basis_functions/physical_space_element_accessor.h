@@ -206,7 +206,7 @@ public :
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
+    evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const;
 
     ///@}
 
@@ -295,13 +295,13 @@ public :
     ///@{
     //Fields related
     ValueVector< Value >
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     ValueVector< Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     ValueVector< Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
     ///@}
 
 
