@@ -38,14 +38,22 @@ public :
     /** Inherith the constructors of the base class. */
     using std::vector<T>::vector;
 
-//    reference operator[] (size_type n)
-//    {
-//        (*this)[n];
-//    }
-//    const_reference operator[] (size_type n) const
-//    {
-//        (*this)[n];
-//    }
+    Size size() const noexcept
+    {
+        return std::vector<T>::size();
+    }
+
+    typename std::vector<T>::reference operator[] (Size n)
+    {
+        Assert(n<size(), ExcIndexRange(n, 0, size()));
+        return std::vector<T>::operator[](n);
+    }
+
+    typename std::vector<T>::const_reference operator[] (Size n) const
+    {
+        Assert(n<size(), ExcIndexRange(n, 0, size()));
+        return std::vector<T>::operator[](n);
+    }
     /**
      * @name Printing info
      */
