@@ -585,8 +585,15 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
         {
             const auto &knots = knot_coordinates_.get_data_direction(i);
 
+            Assert(point[i] >= knots.front() && point[i] <= knots.back(),
+            ExcMessage("The point " + std::to_string(k) +
+            " is not in the interval spanned by the knots along the direction " +
+            std::to_string(i)));
+
             //find the index j in the knots for which knots[j] <= point[i]
             const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
+
+
             const Index j = low - knots.begin();
 
             elem_t_id[i] = (j>0) ? j-1 : 0;

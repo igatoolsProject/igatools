@@ -297,8 +297,8 @@ print_info(LogStream &out) const
     for (const auto &patch : patches_)
     {
         out << "Patch id = " << patch->get_id() << endl;
-//        patch->print_info(out);
-        out.push(tab);
+        patch->print_info(out);
+//        out.push(tab);
     }
 
 
