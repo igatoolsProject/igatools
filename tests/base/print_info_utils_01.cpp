@@ -17,43 +17,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for find algorith on grid container iterator
+ *  Test for
  *
  *  author: pauletti
- *  date:
+ *  date:2014-08-26
  */
 
 #include "../tests.h"
-
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/base/print_info_utils.h>
 
 
-template<int dim>
-bool IsOdd (const typename CartesianGrid<dim>::ElementAccessor &elem)
+class A
 {
-  return ((elem.get_flat_index()%2)==1);
-}
+public:
+	void print_info(LogStream & ){}
+};
 
-template<int dim>
-void do_test()
-{
-    TensorSize<dim> n_knots;
-    for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2*i+2;
-    auto grid = CartesianGrid<dim>::create(n_knots);
 
-    auto it = std::find_if (grid->begin(), grid->end(), IsOdd<dim>);
-
-}
+class B
+{};
 
 
 int main()
 {
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
+	out << has_print_info<A>(0) << endl;
+	out << has_print_info<B>(0) << endl;
 
     return 0;
 }

@@ -17,43 +17,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for find algorith on grid container iterator
- *
- *  author: pauletti
- *  date:
+
+#ifndef __PRINT_INFO_UTILS_H_
+#define __PRINT_INFO_UTILS_H_
+
+#include <igatools/base/config.h>
+#include <type_traits>
+
+IGA_NAMESPACE_OPEN
+/**
+ * Type traits to determine if a class provides
+ * a print_info function
  */
+template<class T>
+using print_info_type = decltype(declval<T>().print_info(declval<LogStream &>()));
 
-#include "../tests.h"
-
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
-
-
-template<int dim>
-bool IsOdd (const typename CartesianGrid<dim>::ElementAccessor &elem)
+template<class T>
+EnableIf<std::is_void<print_info_type<T>>::value, bool >
+has_print_info(int)
 {
-  return ((elem.get_flat_index()%2)==1);
+    return true;
 }
 
-template<int dim>
-void do_test()
+template<class T>
+bool
+has_print_info(long)
 {
-    TensorSize<dim> n_knots;
-    for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2*i+2;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-
-    auto it = std::find_if (grid->begin(), grid->end(), IsOdd<dim>);
-
+    return false;
 }
 
+IGA_NAMESPACE_CLOSE
 
-int main()
-{
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
-
-    return 0;
-}
+#endif
