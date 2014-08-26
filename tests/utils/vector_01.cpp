@@ -19,44 +19,28 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for
+ * Test for iga::vector
+ * author: pauletti
+ * date:   2014-08-26
  *
- *  author: pauletti
- *  date:2014-08-26
  */
 
 #include "../tests.h"
-#include <igatools/base/print_info_utils.h>
 
+#include <igatools/utils/vector.h>
 
-class A
+void do_test()
 {
-public:
-	void print_info(LogStream & ){}
-};
+    iga::vector<Real> vec(5);
+    vec.print_info(out);
 
-
-class B
-{};
-
-
-template <class Z>
-EnableIf<has_print_info<Z>(0), void>
-print_info(LogStream &out)
-{
 }
 
-template <class A>
-EnableIf<(!has_print_info<A>(0)), void>
-print_info(LogStream &out)
-{
-}
+
+
 
 int main()
 {
-   	out << has_print_info<A>(0) << endl;
-	out << has_print_info<B>(0) << endl;
-	print_info<A>(out);
-	print_info<B>(out);
+    do_test();
     return 0;
 }

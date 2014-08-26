@@ -22,6 +22,7 @@
 #define __PRINT_INFO_UTILS_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 #include <type_traits>
 
 IGA_NAMESPACE_OPEN
@@ -30,9 +31,12 @@ IGA_NAMESPACE_OPEN
  * a print_info function
  */
 template<class T>
-using print_info_type = decltype(declval<T>().print_info(declval<LogStream &>()));
+using print_info_type =
+        decltype(std::declval<T>().print_info(std::declval<LogStream &>()));
+
 
 template<class T>
+constexpr
 EnableIf<std::is_void<print_info_type<T>>::value, bool >
 has_print_info(int)
 {
@@ -40,11 +44,43 @@ has_print_info(int)
 }
 
 template<class T>
-bool
+constexpr bool
 has_print_info(long)
 {
     return false;
 }
+
+///**
+// * Ouput for std::vector onto a LogStream.
+// * Mostly use for debugging.
+// *
+// * @relates LogStream
+// */
+//template <class T>
+//EnableIf<has_print_info<T>(0), LogStream &>
+//operator<<(LogStream &out, const std::vector<T> &vec)
+//{
+//    out << "Vector with: " << vec.size() << " entries." << std::endl;
+//    for (auto &entry : vec)
+//    {
+//        entry.print_info(out);
+//        out<<std::endl;
+//    }
+//    return out;
+//}
+
+//template <class T>
+//EnableIf<!has_print_info<T>(0), LogStream &>
+//operator<<(LogStream &out, const std::vector<T> &vector)
+//{
+//    out << "[ ";
+//    for (auto &i:vector)
+//        out << i << " ";
+//    out << "]";
+//    return out;
+//}
+//
+
 
 IGA_NAMESPACE_CLOSE
 

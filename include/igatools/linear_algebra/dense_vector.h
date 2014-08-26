@@ -23,7 +23,9 @@
 #define DENSE_VECTOR_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 #include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/io.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -46,7 +48,7 @@ class DenseVector : public boost::numeric::ublas::vector<Real>
 {
 public:
 
-    /** We inherith the constructors of the base class. */
+    /** Inherith the constructors of the base class. */
     using vector<Real>::vector;
 
     /**
@@ -61,6 +63,12 @@ public:
      * an assertion will be raised.
      */
     DenseVector &operator=(const Real value);
+
+    void print_info(LogStream &out) const
+    {
+      // out << vector<Real>::vector(*this);
+    }
+
 };
 
 /**@}*/

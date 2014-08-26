@@ -64,7 +64,7 @@ Writer(const shared_ptr<Grid> grid)
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const shared_ptr<Grid> grid,
-       const Index n_points_direction = 2)
+       const Index n_points_direction)
     :
     Writer(IdentityMapping<dim, codim>::create(grid),
            shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
@@ -75,7 +75,7 @@ Writer(const shared_ptr<Grid> grid,
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const shared_ptr<const Map> map,
-       const Index n_points_direction = 2)
+       const Index n_points_direction)
     :
     Writer(map,
            shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
