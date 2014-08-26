@@ -59,32 +59,36 @@ public :
     explicit ValueVector(const Index num_points) ;
 
     // TODO (pauletti, Jul 11, 2014): it should be deleted after return by value in pf_accessor
+    /*
     explicit ValueVector(const Size num_functions, const Size num_points)
         :ValueContainer<T>(num_functions,num_points)
     {
-    	Assert(num_functions==1,ExcDimensionMismatch(num_functions,1));
+        Assert(num_functions==1,ExcDimensionMismatch(num_functions,1));
     }
+    //*/
+
     /**
      * Constructor from a std::vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
      */
-    explicit ValueVector(const std::vector<T> &vector_in) ;
+    explicit ValueVector(const std::vector<T> &vector_in);
 
 
     /**
      * Constructor from an initializer list.
      */
-    ValueVector(const std::initializer_list<T> &list) ;
+    ValueVector(const std::initializer_list<T> &list);
 
     /**
      * Copy constructor. Performs a deep copy of the content of the ValueVector object @p vector_in
      */
-    ValueVector(const ValueVector<T> &vector_in) = default ;
+    ValueVector(const ValueVector<T> &vector_in) = default;
 
     /**
      * Move constructor.
      */
-    ValueVector(ValueVector<T> &&vector_in) = default ;
+    ValueVector(ValueVector<T> &&vector_in) = default;
+
 
     /**
      * Destructor.
@@ -101,11 +105,6 @@ public :
      * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
      */
     ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
-
-    /**
-     * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
-     */
-//    ValueVector<T> &operator=(const std::vector<T> &vector);
 
     /**
      * Move assignment operator.
@@ -135,13 +134,13 @@ public :
      * Read/write access operator. Returns the reference to the <p>i</p>-th entry.
      * @note In Debug mode an exception will be raised if the index @p i is out-of-bounds.
      */
-    T& operator[](const Index i);
+    T &operator[](const Index i);
 
     /**
      * Read access operator. Returns the const-reference to the <p>i</p>-th entry.
      * @note In Debug mode an exception will be raised if the index @p i is out-of-bounds.
      */
-    const T& operator[](const Index i) const;
+    const T &operator[](const Index i) const;
 
     /**
      * @name Printing info

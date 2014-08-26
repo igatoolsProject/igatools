@@ -49,7 +49,8 @@ public:
     /** Type for the view (const version). */
     using const_view = ConstContainerView<DynamicMultiArray<T,2>>;
 
-
+    /** @name Constructors */
+    ///@{
     /**
      * Constructor. Constructs a container for storing num_functions*num_points objects of type T.
      * @param[in] num_functions - Number of functions.
@@ -58,14 +59,40 @@ public:
     explicit ValueContainer(const Size num_functions, const Size num_points)
         :
         DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions})),
-        num_functions_ {num_functions},
-        num_points_ {num_points}
+                      num_functions_ {num_functions},
+    num_points_ {num_points}
     {
         Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
         Assert(num_points >= 0, ExcLowerRange(num_points,0));
     }
 
+    /**
+     * Default constructor.
+     * Initializes a container with no entries (num_points == num_functions == 0).
+     */
+    ValueContainer()
+        :
+        ValueContainer<T>(0,0)
+    {}
 
+    /** Copy constructor. */
+    ValueContainer(const ValueContainer<T> &in) = default;
+
+    /** Move constructor. */
+    ValueContainer(ValueContainer<T> &&in) = default;
+
+    ~ValueContainer() = default;
+    ///@}
+
+
+    /** @name Assignment operators*/
+    ///@{
+    /** Copy assignment operator.*/
+    ValueContainer<T> &operator=(const ValueContainer<T> &in) = default;
+
+    /** Move assignment operator.*/
+    ValueContainer<T> &operator=(ValueContainer<T> &&in) = default;
+    ///@}
 
 
     /**
@@ -77,10 +104,12 @@ public:
      */
     Size size() const
     {
-    	Assert(this->flat_size() == num_functions_ * num_points_,
-    			ExcDimensionMismatch(this->flat_size(), num_functions_ * num_points_)) ;
+        Assert(this->data_.size() == this->flat_size(),
+               ExcDimensionMismatch(this->data_.size(),this->flat_size()));
+        Assert(this->flat_size() == num_functions_ * num_points_,
+               ExcDimensionMismatch(this->flat_size(), num_functions_ * num_points_)) ;
 
-    	return this->flat_size();
+        return this->flat_size();
     }
 
     /**
@@ -88,7 +117,7 @@ public:
      */
     Size get_num_points() const noexcept
     {
-    	return num_points_;
+        return num_points_;
     }
 
     /**
@@ -96,7 +125,7 @@ public:
      */
     Size get_num_functions() const noexcept
     {
-    	return num_functions_;
+        return num_functions_;
     }
     ///@}
 

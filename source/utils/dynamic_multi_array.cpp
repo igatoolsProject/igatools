@@ -62,7 +62,7 @@ DynamicMultiArray(const TensorSize<rank> &dim, const T &val)
     :
     MultiArray<vector<T>,rank>(dim)
 {
-    this->data_.resize(this->flat_size(), val);
+    this->data_.resize(this->flat_size(),val);
 }
 
 
@@ -72,8 +72,7 @@ void
 DynamicMultiArray<T,rank>::
 resize(const Size dim)
 {
-    TensorSizedContainer<rank>::reset_size(TensorSize<rank>(dim));
-    this->data_.resize(this->flat_size());
+    this->resize(TensorSize<rank>(dim));
 }
 
 
@@ -82,7 +81,7 @@ void
 DynamicMultiArray<T,rank>::
 resize(const TensorSize<rank> &dim)
 {
-    TensorSizedContainer<rank>::reset_size(dim);
+    this->reset_size(dim);
     this->data_.resize(this->flat_size());
 }
 
@@ -93,8 +92,8 @@ void
 DynamicMultiArray<T,rank>::
 resize(const TensorSize<rank> &dim, const T &val)
 {
-    TensorSizedContainer<rank>::reset_size(dim);
-    this->data_.resize(this->flat_size(), val);
+    this->reset_size(dim);
+    this->data_.resize(this->flat_size(),val);
 }
 
 

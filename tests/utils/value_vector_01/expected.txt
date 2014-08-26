@@ -1,29 +1,33 @@
 ---------------------------------------
 Test the different constructors
 
-Defult constructor
+Default constructor
+data1:
 ValueVector (num_points=0) :
 
 
 Constructor with the size of the vector
+data2:
 ValueVector (num_points=3) :
 0 0 0 
 
 Initializer-list constructor
+data3:
 ValueVector (num_points=3) :
 1.00000 2.00000 3.00000 
 
 Copy constructor
+data4:
 ValueVector (num_points=3) :
 1.00000 2.00000 3.00000 
+data3:
 ValueVector (num_points=3) :
 1.00000 2.00000 3.00000 
 
 Move constructor
+data5:
 ValueVector (num_points=3) :
 1.00000 2.00000 3.00000 
-ValueVector (num_points=0) :
-
 ---------------------------------------
 
 ---------------------------------------
@@ -31,26 +35,31 @@ Test the copy/move assignment operators
 
 Copy assignment
 before copy
-	ValueVector (num_points=3) :
+	data1:
+ValueVector (num_points=3) :
 	1.00000 2.00000 3.00000 
-	ValueVector (num_points=0) :
+	data2:
+ValueVector (num_points=0) :
 	
 after copy
-	ValueVector (num_points=3) :
+	data1:
+ValueVector (num_points=3) :
 	1.00000 2.00000 3.00000 
-	ValueVector (num_points=3) :
+	data2:
+ValueVector (num_points=3) :
 	1.00000 2.00000 3.00000 
 
 Move assignment
 before move
-	ValueVector (num_points=3) :
+	data1:
+ValueVector (num_points=3) :
 	1.00000 2.00000 3.00000 
-	ValueVector (num_points=0) :
+	data3:
+ValueVector (num_points=0) :
 	
 after move
-	ValueVector (num_points=0) :
-	
-	ValueVector (num_points=3) :
+	data3:
+ValueVector (num_points=3) :
 	1.00000 2.00000 3.00000 
 ---------------------------------------
 

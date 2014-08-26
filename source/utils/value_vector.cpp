@@ -38,7 +38,8 @@ ValueVector<T>::
 ValueVector(const Index num_points)
     : ValueContainer<T>(1,num_points)
 {
-	this->zero();
+    Assert(num_points >= 0,ExcLowerRange(num_points,0));
+    this->zero();
 }
 
 template <class T>
@@ -46,7 +47,7 @@ ValueVector<T>::
 ValueVector(const vector<T> &vector_in)
     : ValueVector<T>(vector_in.size())
 {
-	std::copy(vector_in.begin(),vector_in.end(),this->end());
+    std::copy(vector_in.begin(),vector_in.end(),this->begin());
 }
 
 
@@ -56,23 +57,13 @@ ValueVector(const std::initializer_list<T> &list)
     : ValueVector(std::vector<T>(list))
 {}
 //*/
-/*
-template <class T>
-ValueVector<T> &
-ValueVector<T>::
-operator=(const std::vector<T> &vector)
-{
-    std::vector<T>::operator=(vector);
-    return (*this);
-}
-//*/
 
 template <class T>
 void
 ValueVector<T>::
 resize(const Size num_points)
 {
-	ValueContainer<T>::resize(1,num_points);
+    ValueContainer<T>::resize(1,num_points);
 }
 
 template <class T>
@@ -80,7 +71,7 @@ void
 ValueVector<T>::
 clear() noexcept
 {
-	ValueContainer<T>::resize(1,0);
+    this->resize(0);
 }
 
 template <class T>
@@ -127,29 +118,29 @@ operator*(const Real scalar, const ValueVector<T> &a)
 }
 
 template< class T>
-T&
+T &
 ValueVector<T>::
 operator[](const Index i)
 {
-	Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
-	return this->data_[i];
+    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+    return this->data_[i];
 }
 
 template< class T>
-const T&
+const T &
 ValueVector<T>::
 operator[](const Index i) const
 {
-	Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
-	return this->data_[i];
+    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+    return this->data_[i];
 }
 
 template <class T>
 LogStream &
 operator<<(LogStream &out, const ValueVector<T> &vector)
 {
-	std::vector<T> v = vector.get_data();
-	out << v;
+    std::vector<T> v = vector.get_data();
+    out << v;
     return out;
 }
 
