@@ -45,13 +45,13 @@ void do_test()
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
 
     out << "Testing the entry() function"<<endl;
     ClassToTest data2(size);
     Index id = 1;
     for (int i = 0; i < dim ; ++i)
-        for (int j = 0; j < size(i) ; ++j, ++id)
+        for (int j = 0; j < size[i] ; ++j, ++id)
             data2.entry(i,j) = id*1.0;
 
     data2.print_info(out);

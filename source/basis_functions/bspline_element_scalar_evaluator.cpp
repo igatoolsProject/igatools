@@ -68,12 +68,12 @@ get_num_points() const
     TensorSize<dim> n_points;
     for (int i = 0 ; i < dim ; ++i)
     {
-        n_points(i) = values1D_[0][i].get_num_points();
+        n_points[i] = values1D_[0][i].get_num_points();
 
 #ifndef NDEBUG
         for (const auto &values : values1D_)
-            Assert(n_points(i) == values[i].get_num_points(),
-                   ExcDimensionMismatch(n_points(i),values[i].get_num_points()));
+            Assert(n_points[i] == values[i].get_num_points(),
+                   ExcDimensionMismatch(n_points[i],values[i].get_num_points()));
 #endif
     }
     return n_points;
@@ -196,9 +196,7 @@ evaluate_derivative(
     // Main computation
     Real partial_derivative = values1D_[order_tensor_id[0]][0](point_tensor_id[0]);
     for (int i = 1; i < dim; ++i)
-    {
         partial_derivative *= values1D_[order_tensor_id[i]][i](point_tensor_id[i]);
-    }
 
 
     return partial_derivative;
@@ -224,11 +222,11 @@ evaluate_derivative_at_points(
 {
     TensorSize<1> n_points = this->get_num_points();
 
-    Assert(derivatives.tensor_size()(0) == n_points(0),
-           ExcDimensionMismatch(derivatives.tensor_size()(0),n_points(0)));
+    Assert(derivatives.tensor_size()[0] == n_points[0],
+           ExcDimensionMismatch(derivatives.tensor_size()[0],n_points[0]));
 
     const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
-    for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points(0) ; ++flat_pt_id_0)
+    for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
         derivatives(flat_pt_id_0) = deriv_dir_0(flat_pt_id_0);
 }
 
@@ -243,19 +241,19 @@ evaluate_derivative_at_points(
 
 #ifndef NDEBUG
     for (int dir = 0 ; dir < 2 ; ++dir)
-        Assert(derivatives.tensor_size()(dir) == n_points(dir),
-               ExcDimensionMismatch(derivatives.tensor_size()(dir),n_points(dir)));
+        Assert(derivatives.tensor_size()[dir] == n_points[dir],
+               ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
     const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
     const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
 
     Index flat_pt_id = 0;
-    for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points(1) ; ++flat_pt_id_1)
+    for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
     {
         const Real deriv_dir_1_pt = deriv_dir_1(flat_pt_id_1);
 
-        for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points(0) ; ++flat_pt_id_0)
+        for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
             derivatives(flat_pt_id++) = deriv_dir_0(flat_pt_id_0) * deriv_dir_1_pt;
     }
 }
@@ -271,8 +269,8 @@ evaluate_derivative_at_points(
 
 #ifndef NDEBUG
     for (int dir = 0 ; dir < 3 ; ++dir)
-        Assert(derivatives.tensor_size()(dir) == n_points(dir),
-               ExcDimensionMismatch(derivatives.tensor_size()(dir),n_points(dir)));
+        Assert(derivatives.tensor_size()[dir] == n_points[dir],
+               ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
     const auto &deriv_dir_2 = this->get_derivative_components_view(order_tensor_id[2])[2];
@@ -280,16 +278,16 @@ evaluate_derivative_at_points(
     const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
 
     Index flat_pt_id = 0;
-    for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points(2) ; ++flat_pt_id_2)
+    for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points[2] ; ++flat_pt_id_2)
     {
         const Real deriv_dir_2_pt = deriv_dir_2(flat_pt_id_2);
 
-        for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points(1) ; ++flat_pt_id_1)
+        for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
         {
             const Real deriv_dir_1_pt =  deriv_dir_1(flat_pt_id_1);
             const Real deriv_old_dirs_pt = deriv_dir_2_pt * deriv_dir_1_pt;
 
-            for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points(0) ; ++flat_pt_id_0)
+            for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
                 derivatives(flat_pt_id++) = deriv_dir_0(flat_pt_id_0) * deriv_old_dirs_pt;
         }
     }

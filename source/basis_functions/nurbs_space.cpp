@@ -339,14 +339,14 @@ refine_h_weights(
 
                 const auto Pw = weights_(comp_id);
                 const auto old_sizes = Pw.tensor_size();
-                Assert(old_sizes(direction_id) == n+1,
-                       ExcDimensionMismatch(old_sizes(direction_id), n+1));
+                Assert(old_sizes[direction_id] == n+1,
+                       ExcDimensionMismatch(old_sizes[direction_id], n+1));
 
                 auto new_sizes = old_sizes;
-                new_sizes(direction_id) += r+1; // r+1 new weights in the refinement direction
-                Assert(new_sizes(direction_id) ==
+                new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
+                Assert(new_sizes[direction_id] ==
                        sp_space_->get_num_basis(comp_id,direction_id),
-                       ExcDimensionMismatch(new_sizes(direction_id),
+                       ExcDimensionMismatch(new_sizes[direction_id],
                                             sp_space_->get_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);

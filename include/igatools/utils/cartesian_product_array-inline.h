@@ -27,7 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 template< class T, int rank>
 inline
 const std::vector<T> &
@@ -38,6 +38,43 @@ get_data_direction(const int i) const
     return data_[i];
 }
 
+
+template <class T, int rank>
+inline
+CartesianProductArray<T, rank+1>
+insert(const CartesianProductArray<T, rank> &orig,
+       const int index,
+       const std::vector<T> &new_vector)
+{
+    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+
+    TensorSize<rank+1> size;
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            size[i] = new_vector.size();
+        else
+        {
+            size[i] = orig.tensor_size()[j];
+            ++j;
+        }
+    }
+
+    CartesianProductArray<T,rank+1> product(size);
+
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            product.copy_data_direction(i,new_vector);
+        else
+        {
+            product.copy_data_direction(i,orig.get_data_direction(j));
+            ++j;
+        }
+    }
+    return product;
+}
+#endif
 
 IGA_NAMESPACE_CLOSE
 #endif // #ifndef CARTESIAN_PRODUCT_ARRAY_INLINE_H_

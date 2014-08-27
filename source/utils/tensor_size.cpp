@@ -31,9 +31,7 @@ TensorSize<rank>::
 TensorSize(Size val) noexcept
 :
 TensorIndex<rank>::TensorIndex(val)
-{
-    Assert(val >= 0, ExcLowerRange(val,0));
-}
+{}
 
 
 
@@ -42,12 +40,7 @@ TensorSize<rank>::
 TensorSize(const std::array<Size,rank> &arr) noexcept
 :
 TensorIndex<rank>::TensorIndex(arr)
-{
-#ifndef NDEBUG
-    for (const auto &size_dir : *this)
-        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
-#endif
-}
+{}
 
 
 
@@ -71,12 +64,7 @@ TensorSize<rank>::
 TensorSize(std::initializer_list<Size> list) noexcept
 :
 TensorIndex<rank>::TensorIndex(list)
-{
-#ifndef NDEBUG
-    for (const auto &size_dir : *this)
-        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
-#endif
-}
+{}
 
 
 
@@ -102,7 +90,7 @@ operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2)
 {
     bool res = true;
     for (Index i = 0 ; i < rank ; ++i)
-        if (size1(i) != size2(i))
+        if (size1[i] != size2[i])
         {
             res = false;
             break;

@@ -56,11 +56,6 @@ void test_evaluate()
     out << endl;
 
     auto map = IdentityMapping<dim>::create(grid);
-//   map->refine();
-//    map->get_grid()->print_info(out);
-//    out << endl;
-
-
 
     auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
 
@@ -68,9 +63,7 @@ void test_evaluate()
     const int deg = 2;
 
     TensorIndex<1> component_map = {0};
-    TensorSize<dim> n_weights_dir;
-    for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_dir(dir_id) = (deg+2);
+    TensorSize<dim> n_weights_dir(deg+2);
 
     typename RefSpace_t<dim>::WeightsTable weights(component_map);
     if (dim == 1)

@@ -97,15 +97,11 @@ MultiArrayUtils<rank>::
 compute_weight(const TensorSize<rank> &size) noexcept
 {
     TensorIndex<rank> weight;
-    Assert((size(0) >= 0) || (rank==0), ExcLowerRange(size(0),0)) ;
-//    weight.fill(size[0]);
 
-    weight[0] = size(0);
-    for (int i = 1; i < int(rank); ++i)
-    {
-        Assert(size(i) >= 0, ExcLowerRange(size(i),0)) ;
-        weight[i] = weight[i-1] * size(i);
-    }
+    weight[0] = size[0];
+    for (int i = 1; i < rank; ++i)
+        weight[i] = weight[i-1] * size[i];
+
     return weight;
 }
 

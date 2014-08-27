@@ -97,9 +97,9 @@ operator()(const TensorIndex<rank> &tensor_index) -> reference
     const TensorSize<rank> tensor_size = this->tensor_size();
 
     for (int i = 0 ; i < rank ; ++i)
-        Assert((tensor_index(i) >= 0) &&
-        (tensor_index(i) < tensor_size(i)),
-        ExcIndexRange(tensor_index(i),0,tensor_size(i)));
+        Assert((tensor_index[i] >= 0) &&
+        (tensor_index[i] < tensor_size[i]),
+        ExcIndexRange(tensor_index[i],0,tensor_size[i]));
 #endif
 
     Assert((this->tensor_to_flat(tensor_index) >= 0) &&
@@ -116,23 +116,7 @@ auto
 MultiArray<STLContainer,rank>::
 operator()(const TensorIndex<rank> &tensor_index) const -> const_reference
 {
-	return const_cast<MultiArray<STLContainer,rank> &>(*this)(tensor_index);
-/*
-#ifndef NDEBUG
-    const TensorSize<rank> tensor_size = this->tensor_size();
-
-    for (int i = 0 ; i < rank ; ++i)
-        Assert((tensor_index(i) >= 0) &&
-               (tensor_index(i) < tensor_size(i)),
-               ExcIndexRange(tensor_index(i),0,tensor_size(i)));
-#endif
-
-    Assert((this->tensor_to_flat(tensor_index) >= 0) &&
-           (this->tensor_to_flat(tensor_index) < this->flat_size()),
-           ExcIndexRange(this->tensor_to_flat(tensor_index),0,this->flat_size()));
-
-    return this->data_[this->tensor_to_flat(tensor_index)];
-//*/
+    return const_cast<MultiArray<STLContainer,rank> &>(*this)(tensor_index);
 }
 
 

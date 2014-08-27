@@ -53,7 +53,7 @@ void face_non_uniform()
     using Grid =  CartesianGrid<dim>;
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2+i;
+        n_knots[i] = 2+i;
     auto grid = Grid::create(n_knots);
     grid->print_info(out);
     for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)

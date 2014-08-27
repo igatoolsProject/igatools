@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief Type for a tensor index.
  *
- * It is a list of rank number of indices.
+ * It is a list of rank number of non-negative indices.
  *
  * This class makes possible the
  * rank independent treatment of tensor type containers.
@@ -91,23 +91,25 @@ public:
      * @note In Debug mode the index @p i is checked in order to be
      * in the bounds of the array containing the different direction sizes.
      */
-    Index &operator()(const Index i);
+    Index &operator[](const Index i);
 
     /**
      * Read operator. Returns the const-reference to the i-th size.
      * @note In Debug mode the index @p i is checked in order to be
      * in the bounds of the array containing the different direction sizes.
      */
-    const Index &operator()(const Index i) const;
+    const Index &operator[](const Index i) const;
     ///@}
 
     /**
      * @name Increment/decrement operators.
      */
     ///@{
-
     /** Increment the tensor index by the values @p idx.*/
     TensorIndex<rank> &operator +=(const TensorIndex<rank> &idx) noexcept ;
+
+    /** Decrement the tensor index by the values @p idx.*/
+    TensorIndex<rank> &operator -=(const TensorIndex<rank> &idx) noexcept ;
 
     /** Increment the indices in all directions by the value @p j. */
     TensorIndex<rank> &operator +=(const Index j) noexcept ;
@@ -126,6 +128,15 @@ public:
 template <int rank>
 TensorIndex<rank>
 operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b) ;
+
+/**
+ * Returns the tensor index with components given by the sum of @p index with @p j in all directions.
+ *
+ * @relates TensorIndex
+ */
+template <int rank>
+TensorIndex<rank>
+operator+(const TensorIndex<rank> &index,const Index j) ;
 
 
 

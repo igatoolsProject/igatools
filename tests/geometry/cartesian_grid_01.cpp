@@ -52,7 +52,7 @@ void dim_uniform_const()
 {
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2*i+2;
+        n_knots[i] = 2*i+2;
     auto grid = CartesianGrid<dim>::create(n_knots);
     grid->print_info(out);
     out << endl;
@@ -64,11 +64,11 @@ void non_uniform_const()
 {
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2*i+2;
+        n_knots[i] = 2*i+2;
     int k = 0;
     CartesianProductArray<Real, dim> knots(n_knots);
     for (int i = 0; i < dim; ++i)
-        for (int j = 0; j <n_knots(i) ; ++j)
+        for (int j = 0; j <n_knots[i] ; ++j)
             knots.entry(i,j) = k++;
 
     auto grid = CartesianGrid<dim>::create(knots);

@@ -449,10 +449,10 @@ reset(const Space &space,
 
     for (int i = 0 ; i < dim ; ++i)
     {
-        n_intervals_(i) = intervals_id[i].size();
+        n_intervals_[i] = intervals_id[i].size();
 
-        Assert(n_intervals_(i) == space.get_grid()->get_num_intervals()(i) ||
-               n_intervals_(i) == 1,
+        Assert(n_intervals_[i] == space.get_grid()->get_num_intervals()[i] ||
+               n_intervals_[i] == 1,
                ExcMessage("Invalid number of intervals along the direction " + std::to_string(i)));
     }
 
@@ -464,7 +464,7 @@ reset(const Space &space,
     {
         this->splines1d_cache_data_(iComp).resize(n_intervals_);
         for (int i = 0 ; i < dim ; ++i)
-            for (int j = 0 ; j < n_intervals_(i) ; ++j)
+            for (int j = 0 ; j < n_intervals_[i] ; ++j)
                 this->splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
     }
 
@@ -548,11 +548,10 @@ reset(const Space &space,
     const auto grid = space.get_grid();
     array<vector<int>,dim> intervals_id;
     for (int i = 0 ; i < dim ; ++i)
-
     {
         auto &intervals_id_direction = intervals_id[i];
 
-        const int n_intervals = grid->get_num_intervals()(i);
+        const int n_intervals = grid->get_num_intervals()[i];
 
         intervals_id_direction.resize(n_intervals);
 
@@ -564,8 +563,8 @@ reset(const Space &space,
 
 #ifndef NDEBUG
     for (int i = 0 ; i < dim ; ++i)
-        Assert(this->n_intervals_(i) == grid->get_num_intervals()(i),
-               ExcDimensionMismatch(this->n_intervals_(i),grid->get_num_intervals()(i)));
+        Assert(this->n_intervals_[i] == grid->get_num_intervals()[i],
+               ExcDimensionMismatch(this->n_intervals_[i],grid->get_num_intervals()[i]));
 #endif
     //------------------------------------------------------------------------------------------
 
@@ -593,7 +592,7 @@ reset(const Space &space,
         auto &intervals_id_direction = intervals_id[i];
         if (i != const_dir)
         {
-            const int n_intervals = space.get_grid()->get_num_intervals()(i);
+            const int n_intervals = space.get_grid()->get_num_intervals()[i];
 
             intervals_id_direction.resize(n_intervals);
             for (int id = 0 ; id < n_intervals ; ++id)
@@ -605,7 +604,7 @@ reset(const Space &space,
             if (face_id % 2 == 0)
                 intervals_id_direction.push_back(0);
             else
-                intervals_id_direction.push_back(space.get_grid()->get_num_intervals()(i)-1);
+                intervals_id_direction.push_back(space.get_grid()->get_num_intervals()[i]-1);
 
             Assert(intervals_id_direction.size() == 1,
                    ExcDimensionMismatch(intervals_id_direction.size(),1));
@@ -619,12 +618,12 @@ reset(const Space &space,
     {
         if (i != const_dir)
         {
-            Assert(this->n_intervals_(i) == space.get_grid()->get_num_intervals()(i),
-                   ExcDimensionMismatch(this->n_intervals_(i),space.get_grid()->get_num_intervals()(i)));
+            Assert(this->n_intervals_[i] == space.get_grid()->get_num_intervals()[i],
+                   ExcDimensionMismatch(this->n_intervals_[i],space.get_grid()->get_num_intervals()[i]));
         }
         else
         {
-            Assert(this->n_intervals_(i) == 1,ExcDimensionMismatch(this->n_intervals_(i),1));
+            Assert(this->n_intervals_[i] == 1,ExcDimensionMismatch(this->n_intervals_[i],1));
         }
     }
 #endif
@@ -648,7 +647,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
     for (int comp = 0; comp < Space::n_components; ++comp)
     {
         for (int i = 0; i < dim ; ++i)
-            n_basis_direction(i) = degree(comp)[i]+1;
+            n_basis_direction[i] = degree(comp)[i]+1;
 
 
         auto &scalar_evaluator_comp = scalar_evaluators_(comp);

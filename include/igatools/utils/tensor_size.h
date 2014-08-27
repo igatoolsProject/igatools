@@ -28,7 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-//TODO(pauletti, Mar 3, 2014):  create a class assertion for the chechink the sizes
 /**
  * @brief Type for the size of a tensor-like container.
  *

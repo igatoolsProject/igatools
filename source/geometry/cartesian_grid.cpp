@@ -48,7 +48,7 @@ filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
     vector<Real> knots_1d;
     for (int i = 0; i < dim; ++i)
     {
-        const Size n_i = n_knots(i);
+        const Size n_i = n_knots[i];
         Assert(n_i > 1, ExcLowerRange(n_i,2));
 
         knots_1d.resize(n_i);
@@ -256,7 +256,7 @@ get_element_lengths() const -> KnotCoordinates
     {
         const auto &knots_i = knot_coordinates_.get_data_direction(i);
 
-        const Size size_i = size(i);
+        const Size size_i = size[i];
 
         for (int j = 0 ; j < size_i ; ++j)
             length.entry(i,j) = knots_i[j+1] - knots_i[j];
@@ -526,7 +526,7 @@ get_face_grid(const int face_id, FaceGridMap &elem_map) const
     auto knot_coordinates_ = this->get_knot_coordinates();
     v_index[const_dir] = const_value==0 ?
     0 :
-    (knot_coordinates_.tensor_size()(const_dir)-2);
+    (knot_coordinates_.tensor_size()[const_dir]-2);
 
     auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
     auto face_grid = FaceType::create(face_knots);

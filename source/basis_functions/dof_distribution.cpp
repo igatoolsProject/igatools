@@ -72,10 +72,10 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
     //-----------------------------------------------------------------------
     SpaceDimensionTable n_elem_basis;
-    for(int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
+    for (int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
     {
-    	n_elem_basis(iComp) = degree_table(iComp);
-    	n_elem_basis(iComp) += 1;
+        n_elem_basis(iComp) = degree_table(iComp);
+        n_elem_basis(iComp) += 1;
     }
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
     //-----------------------------------------------------------------------
@@ -161,14 +161,14 @@ create_element_loc_to_global_view(
             else if (dim == 2)
             {
                 TensorIndex<dim> incr_t_id;
-                for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                for (incr_t_id[1] = 0 ; incr_t_id[1] < increment[1]; ++incr_t_id[1])
                 {
                     TensorIndex<dim> pos_t_id = origin + incr_t_id;
 
                     Index pos_flat_id = index_table_comp.tensor_to_flat(pos_t_id);
 
                     const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
-                    const VecIt pos_end = pos_begin + increment(0);
+                    const VecIt pos_end = pos_begin + increment[0];
 
                     dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
                 } // end loop incr_t_id(1)
@@ -177,16 +177,16 @@ create_element_loc_to_global_view(
             else if (dim == 3)
             {
                 TensorIndex<dim> incr_t_id;
-                for (incr_t_id(2) = 0 ; incr_t_id(2) < increment(2); ++incr_t_id(2))
+                for (incr_t_id[2] = 0 ; incr_t_id[2] < increment[2]; ++incr_t_id[2])
                 {
-                    for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                    for (incr_t_id[1] = 0 ; incr_t_id[1] < increment[1]; ++incr_t_id[1])
                     {
                         TensorIndex<dim> pos_t_id = origin + incr_t_id;
 
                         Index pos_flat_id = index_table_comp.tensor_to_flat(pos_t_id);
 
                         const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
-                        const VecIt pos_end = pos_begin + increment(0);
+                        const VecIt pos_end = pos_begin + increment[0];
 
                         dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
 
@@ -273,10 +273,10 @@ auto
 DofDistribution<dim, range, rank>::
 get_num_dofs_element(const Index elem_flat_id) const -> Size
 {
-	DofsPerElementTable dofs_per_element_table;
-	const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(elem_flat_id);
+    DofsPerElementTable dofs_per_element_table;
+    const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(elem_flat_id);
 
-	return dofs_element_view.get_num_entries();
+    return dofs_element_view.get_num_entries();
 }
 #endif
 
@@ -285,10 +285,10 @@ auto
 DofDistribution<dim, range, rank>::
 get_num_dofs_element(const CartesianGridElement<dim> &element) const -> Size
 {
-//	DofsPerElementTable dofs_per_element_table;
-	const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
+//  DofsPerElementTable dofs_per_element_table;
+    const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
 
-	return dofs_element_view.get_num_entries();
+    return dofs_element_view.get_num_entries();
 }
 
 

@@ -47,7 +47,7 @@ CartesianProductArray(std::initializer_list<std::initializer_list<T>> list)
     for (int i=0; i<rank; ++i)
     {
         data_[i] = list.begin()[i];
-        size(i) = data_[i].size();
+        size[i] = data_[i].size();
     }
     TensorSizedContainer<rank>::reset_size(size);
 }
@@ -60,10 +60,7 @@ CartesianProductArray(const TensorSize<rank> size)
     TensorSizedContainer<rank>(size)
 {
     for (int i=0; i<rank; ++i)
-    {
-        Assert(size(i) >= 0, ExcLowerRange(size(i),0)) ;
-        data_[i].resize(size(i));
-    }
+        data_[i].resize(size[i]);
 }
 
 
@@ -83,7 +80,7 @@ CartesianProductArray(const array<vector<T>,rank> &data_directions)
     for (int i=0; i<rank; ++i)
     {
         data_[i] = data_directions[i];
-        size(i) = data_[i].size();
+        size[i] = data_[i].size();
     }
     TensorSizedContainer<rank>::reset_size(size);
 }
@@ -96,10 +93,7 @@ resize(const TensorSize<rank> &size)
     TensorSizedContainer<rank>::reset_size(size);
 
     for (int i = 0 ; i < rank ; i++)
-    {
-        Assert(size(i) >= 1, ExcLowerRange(size(i), 1)) ;
-        data_[i].resize(size(i)) ;
-    }
+        data_[i].resize(size[i]) ;
 }
 
 
@@ -109,8 +103,8 @@ CartesianProductArray<T,rank>::
 entry(const int i, const int j)
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    Assert(j >= 0 && j < this->tensor_size()(i),
-           ExcIndexRange(j,0,this->tensor_size()(i)));
+    Assert(j >= 0 && j < this->tensor_size()[i],
+           ExcIndexRange(j,0,this->tensor_size()[i]));
 
     return data_[i][j];
 }
@@ -123,8 +117,8 @@ CartesianProductArray<T,rank>::
 entry(const int i, const int j) const
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    Assert(j >= 0 && j < this->tensor_size()(i),
-           ExcIndexRange(j,0,this->tensor_size()(i)));
+    Assert(j >= 0 && j < this->tensor_size()[i],
+           ExcIndexRange(j,0,this->tensor_size()[i]));
 
     return data_[i][j];
 }
@@ -137,9 +131,9 @@ copy_data_direction(const int i, const vector<T> &data)
     Assert(i>=0 && i<rank, ExcIndexRange(i,0,rank));
     data_[i] = data;
     TensorSize<rank> size = this->tensor_size();
-    if (data_[i].size() != size(i))
+    if (data_[i].size() != size[i])
     {
-        size(i) = data_[i].size();
+        size[i] = data_[i].size();
         TensorSizedContainer<rank>::reset_size(size);
     }
 }
@@ -168,8 +162,8 @@ CartesianProductArray<T,rank>::
 get_flat_cartesian_product() const ->
 Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >
 {
-	using Container = Conditional<
-			std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >;
+    using Container = Conditional<
+    std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >;
 
     const Size flat_size = this->flat_size();
     Container result(flat_size);
@@ -201,6 +195,50 @@ get_sub_product(const SubProductTensorIndex &index) const -> SubProduct
 
 
 
+template< class T, int rank>
+const std::vector<T> &
+CartesianProductArray<T,rank>::
+get_data_direction(const int i) const
+{
+    Assert(i >= 0 && i < rank, ExcIndexRange(i, 0, rank)) ;
+    return data_[i];
+}
+
+
+template <class T, int rank>
+CartesianProductArray<T, rank+1>
+insert(const CartesianProductArray<T, rank> &orig,
+       const int index,
+       const std::vector<T> &new_vector)
+{
+    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+
+    TensorSize<rank+1> size;
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            size[i] = new_vector.size();
+        else
+        {
+            size[i] = orig.tensor_size()[j];
+            ++j;
+        }
+    }
+
+    CartesianProductArray<T,rank+1> product(size);
+
+    for (int i=0, j=0; i<rank+1; ++i)
+    {
+        if (i == index)
+            product.copy_data_direction(i,new_vector);
+        else
+        {
+            product.copy_data_direction(i,orig.get_data_direction(j));
+            ++j;
+        }
+    }
+    return product;
+}
 
 
 

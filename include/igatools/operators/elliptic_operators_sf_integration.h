@@ -198,19 +198,19 @@ public:
 
         const auto &Jk = J[k-1];
         TensorSize<3> t_size_Jk = Jk.tensor_size();
-        Assert(t_size_Jk(0) == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk(0),t_size_theta[k-1]));
-        Assert(t_size_Jk(1) == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk(1),t_size_alpha[k-1]));
-        Assert(t_size_Jk(2) == t_size_beta [k-1],ExcDimensionMismatch(t_size_Jk(2),t_size_beta [k-1]));
+        Assert(t_size_Jk[0] == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk[0],t_size_theta[k-1]));
+        Assert(t_size_Jk[1] == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk[1],t_size_alpha[k-1]));
+        Assert(t_size_Jk[2] == t_size_beta [k-1],ExcDimensionMismatch(t_size_Jk[2],t_size_beta [k-1]));
         TensorIndex<3> t_wgt_Jk = MultiArrayUtils<3>::compute_weight(t_size_Jk);
 
 
         const TensorSize<3> t_size_Cpre = Cpre.tensor_size();
-        Assert(t_size_Cpre(0) == t_size_theta_k_d.flat_size(),
-               ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
-        Assert(t_size_Cpre(1) == t_size_alpha_1_km1.flat_size(),
-               ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
-        Assert(t_size_Cpre(2) == t_size_beta_1_km1.flat_size(),
-               ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
+        Assert(t_size_Cpre[0] == t_size_theta_k_d.flat_size(),
+               ExcDimensionMismatch(t_size_Cpre[0],t_size_theta_k_d.flat_size()));
+        Assert(t_size_Cpre[1] == t_size_alpha_1_km1.flat_size(),
+               ExcDimensionMismatch(t_size_Cpre[1],t_size_alpha_1_km1.flat_size()));
+        Assert(t_size_Cpre[2] == t_size_beta_1_km1.flat_size(),
+               ExcDimensionMismatch(t_size_Cpre[2],t_size_beta_1_km1.flat_size()));
         TensorIndex<3> t_wgt_Cpre = MultiArrayUtils<3>::compute_weight(t_size_Cpre);
 
 
@@ -423,19 +423,19 @@ public:
 
         const auto &Jk = J[k-1];
         TensorSize<3> t_size_Jk = Jk.tensor_size();
-        Assert(t_size_Jk(0) == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk(0),t_size_theta[k-1]));
-        Assert(t_size_Jk(1) == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk(1),t_size_alpha[k-1]));
-        Assert(t_size_Jk(2) == t_size_beta [k-1],ExcDimensionMismatch(t_size_Jk(2),t_size_beta [k-1]));
+        Assert(t_size_Jk[0] == t_size_theta[k-1],ExcDimensionMismatch(t_size_Jk[0],t_size_theta[k-1]));
+        Assert(t_size_Jk[1] == t_size_alpha[k-1],ExcDimensionMismatch(t_size_Jk[1],t_size_alpha[k-1]));
+        Assert(t_size_Jk[2] == t_size_beta [k-1],ExcDimensionMismatch(t_size_Jk[2],t_size_beta [k-1]));
         TensorIndex<3> t_wgt_Jk = MultiArrayUtils<3>::compute_weight(t_size_Jk);
 
 
         const TensorSize<3> t_size_Cpre = Cpre.tensor_size();
-        Assert(t_size_Cpre(0) == t_size_theta_k_d.flat_size(),
-               ExcDimensionMismatch(t_size_Cpre(0),t_size_theta_k_d.flat_size()));
-        Assert(t_size_Cpre(1) == t_size_alpha_1_km1.flat_size(),
-               ExcDimensionMismatch(t_size_Cpre(1),t_size_alpha_1_km1.flat_size()));
-        Assert(t_size_Cpre(2) == t_size_beta_1_km1.flat_size(),
-               ExcDimensionMismatch(t_size_Cpre(2),t_size_beta_1_km1.flat_size()));
+        Assert(t_size_Cpre[0] == t_size_theta_k_d.flat_size(),
+               ExcDimensionMismatch(t_size_Cpre[0],t_size_theta_k_d.flat_size()));
+        Assert(t_size_Cpre[1] == t_size_alpha_1_km1.flat_size(),
+               ExcDimensionMismatch(t_size_Cpre[1],t_size_alpha_1_km1.flat_size()));
+        Assert(t_size_Cpre[2] == t_size_beta_1_km1.flat_size(),
+               ExcDimensionMismatch(t_size_Cpre[2],t_size_beta_1_km1.flat_size()));
         TensorIndex<3> t_wgt_Cpre = MultiArrayUtils<3>::compute_weight(t_size_Cpre);
 
 
@@ -1149,9 +1149,7 @@ eval_operator_u_v(
 
     // test space -- begin
     TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_test;
-    for (int i = 0 ; i < dim ; ++i)
-        n_basis_elem_test(i) = degree_test(i) + 1;
+    TensorSize<dim> n_basis_elem_test = degree_test + 1;
 
     const Size n_basis_test_flat = n_basis_elem_test.flat_size();
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
@@ -1167,7 +1165,7 @@ eval_operator_u_v(
     TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
     TensorSize<dim> n_basis_elem_trial;
     for (int i = 0 ; i < dim ; ++i)
-        n_basis_elem_trial(i) = degree_trial(i) + 1;
+        n_basis_elem_trial[i] = degree_trial[i] + 1;
 
     const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
@@ -1430,9 +1428,7 @@ eval_operator_gradu_gradv(
 
     // test space -- begin
     TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_test;
-    for (int i = 0 ; i < dim ; ++i)
-        n_basis_elem_test(i) = degree_test(i) + 1;
+    TensorSize<dim> n_basis_elem_test = degree_test + 1;
 
     const Size n_basis_test_flat = n_basis_elem_test.flat_size();
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
@@ -1446,9 +1442,7 @@ eval_operator_gradu_gradv(
 
     // trial space -- begin
     TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_trial;
-    for (int i = 0 ; i < dim ; ++i)
-        n_basis_elem_trial(i) = degree_trial(i) + 1;
+    TensorSize<dim> n_basis_elem_trial = degree_trial + 1;
 
     const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),

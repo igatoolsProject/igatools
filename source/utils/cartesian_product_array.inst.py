@@ -40,3 +40,13 @@ ma_list = ['CartesianProductArray<%s,%d>' %(t,dim)
 
 for row in ma_list:
 	f.write('template class %s; \n' % (row))
+
+
+types = ['double','Index']
+for dim in inst.domain_dims:
+	if dim >= 1:
+		for type in types:
+			ret_type = 'CartesianProductArray<%s,%d>' %(type,dim)
+			arg_type = 'CartesianProductArray<%s,%d>' %(type,dim-1)
+			f.write('template %s insert(const %s &,const int,const vector<%s>&); \n' % (ret_type,arg_type,type))
+

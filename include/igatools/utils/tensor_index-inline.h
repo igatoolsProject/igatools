@@ -85,6 +85,20 @@ template <int rank>
 inline
 TensorIndex<rank> &
 TensorIndex<rank>::
+operator -=(const TensorIndex<rank> &ti) noexcept
+{
+    for (int i = 0; i < rank; ++i)
+    {
+        (*this)[i] -= ti[i];
+        Assert((*this)[i] >= 0,ExcLowerRange((*this)[i],0));
+    }
+    return *this;
+}
+
+template <int rank>
+inline
+TensorIndex<rank> &
+TensorIndex<rank>::
 operator -=(const int j) noexcept
 {
     Assert(j >= 0, ExcLowerRange(j,0));
@@ -114,10 +128,10 @@ operator +=(const int j) noexcept
 template <int rank>
 Index &
 TensorIndex<rank>::
-operator()(const Index i)
+operator[](const Index i)
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    return (*this)[i];
+    return std::array<Index,rank>::operator[](i);
 }
 
 
@@ -125,10 +139,10 @@ operator()(const Index i)
 template <int rank>
 const Index &
 TensorIndex<rank>::
-operator()(const Index i) const
+operator[](const Index i) const
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    return (*this)[i];
+    return std::array<Index,rank>::operator[](i);
 }
 
 

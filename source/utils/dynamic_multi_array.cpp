@@ -146,16 +146,16 @@ get_slice(const int direction, const Index index) const
 
     Assert(direction >= 0 && direction < rank,
            ExcIndexRange(direction,0,rank));
-    Assert(index >= 0 && index < tensor_size(direction),
-           ExcIndexRange(index,0,tensor_size(direction)));
+    Assert(index >= 0 && index < tensor_size[direction],
+           ExcIndexRange(index,0,tensor_size[direction]));
 
     const int rank_slice = (rank>0)?rank-1:0;
     TensorSize<rank_slice> sizes_slice;
     for (Index i = 0 ; i < direction ; ++i)
-        sizes_slice(i) = tensor_size(i);
+        sizes_slice[i] = tensor_size[i];
 
     for (Index i = direction+1 ; i < rank ; ++i)
-        sizes_slice(i-1) = tensor_size(i);
+        sizes_slice[i-1] = tensor_size[i];
 
 
     TensorIndex<rank> tensor_id;
@@ -197,13 +197,13 @@ copy_slice(const int direction, const Index index,
     const auto tensor_size = this->tensor_size();
     const auto sizes_slice = slice.tensor_size();
     for (Index i = 0 ; i < direction ; ++i)
-        Assert(tensor_size(i) == sizes_slice(i),
-               ExcDimensionMismatch(tensor_size(i),sizes_slice(i)));
+        Assert(tensor_size[i] == sizes_slice[i],
+               ExcDimensionMismatch(tensor_size[i],sizes_slice[i]));
 
 
     for (Index i = direction+1 ; i < rank ; ++i)
-        Assert(tensor_size(i) == sizes_slice(i-1),
-               ExcDimensionMismatch(tensor_size(i),sizes_slice(i-1)));
+        Assert(tensor_size[i] == sizes_slice[i-1],
+               ExcDimensionMismatch(tensor_size[i],sizes_slice[i-1]));
 #endif
 
     TensorIndex<rank> tensor_id;

@@ -35,7 +35,7 @@ do_test()
     out << "========== BEGIN do_test<" << rank << "> ==========" << endl;
     TensorSize<rank> size;
     for (int i = 0 ; i < rank ; ++i)
-        size(i) = i+2;
+        size[i] = i+2;
 
     CartesianProductIndexer<rank> indexer(size);
     out << "Num. indices = " << indexer.get_num_indices() << endl;

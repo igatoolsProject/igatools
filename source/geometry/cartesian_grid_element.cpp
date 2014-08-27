@@ -261,7 +261,7 @@ is_boundary() const
 
     for (int i = 0; i < dim; ++i)
     {
-        if (element_index[i] == 0 or element_index[i] == num_elements_dim(i) - 1)
+        if (element_index[i] == 0 or element_index[i] == num_elements_dim[i] - 1)
             return true;
     }
 
@@ -278,7 +278,7 @@ is_boundary(const Index face_id) const
     const int face_side = UnitElement<dim>::face_side[face_id];
 
     const auto element_id_dir = this->get_tensor_index()[const_direction] ;
-    const auto num_elements_dir = this->get_grid()->get_num_intervals()(const_direction);
+    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
 
     return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
 }
@@ -399,14 +399,12 @@ jump(const TensorIndex<dim> &increment)
     const auto n_elems = grid_->get_num_intervals();
     bool valid_tensor_index = true;
     for (int i = 0 ; i < dim ; ++i)
-    {
-        if (tensor_index_(i) < 0 || tensor_index_(i) >= n_elems(i))
+        if (tensor_index_[i] < 0 || tensor_index_[i] >= n_elems[i])
         {
             valid_tensor_index = false;
             flat_index_ = IteratorState::invalid;
             break;
         }
-    }
 
     if (valid_tensor_index)
     {

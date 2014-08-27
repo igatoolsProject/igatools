@@ -46,7 +46,7 @@ void do_test()
     out << "Rectangular constructor "<< endl;
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     DynamicMultiArray<Index, dim> data3(size);
     out << data3 << endl;
 }
@@ -79,7 +79,7 @@ void do_test_1()
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     data1.resize(size);
     out << "Size: " << data1.flat_size() << endl;
 
@@ -103,7 +103,7 @@ void do_test_2()
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     data1.resize(size);
     data1.fill_progression(10);
     out << "Size: " << data1.flat_size() << endl;

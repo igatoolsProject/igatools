@@ -66,7 +66,7 @@ dilate(const array<Real,rank> &dilate)
 {
     const TensorSize<rank> size = this->tensor_size();
     for (int i=0; i<rank; ++i)
-        for (int j = 0 ; j < size(i) ; ++j)
+        for (int j = 0 ; j < size[i] ; ++j)
             this->data_[i][j] *= dilate[i];
 }
 
@@ -78,7 +78,7 @@ translate(const Points<rank> &translate)
 {
     const TensorSize<rank> size = this->tensor_size();
     for (int i=0; i<rank; ++i)
-        for (int j = 0 ; j < size(i) ; ++j)
+        for (int j = 0 ; j < size[i] ; ++j)
             this->data_[i][j] += translate[i];
 }
 

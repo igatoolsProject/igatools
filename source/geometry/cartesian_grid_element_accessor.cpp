@@ -70,7 +70,7 @@ resize(const CartesianGrid<dim_> &grid)
 
 
     for (int i = 0; i < dim_; ++i)
-        for (int j = 0; j < size(i); ++j)
+        for (int j = 0; j < size[i]; ++j)
             length_.entry(i,j) = &length_data_.entry(i,j);
 
     this->set_filled(true);

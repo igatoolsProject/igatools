@@ -71,8 +71,8 @@ tensor_to_flat(const TensorIndex<rank> &tensor_index) const
 {
 #ifndef NDEBUG
     for (int i = 0 ; i < rank ; ++i)
-        Assert(tensor_index(i) >= 0 && tensor_index(i) < size_(i),
-               ExcIndexRange(tensor_index(i),0,size_(i)));
+        Assert(tensor_index[i] >= 0 && tensor_index[i] < size_[i],
+               ExcIndexRange(tensor_index[i],0,size_[i]));
 #endif
     return MultiArrayUtils<rank>::tensor_to_flat_index(tensor_index, weight_);
 }
