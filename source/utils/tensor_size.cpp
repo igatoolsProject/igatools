@@ -40,7 +40,12 @@ TensorSize<rank>::
 TensorSize(const std::array<Size,rank> &arr) noexcept
 :
 TensorIndex<rank>::TensorIndex(arr)
-{}
+{
+#ifndef NDEBUG
+    for (const auto &size_dir : *this)
+        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
+#endif
+}
 
 
 
@@ -49,12 +54,7 @@ TensorSize<rank>::
 TensorSize(const TensorIndex<rank> &arr) noexcept
 :
 TensorIndex<rank>::TensorIndex(arr)
-{
-#ifndef NDEBUG
-    for (const auto &size_dir : *this)
-        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
-#endif
-}
+{}
 
 
 
@@ -80,23 +80,15 @@ flat_size() const noexcept
 }
 
 
-
-
-
-
 template <int rank>
-bool
-operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2)
+LogStream &
+operator<<(LogStream &out, const TensorSize<rank> &tensor_size)
 {
-    bool res = true;
-    for (Index i = 0 ; i < rank ; ++i)
-        if (size1[i] != size2[i])
-        {
-            res = false;
-            break;
-        }
-
-    return res;
+    out << "[ ";
+    for (const auto &v : tensor_size)
+        out << v << " ";
+    out << "]";
+    return out;
 }
 
 IGA_NAMESPACE_CLOSE

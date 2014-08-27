@@ -39,6 +39,9 @@ IGA_NAMESPACE_OPEN
  * This class makes possible the
  * rank independent treatment of tensor type containers.
  *
+ * This class inherits publicly from std::array, but reimplements the access operator[]
+ * for bounds checking.
+ *
  * @author M.Martinelli
  * @date 20 Jan 2014
  */

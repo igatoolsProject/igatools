@@ -493,8 +493,6 @@ private:
      */
     signal_refine_t refine_signals_;
 
-    /** Weights for the fast index conversion tensor-to-flat/flat-to-tensor.*/
-    TensorIndex<dim> weight_index_;
 
     friend class CartesianGridElement<dim>;
 

@@ -99,10 +99,7 @@ move_to(const Index flat_index)
 
     //Fill tensor_index_
     if (flat_index_ != IteratorState::pass_the_end)
-    {
-        using Utils = MultiArrayUtils<dim>;
-        tensor_index_ = Utils::flat_to_tensor_index(flat_index_,grid_->weight_index_);
-    }
+        tensor_index_ = grid_->flat_to_tensor(flat_index_);
     else
         tensor_index_.fill(IteratorState::pass_the_end);
 }
@@ -115,9 +112,7 @@ CartesianGridElement<dim_>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     tensor_index_= tensor_index;
-
-    using Utils = MultiArrayUtils<dim>;
-    flat_index_ = Utils::tensor_to_flat_index(tensor_index_,grid_->weight_index_);
+    flat_index_ = grid_->tensor_to_flat(tensor_index_);
 
     Assert((flat_index_ == IteratorState::pass_the_end) ||
            ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
@@ -407,10 +402,7 @@ jump(const TensorIndex<dim> &increment)
         }
 
     if (valid_tensor_index)
-    {
-        using Utils = MultiArrayUtils<dim>;
-        flat_index_ = Utils::tensor_to_flat_index(tensor_index_,grid_->weight_index_);
-    }
+        flat_index_ = grid_->tensor_to_flat(tensor_index_);
 
     return valid_tensor_index;
 }

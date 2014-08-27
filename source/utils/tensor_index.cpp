@@ -59,10 +59,18 @@ operator+(const TensorIndex<rank> &index,const Index j)
 
 
 
+
 template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 {
+    /*
+    out << "[";
+    for (const auto idx : tensor_index)
+        out << idx << " ";
+    out << "]";
+    //*/
+
     out << "[";
     if (rank > 0)
     {
@@ -71,7 +79,7 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
             out << "," << tensor_index[i];
     }
     out << "]";
-
+//*/
     return (out);
 }
 

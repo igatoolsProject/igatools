@@ -32,6 +32,8 @@ IGA_NAMESPACE_OPEN
  * @brief Type for the size of a tensor-like container.
  *
  * It is a list of rank number of sizes.
+ * The main difference with the TensorIndex is due to the fact that TensorSize has the method
+ * flat_size() that returns the multiplication of the sizes along each direction.
  *
  * @author M. Martinelli
  * @date 21 Jan 2014
@@ -50,7 +52,7 @@ public:
     /** Constructor using an std::array. */
     explicit TensorSize(const std::array<Size,rank> &arr) noexcept;
 
-    /** Copy constructor. */
+    /** Copy constructor converting a TensorIndex<rank> @p arr. */
     TensorSize(const TensorIndex<rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
@@ -88,17 +90,8 @@ public:
      * Return the flat size, i.e. the multiplications of the sizes along each direction.
      */
     Size flat_size() const noexcept ;
-
 };
 
-
-/**
- * Equality operator.
- * Returns true if @p size1 and @p size2 are entry-by-entry equal.
- */
-template <int rank>
-bool
-operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2);
 
 /**
  * Output operator for TensorIndex.
@@ -107,14 +100,7 @@ operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2);
 */
 template <int rank>
 LogStream &
-operator<<(LogStream &out, const TensorSize<rank> &tensor_size)
-{
-    out << "[ ";
-    for (const auto &v : tensor_size)
-        out << v << " ";
-    out << "]";
-    return out;
-}
+operator<<(LogStream &out, const TensorSize<rank> &tensor_size);
 
 IGA_NAMESPACE_CLOSE
 
