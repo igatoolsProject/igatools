@@ -283,10 +283,9 @@ auto
 DofDistribution<dim, range, rank>::
 get_num_dofs_element(const CartesianGridElement<dim> &element) const -> Size
 {
-//  DofsPerElementTable dofs_per_element_table;
-    const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
+//    const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
 
-    return dofs_element_view.get_num_entries();
+    return elements_loc_to_global_flat_view_->at(element.get_flat_index()).get_num_entries();
 }
 
 

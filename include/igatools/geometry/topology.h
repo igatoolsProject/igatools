@@ -50,7 +50,7 @@ IGA_NAMESPACE_OPEN
  * For user convenience, we provide two specializations of TopologyId class:
  * - ElemTopology that represent the <b>element</b> topology (and essentially is the
  * same as TopologyId(-1) )
- * - FaceTopology, thet represent the <b>face</b> topology, for which the face-id must be specified
+ * - FaceTopology, that represent the <b>face</b> topology, for which the face-id must be specified
  * in the FaceTopology(const Index face_id) constructor.
  *
  *

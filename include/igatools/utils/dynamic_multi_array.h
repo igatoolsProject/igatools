@@ -103,6 +103,12 @@ public:
      */
     void resize(const TensorSize<rank> &dim);
 
+    /**
+     * Resize the multiarray as rectangular container with <p>dim[i]</p> entries
+     * in the i-th array dimension.
+     *
+     * All the entries are initialized to the value @p val.
+     */
     void resize(const TensorSize<rank> &dim, const T &val);
 
     /**
@@ -196,6 +202,7 @@ operator*(const Real a, const DynamicMultiArray<T,rank> &B);
 template<class T, int rank>
 EnableIf< std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank> >
 operator+(const DynamicMultiArray<T,rank> &A, const DynamicMultiArray<T,rank> &B);
+
 
 template<class T, int rank>
 EnableIf<std::is_floating_point<T>::value  &&(rank>=0),DynamicMultiArray<T,rank> >

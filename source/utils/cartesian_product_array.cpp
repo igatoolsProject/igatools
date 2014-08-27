@@ -168,10 +168,7 @@ Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<po
     const Size flat_size = this->flat_size();
     Container result(flat_size);
     for (Size i = 0; i < flat_size; ++i)
-    {
-        const auto comp_index = this->flat_to_tensor(i);
-        result[i] = this->cartesian_product(comp_index);
-    }
+        result[i] = this->cartesian_product(this->flat_to_tensor(i));
 
     return result;
 }

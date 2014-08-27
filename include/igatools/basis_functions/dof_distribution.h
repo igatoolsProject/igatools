@@ -115,10 +115,10 @@ public:
     /** Assignment operators */
     ///@{
     /** Copy assignment operator. Not allowed to be used. */
-    DofDistribution& operator=(const DofDistribution &dof_distribution) = delete;
+    DofDistribution &operator=(const DofDistribution &dof_distribution) = delete;
 
     /** Move assignment operator.*/
-    DofDistribution& operator=(DofDistribution &&dof_distribution) = default;
+    DofDistribution &operator=(DofDistribution &&dof_distribution) = default;
     ///@}
 
 
@@ -155,7 +155,6 @@ public:
      * Returns the number of active dofs of the @p element.
      */
     Size get_num_dofs_element(const CartesianGridElement<dim> &element) const;
-//    Size get_num_dofs_element(const Index elem_flat_id) const;
 
 
     /** Returns the active dofs of the @p element.*/

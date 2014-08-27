@@ -58,15 +58,6 @@ public :
      */
     explicit ValueVector(const Index num_points) ;
 
-    // TODO (pauletti, Jul 11, 2014): it should be deleted after return by value in pf_accessor
-    /*
-    explicit ValueVector(const Size num_functions, const Size num_points)
-        :ValueContainer<T>(num_functions,num_points)
-    {
-        Assert(num_functions==1,ExcDimensionMismatch(num_functions,1));
-    }
-    //*/
-
     /**
      * Constructor from a std::vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
@@ -118,7 +109,7 @@ public :
      */
     ///@{
     /**
-     * Resize the ValueTable in order to allocate space for @p num_functions functions and
+     * Resize the ValueTable in order to allocate space for
      * @p num_points points.
      */
     void resize(const Size num_points);
