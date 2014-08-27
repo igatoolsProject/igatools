@@ -151,7 +151,7 @@ CartesianGrid<dim_>::
 CartesianGrid(const KnotCoordinates &knot_coordinates,
               const Kind kind)
     :
-    TensorSizedContainer<dim_>(knot_coordinates.tensor_size().operator -=(1)),
+    TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
     knot_coordinates_(knot_coordinates),
@@ -403,7 +403,7 @@ refine_directions(
         if (refinement_directions[i])
             this->refine_knots_direction(i,n_subdivisions[i]);
 
-    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size(). operator -=(1));
+    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
     influent_.resize(this->tensor_size(), true);

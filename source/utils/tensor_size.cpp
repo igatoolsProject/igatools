@@ -91,6 +91,15 @@ operator<<(LogStream &out, const TensorSize<rank> &tensor_size)
     return out;
 }
 
+
+template <int rank>
+TensorSize<rank>
+operator-(const TensorSize<rank> &index,const Index j)
+{
+    return TensorSize<rank>(static_cast<TensorIndex<rank>>(index)-j);
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/utils/tensor_size.inst>

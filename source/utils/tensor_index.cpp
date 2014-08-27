@@ -58,6 +58,21 @@ operator+(const TensorIndex<rank> &index,const Index j)
 }
 
 
+template <int rank>
+TensorIndex<rank>
+operator-(const TensorIndex<rank> &index,const Index j)
+{
+    Assert(j>=0,ExcLowerRange(j,0));
+    TensorIndex<rank> tensor_index;
+    for (int i = 0 ; i < rank ; ++i)
+    {
+        tensor_index[i] = index[i] - j;
+        Assert(tensor_index[i] >= 0, ExcLowerRange(tensor_index[i],0));
+    }
+
+    return tensor_index;
+}
+
 
 
 template <int rank>

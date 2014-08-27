@@ -73,10 +73,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
     SpaceDimensionTable n_elem_basis;
     for (int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
-    {
-        n_elem_basis(iComp) = degree_table(iComp);
-        n_elem_basis(iComp) += 1;
-    }
+        n_elem_basis(iComp) = TensorSize<dim>(degree_table(iComp)+1);
+
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
     //-----------------------------------------------------------------------
 }

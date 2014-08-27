@@ -117,11 +117,12 @@ DynamicMultiArray<T,rank>
 DynamicMultiArray<T,rank>::
 get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) const
 {
-    DynamicMultiArray<T,rank> sub_array(inc);
+    const TensorSize<rank> size(inc);
+    DynamicMultiArray<T,rank> sub_array(size);
 
-    const Size size = MultiArrayUtils<rank>::size(inc);
+    const Size flat_size = size.flat_size();
 
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < flat_size; ++i)
     {
         auto tensor_index = sub_array.flat_to_tensor(i);
         tensor_index += start;

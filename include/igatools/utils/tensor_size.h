@@ -53,7 +53,7 @@ public:
     explicit TensorSize(const std::array<Size,rank> &arr) noexcept;
 
     /** Copy constructor converting a TensorIndex<rank> @p arr. */
-    TensorSize(const TensorIndex<rank> &arr) noexcept;
+    explicit TensorSize(const TensorIndex<rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
     TensorSize(std::initializer_list<Size> list) noexcept;
@@ -91,6 +91,18 @@ public:
      */
     Size flat_size() const noexcept ;
 };
+
+
+/**
+ * Returns the tensor size with components given by the difference of
+ *  @p index with @p j in all directions.
+ *
+ * @relates TensorSize
+ */
+template <int rank>
+TensorSize<rank>
+operator-(const TensorSize<rank> &index,const Index j) ;
+
 
 
 /**

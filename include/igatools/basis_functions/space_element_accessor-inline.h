@@ -44,8 +44,7 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-    	n_basis_direction_(comp_id) = degree_table(comp_id);
-    	n_basis_direction_(comp_id) += 1;
+        n_basis_direction_(comp_id) = TensorSize<dim>(degree_table(comp_id)+1);
 
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
@@ -75,8 +74,7 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-    	n_basis_direction_(comp_id) = degree_table(comp_id);
-    	n_basis_direction_(comp_id) += 1;
+        n_basis_direction_(comp_id) = TensorSize<dim>(degree_table(comp_id)+1);
 
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
@@ -835,9 +833,9 @@ Size
 SpaceElementAccessor<Space>::
 get_num_basis() const
 {
-	Index total_num_basis = 0;
-	for (const auto n_basis_direction_component : n_basis_direction_)
-		total_num_basis += n_basis_direction_component.flat_size();
+    Index total_num_basis = 0;
+    for (const auto n_basis_direction_component : n_basis_direction_)
+        total_num_basis += n_basis_direction_component.flat_size();
 
     return total_num_basis;
 }

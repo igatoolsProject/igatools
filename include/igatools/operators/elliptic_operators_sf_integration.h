@@ -1149,7 +1149,7 @@ eval_operator_u_v(
 
     // test space -- begin
     TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_test = degree_test + 1;
+    TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
     const Size n_basis_test_flat = n_basis_elem_test.flat_size();
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
@@ -1428,7 +1428,7 @@ eval_operator_gradu_gradv(
 
     // test space -- begin
     TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_test = degree_test + 1;
+    TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
     const Size n_basis_test_flat = n_basis_elem_test.flat_size();
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
@@ -1442,7 +1442,7 @@ eval_operator_gradu_gradv(
 
     // trial space -- begin
     TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_trial = degree_trial + 1;
+    TensorSize<dim> n_basis_elem_trial(degree_trial + 1);
 
     const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),

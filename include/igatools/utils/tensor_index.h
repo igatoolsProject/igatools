@@ -141,6 +141,15 @@ template <int rank>
 TensorIndex<rank>
 operator+(const TensorIndex<rank> &index,const Index j) ;
 
+/**
+ * Returns the tensor index with components given by the difference of
+ *  @p index with @p j in all directions.
+ *
+ * @relates TensorIndex
+ */
+template <int rank>
+TensorIndex<rank>
+operator-(const TensorIndex<rank> &index,const Index j) ;
 
 
 /**
