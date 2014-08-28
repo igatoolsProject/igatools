@@ -267,6 +267,7 @@ public:
     void print_info(LogStream &out) const
     {
         TensorSizedContainer<rank>::print_info(out);
+        out << std::endl;
         t_print_info<STLContainer>(out);
     }
     ///@}
