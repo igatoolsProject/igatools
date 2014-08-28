@@ -31,16 +31,16 @@
 template <int dim>
 void fill_progression()
 {
-    out << "========== BEGIN do_test_3<" << dim << "> ==========" << endl;
-    out << "Constant value constructor (value=4)"<< endl;
+    OUTSTART
+
     StaticMultiArray<Index,dim,2> data1(4);
     out << "Fill progression from 2 "<< endl;
     data1.fill_progression(2);
     out << "Size: " << data1.flat_size() << endl;
     data1.print_info(out);
     out << endl;
-    out << "========== END do_test_3<" << dim << "> ==========" << endl;
-    out << endl;
+
+    OUTEND
 }
 
 

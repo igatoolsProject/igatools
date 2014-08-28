@@ -42,6 +42,7 @@ void constructors()
     OUTEND
 }
 
+
 int main()
 {
     out.depth_console(10);
