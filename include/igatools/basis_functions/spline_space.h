@@ -284,6 +284,8 @@ public:
         ComponentContainer(const ComponentMap &comp_map =
                                sequence<n_entries>());
 
+        ComponentContainer(const ComponentMap &comp_map, const T &val);
+
         /**
          * Construct a homogenous range table with val value
          */
@@ -343,12 +345,12 @@ public:
             return comp_map_[i];
         }
 
-        const std::vector<Index> &get_active_components_id() const
+        const vector<Index> &get_active_components_id() const
         {
             return active_components_id_;
         }
 
-        const std::vector<Index> &get_inactive_components_id() const
+        const vector<Index> &get_inactive_components_id() const
         {
             return inactive_components_id_;
         }
@@ -370,10 +372,10 @@ public:
         std::array <Index, n_entries> comp_map_;
 
         /** list of the active components */
-        std::vector<Index> active_components_id_;
+        vector<Index> active_components_id_;
 
         /** list of the inactive components */
-        std::vector<Index> inactive_components_id_;
+        vector<Index> inactive_components_id_;
 
 
     };
@@ -412,11 +414,11 @@ protected:
 
 template <class T, int dim>
 inline
-std::vector<T>
+vector<T>
 unique_container(std::array <T, dim> a)
 {
     auto it = std::unique(a.begin(), a.end());
-    return std::vector<T>(a.begin(), it);
+    return vector<T>(a.begin(), it);
 }
 
 
@@ -444,8 +446,30 @@ ComponentContainer(const ComponentMap &comp_map)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::
-ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
+ComponentContainer(const ComponentMap &comp_map, const T &val)
+    :
+    base_t(),
+    comp_map_(comp_map),
+    active_components_id_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_id_(n_entries)
+{
+    auto all = sequence<n_entries>();
+    auto it=std::set_difference(all.begin(), all.end(),
+                                active_components_id_.begin(),active_components_id_.end(),
+                                inactive_components_id_.begin());
+
+    inactive_components_id_.resize(it-inactive_components_id_.begin());
+
+    for (auto i : active_components_id_)
+        base_t::operator()(i) = val;
+}
+
+
+
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),

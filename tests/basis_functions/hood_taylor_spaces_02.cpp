@@ -30,6 +30,9 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
+using std::shared_ptr;
+using std::make_shared;
+
 template <int dim>
 class StokesProblem
 {

@@ -149,7 +149,7 @@ public:
     /**
      * Get the NURBS weights associated to the element.
      */
-    std::vector<Real> get_local_weights() const ;
+    vector<Real> get_local_weights() const ;
 
 
     /**

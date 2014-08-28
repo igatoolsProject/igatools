@@ -25,6 +25,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/multi_array.h>
+#include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -42,7 +43,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<class T, int rank>
-class DynamicMultiArray : public MultiArray<std::vector<T>,rank>
+class DynamicMultiArray : public MultiArray<vector<T>,rank>
 {
 public:
     /** @name Constructors and destructor */
@@ -168,12 +169,12 @@ public:
 };
 
 
-/**
- * Output operator.
- * @relates DynamicMultiArray
- */
-template<class T, int rank>
-LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
+///**
+// * Output operator.
+// * @relates DynamicMultiArray
+// */
+//template<class T, int rank>
+//LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
 
 
 /**

@@ -189,7 +189,7 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_derivatives_at_points(
-    const std::vector<Real> &local_coefs,
+    const vector<Real> &local_coefs,
     const ValueVector<Point> &points) const ->
 ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
@@ -211,7 +211,7 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_values_at_points(
-    const std::vector<Real> &local_coefs,
+    const vector<Real> &local_coefs,
     const ValueVector<Point> &points) const -> ValueVector<Value>
 {
     return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
@@ -222,7 +222,7 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_gradients_at_points(
-    const std::vector<Real> &local_coefs,
+    const vector<Real> &local_coefs,
     const ValueVector<Point> &points) const -> ValueVector<Derivative<1> >
 {
     return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
@@ -233,7 +233,7 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_hessians_at_points(
-    const std::vector<Real> &local_coefs,
+    const vector<Real> &local_coefs,
     const ValueVector<Point> &points) const -> ValueVector<Derivative<2> >
 {
     return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
@@ -710,7 +710,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -729,7 +729,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector<Value>
 {
     return this->evaluate_field(local_coefs,FaceTopology<dim>(face_id));
@@ -740,7 +740,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector< Derivative<1> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -759,7 +759,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field_gradients(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector< Derivative<1> >
 {
     return this->evaluate_field_gradients(local_coefs,FaceTopology<dim>(face_id));
@@ -770,7 +770,7 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_divergences(
-    const std::vector<Real> &local_coefs,
+    const vector<Real> &local_coefs,
     const TopologyId<dim> &topology_id) const -> ValueVector<Div>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -789,7 +789,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field_divergences(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector<Div>
 {
     return this->evaluate_field_divergences(local_coefs,FaceTopology<dim>(face_id));
@@ -799,7 +799,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
@@ -817,7 +817,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field_hessians(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector< Derivative<2> >
 {
     return this->evaluate_field_hessians(local_coefs,FaceTopology<dim>(face_id));
@@ -855,7 +855,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-get_local_to_global() const -> std::vector<Index>
+get_local_to_global() const -> vector<Index>
 {
     return space_->get_loc_to_global(*this);
 }

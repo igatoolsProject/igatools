@@ -59,7 +59,7 @@ integrate_difference=('template Real space_tools::integrate_difference('
         'const Quadrature< Space::dim > &,'
         'const Norm &,'
         'const Vector<LinAlgebra> &,'
-        'std::vector< Real > &);\n');
+        'vector< Real > &);\n');
 
 
 

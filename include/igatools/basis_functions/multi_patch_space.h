@@ -212,7 +212,7 @@ public:
 
 
     /** Returns the patches (i.e. the physical spaces) used to define the MultiPatchSpace. */
-    std::vector<PatchPtr> get_patches() const;
+    vector<PatchPtr> get_patches() const;
 
     /** Returns the number of patches used to define this space. */
     int get_num_patches() const;
@@ -280,7 +280,7 @@ private:
     bool are_constraints_computed_ = false;
 
     /** Vector of patches defining the MultiPatchSpace. */
-    std::vector< PatchPtr > patches_;
+    vector< PatchPtr > patches_;
 
     /**
      * Add the proper offset to the dofs id in the reference spaces in order to avoid same

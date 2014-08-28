@@ -22,7 +22,6 @@
 #include <igatools/base/exceptions.h>
 #include <limits>
 
-using std::vector;
 using std::array;
 
 IGA_NAMESPACE_OPEN

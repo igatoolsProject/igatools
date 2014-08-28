@@ -25,11 +25,9 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_index.h>
 #include <igatools/utils/tensor_size.h>
-
+#include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  * @brief Utils for managing multi-dimensional array indices.
@@ -107,7 +105,7 @@ public:
      * it returns an array with the corresponding data in each entry
      */
     static TensorIndex<rank>
-    get_tensor_entry(const std::array< std::vector<Index>, rank> &data,
+    get_tensor_entry(const std::array< vector<Index>, rank> &data,
                      const Index flat_index, const TensorIndex<rank> &weight) noexcept ;
 };
 

@@ -39,7 +39,7 @@ using std::shared_ptr;
 using std::make_shared;
 
 using std::array;
-using std::vector;
+
 
 
 IGA_NAMESPACE_OPEN
@@ -317,7 +317,7 @@ init_cache(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_point;
         if (contains(fill_flag , ValueFlags::face_w_measure))
             grid_flag |= ValueFlags::face_w_measure;
-        CartesianGridElementAccessor<dim>::init_cache(grid_flag,quad);
+        //   CartesianGridElementAccessor<dim>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
@@ -441,7 +441,7 @@ GlobalCache::
 reset(const Space &space,
       const Quadrature<dim> &quad,
       const int max_der,
-      const std::array<std::vector<int>,dim> &intervals_id)
+      const std::array<vector<int>,dim> &intervals_id)
 {
     //------------------------------------------------------------------------------------------
     // resizing the structures for the one dimensional splines
@@ -755,7 +755,7 @@ fill_cache(const TopologyId<dim> &topology_id)
     ComponentContainer<array<const BasisValues1d *, dim>> elem_univariate_values;
 
 
-    CartesianGridElementAccessor<dim>::fill_cache(topology_id);
+    //CartesianGridElementAccessor<dim>::fill_cache(topology_id);
 
     if (topology_id.is_element())
     {

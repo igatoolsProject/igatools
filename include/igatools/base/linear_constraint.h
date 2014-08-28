@@ -22,8 +22,7 @@
 #define LINEAR_CONSTRAINT_H
 
 #include <igatools/base/config.h>
-
-#include <vector>
+#include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -35,12 +34,12 @@ IGA_NAMESPACE_OPEN
  * \f$ (c_{i_1},\dots,c_{i_n}) \in \mathbb{R}^n \f$ are the coefficients and \f$ f \in \mathbb{R} \f$
  * is the right hand side that defines the linear constraint.
  */
-class LinearConstraint : private std::pair< std::vector<std::pair<Index,Real> >,Real >
+class LinearConstraint : private std::pair< vector<std::pair<Index,Real> >,Real >
 {
 public:
     /** @name Constructors ad destructor */
     ///@{
-    LinearConstraint(const std::vector<Index> &dofs,const std::vector<Real> &coeffs,const Real rhs);
+    LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
 
 
     /**

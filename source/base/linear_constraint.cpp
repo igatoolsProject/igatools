@@ -26,7 +26,7 @@
 IGA_NAMESPACE_OPEN
 
 LinearConstraint::
-LinearConstraint(const std::vector<Index> &dofs,const std::vector<Real> &coeffs,const Real rhs)
+LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs)
 {
     Assert(dofs.size() == coeffs.size(),ExcDimensionMismatch(dofs.size(),coeffs.size()));
     Assert(!dofs.empty(),ExcEmptyObject());

@@ -24,7 +24,7 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
 
-using std::vector;
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
@@ -71,7 +71,7 @@ init(const SparsityPattern &sparsity_pattern)
                                            0,comm_));
     Teuchos::ArrayRCP<const long unsigned int> n_overlapping_funcs_per_row =
         Teuchos::arcp(
-            Teuchos::RCP< const vector<long unsigned int> >(
+            Teuchos::RCP<const std::vector<long unsigned int> >(
                 new vector<long unsigned int>(sparsity_pattern.get_num_overlapping_funcs()))) ;
 
     matrix_.reset(new WrappedMatrixType(row_space_map_,
@@ -350,7 +350,7 @@ init(const SparsityPattern &sparsity_pattern)
 
     int n_rows = sparsity_pattern.get_num_row_dofs();
     int n_cols = sparsity_pattern.get_num_col_dofs();
-    std::vector<PetscInt> nnz;
+    vector<PetscInt> nnz;
 
     ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);
     ierr = MatCreate(comm_, &matrix_);  // CHKERRQ(ierr);

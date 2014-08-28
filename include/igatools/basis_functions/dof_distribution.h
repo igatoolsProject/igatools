@@ -60,7 +60,7 @@ public:
 
 
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentContainer = vector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -123,7 +123,6 @@ public:
 
 
 
-
     TensorIndex<dim>
     basis_flat_to_tensor(const Index index, const Index comp) const;
 
@@ -158,7 +157,7 @@ public:
 
 
     /** Returns the active dofs of the @p element.*/
-    std::vector<Index> get_loc_to_global_indices(const CartesianGridElement<dim> &element) const;
+    vector<Index> get_loc_to_global_indices(const CartesianGridElement<dim> &element) const;
     ///@}
 
 
@@ -226,7 +225,6 @@ private:
     std::shared_ptr<std::map<Index,DofsConstView>> elements_loc_to_global_flat_view_;
 
     DistributionPolicy policy_;
-
 };
 
 IGA_NAMESPACE_CLOSE

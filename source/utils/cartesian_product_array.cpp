@@ -24,7 +24,7 @@
 
 
 using std::array;
-using std::vector;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -160,10 +160,10 @@ template< class T, int rank>
 auto
 CartesianProductArray<T,rank>::
 get_flat_cartesian_product() const ->
-Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >
+Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t> >
 {
     using Container = Conditional<
-    std::is_floating_point<T>::value,ValueVector<point_t>,std::vector<point_t> >;
+    std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t> >;
 
     const Size flat_size = this->flat_size();
     Container result(flat_size);
@@ -193,7 +193,7 @@ get_sub_product(const SubProductTensorIndex &index) const -> SubProduct
 
 
 template< class T, int rank>
-const std::vector<T> &
+const vector<T> &
 CartesianProductArray<T,rank>::
 get_data_direction(const int i) const
 {
@@ -206,7 +206,7 @@ template <class T, int rank>
 CartesianProductArray<T, rank+1>
 insert(const CartesianProductArray<T, rank> &orig,
        const int index,
-       const std::vector<T> &new_vector)
+       const vector<T> &new_vector)
 {
     Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 
@@ -244,8 +244,15 @@ void
 CartesianProductArray<T,rank>::
 print_info(LogStream &out) const
 {
-    for (int i = 0 ; i < rank ; i++)
-        out << data_[i] << std::endl;
+    TensorSizedContainer<rank>::print_info(out);
+    out << std::endl;
+    int i=0;
+    for (const auto& entry : data_)
+    {
+        out.begin_item("Direction: " + std::to_string(i++));
+        entry.print_info(out);
+        out.end_item();
+    }
 }
 
 

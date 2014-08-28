@@ -22,7 +22,7 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
@@ -338,7 +338,7 @@ get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Poin
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Value >
+evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Value >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
@@ -358,7 +358,7 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
+evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
@@ -384,7 +384,7 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     AssertThrow(false,ExcNotImplemented());
     ValueVector< Derivative<2> > D2field;

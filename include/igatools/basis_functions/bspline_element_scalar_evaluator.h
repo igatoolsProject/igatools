@@ -69,7 +69,7 @@ public:
      * It builds the scalar BSpline evaluator from the one-dimensional views of values and derivatives.
      * @p values1D[i][j] are the <tt>i</tt>-th order (one-dimensional) derivatives along the <tt>j</tt>-th direction.
      */
-    BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim>> &values1D);
+    BSplineElementScalarEvaluator(const vector<std::array<Values1DConstView,dim>> &values1D);
 
     /** Copy constructor. */
     BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = default;
@@ -138,7 +138,7 @@ private:
      * values[i][j] are the values at the n_qp evaluation points of the i-th derivative
      * along the j-th direction.
      */
-    std::vector<std::array<Values1DConstView,dim>> values1D_;
+    vector<std::array<Values1DConstView,dim>> values1D_;
 };
 
 

@@ -43,8 +43,12 @@ run_test(ConstantFunction<dim,rdim,rank> &fun)
     ValueVector<value_t> values(n_pts);
 
     fun.evaluate(points, values);
-    out << points << endl;
-    out << values << endl;
+
+    points.print_info(out);
+    out << endl;
+    values.print_info(out);
+    out << endl;
+
 }
 
 

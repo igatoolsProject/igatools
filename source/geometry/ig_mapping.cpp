@@ -24,7 +24,7 @@
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/utils/vector_tools.h>
 
-using std::vector;
+
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -94,7 +94,7 @@ get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
 template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
-          const std::vector<Real> &control_points)
+          const vector<Real> &control_points)
     :
     base_t::SplineMapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
@@ -268,7 +268,7 @@ template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const std::vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
+    const vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));
@@ -454,7 +454,7 @@ evaluate_hessians_at_points(const ValueVector<Point> &points,
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-set_control_points(const std::vector<Real> &control_points)
+set_control_points(const vector<Real> &control_points)
 {
     Assert(data_->control_points_.size() == control_points.size(),
            ExcDimensionMismatch(data_->control_points_.size(), control_points.size()));
@@ -724,8 +724,14 @@ print_info(LogStream &out) const
     out << "Control points info (projective coordinates):" << endl;
 
     out.push("\t");
+
+    // TODO (pauletti, Aug 26, 2014): does not satisfy printinfo standards, correct
     for (Index comp_id = 0 ; comp_id < space_dim ; ++comp_id)
-        out << "Control mesh["<<comp_id<<"] = " <<  data_->ctrl_mesh_(comp_id) << endl;
+    {
+        out << "Control mesh["<<comp_id<<"] = ";
+        data_->ctrl_mesh_(comp_id).print_info(out);
+        out << endl;
+    }
     out << endl;
     out.pop();
 

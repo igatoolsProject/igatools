@@ -260,9 +260,12 @@ public:
      *  a reference to <tt>*this</tt>.
      */
     GridForwardIterator<Accessor> &operator++();
-
-
     ///@}
+
+    Accessor &get_accessor()
+    {
+        return accessor_;
+    }
 
 protected:
     /** Object holding the Real data. */

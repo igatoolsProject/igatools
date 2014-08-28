@@ -3,32 +3,21 @@ Test the different constructors
 
 Default constructor
 data1:
-ValueVector (num_points=0) :
-
-
+ValueVector (num_points=0) : [ ]
 Constructor with the size of the vector
 data2:
-ValueVector (num_points=3) :
-0 0 0 
-
+ValueVector (num_points=3) : [ 0 0 0 ]
 Initializer-list constructor
 data3:
-ValueVector (num_points=3) :
-1.00000 2.00000 3.00000 
-
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 Copy constructor
 data4:
-ValueVector (num_points=3) :
-1.00000 2.00000 3.00000 
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 data3:
-ValueVector (num_points=3) :
-1.00000 2.00000 3.00000 
-
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 Move constructor
 data5:
-ValueVector (num_points=3) :
-1.00000 2.00000 3.00000 
----------------------------------------
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]---------------------------------------
 
 ---------------------------------------
 Test the copy/move assignment operators
@@ -36,46 +25,33 @@ Test the copy/move assignment operators
 Copy assignment
 before copy
 	data1:
-ValueVector (num_points=3) :
-	1.00000 2.00000 3.00000 
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 	data2:
-ValueVector (num_points=0) :
-	
+ValueVector (num_points=0) : [ ]
 after copy
 	data1:
-ValueVector (num_points=3) :
-	1.00000 2.00000 3.00000 
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 	data2:
-ValueVector (num_points=3) :
-	1.00000 2.00000 3.00000 
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 
 Move assignment
 before move
 	data1:
-ValueVector (num_points=3) :
-	1.00000 2.00000 3.00000 
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 	data3:
-ValueVector (num_points=0) :
-	
+ValueVector (num_points=0) : [ ]
 after move
 	data3:
-ValueVector (num_points=3) :
-	1.00000 2.00000 3.00000 
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 ---------------------------------------
 
 ---------------------------------------
 Test the scalar-by-vector multiplication
 
 Original data =
-ValueVector (num_points=3) :
-1.00000 2.00000 3.00000 
-
+ValueVector (num_points=3) : [ 1.00000 2.00000 3.00000 ]
 -1.0 * data =
-ValueVector (num_points=3) :
--1.00000 -2.00000 -3.00000 
-
+ValueVector (num_points=3) : [ -1.00000 -2.00000 -3.00000 ]
 data * 2.0 =
-ValueVector (num_points=3) :
-2.00000 4.00000 6.00000 
----------------------------------------
+ValueVector (num_points=3) : [ 2.00000 4.00000 6.00000 ]---------------------------------------
 

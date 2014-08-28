@@ -25,7 +25,7 @@
 #include <map>
 #include <set>
 
-using std::vector;
+
 using std::map;
 using std::set;
 using std::pair;
@@ -63,7 +63,7 @@ space_insertion_close(const bool automatic_dofs_renumbering)
 
 
     //--------------------------------------------------------------------------
-    std::vector<DofsComponentView> dofs_components_view;
+    vector<DofsComponentView> dofs_components_view;
 
     Index offset = 0;
     for (auto &space_info_map_entry : spaces_info_)
@@ -246,13 +246,13 @@ get_global_dof(const int space_id, const Index local_dof) const
 }
 
 
-std::vector<Index>
+vector<Index>
 SpaceManager::
-get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
+get_global_dofs(const int space_id, const vector<Index> &local_dofs) const
 {
     Assert(!local_dofs.empty(),ExcEmptyObject());
 
-    std::vector<Index> global_dofs;
+    vector<Index> global_dofs;
 
     for (const Index local_dof : local_dofs)
         global_dofs.emplace_back(this->get_global_dof(space_id,local_dof));

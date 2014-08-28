@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Compiler and compile flags
 macro(init_cxx_flags)
@@ -34,7 +35,7 @@ macro(init_cxx_flags)
   if (NOT (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8))
       message(FATAL_ERROR "gcc version 4.8 or greater.")
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     message(FATAL_ERROR "Your C++ CLANG compiler is not supported by igatools")
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")

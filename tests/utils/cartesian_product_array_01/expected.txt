@@ -1,72 +1,114 @@
 ========= BEGIN do_test<1> =========
 Testing the default constructor
+Size: [ 0 ]  Weights: [0]
+Direction: 0
 [ ]
 
 Testing the entry() function
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 1 2 ]
 
 Testing the copy constructor
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 1 2 ]
 
 Testing the get_flat_cartesian_product() function
 [ [1] [2] ]
 
 Testing the get_sub_product() function
+Size: [ ]  Weights: []
 
 Testing the insert() function
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 10 11 ]
 ========= END do_test<1> =========
 
 ========= BEGIN do_test<2> =========
 Testing the default constructor
+Size: [ 0 0 ]  Weights: [0,0]
+Direction: 0
 [ ]
+Direction: 1
 [ ]
 
 Testing the entry() function
+Size: [ 2 3 ]  Weights: [2,6]
+Direction: 0
 [ 1 2 ]
+Direction: 1
 [ 3 4 5 ]
 
 Testing the copy constructor
+Size: [ 2 3 ]  Weights: [2,6]
+Direction: 0
 [ 1 2 ]
+Direction: 1
 [ 3 4 5 ]
 
 Testing the get_flat_cartesian_product() function
 [ [1,3] [2,3] [1,4] [2,4] [1,5] [2,5] ]
 
 Testing the get_sub_product() function
+Size: [ 3 ]  Weights: [3]
+Direction: 0
 [ 3 4 5 ]
 
 Testing the insert() function
+Size: [ 3 2 ]  Weights: [3,6]
+Direction: 0
 [ 3 4 5 ]
+Direction: 1
 [ 10 11 ]
 ========= END do_test<2> =========
 
 ========= BEGIN do_test<3> =========
 Testing the default constructor
+Size: [ 0 0 0 ]  Weights: [0,0,0]
+Direction: 0
 [ ]
+Direction: 1
 [ ]
+Direction: 2
 [ ]
 
 Testing the entry() function
+Size: [ 2 3 4 ]  Weights: [2,6,24]
+Direction: 0
 [ 1 2 ]
+Direction: 1
 [ 3 4 5 ]
+Direction: 2
 [ 6 7 8 9 ]
 
 Testing the copy constructor
+Size: [ 2 3 4 ]  Weights: [2,6,24]
+Direction: 0
 [ 1 2 ]
+Direction: 1
 [ 3 4 5 ]
+Direction: 2
 [ 6 7 8 9 ]
 
 Testing the get_flat_cartesian_product() function
 [ [1,3,6] [2,3,6] [1,4,6] [2,4,6] [1,5,6] [2,5,6] [1,3,7] [2,3,7] [1,4,7] [2,4,7] [1,5,7] [2,5,7] [1,3,8] [2,3,8] [1,4,8] [2,4,8] [1,5,8] [2,5,8] [1,3,9] [2,3,9] [1,4,9] [2,4,9] [1,5,9] [2,5,9] ]
 
 Testing the get_sub_product() function
+Size: [ 3 4 ]  Weights: [3,12]
+Direction: 0
 [ 3 4 5 ]
+Direction: 1
 [ 6 7 8 9 ]
 
 Testing the insert() function
+Size: [ 3 4 2 ]  Weights: [3,12,24]
+Direction: 0
 [ 3 4 5 ]
+Direction: 1
 [ 6 7 8 9 ]
+Direction: 2
 [ 10 11 ]
 ========= END do_test<3> =========
 

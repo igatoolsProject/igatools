@@ -241,19 +241,6 @@ get_flat_const_view() const
     return ConstContainerView<STLContainer>(this->data_.cbegin(),this->data_.cend());
 }
 
-
-template<class STLContainer, int rank>
-inline
-void
-MultiArray<STLContainer,rank>::
-print_info(LogStream &out) const
-{
-    for (const auto &v : data_)
-        out << v << " ";
-}
-
-
-
 IGA_NAMESPACE_CLOSE
 
 

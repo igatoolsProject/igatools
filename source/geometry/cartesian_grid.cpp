@@ -27,7 +27,7 @@
 #include <algorithm>
 using std::endl;
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 using std::make_shared;
 
@@ -569,9 +569,9 @@ template <int dim_>
 auto
 CartesianGrid<dim_>::
 find_elements_of_points(const ValueVector<Points<dim>> &points) const
--> std::map<ElementIterator, std::vector<int> >
+-> std::map<ElementIterator, vector<int> >
 {
-    std::map<ElementIterator, std::vector<int> > res;
+    std::map<ElementIterator, vector<int> > res;
 
     const int n_points = points.size();
     for (int k=0; k<n_points; ++k)
@@ -597,7 +597,7 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
         }
         auto ans =
             res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
-                        std::vector<int>(1,k));
+                        vector<int>(1,k));
         if (!ans.second)
             (ans.first)->second.push_back(k);
     }

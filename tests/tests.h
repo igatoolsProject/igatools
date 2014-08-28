@@ -25,7 +25,11 @@
 #include <igatools/base/logstream.h>
 #include <fstream>
 
-using namespace std;
+using std::endl;
+using std::array;
+using std::string;
+using std::ofstream;
+
 using namespace iga;
 
 class IgaTestOutput : public LogStream
@@ -39,7 +43,17 @@ public:
         LogStream::attach(o);
         LogStream::depth_console(0);
     }
+
+    void line(string title = "")
+    {
+        (*this) << "========================================================================" << endl;
+        (*this) << title << endl;
+    }
 };
 
 ofstream file("output.txt");
 IgaTestOutput out(file);
+
+#define SEPARATOR "========================================================================"
+#define OUTSTART out << SEPARATOR << endl << __PRETTY_FUNCTION__ << endl << SEPARATOR << endl;
+#define OUTEND out << SEPARATOR << endl << endl;

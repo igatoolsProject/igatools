@@ -60,7 +60,7 @@ namespace space_tools
 Index find_span(
     const int p,
     const Real u,
-    const std::vector<Real> &U);
+    const vector<Real> &U);
 
 
 //TODO the order of parameters should be consistent
@@ -82,7 +82,7 @@ Real integrate_difference(const typename Space::Func &exact_solution,
                           const Quadrature< Space::dim > &quad,
                           const Norm &norm_flag,
                           const Vector<la_pack> &solution_coefs,
-                          std::vector<Real> &element_error);
+                          vector<Real> &element_error);
 
 
 

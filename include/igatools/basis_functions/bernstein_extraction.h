@@ -67,7 +67,7 @@ public:
      */
     void print_info(LogStream &out) const;
 
-    const std::vector<matrix> &get_operator(const int comp, const int  dir) const
+    const vector<matrix> &get_operator(const int comp, const int  dir) const
     {
         return ext_operators_(comp).get_data_direction(dir);
     }
@@ -82,14 +82,14 @@ public:
     }
 
 private:
-    std::vector<matrix>
+    vector<matrix>
     fill_extraction(const int m,
-                    const std::vector<Real>    &knots,
-                    const std::vector<Real>    &rep_knots,
-                    const std::vector<Index>   &acum_mult);
+                    const vector<Real>    &knots,
+                    const vector<Real>    &rep_knots,
+                    const vector<Index>   &acum_mult);
 
     matrix compute(const matrix &M_j_1,
-                   typename std::vector<Real>::const_iterator  y,
+                   typename vector<Real>::const_iterator  y,
                    const Real a,
                    const Real b);
 

@@ -36,7 +36,7 @@
 #include <chrono>
 
 using std::shared_ptr;
-using std::vector;
+
 using std::array;
 using std::set;
 using std::map;
@@ -135,7 +135,7 @@ namespace space_tools
 Index find_span(
     const int p,
     const Real u,
-    const std::vector<Real> &U)
+    const vector<Real> &U)
 {
     const Index m = U.size()-1;
     const Index n = m-p;
@@ -169,7 +169,7 @@ integrate_difference(const typename Space::Func &exact_solution,
                      const Quadrature< Space::dim > &quad,
                      const Norm &norm_flag,
                      const Vector<la_pack> &solution_coefs,
-                     std::vector<Real> &element_error)
+                     vector<Real> &element_error)
 {
     bool is_L2_norm     = contains(norm_flag, Norm::L2);
     bool is_H1_norm     = contains(norm_flag, Norm::H1);

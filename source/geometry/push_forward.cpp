@@ -22,9 +22,8 @@
 #include <igatools/geometry/push_forward.h>
 
 
-using std::array ;
-using std::vector ;
-using std::shared_ptr ;
+using std::array;
+using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
@@ -34,7 +33,7 @@ PushForward<transformation_type_, dim_, codim_>::
 PushForward(const std::shared_ptr< Map > map)
     :
     map_(map)
-{} ;
+{};
 
 
 template< Transformation transformation_type_, int dim_, int codim_>
@@ -42,7 +41,7 @@ auto
 PushForward<transformation_type_, dim_, codim_>::
 create(const std::shared_ptr< Map > map) -> std::shared_ptr<Self>
 {
-    return std::shared_ptr<Self>(new Self(map)) ;
+    return std::shared_ptr<Self>(new Self(map));
 }
 
 
@@ -51,23 +50,23 @@ PushForward<transformation_type_, dim_, codim_>::
 PushForward(const Self &push_forward)
     :
     map_(push_forward.map_)
-{} ;
+{};
 
 template< Transformation transformation_type_, int dim_, int codim_>
 void
 PushForward<transformation_type_, dim_, codim_>::
 reset_map(const std::shared_ptr<  Map > map)
 {
-    Assert(map != nullptr, ExcNullPtr()) ;
-    map_= map ;
-} ;
+    Assert(map != nullptr, ExcNullPtr());
+    map_= map;
+};
 
 template< Transformation transformation_type_, int dim_, int codim_>
 auto
 PushForward<transformation_type_, dim_, codim_>::
 clone() const -> std::shared_ptr<Self>
 {
-    return std::shared_ptr<Self>(new Self(*this)) ;
+    return std::shared_ptr<Self>(new Self(*this));
 }
 
 
@@ -76,7 +75,7 @@ auto
 PushForward<transformation_type_, dim_, codim_>::
 get_mapping() const -> shared_ptr< const Map >
 {
-    return std::shared_ptr< const Map >(map_) ;
+    return std::shared_ptr< const Map >(map_);
 }
 
 
@@ -97,13 +96,13 @@ void
 PushForward<transformation_type_, dim_, codim_>::
 print_memory_info(LogStream &out) const
 {
-    using std::endl ;
-    out << "PushForward memory info" << endl ;
+    using std::endl;
+    out << "PushForward memory info" << endl;
     out << "this address = " << this << endl;
 
-    out.push("\t") ;
-    out << "map_ memory address = " << map_ << endl ;
-    out.pop() ;
+    out.push("\t");
+    out << "map_ memory address = " << map_ << endl;
+    out.pop();
 }
 
 IGA_NAMESPACE_CLOSE

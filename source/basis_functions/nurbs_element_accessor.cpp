@@ -25,7 +25,7 @@
 using std::endl;
 
 using std::array;
-using std::vector;
+
 using std::accumulate;
 
 using std::make_shared;
@@ -849,7 +849,7 @@ get_local_weights() const
 
     const auto local_to_global = this->get_local_to_global();
 
-    for (uint global_id : local_to_global)
+    for (Index global_id : local_to_global)
     {
         Index comp_id = 0; // component id of the global index
         Index  dof_id = 0; // flat index of the global index relative to the component

@@ -25,7 +25,6 @@
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
 
-#include <vector>
 
 IGA_NAMESPACE_OPEN
 
@@ -53,8 +52,8 @@ IGA_NAMESPACE_OPEN
  *  public:
  *  using Function<m, n>::
  *    LinearFunction();
- *    void evaluate(std::vector < typename LinearFunction<dim, rdim>::Point >  & points,
- *                  std::vector     < typename LinearFunction<dim, rdim>::Value >  & values
+ *    void evaluate(vector < typename LinearFunction<dim, rdim>::Point >  & points,
+ *                  vector     < typename LinearFunction<dim, rdim>::Value >  & values
  *                 ) const
  *    {
  *      for (int i=0; i<points.size(); i++)

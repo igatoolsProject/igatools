@@ -67,7 +67,8 @@ void do_test()
 
     out << "Testing the get_flat_cartesian_product() function" <<endl;
     vector<TensorIndex<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
-    out << flat_cartesian_product << endl << endl;
+    flat_cartesian_product.print_info(out);
+    out << endl << endl;
 
     out<< "Testing the get_sub_product() function" << endl;
     TensorIndex<dim-1> sub_id;

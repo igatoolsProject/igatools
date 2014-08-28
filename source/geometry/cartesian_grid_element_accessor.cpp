@@ -24,7 +24,7 @@
 #include <algorithm>
 
 using std::array;
-using std::vector;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -38,8 +38,7 @@ CartesianGridElementAccessor<dim_>::
 CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                              const Index index)
     :
-    CartesianGridElement<dim>(grid, index),
-    length_cache_ {new LengthCache}
+    CartesianGridElement<dim>(grid, index)
 {}
 
 
@@ -49,32 +48,31 @@ CartesianGridElementAccessor<dim_>::
 CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                              const TensorIndex<dim> index)
     :
-    CartesianGridElement<dim>(grid, index),
-    length_cache_ {new LengthCache}
+    CartesianGridElement<dim>(grid, index)
 {}
 
 
 
 
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-LengthCache::
-resize(const CartesianGrid<dim_> &grid)
-{
-    length_data_ = grid.get_element_lengths();
-
-    auto const size = length_data_.tensor_size();
-    length_.resize(size);
-    this->set_initialized(true);
-
-
-    for (int i = 0; i < dim_; ++i)
-        for (int j = 0; j < size[i]; ++j)
-            length_.entry(i,j) = &length_data_.entry(i,j);
-
-    this->set_filled(true);
-}
+//template <int dim_>
+//void
+//CartesianGridElementAccessor<dim_>::
+//LengthCache::
+//resize(const CartesianGrid<dim_> &grid)
+//{
+//    length_data_ = grid.get_element_lengths();
+//
+//    auto const size = length_data_.tensor_size();
+//    length_.resize(size);
+//    this->set_initialized(true);
+//
+//
+//    for (int i = 0; i < dim_; ++i)
+//        for (int j = 0; j < size(i); ++j)
+//            length_.entry(i,j) = &length_data_.entry(i,j);
+//
+//    this->set_filled(true);
+//}
 
 
 
@@ -123,41 +121,41 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
 }
 
 
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-init_cache(const ValueFlags flag,
-           const Quadrature<dim_> &quad)
-{
-    Assert((flag|admisible_flag) == admisible_flag,
-           ExcFillFlagNotSupported(admisible_flag, flag));
-    Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()));
+//template <int dim_>
+//void
+//CartesianGridElementAccessor<dim_>::
+//init_cache(const ValueFlags flag,
+//           const Quadrature<dim_> &quad)
+//{
+//    Assert((flag|admisible_flag) == admisible_flag,
+//           ExcFillFlagNotSupported(admisible_flag, flag));
+//    Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()));
+//
+//
+//    length_cache_->resize(*this->get_grid());
+//
+//    GridElemValueFlagsHandler elem_flags_handler(flag);
+//    GridFaceValueFlagsHandler face_flags_handler(flag);
+//
+//    elem_values_.resize(elem_flags_handler, quad);
+//
+//    Index face_id = 0 ;
+//    for (auto &face_value : face_values_)
+//        face_value.resize(face_flags_handler, quad, face_id++);
+//}
 
 
-    length_cache_->resize(*this->get_grid());
 
-    GridElemValueFlagsHandler elem_flags_handler(flag);
-    GridFaceValueFlagsHandler face_flags_handler(flag);
-
-    elem_values_.resize(elem_flags_handler, quad);
-
-    Index face_id = 0 ;
-    for (auto &face_value : face_values_)
-        face_value.resize(face_flags_handler, quad, face_id++);
-}
-
-
-
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-init_cache(const ValueFlags flag)
-{
-    length_cache_->resize(*this->get_grid());
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-}
+//template <int dim_>
+//void
+//CartesianGridElementAccessor<dim_>::
+//init_cache(const ValueFlags flag)
+//{
+//    length_cache_->resize(*this->get_grid());
+//
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
+//}
 
 
 template <int dim_>
@@ -187,39 +185,39 @@ get_face_measure(const Index face_id) const
 
 
 
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-init_face_cache(const Index face_id,
-                const ValueFlags flag,
-                const Quadrature<dim_-1> &quad)
-{
-    Assert(false, ExcNotImplemented());
-}
+//template <int dim_>
+//void
+//CartesianGridElementAccessor<dim_>::
+//init_face_cache(const Index face_id,
+//                const ValueFlags flag,
+//                const Quadrature<dim_-1> &quad)
+//{
+//    Assert(false, ExcNotImplemented());
+//}
 
 
 
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-fill_cache(const TopologyId<dim_> &topology_id)
-{
-    auto &cache = get_values_cache(topology_id);
+//template <int dim_>
+//void
+//CartesianGridElementAccessor<dim_>::
+//fill_cache(const TopologyId<dim_> &topology_id)
+//{
+//    auto &cache = get_values_cache(topology_id);
+//
+//    cache.fill(CartesianGridElement<dim_>::get_measure(topology_id));
+//
+//    cache.set_filled(true);
+//}
 
-    cache.fill(CartesianGridElement<dim_>::get_measure(topology_id));
-
-    cache.set_filled(true);
-}
 
 
-
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-fill_face_cache(const Index face_id)
-{
-    fill_cache(FaceTopology<dim_>(face_id));
-}
+//template <int dim_>
+//void
+//CartesianGridElementAccessor<dim_>::
+//fill_face_cache(const Index face_id)
+//{
+//    fill_cache(FaceTopology<dim_>(face_id));
+//}
 
 
 
@@ -270,23 +268,23 @@ get_face_points(const Index face_id) const -> ValueVector<Points<dim>> const
 }
 
 
-template <int dim_>
-array< Real, dim_>
-CartesianGridElementAccessor<dim_>::
-get_coordinate_lengths() const
-{
-    Assert(length_cache_->is_filled(),ExcMessage("Cache not filled"));
-
-    const auto &tensor_index = this->get_tensor_index();
-
-    array<Real,dim_> coord_length;
-    for (int d = 0; d<dim_; d++)
-    {
-        const auto &length_d = length_cache_->length_.get_data_direction(d);
-        coord_length[d] = *(length_d[tensor_index[d]]);
-    }
-    return coord_length;
-}
+//template <int dim_>
+//array< Real, dim_>
+//CartesianGridElementAccessor<dim_>::
+//get_coordinate_lengths() const
+//{
+//    Assert(length_cache_->is_filled(),ExcMessage("Cache not filled"));
+//
+//    const auto &tensor_index = this->get_tensor_index();
+//
+//    array<Real,dim_> coord_length;
+//    for (int d = 0; d<dim_; d++)
+//    {
+//        const auto &length_d = length_cache_->length_.get_data_direction(d);
+//        coord_length[d] = *(length_d[tensor_index[d]]);
+//    }
+//    return coord_length;
+//}
 
 
 template <int dim_>
@@ -385,50 +383,28 @@ void
 CartesianGridElementAccessor<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
-    using std::endl;
-
-    const std::string tab = "   ";
-
-
-    out << "CartesianGridElementAccessor<" << dim_ << "> info:" << endl;
-    out.push(tab);
-
-    if (contains(verbosity,VerbosityLevel::debug))
-        out << "Memory address = " << &(*this) << endl;
-
     CartesianGridElement<dim_>::print_info(out,verbosity);
-
-    if (contains(verbosity,VerbosityLevel::debug))
-    {
-        out << "Element cache memory address = " << &elem_values_ << endl;
-        elem_values_.print_info(out);
-
-        for (int i = 0 ; i < n_faces ; ++i)
-            out << "Face[" << i << "] cache memory address = " << &face_values_[i] << endl;
-    }
-    out.pop();
-
 }
+
 
 
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-ElementValuesCache::
-print_info(LogStream &out) const
+print_cache_info(LogStream &out) const
 {
-    using std::endl;
+    out.begin_item("Element Cache:");
+    elem_values_.print_info(out);
+    out.end_item();
 
-    const std::string tab = "   ";
+    for (int i = 0 ; i < n_faces ; ++i)
+    {
+        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+        face_values_[i].print_info(out);
+        out.end_item();
+    }
 
-    out << "ElementValuesCache info: (memory address = " << &(*this) << ")" << endl;
-    out.push(tab);
-
-    this->flags_handler_.print_info(out);
-
-    out.pop();
 }
-
 
 IGA_NAMESPACE_CLOSE
 
