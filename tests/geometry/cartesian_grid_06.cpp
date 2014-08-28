@@ -31,9 +31,9 @@
 
 
 template<int dim>
-bool IsOdd (const typename CartesianGrid<dim>::ElementAccessor &elem)
+bool IsOdd(const typename CartesianGrid<dim>::ElementAccessor &elem)
 {
-  return ((elem.get_flat_index()%2)==1);
+    return ((elem.get_flat_index()%2)==1);
 }
 
 template<int dim>
@@ -44,7 +44,7 @@ void do_test()
         n_knots(i) = 2*i+2;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    auto it = std::find_if (grid->begin(), grid->end(), IsOdd<dim>);
+    auto it = std::find_if(grid->begin(), grid->end(), IsOdd<dim>);
 
 }
 

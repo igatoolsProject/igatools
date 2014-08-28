@@ -19,7 +19,7 @@
  *   a)
  *     - vector of active functions
  *     - get_num_functions() = n. active functions
- *  
+ *
  *   b) Accessor, all local number of functions should be revisit
  *     - get_local_to_global
  *     - get_values
@@ -27,8 +27,8 @@
  * 3. Design of HSpace class and accessor (starting from this file)
  *
  * 4. Design of the MaximalBox algorithm
- *  a) Given a CartesianGrid with the influence elements information, 
- *     find a maximal box covering: 
+ *  a) Given a CartesianGrid with the influence elements information,
+ *     find a maximal box covering:
  *
  *     list_yet_to_cover = influence elements on CartesianGrid
  *     Repeat:
@@ -42,8 +42,8 @@
  *  twice for every direction (moving left and right), and is overwritten at
  *  every step.
  * The difficulties in igatools may be how to move inside the list of
- *  elems_to_move, to store the new element in the right position (in the 
- *  pseudo-code the indices [i,j,k]); and how to compute elem_new, moving 
+ *  elems_to_move, to store the new element in the right position (in the
+ *  pseudo-code the indices [i,j,k]); and how to compute elem_new, moving
  *  with the tensor index ti inside the grid.
  *
  *   MaximalBox(indices)
@@ -91,34 +91,34 @@ class HierarchicalSpace
 {
 public:
 
-  using ElementAccessor  = HierarchicalSpaceElementAccessor<self_t>;
-  using ElementIterator  = GridForwardIterator<ElementAccessor>;
+    using ElementAccessor  = HierarchicalSpaceElementAccessor<self_t>;
+    using ElementIterator  = GridForwardIterator<ElementAccessor>;
 
-  using SpaceElementIterator =  typename Space::ElementIterator;
+    using SpaceElementIterator =  typename Space::ElementIterator;
 public:
-  
 
-  /**
-   * - activate new elements on the fine mesh / deactivate on the coarse / mark influence (only on the active elements)
-   * - activate deactivate functions
-   *
-   *
-   *
-   */
-  void refine()
-  {
-	  //1. activate, deactivate and mark influence on elements;
-	  //2. compute maximal boxes
-	  //3. activate/deactivate function
-  }
 
-private:
-  SpaceElementIterator parent(const SpaceElementIterator &elem);
+    /**
+     * - activate new elements on the fine mesh / deactivate on the coarse / mark influence (only on the active elements)
+     * - activate deactivate functions
+     *
+     *
+     *
+     */
+    void refine()
+    {
+        //1. activate, deactivate and mark influence on elements;
+        //2. compute maximal boxes
+        //3. activate/deactivate function
+    }
 
 private:
-  Tree<dim> refinement_tree_;
-  
-  vector<Space> spaces_;
+    SpaceElementIterator parent(const SpaceElementIterator &elem);
+
+private:
+    Tree<dim> refinement_tree_;
+
+    vector<Space> spaces_;
 }
 
 
@@ -128,26 +128,27 @@ class HierarchicalSpaceAccessor : public typename Space::Accessor;
 
 public:
 
-  ValueTable<Value> 
-  get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-  
+    ValueTable<Value>
+    get_basis_values(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+
 private:
-  const std::shared_ptr<ContainerType> h_space_;
-  int level_;
-  SpaceIterator elem_;
+    const std::shared_ptr<ContainerType> h_space_;
+    int level_;
+    SpaceIterator elem_;
 }
 
 
 auto
 HierarchicalSpaceAccessor<Space>::
-get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> 
+get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value>
 {
-  ValueTable<Value> res;
-  auto elem = elem_;
-  do {
-    res += elem->get_basis_values();
-    elem = h_space_->parent(elem);
-  } while (elem != NULL);
+    ValueTable<Value> res;
+    auto elem = elem_;
+    do {
+        res += elem->get_basis_values();
+        elem = h_space_->parent(elem);
+    }
+    while (elem != NULL);
 
-  return res;
+    return res;
 }

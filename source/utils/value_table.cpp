@@ -132,7 +132,7 @@ void
 ValueTable<T>::
 resize(const Size num_functions, const Size num_points)
 {
-	ValueContainer<T>::resize(num_functions,num_points);
+    ValueContainer<T>::resize(num_functions,num_points);
 }
 
 template <class T>
@@ -140,7 +140,7 @@ void
 ValueTable<T>::
 clear() noexcept
 {
-	ValueContainer<T>::clear();
+    ValueContainer<T>::clear();
 }
 
 

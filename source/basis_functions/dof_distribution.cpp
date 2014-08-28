@@ -295,7 +295,7 @@ print_info(LogStream &out) const
         index_table_(comp).print_info(out);
     out << std::endl;
 
-	// TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
+    // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
     for (const auto &dofs_elem : *elements_loc_to_global_flat_view_)
     {
         out << "[ ";

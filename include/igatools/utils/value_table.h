@@ -70,7 +70,7 @@ IGA_NAMESPACE_OPEN
  */
 template <class T>
 class ValueTable :
-		public ValueContainer<T>
+    public ValueContainer<T>
 //    public DynamicMultiArray<T,2>
 {
 public :
