@@ -43,13 +43,13 @@ public :
         return std::vector<T>::size();
     }
 
-    typename std::vector<T>::reference operator[] (Size n)
+    typename std::vector<T>::reference operator[](Size n)
     {
         Assert(n<size(), ExcIndexRange(n, 0, size()));
         return std::vector<T>::operator[](n);
     }
 
-    typename std::vector<T>::const_reference operator[] (Size n) const
+    typename std::vector<T>::const_reference operator[](Size n) const
     {
         Assert(n<size(), ExcIndexRange(n, 0, size()));
         return std::vector<T>::operator[](n);

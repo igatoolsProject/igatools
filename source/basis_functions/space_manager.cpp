@@ -109,7 +109,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const Index min_dofs_id,
           const Index max_dofs_id,
           const DofsView &dofs_view,
-          const std::shared_ptr<const vector<DofsConstView>> elements_dofs_view)
+          const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
     :
     space_(space),
     num_dofs_(num_dofs),
@@ -273,7 +273,7 @@ is_space_insertion_open() const
 auto
 SpaceManager::
 SpaceInfo::
-get_elements_dofs_view() const -> const vector<DofsConstView> &
+get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
 {
     return *elements_dofs_view_;
 }

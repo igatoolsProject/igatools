@@ -150,6 +150,9 @@ get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const
     if (fill_face_D2_phi_hat)
         reference_space_accessor_fill_flags |= ValueFlags::face_hessian;
 
+    if (contains(fill_flag , ValueFlags::measure))
+        reference_space_accessor_fill_flags |= ValueFlags::measure;
+
 
     return reference_space_accessor_fill_flags;
 }
@@ -533,7 +536,7 @@ template< class PhysSpace >
 template <int deriv_order>
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const ->
+evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     Assert(deriv_order >= 0 && deriv_order <= 2,ExcIndexRange(deriv_order,0,2));

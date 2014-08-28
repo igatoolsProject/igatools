@@ -69,7 +69,7 @@ public:
     {
     public:
         BasisValues1d()
-    {}
+        {}
         BasisValues1d(const int max_der_order, const int n_func, const int n_points)
             :
             values_(max_der_order, DenseMatrix(n_func, n_points))

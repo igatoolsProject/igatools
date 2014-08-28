@@ -35,14 +35,6 @@ DynamicMultiArray()
 {}
 
 
-template<class T, int rank>
-DynamicMultiArray<T,rank>::
-DynamicMultiArray(const Size dim)
-    :
-    MultiArray<vector<T>,rank>(dim)
-{
-    this->data_.resize(this->flat_size());
-}
 
 
 template<class T, int rank>
@@ -58,13 +50,21 @@ DynamicMultiArray(const TensorSize<rank> &dim)
 
 template<class T, int rank>
 DynamicMultiArray<T,rank>::
+DynamicMultiArray(const Size dim)
+    :
+    DynamicMultiArray<T,rank>(TensorSize<rank>(dim))
+{}
+
+
+template<class T, int rank>
+DynamicMultiArray<T,rank>::
 DynamicMultiArray(const TensorSize<rank> &dim, const T &val)
     :
     MultiArray<vector<T>,rank>(dim)
 {
-    this->data_.resize(this->flat_size(), val);
+    this->data_.resize(this->flat_size(),val);
 }
-
+//*/
 
 
 template<class T, int rank>
@@ -72,8 +72,7 @@ void
 DynamicMultiArray<T,rank>::
 resize(const Size dim)
 {
-    TensorSizedContainer<rank>::reset_size(TensorSize<rank>(dim));
-    this->data_.resize(this->flat_size());
+    this->resize(TensorSize<rank>(dim));
 }
 
 
@@ -82,10 +81,9 @@ void
 DynamicMultiArray<T,rank>::
 resize(const TensorSize<rank> &dim)
 {
-    TensorSizedContainer<rank>::reset_size(dim);
+    this->reset_size(dim);
     this->data_.resize(this->flat_size());
 }
-
 
 
 template<class T, int rank>
@@ -93,10 +91,10 @@ void
 DynamicMultiArray<T,rank>::
 resize(const TensorSize<rank> &dim, const T &val)
 {
-    TensorSizedContainer<rank>::reset_size(dim);
-    this->data_.resize(this->flat_size(), val);
+    this->reset_size(dim);
+    this->data_.resize(this->flat_size(),val);
 }
-
+//*/
 
 
 template<class T, int rank>
@@ -118,11 +116,12 @@ DynamicMultiArray<T,rank>
 DynamicMultiArray<T,rank>::
 get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) const
 {
-    DynamicMultiArray<T,rank> sub_array(inc);
+    const TensorSize<rank> size(inc);
+    DynamicMultiArray<T,rank> sub_array(size);
 
-    const Size size = MultiArrayUtils<rank>::size(inc);
+    const Size flat_size = size.flat_size();
 
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < flat_size; ++i)
     {
         auto tensor_index = sub_array.flat_to_tensor(i);
         tensor_index += start;
@@ -147,16 +146,16 @@ get_slice(const int direction, const Index index) const
 
     Assert(direction >= 0 && direction < rank,
            ExcIndexRange(direction,0,rank));
-    Assert(index >= 0 && index < tensor_size(direction),
-           ExcIndexRange(index,0,tensor_size(direction)));
+    Assert(index >= 0 && index < tensor_size[direction],
+           ExcIndexRange(index,0,tensor_size[direction]));
 
     const int rank_slice = (rank>0)?rank-1:0;
     TensorSize<rank_slice> sizes_slice;
     for (Index i = 0 ; i < direction ; ++i)
-        sizes_slice(i) = tensor_size(i);
+        sizes_slice[i] = tensor_size[i];
 
     for (Index i = direction+1 ; i < rank ; ++i)
-        sizes_slice(i-1) = tensor_size(i);
+        sizes_slice[i-1] = tensor_size[i];
 
 
     TensorIndex<rank> tensor_id;
@@ -198,13 +197,13 @@ copy_slice(const int direction, const Index index,
     const auto tensor_size = this->tensor_size();
     const auto sizes_slice = slice.tensor_size();
     for (Index i = 0 ; i < direction ; ++i)
-        Assert(tensor_size(i) == sizes_slice(i),
-               ExcDimensionMismatch(tensor_size(i),sizes_slice(i)));
+        Assert(tensor_size[i] == sizes_slice[i],
+               ExcDimensionMismatch(tensor_size[i],sizes_slice[i]));
 
 
     for (Index i = direction+1 ; i < rank ; ++i)
-        Assert(tensor_size(i) == sizes_slice(i-1),
-               ExcDimensionMismatch(tensor_size(i),sizes_slice(i-1)));
+        Assert(tensor_size[i] == sizes_slice[i-1],
+               ExcDimensionMismatch(tensor_size[i],sizes_slice[i-1]));
 #endif
 
     TensorIndex<rank> tensor_id;
@@ -229,6 +228,14 @@ copy_slice(const int direction, const Index index,
 }
 
 
+template<class T, int rank>
+void
+DynamicMultiArray<T,rank>::
+clear() noexcept
+{
+    this->reset_size(TensorSize<rank>(0));
+    this->data_.clear();
+}
 
 //template<class T, int rank>
 //LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)

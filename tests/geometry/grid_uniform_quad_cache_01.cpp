@@ -49,7 +49,7 @@ void run_test()
     cache.init_element_cache(elem);
 
     auto end = grid->end();
-    for (;elem != end; ++elem)
+    for (; elem != end; ++elem)
     {
         cache.fill_element_cache(elem);
         out << "Measure: " << elem->get_measure() << endl;

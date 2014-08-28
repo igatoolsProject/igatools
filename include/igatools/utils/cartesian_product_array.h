@@ -28,6 +28,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/utils/vector.h>
 #include <igatools/utils/tensor_sized_container.h>
+#include <igatools/utils/value_vector.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -242,7 +243,8 @@ public:
      * \{(1,4), (1,3), (2,4), (2, 3)\}
      * \f]
      */
-    vector< point_t > get_flat_cartesian_product() const;
+    Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t> >
+    get_flat_cartesian_product() const;
     ///@}
 
     /**
@@ -266,45 +268,17 @@ protected:
 };
 
 
-
 /**
  * Returns a CartesianProductArray of one higher rank built from the insertion
- * of a given @p new_vector at the given direction @p index.
+ * of a given @p new_vector at in the CartesianProductArray @p orig at the given direction @p index.
  */
 template <class T, int rank>
 CartesianProductArray<T, rank+1>
 insert(const CartesianProductArray<T, rank> &orig,
        const int index,
-       const vector<T> &new_vector)
-{
-    Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
+       const vector<T> &new_vector);
 
-    TensorSize<rank+1> size;
-    for (int i=0, j=0; i<rank+1; ++i)
-    {
-        if (i == index)
-            size(i) = new_vector.size();
-        else
-        {
-            size(i) = orig.tensor_size()(j);
-            ++j;
-        }
-    }
 
-    CartesianProductArray<T,rank+1> product(size);
-
-    for (int i=0, j=0; i<rank+1; ++i)
-    {
-        if (i == index)
-            product.copy_data_direction(i,new_vector);
-        else
-        {
-            product.copy_data_direction(i,orig.get_data_direction(j));
-            ++j;
-        }
-    }
-    return product;
-}
 IGA_NAMESPACE_CLOSE
 
 // If we are in debug mode we do not inline to gain some compilation speed,

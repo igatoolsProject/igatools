@@ -188,27 +188,6 @@ public:
     {
         return space_dim_;
     }
-
-    const SpaceDimensionTable &get_num_basis_per_element_table() const
-    {
-        return elem_n_basis_;
-    }
-    /**
-     * Returns the number of dofs per element.
-     */
-    Size get_num_basis_per_element() const
-    {
-        return elem_n_basis_.total_dimension;
-    }
-
-    /**
-     *  Return the number of dofs per element for the i-th space component.
-     */
-    Size get_num_basis_per_element(int i) const
-    {
-        return elem_n_basis_.comp_dimension(i);
-    }
-
     ///@}
 
     /**
@@ -262,9 +241,6 @@ private:
 
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
-
-    /** Table with the number of element non zero basis in each component and direction */
-    SpaceDimensionTable elem_n_basis_;
 
     EndBehaviourTable end_behaviour_;
 
@@ -449,7 +425,8 @@ unique_container(std::array <T, dim> a)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map)
     :
     base_t(),
@@ -504,7 +481,8 @@ ComponentContainer(std::initializer_list<T> list)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(const T &val)
     :
     comp_map_(filled_array<Index, n_entries>(0)),

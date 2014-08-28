@@ -66,7 +66,7 @@ dilate(const array<Real,rank> &dilate)
 {
     const TensorSize<rank> size = this->tensor_size();
     for (int i=0; i<rank; ++i)
-        for (int j = 0 ; j < size(i) ; ++j)
+        for (int j = 0 ; j < size[i] ; ++j)
             this->data_[i][j] *= dilate[i];
 }
 
@@ -78,18 +78,18 @@ translate(const Points<rank> &translate)
 {
     const TensorSize<rank> size = this->tensor_size();
     for (int i=0; i<rank; ++i)
-        for (int j = 0 ; j < size(i) ; ++j)
+        for (int j = 0 ; j < size[i] ; ++j)
             this->data_[i][j] += translate[i];
 }
 
 
 template<int rank>
-vector< Real >
+ValueVector< Real >
 TensorProductArray<rank>::
 get_flat_tensor_product() const
 {
     const Size flat_size = this->flat_size();
-    vector<Real> result(flat_size);
+    ValueVector<Real> result(flat_size);
     for (Size i = 0; i < flat_size; ++i)
     {
         const auto tensor_id = this->flat_to_tensor(i);

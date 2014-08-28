@@ -86,7 +86,7 @@ void do_test_aniso()
         TensorSize<dim> n_points;
         for (int j = 0; j < dim; ++j)
         {
-            n_points(j) = i + j;
+            n_points[j] = i + j;
             out << i+j << " ";
         }
         out << endl << endl ;

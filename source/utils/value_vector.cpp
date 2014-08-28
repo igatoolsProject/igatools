@@ -33,50 +33,54 @@ ValueVector() : ValueVector<T>(0)
 template <class T>
 ValueVector<T>::
 ValueVector(const Index num_points)
-    : vector<T>(num_points,T {})
-{}
+    : ValueContainer<T>(1,num_points)
+{
+    Assert(num_points >= 0,ExcLowerRange(num_points,0));
+    this->zero();
+}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const vector<T> &vector_in)
-    : vector<T> {vector_in}
-{}
+    : ValueVector<T>(vector_in.size())
+{
+    std::copy(vector_in.begin(),vector_in.end(),this->begin());
+}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : vector<T>(list)
+    : ValueVector(vector<T>(list))
 {}
-
-template <class T>
-ValueVector<T> &
-ValueVector<T>::
-operator=(const vector<T> &vec)
-{
-    vector<T>::operator=(vec);
-    return (*this);
-}
-
-
-
-//template <class T>
-//void
-//ValueVector<T>::
-//print_info(LogStream &out) const
-//{
-//    out << vector<T>(*this);
-//}
-
-
+//*/
 
 template <class T>
 void
 ValueVector<T>::
-zero()
+resize(const Size num_points)
 {
-    for (auto &value : (*this))
-        value = T() ;
+    ValueContainer<T>::resize(1,num_points);
 }
+
+template <class T>
+void
+ValueVector<T>::
+clear() noexcept
+{
+    this->resize(0);
+}
+
+template <class T>
+void
+ValueVector<T>::
+print_info(LogStream &out) const
+{
+    out << "ValueVector (num_points=" << this->get_num_points() << ") : ";
+    this->get_data().print_info(out);
+}
+
+
+
 
 
 template< class T>
@@ -106,6 +110,32 @@ operator*(const Real scalar, const ValueVector<T> &a)
     return result ;
 }
 
+template< class T>
+T &
+ValueVector<T>::
+operator[](const Index i)
+{
+    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+    return this->data_[i];
+}
+
+template< class T>
+const T &
+ValueVector<T>::
+operator[](const Index i) const
+{
+    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+    return this->data_[i];
+}
+
+template <class T>
+LogStream &
+operator<<(LogStream &out, const ValueVector<T> &vector)
+{
+
+    vector.print_info(out);
+    return out;
+}
 
 IGA_NAMESPACE_CLOSE
 

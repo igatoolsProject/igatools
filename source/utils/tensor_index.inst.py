@@ -28,3 +28,5 @@ for row in index_list:
     f.write('template class %s; \n' % (row))
     f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
     f.write('template %s operator+(const %s &, const %s &); \n' % (row,row,row))
+    f.write('template %s operator+(const %s &, const Index); \n' % (row,row))
+    f.write('template %s operator-(const %s &, const Index); \n' % (row,row))

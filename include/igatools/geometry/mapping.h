@@ -26,6 +26,7 @@
 #include <igatools/base/function.h>
 #include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/utils/value_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -148,33 +149,33 @@ public:
 
     /** @name Mapping as a standard function (using the cache).*/
     ///@{
-    virtual void evaluate(vector<Value> &values) const;
+    virtual void evaluate(ValueVector<Value> &values) const;
 
-    virtual void evaluate_gradients(vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients(ValueVector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians(vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians(ValueVector<Hessian> &hessians) const;
 
     virtual void evaluate_face(const Index face_id,
-                               vector<Value> &values) const;
+    		ValueVector<Value> &values) const;
 
     virtual void evaluate_face_gradients(const Index face_id,
-                                         vector<Gradient> &gradients) const;
+    		ValueVector<Gradient> &gradients) const;
 
     virtual void evaluate_face_hessians(const Index face_id,
-                                        vector<Hessian> &hessians) const;
+    		ValueVector<Hessian> &hessians) const;
     ///@}
 
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
-    virtual void evaluate_at_points(const vector<Point> &points,
-                                    vector<Value> &values) const ;
+    virtual void evaluate_at_points(const ValueVector<Point> &points,
+    		ValueVector<Value> &values) const ;
 
-    virtual void evaluate_gradients_at_points(const vector<Point> &points,
-                                              vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients_at_points(const ValueVector<Point> &points,
+    		ValueVector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians_at_points(const vector<Point> &points,
-                                             vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians_at_points(const ValueVector<Point> &points,
+    		ValueVector<Hessian> &hessians) const;
     ///@}
 
 
@@ -200,11 +201,11 @@ public:
                                   const GridIterator &elem) const = 0;
 
 
-    virtual vector<Value> values() const;
+    virtual ValueVector<Value> values() const;
 
-    virtual vector<Gradient> gradients() const;
+    virtual ValueVector<Gradient> gradients() const;
 
-    virtual vector<Hessian> hessians() const;
+    virtual ValueVector<Hessian> hessians() const;
     ///@}
 
     /** @name Dealing with the element-based iterator. */

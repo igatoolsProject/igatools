@@ -51,7 +51,7 @@ public:
         return f;
     }
 
-    void evaluate(const vector< Points<dim> > &points, vector<Points<1> > &values) const
+    void evaluate(const ValueVector< Points<dim> > &points, ValueVector<Points<1> > &values) const
     {
         for (int i = 0; i<points.size(); ++i)
         {
@@ -98,13 +98,13 @@ void do_test(const int p)
 
     auto proj_values = space_tools::projection_l2
                        <space_t,la_pack>(
-                           f,const_pointer_cast<const space_t>(space),quad);
+                           f,std::const_pointer_cast<const space_t>(space),quad);
 
     proj_values.print(out);
 
     Writer<dim> output(grid, 4);
     output.add_field(space, proj_values, "projected function");
-    string filename = "proj_function-" + to_string(dim) +"d";
+    string filename = "proj_function-" + std::to_string(dim) +"d";
     output.save(filename);
 }
 

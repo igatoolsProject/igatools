@@ -184,7 +184,7 @@ void run_test()
     out << "Dim: " << dim << endl;
     out << "Degree: " << p << endl;
     out << "Points: " << endl;
-    out << points << endl;
+    points.print_info(out);
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
     out << endl;

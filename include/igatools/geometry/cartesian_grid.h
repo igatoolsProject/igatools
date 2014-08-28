@@ -360,7 +360,7 @@ public:
      * @endcode
      */
     std::map<ElementIterator, vector<int> >
-    find_elements_of_points(const vector<Points<dim>> &points) const;
+    find_elements_of_points(const ValueVector<Points<dim>> &points) const;
 
 public:
     /**
@@ -492,6 +492,7 @@ private:
      * function pointers.
      */
     signal_refine_t refine_signals_;
+
 
     friend class CartesianGridElement<dim>;
 

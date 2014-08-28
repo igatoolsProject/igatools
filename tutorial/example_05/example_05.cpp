@@ -67,11 +67,6 @@ void  PoissonPreparation<dim>::local_assemble()
     out << "-dimensional laplace problem." << endl;
     // [assemble function]
 
-    // [local matrix]
-    const int n_basis = space->get_num_basis_per_element();
-    DenseMatrix loc_mat(n_basis, n_basis);
-    DenseVector loc_rhs(n_basis);
-    // [local matrix]
 
     // [iterate as before]
     const QGauss<dim> quad(2);
@@ -86,8 +81,16 @@ void  PoissonPreparation<dim>::local_assemble()
     for (; elem != elem_end; ++elem)
     {
         // [iterate as before]
-        loc_mat = 0.;
-        loc_rhs = 0.;
+
+        // [local matrix]
+        const int n_basis = elem->get_num_basis();
+
+        DenseMatrix loc_mat(n_basis, n_basis);
+        loc_mat = 0.0;
+
+        DenseVector loc_rhs(n_basis);
+        loc_rhs = 0.0;
+        // [local matrix]
 
         // [get the values]
         elem->fill_cache();

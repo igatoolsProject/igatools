@@ -30,7 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/utils/concatenated_iterator.h>
-#include <vector>
+#include <igatools/utils/vector.h>
 
 
 

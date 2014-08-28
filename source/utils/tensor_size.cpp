@@ -31,9 +31,7 @@ TensorSize<rank>::
 TensorSize(Size val) noexcept
 :
 TensorIndex<rank>::TensorIndex(val)
-{
-    Assert(val >= 0, ExcLowerRange(val,0));
-}
+{}
 
 
 
@@ -56,12 +54,7 @@ TensorSize<rank>::
 TensorSize(const TensorIndex<rank> &arr) noexcept
 :
 TensorIndex<rank>::TensorIndex(arr)
-{
-#ifndef NDEBUG
-    for (const auto &size_dir : *this)
-        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
-#endif
-}
+{}
 
 
 
@@ -71,12 +64,7 @@ TensorSize<rank>::
 TensorSize(std::initializer_list<Size> list) noexcept
 :
 TensorIndex<rank>::TensorIndex(list)
-{
-#ifndef NDEBUG
-    for (const auto &size_dir : *this)
-        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
-#endif
-}
+{}
 
 
 
@@ -92,24 +80,25 @@ flat_size() const noexcept
 }
 
 
-
-
+template <int rank>
+LogStream &
+operator<<(LogStream &out, const TensorSize<rank> &tensor_size)
+{
+    out << "[ ";
+    for (const auto &v : tensor_size)
+        out << v << " ";
+    out << "]";
+    return out;
+}
 
 
 template <int rank>
-bool
-operator==(const TensorSize<rank> &size1,const TensorSize<rank> &size2)
+TensorSize<rank>
+operator-(const TensorSize<rank> &index,const Index j)
 {
-    bool res = true;
-    for (Index i = 0 ; i < rank ; ++i)
-        if (size1(i) != size2(i))
-        {
-            res = false;
-            break;
-        }
-
-    return res;
+    return TensorSize<rank>(static_cast<TensorIndex<rank>>(index)-j);
 }
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -28,7 +28,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 output = []
-containers = ['ValueTable', 'ValueVector']
+containers = ['ValueContainer']
 
 
 igm_phy_sp_dims = unique( [ PhysSpaceSpecs([x.dim, 0, x.range, 1, 'h_grad'])
@@ -47,7 +47,7 @@ for row in unique(inst.all_phy_sp_dims + igm_phy_sp_dims):
     gradient_phys = ("Derivatives<%d,%d,%d,1>" %(row.space_dim, row.phys_range, row.phys_rank)) 
     hessian_phys = ("Derivatives<%d,%d,%d,2>" %(row.space_dim, row.phys_range, row.phys_rank)) 
     topology_id = ("const TopologyId<%d> &" %(row.dim))
-    pts = 'const vector<RefPoint> &'
+    pts = 'const ValueVector<RefPoint> &'
     for container in containers:
         v_ref  = 'const %s<%s> &' %(container, value_ref)
         d1v_ref  = 'const %s<%s> &' %(container, gradient_ref)
@@ -57,38 +57,38 @@ for row in unique(inst.all_phy_sp_dims + igm_phy_sp_dims):
         d2v_phys = '%s<%s> &' %(container, hessian_phys)
         output.append(
                     'template void %s::' %(push_fwd_elem_acc) +
-                    'transform_values<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
+                    'transform_values<%d,%d,Transformation::%s>' %(row.range, row.rank, row.trans_type) +
                     '(%s,%s,%s,void *) const ;\n' %(v_ref, v_phys, topology_id)
                     )
         order = 1
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
-            'transform_gradients<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
+            'transform_gradients<%d,%d,Transformation::%s>' %(row.range, row.rank, row.trans_type) +
             '(%s,%s,%s,%s,void *) const;\n' %(v_ref,d1v_ref,d1v_phys,topology_id)
         )
         order = 2
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
-            'transform_hessians<%d,%d,%s,Transformation::%s>' %(row.range, row.rank, container,row.trans_type) +
+            'transform_hessians<%d,%d,Transformation::%s>' %(row.range, row.rank, row.trans_type) +
             '(%s,%s,%s,%s,%s,void *) const;\n' %(v_ref,d1v_ref,d2v_ref,d2v_phys,topology_id)
         )
 
         order = 0
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
-            'transform_basis_derivatives_at_points<%d,%d,%s,Transformation::%s>' %(row.range,row.rank,container,row.trans_type) +
+            'transform_basis_derivatives_at_points<%d,%d,Transformation::%s>' %(row.range,row.rank,row.trans_type) +
             '(%s,%s,%s,%s,%s,void *) const;\n' %(pts,v_ref,d1v_ref,d2v_ref,v_phys)
         )
         order = 1
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
-            'transform_basis_derivatives_at_points<%d,%d,%s,Transformation::%s>' %(row.range,row.rank,container,row.trans_type) +
+            'transform_basis_derivatives_at_points<%d,%d,Transformation::%s>' %(row.range,row.rank,row.trans_type) +
             '(%s,%s,%s,%s,%s,void *) const;\n' %(pts,v_ref,d1v_ref,d2v_ref,d1v_phys)
         )
         order = 2
         output.append(
             'template void %s::' %(push_fwd_elem_acc) +
-            'transform_basis_derivatives_at_points<%d,%d,%s,Transformation::%s>' %(row.range,row.rank,container,row.trans_type) +
+            'transform_basis_derivatives_at_points<%d,%d,Transformation::%s>' %(row.range,row.rank,row.trans_type) +
             '(%s,%s,%s,%s,%s,void *) const;\n' %(pts,v_ref,d1v_ref,d2v_ref,d2v_phys)
         )
 

@@ -83,17 +83,17 @@ public:
     void set_face_element(const Index face_id,
                           const GridIterator &elem) const;
 
-    void evaluate(vector<Value> &values) const override;
+    void evaluate(ValueVector<Value> &values) const override;
 
-    void evaluate_gradients(vector<Gradient> &gradients) const override;
+    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(vector<Hessian> &hessians) const override;
+    void evaluate_hessians(ValueVector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id,vector<Value> &values) const override;
+    void evaluate_face(const Index face_id,ValueVector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id,vector<Gradient> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id,ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id,vector<Hessian> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id,ValueVector<Hessian> &hessians) const override;
 
 private:
     const Gradient A_;
@@ -101,8 +101,8 @@ private:
 
 
     // TODO (pauletti, Apr 23, 2014): why not have this in the base class?
-    mutable vector<Point> points_;
-    mutable std::array<vector<Point>, UnitElement<dim_>::faces_per_element> face_points_;
+    mutable ValueVector<Point> points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim_>::faces_per_element> face_points_;
 };
 
 
@@ -150,30 +150,30 @@ public:
 
     void set_face_element(const Index face_id, const GridIterator &elem) const;
 
-    void evaluate(vector<Value> &values) const override;
+    void evaluate(ValueVector<Value> &values) const override;
 
-    void evaluate_gradients(vector<Gradient> &gradients) const override;
+    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(vector<Hessian> &hessians) const override;
+    void evaluate_hessians(ValueVector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, vector<Value> &values) const override;
+    void evaluate_face(const Index face_id, ValueVector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const override;
 
 
     /** @name Evaluating the quantities related to BallMapping without the use of the cache. */
     ///@{
-    void evaluate_gradients_at_points(const vector<Point> &points, vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const vector<Point> &points, vector<Hessian> &hessians) const override final;
+    void evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const override final;
     ///@}
 
 private:
     static const int order = 3;
 
-    mutable vector<Points<dim>> points_;
-    mutable std::array<vector<Point>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable ValueVector<Points<dim>> points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim>::faces_per_element> face_points_;
     mutable std::array<vector<std::array<double, dim> >, order> cos_val;
     mutable std::array<vector<std::array<double, dim> >, order> sin_val;
     mutable std::array<std::array<vector<std::array<double, dim> >, order>,
@@ -219,22 +219,22 @@ public:
 
     void set_face_element(const Index face_id, const GridIterator &elem) const;
 
-    void evaluate(vector<Value> &values) const override;
+    void evaluate(ValueVector<Value> &values) const override;
 
-    void evaluate_gradients(vector<Gradient> &gradients) const override;
+    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(vector<Hessian> &hessians) const override;
+    void evaluate_hessians(ValueVector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, vector<Value> &values) const override;
+    void evaluate_face(const Index face_id, ValueVector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const override;
 
 private:
     static const int order = 3;
-    mutable vector<Points<dim>> points_;
-    mutable std::array<vector<Point>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable ValueVector<Points<dim>> points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim>::faces_per_element> face_points_;
     mutable std::array<vector<std::array<double, space_dim> >, order> cos_val;
     mutable std::array<vector<std::array<double, space_dim> >, order> sin_val;
     mutable std::array<std::array<vector<std::array<double, dim> >, order>,
@@ -359,23 +359,24 @@ public:
 
     void set_face_element(const Index face_id, const GridIterator &elem) const;
 
-    void evaluate(vector<Point> &values) const override;
+    void evaluate(ValueVector<Point> &values) const override;
 
-    void evaluate_gradients(vector<Gradient> &gradients) const override;
+    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(vector<Hessian> &hessians) const override;
+    void evaluate_hessians(ValueVector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, vector<Point> &values) const override;
+    void evaluate_face(const Index face_id, ValueVector<Point> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const override;
 
     /** @name Evaluating the quantities related to CylindricalAnnulus without the use of the cache. */
     ///@{
-    void evaluate_at_points(const vector<Point> &points, vector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const vector<Point> &points, vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const vector<Point> &points, vector<Hessian> &hessians) const override final;
+    void evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const override final;
+
     ///@}
 
 private:
@@ -389,8 +390,8 @@ private:
     const Real dR_;
     const Real dT_;
     const Real dH_;
-    mutable vector<Point> points_;
-    mutable std::array<vector<Point>, UnitElement<3>::faces_per_element> face_points_;
+    mutable ValueVector<Point> points_;
+    mutable std::array<ValueVector<Point>, UnitElement<3>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

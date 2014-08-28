@@ -25,6 +25,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/topology.h>
+#include <igatools/utils/value_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -186,8 +187,8 @@ public:
      * and returns the points mapped over the domain (in the parametric coordinate system)
      * represented by this GridElementAccessor.
      */
-    vector<Points<dim> >
-    transform_points_unit_to_reference(const vector<Points<dim>> &point_unit_domain) const;
+    ValueVector<Points<dim> >
+    transform_points_unit_to_reference(const ValueVector<Points<dim>> &point_unit_domain) const;
 
     /**
      * This function takes as input argument a vector of points over the element
@@ -196,8 +197,8 @@ public:
      * and returns the points mapped over the
      * points unitary hypercube [0,1]^{dim}.
      */
-    vector<Points<dim> >
-    transform_points_reference_to_unit(const vector<Points<dim>> &point_reference_domain) const;
+    ValueVector<Points<dim> >
+    transform_points_reference_to_unit(const ValueVector<Points<dim>> &point_reference_domain) const;
 
 
     /**
@@ -223,6 +224,8 @@ public:
      */
     bool is_valid() const;
 
+    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+    ///@{
     /**
      * Moves the element to the position that differs from the current one
      * for the quantity given by @p increment.
@@ -250,6 +253,27 @@ public:
      * are doing.
      */
     void move_to(const TensorIndex<dim> &tensor_index);
+
+    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
+    // someone made them public due to hackish code in NURBSelementaccessor
+    // we must rethink that code
+
+    /** Moves the element to the next valid element in the CartesianGrid. */
+    void operator++();
+    ///@}
+
+    /** @name Comparison operators*/
+    ///@{
+    bool operator==(const CartesianGridElement<dim_> &elem) const;
+
+    /**
+     * Returns true if the the CartesianGridElement @p elem has a different flat index w.r.t.
+     * the calling object.
+     * @note The calling object and the CartesianGridElement @p elem must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
+    bool operator!=(const CartesianGridElement<dim_> &elem) const;
+    ///@}
 
 protected:
     /** Cartesian grid from which the element belongs.*/

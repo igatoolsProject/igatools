@@ -1,5 +1,6 @@
 Points:
-[ [ 0.500000 0.500000 0.500000 ]  ]
+ValueVector (num_points=1) :
+[ 0.500000 0.500000 0.500000 ]  
 Values (x1,x2,...):
 ValueVector (num_points=1) :
 [ 1.06066 1.06066 1.00000 ]  

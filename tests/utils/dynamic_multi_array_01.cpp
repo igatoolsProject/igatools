@@ -34,22 +34,27 @@
 template <int dim>
 void do_test()
 {
+    out << "========== do_test<" << dim << ">() --- begin ==========" << endl;
     out << "Default constructor "<< endl;
     DynamicMultiArray<Index, dim> data1;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
 
     out << "Uniform constructor "<< endl;
     DynamicMultiArray<Index, dim> data2(3);
-    out << data2 << endl;
+    data2.print_info(out);
+    out << endl;
 
 
     out << "Rectangular constructor "<< endl;
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     DynamicMultiArray<Index, dim> data3(size);
-    out << data3 << endl;
+    data3.print_info(out);
+    out << endl;
+    out << "========== do_test<" << dim << ">() --- end ==========" << endl;
 }
 
 
@@ -57,9 +62,11 @@ void do_test()
 template <int dim>
 void do_test_1()
 {
+    out << "========== do_test_1<" << dim << ">() --- begin ==========" << endl;
     out << "Default constructor "<< endl;
     DynamicMultiArray<Index, dim> data1;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
     data1.resize(3);
 
@@ -71,38 +78,45 @@ void do_test_1()
     for (int i = 0; i < data1.flat_size(); ++i)
         data1(i) = i;
 
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     data1.resize(size);
     out << "Size: " << data1.flat_size() << endl;
     for (int i = 0; i < data1.flat_size(); ++i)
         data1(i) = i;
 
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
+    out << "========== do_test_1<" << dim << ">() --- end ==========" << endl;
 }
 
 
 template <int dim>
 void do_test_2()
 {
+    out << "========== do_test_2<" << dim << ">() --- begin ==========" << endl;
     out << "Default constructor "<< endl;
     DynamicMultiArray<Index, dim> data1(3);
     data1.fill_progression();
     out << "Size: " << data1.flat_size() << endl;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     data1.resize(size);
     data1.fill_progression(10);
     out << "Size: " << data1.flat_size() << endl;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
+    out << "========== do_test_2<" << dim << ">() --- end ==========" << endl;
 }
 
 
@@ -110,11 +124,13 @@ void do_test_2()
 template <int dim>
 void do_test_3()
 {
+    out << "========== do_test_3<" << dim << ">() --- begin ==========" << endl;
     out << "Default constructor "<< endl;
     DynamicMultiArray<Index, dim> data1(4);
     data1.fill_progression();
     out << "Size: " << data1.flat_size() << endl;
-    out << data1 << endl;
+    data1.print_info(out);
+    out << endl;
 
 
     TensorIndex<dim> origin;
@@ -124,9 +140,10 @@ void do_test_3()
     for (int i = 0; i < dim; ++i)
         increment[i] = 3-i;
 
-    TensorIndex<dim> end = origin + increment;
-
-    out << "Flat view: " << data1.get_sub_array(origin, increment).get_data() << endl;
+    out << "Flat view: ";
+    data1.get_sub_array(origin, increment).get_data().print_info(out);
+    out << endl;
+    out << "========== do_test_3<" << dim << ">() --- end ==========" << endl;
 }
 
 

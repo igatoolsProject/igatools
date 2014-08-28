@@ -53,50 +53,6 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 
 
 
-template <int dim_>
-bool
-CartesianGridElementAccessor<dim_>::
-operator== (const CartesianGridElementAccessor<dim_> &a) const
-{
-    Assert(this->get_grid() == a.get_grid(), ExcMessage("Cannot Compare Iterators."));
-    return (this->get_flat_index() == a.get_flat_index());
-}
-
-
-
-template <int dim_>
-bool
-CartesianGridElementAccessor<dim_>::
-operator!=(const CartesianGridElementAccessor<dim_> &a) const
-{
-    Assert(this->get_grid() == a.get_grid(), ExcMessage("Cannot Compare Iterators."));
-    return (this->get_flat_index() != a.get_flat_index());
-}
-
-
-
-
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-operator++()
-{
-    const auto n_elem = this->grid_->get_num_all_elems();
-    Index index = this->get_flat_index();
-    do
-    {
-        ++index;
-    }
-    while (index<n_elem && (!this->grid_->active_elems_(index)));
-
-    if (index >= n_elem)
-        index = IteratorState::pass_the_end;
-
-    this->move_to(index);
-}
-
-
-
 
 //template <int dim_>
 //void
@@ -289,7 +245,7 @@ get_face_w_measures(const Index face_id) const
 template <int dim_>
 auto
 CartesianGridElementAccessor<dim_>::
-get_points(const TopologyId<dim_> &topology_id) const -> vector<Points<dim>> const
+get_points(const TopologyId<dim_> &topology_id) const -> ValueVector<Points<dim>> const
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
@@ -306,7 +262,7 @@ get_points(const TopologyId<dim_> &topology_id) const -> vector<Points<dim>> con
 template <int dim_>
 auto
 CartesianGridElementAccessor<dim_>::
-get_face_points(const Index face_id) const -> vector<Points<dim>> const
+get_face_points(const Index face_id) const -> ValueVector<Points<dim>> const
 {
     return this->get_points(FaceTopology<dim_>(face_id));
 }

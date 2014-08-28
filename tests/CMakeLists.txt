@@ -36,14 +36,13 @@ include_directories(${IGATOOLS_INCLUDE_DIRS})
 link_directories(${IGATOOLS_LIBRARY_DIR})
 
 
-
 #--------------------------------------------------------------
 # Add a target for each .cpp file in test_dirs/*.cpp
 #
 set (test_dirs base basis_functions utils
   equations geometry linear_algebra io 
   tutorial bug_and_features templates mortar
-  hierarchical)
+  hierarchical operators)
 
 foreach(dir ${test_dirs})
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${dir})

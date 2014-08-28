@@ -58,7 +58,7 @@ public:
         return f;
     }
 
-    void evaluate(const vector< Points<dim> > &points, vector<Points<1> > &values) const
+    void evaluate(const ValueVector< Points<dim> > &points, ValueVector<Points<1> > &values) const
     {
         for (int i =0; i<points.size(); i++)
         {

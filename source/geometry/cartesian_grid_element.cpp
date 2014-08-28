@@ -100,12 +100,7 @@ move_to(const Index flat_index)
 
     //Fill tensor_index_
     if (flat_index_ != IteratorState::pass_the_end)
-    {
-        using Utils = MultiArrayUtils<dim>;
-        tensor_index_ = Utils::flat_to_tensor_index(
-                            flat_index_,
-                            Utils::compute_weight(grid_->get_num_intervals()));
-    }
+        tensor_index_ = grid_->flat_to_tensor(flat_index_);
     else
         tensor_index_.fill(IteratorState::pass_the_end);
 }
@@ -118,11 +113,7 @@ CartesianGridElement<dim_>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     tensor_index_= tensor_index;
-
-    using Utils = MultiArrayUtils<dim>;
-    flat_index_ = Utils::tensor_to_flat_index(
-                      tensor_index_,
-                      Utils::compute_weight(grid_->get_num_intervals()));
+    flat_index_ = grid_->tensor_to_flat(tensor_index_);
 
     Assert((flat_index_ == IteratorState::pass_the_end) ||
            ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
@@ -266,7 +257,7 @@ is_boundary() const
 
     for (int i = 0; i < dim; ++i)
     {
-        if (element_index[i] == 0 or element_index[i] == num_elements_dim(i) - 1)
+        if (element_index[i] == 0 or element_index[i] == num_elements_dim[i] - 1)
             return true;
     }
 
@@ -283,7 +274,7 @@ is_boundary(const Index face_id) const
     const int face_side = UnitElement<dim>::face_side[face_id];
 
     const auto element_id_dir = this->get_tensor_index()[const_direction] ;
-    const auto num_elements_dir = this->get_grid()->get_num_intervals()(const_direction);
+    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
 
     return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
 }
@@ -293,8 +284,8 @@ is_boundary(const Index face_id) const
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-transform_points_unit_to_reference(const vector<Points<dim>> &points_unit_domain) const ->
-vector<Points<dim>>
+transform_points_unit_to_reference(const ValueVector<Points<dim>> &points_unit_domain) const ->
+ValueVector<Points<dim>>
 {
     const int n_points = points_unit_domain.size();
     Assert(n_points > 0,ExcEmptyObject());
@@ -303,7 +294,7 @@ vector<Points<dim>>
     const auto translate = this->vertex(0);
     const auto dilate    = this->get_coordinate_lengths();
 
-    vector<Points<dim>> points_ref_domain(n_points);
+    ValueVector<Points<dim>> points_ref_domain(n_points);
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_unit_domain = points_unit_domain[ipt];
@@ -325,8 +316,8 @@ vector<Points<dim>>
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-transform_points_reference_to_unit(const vector<Points<dim>> &points_ref_domain) const ->
-vector<Points<dim>>
+transform_points_reference_to_unit(const ValueVector<Points<dim>> &points_ref_domain) const ->
+ValueVector<Points<dim>>
 {
     const int n_points = points_ref_domain.size();
     Assert(n_points > 0,ExcEmptyObject());
@@ -335,28 +326,17 @@ vector<Points<dim>>
     const auto translate = this->vertex(0);
     const auto dilate    = this->get_coordinate_lengths();
 
-    vector<Points<dim>> points_unit_domain(n_points);
-//    LogStream out ;
-//    using std::endl;
-//    out << "CartesianGridElement::transform_points_reference_to_unit" << endl;
-//    this->print_info(out);
-//    out <<endl;
+    ValueVector<Points<dim>> points_unit_domain(n_points);
     for (int ipt = 0 ; ipt < n_points ; ++ipt)
     {
         const auto &point_ref_domain = points_ref_domain[ipt];
-//        out << "point_ref_domain="<<point_ref_domain<<endl;
         Assert(this->is_point_inside(point_ref_domain) || this->is_point_on_boundary(point_ref_domain),
         ExcMessage("The point " + std::to_string(ipt) +
         " is outside this CartesianGridElement."));
 
         auto &point_unit_domain = points_unit_domain[ipt];
         for (int i = 0 ; i < dim ; ++i)
-        {
-//            out << "dilate["<<i<<"]=" <<dilate[i] << endl;
-//            out << "translate["<<i<<"]=" <<translate[i] << endl;
-
             point_unit_domain[i] = (point_ref_domain[i] - translate[i]) / dilate[i] ;
-        }
     }
 
     return points_unit_domain;
@@ -415,27 +395,59 @@ jump(const TensorIndex<dim> &increment)
     const auto n_elems = grid_->get_num_intervals();
     bool valid_tensor_index = true;
     for (int i = 0 ; i < dim ; ++i)
-    {
-        if (tensor_index_(i) < 0 || tensor_index_(i) >= n_elems(i))
+        if (tensor_index_[i] < 0 || tensor_index_[i] >= n_elems[i])
         {
             valid_tensor_index = false;
             flat_index_ = IteratorState::invalid;
             break;
         }
-    }
 
     if (valid_tensor_index)
-    {
-        using Utils = MultiArrayUtils<dim>;
-
-        flat_index_ = Utils::tensor_to_flat_index(
-                          tensor_index_,
-                          Utils::compute_weight(n_elems));
-    }
+        flat_index_ = grid_->tensor_to_flat(tensor_index_);
 
     return valid_tensor_index;
 }
 
+
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+operator++()
+{
+    const auto n_elem = this->grid_->get_num_all_elems();
+    Index index = this->get_flat_index();
+    do
+    {
+        ++index;
+    }
+    while (index<n_elem && (!this->grid_->active_elems_(index)));
+
+    if (index >= n_elem)
+        index = IteratorState::pass_the_end;
+
+    this->move_to(index);
+}
+
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+operator==(const CartesianGridElement<dim_> &elem) const
+{
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_flat_index() == elem.get_flat_index());
+}
+
+
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+operator!=(const CartesianGridElement<dim_> &elem) const
+{
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_flat_index() != elem.get_flat_index());
+}
 
 
 template <int dim_>

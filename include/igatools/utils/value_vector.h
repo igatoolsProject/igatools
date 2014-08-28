@@ -23,6 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/value_container.h>
+
 #include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
@@ -41,7 +43,7 @@ IGA_NAMESPACE_OPEN
  */
 template< class T >
 class ValueVector :
-    public vector<T>
+    public ValueContainer<T>
 {
 public :
     /**
@@ -56,10 +58,6 @@ public :
      */
     explicit ValueVector(const Index num_points) ;
 
-    // TODO (pauletti, Jul 11, 2014): it should be deleted after return by value in pf_accessor
-    explicit ValueVector(const Size num_functions, const Size num_points)
-        :ValueVector(num_points)
-    {}
     /**
      * Constructor from a vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
@@ -70,17 +68,18 @@ public :
     /**
      * Constructor from an initializer list.
      */
-    ValueVector(const std::initializer_list<T> &list) ;
+    ValueVector(const std::initializer_list<T> &list);
 
     /**
      * Copy constructor. Performs a deep copy of the content of the ValueVector object @p vector_in
      */
-    ValueVector(const ValueVector<T> &vector_in) = default ;
+    ValueVector(const ValueVector<T> &vector_in) = default;
 
     /**
      * Move constructor.
      */
-    ValueVector(ValueVector<T> &&vector_in) = default ;
+    ValueVector(ValueVector<T> &&vector_in) = default;
+
 
     /**
      * Destructor.
@@ -99,7 +98,7 @@ public :
     ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
 
     /**
-     * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
+     * Copy assignment operator. Performs a deep copy of the content of the vector object.
      */
     ValueVector<T> &operator=(const vector<T> &vector);
 
@@ -111,40 +110,44 @@ public :
     ///@}
 
     /**
-     * Returns the number of points.
-     */
-    Size get_num_points() const noexcept
-    {
-        return this->size();
-    }
-    /**
-     * Returns the number of functions.
-     */
-    Size get_num_functions() const noexcept
-    {
-        return 1;
-    }
-    /**
-     * @name Values initialization
+     * @name Functions for resizing
      */
     ///@{
+    /**
+     * Resize the ValueTable in order to allocate space for
+     * @p num_points points.
+     */
+    void resize(const Size num_points);
 
-    /** Set all the values of the vector to zero. */
-    void zero() ;
-
+    /**
+     * Removes all elements from the ValueVector, leaving the container with a size of 0.
+     */
+    void clear() noexcept;
     ///@}
 
 
-//    /**
-//     * @name Printing info
-//     */
-//    ///@{
-//    /**
-//     * Prints the content of the ValueVector on the LogStream @p out.
-//     * Its use is intended mainly for testing and debugging purpose.
-//     */
-//    void print_info(LogStream &out) const ;
-//    ///@}
+    /**
+     * Read/write access operator. Returns the reference to the <p>i</p>-th entry.
+     * @note In Debug mode an exception will be raised if the index @p i is out-of-bounds.
+     */
+    T &operator[](const Index i);
+
+    /**
+     * Read access operator. Returns the const-reference to the <p>i</p>-th entry.
+     * @note In Debug mode an exception will be raised if the index @p i is out-of-bounds.
+     */
+    const T &operator[](const Index i) const;
+
+    /**
+     * @name Printing info
+     */
+    ///@{
+    /**
+     * Prints the content of the ValueVector on the LogStream @p out.
+     * Its use is intended mainly for testing and debugging purpose.
+     */
+    void print_info(LogStream &out) const ;
+    ///@}
 
 } ;
 
@@ -164,6 +167,16 @@ operator*(const ValueVector<T> &a, const Real scalar) ;
 template< class T>
 ValueVector<T>
 operator*(const Real scalar, const ValueVector<T> &a) ;
+
+
+/**
+ * Output operator for ValueVector.
+ *
+ * @relates ValueVector
+*/
+template <class T>
+LogStream &
+operator<<(LogStream &out, const ValueVector<T> &vector);
 
 IGA_NAMESPACE_CLOSE
 

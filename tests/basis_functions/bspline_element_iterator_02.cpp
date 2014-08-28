@@ -77,7 +77,6 @@ void do_test(const int degree)
             elem->fill_cache();
             elem->get_basis_hessians().print_info(out);
         }
-
     }
 
 }

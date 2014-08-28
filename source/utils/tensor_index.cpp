@@ -45,12 +45,47 @@ operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
     return tensor_index;
 }
 
+template <int rank>
+TensorIndex<rank>
+operator+(const TensorIndex<rank> &index,const Index j)
+{
+    Assert(j>=0,ExcLowerRange(j,0));
+    TensorIndex<rank> tensor_index;
+    for (int i = 0 ; i < rank ; ++i)
+        tensor_index[i] = index[i] + j;
+
+    return tensor_index;
+}
+
+
+template <int rank>
+TensorIndex<rank>
+operator-(const TensorIndex<rank> &index,const Index j)
+{
+    Assert(j>=0,ExcLowerRange(j,0));
+    TensorIndex<rank> tensor_index;
+    for (int i = 0 ; i < rank ; ++i)
+    {
+        tensor_index[i] = index[i] - j;
+        Assert(tensor_index[i] >= 0, ExcLowerRange(tensor_index[i],0));
+    }
+
+    return tensor_index;
+}
+
 
 
 template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 {
+    /*
+    out << "[";
+    for (const auto idx : tensor_index)
+        out << idx << " ";
+    out << "]";
+    //*/
+
     out << "[";
     if (rank > 0)
     {
@@ -59,7 +94,7 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
             out << "," << tensor_index[i];
     }
     out << "]";
-
+//*/
     return (out);
 }
 

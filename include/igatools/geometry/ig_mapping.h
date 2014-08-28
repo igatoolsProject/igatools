@@ -72,8 +72,8 @@ public:
      * It builds a Mapping object wrapped in a std::shared_ptr,
      * from a function space and a vector of control points.
      */
-    static std::shared_ptr<Mapping<dim,codim>>
-                                            create(const std::shared_ptr<RefSpace> space, const vector<Real> &control_points);
+    static std::shared_ptr<Mapping<dim,codim> >
+    create(const std::shared_ptr<RefSpace> space, const vector<Real> &control_points);
 
     /**
      * Copy constructor. Performs a deep copy of the object.
@@ -95,22 +95,22 @@ public:
 
     /** @name Mapping as a standard function */
     ///@{
-    virtual void evaluate(vector<Value> &values) const override;
+    virtual void evaluate(ValueVector<Value> &values) const override;
 
     virtual void evaluate_gradients
-    (vector<Gradient> &gradients) const override;
+    (ValueVector<Gradient> &gradients) const override;
 
     virtual void evaluate_hessians
-    (vector<Hessian> &hessians) const override;
+    (ValueVector<Hessian> &hessians) const override;
 
     virtual void evaluate_face
-    (const Index face_id, vector<Value> &values) const override;
+    (const Index face_id, ValueVector<Value> &values) const override;
 
     virtual void evaluate_face_gradients
-    (const Index face_id, vector<Gradient> &gradients) const override;
+    (const Index face_id, ValueVector<Gradient> &gradients) const override;
 
     virtual void evaluate_face_hessians
-    (const Index face_id, vector<Hessian> &hessians) const override;
+    (const Index face_id, ValueVector<Hessian> &hessians) const override;
 
     ///@}
 
@@ -157,9 +157,9 @@ public:
 
     /** @name Evaluating the quantities related to the IgMapping without the use of the cache. */
     ///@{
-    void evaluate_at_points(const vector<Point> &points, vector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const vector<Point> &points, vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const vector<Point> &points, vector<Hessian> &hessians) const override final;
+    void evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const override final;
     ///@}
 
 

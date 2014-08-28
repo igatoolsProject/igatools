@@ -32,11 +32,17 @@
 
 #include <boost/numeric/ublas/io.hpp>
 
+
+#include <chrono>
+
 using std::shared_ptr;
 
 using std::array;
 using std::set;
 using std::map;
+
+using namespace std::chrono;
+
 
 IGA_NAMESPACE_OPEN
 #if 0
@@ -206,8 +212,8 @@ integrate_difference(const typename Space::Func &exact_solution,
     using Value = typename Space::Func::Value;
     using Gradient = typename Space::Func::Gradient;
 
-    vector<Value>    u(n_points);
-    vector<Gradient> grad_u(n_points);
+    ValueVector<Value>    u(n_points);
+    ValueVector<Gradient> grad_u(n_points);
 
     Value err;
     Gradient grad_err;
@@ -294,13 +300,14 @@ projection_l2(const typename Space::Func &func,
     ValueFlags flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure;
     const int n_qpoints = quad.get_num_points();
 
-    vector< typename Space::Point> eval_points(n_qpoints);
-    vector< typename Space::Value> func_at_eval_pts(n_qpoints);
+    ValueVector< typename Space::Point> eval_points(n_qpoints);
+    ValueVector< typename Space::Value> func_at_eval_pts(n_qpoints);
 
     auto elem = space->begin();
     const auto elem_end = space->end();
     elem->init_cache(flag, quad);
     const int n_basis = elem->get_num_basis();
+
     DenseVector local_rhs(n_basis);
     DenseMatrix local_matrix(n_basis,n_basis);
 

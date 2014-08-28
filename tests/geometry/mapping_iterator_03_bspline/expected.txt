@@ -37,7 +37,9 @@ Type = IgMapping
 			
 		Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 ]
 	
-	Quad pts.= [ [ 0 ]  [ 1.00000 ]  ]
+	Quad pts.= 
+	ValueVector (num_points=2) :
+	[ 0 ]  [ 1.00000 ]  
 	
 	Loop using the BSplineElementAccessor
 	Element id: 0
@@ -117,7 +119,9 @@ Type = IgMapping
 				
 			Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
 		
-		Quad pts.= [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
+		Quad pts.= 
+		ValueVector (num_points=4) :
+		[ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  
 		
 		Loop using the BSplineElementAccessor
 		Element id: 0
@@ -238,7 +242,9 @@ Type = IgMapping
 					
 				Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 0 0 0 0 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
 			
-			Quad pts.= [ [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
+			Quad pts.= 
+			ValueVector (num_points=8) :
+			[ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  
 			
 			Loop using the BSplineElementAccessor
 			Element id: 0

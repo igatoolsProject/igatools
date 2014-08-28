@@ -206,7 +206,7 @@ public :
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const;
+    evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const;
 
     ///@}
 
@@ -314,6 +314,8 @@ public :
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
 
 
+
+
     /**
      * Prints internal information about the BSplineElementAccessor.
      * Its main use is for testing and debugging.
@@ -351,9 +353,9 @@ protected:
 
     void operator++();
 
-    bool operator==(const PhysicalSpaceElementAccessor <PhysSpace> &a) const;
+    bool operator==(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
+    bool operator!=(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
 
-    bool operator!=(const PhysicalSpaceElementAccessor <PhysSpace> &a) const;
 
     /**
      * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
@@ -368,10 +370,6 @@ protected:
      * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElementAccessor).
      */
     ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
-
-    // TODO (pauletti, Apr 23, 2014): why not private?
-public :
-
 
 private:
     template <typename Accessor> friend class GridForwardIterator;

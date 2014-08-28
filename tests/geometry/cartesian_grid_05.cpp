@@ -34,7 +34,7 @@ void do_test()
 {
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2*i+2;
+        n_knots[i] = 2*i+2;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
 
@@ -48,10 +48,10 @@ void do_test()
     for (int i=0 ; i < dim ; ++i)
         p_end(i) = 1.0;
 
-    vector<Points<dim>> points;
-    points.push_back(p_origin);
-    points.push_back(p_mid);
-    points.push_back(p_end);
+    ValueVector<Points<dim>> points(3);
+    points[0] = p_origin;
+    points[1] = p_mid;
+    points[2] = p_end;
 
     auto elem_list = grid->find_elements_of_points(points);
     for (auto el : elem_list)

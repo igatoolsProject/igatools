@@ -46,13 +46,13 @@ void do_test()
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
 
     out << "Testing the entry() function"<<endl;
     ClassToTest data2(size);
     Index id = 1;
     for (int i = 0; i < dim ; ++i)
-        for (int j = 0; j < size(i) ; ++j, ++id)
+        for (int j = 0; j < size[i] ; ++j, ++id)
             data2.entry(i,j) = id;
 
     data2.print_info(out);
@@ -67,7 +67,8 @@ void do_test()
 
     out << "Testing the get_flat_cartesian_product() function" <<endl;
     vector<TensorIndex<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
-    out << flat_cartesian_product << endl << endl;
+    flat_cartesian_product.print_info(out);
+    out << endl << endl;
 
     out<< "Testing the get_sub_product() function" << endl;
     TensorIndex<dim-1> sub_id;
@@ -96,11 +97,11 @@ void do_test1()
 
     TensorSize<dim> size;
     for (int i = 0; i < dim; ++i)
-        size(i) = 2+i;
+        size[i] = 2+i;
     auto weight = MultiArrayUtils<dim>::compute_weight(size);
     out << "Size: " << endl;
     for (int i = 0; i < dim; ++i)
-        out << size(i) << endl;
+        out << size[i] << endl;
 
     out << "Tensor weight: " << endl;
     for (int i = 0; i < dim; ++i)
@@ -115,7 +116,7 @@ void do_test1()
     out << ")" << endl;
 
     for (int i = 0; i < dim; ++i)
-        tensor_index[i] = size(i)-2;
+        tensor_index[i] = size[i]-2;
     out << "Tensor index: ( ";
     for (int i = 0; i < dim; ++i)
         out << tensor_index[i] << " ";

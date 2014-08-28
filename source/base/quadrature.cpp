@@ -57,7 +57,7 @@ Quadrature(const CartesianProductArray<Real,dim> &points,
     weights_(weights)
 {
     Assert(points.tensor_size() == weights.tensor_size(),
-           ExcMessage("Wrong sizes."));
+           ExcMessage("Sizes of points and weights do not match."));
 }
 
 

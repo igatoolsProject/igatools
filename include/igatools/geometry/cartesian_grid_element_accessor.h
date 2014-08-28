@@ -228,7 +228,7 @@ public:
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    vector<Points<dim>> const get_points(const TopologyId<dim_> &topology_id
+    ValueVector<Points<dim>> const get_points(const TopologyId<dim_> &topology_id
                                               = ElemTopology<dim_>()) const;
 
     /**
@@ -236,7 +236,7 @@ public:
      * values of the map at the evaluation points on the face specified
      * by @p face_id.
      */
-    vector<Points<dim>> const get_face_points(const Index face_id) const;
+    ValueVector<Points<dim>> const get_face_points(const Index face_id) const;
 
     ///@}
 
@@ -250,17 +250,6 @@ public:
                         VerbosityLevel::normal) const;
 
     void print_cache_info(LogStream &out) const;
-
-    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
-    // someone made them public due to hackish code in NURBSelementaccessor
-    // we must rethink that code
-public:
-    bool operator==(const CartesianGridElementAccessor<dim_> &a) const;
-
-    bool operator!=(const CartesianGridElementAccessor<dim_> &a) const;
-
-
-    void operator++();
 
 private:
 
@@ -407,4 +396,4 @@ protected:
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* __CARTESIAN_GRID_ELEMENT_ACCESSORS_H_ */
+#endif /* CARTESIAN_GRID_ELEMENT_ACCESSORS_H_ */

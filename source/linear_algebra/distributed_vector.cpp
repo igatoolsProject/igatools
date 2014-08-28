@@ -234,9 +234,12 @@ Vector(const Index num_global_dofs)
 
 Vector<LAPack::petsc>::
 Vector(const vector<Index> &dofs_id)
+    :
+    Vector<LinearAlgebraPackage::petsc>(dofs_id.size())
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    //TODO: chencge this constructor in order to use the dofs_id entries and not only its size.
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
 
@@ -272,8 +275,11 @@ const Real &
 Vector<LAPack::petsc>::
 operator()(const Index global_id) const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    VecGetValues(vector_,1,&global_id,const_cast<Real *>(&real_tmp_));
+
+    return real_tmp_;
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
 
@@ -282,8 +288,11 @@ Real &
 Vector<LAPack::petsc>::
 operator()(const Index global_id)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    VecGetValues(vector_,1,&global_id,&real_tmp_);
+
+    return real_tmp_;
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
 

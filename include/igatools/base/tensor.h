@@ -372,7 +372,7 @@ using ActionTensor = Conditional<
  * - if rank == 1, SubTensor<Tensor<dim,rank,tensor_type,value_type>> is value_type
  *
  *
- * @author Martinelli 2012, 2013
+ * @author Martinelli 2012, 2013, 2014
  * @author Cavallini 2012
  * @author Pauletti 2012, 2013, 2014
  *
@@ -743,13 +743,13 @@ compose(const T1 &S, const T2 &T)
  * A(v,w)=A^t(w,v).
  *
  * @note for linear transformations A:V->W, A^t:W*->V*,
- * so if you want to compute Aˆt * A in the "matrix sense" you
+ * so if you want to compute A^t * A in the "matrix sense" you
  * need to use compose(co_tensor(traspose(A)), A).
  *
  */
 template < class T >
-EnableIf<T::is_tensor,Transpose<T>>
-                                 transpose(const T &A)
+EnableIf<T::is_tensor,Transpose<T> >
+transpose(const T &A)
 {
     Transpose<T> B;
 
@@ -1107,7 +1107,7 @@ operator<<(LogStream &out, const Tdouble &tensor)
 
 
 /**
- * The <tt>TMatrix</tt> class provides for a statically allocated \p m x \p n matrix.
+ * @brief The <tt>TMatrix</tt> class provides for a statically allocated \p m x \p n matrix.
  *
  * @note technically  <tt>TMatrix</tt> is not a class but
  * a template alias (or templated typedef).

@@ -66,7 +66,7 @@ public:
 
     void print_info(LogStream &out) const
     {
-      // out << vector<Real>::vector(*this);
+        // out << vector<Real>::vector(*this);
     }
 
 };

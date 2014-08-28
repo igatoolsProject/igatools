@@ -50,10 +50,10 @@ void space_cache(const int n_knots = 5, const int deg=1)
     cache.init_element_cache(elem);
 
     auto end = space->end();
-    for (;elem != end; ++elem)
+    for (; elem != end; ++elem)
     {
         cache.fill_element_cache(elem);
-      //  elem->get_basis_values().print_info(out);
+        //  elem->get_basis_values().print_info(out);
     }
 }
 

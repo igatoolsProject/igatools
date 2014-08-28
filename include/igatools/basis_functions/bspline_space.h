@@ -267,11 +267,7 @@ protected:
 public:
     /** @name Getting information about the space */
     ///@{
-    vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
-
-    std::shared_ptr<const self_t >
-    get_reference_space() const;
-    ///@}
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     /** @name Functions involving the element iterator */
     ///@{
@@ -290,20 +286,14 @@ public:
      * Returns a element iterator to one-pass the end of patch.
      */
     ElementIterator end() const;
-
-
     ///@}
 
-    /**
-     * Prints internal information about the space.
-     * @note Mostly used for debugging and testing.
-     */
-    void print_info(LogStream &out) const;
 
 
 
 
-
+    /** Getting some underlying objects */
+    ///@{
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
                        vector<Index> &face_to_element_dofs,
@@ -314,6 +304,9 @@ public:
     get_face_space(const Index face_id,
                    vector<Index> &face_to_element_dofs) const;
 
+    std::shared_ptr<const self_t >
+    get_reference_space() const;
+
 
     /** Return the push forward (non-const version). */
     std::shared_ptr<PushForwardType> get_push_forward();
@@ -322,6 +315,22 @@ public:
     /** Return the push forward (const version). */
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
+
+    std::shared_ptr<SpaceManager> get_space_manager();
+
+
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
+
+
+    /** Returns the container with the dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dofs_distribution() const;
+
+
+    /** Returns the container with the dof distribution (const version). */
+    DofDistribution<dim, range, rank> &
+    get_dofs_distribution();
+    ///@}
 
     /**
      * Adds an @p offset to the values of the dof ids.
@@ -345,14 +354,16 @@ public:
                          const Index comp) const;
 
 
-    std::shared_ptr<SpaceManager> get_space_manager();
-
-    std::shared_ptr<const SpaceManager> get_space_manager() const;
+    /**
+     * Prints internal information about the space.
+     * @note Mostly used for debugging and testing.
+     */
+    void print_info(LogStream &out) const;
 
 private:
 
     /** Container with the local to global basis indices */
-    DofDistribution<dim, range, rank> basis_indices_;
+    DofDistribution<dim, range, rank> dofs_distribution_;
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
@@ -382,16 +393,6 @@ public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
-
-
-    /** Returns the container with the local to global basis indices (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_basis_indices() const;
-
-    /** Returns the container with the local to global basis indices (non-const version). */
-    DofDistribution<dim, range, rank> &
-    get_basis_indices();
-
 };
 
 

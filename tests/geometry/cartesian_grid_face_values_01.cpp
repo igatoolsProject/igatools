@@ -88,7 +88,7 @@ void run_test2()
     TensorSize<dim> n_knots;
     int j=1;
     for (int i = 0 ; i < dim ; ++i)
-        n_knots(i) = ++j;
+        n_knots[i] = ++j;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
 

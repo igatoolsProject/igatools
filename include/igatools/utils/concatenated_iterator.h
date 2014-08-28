@@ -25,10 +25,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-
 #include <igatools/utils/container_view.h>
-
-#include <vector>
+#include <igatools/utils/vector.h>
 
 
 IGA_NAMESPACE_OPEN

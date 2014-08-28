@@ -449,10 +449,10 @@ reset(const Space &space,
 
     for (int i = 0 ; i < dim ; ++i)
     {
-        n_intervals_(i) = intervals_id[i].size();
+        n_intervals_[i] = intervals_id[i].size();
 
-        Assert(n_intervals_(i) == space.get_grid()->get_num_intervals()(i) ||
-               n_intervals_(i) == 1,
+        Assert(n_intervals_[i] == space.get_grid()->get_num_intervals()[i] ||
+               n_intervals_[i] == 1,
                ExcMessage("Invalid number of intervals along the direction " + std::to_string(i)));
     }
 
@@ -464,7 +464,7 @@ reset(const Space &space,
     {
         this->splines1d_cache_data_(iComp).resize(n_intervals_);
         for (int i = 0 ; i < dim ; ++i)
-            for (int j = 0 ; j < n_intervals_(i) ; ++j)
+            for (int j = 0 ; j < n_intervals_[i] ; ++j)
                 this->splines1d_cache_data_(iComp).entry(i,j).resize(max_der_plus_one);
     }
 
@@ -500,7 +500,7 @@ reset(const Space &space,
             Assert(num_intervals == n_intervals_[jDim],
                    ExcDimensionMismatch(num_intervals, n_intervals_[jDim]));
             const int degree = degree_(iComp)[jDim];
-            const vector<Real> &pt_coords = eval_points.get_data_direction(jDim);
+            const auto &pt_coords = eval_points.get_data_direction(jDim);
 
             // fill values and derivatives of the Bernstein's polynomials at
             // quad points in [0,1]
@@ -548,11 +548,10 @@ reset(const Space &space,
     const auto grid = space.get_grid();
     array<vector<int>,dim> intervals_id;
     for (int i = 0 ; i < dim ; ++i)
-
     {
         auto &intervals_id_direction = intervals_id[i];
 
-        const int n_intervals = grid->get_num_intervals()(i);
+        const int n_intervals = grid->get_num_intervals()[i];
 
         intervals_id_direction.resize(n_intervals);
 
@@ -564,8 +563,8 @@ reset(const Space &space,
 
 #ifndef NDEBUG
     for (int i = 0 ; i < dim ; ++i)
-        Assert(this->n_intervals_(i) == grid->get_num_intervals()(i),
-               ExcDimensionMismatch(this->n_intervals_(i),grid->get_num_intervals()(i)));
+        Assert(this->n_intervals_[i] == grid->get_num_intervals()[i],
+               ExcDimensionMismatch(this->n_intervals_[i],grid->get_num_intervals()[i]));
 #endif
     //------------------------------------------------------------------------------------------
 
@@ -593,7 +592,7 @@ reset(const Space &space,
         auto &intervals_id_direction = intervals_id[i];
         if (i != const_dir)
         {
-            const int n_intervals = space.get_grid()->get_num_intervals()(i);
+            const int n_intervals = space.get_grid()->get_num_intervals()[i];
 
             intervals_id_direction.resize(n_intervals);
             for (int id = 0 ; id < n_intervals ; ++id)
@@ -605,7 +604,7 @@ reset(const Space &space,
             if (face_id % 2 == 0)
                 intervals_id_direction.push_back(0);
             else
-                intervals_id_direction.push_back(space.get_grid()->get_num_intervals()(i)-1);
+                intervals_id_direction.push_back(space.get_grid()->get_num_intervals()[i]-1);
 
             Assert(intervals_id_direction.size() == 1,
                    ExcDimensionMismatch(intervals_id_direction.size(),1));
@@ -619,12 +618,12 @@ reset(const Space &space,
     {
         if (i != const_dir)
         {
-            Assert(this->n_intervals_(i) == space.get_grid()->get_num_intervals()(i),
-                   ExcDimensionMismatch(this->n_intervals_(i),space.get_grid()->get_num_intervals()(i)));
+            Assert(this->n_intervals_[i] == space.get_grid()->get_num_intervals()[i],
+                   ExcDimensionMismatch(this->n_intervals_[i],space.get_grid()->get_num_intervals()[i]));
         }
         else
         {
-            Assert(this->n_intervals_(i) == 1,ExcDimensionMismatch(this->n_intervals_(i),1));
+            Assert(this->n_intervals_[i] == 1,ExcDimensionMismatch(this->n_intervals_[i],1));
         }
     }
 #endif
@@ -648,7 +647,7 @@ fill_values_cache_from_univariate(const int max_deriv_order,
     for (int comp = 0; comp < Space::n_components; ++comp)
     {
         for (int i = 0; i < dim ; ++i)
-            n_basis_direction(i) = degree(comp)[i]+1;
+            n_basis_direction[i] = degree(comp)[i]+1;
 
 
         auto &scalar_evaluator_comp = scalar_evaluators_(comp);
@@ -877,7 +876,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
 
         for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const auto n_basis = this->get_num_basis(comp);
             const Size offset = this->comp_offset_(comp);
             const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
 
@@ -968,7 +967,7 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
         for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const auto n_basis = this->get_num_basis(comp);
             const Size act_offset = this->comp_offset_(scalar_evaluators_.active(comp));
             const Size offset = this->comp_offset_(comp);
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -987,8 +986,6 @@ evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValu
         } // end loop comp
     } // end if (deriv_order > 0)
 }
-
-
 
 
 
@@ -1015,7 +1012,7 @@ template <int dim, int range, int rank>
 template<int deriv_order>
 auto
 BSplineElementAccessor<dim, range, rank>::
-evaluate_basis_derivatives_at_points(const vector<Point> &points) const ->
+evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     using return_t = ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >;
@@ -1040,20 +1037,15 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-            auto n_basis = this->space_->get_num_basis_per_element_table();
+//            auto n_basis = this->n_basis_direction_;
             auto degree = this->space_->get_degree();
             for (int iComp : bezier_op.get_active_components_id())
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
                 array<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
-                // const TensorSize<dim> basis_component_t_size = this->n_basis_direction_(iComp);
                 for (int dir = 0 ; dir < dim ; ++dir)
-                {
-//                    const int n_basis_1D = n_basis(iComp)(dir);
-//                    const int degree = n_basis_1D - 1 ;
                     bernstein_values[dir] = BernsteinBasis::derivative(0,degree(iComp)[dir],point[dir]);
-                }
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
                 //------------------------------------------------------------------------------
 
@@ -1143,7 +1135,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
-            auto n_basis = this->space_->get_num_basis_per_element_table();
+//            auto n_basis = this->n_basis_direction_;
             auto degree = this->space_->get_degree();
             for (int iComp : bezier_op.get_active_components_id())
             {
@@ -1156,8 +1148,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                     {
                         const Real scaling_coef = pow(1.0/elem_lengths[dir],order);
 
-//                        const int n_basis_1D = basis_component_t_size(dir);
-//                        const int degree = n_basis_1D - 1 ;
                         bernstein_values[order][dir] =
                         scaling_coef * BernsteinBasis::derivative(order,degree(iComp)[dir],point[dir]);
                     }
@@ -1248,7 +1238,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         for (int comp : bezier_op.get_inactive_components_id())
         {
             const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
+            const auto n_basis =  this->get_num_basis(comp);
             const Size act_offset = this->comp_offset_(bezier_op.active(comp));
 
             const Size offset = this->comp_offset_(comp);

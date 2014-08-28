@@ -45,8 +45,8 @@ template<int dim, int range, int rank>
 void
 ConstantFunction<dim, range, rank>::
 evaluate(
-    const vector<Point> &points,
-    vector<Value> &values) const
+    const ValueVector<Point> &points,
+    ValueVector<Value> &values) const
 {
     Assert(points.size() == values.size(),
            ExcDimensionMismatch(points.size(), values.size())) ;

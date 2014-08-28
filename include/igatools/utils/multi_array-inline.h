@@ -31,6 +31,14 @@ IGA_NAMESPACE_OPEN
 template<class STLContainer, int rank>
 inline
 MultiArray<STLContainer,rank>::
+MultiArray()
+    :
+    TensorSizedContainer<rank>(0)
+{}
+
+template<class STLContainer, int rank>
+inline
+MultiArray<STLContainer,rank>::
 MultiArray(const int dim)
     :
     TensorSizedContainer<rank>(dim)
@@ -73,7 +81,7 @@ auto
 MultiArray<STLContainer,rank>::
 operator()(const Index i) const -> const_reference
 {
-    Assert(i<this->flat_size(),
+    Assert((0<=i) &&(i<this->flat_size()),
            ExcIndexRange(i,0,this->flat_size()));
     return this->data_[i];
 }
@@ -83,9 +91,22 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const TensorIndex<rank> &i) -> reference
+operator()(const TensorIndex<rank> &tensor_index) -> reference
 {
-    return this->data_[this->tensor_to_flat(i)];
+#ifndef NDEBUG
+    const TensorSize<rank> tensor_size = this->tensor_size();
+
+    for (int i = 0 ; i < rank ; ++i)
+        Assert((tensor_index[i] >= 0) &&
+        (tensor_index[i] < tensor_size[i]),
+        ExcIndexRange(tensor_index[i],0,tensor_size[i]));
+#endif
+
+    Assert((this->tensor_to_flat(tensor_index) >= 0) &&
+    (this->tensor_to_flat(tensor_index) < this->flat_size()),
+    ExcIndexRange(this->tensor_to_flat(tensor_index),0,this->flat_size()));
+
+    return this->data_[this->tensor_to_flat(tensor_index)];
 }
 
 
@@ -93,9 +114,9 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const TensorIndex<rank> &i) const -> const_reference
+operator()(const TensorIndex<rank> &tensor_index) const -> const_reference
 {
-    return this->data_[this->tensor_to_flat(i)];
+    return const_cast<MultiArray<STLContainer,rank> &>(*this)(tensor_index);
 }
 
 

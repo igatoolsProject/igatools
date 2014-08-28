@@ -178,7 +178,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const vector<Point> &points) const;
+    evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const;
 
     ///@}
 
@@ -224,7 +224,7 @@ private:
     ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentContainer <std::array<const BasisValues1d *,dim>>;
+    using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
     /**
      * Fills the cache (accordingly with the flags_handler status)
@@ -239,10 +239,6 @@ private:
     void fill_values_cache_from_univariate(const int max_deriv_order,
                                            const univariate_values_t &values_1D,
                                            ValuesCache &cache);
-
-
-
-
     ///@}
 
 
@@ -370,10 +366,9 @@ private:
 
 
 
-protected:
+public:
     const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
             &get_scalar_evaluators() const;
-
 };
 
 IGA_NAMESPACE_CLOSE

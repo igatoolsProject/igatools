@@ -41,7 +41,8 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     const int n_derivatives = 3;
     const auto grid = space->get_grid();
     //const auto n_intervals = grid->get_num_intervals();
-    const auto n_funcs = space->get_num_basis_per_element_table();
+    const auto degree = space->get_degree();
+//    const auto n_funcs = space->get_num_basis_per_element_table();
     const auto n_points = quad.get_num_points_direction();
     for (auto comp : splines1d_.get_active_components_id())
     {
@@ -49,7 +50,7 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
         const auto size = splines1d.tensor_size();
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-            auto n_fun = n_funcs(comp)[dir];
+            auto n_fun = degree(comp)[dir]+1;
             auto n_pts = n_points[dir];
             for (int j = 0 ; j < size[dir] ; ++j)
                 splines1d.entry(dir,j).resize(n_derivatives, n_fun, n_pts);

@@ -162,7 +162,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable<Value>
-    evaluate_basis_values_at_points(const vector<Point> &points) const;
+    evaluate_basis_values_at_points(const ValueVector<Point> &points) const;
 
 
     /**
@@ -184,7 +184,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const vector<Point> &points) const;
+    evaluate_basis_gradients_at_points(const ValueVector<Point> &points) const;
 
 
     /**
@@ -206,7 +206,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const vector<Point> &points) const;
+    evaluate_basis_hessians_at_points(const ValueVector<Point> &points) const;
 
 
     /**
@@ -230,7 +230,7 @@ public:
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
         const vector<Real> &local_coefs,
-        const vector<Point> &points) const;
+        const ValueVector<Point> &points) const;
 
 
     /**
@@ -244,7 +244,7 @@ public:
     ValueVector<Value>
     evaluate_field_values_at_points(
         const vector<Real> &local_coefs,
-        const vector<Point> &points) const;
+        const ValueVector<Point> &points) const;
 
 
     /**
@@ -258,7 +258,7 @@ public:
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
         const vector<Real> &local_coefs,
-        const vector<Point> &points) const;
+        const ValueVector<Point> &points) const;
 
 
     /**
@@ -272,7 +272,7 @@ public:
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
         const vector<Real> &local_coefs,
-        const vector<Point> &points) const;
+        const ValueVector<Point> &points) const;
     ///@}
 
 
@@ -529,8 +529,8 @@ public:
      * For example:
      * \code
        auto loc_to_glob = elem->get_local_to_global();
-       // loc_to_glob[0] is the global id of the first element basis function
-       // loc_to_glob[1] is the global id of the second element basis function
+       // loc_to_glob[0] is the global id of the first basis function on the element
+       // loc_to_glob[1] is the global id of the second basis function on the element
        // ...
       \endcode
      *
@@ -562,6 +562,10 @@ protected:
      * Space for which the SpaceElementAccessor refers to.
      */
     std::shared_ptr<const Space> space_ = nullptr;
+
+
+    /** Number of scalar basis functions along each direction, for all space components. */
+    typename Space::SpaceDimensionTable n_basis_direction_;
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
     ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;

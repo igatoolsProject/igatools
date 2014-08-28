@@ -27,6 +27,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
@@ -88,6 +89,8 @@ public:
 
     using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 
+    using DegreeTable = typename RefSpace::DegreeTable;
+
 public:
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
@@ -121,17 +124,13 @@ public:
      */
     Index get_num_basis() const;
 
-    /**
-     * Returns the number of dofs per element.
-     */
-    int get_num_basis_per_element() const;
+    /** Returns the container with the local to global basis indices (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dofs_distribution() const;
 
-    const SpaceDimensionTable get_num_basis_per_element_table() const
-    {
-        return ref_space_->get_num_basis_per_element_table();
-    }
+    const DegreeTable &get_degree() const;
 
-    vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     /**
      * Returns a element iterator to the first element of the patch.
