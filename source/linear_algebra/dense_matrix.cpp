@@ -28,17 +28,17 @@ IGA_NAMESPACE_OPEN
 #if 0
 DenseMatrix::
 DenseMatrix(const Index n_rows, const Index n_cols, const bool init_to_zero)
-:
-BoostMatrix(n_rows,n_cols)
+    :
+    BoostMatrix(n_rows,n_cols)
 {
-	if (init_to_zero)
-		BoostMatrix::clear();
+    if (init_to_zero)
+        BoostMatrix::clear();
 }
 
 DenseMatrix::
 DenseMatrix(const Index n,const bool init_to_zero)
-:
-DenseMatrix(n,n,init_to_zero)
+    :
+    DenseMatrix(n,n,init_to_zero)
 {}
 #endif
 

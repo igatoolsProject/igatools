@@ -59,11 +59,11 @@ MultiArrayIteratorBase(Container &container,const Index id,const Index stride)
     Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
     if (container_->flat_size() > 0)
     {
-    	if (id_ == container_->flat_size())
-    		id_ = IteratorState::pass_the_end;
+        if (id_ == container_->flat_size())
+            id_ = IteratorState::pass_the_end;
     }
     else
-    	id_ = IteratorState::invalid;
+        id_ = IteratorState::invalid;
 }
 
 
