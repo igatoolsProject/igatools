@@ -29,28 +29,33 @@
 #include <igatools/utils/static_multi_array.h>
 
 template <int dim, int rank = 2>
-void constructors()
+void access_operator()
 {
     OUTSTART
 
-    StaticMultiArray<Index,dim,rank> data1;
+    StaticMultiArray<Index, dim, rank> data;
 
-    StaticMultiArray<Index,dim,rank> data2(3);
-    data2.print_info(out);
+    for (int i = 0; i < data.flat_size(); ++i)
+        data(i) = i;
+
+    data.print_info(out);
+    out << endl;
+
+    for (const auto &entry : data)
+        out << entry << " ";;
     out << endl;
 
     OUTEND
 }
 
+
 int main()
 {
     out.depth_console(10);
 
-    constructors<1>();
-    constructors<2>();
-    constructors<3>();
-
-    constructors<2,3>();
+    access_operator<1>();
+    access_operator<2>();
+    access_operator<3>();
 
     return 0;
 }

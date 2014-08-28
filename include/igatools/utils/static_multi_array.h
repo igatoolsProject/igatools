@@ -68,12 +68,14 @@ public:
     explicit StaticMultiArray(const T &val);
 
 
+#if 0
     /**
      * Construct a StaticMultiArray in which its elements are equal between
      * different rank indices,
      * and for a given rank are set to be equal to the argument values @p val.
      */
     explicit StaticMultiArray(const std::array<T,dim> &val);
+#endif
 
     /**
      * Initializer list constructor.

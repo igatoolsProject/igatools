@@ -28,29 +28,30 @@
 #include "../tests.h"
 #include <igatools/utils/static_multi_array.h>
 
-template <int dim, int rank = 2>
-void constructors()
+template <int dim>
+void fill_progression()
 {
-    OUTSTART
-
-    StaticMultiArray<Index,dim,rank> data1;
-
-    StaticMultiArray<Index,dim,rank> data2(3);
-    data2.print_info(out);
+    out << "========== BEGIN do_test_3<" << dim << "> ==========" << endl;
+    out << "Constant value constructor (value=4)"<< endl;
+    StaticMultiArray<Index,dim,2> data1(4);
+    out << "Fill progression from 2 "<< endl;
+    data1.fill_progression(2);
+    out << "Size: " << data1.flat_size() << endl;
+    data1.print_info(out);
     out << endl;
-
-    OUTEND
+    out << "========== END do_test_3<" << dim << "> ==========" << endl;
+    out << endl;
 }
+
 
 int main()
 {
     out.depth_console(10);
 
-    constructors<1>();
-    constructors<2>();
-    constructors<3>();
 
-    constructors<2,3>();
+    fill_progression<1>();
+    fill_progression<2>();
+    fill_progression<3>();
 
     return 0;
 }

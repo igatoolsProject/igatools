@@ -51,6 +51,8 @@ StaticMultiArray(const T &val)
 }
 
 
+#if 0
+//This code is wrong data_ has dim^rank entries and i goes from 0 to rank*dim
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray(const std::array<T,dim> &val)
@@ -62,7 +64,7 @@ StaticMultiArray(const std::array<T,dim> &val)
         for (int d=0 ; d < dim ; ++d,++i)
             this->data_[i] = val[d];
 }
-
+#endif
 
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
