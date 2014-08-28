@@ -83,8 +83,10 @@ void test()
 
     F.evaluate(x,y);
 
-    out << x << endl;
-    out << y << endl;
+    x.print_info(out);
+    out << endl;
+    y.print_info(out);
+    out << endl;
 }
 
 

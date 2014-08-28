@@ -151,7 +151,6 @@ public :
 
 } ;
 
-
 /**
  * Performs the scalar-by-vector multiplication <tt>scalar * a</tt>
  * @relates ValueVector
@@ -167,16 +166,6 @@ operator*(const ValueVector<T> &a, const Real scalar) ;
 template< class T>
 ValueVector<T>
 operator*(const Real scalar, const ValueVector<T> &a) ;
-
-
-/**
- * Output operator for ValueVector.
- *
- * @relates ValueVector
-*/
-template <class T>
-LogStream &
-operator<<(LogStream &out, const ValueVector<T> &vector);
 
 IGA_NAMESPACE_CLOSE
 

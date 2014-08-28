@@ -128,20 +128,6 @@ operator[](const Index i) const
     return this->data_[i];
 }
 
-template <class T>
-LogStream &
-operator<<(LogStream &out, const ValueVector<T> &vector)
-{
-
-    vector.print_info(out);
-    return out;
-}
-
 IGA_NAMESPACE_CLOSE
 
-
-
 #include <igatools/utils/value_vector.inst>
-
-
-
