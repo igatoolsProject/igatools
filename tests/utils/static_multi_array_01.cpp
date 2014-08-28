@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/utils/static_multi_array.h>
-
+// TODO (pauletti, Aug 28, 2014): this test is too long, split in several
 
 //Test the different constructors
 template <int dim>
@@ -143,5 +143,6 @@ int main()
     do_test_3<1>();
     do_test_3<2>();
     do_test_3<3>();
+
     return 0;
 }

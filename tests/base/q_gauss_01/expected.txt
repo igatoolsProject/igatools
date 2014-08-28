@@ -3,11 +3,15 @@ Dimension: 1
 Points per direction: 1
 Number of points:1
 weights:
+Size: [ 1 ]  Weights: [1]
+Direction: 0
 [ 1.00000 ]
 
 weights (flat tensor product):
 [ 1.00000 ]
 coordinates:
+Size: [ 1 ]  Weights: [1]
+Direction: 0
 [ 0.500000 ]
 
 coordinates (flat cartesian_product):
@@ -16,11 +20,15 @@ coordinates (flat cartesian_product):
 Points per direction: 2
 Number of points:2
 weights:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 0.500000 0.500000 ]
 
 weights (flat tensor product):
 [ 0.500000 0.500000 ]
 coordinates:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
@@ -29,11 +37,15 @@ coordinates (flat cartesian_product):
 Points per direction: 3
 Number of points:3
 weights:
+Size: [ 3 ]  Weights: [3]
+Direction: 0
 [ 0.277778 0.444444 0.277778 ]
 
 weights (flat tensor product):
 [ 0.277778 0.444444 0.277778 ]
 coordinates:
+Size: [ 3 ]  Weights: [3]
+Direction: 0
 [ 0.112702 0.500000 0.887298 ]
 
 coordinates (flat cartesian_product):
@@ -46,13 +58,19 @@ Dimension: 2
 Points per direction: 1
 Number of points:1
 weights:
+Size: [ 1 1 ]  Weights: [1,1]
+Direction: 0
 [ 1.00000 ]
+Direction: 1
 [ 1.00000 ]
 
 weights (flat tensor product):
 [ 1.00000 ]
 coordinates:
+Size: [ 1 1 ]  Weights: [1,1]
+Direction: 0
 [ 0.500000 ]
+Direction: 1
 [ 0.500000 ]
 
 coordinates (flat cartesian_product):
@@ -61,13 +79,19 @@ coordinates (flat cartesian_product):
 Points per direction: 2
 Number of points:4
 weights:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
 [ 0.500000 0.500000 ]
+Direction: 1
 [ 0.500000 0.500000 ]
 
 weights (flat tensor product):
 [ 0.250000 0.250000 0.250000 0.250000 ]
 coordinates:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
 [ 0.211325 0.788675 ]
+Direction: 1
 [ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
@@ -76,13 +100,19 @@ coordinates (flat cartesian_product):
 Points per direction: 3
 Number of points:9
 weights:
+Size: [ 3 3 ]  Weights: [3,9]
+Direction: 0
 [ 0.277778 0.444444 0.277778 ]
+Direction: 1
 [ 0.277778 0.444444 0.277778 ]
 
 weights (flat tensor product):
 [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
 coordinates:
+Size: [ 3 3 ]  Weights: [3,9]
+Direction: 0
 [ 0.112702 0.500000 0.887298 ]
+Direction: 1
 [ 0.112702 0.500000 0.887298 ]
 
 coordinates (flat cartesian_product):
@@ -95,15 +125,23 @@ Dimension: 3
 Points per direction: 1
 Number of points:1
 weights:
+Size: [ 1 1 1 ]  Weights: [1,1,1]
+Direction: 0
 [ 1.00000 ]
+Direction: 1
 [ 1.00000 ]
+Direction: 2
 [ 1.00000 ]
 
 weights (flat tensor product):
 [ 1.00000 ]
 coordinates:
+Size: [ 1 1 1 ]  Weights: [1,1,1]
+Direction: 0
 [ 0.500000 ]
+Direction: 1
 [ 0.500000 ]
+Direction: 2
 [ 0.500000 ]
 
 coordinates (flat cartesian_product):
@@ -112,15 +150,23 @@ coordinates (flat cartesian_product):
 Points per direction: 2
 Number of points:8
 weights:
+Size: [ 2 2 2 ]  Weights: [2,4,8]
+Direction: 0
 [ 0.500000 0.500000 ]
+Direction: 1
 [ 0.500000 0.500000 ]
+Direction: 2
 [ 0.500000 0.500000 ]
 
 weights (flat tensor product):
 [ 0.125000 0.125000 0.125000 0.125000 0.125000 0.125000 0.125000 0.125000 ]
 coordinates:
+Size: [ 2 2 2 ]  Weights: [2,4,8]
+Direction: 0
 [ 0.211325 0.788675 ]
+Direction: 1
 [ 0.211325 0.788675 ]
+Direction: 2
 [ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
@@ -129,15 +175,23 @@ coordinates (flat cartesian_product):
 Points per direction: 3
 Number of points:27
 weights:
+Size: [ 3 3 3 ]  Weights: [3,9,27]
+Direction: 0
 [ 0.277778 0.444444 0.277778 ]
+Direction: 1
 [ 0.277778 0.444444 0.277778 ]
+Direction: 2
 [ 0.277778 0.444444 0.277778 ]
 
 weights (flat tensor product):
 [ 0.0214335 0.0342936 0.0214335 0.0342936 0.0548697 0.0342936 0.0214335 0.0342936 0.0214335 0.0342936 0.0548697 0.0342936 0.0548697 0.0877915 0.0548697 0.0342936 0.0548697 0.0342936 0.0214335 0.0342936 0.0214335 0.0342936 0.0548697 0.0342936 0.0214335 0.0342936 0.0214335 ]
 coordinates:
+Size: [ 3 3 3 ]  Weights: [3,9,27]
+Direction: 0
 [ 0.112702 0.500000 0.887298 ]
+Direction: 1
 [ 0.112702 0.500000 0.887298 ]
+Direction: 2
 [ 0.112702 0.500000 0.887298 ]
 
 coordinates (flat cartesian_product):
@@ -150,11 +204,15 @@ Dimension: 1
 Points per direction: 1 
 Number of points:1
 weights:
+Size: [ 1 ]  Weights: [1]
+Direction: 0
 [ 1.00000 ]
 
 weights (flat tensor product):
 [ 1.00000 ]
 coordinates:
+Size: [ 1 ]  Weights: [1]
+Direction: 0
 [ 0.500000 ]
 
 coordinates (flat cartesian_product):
@@ -163,11 +221,15 @@ coordinates (flat cartesian_product):
 Points per direction: 2 
 Number of points:2
 weights:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 0.500000 0.500000 ]
 
 weights (flat tensor product):
 [ 0.500000 0.500000 ]
 coordinates:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
@@ -176,11 +238,15 @@ coordinates (flat cartesian_product):
 Points per direction: 3 
 Number of points:3
 weights:
+Size: [ 3 ]  Weights: [3]
+Direction: 0
 [ 0.277778 0.444444 0.277778 ]
 
 weights (flat tensor product):
 [ 0.277778 0.444444 0.277778 ]
 coordinates:
+Size: [ 3 ]  Weights: [3]
+Direction: 0
 [ 0.112702 0.500000 0.887298 ]
 
 coordinates (flat cartesian_product):
@@ -193,13 +259,19 @@ Dimension: 2
 Points per direction: 1 2 
 Number of points:2
 weights:
+Size: [ 1 2 ]  Weights: [1,2]
+Direction: 0
 [ 1.00000 ]
+Direction: 1
 [ 0.500000 0.500000 ]
 
 weights (flat tensor product):
 [ 0.500000 0.500000 ]
 coordinates:
+Size: [ 1 2 ]  Weights: [1,2]
+Direction: 0
 [ 0.500000 ]
+Direction: 1
 [ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
@@ -208,13 +280,19 @@ coordinates (flat cartesian_product):
 Points per direction: 2 3 
 Number of points:6
 weights:
+Size: [ 2 3 ]  Weights: [2,6]
+Direction: 0
 [ 0.500000 0.500000 ]
+Direction: 1
 [ 0.277778 0.444444 0.277778 ]
 
 weights (flat tensor product):
 [ 0.138889 0.138889 0.222222 0.222222 0.138889 0.138889 ]
 coordinates:
+Size: [ 2 3 ]  Weights: [2,6]
+Direction: 0
 [ 0.211325 0.788675 ]
+Direction: 1
 [ 0.112702 0.500000 0.887298 ]
 
 coordinates (flat cartesian_product):
@@ -223,13 +301,19 @@ coordinates (flat cartesian_product):
 Points per direction: 3 4 
 Number of points:12
 weights:
+Size: [ 3 4 ]  Weights: [3,12]
+Direction: 0
 [ 0.277778 0.444444 0.277778 ]
+Direction: 1
 [ 0.173927 0.326073 0.326073 0.173927 ]
 
 weights (flat tensor product):
 [ 0.0483132 0.0773011 0.0483132 0.0905757 0.144921 0.0905757 0.0905757 0.144921 0.0905757 0.0483132 0.0773011 0.0483132 ]
 coordinates:
+Size: [ 3 4 ]  Weights: [3,12]
+Direction: 0
 [ 0.112702 0.500000 0.887298 ]
+Direction: 1
 [ 0.0694319 0.330010 0.669991 0.930568 ]
 
 coordinates (flat cartesian_product):
@@ -242,15 +326,23 @@ Dimension: 3
 Points per direction: 1 2 3 
 Number of points:6
 weights:
+Size: [ 1 2 3 ]  Weights: [1,2,6]
+Direction: 0
 [ 1.00000 ]
+Direction: 1
 [ 0.500000 0.500000 ]
+Direction: 2
 [ 0.277778 0.444444 0.277778 ]
 
 weights (flat tensor product):
 [ 0.138889 0.138889 0.222222 0.222222 0.138889 0.138889 ]
 coordinates:
+Size: [ 1 2 3 ]  Weights: [1,2,6]
+Direction: 0
 [ 0.500000 ]
+Direction: 1
 [ 0.211325 0.788675 ]
+Direction: 2
 [ 0.112702 0.500000 0.887298 ]
 
 coordinates (flat cartesian_product):
@@ -259,15 +351,23 @@ coordinates (flat cartesian_product):
 Points per direction: 2 3 4 
 Number of points:24
 weights:
+Size: [ 2 3 4 ]  Weights: [2,6,24]
+Direction: 0
 [ 0.500000 0.500000 ]
+Direction: 1
 [ 0.277778 0.444444 0.277778 ]
+Direction: 2
 [ 0.173927 0.326073 0.326073 0.173927 ]
 
 weights (flat tensor product):
 [ 0.0241566 0.0241566 0.0386505 0.0386505 0.0241566 0.0241566 0.0452879 0.0452879 0.0724606 0.0724606 0.0452879 0.0452879 0.0452879 0.0452879 0.0724606 0.0724606 0.0452879 0.0452879 0.0241566 0.0241566 0.0386505 0.0386505 0.0241566 0.0241566 ]
 coordinates:
+Size: [ 2 3 4 ]  Weights: [2,6,24]
+Direction: 0
 [ 0.211325 0.788675 ]
+Direction: 1
 [ 0.112702 0.500000 0.887298 ]
+Direction: 2
 [ 0.0694319 0.330010 0.669991 0.930568 ]
 
 coordinates (flat cartesian_product):
@@ -276,15 +376,23 @@ coordinates (flat cartesian_product):
 Points per direction: 3 4 5 
 Number of points:60
 weights:
+Size: [ 3 4 5 ]  Weights: [3,12,60]
+Direction: 0
 [ 0.277778 0.444444 0.277778 ]
+Direction: 1
 [ 0.173927 0.326073 0.326073 0.173927 ]
+Direction: 2
 [ 0.118463 0.239314 0.284444 0.239314 0.118463 ]
 
 weights (flat tensor product):
 [ 0.00572335 0.00915735 0.00572335 0.0107299 0.0171679 0.0107299 0.0107299 0.0171679 0.0107299 0.00572335 0.00915735 0.00572335 0.0115620 0.0184993 0.0115620 0.0216761 0.0346817 0.0216761 0.0216761 0.0346817 0.0216761 0.0115620 0.0184993 0.0115620 0.0137424 0.0219879 0.0137424 0.0257638 0.0412220 0.0257638 0.0257638 0.0412220 0.0257638 0.0137424 0.0219879 0.0137424 0.0115620 0.0184993 0.0115620 0.0216761 0.0346817 0.0216761 0.0216761 0.0346817 0.0216761 0.0115620 0.0184993 0.0115620 0.00572335 0.00915735 0.00572335 0.0107299 0.0171679 0.0107299 0.0107299 0.0171679 0.0107299 0.00572335 0.00915735 0.00572335 ]
 coordinates:
+Size: [ 3 4 5 ]  Weights: [3,12,60]
+Direction: 0
 [ 0.112702 0.500000 0.887298 ]
+Direction: 1
 [ 0.0694319 0.330010 0.669991 0.930568 ]
+Direction: 2
 [ 0.0469101 0.230765 0.500000 0.769235 0.953090 ]
 
 coordinates (flat cartesian_product):
