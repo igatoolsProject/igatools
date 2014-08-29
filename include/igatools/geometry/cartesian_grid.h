@@ -155,7 +155,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates,
+    CartesianGrid(const KnotCoordinates &knot_coordinates,
                   const Kind kind);
 
     /**
@@ -218,7 +218,7 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const CartesianProductArray<Real,dim> &knot_coordinates);
+    create(const KnotCoordinates &knot_coordinates);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -234,15 +234,13 @@ public:
 
 
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points,
-           const Size n_knots);
+    create(const BBox<dim> &end_points, const Size n_knots);
 
     /**
      * @todo document me
      */
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points,
-           const TensorSize<dim> &n);
+    create(const BBox<dim> &end_points, const TensorSize<dim> &n);
     ///@}
 
     /**
