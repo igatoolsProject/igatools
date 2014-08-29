@@ -251,10 +251,40 @@ public:
     ///@}
 
 protected:
+    /**
+     * @name Functions for changing the size or the shape of the MultiArray
+     * (it makes sense only if STLContainer is resizable).
+     */
+    ///@{
+
+    /**
+     * Resize the MultiArray as square container with @p dim entries in each
+     * array dimension.
+     */
+    void resize(const Size dim);
+
+
+    /**
+     * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
+     * in the i-th array dimension.
+     */
+    void resize(const TensorSize<rank> &dim);
+
+
+    /**
+     * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
+     * in the i-th array dimension.
+     *
+     * All the entries are initialized to the value @p val.
+     */
+    void resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val);
+    ///@}
+
+
+private:
 
     /**
      * Data of type Entry stored in a STL container.
-     * @note This member variable is protected because should be resized by DynamicMultiArray.
      */
     STLContainer data_;
 };

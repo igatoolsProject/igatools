@@ -47,9 +47,11 @@ TensorIndex<rank>
 CartesianProductIndexer<rank>::
 get_tensor_index(const Index flat_index) const
 {
+    /*
     Assert((flat_index >=0) && (flat_index < this->flat_size()),
            ExcIndexRange(flat_index,0,this->flat_size()));
-    return this->data_[flat_index] ;
+    //*/
+    return this->get_data()[flat_index] ;
 }
 
 

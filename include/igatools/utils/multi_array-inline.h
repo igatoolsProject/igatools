@@ -253,6 +253,38 @@ print_info(LogStream &out) const
 }
 
 
+template<class STLContainer, int rank>
+inline
+void
+MultiArray<STLContainer,rank>::
+resize(const Size dim)
+{
+    this->resize(TensorSize<rank>(dim));
+}
+
+
+template<class STLContainer, int rank>
+inline
+void
+MultiArray<STLContainer,rank>::
+resize(const TensorSize<rank> &dim)
+{
+    this->reset_size(dim);
+    this->data_.resize(this->flat_size());
+}
+
+
+template<class STLContainer, int rank>
+inline
+void
+MultiArray<STLContainer,rank>::
+resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val)
+{
+    this->reset_size(dim);
+    this->data_.resize(this->flat_size(),val);
+}
+
+
 
 IGA_NAMESPACE_CLOSE
 
