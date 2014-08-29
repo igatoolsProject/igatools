@@ -26,6 +26,7 @@
 #include <type_traits>
 
 IGA_NAMESPACE_OPEN
+
 /**
  * Type traits to determine if a class provides
  * a print_info function
@@ -49,38 +50,6 @@ has_print_info(long)
 {
     return false;
 }
-
-///**
-// * Ouput for vector onto a LogStream.
-// * Mostly use for debugging.
-// *
-// * @relates LogStream
-// */
-//template <class T>
-//EnableIf<has_print_info<T>(0), LogStream &>
-//operator<<(LogStream &out, const vector<T> &vec)
-//{
-//    out << "Vector with: " << vec.size() << " entries." << std::endl;
-//    for (auto &entry : vec)
-//    {
-//        entry.print_info(out);
-//        out<<std::endl;
-//    }
-//    return out;
-//}
-
-//template <class T>
-//EnableIf<!has_print_info<T>(0), LogStream &>
-//operator<<(LogStream &out, const vector<T> &vector)
-//{
-//    out << "[ ";
-//    for (auto &i:vector)
-//        out << i << " ";
-//    out << "]";
-//    return out;
-//}
-//
-
 
 IGA_NAMESPACE_CLOSE
 

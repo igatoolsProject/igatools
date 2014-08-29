@@ -53,7 +53,7 @@ void elem_points(const int n_knots = 5)
 
         cache.fill_element_cache(elem);
         out.begin_item("Points:");
-        out << elem->get_points();
+        elem->get_points().print_info(out);
         out.end_item();
     }
 
