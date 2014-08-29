@@ -265,7 +265,7 @@ assemble()
      * Initialization of the container for the values of the function
      * that must be projected.
      */
-    vector<Value> f_values_proj(this->elem_quad.get_num_points());
+    ValueVector<Value> f_values_proj(this->elem_quad.get_num_points());
     //-----------------------------------------------------------------
 
 
@@ -346,7 +346,7 @@ assemble()
 
         //----------------------------------------------------
         // multiplicative coefficients of the stiffness matrix term.
-        vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
+        iga::vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
         for (auto &c : c_stiffness)
             for (Index i = 0 ; i < dim ; ++i)
                 c[i][i] = 1.0;
@@ -429,15 +429,15 @@ assemble()
 
     out_screen << "Dim=" << dim << "         space_deg=" << this->deg_ << endl;
     out_screen << "Elapsed seconds eval mass matrix = "
-        << this->elapsed_time_eval_mass_matrix_.count() << endl;
+               << this->elapsed_time_eval_mass_matrix_.count() << endl;
     out_screen << "Elapsed seconds eval stiffness matrix = "
-        << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
+               << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
     out_screen << "Elapsed seconds apply bc = "
-        << elapsed_time_apply_bc.count() << endl;
+               << elapsed_time_apply_bc.count() << endl;
     out_screen << "Elapsed seconds boundary conditions = "
-        << elapsed_time_boundary_conditions.count() << endl;
+               << elapsed_time_boundary_conditions.count() << endl;
     out_screen << "Elapsed seconds assemble() function = "
-        << elapsed_time_assemble.count() << endl;
+               << elapsed_time_assemble.count() << endl;
     out_screen << endl;
 
 

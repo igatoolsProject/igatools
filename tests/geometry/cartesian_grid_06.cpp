@@ -41,7 +41,7 @@ void do_test()
 {
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
-        n_knots(i) = 2*i+2;
+        n_knots[i] = 2*i+2;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     auto it = std::find_if(grid->begin(), grid->end(), IsOdd<dim>);

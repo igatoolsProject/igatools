@@ -115,7 +115,7 @@ T &
 ValueVector<T>::
 operator[](const Index i)
 {
-    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+//    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
     return this->data_[i];
 }
 
@@ -124,7 +124,7 @@ const T &
 ValueVector<T>::
 operator[](const Index i) const
 {
-    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
+//    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
     return this->data_[i];
 }
 
