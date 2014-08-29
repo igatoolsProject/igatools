@@ -248,8 +248,9 @@ void
 MultiArray<STLContainer,rank>::
 print_info(LogStream &out) const
 {
-    for (const auto &v : data_)
-        out << v << " ";
+    TensorSizedContainer<rank>::print_info(out);
+    out << std::endl;
+    t_print_info<STLContainer>(out);
 }
 
 

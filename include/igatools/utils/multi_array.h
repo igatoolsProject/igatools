@@ -264,12 +264,7 @@ public:
      * Prints the content of the MultiArray on the LogStream @p out.
      * Its use is intended mainly for testing and debugging purpose.
      */
-    void print_info(LogStream &out) const
-    {
-        TensorSizedContainer<rank>::print_info(out);
-        out << std::endl;
-        t_print_info<STLContainer>(out);
-    }
+    void print_info(LogStream &out) const;
     ///@}
 
 protected:
