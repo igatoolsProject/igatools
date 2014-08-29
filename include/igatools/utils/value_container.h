@@ -104,8 +104,8 @@ public:
      */
     Size size() const
     {
-        Assert(this->data_.size() == this->flat_size(),
-               ExcDimensionMismatch(this->data_.size(),this->flat_size()));
+        Assert(this->get_data().size() == this->flat_size(),
+               ExcDimensionMismatch(this->get_data().size(),this->flat_size()));
         Assert(this->flat_size() == num_functions_ * num_points_,
                ExcDimensionMismatch(this->flat_size(), num_functions_ * num_points_)) ;
 

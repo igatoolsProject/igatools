@@ -47,9 +47,8 @@ StaticMultiArray(const T &val)
     :
     StaticMultiArray<T,dim,rank>()
 {
-    this->data_ = filled_array<T, n_entries>(val);
+    const_cast<std::array<T,n_entries>&>(this->get_data()) = filled_array<T, n_entries>(val);
 }
-
 
 #if 0
 //This code is wrong data_ has dim^rank entries and i goes from 0 to rank*dim
@@ -59,10 +58,15 @@ StaticMultiArray(const std::array<T,dim> &val)
     :
     StaticMultiArray<T,dim,rank>()
 {
+    LogStream out;
+    out << "flat size= " << this->flat_size() << std::endl;
     Index i = 0 ;
     for (int r=0 ; r <= rank ; ++r)
         for (int d=0 ; d < dim ; ++d,++i)
-            this->data_[i] = val[d];
+        {
+            out << "i= " << i << std::endl;
+            (*this)(i) = val[d];
+        }
 }
 #endif
 
@@ -75,7 +79,7 @@ StaticMultiArray(std::initializer_list<T> list)
     Assert(list.size() == n_entries, ExcDimensionMismatch(list.size(),n_entries));
 
     for (int i = 0 ; i < n_entries  ; ++i)
-        this->data_[i] = list.begin()[i] ;
+        (*this)(i) = list.begin()[i] ;
 }
 
 

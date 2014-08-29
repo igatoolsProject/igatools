@@ -67,7 +67,6 @@ public:
      */
     explicit StaticMultiArray(const T &val);
 
-
 #if 0
     /**
      * Construct a StaticMultiArray in which its elements are equal between
