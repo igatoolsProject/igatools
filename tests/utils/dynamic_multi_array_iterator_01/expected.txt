@@ -1,63 +1,90 @@
 Default constructor 
+Size: [ 0 ]  Weights: [0]
 [ ]
 Uniform constructor 
+Size: [ 3 ]  Weights: [3]
 [ 0 0 0 ]
 Rectangular constructor 
+Size: [ 2 ]  Weights: [2]
 [ 0 0 ]
 Default constructor 
+Size: [ 0 0 ]  Weights: [0,0]
 [ ]
 Uniform constructor 
+Size: [ 3 3 ]  Weights: [3,9]
 [ 0 0 0 0 0 0 0 0 0 ]
 Rectangular constructor 
+Size: [ 2 3 ]  Weights: [2,6]
 [ 0 0 0 0 0 0 ]
 Default constructor 
+Size: [ 0 0 0 ]  Weights: [0,0,0]
 [ ]
 Uniform constructor 
+Size: [ 3 3 3 ]  Weights: [3,9,27]
 [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
 Rectangular constructor 
+Size: [ 2 3 4 ]  Weights: [2,6,24]
 [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
 Default constructor 
+Size: [ 0 ]  Weights: [0]
 [ ]
 Size: 3
-0 0 0 [ 0 1 2 ]
+0 0 0 Size: [ 3 ]  Weights: [3]
+[ 0 1 2 ]
 Size: 2
+Size: [ 2 ]  Weights: [2]
 [ 0 1 ]
 Default constructor 
+Size: [ 0 0 ]  Weights: [0,0]
 [ ]
 Size: 9
-0 0 0 0 0 0 0 0 0 [ 0 1 2 3 4 5 6 7 8 ]
+0 0 0 0 0 0 0 0 0 Size: [ 3 3 ]  Weights: [3,9]
+[ 0 1 2 3 4 5 6 7 8 ]
 Size: 6
+Size: [ 2 3 ]  Weights: [2,6]
 [ 0 1 2 3 4 5 ]
 Default constructor 
+Size: [ 0 0 0 ]  Weights: [0,0,0]
 [ ]
 Size: 27
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 ]
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 Size: [ 3 3 3 ]  Weights: [3,9,27]
+[ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 ]
 Size: 24
+Size: [ 2 3 4 ]  Weights: [2,6,24]
 [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 ]
 Default constructor 
 Size: 3
+Size: [ 3 ]  Weights: [3]
 [ 0 1 2 ]
 Size: 2
+Size: [ 2 ]  Weights: [2]
 [ 10 11 ]
 Default constructor 
 Size: 9
+Size: [ 3 3 ]  Weights: [3,9]
 [ 0 1 2 3 4 5 6 7 8 ]
 Size: 6
+Size: [ 2 3 ]  Weights: [2,6]
 [ 10 11 12 13 14 15 ]
 Default constructor 
 Size: 27
+Size: [ 3 3 3 ]  Weights: [3,9,27]
 [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 ]
 Size: 24
+Size: [ 2 3 4 ]  Weights: [2,6,24]
 [ 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 ]
 Default constructor 
 Size: 4
+Size: [ 4 ]  Weights: [4]
 [ 0 1 2 3 ]
 Flat view: [ 1 2 3 ]
 Default constructor 
 Size: 16
+Size: [ 4 4 ]  Weights: [4,16]
 [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
 Flat view: [ 5 6 7 9 10 11 ]
 Default constructor 
 Size: 64
+Size: [ 4 4 4 ]  Weights: [4,16,64]
 [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 ]
 Flat view: [ 21 22 23 25 26 27 ]
