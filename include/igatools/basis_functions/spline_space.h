@@ -60,12 +60,12 @@ private:
     using typename GridSpace::GridType;
 
 public:
-    static const std::array<int, dim> dims;
+    using GridSpace::dims;
 
     using FaceSpace = Conditional<(dim>0),
           SplineSpace<dim-1, range, rank>,
           SplineSpace<    0, range, rank> >;
-public:
+
     using Func = Function<dim, range, rank>;
 
 public:
@@ -77,11 +77,12 @@ public:
 
 public:
     template<class> class ComponentContainer;
-    static constexpr int n_components = ComponentContainer<int>::n_entries;
-    static const std::array<int, n_components> components;
+    static constexpr int n_components = ComponentContainer<Size>::n_entries;
+    static const std::array<Size, n_components> components;
+
 
 public:
-    using Knots = CartesianProductArray<Real, dim>;
+    using KnotCoordinates = typename GridType::KnotCoordinates;
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
@@ -89,7 +90,7 @@ public:
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
-    using KnotsTable = ComponentContainer<Knots>;
+    using KnotsTable = ComponentContainer<KnotCoordinates>;
     using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
 
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
@@ -269,7 +270,6 @@ public:
     {
         using base_t = StaticMultiArray<T,range,rank>;
     public:
-        // using base_t::Entry;
         /** Type of the iterator. */
         using iterator =  MultiArrayIterator<ComponentContainer<T>>;
 
@@ -406,7 +406,8 @@ public:
 
 protected:
 
-    /** This function initialize the member variables from the constructor arguments or after an h-refinement. */
+    /** This function initialize the member variables from the constructor
+     * arguments or after an h-refinement. */
     void init();
 };
 

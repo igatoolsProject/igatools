@@ -92,17 +92,6 @@ public:
 
     static constexpr std::array<Size, dim_> dims = sequence<dim>();
 
-    /** Type for the vector of knot vectors */
-    using KnotCoordinates = CartesianProductArray<Real, dim>;
-
-    /**
-     * Types of grid for future optimization
-     */
-    enum class Kind
-    {
-        uniform, direction_uniform, non_uniform
-    };
-
     /** Type for the face of the grid
      * @note for the case dim==0 (with non existent face type)
      * we use CartesianGrid<0>, but any function dealing with face
@@ -115,6 +104,17 @@ public:
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
+
+    /** Type for the vector of knot vectors */
+    using KnotCoordinates = CartesianProductArray<Real, dim>;
+
+    /**
+     * Types of grid for future optimization
+     */
+    enum class Kind
+    {
+    	uniform, direction_uniform, non_uniform
+    };
 
     /** @name Constructors*/
     ///@{
