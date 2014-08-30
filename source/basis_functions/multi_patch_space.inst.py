@@ -33,5 +33,5 @@ include_files = ['basis_functions/bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces:
-    f.write( 'template class MultiPatchSpace<%s>;\n' %space)
+#for space in inst.PhysSpaces:
+#    f.write( 'template class MultiPatchSpace<%s>;\n' %space)
