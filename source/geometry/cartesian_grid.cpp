@@ -155,7 +155,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
     knot_coordinates_(knot_coordinates),
-    influent_(this->tensor_size(), true),
+    marked_elems_(this->tensor_size(), true),
     active_elems_(this->tensor_size(), true)
 {
 #ifndef NDEBUG
@@ -217,7 +217,7 @@ CartesianGrid(const self_t &grid)
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
-    influent_(grid.influent_),
+    marked_elems_(grid.marked_elems_),
     active_elems_(grid.active_elems_)
 {}
 
@@ -406,7 +406,7 @@ refine_directions(
     TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
-    influent_.resize(this->tensor_size(), true);
+    marked_elems_.resize(this->tensor_size(), true);
     active_elems_.resize(this->tensor_size(), true);
 
     // refining the objects that's are attached to the CartesianGrid

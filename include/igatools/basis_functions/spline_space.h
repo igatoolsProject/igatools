@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef SPACE_SPEC_H_
-#define SPACE_SPEC_H_
+#ifndef SPLINE_SPACE_H_
+#define SPLINE_SPACE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
@@ -29,7 +29,6 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/geometry/cartesian_grid.h>
-
 
 IGA_NAMESPACE_OPEN
 

@@ -30,7 +30,6 @@
 #include <igatools/geometry/grid_forward_iterator.h>
 
 #include <array>
-#include <vector>
 #include <memory>
 
 #include <boost/signals2.hpp>
@@ -453,12 +452,11 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-
     /**
      * In the hierarchical spaces elements are characterized as influent or not
      * this is the place where this information is stored.
      */
-    DynamicMultiArray<bool,dim> influent_;
+    DynamicMultiArray<bool,dim> marked_elems_;
 
     /**
      * Active elements indicators (used for example in hierarchical spaces).
