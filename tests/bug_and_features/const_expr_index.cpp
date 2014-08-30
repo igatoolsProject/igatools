@@ -18,20 +18,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __IGA_ARRAY_UTILS_H_
-#define __IGA_ARRAY_UTILS_H_
+/*
+ * Development playground for constexpression sequence
+ * author: pauletti
+ * date: Aug 29, 2014
+ *
+ */
 
-#include <igatools/base/config.h>
-#include <array>
-#include <algorithm>
+#include "../tests.h"
 #include <utility>
 
-IGA_NAMESPACE_OPEN
 
-
-/**
- * Constant expression sequence generation
- */
 template <typename Type, Type ...Indices>
 constexpr
 auto make_index_array(std::integer_sequence<Type, Indices...>)
@@ -40,41 +37,30 @@ auto make_index_array(std::integer_sequence<Type, Indices...>)
     return std::array<Type, sizeof...(Indices)>{Indices...};
 }
 
-template<Size N>
+template<size_t N>
 constexpr
 auto sequence()
--> std::array<Size, N>
+-> std::array<size_t, N>
 {
-	return make_index_array(std::make_integer_sequence<Size, N>());
+	return make_index_array(std::make_index_sequence<N>());
 }
 
-
-
-template <class T, int dim>
-inline
-std::array<T, dim> filled_array(const T &v)
+template<int dim>
+class A
 {
-    std::array<T,dim> res;
-    res.fill(v);
-    return res;
-}
+public:
+	static constexpr  std::array<size_t, dim> dims = sequence<dim>();
+};
 
+template<int dim>
+constexpr  std::array<size_t, dim> A<dim>::dims;
 
-#if 0
-/**
- * Returns an array filled with the sequence of numbers
- */
-template <int dim, class T = int>
-inline
-std::array<T,dim>
-sequence(const int init = 0)
+int main()
 {
-    std::array<T,dim> res;
-    std::iota(res.begin(), res.end(), init);
-    return res;
+
+	for (auto a : A<20>::dims)
+		out << a << " ";
+	out << endl;
+
+	return 0;
 }
-#endif
-
-IGA_NAMESPACE_CLOSE
-
-#endif

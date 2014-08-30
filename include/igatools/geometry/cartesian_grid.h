@@ -27,6 +27,7 @@
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/base/array_utils.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 
 #include <array>
@@ -87,7 +88,9 @@ private:
 
 public:
     /** Dimensionality of the grid. */
-    static const int dim = dim_;
+    static constexpr int dim = dim_;
+
+    static constexpr std::array<Size, dim_> dims = sequence<dim>();
 
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim>;
@@ -292,7 +295,7 @@ public:
     CartesianProductArray<Real, dim> const &get_knot_coordinates() const;
 
     /**
-     * Returns the knot coordinates along the direction @p i.
+     * Computes the interval lengths along each direction.
      */
     CartesianProductArray<Real, dim> get_element_lengths() const;
 
