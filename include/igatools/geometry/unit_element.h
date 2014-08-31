@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
+#include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -52,9 +53,10 @@ struct UnitElement
     static const int face_dim = (dim >= 1)? dim-1 : 0;
 
     /** Number of faces per element.*/
-    static constexpr int faces_per_element = 2 * dim;
+    static constexpr Size faces_per_element = 2 * dim;
 
-    static const std::array<int,faces_per_element> faces;
+    static constexpr std::array<Size, faces_per_element> faces =
+    		sequence<faces_per_element>();
     /**
      * Converts the local face index of the unit element
      * to the hyperplane it belongs to.

@@ -20,10 +20,14 @@
 
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 
-
 using std::shared_ptr;
+using std::array;
 
 IGA_NAMESPACE_OPEN
+
+template <int dim_>
+const array<Size, UnitElement<dim_>::faces_per_element>
+GridUniformQuadCache<dim_>::faces  = UnitElement<dim_>::faces;
 
 template <int dim_>
 GridUniformQuadCache<dim_>::
@@ -33,6 +37,7 @@ GridUniformQuadCache(shared_ptr<const GridType> grid,
     :
     grid_(grid),
     flags_(flag),
+    face_flags_(flag),
     lengths_(grid->get_element_lengths()),
     quad_(quad)
 {}
@@ -47,6 +52,13 @@ init_element_cache(ElementIterator &elem)
     // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
     auto &cache = elem.get_accessor().elem_values_;
     cache.resize(flags_, quad_);
+
+    auto &face_cache = elem.get_accessor().face_values_;
+    for (auto f: faces)
+    {
+    	auto &f_cache = face_cache[f];
+    	f_cache.resize(face_flags_, quad_, f);
+    }
 }
 
 
@@ -56,10 +68,27 @@ void
 GridUniformQuadCache<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
+	const auto &index = elem->get_tensor_index();
     auto &cache = elem.get_accessor().elem_values_;
-    auto meas = lengths_.tensor_product(elem->get_tensor_index());
+    auto meas = lengths_.tensor_product(index);
     cache.fill(meas);
     cache.set_filled(true);
+
+
+}
+
+
+
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
+fill_face_cache(ElementIterator &elem, const int face)
+{
+	const auto &index = elem->get_tensor_index();
+	auto &f_cache = elem.get_accessor().face_values_[face];
+	auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
+	f_cache.fill(meas);
+	f_cache.set_filled(true);
 }
 
 

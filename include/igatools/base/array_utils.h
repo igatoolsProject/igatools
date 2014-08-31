@@ -60,7 +60,8 @@ std::array<T, dim> filled_array(const T &v)
 }
 
 
-#if 0
+namespace arr
+{
 /**
  * Returns an array filled with the sequence of numbers
  */
@@ -73,7 +74,7 @@ sequence(const int init = 0)
     std::iota(res.begin(), res.end(), init);
     return res;
 }
-#endif
+}
 
 IGA_NAMESPACE_CLOSE
 

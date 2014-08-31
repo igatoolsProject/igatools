@@ -31,7 +31,8 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Global CartesianGrid uniform quadrature
+ * Global CartesianGrid uniform quadrature
+ *
  * computational optimization cache, storing the interval length
  * in each direction.
  *
@@ -41,7 +42,7 @@ class GridUniformQuadCache
 {
     using GridType = CartesianGrid<dim_>;
     using ElementIterator = typename GridType::ElementIterator;
-
+    static const std::array<Size, UnitElement<dim_>::faces_per_element> faces;
 
 public:
     static const int dim = dim_;
@@ -51,11 +52,21 @@ public:
                          const ValueFlags flag,
                          const Quadrature<dim> &quad);
 
-    //Allocates the ElementIterator element_cache
+    /**
+     * Allocates the space in ElementIterator element_cache
+     * necessary for the given quadrature and flag combination.
+     * It also fills the invariant (not changing) members of
+     * the cache.
+     */
     void init_element_cache(ElementIterator &elem);
 
-    //Fill the ElementIterator element_cache
+    /**
+     * Fills the ElementIterator element_cache
+     * element dependent part
+     */
     void fill_element_cache(ElementIterator &elem);
+
+    void fill_face_cache(ElementIterator &elem, const int face);
 
     void print_info(LogStream &out) const;
 
@@ -63,6 +74,8 @@ private:
     std::shared_ptr<const GridType> grid_;
 
     GridElemValueFlagsHandler flags_;
+
+    GridFaceValueFlagsHandler face_flags_;
 
     TensorProductArray<dim> lengths_;
 

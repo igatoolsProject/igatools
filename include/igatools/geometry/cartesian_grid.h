@@ -292,7 +292,7 @@ public:
     /**
      * Returns the knot coordinates along all the directions (const version).
      */
-    CartesianProductArray<Real, dim> const &get_knot_coordinates() const;
+    KnotCoordinates const &get_knot_coordinates() const;
 
     /**
      * Computes the interval lengths along each direction.

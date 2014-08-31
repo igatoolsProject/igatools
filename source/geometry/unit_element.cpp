@@ -92,7 +92,7 @@ UnitElement<4>::vertex_to_component[vertices_per_element][4]
 
 template <int dim>
 const std::array<int, UnitElement<dim>::faces_per_element>
-UnitElement<dim>::faces = sequence<UnitElement<dim>::faces_per_element>();
+UnitElement<dim>::faces;// = sequence<UnitElement<dim>::faces_per_element>();
 
 
 template <>

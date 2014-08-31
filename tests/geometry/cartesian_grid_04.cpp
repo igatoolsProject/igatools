@@ -37,7 +37,7 @@ void face_uniform(const int n_knots)
     for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)
     {
         out << "Face: " << i << endl;
-        map<int, int> elem_map;
+        std::map<int, int> elem_map;
         auto face_grid = grid->get_face_grid(i, elem_map);
         face_grid->print_info(out);
         for (auto x : elem_map)

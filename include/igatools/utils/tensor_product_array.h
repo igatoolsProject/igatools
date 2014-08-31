@@ -130,6 +130,20 @@ public :
     Real tensor_product(const TensorIndex<rank> &tensor_id) const;
 
     /**
+     * Returns the product of a subtensor.
+     */
+    template<int subrank>
+    Real sub_tensor_product(const TensorIndex<rank> &index,
+    		                const TensorIndex<subrank> &dirs) const
+    {
+    	Assert(subrank<=rank, ExcIndexRange(subrank,0,rank));
+    	Real res = 1.;
+        for (auto i : dirs)
+        	res *=  this->data_[i][index[i]];
+        return res;
+    }
+
+    /**
      * Returns a flat vector with the component of the tensor generated
      * through the tensor product operation.
      */
