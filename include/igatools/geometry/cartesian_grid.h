@@ -113,7 +113,7 @@ public:
      */
     enum class Kind
     {
-    	uniform, direction_uniform, non_uniform
+        uniform, direction_uniform, non_uniform
     };
 
     /** @name Constructors*/

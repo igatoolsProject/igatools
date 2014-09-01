@@ -280,7 +280,7 @@ auto
 CartesianGrid<dim_>::begin() const -> ElementIterator
 {
     auto it = std::find(active_elems_.get_data().begin(),
-    		active_elems_.get_data().end(), true);
+                        active_elems_.get_data().end(), true);
     if (it == active_elems_.get_data().end())
         return ElementIterator(this->shared_from_this(),
                                IteratorState::pass_the_end);

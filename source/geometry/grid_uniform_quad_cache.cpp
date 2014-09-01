@@ -56,8 +56,8 @@ init_element_cache(ElementIterator &elem)
     auto &face_cache = elem.get_accessor().face_values_;
     for (auto f: faces)
     {
-    	auto &f_cache = face_cache[f];
-    	f_cache.resize(face_flags_, quad_, f);
+        auto &f_cache = face_cache[f];
+        f_cache.resize(face_flags_, quad_, f);
     }
 }
 
@@ -68,7 +68,7 @@ void
 GridUniformQuadCache<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
-	const auto &index = elem->get_tensor_index();
+    const auto &index = elem->get_tensor_index();
     auto &cache = elem.get_accessor().elem_values_;
     auto meas = lengths_.tensor_product(index);
     cache.fill(meas);
@@ -84,11 +84,11 @@ void
 GridUniformQuadCache<dim_>::
 fill_face_cache(ElementIterator &elem, const int face)
 {
-	const auto &index = elem->get_tensor_index();
-	auto &f_cache = elem.get_accessor().face_values_[face];
-	auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
-	f_cache.fill(meas);
-	f_cache.set_filled(true);
+    const auto &index = elem->get_tensor_index();
+    auto &f_cache = elem.get_accessor().face_values_[face];
+    auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
+    f_cache.fill(meas);
+    f_cache.set_filled(true);
 }
 
 

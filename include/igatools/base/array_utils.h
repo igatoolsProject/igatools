@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 template <typename Type, Type ...Indices>
 constexpr
 auto make_index_array(std::integer_sequence<Type, Indices...>)
-    -> std::array<Type, sizeof...(Indices)>
+-> std::array<Type, sizeof...(Indices)>
 {
     return std::array<Type, sizeof...(Indices)>{Indices...};
 }
@@ -45,7 +45,7 @@ constexpr
 auto sequence()
 -> std::array<Size, N>
 {
-	return make_index_array(std::make_integer_sequence<Size, N>());
+    return make_index_array(std::make_integer_sequence<Size, N>());
 }
 
 

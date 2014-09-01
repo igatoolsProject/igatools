@@ -134,12 +134,12 @@ public :
      */
     template<int subrank>
     Real sub_tensor_product(const TensorIndex<rank> &index,
-    		                const TensorIndex<subrank> &dirs) const
+                            const TensorIndex<subrank> &dirs) const
     {
-    	Assert(subrank<=rank, ExcIndexRange(subrank,0,rank));
-    	Real res = 1.;
+        Assert(subrank<=rank, ExcIndexRange(subrank,0,rank));
+        Real res = 1.;
         for (auto i : dirs)
-        	res *=  this->data_[i][index[i]];
+            res *=  this->data_[i][index[i]];
         return res;
     }
 

@@ -56,7 +56,7 @@ struct UnitElement
     static constexpr Size faces_per_element = 2 * dim;
 
     static constexpr std::array<Size, faces_per_element> faces =
-    		sequence<faces_per_element>();
+        sequence<faces_per_element>();
     /**
      * Converts the local face index of the unit element
      * to the hyperplane it belongs to.

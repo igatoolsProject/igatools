@@ -36,7 +36,7 @@ const Size SplineSpace<dim, range, rank>::n_components;
 template<int dim, int range, int rank>
 const array<Size, SplineSpace<dim, range, rank>::n_components>
 SplineSpace<dim, range, rank>::components =
-		sequence<SplineSpace<dim, range, rank>::n_components>();
+    sequence<SplineSpace<dim, range, rank>::n_components>();
 
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
