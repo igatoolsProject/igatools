@@ -66,6 +66,10 @@ public:
      */
     void fill_element_cache(ElementIterator &elem);
 
+    /**
+     * Fills the ElementIterator face_cache
+     * element dependent part
+     */
     void fill_face_cache(ElementIterator &elem, const int face);
 
     void print_info(LogStream &out) const;

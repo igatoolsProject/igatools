@@ -35,6 +35,9 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 struct UnitElement
 {
+
+    static const std::array<Size, dim + 2> skeleton;
+
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;
 
