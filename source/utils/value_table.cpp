@@ -25,6 +25,7 @@
 
 #include <iostream>
 
+
 IGA_NAMESPACE_OPEN
 
 
@@ -56,10 +57,10 @@ ValueTable<T>::
 get_function_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < this->num_functions_, ExcIndexRange(i,0,this->num_functions_));
+    Assert(i >= 0 && i < this->get_num_functions(), ExcIndexRange(i,0,this->get_num_functions()));
     return view(
-        iterator(*this, i    * this->num_points_, 1),
-        iterator(*this,(i+1) * this->num_points_, 1));
+        iterator(*this, i    * this->get_num_points(), 1),
+        iterator(*this,(i+1) * this->get_num_points(), 1));
 }
 
 
@@ -69,10 +70,10 @@ ValueTable<T>::
 get_function_view(const int i) const -> const_view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < this->num_functions_, ExcIndexRange(i,0,this->num_functions_));
+    Assert(i >= 0 && i < this->get_num_functions(), ExcIndexRange(i,0,this->get_num_functions()));
     return const_view(
-               const_iterator(*this, i    * this->num_points_, 1),
-               const_iterator(*this,(i+1) * this->num_points_, 1));
+               const_iterator(*this, i    * this->get_num_points(), 1),
+               const_iterator(*this,(i+1) * this->get_num_points(), 1));
 }
 
 template <class T>
@@ -81,10 +82,10 @@ ValueTable<T>::
 get_point_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < this->num_points_, ExcIndexRange(i,0,this->num_points_));
+    Assert(i >= 0 && i < this->get_num_points(), ExcIndexRange(i,0,this->get_num_points()));
     return view(
-        iterator(*this,i,this->num_points_),
-        iterator(*this,IteratorState::pass_the_end,this->num_points_));
+        iterator(*this,i,this->get_num_points()),
+        iterator(*this,IteratorState::pass_the_end,this->get_num_points()));
 }
 
 
@@ -94,10 +95,10 @@ ValueTable<T>::
 get_point_view(const int i) const -> const_view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < this->num_points_, ExcIndexRange(i,0,this->num_points_));
+    Assert(i >= 0 && i < this->get_num_points(), ExcIndexRange(i,0,this->get_num_points()));
     return const_view(
-               const_iterator(*this,i,this->num_points_),
-               const_iterator(*this,IteratorState::pass_the_end,this->num_points_));
+               const_iterator(*this,i,this->get_num_points()),
+               const_iterator(*this,IteratorState::pass_the_end,this->get_num_points()));
 }
 
 
@@ -106,20 +107,20 @@ ValueVector<T>
 ValueTable<T>::
 evaluate_linear_combination(const vector<Real> &coefficients) const
 {
-    Assert(this->num_points_ > 0, ExcLowerRange(this->num_points_,0));
-    Assert(this->num_functions_ > 0, ExcLowerRange(this->num_functions_,0));
-    Assert(this->num_functions_ == static_cast<int>(coefficients.size()),
-           ExcDimensionMismatch(this->num_functions_,static_cast<int>(coefficients.size())));
+    Assert(this->get_num_points() > 0, ExcLowerRange(this->get_num_points(),0));
+    Assert(this->get_num_functions() > 0, ExcLowerRange(this->get_num_functions(),0));
+    Assert(this->get_num_functions() == static_cast<int>(coefficients.size()),
+           ExcDimensionMismatch(this->get_num_functions(),static_cast<int>(coefficients.size())));
 
-    ValueVector<T> linear_combination(this->num_points_) ;
+    ValueVector<T> linear_combination(this->get_num_points()) ;
 
-    for (int iFn = 0 ; iFn < this->num_functions_ ; ++iFn)
+    for (int iFn = 0 ; iFn < this->get_num_functions() ; ++iFn)
     {
         const auto func = this->get_function_view(iFn) ;
 
         Real coeff_iFn = coefficients[iFn] ;
 
-        for (int jPt = 0 ; jPt < this->num_points_ ; ++jPt)
+        for (int jPt = 0 ; jPt < this->get_num_points() ; ++jPt)
             linear_combination[jPt] += coeff_iFn * func[jPt] ;
     }
 
@@ -148,9 +149,9 @@ void
 ValueTable<T>::
 print_info(LogStream &out) const
 {
-    out << "ValueTable (num_functions=" << this->num_functions_ << ",num_points=" << this->num_points_ << ") :" << std::endl ;
+    out << "ValueTable (num_functions=" << this->get_num_functions() << ",num_points=" << this->get_num_points() << ") :" << std::endl ;
 
-    for (int iFunc = 0 ; iFunc < this->num_functions_ ; iFunc++)
+    for (int iFunc = 0 ; iFunc < this->get_num_functions() ; iFunc++)
     {
         out.push("\t");
 

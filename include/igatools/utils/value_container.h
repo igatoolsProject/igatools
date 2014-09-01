@@ -27,6 +27,7 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/container_view.h>
 
+#include <vector>
 
 IGA_NAMESPACE_OPEN
 
@@ -57,9 +58,7 @@ public:
      */
     explicit ValueContainer(const Size num_functions, const Size num_points)
         :
-        DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions})),
-                      num_functions_ {num_functions},
-    num_points_ {num_points}
+        DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions}))
     {
         Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
         Assert(num_points >= 0, ExcLowerRange(num_points,0));
@@ -93,7 +92,7 @@ public:
     ValueContainer<T> &operator=(ValueContainer<T> &&in) = default;
     ///@}
 
-
+public:
     /**
      * @name Functions for getting size information
      */
@@ -105,8 +104,8 @@ public:
     {
         Assert(this->get_data().size() == this->flat_size(),
                ExcDimensionMismatch(this->get_data().size(),this->flat_size()));
-        Assert(this->flat_size() == num_functions_ * num_points_,
-               ExcDimensionMismatch(this->flat_size(), num_functions_ * num_points_)) ;
+        Assert(this->flat_size() == this->get_num_functions() * this->get_num_points(),
+               ExcDimensionMismatch(this->flat_size(), this->get_num_functions() * this->get_num_points())) ;
 
         return this->flat_size();
     }
@@ -116,7 +115,7 @@ public:
      */
     Size get_num_points() const noexcept
     {
-        return num_points_;
+        return this->tensor_size()[0];
     }
 
     /**
@@ -124,7 +123,7 @@ public:
      */
     Size get_num_functions() const noexcept
     {
-        return num_functions_;
+        return this->tensor_size()[1];
     }
     ///@}
 
@@ -160,16 +159,12 @@ protected:
         Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
         Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-        if (num_functions_ != num_functions ||
-            num_points_ != num_points)
-        {
-            num_functions_ = num_functions;
-            num_points_ = num_points;
-
-            DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points_,num_functions_}));
-        }
+        if (num_functions != this->get_num_functions() ||
+            num_points != this->get_num_points())
+            DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points,num_functions}));
     }
 
+#if 0
     /**
      * Removes all elements from the ValueTable, leaving the container with a size of 0.
      */
@@ -179,17 +174,8 @@ protected:
         num_points_ = 0;
         DynamicMultiArray<T,2>::clear();
     }
+#endif
     ///@}
-    /**
-     * Number of functions for which the objects in the ValueTable refers to.
-     */
-    Size num_functions_ ;
-
-
-    /**
-     * Number of points for which the objects in the ValueTable refers to.
-     */
-    Size num_points_ ;
 };
 
 

@@ -55,6 +55,44 @@ TensorSizedContainer(const TensorSize<rank> &size)
 {}
 
 
+
+template <int rank>
+TensorSize<rank>
+TensorSizedContainer<rank>::
+tensor_size() const
+{
+    return size_;
+}
+
+
+template <int rank>
+Size
+TensorSizedContainer<rank>::
+flat_size() const
+{
+    return size_.flat_size();
+}
+
+
+template <int rank>
+void
+TensorSizedContainer<rank>::
+reset_size(const TensorSize<rank> &size)
+{
+    size_ = size;
+    weight_ = MultiArrayUtils<rank>::compute_weight(size_) ;
+}
+
+template<int rank>
+void
+TensorSizedContainer<rank>::
+print_info(LogStream &out) const
+{
+    out << "Size: " << size_;
+    out << "  Weights: "<< weight_;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 

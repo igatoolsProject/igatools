@@ -31,35 +31,6 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int rank>
-inline
-TensorSize<rank>
-TensorSizedContainer<rank>::
-tensor_size() const
-{
-    return size_;
-}
-
-
-template <int rank>
-inline
-Size
-TensorSizedContainer<rank>::
-flat_size() const
-{
-    return size_.flat_size();
-}
-
-
-template <int rank>
-inline
-void
-TensorSizedContainer<rank>::
-reset_size(const TensorSize<rank> &size)
-{
-    size_ = size;
-    weight_ = MultiArrayUtils<rank>::compute_weight(size_) ;
-}
 
 
 

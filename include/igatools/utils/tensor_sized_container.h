@@ -100,11 +100,9 @@ public:
     Size flat_size() const;
     ///@}
 
-    void print_info(LogStream &out) const
-    {
-        out << "Size: " << size_;
-        out << "  Weights: "<< weight_;
-    }
+    void print_info(LogStream &out) const;
+
+
     /** @name Functions for the index transformations */
     ///@{
     /**
