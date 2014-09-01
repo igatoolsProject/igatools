@@ -62,10 +62,15 @@ void run_test1()
                 out << "face: " << face_id << endl;
                 out.push("  ");
                 out << "meas: "<< elem->get_face_measure(face_id) << endl;
-                out << "w_meas: "<< endl;
+
+                out << "w_meas: ";
                 elem->get_face_w_measures(face_id).print_info(out);
                 out << endl;
-                out << "points: " << elem->get_face_points(face_id) << endl;
+
+                out << "points: ";
+                elem->get_face_points(face_id).print_info(out);
+                out << endl;
+
                 out.pop();
             }
         }
@@ -112,10 +117,14 @@ void run_test2()
                 out << "face: " << face_id << endl;
                 out.push("  ");
                 out << "meas: "<< elem->get_face_measure(face_id) << endl;
-                out << "w_meas: "<< endl;
+                out << "w_meas: ";
                 elem->get_face_w_measures(face_id).print_info(out);
                 out << endl;
-                out << "points: " << elem->get_face_points(face_id) << endl;
+
+                out << "points: ";
+                elem->get_face_points(face_id).print_info(out);
+                out << endl;
+
                 out.pop();
             }
         }

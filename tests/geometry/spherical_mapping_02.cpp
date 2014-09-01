@@ -52,15 +52,19 @@ void test_evaluate()
 
     out << "Points: (r,phi1,...,phi_n) :" << endl;
     quad.get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
 
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
+    out << endl;
 
     out << "Gradients (x1,x2,...):" << endl;
     gradients.print_info(out);
+    out << endl;
 
     out << "Hessians:" << endl;
     hessians.print_info(out);
+    out << endl;
 
     string filename = "spherical_map-" + to_string(dim) + "d";
     Writer<dim> writer(map, 10);

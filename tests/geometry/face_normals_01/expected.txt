@@ -1,24 +1,18 @@
 Face: 0
   Normal vector: 
-ValueVector (num_points=1) :
-[ 0 -1.00000 0 ]  
+ValueVector (num_points=1) : [ [ 0 -1.00000 0 ]  ]
 Face: 1
   Normal vector: 
-ValueVector (num_points=1) :
-[ -0.707107 0.707107 0 ]  
+ValueVector (num_points=1) : [ [ -0.707107 0.707107 0 ]  ]
 Face: 2
   Normal vector: 
-ValueVector (num_points=1) :
-[ -0.923880 -0.382683 0 ]  
+ValueVector (num_points=1) : [ [ -0.923880 -0.382683 0 ]  ]
 Face: 3
   Normal vector: 
-ValueVector (num_points=1) :
-[ 0.923880 0.382683 0 ]  
+ValueVector (num_points=1) : [ [ 0.923880 0.382683 0 ]  ]
 Face: 4
   Normal vector: 
-ValueVector (num_points=1) :
-[ 0 0 -1.00000 ]  
+ValueVector (num_points=1) : [ [ 0 0 -1.00000 ]  ]
 Face: 5
   Normal vector: 
-ValueVector (num_points=1) :
-[ 0 0 1.00000 ]  
+ValueVector (num_points=1) : [ [ 0 0 1.00000 ]  ]

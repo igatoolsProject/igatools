@@ -169,12 +169,12 @@ public:
 };
 
 
-/**
- * Output operator.
- * @relates DynamicMultiArray
- */
-template<class T, int rank>
-LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
+///**
+// * Output operator.
+// * @relates DynamicMultiArray
+// */
+//template<class T, int rank>
+//LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
 
 
 /**

@@ -53,7 +53,7 @@ void do_test()
 
 
     out << "Initializer-list constructor" << endl ;
-    std::vector<Real> vec = {1.0,2.0,3.0};
+    vector<Real> vec = {1.0,2.0,3.0};
     ClassToTest data3(vec);
     out << "data3:\n";
     data3.print_info(out);
@@ -64,6 +64,7 @@ void do_test()
     ClassToTest data4 = data3 ;
     out << "data4:\n";
     data4.print_info(out);
+    out << endl;
     out << "data3:\n";
     data3.print_info(out);
     out << endl ;
@@ -73,7 +74,7 @@ void do_test()
     ClassToTest data5 = std::move(data3);
     out << "data5:\n";
     data5.print_info(out);
-//    data3.print_info(out);
+    out << endl;
 
     out << "---------------------------------------" << endl ;
 
@@ -97,8 +98,10 @@ void do_test1()
     out.push("\t") ;
     out << "data1:\n";
     data1.print_info(out);
+    out << endl;
     out << "data2:\n";
     data2.print_info(out);
+    out << endl;
     out.pop() ;
 
     data2 = data1 ;
@@ -106,8 +109,10 @@ void do_test1()
     out.push("\t") ;
     out << "data1:\n";
     data1.print_info(out);
+    out << endl;
     out << "data2:\n";
     data2.print_info(out);
+    out << endl;
     out.pop() ;
     out << endl ;
 
@@ -117,8 +122,10 @@ void do_test1()
     out.push("\t") ;
     out << "data1:\n";
     data1.print_info(out);
+    out << endl;
     out << "data3:\n";
     data3.print_info(out);
+    out << endl;
     out.pop() ;
 
     data3 = std::move(data1) ;
@@ -127,6 +134,7 @@ void do_test1()
 //    data1.print_info(out);
     out << "data3:\n";
     data3.print_info(out);
+    out << endl;
     out.pop() ;
 
 
@@ -159,6 +167,7 @@ void do_test2()
     ClassToTest data2 = data * b ;
     out << "data * 2.0 =" << endl ;
     data2.print_info(out);
+    out << endl;
     out << "---------------------------------------" << endl ;
     out << endl ;
 }

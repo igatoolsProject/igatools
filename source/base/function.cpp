@@ -21,7 +21,6 @@
 #include <igatools/base/function.h>
 #include <igatools/base/exceptions.h>
 
-using std::vector;
 
 IGA_NAMESPACE_OPEN
 

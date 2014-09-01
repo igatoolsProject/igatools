@@ -66,11 +66,13 @@ void do_test()
 
     out << "Testing the get_flat_cartesian_product() function" <<endl;
     const auto flat_cartesian_product = data3.get_flat_cartesian_product();
-    out << flat_cartesian_product << endl << endl;
+    flat_cartesian_product.print_info(out);
+    out << endl << endl;
 
     out << "Testing the get_flat_tensor_product() function" <<endl;
     const auto flat_tensor_product = data3.get_flat_tensor_product();
-    out << flat_tensor_product << endl << endl;
+    flat_tensor_product.print_info(out);
+    out << endl << endl;
 
     out<< "Testing the get_sub_product() function" << endl;
     TensorIndex<dim-1> sub_id;
@@ -85,6 +87,7 @@ void do_test()
     vector<Real> new_values = {-2.0,-1.0};
     TensorProductArray<dim> data5 = insert(data4, dim-1,new_values);
     data5.print_info(out);
+    out << endl;
 
     out << "========= END do_test<" << dim << "> =========" << endl ;
     out << endl;

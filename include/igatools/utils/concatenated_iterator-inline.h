@@ -40,7 +40,7 @@ ConcatenatedIteratorData()
 template <class ViewType,class DerivedClass>
 ConcatenatedIteratorData<ViewType,DerivedClass>::
 ConcatenatedIteratorData(
-    const std::vector<ViewType> &ranges,
+    const vector<ViewType> &ranges,
     const Index index)
     :
     ranges_(ranges)
@@ -77,7 +77,7 @@ template <class ViewType,class DerivedClass>
 inline
 auto
 ConcatenatedIteratorData<ViewType,DerivedClass>::
-get_ranges() const -> std::vector<ViewType>
+get_ranges() const -> vector<ViewType>
 {
     return this->ranges_;
 }
@@ -362,7 +362,7 @@ template <class ViewType,class ConstViewType>
 inline
 ConcatenatedConstIterator<ViewType,ConstViewType>::
 ConcatenatedConstIterator(
-    const std::vector<ConstViewType> &ranges,
+    const vector<ConstViewType> &ranges,
     const Index index)
     :
     ConcatenatedIteratorData<
@@ -399,7 +399,7 @@ template <class ViewType>
 inline
 ConcatenatedIterator<ViewType>::
 ConcatenatedIterator(
-    const std::vector<ViewType> &ranges,
+    const vector<ViewType> &ranges,
     const Index index)
     :
     ConcatenatedIteratorData<

@@ -4,12 +4,16 @@ Knots without repetition:
    Number of active elements: 3
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
+      Size: [ 4 ]  Weights: [4]
+      Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
    
 
 Degrees:
 [1] 
 Interior multiplicities:
+   Size: [ 2 ]  Weights: [2]
+   Direction: 0
    [ 1 1 ]
 
 Dimensionality Table:
@@ -23,13 +27,19 @@ Knots without repetition:
    Number of active elements: 3
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
+      Size: [ 4 ]  Weights: [4]
+      Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
    
 
 Degrees:
 [1] [1] 
 Interior multiplicities:
+   Size: [ 2 ]  Weights: [2]
+   Direction: 0
    [ 1 1 ]
+   Size: [ 2 ]  Weights: [2]
+   Direction: 0
    [ 1 1 ]
 
 Dimensionality Table:
@@ -43,16 +53,25 @@ Knots without repetition:
    Number of active elements: 9
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
+      Size: [ 4 4 ]  Weights: [4,16]
+      Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
+      Direction: 1
       [ 0 0.333333 0.666667 1.00000 ]
    
 
 Degrees:
 [3,3] [3,3] 
 Interior multiplicities:
+   Size: [ 2 2 ]  Weights: [2,4]
+   Direction: 0
    [ 1 1 ]
+   Direction: 1
    [ 1 1 ]
+   Size: [ 2 2 ]  Weights: [2,4]
+   Direction: 0
    [ 1 1 ]
+   Direction: 1
    [ 1 1 ]
 
 Dimensionality Table:
@@ -66,16 +85,25 @@ Knots without repetition:
    Number of active elements: 9
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
+      Size: [ 4 4 ]  Weights: [4,16]
+      Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
+      Direction: 1
       [ 0 0.333333 0.666667 1.00000 ]
    
 
 Degrees:
 [2,2] [2,2] 
 Interior multiplicities:
+   Size: [ 2 2 ]  Weights: [2,4]
+   Direction: 0
    [ 1 1 ]
+   Direction: 1
    [ 1 1 ]
+   Size: [ 2 2 ]  Weights: [2,4]
+   Direction: 0
    [ 1 1 ]
+   Direction: 1
    [ 1 1 ]
 
 Dimensionality Table:

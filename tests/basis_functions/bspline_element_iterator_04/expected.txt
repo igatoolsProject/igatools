@@ -4,16 +4,25 @@ Spline Space:
       Number of active elements: 4
       Number of intervals per direction: [ 2 2 ]
       Knot coordinates:
+         Size: [ 3 3 ]  Weights: [3,9]
+         Direction: 0
          [ 0 0.500000 1.00000 ]
+         Direction: 1
          [ 0 0.500000 1.00000 ]
       
    
    Degrees:
    [3,2] [2,3] 
    Interior multiplicities:
+      Size: [ 1 1 ]  Weights: [1,1]
+      Direction: 0
       [ 1 ]
+      Direction: 1
       [ 1 ]
+      Size: [ 1 1 ]  Weights: [1,1]
+      Direction: 0
       [ 1 ]
+      Direction: 1
       [ 1 ]
    
    Dimensionality Table:
@@ -363,22 +372,38 @@ Spline Space:
       Number of active elements: 8
       Number of intervals per direction: [ 2 2 2 ]
       Knot coordinates:
+         Size: [ 3 3 3 ]  Weights: [3,9,27]
+         Direction: 0
          [ 0 0.500000 1.00000 ]
+         Direction: 1
          [ 0 0.500000 1.00000 ]
+         Direction: 2
          [ 0 0.500000 1.00000 ]
       
    
    Degrees:
    [3,2,2] [2,3,2] [2,2,3] 
    Interior multiplicities:
+      Size: [ 1 1 1 ]  Weights: [1,1,1]
+      Direction: 0
       [ 1 ]
+      Direction: 1
       [ 1 ]
+      Direction: 2
       [ 1 ]
+      Size: [ 1 1 1 ]  Weights: [1,1,1]
+      Direction: 0
       [ 1 ]
+      Direction: 1
       [ 1 ]
+      Direction: 2
       [ 1 ]
+      Size: [ 1 1 1 ]  Weights: [1,1,1]
+      Direction: 0
       [ 1 ]
+      Direction: 1
       [ 1 ]
+      Direction: 2
       [ 1 ]
    
    Dimensionality Table:

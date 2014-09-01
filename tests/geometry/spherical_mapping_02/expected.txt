@@ -1,36 +1,24 @@
 Points: (r,phi1,...,phi_n) :
-ValueVector (num_points=1) :
-[ 0.500000 ]  
+ValueVector (num_points=1) : [ [ 0.500000 ]  ]
 Values (x1,x2,...):
-ValueVector (num_points=1) :
-[ 0.500000 ]  
+ValueVector (num_points=1) : [ [ 0.500000 ]  ]
 Gradients (x1,x2,...):
-ValueVector (num_points=1) :
-[ [ 1.00000 ]  ]  
+ValueVector (num_points=1) : [ [ [ 1.00000 ]  ]  ]
 Hessians:
-ValueVector (num_points=1) :
-[ [ [ 0 ]  ]  ]  
+ValueVector (num_points=1) : [ [ [ [ 0 ]  ]  ]  ]
 Points: (r,phi1,...,phi_n) :
-ValueVector (num_points=1) :
-[ 0.500000 0.500000 ]  
+ValueVector (num_points=1) : [ [ 0.500000 0.500000 ]  ]
 Values (x1,x2,...):
-ValueVector (num_points=1) :
-[ 0.438791 0.239713 ]  
+ValueVector (num_points=1) : [ [ 0.438791 0.239713 ]  ]
 Gradients (x1,x2,...):
-ValueVector (num_points=1) :
-[ [ 0.877583 0.479426 ]  [ -0.239713 0.438791 ]  ]  
+ValueVector (num_points=1) : [ [ [ 0.877583 0.479426 ]  [ -0.239713 0.438791 ]  ]  ]
 Hessians:
-ValueVector (num_points=1) :
-[ [ [ 0 0 ]  [ -0.479426 0.877583 ]  ]  [ [ -0.479426 0.877583 ]  [ -0.438791 -0.239713 ]  ]  ]  
+ValueVector (num_points=1) : [ [ [ [ 0 0 ]  [ -0.479426 0.877583 ]  ]  [ [ -0.479426 0.877583 ]  [ -0.438791 -0.239713 ]  ]  ]  ]
 Points: (r,phi1,...,phi_n) :
-ValueVector (num_points=1) :
-[ 0.500000 0.500000 0.500000 ]  
+ValueVector (num_points=1) : [ [ 0.500000 0.500000 0.500000 ]  ]
 Values (x1,x2,...):
-ValueVector (num_points=1) :
-[ 0.438791 0.210368 0.114924 ]  
+ValueVector (num_points=1) : [ [ 0.438791 0.210368 0.114924 ]  ]
 Gradients (x1,x2,...):
-ValueVector (num_points=1) :
-[ [ 0.877583 0.420736 0.229849 ]  [ -0.239713 0.385076 0.210368 ]  [ 0 -0.114924 0.210368 ]  ]  
+ValueVector (num_points=1) : [ [ [ 0.877583 0.420736 0.229849 ]  [ -0.239713 0.385076 0.210368 ]  [ 0 -0.114924 0.210368 ]  ]  ]
 Hessians:
-ValueVector (num_points=1) :
-[ [ [ 0 0 0 ]  [ -0.479426 0.770151 0.420736 ]  [ 0 -0.229849 0.420736 ]  ]  [ [ -0.479426 0.770151 0.420736 ]  [ -0.438791 -0.210368 -0.114924 ]  [ 0 -0.210368 0.385076 ]  ]  [ [ 0 -0.229849 0.420736 ]  [ 0 -0.210368 0.385076 ]  [ 0 -0.210368 -0.114924 ]  ]  ]  
+ValueVector (num_points=1) : [ [ [ [ 0 0 0 ]  [ -0.479426 0.770151 0.420736 ]  [ 0 -0.229849 0.420736 ]  ]  [ [ -0.479426 0.770151 0.420736 ]  [ -0.438791 -0.210368 -0.114924 ]  [ 0 -0.210368 0.385076 ]  ]  [ [ 0 -0.229849 0.420736 ]  [ 0 -0.210368 0.385076 ]  [ 0 -0.210368 -0.114924 ]  ]  ]  ]

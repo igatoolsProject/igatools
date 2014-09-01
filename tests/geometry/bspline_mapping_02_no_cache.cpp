@@ -184,6 +184,7 @@ void run_test()
     out << "Degree: " << p << endl;
     out << "Points: " << endl;
     points.print_info(out);
+    out << endl;
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
     out << endl;

@@ -69,6 +69,7 @@ void test_iterator()
 
     out << "x = " << endl;
     quad.get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
     out << "F(x)     = " << endl;
     values.print_info(out);
     out << endl;

@@ -837,9 +837,9 @@ void TableHandler::add_value(const std::string &key,
         // of padding columns as necessary
         int n = 0;
         for (std::map< std::string, Column >::iterator p = columns.begin(); p != columns.end(); ++p)
-            n = (n >= p->second.entries.size() ? n : p->second.entries.size());
+            n = (n >= int(p->second.entries.size()) ? n : int(p->second.entries.size()));
 
-        while (columns[key].entries.size()+1 < n)
+        while (int(columns[key].entries.size()+1) < n)
             columns[key].entries.push_back(internal::TableEntry(T()));
     }
 

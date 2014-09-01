@@ -75,8 +75,11 @@ void test_evaluate()
     {
         elem->fill_cache() ;
         elem->get_basis_values().print_info(out) ;
+        out << endl;
         elem_pf.get_map_gradients().print_info(out) ;
+        out << endl;
         elem_rs.get_basis_values().print_info(out) ;
+        out << endl;
     }
     out << std::endl << std::endl ;
 }

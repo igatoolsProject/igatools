@@ -152,7 +152,7 @@ void PoissonProblem<dim>::assemble()
                               * w_meas[qp];
         }
 
-        vector<Index> loc_dofs = elem->get_local_to_global();
+        const auto loc_dofs = elem->get_local_to_global();
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }

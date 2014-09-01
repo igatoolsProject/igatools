@@ -6,12 +6,16 @@ Type = IgMapping
 	      Number of active elements: 2
 	      Number of intervals per direction: [ 2 ]
 	      Knot coordinates:
+	         Size: [ 3 ]  Weights: [3]
+	         Direction: 0
 	         [ 0 0.500000 1.00000 ]
 	      
 	   
 	   Degrees:
 	   [2] 
 	   Interior multiplicities:
+	      Size: [ 1 ]  Weights: [1]
+	      Direction: 0
 	      [ 1 ]
 	   
 	   Dimensionality Table:
@@ -38,9 +42,7 @@ Type = IgMapping
 		Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 ]
 	
 	Quad pts.= 
-	ValueVector (num_points=2) :
-	[ 0 ]  [ 1.00000 ]  
-	
+	ValueVector (num_points=2) : [ [ 0 ]  [ 1.00000 ]  ]
 	Loop using the BSplineElementAccessor
 	Element id: 0
 	Values = ValueTable (num_functions=3,num_points=2) :
@@ -75,16 +77,25 @@ Type = IgMapping
 		      Number of active elements: 2
 		      Number of intervals per direction: [ 2 1 ]
 		      Knot coordinates:
+		         Size: [ 3 2 ]  Weights: [3,6]
+		         Direction: 0
 		         [ 0 0.500000 1.00000 ]
+		         Direction: 1
 		         [ 0 1.00000 ]
 		      
 		   
 		   Degrees:
 		   [2,1] [2,1] 
 		   Interior multiplicities:
+		      Size: [ 1 0 ]  Weights: [1,0]
+		      Direction: 0
 		      [ 1 ]
+		      Direction: 1
 		      [ ]
+		      Size: [ 1 0 ]  Weights: [1,0]
+		      Direction: 0
 		      [ 1 ]
+		      Direction: 1
 		      [ ]
 		   
 		   Dimensionality Table:
@@ -120,9 +131,7 @@ Type = IgMapping
 			Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
 		
 		Quad pts.= 
-		ValueVector (num_points=4) :
-		[ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  
-		
+		ValueVector (num_points=4) : [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
 		Loop using the BSplineElementAccessor
 		Element id: 0
 		Values = ValueTable (num_functions=12,num_points=4) :
@@ -179,22 +188,38 @@ Type = IgMapping
 			      Number of active elements: 2
 			      Number of intervals per direction: [ 2 1 1 ]
 			      Knot coordinates:
+			         Size: [ 3 2 2 ]  Weights: [3,6,12]
+			         Direction: 0
 			         [ 0 0.500000 1.00000 ]
+			         Direction: 1
 			         [ 0 1.00000 ]
+			         Direction: 2
 			         [ 0 1.00000 ]
 			      
 			   
 			   Degrees:
 			   [2,1,1] [2,1,1] [2,1,1] 
 			   Interior multiplicities:
+			      Size: [ 1 0 0 ]  Weights: [1,0,0]
+			      Direction: 0
 			      [ 1 ]
+			      Direction: 1
 			      [ ]
+			      Direction: 2
 			      [ ]
+			      Size: [ 1 0 0 ]  Weights: [1,0,0]
+			      Direction: 0
 			      [ 1 ]
+			      Direction: 1
 			      [ ]
+			      Direction: 2
 			      [ ]
+			      Size: [ 1 0 0 ]  Weights: [1,0,0]
+			      Direction: 0
 			      [ 1 ]
+			      Direction: 1
 			      [ ]
+			      Direction: 2
 			      [ ]
 			   
 			   Dimensionality Table:
@@ -243,9 +268,7 @@ Type = IgMapping
 				Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 0 0 0 0 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
 			
 			Quad pts.= 
-			ValueVector (num_points=8) :
-			[ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  
-			
+			ValueVector (num_points=8) : [ [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
 			Loop using the BSplineElementAccessor
 			Element id: 0
 			Values = ValueTable (num_functions=36,num_points=8) :

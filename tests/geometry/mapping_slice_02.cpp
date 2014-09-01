@@ -76,8 +76,14 @@ void run_test()
         face_elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, face_quad);
 
         face_elem->fill_cache();
+
+        out << "Map Values (x1,x2,...):" << endl;
         face_elem->get_map_values().print_info(out);
+        out << endl;
+
+        out << "Map Gradients (x1,x2,...):" << endl;
         face_elem->get_map_gradients().print_info(out);
+        out << endl;
     }
 }
 

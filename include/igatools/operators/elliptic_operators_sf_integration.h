@@ -112,7 +112,7 @@ public:
     virtual void eval_operator_gradu_gradv(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+        const vector<TMatrix<space_dim,space_dim>> &coeffs,
         DenseMatrix &operator_gradu_gradv) const override final;
 
 
@@ -1075,7 +1075,7 @@ evaluate_w_phi1Dtrial_phi1Dtest(
         ExcDimensionMismatch(phi_trial.get_num_points(),n_pts));
 
 
-        std::vector<Real> w_times_edge_length(n_pts);
+        vector<Real> w_times_edge_length(n_pts);
 
         const Real edge_length = length_element_edge[dir];
         for (int jpt = 0 ; jpt < n_pts ; ++jpt)
@@ -1405,7 +1405,7 @@ EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
 eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+    const vector<TMatrix<space_dim,space_dim>> &coeffs,
     DenseMatrix &operator_gradu_gradv) const
 {
 
@@ -1598,7 +1598,7 @@ eval_operator_gradu_gradv(
            ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
 
 //    LogStream out;
-    std::vector<TMatrix<dim,dim>> C_hat(n_points);
+    vector<TMatrix<dim,dim>> C_hat(n_points);
     for (Index ipt = 0 ; ipt < n_points ; ++ipt)
     {
         TMatrix<dim,dim> &C_hat_ipt = C_hat[ipt];

@@ -22,7 +22,7 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/multi_array_utils.h>
 
-using std::vector;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -234,15 +234,15 @@ clear() noexcept
     this->resize(0);
 }
 
-template<class T, int rank>
-LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)
-{
-    Size size = data.flat_size();
-
-    for (Index i = 0 ; i < size ; ++i)
-        out << data(i) << " ";
-    return out;
-}
+//template<class T, int rank>
+//LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)
+//{
+//    Size size = data.flat_size();
+//
+//    for (Index i = 0 ; i < size ; ++i)
+//        out << data(i) << " ";
+//    return out;
+//}
 
 
 

@@ -1,90 +1,24 @@
-========== BEGIN do_test<1> ==========
-Constant value constructor (value=3)
+========================================================================
+void constructors() [with int dim = 1; int rank = 2]
+========================================================================
 3 
-Variable value constructor (value=dim)
-0 
-========== END do_test<1> ==========
+========================================================================
 
-========== BEGIN do_test<2> ==========
-Constant value constructor (value=3)
+========================================================================
+void constructors() [with int dim = 2; int rank = 2]
+========================================================================
 3 3 3 3 
-Variable value constructor (value=dim)
-0 1 0 1 
-========== END do_test<2> ==========
+========================================================================
 
-========== BEGIN do_test<3> ==========
-Constant value constructor (value=3)
+========================================================================
+void constructors() [with int dim = 3; int rank = 2]
+========================================================================
 3 3 3 3 3 3 3 3 3 
-Variable value constructor (value=dim)
-0 1 2 0 1 2 0 1 2 
-========== END do_test<3> ==========
+========================================================================
 
-========== BEGIN do_test_1<1> ==========
-Size: 1
-0 
-Size: 1
-0 
-========== END do_test_1<1> ==========
-
-========== BEGIN do_test_1<2> ==========
-Size: 4
-0 1 2 3 
-Size: 4
-0 1 2 3 
-========== END do_test_1<2> ==========
-
-========== BEGIN do_test_1<3> ==========
-Size: 9
-0 1 2 3 4 5 6 7 8 
-Size: 9
-0 1 2 3 4 5 6 7 8 
-========== END do_test_1<3> ==========
-
-========== BEGIN do_test_2<1> ==========
-Fill progression from 0 
-Size: 1
-0 
-Fill progression from 10 
-Size: 1
-10 
-========== END do_test_2<1> ==========
-
-========== BEGIN do_test_2<2> ==========
-Fill progression from 0 
-Size: 4
-0 1 2 3 
-Fill progression from 10 
-Size: 4
-10 11 12 13 
-========== END do_test_2<2> ==========
-
-========== BEGIN do_test_2<3> ==========
-Fill progression from 0 
-Size: 9
-0 1 2 3 4 5 6 7 8 
-Fill progression from 10 
-Size: 9
-10 11 12 13 14 15 16 17 18 
-========== END do_test_2<3> ==========
-
-========== BEGIN do_test_3<1> ==========
-Constant value constructor (value=4)
-Fill progression from 2 
-Size: 1
-2 
-========== END do_test_3<1> ==========
-
-========== BEGIN do_test_3<2> ==========
-Constant value constructor (value=4)
-Fill progression from 2 
-Size: 4
-2 3 4 5 
-========== END do_test_3<2> ==========
-
-========== BEGIN do_test_3<3> ==========
-Constant value constructor (value=4)
-Fill progression from 2 
-Size: 9
-2 3 4 5 6 7 8 9 10 
-========== END do_test_3<3> ==========
+========================================================================
+void constructors() [with int dim = 2; int rank = 3]
+========================================================================
+3 3 3 3 3 3 3 3 
+========================================================================
 

@@ -124,7 +124,7 @@ public:
      * depends on the face index (i.e. the input parameter @p face_id in the constructor
      * FaceTopology<dim>::FaceTopology(const Index face_id) ).
      */
-    std::vector<Index> get_active_directions() const;
+    vector<Index> get_active_directions() const;
 
 private:
     Index id_;

@@ -29,7 +29,6 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <string>
-#include <vector>
 #include <array>
 #include <set>
 

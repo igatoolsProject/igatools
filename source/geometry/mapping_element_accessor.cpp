@@ -29,7 +29,6 @@
 #include <igatools/geometry/ig_mapping.h>
 
 using std::array;
-using std::vector;
 using std::shared_ptr;
 using std::static_pointer_cast;
 using std::dynamic_pointer_cast;

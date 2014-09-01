@@ -124,6 +124,7 @@ void run_test()
     out << "Degree: " << p << endl;
     out << "Points: " << endl;
     quad.get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
     out << endl;

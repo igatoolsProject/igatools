@@ -4,6 +4,7 @@ Grid 1
 Number of active elements: 1
 Number of intervals per direction: [ ]
 Knot coordinates:
+   Size: [ ]  Weights: []
 
 ------------------------------------------
 
@@ -12,6 +13,7 @@ Grid 2
 Number of active elements: 1
 Number of intervals per direction: [ ]
 Knot coordinates:
+   Size: [ ]  Weights: []
 
 ------------------------------------------
 
@@ -20,6 +22,7 @@ Grid union
 Number of active elements: 1
 Number of intervals per direction: [ ]
 Knot coordinates:
+   Size: [ ]  Weights: []
 
 map_elem_grid_union_to_elem_grid_1 = 0 
 map_elem_grid_union_to_elem_grid_2 = 0 
@@ -33,6 +36,8 @@ Grid 1
 Number of active elements: 2
 Number of intervals per direction: [ 2 ]
 Knot coordinates:
+   Size: [ 3 ]  Weights: [3]
+   Direction: 0
    [ 0 0.500000 1.00000 ]
 
 ------------------------------------------
@@ -42,6 +47,8 @@ Grid 2
 Number of active elements: 3
 Number of intervals per direction: [ 3 ]
 Knot coordinates:
+   Size: [ 4 ]  Weights: [4]
+   Direction: 0
    [ 0 0.333333 0.666667 1.00000 ]
 
 ------------------------------------------
@@ -51,6 +58,8 @@ Grid union
 Number of active elements: 4
 Number of intervals per direction: [ 4 ]
 Knot coordinates:
+   Size: [ 5 ]  Weights: [5]
+   Direction: 0
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 map_elem_grid_union_to_elem_grid_1 = 0 0 1 1 
@@ -65,7 +74,10 @@ Grid 1
 Number of active elements: 4
 Number of intervals per direction: [ 2 2 ]
 Knot coordinates:
+   Size: [ 3 3 ]  Weights: [3,9]
+   Direction: 0
    [ 0 0.500000 1.00000 ]
+   Direction: 1
    [ 0 0.500000 1.00000 ]
 
 ------------------------------------------
@@ -75,7 +87,10 @@ Grid 2
 Number of active elements: 9
 Number of intervals per direction: [ 3 3 ]
 Knot coordinates:
+   Size: [ 4 4 ]  Weights: [4,16]
+   Direction: 0
    [ 0 0.333333 0.666667 1.00000 ]
+   Direction: 1
    [ 0 0.333333 0.666667 1.00000 ]
 
 ------------------------------------------
@@ -85,7 +100,10 @@ Grid union
 Number of active elements: 16
 Number of intervals per direction: [ 4 4 ]
 Knot coordinates:
+   Size: [ 5 5 ]  Weights: [5,25]
+   Direction: 0
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
+   Direction: 1
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 map_elem_grid_union_to_elem_grid_1 = 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 
@@ -100,8 +118,12 @@ Grid 1
 Number of active elements: 8
 Number of intervals per direction: [ 2 2 2 ]
 Knot coordinates:
+   Size: [ 3 3 3 ]  Weights: [3,9,27]
+   Direction: 0
    [ 0 0.500000 1.00000 ]
+   Direction: 1
    [ 0 0.500000 1.00000 ]
+   Direction: 2
    [ 0 0.500000 1.00000 ]
 
 ------------------------------------------
@@ -111,8 +133,12 @@ Grid 2
 Number of active elements: 27
 Number of intervals per direction: [ 3 3 3 ]
 Knot coordinates:
+   Size: [ 4 4 4 ]  Weights: [4,16,64]
+   Direction: 0
    [ 0 0.333333 0.666667 1.00000 ]
+   Direction: 1
    [ 0 0.333333 0.666667 1.00000 ]
+   Direction: 2
    [ 0 0.333333 0.666667 1.00000 ]
 
 ------------------------------------------
@@ -122,8 +148,12 @@ Grid union
 Number of active elements: 64
 Number of intervals per direction: [ 4 4 4 ]
 Knot coordinates:
+   Size: [ 5 5 5 ]  Weights: [5,25,125]
+   Direction: 0
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
+   Direction: 1
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
+   Direction: 2
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 map_elem_grid_union_to_elem_grid_1 = 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 0 0 1 1 0 0 1 1 2 2 3 3 2 2 3 3 4 4 5 5 4 4 5 5 6 6 7 7 6 6 7 7 4 4 5 5 4 4 5 5 6 6 7 7 6 6 7 7 

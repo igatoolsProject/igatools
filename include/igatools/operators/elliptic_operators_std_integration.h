@@ -108,7 +108,7 @@ public:
     virtual void eval_operator_gradu_gradv(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+        const vector<TMatrix<space_dim,space_dim>> &coeffs,
         DenseMatrix &operator_gradu_gradv) const override final;
 };
 
@@ -155,7 +155,7 @@ eval_operator_u_v(
     Assert(n_qp == phi_test.get_num_points(),ExcDimensionMismatch(n_qp,phi_test.get_num_points()));
     Assert(n_qp == phi_trial.get_num_points(),ExcDimensionMismatch(n_qp,phi_trial.get_num_points()));
 
-    std::vector<Real> coeffs_times_w_meas(n_qp);
+    vector<Real> coeffs_times_w_meas(n_qp);
     for (int qp = 0; qp < n_qp; ++qp)
         coeffs_times_w_meas[qp] = coeffs[qp] * w_meas[qp];
 
@@ -215,7 +215,7 @@ EllipticOperatorsStdIntegration<PhysSpaceTest,PhysSpaceTrial>::
 eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+    const vector<TMatrix<space_dim,space_dim>> &coeffs,
     DenseMatrix &operator_gradu_gradv) const
 {
     //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
@@ -253,7 +253,7 @@ eval_operator_gradu_gradv(
 
 
 //    LogStream out;
-    std::vector<TMatrix<space_dim,space_dim>> coeffs_times_w_meas(n_qp);
+    vector<TMatrix<space_dim,space_dim>> coeffs_times_w_meas(n_qp);
     for (Index qp = 0; qp < n_qp; ++qp)
     {
         for (Index i = 0 ; i < PhysSpaceTest::space_dim ; ++i)
@@ -271,7 +271,7 @@ eval_operator_gradu_gradv(
     {
         const auto grad_phi_i = grad_phi_test.get_function_view(i);
 
-        std::vector<grad_test_t> coeffs_times_grad_phi_i(n_qp);
+        vector<grad_test_t> coeffs_times_grad_phi_i(n_qp);
         for (Index qp = 0; qp < n_qp; ++qp)
         {
             const auto &C = coeffs_times_w_meas[qp];

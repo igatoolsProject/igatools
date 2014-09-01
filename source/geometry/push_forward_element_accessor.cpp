@@ -27,7 +27,6 @@
 #include <algorithm>
 
 using std::array;
-using std::vector;
 using std::shared_ptr;
 
 

@@ -128,7 +128,7 @@ public:
     virtual void eval_operator_gradu_gradv(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+        const vector<TMatrix<space_dim,space_dim>> &coeffs,
         DenseMatrix &operator_gradu_gradv) const = 0;
 
 protected:

@@ -47,13 +47,13 @@
 
 // [unqualified names]
 using namespace iga;
-using namespace std;
-using namespace std::chrono;
 
 using functions::ConstantFunction;
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
 using numbers::PI;
+
+using std::cout;
 // [unqualified names]
 
 
@@ -88,9 +88,9 @@ protected:
     using SpaceTest = Space;
     using SpaceTrial = Space;
 
-    using Duration = chrono::duration<Real>;
-    using Clock = chrono::high_resolution_clock;
-    using TimePoint = chrono::time_point<Clock>;
+    using Duration = std::chrono::duration<Real>;
+    using Clock = std::chrono::high_resolution_clock;
+    using TimePoint = std::chrono::time_point<Clock>;
     // [type aliases]
 
     TimePoint start_poisson_;
@@ -429,15 +429,15 @@ assemble()
 
     out_screen << "Dim=" << dim << "         space_deg=" << this->deg_ << endl;
     out_screen << "Elapsed seconds eval mass matrix = "
-        << this->elapsed_time_eval_mass_matrix_.count() << endl;
+               << this->elapsed_time_eval_mass_matrix_.count() << endl;
     out_screen << "Elapsed seconds eval stiffness matrix = "
-        << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
+               << this->elapsed_time_eval_stiffness_matrix_.count() << endl;
     out_screen << "Elapsed seconds apply bc = "
-        << elapsed_time_apply_bc.count() << endl;
+               << elapsed_time_apply_bc.count() << endl;
     out_screen << "Elapsed seconds boundary conditions = "
-        << elapsed_time_boundary_conditions.count() << endl;
+               << elapsed_time_boundary_conditions.count() << endl;
     out_screen << "Elapsed seconds assemble() function = "
-        << elapsed_time_assemble.count() << endl;
+               << elapsed_time_assemble.count() << endl;
     out_screen << endl;
 
 

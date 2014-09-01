@@ -34,11 +34,13 @@ int main()
     out.depth_console(10);
 
     const int n=5;
-    std::vector< Real > points(n);
+    vector< Real > points(n);
     for (int i=0; i<n; ++i)
         points[i] = Real(i)/(n-1);
 
-    out << "points: " << points << endl;
+    out << "points: ";
+    points.print_info(out);
+    out << endl;
 
     for (int p = 0; p<3; p++)
     {

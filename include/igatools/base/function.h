@@ -53,8 +53,8 @@ IGA_NAMESPACE_OPEN
  *  public:
  *  using Function<m, n>::
  *    LinearFunction();
- *    void evaluate(std::vector < typename LinearFunction<dim, rdim>::Point >  & points,
- *                  std::vector     < typename LinearFunction<dim, rdim>::Value >  & values
+ *    void evaluate(ValueVector< typename LinearFunction<dim,rdim>::Point >  & points,
+ *                  ValueVector< typename LinearFunction<dim,rdim>::Value >  & values
  *                 ) const
  *    {
  *      for (int i=0; i<points.size(); i++)

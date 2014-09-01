@@ -26,6 +26,7 @@
 template< int dim, int range, int rank = 1>
 void do_test()
 {
+    using iga::vector;
     vector<Real> coord_x {0,1,2,3,4};
     vector<Real> coord_y {5,6,7,8};
     vector<Real> coord_z {9, 10, 11};

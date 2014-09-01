@@ -54,6 +54,8 @@ create_mapping(shared_ptr<RefSpace_t<dim>> bspline_space)
 {
     // bspline_space->print_info(out) ;
 
+    using iga::vector;
+
     vector<Real> control_pts(bspline_space->get_num_basis());
 
     if (dim == 1)
@@ -132,6 +134,7 @@ void test_evaluate()
     const int n_patches = 4;
 
     using PhysSpacePtr = shared_ptr<PhysicalSpace_t<dim>>;
+    using iga::vector;
     vector<PhysSpacePtr> phys_spaces;
 
     const int num_knots = 2 ;

@@ -31,15 +31,15 @@ data = Instantiation(include_files)
 ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim) 
            for dim in inst.domain_dims]
 ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
-                     for  dim in inst.domain_dims for t in ('Real','Index','bool','std::vector<Index>')]
+                     for  dim in inst.domain_dims for t in ('Real','Index','bool','vector<Index>')]
 ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
            for deriv in inst.derivatives + inst.values + inst.divs]
 
 
 for row in ma_list:
     f.write('template class %s; \n' % (row))
-    f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
-    
+#   f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
+  
 
             
 evaluators = set(['DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<%d>>,%d>' %(x.dim,x.dim)

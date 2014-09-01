@@ -27,7 +27,6 @@
 using boost::numeric::ublas::row;
 using boost::numeric::ublas::matrix;
 using boost::math::binomial_coefficient;
-using std::vector;
 
 IGA_NAMESPACE_OPEN
 
@@ -112,7 +111,7 @@ BernsteinBasis::derivative(
 
 
 matrix<Real>
-BernsteinBasis::evaluate(const int p,  const std::vector< Real > &points)
+BernsteinBasis::evaluate(const int p,  const vector<Real> &points)
 {
     /*
      * First we compute 2 table where each colum we store
@@ -159,7 +158,7 @@ matrix<Real>
 BernsteinBasis::derivative(
     const int order,
     const int p,
-    const std::vector< Real > &points)
+    const vector< Real > &points)
 {
     if (order > 0)
     {

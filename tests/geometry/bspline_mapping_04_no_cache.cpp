@@ -226,9 +226,17 @@ void test_evaluate()
     auto gradients = elem->evaluate_gradients_at_points(points);
     auto hessians = elem->evaluate_hessians_at_points(points);
 
+    out << "Values : ";
     values.print_info(out);
+    out << endl;
+
+    out << "Gradients : ";
     gradients.print_info(out);
+    out << endl;
+
+    out << "Hessians : ";
     hessians.print_info(out);
+    out << endl;
 
     string filename = "bspline_map-" + to_string(dim) + "d";
     Writer<dim> writer(map, 4);

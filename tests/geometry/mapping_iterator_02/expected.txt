@@ -4,7 +4,5 @@ A =
 b =[ 1.00000 ] 
 
 wdets    = 
-ValueVector (num_points=2) :
-0.750000 0.750000 
-
+ValueVector (num_points=2) : [ 0.750000 0.750000 ]
 

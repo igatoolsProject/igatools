@@ -20,7 +20,7 @@
 /*
  *
  * Test for the Concatenated iterator class, using as base iterator the
- * std::vector<int>::iterator.
+ * vector<int>::iterator.
  *
  * martinelli
  * 30 May 2014
@@ -32,11 +32,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/utils/concatenated_iterator.h>
 
-#include <vector>
 #include <memory>
-
-using std::vector;
-using std::shared_ptr;
 
 
 template <int dim>
@@ -52,7 +48,7 @@ do_test_1()
     using VecView = View<VecIt,VecConstIt>;
     using VecConstView = ConstView<VecIt,VecConstIt>;
 
-    std::vector<VecConstView> ranges;
+    vector<VecConstView> ranges;
 
     int n_spaces = 3;
     vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
@@ -113,7 +109,7 @@ do_test_2()
     using VecView = View<VecIt,VecConstIt>;
     using VecConstView = ConstView<VecIt,VecConstIt>;
 
-    std::vector<VecConstView> ranges;
+    vector<VecConstView> ranges;
 
     int n_spaces = 3;
     vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);

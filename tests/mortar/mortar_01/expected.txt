@@ -4,12 +4,16 @@ Reference space:
          Number of active elements: 2
          Number of intervals per direction: [ 2 ]
          Knot coordinates:
+            Size: [ 3 ]  Weights: [3]
+            Direction: 0
             [ 0 0.500000 1.00000 ]
          
       
       Degrees:
       [1] 
       Interior multiplicities:
+         Size: [ 1 ]  Weights: [1]
+         Direction: 0
          [ 1 ]
       
       Dimensionality Table:
@@ -40,12 +44,16 @@ Push-forward:
       	      Number of active elements: 2
       	      Number of intervals per direction: [ 2 ]
       	      Knot coordinates:
+      	         Size: [ 3 ]  Weights: [3]
+      	         Direction: 0
       	         [ 0 0.500000 1.00000 ]
       	      
       	   
       	   Degrees:
       	   [1] 
       	   Interior multiplicities:
+      	      Size: [ 1 ]  Weights: [1]
+      	      Direction: 0
       	      [ 1 ]
       	   
       	   Dimensionality Table:
@@ -78,12 +86,16 @@ Push-forward:
             Number of active elements: 2
             Number of intervals per direction: [ 2 ]
             Knot coordinates:
+               Size: [ 3 ]  Weights: [3]
+               Direction: 0
                [ 0 0.500000 1.00000 ]
             
          
          Degrees:
          [1] 
          Interior multiplicities:
+            Size: [ 1 ]  Weights: [1]
+            Direction: 0
             [ 1 ]
          
          Dimensionality Table:
@@ -114,12 +126,16 @@ Push-forward:
          	      Number of active elements: 2
          	      Number of intervals per direction: [ 2 ]
          	      Knot coordinates:
+         	         Size: [ 3 ]  Weights: [3]
+         	         Direction: 0
          	         [ 0 0.500000 1.00000 ]
          	      
          	   
          	   Degrees:
          	   [1] 
          	   Interior multiplicities:
+         	      Size: [ 1 ]  Weights: [1]
+         	      Direction: 0
          	      [ 1 ]
          	   
          	   Dimensionality Table:

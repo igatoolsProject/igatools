@@ -24,21 +24,13 @@ MappingElementAccessor info
          Faces on boundary = 0 2 3
    num. points = 4
 Points evaluated at the element using the cache
-ValueVector (num_points=4) :
-[ 0 0 ]  [ 0.500000 0 ]  [ 0 1.00000 ]  [ 0.500000 1.50000 ]  
-
+ValueVector (num_points=4) : [ [ 0 0 ]  [ 0.500000 0 ]  [ 0 1.00000 ]  [ 0.500000 1.50000 ]  ]
 Points evaluated at the element using evaluate_values_at_points()
-ValueVector (num_points=4) :
-[ 0 0 ]  [ 0.500000 0 ]  [ 0 1.00000 ]  [ 0.500000 1.50000 ]  
-
+ValueVector (num_points=4) : [ [ 0 0 ]  [ 0.500000 0 ]  [ 0 1.00000 ]  [ 0.500000 1.50000 ]  ]
 Points evaluated at the face id 0 using the cache
-ValueVector (num_points=2) :
-[ 0 0 ]  [ 0 1.00000 ]  
-
+ValueVector (num_points=2) : [ [ 0 0 ]  [ 0 1.00000 ]  ]
 Points evaluate at the face id 0 using evaluate_values_at_points()
-ValueVector (num_points=2) :
-[ 0 0 ]  [ 0 1.00000 ]  
-----
+ValueVector (num_points=2) : [ [ 0 0 ]  [ 0 1.00000 ]  ]----
 
 ----
 Element id 1
@@ -60,20 +52,12 @@ MappingElementAccessor info
          Faces on boundary = 1 2 3
    num. points = 4
 Points evaluated at the element using the cache
-ValueVector (num_points=4) :
-[ 0.500000 0 ]  [ 1.00000 0 ]  [ 0.500000 1.50000 ]  [ 1.00000 2.00000 ]  
-
+ValueVector (num_points=4) : [ [ 0.500000 0 ]  [ 1.00000 0 ]  [ 0.500000 1.50000 ]  [ 1.00000 2.00000 ]  ]
 Points evaluated at the element using evaluate_values_at_points()
-ValueVector (num_points=4) :
-[ 0.500000 0 ]  [ 1.00000 0 ]  [ 0.500000 1.50000 ]  [ 1.00000 2.00000 ]  
-
+ValueVector (num_points=4) : [ [ 0.500000 0 ]  [ 1.00000 0 ]  [ 0.500000 1.50000 ]  [ 1.00000 2.00000 ]  ]
 Points evaluated at the face id 1 using the cache
-ValueVector (num_points=2) :
-[ 1.00000 0 ]  [ 1.00000 2.00000 ]  
-
+ValueVector (num_points=2) : [ [ 1.00000 0 ]  [ 1.00000 2.00000 ]  ]
 Points evaluate at the face id 1 using evaluate_values_at_points()
-ValueVector (num_points=2) :
-[ 1.00000 0 ]  [ 1.00000 2.00000 ]  
-----
+ValueVector (num_points=2) : [ [ 1.00000 0 ]  [ 1.00000 2.00000 ]  ]----
 
 ========== Test (Dimension: 2) --- end ========== 

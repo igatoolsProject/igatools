@@ -68,11 +68,11 @@ is_face() const
 
 template<int dim>
 inline
-std::vector<Index>
+vector<Index>
 TopologyId<dim>::
 get_active_directions() const
 {
-    std::vector<Index> active_directions;
+    vector<Index> active_directions;
     if (this->is_element())
     {
         for (Index d = 0 ; d < dim ; ++d)

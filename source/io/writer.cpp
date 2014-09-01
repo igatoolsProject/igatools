@@ -27,7 +27,6 @@
 #include <igatools/geometry/identity_mapping.h>
 #include <igatools/utils/multi_array_utils.h>
 
-#include <vector>
 #include <sstream>
 #include <fstream>
 #include <utility>
