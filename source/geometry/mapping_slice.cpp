@@ -23,7 +23,7 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 using std::endl;
 
@@ -81,8 +81,8 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
     const auto weights = quad.get_weights();
 
     auto ext_quad = Quadrature<dim+1>(
-                        insert(points, direction_,std::vector<Real>(1,value_)),
-                        insert(weights,direction_,std::vector<Real>(1,1.0))) ;
+                        insert(points, direction_,vector<Real>(1,value_)),
+                        insert(weights,direction_,vector<Real>(1,1.0))) ;
 
     return ext_quad;
 }

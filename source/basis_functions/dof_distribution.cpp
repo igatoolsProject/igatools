@@ -21,7 +21,6 @@
 
 #include <igatools/basis_functions/dof_distribution.h>
 
-using std::vector;
 using std::map;
 using std::shared_ptr;
 using std::make_shared;
@@ -212,7 +211,7 @@ create_element_loc_to_global_view(
 
 
 template<int dim, int range, int rank>
-std::vector<Index>
+vector<Index>
 DofDistribution<dim, range, rank>::
 get_loc_to_global_indices(const CartesianGridElement<dim> &element) const
 {
@@ -283,8 +282,6 @@ auto
 DofDistribution<dim, range, rank>::
 get_num_dofs_element(const CartesianGridElement<dim> &element) const -> Size
 {
-//    const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
-
     return elements_loc_to_global_flat_view_->at(element.get_flat_index()).get_num_entries();
 }
 
@@ -298,16 +295,13 @@ print_info(LogStream &out) const
         index_table_(comp).print_info(out);
     out << std::endl;
 
-//    int i = 0;
+    // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
     for (const auto &dofs_elem : *elements_loc_to_global_flat_view_)
     {
-//        out << this->get_loc_to_global_indices(dofs_elem.first) << std::endl;
-
         out << "[ ";
         for (auto x : dofs_elem.second)
             out << x << " ";
         out << "]" << std::endl;
-        //*/
     }
 }
 

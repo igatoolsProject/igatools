@@ -156,26 +156,26 @@ public:
     virtual void evaluate_hessians(ValueVector<Hessian> &hessians) const;
 
     virtual void evaluate_face(const Index face_id,
-    		ValueVector<Value> &values) const;
+                               ValueVector<Value> &values) const;
 
     virtual void evaluate_face_gradients(const Index face_id,
-    		ValueVector<Gradient> &gradients) const;
+                                         ValueVector<Gradient> &gradients) const;
 
     virtual void evaluate_face_hessians(const Index face_id,
-    		ValueVector<Hessian> &hessians) const;
+                                        ValueVector<Hessian> &hessians) const;
     ///@}
 
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
     virtual void evaluate_at_points(const ValueVector<Point> &points,
-    		ValueVector<Value> &values) const ;
+                                    ValueVector<Value> &values) const ;
 
     virtual void evaluate_gradients_at_points(const ValueVector<Point> &points,
-    		ValueVector<Gradient> &gradients) const;
+                                              ValueVector<Gradient> &gradients) const;
 
     virtual void evaluate_hessians_at_points(const ValueVector<Point> &points,
-    		ValueVector<Hessian> &hessians) const;
+                                             ValueVector<Hessian> &hessians) const;
     ///@}
 
 

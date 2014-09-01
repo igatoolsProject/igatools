@@ -18,46 +18,39 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/function_lib.h>
-#include <igatools/base/exceptions.h>
+#ifndef __PRINT_INFO_UTILS_H_
+#define __PRINT_INFO_UTILS_H_
+
+#include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
+#include <type_traits>
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * Type traits to determine if a class provides
+ * a print_info function
+ */
+template<class T>
+using print_info_type =
+    decltype(std::declval<T>().print_info(std::declval<LogStream &>()));
 
-namespace functions
+
+template<class T>
+constexpr
+EnableIf<std::is_void<print_info_type<T>>::value, bool >
+                                       has_print_info(int)
 {
-template<int dim, int range, int rank>
-ConstantFunction<dim, range, rank>::
-ConstantFunction(const Value value)
-    :value_ {value}
-{}
-
-
-
-template<int dim, int range, int rank>
-ConstantFunction<dim, range, rank>::
-~ConstantFunction()
-{}
-
-
-
-template<int dim, int range, int rank>
-void
-ConstantFunction<dim, range, rank>::
-evaluate(
-    const ValueVector<Point> &points,
-    ValueVector<Value> &values) const
-{
-    Assert(points.size() == values.size(),
-           ExcDimensionMismatch(points.size(), values.size())) ;
-
-    for (auto &value : values)
-        value = value_;
+    return true;
 }
 
-} // of namespace functions.
-
+template<class T>
+constexpr bool
+has_print_info(long)
+{
+    return false;
+}
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/function_lib.inst>
+#endif

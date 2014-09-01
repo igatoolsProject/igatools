@@ -39,7 +39,6 @@ using std::shared_ptr;
 using std::make_shared;
 
 using std::array;
-using std::vector;
 
 
 IGA_NAMESPACE_OPEN
@@ -441,7 +440,7 @@ GlobalCache::
 reset(const Space &space,
       const Quadrature<dim> &quad,
       const int max_der,
-      const std::array<std::vector<int>,dim> &intervals_id)
+      const std::array<vector<int>,dim> &intervals_id)
 {
     //------------------------------------------------------------------------------------------
     // resizing the structures for the one dimensional splines

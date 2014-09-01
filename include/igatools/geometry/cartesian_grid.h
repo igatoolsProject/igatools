@@ -23,11 +23,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
-#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/base/logstream.h>
-#include <igatools/geometry/grid_forward_iterator.h>
-#include <igatools/geometry/unit_element.h>
+#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/geometry/unit_element.h>
+#include <igatools/geometry/grid_forward_iterator.h>
 
 #include <array>
 #include <vector>
@@ -155,12 +155,12 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates,
+    CartesianGrid(const KnotCoordinates &knot_coordinates,
                   const Kind kind);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as std::array of std::vector<Real>.
+     * direction is provided as std::array of vector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -168,7 +168,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const std::array<std::vector<Real>,dim> &knot_coordinates);
+    CartesianGrid(const std::array<vector<Real>,dim> &knot_coordinates);
 
 public:
     /**
@@ -218,11 +218,11 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const CartesianProductArray<Real,dim> &knot_coordinates);
+    create(const KnotCoordinates &knot_coordinates);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as std::array of std::vector<Real>.
+     * direction is provided as std::array of vector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -230,19 +230,17 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const std::array<std::vector<Real>,dim> &knot_coordinates);
+    create(const std::array<vector<Real>,dim> &knot_coordinates);
 
 
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points,
-           const Size n_knots);
+    create(const BBox<dim> &end_points, const Size n_knots);
 
     /**
      * @todo document me
      */
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points,
-           const TensorSize<dim> &n);
+    create(const BBox<dim> &end_points, const TensorSize<dim> &n);
     ///@}
 
     /**
@@ -287,7 +285,7 @@ public:
     /**
      * Returns the knot coordinates along the direction @p i.
      */
-    std::vector<Real> const &get_knot_coordinates(const int i) const;
+    vector<Real> const &get_knot_coordinates(const int i) const;
 
     /**
      * Returns the knot coordinates along all the directions (const version).
@@ -359,7 +357,7 @@ public:
      *
      * @endcode
      */
-    std::map<ElementIterator, std::vector<int> >
+    std::map<ElementIterator, vector<int> >
     find_elements_of_points(const ValueVector<Points<dim>> &points) const;
 
 public:

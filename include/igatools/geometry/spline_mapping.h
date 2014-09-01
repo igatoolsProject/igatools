@@ -57,7 +57,7 @@ public:
      * Sets the control points defining the map.
      * @param[in] control_points - Coordinates of the control points in the Euclidean space.
      */
-    virtual void set_control_points(const std::vector<Real> &control_points) = 0;
+    virtual void set_control_points(const vector<Real> &control_points) = 0;
     ///@}
 
 

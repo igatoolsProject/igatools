@@ -21,7 +21,7 @@
 #include <igatools/linear_algebra/sparsity_pattern.h>
 
 using std::set;
-using std::vector;
+
 using std::pair;
 
 IGA_NAMESPACE_OPEN

@@ -24,7 +24,7 @@
 
 using std::endl;
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 using std::make_shared;
 using boost::numeric::ublas::matrix_row;

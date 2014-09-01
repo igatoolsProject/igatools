@@ -33,5 +33,4 @@ for row in value_vectors:
     f.write('template class %s; \n' % (row))
     f.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
     f.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
-    f.write("template LogStream & operator<<(LogStream &,const %s &) ;\n" % (row))
     

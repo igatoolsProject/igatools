@@ -202,7 +202,7 @@ private:
      * at the quadrature points.
      * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
-    using BasisValues1d = std::vector<DenseMatrix>;
+    using BasisValues1d = vector<DenseMatrix>;
 
 
 protected:
@@ -281,7 +281,7 @@ private:
         void reset(const Space &space,
                    const Quadrature<dim> &quad,
                    const int max_der,
-                   const std::array<std::vector<int>,dim> &intervals_id);
+                   const std::array<vector<int>,dim> &intervals_id);
 
         TensorSize<dim> n_intervals_;
     };

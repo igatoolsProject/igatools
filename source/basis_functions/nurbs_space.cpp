@@ -25,7 +25,6 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
 using std::endl;
 using std::shared_ptr;
 using std::make_shared;
@@ -238,7 +237,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs,
+                   vector<Index> &face_to_element_dofs,
                    typename GridType::FaceGridMap &elem_map) const
 -> std::shared_ptr<RefFaceSpace>
 {
@@ -268,7 +267,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_face_space(const Index face_id,
-               std::vector<Index> &face_to_element_dofs) const
+               vector<Index> &face_to_element_dofs) const
 -> std::shared_ptr<FaceSpace>
 {
     auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
@@ -440,7 +439,7 @@ get_degree() const -> const DegreeTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_loc_to_global(const CartesianGridElement<dim> &element) const -> std::vector<Index>
+get_loc_to_global(const CartesianGridElement<dim> &element) const -> vector<Index>
 {
     return sp_space_->get_loc_to_global(element);
 }

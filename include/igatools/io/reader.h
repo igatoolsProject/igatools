@@ -161,7 +161,7 @@ bool xml_element_is_unique(const boost::property_tree::ptree &tree,
  * @note If any element is present in the tree, an assertion will be raised
  * (in Debug and Release mode).
  */
-std::vector< boost::property_tree::ptree >
+vector< boost::property_tree::ptree >
 get_xml_element_vector(const boost::property_tree::ptree &tree,
                        const std::string &tag_name);
 
@@ -187,7 +187,7 @@ boost::property_tree::ptree get_xml_element_attributes(
  * The type of scalars is determined by the template parameter @p ScalarType.
  */
 template <class ScalarType>
-std::vector<ScalarType>
+vector<ScalarType>
 get_vector_data_from_xml(const boost::property_tree::ptree &tree);
 
 /**

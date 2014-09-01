@@ -27,7 +27,6 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/container_view.h>
 
-#include <vector>
 
 IGA_NAMESPACE_OPEN
 

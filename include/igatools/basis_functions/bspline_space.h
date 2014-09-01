@@ -269,7 +269,7 @@ protected:
 
 public:
 
-    std::vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     /** @name Functions involving the element iterator */
     ///@{
@@ -298,13 +298,13 @@ public:
     ///@{
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
-                       std::vector<Index> &face_to_element_dofs,
+                       vector<Index> &face_to_element_dofs,
                        typename GridType::FaceGridMap &elem_map) const;
 
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs) const;
+                   vector<Index> &face_to_element_dofs) const;
 
     std::shared_ptr<const self_t >
     get_reference_space() const;

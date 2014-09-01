@@ -22,9 +22,6 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/unit_element.h>
 
-#include <vector>
-
-using std::vector;
 using std::array;
 using std::endl;
 
@@ -186,7 +183,7 @@ Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
             points_new.copy_data_direction(
                 i,
                 vector<Real>(1,UnitElement<dim>::face_constant_coordinate[face_id]));
-            weights_new.copy_data_direction(i,std::vector<Real>(1,1.0));
+            weights_new.copy_data_direction(i,vector<Real>(1,1.0));
             --j;
         }
     }

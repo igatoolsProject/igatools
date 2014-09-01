@@ -22,7 +22,6 @@
 #include <igatools/geometry/mapping_slice.h>
 #include <igatools/basis_functions/space_manager.h>
 
-using std::vector;
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -203,7 +202,7 @@ get_id() const
 
 
 template <class RefSpace_, class PushForward_>
-std::vector<Index>
+vector<Index>
 PhysicalSpace<RefSpace_,PushForward_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {

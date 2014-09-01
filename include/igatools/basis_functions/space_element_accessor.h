@@ -45,11 +45,13 @@ template <typename Accessor> class GridForwardIterator;
  * It collects all common functions for getting basis values (and derivatives)
  * and field values (and derivatives).
  *
- * Its design fulfills the
- * <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern"><em>Curiously Recurring Template Pattern (CRTP)</em></a>
- *  in order to achieve <em>static polymorphism</em>, which is an imitation of polymorphism
- * in programming code but which is resolved at compile time and thus does away with run-time
- * virtual-table lookups.
+ *
+ * @note Its design fulfills the
+ * <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">
+ * <em>Curiously Recurring Template Pattern (CRTP)</em></a>
+ * in order to achieve <em>static polymorphism</em>, which is an imitation of
+ * polymorphism in programming code but which is resolved at compile time
+ * and thus does away with run-time virtual-table lookups.
  *
  *
  * @ingroup accessors
@@ -61,48 +63,34 @@ template<class Space>
 class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
 {
 public:
-    /** @name Types and aliases used and/or returned by the SpaceElementAccessor's methods. */
+    /** @name Types and aliases used and/or returned by the
+     * SpaceElementAccessor's methods. */
     ///@{
-
     using DerivedElementAccessor = typename Space::ElementAccessor;
 
-    /**
-     * Typedef for specifying the value of the basis function.
-     */
-    using Value = typename Space::Value;
-
+    // TODO (pauletti, Aug 21, 2014): doxy documentation should link to space doc
+    // do NOT type twice
     using Point = typename Space::Point;
-
-    /**
-     * Typedef for specifying the divergence of the basis function.
-     */
-    using Div = typename Space::Div;
-
-    /**
-     * Typedef for specifying the derivatives of the basis function.
-     */
+    using Value = typename Space::Value;
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
+    using Div = typename Space::Div;
 
-
-    static const int dim = Space::dim;
-    static const int codim = Space::codim;
-    static const int range = Space::range;
-    static const int rank = Space::rank;
+    static const int dim       = Space::dim;
+    static const int codim     = Space::codim;
+    static const int space_dim = Space::space_dim;
+    static const int range     = Space::range;
+    static const int rank      = Space::rank;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
-
     ///@}
-
 
     /** Number of faces per element. */
     static const Size n_faces = UnitElement<dim>::faces_per_element;
-
-
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =
@@ -119,7 +107,6 @@ public:
         ValueFlags::face_gradient |
         ValueFlags::face_hessian |
         ValueFlags::face_divergence;
-
 
     /** @name Constructors */
     ///@{
@@ -242,7 +229,7 @@ public:
     template <int deriv_order>
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
-        const std::vector<Real> &local_coefs,
+        const vector<Real> &local_coefs,
         const ValueVector<Point> &points) const;
 
 
@@ -256,7 +243,7 @@ public:
      */
     ValueVector<Value>
     evaluate_field_values_at_points(
-        const std::vector<Real> &local_coefs,
+        const vector<Real> &local_coefs,
         const ValueVector<Point> &points) const;
 
 
@@ -270,7 +257,7 @@ public:
      */
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
-        const std::vector<Real> &local_coefs,
+        const vector<Real> &local_coefs,
         const ValueVector<Point> &points) const;
 
 
@@ -284,7 +271,7 @@ public:
      */
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
-        const std::vector<Real> &local_coefs,
+        const vector<Real> &local_coefs,
         const ValueVector<Point> &points) const;
     ///@}
 
@@ -453,7 +440,7 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Value>
-    evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
     /**
@@ -461,7 +448,7 @@ public:
      * points on the face specified by @p face_id.
      */
     ValueVector<Value>
-    evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field(const Index face_id, const vector<Real> &local_coefs) const;
 
     /**
      * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
@@ -472,14 +459,14 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Derivative<1> >
-    evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
      * points on the face specified by @p face_id.
      */
     ValueVector<Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field_gradients(const Index face_id, const vector<Real> &local_coefs) const;
 
     /**
      * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
@@ -490,14 +477,14 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Derivative<2> >
-    evaluate_field_hessians(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_hessians(const vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
      * points on the face specified by @p face_id.
      */
     ValueVector<Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field_hessians(const Index face_id, const vector<Real> &local_coefs) const;
 
     /**
      * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
@@ -508,14 +495,14 @@ public:
      * @see get_local_coefs
      */
     ValueVector<Div>
-    evaluate_field_divergences(const std::vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    evaluate_field_divergences(const vector<Real> &local_coefs, const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
      * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
      * points on the face specified by @p face_id.
      */
     ValueVector<Div>
-    evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const;
+    evaluate_face_field_divergences(const Index face_id, const vector<Real> &local_coefs) const;
     ///@}
 
 
@@ -548,7 +535,7 @@ public:
       \endcode
      *
      */
-    std::vector<Index> get_local_to_global() const;
+    vector<Index> get_local_to_global() const;
 
     /**
      * Pointer to the BsplineSpace the accessor is iterating on.

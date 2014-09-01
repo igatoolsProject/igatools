@@ -23,10 +23,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/base/exceptions.h>
 
-using std::vector ;
-
 IGA_NAMESPACE_OPEN
-
 
 template <class T>
 ValueVector<T>::
@@ -50,11 +47,10 @@ ValueVector(const vector<T> &vector_in)
     std::copy(vector_in.begin(),vector_in.end(),this->begin());
 }
 
-
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : ValueVector(std::vector<T>(list))
+    : ValueVector(vector<T>(list))
 {}
 //*/
 
@@ -79,14 +75,11 @@ void
 ValueVector<T>::
 print_info(LogStream &out) const
 {
-    const int num_points = this->size() ;
-    out << "ValueVector (num_points=" << num_points << ") :" << std::endl ;
-
-    for (int iPt = 0 ; iPt < num_points ; iPt++)
-        out << (*this)[ iPt ] << " " ;
-
-    out << std::endl ;
+    out << "ValueVector (num_points=" << this->get_num_points() << ") : ";
+    this->get_data().print_info(out);
 }
+
+
 
 
 
@@ -122,8 +115,7 @@ T &
 ValueVector<T>::
 operator[](const Index i)
 {
-    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
-    return const_cast<vector<T>&>(this->get_data())[i];
+    return (*this)(i);
 }
 
 template< class T>
@@ -131,24 +123,9 @@ const T &
 ValueVector<T>::
 operator[](const Index i) const
 {
-    Assert(i >= 0 && i < this->get_num_points(),ExcIndexRange(i,0,this->get_num_points()));
-    return this->get_data()[i];
-}
-
-template <class T>
-LogStream &
-operator<<(LogStream &out, const ValueVector<T> &vector)
-{
-    std::vector<T> v = vector.get_data();
-    out << v;
-    return out;
+    return (*this)(i);
 }
 
 IGA_NAMESPACE_CLOSE
 
-
-
 #include <igatools/utils/value_vector.inst>
-
-
-

@@ -141,7 +141,7 @@ class SpaceManager
 {
 public:
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentContainer = vector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -261,7 +261,7 @@ public:
      * Returns the global dofs corresponding to the @p local_dofs
      * in the space with id equal to @p space_id.
      */
-    std::vector<Index> get_global_dofs(const int space_id, const std::vector<Index> &local_dof) const;
+    vector<Index> get_global_dofs(const int space_id, const vector<Index> &local_dof) const;
     ///@}
 
 
@@ -385,7 +385,7 @@ private:
         DofsView dofs_view_;
 
         /**
-         * Vector of size equal to the number of elements in the single-patch space,
+         * Map of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
          *
          * @note We use a std:shared_ptr because this container can be very big and
@@ -409,10 +409,10 @@ private:
     DofsView dofs_view_;
 
 
-    std::vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
+    vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
 
 
-    std::vector<EqualityConstraint> equality_constraints_;
+    vector<EqualityConstraint> equality_constraints_;
 
 
     /** Counts and return the number of unique dofs in the SpaceManager. */

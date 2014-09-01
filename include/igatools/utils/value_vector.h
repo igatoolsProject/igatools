@@ -25,14 +25,14 @@
 #include <igatools/base/logstream.h>
 #include <igatools/utils/value_container.h>
 
-#include <vector>
+#include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
  * @brief Container for objects of type T that refers to different evaluation points.
  *
- * This container class is derived from std::vector<T> with added a
+ * This container class is derived from vector<T> with added a
  * function for printing its elements and a function for the reset of the element entries
  * using the proper default constructor.
  *
@@ -59,10 +59,10 @@ public :
     explicit ValueVector(const Index num_points) ;
 
     /**
-     * Constructor from a std::vector<T> object.
+     * Constructor from a vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
      */
-    explicit ValueVector(const std::vector<T> &vector_in);
+    explicit ValueVector(const vector<T> &vector_in) ;
 
 
     /**
@@ -96,6 +96,11 @@ public :
      * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
      */
     ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
+
+    /**
+     * Copy assignment operator. Performs a deep copy of the content of the vector object.
+     */
+    ValueVector<T> &operator=(const vector<T> &vector);
 
     /**
      * Move assignment operator.
@@ -146,7 +151,6 @@ public :
 
 } ;
 
-
 /**
  * Performs the scalar-by-vector multiplication <tt>scalar * a</tt>
  * @relates ValueVector
@@ -162,16 +166,6 @@ operator*(const ValueVector<T> &a, const Real scalar) ;
 template< class T>
 ValueVector<T>
 operator*(const Real scalar, const ValueVector<T> &a) ;
-
-
-/**
- * Output operator for ValueVector.
- *
- * @relates ValueVector
-*/
-template <class T>
-LogStream &
-operator<<(LogStream &out, const ValueVector<T> &vector);
 
 IGA_NAMESPACE_CLOSE
 

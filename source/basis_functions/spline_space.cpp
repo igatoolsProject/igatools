@@ -22,7 +22,6 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 
-using std::vector;
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -243,7 +242,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
             for (auto &n: mult)
                 size += n;
 
-            std::vector<Real> rep_knots;
+            vector<Real> rep_knots;
             rep_knots.reserve(size);
             rep_knots.insert(rep_knots.end(), left_knts.begin(), left_knts.end());
             auto m_it = mult.begin();
@@ -346,7 +345,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
         {
             Assert(!periodic_(iComp)[j], ExcMessage("periodic needs to be implemented"));
             const auto &mult  = (*interior_mult_)(iComp).get_data_direction(j);
-            std::vector<Size> accum_mult;
+            vector<Size> accum_mult;
             const int size = mult.size();
             accum_mult.reserve(size + 1);
             accum_mult.push_back(0);
@@ -400,8 +399,8 @@ interpolatory_end_knots() const -> BoundaryKnotsTable
             const auto order = deg + 1;
             const Real a = knots.front();
             const Real b = knots.back();
-            std::vector<Real> vec_left(order, a);
-            std::vector<Real> vec_right(order, b);
+            vector<Real> vec_left(order, a);
+            vector<Real> vec_right(order, b);
             bdry_knots[j].copy_data_direction(0, vec_left);
             bdry_knots[j].copy_data_direction(1, vec_right);
         }
@@ -423,8 +422,8 @@ interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProdu
     const auto order = deg + 1;
     const Real a = knots.front();
     const Real b = knots.back();
-    std::vector<Real> vec_left(order, a);
-    std::vector<Real> vec_right(order, b);
+    vector<Real> vec_left(order, a);
+    vector<Real> vec_right(order, b);
     bdry_knots_dir.copy_data_direction(0, vec_left);
     bdry_knots_dir.copy_data_direction(1, vec_right);
 
