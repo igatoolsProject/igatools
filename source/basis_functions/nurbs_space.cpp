@@ -173,8 +173,8 @@ perform_post_construction_checks() const
     // check that the number of weights is equal to the number of basis functions in the space
     for (auto comp : components)
     {
-        Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
-               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
+        Assert(sp_space_->get_num_basis(comp) == weights_[comp].flat_size(),
+               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_[comp].flat_size()));
     }
 #endif
 }
@@ -252,7 +252,7 @@ get_ref_face_space(const Index face_id,
     const auto n_basis = f_space->get_num_basis_table();
     for (int comp : f_weights.get_active_components_id())
     {
-        f_weights(comp).resize(n_basis(comp),1.0);
+        f_weights[comp].resize(n_basis[comp],1.0);
         //        for (auto j : RefFaceSpace::dims)
         //            f_weights(comp).copy_data_direction(j, v_weights(comp).get_data_direction(active_dirs[j]));
     }
@@ -323,10 +323,10 @@ refine_h_weights(
             //*/
             for (const int comp_id : weights_.get_active_components_id())
             {
-                const int p = sp_space_->get_degree()(comp_id)[direction_id];
-                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
+                const int p = sp_space_->get_degree()[comp_id][direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
 
                 const int m = U.size()-1;
@@ -336,7 +336,7 @@ refine_h_weights(
 
                 const int n = m-p-1;
 
-                const auto Pw = weights_(comp_id);
+                const auto Pw = weights_[comp_id];
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes[direction_id] == n+1,
                        ExcDimensionMismatch(old_sizes[direction_id], n+1));
@@ -390,7 +390,7 @@ refine_h_weights(
                     k = k-1;
                 } // end loop j
 
-                weights_(comp_id) = Qw;
+                weights_[comp_id] = Qw;
 
             } // end loop comp_id
 

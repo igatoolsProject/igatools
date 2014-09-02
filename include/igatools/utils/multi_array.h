@@ -149,14 +149,18 @@ public:
     ///@{
 
     /**
-     *  Flat index access operator (non-const version).
+     * Flat index access operator (non-const version).
+     * @note In Debug mode the index @p i is checked in order to be
+     * in the bounds of the container.
      */
-    reference operator()(const Index i);
+    reference operator[](const Index i);
 
     /**
-     *  Flat index access operator (const version).
+     * Flat index access operator (const version).
+     * @note In Debug mode the index @p i is checked in order to be
+     * in the bounds of the container.
      */
-    const_reference operator()(const Index i) const;
+    const_reference operator[](const Index i) const;
 
 
     /**

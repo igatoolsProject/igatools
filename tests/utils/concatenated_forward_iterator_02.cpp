@@ -68,7 +68,7 @@ do_test_1()
 
         dofs_offset += ref_spaces[i_sp]->get_num_basis();
 
-        const DMA &index_space = ref_spaces[i_sp]->get_dofs_distribution().get_index_table()(0);
+        const DMA &index_space = ref_spaces[i_sp]->get_dofs_distribution().get_index_table()[0];
 
         out << "Index space " << i_sp << " =" << endl;
         index_space.print_info(out);
@@ -129,7 +129,7 @@ do_test_2()
 
         dofs_offset += ref_spaces[i_sp]->get_num_basis();
 
-        const DMA &index_space = ref_spaces[i_sp]->get_dofs_distribution().get_index_table()(0);
+        const DMA &index_space = ref_spaces[i_sp]->get_dofs_distribution().get_index_table()[0];
 
         out << "Index space " << i_sp << " =" << endl;
         index_space.print_info(out);

@@ -123,7 +123,7 @@ get_sub_array(const TensorIndex<rank> &start, const TensorIndex<rank> &inc) cons
     {
         auto tensor_index = sub_array.flat_to_tensor(i);
         tensor_index += start;
-        sub_array(i) = (*this)(tensor_index);
+        sub_array[i] = (*this)(tensor_index);
     }
 
     return sub_array;
@@ -171,7 +171,7 @@ get_slice(const int direction, const Index index) const
         for (Index i = direction+1 ; i < rank ; ++i)
             tensor_id[i] = tensor_id_slice[i-1];
 
-        slice(flat_id_slice) = this->operator()(tensor_id);
+        slice[flat_id_slice] = this->operator()(tensor_id);
     }
 
 
@@ -218,7 +218,7 @@ copy_slice(const int direction, const Index index,
         for (Index i = direction+1 ; i < rank ; ++i)
             tensor_id[i] = tensor_id_slice[i-1];
 
-        this->operator()(tensor_id) = slice(flat_id_slice);
+        this->operator()(tensor_id) = slice[flat_id_slice];
     }
 
 

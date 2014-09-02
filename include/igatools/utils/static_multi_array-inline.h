@@ -64,7 +64,7 @@ StaticMultiArray(const std::array<T,dim> &val)
         for (int d=0 ; d < dim ; ++d,++i)
         {
             out << "i= " << i << std::endl;
-            (*this)(i) = val[d];
+            (*this)[i] = val[d];
         }
 }
 #endif
@@ -78,7 +78,7 @@ StaticMultiArray(std::initializer_list<T> list)
     Assert(list.size() == n_entries, ExcDimensionMismatch(list.size(),n_entries));
 
     for (int i = 0 ; i < n_entries  ; ++i)
-        (*this)(i) = list.begin()[i] ;
+        (*this)[i] = list.begin()[i] ;
 }
 
 

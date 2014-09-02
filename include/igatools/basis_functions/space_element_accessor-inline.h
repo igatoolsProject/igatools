@@ -44,17 +44,17 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-        n_basis_direction_(comp_id) = TensorSize<dim>(degree_table(comp_id)+1);
+        n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
 
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) =
-            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
+        basis_functions_indexer_[comp_id] =
+            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
     }
 
-    comp_offset_(0) = 0;
+    comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
+        comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
 }
 
 
@@ -74,17 +74,17 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-        n_basis_direction_(comp_id) = TensorSize<dim>(degree_table(comp_id)+1);
+        n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
 
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) =
-            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
+        basis_functions_indexer_[comp_id] =
+            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
     }
 
-    comp_offset_(0) = 0;
+    comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
+        comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
 }
 
 
@@ -508,8 +508,8 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     const int total_n_points = n_points_direction.flat_size();
 
     int total_n_basis = 0;
-    for (int i = 0; i < Space::n_components; ++i)
-        total_n_basis += n_basis_direction(i).flat_size();
+    for (const auto &n_basis_comp : n_basis_direction)
+        total_n_basis += n_basis_comp.flat_size();
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
@@ -847,7 +847,7 @@ int
 SpaceElementAccessor<Space>::
 get_num_basis(const int i) const
 {
-    return n_basis_direction_(i).flat_size();
+    return n_basis_direction_[i].flat_size();
 }
 
 

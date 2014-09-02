@@ -66,126 +66,20 @@ void test_evaluate()
     TensorSize<dim> n_weights_dir(deg+2);
 
     typename RefSpace_t<dim>::WeightsTable weights(component_map);
-    if (dim == 1)
+    for (auto &weights_comp : weights)
     {
+        weights_comp.resize(n_weights_dir);
+
         Index id = 0;
-
-        weights(0).resize(n_weights_dir);
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
+        for (Index i=0 ; i < pow(4,dim-1) ; ++i)
+        {
+            weights_comp[id++] = 1.0 ;
+            weights_comp[id++] = 0.4 ;
+            weights_comp[id++] = 0.65 ;
+            weights_comp[id++] = 1.0 ;
+        }
     }
-    else if (dim == 2)
-    {
-        Index id = 0;
 
-        weights(0).resize(n_weights_dir);
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-    }
-    else if (dim == 3)
-    {
-        Index id = 0;
-
-        weights(0).resize(n_weights_dir);
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-    }
     auto ref_space = RefSpace_t<dim>::create(deg,grid,weights);
 
     auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);

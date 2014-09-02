@@ -73,7 +73,7 @@ void do_test()
     const auto n_basis = bsp->get_num_basis_table();
 
     for (auto comp : Space::components)
-        weights(comp).resize(n_basis(comp),1.0);
+        weights[comp].resize(n_basis[comp],1.0);
 
     for (auto &w : weights)
         w.print_info(out);

@@ -230,7 +230,7 @@ operator+(const DynamicMultiArray<T,rank> &A, const DynamicMultiArray<T,rank> &B
 
     const Size n_entries = res.flat_size();
     for (Index i = 0 ; i < n_entries ; ++i)
-        res(i) += B(i);
+        res[i] += B[i];
 
     return res;
 }

@@ -38,7 +38,7 @@ CartesianProductIndexer(const TensorSize<rank> &num_indices_direction)
     const Size flat_size = this->flat_size();
 
     for (Index flat_id = 0 ; flat_id < flat_size ; ++flat_id)
-        (*this)(flat_id) = this->flat_to_tensor(flat_id);
+        (*this)[flat_id] = this->flat_to_tensor(flat_id);
 }
 
 

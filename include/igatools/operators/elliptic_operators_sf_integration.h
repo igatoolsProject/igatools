@@ -257,10 +257,10 @@ public:
 
                                 const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
 
-                                Cpost(f_id_Cpost) = std::inner_product(
-                                                        &Jk(f_id_Jk),
-                                                        &Jk(f_id_Jk)+t_size_theta[k-1],
-                                                        &Cpre(f_id_Cpre),
+                                Cpost[f_id_Cpost] = std::inner_product(
+                                                        &Jk[f_id_Jk],
+                                                        &Jk[f_id_Jk]+t_size_theta[k-1],
+                                                        &Cpre[f_id_Cpre],
                                                         0.0);
 
                                 tid_Cpost[0]++;
@@ -339,10 +339,10 @@ public:
 
                         const Index f_id_Jk = MultiArrayUtils<3>::tensor_to_flat_index(tid_Jk,t_wgt_Jk);
 
-                        Cpost(f_id_Cpost) = std::inner_product(
-                                                &Jk(f_id_Jk),
-                                                &Jk(f_id_Jk)+t_size_theta[k-1],
-                                                &Cpre(f_id_Cpre),
+                        Cpost[f_id_Cpost] = std::inner_product(
+                                                &Jk[f_id_Jk],
+                                                &Jk[f_id_Jk]+t_size_theta[k-1],
+                                                &Cpre[f_id_Cpre],
                                                 0.0);
 
 
@@ -483,9 +483,9 @@ public:
 
                             local_operator(f_id_test,f_id_trial) =
                                 std::inner_product(
-                                    &Jk(f_id_Jk),
-                                    &Jk(f_id_Jk)+t_size_theta[k-1],
-                                    &Cpre(f_id_Cpre),
+                                    &Jk[f_id_Jk],
+                                    &Jk[f_id_Jk]+t_size_theta[k-1],
+                                    &Cpre[f_id_Cpre],
                                     0.0);
                         } // end loop alpha_k
                     } // end loop flat_alpha_k_1
@@ -548,9 +548,9 @@ public:
 
                     local_operator(fid_beta_1_k,fid_alpha_1_k) =
                         std::inner_product(
-                            &Jk(f_id_Jk),
-                            &Jk(f_id_Jk)+t_size_theta[k-1],
-                            &Cpre(f_id_Cpre),
+                            &Jk[f_id_Jk],
+                            &Jk[f_id_Jk]+t_size_theta[k-1],
+                            &Cpre[f_id_Cpre],
                             0.0);
 
                 }// end loop fid_alpha_1_k
@@ -1092,7 +1092,7 @@ evaluate_w_phi1Dtrial_phi1Dtest(
                 const auto phi_1D_trial = phi_trial.get_function_view(f_id_trial);
 
                 for (int jpt = 0 ; jpt < n_pts ; ++jpt)
-                    moments1D(flat_id_I++) =
+                    moments1D[flat_id_I++] =
                     w_times_edge_length[jpt] * phi_1D_test[jpt] * phi_1D_trial[jpt];
             } // end loop mu1
         } // end loop mu2
@@ -1148,7 +1148,7 @@ eval_operator_u_v(
     const Index comp = 0; // only scalar spaces for the moment
 
     // test space -- begin
-    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
     const Size n_basis_test_flat = n_basis_elem_test.flat_size();
@@ -1162,10 +1162,8 @@ eval_operator_u_v(
 
 
     // trial space -- begin
-    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
-    TensorSize<dim> n_basis_elem_trial;
-    for (int i = 0 ; i < dim ; ++i)
-        n_basis_elem_trial[i] = degree_trial[i] + 1;
+    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()[comp];
+    TensorSize<dim> n_basis_elem_trial(degree_trial+1);
 
     const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
@@ -1189,7 +1187,7 @@ eval_operator_u_v(
         const auto &quad_points = ref_elem_accessor.get_quad_points();
         const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
 
         for (int i = 0 ; i < dim ; ++i)
             phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
@@ -1225,7 +1223,7 @@ eval_operator_u_v(
         const auto &quad_points = ref_elem_accessor.get_quad_points();
         const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
 
         for (int i = 0 ; i < dim ; ++i)
             phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
@@ -1294,7 +1292,7 @@ eval_operator_u_v(
 
     DynamicMultiArray<Real,dim> c_times_detDF(n_points_1D);
     for (Index ipt = 0 ; ipt < n_points ; ++ipt)
-        c_times_detDF(ipt) = coeffs[ipt] * det_DF[ipt];
+        c_times_detDF[ipt] = coeffs[ipt] * det_DF[ipt];
 
 
 #ifdef TIME_PROFILING
@@ -1356,7 +1354,7 @@ eval_operator_u_v(
     Assert(n_entries == c_times_detDF.flat_size(),
            ExcDimensionMismatch(n_entries,c_times_detDF.flat_size()));
     for (Index entry_id = 0 ; entry_id < n_entries ; ++entry_id)
-        C0(entry_id) = c_times_detDF(entry_id);
+        C0[entry_id] = c_times_detDF[entry_id];
 
 
     SumFactorizationIntegrator<dim> integrate_sf;
@@ -1427,7 +1425,7 @@ eval_operator_gradu_gradv(
     const Index comp = 0; // only scalar spaces for the moment
 
     // test space -- begin
-    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
     const Size n_basis_test_flat = n_basis_elem_test.flat_size();
@@ -1441,7 +1439,7 @@ eval_operator_gradu_gradv(
 
 
     // trial space -- begin
-    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()(comp);
+    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_trial(degree_trial + 1);
 
     const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
@@ -1467,7 +1465,7 @@ eval_operator_gradu_gradv(
         const auto &quad_points = ref_elem_accessor.get_quad_points();
         const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
 
         for (int i = 0 ; i < dim ; ++i)
         {
@@ -1514,7 +1512,7 @@ eval_operator_gradu_gradv(
         const auto &quad_points = ref_elem_accessor.get_quad_points();
         const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()(comp);
+        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
 
         for (int i = 0 ; i < dim ; ++i)
         {
@@ -1713,7 +1711,7 @@ eval_operator_gradu_gradv(
             Assert(n_entries == C_hat.size(),
                    ExcDimensionMismatch(n_entries,C_hat.size()));
             for (Index entry_id = 0 ; entry_id < n_entries ; ++entry_id)
-                C0(entry_id) = C_hat[entry_id][k][l];
+                C0[entry_id] = C_hat[entry_id][k][l];
 
             operator_gradu_gradv_tmp.clear();
 

@@ -168,7 +168,7 @@ public:
      */
     Size get_num_basis(const int comp) const
     {
-        return space_dim_.comp_dimension(comp);
+        return space_dim_.comp_dimension[comp];
     }
 
     /**
@@ -177,7 +177,7 @@ public:
      */
     Size get_num_basis(const int comp, const int dir) const
     {
-        return  space_dim_(comp)[dir];
+        return  space_dim_[comp][dir];
     }
 
     /**
@@ -331,12 +331,12 @@ public:
         /**
          *  Flat index access operator (non-const version).
          */
-        T &operator()(const Index i);
+        T &operator[](const Index i);
 
         /**
          *  Flat index access operator (const version).
          */
-        const T &operator()(const Index i) const;
+        const T &operator[](const Index i) const;
 
         const Index active(const Index i) const
         {
@@ -357,7 +357,7 @@ public:
         print_info(LogStream &out) const
         {
             for (int i=0; i<n_entries; ++i)
-                out << (*this)(i) << " ";
+                out << (*this)[i] << " ";
         }
 
         const std::array <Index, n_entries> &get_comp_map() const
@@ -468,7 +468,7 @@ ComponentContainer(const T &val)
     for (int i=1; i<n_entries; ++i)
         inactive_components_id_[i-1] = i;
 
-    base_t::operator()(0) = val;
+    base_t::operator[](0) = val;
 }
 
 
@@ -478,9 +478,9 @@ template<class T>
 T &
 SplineSpace<dim, range, rank>::
 ComponentContainer<T>::
-operator()(const Index i)
+operator[](const Index i)
 {
-    return base_t::operator()(comp_map_[i]);
+    return base_t::operator[](comp_map_[i]);
 }
 
 
@@ -489,9 +489,9 @@ template<class T>
 const T &
 SplineSpace<dim, range, rank>::
 ComponentContainer<T>::
-operator()(const Index i) const
+operator[](const Index i) const
 {
-    return base_t::operator()(comp_map_[i]);
+    return base_t::operator[](comp_map_[i]);
 }
 
 IGA_NAMESPACE_CLOSE

@@ -60,9 +60,9 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 
     for (Index comp_id : weights.get_active_components_id())
     {
-        auto &weights_component = weights(comp_id);
+        auto &weights_component = weights[comp_id];
 
-        weights_component.resize(basis_tensor_size_table(comp_id));
+        weights_component.resize(basis_tensor_size_table[comp_id]);
 
         for (auto &w : weights_component)
             w = 1.0;
@@ -130,15 +130,15 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     Index ctrl_pt_fid = 0;
     for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+        const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
 
-        auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
+        auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
 
         ctrl_mesh_comp.resize(num_basis_comp);
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-        const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_(comp_id);
+        const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_[comp_id];
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
@@ -146,12 +146,12 @@ IgMapping(const std::shared_ptr<RefSpace> space,
             {
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
-                const Real w = weights_pre_refinement_comp(loc_id);
+                const Real &w = weights_pre_refinement_comp[loc_id];
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid];
 
             ++ctrl_pt_fid;
         }
@@ -473,13 +473,13 @@ set_control_points(const vector<Real> &control_points)
     Index ctrl_pt_fid = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-//        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+//        const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
 
-        auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
+        auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-        const auto &weights_after_refinement_comp = weights(comp_id);
+        const auto &weights_after_refinement_comp = weights[comp_id];
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
@@ -487,12 +487,12 @@ set_control_points(const vector<Real> &control_points)
             {
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
-                const Real &w = weights_after_refinement_comp(loc_id);
+                const Real &w = weights_after_refinement_comp[loc_id];
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid];
 
             ++ctrl_pt_fid;
 
@@ -547,10 +547,10 @@ refine_h_control_mesh(
 
             for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
             {
-                const int p = ref_space->get_degree()(comp_id)[direction_id];
-                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
+                const int p = ref_space->get_degree()[comp_id][direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -559,7 +559,7 @@ refine_h_control_mesh(
 
                 const int n = m-p-1;
 
-                const auto &Pw = data_->ctrl_mesh_(comp_id);
+                const auto &Pw = data_->ctrl_mesh_[comp_id];
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes[direction_id] == n+1,
                        ExcDimensionMismatch(old_sizes[direction_id],n+1));
@@ -621,7 +621,7 @@ refine_h_control_mesh(
 
                 } // end loop j
 
-                data_->ctrl_mesh_(comp_id) = Qw;
+                data_->ctrl_mesh_[comp_id] = Qw;
                 //*/
             } // end loop comp_id
         } // end if (refinement_directions[direction_id])
@@ -639,8 +639,8 @@ refine_h_control_mesh(
     Index ctrl_pt_id = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
-        const auto &weights_after_refinement_comp = weights_after_refinement(comp_id);
+        const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+        const auto &weights_after_refinement_comp = weights_after_refinement[comp_id];
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
@@ -648,12 +648,12 @@ refine_h_control_mesh(
             if (RefSpace::has_weights)
             {
                 // if NURBS, transform the control points from  projective to euclidean coordinates
-                const Real w = weights_after_refinement_comp(loc_id);
+                const Real &w = weights_after_refinement_comp[loc_id];
 
-                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp(loc_id) / w ;
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id] / w ;
             }
             else
-                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp(loc_id);
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id];
         }
     }
     //----------------------------------
@@ -729,7 +729,7 @@ print_info(LogStream &out) const
     for (Index comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
         out << "Control mesh["<<comp_id<<"] = ";
-        data_->ctrl_mesh_(comp_id).print_info(out);
+        data_->ctrl_mesh_[comp_id].print_info(out);
         out << endl;
     }
     out << endl;

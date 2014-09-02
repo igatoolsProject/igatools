@@ -53,7 +53,10 @@ public:
     /** @name Constructors */
     ///@{
 
-    /** Default constructor. Initializes all the direction indices to zero. */
+    /**
+     * Default constructor. Initializes all the direction indices to
+     * @p value. If no @p value is provided, the initialization is made with zeros.
+     */
     explicit TensorIndex(const Size value = 0) noexcept ;
 
     /** Constructor using an std::array. */

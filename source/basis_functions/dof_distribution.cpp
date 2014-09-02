@@ -48,8 +48,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     Index dof_id = 0;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
-        index_table_(comp).resize(n_basis(comp));
-        for (auto &x : index_table_(comp))
+        index_table_[comp].resize(n_basis[comp]);
+        for (auto &x : index_table_[comp])
             x = dof_id++;
     }
     //-----------------------------------------------------------------------
@@ -72,7 +72,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
     SpaceDimensionTable n_elem_basis;
     for (int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
-        n_elem_basis(iComp) = TensorSize<dim>(degree_table(iComp)+1);
+        n_elem_basis[iComp] = TensorSize<dim>(degree_table[iComp]+1);
 
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
     //-----------------------------------------------------------------------
@@ -100,7 +100,7 @@ auto
 DofDistribution<dim, range, rank>::
 basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
 {
-    return index_table_(comp).flat_to_tensor(index);
+    return index_table_[comp].flat_to_tensor(index);
 }
 
 
@@ -110,7 +110,7 @@ DofDistribution<dim, range, rank>::
 basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                      const Index comp) const
 {
-    return index_table_(comp).tensor_to_flat(tensor_index);
+    return index_table_[comp].tensor_to_flat(tensor_index);
 }
 
 
@@ -129,12 +129,12 @@ create_element_loc_to_global_view(
         vector<DofsComponentConstView> dofs_elem_ranges;
         for (int comp = 0; comp < Space::n_components; ++comp)
         {
-            const auto &index_table_comp = index_table_(comp);
+            const auto &index_table_comp = index_table_[comp];
 
-            auto origin = accum_mult(comp).cartesian_product(t_index);
+            auto origin = accum_mult[comp].cartesian_product(t_index);
             Index origin_flat_id = index_table_comp.tensor_to_flat(origin);
 
-            auto increment = n_elem_basis(comp);
+            auto increment = n_elem_basis[comp];
 
             using VecIt = vector<Index>::const_iterator;
             const VecIt comp_dofs_begin = index_table_comp.get_data().begin();
@@ -291,8 +291,8 @@ void
 DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    for (int comp = 0; comp < Space::n_components; ++comp)
-        index_table_(comp).print_info(out);
+    for (const auto &index_table_comp : index_table_)
+        index_table_comp.print_info(out);
     out << std::endl;
 
     // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct

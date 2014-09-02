@@ -60,45 +60,20 @@ void test_evaluate()
 
     typename NURBSSpace<dim,dim>::WeightsTable weights(component_map);
 
-    if (dim == 1)
+    for (auto &weights_comp : weights)
     {
-        weights(0).resize(n_weights_dir);
-        weights(0)(0) = 1.0 ;
-        weights(0)(1) = 0.853553390593274 ;
-        weights(0)(2) = 0.853553390593274 ;
-        weights(0)(3) = 1.0 ;
-    }
-    else if (dim == 2)
-    {
-        for (Index comp_id = 0 ; comp_id < 2 ; ++comp_id)
-        {
-            weights(comp_id).resize(n_weights_dir);
-            Index id = 0;
-            for (Index i=0 ; i < 4 ; ++i)
-            {
-                weights(comp_id)(id++) = 1.0 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 1.0 ;
-            }
-        }
-    }
-    else if (dim == 3)
-    {
-        for (Index comp_id = 0 ; comp_id < 3 ; ++comp_id)
-        {
-            weights(comp_id).resize(n_weights_dir);
+        weights_comp.resize(n_weights_dir);
 
-            Index id = 0;
-            for (Index i=0 ; i < 16 ; ++i)
-            {
-                weights(comp_id)(id++) = 1.0 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 0.853553390593274 ;
-                weights(comp_id)(id++) = 1.0 ;
-            }
+        Index id = 0;
+        for (Index i=0 ; i < pow(4,dim-1) ; ++i)
+        {
+            weights_comp[id++] = 1.0 ;
+            weights_comp[id++] = 0.853553390593274 ;
+            weights_comp[id++] = 0.853553390593274 ;
+            weights_comp[id++] = 1.0 ;
         }
     }
+
     auto nurbs_space = NURBSSpace<dim,dim>::create(deg,grid,weights);
 
     vector<Real> control_pts(nurbs_space->get_num_basis());

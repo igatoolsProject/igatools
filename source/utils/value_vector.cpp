@@ -110,21 +110,6 @@ operator*(const Real scalar, const ValueVector<T> &a)
     return result ;
 }
 
-template< class T>
-T &
-ValueVector<T>::
-operator[](const Index i)
-{
-    return (*this)(i);
-}
-
-template< class T>
-const T &
-ValueVector<T>::
-operator[](const Index i) const
-{
-    return (*this)(i);
-}
 
 IGA_NAMESPACE_CLOSE
 

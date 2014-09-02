@@ -354,7 +354,7 @@ bool
 CartesianGridElement<dim_>::
 is_influence() const
 {
-    return grid_->influent_(flat_index_);
+    return grid_->influent_[flat_index_];
 }
 
 template <int dim_>
@@ -362,7 +362,7 @@ bool
 CartesianGridElement<dim_>::
 is_active() const
 {
-    return grid_->active_elems_(flat_index_);
+    return grid_->active_elems_[flat_index_];
 }
 
 template <int dim_>
@@ -370,8 +370,8 @@ void
 CartesianGridElement<dim_>::
 set_influence(const bool influence_flag)
 {
-    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             influent_(flat_index_) = influence_flag;
+    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
+    influent_[flat_index_] = influence_flag;
 }
 
 template <int dim_>
@@ -379,8 +379,8 @@ void
 CartesianGridElement<dim_>::
 set_active(const bool active_flag)
 {
-    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             active_elems_(flat_index_) = active_flag;
+    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
+    active_elems_[flat_index_] = active_flag;
 }
 
 template <int dim_>
@@ -418,7 +418,7 @@ operator++()
     {
         ++index;
     }
-    while (index<n_elem && (!this->grid_->active_elems_(index)));
+    while (index<n_elem && (!this->grid_->active_elems_[index]));
 
     if (index >= n_elem)
         index = IteratorState::pass_the_end;

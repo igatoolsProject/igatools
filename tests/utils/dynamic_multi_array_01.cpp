@@ -73,10 +73,10 @@ void do_test_1()
     out << "Size: " << data1.flat_size() << endl;
 
     for (int i = 0; i < data1.flat_size(); ++i)
-        out << data1(i) << " ";
+        out << data1[i] << " ";
 
     for (int i = 0; i < data1.flat_size(); ++i)
-        data1(i) = i;
+        data1[i] = i;
 
     data1.print_info(out);
     out << endl;
@@ -88,7 +88,7 @@ void do_test_1()
     data1.resize(size);
     out << "Size: " << data1.flat_size() << endl;
     for (int i = 0; i < data1.flat_size(); ++i)
-        data1(i) = i;
+        data1[i] = i;
 
     data1.print_info(out);
     out << endl;

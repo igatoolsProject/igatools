@@ -59,11 +59,11 @@ MultiArrayIteratorBase(Container &container,const Index id,const Index stride)
     Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
     if (container_->flat_size() > 0)
     {
-    	if (id_ == container_->flat_size())
-    		id_ = IteratorState::pass_the_end;
+        if (id_ == container_->flat_size())
+            id_ = IteratorState::pass_the_end;
     }
     else
-    	id_ = IteratorState::invalid;
+        id_ = IteratorState::invalid;
 }
 
 
@@ -91,7 +91,7 @@ operator*() const -> const reference
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)(id_);
+    return (*container_)[id_];
 }
 
 template <class Container>
@@ -102,7 +102,7 @@ operator*() -> reference
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)(id_);
+    return (*container_)[id_];
 }
 
 template <class Container>
@@ -113,7 +113,7 @@ operator[](const Index i) const -> const reference
 {
     Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)(id_ + i*stride_);
+    return (*container_)[id_ + i*stride_];
 }
 
 template <class Container>
@@ -124,7 +124,7 @@ operator[](const Index i) -> reference
 {
     Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)(id_ + i*stride_);
+    return (*container_)[id_ + i *stride_];
 }
 
 
@@ -137,7 +137,7 @@ operator->() const -> const pointer
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
 //    return &container_->get_data()[id_];
-    return &(*container_)(id_);
+    return &(*container_)[id_];
 }
 
 template <class Container>
@@ -148,7 +148,7 @@ operator->() -> pointer
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return &(*container_)(id_);
+    return &(*container_)[id_];
 }
 
 template <class Container>

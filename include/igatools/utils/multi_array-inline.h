@@ -68,7 +68,7 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const Index i) -> reference
+operator[](const Index i) -> reference
 {
     Assert((0<=i) &&(i<this->flat_size()),
     ExcIndexRange(i,0,this->flat_size()));
@@ -79,7 +79,7 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const Index i) const -> const_reference
+operator[](const Index i) const -> const_reference
 {
     Assert((0<=i) &&(i<this->flat_size()),
            ExcIndexRange(i,0,this->flat_size()));

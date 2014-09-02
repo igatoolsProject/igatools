@@ -137,7 +137,7 @@ StokesProblem(const int deg, const int n_knots)
     auto vel_m  = make_shared<typename VelSpace::MultiplicityTable>(vel_mult);
 
     typename PreSpace::DegreeTable pre_deg;//(TensorIndex<dim>(deg));
-    pre_deg(0) = TensorIndex<dim>(deg);
+    pre_deg[0] = TensorIndex<dim>(deg);
 
     const typename VelSpace::DegreeTable vel_deg(TensorIndex<dim>(deg+1));
 

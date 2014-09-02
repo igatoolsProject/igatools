@@ -69,7 +69,7 @@ public:
 
     const vector<matrix> &get_operator(const int comp, const int  dir) const
     {
-        return ext_operators_(comp).get_data_direction(dir);
+        return ext_operators_[comp].get_data_direction(dir);
     }
 
     ElemOperTable get_element_operators(TensorIndex<dim> idx) const
@@ -77,7 +77,7 @@ public:
         ElemOperTable result(ext_operators_.get_comp_map());
         for (auto comp : result.get_active_components_id())
             for (int dir = 0 ; dir < dim ; ++dir)
-                result(comp)[dir] = &(ext_operators_(comp).get_data_direction(dir)[idx[dir]]);
+                result[comp][dir] = &(ext_operators_[comp].get_data_direction(dir)[idx[dir]]);
         return result;
     }
 
