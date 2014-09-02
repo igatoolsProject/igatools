@@ -27,6 +27,12 @@
 
 IGA_NAMESPACE_OPEN
 
+constexpr int skel_size(int dim, int k)
+{
+    return dim==k ? 1 :
+    		(k==-1? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
+}
+
 /**
  * @brief This class provides dimension independent information of all topological
  * structures that make up the elements in the reference patch or knotspans.
@@ -36,7 +42,23 @@ template <int dim>
 struct UnitElement
 {
 
-    static const std::array<Size, dim + 2> skeleton;
+	template<int k>
+	struct SkeletonSize
+	{
+		static constexpr Size value = skel_size(dim, k);
+	};
+
+
+    template<int k>
+    struct Skeleton
+    {
+    	std::array<Size, dim - k> constant_directions;
+    	std::array<Size, dim - k> constant_values;
+    	std::array<Size, k>       active_directions;
+    };
+
+    //static const Size n_faces = skeleton_size[dim-1];
+    //static const std::array<Skeleton<dim-1>, skeleton_size[dim-1]>
 
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;

@@ -34,9 +34,8 @@ void skeleton()
 {
     OUTSTART
 
-    auto skeletons = UnitElement<dim>::skeleton;
-    for (auto size : skeletons)
-        out << size << endl;
+    for (int k = 0; k<=dim; ++k)
+    	out << UnitElement<dim>::SkeletonSize<k>::value << endl;
 
     OUTEND
 }

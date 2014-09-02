@@ -23,24 +23,20 @@
 
 IGA_NAMESPACE_OPEN
 
-constexpr int skeleton_size(int dim, int k)
-{
-    return dim>0? (2*skeleton_size(dim-1, k) + skeleton_size(dim-1, k-1)) : (k+1);
-}
-
-template <int dim>
-std::array<Size, dim+2>
-fill_skeleton_size()
-{
-    std::array<Size,dim+2> res;
-    for (int k=-1; k<dim+1; ++k)
-        res[k+1] = skeleton_size(dim, k);
-    return res;
-}
-
-template <int dim>
-const std::array<Size, dim + 2> UnitElement<dim>::skeleton
-= fill_skeleton_size<dim>();
+//template <int dim>
+//std::array<Size, dim+2>
+//fill_skeleton_size()
+//{
+//    std::array<Size,dim+2> res;
+//    for (int k=-1; k<dim+1; ++k)
+//        res[k+1] = skel_size(dim, k);
+//    return res;
+//}
+//
+//template <int dim>
+//const std::array<Size, dim + 2> UnitElement<dim>::skeleton_size
+//= fill_skeleton_size<dim>();
+//
 
 
 
