@@ -54,7 +54,7 @@ public:
     ///@{
 
     /** Default constructor. Initializes all the direction indices to zero. */
-    TensorIndex(const Index value = 0) noexcept ;
+    explicit TensorIndex(const Size value = 0) noexcept ;
 
     /** Constructor using an std::array. */
     explicit TensorIndex(const std::array<Index,rank> &arr) noexcept;

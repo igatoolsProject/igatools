@@ -35,6 +35,44 @@ IGA_NAMESPACE_OPEN
 
 
 template <int rank>
+TensorIndex<rank>::
+TensorIndex(const Size val) noexcept
+{
+	Assert(val >= 0, ExcLowerRange(val,0));
+    for (auto &idx : (*this))
+        idx = val;
+}
+
+
+template <int rank>
+TensorIndex<rank>::
+TensorIndex(const std::array<int,rank> &arr) noexcept
+:
+std::array<int,rank>::array(arr)
+{
+#ifndef NDEBUG
+    for (const auto &idx : (*this))
+        Assert(idx >= 0,ExcLowerRange(idx,0));
+#endif
+}
+
+template <int rank>
+TensorIndex<rank>::
+TensorIndex(std::initializer_list<Index> list) noexcept
+{
+    if (rank > 0)
+    {
+        Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
+        std::copy(list.begin(), list.end(), this->begin());
+    }
+
+#ifndef NDEBUG
+    for (const auto &idx : (*this))
+        Assert(idx >= 0,ExcLowerRange(idx,0));
+#endif
+}
+
+template <int rank>
 TensorIndex<rank>
 operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 {

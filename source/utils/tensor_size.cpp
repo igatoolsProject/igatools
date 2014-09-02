@@ -30,7 +30,7 @@ template <int rank>
 TensorSize<rank>::
 TensorSize(Size val) noexcept
 :
-TensorIndex<rank>::TensorIndex(val)
+TensorIndex<rank>(val)
 {}
 
 
