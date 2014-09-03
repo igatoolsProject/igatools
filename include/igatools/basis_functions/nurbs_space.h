@@ -225,6 +225,12 @@ public:
      */
     Size get_num_basis(const int comp, const int dir) const;
 
+    /**
+     * Component-direction indexed table with the number of basis functions
+     * in each direction and component
+     */
+    const SpaceDimensionTable & get_num_basis_table() const;
+
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
