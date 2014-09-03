@@ -43,7 +43,7 @@ void skeleton()
 }
 
 template <int dim, int k>
-EnableIf< (dim==k),
+EnableIf< (dim==k) || (k<0),
 std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
 fill_skeleton()
 {
@@ -53,47 +53,75 @@ fill_skeleton()
 
 
 template <int dim, int k>
-EnableIf< (dim>k),
+EnableIf< (dim>k) && (k>=0),
 std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
 fill_skeleton()
 {
     std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
 
     auto skel_dim_1 = fill_skeleton<dim-1, k>();
+    auto skel_dim_1_0 = fill_skeleton<dim-1, k-1>();
     auto polygon = res.begin();
+
+    for (auto &polygon_dim_1 : skel_dim_1_0)
+    {
+    	auto &dirs_dim_1 = polygon_dim_1.constant_directions;
+    	auto &dirs       = polygon->constant_directions;
+    	std::copy(dirs_dim_1.begin(), dirs_dim_1.end(), dirs.begin());
+    	polygon->constant_values = polygon_dim_1.constant_values;
+    	++polygon;
+    }
+
     for (auto &polygon_dim_1 : skel_dim_1)
     {
         auto &dirs_dim_1 = polygon_dim_1.constant_directions;
-        for (int i=0; i<dim; ++i)
-            for (int j = 0; j<2; ++j)
-            {
-                auto &dirs       = polygon->constant_directions;
-                std::copy(dirs_dim_1.begin(), dirs_dim_1.end(), dirs.begin());
-                dirs[dim - k -1] = i;
-                ++polygon;
-            }
-
+        auto &values_1 = polygon_dim_1.constant_values;
+        for (int j = 0; j<2; ++j)
+        {
+        	auto &dirs       = polygon->constant_directions;
+        	auto &values       = polygon->constant_values;
+        	std::copy(dirs_dim_1.begin(), dirs_dim_1.end(), dirs.begin());
+        	dirs[dim - k -1] = dim-1;
+        	std::copy(values_1.begin(), values_1.end(), values.begin());
+        	++polygon;
+        }
     }
     return res;
 }
 
 
+template<int dim, int sub_dim>
+void describe_skeleton()
+{
+	auto faces = fill_skeleton<dim, sub_dim>();
+	for (auto &face : faces)
+	{
+		out << "polygon const direction: ";
+		for (auto &dir : face.constant_directions)
+		{
+			out << dir << " ";
+		}
+		out << endl;
+	}
+}
 
 
 int main()
 {
     out.depth_console(20);
 
-    auto faces = fill_skeleton<2,0>();
-    for (auto &face : faces)
-    {
-        out << "polygon const direction: ";
-        for (auto &dir : face.constant_directions)
-        {
-            out << dir << " ";
-        }
-        out << endl;
-    }
+    describe_skeleton<1,1>();
+    describe_skeleton<1,0>();
+
+    describe_skeleton<2,2>();
+    describe_skeleton<2,1>();
+    describe_skeleton<2,0>();
+
+    describe_skeleton<3,3>();
+    describe_skeleton<3,2>();
+    describe_skeleton<3,1>();
+    describe_skeleton<3,0>();
+
 //    skeleton<1>();
  //   skeleton<2>();
 //    skeleton<3>();

@@ -53,8 +53,8 @@ struct UnitElement
         : constant_directions(constant_directions_)
         {}
     	std::array<Size, dim - k> constant_directions;
-    	//std::array<Size, dim - k> constant_values;
-    	//std::array<Size, k>       active_directions;
+    	std::array<Size, dim - k> constant_values;
+    	std::array<Size, k>       active_directions;
     };
 
     //static const Size n_faces = skeleton_size[dim-1];
