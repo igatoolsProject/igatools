@@ -420,8 +420,8 @@ void do_test()
     using PushFw   = PushForward<Transformation::h_grad, dim,0>;
     using PhySpace = PhysicalSpace<RefSpaceField, PushFw>;
 
-    auto space0 = PhySpace::create(ref_space_field0, PushFw::create(map0),0);
-    auto space1 = PhySpace::create(ref_space_field1, PushFw::create(map1),0);
+    auto space0 = PhySpace::create(ref_space_field0, PushFw::create(map0));
+    auto space1 = PhySpace::create(ref_space_field1, PushFw::create(map1));
 
     space0->refine_h(2);
     space1->refine_h(2);
@@ -457,8 +457,8 @@ int main()
 
     using PushFw      = PushForward<Transformation::h_grad, dim,0>;
     using PhySpace    = PhysicalSpace<RefSpace_field, PushFw>;
-    auto space0     = PhySpace::create(ref_space_field0, PushFw::create(map0),0);
-    auto space1     = PhySpace::create(ref_space_field1, PushFw::create(map1),1);
+    auto space0     = PhySpace::create(ref_space_field0, PushFw::create(map0));
+    auto space1     = PhySpace::create(ref_space_field1, PushFw::create(map1));
 #endif
     LogStream out;
 //  auto grid=map0->get_grid();

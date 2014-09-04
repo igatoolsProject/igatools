@@ -107,18 +107,13 @@ public:
 
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward,
-                  const Index id = 0);
+                  std::shared_ptr<PushForwardType> push_forward);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
-    /*
-    std::shared_ptr<self_t> clone() const;
-    //*/
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<PushForwardType> push_forward,
-        const Index id = 0);
+        std::shared_ptr<PushForwardType> push_forward);
 
     /**
      * Total number of dofs of the space.
@@ -199,8 +194,6 @@ private:
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;
-
-//    Index id_;
 
     friend ElementAccessor;
 };

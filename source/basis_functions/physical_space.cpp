@@ -34,8 +34,7 @@ template <class RefSpace_, class PushForward_>
 PhysicalSpace<RefSpace_,PushForward_>::
 PhysicalSpace(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward,
-    const Index id)
+    shared_ptr<PushForwardType> push_forward)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
@@ -47,29 +46,9 @@ PhysicalSpace(
 
     Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
-
-    ref_space_->set_id(id);
 }
 
 
-/*
-
-template <class RefSpace_, class PushForward_>
-auto
-PhysicalSpace<RefSpace_,PushForward_>::
-clone() const -> shared_ptr<self_t>
-{
-    Assert(ref_space_ != nullptr, ExcNullPtr());
-    Assert(push_forward_ != nullptr, ExcNullPtr());
-
-    return shared_ptr<self_t>(
-        new self_t(
-            shared_ptr<RefSpace>(new RefSpace(*ref_space_)),
-            shared_ptr<PushForwardType>(new PushForwardType(*push_forward_)),
-            this->get_id())
-    );
-};
-//*/
 
 
 template <class RefSpace_, class PushForward_>
@@ -77,12 +56,11 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 create(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward,
-    const Index id) -> shared_ptr<self_t>
+    shared_ptr<PushForwardType> push_forward) -> shared_ptr<self_t>
 {
     Assert(ref_space != nullptr, ExcNullPtr());
     Assert(push_forward != nullptr, ExcNullPtr());
-    return shared_ptr<self_t>(new self_t(ref_space,push_forward,id));
+    return shared_ptr<self_t>(new self_t(ref_space,push_forward));
 }
 
 

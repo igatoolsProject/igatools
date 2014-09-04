@@ -214,33 +214,55 @@ public:
     void add_space(std::shared_ptr<Space> space);
     ///@}
 
-
+    /** @name Functions for the insertion of the equality constraints */
+    ///@{
     /**
      * Sets the SpaceManager in a state that can receive new equality constraints.
      */
     void equality_constraints_open();
 
     /**
-     * Coomunicate the SpaceManager that the insertion of the equality constraints is
+     * Add an equality constraint between @dof_id_master and @p dof_id_slave.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the space manager is not set in the proper state by the function
+     * equality_constraints_open().
+     */
+    void add_equality_constraint(const Index dof_id_master,const Index dof_id_slave);
+
+    /**
+     * Communicate the SpaceManager that the insertion of the equality constraints is
      * completed.
      */
     void equality_constraints_close();
+    ///@}
 
+    /** @name Functions for the insertion of the linear constraints */
+    ///@{
     /**
      * Sets the SpaceManager in a state that can receive new linear constraints.
      */
     void linear_constraints_open();
 
+
     /**
-     * Coomunicate the SpaceManager that the insertion of the linear constraints is
+     * Add a LinearConstraint to the SpaceManager,
+     * where @p dofs are the dofs id involved by the constraint,
+     * @p coeffs their coefficients and
+     * @p rhs is the right hand side that defines the linear constraint equation.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the space manager is not set in the proper state by the function
+     * linear_constraints_open().
+     */
+    void add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
+
+    /**
+     * Communicate the SpaceManager that the insertion of the linear constraints is
      * completed.
      */
     void linear_constraints_close();
-
-    /**
-     * Add an equality constraint between @dof_id_master and @p dof_id_slave.
-     */
-    void add_equality_constraint(const Index dof_id_master,const Index dof_id_slave);
+    ///@}
 
 
 
@@ -428,7 +450,7 @@ public:
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
-    const std::map<int,SpaceInfo> &get_spaces_info() const;
+    const std::map<Index,SpaceInfo> &get_spaces_info() const;
 };
 
 

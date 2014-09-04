@@ -151,7 +151,7 @@ void test_evaluate()
 
         auto push_fwd = PushForward_t<dim>::create(map);
 
-        phys_spaces.push_back(PhysicalSpace_t<dim>::create(ref_space,push_fwd,patch_id));
+        phys_spaces.push_back(PhysicalSpace_t<dim>::create(ref_space,push_fwd));
     }
     //---------------------------------------------------------------
 
@@ -221,8 +221,9 @@ void test_evaluate()
 //    dofs_manager->print_info(out);
     multi_patch_space.print_info(out);
 
-    for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
+    for (const auto &space : phys_spaces)
     {
+        const Index patch_id = space->get_id();
         out << "The local_dof=3 for the space_id="<< patch_id
             << " corresponds to the global_dof="<< space_manager->get_global_dof(patch_id,3) << endl;
         out << "The local_dof=7 for the space_id="<< patch_id

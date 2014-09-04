@@ -327,9 +327,6 @@ linear_constraints_open()
     Assert(are_linear_constraints_open_ == false,
            ExcMessage("Linear constraints already opened."));
     are_linear_constraints_open_ = true;
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 }
 
 
@@ -340,11 +337,20 @@ linear_constraints_close()
     Assert(are_linear_constraints_open_ == true,
            ExcMessage("Linear constraints already closed."));
     are_linear_constraints_open_ = false;
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 }
 
+
+
+void
+SpaceManager::
+add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs)
+{
+    Assert(are_linear_constraints_open_ == true,
+           ExcMessage("Linear constraints already closed."));
+
+    using LC = LinearConstraint;
+    linear_constraints_.emplace_back(std::shared_ptr<LC>(new LC(dofs,coeffs,rhs)));
+}
 
 
 void
