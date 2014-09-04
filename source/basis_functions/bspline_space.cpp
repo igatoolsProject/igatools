@@ -78,8 +78,10 @@ BSplineSpace(const DegreeTable &deg,
              const bool homogeneous_range)
     :
     BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum),
-    dof_distribution_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                      BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+    dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
+                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+    dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),
+                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
     operators_(knots,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
@@ -112,8 +114,10 @@ BSplineSpace(const DegreeTable &deg,
              const EndBehaviourTable &ends)
     :
     BaseSpace(deg, knots, interior_mult),
-    dof_distribution_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                      BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+    dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
+                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+    dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),
+                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
     operators_(knots,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
@@ -276,7 +280,7 @@ get_push_forward() const -> shared_ptr<const PushForwardType>
 }
 
 
-//#if 0
+
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
@@ -284,11 +288,17 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
-    dof_distribution_ = DofDistribution<dim, range, rank>(
-                            this->get_grid(),
-                            BaseSpace::accumulated_interior_multiplicities(),
-                            BaseSpace::get_num_basis_table(),
-                            BaseSpace::get_degree());
+    dof_distribution_global_ = DofDistribution<dim, range, rank>(
+                                   this->get_grid(),
+                                   BaseSpace::accumulated_interior_multiplicities(),
+                                   BaseSpace::get_num_basis_table(),
+                                   BaseSpace::get_degree());
+
+    dof_distribution_patch_ = DofDistribution<dim, range, rank>(
+                                  this->get_grid(),
+                                  BaseSpace::accumulated_interior_multiplicities(),
+                                  BaseSpace::get_num_basis_table(),
+                                  BaseSpace::get_degree());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
@@ -306,27 +316,49 @@ void
 BSplineSpace<dim_, range_, rank_>::
 add_dofs_offset(const Index offset)
 {
-    dof_distribution_.add_dofs_offset(offset);
+    dof_distribution_global_.add_dofs_offset(offset);
 }
-
 
 
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution() const -> const DofDistribution<dim, range, rank> &
+get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
-    return dof_distribution_;
+    return dof_distribution_global_;
 }
+
+
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution() -> DofDistribution<dim, range, rank> &
+get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
-    return dof_distribution_;
+    return dof_distribution_global_;
 }
+
+
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
+{
+    return dof_distribution_patch_;
+}
+
+
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
+{
+    return dof_distribution_patch_;
+}
+
 
 
 template<int dim_, int range_, int rank_>
@@ -334,7 +366,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
 {
-    return dof_distribution_.basis_flat_to_tensor(index,comp);
+    return dof_distribution_global_.basis_flat_to_tensor(index,comp);
 }
 
 
@@ -344,15 +376,27 @@ BSplineSpace<dim_, range_, rank_>::
 basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                      const Index comp) const
 {
-    return dof_distribution_.basis_tensor_to_flat(tensor_index, comp);
+    return dof_distribution_global_.basis_tensor_to_flat(tensor_index, comp);
 }
+
+
 
 template<int dim_, int range_, int rank_>
 vector<Index>
 BSplineSpace<dim_, range_, rank_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
-    return dof_distribution_.get_loc_to_global_indices(element);
+    return dof_distribution_global_.get_loc_to_global_indices(element);
+}
+
+
+
+template<int dim_, int range_, int rank_>
+vector<Index>
+BSplineSpace<dim_, range_, rank_>::
+get_loc_to_patch(const CartesianGridElement<dim> &element) const
+{
+    return dof_distribution_patch_.get_loc_to_global_indices(element);
 }
 
 
@@ -387,8 +431,12 @@ print_info(LogStream &out) const
     BaseSpace::print_info(out);
     out.end_item();
 
-    out.begin_item("Basis Indices:");
-    dof_distribution_.print_info(out);
+    out.begin_item("Patch Basis Indices:");
+    dof_distribution_patch_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Global Basis Indices:");
+    dof_distribution_global_.print_info(out);
     out.end_item();
 
     out.begin_item("Bernstein Extraction:");

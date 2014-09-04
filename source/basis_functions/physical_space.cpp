@@ -211,6 +211,15 @@ get_loc_to_global(const CartesianGridElement<dim> &element) const
 
 
 template <class RefSpace_, class PushForward_>
+vector<Index>
+PhysicalSpace<RefSpace_,PushForward_>::
+get_loc_to_patch(const CartesianGridElement<dim> &element) const
+{
+    return ref_space_->get_loc_to_patch(element);
+}
+
+
+template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
 get_space_manager() -> shared_ptr<SpaceManager>
@@ -233,12 +242,43 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 }
 
 
+
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-get_dof_distribution() const -> const DofDistribution<dim, range, rank> &
+get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
-    return ref_space_->get_dof_distribution();
+    return ref_space_->get_dof_distribution_global();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_global();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_patch();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_patch();
 }
 
 template <class RefSpace_, class PushForward_>

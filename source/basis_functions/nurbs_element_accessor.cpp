@@ -846,9 +846,9 @@ get_local_weights() const
 
     vector<Real> weights_element;
 
-    const auto local_to_global = this->get_local_to_global();
+    const auto local_to_patch = this->get_local_to_patch();
 
-    for (const auto &global_id : local_to_global)
+    for (const auto &global_id : local_to_patch)
     {
         Index comp_id = 0; // component id of the global index
         Index  dof_id = 0; // flat index of the global index relative to the component

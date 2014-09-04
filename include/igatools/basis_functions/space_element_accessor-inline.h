@@ -865,6 +865,16 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
+get_local_to_patch() const -> vector<Index>
+{
+    return space_->get_loc_to_patch(*this);
+}
+
+
+template<class Space>
+inline
+auto
+SpaceElementAccessor<Space>::
 get_space() const -> std::shared_ptr<const Space>
 {
     return space_;

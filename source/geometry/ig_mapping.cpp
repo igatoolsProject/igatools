@@ -282,11 +282,11 @@ IgMapping<RefSpace>::
 get_control_points_elem() const
 {
     Assert(data_ != nullptr, ExcNullPtr());
-    const auto &local_to_global = cache_->get_local_to_global();
+    const auto &local_to_patch = cache_->get_local_to_patch();
 
     vector<Real> ctrl_pts_element;
 
-    for (const auto &local_id : local_to_global)
+    for (const auto &local_id : local_to_patch)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
     return ctrl_pts_element;

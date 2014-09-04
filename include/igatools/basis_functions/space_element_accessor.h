@@ -538,6 +538,12 @@ public:
     vector<Index> get_local_to_global() const;
 
     /**
+     * Returns the patch dofs of the local (non zero) basis functions
+     * on the element.
+     */
+    vector<Index> get_local_to_patch() const;
+
+    /**
      * Pointer to the BsplineSpace the accessor is iterating on.
      */
     std::shared_ptr<const Space> get_space() const;

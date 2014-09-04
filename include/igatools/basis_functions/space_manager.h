@@ -454,7 +454,7 @@ add_space(std::shared_ptr<Space> space)
     using RefSpace = typename Space::RefSpace;
     auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
 
-    auto &dof_distribution = ref_space->get_dof_distribution();
+    auto &dof_distribution = ref_space->get_dof_distribution_global();
 
     spaces_info_[ref_space->get_id()] =
         SpaceInfo(space,

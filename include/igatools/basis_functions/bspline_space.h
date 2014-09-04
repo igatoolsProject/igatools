@@ -280,6 +280,8 @@ public:
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+
     /** @name Functions involving the element iterator */
     ///@{
     /**
@@ -333,14 +335,24 @@ public:
     std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
-    /** Returns the container with the dof distribution (const version). */
+    /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &
-    get_dof_distribution() const;
+    get_dof_distribution_global() const;
 
 
-    /** Returns the container with the dof distribution (const version). */
+    /** Returns the container with the global dof distribution (non const version). */
     DofDistribution<dim, range, rank> &
-    get_dof_distribution();
+    get_dof_distribution_global();
+
+    /** Returns the container with the patch dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() const;
+
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch();
+
     ///@}
 
     /**
@@ -373,8 +385,17 @@ public:
 
 private:
 
-    /** Container with the local to global basis indices */
-    DofDistribution<dim, range, rank> dof_distribution_;
+    /** Container with the local to global basis indices
+     * @note The concept of global indices refers to a global numeration of the
+     * dofs of all the spaces.
+     */
+    DofDistribution<dim, range, rank> dof_distribution_global_;
+
+    /** Container with the local to patch basis indices
+     * @note The concept of patch indices refers to the numeration at patch
+     * level of the dofs.
+     */
+    DofDistribution<dim, range, rank> dof_distribution_patch_;
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;

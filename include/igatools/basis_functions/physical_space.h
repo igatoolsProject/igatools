@@ -125,13 +125,23 @@ public:
      */
     Index get_num_basis() const;
 
-    /** Returns the container with the local to global basis indices (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_dof_distribution() const;
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
+
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_global();
+
+    /** Returns the container with the patch dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_patch() const;
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_patch();
 
     const DegreeTable &get_degree() const;
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
     /**
      * Returns a element iterator to the first element of the patch.

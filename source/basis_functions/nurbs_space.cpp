@@ -445,6 +445,7 @@ get_degree() const -> const DegreeTable &
 }
 
 
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
@@ -452,6 +453,18 @@ get_loc_to_global(const CartesianGridElement<dim> &element) const -> vector<Inde
 {
     return sp_space_->get_loc_to_global(element);
 }
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_loc_to_patch(const CartesianGridElement<dim> &element) const -> vector<Index>
+{
+    return sp_space_->get_loc_to_patch(element);
+}
+
+
 
 template <int dim_, int range_, int rank_>
 auto
@@ -461,21 +474,44 @@ get_spline_space() const -> const std::shared_ptr<spline_space_t>
     return sp_space_;
 }
 
+
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution() const -> const DofDistribution<dim, range, rank> &
+get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_dof_distribution();
+    return sp_space_->get_dof_distribution_global();
 }
 
 
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution() -> DofDistribution<dim, range, rank> &
+get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_dof_distribution();
+    return sp_space_->get_dof_distribution_global();
+}
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_dof_distribution_patch();
+}
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_dof_distribution_patch();
 }
 
 
