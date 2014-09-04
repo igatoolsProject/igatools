@@ -102,7 +102,7 @@ public:
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     /** Copy constructor.*/
-    DofDistribution(const DofDistribution &dof_ditribution) = default;
+    DofDistribution(const DofDistribution &dof_ditribution) = delete;
 
     /** Move constructor.*/
     DofDistribution(DofDistribution &&dof_ditribution) = default;

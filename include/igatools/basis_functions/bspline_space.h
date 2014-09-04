@@ -215,6 +215,7 @@ public:
     /** Destructor. */
     ~BSplineSpace() = default;
 
+
 protected:
     /** @name Constructors */
     ///@{
@@ -256,6 +257,13 @@ protected:
                           std::shared_ptr<GridType> knots,
                           std::shared_ptr<const MultiplicityTable> interior_mult,
                           const EndBehaviourTable &ends);
+
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    BSplineSpace(const self_t &space) = delete;
+
     ///@}
 
 
@@ -266,6 +274,7 @@ protected:
     self_t &
     operator=(const self_t &space) = delete;
     ///@}
+
 
 public:
 

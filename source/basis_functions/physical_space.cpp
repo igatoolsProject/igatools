@@ -52,7 +52,7 @@ PhysicalSpace(
 }
 
 
-
+/*
 
 template <class RefSpace_, class PushForward_>
 auto
@@ -69,7 +69,7 @@ clone() const -> shared_ptr<self_t>
             this->get_id())
     );
 };
-
+//*/
 
 
 template <class RefSpace_, class PushForward_>
@@ -238,7 +238,7 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 get_dofs_distribution() const -> const DofDistribution<dim, range, rank> &
 {
-	return ref_space_->get_dofs_distribution();
+    return ref_space_->get_dofs_distribution();
 }
 
 template <class RefSpace_, class PushForward_>
@@ -246,7 +246,7 @@ auto
 PhysicalSpace<RefSpace_,PushForward_>::
 get_degree() const -> const DegreeTable &
 {
-	return ref_space_->get_degree();
+    return ref_space_->get_degree();
 }
 
 

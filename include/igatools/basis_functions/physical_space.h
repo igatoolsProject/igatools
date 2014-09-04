@@ -112,8 +112,9 @@ public:
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
+    /*
     std::shared_ptr<self_t> clone() const;
-
+    //*/
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
         std::shared_ptr<PushForwardType> push_forward,
@@ -180,6 +181,7 @@ public:
     std::shared_ptr<SpaceManager> get_space_manager();
 
     std::shared_ptr<const SpaceManager> get_space_manager() const;
+
 
 
 

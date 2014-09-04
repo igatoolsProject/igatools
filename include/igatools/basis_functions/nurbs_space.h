@@ -205,6 +205,12 @@ protected:
      */
     explicit  NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
                          const WeightsTable &weights);
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    NURBSSpace(const self_t &space) = delete;
+
     ///@}
 
 public:
