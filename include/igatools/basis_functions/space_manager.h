@@ -454,15 +454,15 @@ add_space(std::shared_ptr<Space> space)
     using RefSpace = typename Space::RefSpace;
     auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
 
-    auto &dofs_distribution = ref_space->get_dofs_distribution();
+    auto &dof_distribution = ref_space->get_dof_distribution();
 
     spaces_info_[ref_space->get_id()] =
         SpaceInfo(space,
                   ref_space->get_num_basis(),
-                  dofs_distribution.get_min_dof_id(),
-                  dofs_distribution.get_max_dof_id(),
-                  dofs_distribution.get_dofs_view(),
-                  dofs_distribution.get_elements_view());
+                  dof_distribution.get_min_dof_id(),
+                  dof_distribution.get_max_dof_id(),
+                  dof_distribution.get_dofs_view(),
+                  dof_distribution.get_elements_view());
     //---------------------------------------------------------------------------------------------
 }
 

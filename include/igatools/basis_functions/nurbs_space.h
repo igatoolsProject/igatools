@@ -235,7 +235,7 @@ public:
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    const SpaceDimensionTable & get_num_basis_table() const;
+    const SpaceDimensionTable &get_num_basis_table() const;
 
 
     /**
@@ -254,10 +254,10 @@ public:
 
     const std::shared_ptr<spline_space_t> get_spline_space() const;
 
-    const DofDistribution<dim, range, rank> &get_dofs_distribution() const;
+    const DofDistribution<dim, range, rank> &get_dof_distribution() const;
 
 
-    DofDistribution<dim, range, rank> &get_dofs_distribution();
+    DofDistribution<dim, range, rank> &get_dof_distribution();
 
 
 

@@ -127,7 +127,7 @@ public:
 
     /** Returns the container with the local to global basis indices (const version). */
     const DofDistribution<dim, range, rank> &
-    get_dofs_distribution() const;
+    get_dof_distribution() const;
 
     const DegreeTable &get_degree() const;
 

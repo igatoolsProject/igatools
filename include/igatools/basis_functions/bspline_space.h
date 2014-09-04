@@ -335,12 +335,12 @@ public:
 
     /** Returns the container with the dof distribution (const version). */
     const DofDistribution<dim, range, rank> &
-    get_dofs_distribution() const;
+    get_dof_distribution() const;
 
 
     /** Returns the container with the dof distribution (const version). */
     DofDistribution<dim, range, rank> &
-    get_dofs_distribution();
+    get_dof_distribution();
     ///@}
 
     /**
@@ -374,7 +374,7 @@ public:
 private:
 
     /** Container with the local to global basis indices */
-    DofDistribution<dim, range, rank> dofs_distribution_;
+    DofDistribution<dim, range, rank> dof_distribution_;
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;

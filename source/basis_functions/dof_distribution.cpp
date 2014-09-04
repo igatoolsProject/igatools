@@ -59,8 +59,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
-    for (auto &dofs_distribution_comp : index_table_)
-        components_views.emplace_back(dofs_distribution_comp.get_flat_view());
+    for (auto &dof_distribution_comp : index_table_)
+        components_views.emplace_back(dof_distribution_comp.get_flat_view());
 
     dofs_view_ = DofsView(
                      DofsIterator(components_views,0),

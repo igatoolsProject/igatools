@@ -464,18 +464,18 @@ get_spline_space() const -> const std::shared_ptr<spline_space_t>
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_dofs_distribution() const -> const DofDistribution<dim, range, rank> &
+get_dof_distribution() const -> const DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_dofs_distribution();
+    return sp_space_->get_dof_distribution();
 }
 
 
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_dofs_distribution() -> DofDistribution<dim, range, rank> &
+get_dof_distribution() -> DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_dofs_distribution();
+    return sp_space_->get_dof_distribution();
 }
 
 
