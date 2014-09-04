@@ -27,10 +27,6 @@
 #include <igatools/linear_algebra/linear_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
-
-#include <igatools/utils/value_table.h>
-#include <igatools/basis_functions/bernstein_basis.h>
-
 #include <math.h>
 
 using namespace iga;
@@ -412,7 +408,7 @@ void Mortar_Interface<dim, dim_field>::integration()
 		}
 				
 		
-		/*if (face_el_type!=0){	
+		if (face_el_type!=0){	
 					if (degree_multiplier_==1)
 						auto deri_multiplier=felem_multiplier_ref. template evaluate_basis_derivatives_at_points<1>(curr_slave_face_quad_pts_unit);
 					else if (degree_multiplier_==2)
@@ -428,22 +424,128 @@ void Mortar_Interface<dim, dim_field>::integration()
 					//	auto deri_multiplier=felem_multiplier_ref. template evaluate_basis_derivatives_at_points<5>(curr_slave_face_quad_pts_unit);
 					else 
 						Assert(false,ExcNotImplemented());
-		} //if (face_el_type!=0)*/
+		} //if (face_el_type!=0)
 				
 			
 		
 					
 		auto multiplier_degree_dir=multiplier_face_space_->get_reference_space()->get_degree();				
 		out<<"MUL DEG FACE"<<multiplier_degree_dir(0)<<endl;
-				
+		
+		
+		
 		//add the contributions of the current element
 		for (int i = 0; i < n_multiplier_basis; ++i){
 			auto phi_m = basis_multiplier.get_function_view(i);
 			for (int j = 0; j < n_slave_basis; ++j){
 						auto phj = basis_slave.get_function_view(j);
 						for (int qp = 0; qp < n_qp; ++qp){
-							//modif here
-							auto phi_m_qp=phi_m[qp];
+							out<<"face_el_type"<<face_el_type<<endl;
+							
+							///////////////////
+							if (face_el_type==0)
+								auto phi_m_qp=phi_m[qp];
+							else if (face_el_type==1) {
+								if (dim==2)
+									int loc_l=curr_face_crosspoint*(n_multiplier_basis-1);
+								else if (dim==3){
+									if ((curr_face_crosspoint==0) || (curr_face_crosspoint==1)){
+										int loc_l2=multiplier_degree_dir(0)[1];
+										int loc_l1=n_multiplier_basis/loc_l2;
+										if (curr_face_crosspoint==0)
+											int loc_l=(i/loc_l1)*loc_l1;
+										else 
+											int loc_l=(i/loc_l1)*loc_l1+(loc_l1-1);
+									}
+									else {
+										int loc_l1=multiplier_degree_dir(0)[0];
+										int loc_l2=n_multiplier_basis/loc_l1;
+										if (curr_face_crosspoint==2)
+											int loc_l=i-(i/loc_l1)*loc_l1;
+										else 
+											int loc_l=i+(loc_l2-((i/loc_l1)+1))*loc_l1;
+									}				
+								} // if (dim==3)
+								
+								
+								auto phi_m=basis_multiplier.get_function_view(i);
+								auto deri_phi_m=deri_multiplier.get_function_view(i);
+								if (is_member_vec(remove_multiplier_dof,multiplier_face_dof_num_[dofs_face_multiplier[i]])!=-1)
+									auto phi_m_qp=0.;
+								else {
+									auto phi_l=basis_multiplier.get_function_view(loc_l);
+									auto phi_l_qp=phi_l[qp];
+									auto deri_phi_l=deri_multiplier.get_function_view(loc_l);
+									if (dim==1){
+										auto deri_phi_l_qp=deri_phi_l[qp];
+										auto deri_phi_m_qp=deri_phi_m[qp];}
+									else if (dim==2){
+										if ((curr_face_crosspoint==0) || (curr_face_crosspoint==1))
+											int dir_var(0);
+										else 
+											int dir_var(1);
+										auto deri_phi_l_qp=deri_phi_l[qp][dir_var];
+										auto deri_phi_m_qp=deri_phi_m[qp][dir_var];}
+									
+									
+									auto phi_m_qp=phi_m[qp]-(deri_phi_m_qp)/(deri_phi_l_qp)*phi_l_qp;
+								} // is_member
+								
+								
+								
+							}// if face_el_type==1
+							else {
+								auto phi_m_qp=0.0;
+							/*	
+								int loc_k2=multiplier_degree_dir(0)[1];
+								int loc_k1=n_multiplier_basis/loc_k2;
+								if ((curr_face_crosspoint==4) || (curr_face_crosspoint==6))
+									auto loc_k=(i/loc_k1)*loc_k1;
+								else 
+									auto loc_k=(i/loc_k1)*loc_k1+(loc_k1-1);
+								
+								
+								int loc_m1=multiplier_degree_dir(0)[0];
+								int loc_m2=n_multiplier_basis/loc_m1;
+								if ((curr_face_crosspoint==4) || (curr_face_crosspoint==5))
+									auto loc_m=i-(i/loc_m1)*loc_m1;
+								else 
+									auto loc_m=i+(loc_m2-((i/loc_m1)+1))*loc_m1;
+								
+								
+								
+								auto phi_m=basis_multiplier.get_function_view(i);
+								auto deri_phi_m=deri_multiplier.get_function_view(i);
+								if (is_member_vec(remove_multiplier_dof,multiplier_face_dof_num_[dofs_face_multiplier[i]])!=-1)
+									phi_m_qp=0.;
+								else {
+									auto phi_k=basis_multiplier.get_function_view(loc_k);
+									auto phi_k_qp=phi_k[qp];
+									auto deri_phi_k=deri_multiplier.get_function_view(loc_k);
+									
+									auto phi_m=basis_multiplier.get_function_view(loc_m);
+									auto phi_m_qp=phi_m[qp];
+									auto deri_phi_m=deri_multiplier.get_function_view(loc_m);
+									
+									auto deri_phi_l0_qp=deri_phi_l[qp][0];
+									auto deri_phi_m0_qp=deri_phi_m[qp][0];
+									auto deri_phi_l1_qp=deri_phi_l[qp][1];
+									auto deri_phi_m1_qp=deri_phi_m[qp][1];
+									
+									//phi_m_qp=phi_m[qp]-(deri_phi_m_qp)/(deri_phi_l_qp)*phi_l_qp;
+									*/
+								}
+								
+								
+								
+								
+								
+							}
+							//
+							//
+							 
+							
+							
 							loc_e(dofs_face_multiplier[i],dofs_face_slave[j])=loc_e(dofs_face_multiplier[i],dofs_face_slave[j])+
 							scalar_product(phi_m_qp,phj[qp])*face_meas*face_w_unit_domain[qp]*determinant<dim-1,dim>(face_slave_map_grad[qp]);
 						}

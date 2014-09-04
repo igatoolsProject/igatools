@@ -27,10 +27,6 @@
 #include <igatools/linear_algebra/linear_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
-
-#include <igatools/utils/value_table.h>
-#include <igatools/basis_functions/bernstein_basis.h>
-
 #include <math.h>
 
 using namespace iga;
@@ -279,6 +275,8 @@ void Mortar_Interface<dim, dim_field>::integration()
     auto slave_grid  = slave_space_->get_grid();
 	
 	this->get_loc_face_crosspoint_modif(slave_grid);
+	//out<<"slave face"<<slave_mortar_face_nb_<<endl;
+    //out<<"loc_face_crosspoint_"<<loc_face_crosspoint_<<endl;
 	auto master_grid = master_space_->get_grid();
 
     vector< Index >  joint_face_grid_to_joint_grid_slave;
@@ -329,9 +327,10 @@ void Mortar_Interface<dim, dim_field>::integration()
 		}
 		modify_multiplier_dof.push_back(temp_dof2);
 	}
+	//out<<"LISTE DOF"<<loc_face_crosspoint_dof[0]<<endl;
+	//using 	Derivative = Derivatives< dim, 1, 1, 1>;
 	
-	
-	
+													  
 	for (int i=0; i<loc_face_crosspoint_dof.size(); ++i){
 		for (int j=0; j<loc_face_crosspoint_dof[i].size();++j){
 			out<<"LISTE DOF "<<"loc face nb: "<<i<<", face nb:"<<loc_face_crosspoint_[i]<<", loc dof nb: "<<j<<", face dof nb: "<<loc_face_crosspoint_dof[i][j]<<endl;
@@ -340,7 +339,6 @@ void Mortar_Interface<dim, dim_field>::integration()
 		out<<"modify"<<modify_multiplier_dof[i]<<endl;
 	}
 
-	
 	
 	// Loop on the face joint grid to lead the integration on the slave side
     for (auto felem_j: *face_joint_grid)
@@ -393,26 +391,47 @@ void Mortar_Interface<dim, dim_field>::integration()
 		auto basis_master     = felem_master.evaluate_basis_values_at_points(curr_master_face_quad_pts_unit);
 		
 		
+		//out<<felem_j.is_boundary(0)<<felem_j.is_boundary(1)<<endl;
+		//out<<"is bound"<<felem_j.is_boundary()<<endl;
+		//out<<"is bound"<<felem_j.is_boundary(0)<<endl;
+		
 		auto felem_multiplier_ref=felem_multiplier.get_ref_space_accessor();
+		////auto basis_slave_ref=felem_slave_ref.evaluate_basis_values_at_points(curr_slave_face_quad_pts_unit);
+		////out<<basis_slave.get_function_view(0)[0]<<basis_slave_ref.get_function_view(0)[0];
 		
 		
-		
-	
+		//vector<int> loc_der_var;
 		int face_el_type(0);
 		int curr_face_crosspoint(-1);
-		for (int i=0; i<loc_face_crosspoint_.size(); ++i) {
-			if ((felem_j.is_boundary(loc_face_crosspoint_[i]) && face_el_type==0)){
+		//if (!loc_face_crosspoint_.empty()){
+			//vector<vector<int>> curr_elem_dof;
+			for (int i=0; i<loc_face_crosspoint_.size(); ++i) {
+				if ((felem_j.is_boundary(loc_face_crosspoint_[i]) && face_el_type==0)){
 					face_el_type=1;
 					curr_face_crosspoint=loc_face_crosspoint_[i];
-			}
-			else if ((felem_j.is_boundary(loc_face_crosspoint_[i]) && face_el_type!=0)){
+				}
+				else if ((felem_j.is_boundary(loc_face_crosspoint_[i]) && face_el_type!=0)){
 					face_el_type=2;
-				    curr_face_crosspoint=curr_face_crosspoint+2*loc_face_crosspoint_[i];
+				    curr_face_crosspoint=curr_face_crosspoint+2*loc_face_crosspoint_[i];}
 			}
-		}
 				
-		
-		/*if (face_el_type!=0){	
+					/*if (dim==2){
+						loc_der_var.push_back(0);
+					}
+					else {
+						if ((loc_face_crosspoint_[i]==0)|(loc_face_crosspoint_[i]==1))
+								   loc_der_var.push_back(0); //to check 1 ?
+						else 
+								   loc_der_var.push_back(1);
+					}*/
+					
+					//vector<int> temp_curr_elem_dof;
+					//for (int s=0; s<dofs_face_multiplier.size(); ++s){ // pas trjs member c est ici que l on classe cx a enlever et cx a garder
+					//	temp_curr_elem_dof.push_back(is_member_vec(loc_face_crosspoint_dof[i], dofs_face_multiplier[s]));
+					//}
+					//curr_elem_dof.push_back(temp_curr_elem_dof);  // ce que l on enleve !!!
+						
+			if (face_el_type!=0){	
 					if (degree_multiplier_==1)
 						auto deri_multiplier=felem_multiplier_ref. template evaluate_basis_derivatives_at_points<1>(curr_slave_face_quad_pts_unit);
 					else if (degree_multiplier_==2)
@@ -428,22 +447,158 @@ void Mortar_Interface<dim, dim_field>::integration()
 					//	auto deri_multiplier=felem_multiplier_ref. template evaluate_basis_derivatives_at_points<5>(curr_slave_face_quad_pts_unit);
 					else 
 						Assert(false,ExcNotImplemented());
-		} //if (face_el_type!=0)*/
+			} //if (face_el_type!=0)
 				
 			
+		//}
+		
+		
+		
+		/*auto phi_m = basis_multiplier.get_function_view(i);
+		if (!loc_face_crosspoint_.empty()){
+			if (felem_j.is_boundary(loc_face_crosspoint_[0]){
+				for (qp = 0; qp < n_qp; ++qp)
+					if (is_member_vec(loc_face_crosspoint_dof[0], dofs_face_multiplier[i])~=-1)
+						phi_m[qp]=phi_m[qp]*0.;
+					else {
+							int loc_l=dofs_face_multiplier[i]%curr_elem_dof[0].size();
+							phi_l=basis_multiplier.get_function_view(loc_l);
+							deri_phi_l=deri_multiplier.get_function_view(loc_l);
+						
+							deri_phi_m=deri_multiplier.get_function_view(i);
+							//phi_m[qp]=phi_m[qp]-deri_phi_m[qp][loc_der_var[0]/deri_phi_l[qp][loc_der_var[0]*phi_l[qp];
+							if (curr_elem_dof.size()>1) 
+							auto phi_l_hat= phi_m
+																							 
+																							 
+							
+																							 
+																							 
+							//a																	
+						
+					}
+				}
+			}
+		}*/
 		
 					
-		auto multiplier_degree_dir=multiplier_face_space_->get_reference_space()->get_degree();				
-		out<<"MUL DEG FACE"<<multiplier_degree_dir(0)<<endl;
-				
+		auto multiplier_degree_dir=multiplier_face_space_->get_degree();				
+		
+		
 		//add the contributions of the current element
 		for (int i = 0; i < n_multiplier_basis; ++i){
 			auto phi_m = basis_multiplier.get_function_view(i);
-			for (int j = 0; j < n_slave_basis; ++j){
+				for (int j = 0; j < n_slave_basis; ++j){
 						auto phj = basis_slave.get_function_view(j);
 						for (int qp = 0; qp < n_qp; ++qp){
-							//modif here
-							auto phi_m_qp=phi_m[qp];
+							
+							
+							///////////////////
+							if (face_el_type==0)
+								auto phi_m_qp=phi_m[qp];
+							else if (face_el_type==1) {
+								if (dim==2)
+									auto loc_l=curr_face_crosspoint*(n_multiplier_basis-1);
+								else if (dim==3){
+									//vector<int> curr_glob_dof;
+									//for (int nb=0; nb<dofs_face_multiplier.size(); ++nb){
+									//	curr_glob_dof.push_back(multiplier_face_dof_num_[dofs_face_multiplier[nb]]);
+									//}
+									if ((curr_face_crosspoint==0) || (curr_face_crosspoint==1)){
+										//loc_n2=curr_glob_dof.size();
+										int loc_l2=multiplier_degree_dir(0)[1];
+										int loc_l1=n_multiplier_basis/loc_l2;
+										if (curr_face_crosspoint==0)
+											int loc_l=(i/loc_l1)*loc_l1;
+										else 
+											int loc_l=(i/loc_l1)*loc_l1+(loc_l1-1);
+									}
+									else {
+										//loc_n1=curr_glob_dof.size();
+										int loc_l1=multiplier_degree_dir(0)[0];
+										int loc_l2=n_multiplier_basis/loc_l1;
+										if (curr_face_crosspoint==2)
+											int loc_l=i-(i/loc_l1)*loc_l1;
+										else 
+											int loc_l=i+(loc_l2-((i/loc_l1)+1))*loc_l1;
+									}				
+								} // if (dim==3)
+								
+								
+								auto phi_m=basis_multiplier.get_function_view(i);
+								auto deri_phi_m=deri_multiplier.get_function_view(i);
+								if (is_member_vec(remove_multiplier_dof,multiplier_face_dof_num_[dofs_face_multiplier[i]])!=-1)
+									phi_m_qp=0.;
+								else {
+									auto phi_l=basis_multiplier.get_function_view(loc_l);
+									auto phi_l_qp=phi_l[qp];
+									auto deri_phi_l=deri_multiplier.get_function_view(loc_l);
+									if (dim==1){
+										auto deri_phi_l_qp=deri_phi_l[qp];}
+									else if (dim==2){
+										if ((curr_face_crosspoint==0) || (curr_face_crosspoint==1))
+											int dir_var(0);
+										else 
+											int dir_var(1);
+										auto deri_phi_l_qp=deri_phi_l[qp][dir_var];
+										auto deri_phi_m_qp=deri_phi_m[qp][dir_var];}
+									
+									
+									phi_m_qp=phi_m[qp]-(deri_phi_m_qp)/(deri_phi_l_qp)*phi_l_qp;
+								} // is_member
+								
+								
+								
+							}// if face_el_type==1
+						/*	else {
+								
+								loc_k2=multiplier_degree_dir(0)[1];
+								loc_k1=n_multiplier_basis/loc_k2;
+								if ((curr_face_crosspoint==4) || (curr_face_crosspoint==6))
+									auto loc_k=(i/loc_k1)*loc_k1;
+								else 
+									auto loc_k=(i/loc_k1)*loc_k1+(loc_k1-1);
+								
+								
+								loc_m1=multiplier_degree_dir(0)[0];
+								loc_m2=n_multiplier_basis/loc_m1;
+								if ((curr_face_crosspoint==4) || (curr_face_crosspoint==5))
+									auto loc_m=i-(i/loc_m1)*loc_m1;
+								else 
+									auto loc_m=i+(loc_m2-((i/loc_m1)+1))*loc_m1;
+								
+								
+								
+								auto phi_m=basis_multiplier.get_function_view(i);
+								auto deri_phi_m=deri_multiplier.get_function_view(i);
+								if (is_member_vec(remove_multiplier_dof,multiplier_face_dof_num_[dofs_face_multiplier[i]])!=-1)
+									phi_m_qp=0.;
+								else {
+									auto phi_k=basis_multiplier.get_function_view(loc_k);
+									auto phi_k_qp=phi_k[qp];
+									auto deri_phi_k=deri_multiplier.get_function_view(loc_k);
+									
+									auto phi_m=basis_multiplier.get_function_view(loc_m);
+									auto phi_m_qp=phi_m[qp];
+									auto deri_phi_m=deri_multiplier.get_function_view(loc_m);
+									
+									auto deri_phi_l0_qp=deri_phi_l[qp][0];
+									auto deri_phi_m0_qp=deri_phi_m[qp][0];
+									auto deri_phi_l1_qp=deri_phi_l[qp][1];
+									auto deri_phi_m1_qp=deri_phi_m[qp][1];
+									
+									//phi_m_qp=phi_m[qp]-(deri_phi_m_qp)/(deri_phi_l_qp)*phi_l_qp;
+								}
+								
+								
+								
+								
+								
+							}
+							//
+							*/
+							
+							
 							loc_e(dofs_face_multiplier[i],dofs_face_slave[j])=loc_e(dofs_face_multiplier[i],dofs_face_slave[j])+
 							scalar_product(phi_m_qp,phj[qp])*face_meas*face_w_unit_domain[qp]*determinant<dim-1,dim>(face_slave_map_grad[qp]);
 						}
@@ -705,7 +860,7 @@ int main()
 		}// Problem here with a value different than 2
 		if(i==0){
 			spaces[i]->get_grid()->set_boundary_id(2,3);
-			//spaces[i]->get_grid()->set_boundary_id(4,3);
+			spaces[i]->get_grid()->set_boundary_id(4,3);
 		}
 		//spaces[i]->print_info(out);
 		auto tmp_mortar_faces=mortar_faces[i];

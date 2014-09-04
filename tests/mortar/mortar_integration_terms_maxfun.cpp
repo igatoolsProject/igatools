@@ -412,7 +412,7 @@ void Mortar_Interface<dim, dim_field>::integration()
 		}
 				
 		
-		/*if (face_el_type!=0){	
+		if (face_el_type!=0){	
 					if (degree_multiplier_==1)
 						auto deri_multiplier=felem_multiplier_ref. template evaluate_basis_derivatives_at_points<1>(curr_slave_face_quad_pts_unit);
 					else if (degree_multiplier_==2)
@@ -428,21 +428,162 @@ void Mortar_Interface<dim, dim_field>::integration()
 					//	auto deri_multiplier=felem_multiplier_ref. template evaluate_basis_derivatives_at_points<5>(curr_slave_face_quad_pts_unit);
 					else 
 						Assert(false,ExcNotImplemented());
-		} //if (face_el_type!=0)*/
+		} //if (face_el_type!=0)
 				
 			
 		
 					
 		auto multiplier_degree_dir=multiplier_face_space_->get_reference_space()->get_degree();				
 		out<<"MUL DEG FACE"<<multiplier_degree_dir(0)<<endl;
+		
+		
+		
+		
+		
+		
+		//BSplineElementAccessor<dim, range, rank>::
+		//evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const ->
+		//ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+		//{
+		const int deriv_order(0);
+			using return_t = ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >;
+			
+			const Size n_basis  = felem_multiplier_ref.get_num_basis();
+			const Size n_points = curr_slave_face_quad_pts_unit.size();
+			
+			return_t D_phi(n_basis,n_points);
+			const auto bezier_op = felem_multiplier_ref.space_->operators_.get_element_operators(curr_bspline_elem_acc.get_tensor_index());
+			
+			if (deriv_order == 0)
+			{
+				for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
+				{
+					const Point point = curr_slave_face_quad_pts_unit[pt_id];
+					
+					auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
+					
+#ifndef NDEBUG
+					for (int dir = 0 ; dir < dim ; ++dir)
+						Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
+							   ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
+#endif
+					auto n_basis = felem_multiplier_ref.space_->get_num_basis_per_element_table();
+					auto degree = felem_multiplier_ref.space_->get_degree();
+					for (int iComp : bezier_op.get_active_components_id())
+					{
+						//------------------------------------------------------------------------------
+						// evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
+						array<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
+						// const TensorSize<dim> basis_component_t_size = this->n_basis_direction_(iComp);
+						for (int dir = 0 ; dir < dim ; ++dir)
+						{
+							//                    const int n_basis_1D = n_basis(iComp)(dir);
+							//                    const int degree = n_basis_1D - 1 ;
+							bernstein_values[dir] = BernsteinBasis::derivative(0,degree(iComp)[dir],point[dir]);
+						}
+						// evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
+						//------------------------------------------------------------------------------
+						
+						
+						//--------------------------------------------------------------------------------
+						// apply the Bezier extraction operator for the functions on this element -- begin
+						const auto &bezier_op_comp = bezier_op(iComp);
+						
+						array<boost::numeric::ublas::vector<Real>,dim> curr_1D_func_val_at_pts;
+						for (int dir = 0 ; dir < dim ; ++dir)
+						{
+							const auto &M = *(bezier_op_comp[dir]);
+							
+							curr_1D_func_val_at_pts[dir] = prec_prod(M, bernstein_values[dir]);
+						}
+						// apply the Bezier extraction operator for the functions on this element -- end
+						//--------------------------------------------------------------------------------
+			} // end if (deriv_order == 0)
+					
+					
+		/*	else
+			{
+				Assert(deriv_order >= 1, ExcLowerRange(deriv_order,1));
 				
+				using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
+				DerSymmMngr_t derivative_symmetry_manager;
+				const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
+				const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
+				const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
+				
+				const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
+				
+				const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
+				const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
+				
+				const array<Real,dim> elem_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
+				
+				for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
+				{
+					const Point point = points[pt_id];
+					
+					auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
+					
+#ifndef NDEBUG
+					for (int dir = 0 ; dir < dim ; ++dir)
+						Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
+							   ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
+#endif
+					auto n_basis = this->space_->get_num_basis_per_element_table();
+					auto degree = this->space_->get_degree();
+					for (int iComp : bezier_op.get_active_components_id())
+					{
+						//------------------------------------------------------------------------------
+						// evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
+						array<array<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bernstein_values;
+						for (int order = 0 ; order <= deriv_order ; ++order)
+						{
+							for (int dir = 0 ; dir < dim ; ++dir)
+							{
+								const Real scaling_coef = pow(1.0/elem_lengths[dir],order);
+								
+								//                        const int n_basis_1D = basis_component_t_size(dir);
+								//                        const int degree = n_basis_1D - 1 ;
+								bernstein_values[order][dir] =
+								scaling_coef * BernsteinBasis::derivative(order,degree(iComp)[dir],point[dir]);
+							}
+						}
+						// evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
+						//------------------------------------------------------------------------------
+						
+						
+						
+						//--------------------------------------------------------------------------------
+						// apply the Bezier extraction operator for the functions on this element -- begin
+						const auto &bezier_op_comp = bezier_op(iComp);
+						
+						array<array<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> curr_1D_func_val_at_pts;
+						for (int order = 0 ; order <= deriv_order ; ++order)
+						{
+							for (int dir = 0 ; dir < dim ; ++dir)
+							{
+								const auto &M = *(bezier_op_comp[dir]);
+								
+								curr_1D_func_val_at_pts[order][dir] = prec_prod(M, bernstein_values[order][dir]);
+							}
+						}
+						// apply the Bezier extraction operator for the functions on this element -- end
+						//--------------------------------------------------------------------------------
+			} // end if (deriv_order != 0)
+			
+		*/
+		
+		
+		
+		
+		
+		
 		//add the contributions of the current element
 		for (int i = 0; i < n_multiplier_basis; ++i){
 			auto phi_m = basis_multiplier.get_function_view(i);
 			for (int j = 0; j < n_slave_basis; ++j){
 						auto phj = basis_slave.get_function_view(j);
 						for (int qp = 0; qp < n_qp; ++qp){
-							//modif here
 							auto phi_m_qp=phi_m[qp];
 							loc_e(dofs_face_multiplier[i],dofs_face_slave[j])=loc_e(dofs_face_multiplier[i],dofs_face_slave[j])+
 							scalar_product(phi_m_qp,phj[qp])*face_meas*face_w_unit_domain[qp]*determinant<dim-1,dim>(face_slave_map_grad[qp]);
