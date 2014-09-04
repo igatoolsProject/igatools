@@ -82,7 +82,7 @@ void
 ValueVector<T>::
 zero()
 {
-    for (auto & value : (*this))
+    for (auto &value : (*this))
         value = T() ;
 }
 
@@ -93,7 +93,7 @@ operator*(const ValueVector<T> &a, const Real scalar)
 {
     ValueVector<T> result = a ;
 
-    for (auto & r : result)
+    for (auto &r : result)
         r *= scalar ;
 
     return result ;
@@ -108,7 +108,7 @@ operator*(const Real scalar, const ValueVector<T> &a)
 {
     ValueVector<T> result = a ;
 
-    for (auto & r : result)
+    for (auto &r : result)
         r *= scalar ;
 
     return result ;

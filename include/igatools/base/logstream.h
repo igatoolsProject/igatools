@@ -213,6 +213,17 @@ public:
      */
     void pop();
 
+    void begin_item(const std::string &text)
+    {
+        *this << text << std::endl;
+        push("   ");
+    }
+
+    void end_item()
+    {
+        pop();
+        *this << std::endl;
+    }
     /**
      * Maximum number of levels to be
      * printed on the console. This

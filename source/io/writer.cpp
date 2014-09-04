@@ -92,7 +92,7 @@ Writer(const shared_ptr<const Mapping<dim,codim> > map,
     map_(map),
     quad_plot_(*quadrature),
     num_points_direction_(quad_plot_.get_num_points_direction()),
-    n_iga_elements_(grid_->get_num_elements()),
+    n_iga_elements_(grid_->get_num_active_elems()),
     n_points_per_iga_element_(quad_plot_.get_num_points()),
     n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
     sizeof_Real_(sizeof(T)),
@@ -292,7 +292,7 @@ add_field(shared_ptr<Space> space_,
 
 
 
-    const int n_elements = grid_->get_num_elements();
+    const int n_elements = grid_->get_num_active_elems();
     const int n_pts_per_elem = quad_plot_.get_num_points();
 
     static const int dim_phys_range = Space::range;
@@ -574,9 +574,9 @@ add_element_data(const std::vector<int> &element_data,
 template<int dim, int codim, class T>
 template<class Out>
 void Writer<dim, codim, T>::save_ascii(Out &file,
-    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-    &vtk_elements_connectivity) const
+                                       const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                                       const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                                       &vtk_elements_connectivity) const
 {
     const string tab1("\t");
     const string tab2 = tab1 + tab1;
@@ -733,9 +733,9 @@ void Writer<dim, codim, T>::save_ascii(Out &file,
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::save_appended(const string &filename,
-    const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
-    const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
-    &vtk_elements_connectivity) const
+                                          const std::vector< std::vector< std::array<T,3> > > &points_in_iga_elements,
+                                          const std::vector< std::vector< std::array< int,n_vertices_per_vtk_element_> > >
+                                          &vtk_elements_connectivity) const
 {
     ofstream file(filename);
     file.setf(ios::scientific);

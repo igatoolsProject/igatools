@@ -128,6 +128,20 @@ public:
     /** Move assignment operator. Not allowed to be used. */
     self_t &operator=(self_t &&) = delete;
     ///@}
+
+    Index get_id() const
+    {
+        return id_;
+    }
+
+    void set_id(const Index id)
+    {
+        Assert(id >= 0,ExcLowerRange(id,0));
+        id_ = id;
+    }
+
+protected:
+    Index id_ = 0;
 };
 
 

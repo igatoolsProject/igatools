@@ -77,7 +77,7 @@ int main()
     using MatrixType = Matrix<la_pack>;
     using LinSolverType = LinearSolver<la_pack>;
 
-    MatrixType matrix(SparsityPattern(*bspline_space->get_dofs_manager()));
+    MatrixType matrix(SparsityPattern(*bspline_space->get_space_manager()));
 
 
     const Index num_rows = matrix.get_num_rows() ;

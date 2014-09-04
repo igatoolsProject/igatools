@@ -45,6 +45,17 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 
 
 template <int dim_>
+CartesianGridElementAccessor<dim_>::
+CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
+                             const TensorIndex<dim> index)
+    :
+    CartesianGridElement<dim>(grid, index),
+    length_cache_ {new LengthCache}
+{}
+
+
+
+template <int dim_>
 bool
 CartesianGridElementAccessor<dim_>::
 operator== (const CartesianGridElementAccessor<dim_> &a) const
@@ -72,9 +83,15 @@ void
 CartesianGridElementAccessor<dim_>::
 operator++()
 {
+    const auto n_elem = this->grid_->get_num_all_elems();
     Index index = this->get_flat_index();
-    ++index;
-    if (index >= this->get_grid()->get_num_elements())
+    do
+    {
+        ++index;
+    }
+    while (index<n_elem && (!this->grid_->active_elems_(index)));
+
+    if (index >= n_elem)
         index = IteratorState::pass_the_end;
 
     this->reset_flat_tensor_indices(index);

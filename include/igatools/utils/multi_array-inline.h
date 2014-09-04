@@ -60,7 +60,7 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const Index i) -> Entry &
+operator()(const Index i) -> reference
 {
     Assert((0<=i) &&(i<this->flat_size()),
     ExcIndexRange(i,0,this->flat_size()));
@@ -71,7 +71,7 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const Index i) const -> const Entry &
+operator()(const Index i) const -> const_reference
 {
     Assert(i<this->flat_size(),
            ExcIndexRange(i,0,this->flat_size()));
@@ -83,7 +83,7 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const TensorIndex<rank> &i) -> Entry &
+operator()(const TensorIndex<rank> &i) -> reference
 {
     return this->data_[this->tensor_to_flat(i)];
 }
@@ -93,7 +93,7 @@ template<class STLContainer, int rank>
 inline
 auto
 MultiArray<STLContainer,rank>::
-operator()(const TensorIndex<rank> &i) const -> const Entry &
+operator()(const TensorIndex<rank> &i) const -> const_reference
 {
     return this->data_[this->tensor_to_flat(i)];
 }
@@ -163,9 +163,9 @@ template<class STLContainer, int rank>
 inline
 void
 MultiArray<STLContainer,rank>::
-fill_progression(const Entry &init)
+fill_progression(const value_type &init)
 {
-    Entry val = init;
+    auto val = init;
     for (auto &d : data_)
         d = val++;
 }
@@ -176,7 +176,7 @@ template<class STLContainer, int rank>
 inline
 void
 MultiArray<STLContainer,rank>::
-fill(const Entry &value)
+fill(const value_type &value)
 {
     std::fill(this->data_.begin(),this->data_.end(),value);
 }
@@ -199,6 +199,25 @@ MultiArray<STLContainer,rank>::
 get_const_view() const
 {
     return ConstContainerView<MultiArray<STLContainer,rank>>(this->cbegin(),this->cend());
+}
+
+
+template<class STLContainer, int rank>
+inline
+ContainerView<STLContainer>
+MultiArray<STLContainer,rank>::
+get_flat_view()
+{
+    return ContainerView<STLContainer>(this->data_.begin(),this->data_.end());
+}
+
+template<class STLContainer, int rank>
+inline
+ConstContainerView<STLContainer>
+MultiArray<STLContainer,rank>::
+get_flat_const_view() const
+{
+    return ConstContainerView<STLContainer>(this->data_.cbegin(),this->data_.cend());
 }
 
 

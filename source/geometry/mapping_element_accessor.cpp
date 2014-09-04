@@ -33,12 +33,13 @@ using std::vector;
 using std::shared_ptr;
 using std::static_pointer_cast;
 using std::dynamic_pointer_cast;
+
 IGA_NAMESPACE_OPEN
 
 template<int dim_ref_, int codim_ >
 MappingElementAccessor<dim_ref_,codim_>::
 MappingElementAccessor(const shared_ptr<ContainerType> mapping,
-                       const int index)
+                       const Index index)
     :
     CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
     mapping_(mapping)
@@ -71,8 +72,50 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
     :
     CartesianGridElementAccessor<0>(mapping->get_grid(), index),
     mapping_(mapping)
+{}
+
+
+
+template<int dim_ref_, int codim_ >
+MappingElementAccessor<dim_ref_,codim_>::
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const TensorIndex<dim> &index)
+    :
+    CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
+    mapping_(mapping)
 {
+    using BSplineSp = BSplineSpace<dim,dim+codim,1>;
+    using BSplineMapping = IgMapping<BSplineSp>;
+    if (dynamic_pointer_cast<const BSplineMapping>(mapping_))
+    {
+        auto ig_mapping = dynamic_pointer_cast<const BSplineMapping>(mapping_);
+        mapping_.reset(new BSplineMapping(ig_mapping->get_data()));
+    }
+
+
+
+    using NURBSSp = NURBSSpace<dim,dim+codim,1>;
+    using NURBSMapping = IgMapping<NURBSSp>;
+    if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
+    {
+        auto ig_mapping = dynamic_pointer_cast<const NURBSMapping>(mapping_);
+        mapping_ .reset(new NURBSMapping(ig_mapping->get_data()));
+    }
+
+    Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
 }
+
+
+
+template<>
+MappingElementAccessor<0, 0>::
+MappingElementAccessor(const shared_ptr<ContainerType> mapping,
+                       const TensorIndex<0> &index)
+    :
+    CartesianGridElementAccessor<0>(mapping->get_grid(), index),
+    mapping_(mapping)
+{}
+
 
 
 template<int dim_ref_, int codim_ >
@@ -272,7 +315,7 @@ template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 init_cache(const ValueFlags fill_flag,
-            const Quadrature<dim> &quad)
+           const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
@@ -338,8 +381,8 @@ template< int dim_ref_, int codim_ >
 void
 MappingElementAccessor<dim_ref_,codim_>::
 init_face_cache(const Index face_id,
-                 const ValueFlags fill_flag,
-                 const Quadrature<dim-1> &quad)
+                const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad)
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());

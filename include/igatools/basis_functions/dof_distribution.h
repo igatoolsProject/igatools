@@ -22,6 +22,7 @@
 #define DOF_DISTRIBUTION_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/tensor_sized_container.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 #include <igatools/utils/concatenated_iterator.h>
@@ -39,7 +40,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int range = 1, int rank = 1>
-class DofDistribution
+class DofDistribution : public TensorSizedContainer<dim>
 {
 public:
     using Space = SplineSpace<dim, range, rank>;
@@ -47,6 +48,31 @@ public:
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
+
+
+    /** Type alias for the dofs container used in each scalar component of a single-patch space. */
+    using DofsComponentContainer = std::vector<Index>;
+
+    /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
+    using DofsComponentView = ContainerView<DofsComponentContainer>;
+
+    /** Type alias for the ConstView on the dofs in each scalar component of a single-patch space. */
+    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
+
+    /** Type alias for a concatenated iterator defined on several component views. */
+    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
+
+    /** Type alias for a concatenated const-iterator defined on several component views. */
+    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
+
+    /** Type alias for the View on the dofs held by the single-patch space. */
+    using DofsView = View<DofsIterator,DofsConstIterator>;
+
+    /** Type alias for the ConstView on the dofs held by the single-patch space. */
+    using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
+
+
+
 
     enum class DistributionPolicy
     {
@@ -69,18 +95,13 @@ public:
 
 
     TensorIndex<dim>
-    basis_flat_to_tensor(const Index index, const Index comp) const
-    {
-        return index_distribution_(comp).flat_to_tensor(index);
-    }
+    basis_flat_to_tensor(const Index index, const Index comp) const;
 
 
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                         const Index comp) const
-    {
-        return index_distribution_(comp).tensor_to_flat(tensor_index);
-    }
+                         const Index comp) const;
+
     /**
      * Print the class content
      */
@@ -90,21 +111,27 @@ public:
     /** Add an @p offset to the dofs. */
     void add_dofs_offset(const Index offset);
 
+    /** Returns the minimum dof id. */
+    Index get_min_dof_id() const;
+
+    /** Returns the maximum dof id. */
+    Index get_max_dof_id() const;
 
 private:
 
+    /**
+     * Container used to store the dofs ids of each component of a single patch space.
+     *
+     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
+     * use the associated View instead!
+     */
     IndexDistributionTable index_distribution_;
 
-#if 0
-    //TODO (martinelli, Jun 27, 2014): I think this should be removed and use instead some kind of iterator
-    DynamicMultiArray<std::vector<Index>, dim> element_loc_to_global_;
+    /**
+     * View of the active dofs ids on a given single-patch space.
+     */
+    DofsView dofs_view_;
 
-    DynamicMultiArray<std::vector<Index>, dim> create_element_loc_to_global_from_index_distribution(
-        std::shared_ptr<const CartesianGrid<dim> > grid,
-        const MultiplicityTable &accum_mult,
-        const SpaceDimensionTable &n_elem_basis,
-        const IndexDistributionTable &index_distribution) const;
-#endif
 
 
     void create_element_loc_to_global_view(
@@ -112,29 +139,47 @@ private:
         const MultiplicityTable &accum_mult,
         const SpaceDimensionTable &n_elem_basis);
 
-
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-    using DofsView = ConstView<DofsIterator,DofsConstIterator>;
-    DynamicMultiArray<DofsView, dim> element_loc_to_global_view_;
+    /**
+     * Pointer to a vector in which each entry is a const view to the global dofs on a single element
+     * of a space.
+     * The size of the vector is equal to the number of active elements in the space.
+     *
+     * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
+     * and we want to keep the syncronization of the element views without the expense of successive copies.
+     */
+    std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
 
     DistributionPolicy policy_;
 
 public:
 
-    const IndexDistributionTable &get_index_distribution() const
-    {
-        return index_distribution_;
-    }
+    /**
+     * Returns the container used to store the dofs ids of each component of a single patch space.
+     *
+     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
+     * use the associated View instead!
+     */
+    const IndexDistributionTable &get_index_distribution() const;
 
-    const DynamicMultiArray<DofsView, dim> & get_elements_view() const
-	{
-    	return element_loc_to_global_view_;
-	}
+    /**
+     * Returns a view of the active dofs ids on a given single-patch space (non-const version).
+     */
+    DofsView &get_dofs_view();
 
+
+    /**
+     * Returns a view of the active dofs ids on a given single-patch space (const version).
+     */
+    const DofsView &get_dofs_view() const;
+
+
+
+    /**
+     * Returns a pointer to a vector in which each entry is a const view to the global dofs
+     * on a single element of a space.
+     * The size of the vector is equal to the number of active elements in the space.
+     */
+    std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
 };
 
 IGA_NAMESPACE_CLOSE

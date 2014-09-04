@@ -27,13 +27,14 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include <igatools/basis_functions/dofs_manager.h>
 
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
+
+class SpaceManager;
 
 template < int, int, int> class BSplineElementAccessor;
 
@@ -166,7 +167,58 @@ public:
 
 
 public:
-    /** @name Constructor and destructor */
+    /**
+     * @name Creators.
+     */
+    ///@{
+    /**
+     * Builds and returns a maximum regularity BSpline space
+     * over CartesianGrid
+     * @p knots for the given @p degree in all directions and homogeneous
+     * in all components.
+     */
+    static std::shared_ptr<self_t>
+    create(const int degree, std::shared_ptr<GridType> knots);
+
+
+    /**
+     * Builds and returns a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree[i] in the i-th direction and homogeneous
+     * in all components.
+     */
+    static std::shared_ptr<self_t>
+    create(const TensorIndex<dim> &degree, std::shared_ptr<GridType> knots);
+
+
+    /**
+     * Builds and returns a maximum regularity BSpline space over CartesianGrid
+     * @p knots for the given @p degree for each direction and for each
+     * component.
+     */
+    static std::shared_ptr<self_t>
+    create(const DegreeTable &degree,
+           std::shared_ptr<GridType> knots,
+           const bool homogeneous_range = false);
+
+    /**
+     * Builds and returns a BSpline space over the CartesianGrid
+     * @p knots with the given multiplicity vector @p mult_vectors
+     * for each component
+     * and the given @p degree for each direction and for each
+     * component.
+     */
+    static std::shared_ptr<self_t>
+    create(const DegreeTable &deg,
+           std::shared_ptr<GridType> knots,
+           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const EndBehaviourTable &ends = EndBehaviourTable());
+    ///@}
+
+    /** Destructor. */
+    ~BSplineSpace() = default;
+
+protected:
+    /** @name Constructors */
     ///@{
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -175,12 +227,6 @@ public:
      */
     explicit BSplineSpace(const int degree, std::shared_ptr<GridType> knots);
 
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const int degree, std::shared_ptr<GridType> knots);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -189,13 +235,6 @@ public:
      */
     explicit BSplineSpace(const TensorIndex<dim> &degree,
                           std::shared_ptr<GridType> knots);
-
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const TensorIndex<dim> &degree, std::shared_ptr<GridType> knots);
 
 
     /**
@@ -207,14 +246,6 @@ public:
                           std::shared_ptr<GridType> knots,
                           const bool homogeneous_range = false);
 
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const DegreeTable &degree,
-           std::shared_ptr<GridType> knots,
-           const bool homogeneous_range = false);
 
     /**
      * Constructs a BSpline space over the CartesianGrid
@@ -227,20 +258,6 @@ public:
                           std::shared_ptr<GridType> knots,
                           std::shared_ptr<const MultiplicityTable> interior_mult,
                           const EndBehaviourTable &ends);
-
-
-    /**
-     * Smart pointer create construction technique, see more detail
-     * in the corresponding wrapped constructor before.
-     */
-    static std::shared_ptr<self_t>
-    create(const DegreeTable &deg,
-           std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends = EndBehaviourTable());
-
-    /** Destructor */
-    ~BSplineSpace() = default;
     ///@}
 
 
@@ -252,36 +269,13 @@ public:
     operator=(const self_t &space) = delete;
     ///@}
 
+public:
     /** @name Getting information about the space */
     ///@{
-    /**
-     * Returns true if all component belong to the same scalar valued
-     * space.
-     */
-
-//   bool is_range_homogeneous() const;
-
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const
-    {
-        return basis_indices_.get_loc_to_global_indices(j);
-    }
+    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
     std::shared_ptr<const self_t >
     get_reference_space() const;
-
-    /**
-     * Returns a const reference to the dense multi array storing the global dofs.
-     * Each element has a statically defined zone to read their dofs from,
-     * independent of the distribution policy in use.
-     */
-
-    /**
-     * Returns a reference to the dense multi array storing the global dofs.
-     * Each element has a statically defined zone to read their dofs from,
-     * independent of the distribution policy in use.
-     */
-    //  const IndexSpaceTable &get_index_space() const;
-
     ///@}
 
     /** @name Functions involving the element iterator */
@@ -345,10 +339,7 @@ public:
      * @note try not to use as plans are to make it private
      */
     TensorIndex<dim>
-    basis_flat_to_tensor(const Index index, const Index comp) const
-    {
-        return basis_indices_.basis_flat_to_tensor(index,comp);
-    }
+    basis_flat_to_tensor(const Index index, const Index comp) const;
 
 
     /**
@@ -356,15 +347,12 @@ public:
      */
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                         const Index comp) const
-    {
-        return basis_indices_.basis_tensor_to_flat(tensor_index, comp);
-    }
+                         const Index comp) const;
 
 
-    std::shared_ptr<DofsManager> get_dofs_manager() const;
+    std::shared_ptr<SpaceManager> get_space_manager();
 
-
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 private:
 
@@ -373,21 +361,6 @@ private:
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
-
-
-    ///@{
-protected:
-    /**
-     * True if each component of the vector valued space belongs
-     * to the same scalar valued space.
-     */
-    //  const bool homogeneous_range_;
-
-    //TODO(pauletti, Apr 27, 2014): make this private w/getter
-
-
-private:
-    ///@}
 
 
     friend class BSplineElementAccessor<dim, range, rank>;
@@ -410,28 +383,19 @@ private:
         const GridType &grid_old) ;
 
 
-    void create_dofs_manager();
-    std::shared_ptr<DofsManager> dofs_manager_;
-
 public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
 
 
-    /** Returns the container with the local to global basis indices. */
+    /** Returns the container with the local to global basis indices (const version). */
     const DofDistribution<dim, range, rank> &
-    get_basis_indices() const
-    {
-        return basis_indices_;
-    }
+    get_basis_indices() const;
 
-    /** Returns the container with the local to global basis indices. */
+    /** Returns the container with the local to global basis indices (non-const version). */
     DofDistribution<dim, range, rank> &
-    get_basis_indices()
-    {
-        return basis_indices_;
-    }
+    get_basis_indices();
 
 };
 

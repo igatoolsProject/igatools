@@ -33,7 +33,7 @@ template<class Space>
 inline
 SpaceElementAccessor<Space>::
 SpaceElementAccessor(const std::shared_ptr<const Space> space,
-                     const int elem_index)
+                     const Index elem_index)
     :
     CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
     space_(space)
@@ -55,6 +55,36 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
         comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis.comp_dimension(comp_id);
 
 }
+
+
+
+template<class Space>
+inline
+SpaceElementAccessor<Space>::
+SpaceElementAccessor(const std::shared_ptr<const Space> space,
+                     const TensorIndex<dim> &elem_index)
+    :
+    CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
+    space_(space)
+{
+    Assert(space_ != nullptr, ExcNullPtr());
+
+    using Indexer = CartesianProductIndexer<dim>;
+    auto n_basis = space->get_num_basis_per_element_table();
+    for (int comp_id : basis_functions_indexer_.get_active_components_id())
+    {
+        // creating the objects for fast conversion from flat-to-tensor indexing
+        // (in practice it is an hash-table from flat to tensor indices)
+        basis_functions_indexer_(comp_id) =
+            std::shared_ptr<Indexer>(new Indexer(n_basis(comp_id)));
+    }
+
+    comp_offset_(0) = 0;
+    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
+        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis.comp_dimension(comp_id);
+
+}
+
 
 
 template<class Space>

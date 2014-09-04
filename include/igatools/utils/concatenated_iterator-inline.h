@@ -88,7 +88,7 @@ int
 ConcatenatedIteratorData<ViewType,DerivedClass>::
 get_range_id() const
 {
-	return range_id_;
+    return range_id_;
 }
 
 template <class ViewType,class DerivedClass>
@@ -97,7 +97,7 @@ auto
 ConcatenatedIteratorData<ViewType,DerivedClass>::
 get_iterator_current() const -> Iterator
 {
-	return iterator_current_;
+    return iterator_current_;
 }
 
 
@@ -398,11 +398,11 @@ inline
 ConcatenatedConstIterator<ViewType,ConstViewType>::
 ConcatenatedConstIterator(const ConcatenatedIterator<ViewType> &it)
 {
-	for (const auto & rng : it.get_ranges())
-		this->ranges_.emplace_back(ConstViewType(rng)) ;
+    for (const auto &rng : it.get_ranges())
+        this->ranges_.emplace_back(ConstViewType(rng)) ;
 
-	this->range_id_ = it.get_range_id();
-	this->iterator_current_ = it.get_iterator_current();
+    this->range_id_ = it.get_range_id();
+    this->iterator_current_ = it.get_iterator_current();
 }
 
 

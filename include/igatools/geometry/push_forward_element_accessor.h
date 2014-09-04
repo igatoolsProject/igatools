@@ -70,8 +70,14 @@ public:
      */
     PushForwardElementAccessor() = delete;
 
-    explicit PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
-                                        const int index);
+    explicit
+    PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
+                               const Index index);
+
+    explicit
+    PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
+                               const TensorIndex<dim> &index);
+
 
     /**
      * Copy constructor.
@@ -108,11 +114,11 @@ public:
      *
      */
     void init_cache(const ValueFlags fill_flag,
-                     const Quadrature<dim> &quad);
+                    const Quadrature<dim> &quad);
 
     void init_face_cache(const Index face_id,
-                          const ValueFlags fill_flag,
-                          const Quadrature<dim-1> &quad);
+                         const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad);
 
     /** @name Mapping used for transforming quantities with the use of the cache  */
     ///@{

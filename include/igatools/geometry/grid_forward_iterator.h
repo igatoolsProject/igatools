@@ -22,11 +22,12 @@
 #define GRID_FORWARD_ITERATOR_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/tensor_index.h>
 
 #include <iterator>
 #include <memory>
-IGA_NAMESPACE_OPEN
 
+IGA_NAMESPACE_OPEN
 
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
@@ -166,6 +167,8 @@ public:
     /** Type of the grid-like container . */
     using ContainerType = typename Accessor::ContainerType;
 
+    static const int dim = ContainerType::dim;
+
     /** @name Constructors & destructor */
     ///@{
     /**
@@ -174,12 +177,18 @@ public:
     GridForwardIterator() = delete;
 
     /**
-     * Construct a forward iterator on a cartesian grid container
-     * like type pointed to by patch and the index of the
-     * object pointed to by the iterator.
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
      */
-    GridForwardIterator(std::shared_ptr<ContainerType> patch,
+    GridForwardIterator(std::shared_ptr<ContainerType> grid,
                         const Index index);
+
+    /**
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
+     */
+    GridForwardIterator(std::shared_ptr<ContainerType> grid,
+                        const TensorIndex<dim> &index);
 
     /** Copy constructor. */
     GridForwardIterator(const GridForwardIterator<Accessor> &it) = default;

@@ -37,9 +37,9 @@ IGA_NAMESPACE_OPEN
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
-MultiPatchSpace(shared_ptr<DofsManager> dofs_manager)
+MultiPatchSpace(shared_ptr<SpaceManager> dofs_manager)
     :
-    dofs_manager_(dofs_manager)
+    space_manager_(dofs_manager)
 {
     Assert(dofs_manager != nullptr,ExcNullPtr());
 }
@@ -52,7 +52,7 @@ patch_insertion_open()
 {
     is_patch_insertion_open_ = true;
 
-    dofs_manager_->dofs_view_open();
+    space_manager_->space_insertion_open();
 }
 
 template <class PhysicalSpace>
@@ -95,11 +95,12 @@ patch_insertion_close(const bool automatic_dofs_renumbering)
     //------------------------------------------------------------------------
 
 
-    dofs_manager_->dofs_view_close(automatic_dofs_renumbering);
+    space_manager_->space_insertion_close(automatic_dofs_renumbering);
 
     is_patch_insertion_open_ = false;
 }
 
+#ifdef USE_GRAPH
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
@@ -147,6 +148,7 @@ build_graph()
 
     is_graph_built_ = true;
 }
+#endif
 
 template <class PhysicalSpace>
 void
@@ -158,8 +160,10 @@ compute_constraints()
     Assert(are_constraints_computed_ == false,ExcInvalidState());
 
     //---------------------------------------------------------------------------
+#ifdef USE_GRAPH
     if (is_graph_built_ == false)
         this->build_graph();
+#endif
     //---------------------------------------------------------------------------
 
 
@@ -203,41 +207,7 @@ add_patch(PatchPtr patch)
     patches_.push_back(patch);
 
 
-
-
-    //------------------------------------------------------------------------
-    // adding the dofs view of the patch to the DofsManager -- begin
-    using DofsComponentContainer = std::vector<Index>;
-    using DofsComponentView = ContainerView<DofsComponentContainer>;
-    using DofsComponentConstView = ConstContainerView<DofsComponentContainer>;
-
-    using DofsIterator = ConcatenatedIterator<DofsComponentView>;
-    using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
-
-    using SpaceDofsView = View<DofsIterator,DofsConstIterator>;
-
-    shared_ptr<RefSpace> ref_space = std::const_pointer_cast<RefSpace>(patch->get_reference_space());
-
-    auto &index_space = ref_space->get_basis_indices().get_index_distribution();
-
-    vector<DofsComponentView> space_components_view;
-    for (auto &index_space_comp : index_space)
-    {
-        vector<Index> &index_space_comp_data = const_cast<vector<Index> &>(index_space_comp.get_data());
-        DofsComponentView index_space_comp_view(
-            index_space_comp_data.begin(),index_space_comp_data.end());
-
-        space_components_view.push_back(index_space_comp_view);
-    }
-
-    DofsIterator space_dofs_begin(space_components_view,0);
-    DofsIterator space_dofs_end(space_components_view,IteratorState::pass_the_end);
-    SpaceDofsView dofs_space_view(space_dofs_begin,space_dofs_end);
-
-    dofs_manager_->add_dofs_space_view(patch->get_id(),patch->get_num_basis(),dofs_space_view);
-    // adding the dofs view of the patch to the DofsManager -- end
-    //------------------------------------------------------------------------
-
+    space_manager_->add_space(patch);
 }
 
 
@@ -281,9 +251,9 @@ get_num_interfaces() const
 }
 
 template <class PhysicalSpace>
-shared_ptr<DofsManager>
+auto
 MultiPatchSpace<PhysicalSpace>::
-get_dofs_manager() const
+get_space_manager() -> shared_ptr<SpaceManager>
 {
     /*
     Assert(is_patch_insertion_open_ == false,ExcInvalidState());
@@ -291,7 +261,21 @@ get_dofs_manager() const
     Assert(is_graph_built_ == true,ExcInvalidState());
     Assert(are_constraints_computed_ == true,ExcInvalidState());
     //*/
-    return dofs_manager_;
+    return space_manager_;
+}
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+get_space_manager() const -> shared_ptr<const SpaceManager>
+{
+    /*
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+    Assert(is_graph_built_ == true,ExcInvalidState());
+    Assert(are_constraints_computed_ == true,ExcInvalidState());
+    //*/
+    return space_manager_;
 }
 
 
@@ -333,15 +317,15 @@ print_info(LogStream &out) const
         for (const auto &interface : interfaces_same_type.second)
         {
             out << "Interface id = " << interface_id++ << endl;
-            interface->print_info(out);
             out.push(tab);
+            interface->print_info(out);
         }
         out.pop();
     }
 
 
 
-
+#ifdef USE_GRAPH
     //---------------------------------------------------------------------------
     Assert(is_graph_built_ == true,ExcInvalidState());
     out << "Patches in the graph:" << endl;
@@ -377,14 +361,14 @@ print_info(LogStream &out) const
     }
     out.pop();
     //---------------------------------------------------------------------------
-
+#endif
 
 
     //---------------------------------------------------------------------------
     out.push(tab);
-    out << "DOFs manager:" << endl;
+    out << "Space manager:" << endl;
     out.push(tab);
-    dofs_manager_->print_info(out);
+    space_manager_->print_info(out);
     out << endl;
     out.pop();
     //---------------------------------------------------------------------------

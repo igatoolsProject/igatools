@@ -85,18 +85,11 @@ void
 PushForward<transformation_type_, dim_, codim_>::
 print_info(LogStream &out) const
 {
-    using std::endl ;
-    out << "PushForward info" << endl ;
+    out << "Transformation type: " << int(transformation_type) << std::endl;
 
-    out.push("\t") ;
-    out << "transformation type = " << int(transformation_type) << endl ;
-
-    out << "Map info:" << endl;
-    out.push("\t");
+    out.begin_item("Mapping:");
     map_->print_info(out);
-
-    out.pop() ;
-    out.pop() ;
+    out.end_item();
 }
 
 template< Transformation transformation_type_, int dim_, int codim_>

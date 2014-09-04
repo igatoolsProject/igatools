@@ -28,6 +28,7 @@ using std::array;
 using std::vector;
 using std::endl;
 using std::shared_ptr;
+using std::make_shared;
 using std::bind;
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -197,7 +198,7 @@ NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
     return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
-                           this->get_grid()->get_num_elements() - 1);
+                           this->get_grid()->get_num_active_elems() - 1);
 }
 
 
@@ -317,13 +318,17 @@ refine_h_weights(
                           knots_added.begin());
 
             knots_added.resize(it-knots_added.begin());
-
-            for (const auto comp_id : weights_.get_active_components_id())
+            /*
+                        Assert(false,ExcNotImplemented());
+                        AssertThrow(false,ExcNotImplemented());
+            //*/
+            for (const int comp_id : weights_.get_active_components_id())
             {
                 const int p = sp_space_->get_degree()(comp_id)[direction_id];
                 const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
                 const auto &X = knots_added;
                 const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -333,7 +338,6 @@ refine_h_weights(
                 const int n = m-p-1;
 
                 const auto Pw = weights_(comp_id);
-
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes(direction_id) == n+1,
                        ExcDimensionMismatch(old_sizes(direction_id), n+1));
@@ -403,35 +407,168 @@ refine_h_weights(
 }
 
 
+
 template <int dim_, int range_, int rank_>
-std::shared_ptr<DofsManager>
+Size
 NURBSSpace<dim_, range_, rank_>::
-get_dofs_manager() const
+get_num_basis() const
 {
-    return this->get_spline_space()->get_dofs_manager();
+    return sp_space_->get_num_basis();
 }
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis(const int i) const
+{
+    return sp_space_->get_num_basis(i);
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis(const int comp, const int dir) const
+{
+    return sp_space_->get_num_basis(comp, dir);
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis_per_element() const
+{
+    return sp_space_->get_num_basis_per_element();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis_per_element_table() const -> const SpaceDimensionTable
+{
+    return sp_space_->get_num_basis_per_element_table();
+}
+
+template <int dim_, int range_, int rank_>
+Size
+NURBSSpace<dim_, range_, rank_>::
+get_num_basis_per_element(int i) const
+{
+    return sp_space_->get_num_basis_per_element(i);
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_degree() const -> const DegreeTable &
+{
+    return sp_space_->get_degree();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_loc_to_global(const TensorIndex<dim> &j) const -> std::vector<Index>
+{
+    return sp_space_->get_loc_to_global(j);
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_spline_space() const -> const std::shared_ptr<spline_space_t>
+{
+    return sp_space_;
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_basis_indices();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_basis_indices() -> DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_basis_indices();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_push_forward() -> std::shared_ptr<PushForwardType>
+{
+    return sp_space_->get_push_forward();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_push_forward() const -> std::shared_ptr<const PushForwardType>
+{
+    return sp_space_->get_push_forward();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_reference_space() const -> std::shared_ptr<const self_t >
+{
+    return this->shared_from_this();
+}
+
+template <int dim_, int range_, int rank_>
+void
+NURBSSpace<dim_, range_, rank_>::
+add_dofs_offset(const Index offset)
+{
+    sp_space_->add_dofs_offset(offset);
+}
+
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_space_manager() -> shared_ptr<SpaceManager>
+{
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->space_insertion_open();
+    space_manager->add_space(this->shared_from_this());
+    space_manager->space_insertion_close();
+
+    return space_manager;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
+{
+    return const_cast<self_t &>(*this).get_space_manager();
+}
+
+
 
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-    out << "NURBSSpace<" << dim_ << "," << range_ << ">" << endl;
-
+    out.begin_item("BSpline Space:");
     sp_space_->print_info(out);
+    out.end_item();
 
-//    for (auto w : weights_)
-//        w.print_info(out);
-    out.push("\t");
-    for (int comp_id = 0; comp_id < n_components; comp_id++)
-    {
-        const auto weights_component = weights_(comp_id).get_data();
-        out << "weights[" << comp_id << "] = { ";
-        for (const Real &w : weights_component)
-            out << w << " ";
-        out << "}" << endl;
-    }
-    out.pop();
+    out.begin_item("Weights:");
+    for (auto w : weights_)
+        w.print_info(out);
+    out.end_item();
 }
 
 

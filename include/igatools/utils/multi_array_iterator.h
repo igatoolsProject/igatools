@@ -49,22 +49,22 @@ template <class Container>
 class MultiArrayIteratorBase
     : public std::iterator<
     std::random_access_iterator_tag,
-    typename Container::Entry >
+    typename Container::value_type >
 {
 public:
     using parent_t = std::iterator<
                      std::random_access_iterator_tag,
-                     typename Container::Entry >;
+                     typename Container::value_type >;
 
     /**
      * Type for the values referenced by the iterator.
      * If the @p Container type is declared to be @p const then also
      * the @p Value type will be @p const.
      */
-    using value_type = typename Container::Entry;
+    using value_type = typename Container::value_type;
 
     /** Type for the reference. */
-    using reference = value_type &;
+    using reference = typename Container::reference;
 
 
     /** Type for the pointer. */

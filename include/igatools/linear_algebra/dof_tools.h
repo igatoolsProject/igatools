@@ -25,7 +25,6 @@
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/basis_functions/function_space.h>
-#include <igatools/basis_functions/dofs_manager.h>
 
 
 #include <memory>
@@ -45,23 +44,6 @@ class Matrix;
  */
 namespace dof_tools
 {
-#if 0
-/**
- * Construct the sparsity pattern associated with the DofsManager of one space.
- */
-SparsityPattern
-get_sparsity_pattern(const DofsManager &dofs_manager);
-
-
-/**
- * Construct the sparsity pattern associated with the DofsManager of two space.
- *
- * @warning This function only works when both spaces have the same number of elements.
- */
-SparsityPattern
-get_sparsity_pattern(const DofsManager &dofs_manager_rows,const DofsManager &dofs_manager_cols);
-#endif
-
 /**
  * Modifies the matrix, the unknown and rhs of a linear system
  * to impose dirichlet constraints on the dofs.
@@ -73,9 +55,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<la_pack> &rhs,
                            Vector<la_pack> &solution);
 
-
 } // end of namespace dof_tools
-
 
 IGA_NAMESPACE_CLOSE
 

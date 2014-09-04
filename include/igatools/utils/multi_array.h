@@ -100,8 +100,14 @@ class MultiArray : public TensorSizedContainer<rank>
 {
 public:
     /** Type of the entries stored in the STL container. */
-    using Entry = typename STLContainer::value_type;
+    using value_type = typename STLContainer::value_type;
 
+
+    /** Type for the reference in the STL container. */
+    using reference = typename STLContainer::reference;
+
+    /** Type for the const_reference in the STL container. */
+    using const_reference = typename STLContainer::const_reference;
 
     /** @name Constructors and destructor */
     ///@{
@@ -146,23 +152,23 @@ public:
     /**
      *  Flat index access operator (non-const version).
      */
-    Entry &operator()(const Index i);
+    reference operator()(const Index i);
 
     /**
      *  Flat index access operator (const version).
      */
-    const Entry &operator()(const Index i) const;
+    const_reference operator()(const Index i) const;
 
 
     /**
      *  Tensor index access operator (non-const version).
      */
-    Entry &operator()(const TensorIndex<rank> &i);
+    reference operator()(const TensorIndex<rank> &i);
 
     /**
      *  Tensor index access operator (const version).
      */
-    const Entry &operator()(const TensorIndex<rank> &i) const;
+    const_reference operator()(const TensorIndex<rank> &i) const;
 
     /** Return the entries of the multiarray as unidimensional std::vector. */
     const STLContainer &get_data() const;
@@ -200,13 +206,25 @@ public:
     ///@}
 
 
-    /** @name Getting a view */
+    /** @name Getting a view of the data*/
     ///@{
     /** Returns a ContainerView of the MultiArray. */
     ContainerView<MultiArray<STLContainer,rank>> get_view();
 
     /** Returns a ConstContainerView of the MultiArray. */
     ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;
+
+    /**
+     * Returns a ContainerView of the underlying STLContainer
+     * used to store the entries of the MultiArray.
+     */
+    ContainerView<STLContainer> get_flat_view();
+
+    /**
+     * Returns a ConstContainerView of the underlying STLContainer
+     * used to store the entries of the MultiArray.
+     */
+    ConstContainerView<STLContainer> get_flat_const_view() const;
     ///@}
 
     /** @name Functions to easily fill the multiarray */
@@ -214,11 +232,11 @@ public:
     /**
      * Fills the multiarray with an arithmetic progression starting with the value @p init_value.
      */
-    void fill_progression(const Entry &init_value = {});
+    void fill_progression(const value_type &init_value = {});
 
 
     /** Fills the multiarray copying in each entry the content of @p value. */
-    void fill(const Entry &value);
+    void fill(const value_type &value);
     ///@}
 
 
