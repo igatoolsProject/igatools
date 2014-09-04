@@ -34,7 +34,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/multi_patch_space.h>
+#include <igatools/basis_functions/multi_patch_space-template.h>
 
 template <int dim>
 using RefSpace_t = BSplineSpace<dim,dim,1>  ;
@@ -53,6 +53,8 @@ shared_ptr< IgMapping< RefSpace_t<dim> > >
 create_mapping(shared_ptr<RefSpace_t<dim>> bspline_space)
 {
     // bspline_space->print_info(out) ;
+
+    using iga::vector;
 
     vector<Real> control_pts(bspline_space->get_num_basis());
 
@@ -132,6 +134,7 @@ void test_evaluate()
     const int n_patches = 4;
 
     using PhysSpacePtr = shared_ptr<PhysicalSpace_t<dim>>;
+    using iga::vector;
     vector<PhysSpacePtr> phys_spaces;
 
     const int num_knots = 2 ;
@@ -148,7 +151,7 @@ void test_evaluate()
 
         auto push_fwd = PushForward_t<dim>::create(map);
 
-        phys_spaces.push_back(PhysicalSpace_t<dim>::create(ref_space,push_fwd,patch_id));
+        phys_spaces.push_back(PhysicalSpace_t<dim>::create(ref_space,push_fwd));
     }
     //---------------------------------------------------------------
 
@@ -218,8 +221,9 @@ void test_evaluate()
 //    dofs_manager->print_info(out);
     multi_patch_space.print_info(out);
 
-    for (int patch_id = 0 ; patch_id < n_patches ; ++patch_id)
+    for (const auto &space : phys_spaces)
     {
+        const Index patch_id = space->get_id();
         out << "The local_dof=3 for the space_id="<< patch_id
             << " corresponds to the global_dof="<< space_manager->get_global_dof(patch_id,3) << endl;
         out << "The local_dof=7 for the space_id="<< patch_id

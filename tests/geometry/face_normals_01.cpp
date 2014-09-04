@@ -48,11 +48,12 @@ int main()
 
     for (Index face_id = 0 ; face_id < UnitElement<3>::faces_per_element ; face_id++)
     {
-        elem->fill_face_cache (face_id);
+        elem->fill_face_cache(face_id);
         auto normals = elem->get_face_normals(face_id);
         out << "Face: " << face_id << endl;
         out << "  Normal vector: " << endl ;;
         normals.print_info(out);
+        out << endl;
     }
 
     return (0) ;

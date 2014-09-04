@@ -52,6 +52,7 @@ public:
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const Mapping<dim_ref_,codim_>;
 
+    using GridIterator = typename ContainerType::GridIterator;
     /** Dimension of the reference domain */
     using CartesianGridElementAccessor<dim_ref_>::dim;
 
@@ -285,7 +286,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< ValueMap >
-    evaluate_values_at_points(const std::vector<Point> &points) const;
+    evaluate_values_at_points(const ValueVector<Point> &points) const;
 
     /**
      * Returns the gradient of the map (i.e. the Jacobian)
@@ -296,7 +297,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< GradientMap >
-    evaluate_gradients_at_points(const std::vector<Point> &points) const;
+    evaluate_gradients_at_points(const ValueVector<Point> &points) const;
 
 
     /**
@@ -308,7 +309,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueVector< HessianMap >
-    evaluate_hessians_at_points(const std::vector<Point> &points) const;
+    evaluate_hessians_at_points(const ValueVector<Point> &points) const;
 
     ///@}
 

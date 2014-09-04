@@ -27,7 +27,6 @@
 #include <algorithm>
 
 using std::array;
-using std::vector;
 using std::shared_ptr;
 
 
@@ -200,12 +199,12 @@ init_face_cache(const Index face_id,
 
 
 template< class PushForward >
-template < int dim_range, int rank,template<class T> class Container, Transformation ttype >
+template < int dim_range, int rank,Transformation ttype >
 void
 PushForwardElementAccessor<PushForward>::
 transform_values(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    Container< PhysValue<dim_range, rank> > &D0v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    ValueContainer< PhysValue<dim_range, rank> > &D0v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
@@ -224,12 +223,12 @@ transform_values(
 
 
 template< class PushForward >
-template < int dim_range, int rank,template<class T> class Container, Transformation ttype >
+template < int dim_range, int rank,Transformation ttype >
 void
 PushForwardElementAccessor<PushForward>::
 transform_values(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    Container< PhysValue<dim_range, rank> > &D0v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    ValueContainer< PhysValue<dim_range, rank> > &D0v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_div>::type *) const
 {
@@ -241,11 +240,8 @@ transform_values(
     const Size num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
-    // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D0v_hat.size() % num_points) == 0, ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D0v_hat.size() / num_points;
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
+    const int n_func = D0v_hat.get_num_functions();
 
 
     auto D0v_iterator     = D0v.begin();
@@ -271,13 +267,13 @@ transform_values(
 
 
 template< class PushForward >
-template <int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template <int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_gradients(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-    Container< PhysDerivative<dim_range, rank, 1> > &D1v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1v_hat,
+    ValueContainer< PhysDerivative<dim_range, rank, 1> > &D1v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
@@ -287,11 +283,8 @@ transform_gradients(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
-    // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D1v_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D1v_hat.size() / num_points;
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
+    const int n_func = D1v_hat.get_num_functions();
 
     auto D1v_iterator     = D1v.begin();
     auto D1v_hat_iterator = D1v_hat.cbegin();
@@ -312,13 +305,13 @@ transform_gradients(
 
 
 template< class PushForward >
-template <int dim_range, int rank, template<class T> class Container, Transformation ttype >
+template <int dim_range, int rank,Transformation ttype >
 void
 PushForwardElementAccessor<PushForward>::
 transform_gradients(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-    Container< PhysDerivative<dim_range, rank, 1> > &D1v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1v_hat,
+    ValueContainer< PhysDerivative<dim_range, rank, 1> > &D1v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_div>::type *) const
 {
@@ -331,11 +324,8 @@ transform_gradients(
     const int num_points = this->get_num_points(topology_id);
     Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
-    // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D1v_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D1v_hat.size() / num_points;
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
+    const int n_func = D1v_hat.get_num_functions();
 
     const auto &gradients_map = this->get_gradients(topology_id);
     const auto &inv_gradients_map = this->get_inv_gradients(topology_id);
@@ -383,14 +373,14 @@ transform_gradients(
 
 
 template< class PushForward >
-template <int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template <int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_hessians(
-    const Container< RefValue<dim_range, rank> > &D0v_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1v_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2v_hat,
-    Container< PhysDerivative<dim_range, rank, 2> > &D2v,
+    const ValueContainer< RefValue<dim_range, rank> > &D0v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1v_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2v_hat,
+    ValueContainer< PhysDerivative<dim_range, rank, 2> > &D2v,
     const TopologyId<dim> &topology_id,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
@@ -407,8 +397,8 @@ transform_hessians(
     const auto &inv_gradients = this->get_inv_gradients(topology_id);
     const auto &hessians      = this->get_map_hessians(topology_id);
 
-    Container<PhysDerivative<dim_range, rank, 1>> D1v(n_func, num_points);
-    transform_gradients<dim_range, rank,Container, type> (D0v_hat, D1v_hat, D1v, topology_id);
+    ValueContainer<PhysDerivative<dim_range, rank, 1>> D1v(n_func, num_points);
+    transform_gradients<dim_range, rank, type> (D0v_hat, D1v_hat, D1v, topology_id);
 
     auto D2v_hat_iterator = D2v_hat.cbegin();
     auto D1v_iterator = D1v.cbegin();
@@ -464,32 +454,22 @@ transform_face_measure(const Index face_id) const
 
 
 template< class PushForward >
-template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template < int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<RefPoint> &points,
-    const Container< RefValue<dim_range, rank> > &phi_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
-    Container< PhysValue<dim_range,rank> > &phi,
+    const ValueVector<RefPoint> &points,
+    const ValueContainer< RefValue<dim_range, rank> > &phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    ValueContainer< PhysValue<dim_range,rank> > &phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
-#ifndef NDEBUG
-    const int num_points = points.size();
-#endif
-    Assert(num_points > 0, ExcEmptyObject());
-
-
+    Assert(points.size() > 0, ExcEmptyObject());
     Assert(phi_hat.size() > 0, ExcEmptyObject());
 
     Assert(phi.size() == phi_hat.size(),
            ExcDimensionMismatch(phi.size(), phi_hat.size()));
-
-    // if Container is ValueTable, phi_hat.size() is a multiple of num_points
-    // if Container is ValueVector, phi_hat.size() is equal to num_points
-    Assert((phi_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
 
     auto phi_iterator = phi.begin();
     for (const auto &phi_hat_to_copy : phi_hat)
@@ -502,33 +482,27 @@ transform_basis_derivatives_at_points(
 
 
 template< class PushForward >
-template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template < int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<RefPoint> &points,
-    const Container< RefValue<dim_range, rank> > &phi_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
-    Container< PhysDerivative<dim_range,rank,1> > &D1phi,
+    const ValueVector<RefPoint> &points,
+    const ValueContainer< RefValue<dim_range, rank> > &phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    ValueContainer< PhysDerivative<dim_range,rank,1> > &D1phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     const int num_points = points.size();
     Assert(num_points > 0, ExcEmptyObject());
-
-
     Assert(D1phi_hat.size() > 0, ExcEmptyObject());
 
     Assert(D1phi.size() == D1phi_hat.size(),
            ExcDimensionMismatch(D1phi.size(), D1phi_hat.size()));
 
 
-    // the next two lines are written to retrieve the number of basis function
-    // in the case Container is a ValueTable object.
-    // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D1phi_hat.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D1phi_hat.size() / num_points;
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
+    const int n_func = D1phi_hat.get_num_functions();
 
 
     auto D1phi_iterator     = D1phi.begin();
@@ -555,15 +529,15 @@ transform_basis_derivatives_at_points(
 
 
 template< class PushForward >
-template < int dim_range, int rank, template<class T> class Container, Transformation ttype>
+template < int dim_range, int rank,Transformation ttype>
 void
 PushForwardElementAccessor<PushForward>::
 transform_basis_derivatives_at_points(
-    const std::vector<RefPoint> &points,
-    const Container< RefValue<dim_range, rank> > &phi_hat,
-    const Container< RefDerivative<dim_range,rank,1> > &D1phi_hat,
-    const Container< RefDerivative<dim_range,rank,2> > &D2phi_hat,
-    Container< PhysDerivative<dim_range,rank,2> > &D2phi,
+    const ValueVector<RefPoint> &points,
+    const ValueContainer< RefValue<dim_range, rank> > &phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,1> > &D1phi_hat,
+    const ValueContainer< RefDerivative<dim_range,rank,2> > &D2phi_hat,
+    ValueContainer< PhysDerivative<dim_range,rank,2> > &D2phi,
     typename std::enable_if<ttype == Transformation::h_grad>::type *) const
 {
     const int num_points = points.size();
@@ -573,11 +547,8 @@ transform_basis_derivatives_at_points(
     Assert(D2phi.size() == D1phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D1phi_hat.size()));
     Assert(D2phi.size() == D2phi_hat.size(), ExcDimensionMismatch(D2phi.size(), D2phi_hat.size()));
 
-    // the next two lines are written to retrieve the number of basis function in the case Container is a ValueTable object.
-    // if Container is ValueVector, n_func will be equal to 1.
-    Assert((D2phi.size() % num_points) == 0,
-           ExcMessage("The size of the container must be a multiple of num_points."));
-    const int n_func = D2phi.size() / num_points;
+    // if ValueContainer is ValueVector, n_func will be equal to 1.
+    const int n_func = D2phi.get_num_functions();
 
     const auto gradients_map = this->evaluate_gradients_at_points(points);
     const auto hessians_map = this->evaluate_hessians_at_points(points);

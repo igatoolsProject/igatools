@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/dof_distribution.h>
 
-using std::vector;
+using std::map;
 using std::shared_ptr;
 using std::make_shared;
 
@@ -32,12 +32,12 @@ DofDistribution<dim, range, rank>::
 DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis,
-                const SpaceDimensionTable &n_elem_basis,
+                const DegreeTable &degree_table,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
     elements_loc_to_global_flat_view_(
-        make_shared<vector<DofsConstView>>(vector<DofsConstView>(grid->get_num_intervals().flat_size()))),
+        make_shared<map<Index,DofsConstView>>(map<Index,DofsConstView>())),
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
@@ -48,8 +48,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     Index dof_id = 0;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
-        index_distribution_(comp).resize(n_basis(comp));
-        for (auto &x : index_distribution_(comp))
+        index_table_[comp].resize(n_basis[comp]);
+        for (auto &x : index_table_[comp])
             x = dof_id++;
     }
     //-----------------------------------------------------------------------
@@ -59,8 +59,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
-    for (auto &dofs_distribution_comp : index_distribution_)
-        components_views.emplace_back(dofs_distribution_comp.get_flat_view());
+    for (auto &dof_distribution_comp : index_table_)
+        components_views.emplace_back(dof_distribution_comp.get_flat_view());
 
     dofs_view_ = DofsView(
                      DofsIterator(components_views,0),
@@ -69,7 +69,13 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     //-----------------------------------------------------------------------
 
 
+    //-----------------------------------------------------------------------
+    SpaceDimensionTable n_elem_basis;
+    for (int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
+        n_elem_basis[iComp] = TensorSize<dim>(degree_table[iComp]+1);
+
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
+    //-----------------------------------------------------------------------
 }
 
 template<int dim, int range, int rank>
@@ -94,7 +100,7 @@ auto
 DofDistribution<dim, range, rank>::
 basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
 {
-    return index_distribution_(comp).flat_to_tensor(index);
+    return index_table_[comp].flat_to_tensor(index);
 }
 
 
@@ -104,20 +110,8 @@ DofDistribution<dim, range, rank>::
 basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                      const Index comp) const
 {
-    return index_distribution_(comp).tensor_to_flat(tensor_index);
+    return index_table_[comp].tensor_to_flat(tensor_index);
 }
-
-
-template<int dim, int range, int rank>
-void
-DofDistribution<dim, range, rank>::
-reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol)
-{
-    index_distribution_ = index_distribution;
-
-    policy_ = pol;
-}
-
 
 
 template<int dim, int range, int rank>
@@ -135,15 +129,15 @@ create_element_loc_to_global_view(
         vector<DofsComponentConstView> dofs_elem_ranges;
         for (int comp = 0; comp < Space::n_components; ++comp)
         {
-            const auto &index_distribution_comp = index_distribution_(comp);
+            const auto &index_table_comp = index_table_[comp];
 
-            auto origin = accum_mult(comp).cartesian_product(t_index);
-            Index origin_flat_id = index_distribution_comp.tensor_to_flat(origin);
+            auto origin = accum_mult[comp].cartesian_product(t_index);
+            Index origin_flat_id = index_table_comp.tensor_to_flat(origin);
 
-            auto increment = n_elem_basis(comp);
+            auto increment = n_elem_basis[comp];
 
             using VecIt = vector<Index>::const_iterator;
-            const VecIt comp_dofs_begin = index_distribution_comp.get_data().begin();
+            const VecIt comp_dofs_begin = index_table_comp.get_data().begin();
 
             if (dim == 0)
             {
@@ -164,14 +158,14 @@ create_element_loc_to_global_view(
             else if (dim == 2)
             {
                 TensorIndex<dim> incr_t_id;
-                for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                for (incr_t_id[1] = 0 ; incr_t_id[1] < increment[1]; ++incr_t_id[1])
                 {
                     TensorIndex<dim> pos_t_id = origin + incr_t_id;
 
-                    Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+                    Index pos_flat_id = index_table_comp.tensor_to_flat(pos_t_id);
 
                     const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
-                    const VecIt pos_end = pos_begin + increment(0);
+                    const VecIt pos_end = pos_begin + increment[0];
 
                     dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
                 } // end loop incr_t_id(1)
@@ -180,16 +174,16 @@ create_element_loc_to_global_view(
             else if (dim == 3)
             {
                 TensorIndex<dim> incr_t_id;
-                for (incr_t_id(2) = 0 ; incr_t_id(2) < increment(2); ++incr_t_id(2))
+                for (incr_t_id[2] = 0 ; incr_t_id[2] < increment[2]; ++incr_t_id[2])
                 {
-                    for (incr_t_id(1) = 0 ; incr_t_id(1) < increment(1); ++incr_t_id(1))
+                    for (incr_t_id[1] = 0 ; incr_t_id[1] < increment[1]; ++incr_t_id[1])
                     {
                         TensorIndex<dim> pos_t_id = origin + incr_t_id;
 
-                        Index pos_flat_id = index_distribution_comp.tensor_to_flat(pos_t_id);
+                        Index pos_flat_id = index_table_comp.tensor_to_flat(pos_t_id);
 
                         const VecIt pos_begin = comp_dofs_begin + pos_flat_id;
-                        const VecIt pos_end = pos_begin + increment(0);
+                        const VecIt pos_end = pos_begin + increment[0];
 
                         dofs_elem_ranges.emplace_back(DofsComponentConstView(pos_begin,pos_end));
 
@@ -216,27 +210,14 @@ create_element_loc_to_global_view(
 
 
 
-// TODO (pauletti, May 28, 2014): inline this
 template<int dim, int range, int rank>
 vector<Index>
 DofDistribution<dim, range, rank>::
-get_loc_to_global_indices(const TensorIndex<dim> &t_id) const
+get_loc_to_global_indices(const CartesianGridElement<dim> &element) const
 {
-    return this->get_loc_to_global_indices(this->tensor_to_flat(t_id));
-}
-
-
-
-// TODO (antolin, Jul 11, 2014): inline this
-template<int dim, int range, int rank>
-std::vector<Index>
-DofDistribution<dim, range, rank>::
-get_loc_to_global_indices(const Index &f_id) const
-{
-    const auto &dofs_elem_view = (*elements_loc_to_global_flat_view_)[f_id];
+    const auto &dofs_elem_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
     return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
 }
-
 
 
 template<int dim, int range, int rank>
@@ -244,7 +225,7 @@ void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    for (auto &dofs_component : index_distribution_)
+    for (auto &dofs_component : index_table_)
         for (auto &dof_id : dofs_component)
             dof_id += offset;
 }
@@ -252,15 +233,15 @@ add_dofs_offset(const Index offset)
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_index_distribution() const -> const IndexDistributionTable &
+get_index_table() const -> const IndexDistributionTable &
 {
-    return index_distribution_;
+    return index_table_;
 }
 
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_elements_view() const -> std::shared_ptr<const std::vector<DofsConstView>>
+get_elements_view() const -> std::shared_ptr<const std::map<Index,DofsConstView>>
 {
     return elements_loc_to_global_flat_view_;
 }
@@ -283,26 +264,44 @@ get_dofs_view() const -> const DofsView &
 }
 
 
+#if 0
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_num_dofs_element(const Index elem_flat_id) const -> Size
+{
+    DofsPerElementTable dofs_per_element_table;
+    const auto &dofs_element_view = elements_loc_to_global_flat_view_->at(elem_flat_id);
+
+    return dofs_element_view.get_num_entries();
+}
+#endif
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_num_dofs_element(const CartesianGridElement<dim> &element) const -> Size
+{
+    return elements_loc_to_global_flat_view_->at(element.get_flat_index()).get_num_entries();
+}
+
 
 template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    for (int comp = 0; comp < Space::n_components; ++comp)
-        index_distribution_(comp).print_info(out);
+    for (const auto &index_table_comp : index_table_)
+        index_table_comp.print_info(out);
     out << std::endl;
 
-    int i = 0;
-    for (auto dofs_elem : *elements_loc_to_global_flat_view_)
+    // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
+    for (const auto &dofs_elem : *elements_loc_to_global_flat_view_)
     {
-        out << this->get_loc_to_global_indices(i++) << std::endl;
-        /*
         out << "[ ";
-        for (auto x : dofs_elem)
+        for (auto x : dofs_elem.second)
             out << x << " ";
         out << "]" << std::endl;
-        //*/
     }
 }
 

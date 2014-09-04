@@ -56,26 +56,15 @@ void test_evaluate()
     out << endl;
 
     auto map = IdentityMapping<dim>::create(grid);
-//   map->refine();
-//    map->get_grid()->print_info(out);
-//    out << endl;
-
 
 
     auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
 
 
     const int deg = 2;
-    TensorSize<dim> n_weights_comp;
-    for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_comp(dir_id) = pow(deg+2,dim);
-//        n_weights_comp(dir_id) = ref_space->get_num_basis(0,dir_id);
+    TensorSize<dim> n_weights_comp(pow(deg+2,dim));
 
     auto ref_space = RefSpace_t<dim>::create(deg,grid);
-
-    std::cout << "pippo 1" << std::endl;
-//    ref_space->reset_weights(ComponentTable<DynamicMultiArray<Real,dim>,dim>(weights_comp));
-
     auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
 

@@ -30,12 +30,8 @@
 #include "../tests.h"
 
 #include <igatools/utils/concatenated_iterator.h>
-#include <vector>
-
-using std::vector;
 
 
-using std::endl;
 
 
 void do_test_1_const()
@@ -51,7 +47,7 @@ void do_test_1_const()
     using VecView = View<VecIterator,VecConstIterator>;
     using VecConstView = ConstView<VecIterator,VecConstIterator>;
 
-    std::vector<VecConstView> ranges;
+    vector<VecConstView> ranges;
     ranges.push_back(VecConstView(v0.begin(),v0.end()));
     ranges.push_back(VecConstView(v1.begin(),v1.end()));
     ranges.push_back(VecConstView(v2.begin(),v2.end()));
@@ -84,7 +80,7 @@ void do_test_1_nonconst()
     using VecConstIterator = vector<int>::const_iterator;
     using VecView = View<VecIterator,VecConstIterator>;
 
-    std::vector<VecView> ranges;
+    vector<VecView> ranges;
     ranges.push_back(VecView(v0.begin(),v0.end()));
     ranges.push_back(VecView(v1.begin(),v1.end()));
     ranges.push_back(VecView(v2.begin(),v2.end()));
@@ -123,7 +119,7 @@ void do_test_2()
     using VecView = View<ItType_0,ConstItType_0>;
     using VecConstView = ConstView<ItType_0,ConstItType_0>;
 
-    std::vector<VecConstView> ranges_a;
+    vector<VecConstView> ranges_a;
     ranges_a.push_back(VecConstView(v0a.begin(),v0a.end()));
     ranges_a.push_back(VecConstView(v1a.begin(),v1a.end()));
     ranges_a.push_back(VecConstView(v2a.begin(),v2a.end()));
@@ -133,7 +129,7 @@ void do_test_2()
     ItType_1 end_a(ranges_a,IteratorState::pass_the_end);
 
 
-    std::vector<VecConstView> ranges_b;
+    vector<VecConstView> ranges_b;
     ranges_b.push_back(VecConstView(v0b.begin(),v0b.end()));
     ranges_b.push_back(VecConstView(v1b.begin(),v1b.end()));
 
@@ -141,7 +137,7 @@ void do_test_2()
     ItType_1 end_b(ranges_b,IteratorState::pass_the_end);
 
 
-    std::vector<VecConstView> ranges;
+    vector<VecConstView> ranges;
     for (const auto &r : ranges_a)
         ranges.push_back(r);
     for (const auto &r : ranges_b)

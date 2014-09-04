@@ -41,19 +41,20 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     Assert(space_ != nullptr, ExcNullPtr());
 
     using Indexer = CartesianProductIndexer<dim>;
-    auto n_basis = space->get_num_basis_per_element_table();
+    const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
+        n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
+
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) =
-            std::shared_ptr<Indexer>(new Indexer(n_basis(comp_id)));
+        basis_functions_indexer_[comp_id] =
+            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
     }
 
-    comp_offset_(0) = 0;
+    comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis.comp_dimension(comp_id);
-
+        comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
 }
 
 
@@ -70,19 +71,20 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     Assert(space_ != nullptr, ExcNullPtr());
 
     using Indexer = CartesianProductIndexer<dim>;
-    auto n_basis = space->get_num_basis_per_element_table();
+    const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
+        n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
+
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) =
-            std::shared_ptr<Indexer>(new Indexer(n_basis(comp_id)));
+        basis_functions_indexer_[comp_id] =
+            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
     }
 
-    comp_offset_(0) = 0;
+    comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis.comp_dimension(comp_id);
-
+        comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
 }
 
 
@@ -128,7 +130,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_basis_values_at_points(const std::vector<RefPoint> &points) const -> ValueTable<Value>
+evaluate_basis_values_at_points(const ValueVector<Point> &points) const -> ValueTable<Value>
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
 }
@@ -137,7 +139,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_basis_gradients_at_points(const std::vector<RefPoint> &points) const -> ValueTable<Derivative<1> >
+evaluate_basis_gradients_at_points(const ValueVector<Point> &points) const -> ValueTable<Derivative<1> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
 }
@@ -146,7 +148,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_basis_hessians_at_points(const std::vector<RefPoint> &points) const -> ValueTable<Derivative<2> >
+evaluate_basis_hessians_at_points(const ValueVector<Point> &points) const -> ValueTable<Derivative<2> >
 {
     return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
 }
@@ -187,8 +189,8 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_derivatives_at_points(
-    const std::vector<Real> &local_coefs,
-    const std::vector<RefPoint> &points) const ->
+    const vector<Real> &local_coefs,
+    const ValueVector<Point> &points) const ->
 ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     const auto &derived_element_accessor = this->as_derived_element_accessor();
@@ -209,8 +211,8 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_values_at_points(
-    const std::vector<Real> &local_coefs,
-    const std::vector<RefPoint> &points) const -> ValueVector<Value>
+    const vector<Real> &local_coefs,
+    const ValueVector<Point> &points) const -> ValueVector<Value>
 {
     return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
 }
@@ -220,8 +222,8 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_gradients_at_points(
-    const std::vector<Real> &local_coefs,
-    const std::vector<RefPoint> &points) const -> ValueVector<Derivative<1> >
+    const vector<Real> &local_coefs,
+    const ValueVector<Point> &points) const -> ValueVector<Derivative<1> >
 {
     return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
 }
@@ -231,8 +233,8 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_hessians_at_points(
-    const std::vector<Real> &local_coefs,
-    const std::vector<RefPoint> &points) const -> ValueVector<Derivative<2> >
+    const vector<Real> &local_coefs,
+    const ValueVector<Point> &points) const -> ValueVector<Derivative<2> >
 {
     return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
 }
@@ -506,8 +508,8 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     const int total_n_points = n_points_direction.flat_size();
 
     int total_n_basis = 0;
-    for (int i = 0; i < Space::n_components; ++i)
-        total_n_basis += n_basis_direction(i).flat_size();
+    for (const auto &n_basis_comp : n_basis_direction)
+        total_n_basis += n_basis_comp.flat_size();
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
@@ -647,16 +649,15 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
            !face_flags_handler.fill_none(),
            ExcMessage("Nothing to reset"));
 
-    auto n_basis = space_->get_num_basis_per_element_table();
     if (!elem_flags_handler.fill_none())
-        this->elem_values_.reset(elem_flags_handler, n_basis, quad);
+        this->elem_values_.reset(elem_flags_handler, n_basis_direction_, quad);
 
 
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0 ;
         for (auto &face_value : this->face_values_)
-            face_value.reset(face_id++, face_flags_handler, n_basis, quad);
+            face_value.reset(face_id++, face_flags_handler, n_basis_direction_, quad);
     }
     //--------------------------------------------------------------------------
 }
@@ -709,7 +710,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector<Value>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -728,7 +729,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector<Value>
 {
     return this->evaluate_field(local_coefs,FaceTopology<dim>(face_id));
@@ -739,7 +740,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
 -> ValueVector< Derivative<1> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -758,7 +759,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field_gradients(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field_gradients(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector< Derivative<1> >
 {
     return this->evaluate_field_gradients(local_coefs,FaceTopology<dim>(face_id));
@@ -769,7 +770,7 @@ inline
 auto
 SpaceElementAccessor<Space>::
 evaluate_field_divergences(
-    const std::vector<Real> &local_coefs,
+    const vector<Real> &local_coefs,
     const TopologyId<dim> &topology_id) const -> ValueVector<Div>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -788,7 +789,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field_divergences(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field_divergences(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector<Div>
 {
     return this->evaluate_field_divergences(local_coefs,FaceTopology<dim>(face_id));
@@ -798,7 +799,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
@@ -816,7 +817,7 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-evaluate_face_field_hessians(const Index face_id, const std::vector<Real> &local_coefs) const
+evaluate_face_field_hessians(const Index face_id, const vector<Real> &local_coefs) const
 -> ValueVector< Derivative<2> >
 {
     return this->evaluate_field_hessians(local_coefs,FaceTopology<dim>(face_id));
@@ -832,7 +833,11 @@ Size
 SpaceElementAccessor<Space>::
 get_num_basis() const
 {
-    return this->space_->get_num_basis_per_element();
+    Index total_num_basis = 0;
+    for (const auto n_basis_direction_component : n_basis_direction_)
+        total_num_basis += n_basis_direction_component.flat_size();
+
+    return total_num_basis;
 }
 
 
@@ -842,7 +847,7 @@ int
 SpaceElementAccessor<Space>::
 get_num_basis(const int i) const
 {
-    return space_->get_num_basis_per_element(i);
+    return n_basis_direction_[i].flat_size();
 }
 
 
@@ -850,9 +855,19 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-get_local_to_global() const -> std::vector<Index>
+get_local_to_global() const -> vector<Index>
 {
-    return space_->get_loc_to_global(this->get_tensor_index());
+    return space_->get_loc_to_global(*this);
+}
+
+
+template<class Space>
+inline
+auto
+SpaceElementAccessor<Space>::
+get_local_to_patch() const -> vector<Index>
+{
+    return space_->get_loc_to_patch(*this);
 }
 
 

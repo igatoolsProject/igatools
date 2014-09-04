@@ -22,7 +22,6 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
-using std::vector;
 using std::shared_ptr;
 using std::make_shared;
 
@@ -63,7 +62,7 @@ create(const std::shared_ptr<GridType> grid) -> shared_ptr<base_t>
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate(vector<Value> &values) const
+evaluate(ValueVector<Value> &values) const
 {
     const int num_points = points_.size();
     Assert(values.size() == num_points,
@@ -87,7 +86,7 @@ evaluate(vector<Value> &values) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_gradients(vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     Assert(gradients.size() == points_.size(),
            ExcDimensionMismatch(gradients.size(),points_.size()));
@@ -103,7 +102,7 @@ evaluate_gradients(vector<Gradient> &gradients) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_hessians(vector<Hessian> &hessians) const
+evaluate_hessians(ValueVector<Hessian> &hessians) const
 {
     const int num_points = points_.size();
     for (int i = 0; i<num_points; i++)
@@ -115,7 +114,7 @@ evaluate_hessians(vector<Hessian> &hessians) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face(const Index face_id, vector<Value> &values) const
+evaluate_face(const Index face_id, ValueVector<Value> &values) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -142,7 +141,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -160,7 +159,7 @@ evaluate_face_gradients(const Index face_id, vector<Gradient> &gradients) const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-evaluate_face_hessians(const Index face_id, vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
@@ -184,7 +183,7 @@ required_flags() const
 template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
     points_ = elem.get_points();
 }
@@ -195,7 +194,7 @@ template<int dim, int codim>
 void
 IdentityMapping< dim, codim>::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem) const
+                 const GridIterator &elem) const
 {
     face_points_[face_id] = elem.get_points(FaceTopology<dim>(face_id));
 }

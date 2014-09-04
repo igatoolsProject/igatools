@@ -35,15 +35,10 @@
 #include <petscmat.h>
 #endif
 
-
 IGA_NAMESPACE_OPEN
 
-
-
-template < LAPack la_pack>
+template <LAPack la_pack>
 class Matrix;
-
-
 
 #ifdef USE_TRILINOS
 /**
@@ -59,16 +54,14 @@ public:
     using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
 
     using self_t = Matrix<LAPack::trilinos>;
+
     using vector_t = Vector<LAPack::trilinos>;
 
 public:
-
-
     /**@name Constructor and destructor */
     ///@{
     /** Default constructor */
     Matrix() = delete;
-
 
     /**
      * Construct a distributed matrix with the dof distribution for its rows and column
@@ -81,13 +74,10 @@ public:
      */
     Matrix(const self_t &matrix) = delete;
 
-
     /**
      * Move constructor.
      */
     Matrix(self_t &&matrix) = default;
-
-
 
     /** Destructor */
     ~Matrix() = default;
@@ -121,8 +111,6 @@ public:
 
     ///@}
 
-
-
     /** @name Methods for getting and/or modifying the matrix entries */
     ///@{
 
@@ -131,8 +119,6 @@ public:
      * @note @p i and @p j are the global indices of the entry (i,j).
      */
     void add_entry(const Index i,const  Index j,const Real input);
-
-
 
     /**
      * \brief This function add the local matrix values to the global matrix, the local-to-global ids
@@ -146,8 +132,8 @@ public:
      * local_to_global vector, otherwise an exception will be raised.
      */
     void add_block(
-        const std::vector<Index> &row_glob_ids,
-        const std::vector<Index> &cln_glob_ids,
+        const vector<Index> &row_glob_ids,
+        const vector<Index> &cln_glob_ids,
         const DenseMatrix &local_matrix) ;
 
     /**
@@ -175,15 +161,12 @@ public:
     Teuchos::RCP<WrappedMatrixType> get_trilinos_matrix() ;
     ///@}
 
-
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
     void print(LogStream &out) const ;
 
-
     /** Return the number of global rows of the matrix */
     Index get_num_rows() const ;
-
 
     /** Return the number of global columns of the matrix */
     Index get_num_columns() const ;
@@ -211,7 +194,6 @@ public:
      */
     void multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const;
     ///@}
-
 
     /** @name Methods for changing the filling state. */
     ///@{
@@ -248,28 +230,8 @@ private:
     Teuchos::RCP<const Teuchos::Comm<int>> comm_ = Teuchos::createSerialComm<int>();
 
     void init(const SparsityPattern &sparsity_pattern);
-    /*
-        DeclException2(ExcInvalidIndex,
-                       int, int,
-                       << "The entry with index <" << arg1 << ',' << arg2
-                       << "> does not exist.");
-
-        DeclException4(ExcAccessToNonLocalElement,
-                       int, int, int, int,
-                       << "You tried to access element (" << arg1
-                       << "/" << arg2 << ")"
-                       << " of a distributed matrix, but only rows "
-                       << arg3 << " through " << arg4
-                       << " are stored locally and can be accessed.");
-
-        DeclException0(ExcNotQuadratic);
-    //*/
 };
 #endif // #ifdef USE_TRILINOS
-
-
-
-
 
 
 
@@ -284,19 +246,14 @@ class Matrix<LAPack::petsc>
 {
 public:
     /** Typedef for the matrix type */
-//    using WrappedMatrixType = Tpetra::CrsMatrix<Real,Index,Index> ;
-
     using self_t = Matrix<LAPack::petsc>;
     using vector_t = Vector<LAPack::petsc>;
 
 public:
-
-
     /**@name Constructor and destructor */
     ///@{
     /** Default constructor */
     Matrix() = delete;
-
 
     /**
      * Construct a distributed matrix with the dof distribution for its rows and column
@@ -309,13 +266,10 @@ public:
      */
     Matrix(const self_t &matrix) = delete;
 
-
     /**
      * Move constructor.
      */
     Matrix(self_t &&matrix) = default;
-
-
 
     /** Destructor */
     ~Matrix() = default;
@@ -346,10 +300,7 @@ public:
      * Move assignment operator. Not allowed to be used.
      */
     Matrix &operator=(self_t &&matrix) = delete;
-
     ///@}
-
-
 
     /** @name Methods for getting and/or modifying the matrix entries */
     ///@{
@@ -359,8 +310,6 @@ public:
      * @note @p i and @p j are the global indices of the entry (i,j).
      */
     void add_entry(const Index i,const  Index j,const Real input);
-
-
 
     /**
      * \brief This function add the local matrix values to the global matrix, the local-to-global ids
@@ -374,8 +323,8 @@ public:
      * local_to_global vector, otherwise an exception will be raised.
      */
     void add_block(
-        const std::vector<Index> &row_glob_ids,
-        const std::vector<Index> &cln_glob_ids,
+        const vector<Index> &row_glob_ids,
+        const vector<Index> &cln_glob_ids,
         const DenseMatrix &local_matrix) ;
 
     /**
@@ -401,7 +350,6 @@ public:
     Mat get_petsc_matrix() ;
     ///@}
 
-
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
     void print(LogStream &out) const ;
@@ -409,7 +357,6 @@ public:
 
     /** Return the number of global rows of the matrix */
     Index get_num_rows() const ;
-
 
     /** Return the number of global columns of the matrix */
     Index get_num_columns() const ;
@@ -465,38 +412,9 @@ private:
     MPI_Comm comm_;
     Mat matrix_;
 
-    /** The real Trilinos::TPetra matrix */
-//    Teuchos::RCP<WrappedMatrixType> matrix_ ;
-
-    /** Typedef for the dofs map across the processors */
-//    using dofs_map_t = Tpetra::Map<Index,Index>;
-
-//    Teuchos::RCP<dofs_map_t> row_space_map_;
-//    Teuchos::RCP<dofs_map_t> column_space_map_;
-
-//    Teuchos::RCP<const Teuchos::Comm<int>> comm_ = Teuchos::createSerialComm<int>();
-
     void init(const SparsityPattern &sparsity_pattern);
-    /*
-        DeclException2(ExcInvalidIndex,
-                       int, int,
-                       << "The entry with index <" << arg1 << ',' << arg2
-                       << "> does not exist.");
-
-        DeclException4(ExcAccessToNonLocalElement,
-                       int, int, int, int,
-                       << "You tried to access element (" << arg1
-                       << "/" << arg2 << ")"
-                       << " of a distributed matrix, but only rows "
-                       << arg3 << " through " << arg4
-                       << " are stored locally and can be accessed.");
-
-        DeclException0(ExcNotQuadratic);
-    //*/
 };
 #endif // #ifdef USE_PETSC
-
-
 
 IGA_NAMESPACE_CLOSE
 

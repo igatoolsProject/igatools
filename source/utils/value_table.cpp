@@ -24,7 +24,7 @@
 #include <igatools/base/exceptions.h>
 
 #include <iostream>
-using std::vector ;
+
 
 IGA_NAMESPACE_OPEN
 
@@ -41,76 +41,14 @@ ValueTable<T>::ValueTable(
     const Size num_functions,
     const Size num_points)
     :
-    DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions})),
-                  num_functions_ {num_functions},
-num_points_ {num_points}
-{
-    Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
-    Assert(num_points >= 0, ExcLowerRange(num_points,0));
-}
+    ValueContainer<T>(num_functions,num_points)
+{}
 
 
 
-template <class T>
-void
-ValueTable<T>::
-resize(const Size num_functions, const Size num_points)
-{
-    Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
-    Assert(num_points >= 0, ExcLowerRange(num_points,0));
-
-    if (num_functions_ != num_functions ||
-        num_points_ != num_points)
-    {
-        num_functions_ = num_functions ;
-        num_points_ = num_points ;
-
-        DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points_,num_functions_}));
-    }
-}
-
-template <class T>
-Size
-ValueTable<T>::
-size() const
-{
-    Assert(this->flat_size() == num_functions_ * num_points_,
-           ExcDimensionMismatch(this->flat_size(), num_functions_ * num_points_)) ;
-
-    return this->flat_size();
-}
-
-template <class T>
-void
-ValueTable<T>::
-clear() noexcept
-{
-    num_functions_ = 0;
-    num_points_ = 0;
-    DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points_,num_functions_}));
-}
 
 
-template <class T>
-Size
-ValueTable<T>::
-get_num_functions() const noexcept
-{
-    Assert(num_functions_ == this->tensor_size()(1),
-           ExcDimensionMismatch(num_functions_,this->tensor_size()(1)));
-    return this->tensor_size()(1);
-}
 
-
-template <class T>
-Size
-ValueTable<T>::
-get_num_points() const noexcept
-{
-    Assert(num_points_ == this->tensor_size()(0),
-           ExcDimensionMismatch(num_points_,this->tensor_size()(0)));
-    return this->tensor_size()(0);
-}
 
 
 template <class T>
@@ -119,10 +57,10 @@ ValueTable<T>::
 get_function_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < num_functions_, ExcIndexRange(i,0,num_functions_));
+    Assert(i >= 0 && i < this->get_num_functions(), ExcIndexRange(i,0,this->get_num_functions()));
     return view(
-        iterator(*this, i    * num_points_, 1),
-        iterator(*this,(i+1) * num_points_, 1));
+        iterator(*this, i    * this->get_num_points(), 1),
+        iterator(*this,(i+1) * this->get_num_points(), 1));
 }
 
 
@@ -132,10 +70,10 @@ ValueTable<T>::
 get_function_view(const int i) const -> const_view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < num_functions_, ExcIndexRange(i,0,num_functions_));
+    Assert(i >= 0 && i < this->get_num_functions(), ExcIndexRange(i,0,this->get_num_functions()));
     return const_view(
-               const_iterator(*this, i    * num_points_, 1),
-               const_iterator(*this,(i+1) * num_points_, 1));
+               const_iterator(*this, i    * this->get_num_points(), 1),
+               const_iterator(*this,(i+1) * this->get_num_points(), 1));
 }
 
 template <class T>
@@ -144,11 +82,10 @@ ValueTable<T>::
 get_point_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < num_points_, ExcIndexRange(i,0,num_points_));
+    Assert(i >= 0 && i < this->get_num_points(), ExcIndexRange(i,0,this->get_num_points()));
     return view(
-        iterator(*this, i   ,num_points_),
-        iterator(*this,IteratorState::pass_the_end,num_points_));
-//    iterator(*this,(num_functions_-1) * num_points_ + i+1,num_points_));
+        iterator(*this,i,this->get_num_points()),
+        iterator(*this,IteratorState::pass_the_end,this->get_num_points()));
 }
 
 
@@ -158,39 +95,53 @@ ValueTable<T>::
 get_point_view(const int i) const -> const_view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < num_points_, ExcIndexRange(i,0,num_points_));
+    Assert(i >= 0 && i < this->get_num_points(), ExcIndexRange(i,0,this->get_num_points()));
     return const_view(
-               const_iterator(*this, i   ,num_points_),
-               const_iterator(*this,IteratorState::pass_the_end,num_points_));
-//               const_iterator(*this,(num_functions_-1) * num_points_ + i+1,num_points_));
+               const_iterator(*this,i,this->get_num_points()),
+               const_iterator(*this,IteratorState::pass_the_end,this->get_num_points()));
 }
 
 
 template <class T>
 ValueVector<T>
 ValueTable<T>::
-evaluate_linear_combination(const std::vector<Real> &coefficients) const
+evaluate_linear_combination(const vector<Real> &coefficients) const
 {
-    Assert(num_points_ > 0, ExcLowerRange(num_points_,0));
-    Assert(num_functions_ > 0, ExcLowerRange(num_functions_,0));
-    Assert(num_functions_ == static_cast<int>(coefficients.size()),
-           ExcDimensionMismatch(num_functions_,static_cast<int>(coefficients.size())));
+    Assert(this->get_num_points() > 0, ExcLowerRange(this->get_num_points(),0));
+    Assert(this->get_num_functions() > 0, ExcLowerRange(this->get_num_functions(),0));
+    Assert(this->get_num_functions() == static_cast<int>(coefficients.size()),
+           ExcDimensionMismatch(this->get_num_functions(),static_cast<int>(coefficients.size())));
 
-    ValueVector<T> linear_combination(num_points_) ;
+    ValueVector<T> linear_combination(this->get_num_points()) ;
 
-    for (int iFn = 0 ; iFn < num_functions_ ; ++iFn)
+    for (int iFn = 0 ; iFn < this->get_num_functions() ; ++iFn)
     {
         const auto func = this->get_function_view(iFn) ;
 
         Real coeff_iFn = coefficients[iFn] ;
 
-        for (int jPt = 0 ; jPt < num_points_ ; ++jPt)
+        for (int jPt = 0 ; jPt < this->get_num_points() ; ++jPt)
             linear_combination[jPt] += coeff_iFn * func[jPt] ;
     }
 
     return linear_combination ;
 }
 
+template <class T>
+void
+ValueTable<T>::
+resize(const Size num_functions, const Size num_points)
+{
+    ValueContainer<T>::resize(num_functions,num_points);
+}
+
+template <class T>
+void
+ValueTable<T>::
+clear() noexcept
+{
+    ValueContainer<T>::clear();
+}
 
 
 template <class T>
@@ -198,9 +149,9 @@ void
 ValueTable<T>::
 print_info(LogStream &out) const
 {
-    out << "ValueTable (num_functions=" << num_functions_ << ",num_points=" << num_points_ << ") :" << std::endl ;
+    out << "ValueTable (num_functions=" << this->get_num_functions() << ",num_points=" << this->get_num_points() << ") :" << std::endl ;
 
-    for (int iFunc = 0 ; iFunc < num_functions_ ; iFunc++)
+    for (int iFunc = 0 ; iFunc < this->get_num_functions() ; iFunc++)
     {
         out.push("\t");
 
@@ -217,14 +168,6 @@ print_info(LogStream &out) const
 }
 
 
-template <class T>
-void
-ValueTable<T>::
-zero()
-{
-    for (auto &value : (*this))
-        value = T() ;
-}
 
 
 IGA_NAMESPACE_CLOSE

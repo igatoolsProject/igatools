@@ -41,6 +41,7 @@ public:
     using base_t::space_dim;
 
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
 
     using typename base_t::Point;
     using typename base_t::Value;
@@ -60,7 +61,7 @@ public:
     MappingSlice(const std::shared_ptr<const SupMap> map,
                  const int face_id,
                  const std::shared_ptr<GridType> grid,
-                 const std::shared_ptr<std::map<int,int> > elem_map);
+                 const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map);
 
     /**
      * Copy constructor
@@ -75,22 +76,22 @@ public:
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<const SupMap> map,
            const int face_id,
-           const std::shared_ptr<GridType > grid,
-           const std::shared_ptr<std::map<int,int> > elem_map);
+           const std::shared_ptr<GridType> grid,
+           const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map);
 
     static std::shared_ptr<base_t>
     create(const std::shared_ptr<const base_t> map,
            const int face_id,
            const std::shared_ptr<GridType > grid,
-           const std::shared_ptr<std::map<int,int> > elem_map)
+           const std::shared_ptr<typename base_t::GridType::FaceGridMap> elem_map)
     {
         AssertThrow(true, ExcImpossibleInDim(-1));
         return std::shared_ptr<base_t>();//Should never reach this
     }
 
-    void evaluate(std::vector<Value> &values) const override;
+    void evaluate(ValueVector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
+    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
 
 
     /** @name Evaluating the quantities related to the MappingSlice without the use of the cache. */
@@ -104,10 +105,10 @@ public:
 
     void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) const override ;
+    void set_element(const GridIterator &elem) const override ;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) const override;
+                          const GridIterator &elem) const override;
 
     /**
      * Prints internal information about the mapping.
@@ -128,7 +129,7 @@ private:
     // the cache
     mutable typename SupMap::ElementIterator element;
 
-    const std::shared_ptr<std::map<int,int> > elem_map_;
+    const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map_;
 
     /**
      * This function injects the points belonging to the domain of MappingSlice (that has dimension == dim_)
@@ -136,6 +137,8 @@ private:
      */
     std::vector<typename SupMap::Point> inject_points(const std::vector<Point> &points) const;
 };
+
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -41,8 +41,8 @@ public:
     b_ {b}
     {}
 
-    void evaluate(const vector<Point> &points,
-                  vector<Value> &values) const
+    void evaluate(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const
     {
         auto point = points.begin();
         for (auto &val : values)
@@ -77,14 +77,16 @@ void test()
 
 
     Function F(A,b);
-    vector<typename Function::Point> x(n_points);
-    vector<typename Function::Value> y(n_points);
+    ValueVector<typename Function::Point> x(n_points);
+    ValueVector<typename Function::Value> y(n_points);
     x[1][0] = 1.;
 
     F.evaluate(x,y);
 
-    out << x << endl;
-    out << y << endl;
+    x.print_info(out);
+    out << endl;
+    y.print_info(out);
+    out << endl;
 }
 
 

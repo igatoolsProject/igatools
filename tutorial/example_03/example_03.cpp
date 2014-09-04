@@ -85,7 +85,9 @@ void loop_on_space_with_cache()
     {
         elem->fill_cache();
         out << "Element: " << elem->get_flat_index();
-        out << " has global basis: " << elem->get_local_to_global() << endl;
+        out << " has global basis: ";
+        elem->get_local_to_global().print_info(out);
+        out << endl;
         elem->get_basis_values().print_info(out);
         out<< endl;
     }

@@ -56,6 +56,7 @@ void run_test()
         elem->fill_cache();
         out << elem->get_measure() << endl;
         elem->get_w_measures().print_info(out);
+        out << endl;
     }
 
 
@@ -85,7 +86,8 @@ void run_test2()
     {
         out << elem->get_flat_index() << "   ";
         elem->fill_cache();
-        out << elem->get_points() << endl;
+        elem->get_points().print_info(out);
+        out << endl;
     }
 
 

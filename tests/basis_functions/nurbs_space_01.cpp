@@ -26,6 +26,7 @@
 template< int dim, int range, int rank = 1>
 void do_test()
 {
+    using iga::vector;
     vector<Real> coord_x {0,1,2,3,4};
     vector<Real> coord_y {5,6,7,8};
     vector<Real> coord_z {9, 10, 11};
@@ -72,7 +73,7 @@ void do_test()
     const auto n_basis = bsp->get_num_basis_table();
 
     for (auto comp : Space::components)
-        weights(comp).resize(n_basis(comp),1.0);
+        weights[comp].resize(n_basis[comp],1.0);
 
     for (auto &w : weights)
         w.print_info(out);

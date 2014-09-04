@@ -24,7 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/base/exceptions.h>
 #include <array>
-#include <vector>
 #include <cmath>
 #include <cstdint>
 #include <iostream>
@@ -62,14 +61,6 @@ typedef unsigned long long ulongint;
  */
 template<int dim>
 using int_array = std::array<int, dim >;
-
-/**
- * This type is used for array of vectors such as:
- * - raw knot vectors
- * - raw multiplicity vectors
- */
-template< class T, int dim >
-using vector_array = std::array< std::vector<T>, dim >;
 
 /**
  * Bounding Box, a dim-dimensional rectangular

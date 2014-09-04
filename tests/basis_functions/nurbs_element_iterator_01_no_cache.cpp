@@ -50,7 +50,7 @@ void test()
     WeightsTable weights;
     const auto n_basis = bsp->get_num_basis_table();
     for (auto comp : Space::components)
-        weights(comp).resize(n_basis(comp),1.0);
+        weights[comp].resize(n_basis[comp],1.0);
 
     auto space = Space::create(deg, knots, weights);
 

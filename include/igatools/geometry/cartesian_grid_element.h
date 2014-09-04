@@ -25,6 +25,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/topology.h>
+#include <igatools/utils/value_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -55,9 +56,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor.
      */
-    CartesianGridElement() = delete;
+    CartesianGridElement() = default;
 
     /**
      * Construct an object pointing to the element with
@@ -93,13 +94,20 @@ public:
      * Copy assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(const CartesianGridElement<dim_> &elem) = delete;
+    &operator=(const CartesianGridElement<dim_> &elem)
+    {
+        Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
+        flat_index_ = elem.flat_index_;
+        tensor_index_ = elem.tensor_index_;
+        return *this;
+    }
+
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
     CartesianGridElement<dim>
-    &operator=(CartesianGridElement<dim_> &&elem) = delete;
+    &operator=(CartesianGridElement<dim_> &&elem) = default;
     ///@}
 
     /** Return the cartesian grid from which the element belongs.*/
@@ -112,26 +120,9 @@ public:
 
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim>  get_tensor_index() const;
-
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void reset_flat_tensor_indices(const Index flat_index);
-
-    /**
-     * Sets the index of the element using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
     ///@}
 
+public:
     /** @name Query geometrical/topological information without use of cache */
     ///@{
     /**
@@ -196,8 +187,8 @@ public:
      * and returns the points mapped over the domain (in the parametric coordinate system)
      * represented by this GridElementAccessor.
      */
-    std::vector<Points<dim> >
-    transform_points_unit_to_reference(const std::vector<Points<dim>> &point_unit_domain) const;
+    ValueVector<Points<dim> >
+    transform_points_unit_to_reference(const ValueVector<Points<dim>> &point_unit_domain) const;
 
     /**
      * This function takes as input argument a vector of points over the element
@@ -206,8 +197,8 @@ public:
      * and returns the points mapped over the
      * points unitary hypercube [0,1]^{dim}.
      */
-    std::vector<Points<dim> >
-    transform_points_reference_to_unit(const std::vector<Points<dim>> &point_reference_domain) const;
+    ValueVector<Points<dim> >
+    transform_points_reference_to_unit(const ValueVector<Points<dim>> &point_reference_domain) const;
 
 
     /**
@@ -233,6 +224,8 @@ public:
      */
     bool is_valid() const;
 
+    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+    ///@{
     /**
      * Moves the element to the position that differs from the current one
      * for the quantity given by @p increment.
@@ -240,11 +233,47 @@ public:
      * If the resulting position after the movement is valid (i.e. within the grid), then the function
      * returns true, otherwise it returns false.
      */
-    bool move(const TensorIndex<dim> &increment);
+    bool jump(const TensorIndex<dim> &increment);
+
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index);
+
+
+    /**
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const TensorIndex<dim> &tensor_index);
+
+    /** Moves the element to the next valid element in the CartesianGrid. */
+    void operator++();
+    ///@}
+
+    /** @name Comparison operators*/
+    ///@{
+    bool operator==(const CartesianGridElement<dim_> &elem) const;
+
+    /**
+     * Returns true if the the CartesianGridElement @p elem has a different flat index w.r.t.
+     * the calling object.
+     * @note The calling object and the CartesianGridElement @p elem must refers to the same
+     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+     */
+    bool operator!=(const CartesianGridElement<dim_> &elem) const;
+    ///@}
 
 protected:
     /** Cartesian grid from which the element belongs.*/
-    const std::shared_ptr<ContainerType> grid_;
+    std::shared_ptr<ContainerType> grid_;
 
     /** Flat (linear) index assigned to the current (sub)-element. */
     Index flat_index_;

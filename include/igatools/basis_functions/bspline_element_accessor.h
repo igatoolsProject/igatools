@@ -66,7 +66,6 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
     using typename parent_t::Point;
     using typename parent_t::Value;
-    using typename parent_t::RefPoint;
     //using typename parent_t::Div;
 
 
@@ -76,7 +75,7 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    BSplineElementAccessor() = delete;
+    BSplineElementAccessor() = default;
 
     /**
      * Constructs an accessor to element number index of a
@@ -179,7 +178,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
+    evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const;
 
     ///@}
 
@@ -203,7 +202,7 @@ private:
      * at the quadrature points.
      * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
-    using BasisValues1d = std::vector<DenseMatrix>;
+    using BasisValues1d = vector<DenseMatrix>;
 
 
 protected:
@@ -225,7 +224,7 @@ private:
     ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentContainer <std::array<const BasisValues1d *,dim>>;
+    using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
     /**
      * Fills the cache (accordingly with the flags_handler status)
@@ -240,10 +239,6 @@ private:
     void fill_values_cache_from_univariate(const int max_deriv_order,
                                            const univariate_values_t &values_1D,
                                            ValuesCache &cache);
-
-
-
-
     ///@}
 
 
@@ -286,7 +281,7 @@ private:
         void reset(const Space &space,
                    const Quadrature<dim> &quad,
                    const int max_der,
-                   const std::array<std::vector<int>,dim> &intervals_id);
+                   const std::array<vector<int>,dim> &intervals_id);
 
         TensorSize<dim> n_intervals_;
     };
@@ -371,10 +366,9 @@ private:
 
 
 
-protected:
+public:
     const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
             &get_scalar_evaluators() const;
-
 };
 
 IGA_NAMESPACE_CLOSE

@@ -25,7 +25,7 @@
 #include <map>
 #include <set>
 
-using std::vector;
+
 using std::map;
 using std::set;
 using std::pair;
@@ -63,7 +63,7 @@ space_insertion_close(const bool automatic_dofs_renumbering)
 
 
     //--------------------------------------------------------------------------
-    std::vector<DofsComponentView> dofs_components_view;
+    vector<DofsComponentView> dofs_components_view;
 
     Index offset = 0;
     for (auto &space_info_map_entry : spaces_info_)
@@ -109,7 +109,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const Index min_dofs_id,
           const Index max_dofs_id,
           const DofsView &dofs_view,
-          const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view)
+          const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
     :
     space_(space),
     num_dofs_(num_dofs),
@@ -246,13 +246,13 @@ get_global_dof(const int space_id, const Index local_dof) const
 }
 
 
-std::vector<Index>
+vector<Index>
 SpaceManager::
-get_global_dofs(const int space_id, const std::vector<Index> &local_dofs) const
+get_global_dofs(const int space_id, const vector<Index> &local_dofs) const
 {
     Assert(!local_dofs.empty(),ExcEmptyObject());
 
-    std::vector<Index> global_dofs;
+    vector<Index> global_dofs;
 
     for (const Index local_dof : local_dofs)
         global_dofs.emplace_back(this->get_global_dof(space_id,local_dof));
@@ -273,7 +273,7 @@ is_space_insertion_open() const
 auto
 SpaceManager::
 SpaceInfo::
-get_elements_dofs_view() const -> const std::vector<DofsConstView> &
+get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
 {
     return *elements_dofs_view_;
 }
@@ -327,9 +327,6 @@ linear_constraints_open()
     Assert(are_linear_constraints_open_ == false,
            ExcMessage("Linear constraints already opened."));
     are_linear_constraints_open_ = true;
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 }
 
 
@@ -340,11 +337,20 @@ linear_constraints_close()
     Assert(are_linear_constraints_open_ == true,
            ExcMessage("Linear constraints already closed."));
     are_linear_constraints_open_ = false;
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 }
 
+
+
+void
+SpaceManager::
+add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs)
+{
+    Assert(are_linear_constraints_open_ == true,
+           ExcMessage("Linear constraints already closed."));
+
+    using LC = LinearConstraint;
+    linear_constraints_.emplace_back(std::shared_ptr<LC>(new LC(dofs,coeffs,rhs)));
+}
 
 
 void

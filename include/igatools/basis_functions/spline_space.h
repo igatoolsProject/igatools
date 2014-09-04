@@ -168,7 +168,7 @@ public:
      */
     Size get_num_basis(const int comp) const
     {
-        return space_dim_.comp_dimension(comp);
+        return space_dim_.comp_dimension[comp];
     }
 
     /**
@@ -177,7 +177,7 @@ public:
      */
     Size get_num_basis(const int comp, const int dir) const
     {
-        return  space_dim_(comp)[dir];
+        return  space_dim_[comp][dir];
     }
 
     /**
@@ -188,27 +188,6 @@ public:
     {
         return space_dim_;
     }
-
-    const SpaceDimensionTable &get_num_basis_per_element_table() const
-    {
-        return elem_n_basis_;
-    }
-    /**
-     * Returns the number of dofs per element.
-     */
-    Size get_num_basis_per_element() const
-    {
-        return elem_n_basis_.total_dimension;
-    }
-
-    /**
-     *  Return the number of dofs per element for the i-th space component.
-     */
-    Size get_num_basis_per_element(int i) const
-    {
-        return elem_n_basis_.comp_dimension(i);
-    }
-
     ///@}
 
     /**
@@ -262,9 +241,6 @@ private:
 
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
-
-    /** Table with the number of element non zero basis in each component and direction */
-    SpaceDimensionTable elem_n_basis_;
 
     EndBehaviourTable end_behaviour_;
 
@@ -355,24 +331,24 @@ public:
         /**
          *  Flat index access operator (non-const version).
          */
-        T &operator()(const Index i);
+        T &operator[](const Index i);
 
         /**
          *  Flat index access operator (const version).
          */
-        const T &operator()(const Index i) const;
+        const T &operator[](const Index i) const;
 
         const Index active(const Index i) const
         {
             return comp_map_[i];
         }
 
-        const std::vector<Index> &get_active_components_id() const
+        const vector<Index> &get_active_components_id() const
         {
             return active_components_id_;
         }
 
-        const std::vector<Index> &get_inactive_components_id() const
+        const vector<Index> &get_inactive_components_id() const
         {
             return inactive_components_id_;
         }
@@ -381,7 +357,7 @@ public:
         print_info(LogStream &out) const
         {
             for (int i=0; i<n_entries; ++i)
-                out << (*this)(i) << " ";
+                out << (*this)[i] << " ";
         }
 
         const std::array <Index, n_entries> &get_comp_map() const
@@ -394,10 +370,10 @@ public:
         std::array <Index, n_entries> comp_map_;
 
         /** list of the active components */
-        std::vector<Index> active_components_id_;
+        vector<Index> active_components_id_;
 
         /** list of the inactive components */
-        std::vector<Index> inactive_components_id_;
+        vector<Index> inactive_components_id_;
 
 
     };
@@ -436,18 +412,19 @@ protected:
 
 template <class T, int dim>
 inline
-std::vector<T>
+vector<T>
 unique_container(std::array <T, dim> a)
 {
     auto it = std::unique(a.begin(), a.end());
-    return std::vector<T>(a.begin(), it);
+    return vector<T>(a.begin(), it);
 }
 
 
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map)
     :
     base_t(),
@@ -467,7 +444,8 @@ ComponentContainer(const ComponentMap &comp_map)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),
@@ -479,7 +457,8 @@ ComponentContainer(std::initializer_list<T> list)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(const T &val)
     :
     comp_map_(filled_array<Index, n_entries>(0)),
@@ -489,7 +468,7 @@ ComponentContainer(const T &val)
     for (int i=1; i<n_entries; ++i)
         inactive_components_id_[i-1] = i;
 
-    base_t::operator()(0) = val;
+    base_t::operator[](0) = val;
 }
 
 
@@ -499,9 +478,9 @@ template<class T>
 T &
 SplineSpace<dim, range, rank>::
 ComponentContainer<T>::
-operator()(const Index i)
+operator[](const Index i)
 {
-    return base_t::operator()(comp_map_[i]);
+    return base_t::operator[](comp_map_[i]);
 }
 
 
@@ -510,9 +489,9 @@ template<class T>
 const T &
 SplineSpace<dim, range, rank>::
 ComponentContainer<T>::
-operator()(const Index i) const
+operator[](const Index i) const
 {
-    return base_t::operator()(comp_map_[i]);
+    return base_t::operator[](comp_map_[i]);
 }
 
 IGA_NAMESPACE_CLOSE

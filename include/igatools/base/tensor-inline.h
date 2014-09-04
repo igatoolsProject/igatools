@@ -251,8 +251,8 @@ operator=(const value_type &entry_val)
 {
     Assert(dim_ == 1 && rank_ == 1,
            ExcMessage("Assignment is allowed only if dim_==1 and rank_==1")) ;
-    for (int i = 0; i < dim_; ++i)
-        tensor_[i] = entry_val;
+    for (auto &val : tensor_)
+        val = entry_val;
     return *this;
 }
 
@@ -264,7 +264,7 @@ auto
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator[](const int  i) -> SubTensor<self_t> &
 {
-    Assert(i < dim_, ExcIndexRange(i, 0, dim_)) ;
+    Assert(i >= 0 && i < dim_, ExcIndexRange(i, 0, dim_)) ;
     return tensor_[i] ;
 }
 
@@ -276,7 +276,7 @@ auto
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator[](const int  i) const -> const SubTensor<self_t> &
 {
-    Assert(i < dim_, ExcIndexRange(i, 0, dim_)) ;
+    Assert(i >= 0 && i < dim_, ExcIndexRange(i, 0, dim_)) ;
     return tensor_[i] ;
 }
 
@@ -314,7 +314,7 @@ value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator()(const int i)
 {
-    Assert(i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
+    Assert(i >= 0 && i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
     return (reinterpret_cast<value_type *>(tensor_)[i]);
 }
 
@@ -326,7 +326,7 @@ const value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator()(const int i) const
 {
-    Assert(i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
+    Assert(i >= 0 && i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
     return (reinterpret_cast<value_type const *>(tensor_)[i]);
 }
 

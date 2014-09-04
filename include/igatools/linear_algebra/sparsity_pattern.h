@@ -55,14 +55,14 @@ public:
     SparsityPattern(const SpaceManager &space_manager);
 
     /**
-     * Construct the sparsity pattern associated with the SpaceManager of two space.
+     * Construct the sparsity pattern associated with the SpaceManager of two spaces.
      *
      * @warning This function only works when both spaces have the same number of elements.
      */
     SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols);
     /*
-        SparsityPattern(const std::vector< Index > row_dofs,
-                        const std::vector< Index > col_dofs) ;
+        SparsityPattern(const vector< Index > row_dofs,
+                        const vector< Index > col_dofs) ;
     //*/
     SparsityPattern(const SparsityPattern &) ;
 
@@ -80,18 +80,18 @@ public:
     /**
      * Returns the vector of the column dofs.
      */
-    const std::vector< Index > get_col_dofs() const ;
+    const vector< Index > get_col_dofs() const ;
 
     /**
      * Returns the vector of the row dofs.
      */
-    const std::vector< Index > get_row_dofs() const ;
+    const vector< Index > get_row_dofs() const ;
 
 
     /**
      * todo: document me.
      */
-    std::vector< long unsigned int > get_num_overlapping_funcs() const ;
+    vector< long unsigned int > get_num_overlapping_funcs() const ;
 
 
 private:
@@ -101,8 +101,8 @@ private:
      */
     SparsityPattern &operator=(const SparsityPattern &) ;
 
-    std::vector< Index > row_dofs_ ;
-    std::vector< Index > col_dofs_ ;
+    vector< Index > row_dofs_ ;
+    vector< Index > col_dofs_ ;
 
 
 };

@@ -23,7 +23,6 @@
 
 
 using std::array ;
-using std::vector ;
 using std::shared_ptr ;
 
 IGA_NAMESPACE_OPEN

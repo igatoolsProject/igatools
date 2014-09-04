@@ -22,12 +22,8 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/exceptions.h>
-//#include <boost/multi_array.hpp>
-
-using std::vector ;
 
 IGA_NAMESPACE_OPEN
-
 
 template <class T>
 ValueVector<T>::
@@ -37,54 +33,54 @@ ValueVector() : ValueVector<T>(0)
 template <class T>
 ValueVector<T>::
 ValueVector(const Index num_points)
-    : std::vector<T>(num_points,T {})
-{}
+    : ValueContainer<T>(1,num_points)
+{
+    Assert(num_points >= 0,ExcLowerRange(num_points,0));
+    this->zero();
+}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const vector<T> &vector_in)
-    : std::vector<T> {vector_in}
-{}
+    : ValueVector<T>(vector_in.size())
+{
+    std::copy(vector_in.begin(),vector_in.end(),this->begin());
+}
 
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : std::vector<T>(list)
+    : ValueVector(vector<T>(list))
 {}
+//*/
 
 template <class T>
-ValueVector<T> &
+void
 ValueVector<T>::
-operator=(const std::vector<T> &vector)
+resize(const Size num_points)
 {
-    std::vector<T>::operator=(vector);
-    return (*this);
+    ValueContainer<T>::resize(1,num_points);
 }
 
-
+template <class T>
+void
+ValueVector<T>::
+clear() noexcept
+{
+    this->resize(0);
+}
 
 template <class T>
 void
 ValueVector<T>::
 print_info(LogStream &out) const
 {
-    const int num_points = this->size() ;
-    out << "ValueVector (num_points=" << num_points << ") :" << std::endl ;
-
-    for (int iPt = 0 ; iPt < num_points ; iPt++)
-        out << (*this)[ iPt ] << " " ;
-
-    out << std::endl ;
+    out << "ValueVector (num_points=" << this->get_num_points() << ") : ";
+    this->get_data().print_info(out);
 }
 
-template <class T>
-void
-ValueVector<T>::
-zero()
-{
-    for (auto &value : (*this))
-        value = T() ;
-}
+
+
 
 
 template< class T>
@@ -117,9 +113,4 @@ operator*(const Real scalar, const ValueVector<T> &a)
 
 IGA_NAMESPACE_CLOSE
 
-
-
 #include <igatools/utils/value_vector.inst>
-
-
-

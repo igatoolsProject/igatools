@@ -56,7 +56,9 @@ void do_test()
     for (; element != endc; ++element)
     {
         out << "Element index: " << element->get_flat_index() << endl;
-        out << "Global dofs: "<< element->get_local_to_global() << endl;
+        out << "Global dofs: ";
+        element->get_local_to_global().print_info(out);
+        out << endl;
     }
 
     out << endl;

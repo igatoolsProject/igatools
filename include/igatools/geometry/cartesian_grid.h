@@ -23,11 +23,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
-#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/base/logstream.h>
-#include <igatools/geometry/grid_forward_iterator.h>
-#include <igatools/geometry/unit_element.h>
+#include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/geometry/unit_element.h>
+#include <igatools/geometry/grid_forward_iterator.h>
 
 #include <array>
 #include <vector>
@@ -155,12 +155,12 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const CartesianProductArray<Real,dim> &knot_coordinates,
+    CartesianGrid(const KnotCoordinates &knot_coordinates,
                   const Kind kind);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as std::array of std::vector<Real>.
+     * direction is provided as std::array of vector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -168,7 +168,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const std::array<std::vector<Real>,dim> &knot_coordinates);
+    CartesianGrid(const std::array<vector<Real>,dim> &knot_coordinates);
 
 public:
     /**
@@ -218,11 +218,11 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const CartesianProductArray<Real,dim> &knot_coordinates);
+    create(const KnotCoordinates &knot_coordinates);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as std::array of std::vector<Real>.
+     * direction is provided as std::array of vector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -230,21 +230,18 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const std::array<std::vector<Real>,dim> &knot_coordinates);
+    create(const std::array<vector<Real>,dim> &knot_coordinates);
 
 
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points,
-           const Size n_knots);
+    create(const BBox<dim> &end_points, const Size n_knots);
 
     /**
      * @todo document me
      */
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points,
-           const TensorSize<dim> &n);
+    create(const BBox<dim> &end_points, const TensorSize<dim> &n);
     ///@}
-
 
     /**
      * @name Assignment operators
@@ -260,7 +257,6 @@ public:
      * Move assignment operator.
      */
     self_t &operator=(self_t &&grid) = default;
-
     ///@}
 
 
@@ -289,7 +285,7 @@ public:
     /**
      * Returns the knot coordinates along the direction @p i.
      */
-    std::vector<Real> const &get_knot_coordinates(const int i) const;
+    vector<Real> const &get_knot_coordinates(const int i) const;
 
     /**
      * Returns the knot coordinates along all the directions (const version).
@@ -340,35 +336,31 @@ public:
      */
     Points<dim> get_face_normal(const int face_no) const;
 
+    using FaceGridMap = std::map<typename FaceType::ElementIterator, ElementIterator>;
     /**
-     * Returns the CartesianGrid on the @p face_id.
+     * Construct a cartesian grid of dim-1 conforming to
+     * the grid face face_id and a map from the elements of
+     * the face grid to the corresponding element of the current
+     * grid.
      */
     std::shared_ptr<FaceType>
-    get_face_grid(const int face_id, std::map<int,int> &elem_map) const;
-
+    get_face_grid(const int face_id, FaceGridMap &elem_map) const;
     ///@}
-    Index get_element_flat_id_from_point(const Points<dim> &point) const;
-
-
-    std::vector<ElementIterator>
-    get_element_from_point(const std::vector<Points<dim>> &points) const;
 
     /**
-     * Returns the flat representation of an element index from its tensor-like
-     * representation.
-     * @note In Debug mode, the element index is checked for its validity in
-     * the CartesianGrid.
+     * Given a vector of points, this function return a map with
+     * entries indexed by the grid element each point belongs to
+     * containing a list of indices of the points that belong to
+     * this element.
+     * For ex.
+     * @code
+     *
+     * @endcode
      */
-    Index tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const;
+    std::map<ElementIterator, vector<int> >
+    find_elements_of_points(const ValueVector<Points<dim>> &points) const;
 
-    /**
-     * Returns the tensor-like representation of an element index from its flat
-     * representation.
-     * @note In Debug mode, the element index is checked for its validity in the
-     * CartesianGrid.
-     */
-    TensorIndex<dim> flat_to_tensor_element_index(const Index flat_id) const;
-
+public:
     /**
      * Prints debug information of the CartesianGrid to a LogStream.
      */
@@ -498,6 +490,7 @@ private:
      * function pointers.
      */
     signal_refine_t refine_signals_;
+
 
     friend class CartesianGridElement<dim>;
 

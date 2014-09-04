@@ -1,64 +1,36 @@
 Traversing the elements of a 1-dimensional grid.
 The center of element: 0 is: [ 0.250000 ] 
-The weighted measure is: ValueVector (num_points=2) :
-0.250000 0.250000 
-
+The weighted measure is: ValueVector (num_points=2) : [ 0.250000 0.250000 ]
 The center of element: 1 is: [ 0.750000 ] 
-The weighted measure is: ValueVector (num_points=2) :
-0.250000 0.250000 
-
+The weighted measure is: ValueVector (num_points=2) : [ 0.250000 0.250000 ]
 
 Traversing the elements of a 2-dimensional grid.
 The center of element: 0 is: [ 0.250000 0.250000 ] 
-The weighted measure is: ValueVector (num_points=4) :
-0.0625000 0.0625000 0.0625000 0.0625000 
-
+The weighted measure is: ValueVector (num_points=4) : [ 0.0625000 0.0625000 0.0625000 0.0625000 ]
 The center of element: 1 is: [ 0.750000 0.250000 ] 
-The weighted measure is: ValueVector (num_points=4) :
-0.0625000 0.0625000 0.0625000 0.0625000 
-
+The weighted measure is: ValueVector (num_points=4) : [ 0.0625000 0.0625000 0.0625000 0.0625000 ]
 The center of element: 2 is: [ 0.250000 0.750000 ] 
-The weighted measure is: ValueVector (num_points=4) :
-0.0625000 0.0625000 0.0625000 0.0625000 
-
+The weighted measure is: ValueVector (num_points=4) : [ 0.0625000 0.0625000 0.0625000 0.0625000 ]
 The center of element: 3 is: [ 0.750000 0.750000 ] 
-The weighted measure is: ValueVector (num_points=4) :
-0.0625000 0.0625000 0.0625000 0.0625000 
-
+The weighted measure is: ValueVector (num_points=4) : [ 0.0625000 0.0625000 0.0625000 0.0625000 ]
 
 Traversing the elements of a 3-dimensional grid.
 The center of element: 0 is: [ 0.250000 0.250000 0.250000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 1 is: [ 0.750000 0.250000 0.250000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 2 is: [ 0.250000 0.750000 0.250000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 3 is: [ 0.750000 0.750000 0.250000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 4 is: [ 0.250000 0.250000 0.750000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 5 is: [ 0.750000 0.250000 0.750000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 6 is: [ 0.250000 0.750000 0.750000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 The center of element: 7 is: [ 0.750000 0.750000 0.750000 ] 
-The weighted measure is: ValueVector (num_points=8) :
-0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 
-
+The weighted measure is: ValueVector (num_points=8) : [ 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
 Traversing the elements of a 1-dimensional B-spline space.
 Element: 0 has global basis: [ 0 1 2 ]

@@ -37,8 +37,10 @@
 #include <igatools/io/writer.h>
 
 using namespace iga;
-using namespace std;
 using numbers::PI;
+
+using std::string;
+using std::to_string;
 // [old includes]
 
 // [an geometry]

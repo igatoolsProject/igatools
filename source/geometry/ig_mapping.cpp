@@ -24,7 +24,7 @@
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/utils/vector_tools.h>
 
-using std::vector;
+
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -60,9 +60,9 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 
     for (Index comp_id : weights.get_active_components_id())
     {
-        auto &weights_component = weights(comp_id);
+        auto &weights_component = weights[comp_id];
 
-        weights_component.resize(basis_tensor_size_table(comp_id));
+        weights_component.resize(basis_tensor_size_table[comp_id]);
 
         for (auto &w : weights_component)
             w = 1.0;
@@ -94,7 +94,7 @@ get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
 template<class RefSpace>
 IgMapping<RefSpace>::
 IgMapping(const std::shared_ptr<RefSpace> space,
-          const std::vector<Real> &control_points)
+          const vector<Real> &control_points)
     :
     base_t::SplineMapping(space->get_grid()),
     data_(shared_ptr<IgMappingData>(new IgMappingData)),
@@ -130,15 +130,15 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     Index ctrl_pt_fid = 0;
     for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+        const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
 
-        auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
+        auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
 
         ctrl_mesh_comp.resize(num_basis_comp);
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-        const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_(comp_id);
+        const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_[comp_id];
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
@@ -146,12 +146,12 @@ IgMapping(const std::shared_ptr<RefSpace> space,
             {
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
-                const Real w = weights_pre_refinement_comp(loc_id);
+                const Real &w = weights_pre_refinement_comp[loc_id];
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid];
 
             ++ctrl_pt_fid;
         }
@@ -244,9 +244,9 @@ init_element(const ValueFlags flag,
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
-    cache_->reset_flat_tensor_indices(elem.get_flat_index());
+    cache_->move_to(elem.get_flat_index());
     cache_->fill_cache();
 }
 
@@ -254,11 +254,11 @@ set_element(const CartesianGridElementAccessor<dim> &elem) const
 
 template<class RefSpace>
 void IgMapping<RefSpace>::
-set_face_element(const Index face_id, const CartesianGridElementAccessor<dim> &elem) const
+set_face_element(const Index face_id, const GridIterator &elem) const
 {
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
-    cache_->reset_flat_tensor_indices(elem.get_flat_index());
+    cache_->move_to(elem.get_flat_index());
     cache_->fill_face_cache(face_id);
 }
 
@@ -268,7 +268,7 @@ template<class RefSpace>
 auto
 IgMapping<RefSpace>::create(
     const std::shared_ptr<RefSpace> space,
-    const std::vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
+    const vector<Real> &control_points) -> shared_ptr<Mapping<dim,codim>>
 {
     return (shared_ptr<Mapping<dim,codim>>(
         new IgMapping<RefSpace>(space,control_points)));
@@ -282,11 +282,11 @@ IgMapping<RefSpace>::
 get_control_points_elem() const
 {
     Assert(data_ != nullptr, ExcNullPtr());
-    const auto &local_to_global = cache_->get_local_to_global();
+    const auto &local_to_patch = cache_->get_local_to_patch();
 
     vector<Real> ctrl_pts_element;
 
-    for (const auto &local_id : local_to_global)
+    for (const auto &local_id : local_to_patch)
         ctrl_pts_element.emplace_back(data_->control_points_[local_id]);
 
     return ctrl_pts_element;
@@ -295,7 +295,7 @@ get_control_points_elem() const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate(vector<Value> &values) const
+evaluate(ValueVector<Value> &values) const
 {
     values = cache_->evaluate_field(this->get_control_points_elem());
 }
@@ -305,7 +305,7 @@ evaluate(vector<Value> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients(std::vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem());
 }
@@ -314,7 +314,7 @@ evaluate_gradients(std::vector<Gradient> &gradients) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians(std::vector<Hessian> &hessians) const
+evaluate_hessians(ValueVector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem());
 }
@@ -324,7 +324,7 @@ evaluate_hessians(std::vector<Hessian> &hessians) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face(const Index face_id, vector<Value> &values) const
+evaluate_face(const Index face_id, ValueVector<Value> &values) const
 {
     values = cache_->evaluate_field(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -334,7 +334,7 @@ evaluate_face(const Index face_id, vector<Value> &values) const
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const
+evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const
 {
     gradients = cache_->evaluate_field_gradients(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
@@ -343,155 +343,118 @@ evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) c
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const
+evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const
 {
     hessians = cache_->evaluate_field_hessians(this->get_control_points_elem(),FaceTopology<dim>(face_id));
 }
 
 
+
+// TODO (pauletti, Aug 7, 2014): evaluate_at_points, evaluate_gradients_at_points, etc
+// should eventually be a template function template<order> eval_derivative_at_point
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
+evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
+    Assert(values.size() == points.size(),
+           ExcDimensionMismatch(values.size(),points.size()));
 
-    const auto grid = this->get_grid();
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
+    auto &elem = cache_;
 
-    // for each point: get the flat-id of the element on which the point belongs from
-    vector<int> elem_fids;
-    for (const auto &pt : points)
-        elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
-
-    // aggregate consecutive points on the same element
-    vector<int> elem_fids_no_duplicates;
-    vector<int> elem_fids_multiplicity;
-    vector_tools::count_and_remove_duplicates(elem_fids,elem_fids_no_duplicates,elem_fids_multiplicity);
-
-
-    values.clear();
-    auto point_it = points.cbegin();
-    auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto &elem_fid : elem_fids_no_duplicates)
+    for (auto p : elem_list)
     {
-        cache_->reset_flat_tensor_indices(elem_fid);
-
-        //here we copy the points that belongs to the current element
-        const auto point_it_end = point_it + (*elem_multiplicity_it++);
-        vector<Point> points_current_element(point_it,point_it_end);
-        point_it = point_it_end;
+        elem->move_to(p.first->get_flat_index());
+        ValueVector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
-            cache_->transform_points_reference_to_unit(points_current_element);
+            elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+            elem->evaluate_field_values_at_points(
+                get_control_points_elem(), points_unit_element);
 
-        const auto values_current_element =
-            cache_->evaluate_field_values_at_points(
-                this->get_control_points_elem(),points_unit_element);
-
-        for (const auto &v : values_current_element)
-            values.push_back(v);
-
+        for (int j=0; j<p.second.size(); ++j)
+            values[p.second[j]] = elem_val[j];
     }
-    Assert(values.size() == points.size(),ExcDimensionMismatch(values.size(),points.size()));
 }
 
+
+
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const ValueVector<Point> &points,
+                             ValueVector<Gradient> &gradients) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
+    Assert(gradients.size() == points.size(),
+           ExcDimensionMismatch(gradients.size(),points.size()));
 
-    const auto grid = this->get_grid();
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
+    auto &elem = cache_;
 
-    // for each point: get the flat-id of the element on which the point belongs from
-    vector<int> elem_fids;
-    for (const auto &pt : points)
-        elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
-
-    // aggregate consecutive points on the same element
-    vector<int> elem_fids_no_duplicates;
-    vector<int> elem_fids_multiplicity;
-    vector_tools::count_and_remove_duplicates(elem_fids,elem_fids_no_duplicates,elem_fids_multiplicity);
-
-
-    gradients.clear();
-    auto point_it = points.cbegin();
-    auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto &elem_fid : elem_fids_no_duplicates)
+    for (auto p : elem_list)
     {
-        cache_->reset_flat_tensor_indices(elem_fid);
-
-        //here we copy the points that belongs to the current element
-        const auto point_it_end = point_it + (*elem_multiplicity_it++);
-        vector<Point> points_current_element(point_it,point_it_end);
-        point_it = point_it_end;
+        elem->move_to(p.first->get_flat_index());
+        ValueVector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
-            cache_->transform_points_reference_to_unit(points_current_element);
+            elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+            elem->evaluate_field_gradients_at_points(
+                get_control_points_elem(), points_unit_element);
 
-        const auto gradients_current_element =
-            cache_->evaluate_field_gradients_at_points(
-                this->get_control_points_elem(),points_unit_element);
-
-        for (const auto &v : gradients_current_element)
-            gradients.push_back(v);
-
+        for (int j=0; j<p.second.size(); ++j)
+            gradients[p.second[j]] = elem_val[j];
     }
-    Assert(gradients.size() == points.size(),ExcDimensionMismatch(gradients.size(),points.size()));
+
 }
 
+
+
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const ValueVector<Point> &points,
+                            ValueVector<Hessian> &hessians) const
 {
     Assert(points.size() > 0, ExcEmptyObject());
+    Assert(hessians.size() == points.size(),
+           ExcDimensionMismatch(hessians.size(),points.size()));
 
-    const auto grid = this->get_grid();
+    auto elem_list = this->get_grid()->find_elements_of_points(points);
+    auto &elem = cache_;
 
-    // for each point: get the flat-id of the element on which the point belongs from
-    vector<int> elem_fids;
-    for (const auto &pt : points)
-        elem_fids.push_back(grid->get_element_flat_id_from_point(pt));
-
-    // aggregate consecutive points on the same element
-    vector<int> elem_fids_no_duplicates;
-    vector<int> elem_fids_multiplicity;
-    vector_tools::count_and_remove_duplicates(elem_fids,elem_fids_no_duplicates,elem_fids_multiplicity);
-
-
-    hessians.clear();
-    auto point_it = points.cbegin();
-    auto elem_multiplicity_it = elem_fids_multiplicity.cbegin();
-    for (const auto &elem_fid : elem_fids_no_duplicates)
+    for (auto p : elem_list)
     {
-        cache_->reset_flat_tensor_indices(elem_fid);
-
-        //here we copy the points that belongs to the current element
-        const auto point_it_end = point_it + (*elem_multiplicity_it++);
-        vector<Point> points_current_element(point_it,point_it_end);
-        point_it = point_it_end;
+        elem->move_to(p.first->get_flat_index());
+        ValueVector<Point> pts(p.second.size());
+        for (int j=0; j<p.second.size(); ++j)
+            pts[j] = points[p.second[j]];
 
         const auto points_unit_element =
-            cache_->transform_points_reference_to_unit(points_current_element);
+            elem->transform_points_reference_to_unit(pts);
+        const auto elem_val =
+            elem->evaluate_field_hessians_at_points(
+                get_control_points_elem(), points_unit_element);
 
-        const auto hessians_current_element =
-            cache_->evaluate_field_hessians_at_points(
-                this->get_control_points_elem(),points_unit_element);
-
-        for (const auto &v : hessians_current_element)
-            hessians.push_back(v);
-
+        for (int j=0; j<p.second.size(); ++j)
+            hessians[p.second[j]] = elem_val[j];
     }
-    Assert(hessians.size() == points.size(),ExcDimensionMismatch(hessians.size(),points.size()));
+
 }
 
 
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
-set_control_points(const std::vector<Real> &control_points)
+set_control_points(const vector<Real> &control_points)
 {
     Assert(data_->control_points_.size() == control_points.size(),
            ExcDimensionMismatch(data_->control_points_.size(), control_points.size()));
@@ -510,13 +473,13 @@ set_control_points(const std::vector<Real> &control_points)
     Index ctrl_pt_fid = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-//        const TensorSize<dim> &num_basis_comp = num_basis_table(comp_id);
+//        const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
 
-        auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
+        auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-        const auto &weights_after_refinement_comp = weights(comp_id);
+        const auto &weights_after_refinement_comp = weights[comp_id];
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
@@ -524,12 +487,12 @@ set_control_points(const std::vector<Real> &control_points)
             {
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
-                const Real &w = weights_after_refinement_comp(loc_id);
+                const Real &w = weights_after_refinement_comp[loc_id];
 
-                ctrl_mesh_comp(loc_id) = w * data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid];
             }
             else
-                ctrl_mesh_comp(loc_id) = data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid];
 
             ++ctrl_pt_fid;
 
@@ -584,10 +547,10 @@ refine_h_control_mesh(
 
             for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
             {
-                const int p = ref_space->get_degree()(comp_id)[direction_id];
-                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
+                const int p = ref_space->get_degree()[comp_id][direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
                 const int m = U.size()-1;
                 const int r = X.size()-1;
@@ -596,7 +559,7 @@ refine_h_control_mesh(
 
                 const int n = m-p-1;
 
-                const auto &Pw = data_->ctrl_mesh_(comp_id);
+                const auto &Pw = data_->ctrl_mesh_[comp_id];
                 const auto old_sizes = Pw.tensor_size();
                 Assert(old_sizes[direction_id] == n+1,
                        ExcDimensionMismatch(old_sizes[direction_id],n+1));
@@ -658,7 +621,7 @@ refine_h_control_mesh(
 
                 } // end loop j
 
-                data_->ctrl_mesh_(comp_id) = Qw;
+                data_->ctrl_mesh_[comp_id] = Qw;
                 //*/
             } // end loop comp_id
         } // end if (refinement_directions[direction_id])
@@ -676,8 +639,8 @@ refine_h_control_mesh(
     Index ctrl_pt_id = 0;
     for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
     {
-        const auto &ctrl_mesh_comp = data_->ctrl_mesh_(comp_id);
-        const auto &weights_after_refinement_comp = weights_after_refinement(comp_id);
+        const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+        const auto &weights_after_refinement_comp = weights_after_refinement[comp_id];
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
@@ -685,12 +648,12 @@ refine_h_control_mesh(
             if (RefSpace::has_weights)
             {
                 // if NURBS, transform the control points from  projective to euclidean coordinates
-                const Real w = weights_after_refinement_comp(loc_id);
+                const Real &w = weights_after_refinement_comp[loc_id];
 
-                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp(loc_id) / w ;
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id] / w ;
             }
             else
-                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp(loc_id);
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id];
         }
     }
     //----------------------------------
@@ -761,8 +724,14 @@ print_info(LogStream &out) const
     out << "Control points info (projective coordinates):" << endl;
 
     out.push("\t");
+
+    // TODO (pauletti, Aug 26, 2014): does not satisfy printinfo standards, correct
     for (Index comp_id = 0 ; comp_id < space_dim ; ++comp_id)
-        out << "Control mesh["<<comp_id<<"] = " <<  data_->ctrl_mesh_(comp_id) << endl;
+    {
+        out << "Control mesh["<<comp_id<<"] = ";
+        data_->ctrl_mesh_[comp_id].print_info(out);
+        out << endl;
+    }
     out << endl;
     out.pop();
 

@@ -27,7 +27,7 @@
 #include <algorithm>
 using std::endl;
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 using std::make_shared;
 
@@ -48,7 +48,7 @@ filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
     vector<Real> knots_1d;
     for (int i = 0; i < dim; ++i)
     {
-        const Size n_i = n_knots(i);
+        const Size n_i = n_knots[i];
         Assert(n_i > 1, ExcLowerRange(n_i,2));
 
         knots_1d.resize(n_i);
@@ -151,7 +151,7 @@ CartesianGrid<dim_>::
 CartesianGrid(const KnotCoordinates &knot_coordinates,
               const Kind kind)
     :
-    TensorSizedContainer<dim_>(knot_coordinates.tensor_size().operator -=(1)),
+    TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
     knot_coordinates_(knot_coordinates),
@@ -223,7 +223,6 @@ CartesianGrid(const self_t &grid)
 
 
 
-//TODO: inline this function
 template<int dim_>
 vector< Real > const &
 CartesianGrid<dim_>::
@@ -234,7 +233,6 @@ get_knot_coordinates(const int i) const
 
 
 
-//TODO: inline this function
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -256,7 +254,7 @@ get_element_lengths() const -> KnotCoordinates
     {
         const auto &knots_i = knot_coordinates_.get_data_direction(i);
 
-        const Size size_i = size(i);
+        const Size size_i = size[i];
 
         for (int j = 0 ; j < size_i ; ++j)
             length.entry(i,j) = knots_i[j+1] - knots_i[j];
@@ -405,7 +403,7 @@ refine_directions(
         if (refinement_directions[i])
             this->refine_knots_direction(i,n_subdivisions[i]);
 
-    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size(). operator -=(1));
+    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
     influent_.resize(this->tensor_size(), true);
@@ -482,7 +480,7 @@ refine_knots_direction(const int direction_id,
     Index i_new = 0;
     for (Index i_old = 0 ; i_old < n_knots_old - 1 ; ++i_old)
     {
-        const Real h = (knots_old[i_old+1] - knots_old[i_old]) / n_subdivisions ;
+        const Real h = (knots_old[i_old+1] - knots_old[i_old]) / n_subdivisions;
 
         for (Index j = 0 ; j < n_subdivisions ; ++j, ++i_new)
             knots_new[i_new] = knots_old[i_old] + j * h;
@@ -490,8 +488,6 @@ refine_knots_direction(const int direction_id,
     knots_new[n_knots_new-1] = knots_old[n_knots_old-1];
 
     knot_coordinates_.copy_data_direction(direction_id,knots_new);
-
-
 }
 
 
@@ -514,7 +510,7 @@ print_info(LogStream &out) const
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-get_face_grid(const int face_id, std::map<int,int> &elem_map) const
+get_face_grid(const int face_id, FaceGridMap &elem_map) const
 -> shared_ptr<FaceType>
 {
     Assert(dim > 0, ExcLowerRange(dim,1));
@@ -527,7 +523,7 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const
     auto knot_coordinates_ = this->get_knot_coordinates();
     v_index[const_dir] = const_value==0 ?
     0 :
-    (knot_coordinates_.tensor_size()(const_dir)-2);
+    (knot_coordinates_.tensor_size()[const_dir]-2);
 
     auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
     auto face_grid = FaceType::create(face_knots);
@@ -540,8 +536,10 @@ get_face_grid(const int face_id, std::map<int,int> &elem_map) const
         auto f_index = f_elem->get_tensor_index();
         for (int j=0; j<dim-1; ++j)
             v_index[active_dirs[j]] = f_index[j];
-        v_elem->reset_flat_tensor_indices(v_index);
-        elem_map[f_elem->get_flat_index()]=v_elem->get_flat_index();
+        v_elem->move_to(v_index);
+        //auto ret =
+        elem_map.emplace(f_elem, v_elem);
+        //  elem_map[f_elem] = v_elem;
     }
 
     return face_grid;
@@ -566,82 +564,42 @@ get_bounding_box() const -> BBox<dim>
 }
 
 
-template <int dim_>
-Index
-CartesianGrid<dim_>::
-tensor_to_flat_element_index(const TensorIndex<dim> &tensor_id) const
-{
-    return this->tensor_to_flat(tensor_id);
-//    return MultiArrayUtils<dim>::tensor_to_flat_index(tensor_id,weight_elem_id_);
-}
-
-
 
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-flat_to_tensor_element_index(const Index flat_id) const ->TensorIndex<dim>
+find_elements_of_points(const ValueVector<Points<dim>> &points) const
+-> std::map<ElementIterator, vector<int> >
 {
-    return this->flat_to_tensor(flat_id);
-//    return MultiArrayUtils<dim>::flat_to_tensor_index(flat_id,weight_elem_id_);
-}
+    std::map<ElementIterator, vector<int> > res;
 
-template <int dim_>
-Index
-CartesianGrid<dim_>::
-get_element_flat_id_from_point(const Points<dim> &point) const
-{
-#ifndef NDEBUG
-    const auto bounding_box = this->get_bounding_box();
-#endif
-
-    TensorIndex<dim> elem_t_id;
-    for (int i = 0 ; i < dim ; ++i)
-     {
-        Assert(point[i] >= bounding_box[i][0] && point[i] <= bounding_box[i][1],
-               ExcMessage("Point " +
-                          std::to_string(point[i]) +
-                          " outside the domain [" +
-                          std::to_string(bounding_box[i][0]) + "," +
-                          std::to_string(bounding_box[i][1])+
-                          "]"));
-
-        const auto &knots = knot_coordinates_.get_data_direction(i);
-            //find the index j in the knots for which knots[j] <= point[i]
-            const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
-            const Index j = low - knots.begin();
-
-            elem_t_id[i] = (j>0) ? j-1 : 0;
-
-     }
-
-    return this->tensor_to_flat_element_index(elem_t_id);
-
-}
-
-
-template <int dim_>
-auto
-CartesianGrid<dim_>::
-get_element_from_point(const std::vector<Points<dim>> &points) const
--> std::vector<ElementIterator>
-{
-    std::vector<ElementIterator> res;
-
-    for (const auto point : points)
+    const int n_points = points.size();
+    for (int k=0; k<n_points; ++k)
     {
+        const auto &point = points[k];
         TensorIndex<dim> elem_t_id;
         for (int i = 0 ; i < dim ; ++i)
         {
             const auto &knots = knot_coordinates_.get_data_direction(i);
 
+            Assert(point[i] >= knots.front() && point[i] <= knots.back(),
+            ExcMessage("The point " + std::to_string(k) +
+            " is not in the interval spanned by the knots along the direction " +
+            std::to_string(i)));
+
             //find the index j in the knots for which knots[j] <= point[i]
             const auto low = std::lower_bound(knots.begin(),knots.end(),point[i]);
+
+
             const Index j = low - knots.begin();
 
             elem_t_id[i] = (j>0) ? j-1 : 0;
-            res.push_back(ElementIterator(this->shared_from_this(), elem_t_id));
         }
+        auto ans =
+            res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
+                        vector<int>(1,k));
+        if (!ans.second)
+            (ans.first)->second.push_back(k);
     }
     return res;
 }

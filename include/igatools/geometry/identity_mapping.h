@@ -47,6 +47,7 @@ private:
     using typename base_t::Gradient;
     using typename base_t::Hessian;
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
 
 public:
     IdentityMapping() = delete;
@@ -63,22 +64,22 @@ public:
 
     ValueFlags required_flags() const;
 
-    void set_element(const CartesianGridElementAccessor<dim> &elem) const;
+    void set_element(const GridIterator &elem) const;
 
     void set_face_element(const Index face_id,
-                          const CartesianGridElementAccessor<dim> &elem) const;
+                          const GridIterator &elem) const;
 
-    void evaluate(std::vector<Value> &values) const override;
+    void evaluate(ValueVector<Value> &values) const override;
 
-    void evaluate_gradients(std::vector<Gradient> &gradients) const override;
+    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_hessians(std::vector<Hessian> &hessians) const override;
+    void evaluate_hessians(ValueVector<Hessian> &hessians) const override;
 
-    void evaluate_face(const Index face_id, std::vector<Value> &values) const override;
+    void evaluate_face(const Index face_id, ValueVector<Value> &values) const override;
 
-    void evaluate_face_gradients(const Index face_id, std::vector<Gradient> &gradients) const override;
+    void evaluate_face_gradients(const Index face_id, ValueVector<Gradient> &gradients) const override;
 
-    void evaluate_face_hessians(const Index face_id, std::vector<Hessian> &hessians) const override;
+    void evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) const override;
 
     /**
      * Prints internal information about the mapping.
@@ -91,8 +92,8 @@ private:
     std::array<Gradient, UnitElement<dim>::faces_per_element> face_A_;
 
     //The cache
-    mutable std::vector<Point> points_;
-    mutable std::array<std::vector<Point>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable ValueVector<Point> points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim>::faces_per_element> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

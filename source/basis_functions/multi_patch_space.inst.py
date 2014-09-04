@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
 include_files = ['basis_functions/bspline_space.h',

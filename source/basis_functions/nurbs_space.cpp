@@ -25,7 +25,6 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
 using std::endl;
 using std::shared_ptr;
 using std::make_shared;
@@ -174,8 +173,8 @@ perform_post_construction_checks() const
     // check that the number of weights is equal to the number of basis functions in the space
     for (auto comp : components)
     {
-        Assert(sp_space_->get_num_basis(comp) == weights_(comp).flat_size(),
-               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_(comp).flat_size()));
+        Assert(sp_space_->get_num_basis(comp) == weights_[comp].flat_size(),
+               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_[comp].flat_size()));
     }
 #endif
 }
@@ -187,7 +186,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(), 0);
+    return ElementIterator(std::enable_shared_from_this<self_t>::shared_from_this(), 0);
 }
 
 
@@ -197,7 +196,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
+    return ElementIterator(std::enable_shared_from_this<self_t>::shared_from_this(),
                            this->get_grid()->get_num_active_elems() - 1);
 }
 
@@ -208,7 +207,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_>>::shared_from_this(),
+    return ElementIterator(std::enable_shared_from_this<self_t>::shared_from_this(),
                            IteratorState::pass_the_end);
 }
 
@@ -238,8 +237,8 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs,
-                   std::map<int, int> &elem_map) const
+                   vector<Index> &face_to_element_dofs,
+                   typename GridType::FaceGridMap &elem_map) const
 -> std::shared_ptr<RefFaceSpace>
 {
     auto f_space = sp_space_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
@@ -253,7 +252,7 @@ get_ref_face_space(const Index face_id,
     const auto n_basis = f_space->get_num_basis_table();
     for (int comp : f_weights.get_active_components_id())
     {
-        f_weights(comp).resize(n_basis(comp),1.0);
+        f_weights[comp].resize(n_basis[comp],1.0);
         //        for (auto j : RefFaceSpace::dims)
         //            f_weights(comp).copy_data_direction(j, v_weights(comp).get_data_direction(active_dirs[j]));
     }
@@ -268,10 +267,10 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_face_space(const Index face_id,
-               std::vector<Index> &face_to_element_dofs) const
+               vector<Index> &face_to_element_dofs) const
 -> std::shared_ptr<FaceSpace>
 {
-    auto elem_map = std::make_shared<std::map<int,int> >();
+    auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
     auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
     auto map  = get_push_forward()->get_mapping();
 
@@ -324,10 +323,10 @@ refine_h_weights(
             //*/
             for (const int comp_id : weights_.get_active_components_id())
             {
-                const int p = sp_space_->get_degree()(comp_id)[direction_id];
-                const auto &U = knots_with_repetitions_pre_refinement(comp_id).get_data_direction(direction_id);
+                const int p = sp_space_->get_degree()[comp_id][direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
                 const auto &X = knots_added;
-                const auto &Ubar = knots_with_repetitions(comp_id).get_data_direction(direction_id);
+                const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
 
                 const int m = U.size()-1;
@@ -337,29 +336,25 @@ refine_h_weights(
 
                 const int n = m-p-1;
 
-                const auto Pw = weights_(comp_id);
+                const auto Pw = weights_[comp_id];
                 const auto old_sizes = Pw.tensor_size();
-                Assert(old_sizes(direction_id) == n+1,
-                       ExcDimensionMismatch(old_sizes(direction_id), n+1));
+                Assert(old_sizes[direction_id] == n+1,
+                       ExcDimensionMismatch(old_sizes[direction_id], n+1));
 
                 auto new_sizes = old_sizes;
-                new_sizes(direction_id) += r+1; // r+1 new weights in the refinement direction
-                Assert(new_sizes(direction_id) ==
+                new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
+                Assert(new_sizes[direction_id] ==
                        sp_space_->get_num_basis(comp_id,direction_id),
-                       ExcDimensionMismatch(new_sizes(direction_id),
+                       ExcDimensionMismatch(new_sizes[direction_id],
                                             sp_space_->get_num_basis(comp_id,direction_id)));
 
                 DynamicMultiArray<Real,dim> Qw(new_sizes);
 
                 for (Index j = 0; j <= a-p; ++j)
-                {
                     Qw.copy_slice(direction_id,j,Pw.get_slice(direction_id,j));
-                }
 
                 for (Index j = b-1; j <= n; ++j)
-                {
                     Qw.copy_slice(direction_id,j+r+1,Pw.get_slice(direction_id,j));
-                }
 
                 Index i = b + p - 1;
                 Index k = b + p + r;
@@ -395,7 +390,7 @@ refine_h_weights(
                     k = k-1;
                 } // end loop j
 
-                weights_(comp_id) = Qw;
+                weights_[comp_id] = Qw;
 
             } // end loop comp_id
 
@@ -433,27 +428,12 @@ get_num_basis(const int comp, const int dir) const
 }
 
 template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis_per_element() const
-{
-    return sp_space_->get_num_basis_per_element();
-}
-
-template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_num_basis_per_element_table() const -> const SpaceDimensionTable
+get_num_basis_table() const ->
+const SpaceDimensionTable &
 {
-    return sp_space_->get_num_basis_per_element_table();
-}
-
-template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis_per_element(int i) const
-{
-    return sp_space_->get_num_basis_per_element(i);
+    return sp_space_->get_num_basis_table();
 }
 
 template <int dim_, int range_, int rank_>
@@ -464,13 +444,26 @@ get_degree() const -> const DegreeTable &
     return sp_space_->get_degree();
 }
 
+
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_loc_to_global(const TensorIndex<dim> &j) const -> std::vector<Index>
+get_loc_to_global(const CartesianGridElement<dim> &element) const -> vector<Index>
 {
-    return sp_space_->get_loc_to_global(j);
+    return sp_space_->get_loc_to_global(element);
 }
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_loc_to_patch(const CartesianGridElement<dim> &element) const -> vector<Index>
+{
+    return sp_space_->get_loc_to_patch(element);
+}
+
 
 
 template <int dim_, int range_, int rank_>
@@ -481,21 +474,44 @@ get_spline_space() const -> const std::shared_ptr<spline_space_t>
     return sp_space_;
 }
 
+
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_basis_indices() const -> const DofDistribution<dim, range, rank> &
+get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_basis_indices();
+    return sp_space_->get_dof_distribution_global();
 }
 
 
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_basis_indices() -> DofDistribution<dim, range, rank> &
+get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
-    return sp_space_->get_basis_indices();
+    return sp_space_->get_dof_distribution_global();
+}
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_dof_distribution_patch();
+}
+
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
+{
+    return sp_space_->get_dof_distribution_patch();
 }
 
 

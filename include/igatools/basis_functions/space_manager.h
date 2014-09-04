@@ -141,7 +141,7 @@ class SpaceManager
 {
 public:
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentContainer = vector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -214,33 +214,55 @@ public:
     void add_space(std::shared_ptr<Space> space);
     ///@}
 
-
+    /** @name Functions for the insertion of the equality constraints */
+    ///@{
     /**
      * Sets the SpaceManager in a state that can receive new equality constraints.
      */
     void equality_constraints_open();
 
     /**
-     * Coomunicate the SpaceManager that the insertion of the equality constraints is
+     * Add an equality constraint between @dof_id_master and @p dof_id_slave.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the space manager is not set in the proper state by the function
+     * equality_constraints_open().
+     */
+    void add_equality_constraint(const Index dof_id_master,const Index dof_id_slave);
+
+    /**
+     * Communicate the SpaceManager that the insertion of the equality constraints is
      * completed.
      */
     void equality_constraints_close();
+    ///@}
 
+    /** @name Functions for the insertion of the linear constraints */
+    ///@{
     /**
      * Sets the SpaceManager in a state that can receive new linear constraints.
      */
     void linear_constraints_open();
 
+
     /**
-     * Coomunicate the SpaceManager that the insertion of the linear constraints is
+     * Add a LinearConstraint to the SpaceManager,
+     * where @p dofs are the dofs id involved by the constraint,
+     * @p coeffs their coefficients and
+     * @p rhs is the right hand side that defines the linear constraint equation.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the space manager is not set in the proper state by the function
+     * linear_constraints_open().
+     */
+    void add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
+
+    /**
+     * Communicate the SpaceManager that the insertion of the linear constraints is
      * completed.
      */
     void linear_constraints_close();
-
-    /**
-     * Add an equality constraint between @dof_id_master and @p dof_id_slave.
-     */
-    void add_equality_constraint(const Index dof_id_master,const Index dof_id_slave);
+    ///@}
 
 
 
@@ -261,7 +283,7 @@ public:
      * Returns the global dofs corresponding to the @p local_dofs
      * in the space with id equal to @p space_id.
      */
-    std::vector<Index> get_global_dofs(const int space_id, const std::vector<Index> &local_dof) const;
+    vector<Index> get_global_dofs(const int space_id, const vector<Index> &local_dof) const;
     ///@}
 
 
@@ -319,7 +341,7 @@ private:
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
-                  const std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view);
+                  const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view);
 
         /** Returns the number of dofs of the space. */
         Index get_num_dofs() const ;
@@ -339,7 +361,7 @@ private:
          * Returns a vector of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
          */
-        const std::vector<DofsConstView> &get_elements_dofs_view() const;
+        const std::map<Index,DofsConstView> &get_elements_dofs_view() const;
 
 
 
@@ -385,14 +407,14 @@ private:
         DofsView dofs_view_;
 
         /**
-         * Vector of size equal to the number of elements in the single-patch space,
+         * Map of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
          *
          * @note We use a std:shared_ptr because this container can be very big and
          * it is already present
          * the the DofDistribution class instantiated in the space itself.
          */
-        std::shared_ptr<const std::vector<DofsConstView>> elements_dofs_view_;
+        std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view_;
     };
 
     /**
@@ -409,10 +431,10 @@ private:
     DofsView dofs_view_;
 
 
-    std::vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
+    vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
 
 
-    std::vector<EqualityConstraint> equality_constraints_;
+    vector<EqualityConstraint> equality_constraints_;
 
 
     /** Counts and return the number of unique dofs in the SpaceManager. */
@@ -428,7 +450,7 @@ public:
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
-    const std::map<int,SpaceInfo> &get_spaces_info() const;
+    const std::map<Index,SpaceInfo> &get_spaces_info() const;
 };
 
 
@@ -454,15 +476,15 @@ add_space(std::shared_ptr<Space> space)
     using RefSpace = typename Space::RefSpace;
     auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
 
-    auto &dofs_distribution = ref_space->get_basis_indices();
+    auto &dof_distribution = ref_space->get_dof_distribution_global();
 
     spaces_info_[ref_space->get_id()] =
         SpaceInfo(space,
                   ref_space->get_num_basis(),
-                  dofs_distribution.get_min_dof_id(),
-                  dofs_distribution.get_max_dof_id(),
-                  dofs_distribution.get_dofs_view(),
-                  dofs_distribution.get_elements_view());
+                  dof_distribution.get_min_dof_id(),
+                  dof_distribution.get_max_dof_id(),
+                  dof_distribution.get_dofs_view(),
+                  dof_distribution.get_elements_view());
     //---------------------------------------------------------------------------------------------
 }
 

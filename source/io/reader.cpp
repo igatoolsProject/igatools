@@ -29,11 +29,10 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <string>
-#include <vector>
 #include <array>
 #include <set>
 
-using std::vector;
+
 using std::array;
 using std::set;
 using std::shared_ptr;
@@ -631,14 +630,14 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
         AssertThrow(n_degree == degrees_vec.size(),ExcDimensionMismatch(n_degree,degrees_vec.size()));
 
         for (int i = 0 ; i < dim ; ++i)
-            degrees(comp_id)[i] = degrees_vec[i];
+            degrees[comp_id][i] = degrees_vec[i];
         //---------------------------------------------
 
 
         //---------------------------------------------
         // getting the multiplicities
         const auto &comp_multiplicities_element = get_xml_element(comp_element,"InteriorMultiplicities");
-        (*multiplicities)(comp_id) = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        (*multiplicities)[comp_id] = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
 
     } // end loop over the scalar components
@@ -648,8 +647,8 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     typename space_t::EndBehaviourTable end_behaviour(components_map);
     for (const auto comp_id : end_behaviour.get_active_components_id())
     {
-        end_behaviour(comp_id)[0] = space_t::EndBehaviour::interpolatory;
-        end_behaviour(comp_id)[1] = space_t::EndBehaviour::interpolatory;
+        end_behaviour[comp_id][0] = space_t::EndBehaviour::interpolatory;
+        end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
     }
 
     auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour);
@@ -769,14 +768,14 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         AssertThrow(n_degree == degrees_vec.size(),ExcDimensionMismatch(n_degree,degrees_vec.size()));
 
         for (int i = 0 ; i < dim ; ++i)
-            degrees(comp_id)[i] = degrees_vec[i];
+            degrees[comp_id][i] = degrees_vec[i];
         //---------------------------------------------
 
 
         //---------------------------------------------
         // getting the multiplicities
         const auto &comp_multiplicities_element = get_xml_element(comp_element,"InteriorMultiplicities");
-        (*multiplicities)(comp_id) = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        (*multiplicities)[comp_id] = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
 
 
@@ -792,10 +791,10 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
 
-        auto &w_comp = weights(comp_id);
+        auto &w_comp = weights[comp_id];
         w_comp.resize(dofs_size);
         for (int flat_id = 0 ; flat_id < n_weights ; ++flat_id)
-            w_comp(flat_id) = weights_vec[flat_id];
+            w_comp[flat_id] = weights_vec[flat_id];
         //-------------------------------------------------------------------------
 
     } // end loop over the scalar components
@@ -805,8 +804,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     typename space_t::EndBehaviourTable end_behaviour(components_map);
     for (const auto comp_id : end_behaviour.get_active_components_id())
     {
-        end_behaviour(comp_id)[0] = space_t::EndBehaviour::interpolatory;
-        end_behaviour(comp_id)[1] = space_t::EndBehaviour::interpolatory;
+        end_behaviour[comp_id][0] = space_t::EndBehaviour::interpolatory;
+        end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
     }
 
     auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour,weights);

@@ -36,7 +36,14 @@ IGA_NAMESPACE_OPEN
  *
  * It is a helper class for the BSplineSpace.
  *
+ * This class basically has two main (private) member:
+ * - index_distribution_ that is the container for the basis function indices of a single-patch space
+ * - elements_loc_to_global_flat_view_ that represent the views of the dofs that are active on each element of the space.
+ *
+ *
+ *
  * @author pauletti, 2014
+ * @author M.Martinelli, 2014
  *
  */
 template<int dim, int range = 1, int rank = 1>
@@ -45,13 +52,15 @@ class DofDistribution : public TensorSizedContainer<dim>
 public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
+    using DegreeTable = typename Space::DegreeTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
 
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = std::vector<Index>;
+    using DofsComponentContainer = vector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;
@@ -79,19 +88,39 @@ public:
         standard, component, other
     };
 
+
+    /** @name Constructors */
+    ///@{
+    /** Default constructor. Not allowed to be used. */
     DofDistribution() = delete;
 
+    //TODO: document this constructor
     DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
-                    const SpaceDimensionTable &n_elem_basis,
+                    const DegreeTable &degree_table,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
-    void reassign_dofs(const IndexDistributionTable &index_distribution, const DistributionPolicy pol);
+    /** Copy constructor.*/
+    DofDistribution(const DofDistribution &dof_ditribution) = delete;
 
-    std::vector<Index> get_loc_to_global_indices(const TensorIndex<dim> &elem_tensor_id) const;
+    /** Move constructor.*/
+    DofDistribution(DofDistribution &&dof_ditribution) = default;
 
-    std::vector<Index> get_loc_to_global_indices(const Index &elem_flat_id) const;
+    /** Destructor. */
+    ~DofDistribution() = default;
+    //@}
+
+
+    /** Assignment operators */
+    ///@{
+    /** Copy assignment operator. Not allowed to be used. */
+    DofDistribution &operator=(const DofDistribution &dof_distribution) = delete;
+
+    /** Move assignment operator.*/
+    DofDistribution &operator=(DofDistribution &&dof_distribution) = default;
+    ///@}
+
 
 
     TensorIndex<dim>
@@ -117,41 +146,20 @@ public:
     /** Returns the maximum dof id. */
     Index get_max_dof_id() const;
 
-private:
 
+
+    /** @name Getting information of a specific element */
+    ///@{
     /**
-     * Container used to store the dofs ids of each component of a single patch space.
-     *
-     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
-     * use the associated View instead!
+     * Returns the number of active dofs of the @p element.
      */
-    IndexDistributionTable index_distribution_;
-
-    /**
-     * View of the active dofs ids on a given single-patch space.
-     */
-    DofsView dofs_view_;
+    Size get_num_dofs_element(const CartesianGridElement<dim> &element) const;
 
 
+    /** Returns the active dofs of the @p element.*/
+    vector<Index> get_loc_to_global_indices(const CartesianGridElement<dim> &element) const;
+    ///@}
 
-    void create_element_loc_to_global_view(
-        std::shared_ptr<const CartesianGrid<dim> > grid,
-        const MultiplicityTable &accum_mult,
-        const SpaceDimensionTable &n_elem_basis);
-
-    /**
-     * Pointer to a vector in which each entry is a const view to the global dofs on a single element
-     * of a space.
-     * The size of the vector is equal to the number of active elements in the space.
-     *
-     * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
-     * and we want to keep the syncronization of the element views without the expense of successive copies.
-     */
-    std::shared_ptr<std::vector<DofsConstView>> elements_loc_to_global_flat_view_;
-
-    DistributionPolicy policy_;
-
-public:
 
     /**
      * Returns the container used to store the dofs ids of each component of a single patch space.
@@ -159,7 +167,7 @@ public:
      * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
      * use the associated View instead!
      */
-    const IndexDistributionTable &get_index_distribution() const;
+    const IndexDistributionTable &get_index_table() const;
 
     /**
      * Returns a view of the active dofs ids on a given single-patch space (non-const version).
@@ -175,11 +183,48 @@ public:
 
 
     /**
-     * Returns a pointer to a vector in which each entry is a const view to the global dofs
-     * on a single element of a space.
-     * The size of the vector is equal to the number of active elements in the space.
+     * Returns a pointer to a std::map in which the key is the element flat_id and the value
+     * is a const view to the global dofs on a single element of a space.
+     * The size of the map is equal to the number of active elements in the space.
      */
-    std::shared_ptr<const std::vector<DofsConstView>> get_elements_view() const;
+    std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
+
+private:
+
+    /**
+     * Container used to store the dofs ids of each component of a single patch space.
+     *
+     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
+     * use the associated View instead!
+     */
+    IndexDistributionTable index_table_;
+
+    /**
+     * View of the active dofs ids on a given single-patch space.
+     */
+    DofsView dofs_view_;
+
+
+    /**
+     * This functions uses the indices stored in the index_distribution_ member variable and
+     * creates the views relative to the elements in the space.
+     */
+    void create_element_loc_to_global_view(
+        std::shared_ptr<const CartesianGrid<dim> > grid,
+        const MultiplicityTable &accum_mult,
+        const SpaceDimensionTable &n_elem_basis);
+
+    /**
+     * Pointer to a std::map in which the key is the element flat_id and the value
+     * is a const view to the global dofs on a single element of a space.
+     * The size of the map is equal to the number of active elements in the space.
+     *
+     * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
+     * and we want to keep the synchronization of the element views without the expense of successive copies.
+     */
+    std::shared_ptr<std::map<Index,DofsConstView>> elements_loc_to_global_flat_view_;
+
+    DistributionPolicy policy_;
 };
 
 IGA_NAMESPACE_CLOSE

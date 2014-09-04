@@ -62,10 +62,13 @@ void test_evaluate()
 
     out << "Values:" << endl;
     values.print_info(out);
+    out << endl;
     out << "Gradients:" << endl;
     gradients.print_info(out);
+    out << endl;
     out << "Hessians:" << endl;
     hessians.print_info(out);
+    out << endl;
 
 }
 

@@ -56,7 +56,6 @@ public:
 
     using typename parent_t::Point;
     using typename parent_t::Value;
-    using typename parent_t::RefPoint;
 
 
     /** Number of faces of the element. */
@@ -79,7 +78,7 @@ public:
                          const Index elem_index);
 
     NURBSElementAccessor(const std::shared_ptr<const Space> space,
-                             const TensorIndex<dim> &elem_index);
+                         const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.
@@ -150,7 +149,7 @@ public:
     /**
      * Get the NURBS weights associated to the element.
      */
-    std::vector<Real> get_local_weights() const ;
+    vector<Real> get_local_weights() const ;
 
 
     /**
@@ -193,7 +192,7 @@ public:
      * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
      * (i.e. must have the same element-index) after an index update/reset.
      */
-    void reset_flat_tensor_indices(const Index flat_index);
+    void move_to(const Index flat_index);
 
     /**
      * Sets the index of the element using the tensor representation.
@@ -206,7 +205,7 @@ public:
      * the NURBSElementAccessor contains the BSplineElementAccessor that must be synchronized
      * (i.e. must have the same element-index) after an index update/reset.
      */
-    void reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index);
+    void move_to(const TensorIndex<dim> &tensor_index);
     ///@}
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
@@ -222,7 +221,7 @@ public:
      */
     template <int deriv_order>
     ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const;
+    evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const;
 
     ///@}
 

@@ -20,6 +20,7 @@
 
 
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/utils/unique_id_generator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -28,8 +29,18 @@ template <class GridType>
 FunctionSpaceOnGrid<GridType>::
 FunctionSpaceOnGrid(std::shared_ptr<GridType> grid)
     :
-    GridWrapper<GridType>(grid)
+    GridWrapper<GridType>(grid),
+    id_(UniqueIdGenerator::get_unique_id())
 {};
+
+
+template <class GridType>
+Index
+FunctionSpaceOnGrid<GridType>::
+get_id() const
+{
+    return id_;
+}
 
 
 IGA_NAMESPACE_CLOSE

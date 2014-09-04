@@ -24,8 +24,8 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/utils/value_vector.h>
-#include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/container_view.h>
+#include <igatools/utils/value_container.h>
 
 #include <vector>
 
@@ -39,7 +39,7 @@ IGA_NAMESPACE_OPEN
  * at one single point. This means that the entries can be accessed specifying two
  * (flat) indices: one for the function and the other for the point.
  *
- * Internally the data are stored as single <tt>std::vector<T></tt>
+ * Internally the data are stored as single <tt>vector<T></tt>
  * (through the inherithance from DynamicMultiArray<T,2>) of length
  * <tt> num_functions * num_points</tt> and the memory is ordered as
  * <tt>num_functions</tt> chunks of length <tt>num_points</tt> objects of type @p T.
@@ -70,14 +70,15 @@ IGA_NAMESPACE_OPEN
  */
 template <class T>
 class ValueTable :
-    public DynamicMultiArray<T,2>
+    public ValueContainer<T>
+//    public DynamicMultiArray<T,2>
 {
 public :
     /** Type for the iterator (non-const version). */
-    using iterator = typename DynamicMultiArray<T,2>::iterator ;
+    using iterator = typename ValueContainer<T>::iterator ;
 
     /** Type for the iterator (const version). */
-    using const_iterator = typename DynamicMultiArray<T,2>::const_iterator;
+    using const_iterator = typename ValueContainer<T>::const_iterator;
 
     /** Type for the view (non-const version). */
     using view = ContainerView<DynamicMultiArray<T,2>>;
@@ -146,54 +147,10 @@ public :
     ///@}
 
 
-    /**
-     * @name Values initialization
-     */
-    ///@{
-
-    /** Set all the values of the table to zero. */
-    void zero() ;
-
-    ///@}
 
 
-    /**
-     * @name Functions for resizing
-     */
-    ///@{
-
-    /**
-     * Resize the ValueTable in order to allocate space for @p num_functions functions and
-     * @p num_points points.
-     */
-    void resize(const Size num_functions, const Size num_points) ;
-
-    /**
-     * Removes all elements from the ValueTable, leaving the container with a size of 0.
-     */
-    void clear() noexcept ;
-    ///@}
 
 
-    /**
-     * @name Functions for getting size information
-     */
-    ///@{
-    /**
-     * Returns the number of elements in the ValueTable (= num_functions * num_points).
-     */
-    Size size() const;
-
-    /**
-     * Returns the number of points.
-     */
-    Size get_num_points() const noexcept ;
-
-    /**
-     * Returns the number of functions.
-     */
-    Size get_num_functions() const noexcept ;
-    ///@}
 
 
     /**
@@ -229,6 +186,23 @@ public :
     const_view get_point_view(const int i) const;
     ///@}
 
+    /**
+     * @name Functions for resizing
+     */
+    ///@{
+    /**
+     * Resize the ValueTable in order to allocate space for @p num_functions functions and
+     * @p num_points points.
+     */
+    void resize(const Size num_functions, const Size num_points);
+
+    /**
+     * Removes all elements from the ValueTable, leaving the container with a size of 0.
+     */
+    void clear() noexcept;
+
+    ///@}
+
 
     /**
      * @name Printing info
@@ -247,21 +221,11 @@ public :
      * The size of vector of the @p coefficients must be equal to the number of functions
      * represented in the ValueTable.
      */
-    ValueVector<T> evaluate_linear_combination(const std::vector<Real> &coefficients) const ;
+    ValueVector<T> evaluate_linear_combination(const vector<Real> &coefficients) const ;
 
 
 private:
 
-    /**
-     * Number of functions for which the objects in the ValueTable refers to.
-     */
-    Size num_functions_ ;
-
-
-    /**
-     * Number of points for which the objects in the ValueTable refers to.
-     */
-    Size num_points_ ;
 } ;
 
 

@@ -22,7 +22,6 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
@@ -149,6 +148,9 @@ get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const
 
     if (fill_face_D2_phi_hat)
         reference_space_accessor_fill_flags |= ValueFlags::face_hessian;
+
+    if (contains(fill_flag , ValueFlags::measure))
+        reference_space_accessor_fill_flags |= ValueFlags::measure;
 
 
     return reference_space_accessor_fill_flags;
@@ -335,7 +337,7 @@ get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Phys
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Value >
+evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Value >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
@@ -355,7 +357,7 @@ evaluate_field(const std::vector<Real> &local_coefs,const TopologyId<dim> &topol
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
+evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
@@ -381,7 +383,7 @@ evaluate_field_gradients(const std::vector<Real> &local_coefs,const TopologyId<d
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_field_hessians(const std::vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     AssertThrow(false,ExcNotImplemented());
     ValueVector< Derivative<2> > D2field;
@@ -533,7 +535,7 @@ template< class PhysSpace >
 template <int deriv_order>
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-evaluate_basis_derivatives_at_points(const std::vector<RefPoint> &points) const ->
+evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
     Assert(deriv_order >= 0 && deriv_order <= 2,ExcIndexRange(deriv_order,0,2));

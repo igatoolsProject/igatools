@@ -65,7 +65,7 @@ void run_test()
 
     for (int face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
     {
-        auto elem_map = std::make_shared<std::map<int,int> >();
+        auto elem_map = std::make_shared<typename CartesianGrid<dim>::FaceGridMap>();
         auto face_grid = grid->get_face_grid(face_id, *elem_map);
         auto face_map =
             MappingSlice<dim-1,codim+1>::create(map, face_id, face_grid, elem_map);
@@ -76,8 +76,14 @@ void run_test()
         face_elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, face_quad);
 
         face_elem->fill_cache();
+
+        out << "Map Values (x1,x2,...):" << endl;
         face_elem->get_map_values().print_info(out);
+        out << endl;
+
+        out << "Map Gradients (x1,x2,...):" << endl;
         face_elem->get_map_gradients().print_info(out);
+        out << endl;
     }
 }
 

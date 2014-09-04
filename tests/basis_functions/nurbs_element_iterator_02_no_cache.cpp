@@ -52,10 +52,10 @@ void test()
     const auto n_basis = bsp->get_num_basis_table();
     for (auto comp : Space::components)
     {
-        weights(comp).resize(n_basis(comp));
-        const int n_entries = weights(comp).flat_size();
+        weights[comp].resize(n_basis[comp]);
+        const int n_entries = weights[comp].flat_size();
         for (int i = 0 ; i < n_entries ; ++i)
-            weights(comp)(i) = (i+1) * (1.0 / n_entries) ;
+            weights[comp][i] = (i+1) * (1.0 / n_entries) ;
 
     }
     auto space = Space::create(deg, knots, weights);

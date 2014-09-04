@@ -25,7 +25,6 @@
 using std::endl;
 
 using std::array;
-using std::vector;
 using std::accumulate;
 
 using std::make_shared;
@@ -183,7 +182,7 @@ evaluate_nurbs_values(
 
         for (int i = 0; i < num_basis_comp; ++i)
         {
-            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const int basis_flat_id = this->comp_offset_[iComp] + i;
 
             const auto &N_i = bspline_values.get_function_view(basis_flat_id);
             const Real w_i = weights[basis_flat_id];
@@ -203,7 +202,7 @@ evaluate_nurbs_values(
 
         for (int i = 0; i < num_basis_comp; i++)
         {
-            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const int basis_flat_id = this->comp_offset_[iComp] + i;
             const auto &P_i = P[i];
 
             for (int iPt = 0; iPt < num_points; ++iPt)
@@ -216,9 +215,9 @@ evaluate_nurbs_values(
 
     for (int comp : w_table.get_inactive_components_id())
     {
-        const auto n_basis = this->space_->get_num_basis_per_element(comp);
-        const Size offset = this->comp_offset_(comp);
-        const Size act_offset = this->comp_offset_(w_table.active(comp));
+        const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+        const Size offset = this->comp_offset_[comp];
+        const Size act_offset = this->comp_offset_[w_table.active(comp)];
 
         for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
         {
@@ -301,7 +300,7 @@ evaluate_nurbs_gradients(
 
         for (int i = 0; i < num_basis_comp; ++i)
         {
-            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const int basis_flat_id = this->comp_offset_[iComp] + i;
             const auto  &N_i =    bspline_values.get_function_view(basis_flat_id);
             const auto &dN_i = bspline_gradients.get_function_view(basis_flat_id);
             const Real w_i = weights[basis_flat_id];
@@ -340,7 +339,7 @@ evaluate_nurbs_gradients(
 
         for (int i = 0; i < num_basis_comp; i++)
         {
-            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const int basis_flat_id = this->comp_offset_[iComp] + i;
             const auto &P_i =  P[i];
             const auto &dP_i = dP[i];
 
@@ -364,9 +363,9 @@ evaluate_nurbs_gradients(
 
     for (int comp : w_table.get_inactive_components_id())
     {
-        const auto n_basis = this->space_->get_num_basis_per_element(comp);
-        const Size offset = this->comp_offset_(comp);
-        const Size act_offset = this->comp_offset_(w_table.active(comp));
+        const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+        const Size offset = this->comp_offset_[comp];
+        const Size act_offset = this->comp_offset_[w_table.active(comp)];
 
         for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
         {
@@ -466,7 +465,7 @@ evaluate_nurbs_hessians(
 
         for (int i = 0; i < num_basis_comp; ++i)
         {
-            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const int basis_flat_id = this->comp_offset_[iComp] + i;
             const auto   &N_i =    bspline_values.get_function_view(basis_flat_id);
             const auto  &dN_i = bspline_gradients.get_function_view(basis_flat_id);
             const auto &d2N_i =  bspline_hessians.get_function_view(basis_flat_id);
@@ -521,7 +520,7 @@ evaluate_nurbs_hessians(
 
         for (int i = 0; i < num_basis_comp; i++)
         {
-            const int basis_flat_id = this->comp_offset_(iComp) + i;
+            const int basis_flat_id = this->comp_offset_[iComp] + i;
 
             const auto   &P_i =   P[i];
             const auto  &dP_i =  dP[i];
@@ -555,9 +554,9 @@ evaluate_nurbs_hessians(
 
         for (int comp : w_table.get_inactive_components_id())
         {
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
-            const Size offset = this->comp_offset_(comp);
-            const Size act_offset = this->comp_offset_(w_table.active(comp));
+            const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+            const Size offset = this->comp_offset_[comp];
+            const Size act_offset = this->comp_offset_[w_table.active(comp)];
 
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
@@ -577,7 +576,7 @@ template <int dim, int range, int rank >
 template <int deriv_order>
 auto
 NURBSElementAccessor< dim, range, rank >::
-evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const
+evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const
 ->ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
 
@@ -626,9 +625,9 @@ evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const
         } // end loop comp
         for (int comp : w_table.get_inactive_components_id())
         {
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
-            const Size offset = this->comp_offset_(comp);
-            const Size act_offset = this->comp_offset_(w_table.active(comp));
+            const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+            const Size offset = this->comp_offset_[comp];
+            const Size act_offset = this->comp_offset_[w_table.active(comp)];
 
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
@@ -687,9 +686,9 @@ evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const
         } // end loop comp
         for (int comp : w_table.get_inactive_components_id())
         {
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
-            const Size offset = this->comp_offset_(comp);
-            const Size act_offset = this->comp_offset_(w_table.active(comp));
+            const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+            const Size offset = this->comp_offset_[comp];
+            const Size act_offset = this->comp_offset_[w_table.active(comp)];
 
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
@@ -744,12 +743,15 @@ evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const
 
                     int der_entry_id = 0;
                     for (int i = 0 ; i < dim ; ++i)
+                    {
+                        const auto &DP_i_comp = DP(i)(comp);
+                        const auto &DQ_i_comp = DQ(i)(comp);
+
                         for (int j = 0 ; j < dim ; ++j, ++der_entry_id)
                             D2R(der_entry_id)(comp) = (W/Q) *(D2P(der_entry_id)(comp)
-                                                              - (P * D2Q(der_entry_id)(comp) +
-                                                                 DP(i)(comp) * DQ(j)(comp) +
-                                                                 DP(j)(comp) * DQ(i)(comp)) / Q +
-                                                              DQ(i)(comp) * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                                                              - (P * D2Q(der_entry_id)(comp) + DP_i_comp * DQ(j)(comp) + DP(j)(comp) * DQ_i_comp) / Q +
+                                                              DQ_i_comp * DQ(j)(comp) * (2.0 * P) / (Q*Q));
+                    } // end loop i
                     ++P_it;
                     ++Q_it;
 
@@ -766,9 +768,9 @@ evaluate_basis_derivatives_at_points(const vector<RefPoint> &points) const
         } // end loop comp
         for (int comp : w_table.get_inactive_components_id())
         {
-            const auto n_basis = this->space_->get_num_basis_per_element(comp);
-            const Size offset = this->comp_offset_(comp);
-            const Size act_offset = this->comp_offset_(w_table.active(comp));
+            const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+            const Size offset = this->comp_offset_[comp];
+            const Size act_offset = this->comp_offset_[w_table.active(comp)];
 
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
@@ -844,9 +846,9 @@ get_local_weights() const
 
     vector<Real> weights_element;
 
-    const auto local_to_global = this->get_local_to_global();
+    const auto local_to_patch = this->get_local_to_patch();
 
-    for (uint global_id : local_to_global)
+    for (const auto &global_id : local_to_patch)
     {
         Index comp_id = 0; // component id of the global index
         Index  dof_id = 0; // flat index of the global index relative to the component
@@ -859,7 +861,7 @@ get_local_weights() const
             }
         }
 
-        weights_element.emplace_back((this->space_)->weights_(comp_id)(dof_id));
+        weights_element.emplace_back((this->space_)->weights_[comp_id][dof_id]);
     }
 
     return weights_element;
@@ -903,11 +905,11 @@ operator++()
 template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
-reset_flat_tensor_indices(const Index flat_index)
+move_to(const Index flat_index)
 {
     CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
-    grid_element_accessor.reset_flat_tensor_indices(flat_index);
-    bspline_element_accessor_.reset_flat_tensor_indices(flat_index);
+    grid_element_accessor.move_to(flat_index);
+    bspline_element_accessor_.move_to(flat_index);
 }
 
 
@@ -915,11 +917,11 @@ reset_flat_tensor_indices(const Index flat_index)
 template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
-reset_flat_tensor_indices(const TensorIndex<dim> &tensor_index)
+move_to(const TensorIndex<dim> &tensor_index)
 {
     CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
-    grid_element_accessor.reset_flat_tensor_indices(tensor_index);
-    bspline_element_accessor_.reset_flat_tensor_indices(tensor_index);
+    grid_element_accessor.move_to(tensor_index);
+    bspline_element_accessor_.move_to(tensor_index);
 }
 
 IGA_NAMESPACE_CLOSE

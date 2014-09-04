@@ -44,18 +44,17 @@ void do_test(const int p)
         for (int j = 0 ; j < n_knots ; ++j)
             coord.entry(i,j) = j;
 
-
     auto knots = CartesianGrid<dim_domain>::create(coord);
-
     auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
-
 
     typename BSplineSpace< dim_domain, dim_range, rank >::ElementIterator
     element = bspline_space->begin(), endc = bspline_space->end();
     for (; element != endc; ++element)
     {
         out << "Element index: " << element->get_flat_index() << endl;
-        out << "Global dofs: "<< element->get_local_to_global() << endl;
+        out << "Global dofs: ";
+        element->get_local_to_global().print_info(out);
+        out << endl;
     }
 
     out << endl;

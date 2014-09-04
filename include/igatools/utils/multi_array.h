@@ -102,7 +102,6 @@ public:
     /** Type of the entries stored in the STL container. */
     using value_type = typename STLContainer::value_type;
 
-
     /** Type for the reference in the STL container. */
     using reference = typename STLContainer::reference;
 
@@ -150,14 +149,18 @@ public:
     ///@{
 
     /**
-     *  Flat index access operator (non-const version).
+     * Flat index access operator (non-const version).
+     * @note In Debug mode the index @p i is checked in order to be
+     * in the bounds of the container.
      */
-    reference operator()(const Index i);
+    reference operator[](const Index i);
 
     /**
-     *  Flat index access operator (const version).
+     * Flat index access operator (const version).
+     * @note In Debug mode the index @p i is checked in order to be
+     * in the bounds of the container.
      */
-    const_reference operator()(const Index i) const;
+    const_reference operator[](const Index i) const;
 
 
     /**
@@ -252,10 +255,40 @@ public:
     ///@}
 
 protected:
+    /**
+     * @name Functions for changing the size or the shape of the MultiArray
+     * (it makes sense only if STLContainer is resizable).
+     */
+    ///@{
+
+    /**
+     * Resize the MultiArray as square container with @p dim entries in each
+     * array dimension.
+     */
+    void resize(const Size dim);
+
+
+    /**
+     * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
+     * in the i-th array dimension.
+     */
+    void resize(const TensorSize<rank> &dim);
+
+
+    /**
+     * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
+     * in the i-th array dimension.
+     *
+     * All the entries are initialized to the value @p val.
+     */
+    void resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val);
+    ///@}
+
+
+private:
 
     /**
      * Data of type Entry stored in a STL container.
-     * @note This member variable is protected because should be resized by DynamicMultiArray.
      */
     STLContainer data_;
 };

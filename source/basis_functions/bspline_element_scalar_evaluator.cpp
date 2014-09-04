@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const std::vector<std::array<Values1DConstView,dim>> &values1D)
+BSplineElementScalarEvaluator(const vector<std::array<Values1DConstView,dim>> &values1D)
     :
     values1D_(values1D)
 {
@@ -68,69 +68,17 @@ get_num_points() const
     TensorSize<dim> n_points;
     for (int i = 0 ; i < dim ; ++i)
     {
-        n_points(i) = values1D_[0][i].get_num_points();
+        n_points[i] = values1D_[0][i].get_num_points();
 
 #ifndef NDEBUG
         for (const auto &values : values1D_)
-            Assert(n_points(i) == values[i].get_num_points(),
-                   ExcDimensionMismatch(n_points(i),values[i].get_num_points()));
+            Assert(n_points[i] == values[i].get_num_points(),
+                   ExcDimensionMismatch(n_points[i],values[i].get_num_points()));
 #endif
     }
     return n_points;
 }
-/*
-template <int dim>
-template <int k>
-void
-BSplineElementScalarEvaluator<dim>::
-recursive_multiplication(
-    const TensorIndex<dim> &order_tensor_id,
-    DynamicMultiArray<Real,dim-k+1> & derivative) const
-{
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 
-    const int old_rank = dim-k+1;
-    const int new_dir = k-1;
-
-    TensorSize<rank> num_pts;
-    TensorSize<rank+1> num_pts_new;
-    for ( int rank = 0 ; rank < old_rank ; ++rank)
-    {
-        dir = dim-rank-1;
-        num_pts(rank) = this->get_num_points()(dir);
-        num_pts_new(rank+1) = num_pts(rank);
-
-        Assert(num_pts(rank) == derivative.tensor_size()(dir),
-                ExcDimensionMismatch(num_pts(rank),derivative.tensor_size()(dir)));
-    }
-    const Size pts_flat_size = num_pts.flat_size();
-
-    TensorIndex<rank> pt_tensor_id;
-    TensorIndex<rank> pt_tensor_w = MultiArrayUtils<rank>::compute_weight(num_pts);
-
-    //number of points in the new direction
-    const Size n_pts_new_dir = this->get_num_points()(new_dir);
-    num_pts_new(0) = n_pts_new_dir;
-
-    const auto &deriv_new_dir = values1D_[order_tensor_id[new_dir]][new_dir];
-    Index pt_flat_id_new = 0;
-    for (Index pt_flat_id = 0 ; pt_flat_id < pts_flat_size ; ++pt_flat_id)
-    {
-        //loop over the previous points
-        const Real value = derivative(pt_flat_id);
-
-        for (Index i = 0 ; i < n_pts_new_dir ; ++i,++pt_flat_id_new)
-        {
-            //loop over the new point index
-            dervative_new(pt_flat_id_new) = value * deriv_new_dir(i);
-        }
-
-    }
-
-    recursive_multiplication<k+1>(order_tensor_id,derivative_next);
-}
-//*/
 
 template <int dim>
 Real
@@ -148,9 +96,7 @@ evaluate_derivative(
     // Main computation
     Real partial_derivative = values1D_[order_tensor_id[0]][0](point_tensor_id[0]);
     for (int i = 1; i < dim; ++i)
-    {
         partial_derivative *= values1D_[order_tensor_id[i]][i](point_tensor_id[i]);
-    }
 
 
     return partial_derivative;
@@ -176,12 +122,12 @@ evaluate_derivative_at_points(
 {
     TensorSize<1> n_points = this->get_num_points();
 
-    Assert(derivatives.tensor_size()(0) == n_points(0),
-           ExcDimensionMismatch(derivatives.tensor_size()(0),n_points(0)));
+    Assert(derivatives.tensor_size()[0] == n_points[0],
+           ExcDimensionMismatch(derivatives.tensor_size()[0],n_points[0]));
 
     const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
-    for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points(0) ; ++flat_pt_id_0)
-        derivatives(flat_pt_id_0) = deriv_dir_0(flat_pt_id_0);
+    for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
+        derivatives[flat_pt_id_0] = deriv_dir_0(flat_pt_id_0);
 }
 
 template <>
@@ -195,20 +141,20 @@ evaluate_derivative_at_points(
 
 #ifndef NDEBUG
     for (int dir = 0 ; dir < 2 ; ++dir)
-        Assert(derivatives.tensor_size()(dir) == n_points(dir),
-               ExcDimensionMismatch(derivatives.tensor_size()(dir),n_points(dir)));
+        Assert(derivatives.tensor_size()[dir] == n_points[dir],
+               ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
     const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
     const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
 
     Index flat_pt_id = 0;
-    for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points(1) ; ++flat_pt_id_1)
+    for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
     {
         const Real deriv_dir_1_pt = deriv_dir_1(flat_pt_id_1);
 
-        for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points(0) ; ++flat_pt_id_0)
-            derivatives(flat_pt_id++) = deriv_dir_0(flat_pt_id_0) * deriv_dir_1_pt;
+        for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
+            derivatives[flat_pt_id++] = deriv_dir_0(flat_pt_id_0) * deriv_dir_1_pt;
     }
 }
 
@@ -223,8 +169,8 @@ evaluate_derivative_at_points(
 
 #ifndef NDEBUG
     for (int dir = 0 ; dir < 3 ; ++dir)
-        Assert(derivatives.tensor_size()(dir) == n_points(dir),
-               ExcDimensionMismatch(derivatives.tensor_size()(dir),n_points(dir)));
+        Assert(derivatives.tensor_size()[dir] == n_points[dir],
+               ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
     const auto &deriv_dir_2 = this->get_derivative_components_view(order_tensor_id[2])[2];
@@ -232,17 +178,17 @@ evaluate_derivative_at_points(
     const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
 
     Index flat_pt_id = 0;
-    for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points(2) ; ++flat_pt_id_2)
+    for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points[2] ; ++flat_pt_id_2)
     {
         const Real deriv_dir_2_pt = deriv_dir_2(flat_pt_id_2);
 
-        for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points(1) ; ++flat_pt_id_1)
+        for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
         {
             const Real deriv_dir_1_pt =  deriv_dir_1(flat_pt_id_1);
             const Real deriv_old_dirs_pt = deriv_dir_2_pt * deriv_dir_1_pt;
 
-            for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points(0) ; ++flat_pt_id_0)
-                derivatives(flat_pt_id++) = deriv_dir_0(flat_pt_id_0) * deriv_old_dirs_pt;
+            for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
+                derivatives[flat_pt_id++] = deriv_dir_0(flat_pt_id_0) * deriv_old_dirs_pt;
         }
     }
 }

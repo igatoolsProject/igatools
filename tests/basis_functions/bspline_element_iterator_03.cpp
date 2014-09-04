@@ -71,28 +71,37 @@ void do_test()
 
     auto element1 = space->begin();
     element1->init_cache(ValueFlags::value | ValueFlags::gradient,
-                          quad_scheme1);
+                         quad_scheme1);
     element1->fill_cache() ;
 
     auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
+    out << endl;
+
     auto values1    = element1->get_basis_values();
     values1.print_info(out);
+    out << endl;
+
     auto gradients1    = element1->get_basis_gradients();
     gradients1.print_info(out);
+    out << endl;
 
     QUniform< dim_domain > quad_scheme2(3) ;
     element1->init_cache(ValueFlags::value | ValueFlags::gradient,
-                          quad_scheme2);
+                         quad_scheme2);
     element1->fill_cache() ;
 
     auto values2    = element1->get_basis_values();
     values2.print_info(out);
+    out << endl;
+
     auto gradients2    = element1->get_basis_gradients();
     gradients2.print_info(out);
+    out << endl;
 
     u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
     u_values.print_info(out);
+    out << endl;
 
 
 }

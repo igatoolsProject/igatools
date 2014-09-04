@@ -54,7 +54,8 @@ void run_test()
         face_space->print_info(out);
 
         out << "Dofs face to space mapping: " << endl;
-        out << dof_map << endl;
+        dof_map.print_info(out);
+        out << endl;
     }
 }
 

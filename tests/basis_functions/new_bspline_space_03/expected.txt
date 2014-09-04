@@ -3,12 +3,16 @@ Spline Space:
       Number of active elements: 3
       Number of intervals per direction: [ 3 ]
       Knot coordinates:
+         Size: [ 4 ]  Weights: [4]
+         Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
       
    
    Degrees:
    [2] 
    Interior multiplicities:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
       [ 1 3 ]
    
    Dimensionality Table:
@@ -17,7 +21,13 @@ Spline Space:
    7 
    Total Dimension: 7
 
-Basis Indices:
+Patch Basis Indices:
+   0 1 2 3 4 5 6 
+   [ 0 1 2 ]
+   [ 1 2 3 ]
+   [ 4 5 6 ]
+
+Global Basis Indices:
    0 1 2 3 4 5 6 
    [ 0 1 2 ]
    [ 1 2 3 ]
@@ -36,14 +46,20 @@ Spline Space:
       Number of active elements: 6
       Number of intervals per direction: [ 3 2 ]
       Knot coordinates:
+         Size: [ 4 3 ]  Weights: [4,12]
+         Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
+         Direction: 1
          [ 0 0.500000 1.00000 ]
       
    
    Degrees:
    [2,1] 
    Interior multiplicities:
+      Size: [ 2 1 ]  Weights: [2,2]
+      Direction: 0
       [ 1 3 ]
+      Direction: 1
       [ 1 ]
    
    Dimensionality Table:
@@ -52,7 +68,16 @@ Spline Space:
    21 
    Total Dimension: 21
 
-Basis Indices:
+Patch Basis Indices:
+   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
+   [ 0 1 2 7 8 9 ]
+   [ 1 2 3 8 9 10 ]
+   [ 4 5 6 11 12 13 ]
+   [ 7 8 9 14 15 16 ]
+   [ 8 9 10 15 16 17 ]
+   [ 11 12 13 18 19 20 ]
+
+Global Basis Indices:
    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
    [ 0 1 2 7 8 9 ]
    [ 1 2 3 8 9 10 ]
@@ -77,16 +102,25 @@ Spline Space:
       Number of active elements: 6
       Number of intervals per direction: [ 3 2 ]
       Knot coordinates:
+         Size: [ 4 3 ]  Weights: [4,12]
+         Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
+         Direction: 1
          [ 0 0.500000 1.00000 ]
       
    
    Degrees:
    [2,1] [1,3] 
    Interior multiplicities:
+      Size: [ 2 1 ]  Weights: [2,2]
+      Direction: 0
       [ 1 3 ]
+      Direction: 1
       [ 1 ]
+      Size: [ 2 1 ]  Weights: [2,2]
+      Direction: 0
       [ 1 1 ]
+      Direction: 1
       [ 2 ]
    
    Dimensionality Table:
@@ -95,7 +129,16 @@ Spline Space:
    21 24 
    Total Dimension: 45
 
-Basis Indices:
+Patch Basis Indices:
+   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 
+   [ 0 1 2 7 8 9 21 22 25 26 29 30 33 34 ]
+   [ 1 2 3 8 9 10 22 23 26 27 30 31 34 35 ]
+   [ 4 5 6 11 12 13 23 24 27 28 31 32 35 36 ]
+   [ 7 8 9 14 15 16 29 30 33 34 37 38 41 42 ]
+   [ 8 9 10 15 16 17 30 31 34 35 38 39 42 43 ]
+   [ 11 12 13 18 19 20 31 32 35 36 39 40 43 44 ]
+
+Global Basis Indices:
    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 
    [ 0 1 2 7 8 9 21 22 25 26 29 30 33 34 ]
    [ 1 2 3 8 9 10 22 23 26 27 30 31 34 35 ]
@@ -128,14 +171,20 @@ Spline Space:
       Number of active elements: 6
       Number of intervals per direction: [ 3 2 ]
       Knot coordinates:
+         Size: [ 4 3 ]  Weights: [4,12]
+         Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
+         Direction: 1
          [ 0 0.500000 1.00000 ]
       
    
    Degrees:
    [2,1] 
    Interior multiplicities:
+      Size: [ 2 1 ]  Weights: [2,2]
+      Direction: 0
       [ 1 1 ]
+      Direction: 1
       [ 1 ]
    
    Dimensionality Table:
@@ -144,7 +193,16 @@ Spline Space:
    15 
    Total Dimension: 15
 
-Basis Indices:
+Patch Basis Indices:
+   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 
+   [ 0 1 2 5 6 7 ]
+   [ 1 2 3 6 7 8 ]
+   [ 2 3 4 7 8 9 ]
+   [ 5 6 7 10 11 12 ]
+   [ 6 7 8 11 12 13 ]
+   [ 7 8 9 12 13 14 ]
+
+Global Basis Indices:
    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 
    [ 0 1 2 5 6 7 ]
    [ 1 2 3 6 7 8 ]
@@ -169,14 +227,20 @@ Spline Space:
       Number of active elements: 6
       Number of intervals per direction: [ 3 2 ]
       Knot coordinates:
+         Size: [ 4 3 ]  Weights: [4,12]
+         Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
+         Direction: 1
          [ 0 0.500000 1.00000 ]
       
    
    Degrees:
    [3,3] 
    Interior multiplicities:
+      Size: [ 2 1 ]  Weights: [2,2]
+      Direction: 0
       [ 1 1 ]
+      Direction: 1
       [ 1 ]
    
    Dimensionality Table:
@@ -185,7 +249,16 @@ Spline Space:
    30 
    Total Dimension: 30
 
-Basis Indices:
+Patch Basis Indices:
+   0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 
+   [ 0 1 2 3 6 7 8 9 12 13 14 15 18 19 20 21 ]
+   [ 1 2 3 4 7 8 9 10 13 14 15 16 19 20 21 22 ]
+   [ 2 3 4 5 8 9 10 11 14 15 16 17 20 21 22 23 ]
+   [ 6 7 8 9 12 13 14 15 18 19 20 21 24 25 26 27 ]
+   [ 7 8 9 10 13 14 15 16 19 20 21 22 25 26 27 28 ]
+   [ 8 9 10 11 14 15 16 17 20 21 22 23 26 27 28 29 ]
+
+Global Basis Indices:
    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 
    [ 0 1 2 3 6 7 8 9 12 13 14 15 18 19 20 21 ]
    [ 1 2 3 4 7 8 9 10 13 14 15 16 19 20 21 22 ]

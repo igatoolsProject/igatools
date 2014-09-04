@@ -1,20 +1,28 @@
 face: 0
 Multiplicity:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 1 1 ]
 Degree:
 [3]
 face: 1
 Multiplicity:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
 [ 1 1 ]
 Degree:
 [3]
 face: 2
 Multiplicity:
+Size: [ 1 ]  Weights: [1]
+Direction: 0
 [ 1 ]
 Degree:
 [1]
 face: 3
 Multiplicity:
+Size: [ 1 ]  Weights: [1]
+Direction: 0
 [ 1 ]
 Degree:
 [1]

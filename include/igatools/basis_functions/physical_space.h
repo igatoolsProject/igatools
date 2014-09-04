@@ -27,6 +27,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
@@ -90,6 +91,8 @@ public:
 
     using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 
+    using DegreeTable = typename RefSpace::DegreeTable;
+
 public:
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
@@ -106,34 +109,36 @@ public:
 
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward,
-                  const Index id = 0);
+                  std::shared_ptr<PushForwardType> push_forward);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
-    std::shared_ptr<self_t> clone() const;
-
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<PushForwardType> push_forward,
-        const Index id = 0);
+        std::shared_ptr<PushForwardType> push_forward);
 
     /**
      * Total number of dofs of the space.
      */
     Index get_num_basis() const;
 
-    /**
-     * Returns the number of dofs per element.
-     */
-    int get_num_basis_per_element() const;
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
 
-    const SpaceDimensionTable get_num_basis_per_element_table() const
-    {
-        return ref_space_->get_num_basis_per_element_table();
-    }
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_global();
 
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
+    /** Returns the container with the patch dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_patch() const;
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_patch();
+
+    const DegreeTable &get_degree() const;
+
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
     /**
      * Returns a element iterator to the first element of the patch.
@@ -166,7 +171,7 @@ public:
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs) const;
+                   vector<Index> &face_to_element_dofs) const;
 
 
     void print_info(LogStream &out) const;
@@ -186,12 +191,11 @@ public:
 
 
 
+
 private:
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;
-
-//    Index id_;
 
     friend ElementAccessor;
 };

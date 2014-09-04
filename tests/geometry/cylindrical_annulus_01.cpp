@@ -52,11 +52,21 @@ int main()
     auto hessians = elem->get_map_hessians();
 
     out << "Points:" << endl;
-    out << quad.get_points().get_flat_cartesian_product() << endl;
+    quad.get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
+
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
+    out << endl;
+
+    out << "Gradients:" << endl;
     gradients.print_info(out);
+    out << endl;
+
+    out << "Hessians:" << endl;
     hessians.print_info(out);
+    out << endl;
+    out << endl;
 
     string filename = "cylindrical_map-" + to_string(3) + "d";
     Writer<3> writer(map, 4);

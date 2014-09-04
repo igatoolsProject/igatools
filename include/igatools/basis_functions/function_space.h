@@ -129,16 +129,10 @@ public:
     self_t &operator=(self_t &&) = delete;
     ///@}
 
-    Index get_id() const
-    {
-        return id_;
-    }
-
-    void set_id(const Index id)
-    {
-        Assert(id >= 0,ExcLowerRange(id,0));
-        id_ = id;
-    }
+    /**
+     * Returns the id of the space.
+     */
+    Index get_id() const;
 
 protected:
     Index id_ = 0;

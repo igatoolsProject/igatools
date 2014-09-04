@@ -159,7 +159,7 @@ UnitElement<0>::face_active_directions[faces_per_element]
 template <>
 const TensorIndex<0>
 UnitElement<1>::face_active_directions[faces_per_element]
-= {{},{}};
+= {TensorIndex<0>(),TensorIndex<0>()};
 
 template <>
 const TensorIndex<1>

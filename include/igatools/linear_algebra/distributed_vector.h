@@ -24,6 +24,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/vector.h>
 
 #include <igatools/linear_algebra/dense_vector.h>
 
@@ -86,7 +87,7 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const std::vector<Index> &dof_ids);
+    Vector(const vector<Index> &dof_ids);
 
     /**
      * Copy constructor. Performs a shallow copy of the object (i.e.)
@@ -136,7 +137,7 @@ public:
      * dof numbering provided from some external library, IRIT as an example.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<self_t> create(const std::vector<Index> &dof_ids);
+    static std::shared_ptr<self_t> create(const vector<Index> &dof_ids);
 
 
     /**
@@ -170,7 +171,7 @@ public:
      * \date 29 Jan 2013
      */
     void add_block(
-        const std::vector< Index > &local_to_global,
+        const vector< Index > &local_to_global,
         const DenseVector &local_vector);
 
 
@@ -198,8 +199,8 @@ public:
      * Returns the local coefficients of the distributed vector,
      * from the vector of local-to-global indices.
      */
-    std::vector<Real>
-    get_local_coefs(const std::vector<Index> &local_to_global_ids) const;
+    vector<Real>
+    get_local_coefs(const vector<Index> &local_to_global_ids) const;
 
 
     /**
@@ -290,7 +291,7 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const std::vector< Index > &dof_ids);
+    Vector(const vector< Index > &dof_ids);
 
     /**
      * Copy constructor. Performs a shallow copy of the object (i.e.)
@@ -340,7 +341,7 @@ public:
      * dof numbering provided from some external library, IRIT as an example.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<self_t> create(const std::vector<Index> &dof_ids);
+    static std::shared_ptr<self_t> create(const vector<Index> &dof_ids);
 
 
     /**
@@ -374,7 +375,7 @@ public:
      * \date 29 Jan 2013
      */
     void add_block(
-        const std::vector< Index > &local_to_global,
+        const vector< Index > &local_to_global,
         const DenseVector &local_vector);
 
 
@@ -402,8 +403,8 @@ public:
      * Returns the local coefficients of the distributed vector,
      * from the vector of local-to-global indices.
      */
-    std::vector<Real>
-    get_local_coefs(const std::vector<Index> &local_to_global_ids) const;
+    vector<Real>
+    get_local_coefs(const vector<Index> &local_to_global_ids) const;
 
 
     /**

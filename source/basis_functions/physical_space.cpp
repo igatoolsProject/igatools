@@ -22,7 +22,6 @@
 #include <igatools/geometry/mapping_slice.h>
 #include <igatools/basis_functions/space_manager.h>
 
-using std::vector;
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -35,8 +34,7 @@ template <class RefSpace_, class PushForward_>
 PhysicalSpace<RefSpace_,PushForward_>::
 PhysicalSpace(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward,
-    const Index id)
+    shared_ptr<PushForwardType> push_forward)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
@@ -48,8 +46,6 @@ PhysicalSpace(
 
     Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
-
-    ref_space_->set_id(id);
 }
 
 
@@ -58,32 +54,13 @@ PhysicalSpace(
 template <class RefSpace_, class PushForward_>
 auto
 PhysicalSpace<RefSpace_,PushForward_>::
-clone() const -> shared_ptr<self_t>
-{
-    Assert(ref_space_ != nullptr, ExcNullPtr());
-    Assert(push_forward_ != nullptr, ExcNullPtr());
-
-    return shared_ptr<self_t>(
-        new self_t(
-            shared_ptr<RefSpace>(new RefSpace(*ref_space_)),
-            shared_ptr<PushForwardType>(new PushForwardType(*push_forward_)),
-            this->get_id())
-    );
-};
-
-
-
-template <class RefSpace_, class PushForward_>
-auto
-PhysicalSpace<RefSpace_,PushForward_>::
 create(
     shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward,
-    const Index id) -> shared_ptr<self_t>
+    shared_ptr<PushForwardType> push_forward) -> shared_ptr<self_t>
 {
     Assert(ref_space != nullptr, ExcNullPtr());
     Assert(push_forward != nullptr, ExcNullPtr());
-    return shared_ptr<self_t>(new self_t(ref_space,push_forward,id));
+    return shared_ptr<self_t>(new self_t(ref_space,push_forward));
 }
 
 
@@ -144,7 +121,7 @@ get_num_basis() const
 }
 
 
-
+#if 0
 template <class RefSpace_, class PushForward_>
 int
 PhysicalSpace<RefSpace_,PushForward_>::
@@ -152,7 +129,7 @@ get_num_basis_per_element() const
 {
     return ref_space_->get_num_basis_per_element();
 }
-
+#endif
 
 
 template <class RefSpace_, class PushForward_>
@@ -180,7 +157,7 @@ PhysicalSpace<RefSpace_,PushForward_>::
 get_face_space(const Index face_id,
                vector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
-    auto elem_map = std::make_shared<std::map<int,int> >();
+    auto elem_map = std::make_shared<typename GridType::FaceGridMap >();
     auto face_ref_sp = ref_space_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
     auto map  = push_forward_->get_mapping();
 
@@ -203,11 +180,20 @@ get_id() const
 
 
 template <class RefSpace_, class PushForward_>
-std::vector<Index>
+vector<Index>
 PhysicalSpace<RefSpace_,PushForward_>::
-get_loc_to_global(const TensorIndex<dim> &j) const
+get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
-    return ref_space_->get_loc_to_global(j);
+    return ref_space_->get_loc_to_global(element);
+}
+
+
+template <class RefSpace_, class PushForward_>
+vector<Index>
+PhysicalSpace<RefSpace_,PushForward_>::
+get_loc_to_patch(const CartesianGridElement<dim> &element) const
+{
+    return ref_space_->get_loc_to_patch(element);
 }
 
 
@@ -231,6 +217,54 @@ PhysicalSpace<RefSpace_,PushForward_>::
 get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_global();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_global();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_patch();
+}
+
+
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
+{
+    return ref_space_->get_dof_distribution_patch();
+}
+
+template <class RefSpace_, class PushForward_>
+auto
+PhysicalSpace<RefSpace_,PushForward_>::
+get_degree() const -> const DegreeTable &
+{
+    return ref_space_->get_degree();
 }
 
 

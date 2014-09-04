@@ -108,7 +108,7 @@ void run_test()
         elem->print_info(out);
 
 
-        vector<Points<dim>> unit_points_face(2);
+        ValueVector<Points<dim>> unit_points_face(2);
         int face_id;
         if (elem->get_flat_index() == 0)
         {

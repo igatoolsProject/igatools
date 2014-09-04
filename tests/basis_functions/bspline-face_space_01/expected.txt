@@ -5,11 +5,13 @@ Reference space:
          Number of active elements: 1
          Number of intervals per direction: [ ]
          Knot coordinates:
+            Size: [ ]  Weights: []
          
       
       Degrees:
       [] 
       Interior multiplicities:
+         Size: [ ]  Weights: []
       
       Dimensionality Table:
       [ ] 
@@ -17,7 +19,11 @@ Reference space:
       1 
       Total Dimension: 1
    
-   Basis Indices:
+   Patch Basis Indices:
+      0 
+      [ 0 ]
+   
+   Global Basis Indices:
       0 
       [ 0 ]
    
@@ -45,11 +51,13 @@ Push-forward:
             Number of active elements: 1
             Number of intervals per direction: [ ]
             Knot coordinates:
+               Size: [ ]  Weights: []
             
          
          Degrees:
          [] 
          Interior multiplicities:
+            Size: [ ]  Weights: []
          
          Dimensionality Table:
          [ ] 
@@ -57,7 +65,11 @@ Push-forward:
          1 
          Total Dimension: 1
       
-      Basis Indices:
+      Patch Basis Indices:
+         0 
+         [ 0 ]
+      
+      Global Basis Indices:
          0 
          [ 0 ]
       
@@ -85,12 +97,16 @@ Push-forward:
                Number of active elements: 2
                Number of intervals per direction: [ 2 ]
                Knot coordinates:
+                  Size: [ 3 ]  Weights: [3]
+                  Direction: 0
                   [ 0 0.500000 1.00000 ]
                
             
             Degrees:
             [1] 
             Interior multiplicities:
+               Size: [ 1 ]  Weights: [1]
+               Direction: 0
                [ 1 ]
             
             Dimensionality Table:
@@ -99,7 +115,12 @@ Push-forward:
             3 
             Total Dimension: 3
          
-         Basis Indices:
+         Patch Basis Indices:
+            0 1 2 
+            [ 0 1 ]
+            [ 1 2 ]
+         
+         Global Basis Indices:
             0 1 2 
             [ 0 1 ]
             [ 1 2 ]
@@ -131,12 +152,16 @@ Push-forward:
                   Number of active elements: 2
                   Number of intervals per direction: [ 2 ]
                   Knot coordinates:
+                     Size: [ 3 ]  Weights: [3]
+                     Direction: 0
                      [ 0 0.500000 1.00000 ]
                   
                
                Degrees:
                [1] 
                Interior multiplicities:
+                  Size: [ 1 ]  Weights: [1]
+                  Direction: 0
                   [ 1 ]
                
                Dimensionality Table:
@@ -145,7 +170,12 @@ Push-forward:
                3 
                Total Dimension: 3
             
-            Basis Indices:
+            Patch Basis Indices:
+               0 1 2 
+               [ 0 1 ]
+               [ 1 2 ]
+            
+            Global Basis Indices:
                0 1 2 
                [ 0 1 ]
                [ 1 2 ]
@@ -177,12 +207,16 @@ Push-forward:
                      Number of active elements: 1
                      Number of intervals per direction: [ 1 ]
                      Knot coordinates:
+                        Size: [ 2 ]  Weights: [2]
+                        Direction: 0
                         [ 0 1.00000 ]
                      
                   
                   Degrees:
                   [1] 
                   Interior multiplicities:
+                     Size: [ 0 ]  Weights: [0]
+                     Direction: 0
                      [ ]
                   
                   Dimensionality Table:
@@ -191,7 +225,11 @@ Push-forward:
                   2 
                   Total Dimension: 2
                
-               Basis Indices:
+               Patch Basis Indices:
+                  0 1 
+                  [ 0 1 ]
+               
+               Global Basis Indices:
                   0 1 
                   [ 0 1 ]
                
@@ -221,12 +259,16 @@ Push-forward:
                         Number of active elements: 1
                         Number of intervals per direction: [ 1 ]
                         Knot coordinates:
+                           Size: [ 2 ]  Weights: [2]
+                           Direction: 0
                            [ 0 1.00000 ]
                         
                      
                      Degrees:
                      [1] 
                      Interior multiplicities:
+                        Size: [ 0 ]  Weights: [0]
+                        Direction: 0
                         [ ]
                      
                      Dimensionality Table:
@@ -235,7 +277,11 @@ Push-forward:
                      2 
                      Total Dimension: 2
                   
-                  Basis Indices:
+                  Patch Basis Indices:
+                     0 1 
+                     [ 0 1 ]
+                  
+                  Global Basis Indices:
                      0 1 
                      [ 0 1 ]
                   
@@ -265,14 +311,20 @@ Push-forward:
                            Number of active elements: 6
                            Number of intervals per direction: [ 2 3 ]
                            Knot coordinates:
+                              Size: [ 3 4 ]  Weights: [3,12]
+                              Direction: 0
                               [ 0 0.500000 1.00000 ]
+                              Direction: 1
                               [ 0 0.333333 0.666667 1.00000 ]
                            
                         
                         Degrees:
                         [1,1] 
                         Interior multiplicities:
+                           Size: [ 1 2 ]  Weights: [1,2]
+                           Direction: 0
                            [ 1 ]
+                           Direction: 1
                            [ 1 1 ]
                         
                         Dimensionality Table:
@@ -281,7 +333,16 @@ Push-forward:
                         12 
                         Total Dimension: 12
                      
-                     Basis Indices:
+                     Patch Basis Indices:
+                        0 1 2 3 4 5 6 7 8 9 10 11 
+                        [ 0 1 3 4 ]
+                        [ 1 2 4 5 ]
+                        [ 3 4 6 7 ]
+                        [ 4 5 7 8 ]
+                        [ 6 7 9 10 ]
+                        [ 7 8 10 11 ]
+                     
+                     Global Basis Indices:
                         0 1 2 3 4 5 6 7 8 9 10 11 
                         [ 0 1 3 4 ]
                         [ 1 2 4 5 ]
@@ -321,14 +382,20 @@ Push-forward:
                               Number of active elements: 6
                               Number of intervals per direction: [ 2 3 ]
                               Knot coordinates:
+                                 Size: [ 3 4 ]  Weights: [3,12]
+                                 Direction: 0
                                  [ 0 0.500000 1.00000 ]
+                                 Direction: 1
                                  [ 0 0.333333 0.666667 1.00000 ]
                               
                            
                            Degrees:
                            [1,1] 
                            Interior multiplicities:
+                              Size: [ 1 2 ]  Weights: [1,2]
+                              Direction: 0
                               [ 1 ]
+                              Direction: 1
                               [ 1 1 ]
                            
                            Dimensionality Table:
@@ -337,7 +404,16 @@ Push-forward:
                            12 
                            Total Dimension: 12
                         
-                        Basis Indices:
+                        Patch Basis Indices:
+                           0 1 2 3 4 5 6 7 8 9 10 11 
+                           [ 0 1 3 4 ]
+                           [ 1 2 4 5 ]
+                           [ 3 4 6 7 ]
+                           [ 4 5 7 8 ]
+                           [ 6 7 9 10 ]
+                           [ 7 8 10 11 ]
+                        
+                        Global Basis Indices:
                            0 1 2 3 4 5 6 7 8 9 10 11 
                            [ 0 1 3 4 ]
                            [ 1 2 4 5 ]
@@ -377,14 +453,20 @@ Push-forward:
                                  Number of active elements: 3
                                  Number of intervals per direction: [ 1 3 ]
                                  Knot coordinates:
+                                    Size: [ 2 4 ]  Weights: [2,8]
+                                    Direction: 0
                                     [ 0 1.00000 ]
+                                    Direction: 1
                                     [ 0 0.333333 0.666667 1.00000 ]
                                  
                               
                               Degrees:
                               [1,1] 
                               Interior multiplicities:
+                                 Size: [ 0 2 ]  Weights: [0,0]
+                                 Direction: 0
                                  [ ]
+                                 Direction: 1
                                  [ 1 1 ]
                               
                               Dimensionality Table:
@@ -393,7 +475,13 @@ Push-forward:
                               8 
                               Total Dimension: 8
                            
-                           Basis Indices:
+                           Patch Basis Indices:
+                              0 1 2 3 4 5 6 7 
+                              [ 0 1 2 3 ]
+                              [ 2 3 4 5 ]
+                              [ 4 5 6 7 ]
+                           
+                           Global Basis Indices:
                               0 1 2 3 4 5 6 7 
                               [ 0 1 2 3 ]
                               [ 2 3 4 5 ]
@@ -429,14 +517,20 @@ Push-forward:
                                     Number of active elements: 3
                                     Number of intervals per direction: [ 1 3 ]
                                     Knot coordinates:
+                                       Size: [ 2 4 ]  Weights: [2,8]
+                                       Direction: 0
                                        [ 0 1.00000 ]
+                                       Direction: 1
                                        [ 0 0.333333 0.666667 1.00000 ]
                                     
                                  
                                  Degrees:
                                  [1,1] 
                                  Interior multiplicities:
+                                    Size: [ 0 2 ]  Weights: [0,0]
+                                    Direction: 0
                                     [ ]
+                                    Direction: 1
                                     [ 1 1 ]
                                  
                                  Dimensionality Table:
@@ -445,7 +539,13 @@ Push-forward:
                                  8 
                                  Total Dimension: 8
                               
-                              Basis Indices:
+                              Patch Basis Indices:
+                                 0 1 2 3 4 5 6 7 
+                                 [ 0 1 2 3 ]
+                                 [ 2 3 4 5 ]
+                                 [ 4 5 6 7 ]
+                              
+                              Global Basis Indices:
                                  0 1 2 3 4 5 6 7 
                                  [ 0 1 2 3 ]
                                  [ 2 3 4 5 ]
@@ -481,14 +581,20 @@ Push-forward:
                                        Number of active elements: 2
                                        Number of intervals per direction: [ 1 2 ]
                                        Knot coordinates:
+                                          Size: [ 2 3 ]  Weights: [2,6]
+                                          Direction: 0
                                           [ 0 1.00000 ]
+                                          Direction: 1
                                           [ 0 0.500000 1.00000 ]
                                        
                                     
                                     Degrees:
                                     [1,1] 
                                     Interior multiplicities:
+                                       Size: [ 0 1 ]  Weights: [0,0]
+                                       Direction: 0
                                        [ ]
+                                       Direction: 1
                                        [ 1 ]
                                     
                                     Dimensionality Table:
@@ -497,7 +603,12 @@ Push-forward:
                                     6 
                                     Total Dimension: 6
                                  
-                                 Basis Indices:
+                                 Patch Basis Indices:
+                                    0 1 2 3 4 5 
+                                    [ 0 1 2 3 ]
+                                    [ 2 3 4 5 ]
+                                 
+                                 Global Basis Indices:
                                     0 1 2 3 4 5 
                                     [ 0 1 2 3 ]
                                     [ 2 3 4 5 ]
@@ -531,14 +642,20 @@ Push-forward:
                                           Number of active elements: 2
                                           Number of intervals per direction: [ 1 2 ]
                                           Knot coordinates:
+                                             Size: [ 2 3 ]  Weights: [2,6]
+                                             Direction: 0
                                              [ 0 1.00000 ]
+                                             Direction: 1
                                              [ 0 0.500000 1.00000 ]
                                           
                                        
                                        Degrees:
                                        [1,1] 
                                        Interior multiplicities:
+                                          Size: [ 0 1 ]  Weights: [0,0]
+                                          Direction: 0
                                           [ ]
+                                          Direction: 1
                                           [ 1 ]
                                        
                                        Dimensionality Table:
@@ -547,7 +664,12 @@ Push-forward:
                                        6 
                                        Total Dimension: 6
                                     
-                                    Basis Indices:
+                                    Patch Basis Indices:
+                                       0 1 2 3 4 5 
+                                       [ 0 1 2 3 ]
+                                       [ 2 3 4 5 ]
+                                    
+                                    Global Basis Indices:
                                        0 1 2 3 4 5 
                                        [ 0 1 2 3 ]
                                        [ 2 3 4 5 ]

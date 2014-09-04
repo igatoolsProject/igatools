@@ -26,6 +26,7 @@
 #include <igatools/base/function.h>
 #include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/utils/value_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -62,7 +63,13 @@ class Mapping
 {
 public:
     /** Type of the Grid */
-    using typename GridWrapper<CartesianGrid<dim_>>::GridType;
+    //TODO(pauletti, Aug 4, 2014): for some reason the current compiler doesn't
+    // understand something like GridIterator if the
+    // following commneted using is used
+    //using typename GridWrapper<CartesianGrid<dim_>>::GridType;
+    using GridType = CartesianGrid<dim_>;
+
+    using GridIterator = typename GridType::ElementAccessor;
 
     /** Dimension of the reference domain */
     static const int dim = dim_;
@@ -138,36 +145,37 @@ public:
     /** Copy assignment operator. Not allowed to be used. */
     Mapping<dim_,codim_> &operator=(const Mapping<dim_,codim_> &map) = delete;
     ///@}
+//TODO(pauletti, Aug 6, 2014): use template<order> evaluate_derivative()
 
     /** @name Mapping as a standard function (using the cache).*/
     ///@{
-    virtual void evaluate(std::vector<Value> &values) const;
+    virtual void evaluate(ValueVector<Value> &values) const;
 
-    virtual void evaluate_gradients(std::vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients(ValueVector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians(std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians(ValueVector<Hessian> &hessians) const;
 
     virtual void evaluate_face(const Index face_id,
-                               std::vector<Value> &values) const;
+                               ValueVector<Value> &values) const;
 
     virtual void evaluate_face_gradients(const Index face_id,
-                                         std::vector<Gradient> &gradients) const;
+                                         ValueVector<Gradient> &gradients) const;
 
     virtual void evaluate_face_hessians(const Index face_id,
-                                        std::vector<Hessian> &hessians) const;
+                                        ValueVector<Hessian> &hessians) const;
     ///@}
 
 
     /** @name Mapping as a standard function (without the use of the cache).*/
     ///@{
-    virtual void evaluate_at_points(const std::vector<Point> &points,
-                                    std::vector<Value> &values) const ;
+    virtual void evaluate_at_points(const ValueVector<Point> &points,
+                                    ValueVector<Value> &values) const ;
 
-    virtual void evaluate_gradients_at_points(const std::vector<Point> &points,
-                                              std::vector<Gradient> &gradients) const;
+    virtual void evaluate_gradients_at_points(const ValueVector<Point> &points,
+                                              ValueVector<Gradient> &gradients) const;
 
-    virtual void evaluate_hessians_at_points(const std::vector<Point> &points,
-                                             std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians_at_points(const ValueVector<Point> &points,
+                                             ValueVector<Hessian> &hessians) const;
     ///@}
 
 
@@ -182,7 +190,7 @@ public:
     virtual void init_element(const ValueFlags flag,
                               const Quadrature<dim> &quad) const = 0;
 
-    virtual void set_element(const CartesianGridElementAccessor<dim> &elem) const = 0;
+    virtual void set_element(const GridIterator &elem) const = 0;
 
     /**
      *
@@ -190,14 +198,14 @@ public:
      * or GridElement iterator
      */
     virtual void set_face_element(const Index face_id,
-                                  const CartesianGridElementAccessor<dim> &elem) const = 0;
+                                  const GridIterator &elem) const = 0;
 
 
-    virtual std::vector<Value> values() const;
+    virtual ValueVector<Value> values() const;
 
-    virtual std::vector<Gradient> gradients() const;
+    virtual ValueVector<Gradient> gradients() const;
 
-    virtual std::vector<Hessian> hessians() const;
+    virtual ValueVector<Hessian> hessians() const;
     ///@}
 
     /** @name Dealing with the element-based iterator. */

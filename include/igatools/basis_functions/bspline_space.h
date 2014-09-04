@@ -217,6 +217,7 @@ public:
     /** Destructor. */
     ~BSplineSpace() = default;
 
+
 protected:
     /** @name Constructors */
     ///@{
@@ -258,6 +259,13 @@ protected:
                           std::shared_ptr<GridType> knots,
                           std::shared_ptr<const MultiplicityTable> interior_mult,
                           const EndBehaviourTable &ends);
+
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    BSplineSpace(const self_t &space) = delete;
+
     ///@}
 
 
@@ -269,14 +277,12 @@ protected:
     operator=(const self_t &space) = delete;
     ///@}
 
-public:
-    /** @name Getting information about the space */
-    ///@{
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
 
-    std::shared_ptr<const self_t >
-    get_reference_space() const;
-    ///@}
+public:
+
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
     /** @name Functions involving the element iterator */
     ///@{
@@ -295,29 +301,26 @@ public:
      * Returns a element iterator to one-pass the end of patch.
      */
     ElementIterator end() const;
-
-
     ///@}
 
-    /**
-     * Prints internal information about the space.
-     * @note Mostly used for debugging and testing.
-     */
-    void print_info(LogStream &out) const;
 
 
 
 
-
+    /** Getting some underlying objects */
+    ///@{
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
-                       std::vector<Index> &face_to_element_dofs,
-                       std::map<int, int> &elem_map) const;
+                       vector<Index> &face_to_element_dofs,
+                       typename GridType::FaceGridMap &elem_map) const;
 
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs) const;
+                   vector<Index> &face_to_element_dofs) const;
+
+    std::shared_ptr<const self_t >
+    get_reference_space() const;
 
 
     /** Return the push forward (non-const version). */
@@ -327,6 +330,32 @@ public:
     /** Return the push forward (const version). */
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 
+
+    std::shared_ptr<SpaceManager> get_space_manager();
+
+
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
+
+
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const;
+
+
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_global();
+
+    /** Returns the container with the patch dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() const;
+
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch();
+
+    ///@}
 
     /**
      * Adds an @p offset to the values of the dof ids.
@@ -350,14 +379,25 @@ public:
                          const Index comp) const;
 
 
-    std::shared_ptr<SpaceManager> get_space_manager();
-
-    std::shared_ptr<const SpaceManager> get_space_manager() const;
+    /**
+     * Prints internal information about the space.
+     * @note Mostly used for debugging and testing.
+     */
+    void print_info(LogStream &out) const;
 
 private:
 
-    /** Container with the local to global basis indices */
-    DofDistribution<dim, range, rank> basis_indices_;
+    /** Container with the local to global basis indices
+     * @note The concept of global indices refers to a global numeration of the
+     * dofs of all the spaces.
+     */
+    DofDistribution<dim, range, rank> dof_distribution_global_;
+
+    /** Container with the local to patch basis indices
+     * @note The concept of patch indices refers to the numeration at patch
+     * level of the dofs.
+     */
+    DofDistribution<dim, range, rank> dof_distribution_patch_;
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
@@ -387,16 +427,6 @@ public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
-
-
-    /** Returns the container with the local to global basis indices (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_basis_indices() const;
-
-    /** Returns the container with the local to global basis indices (non-const version). */
-    DofDistribution<dim, range, rank> &
-    get_basis_indices();
-
 };
 
 

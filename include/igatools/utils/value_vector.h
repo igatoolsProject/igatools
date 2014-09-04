@@ -23,16 +23,16 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/value_container.h>
 
-
-#include <vector>
+#include <igatools/utils/vector.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
  * @brief Container for objects of type T that refers to different evaluation points.
  *
- * This container class is derived from std::vector<T> with added a
+ * This container class is derived from vector<T> with added a
  * function for printing its elements and a function for the reset of the element entries
  * using the proper default constructor.
  *
@@ -43,7 +43,7 @@ IGA_NAMESPACE_OPEN
  */
 template< class T >
 class ValueVector :
-    public std::vector<T>
+    public ValueContainer<T>
 {
 public :
     /**
@@ -58,31 +58,28 @@ public :
      */
     explicit ValueVector(const Index num_points) ;
 
-    // TODO (pauletti, Jul 11, 2014): it should be deleted after return by value in pf_accessor
-    explicit ValueVector(const Size num_functions, const Size num_points)
-        :ValueVector(num_points)
-    {}
     /**
-     * Constructor from a std::vector<T> object.
+     * Constructor from a vector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
      */
-    explicit ValueVector(const std::vector<T> &vector_in) ;
+    explicit ValueVector(const vector<T> &vector_in) ;
 
 
     /**
      * Constructor from an initializer list.
      */
-    ValueVector(const std::initializer_list<T> &list) ;
+    ValueVector(const std::initializer_list<T> &list);
 
     /**
      * Copy constructor. Performs a deep copy of the content of the ValueVector object @p vector_in
      */
-    ValueVector(const ValueVector<T> &vector_in) = default ;
+    ValueVector(const ValueVector<T> &vector_in) = default;
 
     /**
      * Move constructor.
      */
-    ValueVector(ValueVector<T> &&vector_in) = default ;
+    ValueVector(ValueVector<T> &&vector_in) = default;
+
 
     /**
      * Destructor.
@@ -101,9 +98,9 @@ public :
     ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
 
     /**
-     * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
+     * Copy assignment operator. Performs a deep copy of the content of the vector object.
      */
-    ValueVector<T> &operator=(const std::vector<T> &vector);
+    ValueVector<T> &operator=(const vector<T> &vector);
 
     /**
      * Move assignment operator.
@@ -113,28 +110,21 @@ public :
     ///@}
 
     /**
-     * Returns the number of points.
-     */
-    Size get_num_points() const noexcept
-    {
-        return this->size();
-    }
-    /**
-     * Returns the number of functions.
-     */
-    Size get_num_functions() const noexcept
-    {
-        return 1;
-    }
-    /**
-     * @name Values initialization
+     * @name Functions for resizing
      */
     ///@{
+    /**
+     * Resize the ValueTable in order to allocate space for
+     * @p num_points points.
+     */
+    void resize(const Size num_points);
 
-    /** Set all the values of the vector to zero. */
-    void zero() ;
-
+    /**
+     * Removes all elements from the ValueVector, leaving the container with a size of 0.
+     */
+    void clear() noexcept;
     ///@}
+
 
 
     /**
@@ -149,7 +139,6 @@ public :
     ///@}
 
 } ;
-
 
 /**
  * Performs the scalar-by-vector multiplication <tt>scalar * a</tt>

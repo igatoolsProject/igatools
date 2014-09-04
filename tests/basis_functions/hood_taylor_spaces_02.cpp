@@ -60,12 +60,6 @@ private:
 template <int dim>
 void StokesProblem<dim>::assemble_Bt()
 {
-    const int vel_n_basis = vel_space_->get_num_basis_per_element();
-    const int pre_n_basis = pre_space_->get_num_basis_per_element();
-    DenseMatrix loc_mat(vel_n_basis, pre_n_basis);
-    vector<Index> vel_loc_dofs(vel_n_basis);
-    vector<Index> pre_loc_dofs(pre_n_basis);
-
     auto vel_el = vel_space_->begin();
     auto pre_el = pre_space_->begin();
     auto end_el = vel_space_->end();
@@ -76,9 +70,15 @@ void StokesProblem<dim>::assemble_Bt()
     pre_el->init_cache(pre_flag,elem_quad_);
 
     const int n_qp = elem_quad_.get_num_points();
+
     for (; vel_el != end_el; ++vel_el, ++pre_el)
     {
-        loc_mat.clear();
+        const int vel_n_basis = vel_el->get_num_basis();
+        const int pre_n_basis = pre_el->get_num_basis();
+
+        DenseMatrix loc_mat(vel_n_basis, pre_n_basis);
+        loc_mat = 0.0;
+
         vel_el->fill_cache();
         pre_el->fill_cache();
 
@@ -97,8 +97,8 @@ void StokesProblem<dim>::assemble_Bt()
                                      * w_meas[qp];
             }
         }
-        vel_loc_dofs = vel_el->get_local_to_global();
-        pre_loc_dofs = pre_el->get_local_to_global();
+        vector<Index> vel_loc_dofs = vel_el->get_local_to_global();
+        vector<Index> pre_loc_dofs = pre_el->get_local_to_global();
         Bt_->add_block(vel_loc_dofs, pre_loc_dofs, loc_mat);
 
         out << loc_mat << endl;
@@ -137,7 +137,7 @@ StokesProblem(const int deg, const int n_knots)
     auto vel_m  = make_shared<typename VelSpace::MultiplicityTable>(vel_mult);
 
     typename PreSpace::DegreeTable pre_deg;//(TensorIndex<dim>(deg));
-    pre_deg(0) = TensorIndex<dim>(deg);
+    pre_deg[0] = TensorIndex<dim>(deg);
 
     const typename VelSpace::DegreeTable vel_deg(TensorIndex<dim>(deg+1));
 

@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
+#include <igatools/utils/value_vector.h>
 
 #include <vector>
 
@@ -52,8 +53,8 @@ IGA_NAMESPACE_OPEN
  *  public:
  *  using Function<m, n>::
  *    LinearFunction();
- *    void evaluate(std::vector < typename LinearFunction<dim, rdim>::Point >  & points,
- *                  std::vector     < typename LinearFunction<dim, rdim>::Value >  & values
+ *    void evaluate(ValueVector< typename LinearFunction<dim,rdim>::Point >  & points,
+ *                  ValueVector< typename LinearFunction<dim,rdim>::Value >  & values
  *                 ) const
  *    {
  *      for (int i=0; i<points.size(); i++)
@@ -116,22 +117,22 @@ public:
     /** @name Evaluations of the Function at some points */
     ///@{
     /** Compute the @p values of Function at some @p points. */
-    virtual void evaluate(const std::vector<Point> &points,
-                          std::vector<Value> &values) const = 0;
+    virtual void evaluate(const ValueVector<Point> &points,
+                          ValueVector<Value> &values) const = 0;
 
     /** Compute the @p gradients of Function at some @p points. */
-    virtual void evaluate_gradients(const std::vector<Point> &points,
-                                    std::vector<Gradient> &gradient) const;
+    virtual void evaluate_gradients(const ValueVector<Point> &points,
+                                    ValueVector<Gradient> &gradient) const;
 
     /** Compute the @p hessians of Function at some @p points. */
-    virtual void evaluate_hessians(const std::vector<Point> &points,
-                                   std::vector<Hessian> &hessians) const;
+    virtual void evaluate_hessians(const ValueVector<Point> &points,
+                                   ValueVector<Hessian> &hessians) const;
 
     /** Compute the @p values and the @p gradients of Function at some
      *  @p points. */
-    virtual void evaluate_values_and_gradients(const std::vector<Point> &points,
-                                               std::vector<Value> &values,
-                                               std::vector<Gradient> &gradients) const;
+    virtual void evaluate_values_and_gradients(const ValueVector<Point> &points,
+                                               ValueVector<Value> &values,
+                                               ValueVector<Gradient> &gradients) const;
     ///@}
 };
 

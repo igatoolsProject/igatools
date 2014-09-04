@@ -48,6 +48,7 @@ public:
     using typename base_t::Gradient;
     using typename base_t::Hessian;
     using typename base_t::GridType;
+    using typename base_t::GridIterator;
 
     /** @name Constructor and destructor */
     ///@{

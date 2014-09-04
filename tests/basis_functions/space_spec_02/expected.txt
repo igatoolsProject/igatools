@@ -2,12 +2,16 @@ Knots without repetition:
    Number of active elements: 3
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
+      Size: [ 4 ]  Weights: [4]
+      Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
    
 
 Degrees:
 [2] 
 Interior multiplicities:
+   Size: [ 2 ]  Weights: [2]
+   Direction: 0
    [ 1 1 ]
 
 Dimensionality Table:
@@ -16,25 +20,38 @@ Component Dimension:
 5 
 Total Dimension: 5
 Boundary knots:
+Size: [ 3 3 ]  Weights: [3,9]
+Direction: 0
 [ -0.500000 0 0 ]
+Direction: 1
 [ 1.10000 1.20000 1.30000 ]
 Repeated knots:
+Size: [ 8 ]  Weights: [8]
+Direction: 0
 [ -0.500000 0 0 0.333333 0.666667 1.10000 1.20000 1.30000 ]
 Interpolatory Boundary knots:
 Repeated knots:
+Size: [ 8 ]  Weights: [8]
+Direction: 0
 [ 0 0 0 0.333333 0.666667 1.00000 1.00000 1.00000 ]
 Knots without repetition:
    Number of active elements: 8
    Number of intervals per direction: [ 2 4 ]
    Knot coordinates:
+      Size: [ 3 5 ]  Weights: [3,15]
+      Direction: 0
       [ 0 0.500000 1.00000 ]
+      Direction: 1
       [ 0 0.250000 0.500000 0.750000 1.00000 ]
    
 
 Degrees:
 [1,3] 
 Interior multiplicities:
+   Size: [ 1 3 ]  Weights: [1,3]
+   Direction: 0
    [ 1 ]
+   Direction: 1
    [ 1 1 1 ]
 
 Dimensionality Table:
@@ -43,27 +60,44 @@ Component Dimension:
 21 
 Total Dimension: 21
 Boundary knots:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
 [ -0.500000 0 ]
+Direction: 1
 [ 1.20000 1.30000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
 [ -0.600000 0 0 0 ]
+Direction: 1
 [ 1.00000 1.10000 1.60000 1.60000 ]
 Repeated knots:
+Size: [ 5 11 ]  Weights: [5,55]
+Direction: 0
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
+Direction: 1
 [ -0.600000 0 0 0 0.250000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
 Knots without repetition:
    Number of active elements: 24
    Number of intervals per direction: [ 2 3 4 ]
    Knot coordinates:
+      Size: [ 3 4 5 ]  Weights: [3,12,60]
+      Direction: 0
       [ 0 0.500000 1.00000 ]
+      Direction: 1
       [ 0 0.333333 0.666667 1.00000 ]
+      Direction: 2
       [ 0 0.250000 0.500000 0.750000 1.00000 ]
    
 
 Degrees:
 [1,3,0] 
 Interior multiplicities:
+   Size: [ 1 2 3 ]  Weights: [1,2,6]
+   Direction: 0
    [ 1 ]
+   Direction: 1
    [ 1 1 ]
+   Direction: 2
    [ 1 1 1 ]
 
 Dimensionality Table:
@@ -72,30 +106,52 @@ Component Dimension:
 72 
 Total Dimension: 72
 Boundary knots:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
 [ -0.500000 0 ]
+Direction: 1
 [ 1.20000 1.30000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
 [ -0.600000 0 0 0 ]
+Direction: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 1 1 ]  Weights: [1,1]
+Direction: 0
 [ -0.600000 ]
+Direction: 1
 [ 1.60000 ]
 Repeated knots:
+Size: [ 5 10 5 ]  Weights: [5,50,250]
+Direction: 0
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
+Direction: 1
 [ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+Direction: 2
 [ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
 Knots without repetition:
    Number of active elements: 6
    Number of intervals per direction: [ 2 3 ]
    Knot coordinates:
+      Size: [ 3 4 ]  Weights: [3,12]
+      Direction: 0
       [ 0 0.500000 1.00000 ]
+      Direction: 1
       [ 0 0.333333 0.666667 1.00000 ]
    
 
 Degrees:
 [1,3] [3,1] 
 Interior multiplicities:
+   Size: [ 1 2 ]  Weights: [1,2]
+   Direction: 0
    [ 1 ]
+   Direction: 1
    [ 1 1 ]
+   Size: [ 1 2 ]  Weights: [1,2]
+   Direction: 0
    [ 1 ]
+   Direction: 1
    [ 1 1 ]
 
 Dimensionality Table:
@@ -104,16 +160,34 @@ Component Dimension:
 18 20 
 Total Dimension: 38
 Boundary knots:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
 [ -0.500000 0 ]
+Direction: 1
 [ 1.20000 1.30000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
 [ -0.600000 0 0 0 ]
+Direction: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
 [ -0.600000 0 0 0 ]
+Direction: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
 [ -0.500000 0 ]
+Direction: 1
 [ 1.20000 1.30000 ]
 Repeated knots:
+Size: [ 5 10 ]  Weights: [5,50]
+Direction: 0
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
+Direction: 1
 [ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 9 6 ]  Weights: [9,54]
+Direction: 0
 [ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
+Direction: 1
 [ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]

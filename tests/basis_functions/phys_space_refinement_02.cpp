@@ -56,11 +56,6 @@ void test_evaluate()
     out << endl;
 
     auto map = IdentityMapping<dim>::create(grid);
-//   map->refine();
-//    map->get_grid()->print_info(out);
-//    out << endl;
-
-
 
     auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
 
@@ -68,131 +63,23 @@ void test_evaluate()
     const int deg = 2;
 
     TensorIndex<1> component_map = {0};
-    TensorSize<dim> n_weights_dir;
-    for (Index dir_id = 0 ; dir_id < dim ; ++dir_id)
-        n_weights_dir(dir_id) = (deg+2);
+    TensorSize<dim> n_weights_dir(deg+2);
 
     typename RefSpace_t<dim>::WeightsTable weights(component_map);
-    if (dim == 1)
+    for (auto &weights_comp : weights)
     {
+        weights_comp.resize(n_weights_dir);
+
         Index id = 0;
-
-        weights(0).resize(n_weights_dir);
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
+        for (Index i=0 ; i < pow(4,dim-1) ; ++i)
+        {
+            weights_comp[id++] = 1.0 ;
+            weights_comp[id++] = 0.4 ;
+            weights_comp[id++] = 0.65 ;
+            weights_comp[id++] = 1.0 ;
+        }
     }
-    else if (dim == 2)
-    {
-        Index id = 0;
 
-        weights(0).resize(n_weights_dir);
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-    }
-    else if (dim == 3)
-    {
-        Index id = 0;
-
-        weights(0).resize(n_weights_dir);
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-
-        weights(0)(id++) = 1.0 ;
-        weights(0)(id++) = 0.4 ;
-        weights(0)(id++) = 0.65 ;
-        weights(0)(id++) = 1.0 ;
-    }
     auto ref_space = RefSpace_t<dim>::create(deg,grid,weights);
 
     auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);

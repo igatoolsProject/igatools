@@ -21,7 +21,6 @@
 #include <igatools/geometry/grid_tools.h>
 #include <set>
 
-using std::vector;
 using std::array;
 using std::set;
 
@@ -30,11 +29,12 @@ IGA_NAMESPACE_OPEN
 namespace grid_tools
 {
 template <int dim>
-vector<Index>
-build_map_elements_between_cartesian_grids(
-    const CartesianGrid<dim> &grid_fine,
-    const CartesianGrid<dim> &grid_coarse)
+InterGridMap<dim>
+build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                           const CartesianGrid<dim> &grid_coarse)
 {
+    InterGridMap<dim> res;
+
     //---------------------------------------------------------
     // checks that the grid are on the same domain
     Assert(grid_fine.get_bounding_box() == grid_coarse.get_bounding_box(),
@@ -73,34 +73,43 @@ build_map_elements_between_cartesian_grids(
     }
 
     const int n_elems_fine = grid_fine.get_num_active_elems();
-    vector<int> map_elem_fine_to_elem_coarse(n_elems_fine);
+
+    auto f_elem = grid_fine.begin();
+    auto c_elem = grid_coarse.begin();
     for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
     {
-        TensorIndex<dim> elem_fine_tid =
-            grid_fine.flat_to_tensor_element_index(elem_fine_fid);
+        f_elem->move_to(elem_fine_fid);
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
-            elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][elem_fine_tid[i]];
+            elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][f_elem->get_tensor_index()[i]];
 
-        const int elem_coarse_fid =
-            grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
 
-        map_elem_fine_to_elem_coarse[elem_fine_fid] = elem_coarse_fid;
+        c_elem->move_to(elem_coarse_tid);
+
+        res.emplace(f_elem, c_elem);
+//        TensorIndex<dim> elem_fine_tid =
+//            grid_fine.flat_to_tensor_element_index(elem_fine_fid);
+//
+//
+//        const int elem_coarse_fid =
+//            grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
+//
+//        map_elem_fine_to_elem_coarse[elem_fine_fid] = elem_coarse_fid;
     }
 
-    return map_elem_fine_to_elem_coarse;
+    return res;
 }
 
 
 
 template <int dim>
-std::shared_ptr<CartesianGrid<dim>>
-                                 build_cartesian_grid_union(
-                                     const CartesianGrid<dim> &grid_1,
-                                     const CartesianGrid<dim> &grid_2,
-                                     vector<Index> &map_elem_grid_union_to_elem_grid_1,
-                                     vector<Index> &map_elem_grid_union_to_elem_grid_2)
+std::shared_ptr<CartesianGrid<dim> >
+build_cartesian_grid_union(
+    const CartesianGrid<dim> &grid_1,
+    const CartesianGrid<dim> &grid_2,
+    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
+    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2)
 {
     //---------------------------------------------------------
     // checks that the grid are on the same domain

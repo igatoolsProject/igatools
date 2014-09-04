@@ -28,46 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int rank>
-inline
-TensorIndex<rank>::
-TensorIndex(Index val) noexcept
-{
-    Assert(val >= 0, ExcLowerRange(val,0));
-    for (auto &idx : (*this))
-        idx = val;
-}
-
-
-template <int rank>
-inline
-TensorIndex<rank>::
-TensorIndex(const std::array<int,rank> &arr) noexcept
-:
-std::array<int,rank>::array(arr)
-{
-#ifndef NDEBUG
-    for (const auto &idx : (*this))
-        Assert(idx >= 0,ExcLowerRange(idx,0));
-#endif
-}
-
-template <int rank>
-inline
-TensorIndex<rank>::
-TensorIndex(std::initializer_list<Index> list) noexcept
-{
-    if (rank > 0)
-    {
-        Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
-        std::copy(list.begin(), list.end(), this->begin());
-    }
-
-#ifndef NDEBUG
-    for (const auto &idx : (*this))
-        Assert(idx >= 0,ExcLowerRange(idx,0));
-#endif
-}
 
 
 template <int rank>
@@ -78,6 +38,20 @@ operator +=(const TensorIndex<rank> &ti) noexcept
 {
     for (int i = 0; i < rank; ++i)
         (*this)[i] += ti[i];
+    return *this;
+}
+
+template <int rank>
+inline
+TensorIndex<rank> &
+TensorIndex<rank>::
+operator -=(const TensorIndex<rank> &ti) noexcept
+{
+    for (int i = 0; i < rank; ++i)
+    {
+        (*this)[i] -= ti[i];
+        Assert((*this)[i] >= 0,ExcLowerRange((*this)[i],0));
+    }
     return *this;
 }
 
@@ -114,10 +88,10 @@ operator +=(const int j) noexcept
 template <int rank>
 Index &
 TensorIndex<rank>::
-operator()(const Index i)
+operator[](const Index i)
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    return (*this)[i];
+    return std::array<Index,rank>::operator[](i);
 }
 
 
@@ -125,11 +99,13 @@ operator()(const Index i)
 template <int rank>
 const Index &
 TensorIndex<rank>::
-operator()(const Index i) const
+operator[](const Index i) const
 {
     Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    return (*this)[i];
+    return std::array<Index,rank>::operator[](i);
 }
+
+
 
 IGA_NAMESPACE_CLOSE
 

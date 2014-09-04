@@ -23,7 +23,7 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
-using std::vector;
+
 using std::shared_ptr;
 using std::endl;
 
@@ -34,7 +34,7 @@ MappingSlice<dim_, codim_>::
 MappingSlice(const std::shared_ptr<const SupMap> map,
              const int face_id,
              const std::shared_ptr<GridType > grid,
-             const std::shared_ptr<std::map<int,int> > elem_map)
+             const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map)
     :
     base_t::Mapping(grid),
     map_(map),
@@ -65,7 +65,7 @@ MappingSlice<dim_, codim_>::
 create(const std::shared_ptr<const SupMap> map,
        const int face_id,
        const std::shared_ptr<GridType > grid,
-       const std::shared_ptr<std::map<int,int> > elem_map) -> shared_ptr<base_t>
+       const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map) -> shared_ptr<base_t>
 {
     return shared_ptr<base_t>(new self_t(map, face_id, grid, elem_map));
 }
@@ -81,8 +81,8 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
     const auto weights = quad.get_weights();
 
     auto ext_quad = Quadrature<dim+1>(
-                        insert(points, direction_,std::vector<Real>(1,value_)),
-                        insert(weights,direction_,std::vector<Real>(1,1.0))) ;
+                        insert(points, direction_,vector<Real>(1,value_)),
+                        insert(weights,direction_,vector<Real>(1,1.0))) ;
 
     return ext_quad;
 }
@@ -92,7 +92,7 @@ build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate(std::vector<Value> &values) const
+evaluate(ValueVector<Value> &values) const
 {
     values = element->get_map_values();
 }
@@ -102,7 +102,7 @@ evaluate(std::vector<Value> &values) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-evaluate_gradients(std::vector<Gradient> &gradients) const
+evaluate_gradients(ValueVector<Gradient> &gradients) const
 {
     auto grad = element->get_map_gradients();
 
@@ -130,9 +130,10 @@ init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-set_element(const CartesianGridElementAccessor<dim> &elem) const
+set_element(const GridIterator &elem) const
 {
-    element->reset_flat_tensor_indices((*elem_map_)[elem.get_flat_index()]);
+    typename CartesianGrid<dim_>::ElementIterator el_tmp(this->get_grid(),elem.get_flat_index());
+    element->move_to((*elem_map_)[el_tmp]->get_flat_index());
     element->fill_cache();
 }
 
@@ -141,7 +142,7 @@ template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
 set_face_element(const Index face_id,
-                 const CartesianGridElementAccessor<dim> &elem) const
+                 const GridIterator &elem) const
 {
     Assert(false, ExcNotImplemented());
     AssertThrow(false, ExcNotImplemented());

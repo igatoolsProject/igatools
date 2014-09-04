@@ -207,6 +207,12 @@ protected:
      */
     explicit  NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
                          const WeightsTable &weights);
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    NURBSSpace(const self_t &space) = delete;
+
     ///@}
 
 public:
@@ -228,16 +234,11 @@ public:
     Size get_num_basis(const int comp, const int dir) const;
 
     /**
-     * Returns the number of dofs per element.
+     * Component-direction indexed table with the number of basis functions
+     * in each direction and component
      */
-    Size get_num_basis_per_element() const;
+    const SpaceDimensionTable &get_num_basis_table() const;
 
-    const SpaceDimensionTable get_num_basis_per_element_table() const;
-
-    /**
-     *  Return the number of dofs per element for the i-th space component.
-     */
-    Size get_num_basis_per_element(int i) const;
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
@@ -246,7 +247,10 @@ public:
      */
     const DegreeTable &get_degree() const;
 
-    std::vector<Index> get_loc_to_global(const TensorIndex<dim> &j) const;
+
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
     ///@}
 
@@ -254,10 +258,17 @@ public:
 
     const std::shared_ptr<spline_space_t> get_spline_space() const;
 
-    const DofDistribution<dim, range, rank> &get_basis_indices() const;
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
 
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_global();
 
-    DofDistribution<dim, range, rank> &get_basis_indices();
+    /** Returns the container with the patch dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_patch() const;
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_patch();
 
 
 
@@ -273,12 +284,12 @@ public:
 
     std::shared_ptr<RefFaceSpace>
     get_ref_face_space(const Index face_id,
-                       std::vector<Index> &face_to_element_dofs,
-                       std::map<int, int> &elem_map) const;
+                       vector<Index> &face_to_element_dofs,
+                       typename GridType::FaceGridMap &elem_map) const;
 
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
-                   std::vector<Index> &face_to_element_dofs) const;
+                   vector<Index> &face_to_element_dofs) const;
 
 
 

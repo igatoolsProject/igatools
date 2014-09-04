@@ -83,19 +83,11 @@ count_and_remove_duplicates(
         }
     }
 
-    Assert(multiplicities.size() == vec_without_duplicates.size(),
+    Assert(multiplicities.size() == int(vec_without_duplicates.size()),
            ExcDimensionMismatch(multiplicities.size(),vec_without_duplicates.size()));
 
-    Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == vec_with_duplicates.size(),
+    Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == int(vec_with_duplicates.size()),
            ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
-    /*
-    //------------------------------------------------------------------------------------------
-    // now we count how many entries with the same values (==>multiplicity)
-    multiplicities.clear() ;
-    for (const auto & v : vec_without_duplicates)
-        multiplicities.push_back(count(vec_with_duplicates_begin, vec_with_duplicates_end, v)) ;
-    //------------------------------------------------------------------------------------------
-    //*/
 }
 
 } ;

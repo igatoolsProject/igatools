@@ -51,11 +51,20 @@ void test_evaluate()
     auto hessians = elem->get_map_hessians();
 
     out << "Points: (r,phi,thetas...) :" << endl;
-    out << quad.get_points().get_flat_cartesian_product() << endl;
+    quad.get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
+
     out << "Values (x1,x2,...):" << endl;
     values.print_info(out);
+    out << endl;
+
+    out << "Gradients (x1,x2,...):" << endl;
     gradients.print_info(out);
+    out << endl;
+
+    out << "Hessians (x1,x2,...):" << endl;
     hessians.print_info(out);
+    out << endl;
 
     string filename = "spherical_map-" + to_string(dim) + "d";
     Writer<dim> writer(map, 4);

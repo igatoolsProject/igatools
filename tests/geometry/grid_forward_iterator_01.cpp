@@ -72,7 +72,7 @@ void test_accessor3()
     const int n_knots = 4;
     for (int i = 0; i < dim; ++i)
     {
-        vector<Real> tmp_coord;
+        iga::vector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coords.copy_data_direction(i,tmp_coord);
@@ -106,7 +106,7 @@ void test_accessor4()
     const int n_knots = 4;
     for (int i = 0; i < dim; ++i)
     {
-        vector<Real> tmp_coord;
+        iga::vector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coords.copy_data_direction(i,tmp_coord);
