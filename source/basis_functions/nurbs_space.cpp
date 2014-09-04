@@ -430,6 +430,15 @@ get_num_basis(const int comp, const int dir) const
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
+get_num_basis_table() const ->
+const SpaceDimensionTable &
+{
+    return sp_space_->get_num_basis_table();
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
 get_degree() const -> const DegreeTable &
 {
     return sp_space_->get_degree();

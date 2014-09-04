@@ -55,7 +55,7 @@ public:
     SparsityPattern(const SpaceManager &space_manager);
 
     /**
-     * Construct the sparsity pattern associated with the SpaceManager of two space.
+     * Construct the sparsity pattern associated with the SpaceManager of two spaces.
      *
      * @warning This function only works when both spaces have the same number of elements.
      */
