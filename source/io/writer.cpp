@@ -276,8 +276,6 @@ add_field(shared_ptr<Space> space_,
     //--------------------------------------------------------------------------
     Assert(space_dim <= 3,
            ExcMessage("The maximum allowed physical domain for VTK file is 3."));
-    Assert(space->get_num_basis() == coefs.size(),
-           ExcDimensionMismatch(space->get_num_basis(), coefs.size()));
     //--------------------------------------------------------------------------
 
 
