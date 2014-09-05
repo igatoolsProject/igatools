@@ -101,7 +101,6 @@ fill_cube_elements()
     for (auto &elem : elements)
     {
         auto all = sequence<dim>();
-
         std::set_difference(all.begin(), all.end(),
                             elem.constant_directions.begin(),
                             elem.constant_directions.end(),
@@ -139,42 +138,29 @@ void cube_elements()
 }
 
 
-template<typename Array, std::size_t... I>
-auto a2t_impl(const Array& a, std::index_sequence<I...>)
+template<std::size_t... I>
+auto tuple_of_elements(std::index_sequence<I...>)
     -> decltype(std::make_tuple(std::array<int, I>() ...))
 {
     return std::make_tuple(std::array<int, I>() ...);
 }
 
-template<typename T, std::size_t N, typename Indices = std::make_index_sequence<N>>
-auto a2t(const std::array<T, N>& a)
-    -> decltype(a2t_impl(a, Indices()))
+template<std::size_t N, typename Indices = std::make_index_sequence<N>>
+auto cube_elements()
+    -> decltype(tuple_of_elements(Indices()))
 {
-    return a2t_impl(a, Indices());
+    return tuple_of_elements(Indices());
 }
 
 int main()
 {
     out.depth_console(20);
 
-    std::array<int, 4> array = {1,2,3,4};
+    auto all_elems = cube_elements<4>();
 
-     // convert an array into a tuple
-    auto tuple = a2t(array);
-
-    auto a=  std::get<1>(tuple);
-
-//    cube_elements<1,1>();
-//    cube_elements<1,0>();
-//
-//    cube_elements<2,2>();
-//    cube_elements<2,1>();
-//    cube_elements<2,0>();
-//
-//    cube_elements<3,3>();
-//    cube_elements<3,2>();
-//    cube_elements<3,1>();
-//    cube_elements<3,0>();
+    auto faces =  std::get<2>(all_elems);
+    for (auto &dir : faces)
+    	out << dir << endl;
 
     return 0;
 }
