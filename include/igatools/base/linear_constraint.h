@@ -90,6 +90,17 @@ public:
      */
     Real get_dof_coeff(const int i) const;
 
+    /**
+     * @name Printing info
+     */
+    ///@{
+
+    /**
+     * Prints the content of the LinearConstraint on the LogStream @p out.
+     */
+    void print_info(LogStream &out) const ;
+    ///@}
+
 private:
 
     /** Returns a const reference of the right hand side of the linear constraint. */

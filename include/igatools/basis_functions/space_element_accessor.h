@@ -70,6 +70,7 @@ public:
 
     // TODO (pauletti, Aug 21, 2014): doxy documentation should link to space doc
     // do NOT type twice
+    using RefPoint = typename Space::RefPoint;
     using Point = typename Space::Point;
     using Value = typename Space::Value;
     template <int order>
@@ -162,7 +163,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable<Value>
-    evaluate_basis_values_at_points(const ValueVector<Point> &points) const;
+    evaluate_basis_values_at_points(const ValueVector<RefPoint> &points) const;
 
 
     /**
@@ -184,7 +185,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<1> >
-    evaluate_basis_gradients_at_points(const ValueVector<Point> &points) const;
+    evaluate_basis_gradients_at_points(const ValueVector<RefPoint> &points) const;
 
 
     /**
@@ -206,7 +207,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ValueTable< Derivative<2> >
-    evaluate_basis_hessians_at_points(const ValueVector<Point> &points) const;
+    evaluate_basis_hessians_at_points(const ValueVector<RefPoint> &points) const;
 
 
     /**
@@ -230,7 +231,7 @@ public:
     ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     evaluate_field_derivatives_at_points(
         const vector<Real> &local_coefs,
-        const ValueVector<Point> &points) const;
+        const ValueVector<RefPoint> &points) const;
 
 
     /**
@@ -244,7 +245,7 @@ public:
     ValueVector<Value>
     evaluate_field_values_at_points(
         const vector<Real> &local_coefs,
-        const ValueVector<Point> &points) const;
+        const ValueVector<RefPoint> &points) const;
 
 
     /**
@@ -258,7 +259,7 @@ public:
     ValueVector< Derivative<1> >
     evaluate_field_gradients_at_points(
         const vector<Real> &local_coefs,
-        const ValueVector<Point> &points) const;
+        const ValueVector<RefPoint> &points) const;
 
 
     /**
@@ -272,7 +273,7 @@ public:
     ValueVector< Derivative<2> >
     evaluate_field_hessians_at_points(
         const vector<Real> &local_coefs,
-        const ValueVector<Point> &points) const;
+        const ValueVector<RefPoint> &points) const;
     ///@}
 
 

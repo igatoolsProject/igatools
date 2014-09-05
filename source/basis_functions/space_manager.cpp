@@ -355,6 +355,18 @@ add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, con
 
 void
 SpaceManager::
+add_linear_constraint(std::shared_ptr<LinearConstraint> linear_constraint)
+{
+    Assert(are_linear_constraints_open_ == true,
+           ExcMessage("Linear constraints already closed."));
+
+    Assert(linear_constraint != nullptr, ExcNullPtr());
+    linear_constraints_.push_back(linear_constraint);
+}
+
+
+void
+SpaceManager::
 remove_equality_constraints_redundancies()
 {
     map<Index,set<Index>> upper_sparsity_pattern_pre;
@@ -462,8 +474,19 @@ print_info(LogStream &out) const
     }
 
     out << "Num. unique dofs          = " << this->get_num_dofs() << endl;
-    out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
 
+
+    out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
+    out.push("   ");
+    int lc_counter = 0 ;
+    for (const auto &lc : linear_constraints_)
+    {
+        out << "Linear constraint[" << lc_counter++ << "] :" << endl;
+        out.push("   ");
+        lc->print_info(out);
+        out.pop();
+    }
+    out.pop();
 
 
     out << "Num. equality constraints = " << this->get_num_equality_constraints() << endl;

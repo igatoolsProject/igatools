@@ -82,6 +82,8 @@ public:
     using Value = typename Func::Value;
     using Div   = typename Func::Div;
 
+    using RefPoint = typename RefSpace::Point;
+
 
 public:
     template< class T>
