@@ -37,8 +37,9 @@ int main()
     vector< Real > points(n);
     for (int i=0; i<n; ++i)
         points[i] = Real(i)/(n-1);
-
-    out << "points: " << points << endl;
+    out << "points: ";
+    points.print_info(out);
+    out << endl;
 
     for (int p = 0; p<3; p++)
     {
