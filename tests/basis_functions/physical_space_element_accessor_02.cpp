@@ -37,6 +37,9 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
 
+
+using std::shared_ptr;
+
 template <int dim>
 using RefSpace_t = BSplineSpace<dim,dim,1>  ;
 
