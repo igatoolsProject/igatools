@@ -23,9 +23,9 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/equality_constraint.h>
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
-#include <igatools/basis_functions/equality_constraint.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
