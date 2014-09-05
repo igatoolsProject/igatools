@@ -138,29 +138,59 @@ void cube_elements()
 }
 
 
-template<std::size_t... I>
+template<int dim, std::size_t... I>
 auto tuple_of_elements(std::index_sequence<I...>)
-    -> decltype(std::make_tuple(std::array<int, I>() ...))
+    -> decltype(std::make_tuple(fill_cube_elements<dim, I>() ...))
 {
-    return std::make_tuple(std::array<int, I>() ...);
+    return std::make_tuple(fill_cube_elements<dim, I>() ...);
 }
 
-template<std::size_t N, typename Indices = std::make_index_sequence<N>>
-auto cube_elements()
-    -> decltype(tuple_of_elements(Indices()))
+template<std::size_t dim, typename Indices = std::make_index_sequence<dim+1>>
+auto construct_cube_elements()
+    -> decltype(tuple_of_elements<dim>(Indices()))
 {
-    return tuple_of_elements(Indices());
+    return tuple_of_elements<dim>(Indices());
+}
+
+
+template<int dim, int k>
+void all_cube_elements()
+{
+    OUTSTART
+    auto all_elems = construct_cube_elements<dim>();
+
+	auto elements = std::get<k>(all_elems);
+    const auto size = elements.size();
+    out << "Number of elements: " << size << endl;
+	for (auto i=0; i<size; ++i)
+	{
+	    out.begin_item("Element: " + std::to_string(i));
+	    auto &face = elements[i];
+	    const auto n_dir = face.constant_directions.size();
+        out << "constant directions" << endl;
+        for (int j=0; j<n_dir; ++j)
+        {
+            out << "x["<<face.constant_directions[j]<< "]";
+            out << " = " << face.constant_values[j] << endl;
+        }
+        out << "Active directions" << endl;
+        for (auto &dir : face.active_directions)
+            out << "x[" << dir << "]" << endl;
+        out.end_item();
+	}
+	OUTEND
 }
 
 int main()
 {
     out.depth_console(20);
-
-    auto all_elems = cube_elements<4>();
-
-    auto faces =  std::get<2>(all_elems);
-    for (auto &dir : faces)
-    	out << dir << endl;
+    all_cube_elements<2,2>();
+    all_cube_elements<2,1>();
+    all_cube_elements<2,0>();
+    all_cube_elements<3,3>();
+    all_cube_elements<3,2>();
+    all_cube_elements<3,1>();
+    all_cube_elements<3,0>();
 
     return 0;
 }
