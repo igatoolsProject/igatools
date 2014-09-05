@@ -333,7 +333,9 @@ init_cache(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_w_measure;
         if (contains(fill_flag , ValueFlags::face_normal))
             grid_flag |= ValueFlags::face_point;
-        // CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
+
+        // TODO (pauletti, Sep 5, 2014): uncomment properly
+        //CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
