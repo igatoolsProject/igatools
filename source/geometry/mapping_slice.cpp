@@ -152,14 +152,14 @@ set_face_element(const Index face_id,
 template<int dim_, int codim_>
 auto
 MappingSlice<dim_,codim_>::
-inject_points(const std::vector<Point> &points) const -> std::vector<typename SupMap::Point>
+inject_points(const ValueVector<Point> &points) const -> ValueVector<typename SupMap::Point>
 {
     Assert(!points.empty(),ExcEmptyObject());
 
     const Size n_points = points.size();
 
     using SupMapPoint = typename SupMap::Point;
-    vector<SupMapPoint> sup_map_points(n_points);
+    ValueVector<SupMapPoint> sup_map_points(n_points);
     if (dim_ == 1)
     {
         if (direction_ == 0)
@@ -225,14 +225,12 @@ inject_points(const std::vector<Point> &points) const -> std::vector<typename Su
 template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
-evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const
+evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const
 {
     Assert(!points.empty(),ExcEmptyObject());
     Assert(values.size() == points.size(),ExcDimensionMismatch(values.size(),points.size()))
 
-    using SupMapPoint = typename SupMap::Point;
-    vector<SupMapPoint> sup_map_points = this->inject_points(points);
-
+    const auto sup_map_points = this->inject_points(points);
     map_->evaluate_at_points(sup_map_points,values);
 }
 
@@ -242,18 +240,17 @@ evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values)
 template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
-evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const
+evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const
 {
     Assert(!points.empty(),ExcEmptyObject());
     Assert(gradients.size() == points.size(),ExcDimensionMismatch(gradients.size(),points.size()))
 
     const Size n_points = points.size();
 
-    using SupMapPoint = typename SupMap::Point;
-    vector<SupMapPoint> sup_map_points = this->inject_points(points);
+    const auto sup_map_points = this->inject_points(points);
 
     using SupMapGrad  = typename SupMap::Gradient;
-    vector<SupMapGrad> sup_map_gradients(n_points);
+    ValueVector<SupMapGrad> sup_map_gradients(n_points);
     map_->evaluate_gradients_at_points(sup_map_points,sup_map_gradients);
 
 
@@ -273,7 +270,7 @@ evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradi
 template<int dim_, int codim_>
 void
 MappingSlice<dim_,codim_>::
-evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const
+evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const
 {
     Assert(false,ExcNotImplemented());
 }

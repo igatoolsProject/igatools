@@ -11,8 +11,9 @@
 
 
 using namespace iga;
-using namespace std;
 
+
+using iga::vector;
 
 
 
@@ -52,11 +53,11 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees)
         //cout << "Map[" << i << "]" <<endl;
         auto grid = maps[i]->get_grid();
         ref_spaces_field.push_back(RefSpaceField::create(degrees[i], grid));
-        spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i]),i));
+        spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i])));
         //spaces[i]->print_info(out);
-		grid->print_info(out);
-        grid->refine(5); 
-		grid->print_info(out);
+        grid->print_info(out);
+        grid->refine(5);
+        grid->print_info(out);
         //spaces[i]->print_info(out);
     }
 }

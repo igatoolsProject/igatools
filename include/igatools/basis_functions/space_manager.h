@@ -257,6 +257,16 @@ public:
      */
     void add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
 
+
+    /**
+     * Add a LinearConstraint to the SpaceManager.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the space manager is not set in the proper state by the function
+     * linear_constraints_open().
+     */
+    void add_linear_constraint(std::shared_ptr<LinearConstraint> linear_constraint);
+
     /**
      * Communicate the SpaceManager that the insertion of the linear constraints is
      * completed.

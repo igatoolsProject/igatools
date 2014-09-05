@@ -12,8 +12,9 @@
 
 
 using namespace iga;
-using namespace std;
 
+
+using iga::vector;
 
 
 
@@ -179,26 +180,25 @@ void do_test(vector<shared_ptr<Mapping<dim,0>>> &maps, vector<int> degrees, LogS
 {
 
     using RefSpaceField         = BSplineSpace<dim,dim_field,1>;
-    using RefSpaceField_ptr     = shared_ptr<RefSpaceField>;
     using PushFw                = PushForward<Transformation::h_grad, dim,0>;
     using PhySpace              = PhysicalSpace<RefSpaceField, PushFw>;
     using PhySpace_ptr          = shared_ptr<PhySpace>;
 
-    vector<RefSpaceField_ptr>   ref_spaces_field;
     vector<PhySpace_ptr>        spaces;
 
 
-    for (int i=0; i!=maps.size(); ++i)
+    int i = 0;
+    for (auto &map : maps)
     {
-        ref_spaces_field.push_back(RefSpaceField::create(degrees[i], maps[i]->get_grid()));
-        spaces.push_back(PhySpace::create(ref_spaces_field[i], PushFw::create(maps[i]),i));
-//      spaces[i]->get_grid()->print_info(out);
-        spaces[i]->get_grid()->refine(3);
-        spaces[i]->get_grid()->print_info(out);
-        //spaces[i]->get_reference_space()->refine_h(3);
-//      spaces[i]->print_info(out);
-        //spaces[i]->refine_h(3); // Problem here with a value different than 2
-//      spaces[i]->print_info(out);
+        spaces.push_back(PhySpace::create(
+                             RefSpaceField::create(degrees[i], map->get_grid()),
+                             PushFw::create(map)));
+
+        auto grid = spaces.back()->get_grid();
+        grid->refine(3);
+        grid->print_info(out);
+
+        ++i;
     }
 }
 
@@ -210,7 +210,7 @@ int main()
     const int dim1(1);
     const int dim2(2);
     const int dim3(3);
-    vector<int> degrees(1);
+    vector<int> degrees(2,1);
 
 
     // Mapping $\R \rightarrow \R$, scalar field

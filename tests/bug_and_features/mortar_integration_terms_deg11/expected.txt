@@ -1,0 +1,63 @@
++++++++++++++++++++++++++++++++++++++++++++++++++
+Face joint grid info
+Number of active elements: 2
+Number of intervals per direction: [ 2 ]
+Knot coordinates:
+   Size: [ 3 ]  Weights: [3]
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+face joint grid element nb:0
+face_meas0.500000
+All slave dofs: [ 1 3 ], current face slave dofs[ 0 1 ]
+All master dofs: [ 4 7 10 ], current face master dofs[ 0 1 ]
+All multiplier dofs: [ 1 3 ], current face multiplier dofs[ 0 1 ]
+--------------------
+face joint grid element nb:1
+face_meas0.500000
+All slave dofs: [ 1 3 ], current face slave dofs[ 0 1 ]
+All master dofs: [ 4 7 10 ], current face master dofs[ 1 2 ]
+All multiplier dofs: [ 1 3 ], current face multiplier dofs[ 0 1 ]
+--------------------
++++++++++++++++++++++++++++++++++++++++++++++++++
+Number of multiplier dof:2
+-----------
+Line nb 0, Number of primal dof :5
+Dof[0] = 1      Coef = 0.333333
+Dof[1] = 3      Coef = 0.166667
+Dof[2] = 4      Coef = 0.208333
+Dof[3] = 7      Coef = 0.250000
+Dof[4] = 10      Coef = 0.0416667
+Rhs value = 0
+-----------
+Line nb 1, Number of primal dof :5
+Dof[0] = 1      Coef = 0.166667
+Dof[1] = 3      Coef = 0.333333
+Dof[2] = 4      Coef = 0.0416667
+Dof[3] = 7      Coef = 0.250000
+Dof[4] = 10      Coef = 0.208333
+Rhs value = 0
+-----------
++++++++++++++++++++++++++++++++++++++++++++++++++
+SpaceManager infos:
+    DOFs = [ 0 1 2 3 4 5 6 7 8 9 10 11 12 ]
+    Space[0]:   ID=2   n_dofs=4   DOFs=[ 0 1 2 3 ]
+    Space[1]:   ID=4   n_dofs=9   DOFs=[ 4 5 6 7 8 9 10 11 12 ]
+    Num. unique dofs          = 13
+    Num. linear   constraints = 2
+       Linear constraint[0] :
+          Dof[0] = 1      Coef = 0.333333
+          Dof[1] = 3      Coef = 0.166667
+          Dof[2] = 4      Coef = 0.208333
+          Dof[3] = 7      Coef = 0.250000
+          Dof[4] = 10      Coef = 0.0416667
+          Rhs value = 0
+       Linear constraint[1] :
+          Dof[0] = 1      Coef = 0.166667
+          Dof[1] = 3      Coef = 0.333333
+          Dof[2] = 4      Coef = 0.0416667
+          Dof[3] = 7      Coef = 0.250000
+          Dof[4] = 10      Coef = 0.208333
+          Rhs value = 0
+    Num. equality constraints = 0

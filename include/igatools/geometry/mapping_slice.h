@@ -96,9 +96,9 @@ public:
 
     /** @name Evaluating the quantities related to the MappingSlice without the use of the cache. */
     ///@{
-    void evaluate_at_points(const std::vector<Point> &points, std::vector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const std::vector<Point> &points, std::vector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const std::vector<Point> &points, std::vector<Hessian> &hessians) const override final;
+    void evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const override final;
+    void evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const override final;
+    void evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const override final;
     ///@}
 
 
@@ -135,7 +135,7 @@ private:
      * This function injects the points belonging to the domain of MappingSlice (that has dimension == dim_)
      * to the domain of the Mapping from which the MappingSlice is obtained (that has dimension == dim_+1).
      */
-    std::vector<typename SupMap::Point> inject_points(const std::vector<Point> &points) const;
+    ValueVector<typename SupMap::Point> inject_points(const ValueVector<Point> &points) const;
 };
 
 
