@@ -32,7 +32,7 @@
 template <typename Type, Type ...Indices>
 constexpr
 auto make_index_array(std::integer_sequence<Type, Indices...>)
-    -> std::array<Type, sizeof...(Indices)>
+-> std::array<Type, sizeof...(Indices)>
 {
     return std::array<Type, sizeof...(Indices)>{Indices...};
 }
@@ -42,14 +42,14 @@ constexpr
 auto sequence()
 -> std::array<size_t, N>
 {
-	return make_index_array(std::make_index_sequence<N>());
+    return make_index_array(std::make_index_sequence<N>());
 }
 
 template<int dim>
 class A
 {
 public:
-	static constexpr  std::array<size_t, dim> dims = sequence<dim>();
+    static constexpr  std::array<size_t, dim> dims = sequence<dim>();
 };
 
 template<int dim>
@@ -58,9 +58,9 @@ constexpr  std::array<size_t, dim> A<dim>::dims;
 int main()
 {
 
-	for (auto a : A<20>::dims)
-		out << a << " ";
-	out << endl;
+    for (auto a : A<20>::dims)
+        out << a << " ";
+    out << endl;
 
-	return 0;
+    return 0;
 }

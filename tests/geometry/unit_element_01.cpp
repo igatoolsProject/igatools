@@ -36,15 +36,15 @@ void skeleton()
 {
     OUTSTART
     for (int k = 0; k<=dim; ++k)
-    	out << UnitElement<dim>::skeleton_size[k] << endl;
+        out << UnitElement<dim>::skeleton_size[k] << endl;
     OUTEND
 }
 
 
 template <int dim, int k>
 EnableIf< (dim==0) || (k<0),
-std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-fill_cube_elements()
+          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
+                  fill_cube_elements()
 {
     std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
     return res;
@@ -52,8 +52,8 @@ fill_cube_elements()
 
 template <int dim, int k>
 EnableIf< (dim==k) && (k>0),
-std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-fill_cube_elements()
+          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
+                  fill_cube_elements()
 {
     std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
     res[0].active_directions = sequence<k>();
@@ -62,9 +62,9 @@ fill_cube_elements()
 
 
 template <int dim, int k>
-EnableIf< (dim>k) && (k>=0),
-std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-fill_cube_elements()
+EnableIf< (dim>k)  &&(k>=0),
+          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
+                  fill_cube_elements()
 {
     std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> elements;
 
@@ -83,20 +83,20 @@ fill_cube_elements()
     }
 
     for (int j = 0; j<2; ++j)
-    for (auto &sub_elem_1 : sub_elems_1)
-    {
-        auto &sub_dirs_1 = sub_elem_1.constant_directions;
-        auto &sub_values_1 = sub_elem_1.constant_values;
+        for (auto &sub_elem_1 : sub_elems_1)
         {
-            auto &dirs       = elem->constant_directions;
-            auto &values       = elem->constant_values;
-            std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
-            dirs[dim - k -1] = dim-1;
-            std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
-            values[dim - k -1] = j;
-            ++elem;
+            auto &sub_dirs_1 = sub_elem_1.constant_directions;
+            auto &sub_values_1 = sub_elem_1.constant_values;
+            {
+                auto &dirs       = elem->constant_directions;
+                auto &values       = elem->constant_values;
+                std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
+                dirs[dim - k -1] = dim-1;
+                std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
+                values[dim - k -1] = j;
+                ++elem;
+            }
         }
-    }
 
     for (auto &elem : elements)
     {
@@ -116,14 +116,14 @@ template<int dim, int sub_dim>
 void cube_elements()
 {
     OUTSTART
-	auto elements = fill_cube_elements<dim, sub_dim>();
+    auto elements = fill_cube_elements<dim, sub_dim>();
     const auto size = elements.size();
     out << "Number of elements: " << size << endl;
-	for (auto i=0; i<size; ++i)
-	{
-	    out.begin_item("Element: " + std::to_string(i));
-	    auto &face = elements[i];
-	    const auto n_dir = face.constant_directions.size();
+    for (auto i=0; i<size; ++i)
+    {
+        out.begin_item("Element: " + std::to_string(i));
+        auto &face = elements[i];
+        const auto n_dir = face.constant_directions.size();
         out << "constant directions" << endl;
         for (int j=0; j<n_dir; ++j)
         {
@@ -134,8 +134,8 @@ void cube_elements()
         for (auto &dir : face.active_directions)
             out << "x[" << dir << "]" << endl;
         out.end_item();
-	}
-	OUTEND
+    }
+    OUTEND
 }
 
 

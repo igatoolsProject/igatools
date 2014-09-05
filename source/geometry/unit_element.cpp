@@ -35,14 +35,14 @@ fill_skeleton_size()
 
 template <int dim>
 const std::array<Size, dim + 1> UnitElement<dim>::skeleton_size
-= fill_skeleton_size<dim>();
+    = fill_skeleton_size<dim>();
 
 
 
 template <int dim, int k>
 EnableIf< (dim==0),
-std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-fill_skeleton()
+          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
+                  fill_skeleton()
 {
     std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
     return res;
@@ -51,8 +51,8 @@ fill_skeleton()
 
 template <int dim, int k>
 EnableIf< (dim>0),
-std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-fill_skeleton()
+          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
+                  fill_skeleton()
 {
     std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
 
@@ -215,7 +215,7 @@ UnitElement<0>::face_active_directions[faces_per_element]
 template <>
 const TensorIndex<0>
 UnitElement<1>::face_active_directions[faces_per_element]
-= {TensorIndex<0>(),TensorIndex<0>()};
+    = {TensorIndex<0>(),TensorIndex<0>()};
 
 template <>
 const TensorIndex<1>

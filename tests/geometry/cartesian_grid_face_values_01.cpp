@@ -36,17 +36,17 @@
 template <int dim>
 void face_values(const TensorSize<dim> &n_knots)
 {
-	OUTSTART
+    OUTSTART
 
-	auto grid = CartesianGrid<dim>::create(n_knots);
+    auto grid = CartesianGrid<dim>::create(n_knots);
 
     ValueFlags flag = ValueFlags::face_measure|
 
-    		ValueFlags::face_w_measure|
-    		ValueFlags::face_point|
-    		ValueFlags::point|
-    		ValueFlags::measure|
-    		ValueFlags::w_measure;
+                      ValueFlags::face_w_measure|
+                      ValueFlags::face_point|
+                      ValueFlags::point|
+                      ValueFlags::measure|
+                      ValueFlags::w_measure;
     QUniform<dim> quad(2);
     GridUniformQuadCache<dim> cache(grid, flag, quad);
 
@@ -55,16 +55,16 @@ void face_values(const TensorSize<dim> &n_knots)
 
     for (; elem != grid->end(); ++elem)
     {
-    	out << "Element: ";
-    	elem->print_info(out);
-    	out << endl;
+        out << "Element: ";
+        elem->print_info(out);
+        out << endl;
 
         for (auto &face_id : UnitElement<dim>::faces)
         {
             if (elem->is_boundary(face_id))
             {
-            	cache.fill_face_cache(elem, face_id);
-            	out << "face: " << face_id << endl;
+                cache.fill_face_cache(elem, face_id);
+                out << "face: " << face_id << endl;
 
                 out << "meas: "<< elem->get_face_measure(face_id) << endl;
 

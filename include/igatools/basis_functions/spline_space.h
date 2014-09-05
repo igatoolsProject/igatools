@@ -462,7 +462,7 @@ ComponentContainer(const ComponentMap &comp_map, const T &val)
     inactive_components_id_.resize(it-inactive_components_id_.begin());
 
     for (auto i : active_components_id_)
-        base_t::operator()(i) = val;
+        base_t::operator[](i) = val;
 }
 
 

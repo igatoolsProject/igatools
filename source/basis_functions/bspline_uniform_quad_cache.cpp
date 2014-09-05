@@ -46,11 +46,11 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     const auto n_points = quad.get_num_points_direction();
     for (auto comp : splines1d_.get_active_components_id())
     {
-        auto &splines1d = splines1d_(comp);
+        auto &splines1d = splines1d_[comp];
         const auto size = splines1d.tensor_size();
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-            auto n_fun = degree(comp)[dir]+1;
+            auto n_fun = degree[comp][dir]+1;
             auto n_pts = n_points[dir];
             for (int j = 0 ; j < size[dir] ; ++j)
                 splines1d.entry(dir,j).resize(n_derivatives, n_fun, n_pts);

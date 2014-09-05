@@ -584,7 +584,9 @@ print_info(LogStream &out) const
 
     out.begin_item("Weights:");
     for (auto w : weights_)
+    {
         w.print_info(out);
+    }
     out.end_item();
 }
 

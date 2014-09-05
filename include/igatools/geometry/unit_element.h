@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 constexpr int skel_size(int dim, int k)
 {
     return dim==k ? 1 :
-    		(((k==-1)||(k>dim)) ? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
+           (((k==-1)||(k>dim)) ? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
 }
 
 
@@ -50,11 +50,11 @@ struct UnitElement
     {
         Skeleton() = default;
         Skeleton(const std::array<Size, dim - k> &constant_directions_)
-        : constant_directions(constant_directions_)
+            : constant_directions(constant_directions_)
         {}
-    	std::array<Size, dim - k> constant_directions;
-    	std::array<Size, dim - k> constant_values;
-    	std::array<Size, k>       active_directions;
+        std::array<Size, dim - k> constant_directions;
+        std::array<Size, dim - k> constant_values;
+        std::array<Size, k>       active_directions;
     };
 
     //static const Size n_faces = skeleton_size[dim-1];

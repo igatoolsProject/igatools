@@ -66,7 +66,6 @@ points:
 ValueVector (num_points=2) : [ [ 0 1.00000 ]  [ 0.500000 1.00000 ]  ]
 Element: Flat id = 3    Tensor id = [1,1]
 
-
 face: 1
 meas: 0.500000
 w_meas: 
@@ -185,7 +184,6 @@ ValueVector (num_points=4) : [ 0.0625000 0.0625000 0.0625000 0.0625000 ]
 points: 
 ValueVector (num_points=4) : [ [ 0 0 1.00000 ]  [ 0.500000 0 1.00000 ]  [ 0 0.500000 1.00000 ]  [ 0.500000 0.500000 1.00000 ]  ]
 Element: Flat id = 5    Tensor id = [1,0,1]
-
 
 face: 1
 meas: 0.250000

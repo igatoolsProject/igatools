@@ -276,9 +276,9 @@ protected:
 
 
 public:
-	vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
-	vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
     /** @name Functions involving the element iterator */
     ///@{

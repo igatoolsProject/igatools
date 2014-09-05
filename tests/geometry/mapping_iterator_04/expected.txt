@@ -7,21 +7,7 @@ Loop using the MappingElementAccessor
 ----
 Element id 0
 MappingElementAccessor info
-   CartesianGridElementAccessor<2> info:
-      CartesianGridElement<2> info:
-         Flat id = 0
-         Tensor id = [0,0]
-         Box intervals: 
-            Direction[0] : [ 0 , 0.500000 ]
-            Direction[1] : [ 0 , 1.00000 ]
-         Vertices:
-            Vertex[0] = [ 0 0 ] 
-            Vertex[1] = [ 0.500000 0 ] 
-            Vertex[2] = [ 0 1.00000 ] 
-            Vertex[3] = [ 0.500000 1.00000 ] 
-         Center = [ 0.250000 0.500000 ] 
-         On boundary = true
-         Faces on boundary = 0 2 3
+   Flat id = 0    Tensor id = [0,0]
    num. points = 4
 Points evaluated at the element using the cache
 ValueVector (num_points=4) : [ [ 0 0 ]  [ 0.500000 0 ]  [ 0 1.00000 ]  [ 0.500000 1.50000 ]  ]
@@ -35,21 +21,7 @@ ValueVector (num_points=2) : [ [ 0 0 ]  [ 0 1.00000 ]  ]----
 ----
 Element id 1
 MappingElementAccessor info
-   CartesianGridElementAccessor<2> info:
-      CartesianGridElement<2> info:
-         Flat id = 1
-         Tensor id = [1,0]
-         Box intervals: 
-            Direction[0] : [ 0.500000 , 1.00000 ]
-            Direction[1] : [ 0 , 1.00000 ]
-         Vertices:
-            Vertex[0] = [ 0.500000 0 ] 
-            Vertex[1] = [ 1.00000 0 ] 
-            Vertex[2] = [ 0.500000 1.00000 ] 
-            Vertex[3] = [ 1.00000 1.00000 ] 
-         Center = [ 0.750000 0.500000 ] 
-         On boundary = true
-         Faces on boundary = 1 2 3
+   Flat id = 1    Tensor id = [1,0]
    num. points = 4
 Points evaluated at the element using the cache
 ValueVector (num_points=4) : [ [ 0.500000 0 ]  [ 1.00000 0 ]  [ 0.500000 1.50000 ]  [ 1.00000 2.00000 ]  ]
