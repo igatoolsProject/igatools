@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/equality_constraint.h>
+#include <igatools/base/equality_constraint.h>
 
 IGA_NAMESPACE_OPEN
 

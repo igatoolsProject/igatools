@@ -39,6 +39,13 @@ class LinearConstraint : private std::pair< vector<std::pair<Index,Real> >,Real 
 public:
     /** @name Constructors ad destructor */
     ///@{
+    /** Default constructor. Not allowed to be used. */
+    LinearConstraint() = delete;
+
+    /**
+     * Constructor. It builds the LinearConstraint from a vector of @p dofs defining the constraint,
+     * their relative @p coefficients and the tight hand side value @p rhs.
+     */
     LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
 
 
@@ -81,6 +88,16 @@ public:
     Index get_num_lhs_terms() const;
 
     /**
+     * Returns the number of dofs involved in the left hand side of the linear constraint.
+     */
+    Index get_num_dofs() const;
+
+    /**
+     * Returns the number of coefficients involved in the left hand side of the linear constraint.
+     */
+    Index get_num_coeffs() const;
+
+    /**
      * Return the index of the <tt>p</tt>-th dof involved to define the linear constraint.
      */
     Index get_dof_index(const int i) const;
@@ -88,12 +105,35 @@ public:
     /**
      * Return the coefficient associated to the the <tt>p</tt>-th dof involved to define the linear constraint.
      */
-    Real get_dof_coeff(const int i) const;
+    Real get_coeff(const int i) const;
+
+    /**
+     * @name Printing info
+     */
+    ///@{
+
+    /**
+     * Prints the content of the LinearConstraint on the LogStream @p out.
+     */
+    void print_info(LogStream &out) const ;
+    ///@}
 
 private:
 
     /** Returns a const reference of the right hand side of the linear constraint. */
     const std::pair<Index,Real> &get_lhs_term(const int i) const;
+
+    /**
+     * Left hand side of the linear equation.
+     *
+     * Each entry of this vector is a pair (dof_id-coefficient)
+     */
+    vector<std::pair<Index,Real>> lhs_;
+
+    /**
+     * Right hand side of the linear equation.
+     */
+    Real rhs_;
 
 };
 

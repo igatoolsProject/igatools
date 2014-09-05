@@ -23,9 +23,9 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/equality_constraint.h>
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
-#include <igatools/basis_functions/equality_constraint.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
@@ -256,6 +256,16 @@ public:
      * linear_constraints_open().
      */
     void add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
+
+
+    /**
+     * Add a LinearConstraint to the SpaceManager.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the space manager is not set in the proper state by the function
+     * linear_constraints_open().
+     */
+    void add_linear_constraint(std::shared_ptr<LinearConstraint> linear_constraint);
 
     /**
      * Communicate the SpaceManager that the insertion of the linear constraints is
