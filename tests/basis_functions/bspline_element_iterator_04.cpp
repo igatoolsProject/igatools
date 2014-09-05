@@ -34,6 +34,8 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
+using std::shared_ptr;
+
 template <int dim>
 shared_ptr<BSplineSpace<dim,dim,1> >
 create_space(const int num_knots) ;
