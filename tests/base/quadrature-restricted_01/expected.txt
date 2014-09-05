@@ -15,6 +15,10 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 0
 Number of points:1
 weights:
@@ -31,6 +35,10 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=1) : [ [ 0 ]  ]
+
+
+
+
 Restricted quadrature to face: 1
 Number of points:1
 weights:
@@ -47,6 +55,10 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=1) : [ [ 1.00000 ]  ]
+
+
+
+
 Dimension: 2
 Original quadrature:
 Number of points:9
@@ -68,6 +80,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 0
 Number of points:3
 weights:
@@ -88,6 +104,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0 0.112702 ]  [ 0 0.500000 ]  [ 0 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 1
 Number of points:3
 weights:
@@ -108,6 +128,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 1.00000 0.112702 ]  [ 1.00000 0.500000 ]  [ 1.00000 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 2
 Number of points:3
 weights:
@@ -128,6 +152,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 0 ]  [ 0.500000 0 ]  [ 0.887298 0 ]  ]
+
+
+
+
 Restricted quadrature to face: 3
 Number of points:3
 weights:
@@ -148,6 +176,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 1.00000 ]  [ 0.500000 1.00000 ]  [ 0.887298 1.00000 ]  ]
+
+
+
+
 Dimension: 3
 Original quadrature:
 Number of points:27
@@ -173,6 +205,10 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=27) : [ [ 0.112702 0.112702 0.112702 ]  [ 0.500000 0.112702 0.112702 ]  [ 0.887298 0.112702 0.112702 ]  [ 0.112702 0.500000 0.112702 ]  [ 0.500000 0.500000 0.112702 ]  [ 0.887298 0.500000 0.112702 ]  [ 0.112702 0.887298 0.112702 ]  [ 0.500000 0.887298 0.112702 ]  [ 0.887298 0.887298 0.112702 ]  [ 0.112702 0.112702 0.500000 ]  [ 0.500000 0.112702 0.500000 ]  [ 0.887298 0.112702 0.500000 ]  [ 0.112702 0.500000 0.500000 ]  [ 0.500000 0.500000 0.500000 ]  [ 0.887298 0.500000 0.500000 ]  [ 0.112702 0.887298 0.500000 ]  [ 0.500000 0.887298 0.500000 ]  [ 0.887298 0.887298 0.500000 ]  [ 0.112702 0.112702 0.887298 ]  [ 0.500000 0.112702 0.887298 ]  [ 0.887298 0.112702 0.887298 ]  [ 0.112702 0.500000 0.887298 ]  [ 0.500000 0.500000 0.887298 ]  [ 0.887298 0.500000 0.887298 ]  [ 0.112702 0.887298 0.887298 ]  [ 0.500000 0.887298 0.887298 ]  [ 0.887298 0.887298 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 0
 Number of points:9
 weights:
@@ -197,6 +233,10 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0 0.112702 0.112702 ]  [ 0 0.500000 0.112702 ]  [ 0 0.887298 0.112702 ]  [ 0 0.112702 0.500000 ]  [ 0 0.500000 0.500000 ]  [ 0 0.887298 0.500000 ]  [ 0 0.112702 0.887298 ]  [ 0 0.500000 0.887298 ]  [ 0 0.887298 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 1
 Number of points:9
 weights:
@@ -221,6 +261,10 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 1.00000 0.112702 0.112702 ]  [ 1.00000 0.500000 0.112702 ]  [ 1.00000 0.887298 0.112702 ]  [ 1.00000 0.112702 0.500000 ]  [ 1.00000 0.500000 0.500000 ]  [ 1.00000 0.887298 0.500000 ]  [ 1.00000 0.112702 0.887298 ]  [ 1.00000 0.500000 0.887298 ]  [ 1.00000 0.887298 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 2
 Number of points:9
 weights:
@@ -245,6 +289,10 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0 0.112702 ]  [ 0.500000 0 0.112702 ]  [ 0.887298 0 0.112702 ]  [ 0.112702 0 0.500000 ]  [ 0.500000 0 0.500000 ]  [ 0.887298 0 0.500000 ]  [ 0.112702 0 0.887298 ]  [ 0.500000 0 0.887298 ]  [ 0.887298 0 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 3
 Number of points:9
 weights:
@@ -269,6 +317,10 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 1.00000 0.112702 ]  [ 0.500000 1.00000 0.112702 ]  [ 0.887298 1.00000 0.112702 ]  [ 0.112702 1.00000 0.500000 ]  [ 0.500000 1.00000 0.500000 ]  [ 0.887298 1.00000 0.500000 ]  [ 0.112702 1.00000 0.887298 ]  [ 0.500000 1.00000 0.887298 ]  [ 0.887298 1.00000 0.887298 ]  ]
+
+
+
+
 Restricted quadrature to face: 4
 Number of points:9
 weights:
@@ -293,6 +345,10 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 0 ]  [ 0.500000 0.112702 0 ]  [ 0.887298 0.112702 0 ]  [ 0.112702 0.500000 0 ]  [ 0.500000 0.500000 0 ]  [ 0.887298 0.500000 0 ]  [ 0.112702 0.887298 0 ]  [ 0.500000 0.887298 0 ]  [ 0.887298 0.887298 0 ]  ]
+
+
+
+
 Restricted quadrature to face: 5
 Number of points:9
 weights:
@@ -317,3 +373,7 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 1.00000 ]  [ 0.500000 0.112702 1.00000 ]  [ 0.887298 0.112702 1.00000 ]  [ 0.112702 0.500000 1.00000 ]  [ 0.500000 0.500000 1.00000 ]  [ 0.887298 0.500000 1.00000 ]  [ 0.112702 0.887298 1.00000 ]  [ 0.500000 0.887298 1.00000 ]  [ 0.887298 0.887298 1.00000 ]  ]
+
+
+
+

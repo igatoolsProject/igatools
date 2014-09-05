@@ -767,15 +767,15 @@ LogStream::Prefix::~Prefix()
     stream->pop();
 }
 
-
+#if 0
 /**
- * Ouput for std::vector onto a LogStream.
+ * Ouput for vector onto a LogStream.
  * Mostly use for debugging.
  *
  * @relates LogStream
  */
 template <class T>
-LogStream &operator<<(LogStream &out, const std::vector<T> &vector)
+LogStream &operator<<(LogStream &out, const vector<T> &vector)
 {
     out << "[ ";
     for (auto i:vector)
@@ -783,6 +783,7 @@ LogStream &operator<<(LogStream &out, const std::vector<T> &vector)
     out << "]";
     return out;
 }
+#endif
 
 /**
  * Ouput for std::array onto a LogStream.

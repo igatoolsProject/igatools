@@ -112,7 +112,7 @@ public:
      * Type for the element accessor.
      */
     using ElementAccessor = PushForwardElementAccessor<Self>;
-
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
     /**
      * Default constructor. Not allowed to be used.

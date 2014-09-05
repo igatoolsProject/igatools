@@ -27,10 +27,10 @@
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/base/array_utils.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 
 #include <array>
-#include <vector>
 #include <memory>
 
 #include <boost/signals2.hpp>
@@ -88,18 +88,9 @@ private:
 
 public:
     /** Dimensionality of the grid. */
-    static const int dim = dim_;
+    static constexpr int dim = dim_;
 
-    /** Type for the vector of knot vectors */
-    using KnotCoordinates = CartesianProductArray<Real, dim>;
-
-    /**
-     * Types of grid for future optimization
-     */
-    enum class Kind
-    {
-        uniform, direction_uniform, non_uniform
-    };
+    static constexpr std::array<Size, dim_> dims = sequence<dim>();
 
     /** Type for the face of the grid
      * @note for the case dim==0 (with non existent face type)
@@ -113,6 +104,17 @@ public:
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
+
+    /** Type for the vector of knot vectors */
+    using KnotCoordinates = CartesianProductArray<Real, dim>;
+
+    /**
+     * Types of grid for future optimization
+     */
+    enum class Kind
+    {
+        uniform, direction_uniform, non_uniform
+    };
 
     /** @name Constructors*/
     ///@{
@@ -290,10 +292,10 @@ public:
     /**
      * Returns the knot coordinates along all the directions (const version).
      */
-    CartesianProductArray<Real, dim> const &get_knot_coordinates() const;
+    KnotCoordinates const &get_knot_coordinates() const;
 
     /**
-     * Returns the knot coordinates along the direction @p i.
+     * Computes the interval lengths along each direction.
      */
     CartesianProductArray<Real, dim> get_element_lengths() const;
 
@@ -453,12 +455,11 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-
     /**
      * In the hierarchical spaces elements are characterized as influent or not
      * this is the place where this information is stored.
      */
-    DynamicMultiArray<bool,dim> influent_;
+    DynamicMultiArray<bool,dim> marked_elems_;
 
     /**
      * Active elements indicators (used for example in hierarchical spaces).

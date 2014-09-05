@@ -138,7 +138,6 @@ void do_test_3()
     for (int i = 0; i < dim; ++i)
         increment[i] = 3-i;
 
-    const auto end = origin + increment;
     out << "Flat view: ";
     data1.get_sub_array(origin, increment).get_data().print_info(out);
     out << endl;

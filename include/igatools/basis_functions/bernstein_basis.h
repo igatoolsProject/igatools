@@ -22,9 +22,8 @@
 #define __BERNSTEIN_BASIS_H
 
 #include <igatools/base/config.h>
-
-#include <boost/numeric/ublas/matrix.hpp>
 #include <igatools/utils/vector.h>
+#include <boost/numeric/ublas/matrix.hpp>
 
 //TODO: document the implementation and expand introduction
 

@@ -74,6 +74,7 @@ void do_test_1()
 
     for (int i = 0; i < data1.flat_size(); ++i)
         out << data1[i] << " ";
+    out <<endl;
 
     for (int i = 0; i < data1.flat_size(); ++i)
         data1[i] = i;
@@ -139,8 +140,6 @@ void do_test_3()
     TensorIndex<dim> increment;
     for (int i = 0; i < dim; ++i)
         increment[i] = 3-i;
-
-    TensorIndex<dim> end = origin + increment;
 
     out << "Flat view: ";
     data1.get_sub_array(origin, increment).get_data().print_info(out);

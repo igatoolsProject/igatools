@@ -102,7 +102,6 @@ public:
 
     void print_info(LogStream &out) const;
 
-
     /** @name Functions for the index transformations */
     ///@{
     /**

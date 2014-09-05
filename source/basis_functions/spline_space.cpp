@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 
+
 using std::array;
 using std::shared_ptr;
 using std::make_shared;
@@ -30,12 +31,12 @@ using std::const_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
-const std::array<int, dim>
-SplineSpace<dim, range, rank>::dims = sequence<dim>();
+const Size SplineSpace<dim, range, rank>::n_components;
 
 template<int dim, int range, int rank>
-const std::array<int, SplineSpace<dim, range, rank>::n_components>
-SplineSpace<dim, range, rank>::components = sequence<SplineSpace<dim, range, rank>::n_components>();
+const array<Size, SplineSpace<dim, range, rank>::n_components>
+SplineSpace<dim, range, rank>::components =
+    sequence<SplineSpace<dim, range, rank>::n_components>();
 
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
@@ -312,6 +313,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
         {
             Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
             const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
+
             vector<Size> accum_mult;
             const int size = mult.size();
             accum_mult.reserve(size + 1);

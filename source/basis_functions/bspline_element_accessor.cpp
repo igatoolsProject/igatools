@@ -37,7 +37,6 @@ using std::sort;
 
 using std::shared_ptr;
 using std::make_shared;
-
 using std::array;
 
 
@@ -316,7 +315,7 @@ init_cache(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_point;
         if (contains(fill_flag , ValueFlags::face_w_measure))
             grid_flag |= ValueFlags::face_w_measure;
-        CartesianGridElementAccessor<dim>::init_cache(grid_flag,quad);
+        //   CartesianGridElementAccessor<dim>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
@@ -754,7 +753,7 @@ fill_cache(const TopologyId<dim> &topology_id)
     ComponentContainer<array<const BasisValues1d *, dim>> elem_univariate_values;
 
 
-    CartesianGridElementAccessor<dim>::fill_cache(topology_id);
+    //CartesianGridElementAccessor<dim>::fill_cache(topology_id);
 
     if (topology_id.is_element())
     {

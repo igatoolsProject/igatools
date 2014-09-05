@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
  * \f$ (c_{i_1},\dots,c_{i_n}) \in \mathbb{R}^n \f$ are the coefficients and \f$ f \in \mathbb{R} \f$
  * is the right hand side that defines the linear constraint.
  */
-class LinearConstraint : private std::pair< vector<std::pair<Index,Real> >,Real >
+class LinearConstraint
 {
 public:
     /** @name Constructors ad destructor */

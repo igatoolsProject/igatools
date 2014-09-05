@@ -34,6 +34,7 @@
 
 #include <memory>
 
+using std::shared_ptr;
 
 template <int dim>
 void

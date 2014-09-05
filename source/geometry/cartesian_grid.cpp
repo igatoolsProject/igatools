@@ -37,7 +37,9 @@ namespace
 {
 
 /**
- * Returns a uniform filled knots
+ * Given the boundaries of a dim-dimensional box, it
+ * computes and returns a vector of knot vectors uniformly
+ * distrubuted with the required numbers of knots.
  */
 template <int dim>
 CartesianProductArray<Real,dim>
@@ -64,6 +66,16 @@ filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
     return knot_coordinates;
 }
 }
+
+
+
+template <int dim_>
+constexpr int CartesianGrid<dim_>::dim;
+
+
+
+template<int dim_>
+constexpr  std::array<Size, dim_> CartesianGrid<dim_>::dims;
 
 
 
@@ -155,7 +167,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
     knot_coordinates_(knot_coordinates),
-    influent_(this->tensor_size(), true),
+    marked_elems_(this->tensor_size(), true),
     active_elems_(this->tensor_size(), true)
 {
 #ifndef NDEBUG
@@ -217,7 +229,7 @@ CartesianGrid(const self_t &grid)
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
-    influent_(grid.influent_),
+    marked_elems_(grid.marked_elems_),
     active_elems_(grid.active_elems_)
 {}
 
@@ -228,7 +240,7 @@ vector< Real > const &
 CartesianGrid<dim_>::
 get_knot_coordinates(const int i) const
 {
-    return (knot_coordinates_.get_data_direction(i));
+    return knot_coordinates_.get_data_direction(i);
 }
 
 
@@ -250,13 +262,12 @@ get_element_lengths() const -> KnotCoordinates
 {
     auto const &size = get_num_intervals();
     KnotCoordinates length(size);
-    for (int i = 0; i < dim; ++i)
+
+    for (auto &i : dims)
     {
         const auto &knots_i = knot_coordinates_.get_data_direction(i);
-
-        const Size size_i = size[i];
-
-        for (int j = 0 ; j < size_i ; ++j)
+        const auto n_elem = size[i];
+        for (int j = 0 ; j < n_elem ; ++j)
             length.entry(i,j) = knots_i[j+1] - knots_i[j];
     }
     return length;
@@ -268,8 +279,9 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::begin() const -> ElementIterator
 {
-    auto it = std::find(active_elems_.get_data().begin(), active_elems_.get_data().end(), true);
-    if (it==active_elems_.get_data().end())
+    auto it = std::find(active_elems_.get_data().begin(),
+                        active_elems_.get_data().end(), true);
+    if (it == active_elems_.get_data().end())
         return ElementIterator(this->shared_from_this(),
                                IteratorState::pass_the_end);
 
@@ -399,14 +411,14 @@ refine_directions(
     // make a copy of the grid before the refinement
     grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
 
-    for (int i = 0 ; i < dim ; ++i)
+    for (auto i : dims)
         if (refinement_directions[i])
             this->refine_knots_direction(i,n_subdivisions[i]);
 
     TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
-    influent_.resize(this->tensor_size(), true);
+    marked_elems_.resize(this->tensor_size(), true);
     active_elems_.resize(this->tensor_size(), true);
 
     // refining the objects that's are attached to the CartesianGrid
@@ -513,33 +525,31 @@ CartesianGrid<dim_>::
 get_face_grid(const int face_id, FaceGridMap &elem_map) const
 -> shared_ptr<FaceType>
 {
-    Assert(dim > 0, ExcLowerRange(dim,1));
+    Assert(dim > 0, ExcLowerRange(dim, 1));
 
     const auto active_dirs = UnitElement<dim>::face_active_directions[face_id];
     const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
     const int const_value = UnitElement<dim>::face_side[face_id];
 
     TensorIndex<dim> v_index;
-    auto knot_coordinates_ = this->get_knot_coordinates();
-    v_index[const_dir] = const_value==0 ?
+    //auto knot_coordinates_ = this->get_knot_coordinates();
+    v_index[const_dir] = const_value == 0 ?
     0 :
     (knot_coordinates_.tensor_size()[const_dir]-2);
 
     auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
     auto face_grid = FaceType::create(face_knots);
 
-    auto v_elem = this->begin();
+    auto v_elem = begin();
     auto f_elem = face_grid->begin();
-    auto end = face_grid->end();
-    for (; f_elem != end; ++f_elem)
+    auto f_end    = face_grid->end();
+    for (; f_elem != f_end; ++f_elem)
     {
         auto f_index = f_elem->get_tensor_index();
         for (int j=0; j<dim-1; ++j)
             v_index[active_dirs[j]] = f_index[j];
         v_elem->move_to(v_index);
-        //auto ret =
         elem_map.emplace(f_elem, v_elem);
-        //  elem_map[f_elem] = v_elem;
     }
 
     return face_grid;
@@ -624,10 +634,7 @@ operator==(const CartesianGrid<dim> &grid) const
 
 
 
-// TODO (pauletti, Jul 30, 2014): why is this necessary?
-template <int dim_>
-const int
-CartesianGrid<dim_>::dim;
+
 
 IGA_NAMESPACE_CLOSE
 

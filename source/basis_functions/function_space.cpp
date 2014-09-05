@@ -18,15 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/utils/unique_id_generator.h>
 
 IGA_NAMESPACE_OPEN
 
+template <class Grid_>
+constexpr  std::array<Size, Grid_::dim> FunctionSpaceOnGrid<Grid_>::dims;
 
-template <class GridType>
-FunctionSpaceOnGrid<GridType>::
+template <class Grid_>
+FunctionSpaceOnGrid<Grid_>::
 FunctionSpaceOnGrid(std::shared_ptr<GridType> grid)
     :
     GridWrapper<GridType>(grid),
@@ -44,6 +45,5 @@ get_id() const
 
 
 IGA_NAMESPACE_CLOSE
-
 
 #include <igatools/basis_functions/function_space.inst>

@@ -26,6 +26,7 @@
 
 using std::endl;
 using std::array;
+
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;

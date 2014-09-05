@@ -1,0 +1,312 @@
+========================================================================
+void cube_elements() [with int dim = 1; int sub_dim = 1]
+========================================================================
+Number of elements: 1
+Element: 0
+   constant directions
+   Active directions
+   x[0]
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 1; int sub_dim = 0]
+========================================================================
+Number of elements: 2
+Element: 0
+   constant directions
+   x[0] = 0
+   Active directions
+
+Element: 1
+   constant directions
+   x[0] = 1
+   Active directions
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 2; int sub_dim = 2]
+========================================================================
+Number of elements: 1
+Element: 0
+   constant directions
+   Active directions
+   x[0]
+   x[1]
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 2; int sub_dim = 1]
+========================================================================
+Number of elements: 4
+Element: 0
+   constant directions
+   x[0] = 0
+   Active directions
+   x[1]
+
+Element: 1
+   constant directions
+   x[0] = 1
+   Active directions
+   x[1]
+
+Element: 2
+   constant directions
+   x[1] = 0
+   Active directions
+   x[0]
+
+Element: 3
+   constant directions
+   x[1] = 1
+   Active directions
+   x[0]
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 2; int sub_dim = 0]
+========================================================================
+Number of elements: 4
+Element: 0
+   constant directions
+   x[0] = 0
+   x[1] = 0
+   Active directions
+
+Element: 1
+   constant directions
+   x[0] = 1
+   x[1] = 0
+   Active directions
+
+Element: 2
+   constant directions
+   x[0] = 0
+   x[1] = 1
+   Active directions
+
+Element: 3
+   constant directions
+   x[0] = 1
+   x[1] = 1
+   Active directions
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 3; int sub_dim = 3]
+========================================================================
+Number of elements: 1
+Element: 0
+   constant directions
+   Active directions
+   x[0]
+   x[1]
+   x[2]
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 3; int sub_dim = 2]
+========================================================================
+Number of elements: 6
+Element: 0
+   constant directions
+   x[0] = 0
+   Active directions
+   x[1]
+   x[2]
+
+Element: 1
+   constant directions
+   x[0] = 1
+   Active directions
+   x[1]
+   x[2]
+
+Element: 2
+   constant directions
+   x[1] = 0
+   Active directions
+   x[0]
+   x[2]
+
+Element: 3
+   constant directions
+   x[1] = 1
+   Active directions
+   x[0]
+   x[2]
+
+Element: 4
+   constant directions
+   x[2] = 0
+   Active directions
+   x[0]
+   x[1]
+
+Element: 5
+   constant directions
+   x[2] = 1
+   Active directions
+   x[0]
+   x[1]
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 3; int sub_dim = 1]
+========================================================================
+Number of elements: 12
+Element: 0
+   constant directions
+   x[0] = 0
+   x[1] = 0
+   Active directions
+   x[2]
+
+Element: 1
+   constant directions
+   x[0] = 1
+   x[1] = 0
+   Active directions
+   x[2]
+
+Element: 2
+   constant directions
+   x[0] = 0
+   x[1] = 1
+   Active directions
+   x[2]
+
+Element: 3
+   constant directions
+   x[0] = 1
+   x[1] = 1
+   Active directions
+   x[2]
+
+Element: 4
+   constant directions
+   x[0] = 0
+   x[2] = 0
+   Active directions
+   x[1]
+
+Element: 5
+   constant directions
+   x[0] = 1
+   x[2] = 0
+   Active directions
+   x[1]
+
+Element: 6
+   constant directions
+   x[1] = 0
+   x[2] = 0
+   Active directions
+   x[0]
+
+Element: 7
+   constant directions
+   x[1] = 1
+   x[2] = 0
+   Active directions
+   x[0]
+
+Element: 8
+   constant directions
+   x[0] = 0
+   x[2] = 1
+   Active directions
+   x[1]
+
+Element: 9
+   constant directions
+   x[0] = 1
+   x[2] = 1
+   Active directions
+   x[1]
+
+Element: 10
+   constant directions
+   x[1] = 0
+   x[2] = 1
+   Active directions
+   x[0]
+
+Element: 11
+   constant directions
+   x[1] = 1
+   x[2] = 1
+   Active directions
+   x[0]
+
+========================================================================
+
+========================================================================
+void cube_elements() [with int dim = 3; int sub_dim = 0]
+========================================================================
+Number of elements: 8
+Element: 0
+   constant directions
+   x[0] = 0
+   x[1] = 0
+   x[2] = 0
+   Active directions
+
+Element: 1
+   constant directions
+   x[0] = 1
+   x[1] = 0
+   x[2] = 0
+   Active directions
+
+Element: 2
+   constant directions
+   x[0] = 0
+   x[1] = 1
+   x[2] = 0
+   Active directions
+
+Element: 3
+   constant directions
+   x[0] = 1
+   x[1] = 1
+   x[2] = 0
+   Active directions
+
+Element: 4
+   constant directions
+   x[0] = 0
+   x[1] = 0
+   x[2] = 1
+   Active directions
+
+Element: 5
+   constant directions
+   x[0] = 1
+   x[1] = 0
+   x[2] = 1
+   Active directions
+
+Element: 6
+   constant directions
+   x[0] = 0
+   x[1] = 1
+   x[2] = 1
+   Active directions
+
+Element: 7
+   constant directions
+   x[0] = 1
+   x[1] = 1
+   x[2] = 1
+   Active directions
+
+========================================================================
+

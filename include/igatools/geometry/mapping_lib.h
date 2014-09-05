@@ -376,6 +376,7 @@ public:
     void evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const override final;
     void evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const override final;
     void evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const override final;
+
     ///@}
 
 private:

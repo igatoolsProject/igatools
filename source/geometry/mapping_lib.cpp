@@ -23,6 +23,7 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN

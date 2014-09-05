@@ -50,7 +50,7 @@ class StaticMultiArray : public MultiArray<std::array<T,constexpr_pow(dim,rank)>
 public:
 
     /** Number of entries of type T in the StaticMultiArray */
-    static const Size n_entries = constexpr_pow(dim,rank);
+    static constexpr Size n_entries = constexpr_pow(dim,rank);
 
 
 

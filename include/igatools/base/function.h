@@ -25,7 +25,6 @@
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
 
-#include <vector>
 
 IGA_NAMESPACE_OPEN
 

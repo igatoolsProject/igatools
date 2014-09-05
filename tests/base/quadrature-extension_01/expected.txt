@@ -20,6 +20,10 @@ Direction: 1
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
 
+
+
+
+
 Number of points:9
 weights:
 Size: [ 3 3 ]  Weights: [3,9]
@@ -39,6 +43,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 Number of points:9
 weights:
 Size: [ 3 3 ]  Weights: [3,9]
@@ -58,6 +66,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 Number of points:9
 weights:
 Size: [ 3 3 ]  Weights: [3,9]
@@ -77,6 +89,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 Number of points:9
 weights:
 Size: [ 3 3 ]  Weights: [3,9]
@@ -96,6 +112,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 Number of points:9
 weights:
 Size: [ 3 3 ]  Weights: [3,9]
@@ -115,6 +135,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 Number of points:9
 weights:
 Size: [ 3 3 ]  Weights: [3,9]
@@ -134,6 +158,10 @@ Direction: 1
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+
+
+
+
 ======  Extension from 1D to 2D  ======
 Original quadrature
 Number of points:3
@@ -152,6 +180,10 @@ Direction: 0
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
 
+
+
+
+
 Number of points:3
 weights:
 Size: [ 3 ]  Weights: [3]
@@ -167,6 +199,10 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+
+
+
+
 Number of points:3
 weights:
 Size: [ 3 ]  Weights: [3]
@@ -182,6 +218,10 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+
+
+
+
 Number of points:3
 weights:
 Size: [ 3 ]  Weights: [3]
@@ -197,6 +237,10 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+
+
+
+
 Number of points:3
 weights:
 Size: [ 3 ]  Weights: [3]
@@ -212,3 +256,7 @@ Direction: 0
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+
+
+
+

@@ -22,7 +22,7 @@
  *  when getting face related values.
  *
  *  author: pauletti
- *  date: Oct 8, 2013
+ *  date: Aug 28, 2014
  *
  */
 
@@ -30,109 +30,57 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 
 template <int dim>
-void run_test1()
+void face_values(const TensorSize<dim> &n_knots)
 {
-    out << "========================================================================" << endl;
-    out << "Reference faces values <" << dim << ">()" << endl;
-    out << endl;
+	OUTSTART
 
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+	auto grid = CartesianGrid<dim>::create(n_knots);
+
+    ValueFlags flag = ValueFlags::face_measure|
+
+    		ValueFlags::face_w_measure|
+    		ValueFlags::face_point|
+    		ValueFlags::point|
+    		ValueFlags::measure|
+    		ValueFlags::w_measure;
+    QUniform<dim> quad(2);
+    GridUniformQuadCache<dim> cache(grid, flag, quad);
 
     auto elem = grid->begin();
-    ValueFlags flag = ValueFlags::face_measure|
-                      ValueFlags::face_w_measure|
-                      ValueFlags::face_point|
-                      ValueFlags::point|
-                      ValueFlags::measure|
-                      ValueFlags::w_measure;
-    elem->init_cache(flag, QUniform<dim>(2));
+    cache.init_element_cache(elem);
+
     for (; elem != grid->end(); ++elem)
     {
-        out << "Element: "<< elem->get_flat_index() << endl;
-        out.push("  ");
-        for (int face_id=0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
+    	out << "Element: ";
+    	elem->print_info(out);
+    	out << endl;
+
+        for (auto &face_id : UnitElement<dim>::faces)
         {
             if (elem->is_boundary(face_id))
             {
-                elem->fill_face_cache(face_id);
-                out << "face: " << face_id << endl;
-                out.push("  ");
+            	cache.fill_face_cache(elem, face_id);
+            	out << "face: " << face_id << endl;
+
                 out << "meas: "<< elem->get_face_measure(face_id) << endl;
 
-                out << "w_meas: ";
+                out << "w_meas: " << endl;
                 elem->get_face_w_measures(face_id).print_info(out);
                 out << endl;
 
-                out << "points: ";
+                out << "points: " << endl;
                 elem->get_face_points(face_id).print_info(out);
                 out << endl;
 
-                out.pop();
             }
         }
-        out.pop();
     }
 
-    out << "========================================================================" << endl ;
-    out << endl ;
-}
-
-
-
-template <int dim>
-void run_test2()
-{
-    out << "========================================================================" << endl;
-    out << "Reference faces values <" << dim << ">()" << endl;
-    out << endl;
-
-    TensorSize<dim> n_knots;
-    int j=1;
-    for (int i = 0 ; i < dim ; ++i)
-        n_knots[i] = ++j;
-
-    auto grid = CartesianGrid<dim>::create(n_knots);
-
-    auto elem = grid->begin();
-    ValueFlags flag = ValueFlags::face_measure|
-                      ValueFlags::face_w_measure|
-                      ValueFlags::face_point|
-                      ValueFlags::point|
-                      ValueFlags::measure|
-                      ValueFlags::w_measure;
-    elem->init_cache(flag, QUniform<dim>(2));
-    for (; elem != grid->end(); ++elem)
-    {
-        out << "Element: "<< elem->get_flat_index() << endl;
-        out.push("  ");
-        for (int face_id=0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
-        {
-            if (elem->is_boundary(face_id))
-            {
-                elem->fill_face_cache(face_id);
-                out << "face: " << face_id << endl;
-                out.push("  ");
-                out << "meas: "<< elem->get_face_measure(face_id) << endl;
-                out << "w_meas: ";
-                elem->get_face_w_measures(face_id).print_info(out);
-                out << endl;
-
-                out << "points: ";
-                elem->get_face_points(face_id).print_info(out);
-                out << endl;
-
-                out.pop();
-            }
-        }
-        out.pop();
-    }
-
-    out << "========================================================================" << endl ;
-    out << endl ;
+    OUTEND
 }
 
 
@@ -140,13 +88,13 @@ int main()
 {
     out.depth_console(10);
 
-    run_test1<1>();
-    run_test1<2>();
-    run_test1<3>();
+    face_values(TensorSize<1>(3));
+    face_values(TensorSize<2>(3));
+    face_values(TensorSize<3>(3));
 
-    run_test2<1>();
-    run_test2<2>();
-    run_test2<3>();
+    face_values(TensorSize<1>(arr::sequence<1>(2)));
+    face_values(TensorSize<2>(arr::sequence<2>(2)));
+    face_values(TensorSize<3>(arr::sequence<3>(2)));
 
     return  0;
 }

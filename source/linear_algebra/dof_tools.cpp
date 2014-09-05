@@ -24,6 +24,7 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 
 
+
 using std::map;
 using std::set;
 using std::pair;
@@ -40,8 +41,6 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<la_pack> &rhs,
                            Vector<la_pack> &solution)
 {
-//    vector<Index> constrained_rows;
-
     auto dof = boundary_values.begin();
     const auto dof_end = boundary_values.end();
     for (; dof != dof_end; ++dof)

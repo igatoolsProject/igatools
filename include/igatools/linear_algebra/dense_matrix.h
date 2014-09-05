@@ -23,6 +23,7 @@
 #define DENSE_MATRIX_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -135,8 +136,13 @@ public:
 
     /** Returns the number of columns of the matrix. */
     Size get_num_cols() const;
-};
 
+    void print_info(LogStream &out) const
+    {
+        out << *this;
+    }
+
+};
 /**@}*/
 
 IGA_NAMESPACE_CLOSE

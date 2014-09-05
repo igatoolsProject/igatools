@@ -26,6 +26,7 @@
 #include <algorithm>
 
 using std::array;
+using std::endl;
 
 IGA_NAMESPACE_OPEN
 
@@ -354,7 +355,7 @@ bool
 CartesianGridElement<dim_>::
 is_influence() const
 {
-    return grid_->influent_[flat_index_];
+    return grid_->marked_elems_[flat_index_)];
 }
 
 template <int dim_>
@@ -370,8 +371,8 @@ void
 CartesianGridElement<dim_>::
 set_influence(const bool influence_flag)
 {
-    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
-    influent_[flat_index_] = influence_flag;
+    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
+    marked_elems_[flat_index_)] = influence_flag;
 }
 
 template <int dim_>
@@ -453,53 +454,8 @@ void
 CartesianGridElement<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
-    using std::endl;
-
-    const std::string tab = "   ";
-
-    out << "CartesianGridElement<" << dim_ << "> info:" << endl;
-    out.push(tab);
-
-    if (contains(verbosity,VerbosityLevel::debug))
-        out << "CartesianGrid<" << dim_ << "> memory address = " << grid_ << endl;
-
-    out << "Flat id = " << this->get_flat_index() << endl;
-    out << "Tensor id = " << this->get_tensor_index() << endl;
-
-    out << "Box intervals: " << endl;
-    out.push(tab);
-    for (int i = 0 ; i < dim_ ; ++i)
-    {
-        const auto coord_a = this->vertex(0)[i];
-        const auto coord_b = this->vertex(pow(2,i))[i];
-        out << "Direction["<< i << "] : [ " << coord_a << " , " << coord_b << " ]" << endl;
-    }
-    out.pop();
-
-    out << "Vertices:" << endl;
-    out.push(tab);
-    for (Size i = 0 ; i < UnitElement<dim_>::vertices_per_element ; ++i)
-    {
-        out << "Vertex[" << i << "] = " << this->vertex(i) << endl;
-    }
-    out.pop();
-
-    out << "Center = " << this->center() << endl;
-
-    std::string is_boundary = (this->is_boundary())?"true":"false";
-    out << "On boundary = " << is_boundary << endl;
-
-    if (this->is_boundary())
-    {
-        out << "Faces on boundary =";
-        for (Size i = 0 ; i < UnitElement<dim_>::faces_per_element ; ++i)
-            if (this->is_boundary(i))
-                out << " " << i ;
-
-        out << endl;
-    }
-
-    out.pop();
+    out << "Flat id = "   << flat_index_ << "    ";
+    out << "Tensor id = " << tensor_index_ << endl;
 }
 
 IGA_NAMESPACE_CLOSE

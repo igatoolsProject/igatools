@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 #if 0
 template< class T, int rank>
 inline
-const std::vector<T> &
+const vector<T> &
 CartesianProductArray<T,rank>::
 get_data_direction(const int i) const
 {

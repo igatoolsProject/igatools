@@ -95,9 +95,6 @@ operator*(const ValueVector<T> &a, const Real scalar)
     return result ;
 }
 
-/**
- * Performs the scalar-by-vector multiplication scalar * a
- */
 template< class T>
 ValueVector<T>
 operator*(const Real scalar, const ValueVector<T> &a)

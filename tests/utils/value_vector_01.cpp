@@ -98,10 +98,10 @@ void do_test1()
     out.push("\t") ;
     out << "data1:\n";
     data1.print_info(out);
-    out << endl;
+    out << endl ;
     out << "data2:\n";
     data2.print_info(out);
-    out << endl;
+    out << endl ;
     out.pop() ;
 
     data2 = data1 ;
@@ -113,6 +113,7 @@ void do_test1()
     out << "data2:\n";
     data2.print_info(out);
     out << endl;
+
     out.pop() ;
     out << endl ;
 

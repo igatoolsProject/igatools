@@ -247,11 +247,9 @@ public:
      */
     const DegreeTable &get_degree() const;
 
-
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
-
     ///@}
 
 

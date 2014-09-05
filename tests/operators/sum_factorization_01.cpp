@@ -265,7 +265,7 @@ assemble()
      * Initialization of the container for the values of the function
      * that must be projected.
      */
-    vector<Value> f_values_proj(this->elem_quad.get_num_points());
+    ValueVector<Value> f_values_proj(this->elem_quad.get_num_points());
     //-----------------------------------------------------------------
 
 
@@ -346,7 +346,7 @@ assemble()
 
         //----------------------------------------------------
         // multiplicative coefficients of the stiffness matrix term.
-        vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
+        iga::vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
         for (auto &c : c_stiffness)
             for (Index i = 0 ; i < dim ; ++i)
                 c[i][i] = 1.0;

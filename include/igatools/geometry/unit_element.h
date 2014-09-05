@@ -23,8 +23,16 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
+#include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
+
+constexpr int skel_size(int dim, int k)
+{
+    return dim==k ? 1 :
+    		(((k==-1)||(k>dim)) ? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
+}
+
 
 /**
  * @brief This class provides dimension independent information of all topological
@@ -34,6 +42,24 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 struct UnitElement
 {
+
+    static const std::array<Size, dim + 1> skeleton_size;
+
+    template<int k>
+    struct Skeleton
+    {
+        Skeleton() = default;
+        Skeleton(const std::array<Size, dim - k> &constant_directions_)
+        : constant_directions(constant_directions_)
+        {}
+    	std::array<Size, dim - k> constant_directions;
+    	std::array<Size, dim - k> constant_values;
+    	std::array<Size, k>       active_directions;
+    };
+
+    //static const Size n_faces = skeleton_size[dim-1];
+    //static const std::array<Skeleton<dim-1>, skel_size(dim, dim-1)> faces1;
+
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;
 
@@ -52,9 +78,10 @@ struct UnitElement
     static const int face_dim = (dim >= 1)? dim-1 : 0;
 
     /** Number of faces per element.*/
-    static constexpr int faces_per_element = 2 * dim;
+    static constexpr Size faces_per_element = 2 * dim;
 
-    static const std::array<int,faces_per_element> faces;
+    static constexpr std::array<Size, faces_per_element> faces =
+        sequence<faces_per_element>();
     /**
      * Converts the local face index of the unit element
      * to the hyperplane it belongs to.

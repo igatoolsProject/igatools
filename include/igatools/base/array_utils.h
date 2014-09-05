@@ -24,8 +24,31 @@
 #include <igatools/base/config.h>
 #include <array>
 #include <algorithm>
+#include <utility>
 
 IGA_NAMESPACE_OPEN
+
+
+/**
+ * Constant expression sequence generation
+ */
+template <typename Type, Type ...Indices>
+constexpr
+auto make_index_array(std::integer_sequence<Type, Indices...>)
+-> std::array<Type, sizeof...(Indices)>
+{
+    return std::array<Type, sizeof...(Indices)>{Indices...};
+}
+
+template<Size N>
+constexpr
+auto sequence()
+-> std::array<Size, N>
+{
+    return make_index_array(std::make_integer_sequence<Size, N>());
+}
+
+
 
 template <class T, int dim>
 inline
@@ -37,7 +60,8 @@ std::array<T, dim> filled_array(const T &v)
 }
 
 
-
+namespace arr
+{
 /**
  * Returns an array filled with the sequence of numbers
  */
@@ -49,6 +73,7 @@ sequence(const int init = 0)
     std::array<T,dim> res;
     std::iota(res.begin(), res.end(), init);
     return res;
+}
 }
 
 IGA_NAMESPACE_CLOSE

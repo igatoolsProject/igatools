@@ -25,6 +25,7 @@
 using std::endl;
 
 using std::array;
+
 using std::accumulate;
 
 using std::make_shared;
@@ -40,8 +41,8 @@ NURBSElementAccessor< dim, range, rank >::
 NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
                      const Index elem_index)
     :
-    SpaceElementAccessor<NURBSSpace<dim,range,rank>>(space,elem_index),
-                                                  bspline_element_accessor_(space->get_spline_space(), elem_index)
+    SpaceElementAccessor<NURBSSpace<dim,range,rank> >(space,elem_index),
+    bspline_element_accessor_(space->get_spline_space(), elem_index)
 {}
 
 
@@ -51,8 +52,8 @@ NURBSElementAccessor< dim, range, rank >::
 NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
                      const TensorIndex<dim> &elem_index)
     :
-    SpaceElementAccessor<NURBSSpace<dim,range,rank>>(space,elem_index),
-                                                  bspline_element_accessor_(space->get_spline_space(), elem_index)
+    SpaceElementAccessor<NURBSSpace<dim,range,rank> >(space,elem_index),
+    bspline_element_accessor_(space->get_spline_space(), elem_index)
 {}
 
 

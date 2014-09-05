@@ -22,6 +22,7 @@
 #include <igatools/geometry/mapping_slice.h>
 #include <igatools/basis_functions/space_manager.h>
 
+
 using std::array;
 using std::shared_ptr;
 using std::make_shared;

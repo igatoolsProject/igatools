@@ -27,10 +27,7 @@
 #include <igatools/utils/tensor_size.h>
 #include <igatools/utils/vector.h>
 
-
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  * @brief Utils for managing multi-dimensional array indices.

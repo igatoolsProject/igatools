@@ -29,6 +29,7 @@
 #include <igatools/geometry/ig_mapping.h>
 
 using std::array;
+
 using std::shared_ptr;
 using std::static_pointer_cast;
 using std::dynamic_pointer_cast;
@@ -332,7 +333,7 @@ init_cache(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_w_measure;
         if (contains(fill_flag , ValueFlags::face_normal))
             grid_flag |= ValueFlags::face_point;
-        CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
+        // CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
@@ -393,7 +394,7 @@ void
 MappingElementAccessor<dim_ref_,codim_>::
 fill_cache()
 {
-    CartesianGridElementAccessor<dim_ref_>::fill_cache();
+    //  CartesianGridElementAccessor<dim_ref_>::fill_cache();
     mapping_->set_element(GridIterator(*this));
 
     Assert(elem_values_.is_initialized(), ExcNotInitialized());
@@ -455,7 +456,7 @@ fill_face_cache(const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    CartesianGridElementAccessor<dim_ref_>::fill_face_cache(face_id);
+    // CartesianGridElementAccessor<dim_ref_>::fill_face_cache(face_id);
     mapping_->set_face_element(face_id, *this);
 
     auto &face_values = face_values_[face_id];

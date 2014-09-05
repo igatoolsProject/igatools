@@ -20,7 +20,7 @@
 /*
  *
  * Test for the Concatenated iterator class, using as base iterator the
- * std::vector<int>::iterator.
+ * vector<int>::iterator.
  *
  * martinelli
  * 30 May 2014
@@ -30,6 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/utils/concatenated_iterator.h>
+#include <igatools/utils/vector.h>
 
 
 

@@ -111,6 +111,7 @@ print_info(LogStream &out) const
     get_weights().print_info(out);
     out << endl;
 
+    // TODO (pauletti, Aug 26, 2014): redundant info, remove
     out << "weights (flat tensor product):" << endl;
     get_weights().get_flat_tensor_product().print_info(out);
     out << endl;
@@ -119,8 +120,10 @@ print_info(LogStream &out) const
     this->get_points().print_info(out);
     out << endl;
 
+    // TODO (pauletti, Aug 26, 2014): redundant info, remove
     out << "coordinates (flat cartesian_product):" << endl;
     get_points().get_flat_cartesian_product().print_info(out);
+    out << endl;
 
     out << endl;
 }

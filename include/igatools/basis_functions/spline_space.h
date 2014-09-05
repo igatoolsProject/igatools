@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef SPACE_SPEC_H_
-#define SPACE_SPEC_H_
+#ifndef SPLINE_SPACE_H_
+#define SPLINE_SPACE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
@@ -29,7 +29,6 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/geometry/cartesian_grid.h>
-
 
 IGA_NAMESPACE_OPEN
 
@@ -61,12 +60,12 @@ private:
     using typename GridSpace::GridType;
 
 public:
-    static const std::array<int, dim> dims;
+    using GridSpace::dims;
 
     using FaceSpace = Conditional<(dim>0),
           SplineSpace<dim-1, range, rank>,
           SplineSpace<    0, range, rank> >;
-public:
+
     using Func = Function<dim, range, rank>;
 
 public:
@@ -78,11 +77,12 @@ public:
 
 public:
     template<class> class ComponentContainer;
-    static constexpr int n_components = ComponentContainer<int>::n_entries;
-    static const std::array<int, n_components> components;
+    static constexpr int n_components = ComponentContainer<Size>::n_entries;
+    static const std::array<Size, n_components> components;
+
 
 public:
-    using Knots = CartesianProductArray<Real, dim>;
+    using KnotCoordinates = typename GridType::KnotCoordinates;
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
@@ -90,7 +90,7 @@ public:
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
-    using KnotsTable = ComponentContainer<Knots>;
+    using KnotsTable = ComponentContainer<KnotCoordinates>;
     using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
 
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
@@ -270,7 +270,6 @@ public:
     {
         using base_t = StaticMultiArray<T,range,rank>;
     public:
-        // using base_t::Entry;
         /** Type of the iterator. */
         using iterator =  MultiArrayIterator<ComponentContainer<T>>;
 
@@ -283,6 +282,8 @@ public:
 
         ComponentContainer(const ComponentMap &comp_map =
                                sequence<n_entries>());
+
+        ComponentContainer(const ComponentMap &comp_map, const T &val);
 
         /**
          * Construct a homogenous range table with val value
@@ -405,7 +406,8 @@ public:
 
 protected:
 
-    /** This function initialize the member variables from the constructor arguments or after an h-refinement. */
+    /** This function initialize the member variables from the constructor
+     * arguments or after an h-refinement. */
     void init();
 };
 
@@ -444,8 +446,30 @@ ComponentContainer(const ComponentMap &comp_map)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::
-ComponentContainer<T>::
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
+ComponentContainer(const ComponentMap &comp_map, const T &val)
+    :
+    base_t(),
+    comp_map_(comp_map),
+    active_components_id_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_id_(n_entries)
+{
+    auto all = sequence<n_entries>();
+    auto it=std::set_difference(all.begin(), all.end(),
+                                active_components_id_.begin(),active_components_id_.end(),
+                                inactive_components_id_.begin());
+
+    inactive_components_id_.resize(it-inactive_components_id_.begin());
+
+    for (auto i : active_components_id_)
+        base_t::operator()(i) = val;
+}
+
+
+
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),

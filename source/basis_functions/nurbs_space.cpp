@@ -25,6 +25,7 @@
 #include <igatools/base/exceptions.h>
 
 using std::array;
+
 using std::endl;
 using std::shared_ptr;
 using std::make_shared;
