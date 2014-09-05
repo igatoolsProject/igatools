@@ -28,18 +28,27 @@
 #include "../tests.h"
 
 #include <igatools/utils/vector.h>
+#include <igatools/utils/array.h>
 
-void do_test()
+void vector_print_info()
 {
     iga::vector<Real> vec(5);
     vec.print_info(out);
+    out << endl;
 }
 
 
+void array_print_info()
+{
+    iga::array<Real, 5> arr;
+    arr.print_info(out);
+    out<< endl;
+}
 
 
 int main()
 {
-    do_test();
+    vector_print_info();
+    array_print_info();
     return 0;
 }

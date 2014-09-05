@@ -357,8 +357,9 @@ public:
         void
         print_info(LogStream &out) const
         {
-            for (int i=0; i<n_entries; ++i)
-                out << (*this)(i) << " ";
+            //base_t::print_info(out);
+            active_components_id_.print_info(out);
+            inactive_components_id_.print_info(out);
         }
 
         const std::array <Index, n_entries> &get_comp_map() const

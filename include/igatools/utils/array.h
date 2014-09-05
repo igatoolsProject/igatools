@@ -18,41 +18,41 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#ifndef ARRAY_H_
+#define ARRAY_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/print_info_utils.h>
 
-#include <vector>
+#include <array>
 
 IGA_NAMESPACE_OPEN
 
 /**
  * @brief iga version on std::vector
  */
-template<class T>
-class vector : public std::vector<T>
+template<class T, Size N>
+class array : public std::array<T, N>
 {
 public :
     /** Inherith the constructors of the base class. */
-    using std::vector<T>::vector;
+    using std::array<T, N>::array;
 
     Size size() const noexcept
     {
-        return std::vector<T>::size();
+        return std::array<T, N>::size();
     }
 
     typename std::vector<T>::reference operator[](Size n)
     {
         Assert(n<size(), ExcIndexRange(n, 0, size()));
-        return std::vector<T>::operator[](n);
+        return std::array<T, N>::operator[](n);
     }
 
     typename std::vector<T>::const_reference operator[](Size n) const
     {
         Assert(n<size(), ExcIndexRange(n, 0, size()));
-        return std::vector<T>::operator[](n);
+        return std::array<T, N>::operator[](n);
     }
     /**
      * @name Printing info
@@ -94,7 +94,6 @@ public:
     ///@}
 
 } ;
-
 
 IGA_NAMESPACE_CLOSE
 

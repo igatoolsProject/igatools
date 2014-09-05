@@ -32,7 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Global CartesianGrid uniform quadrature
+ * Global BSplineSpace uniform quadrature
  * computational optimization cache, storing the interval length
  * in each direction.
  *

@@ -98,13 +98,14 @@ print_info(LogStream &out) const
 
 
     out.begin_item("One dimensional splines cache:");
-    // TODO (pauletti, Aug 21, 2014): This should just be splines1d_.print_info
-    for (auto spline : splines1d_)
-    {
-        for (int dir = 0 ; dir < dim ; ++dir)
-            for (auto basis : spline.get_data_direction(dir))
-                basis.print_info(out);
-    }
+    splines1d_.print_info(out);
+//    // TODO (pauletti, Aug 21, 2014): This should just be splines1d_.print_info
+//    for (auto spline : splines1d_)
+//    {
+//        for (int dir = 0 ; dir < dim ; ++dir)
+//            for (auto basis : spline.get_data_direction(dir))
+//                basis.print_info(out);
+//    }
     out.end_item();
 }
 
