@@ -125,6 +125,8 @@ public:
 
     static const int rank = rank_;
 
+    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(0);
+
     using BaseSpace::n_components;
     using BaseSpace::components;
     using BaseSpace::dims;

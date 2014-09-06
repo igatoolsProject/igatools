@@ -64,6 +64,8 @@ public:
 
     static const int rank = spline_space_t::rank;
 
+    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(1);
+
     static constexpr int n_components = spline_space_t::n_components;
 
     static const std::array<int, n_components> components;
