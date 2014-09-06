@@ -255,7 +255,7 @@ public:
      * \return The multiplicity of the internal knots that defines the BSpline
      * space for each component and for each coordinate direction.
      */
-    std::shared_ptr<const MultiplicityTable> get_interior_mult();
+    std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
 
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
