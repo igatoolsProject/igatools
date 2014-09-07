@@ -96,9 +96,30 @@ public:
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
     using IndexSpaceMarkTable = Multiplicity;
 
-    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
+    /**
+     * Component holding the number of basis functions
+     */
+    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim>>
     {
+    	using base_t = ComponentContainer<TensorSize<dim>>;
     public:
+    	//using base_t::ComponentContainer;
+
+    	SpaceDimensionTable() = default;
+
+    	SpaceDimensionTable(const base_t &n_basis)
+    	:
+    		base_t(n_basis),
+    		total_dimension(0)
+    	{
+    		for (auto comp : this->get_active_components_id())
+    		{
+    			auto size = (*this)(comp).flat_size();
+    			comp_dimension(comp) = size;
+    	        total_dimension += size;
+    		}
+    	}
+
         ComponentContainer<Size> comp_dimension;
         Size total_dimension;
     };
@@ -187,6 +208,18 @@ public:
     const SpaceDimensionTable &get_num_basis_table() const
     {
         return space_dim_;
+    }
+
+    SpaceDimensionTable get_num_all_element_basis() const
+    {
+    	ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
+    	for (auto comp : deg_.get_active_components_id())
+    	{
+    		n_basis(comp) = TensorSize<dim>(deg_(comp));
+    		n_basis(comp)+=1;
+    	}
+
+    	return SpaceDimensionTable(n_basis);
     }
     ///@}
 
@@ -357,9 +390,15 @@ public:
         void
         print_info(LogStream &out) const
         {
-            //base_t::print_info(out);
+        	out.begin_item("Raw componets: ");
+            base_t::print_info(out);
+            out.end_item();
+            out.begin_item("Active componets ids: ");
             active_components_id_.print_info(out);
+            out.end_item();
+            out.begin_item("Inactive componets ids: ");
             inactive_components_id_.print_info(out);
+            out.end_item();
         }
 
         const std::array <Index, n_entries> &get_comp_map() const

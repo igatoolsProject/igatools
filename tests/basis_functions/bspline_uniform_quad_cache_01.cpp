@@ -53,6 +53,8 @@ void space_cache(const int n_knots = 5, const int deg=1)
     for (; elem != end; ++elem)
     {
         cache.fill_element_cache(elem);
+        elem->print_info(out);
+        elem->print_cache_info(out);
         //  elem->get_basis_values().print_info(out);
     }
 }

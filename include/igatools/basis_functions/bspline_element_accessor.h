@@ -27,6 +27,7 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
+#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -131,6 +132,12 @@ public:
 
 
 
+private:
+    auto & get_elem_cache()
+    {
+    	return this->elem_values_;
+    }
+public:
     /** @name Cache initialization and filling */
     ///@{
 
@@ -182,11 +189,11 @@ public:
 
     ///@}
 
-    /**
-     * Prints internal information about the BSplineElementAccessor.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
+//    /**
+//     * Prints internal information about the BSplineElementAccessor.
+//     * Its main use is for testing and debugging.
+//     */
+//    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
     /**
@@ -362,7 +369,7 @@ private:
 
 
     template <typename Accessor> friend class GridForwardIterator;
-
+    friend class BSplineUniformQuadCache<dim, range, rank>;
 
 
 

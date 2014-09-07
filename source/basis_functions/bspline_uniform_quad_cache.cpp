@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline_uniform_quad_cache.h>
-
+#include <igatools/basis_functions/bernstein_basis.h>
 
 using std::shared_ptr;
 
@@ -40,9 +40,9 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
 {
     const int n_derivatives = 3;
     const auto grid = space->get_grid();
-    //const auto n_intervals = grid->get_num_intervals();
+    const auto n_intervals = grid->get_num_intervals();
     const auto degree = space->get_degree();
-//    const auto n_funcs = space->get_num_basis_per_element_table();
+    //const auto n_funcs = space->get_num_basis_per_element_table();
     const auto n_points = quad.get_num_points_direction();
     for (auto comp : splines1d_.get_active_components_id())
     {
@@ -58,6 +58,73 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     }
 
 
+    /*
+     * For each component and each direction we consider the number
+     * of intervals in the space.
+     * Then in each interval we compute the values and derivatives of
+     * the one dimensional B-splines on each quadrature point.
+     */
+
+    const auto &bezier_op   = space_->operators_;
+   // const auto &degree      = space_.get_degree();
+    const auto &points      = quad_.get_points();
+
+    const auto &lengths = this->lengths_;
+
+    for (auto comp : splines1d_.get_active_components_id())
+    {
+    	auto &splines1d = splines1d_(comp);
+    	for (int jDim = 0; jDim < dim; ++jDim)
+    	{
+    		const int num_intervals = n_intervals[jDim];
+    		const int deg = degree(comp)[jDim];
+    		BasisValues1d bernstein_values(n_derivatives, deg+1, n_points[jDim]);
+
+    		const auto &pt_coords = points.get_data_direction(jDim);
+
+    		// fill values and derivatives of the Bernstein's polynomials at
+    		// quad points in [0,1]
+    		for (int deriv_order = 0; deriv_order < n_derivatives; ++deriv_order)
+    			bernstein_values.get_derivative(deriv_order) =
+    					BernsteinBasis::derivative(deriv_order, deg, pt_coords);
+
+                const auto &bez_iComp_jDim = bezier_op.get_operator(comp,jDim);
+                const auto &lengths_jDim = lengths.get_data_direction(jDim);
+
+                // compute the one dimensional B-splines at quad point on the reference interval
+                for (int i = 0 ; i < num_intervals ; ++i)
+                {
+                    const auto &M = bez_iComp_jDim[i];
+                    const Real one_div_size = 1.0 / lengths_jDim[i];
+                    BasisValues1d &basis = splines1d.entry(jDim,i);
+
+                    for (int deriv_order = 0; deriv_order < n_derivatives; ++deriv_order)
+                    {
+                        const Real scaling_coef = std::pow(one_div_size, deriv_order);
+                        basis.get_derivative(deriv_order) = scaling_coef * prec_prod(M, bernstein_values.get_derivative(deriv_order));
+                    } //end loop deriv_order
+
+                } // end loop interval
+            } // end loop jDim
+        } // end loop iComp
+}
+
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineUniformQuadCache<dim_, range_, rank_>::
+init_element_cache(ElementAccessor &elem)
+{
+
+	base_t::init_element_cache(elem);
+
+	auto n_basis = space_->get_num_all_element_basis();
+	//n_basis.print_info(out);
+	//out << std::endl;
+
+	auto &cache = elem.get_elem_cache();
+	cache.resize(flags_, n_basis ,quad_);
 }
 
 
@@ -67,9 +134,7 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-//    // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
-//    auto &cache = elem.get_accessor().elem_values_;
-//    cache.resize(flags_, quad_);
+	init_element_cache(elem.get_accessor());
 }
 
 

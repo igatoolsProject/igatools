@@ -32,27 +32,58 @@ IGA_NAMESPACE_OPEN
  * @brief iga version on std::vector
  */
 template<class T, Size N>
-class array : public std::array<T, N>
+class special_array
 {
-public :
-    /** Inherith the constructors of the base class. */
-    using std::array<T, N>::array;
+private:
+	using base_t = std::array<T, N>;
+	base_t data_;
+public:
+	using size_type = Size;
+	using reference = typename std::array<T, N>::reference;
+	using const_reference = typename std::array<T, N>::const_reference;
+	using iterator = typename std::array<T, N>::iterator;
+	using const_iterator = typename std::array<T, N>::const_iterator;
+	using value_type = typename std::array<T, N>::value_type;
 
-    Size size() const noexcept
+	iterator begin() noexcept
+			{
+		return data_.begin();
+			}
+	const_iterator begin() const noexcept
+			{
+		return data_.begin();
+			}
+	iterator end() noexcept
+			{
+		return data_.end();
+			}
+	const_iterator end() const noexcept
+			{
+		return data_.end();
+			}
+	value_type* data() noexcept
+			{
+		return data_.data();
+			}
+	const value_type* data() const noexcept
+			{
+		return data_.data();
+			}
+    constexpr size_type size() noexcept
     {
-        return std::array<T, N>::size();
+        return data_.size();
     }
 
-    typename std::vector<T>::reference operator[](Size n)
+    reference operator[](Size n)
     {
         Assert(n<size(), ExcIndexRange(n, 0, size()));
-        return std::array<T, N>::operator[](n);
+        return data_[n];
     }
 
-    typename std::vector<T>::const_reference operator[](Size n) const
+    const_reference operator[](Size n) const
     {
         Assert(n<size(), ExcIndexRange(n, 0, size()));
-        return std::array<T, N>::operator[](n);
+        return data_[n];
     }
     /**
      * @name Printing info
@@ -67,7 +98,7 @@ private:
     EnableIf<has_print_info<A>(0), void>
     t_print_info(LogStream &out) const
     {
-        for (auto &entry : *this)
+        for (auto &entry : data_)
         {
             entry.print_info(out);
             out << std::endl;
@@ -79,7 +110,7 @@ private:
     t_print_info(LogStream &out) const
     {
         out << "[ ";
-        for (auto &entry : *this)
+        for (auto &entry : data_)
         {
             out << entry << " ";
         }

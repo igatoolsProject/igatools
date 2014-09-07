@@ -47,18 +47,27 @@ GridUniformQuadCache(shared_ptr<const GridType> grid,
 template <int dim_>
 void
 GridUniformQuadCache<dim_>::
-init_element_cache(ElementIterator &elem)
+init_element_cache(ElementAccessor &elem)
 {
-    // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
-    auto &cache = elem.get_accessor().elem_values_;
+	auto &cache = elem.elem_values_;
     cache.resize(flags_, quad_);
 
-    auto &face_cache = elem.get_accessor().face_values_;
+    auto &face_cache = elem.face_values_;
     for (auto f: faces)
     {
         auto &f_cache = face_cache[f];
         f_cache.resize(face_flags_, quad_, f);
     }
+}
+
+
+
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
+init_element_cache(ElementIterator &elem)
+{
+	init_element_cache(elem.get_accessor());
 }
 
 

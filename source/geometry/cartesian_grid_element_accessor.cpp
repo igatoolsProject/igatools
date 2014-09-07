@@ -291,7 +291,8 @@ template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 ValuesCache::
-resize(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
+resize(const GridElemValueFlagsHandler &flags_handler,
+		const Quadrature<dim_> &quad)
 {
     const auto n_points_direction = quad.get_num_points_direction();
     const Size n_points = n_points_direction.flat_size();

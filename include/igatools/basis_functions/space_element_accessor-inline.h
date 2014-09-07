@@ -36,25 +36,21 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
                      const Index elem_index)
     :
     CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
-    space_(space)
+    space_(space),
+    n_basis_direction_(space->get_num_all_element_basis())
 {
     Assert(space_ != nullptr, ExcNullPtr());
 
     using Indexer = CartesianProductIndexer<dim>;
-    const auto degree_table = space->get_degree();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-        n_basis_direction_(comp_id) = TensorSize<dim>(degree_table(comp_id)+1);
-
-        // creating the objects for fast conversion from flat-to-tensor indexing
-        // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_(comp_id) =
+    	basis_functions_indexer_(comp_id) =
             std::shared_ptr<Indexer>(new Indexer(n_basis_direction_(comp_id)));
     }
 
     comp_offset_(0) = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_(comp_id)= comp_offset_(comp_id-1) + n_basis_direction_(comp_id).flat_size();
+        comp_offset_(comp_id)= n_basis_direction_.comp_dimension(comp_id-1);
 }
 
 
@@ -494,30 +490,21 @@ inline
 void
 SpaceElementAccessor<Space>::
 ValuesCache::
-reset(const BasisElemValueFlagsHandler &flags_handler,
-      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
-      const Quadrature<dim> &quad)
+resize(const BasisElemValueFlagsHandler &flags_handler,
+		const  SpaceDimensionTable &n_basis_direction,
+		const Quadrature<dim> &quad)
 {
     quad_ = quad;
-    const TensorSize<dim> n_points_direction = quad_.get_num_points_direction();
-
     flags_handler_ = flags_handler;
 
-    //--------------------------------------------------------------------------
-    // computing the total number of basis functions and the number of evaluation points
-    const int total_n_points = n_points_direction.flat_size();
-
-    int total_n_basis = 0;
-    for (int i = 0; i < Space::n_components; ++i)
-        total_n_basis += n_basis_direction(i).flat_size();
+    const auto n_points_direction = quad.get_num_points_direction();
+    const auto total_n_points = n_points_direction.flat_size();
+    const auto total_n_basis = n_basis_direction.total_dimension;
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
-    //--------------------------------------------------------------------------
 
 
-    //--------------------------------------------------------------------------
-    // resizing the containers for the basis functions
     if (flags_handler_.fill_values())
     {
         if (phi_.get_num_points() != total_n_points ||
@@ -564,8 +551,6 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
         div_phi_.clear();
     }
 
-
-
     if (flags_handler_.fill_hessians())
     {
         if (D2phi_.get_num_points() != total_n_points ||
@@ -579,10 +564,8 @@ reset(const BasisElemValueFlagsHandler &flags_handler,
     {
         D2phi_.clear();
     }
-    //--------------------------------------------------------------------------
 
-
-    this->set_initialized(true);
+//    this->set_initialized(true);
 }
 
 
@@ -591,11 +574,11 @@ inline
 void
 SpaceElementAccessor<Space>::
 ElementValuesCache::
-reset(const BasisElemValueFlagsHandler &flags_handler,
-      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
+resize(const BasisElemValueFlagsHandler &flags_handler,
+      const SpaceDimensionTable &n_basis_direction,
       const Quadrature<dim> &quad)
 {
-    ValuesCache::reset(flags_handler, n_basis_direction,quad);
+    ValuesCache::resize(flags_handler, n_basis_direction,quad);
 }
 
 template<class Space>
@@ -603,16 +586,16 @@ inline
 void
 SpaceElementAccessor<Space>::
 FaceValuesCache::
-reset(const Index face_id,
+resize(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
-      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
+      const SpaceDimensionTable &n_basis_direction,
       const Quadrature<dim> &quad1)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
     const auto quad = quad1.collapse_to_face(face_id);
 
-    ValuesCache::reset(flags_handler, n_basis_direction,quad);
+    ValuesCache::resize(flags_handler, n_basis_direction,quad);
 }
 
 
@@ -622,9 +605,9 @@ inline
 void
 SpaceElementAccessor<Space>::
 FaceValuesCache::
-reset(const Index face_id,
+resize(const Index face_id,
       const BasisFaceValueFlagsHandler &flags_handler,
-      const ComponentContainer<TensorSize<dim> > &n_basis_direction,
+      const SpaceDimensionTable &n_basis_direction,
       const Quadrature<dim-1> &quad)
 {
     Assert(false,ExcNotImplemented()) ;
@@ -650,14 +633,14 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
            ExcMessage("Nothing to reset"));
 
     if (!elem_flags_handler.fill_none())
-        this->elem_values_.reset(elem_flags_handler, n_basis_direction_, quad);
+        this->elem_values_.resize(elem_flags_handler, n_basis_direction_, quad);
 
 
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0 ;
         for (auto &face_value : this->face_values_)
-            face_value.reset(face_id++, face_flags_handler, n_basis_direction_, quad);
+            face_value.resize(face_id++, face_flags_handler, n_basis_direction_, quad);
     }
     //--------------------------------------------------------------------------
 }
@@ -883,8 +866,33 @@ get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<di
     return cache.quad_;
 }
 
+template<class Space>
+void
+SpaceElementAccessor<Space>::print_info(LogStream &out) const
+    {
+    	base_t::print_info(out);
+    	out.begin_item("Number of element basis: ");
+    	n_basis_direction_.print_info(out);
+    	out.end_item();
+    }
 
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+print_cache_info(LogStream &out) const
+    {
+    	base_t::print_cache_info(out);
+    	out.begin_item("Space Element Cache:");
+    	elem_values_.print_info(out);
+    	out.end_item();
 
+    	for (int i = 0 ; i < n_faces ; ++i)
+    	{
+    		out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+    		face_values_[i].print_info(out);
+    		out.end_item();
+    	}
+    }
 
 
 IGA_NAMESPACE_CLOSE

@@ -124,6 +124,10 @@ public:
      */
     Index get_num_basis() const;
 
+    SpaceDimensionTable get_num_all_element_basis() const
+    {
+    	return ref_space_->get_num_all_element_basis();
+    }
     /** Returns the container with the local to global basis indices (const version). */
     const DofDistribution<dim, range, rank> &
     get_dofs_distribution() const;

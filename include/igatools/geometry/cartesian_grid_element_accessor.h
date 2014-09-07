@@ -290,6 +290,14 @@ private:
         void resize(const GridElemValueFlagsHandler &flags_handler,
                     const Quadrature<dim_> &quad);
 
+        /**
+         * Fill the cache member.
+         * @note The @p measure is an input argument because of the different
+         * function calls
+         * between element-measure and face-measure.
+         */
+        void fill(const Real measure);
+
         void print_info(LogStream &out) const
         {
             flags_handler_.print_info(out);
@@ -299,14 +307,8 @@ private:
             unit_points_.print_info(out);
         }
 
-        /**
-         * Fill the cache member.
-         * @note The @p measure is an input argument because of the different
-         * function calls
-         * between element-measure and face-measure.
-         */
-        void fill(const Real measure);
 
+//TODO(pauletti, Sep 6, 2014): should the next be private?
 
         GridElemValueFlagsHandler flags_handler_;
 
@@ -363,13 +365,7 @@ private:
      */
     ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
-//    /**
-//     * Grid (global) lengths cache.
-//     *
-//     * @note The use of the shared_pointer is mandatory for the correct
-//     * management of the global cache.
-//     */
-//    std::shared_ptr<LengthCache> length_cache_;
+
 
     /** Element values cache */
     ElementValuesCache elem_values_;

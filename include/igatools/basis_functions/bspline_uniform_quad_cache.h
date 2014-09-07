@@ -48,6 +48,10 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
     template<class T>
     using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
+    using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+protected:
+    using ElementAccessor = typename Space::ElementAccessor;
+    void init_element_cache(ElementAccessor &elem);
 
 public:
     static const int dim = dim_;
@@ -85,6 +89,11 @@ public:
         void print_info(LogStream &out) const
         {
             values_.print_info(out);
+        }
+
+        auto &get_derivative(const int order)
+        {
+        	return values_[order];
         }
     private:
         vector<DenseMatrix> values_;

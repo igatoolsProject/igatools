@@ -740,7 +740,7 @@ get_face_normals(const Index face_id) const -> const ValueVector<ValueMap> &
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
+transform_external_normals() const -> std::array< ValueVector<ValueMap>, codim >
 {
     Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
     Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());
