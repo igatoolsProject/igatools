@@ -611,13 +611,14 @@ protected:
         /** Returns the divergences. */
         const ValueTable<Div> &get_divergences() const;
 
-
+    public:
+        void print_info(LogStream &out) const;
         //TODO: the member variables should be private
     public:
 
         BasisElemValueFlagsHandler flags_handler_;
 
-
+        //TODO(pauletti, Sep 7, 2014): these table should be a tuple
         ValueTable<Value> phi_;
         ValueTable<Derivative<1>> D1phi_;
         ValueTable<Derivative<2>> D2phi_;

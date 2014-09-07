@@ -26,8 +26,10 @@
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/cartesian_product_array-template.h>
+#include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -46,13 +48,23 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
+
     template<class T>
     using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
+
+    template<class T>
+    using ComponentDirectionContainer = ComponentContainer<std::array<T,dim_>>;
+
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+
+    template <int order>
+    using Derivative = typename Space::template Derivative<order>;
+    //using typename parent_t::Point;
+    using Value = typename Space::Value;
 protected:
     using ElementAccessor = typename Space::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
-
+    void fill_element_cache(ElementAccessor &elem);
 public:
     static const int dim = dim_;
 
@@ -100,7 +112,30 @@ public:
     };
 
 private:
+    template <int order>
+    using Val = Conditional<(order==0), Value, Derivative<order> >;
+
+    /**
+     * Computes the k-th order derivative of the non-zero B-spline basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    template <int order>
+    void evaluate_bspline_derivatives(
+    		const ComponentDirectionContainer<const BasisValues1d *> &elem_values,
+    		ValueTable<Val<order>>& D_phi) const;
+
+private:
+    const int n_derivatives = 3;
+
     std::shared_ptr<const Space> space_;
+
+    SpaceDimensionTable n_basis_;
+
+    ComponentContainer<Size> comp_offset_;
 
     BasisElemValueFlagsHandler flags_;
 
@@ -112,6 +147,12 @@ private:
      * splines1d_[comp][dir][interval][order][function][point]
      */
     ComponentDirectionTable<BasisValues1d> splines1d_;
+
+    ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+
+
+    using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
+
 };
 
 IGA_NAMESPACE_CLOSE

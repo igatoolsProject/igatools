@@ -565,7 +565,7 @@ resize(const BasisElemValueFlagsHandler &flags_handler,
         D2phi_.clear();
     }
 
-//    this->set_initialized(true);
+    this->set_initialized(true);
 }
 
 
@@ -688,6 +688,23 @@ get_divergences() const -> const ValueTable<Div> &
     return div_phi_;
 }
 
+template<class Space>
+inline
+auto
+SpaceElementAccessor<Space>::
+ValuesCache::print_info(LogStream &out) const -> void
+{
+	using std::endl;
+	flags_handler_.print_info(out);
+	out << endl;
+	phi_.print_info(out);
+	out << endl;
+	D1phi_.print_info(out);
+	out << endl;
+	D2phi_.print_info(out);
+	out << endl;
+	div_phi_.print_info(out);
+}
 
 template<class Space>
 inline
@@ -869,30 +886,30 @@ get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<di
 template<class Space>
 void
 SpaceElementAccessor<Space>::print_info(LogStream &out) const
-    {
-    	base_t::print_info(out);
-    	out.begin_item("Number of element basis: ");
-    	n_basis_direction_.print_info(out);
-    	out.end_item();
-    }
+{
+	base_t::print_info(out);
+	out.begin_item("Number of element basis: ");
+	n_basis_direction_.print_info(out);
+	out.end_item();
+}
 
 template<class Space>
 void
 SpaceElementAccessor<Space>::
 print_cache_info(LogStream &out) const
-    {
-    	base_t::print_cache_info(out);
-    	out.begin_item("Space Element Cache:");
-    	elem_values_.print_info(out);
-    	out.end_item();
+{
+	base_t::print_cache_info(out);
+	out.begin_item("Space Element Cache:");
+	elem_values_.print_info(out);
+	out.end_item();
 
-    	for (int i = 0 ; i < n_faces ; ++i)
-    	{
-    		out.begin_item("Face: "+ std::to_string(i) + " Cache:");
-    		face_values_[i].print_info(out);
-    		out.end_item();
-    	}
-    }
+	for (int i = 0 ; i < n_faces ; ++i)
+	{
+		out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+		face_values_[i].print_info(out);
+		out.end_item();
+	}
+}
 
 
 IGA_NAMESPACE_CLOSE

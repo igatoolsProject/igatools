@@ -71,19 +71,27 @@ init_element_cache(ElementIterator &elem)
 }
 
 
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
+fill_element_cache(ElementAccessor &elem)
+{
+    const auto &index = elem.get_tensor_index();
+    auto meas = lengths_.tensor_product(index);
+
+    auto &cache = elem.elem_values_;
+    cache.fill(meas);
+    cache.set_filled(true);
+}
+
+
 
 template <int dim_>
 void
 GridUniformQuadCache<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
-    const auto &index = elem->get_tensor_index();
-    auto &cache = elem.get_accessor().elem_values_;
-    auto meas = lengths_.tensor_product(index);
-    cache.fill(meas);
-    cache.set_filled(true);
-
-
+    fill_element_cache(elem.get_accessor());
 }
 
 

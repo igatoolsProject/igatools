@@ -132,19 +132,14 @@ print_info(LogStream &out) const
 {
     using std::endl;
 
-    const std::string tab = "   ";
-
-    out << "ValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
-    out.push(tab);
-
+    out.begin_item("Flags:");
     out << "   values -->    fill = "
         << fill_values_ << "    filled = " << values_filled_ << endl;
     out << "gradients -->    fill = "
         << fill_gradients_ << "    filled = " << gradients_filled_ << endl;
     out << " hessians -->    fill = "
         << fill_hessians_ << "    filled = " << hessians_filled_ << endl;
-
-    out.pop();
+    out.end_item();
 }
 
 //====================================================
@@ -264,19 +259,14 @@ print_info(LogStream &out) const
 {
     using std::endl;
 
-    const std::string tab = "   ";
-
-    out << "GridElemValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
-    out.push(tab);
-
+    out.begin_item("Fill Flags:");
     out << "    points -->    fill = "
         << fill_points_ << "    filled = " << points_filled_ << endl;
     out << "  measures -->    fill = "
         << fill_measures_ << "    filled = " << measures_filled_ << endl;
     out << "w_measures -->    fill = "
         << fill_w_measures_ << "    filled = " << w_measures_filled_ << endl;
-
-    out.pop();
+    out.end_item();
 }
 
 //====================================================
@@ -472,19 +462,8 @@ void
 MappingElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
-    using std::endl;
-
-    const std::string tab = "   ";
-
-
-    out << "MappingElemValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
-    out.push(tab);
-
-    ValueFlagsHandler::print_info(out);
+	ValueFlagsHandler::print_info(out);
     GridElemValueFlagsHandler::print_info(out);
-
-
-    out.pop();
 }
 //====================================================
 
@@ -668,23 +647,13 @@ void
 BasisElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
-    using std::endl;
-
-    const std::string tab = "   ";
-
-    out << "BasisElemValueFlagsHandler info: (memory address = " << &(*this) << ")" << endl;
-    out.push(tab);
-
-    ValueFlagsHandler::print_info(out);
-
-
+	ValueFlagsHandler::print_info(out);
     out << "divergences -->    fill = "
-        << fill_divergences_ << "    filled = " << divergences_filled_ << endl;
-
-    out.pop();
-    out.pop();
+        << fill_divergences_ << "    filled = " << divergences_filled_ << std::endl;
 }
 //====================================================
+
+
 
 
 //====================================================

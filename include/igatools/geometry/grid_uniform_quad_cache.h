@@ -47,6 +47,7 @@ class GridUniformQuadCache
 protected:
     using ElementAccessor = typename GridType::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
+    void fill_element_cache(ElementAccessor &elem);
 
 public:
     static const int dim = dim_;
