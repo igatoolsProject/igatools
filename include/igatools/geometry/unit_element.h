@@ -38,8 +38,8 @@ constexpr int skel_size(int dim, int k)
 #if 1
 template <int dim, int k>
 EnableIf< (dim==0) || (k<0),
-std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
-fill_cube_elements()
+          std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+                  fill_cube_elements()
 {
     std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     return res;
@@ -47,8 +47,8 @@ fill_cube_elements()
 
 template <int dim, int k>
 EnableIf< (dim==k) && (k>0),
-std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
-fill_cube_elements()
+          std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+                  fill_cube_elements()
 {
     std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     res[0].active_directions = sequence<k>();
@@ -57,9 +57,9 @@ fill_cube_elements()
 
 
 template <int dim, int k>
-EnableIf< (dim>k) && (k>=0),
-std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
-fill_cube_elements()
+EnableIf< (dim>k)  &&(k>=0),
+          std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+                  fill_cube_elements()
 {
     std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> elements;
 
@@ -78,20 +78,20 @@ fill_cube_elements()
     }
 
     for (int j = 0; j<2; ++j)
-    for (auto &sub_elem_1 : sub_elems_1)
-    {
-        auto &sub_dirs_1 = sub_elem_1.constant_directions;
-        auto &sub_values_1 = sub_elem_1.constant_values;
+        for (auto &sub_elem_1 : sub_elems_1)
         {
-            auto &dirs       = elem->constant_directions;
-            auto &values       = elem->constant_values;
-            std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
-            dirs[dim - k -1] = dim-1;
-            std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
-            values[dim - k -1] = j;
-            ++elem;
+            auto &sub_dirs_1 = sub_elem_1.constant_directions;
+            auto &sub_values_1 = sub_elem_1.constant_values;
+            {
+                auto &dirs       = elem->constant_directions;
+                auto &values       = elem->constant_values;
+                std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
+                dirs[dim - k -1] = dim-1;
+                std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
+                values[dim - k -1] = j;
+                ++elem;
+            }
         }
-    }
 
     for (auto &elem : elements)
     {
@@ -107,14 +107,14 @@ fill_cube_elements()
 
 template<int dim, std::size_t... I>
 auto tuple_of_elements(std::index_sequence<I...>)
-    -> decltype(std::make_tuple(fill_cube_elements<dim, I>() ...))
+-> decltype(std::make_tuple(fill_cube_elements<dim, I>() ...))
 {
     return std::make_tuple(fill_cube_elements<dim, I>() ...);
 }
 
 template<std::size_t dim, typename Indices = std::make_index_sequence<dim+1>>
 auto construct_cube_elements()
-    -> decltype(tuple_of_elements<dim>(Indices()))
+-> decltype(tuple_of_elements<dim>(Indices()))
 {
     return tuple_of_elements<dim>(Indices());
 }
@@ -142,9 +142,9 @@ struct UnitElement
     {
         SubElement() = default;
 
-    	std::array<Size, dim - k> constant_directions;
-    	std::array<Size, dim - k> constant_values;
-    	std::array<Size, k>       active_directions;
+        std::array<Size, dim - k> constant_directions;
+        std::array<Size, dim - k> constant_values;
+        std::array<Size, k>       active_directions;
     };
 
     static const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))

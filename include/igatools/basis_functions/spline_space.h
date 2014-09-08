@@ -101,28 +101,28 @@ public:
      */
     class SpaceDimensionTable : public ComponentContainer<TensorSize<dim>>
     {
-    	using base_t = ComponentContainer<TensorSize<dim>>;
+        using base_t = ComponentContainer<TensorSize<dim>>;
     public:
-    	//using base_t::ComponentContainer;
+        //using base_t::ComponentContainer;
 
-    	SpaceDimensionTable() = default;
+        SpaceDimensionTable() = default;
 
-    	SpaceDimensionTable(const base_t &n_basis)
-    	:
-    		base_t(n_basis),
-    		comp_dimension(n_basis.get_comp_map()),
-    		total_dimension(0)
-    	{
-    		for (auto comp : this->get_active_components_id())
-    		{
-    			auto size = (*this)(comp).flat_size();
-    			comp_dimension(comp) = size;
-    		}
-    		for (auto size : comp_dimension)
-    			total_dimension += size;
-    	}
+        SpaceDimensionTable(const base_t &n_basis)
+            :
+            base_t(n_basis),
+            comp_dimension(n_basis.get_comp_map()),
+            total_dimension(0)
+        {
+            for (auto comp : this->get_active_components_id())
+            {
+                auto size = (*this)[comp].flat_size();
+                comp_dimension[comp] = size;
+            }
+            for (auto size : comp_dimension)
+                total_dimension += size;
+        }
 
-    	//TODO(pauletti, Sep 8, 2014): make this private and write some getters
+        //TODO(pauletti, Sep 8, 2014): make this private and write some getters
         ComponentContainer<Size> comp_dimension;
         Size total_dimension;
     };
@@ -215,14 +215,11 @@ public:
 
     SpaceDimensionTable get_num_all_element_basis() const
     {
-    	ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
-    	for (auto comp : deg_.get_active_components_id())
-    	{
-    		n_basis(comp) = TensorSize<dim>(deg_(comp));
-    		n_basis(comp)+=1;
-    	}
+        ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
+        for (auto comp : deg_.get_active_components_id())
+            n_basis[comp] = TensorSize<dim>(deg_[comp]+1);
 
-    	return SpaceDimensionTable(n_basis);
+        return SpaceDimensionTable(n_basis);
     }
     ///@}
 
@@ -393,7 +390,7 @@ public:
         void
         print_info(LogStream &out) const
         {
-        	out.begin_item("Raw componets: ");
+            out.begin_item("Raw componets: ");
             base_t::print_info(out);
             out.end_item();
             out.begin_item("Active componets ids: ");

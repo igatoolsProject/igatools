@@ -39,51 +39,51 @@ template<int dim, int range, int rank = 1>
 void bspline_iterator(const int deg = 1, const int n_knots = 3)
 {
 
-	OUTSTART
+    OUTSTART
 
-	auto grid = CartesianGrid<dim>::create(n_knots);
-	using Space = BSplineSpace<dim, range, rank>;
-	using SpaceCache = BSplineUniformQuadCache<dim, range, rank>;
-	auto space = Space::create(deg, grid);
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    using Space = BSplineSpace<dim, range, rank>;
+    using SpaceCache = BSplineUniformQuadCache<dim, range, rank>;
+    auto space = Space::create(deg, grid);
 
-	const int n_qp = 1;
-	QGauss< dim > quad(n_qp);
+    const int n_qp = 1;
+    QGauss< dim > quad(n_qp);
 
-	{
-		SpaceCache cache(space, ValueFlags::value, quad);
-		auto elem = space->begin();
-		cache.init_element_cache(elem);
-		for (; elem != space->end(); ++elem)
-		{
-			cache.fill_element_cache(elem);
-			elem->get_basis_values().print_info(out);
-		}
-	}
-
-
-	{
-		SpaceCache cache(space, ValueFlags::gradient, quad);
-		auto elem = space->begin();
-		cache.init_element_cache(elem);
-		for (; elem != space->end(); ++elem)
-		{
-			cache.fill_element_cache(elem);
-			elem->get_basis_gradients().print_info(out);
-		}
-	}
+    {
+        SpaceCache cache(space, ValueFlags::value, quad);
+        auto elem = space->begin();
+        cache.init_element_cache(elem);
+        for (; elem != space->end(); ++elem)
+        {
+            cache.fill_element_cache(elem);
+            elem->get_basis_values().print_info(out);
+        }
+    }
 
 
+    {
+        SpaceCache cache(space, ValueFlags::gradient, quad);
+        auto elem = space->begin();
+        cache.init_element_cache(elem);
+        for (; elem != space->end(); ++elem)
+        {
+            cache.fill_element_cache(elem);
+            elem->get_basis_gradients().print_info(out);
+        }
+    }
 
-	{
-		SpaceCache cache(space, ValueFlags::hessian, quad);
-		auto elem = space->begin();
-		cache.init_element_cache(elem);
-		for (; elem != space->end(); ++elem)
-		{
-			cache.fill_element_cache(elem);
-			elem->get_basis_hessians().print_info(out);
-		}
-	}
+
+
+    {
+        SpaceCache cache(space, ValueFlags::hessian, quad);
+        auto elem = space->begin();
+        cache.init_element_cache(elem);
+        for (; elem != space->end(); ++elem)
+        {
+            cache.fill_element_cache(elem);
+            elem->get_basis_hessians().print_info(out);
+        }
+    }
 }
 
 int main()

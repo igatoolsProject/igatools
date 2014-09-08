@@ -46,13 +46,13 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     {
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
-    	basis_functions_indexer_[comp_id] =
+        basis_functions_indexer_[comp_id] =
             std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
     }
 
     comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_[comp_id] = comp_offset_[comp_id-1] + n_basis_direction_.comp_dimension(comp_id-1);
+        comp_offset_[comp_id] = comp_offset_[comp_id-1] + n_basis_direction_.comp_dimension[comp_id-1];
 }
 
 
@@ -493,8 +493,8 @@ void
 SpaceElementAccessor<Space>::
 ValuesCache::
 resize(const BasisElemValueFlagsHandler &flags_handler,
-		const  SpaceDimensionTable &n_basis_direction,
-		const Quadrature<dim> &quad)
+       const  SpaceDimensionTable &n_basis_direction,
+       const Quadrature<dim> &quad)
 {
     quad_ = quad;
     flags_handler_ = flags_handler;
@@ -577,8 +577,8 @@ void
 SpaceElementAccessor<Space>::
 ElementValuesCache::
 resize(const BasisElemValueFlagsHandler &flags_handler,
-      const SpaceDimensionTable &n_basis_direction,
-      const Quadrature<dim> &quad)
+       const SpaceDimensionTable &n_basis_direction,
+       const Quadrature<dim> &quad)
 {
     ValuesCache::resize(flags_handler, n_basis_direction,quad);
 }
@@ -589,9 +589,9 @@ void
 SpaceElementAccessor<Space>::
 FaceValuesCache::
 resize(const Index face_id,
-      const BasisFaceValueFlagsHandler &flags_handler,
-      const SpaceDimensionTable &n_basis_direction,
-      const Quadrature<dim> &quad1)
+       const BasisFaceValueFlagsHandler &flags_handler,
+       const SpaceDimensionTable &n_basis_direction,
+       const Quadrature<dim> &quad1)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
@@ -608,9 +608,9 @@ void
 SpaceElementAccessor<Space>::
 FaceValuesCache::
 resize(const Index face_id,
-      const BasisFaceValueFlagsHandler &flags_handler,
-      const SpaceDimensionTable &n_basis_direction,
-      const Quadrature<dim-1> &quad)
+       const BasisFaceValueFlagsHandler &flags_handler,
+       const SpaceDimensionTable &n_basis_direction,
+       const Quadrature<dim-1> &quad)
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false,ExcNotImplemented()) ;
@@ -696,16 +696,16 @@ auto
 SpaceElementAccessor<Space>::
 ValuesCache::print_info(LogStream &out) const -> void
 {
-	using std::endl;
-	flags_handler_.print_info(out);
-	out << endl;
-	phi_.print_info(out);
-	out << endl;
-	D1phi_.print_info(out);
-	out << endl;
-	D2phi_.print_info(out);
-	out << endl;
-	div_phi_.print_info(out);
+    using std::endl;
+    flags_handler_.print_info(out);
+    out << endl;
+    phi_.print_info(out);
+    out << endl;
+    D1phi_.print_info(out);
+    out << endl;
+    D2phi_.print_info(out);
+    out << endl;
+    div_phi_.print_info(out);
 }
 
 template<class Space>
@@ -899,10 +899,10 @@ template<class Space>
 void
 SpaceElementAccessor<Space>::print_info(LogStream &out) const
 {
-	base_t::print_info(out);
-	out.begin_item("Number of element basis: ");
-	n_basis_direction_.print_info(out);
-	out.end_item();
+    base_t::print_info(out);
+    out.begin_item("Number of element basis: ");
+    n_basis_direction_.print_info(out);
+    out.end_item();
 }
 
 template<class Space>
@@ -910,17 +910,17 @@ void
 SpaceElementAccessor<Space>::
 print_cache_info(LogStream &out) const
 {
-	base_t::print_cache_info(out);
-	out.begin_item("Space Element Cache:");
-	elem_values_.print_info(out);
-	out.end_item();
+    base_t::print_cache_info(out);
+    out.begin_item("Space Element Cache:");
+    elem_values_.print_info(out);
+    out.end_item();
 
-	for (int i = 0 ; i < n_faces ; ++i)
-	{
-		out.begin_item("Face: "+ std::to_string(i) + " Cache:");
-		face_values_[i].print_info(out);
-		out.end_item();
-	}
+    for (int i = 0 ; i < n_faces ; ++i)
+    {
+        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+        face_values_[i].print_info(out);
+        out.end_item();
+    }
 }
 
 

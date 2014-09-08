@@ -49,7 +49,7 @@ void
 GridUniformQuadCache<dim_>::
 init_element_cache(ElementAccessor &elem)
 {
-	auto &cache = elem.elem_values_;
+    auto &cache = elem.elem_values_;
     cache.resize(flags_, quad_);
 
     auto &face_cache = elem.face_values_;
@@ -67,7 +67,7 @@ void
 GridUniformQuadCache<dim_>::
 init_element_cache(ElementIterator &elem)
 {
-	init_element_cache(elem.get_accessor());
+    init_element_cache(elem.get_accessor());
 }
 
 

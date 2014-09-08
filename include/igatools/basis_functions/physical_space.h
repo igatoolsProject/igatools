@@ -136,7 +136,7 @@ public:
 
     SpaceDimensionTable get_num_all_element_basis() const
     {
-    	return ref_space_->get_num_all_element_basis();
+        return ref_space_->get_num_all_element_basis();
     }
 
     const DegreeTable &get_degree() const;

@@ -133,9 +133,9 @@ public:
 
 
 private:
-    auto & get_elem_cache()
+    auto &get_elem_cache()
     {
-    	return this->elem_values_;
+        return this->elem_values_;
     }
 public:
     /** @name Cache initialization and filling */

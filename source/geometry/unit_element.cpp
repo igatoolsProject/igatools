@@ -35,7 +35,7 @@ fill_skeleton_size()
 
 template <int dim>
 const std::array<Size, dim + 1> UnitElement<dim>::sub_elements_size
-= fill_skeleton_size<dim>();
+    = fill_skeleton_size<dim>();
 
 
 template <int dim>

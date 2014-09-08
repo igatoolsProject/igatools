@@ -63,7 +63,7 @@ template<class Space>
 class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
 {
 private:
-	using base_t = CartesianGridElementAccessor<Space::dim>;
+    using base_t = CartesianGridElementAccessor<Space::dim>;
 public:
     /** @name Types and aliases used and/or returned by the
      * SpaceElementAccessor's methods. */
@@ -596,15 +596,15 @@ protected:
     class ValuesCache : public CacheStatus
     {
     public:
-    	//TODO(pauletti, Sep 6, 2014): 2nd argument should be of type SpaceDimensionTable
+        //TODO(pauletti, Sep 6, 2014): 2nd argument should be of type SpaceDimensionTable
         /**
          * Allocate space for the values and derivatives
          * of the element basis functions at quadrature points
          * as specify by the flag
          */
-    	void resize(const BasisElemValueFlagsHandler &flags_handler,
-    			const SpaceDimensionTable &n_basis_direction,
-    			const Quadrature<dim> &quad);
+        void resize(const BasisElemValueFlagsHandler &flags_handler,
+                    const SpaceDimensionTable &n_basis_direction,
+                    const Quadrature<dim> &quad);
 
         /** Returns the values. */
         const ValueTable<Value> &get_values() const;
@@ -648,8 +648,8 @@ protected:
          * at quadrature points
          */
         void resize(const BasisElemValueFlagsHandler &flags_handler,
-                   const SpaceDimensionTable &n_basis_direction,
-                   const Quadrature<dim> &quad);
+                    const SpaceDimensionTable &n_basis_direction,
+                    const Quadrature<dim> &quad);
 
     };
 
@@ -665,18 +665,18 @@ protected:
          * at quadrature points
          */
         void resize(const Index face_id,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const SpaceDimensionTable &n_basis_direction,
-                   const Quadrature<dim> &quad);
+                    const BasisFaceValueFlagsHandler &flags_handler,
+                    const SpaceDimensionTable &n_basis_direction,
+                    const Quadrature<dim> &quad);
 
         /**
          * Allocate space for the values and derivatives
          * at quadrature points for a specified face.
          */
         void resize(const Index face_id,
-                   const BasisFaceValueFlagsHandler &flags_handler,
-                   const SpaceDimensionTable &n_basis_direction,
-                   const Quadrature<dim-1> &quad);
+                    const BasisFaceValueFlagsHandler &flags_handler,
+                    const SpaceDimensionTable &n_basis_direction,
+                    const Quadrature<dim-1> &quad);
 
     };
 

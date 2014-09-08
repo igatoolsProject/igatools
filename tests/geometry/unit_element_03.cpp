@@ -36,14 +36,14 @@ void all_cube_elements()
     OUTSTART
     auto all_elems = UnitElement<dim>::all_elems;
 
-	auto elements = std::get<k>(all_elems);
+    auto elements = std::get<k>(all_elems);
     const auto size = elements.size();
     out << "Number of elements: " << size << endl;
-	for (auto i=0; i<size; ++i)
-	{
-	    out.begin_item("Element: " + std::to_string(i));
-	    auto &face = elements[i];
-	    const auto n_dir = face.constant_directions.size();
+    for (auto i=0; i<size; ++i)
+    {
+        out.begin_item("Element: " + std::to_string(i));
+        auto &face = elements[i];
+        const auto n_dir = face.constant_directions.size();
         out << "constant directions" << endl;
         for (int j=0; j<n_dir; ++j)
         {
@@ -54,8 +54,8 @@ void all_cube_elements()
         for (auto &dir : face.active_directions)
             out << "x[" << dir << "]" << endl;
         out.end_item();
-	}
-	OUTEND
+    }
+    OUTEND
 }
 
 int main()

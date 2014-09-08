@@ -105,12 +105,12 @@ public:
 
         auto &get_derivative(const int order)
         {
-        	return values_[order];
+            return values_[order];
         }
 
         auto const &get_derivative(const int order) const
         {
-        	return values_[order];
+            return values_[order];
         }
 
     private:
@@ -131,8 +131,8 @@ private:
      */
     template <int order>
     void evaluate_bspline_derivatives(
-    		const ComponentDirectionContainer<const BasisValues1d *> &elem_values,
-    		ValueTable<Val<order>>& D_phi) const;
+        const ComponentDirectionContainer<const BasisValues1d *> &elem_values,
+        ValueTable<Val<order>> &D_phi) const;
 
 private:
     const int n_derivatives = 3;

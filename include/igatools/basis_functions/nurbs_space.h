@@ -243,7 +243,7 @@ public:
 
     SpaceDimensionTable get_num_all_element_basis() const
     {
-    	return sp_space_->get_num_all_element_basis();
+        return sp_space_->get_num_all_element_basis();
     }
 
     /**

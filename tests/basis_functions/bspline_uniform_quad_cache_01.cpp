@@ -35,7 +35,7 @@
 template <int dim, int range=1, int rank=1>
 void uniform_space_cache(const int n_knots = 5, const int deg=1)
 {
-	OUTSTART
+    OUTSTART
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
@@ -52,14 +52,14 @@ void uniform_space_cache(const int n_knots = 5, const int deg=1)
 template <int dim, int range=1, int rank=1>
 void space_cache_init_elem(const int n_knots = 5, const int deg=1)
 {
-	OUTSTART
+    OUTSTART
 
-	auto grid  = CartesianGrid<dim>::create(n_knots);
-	auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
+    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
 
-	auto flag = ValueFlags::value;
-	auto quad = QGauss<dim>(2);
-	BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
+    auto flag = ValueFlags::value;
+    auto quad = QGauss<dim>(2);
+    BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
 
     auto elem = space->begin();
 
@@ -72,14 +72,14 @@ void space_cache_init_elem(const int n_knots = 5, const int deg=1)
 template <int dim, int range=1, int rank=1>
 void space_cache_fill_elem(const int n_knots = 5, const int deg=1)
 {
-	OUTSTART
+    OUTSTART
 
-	auto grid  = CartesianGrid<dim>::create(n_knots);
-	auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
+    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
 
-	auto flag = ValueFlags::value;
-	auto quad = QGauss<dim>(2);
-	BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
+    auto flag = ValueFlags::value;
+    auto quad = QGauss<dim>(2);
+    BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
@@ -99,14 +99,14 @@ void space_cache_fill_elem(const int n_knots = 5, const int deg=1)
 template <int dim, int range=1, int rank=1>
 void space_cache_value_elem(const int n_knots = 5, const int deg=1)
 {
-	OUTSTART
+    OUTSTART
 
-	auto grid  = CartesianGrid<dim>::create(n_knots);
-	auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
+    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
 
-	auto flag = ValueFlags::value;
-	auto quad = QGauss<dim>(2);
-	BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
+    auto flag = ValueFlags::value;
+    auto quad = QGauss<dim>(2);
+    BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();

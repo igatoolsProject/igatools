@@ -462,7 +462,7 @@ void
 MappingElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
-	ValueFlagsHandler::print_info(out);
+    ValueFlagsHandler::print_info(out);
     GridElemValueFlagsHandler::print_info(out);
 }
 //====================================================
@@ -647,7 +647,7 @@ void
 BasisElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
-	ValueFlagsHandler::print_info(out);
+    ValueFlagsHandler::print_info(out);
     out << "divergences -->    fill = "
         << fill_divergences_ << "    filled = " << divergences_filled_ << std::endl;
 }

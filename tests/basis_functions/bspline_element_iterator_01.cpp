@@ -37,12 +37,12 @@
 template<int dim, int range, int rank = 1>
 void bspline_iterator(const int deg = 2)
 {
-	OUTSTART
+    OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-	using Space = BSplineSpace<dim, range, rank>;
-	using SpaceCache = BSplineUniformQuadCache<dim, range, rank >;
-	auto space = Space::create(deg, grid);
+    using Space = BSplineSpace<dim, range, rank>;
+    using SpaceCache = BSplineUniformQuadCache<dim, range, rank >;
+    auto space = Space::create(deg, grid);
 
     const int n_qp = 3;
     QGauss< dim > quad(n_qp);

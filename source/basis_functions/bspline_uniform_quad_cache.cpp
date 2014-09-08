@@ -263,9 +263,9 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     splines1d_(space->get_components_map(),
                CartesianProductArray<BasisValues1d, dim_>(space->get_grid()->get_num_intervals()))
 {
-	comp_offset_(0) = 0;
-	for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-		comp_offset_(comp_id) = comp_offset_(comp_id-1) + n_basis_.comp_dimension(comp_id-1);
+    comp_offset_[0] = 0;
+    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
+        comp_offset_[comp_id] = comp_offset_[comp_id-1] + n_basis_.comp_dimension[comp_id-1];
 
     const auto n_points = quad.get_num_points_direction();
     for (auto comp : splines1d_.get_active_components_id())
@@ -298,40 +298,40 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
 
     for (auto comp : splines1d_.get_active_components_id())
     {
-    	auto &splines1d = splines1d_(comp);
-    	for (int jDim = 0; jDim < dim; ++jDim)
-    	{
-    		const int num_intervals = n_intervals[jDim];
-    		const int deg = degree(comp)[jDim];
-    		BasisValues1d bernstein_values(n_derivatives, deg+1, n_points[jDim]);
+        auto &splines1d = splines1d_[comp];
+        for (int jDim = 0; jDim < dim; ++jDim)
+        {
+            const int num_intervals = n_intervals[jDim];
+            const int deg = degree[comp][jDim];
+            BasisValues1d bernstein_values(n_derivatives, deg+1, n_points[jDim]);
 
-    		const auto &pt_coords = points.get_data_direction(jDim);
+            const auto &pt_coords = points.get_data_direction(jDim);
 
-    		// fill values and derivatives of the Bernstein's polynomials at
-    		// quad points in [0,1]
-    		for (int order = 0; order < n_derivatives; ++order)
-    			bernstein_values.get_derivative(order) =
-    					BernsteinBasis::derivative(order, deg, pt_coords);
+            // fill values and derivatives of the Bernstein's polynomials at
+            // quad points in [0,1]
+            for (int order = 0; order < n_derivatives; ++order)
+                bernstein_values.get_derivative(order) =
+                    BernsteinBasis::derivative(order, deg, pt_coords);
 
-                const auto &bez_iComp_jDim = bezier_op.get_operator(comp,jDim);
-                const auto &lengths_jDim = lengths.get_data_direction(jDim);
+            const auto &bez_iComp_jDim = bezier_op.get_operator(comp,jDim);
+            const auto &lengths_jDim = lengths.get_data_direction(jDim);
 
-                // compute the one dimensional B-splines at quad point on the reference interval
-                for (int i = 0 ; i < num_intervals ; ++i)
+            // compute the one dimensional B-splines at quad point on the reference interval
+            for (int i = 0 ; i < num_intervals ; ++i)
+            {
+                const auto &M = bez_iComp_jDim[i];
+                const Real one_div_size = 1.0 / lengths_jDim[i];
+                BasisValues1d &basis = splines1d.entry(jDim,i);
+
+                for (int order = 0; order < n_derivatives; ++order)
                 {
-                    const auto &M = bez_iComp_jDim[i];
-                    const Real one_div_size = 1.0 / lengths_jDim[i];
-                    BasisValues1d &basis = splines1d.entry(jDim,i);
+                    const Real scaling_coef = std::pow(one_div_size, order);
+                    basis.get_derivative(order) = scaling_coef * prec_prod(M, bernstein_values.get_derivative(order));
+                } //end loop order
 
-                    for (int order = 0; order < n_derivatives; ++order)
-                    {
-                        const Real scaling_coef = std::pow(one_div_size, order);
-                        basis.get_derivative(order) = scaling_coef * prec_prod(M, bernstein_values.get_derivative(order));
-                    } //end loop order
-
-                } // end loop interval
-            } // end loop jDim
-        } // end loop comp
+            } // end loop interval
+        } // end loop jDim
+    } // end loop comp
 }
 
 
@@ -341,10 +341,10 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 init_element_cache(ElementAccessor &elem)
 {
-	base_t::init_element_cache(elem);
-	auto n_basis = space_->get_num_all_element_basis();
-	auto &cache = elem.get_elem_cache();
-	cache.resize(flags_, n_basis ,quad_);
+    base_t::init_element_cache(elem);
+    auto n_basis = space_->get_num_all_element_basis();
+    auto &cache = elem.get_elem_cache();
+    cache.resize(flags_, n_basis ,quad_);
 }
 
 
@@ -354,7 +354,7 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-	init_element_cache(elem.get_accessor());
+    init_element_cache(elem.get_accessor());
 }
 
 template <int dim, int range, int rank>
@@ -362,12 +362,12 @@ template <int order>
 void
 BSplineUniformQuadCache<dim, range, rank>::
 evaluate_bspline_derivatives(
-		const ComponentDirectionContainer<const BasisValues1d *> &elem_values,
-		ValueTable<Val<order>>& D_phi) const
+    const ComponentDirectionContainer<const BasisValues1d *> &elem_values,
+    ValueTable<Val<order>> &D_phi) const
 {
 
-	Assert(D_phi.size() > 0, ExcEmptyObject());
-//	Assert(D_phi.get_num_functions() == this->get_num_basis(),
+    Assert(D_phi.size() > 0, ExcEmptyObject());
+//  Assert(D_phi.get_num_functions() == this->get_num_basis(),
 //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
 
     const auto n_points_direction = quad_.get_num_points_direction();
@@ -387,15 +387,15 @@ evaluate_bspline_derivatives(
         const TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
         for (int comp : scalar_evaluators_.get_active_components_id())
         {
-            const int n_basis = n_basis_.comp_dimension(comp);
-            const Size comp_offset_i = comp_offset_(comp);
+            const int n_basis = n_basis_.comp_dimension[comp];
+            const Size comp_offset_i = comp_offset_[comp];
 
             DynamicMultiArray<Real,dim> derivative_scalar_component(n_points_direction);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
             {
                 auto D_phi_i = D_phi.get_function_view(comp_offset_i+func_flat_id);
 
-                const auto &scalar_bspline = *scalar_evaluators_(comp)(func_flat_id);
+                const auto &scalar_bspline = *scalar_evaluators_[comp][func_flat_id];
 
                 //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
                 if (dim > 0)
@@ -403,7 +403,7 @@ evaluate_bspline_derivatives(
                     scalar_bspline.evaluate_derivative_at_points(zero_tensor_id,derivative_scalar_component);
 
                     for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                        D_phi_i[point_flat_id](comp) = derivative_scalar_component(point_flat_id);
+                        D_phi_i[point_flat_id](comp) = derivative_scalar_component[point_flat_id];
                 }
                 else
                 {
@@ -417,16 +417,18 @@ evaluate_bspline_derivatives(
 
         for (int comp : scalar_evaluators_.get_inactive_components_id())
         {
-        	const auto n_basis = n_basis_.comp_dimension(comp);
-        	const Size act_offset = comp_offset_(scalar_evaluators_.active(comp));
-        	const Size offset = comp_offset_(comp);
+            const auto n_basis = n_basis_.comp_dimension[comp];
+            const auto scalar_eval_act_comp = scalar_evaluators_.active(comp);
+            const Size act_offset = comp_offset_[scalar_eval_act_comp];
+            const Size offset = comp_offset_[comp];
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
                 const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
                 auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
 
                 for (int qp = 0; qp < num_points; ++qp)
-                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](scalar_evaluators_.active(comp));
+                    values_phi_hat_copy_to[qp](comp) =
+                        values_phi_hat_copy_from[qp](scalar_eval_act_comp);
             }
         }
 
@@ -450,15 +452,15 @@ evaluate_bspline_derivatives(
 
         for (int comp : scalar_evaluators_.get_active_components_id())
         {
-        	const auto n_basis = n_basis_.comp_dimension(comp);
-        	const Size comp_offset_i = comp_offset_(comp);
+            const auto n_basis = n_basis_.comp_dimension[comp];
+            const Size comp_offset_i = comp_offset_[comp];
 
             DynamicMultiArray<Real,dim> derivative_scalar_component(n_points_direction);
             for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
             {
                 auto D_phi_i = D_phi.get_function_view(comp_offset_i+func_flat_id);
 
-                const auto &scalar_bspline = *scalar_evaluators_(comp)(func_flat_id);
+                const auto &scalar_bspline = *scalar_evaluators_[comp][func_flat_id];
 
                 for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
                 {
@@ -476,7 +478,7 @@ evaluate_bspline_derivatives(
                         scalar_bspline.evaluate_derivative_at_points(deriv_order_tensor_id,derivative_scalar_component);
 
                         for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                            D_phi_i[point_flat_id](entry_flat_id)(comp) = derivative_scalar_component(point_flat_id);
+                            D_phi_i[point_flat_id](entry_flat_id)(comp) = derivative_scalar_component[point_flat_id];
                     }
                     else
                     {
@@ -509,9 +511,10 @@ evaluate_bspline_derivatives(
             const Size n_ders = Derivative<order>::size;
 
 
-            const auto n_basis = n_basis_.comp_dimension(comp);
-            const Size act_offset = comp_offset_(scalar_evaluators_.active(comp));
-            const Size offset = comp_offset_(comp);
+            const auto n_basis = n_basis_.comp_dimension[comp];
+            const auto scalar_eval_act_comp = scalar_evaluators_.active(comp);
+            const Size act_offset = comp_offset_[scalar_eval_act_comp];
+            const Size offset = comp_offset_[comp];
             for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
             {
                 const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
@@ -522,7 +525,7 @@ evaluate_bspline_derivatives(
                     der_t &values = derivatives_phi_hat_copy_to[qp];
 
                     for (int der = 0; der < n_ders; ++der)
-                        values(der)(comp) = values_0(der)(scalar_evaluators_.active(comp));
+                        values(der)(comp) = values_0(der)(scalar_eval_act_comp);
                 }
             } //end loop basis_i
         } // end loop comp
@@ -535,7 +538,7 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 fill_element_cache(ElementIterator &elem)
 {
-	fill_element_cache(elem.get_accessor());
+    fill_element_cache(elem.get_accessor());
 }
 
 template<int dim_, int range_ , int rank_>
@@ -543,95 +546,96 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 fill_element_cache(ElementAccessor &elem)
 {
-	base_t::fill_element_cache(elem);
-	auto &cache = elem.get_elem_cache();
+    base_t::fill_element_cache(elem);
+    auto &cache = elem.get_elem_cache();
 
-	vector<std::array<Values1DConstView,dim>> values1D(n_derivatives);
-	const auto &degree = space_->get_degree();
+    vector<std::array<Values1DConstView,dim>> values1D(n_derivatives);
+    const auto &degree = space_->get_degree();
 
-	//TODO(pauletti, Sep 7, 2014): initilize with the proper component map
-	ComponentDirectionContainer<const BasisValues1d *> univariate_values;
-	//if (topology_id.is_element())
-	{
-		const auto element_tensor_id = elem.get_tensor_index();
-		for (int iComp=0; iComp< Space::n_components; ++iComp)
-		{
-			const auto &values_1D_comp = splines1d_(iComp);
-			for (int i = 0; i < dim; ++i)
-				univariate_values(iComp)[i] = &values_1D_comp.get_data_direction(i)[element_tensor_id[i]];
-		}
-	} // if (topology_id.is_element())
+    //TODO(pauletti, Sep 7, 2014): initilize with the proper component map
+    ComponentDirectionContainer<const BasisValues1d *> univariate_values;
+    //if (topology_id.is_element())
+    {
+        const auto element_tensor_id = elem.get_tensor_index();
+        for (int iComp=0; iComp< Space::n_components; ++iComp)
+        {
+            const auto &values_1D_comp = splines1d_[iComp];
+            for (int i = 0; i < dim; ++i)
+                univariate_values[iComp][i] =
+                    &values_1D_comp.get_data_direction(i)[element_tensor_id[i]];
+        }
+    } // if (topology_id.is_element())
 
-	for (int comp = 0; comp < Space::n_components; ++comp)
-	{
-		const auto  &n_basis_direction = n_basis_(comp);
-		auto &scalar_evaluator_comp = scalar_evaluators_(comp);
+    for (int comp = 0; comp < Space::n_components; ++comp)
+    {
+        const auto  &n_basis_direction = n_basis_[comp];
+        auto &scalar_evaluator_comp = scalar_evaluators_[comp];
 
-		scalar_evaluator_comp.resize(n_basis_direction);
-		const auto &univariate_values_comp = univariate_values(comp);
+        scalar_evaluator_comp.resize(n_basis_direction);
+        const auto &univariate_values_comp = univariate_values[comp];
 
-		const Size n_basis = scalar_evaluator_comp.flat_size();
-		for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
-		{
-			const auto tensor_basis_id = scalar_evaluator_comp.flat_to_tensor(flat_basis_id);
+        const Size n_basis = scalar_evaluator_comp.flat_size();
+        for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
+        {
+            const auto tensor_basis_id = scalar_evaluator_comp.flat_to_tensor(flat_basis_id);
 
-			for (int dir = 0 ; dir < dim ; ++dir)
-			{
-				const auto &basis_with_ders = univariate_values_comp[dir];
+            for (int dir = 0 ; dir < dim ; ++dir)
+            {
+                const auto &basis_with_ders = univariate_values_comp[dir];
 
-				//TODO(pauletti, Sep 7, 2014): see correct assertion
-//				Assert(values1D.size() == basis_with_ders->size(),
-//						ExcDimensionMismatch(values1D.size(),basis_with_ders->size()));
+                //TODO(pauletti, Sep 7, 2014): see correct assertion
+//              Assert(values1D.size() == basis_with_ders->size(),
+//                      ExcDimensionMismatch(values1D.size(),basis_with_ders->size()));
 
-				for (int order = 0 ; order < n_derivatives ; ++order)
-				{
-					const DenseMatrix &funcs = basis_with_ders->get_derivative(order);
-					values1D[order][dir] = Values1DConstView(funcs,tensor_basis_id[dir]);
-				} //end order loop
+                for (int order = 0 ; order < n_derivatives ; ++order)
+                {
+                    const DenseMatrix &funcs = basis_with_ders->get_derivative(order);
+                    values1D[order][dir] = Values1DConstView(funcs,tensor_basis_id[dir]);
+                } //end order loop
 
-			} // end dir loop
+            } // end dir loop
 
-			scalar_evaluator_comp(flat_basis_id) =
-					shared_ptr<BSplineElementScalarEvaluator<dim>>(
-							new BSplineElementScalarEvaluator<dim>(values1D));
-		} // end flat_basis_id loop
-	} // end icomp loop
-	//--------------------------------------------------------------------------
+            scalar_evaluator_comp[flat_basis_id] =
+                shared_ptr<BSplineElementScalarEvaluator<dim>>(
+                    new BSplineElementScalarEvaluator<dim>(values1D));
+        } // end flat_basis_id loop
+    } // end icomp loop
+    //--------------------------------------------------------------------------
 
-	//--------------------------------------------------------------------------
-	if (cache.flags_handler_.fill_values())
-	{
-		evaluate_bspline_derivatives<0>(univariate_values, cache.phi_);
-		cache.flags_handler_.set_values_filled(true);
-	}
-	if (cache.flags_handler_.fill_gradients())
-	{
-		evaluate_bspline_derivatives<1>(univariate_values, cache.D1phi_);
-		cache.flags_handler_.set_gradients_filled(true);
-	}
+    //--------------------------------------------------------------------------
+    if (cache.flags_handler_.fill_values())
+    {
+        evaluate_bspline_derivatives<0>(univariate_values, cache.phi_);
+        cache.flags_handler_.set_values_filled(true);
+    }
+    if (cache.flags_handler_.fill_gradients())
+    {
+        evaluate_bspline_derivatives<1>(univariate_values, cache.D1phi_);
+        cache.flags_handler_.set_gradients_filled(true);
+    }
 
-	if (cache.flags_handler_.fill_hessians())
-	{
-		evaluate_bspline_derivatives<2>(univariate_values, cache.D2phi_);
-		cache.flags_handler_.set_hessians_filled(true);
-	}
-	if (cache.flags_handler_.fill_divergences())
-	{
-		//TODO(pauletti, Sep 7, 2014): create a specialize exception
-		Assert(cache.flags_handler_.gradients_filled(),
-				ExcMessage("Divergence requires gradient to be filled."));
+    if (cache.flags_handler_.fill_hessians())
+    {
+        evaluate_bspline_derivatives<2>(univariate_values, cache.D2phi_);
+        cache.flags_handler_.set_hessians_filled(true);
+    }
+    if (cache.flags_handler_.fill_divergences())
+    {
+        //TODO(pauletti, Sep 7, 2014): create a specialize exception
+        Assert(cache.flags_handler_.gradients_filled(),
+               ExcMessage("Divergence requires gradient to be filled."));
 
-		auto D1  = cache.D1phi_.begin();
-		auto div = cache.div_phi_.begin();
-		auto end = cache.D1phi_.end();
-		for (; D1 != end; ++D1, ++div)
-			*div = trace(*D1);
+        auto D1  = cache.D1phi_.begin();
+        auto div = cache.div_phi_.begin();
+        auto end = cache.D1phi_.end();
+        for (; D1 != end; ++D1, ++div)
+            *div = trace(*D1);
 
-		cache.flags_handler_.set_divergences_filled(true);
-	}
-	//--------------------------------------------------------------------------
+        cache.flags_handler_.set_divergences_filled(true);
+    }
+    //--------------------------------------------------------------------------
 
-	cache.set_filled(true);
+    cache.set_filled(true);
 }
 
 
