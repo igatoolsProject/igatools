@@ -250,7 +250,7 @@ private:
 public:
 
     /** Returns the multiplicity of the internal knots that defines the space. */
-    std::shared_ptr<const MultiplicityTable> get_interior_mult()
+    std::shared_ptr<const MultiplicityTable> get_interior_mult() const
     {
         return interior_mult_;
     }
