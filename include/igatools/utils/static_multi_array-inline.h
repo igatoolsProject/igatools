@@ -44,10 +44,10 @@ StaticMultiArray()
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray(const T &val)
-    :
-    StaticMultiArray<T,dim,rank>()
+:
+StaticMultiArray<T,dim,rank>()
 {
-    const_cast<std::array<T,n_entries>&>(this->get_data()) = filled_array<T, n_entries>(val);
+    const_cast<special_array<T,n_entries>&>(this->get_data()) = special_array<T,n_entries>(val);
 }
 
 #if 0

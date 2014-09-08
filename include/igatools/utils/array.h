@@ -45,6 +45,13 @@ public:
     using const_iterator = typename std::array<T, N>::const_iterator;
     using value_type = typename std::array<T, N>::value_type;
 
+    special_array() = default;
+
+    special_array(const T &val)
+    {
+        data_.fill(val);
+    }
+
     iterator begin() noexcept
     {
         return data_.begin();
