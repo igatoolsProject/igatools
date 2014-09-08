@@ -19,74 +19,79 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for BSplineBasis
- *  Evaluates values gradients and derivatives at one quad point
- *  on each element
+ *  Test for BSplineSpace element iterator using
+ *  the uniform quad global cache
+ *  Evaluates values, gradients and derivatives
  *
  *  author: pauletti
- *  date: Aug 21, 2013
+ *  date: Aug 21, 2014
  *
  */
 
 #include "../tests.h"
 
-
-#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
-template< int dim_domain, int dim_range, int rank >
-void do_test(const int degree)
+template<int dim, int range, int rank = 1>
+void bspline_iterator(const int deg = 1, const int n_knots = 3)
 {
-    out << "domain, range and rank: " << dim_domain << "," << dim_range << "," << rank << endl ;
 
-    auto knots = CartesianGrid<dim_domain>::create(3);
+	OUTSTART
 
-    typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(degree, knots) ;
+	auto grid = CartesianGrid<dim>::create(n_knots);
+	using Space = BSplineSpace<dim, range, rank>;
+	using SpaceCache = BSplineUniformQuadCache<dim, range, rank>;
+	auto space = Space::create(deg, grid);
 
-    const int n_points = 1;
-    QGauss< dim_domain > quad(n_points) ;
+	const int n_qp = 1;
+	QGauss< dim > quad(n_qp);
 
-    auto elem = space->begin();
-    elem->init_cache(ValueFlags::value, quad);
+	{
+		SpaceCache cache(space, ValueFlags::value, quad);
+		auto elem = space->begin();
+		cache.init_element_cache(elem);
+		for (; elem != space->end(); ++elem)
+		{
+			cache.fill_element_cache(elem);
+			elem->get_basis_values().print_info(out);
+		}
+	}
 
-    for (; elem != space->end(); ++elem)
-    {
-        elem->fill_cache();
-        elem->get_basis_values().print_info(out);
-    }
 
-    {
-        auto elem = space->begin();
-        elem->init_cache(ValueFlags::gradient, quad) ;
+	{
+		SpaceCache cache(space, ValueFlags::gradient, quad);
+		auto elem = space->begin();
+		cache.init_element_cache(elem);
+		for (; elem != space->end(); ++elem)
+		{
+			cache.fill_element_cache(elem);
+			elem->get_basis_gradients().print_info(out);
+		}
+	}
 
-        for (; elem != space->end(); ++elem)
-        {
-            elem->fill_cache();
-            elem->get_basis_gradients().print_info(out);
-        }
-    }
 
-    {
-        auto elem = space->begin();
-        elem->init_cache(ValueFlags::hessian, quad) ;
 
-        for (; elem != space->end(); ++elem)
-        {
-            elem->fill_cache();
-            elem->get_basis_hessians().print_info(out);
-        }
-    }
-
+	{
+		SpaceCache cache(space, ValueFlags::hessian, quad);
+		auto elem = space->begin();
+		cache.init_element_cache(elem);
+		for (; elem != space->end(); ++elem)
+		{
+			cache.fill_element_cache(elem);
+			elem->get_basis_hessians().print_info(out);
+		}
+	}
 }
 
 int main()
 {
-    out.depth_console(10); //to be removed after test finished
+    out.depth_console(10);
 
-    do_test< 1, 1, 1 >(1) ;
-    do_test< 2, 1, 1 >(1) ;
+    bspline_iterator<1, 1>();
+    bspline_iterator<2, 1>();
 
     return 0;
 }

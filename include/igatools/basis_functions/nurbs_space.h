@@ -241,6 +241,10 @@ public:
      */
     const SpaceDimensionTable &get_num_basis_table() const;
 
+    SpaceDimensionTable get_num_all_element_basis() const
+    {
+    	return sp_space_->get_num_all_element_basis();
+    }
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.

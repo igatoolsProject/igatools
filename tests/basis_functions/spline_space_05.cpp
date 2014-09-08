@@ -37,9 +37,9 @@ void test(const int deg1)
     typename SplineSpace::DegreeTable deg(deg2);
 
     deg.get_active_components_id().print_info(out);
-    out<< endl;
+    out << endl;
     deg.get_inactive_components_id().print_info(out);
-    out<< endl;
+    out << endl;
 
 
     SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);

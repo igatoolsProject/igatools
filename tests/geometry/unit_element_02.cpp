@@ -42,31 +42,30 @@ void skeleton()
 
 
 template <int dim, int k>
-EnableIf< (dim==0) || (k<0),
-          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-                  fill_cube_elements()
+std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+fill_cube_elements()
 {
-    std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
+    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     return res;
 }
 
 template <int dim, int k>
 EnableIf< (dim==k) && (k>0),
-          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-                  fill_cube_elements()
+std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+fill_cube_elements()
 {
-    std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
+    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     res[0].active_directions = sequence<k>();
     return res;
 }
 
 
 template <int dim, int k>
-EnableIf< (dim>k)  &&(k>=0),
-          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-                  fill_cube_elements()
+EnableIf< (dim>k) && (k>=0),
+std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+fill_cube_elements()
 {
-    std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> elements;
+    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> elements;
 
     auto sub_elems_1 = fill_cube_elements<dim-1, k>();
     auto sub_elems_0 = fill_cube_elements<dim-1, k-1>();
@@ -184,6 +183,9 @@ void all_cube_elements()
 int main()
 {
     out.depth_console(20);
+    all_cube_elements<0,0>();
+    all_cube_elements<1,1>();
+    all_cube_elements<1,0>();
     all_cube_elements<2,2>();
     all_cube_elements<2,1>();
     all_cube_elements<2,0>();

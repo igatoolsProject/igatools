@@ -27,13 +27,98 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int> struct UnitElement;
+
 constexpr int skel_size(int dim, int k)
 {
     return dim==k ? 1 :
            (((k==-1)||(k>dim)) ? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
 }
 
+#if 1
+template <int dim, int k>
+EnableIf< (dim==0) || (k<0),
+std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+fill_cube_elements()
+{
+    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
+    return res;
+}
 
+template <int dim, int k>
+EnableIf< (dim==k) && (k>0),
+std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+fill_cube_elements()
+{
+    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
+    res[0].active_directions = sequence<k>();
+    return res;
+}
+
+
+template <int dim, int k>
+EnableIf< (dim>k) && (k>=0),
+std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+fill_cube_elements()
+{
+    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> elements;
+
+    auto sub_elems_1 = fill_cube_elements<dim-1, k>();
+    auto sub_elems_0 = fill_cube_elements<dim-1, k-1>();
+
+    auto elem = elements.begin();
+
+    for (auto &sub_elem_0 : sub_elems_0)
+    {
+        auto &sub_dirs_0 = sub_elem_0.constant_directions;
+        auto &dirs       = elem->constant_directions;
+        std::copy(sub_dirs_0.begin(), sub_dirs_0.end(), dirs.begin());
+        elem->constant_values = sub_elem_0.constant_values;
+        ++elem;
+    }
+
+    for (int j = 0; j<2; ++j)
+    for (auto &sub_elem_1 : sub_elems_1)
+    {
+        auto &sub_dirs_1 = sub_elem_1.constant_directions;
+        auto &sub_values_1 = sub_elem_1.constant_values;
+        {
+            auto &dirs       = elem->constant_directions;
+            auto &values       = elem->constant_values;
+            std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
+            dirs[dim - k -1] = dim-1;
+            std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
+            values[dim - k -1] = j;
+            ++elem;
+        }
+    }
+
+    for (auto &elem : elements)
+    {
+        auto all = sequence<dim>();
+        std::set_difference(all.begin(), all.end(),
+                            elem.constant_directions.begin(),
+                            elem.constant_directions.end(),
+                            elem.active_directions.begin());
+    }
+
+    return elements;
+}
+
+template<int dim, std::size_t... I>
+auto tuple_of_elements(std::index_sequence<I...>)
+    -> decltype(std::make_tuple(fill_cube_elements<dim, I>() ...))
+{
+    return std::make_tuple(fill_cube_elements<dim, I>() ...);
+}
+
+template<std::size_t dim, typename Indices = std::make_index_sequence<dim+1>>
+auto construct_cube_elements()
+    -> decltype(tuple_of_elements<dim>(Indices()))
+{
+    return tuple_of_elements<dim>(Indices());
+}
+#endif
 /**
  * @brief This class provides dimension independent information of all topological
  * structures that make up the elements in the reference patch or knotspans.
@@ -42,23 +127,31 @@ constexpr int skel_size(int dim, int k)
 template <int dim>
 struct UnitElement
 {
+    /**
+     * Number of elements of dimension k=0,...,dim in the
+     * hyper-cube of dimension dim
+     */
+    static const std::array<Size, dim + 1> sub_elements_size;
 
-    static const std::array<Size, dim + 1> skeleton_size;
 
+    /**
+     * Element of dimension k in a cube of dimension dim
+     */
     template<int k>
-    struct Skeleton
+    struct SubElement
     {
-        Skeleton() = default;
-        Skeleton(const std::array<Size, dim - k> &constant_directions_)
-            : constant_directions(constant_directions_)
-        {}
-        std::array<Size, dim - k> constant_directions;
-        std::array<Size, dim - k> constant_values;
-        std::array<Size, k>       active_directions;
+        SubElement() = default;
+
+    	std::array<Size, dim - k> constant_directions;
+    	std::array<Size, dim - k> constant_values;
+    	std::array<Size, k>       active_directions;
     };
 
+    static const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))
+    all_elems;
+
     //static const Size n_faces = skeleton_size[dim-1];
-    //static const std::array<Skeleton<dim-1>, skel_size(dim, dim-1)> faces1;
+    //static const std::array<SubElement<dim-1>, skel_size(dim, dim-1)> faces1;
 
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;

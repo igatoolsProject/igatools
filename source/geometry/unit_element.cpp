@@ -34,50 +34,15 @@ fill_skeleton_size()
 }
 
 template <int dim>
-const std::array<Size, dim + 1> UnitElement<dim>::skeleton_size
-    = fill_skeleton_size<dim>();
+const std::array<Size, dim + 1> UnitElement<dim>::sub_elements_size
+= fill_skeleton_size<dim>();
 
 
-
-template <int dim, int k>
-EnableIf< (dim==0),
-          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-                  fill_skeleton()
-{
-    std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
-    return res;
-}
+template <int dim>
+const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))
+UnitElement<dim>::all_elems = construct_cube_elements<dim>();
 
 
-template <int dim, int k>
-EnableIf< (dim>0),
-          std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)>>
-                  fill_skeleton()
-{
-    std::array<typename UnitElement<dim>::template Skeleton<k>, skel_size(dim, k)> res;
-
-    auto skel_dim_1 = fill_skeleton<dim-1, k>();
-    auto polygon = res.begin();
-    for (auto polygon_dim_1 : skel_dim_1)
-    {
-        auto &dirs_dim_1 = polygon_dim_1.constant_directions;
-        for (int j = 0; j<2; ++j)
-        {
-            auto &dirs       = polygon->constant_directions;
-            std::copy(dirs_dim_1.begin(), dirs_dim_1.end(), dirs.begin());
-            dirs[dim - k -1] = dim -1;
-            ++polygon;
-        }
-
-    }
-    return res;
-}
-//
-//
-//
-//template <int dim>
-//const std::array<typename UnitElement<dim>::template Skeleton<dim-1>, skel_size(dim, dim-1)>
-//UnitElement<dim>::faces1 = fill_skeleton<dim, dim-1>();
 
 template <>
 const int

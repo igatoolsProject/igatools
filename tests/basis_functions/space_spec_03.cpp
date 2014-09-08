@@ -27,7 +27,7 @@
 #include "../tests.h"
 #include <igatools/basis_functions/spline_space.h>
 
-
+using std::shared_ptr;
 void test_1d()
 {
     const int dim=1;

@@ -613,8 +613,8 @@ print_info(LogStream &out, const VerbosityLevel verbosity_level) const
     out << "PhysicalSpaceElementAccessor info:" << endl;
     out.push(tab);
 
-    ref_space_element_accessor_.print_info(out,verbosity_level);
-    PfElemAccessor::print_info(out,verbosity_level);
+    ref_space_element_accessor_.print_info(out);
+    PfElemAccessor::print_info(out);
 
     out.pop();
 }

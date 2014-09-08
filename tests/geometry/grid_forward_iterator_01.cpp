@@ -34,9 +34,6 @@
 #include <igatools/geometry/unit_element.h>
 
 
-using namespace std;
-
-
 // Accessor constructor
 template <int dim>
 void test_accessor1()

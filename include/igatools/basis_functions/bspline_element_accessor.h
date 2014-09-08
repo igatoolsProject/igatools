@@ -27,6 +27,7 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
+#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -131,6 +132,12 @@ public:
 
 
 
+private:
+    auto & get_elem_cache()
+    {
+    	return this->elem_values_;
+    }
+public:
     /** @name Cache initialization and filling */
     ///@{
 
@@ -182,11 +189,11 @@ public:
 
     ///@}
 
-    /**
-     * Prints internal information about the BSplineElementAccessor.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
+//    /**
+//     * Prints internal information about the BSplineElementAccessor.
+//     * Its main use is for testing and debugging.
+//     */
+//    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
     /**
@@ -352,7 +359,6 @@ private:
 
 
 protected:
-
 #if 0
     /** Returns the Bezier extraction operator relative to the current element. */
     ComponentTable< std::array< const DenseMatrix *,dim> > get_bezier_extraction_operator() const;
@@ -362,7 +368,7 @@ private:
 
 
     template <typename Accessor> friend class GridForwardIterator;
-
+    friend class BSplineUniformQuadCache<dim, range, rank>;
 
 
 

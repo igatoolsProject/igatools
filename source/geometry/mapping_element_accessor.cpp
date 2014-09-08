@@ -333,7 +333,9 @@ init_cache(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_w_measure;
         if (contains(fill_flag , ValueFlags::face_normal))
             grid_flag |= ValueFlags::face_point;
-        // CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
+
+        // TODO (pauletti, Sep 5, 2014): uncomment properly
+        //CartesianGridElementAccessor<dim_ref_>::init_cache(grid_flag,quad);
     }
 
     auto f_flag = fill_flag;
@@ -738,7 +740,7 @@ get_face_normals(const Index face_id) const -> const ValueVector<ValueMap> &
 template< int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
-transform_external_normals() const -> array< ValueVector<ValueMap>, codim >
+transform_external_normals() const -> std::array< ValueVector<ValueMap>, codim >
 {
     Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
     Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());

@@ -47,13 +47,12 @@ GridUniformQuadCache(shared_ptr<const GridType> grid,
 template <int dim_>
 void
 GridUniformQuadCache<dim_>::
-init_element_cache(ElementIterator &elem)
+init_element_cache(ElementAccessor &elem)
 {
-    // TODO (pauletti, Aug 14, 2014): create get_cache in accessor
-    auto &cache = elem.get_accessor().elem_values_;
+	auto &cache = elem.elem_values_;
     cache.resize(flags_, quad_);
 
-    auto &face_cache = elem.get_accessor().face_values_;
+    auto &face_cache = elem.face_values_;
     for (auto f: faces)
     {
         auto &f_cache = face_cache[f];
@@ -66,15 +65,33 @@ init_element_cache(ElementIterator &elem)
 template <int dim_>
 void
 GridUniformQuadCache<dim_>::
-fill_element_cache(ElementIterator &elem)
+init_element_cache(ElementIterator &elem)
 {
-    const auto &index = elem->get_tensor_index();
-    auto &cache = elem.get_accessor().elem_values_;
+	init_element_cache(elem.get_accessor());
+}
+
+
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
+fill_element_cache(ElementAccessor &elem)
+{
+    const auto &index = elem.get_tensor_index();
     auto meas = lengths_.tensor_product(index);
+
+    auto &cache = elem.elem_values_;
     cache.fill(meas);
     cache.set_filled(true);
+}
 
 
+
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
+fill_element_cache(ElementIterator &elem)
+{
+    fill_element_cache(elem.get_accessor());
 }
 
 

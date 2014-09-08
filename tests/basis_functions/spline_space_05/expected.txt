@@ -10,16 +10,37 @@ Knots without repetition:
    
 
 Degrees:
-[1] 
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [1] ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+
 Interior multiplicities:
    Size: [ 2 ]  Weights: [2]
    Direction: 0
    [ 1 1 ]
 
 Dimensionality Table:
-[ 4 ] 
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 4 ] ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+
 Component Dimension:
-4 
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ 4 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+
 Total Dimension: 4
 [ 0 ]
 [ 1 ]
@@ -33,7 +54,14 @@ Knots without repetition:
    
 
 Degrees:
-[1] [1] 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [1] [0] ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ 1 ]
+
 Interior multiplicities:
    Size: [ 2 ]  Weights: [2]
    Direction: 0
@@ -43,9 +71,23 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-[ 4 ] [ 4 ] 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [ 4 ] [ 4 ] ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+
 Component Dimension:
-4 4 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ 4 4 ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+
 Total Dimension: 8
 [ 0 ]
 [ 1 ]
@@ -61,7 +103,14 @@ Knots without repetition:
    
 
 Degrees:
-[3,3] [3,3] 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [3,3] [0,0] ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ 1 ]
+
 Interior multiplicities:
    Size: [ 2 2 ]  Weights: [2,4]
    Direction: 0
@@ -75,9 +124,23 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-[ 6 6 ] [ 6 6 ] 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [ 6 6 ] [ 6 6 ] ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+
 Component Dimension:
-36 36 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ 36 36 ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+
 Total Dimension: 72
 [ 0 ]
 [ 1 ]
@@ -93,7 +156,14 @@ Knots without repetition:
    
 
 Degrees:
-[2,2] [2,2] 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [2,2] [0,0] ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ 1 ]
+
 Interior multiplicities:
    Size: [ 2 2 ]  Weights: [2,4]
    Direction: 0
@@ -107,7 +177,21 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-[ 5 5 ] [ 5 5 ] 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [ 5 5 ] [ 5 5 ] ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+
 Component Dimension:
-25 25 
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ 25 25 ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+
 Total Dimension: 50

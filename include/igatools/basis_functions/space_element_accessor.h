@@ -62,6 +62,8 @@ template <typename Accessor> class GridForwardIterator;
 template<class Space>
 class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
 {
+private:
+	using base_t = CartesianGridElementAccessor<Space::dim>;
 public:
     /** @name Types and aliases used and/or returned by the
      * SpaceElementAccessor's methods. */
@@ -88,6 +90,7 @@ public:
      */
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
+    using SpaceDimensionTable = typename Space::SpaceDimensionTable;
     ///@}
 
     /** Number of faces per element. */
@@ -563,6 +566,10 @@ public:
     get_quad_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
 
+    void print_info(LogStream &out) const;
+
+    void print_cache_info(LogStream &out) const;
+
 
 protected:
     /**
@@ -583,18 +590,21 @@ protected:
 
 
     /**
-     * Base class for the cache of the element values and for the cache of the face values.
+     * Base class for the cache of the element values and
+     * for the cache of the face values.
      */
     class ValuesCache : public CacheStatus
     {
     public:
+    	//TODO(pauletti, Sep 6, 2014): 2nd argument should be of type SpaceDimensionTable
         /**
          * Allocate space for the values and derivatives
-         * at quadrature points
+         * of the element basis functions at quadrature points
+         * as specify by the flag
          */
-        void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
-                   const Quadrature<dim> &quad);
+    	void resize(const BasisElemValueFlagsHandler &flags_handler,
+    			const SpaceDimensionTable &n_basis_direction,
+    			const Quadrature<dim> &quad);
 
         /** Returns the values. */
         const ValueTable<Value> &get_values() const;
@@ -608,19 +618,21 @@ protected:
         /** Returns the divergences. */
         const ValueTable<Div> &get_divergences() const;
 
-
+    public:
+        void print_info(LogStream &out) const;
         //TODO: the member variables should be private
     public:
 
         BasisElemValueFlagsHandler flags_handler_;
 
-
+        //TODO(pauletti, Sep 7, 2014): these table should be a tuple
         ValueTable<Value> phi_;
         ValueTable<Derivative<1>> D1phi_;
         ValueTable<Derivative<2>> D2phi_;
 
         ValueTable<Div> div_phi_;
 
+        //TODO(pauletti, Sep 6, 2014): should be removed
         Quadrature<dim> quad_;
     };
 
@@ -635,8 +647,8 @@ protected:
          * Allocate space for the values and derivatives
          * at quadrature points
          */
-        void reset(const BasisElemValueFlagsHandler &flags_handler,
-                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
+        void resize(const BasisElemValueFlagsHandler &flags_handler,
+                   const SpaceDimensionTable &n_basis_direction,
                    const Quadrature<dim> &quad);
 
     };
@@ -652,18 +664,18 @@ protected:
          * Allocate space for the values and derivatives
          * at quadrature points
          */
-        void reset(const Index face_id,
+        void resize(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
+                   const SpaceDimensionTable &n_basis_direction,
                    const Quadrature<dim> &quad);
 
         /**
          * Allocate space for the values and derivatives
          * at quadrature points for a specified face.
          */
-        void reset(const Index face_id,
+        void resize(const Index face_id,
                    const BasisFaceValueFlagsHandler &flags_handler,
-                   const ComponentContainer<TensorSize<dim> > &n_basis_direction,
+                   const SpaceDimensionTable &n_basis_direction,
                    const Quadrature<dim-1> &quad);
 
     };
@@ -731,7 +743,7 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-
+//TODO(pauletti, Sep 7, 2014): why not include only in optimize mode?
 #include <igatools/basis_functions/space_element_accessor-inline.h>
 
 #endif // #ifndef SPACE_ELEMENT_ACCESSOR_

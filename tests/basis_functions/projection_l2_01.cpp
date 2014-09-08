@@ -84,7 +84,7 @@ void do_test(const int p)
 
     auto proj_values = space_tools::projection_l2
                        <space_ref_t,la_pack>
-                       (f,const_pointer_cast<const space_ref_t>(space),quad);
+                       (f,space,quad);
 
     proj_values.print(out);
 

@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 class SpaceManager;
 
 template < int, int, int> class BSplineElementAccessor;
-
+template < int, int, int> class BSplineUniformQuadCache;
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
  * valued B-spline space.
@@ -402,7 +402,7 @@ private:
 
 
     friend class BSplineElementAccessor<dim, range, rank>;
-
+    friend class BSplineUniformQuadCache<dim, range, rank>;
 
     /**
      * Refines the function space after a grid uniform refinement.

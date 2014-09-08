@@ -26,6 +26,7 @@
 
 #include "../tests.h"
 #include <igatools/basis_functions/dof_distribution.h>
+using std::shared_ptr;
 
 int main()
 {

@@ -44,6 +44,11 @@ class GridUniformQuadCache
     using ElementIterator = typename GridType::ElementIterator;
     static const std::array<Size, UnitElement<dim_>::faces_per_element> faces;
 
+protected:
+    using ElementAccessor = typename GridType::ElementAccessor;
+    void init_element_cache(ElementAccessor &elem);
+    void fill_element_cache(ElementAccessor &elem);
+
 public:
     static const int dim = dim_;
 
@@ -81,8 +86,9 @@ private:
 
     GridFaceValueFlagsHandler face_flags_;
 
+protected:
     TensorProductArray<dim> lengths_;
-
+private:
     Quadrature<dim> quad_;
 };
 

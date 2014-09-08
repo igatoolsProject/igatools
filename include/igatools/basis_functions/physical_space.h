@@ -134,6 +134,11 @@ public:
     /** Returns the container with the patch dof distribution (non const version). */
     DofDistribution<dim, range, rank> &get_dof_distribution_patch();
 
+    SpaceDimensionTable get_num_all_element_basis() const
+    {
+    	return ref_space_->get_num_all_element_basis();
+    }
+
     const DegreeTable &get_degree() const;
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;

@@ -88,7 +88,7 @@ void do_test(const int p)
 
     std::map<Index,Real> boundary_values;
     space_tools::project_boundary_values<space_ref_t,la_pack>(
-        f, const_pointer_cast<const space_ref_t>(space), quad, face_id,
+        f, space, quad, face_id,
         boundary_values);
 
     out << "basis index \t value" << endl;

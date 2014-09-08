@@ -315,6 +315,7 @@ init_cache(const ValueFlags fill_flag,
             grid_flag |= ValueFlags::face_point;
         if (contains(fill_flag , ValueFlags::face_w_measure))
             grid_flag |= ValueFlags::face_w_measure;
+        // TODO (pauletti, Sep 5, 2014): uncomment properly
         //   CartesianGridElementAccessor<dim>::init_cache(grid_flag,quad);
     }
 
@@ -1259,36 +1260,13 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
     return D_phi;
 }
 
-template <int dim, int range, int rank>
-void
-BSplineElementAccessor<dim, range, rank>::
-print_info(LogStream &out,const VerbosityLevel verbosity_level) const
-{
-    using std::endl;
-
-    const std::string tab = "   ";
-
-
-    out << "BSplineElementAccessor<" << dim << "," << range << "," << rank << "> info:" << endl;
-    out.push(tab);
-
-    CartesianGridElementAccessor<dim>::print_info(out,verbosity_level);
-
-    if (contains(verbosity_level,VerbosityLevel::debug))
-    {
-        out << "Element cache memory address = " << &this->elem_values_ << endl;
-        this->elem_values_.flags_handler_.print_info(out);
-
-        for (int i = 0 ; i < n_faces ; ++i)
-        {
-            out << "Face[" << i << "] cache memory address = " << &this->face_values_[i] << endl;
-            this->face_values_[i].flags_handler_.print_info(out);
-        }
-    }
-
-    out.pop();
-
-}
+//template <int dim, int range, int rank>
+//void
+//BSplineElementAccessor<dim, range, rank>::
+//print_info(LogStream &out,const VerbosityLevel verbosity_level) const
+//{
+//   base_t::print_info(out);
+//}
 
 
 IGA_NAMESPACE_CLOSE
