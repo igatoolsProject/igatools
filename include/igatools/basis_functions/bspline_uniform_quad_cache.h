@@ -107,6 +107,12 @@ public:
         {
         	return values_[order];
         }
+
+        auto const &get_derivative(const int order) const
+        {
+        	return values_[order];
+        }
+
     private:
         vector<DenseMatrix> values_;
     };

@@ -123,11 +123,15 @@ void space_cache_value_elem(const int n_knots = 5, const int deg=1)
 int main()
 {
     out.depth_console(10);
-    //uniform_space_cache<1>();
-    //space_cache_init_elem<1>();
+    uniform_space_cache<1>();
+    space_cache_init_elem<1>();
     space_cache_fill_elem<1>();
     space_cache_value_elem<1>();
 
+    uniform_space_cache<2>();
+    space_cache_init_elem<2>();
+    space_cache_fill_elem<2>();
+    space_cache_value_elem<2>();
 
     return  0;
 }

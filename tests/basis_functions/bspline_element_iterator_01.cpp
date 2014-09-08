@@ -31,6 +31,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
 template<int dim, int range >
@@ -42,16 +43,19 @@ void do_test()
 
     const int degree = 2;
     const int rank =  1;
-    typedef BSplineSpace< dim, range, rank > Space_t;
+    typedef BSplineSpace<dim, range, rank > Space_t;
     auto space = Space_t::create(degree, knots);
 
     const int n_points = 3;
     QGauss< dim > quad_scheme(n_points);
 
+    auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
+
+    BSplineUniformQuadCache<dim, range, rank > cache(space, flag, quad_scheme);
+
     auto element = space->begin();
-    element->init_cache(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
-                         quad_scheme);
-    element->fill_cache();
+    cache.init_element_cache(element);
+    cache.fill_element_cache(element);
 
     auto values    = element->get_basis_values();
     auto gradients = element->get_basis_gradients();

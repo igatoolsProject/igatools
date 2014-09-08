@@ -9,14 +9,35 @@ Reference space:
          
       
       Degrees:
-      [] 
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [] ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+      
       Interior multiplicities:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-      [ ] 
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [ ] ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+      
       Component Dimension:
-      1 
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ 1 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+      
       Total Dimension: 1
    
    Basis Indices:
@@ -52,14 +73,35 @@ Push-forward:
             
          
          Degrees:
-         [] 
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [] ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
          Interior multiplicities:
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-         [ ] 
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ ] ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
          Component Dimension:
-         1 
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 1 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
          Total Dimension: 1
       
       Basis Indices:
@@ -97,16 +139,37 @@ Push-forward:
                
             
             Degrees:
-            [1] 
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ [1] ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
             Interior multiplicities:
                Size: [ 1 ]  Weights: [1]
                Direction: 0
                [ 1 ]
             
             Dimensionality Table:
-            [ 3 ] 
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ [ 3 ] ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
             Component Dimension:
-            3 
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 3 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
             Total Dimension: 3
          
          Basis Indices:
@@ -148,16 +211,37 @@ Push-forward:
                   
                
                Degrees:
-               [1] 
+                  Raw componets: 
+                     Size: [ 1 ]  Weights: [1]
+                  [ [1] ]
+                  Active componets ids: 
+                  [ 0 ]
+                  Inactive componets ids: 
+                  [ ]
+               
                Interior multiplicities:
                   Size: [ 1 ]  Weights: [1]
                   Direction: 0
                   [ 1 ]
                
                Dimensionality Table:
-               [ 3 ] 
+                  Raw componets: 
+                     Size: [ 1 ]  Weights: [1]
+                  [ [ 3 ] ]
+                  Active componets ids: 
+                  [ 0 ]
+                  Inactive componets ids: 
+                  [ ]
+               
                Component Dimension:
-               3 
+                  Raw componets: 
+                     Size: [ 1 ]  Weights: [1]
+                  [ 3 ]
+                  Active componets ids: 
+                  [ 0 ]
+                  Inactive componets ids: 
+                  [ ]
+               
                Total Dimension: 3
             
             Basis Indices:
@@ -199,16 +283,37 @@ Push-forward:
                      
                   
                   Degrees:
-                  [1] 
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ [1] ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
                   Interior multiplicities:
                      Size: [ 0 ]  Weights: [0]
                      Direction: 0
                      [ ]
                   
                   Dimensionality Table:
-                  [ 2 ] 
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ [ 2 ] ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
                   Component Dimension:
-                  2 
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ 2 ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
                   Total Dimension: 2
                
                Basis Indices:
@@ -248,16 +353,37 @@ Push-forward:
                         
                      
                      Degrees:
-                     [1] 
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ [1] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
                      Interior multiplicities:
                         Size: [ 0 ]  Weights: [0]
                         Direction: 0
                         [ ]
                      
                      Dimensionality Table:
-                     [ 2 ] 
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ [ 2 ] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
                      Component Dimension:
-                     2 
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ 2 ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
                      Total Dimension: 2
                   
                   Basis Indices:
@@ -299,7 +425,14 @@ Push-forward:
                            
                         
                         Degrees:
-                        [1,1] 
+                           Raw componets: 
+                              Size: [ 1 ]  Weights: [1]
+                           [ [1,1] ]
+                           Active componets ids: 
+                           [ 0 ]
+                           Inactive componets ids: 
+                           [ ]
+                        
                         Interior multiplicities:
                            Size: [ 1 2 ]  Weights: [1,2]
                            Direction: 0
@@ -308,9 +441,23 @@ Push-forward:
                            [ 1 1 ]
                         
                         Dimensionality Table:
-                        [ 3 4 ] 
+                           Raw componets: 
+                              Size: [ 1 ]  Weights: [1]
+                           [ [ 3 4 ] ]
+                           Active componets ids: 
+                           [ 0 ]
+                           Inactive componets ids: 
+                           [ ]
+                        
                         Component Dimension:
-                        12 
+                           Raw componets: 
+                              Size: [ 1 ]  Weights: [1]
+                           [ 12 ]
+                           Active componets ids: 
+                           [ 0 ]
+                           Inactive componets ids: 
+                           [ ]
+                        
                         Total Dimension: 12
                      
                      Basis Indices:
@@ -362,7 +509,14 @@ Push-forward:
                               
                            
                            Degrees:
-                           [1,1] 
+                              Raw componets: 
+                                 Size: [ 1 ]  Weights: [1]
+                              [ [1,1] ]
+                              Active componets ids: 
+                              [ 0 ]
+                              Inactive componets ids: 
+                              [ ]
+                           
                            Interior multiplicities:
                               Size: [ 1 2 ]  Weights: [1,2]
                               Direction: 0
@@ -371,9 +525,23 @@ Push-forward:
                               [ 1 1 ]
                            
                            Dimensionality Table:
-                           [ 3 4 ] 
+                              Raw componets: 
+                                 Size: [ 1 ]  Weights: [1]
+                              [ [ 3 4 ] ]
+                              Active componets ids: 
+                              [ 0 ]
+                              Inactive componets ids: 
+                              [ ]
+                           
                            Component Dimension:
-                           12 
+                              Raw componets: 
+                                 Size: [ 1 ]  Weights: [1]
+                              [ 12 ]
+                              Active componets ids: 
+                              [ 0 ]
+                              Inactive componets ids: 
+                              [ ]
+                           
                            Total Dimension: 12
                         
                         Basis Indices:
@@ -425,7 +593,14 @@ Push-forward:
                                  
                               
                               Degrees:
-                              [1,1] 
+                                 Raw componets: 
+                                    Size: [ 1 ]  Weights: [1]
+                                 [ [1,1] ]
+                                 Active componets ids: 
+                                 [ 0 ]
+                                 Inactive componets ids: 
+                                 [ ]
+                              
                               Interior multiplicities:
                                  Size: [ 0 2 ]  Weights: [0,0]
                                  Direction: 0
@@ -434,9 +609,23 @@ Push-forward:
                                  [ 1 1 ]
                               
                               Dimensionality Table:
-                              [ 2 4 ] 
+                                 Raw componets: 
+                                    Size: [ 1 ]  Weights: [1]
+                                 [ [ 2 4 ] ]
+                                 Active componets ids: 
+                                 [ 0 ]
+                                 Inactive componets ids: 
+                                 [ ]
+                              
                               Component Dimension:
-                              8 
+                                 Raw componets: 
+                                    Size: [ 1 ]  Weights: [1]
+                                 [ 8 ]
+                                 Active componets ids: 
+                                 [ 0 ]
+                                 Inactive componets ids: 
+                                 [ ]
+                              
                               Total Dimension: 8
                            
                            Basis Indices:
@@ -484,7 +673,14 @@ Push-forward:
                                     
                                  
                                  Degrees:
-                                 [1,1] 
+                                    Raw componets: 
+                                       Size: [ 1 ]  Weights: [1]
+                                    [ [1,1] ]
+                                    Active componets ids: 
+                                    [ 0 ]
+                                    Inactive componets ids: 
+                                    [ ]
+                                 
                                  Interior multiplicities:
                                     Size: [ 0 2 ]  Weights: [0,0]
                                     Direction: 0
@@ -493,9 +689,23 @@ Push-forward:
                                     [ 1 1 ]
                                  
                                  Dimensionality Table:
-                                 [ 2 4 ] 
+                                    Raw componets: 
+                                       Size: [ 1 ]  Weights: [1]
+                                    [ [ 2 4 ] ]
+                                    Active componets ids: 
+                                    [ 0 ]
+                                    Inactive componets ids: 
+                                    [ ]
+                                 
                                  Component Dimension:
-                                 8 
+                                    Raw componets: 
+                                       Size: [ 1 ]  Weights: [1]
+                                    [ 8 ]
+                                    Active componets ids: 
+                                    [ 0 ]
+                                    Inactive componets ids: 
+                                    [ ]
+                                 
                                  Total Dimension: 8
                               
                               Basis Indices:
@@ -543,7 +753,14 @@ Push-forward:
                                        
                                     
                                     Degrees:
-                                    [1,1] 
+                                       Raw componets: 
+                                          Size: [ 1 ]  Weights: [1]
+                                       [ [1,1] ]
+                                       Active componets ids: 
+                                       [ 0 ]
+                                       Inactive componets ids: 
+                                       [ ]
+                                    
                                     Interior multiplicities:
                                        Size: [ 0 1 ]  Weights: [0,0]
                                        Direction: 0
@@ -552,9 +769,23 @@ Push-forward:
                                        [ 1 ]
                                     
                                     Dimensionality Table:
-                                    [ 2 3 ] 
+                                       Raw componets: 
+                                          Size: [ 1 ]  Weights: [1]
+                                       [ [ 2 3 ] ]
+                                       Active componets ids: 
+                                       [ 0 ]
+                                       Inactive componets ids: 
+                                       [ ]
+                                    
                                     Component Dimension:
-                                    6 
+                                       Raw componets: 
+                                          Size: [ 1 ]  Weights: [1]
+                                       [ 6 ]
+                                       Active componets ids: 
+                                       [ 0 ]
+                                       Inactive componets ids: 
+                                       [ ]
+                                    
                                     Total Dimension: 6
                                  
                                  Basis Indices:
@@ -600,7 +831,14 @@ Push-forward:
                                           
                                        
                                        Degrees:
-                                       [1,1] 
+                                          Raw componets: 
+                                             Size: [ 1 ]  Weights: [1]
+                                          [ [1,1] ]
+                                          Active componets ids: 
+                                          [ 0 ]
+                                          Inactive componets ids: 
+                                          [ ]
+                                       
                                        Interior multiplicities:
                                           Size: [ 0 1 ]  Weights: [0,0]
                                           Direction: 0
@@ -609,9 +847,23 @@ Push-forward:
                                           [ 1 ]
                                        
                                        Dimensionality Table:
-                                       [ 2 3 ] 
+                                          Raw componets: 
+                                             Size: [ 1 ]  Weights: [1]
+                                          [ [ 2 3 ] ]
+                                          Active componets ids: 
+                                          [ 0 ]
+                                          Inactive componets ids: 
+                                          [ ]
+                                       
                                        Component Dimension:
-                                       6 
+                                          Raw componets: 
+                                             Size: [ 1 ]  Weights: [1]
+                                          [ 6 ]
+                                          Active componets ids: 
+                                          [ 0 ]
+                                          Inactive componets ids: 
+                                          [ ]
+                                       
                                        Total Dimension: 6
                                     
                                     Basis Indices:

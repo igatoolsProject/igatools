@@ -110,16 +110,19 @@ public:
     	SpaceDimensionTable(const base_t &n_basis)
     	:
     		base_t(n_basis),
+    		comp_dimension(n_basis.get_comp_map()),
     		total_dimension(0)
     	{
     		for (auto comp : this->get_active_components_id())
     		{
     			auto size = (*this)(comp).flat_size();
     			comp_dimension(comp) = size;
-    	        total_dimension += size;
     		}
+    		for (auto size : comp_dimension)
+    			total_dimension += size;
     	}
 
+    	//TODO(pauletti, Sep 8, 2014): make this private and write some getters
         ComponentContainer<Size> comp_dimension;
         Size total_dimension;
     };
