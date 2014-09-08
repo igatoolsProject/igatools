@@ -42,9 +42,8 @@ class GridUniformQuadCache
 {
     using GridType = CartesianGrid<dim_>;
     using ElementIterator = typename GridType::ElementIterator;
-    static const std::array<Size, UnitElement<dim_>::faces_per_element> faces;
-
 protected:
+    static const std::array<Size, UnitElement<dim_>::faces_per_element> faces;
     using ElementAccessor = typename GridType::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);

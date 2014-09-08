@@ -74,7 +74,7 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor
      */
     BSplineElementAccessor() = default;
 
@@ -109,10 +109,8 @@ public:
     ~BSplineElementAccessor() = default;
     ///@}
 
-
     /** @name Assignment operators */
     ///@{
-
     /**
      * Copy assignment operator.
      * @note Creates a new element cache, but it shares
@@ -130,13 +128,12 @@ public:
         = default;
     ///@}
 
-
-
 private:
     auto &get_elem_cache()
     {
         return this->elem_values_;
     }
+
 public:
     /** @name Cache initialization and filling */
     ///@{
@@ -155,9 +152,9 @@ public:
     /**
      * For a given face quadrature.
      */
-    void init_face_cache(const Index face_id,
-                         const ValueFlags fill_flag,
-                         const Quadrature<dim-1> &quad);
+    void init_face_cache(const ValueFlags fill_flag,
+                         const Quadrature<dim-1> &quad,
+                         const Index face_id);
 
     /**
      * Fills the element values cache according to the evaluation points

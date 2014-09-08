@@ -493,8 +493,8 @@ void
 SpaceElementAccessor<Space>::
 ValuesCache::
 resize(const BasisElemValueFlagsHandler &flags_handler,
-       const  SpaceDimensionTable &n_basis_direction,
-       const Quadrature<dim> &quad)
+       const Quadrature<dim> &quad,
+       const  SpaceDimensionTable &n_basis_direction)
 {
     quad_ = quad;
     flags_handler_ = flags_handler;
@@ -577,10 +577,10 @@ void
 SpaceElementAccessor<Space>::
 ElementValuesCache::
 resize(const BasisElemValueFlagsHandler &flags_handler,
-       const SpaceDimensionTable &n_basis_direction,
-       const Quadrature<dim> &quad)
+       const Quadrature<dim> &quad,
+       const SpaceDimensionTable &n_basis_direction)
 {
-    ValuesCache::resize(flags_handler, n_basis_direction,quad);
+    ValuesCache::resize(flags_handler, quad, n_basis_direction);
 }
 
 template<class Space>
@@ -588,16 +588,15 @@ inline
 void
 SpaceElementAccessor<Space>::
 FaceValuesCache::
-resize(const Index face_id,
-       const BasisFaceValueFlagsHandler &flags_handler,
+resize(const BasisFaceValueFlagsHandler &flags_handler,
+       const Quadrature<dim> &quad,
        const SpaceDimensionTable &n_basis_direction,
-       const Quadrature<dim> &quad1)
+       const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
 
-    const auto quad = quad1.collapse_to_face(face_id);
-
-    ValuesCache::resize(flags_handler, n_basis_direction,quad);
+    const auto quad1 = quad.collapse_to_face(face_id);
+    ValuesCache::resize(flags_handler, quad1, n_basis_direction);
 }
 
 
@@ -607,10 +606,10 @@ inline
 void
 SpaceElementAccessor<Space>::
 FaceValuesCache::
-resize(const Index face_id,
-       const BasisFaceValueFlagsHandler &flags_handler,
+resize(const BasisFaceValueFlagsHandler &flags_handler,
+       const Quadrature<dim-1> &quad,
        const SpaceDimensionTable &n_basis_direction,
-       const Quadrature<dim-1> &quad)
+       const Index face_id)
 {
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false,ExcNotImplemented()) ;
@@ -626,23 +625,23 @@ reset_element_and_faces_cache(const ValueFlags fill_flag,
                               const Quadrature<dim> &quad)
 {
     //--------------------------------------------------------------------------
-    BasisElemValueFlagsHandler elem_flags_handler(fill_flag);
-    BasisFaceValueFlagsHandler face_flags_handler(fill_flag);
+    BasisElemValueFlagsHandler elem_flags(fill_flag);
+    BasisFaceValueFlagsHandler face_flags(fill_flag);
 
 
-    Assert(!elem_flags_handler.fill_none() ||
-           !face_flags_handler.fill_none(),
+    Assert(!elem_flags.fill_none() ||
+           !face_flags.fill_none(),
            ExcMessage("Nothing to reset"));
 
-    if (!elem_flags_handler.fill_none())
-        this->elem_values_.resize(elem_flags_handler, n_basis_direction_, quad);
+    if (!elem_flags.fill_none())
+        this->elem_values_.resize(elem_flags, quad, n_basis_direction_);
 
 
-    if (!face_flags_handler.fill_none())
+    if (!face_flags.fill_none())
     {
         Index face_id = 0 ;
         for (auto &face_value : this->face_values_)
-            face_value.resize(face_id++, face_flags_handler, n_basis_direction_, quad);
+            face_value.resize(face_flags, quad, n_basis_direction_, face_id++);
     }
     //--------------------------------------------------------------------------
 }

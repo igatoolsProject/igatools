@@ -33,11 +33,14 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief Evaluator of scalar BSpline values and derivatives from one-dimensional values.
+ * @brief Evaluator of scalar BSpline values and derivatives from
+ * one-dimensional values.
  *
- * This purpose of this class is to isolate the methods for computing the BSpline values and derivatives
+ * This purpose of this class is to isolate the methods for computing
+ * the BSpline values and derivatives
  * from the (precomputed) one-dimensional values (and derivative).
- * Each instance of this class represents a single BSpline \f$ N_i : \mathbb{R}^{dim} \to \mathbb{R}\f$ that
+ * Each instance of this class represents a single
+ * BSpline \f$ N_i : \mathbb{R}^{dim} \to \mathbb{R}\f$ that
  * must be evaluated at some points arranged in a tensor-product way.
  *
  * @todo Document more
@@ -48,7 +51,8 @@ template <int dim>
 class BSplineElementScalarEvaluator
 {
 public:
-    /** Type for the one dimensional values on a single interval for a single scalar function.*/
+    /** Type for the one dimensional values on a single interval for
+     * a single scalar function.*/
     using Values1D = typename DenseMatrix::MatrixRowType ;
 
     /**

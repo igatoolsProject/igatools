@@ -360,9 +360,9 @@ init_cache(const ValueFlags fill_flag,
 template <int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
-init_face_cache(const Index face_id,
-                const ValueFlags fill_flag,
-                const Quadrature<dim-1> &quad)
+init_face_cache(const ValueFlags fill_flag,
+                const Quadrature<dim-1> &quad,
+                const Index face_id)
 {
     AssertThrow(false,ExcNotImplemented()) ;
 }

@@ -603,8 +603,8 @@ protected:
          * as specify by the flag
          */
         void resize(const BasisElemValueFlagsHandler &flags_handler,
-                    const SpaceDimensionTable &n_basis_direction,
-                    const Quadrature<dim> &quad);
+                    const Quadrature<dim> &quad,
+                    const SpaceDimensionTable &n_basis_direction);
 
         /** Returns the values. */
         const ValueTable<Value> &get_values() const;
@@ -648,8 +648,8 @@ protected:
          * at quadrature points
          */
         void resize(const BasisElemValueFlagsHandler &flags_handler,
-                    const SpaceDimensionTable &n_basis_direction,
-                    const Quadrature<dim> &quad);
+                    const Quadrature<dim> &quad,
+                    const SpaceDimensionTable &n_basis_direction);
 
     };
 
@@ -664,19 +664,19 @@ protected:
          * Allocate space for the values and derivatives
          * at quadrature points
          */
-        void resize(const Index face_id,
-                    const BasisFaceValueFlagsHandler &flags_handler,
+        void resize(const BasisFaceValueFlagsHandler &flags_handler,
+                    const Quadrature<dim> &quad,
                     const SpaceDimensionTable &n_basis_direction,
-                    const Quadrature<dim> &quad);
+                    const Index face_id);
 
         /**
          * Allocate space for the values and derivatives
          * at quadrature points for a specified face.
          */
-        void resize(const Index face_id,
-                    const BasisFaceValueFlagsHandler &flags_handler,
+        void resize(const BasisFaceValueFlagsHandler &flags_handler,
+                    const Quadrature<dim-1> &quad,
                     const SpaceDimensionTable &n_basis_direction,
-                    const Quadrature<dim-1> &quad);
+                    const Index face_id);
 
     };
 

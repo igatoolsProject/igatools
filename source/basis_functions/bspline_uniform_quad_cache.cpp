@@ -259,6 +259,7 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
     flags_(flag),
+    face_flags_(flag),
     quad_(quad),
     splines1d_(space->get_components_map(),
                CartesianProductArray<BasisValues1d, dim_>(space->get_grid()->get_num_intervals()))
@@ -344,7 +345,14 @@ init_element_cache(ElementAccessor &elem)
     base_t::init_element_cache(elem);
     auto n_basis = space_->get_num_all_element_basis();
     auto &cache = elem.get_elem_cache();
-    cache.resize(flags_, n_basis ,quad_);
+    cache.resize(flags_, quad_, n_basis);
+
+    auto &face_cache = elem.face_values_;
+    for (auto f: base_t::faces)
+    {
+        auto &f_cache = face_cache[f];
+        f_cache.resize(face_flags_, quad_, n_basis, f);
+    }
 }
 
 
@@ -356,6 +364,8 @@ init_element_cache(ElementIterator &elem)
 {
     init_element_cache(elem.get_accessor());
 }
+
+
 
 template <int dim, int range, int rank>
 template <int order>
@@ -533,6 +543,7 @@ evaluate_bspline_derivatives(
 }
 
 
+
 template<int dim_, int range_ , int rank_>
 void
 BSplineUniformQuadCache<dim_, range_, rank_>::
@@ -540,6 +551,8 @@ fill_element_cache(ElementIterator &elem)
 {
     fill_element_cache(elem.get_accessor());
 }
+
+
 
 template<int dim_, int range_ , int rank_>
 void

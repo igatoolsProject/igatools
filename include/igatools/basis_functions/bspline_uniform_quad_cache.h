@@ -61,10 +61,13 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
     using Derivative = typename Space::template Derivative<order>;
     //using typename parent_t::Point;
     using Value = typename Space::Value;
+
 protected:
     using ElementAccessor = typename Space::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
+    void fill_face_cache(ElementAccessor &elem, const int face);
+
 public:
     static const int dim = dim_;
 
@@ -78,6 +81,12 @@ public:
 
     //Fill the ElementIterator element_cache
     void fill_element_cache(ElementIterator &elem);
+
+    /**
+     * Fills the ElementIterator face_cache
+     * element dependent part
+     */
+    void fill_face_cache(ElementIterator &elem, const int face);
 
     void print_info(LogStream &out) const;
 
@@ -144,6 +153,8 @@ private:
     ComponentContainer<Size> comp_offset_;
 
     BasisElemValueFlagsHandler flags_;
+
+    BasisFaceValueFlagsHandler face_flags_;
 
     Quadrature<dim> quad_;
 
