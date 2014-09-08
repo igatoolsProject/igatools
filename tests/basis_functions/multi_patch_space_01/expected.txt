@@ -17,7 +17,14 @@ MultiPatchSpace infos:
                
             
             Degrees:
-            [1,1] [1,1] 
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ [1,1] [0,0] ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ 1 ]
+            
             Interior multiplicities:
                Size: [ 0 0 ]  Weights: [0,0]
                Direction: 0
@@ -31,16 +38,42 @@ MultiPatchSpace infos:
                [ ]
             
             Dimensionality Table:
-            [ 2 2 ] [ 2 2 ] 
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ [ 2 2 ] [ 2 2 ] ]
+               Active componets ids: 
+               [ 0 1 ]
+               Inactive componets ids: 
+               [ ]
+            
             Component Dimension:
-            4 4 
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ 4 4 ]
+               Active componets ids: 
+               [ 0 1 ]
+               Inactive componets ids: 
+               [ ]
+            
             Total Dimension: 8
          
-         Basis Indices:
+         Patch Basis Indices:
             Size: [ 2 2 ]  Weights: [2,4]
-            [ 0 1 2 3 ]Size: [ 2 2 ]  Weights: [2,4]
+            [ 0 1 2 3 ]
+            Size: [ 2 2 ]  Weights: [2,4]
             [ 4 5 6 7 ]
-            [ 0 1 2 3 4 5 6 7 ]
+            Element views:
+               [ 0 1 2 3 4 5 6 7 ]
+            
+         
+         Global Basis Indices:
+            Size: [ 2 2 ]  Weights: [2,4]
+            [ 0 1 2 3 ]
+            Size: [ 2 2 ]  Weights: [2,4]
+            [ 4 5 6 7 ]
+            Element views:
+               [ 0 1 2 3 4 5 6 7 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -73,7 +106,14 @@ MultiPatchSpace infos:
             	      
             	   
             	   Degrees:
-            	   [1,1] [1,1] 
+            	      Raw componets: 
+            	         Size: [ 2 ]  Weights: [2]
+            	      [ [1,1] [0,0] ]
+            	      Active componets ids: 
+            	      [ 0 ]
+            	      Inactive componets ids: 
+            	      [ 1 ]
+            	   
             	   Interior multiplicities:
             	      Size: [ 0 0 ]  Weights: [0,0]
             	      Direction: 0
@@ -87,16 +127,42 @@ MultiPatchSpace infos:
             	      [ ]
             	   
             	   Dimensionality Table:
-            	   [ 2 2 ] [ 2 2 ] 
+            	      Raw componets: 
+            	         Size: [ 2 ]  Weights: [2]
+            	      [ [ 2 2 ] [ 2 2 ] ]
+            	      Active componets ids: 
+            	      [ 0 1 ]
+            	      Inactive componets ids: 
+            	      [ ]
+            	   
             	   Component Dimension:
-            	   4 4 
+            	      Raw componets: 
+            	         Size: [ 2 ]  Weights: [2]
+            	      [ 4 4 ]
+            	      Active componets ids: 
+            	      [ 0 1 ]
+            	      Inactive componets ids: 
+            	      [ ]
+            	   
             	   Total Dimension: 8
             	
-            	Basis Indices:
+            	Patch Basis Indices:
             	   Size: [ 2 2 ]  Weights: [2,4]
-            	   [ 0 1 2 3 ]Size: [ 2 2 ]  Weights: [2,4]
+            	   [ 0 1 2 3 ]
+            	   Size: [ 2 2 ]  Weights: [2,4]
             	   [ 4 5 6 7 ]
-            	   [ 0 1 2 3 4 5 6 7 ]
+            	   Element views:
+            	      [ 0 1 2 3 4 5 6 7 ]
+            	   
+            	
+            	Global Basis Indices:
+            	   Size: [ 2 2 ]  Weights: [2,4]
+            	   [ 0 1 2 3 ]
+            	   Size: [ 2 2 ]  Weights: [2,4]
+            	   [ 4 5 6 7 ]
+            	   Element views:
+            	      [ 0 1 2 3 4 5 6 7 ]
+            	   
             	
             	Bernstein Extraction:
             	   Component[0]: 
@@ -135,7 +201,14 @@ MultiPatchSpace infos:
                   
                
                Degrees:
-               [1,1] [1,1] 
+                  Raw componets: 
+                     Size: [ 2 ]  Weights: [2]
+                  [ [1,1] [0,0] ]
+                  Active componets ids: 
+                  [ 0 ]
+                  Inactive componets ids: 
+                  [ 1 ]
+               
                Interior multiplicities:
                   Size: [ 0 0 ]  Weights: [0,0]
                   Direction: 0
@@ -149,16 +222,42 @@ MultiPatchSpace infos:
                   [ ]
                
                Dimensionality Table:
-               [ 2 2 ] [ 2 2 ] 
+                  Raw componets: 
+                     Size: [ 2 ]  Weights: [2]
+                  [ [ 2 2 ] [ 2 2 ] ]
+                  Active componets ids: 
+                  [ 0 1 ]
+                  Inactive componets ids: 
+                  [ ]
+               
                Component Dimension:
-               4 4 
+                  Raw componets: 
+                     Size: [ 2 ]  Weights: [2]
+                  [ 4 4 ]
+                  Active componets ids: 
+                  [ 0 1 ]
+                  Inactive componets ids: 
+                  [ ]
+               
                Total Dimension: 8
             
-            Basis Indices:
+            Patch Basis Indices:
                Size: [ 2 2 ]  Weights: [2,4]
-               [ 8 9 10 11 ]Size: [ 2 2 ]  Weights: [2,4]
+               [ 0 1 2 3 ]
+               Size: [ 2 2 ]  Weights: [2,4]
+               [ 4 5 6 7 ]
+               Element views:
+                  [ 0 1 2 3 4 5 6 7 ]
+               
+            
+            Global Basis Indices:
+               Size: [ 2 2 ]  Weights: [2,4]
+               [ 8 9 10 11 ]
+               Size: [ 2 2 ]  Weights: [2,4]
                [ 12 13 14 15 ]
-               [ 8 9 10 11 12 13 14 15 ]
+               Element views:
+                  [ 8 9 10 11 12 13 14 15 ]
+               
             
             Bernstein Extraction:
                Component[0]: 
@@ -191,7 +290,14 @@ MultiPatchSpace infos:
                	      
                	   
                	   Degrees:
-               	   [1,1] [1,1] 
+               	      Raw componets: 
+               	         Size: [ 2 ]  Weights: [2]
+               	      [ [1,1] [0,0] ]
+               	      Active componets ids: 
+               	      [ 0 ]
+               	      Inactive componets ids: 
+               	      [ 1 ]
+               	   
                	   Interior multiplicities:
                	      Size: [ 0 0 ]  Weights: [0,0]
                	      Direction: 0
@@ -205,16 +311,42 @@ MultiPatchSpace infos:
                	      [ ]
                	   
                	   Dimensionality Table:
-               	   [ 2 2 ] [ 2 2 ] 
+               	      Raw componets: 
+               	         Size: [ 2 ]  Weights: [2]
+               	      [ [ 2 2 ] [ 2 2 ] ]
+               	      Active componets ids: 
+               	      [ 0 1 ]
+               	      Inactive componets ids: 
+               	      [ ]
+               	   
                	   Component Dimension:
-               	   4 4 
+               	      Raw componets: 
+               	         Size: [ 2 ]  Weights: [2]
+               	      [ 4 4 ]
+               	      Active componets ids: 
+               	      [ 0 1 ]
+               	      Inactive componets ids: 
+               	      [ ]
+               	   
                	   Total Dimension: 8
                	
-               	Basis Indices:
+               	Patch Basis Indices:
                	   Size: [ 2 2 ]  Weights: [2,4]
-               	   [ 8 9 10 11 ]Size: [ 2 2 ]  Weights: [2,4]
+               	   [ 0 1 2 3 ]
+               	   Size: [ 2 2 ]  Weights: [2,4]
+               	   [ 4 5 6 7 ]
+               	   Element views:
+               	      [ 0 1 2 3 4 5 6 7 ]
+               	   
+               	
+               	Global Basis Indices:
+               	   Size: [ 2 2 ]  Weights: [2,4]
+               	   [ 8 9 10 11 ]
+               	   Size: [ 2 2 ]  Weights: [2,4]
                	   [ 12 13 14 15 ]
-               	   [ 8 9 10 11 12 13 14 15 ]
+               	   Element views:
+               	      [ 8 9 10 11 12 13 14 15 ]
+               	   
                	
                	Bernstein Extraction:
                	   Component[0]: 
@@ -253,7 +385,14 @@ MultiPatchSpace infos:
                      
                   
                   Degrees:
-                  [1,1] [1,1] 
+                     Raw componets: 
+                        Size: [ 2 ]  Weights: [2]
+                     [ [1,1] [0,0] ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ 1 ]
+                  
                   Interior multiplicities:
                      Size: [ 0 0 ]  Weights: [0,0]
                      Direction: 0
@@ -267,16 +406,42 @@ MultiPatchSpace infos:
                      [ ]
                   
                   Dimensionality Table:
-                  [ 2 2 ] [ 2 2 ] 
+                     Raw componets: 
+                        Size: [ 2 ]  Weights: [2]
+                     [ [ 2 2 ] [ 2 2 ] ]
+                     Active componets ids: 
+                     [ 0 1 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
                   Component Dimension:
-                  4 4 
+                     Raw componets: 
+                        Size: [ 2 ]  Weights: [2]
+                     [ 4 4 ]
+                     Active componets ids: 
+                     [ 0 1 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
                   Total Dimension: 8
                
-               Basis Indices:
+               Patch Basis Indices:
                   Size: [ 2 2 ]  Weights: [2,4]
-                  [ 16 17 18 19 ]Size: [ 2 2 ]  Weights: [2,4]
+                  [ 0 1 2 3 ]
+                  Size: [ 2 2 ]  Weights: [2,4]
+                  [ 4 5 6 7 ]
+                  Element views:
+                     [ 0 1 2 3 4 5 6 7 ]
+                  
+               
+               Global Basis Indices:
+                  Size: [ 2 2 ]  Weights: [2,4]
+                  [ 16 17 18 19 ]
+                  Size: [ 2 2 ]  Weights: [2,4]
                   [ 20 21 22 23 ]
-                  [ 16 17 18 19 20 21 22 23 ]
+                  Element views:
+                     [ 16 17 18 19 20 21 22 23 ]
+                  
                
                Bernstein Extraction:
                   Component[0]: 
@@ -309,7 +474,14 @@ MultiPatchSpace infos:
                   	      
                   	   
                   	   Degrees:
-                  	   [1,1] [1,1] 
+                  	      Raw componets: 
+                  	         Size: [ 2 ]  Weights: [2]
+                  	      [ [1,1] [0,0] ]
+                  	      Active componets ids: 
+                  	      [ 0 ]
+                  	      Inactive componets ids: 
+                  	      [ 1 ]
+                  	   
                   	   Interior multiplicities:
                   	      Size: [ 0 0 ]  Weights: [0,0]
                   	      Direction: 0
@@ -323,16 +495,42 @@ MultiPatchSpace infos:
                   	      [ ]
                   	   
                   	   Dimensionality Table:
-                  	   [ 2 2 ] [ 2 2 ] 
+                  	      Raw componets: 
+                  	         Size: [ 2 ]  Weights: [2]
+                  	      [ [ 2 2 ] [ 2 2 ] ]
+                  	      Active componets ids: 
+                  	      [ 0 1 ]
+                  	      Inactive componets ids: 
+                  	      [ ]
+                  	   
                   	   Component Dimension:
-                  	   4 4 
+                  	      Raw componets: 
+                  	         Size: [ 2 ]  Weights: [2]
+                  	      [ 4 4 ]
+                  	      Active componets ids: 
+                  	      [ 0 1 ]
+                  	      Inactive componets ids: 
+                  	      [ ]
+                  	   
                   	   Total Dimension: 8
                   	
-                  	Basis Indices:
+                  	Patch Basis Indices:
                   	   Size: [ 2 2 ]  Weights: [2,4]
-                  	   [ 16 17 18 19 ]Size: [ 2 2 ]  Weights: [2,4]
+                  	   [ 0 1 2 3 ]
+                  	   Size: [ 2 2 ]  Weights: [2,4]
+                  	   [ 4 5 6 7 ]
+                  	   Element views:
+                  	      [ 0 1 2 3 4 5 6 7 ]
+                  	   
+                  	
+                  	Global Basis Indices:
+                  	   Size: [ 2 2 ]  Weights: [2,4]
+                  	   [ 16 17 18 19 ]
+                  	   Size: [ 2 2 ]  Weights: [2,4]
                   	   [ 20 21 22 23 ]
-                  	   [ 16 17 18 19 20 21 22 23 ]
+                  	   Element views:
+                  	      [ 16 17 18 19 20 21 22 23 ]
+                  	   
                   	
                   	Bernstein Extraction:
                   	   Component[0]: 
@@ -371,7 +569,14 @@ MultiPatchSpace infos:
                         
                      
                      Degrees:
-                     [1,1] [1,1] 
+                        Raw componets: 
+                           Size: [ 2 ]  Weights: [2]
+                        [ [1,1] [0,0] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ 1 ]
+                     
                      Interior multiplicities:
                         Size: [ 0 0 ]  Weights: [0,0]
                         Direction: 0
@@ -385,16 +590,42 @@ MultiPatchSpace infos:
                         [ ]
                      
                      Dimensionality Table:
-                     [ 2 2 ] [ 2 2 ] 
+                        Raw componets: 
+                           Size: [ 2 ]  Weights: [2]
+                        [ [ 2 2 ] [ 2 2 ] ]
+                        Active componets ids: 
+                        [ 0 1 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
                      Component Dimension:
-                     4 4 
+                        Raw componets: 
+                           Size: [ 2 ]  Weights: [2]
+                        [ 4 4 ]
+                        Active componets ids: 
+                        [ 0 1 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
                      Total Dimension: 8
                   
-                  Basis Indices:
+                  Patch Basis Indices:
                      Size: [ 2 2 ]  Weights: [2,4]
-                     [ 24 25 26 27 ]Size: [ 2 2 ]  Weights: [2,4]
+                     [ 0 1 2 3 ]
+                     Size: [ 2 2 ]  Weights: [2,4]
+                     [ 4 5 6 7 ]
+                     Element views:
+                        [ 0 1 2 3 4 5 6 7 ]
+                     
+                  
+                  Global Basis Indices:
+                     Size: [ 2 2 ]  Weights: [2,4]
+                     [ 24 25 26 27 ]
+                     Size: [ 2 2 ]  Weights: [2,4]
                      [ 28 29 30 31 ]
-                     [ 24 25 26 27 28 29 30 31 ]
+                     Element views:
+                        [ 24 25 26 27 28 29 30 31 ]
+                     
                   
                   Bernstein Extraction:
                      Component[0]: 
@@ -427,7 +658,14 @@ MultiPatchSpace infos:
                      	      
                      	   
                      	   Degrees:
-                     	   [1,1] [1,1] 
+                     	      Raw componets: 
+                     	         Size: [ 2 ]  Weights: [2]
+                     	      [ [1,1] [0,0] ]
+                     	      Active componets ids: 
+                     	      [ 0 ]
+                     	      Inactive componets ids: 
+                     	      [ 1 ]
+                     	   
                      	   Interior multiplicities:
                      	      Size: [ 0 0 ]  Weights: [0,0]
                      	      Direction: 0
@@ -441,16 +679,42 @@ MultiPatchSpace infos:
                      	      [ ]
                      	   
                      	   Dimensionality Table:
-                     	   [ 2 2 ] [ 2 2 ] 
+                     	      Raw componets: 
+                     	         Size: [ 2 ]  Weights: [2]
+                     	      [ [ 2 2 ] [ 2 2 ] ]
+                     	      Active componets ids: 
+                     	      [ 0 1 ]
+                     	      Inactive componets ids: 
+                     	      [ ]
+                     	   
                      	   Component Dimension:
-                     	   4 4 
+                     	      Raw componets: 
+                     	         Size: [ 2 ]  Weights: [2]
+                     	      [ 4 4 ]
+                     	      Active componets ids: 
+                     	      [ 0 1 ]
+                     	      Inactive componets ids: 
+                     	      [ ]
+                     	   
                      	   Total Dimension: 8
                      	
-                     	Basis Indices:
+                     	Patch Basis Indices:
                      	   Size: [ 2 2 ]  Weights: [2,4]
-                     	   [ 24 25 26 27 ]Size: [ 2 2 ]  Weights: [2,4]
+                     	   [ 0 1 2 3 ]
+                     	   Size: [ 2 2 ]  Weights: [2,4]
+                     	   [ 4 5 6 7 ]
+                     	   Element views:
+                     	      [ 0 1 2 3 4 5 6 7 ]
+                     	   
+                     	
+                     	Global Basis Indices:
+                     	   Size: [ 2 2 ]  Weights: [2,4]
+                     	   [ 24 25 26 27 ]
+                     	   Size: [ 2 2 ]  Weights: [2,4]
                      	   [ 28 29 30 31 ]
-                     	   [ 24 25 26 27 28 29 30 31 ]
+                     	   Element views:
+                     	      [ 24 25 26 27 28 29 30 31 ]
+                     	   
                      	
                      	Bernstein Extraction:
                      	   Component[0]: 

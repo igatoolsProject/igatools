@@ -36,7 +36,7 @@ void access_operator()
     StaticMultiArray<Index, dim, rank> data;
 
     for (int i = 0; i < data.flat_size(); ++i)
-        data(i) = i;
+        data[i] = i;
 
     data.print_info(out);
     out << endl;

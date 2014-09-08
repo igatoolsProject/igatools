@@ -12,29 +12,54 @@ Type = IgMapping
 	      
 	   
 	   Degrees:
-	   [2] 
+	      Raw componets: 
+	         Size: [ 1 ]  Weights: [1]
+	      [ [2] ]
+	      Active componets ids: 
+	      [ 0 ]
+	      Inactive componets ids: 
+	      [ ]
+	   
 	   Interior multiplicities:
 	      Size: [ 1 ]  Weights: [1]
 	      Direction: 0
 	      [ 1 ]
 	   
 	   Dimensionality Table:
-	   [ 4 ] 
+	      Raw componets: 
+	         Size: [ 1 ]  Weights: [1]
+	      [ [ 4 ] ]
+	      Active componets ids: 
+	      [ 0 ]
+	      Inactive componets ids: 
+	      [ ]
+	   
 	   Component Dimension:
-	   4 
+	      Raw componets: 
+	         Size: [ 1 ]  Weights: [1]
+	      [ 4 ]
+	      Active componets ids: 
+	      [ 0 ]
+	      Inactive componets ids: 
+	      [ ]
+	   
 	   Total Dimension: 4
 	
 	Patch Basis Indices:
 	   Size: [ 4 ]  Weights: [4]
 	   [ 0 1 2 3 ]
-	   [ 0 1 2 ]
-	   [ 1 2 3 ]
+	   Element views:
+	      [ 0 1 2 ]
+	      [ 1 2 3 ]
+	   
 	
 	Global Basis Indices:
 	   Size: [ 4 ]  Weights: [4]
 	   [ 0 1 2 3 ]
-	   [ 0 1 2 ]
-	   [ 1 2 3 ]
+	   Element views:
+	      [ 0 1 2 ]
+	      [ 1 2 3 ]
+	   
 	
 	Bernstein Extraction:
 	   Component[0]: 
@@ -93,7 +118,14 @@ Type = IgMapping
 		      
 		   
 		   Degrees:
-		   [2,1] [2,1] 
+		      Raw componets: 
+		         Size: [ 2 ]  Weights: [2]
+		      [ [2,1] [2,1] ]
+		      Active componets ids: 
+		      [ 0 1 ]
+		      Inactive componets ids: 
+		      [ ]
+		   
 		   Interior multiplicities:
 		      Size: [ 1 0 ]  Weights: [1,0]
 		      Direction: 0
@@ -107,24 +139,44 @@ Type = IgMapping
 		      [ ]
 		   
 		   Dimensionality Table:
-		   [ 4 2 ] [ 4 2 ] 
+		      Raw componets: 
+		         Size: [ 2 ]  Weights: [2]
+		      [ [ 4 2 ] [ 4 2 ] ]
+		      Active componets ids: 
+		      [ 0 1 ]
+		      Inactive componets ids: 
+		      [ ]
+		   
 		   Component Dimension:
-		   8 8 
+		      Raw componets: 
+		         Size: [ 2 ]  Weights: [2]
+		      [ 8 8 ]
+		      Active componets ids: 
+		      [ 0 1 ]
+		      Inactive componets ids: 
+		      [ ]
+		   
 		   Total Dimension: 16
 		
 		Patch Basis Indices:
 		   Size: [ 4 2 ]  Weights: [4,8]
-		   [ 0 1 2 3 4 5 6 7 ]Size: [ 4 2 ]  Weights: [4,8]
+		   [ 0 1 2 3 4 5 6 7 ]
+		   Size: [ 4 2 ]  Weights: [4,8]
 		   [ 8 9 10 11 12 13 14 15 ]
-		   [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
-		   [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+		   Element views:
+		      [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+		      [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+		   
 		
 		Global Basis Indices:
 		   Size: [ 4 2 ]  Weights: [4,8]
-		   [ 0 1 2 3 4 5 6 7 ]Size: [ 4 2 ]  Weights: [4,8]
+		   [ 0 1 2 3 4 5 6 7 ]
+		   Size: [ 4 2 ]  Weights: [4,8]
 		   [ 8 9 10 11 12 13 14 15 ]
-		   [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
-		   [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+		   Element views:
+		      [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+		      [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+		   
 		
 		Bernstein Extraction:
 		   Component[0]: 
@@ -217,7 +269,14 @@ Type = IgMapping
 			      
 			   
 			   Degrees:
-			   [2,1,1] [2,1,1] [2,1,1] 
+			      Raw componets: 
+			         Size: [ 3 ]  Weights: [3]
+			      [ [2,1,1] [0,0,0] [0,0,0] ]
+			      Active componets ids: 
+			      [ 0 ]
+			      Inactive componets ids: 
+			      [ 1 2 ]
+			   
 			   Interior multiplicities:
 			      Size: [ 1 0 0 ]  Weights: [1,0,0]
 			      Direction: 0
@@ -242,26 +301,48 @@ Type = IgMapping
 			      [ ]
 			   
 			   Dimensionality Table:
-			   [ 4 2 2 ] [ 4 2 2 ] [ 4 2 2 ] 
+			      Raw componets: 
+			         Size: [ 3 ]  Weights: [3]
+			      [ [ 4 2 2 ] [ 4 2 2 ] [ 4 2 2 ] ]
+			      Active componets ids: 
+			      [ 0 1 2 ]
+			      Inactive componets ids: 
+			      [ ]
+			   
 			   Component Dimension:
-			   16 16 16 
+			      Raw componets: 
+			         Size: [ 3 ]  Weights: [3]
+			      [ 16 16 16 ]
+			      Active componets ids: 
+			      [ 0 1 2 ]
+			      Inactive componets ids: 
+			      [ ]
+			   
 			   Total Dimension: 48
 			
 			Patch Basis Indices:
 			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]Size: [ 4 2 2 ]  Weights: [4,8,16]
+			   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+			   Size: [ 4 2 2 ]  Weights: [4,8,16]
+			   [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
+			   Size: [ 4 2 2 ]  Weights: [4,8,16]
 			   [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
-			   [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
-			   [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
+			   Element views:
+			      [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
+			      [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
+			   
 			
 			Global Basis Indices:
 			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]Size: [ 4 2 2 ]  Weights: [4,8,16]
+			   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+			   Size: [ 4 2 2 ]  Weights: [4,8,16]
+			   [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
+			   Size: [ 4 2 2 ]  Weights: [4,8,16]
 			   [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
-			   [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
-			   [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
+			   Element views:
+			      [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
+			      [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
+			   
 			
 			Bernstein Extraction:
 			   Component[0]: 

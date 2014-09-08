@@ -30,6 +30,8 @@
 #include <igatools/utils/vector.h>
 #include <igatools/utils/array.h>
 
+using namespace iga;
+
 void vector_print_info()
 {
     iga::vector<Real> vec(5);

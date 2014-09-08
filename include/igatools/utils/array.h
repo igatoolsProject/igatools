@@ -29,7 +29,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief iga version on std::vector
+ * @brief iga version on std::array
  */
 template<class T, Size N>
 class special_array

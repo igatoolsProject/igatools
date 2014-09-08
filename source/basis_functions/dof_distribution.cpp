@@ -291,18 +291,23 @@ void
 DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
+    using std::endl;
     for (const auto &index_table_comp : index_table_)
+    {
         index_table_comp.print_info(out);
-    out << std::endl;
+        out << endl;
+    }
 
     // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
+    out.begin_item("Element views:");
     for (const auto &dofs_elem : *elements_loc_to_global_flat_view_)
     {
         out << "[ ";
         for (auto x : dofs_elem.second)
             out << x << " ";
-        out << "]" << std::endl;
+        out << "]" << endl;
     }
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE
