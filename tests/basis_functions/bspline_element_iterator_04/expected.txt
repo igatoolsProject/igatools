@@ -12,7 +12,14 @@ Spline Space:
       
    
    Degrees:
-   [3,2] [2,3] 
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ [3,2] [2,3] ]
+      Active componets ids: 
+      [ 0 1 ]
+      Inactive componets ids: 
+      [ ]
+   
    Interior multiplicities:
       Size: [ 1 1 ]  Weights: [1,1]
       Direction: 0
@@ -26,9 +33,23 @@ Spline Space:
       [ 1 ]
    
    Dimensionality Table:
-   [ 5 4 ] [ 4 5 ] 
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ [ 5 4 ] [ 4 5 ] ]
+      Active componets ids: 
+      [ 0 1 ]
+      Inactive componets ids: 
+      [ ]
+   
    Component Dimension:
-   20 20 
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ 20 20 ]
+      Active componets ids: 
+      [ 0 1 ]
+      Inactive componets ids: 
+      [ ]
+   
    Total Dimension: 40
 
 Basis Indices:
@@ -384,7 +405,14 @@ Spline Space:
       
    
    Degrees:
-   [3,2,2] [2,3,2] [2,2,3] 
+      Raw componets: 
+         Size: [ 3 ]  Weights: [3]
+      [ [3,2,2] [2,3,2] [2,2,3] ]
+      Active componets ids: 
+      [ 0 1 2 ]
+      Inactive componets ids: 
+      [ ]
+   
    Interior multiplicities:
       Size: [ 1 1 1 ]  Weights: [1,1,1]
       Direction: 0
@@ -409,9 +437,23 @@ Spline Space:
       [ 1 ]
    
    Dimensionality Table:
-   [ 5 4 4 ] [ 4 5 4 ] [ 4 4 5 ] 
+      Raw componets: 
+         Size: [ 3 ]  Weights: [3]
+      [ [ 5 4 4 ] [ 4 5 4 ] [ 4 4 5 ] ]
+      Active componets ids: 
+      [ 0 1 2 ]
+      Inactive componets ids: 
+      [ ]
+   
    Component Dimension:
-   80 80 80 
+      Raw componets: 
+         Size: [ 3 ]  Weights: [3]
+      [ 80 80 80 ]
+      Active componets ids: 
+      [ 0 1 2 ]
+      Inactive componets ids: 
+      [ ]
+   
    Total Dimension: 240
 
 Basis Indices:

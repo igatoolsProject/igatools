@@ -20,8 +20,7 @@
 
 /*
  *  Test for the Bspline space element iterator using
- *  the uniform quad global cache
- *  Computes values and derivatives of the basis functions
+ *  the uniform quad global cache, passing flags one at a time
  *
  *  author: pauletti
  *  date: Aug 28, 2014
@@ -42,13 +41,13 @@ void bspline_iterator(const int deg = 2)
 
     auto grid = CartesianGrid<dim>::create();
 	using Space = BSplineSpace<dim, range, rank>;
+	using SpaceCache = BSplineUniformQuadCache<dim, range, rank >;
 	auto space = Space::create(deg, grid);
 
     const int n_qp = 3;
     QGauss< dim > quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-
-    BSplineUniformQuadCache<dim, range, rank > cache(space, flag, quad);
+    SpaceCache cache(space, flag, quad);
 
     auto elem = space->begin();
     cache.init_element_cache(elem);
