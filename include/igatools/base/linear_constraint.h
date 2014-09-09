@@ -118,16 +118,6 @@ public:
     void print_info(LogStream &out) const ;
     ///@}
 
-    /**
-     * @name Printing info
-     */
-    ///@{
-
-    /**
-     * Prints the content of the LinearConstraint on the LogStream @p out.
-     */
-    void print_info(LogStream &out) const ;
-    ///@}
 
 private:
 

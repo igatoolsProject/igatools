@@ -116,22 +116,6 @@ print_info(LogStream &out) const
 }
 
 
-
-void
-LinearConstraint::
-print_info(LogStream &out) const
-{
-    const int n_dofs = this->get_num_lhs_terms();
-
-    for (int i = 0 ; i < n_dofs ; ++i)
-    {
-        out << "Dof[" << i << "] = " << this->get_dof_index(i)
-            << "      Coef = " << this->get_dof_coeff(i) << std::endl;
-    }
-    out << "Rhs value = " << this->get_rhs() << std::endl;
-}
-
-
 IGA_NAMESPACE_CLOSE
 
 
