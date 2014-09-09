@@ -110,6 +110,17 @@ get_dofs_id() const
     return dofs_id;
 }
 
+vector<Real>
+LinearConstraint::
+get_coefficients() const
+{
+    vector<Real> coeffs;
+    for (const auto &lhs_term : lhs_)
+        coeffs.push_back(lhs_term.second);
+
+    return coeffs;
+}
+
 
 void
 LinearConstraint::
