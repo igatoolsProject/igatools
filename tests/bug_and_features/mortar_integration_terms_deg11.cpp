@@ -125,11 +125,11 @@ public:
     {
         cout<<"A LC Interface built"<<endl;
         slave_face_space_=slave_space_->get_face_space(slave_mortar_face_nb_, slave_face_dof_num_);
-		slave_face_dof_num_=space_manager->get_global_dofs(slave_space_->get_id(), slave_face_dof_num_);
+		//slave_face_dof_num_=space_manager->get_global_dofs(slave_space_->get_id(), slave_face_dof_num_);
 
 
         master_face_space_=master_space_->get_face_space(master_mortar_face_nb_, master_face_dof_num_);
-        master_face_dof_num_=space_manager->get_global_dofs(master_space_->get_id(), master_face_dof_num_);
+        //master_face_dof_num_=space_manager->get_global_dofs(master_space_->get_id(), master_face_dof_num_);
 
         face_dof_num_=slave_face_dof_num_;
         for (int i=slave_face_dof_num_.size(); i<slave_face_dof_num_.size()+master_face_dof_num_.size(); ++i)

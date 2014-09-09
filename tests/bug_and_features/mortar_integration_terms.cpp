@@ -128,11 +128,11 @@ public:
     {
         cout<<"A LC Interface built"<<endl;
         slave_face_space_=slave_space_->get_face_space(slave_mortar_face_nb_, slave_face_dof_num_);
-		slave_face_dof_num_=space_manager->get_global_dofs(slave_space_->get_id(), slave_face_dof_num_);
+		//slave_face_dof_num_=space_manager->get_global_dofs(slave_space_->get_id(), slave_face_dof_num_);
 		
 		
         master_face_space_=master_space_->get_face_space(master_mortar_face_nb_, master_face_dof_num_);
-        master_face_dof_num_=space_manager->get_global_dofs(master_space_->get_id(), master_face_dof_num_);
+        //master_face_dof_num_=space_manager->get_global_dofs(master_space_->get_id(), master_face_dof_num_);
 		
         face_dof_num_=slave_face_dof_num_;
         for (int i=slave_face_dof_num_.size(); i<slave_face_dof_num_.size()+master_face_dof_num_.size(); ++i)
@@ -561,7 +561,7 @@ int main()
  		/*if (i==1)
 		{
 			spaces[i]->refine_h(2); 
-		}// Problem here with a value different than 2
+		}// 
 		else if (i==0)
 		{
 			spaces[i]->get_grid()->set_boundary_id(2,3);
@@ -629,6 +629,8 @@ int main()
 	using functions::ConstantFunction;
 	using space_tools::project_boundary_values;
 	using dof_tools::apply_boundary_values;
+	
+	
 	
 	auto space_infos = space_manager->get_spaces_info();
 	for (auto &space_curr: space_infos){
@@ -731,11 +733,11 @@ int main()
 			++c;
 		}
 		//std::map<>*/
-		//apply_boundary_values(values, *matrix, *rhs, *solution);
+		apply_boundary_values(values, *matrix, *rhs, *solution);
 		// [dirichlet constraint]*/
 		
 	}
-	
+	//apply_boundary_values(values, *matrix, *rhs, *solution);
 	matrix->fill_complete();
 	//matrix->print(out);
 	//auto aa=space_infos.get_function_view(1);
