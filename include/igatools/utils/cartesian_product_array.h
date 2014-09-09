@@ -105,6 +105,8 @@ public:
      */
     explicit CartesianProductArray(const TensorSize<rank> size);
 
+    CartesianProductArray(const TensorSize<rank> size, T& val);
+
     /**
      * Constructor. Same as CartesianProductArray(const array< int, rank > size)
      * but with all direction sizes equal to @p size.
@@ -229,6 +231,8 @@ public:
      * In the case T is a floating point it returns a Point type.
      */
     point_t cartesian_product(const TensorIndex<rank> &index) const;
+
+    std::array<T const &, rank> cartesian_product_adresss(const TensorIndex<rank> &index) const;
 
     /**
      * Returns a flat vector of the cartesian product of the

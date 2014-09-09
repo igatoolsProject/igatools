@@ -33,11 +33,12 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * Global BSplineSpace uniform quadrature
  * computational optimization cache, storing the interval length
- * in each direction.
- *
+ * in each direction
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
@@ -90,41 +91,7 @@ public:
 
     void print_info(LogStream &out) const;
 
-    class BasisValues1d
-    {
-    public:
-        BasisValues1d()
-        {}
-        BasisValues1d(const int max_der_order, const int n_func, const int n_points)
-            :
-            values_(max_der_order, DenseMatrix(n_func, n_points))
-        {}
 
-        void resize(const int max_der_order, const int n_func, const int n_points)
-        {
-            values_.resize(max_der_order);
-            for (auto matrix: values_)
-                matrix.resize(n_func, n_points);
-        }
-
-        void print_info(LogStream &out) const
-        {
-            values_.print_info(out);
-        }
-
-        auto &get_derivative(const int order)
-        {
-            return values_[order];
-        }
-
-        auto const &get_derivative(const int order) const
-        {
-            return values_[order];
-        }
-
-    private:
-        vector<DenseMatrix> values_;
-    };
 
 private:
     template <int order>
@@ -144,6 +111,7 @@ private:
         ValueTable<Val<order>> &D_phi) const;
 
 private:
+    // TODO (pauletti, Sep 8, 2014): to be passed some how
     const int n_derivatives = 3;
 
     std::shared_ptr<const Space> space_;
@@ -158,12 +126,16 @@ private:
 
     Quadrature<dim> quad_;
 
+    template <class T>
+    using DirectionTable = CartesianProductArray<T, dim_>;
+    using BasisValues = ComponentContainer<BasisValues1d>;
     /**
-     * univariate B-splines values and derivatives at
-     * quadrature points
-     * splines1d_[comp][dir][interval][order][function][point]
+     * B-splines values and derivatives at quadrature points.
+     * The values are stored in the un tensor product way.
+     *
+     * splines1d_[dir][interval][comp][order][function][point]
      */
-    ComponentDirectionTable<BasisValues1d> splines1d_;
+    DirectionTable<BasisValues> splines1d_;
 
     ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 

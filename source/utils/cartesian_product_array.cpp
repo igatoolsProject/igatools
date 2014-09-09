@@ -63,7 +63,15 @@ CartesianProductArray(const TensorSize<rank> size)
         data_[i].resize(size[i]);
 }
 
-
+template< class T, int rank>
+CartesianProductArray<T,rank>::
+CartesianProductArray(const TensorSize<rank> size, T& val)
+    :
+    TensorSizedContainer<rank>(size)
+{
+    for (int i=0; i<rank; ++i)
+        data_[i].resize(size[i], val);
+}
 template< class T, int rank>
 CartesianProductArray<T,rank>::
 CartesianProductArray(const Size size)
@@ -137,9 +145,6 @@ copy_data_direction(const int i, const vector<T> &data)
         TensorSizedContainer<rank>::reset_size(size);
     }
 }
-
-
-
 
 
 

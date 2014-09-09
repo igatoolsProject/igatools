@@ -261,24 +261,29 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     flags_(flag),
     face_flags_(flag),
     quad_(quad),
-    splines1d_(space->get_components_map(),
-               CartesianProductArray<BasisValues1d, dim_>(space->get_grid()->get_num_intervals()))
-{
+    splines1d_(space->get_grid()->get_num_intervals())
+             //s  BasisValues(space->get_components_map()))
+    {
+
+#if 0
     comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
         comp_offset_[comp_id] = comp_offset_[comp_id-1] + n_basis_.comp_dimension[comp_id-1];
 
+
+    // Allocate space for the BasisValues1D
     const auto n_points = quad.get_num_points_direction();
-    for (auto comp : splines1d_.get_active_components_id())
+    const auto n_inter = space->get_grid()->get_num_intervals();
+    for (int dir = 0 ; dir < dim ; ++dir)
     {
-        auto &splines1d = splines1d_[comp];
-        const auto size = splines1d.tensor_size();
-        for (int dir = 0 ; dir < dim ; ++dir)
+        const auto &n_pts = n_points[dir];
+        for (int j = 0 ; j < n_inter[dir] ; ++j)
         {
-            auto n_fun = n_basis_[comp][dir];
-            auto n_pts = n_points[dir];
-            for (int j = 0 ; j < size[dir] ; ++j)
-                splines1d.entry(dir,j).resize(n_derivatives, n_fun, n_pts);
+            auto &splines1d = splines1d_.entry(dir, j);
+            for (auto comp : splines1d.get_active_components_id())
+            {
+                splines1d[comp].resize(n_derivatives, n_basis_[comp][dir], n_pts);
+            }
         }
     }
 
@@ -294,45 +299,84 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     const auto degree = space->get_degree();
     const auto &bezier_op   = space_->operators_;
     const auto &points      = quad_.get_points();
-
     const auto &lengths = this->lengths_;
 
-    for (auto comp : splines1d_.get_active_components_id())
+    for (int dir = 0 ; dir < dim ; ++dir)
     {
-        auto &splines1d = splines1d_[comp];
-        for (int jDim = 0; jDim < dim; ++jDim)
+
+        // fill values and derivatives of the Bernstein's polynomials at
+        // quad points in [0,1]
+        BasisValues bernstein_values(n_basis_.get_comp_map());
+        for (auto comp : bernstein_values.get_active_components())
         {
-            const int num_intervals = n_intervals[jDim];
-            const int deg = degree[comp][jDim];
-            BasisValues1d bernstein_values(n_derivatives, deg+1, n_points[jDim]);
+            const int deg = degree[comp][dir];
+            bernstein_values(comp).resize(n_derivatives, deg+1, n_points[dir]);
+            const auto &pt_coords = points.get_data_direction(dir);
 
-            const auto &pt_coords = points.get_data_direction(jDim);
-
-            // fill values and derivatives of the Bernstein's polynomials at
-            // quad points in [0,1]
             for (int order = 0; order < n_derivatives; ++order)
-                bernstein_values.get_derivative(order) =
-                    BernsteinBasis::derivative(order, deg, pt_coords);
+                bernstein_values(comp).get_derivative(order) =
+                        BernsteinBasis::derivative(order, deg, pt_coords);
+        }
 
-            const auto &bez_iComp_jDim = bezier_op.get_operator(comp,jDim);
-            const auto &lengths_jDim = lengths.get_data_direction(jDim);
-
-            // compute the one dimensional B-splines at quad point on the reference interval
-            for (int i = 0 ; i < num_intervals ; ++i)
+        const auto& inter_lengths = lengths.get_data_direction(dir);
+        for (int j = 0 ; j < n_inter[dir] ; ++j)
+        {
+            auto &splines1d = splines1d_.entry(dir, j);
+            for (auto comp : splines1d.get_active_components_id())
             {
-                const auto &M = bez_iComp_jDim[i];
-                const Real one_div_size = 1.0 / lengths_jDim[i];
-                BasisValues1d &basis = splines1d.entry(jDim,i);
-
+                const auto &berns_values = bernstein_values(comp);
+                const auto &oper = bezier_op.get_operator(comp,dir)[j];
+                const Real one_div_size = 1.0 / inter_lengths[j];
+                auto &basis = splines1d(comp);
                 for (int order = 0; order < n_derivatives; ++order)
                 {
-                    const Real scaling_coef = std::pow(one_div_size, order);
-                    basis.get_derivative(order) = scaling_coef * prec_prod(M, bernstein_values.get_derivative(order));
-                } //end loop order
+                    const Real scale = std::pow(one_div_size, order);
+                    const auto &b_values = berns_values.get_derivative(order);
+                    basis.get_derivative(order) =
+                            scale * prec_prod(oper, b_values);
+                }
+            }
+        }
 
-            } // end loop interval
-        } // end loop jDim
-    } // end loop comp
+    }
+
+//        for (auto comp : splines1d_.get_active_components_id())
+//    {
+//        auto &splines1d = splines1d_[comp];
+//
+//        {
+//            const int num_intervals = n_intervals[jDim];
+//            const int deg = degree[comp][jDim];
+//            BasisValues1d bernstein_values(n_derivatives, deg+1, n_points[jDim]);
+//
+//            const auto &pt_coords = points.get_data_direction(jDim);
+//
+//            // fill values and derivatives of the Bernstein's polynomials at
+//            // quad points in [0,1]
+//            for (int order = 0; order < n_derivatives; ++order)
+//                bernstein_values.get_derivative(order) =
+//                    BernsteinBasis::derivative(order, deg, pt_coords);
+//
+//            const auto &bez_iComp_jDim = bezier_op.get_operator(comp,jDim);
+//            const auto &lengths_jDim = lengths.get_data_direction(jDim);
+//
+//            // compute the one dimensional B-splines at quad point on the reference interval
+//            for (int i = 0 ; i < num_intervals ; ++i)
+//            {
+//                const auto &M = bez_iComp_jDim[i];
+//                const Real one_div_size = 1.0 / lengths_jDim[i];
+//                BasisValues1d &basis = splines1d.entry(jDim,i);
+//
+//                for (int order = 0; order < n_derivatives; ++order)
+//                {
+//                    const Real scaling_coef = std::pow(one_div_size, order);
+//                    basis.get_derivative(order) = scaling_coef * prec_prod(M, bernstein_values.get_derivative(order));
+//                } //end loop order
+//
+//            } // end loop interval
+//        } // end loop jDim
+//    } // end loop comp
+#endif
 }
 
 
@@ -561,7 +605,7 @@ fill_element_cache(ElementAccessor &elem)
 {
     base_t::fill_element_cache(elem);
     auto &cache = elem.get_elem_cache();
-
+#if 0
     vector<std::array<Values1DConstView,dim>> values1D(n_derivatives);
     const auto &degree = space_->get_degree();
 
@@ -569,13 +613,17 @@ fill_element_cache(ElementAccessor &elem)
     ComponentDirectionContainer<const BasisValues1d *> univariate_values;
     //if (topology_id.is_element())
     {
-        const auto element_tensor_id = elem.get_tensor_index();
-        for (int iComp=0; iComp< Space::n_components; ++iComp)
+        const auto elem_values =
+                splines1d_.cartesian_product(elem.get_tensor_index());
+
+        splines1d_.get_data_direction(dir)[comp][element_tensor_id[i]]
+
+        for (auto comp : univariate_values.get_active_components_id())
         {
-            const auto &values_1D_comp = splines1d_[iComp];
+            const auto &values_1D_comp = elem_values[comp];
             for (int i = 0; i < dim; ++i)
                 univariate_values[iComp][i] =
-                    &values_1D_comp.get_data_direction(i)[element_tensor_id[i]];
+                        &values_1D_comp.get_data_direction(i)[element_tensor_id[i]];
         }
     } // if (topology_id.is_element())
 
@@ -647,7 +695,7 @@ fill_element_cache(ElementAccessor &elem)
         cache.flags_handler_.set_divergences_filled(true);
     }
     //--------------------------------------------------------------------------
-
+#endif
     cache.set_filled(true);
 }
 
@@ -665,13 +713,7 @@ print_info(LogStream &out) const
 
     out.begin_item("One dimensional splines cache:");
     splines1d_.print_info(out);
-//    // TODO (pauletti, Aug 21, 2014): This should just be splines1d_.print_info
-//    for (auto spline : splines1d_)
-//    {
-//        for (int dir = 0 ; dir < dim ; ++dir)
-//            for (auto basis : spline.get_data_direction(dir))
-//                basis.print_info(out);
-//    }
+
     out.end_item();
 }
 

@@ -25,21 +25,154 @@
 
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/dense_matrix.h>
-
+#include <igatools/utils/vector.h>
+#include <igatools/utils/tensor_index.h>
 
 IGA_NAMESPACE_OPEN
+
+/**
+ * Set of functions evaluation (values and derivatives) which
+ * are defined as tensor product of scalar functions over
+ * points defined as tensor products.
+ *
+ */
+class BasisValues1d
+{
+public:
+    BasisValues1d()
+{}
+    BasisValues1d(const int max_der_order, const int n_func, const int n_points)
+    :
+        values_(max_der_order, DenseMatrix(n_func, n_points))
+    {}
+
+    void resize(const int max_der_order, const int n_func, const int n_points)
+    {
+        values_.resize(max_der_order);
+        for (auto matrix: values_)
+            matrix.resize(n_func, n_points);
+    }
+
+    void print_info(LogStream &out) const
+    {
+        values_.print_info(out);
+    }
+
+    auto &get_derivative(const int order)
+    {
+        return values_[order];
+    }
+
+    auto const &get_derivative(const int order) const
+    {
+        return values_[order];
+    }
+
+private:
+    vector<DenseMatrix> values_;
+};
+
+
+
+class BasisValues1dConstView
+{
+public:
+    /** @name Constructors */
+    ///@{
+    /** Default constructor. It does nothing. */
+    BasisValues1dConstView() = default;
+
+    /**
+     * Constructor. Builds the const view on the <tt>func_id</tt>-th row
+     * of the DenseMatrix @p funcs.
+     */
+    BasisValues1dConstView(const BasisValues1d &val)
+    :funcs_(&val)
+    {}
+
+    auto const &get_derivative(const int order) const
+    {
+        return funcs_->get_derivative(order);
+    }
+
+    /** Copy constructor. */
+    BasisValues1dConstView(const BasisValues1dConstView &view) = default ;
+
+    /** Move constructor. */
+    BasisValues1dConstView(BasisValues1dConstView &&view) = default ;
+
+    /** Destructor. */
+    ~BasisValues1dConstView() = default;
+    ///@}
+
+    /** Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    BasisValues1dConstView &operator=(const BasisValues1dConstView &view) = default;
+
+    /** Move assignment operator. */
+    BasisValues1dConstView &operator=(BasisValues1dConstView &&view) = default;
+    ///@}
+//
+//    /** Returns the value of the fucntion at the <tt>point_id</tt>-th point. */
+//    Real operator()(const Index point_id) const;
+//
+//    /** Return the number of points for which the function is evaluated. */
+//    Size get_num_points() const;
+
+private:
+    BasisValues1d const* funcs_;
+};
+
+template <int dim>
+using ElemFuncValues = vector<std::array<BasisValues1dConstView, dim>>;
+
+template <int dim>
+class TensorProductFunctionEvaluator
+{
+    TensorProductFunctionEvaluator() = delete;
+    /** Copy constructor. */
+    TensorProductFunctionEvaluator(const TensorProductFunctionEvaluator<dim> &bspline) = default;
+
+    /** Move constructor. */
+    TensorProductFunctionEvaluator(TensorProductFunctionEvaluator<dim> &&bspline) = default;
+
+    /** Destructor. */
+    ~ TensorProductFunctionEvaluator() = default;
+
+    /**
+     * Evaluate and returns one partial derivative in one point.
+     * The order of the partial derivative is specified by the tensor-index
+     * @p order_tensor_id,
+     * while the point is specified by its tensor-index @p point_tensor_id.
+     */
+    Real evaluate( const TensorIndex<dim> &order,
+                   const TensorIndex<dim> &func,
+                   const TensorIndex<dim> &pt) const
+    {
+        Real res = dim>0 ? values_.get_derivatives(order[0])[func[0]][pt[0]] : 1.;
+        for (int i = 1; i < dim; ++i)
+            res *= values_.get_derivatives(order[i])[func[i]][pt[i]];
+        return res;
+    }
+
+private:
+    ElemFuncValues<dim> values_;
+};
 
 
 
 /**
  * @brief Const view to one-dimensional BSpline function over an interval.
  *
- * In the igatools library, the one-dimensional BSpline values and derivatives are computed
- * at the evaluation points over each grid interval and then stored using a DenseMatrix object,
+ * In the igatools library, the one-dimensional BSpline values and derivatives
+ * are computed at the evaluation points over each grid interval and
+ * then stored using a DenseMatrix object,
  * where:
  * - the rows refers to the non-zero BSpline functions over the interval;
  * - the columns refers to the evaluation points over the interval.
- * This means that if we want to refer to the value of the function @p fn at the point @p pt
+ * This means that if we want to refer to the value of the
+ * function @p fn at the point @p pt
  * using a DenseMatrix we must use two indices, e.g.
  * @code{.cpp}
    DenseMatrix values; // this represents all BSpline functions over an interval
@@ -52,10 +185,13 @@ IGA_NAMESPACE_OPEN
  * BSpline over an interval providing
  * the access operator operator(const Index point) that can be used to get the
  * values of the function at the different points.
- * The unique constructor Values1DConstView(const DenseMatrix &funcs,const Index func_id) takes the DenseMatrix
- * holding the values and the index of the function we want to represent and than the Values1DConstView
- * object is built using just the memory address of the DenseMatrix plus the fucntion index, resulting
- * in a lightweight object with minimal memory footprint and no expensive copy of function values.
+ * The unique constructor
+ * Values1DConstView(const DenseMatrix &funcs,const Index func_id) takes the
+ * DenseMatrix holding the values and the index of the function we want to
+ * represent and than the Values1DConstView object is built using just the
+ * memory address of the DenseMatrix plus the fucntion index, resulting
+ * in a lightweight object with minimal memory footprint and no expensive
+ * copy of function values.
  *
  * @todo Document more
  * @author M. Martinelli
@@ -75,7 +211,8 @@ public:
     Values1DConstView() = default;
 
     /**
-     * Constructor. Builds the const view on the <tt>func_id</tt>-th row of the DenseMatrix @p funcs.
+     * Constructor. Builds the const view on the <tt>func_id</tt>-th row
+     * of the DenseMatrix @p funcs.
      */
     Values1DConstView(const DenseMatrix &funcs,const Index func_id);
 
