@@ -121,6 +121,22 @@ get_coefficients() const
     return coeffs;
 }
 
+bool
+LinearConstraint::
+is_dof_present(const Index dof) const
+{
+    bool is_dof_present = false;
+
+    for (const auto &lhs_term : lhs_)
+        if (lhs_term.first == dof)
+        {
+            is_dof_present = true;
+            break;
+        }
+
+    return is_dof_present;
+}
+
 
 void
 LinearConstraint::

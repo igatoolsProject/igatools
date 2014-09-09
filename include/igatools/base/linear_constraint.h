@@ -129,6 +129,12 @@ public:
     void print_info(LogStream &out) const ;
     ///@}
 
+
+    /**
+     * Returns TRUE if the @p dof is present in the definitio of the LinearConstraint.
+     */
+    bool is_dof_present(const Index dof) const;
+
 private:
 
     /** Returns a const reference of the right hand side of the linear constraint. */
