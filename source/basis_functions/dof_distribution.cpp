@@ -110,7 +110,9 @@ DofDistribution<dim, range, rank>::
 basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                      const Index comp) const
 {
-    return index_table_[comp].tensor_to_flat(tensor_index);
+    const auto &index_table_comp = index_table_[comp];
+    const Index basis_flat_id_patch = index_table_comp.tensor_to_flat(tensor_index);
+    return index_table_comp[basis_flat_id_patch];
 }
 
 

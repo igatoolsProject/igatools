@@ -365,7 +365,6 @@ public:
     void add_dofs_offset(const Index offset);
 
 
-
     /**
      * @note try not to use as plans are to make it private
      */
@@ -379,7 +378,6 @@ public:
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                          const Index comp) const;
-
 
     /**
      * Prints internal information about the space.
