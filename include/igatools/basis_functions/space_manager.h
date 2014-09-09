@@ -237,7 +237,7 @@ public:
     void equality_constraints_close();
     ///@}
 
-    /** @name Functions for the insertion of the linear constraints */
+    /** @name Functions for the management of the linear constraints */
     ///@{
     /**
      * Sets the SpaceManager in a state that can receive new linear constraints.
@@ -272,6 +272,11 @@ public:
      * completed.
      */
     void linear_constraints_close();
+
+    /**
+     * Returns the vector of linear constraints defined in the SpaceManager.
+     */
+    vector<std::shared_ptr<LinearConstraint> > get_linear_constraints() const;
     ///@}
 
 
@@ -393,6 +398,9 @@ private:
          */
         SpacePtrVariant &get_space_variant();
 
+
+
+
     private:
         /**
          * Pointer to a generic single-patch space (it can be any of the type allowed for BSplineSpace,
@@ -452,6 +460,8 @@ private:
 
     /** Number of unique dofs in the SpaceManager. */
     Index num_unique_dofs_;
+
+
 
 
 public:

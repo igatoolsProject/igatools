@@ -365,6 +365,14 @@ add_linear_constraint(std::shared_ptr<LinearConstraint> linear_constraint)
 }
 
 
+vector<std::shared_ptr<LinearConstraint> >
+SpaceManager::
+get_linear_constraints() const
+{
+    return linear_constraints_;
+}
+
+
 void
 SpaceManager::
 remove_equality_constraints_redundancies()

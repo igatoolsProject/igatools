@@ -107,6 +107,17 @@ public:
      */
     Real get_coeff(const int i) const;
 
+
+    /**
+     * Returns the dofs involved in the definition of the LinearConstraint.
+     */
+    vector<Index> get_dofs_id() const;
+
+    /**
+     * Returns the coefficients of the dofs involved in the definition of the LinearConstraint.
+     */
+    vector<Real> get_coefficients() const;
+
     /**
      * @name Printing info
      */
