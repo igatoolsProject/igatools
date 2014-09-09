@@ -364,20 +364,13 @@ public:
      */
     void add_dofs_offset(const Index offset);
 
-
     /**
-     * @note try not to use as plans are to make it private
-     */
-    TensorIndex<dim>
-    basis_flat_to_tensor(const Index index, const Index comp) const;
-
-
-    /**
-     * @note try not to use as plans are to make it private
+     * This function returns the global dof id corresponding to the basis function
+     * with tensor index <p>tensor_index</p> on the @p comp component of the space.
      */
     Index
-    basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                         const Index comp) const;
+    get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                      const Index comp) const;
 
     /**
      * Prints internal information about the space.

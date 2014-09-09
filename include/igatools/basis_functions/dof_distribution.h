@@ -122,7 +122,7 @@ public:
     ///@}
 
 
-
+#if 0
     /**
      * @note Try not to use this function
      * @todo: deprecated function
@@ -138,6 +138,7 @@ public:
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                          const Index comp) const;
+#endif
 
     /**
      * Print the class content
