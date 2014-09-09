@@ -99,6 +99,27 @@ get_num_coeffs() const
     return this->get_num_lhs_terms();
 }
 
+vector<Index>
+LinearConstraint::
+get_dofs_id() const
+{
+    vector<Index> dofs_id;
+    for (const auto &lhs_term : lhs_)
+        dofs_id.push_back(lhs_term.first);
+
+    return dofs_id;
+}
+
+vector<Real>
+LinearConstraint::
+get_coefficients() const
+{
+    vector<Real> coeffs;
+    for (const auto &lhs_term : lhs_)
+        coeffs.push_back(lhs_term.second);
+
+    return coeffs;
+}
 
 
 void
