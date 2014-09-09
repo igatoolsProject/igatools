@@ -201,6 +201,9 @@ public:
      */
     int tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept;
 
+    /**
+     * Return the total number of entries of the tensor.
+     */
     static const Size get_number_of_entries();
 
 private:
@@ -561,15 +564,10 @@ public:
     ///@}
 
 
+    /**
+     * Return the total number of entries of the tensor.
+     */
     static const Size get_number_of_entries();
-//     template<class T_>
-// static const iga::Size
-// number_of_entries () noexcept
-// {
-//   iga::Size size = T_::size;
-//   size *= number_of_entries<T_::tensor_type> ();
-//   return size;
-// }
 
 private :
     SubTensor<self_t> tensor_[dim_== 0? 1: dim_];
