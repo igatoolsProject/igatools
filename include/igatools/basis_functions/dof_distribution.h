@@ -122,14 +122,23 @@ public:
     ///@}
 
 
-
+#if 0
+    /**
+     * @note Try not to use this function
+     * @todo: deprecated function
+     */
     TensorIndex<dim>
     basis_flat_to_tensor(const Index index, const Index comp) const;
 
 
+    /**
+     * @note Try not to use this function
+     * @todo: deprecated function
+     */
     Index
     basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                          const Index comp) const;
+#endif
 
     /**
      * Print the class content

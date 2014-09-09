@@ -444,6 +444,13 @@ get_degree() const -> const DegreeTable &
     return sp_space_->get_degree();
 }
 
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
+{
+    return sp_space_->get_interior_mult();
+}
 
 
 template <int dim_, int range_, int rank_>

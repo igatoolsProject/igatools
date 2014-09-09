@@ -35,31 +35,31 @@ LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real
     for (Index i = 0 ; i < n_dofs ; ++i)
     {
         Assert(dofs[i] >= 0,ExcLowerRange(dofs[i],0));
-        this->first.emplace_back(std::make_pair(dofs[i],coeffs[i]));
+        lhs_.emplace_back(std::make_pair(dofs[i],coeffs[i]));
     }
-    this->second = rhs;
+    rhs_ = rhs;
 }
 
 Real
 LinearConstraint::
 get_rhs() const
 {
-    return this->second;
+    return rhs_;
 }
 
 void
 LinearConstraint::
 set_rhs(const Real rhs)
 {
-    this->second = rhs;
+    rhs_ = rhs;
 }
 
 Index
 LinearConstraint::
 get_num_lhs_terms() const
 {
-    Assert(!this->first.empty(),ExcEmptyObject());
-    return this->first.size();
+    Assert(!lhs_.empty(),ExcEmptyObject());
+    return lhs_.size();
 }
 
 
@@ -67,8 +67,7 @@ const std::pair<Index,Real> &
 LinearConstraint::
 get_lhs_term(const int i) const
 {
-    Assert(i >= 0 && i < this->get_num_lhs_terms(),ExcIndexRange(i,0,this->get_num_lhs_terms()));
-    return this->first[i];
+    return lhs_[i];
 }
 
 
@@ -76,14 +75,44 @@ Index
 LinearConstraint::
 get_dof_index(const int i) const
 {
-    return this->get_lhs_term(i).first;
+    return lhs_[i].first;
 }
 
 Real
 LinearConstraint::
-get_dof_coeff(const int i) const
+get_coeff(const int i) const
 {
-    return this->get_lhs_term(i).second;
+    return lhs_[i].second;
+}
+
+Index
+LinearConstraint::
+get_num_dofs() const
+{
+    return this->get_num_lhs_terms();
+}
+
+Index
+LinearConstraint::
+get_num_coeffs() const
+{
+    return this->get_num_lhs_terms();
+}
+
+
+
+void
+LinearConstraint::
+print_info(LogStream &out) const
+{
+    const int n_dofs = this->get_num_dofs();
+
+    for (int i = 0 ; i < n_dofs ; ++i)
+    {
+        out << "Dof[" << i << "] = " << this->get_dof_index(i)
+            << "      Coef = " << this->get_coeff(i) << std::endl;
+    }
+    out << "Rhs value = " << this->get_rhs() << std::endl;
 }
 
 

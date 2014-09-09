@@ -210,24 +210,24 @@ get_ref_face_space(const Index face_id,
     TensorIndex<dim> tensor_index;
     face_to_element_dofs.resize(f_space->get_num_basis());
     int k=0;
-    int offset=0;
     for (auto comp : components)
     {
         const int face_n_basis = f_space->get_num_basis(comp);
+        const auto &face_local_indices = f_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
+
         for (Index i = 0; i < face_n_basis; ++i, ++k)
         {
-            const auto f_tensor_idx = f_space->basis_flat_to_tensor(i,comp);
-            const int fixed_idx =
-            face_side * (this->get_num_basis(comp,const_dir) - 1);
+            const auto f_tensor_idx = face_local_indices.flat_to_tensor(i);
+            const int fixed_idx = face_side * (this->get_num_basis(comp,const_dir) - 1);
             for (int j : RefFaceSpace::dims)
                 tensor_index[active_dirs[j]] =  f_tensor_idx[j];
             tensor_index[const_dir] = fixed_idx;
 
-            const Index dof = basis_tensor_to_flat(tensor_index, comp);
+//            face_to_element_dofs[k] = dof_distribution_global_.basis_tensor_to_flat(tensor_index, comp);
 
-            face_to_element_dofs[k] = offset + dof;
+            face_to_element_dofs[k] = elem_global_indices(tensor_index);
         }
-        offset += this->get_num_basis(comp);
     }
     return f_space;
 }
@@ -360,25 +360,14 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 }
 
 
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
-{
-    return dof_distribution_global_.basis_flat_to_tensor(index,comp);
-}
-
-
 template<int dim_, int range_, int rank_>
 Index
 BSplineSpace<dim_, range_, rank_>::
-basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                     const Index comp) const
+get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                  const Index comp) const
 {
-    return dof_distribution_global_.basis_tensor_to_flat(tensor_index, comp);
+    return dof_distribution_global_.get_index_table()[comp](tensor_index);
 }
-
 
 
 template<int dim_, int range_, int rank_>

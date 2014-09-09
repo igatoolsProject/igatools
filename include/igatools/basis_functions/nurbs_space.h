@@ -64,6 +64,8 @@ public:
 
     static const int rank = spline_space_t::rank;
 
+    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(1);
+
     static constexpr int n_components = spline_space_t::n_components;
 
     static const std::array<int, n_components> components;
@@ -246,6 +248,14 @@ public:
      * The first index of the returned object is the component id, the second index is the direction id.
      */
     const DegreeTable &get_degree() const;
+
+    /**
+     * Returns the multiplicity of the internal knots that defines the BSpline
+     * space for each component and for each coordinate direction.
+     * \return The multiplicity of the internal knots that defines the BSpline
+     * space for each component and for each coordinate direction.
+     */
+    std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
 
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
