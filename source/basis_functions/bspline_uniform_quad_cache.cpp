@@ -433,54 +433,49 @@ evaluate_bspline_derivatives(
 
     if (order == 0)
     {
-        const TensorIndex<dim> zero_tensor_id; // [0,0,..,0] tensor index
+        const TensorIndex<dim> zero; // [0,0,..,0] tensor index
         for (int comp : elem_values.get_active_components_id())
         {
         	auto &values = elem_values[comp];
-        	const auto &n_basis_dir = n_basis_[comp];
+        	//const auto &n_basis_dir = n_basis_[comp];
         	const int total_n_basis = n_basis_.comp_dimension[comp];
-            const Size comp_offset_i = comp_offset_[comp];
+            const Size offset = comp_offset_[comp];
 
-            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
+            for (int func_id = 0; func_id < total_n_basis; ++func_id)
             {
-            	auto D_phi_i = D_phi.get_function_view(comp_offset_i+func_flat_id);
-            	values.flat_to_tensor(func_flat_id);
-                if (dim > 0)
-                {
-                	elem_values[comp].evaluate(zero_tensor_id, func, pts)
-                    scalar_bspline.evaluate_derivative_at_points(zero_tensor_id,derivative_scalar_component);
+            	auto D_phi_i = D_phi.get_function_view(offset + func_id);
+            	auto const &func = values.func_flat_to_tensor(func_id);
 
-                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                        D_phi_i[point_flat_id](comp) = derivative_scalar_component[point_flat_id];
-                }
-                else
-                {
-                    for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                        D_phi_i[point_flat_id](comp) = 1.0;
-                }
+            	for (int point_id = 0; point_id < num_points; ++point_id)
+            	{
+            	    auto const &pts  = values.points_flat_to_tensor(point_id);
 
-            } // end func_flat_id loop
+                    D_phi_i[point_id](comp) = values.evaluate(zero, func, pts);
+            	}
+
+            } // end func_id loop
 
         } // end comp loop
 
-        for (int comp : scalar_evaluators_.get_inactive_components_id())
-        {
-            const auto n_basis = n_basis_.comp_dimension[comp];
-            const auto scalar_eval_act_comp = scalar_evaluators_.active(comp);
-            const Size act_offset = comp_offset_[scalar_eval_act_comp];
-            const Size offset = comp_offset_[comp];
-            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-            {
-                const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-                auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
-
-                for (int qp = 0; qp < num_points; ++qp)
-                    values_phi_hat_copy_to[qp](comp) =
-                        values_phi_hat_copy_from[qp](scalar_eval_act_comp);
-            }
-        }
+//        for (int comp : scalar_evaluators_.get_inactive_components_id())
+//        {
+//            const auto n_basis = n_basis_.comp_dimension[comp];
+//            const auto scalar_eval_act_comp = scalar_evaluators_.active(comp);
+//            const Size act_offset = comp_offset_[scalar_eval_act_comp];
+//            const Size offset = comp_offset_[comp];
+//            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+//            {
+//                const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
+//                auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
+//
+//                for (int qp = 0; qp < num_points; ++qp)
+//                    values_phi_hat_copy_to[qp](comp) =
+//                        values_phi_hat_copy_from[qp](scalar_eval_act_comp);
+//            }
+//        }
 
     } // end if (order == 0)
+#if 0
     else // if (order != 0)
     {
         Assert(order >= 1, ExcLowerRange(order,1));
@@ -578,6 +573,7 @@ evaluate_bspline_derivatives(
             } //end loop basis_i
         } // end loop comp
     } // end if (order > 0)
+#endif
 }
 
 
@@ -636,7 +632,7 @@ fill_element_cache(ElementAccessor &elem)
 
         cache.flags_handler_.set_divergences_filled(true);
     }
-#endif
+
     //--------------------------------------------------------------------------
 
     cache.set_filled(true);

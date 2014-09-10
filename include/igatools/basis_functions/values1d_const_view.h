@@ -27,6 +27,7 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/utils/vector.h>
 #include <igatools/utils/tensor_index.h>
+#include <igatools/utils/tensor_sized_container.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -100,11 +101,6 @@ public:
     :funcs_(&val)
     {}
 
-    auto const &get_derivative(const int order) const
-    {
-        return funcs_->get_derivative(order);
-    }
-
     /** Copy constructor. */
     BasisValues1dConstView(const BasisValues1dConstView &view) = default ;
 
@@ -114,6 +110,12 @@ public:
     /** Destructor. */
     ~BasisValues1dConstView() = default;
     ///@}
+
+
+    const BasisValues1d *operator->() const
+    {
+        return funcs_;
+    }
 
     /** Assignment operators */
     ///@{
@@ -143,10 +145,18 @@ class TensorProductFunctionEvaluator :
 		public ElemFuncValues<dim>
 {
 public:
-	TensorProductFunctionEvaluator(TensorSize<dim> n_func, TensorSize<dim> n_pts)
-:f_size(n_func),
- p_size(n_pts)
-{}
+    void update_size()
+	{
+	    TensorSize<dim> n_func;
+	    TensorSize<dim> n_pts;
+	    for (int i = 0; i < dim; ++i)
+	    {
+	        n_func[i] = (*this)[i]->get_num_functions();
+	        n_pts[i] = (*this)[i]->get_num_functions();
+	    }
+	    f_size = TensorSizedContainer<dim>(n_func);
+	    p_size = TensorSizedContainer<dim>(n_pts);
+	}
 	/**
      * Evaluate and returns one partial derivative in one point.
      * The order of the partial derivative is specified by the tensor-index
@@ -157,11 +167,22 @@ public:
                    const TensorIndex<dim> &func,
                    const TensorIndex<dim> &pt) const
     {
-        Real res = dim>0 ? (*this)[0].get_derivatives(order[0])[func[0]][pt[0]] : 1.;
+        Real res = dim>0 ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.;
         for (int i = 1; i < dim; ++i)
-            res *= (*this)[i].get_derivatives(order[i])[func[i]][pt[i]];
+            res *= (*this)[i]->get_derivative(order[i])(func[i], pt[i]);
         return res;
     }
+
+    auto func_flat_to_tensor(const Index func_id) const
+    {
+        return f_size.flat_to_tensor(func_id);
+    }
+
+    auto points_flat_to_tensor(const Index p_id) const
+    {
+        return p_size.flat_to_tensor(p_id);
+    }
+
 private:
     TensorSizedContainer<dim> f_size;
     TensorSizedContainer<dim> p_size;

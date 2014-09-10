@@ -110,7 +110,7 @@ private:
      */
     template <int order>
     void evaluate_bspline_derivatives(
-        const ComponentDirectionContainer<const BasisValues1d *> &elem_values,
+        const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
         ValueTable<Val<order>> &D_phi) const;
 
 private:
@@ -147,8 +147,12 @@ private:
     		ComponentContainer<TensorProductFunctionEvaluator<dim>>
     		result((this->entry(0,0)).get_comp_map());
     		for (auto c : result.get_active_components_id())
-    			for (int i = 0; i < dim; ++i)
-    				result[c][i] = BasisValues1dConstView((this->entry(i, id[i]))[c]);
+    		{
+    		    for (int i = 0; i < dim; ++i)
+    		        result[c][i] = BasisValues1dConstView((this->entry(i, id[i]))[c]);
+    		    result[c].update_size();
+
+    		}
     		return result;
 		}
     };
