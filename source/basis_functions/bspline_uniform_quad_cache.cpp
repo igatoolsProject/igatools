@@ -452,27 +452,24 @@ evaluate_bspline_derivatives(
 
                     D_phi_i[point_id](comp) = values.evaluate(zero, func, pts);
             	}
-
             } // end func_id loop
-
         } // end comp loop
 
-//        for (int comp : scalar_evaluators_.get_inactive_components_id())
-//        {
-//            const auto n_basis = n_basis_.comp_dimension[comp];
-//            const auto scalar_eval_act_comp = scalar_evaluators_.active(comp);
-//            const Size act_offset = comp_offset_[scalar_eval_act_comp];
-//            const Size offset = comp_offset_[comp];
-//            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-//            {
-//                const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-//                auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
-//
-//                for (int qp = 0; qp < num_points; ++qp)
-//                    values_phi_hat_copy_to[qp](comp) =
-//                        values_phi_hat_copy_from[qp](scalar_eval_act_comp);
-//            }
-//        }
+        for (int comp : elem_values.get_inactive_components_id())
+        {
+            const auto n_basis = n_basis_.comp_dimension[comp];
+            const auto act_comp = elem_values.active(comp);
+            const Size act_offset = comp_offset_[act_comp];
+            const Size offset = comp_offset_[comp];
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
+                auto inact_D_phi = D_phi.get_function_view(offset+basis_i);
+
+                for (int qp = 0; qp < num_points; ++qp)
+                    inact_D_phi[qp](comp) = act_D_phi[qp](act_comp);
+            }
+        }
 
     } // end if (order == 0)
 #if 0

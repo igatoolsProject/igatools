@@ -32,8 +32,9 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
+
 template <int dim, int range=1, int rank=1>
-void uniform_space_cache(const int n_knots = 5, const int deg=1)
+void space_cache_fill_elem(const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
@@ -43,19 +44,27 @@ void uniform_space_cache(const int n_knots = 5, const int deg=1)
     auto flag = ValueFlags::value;
     auto quad = QGauss<dim>(2);
     BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
-    cache.print_info(out);
 
+    auto elem = space->begin();
+    auto end = space->end();
+
+    cache.init_element_cache(elem);
+    for (; elem != end; ++elem)
+    {
+        cache.fill_element_cache(elem);
+        elem->print_info(out);
+        elem->print_cache_info(out);
+    }
     OUTEND
 }
-
 
 
 int main()
 {
     out.depth_console(10);
 
-    uniform_space_cache<1>();
-    uniform_space_cache<2>();
+    space_cache_fill_elem<1>();
+    space_cache_fill_elem<2>();
 
     return  0;
 }

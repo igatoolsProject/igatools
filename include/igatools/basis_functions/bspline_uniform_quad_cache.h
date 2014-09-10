@@ -36,8 +36,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
 /**
  * Global BSplineSpace uniform quadrature
  * computational optimization cache, storing the interval length
@@ -159,14 +157,7 @@ private:
 
     GlobalCache splines1d_;
 
-
-
-
     ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
-
-
-   // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
-
 };
 
 IGA_NAMESPACE_CLOSE
