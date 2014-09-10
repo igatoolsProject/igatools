@@ -61,6 +61,13 @@ public:
     ///@}
 
 
+    /**
+     * Returns a vector containing a copy of the control point values.
+     */
+    virtual vector<Real> get_control_points() const = 0;
+
+
+
     /** Return the space used to define (or defined by) the SplineMapping.*/
     virtual std::shared_ptr<RefSpace> get_iga_space() = 0;
 };

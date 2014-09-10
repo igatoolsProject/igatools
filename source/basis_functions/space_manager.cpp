@@ -437,8 +437,6 @@ count_unique_dofs() const
 
 
 
-
-
 void
 SpaceManager::
 print_info(LogStream &out) const

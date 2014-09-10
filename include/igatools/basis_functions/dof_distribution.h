@@ -32,7 +32,8 @@ IGA_NAMESPACE_OPEN
 /**
  *
  * Class to handle the distribution of the basis function
- * indices storing what is known as the local to global map.
+ * indices that are defined on a single patch space,
+ * storing what is known as the local to global map.
  *
  * It is a helper class for the BSplineSpace.
  *
@@ -122,23 +123,17 @@ public:
     ///@}
 
 
-#if 0
-    /**
-     * @note Try not to use this function
-     * @todo: deprecated function
-     */
-    TensorIndex<dim>
-    basis_flat_to_tensor(const Index index, const Index comp) const;
-
 
     /**
-     * @note Try not to use this function
-     * @todo: deprecated function
+     * This function looks for a @p dof_id and (if found) gives back its component id @p comp
+     * and its TensorIndex<dim> @p tensor_index within the component.
+     *
+     * @returns TRUE if the @p dof_id is found in the DofDistribution.
+     *
+     * @warning If the @p dof_id is NOT found in the DofDistribution the values @p comp_id and
+     * @p tensor_id are UNDETERMINED.
      */
-    Index
-    basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                         const Index comp) const;
-#endif
+    bool find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const;
 
     /**
      * Print the class content
@@ -197,6 +192,15 @@ public:
      * The size of the map is equal to the number of active elements in the space.
      */
     std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
+
+
+    /**
+     * Converts a @p global_dof_id into the correspondent local (patch) representation.
+     *
+     * @note The @p global_dof_id must be in the DofDistribution, otherwise in DEBUG mode
+     * an assertion will be raised.
+     */
+    Index global_to_patch_local(const Index global_dof_id) const;
 
 private:
 

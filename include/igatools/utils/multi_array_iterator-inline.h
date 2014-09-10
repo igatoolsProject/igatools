@@ -85,6 +85,18 @@ operator++()
 
 template <class Container>
 inline
+MultiArrayIteratorBase<Container>
+MultiArrayIteratorBase<Container>::
+operator++(int)
+{
+    MultiArrayIteratorBase<Container> tmp(container_,id_,stride_);
+    operator++();
+    return tmp;
+}
+
+
+template <class Container>
+inline
 auto
 MultiArrayIteratorBase<Container>::
 operator*() const -> const reference
@@ -221,7 +233,6 @@ operator-(const Index n) const
     return MultiArrayIteratorBase<Container>(*container_,id_ - n*stride_,stride_);
 }
 
-#if 0
 template <class Container>
 inline
 auto
@@ -241,10 +252,26 @@ operator-(const MultiArrayIteratorBase<Container> &a) const -> difference_type
     Assert(a+n == (*this), ExcMessage("Iterator a cannot advance to (*this)."));
     return n;
 }
-#endif
 
 
 
+template <class Container>
+inline
+Index
+MultiArrayIteratorBase<Container>::
+get_id() const
+{
+    return id_;
+}
+
+template <class Container>
+inline
+Index
+MultiArrayIteratorBase<Container>::
+get_stride() const
+{
+    return stride_;
+}
 
 
 

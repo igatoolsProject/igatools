@@ -536,6 +536,40 @@ get_interfaces_same_type(const InterfaceType interface_type) -> std::set<Interfa
     return interfaces_[interface_type];
 }
 
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+global_to_local(
+    const Index global_dof_id,
+    PatchPtr &space,
+    int &comp_id,
+    TensorIndex<dim> &tensor_id) const
+{
+    bool global_dof_is_found = false;
+    for (auto space_tmp : patches_)
+    {
+        const auto &dof_distribution_glb = space_tmp->get_dof_distribution_global();
+
+        global_dof_is_found = dof_distribution_glb.find_dof_id(global_dof_id,comp_id,tensor_id);
+
+        if (global_dof_is_found)
+        {
+            space = space_tmp;
+            break;
+        }
+    }
+
+    Assert(global_dof_is_found,
+           ExcMessage("The global dof id " + std::to_string(global_dof_id) +
+                      " does not belong from the MultiPatchSpace."));
+    AssertThrow(global_dof_is_found,
+                ExcMessage("The global dof id " + std::to_string(global_dof_id) +
+                           " does not belong from the MultiPatchSpace."));
+}
+
+
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
