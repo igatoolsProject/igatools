@@ -33,8 +33,7 @@ IGA_NAMESPACE_OPEN
 /**
  * Set of functions evaluation (values and derivatives) which
  * are defined as tensor product of scalar functions over
- * points defined as tensor products.
- *
+ * points also defined as tensor products.
  */
 class BasisValues1d
 {
@@ -46,6 +45,14 @@ public:
         values_(max_der_order, DenseMatrix(n_func, n_points))
     {}
 
+    Size get_num_points() const
+    {
+    	return values_[0].size2();
+    }
+    Size get_num_functions() const
+    {
+    	return values_[0].size1();
+    }
     void resize(const int max_der_order, const int n_func, const int n_points)
     {
         values_.resize(max_der_order);
@@ -74,6 +81,9 @@ private:
 
 
 
+/**
+ * Reference (View) of a BasisValues1d
+ */
 class BasisValues1dConstView
 {
 public:
@@ -124,23 +134,20 @@ private:
     BasisValues1d const* funcs_;
 };
 
-template <int dim>
-using ElemFuncValues = vector<std::array<BasisValues1dConstView, dim>>;
 
 template <int dim>
-class TensorProductFunctionEvaluator
+using ElemFuncValues = std::array<BasisValues1dConstView, dim>;
+
+template <int dim>
+class TensorProductFunctionEvaluator :
+		public ElemFuncValues<dim>
 {
-    TensorProductFunctionEvaluator() = delete;
-    /** Copy constructor. */
-    TensorProductFunctionEvaluator(const TensorProductFunctionEvaluator<dim> &bspline) = default;
-
-    /** Move constructor. */
-    TensorProductFunctionEvaluator(TensorProductFunctionEvaluator<dim> &&bspline) = default;
-
-    /** Destructor. */
-    ~ TensorProductFunctionEvaluator() = default;
-
-    /**
+public:
+	TensorProductFunctionEvaluator(TensorSize<dim> n_func, TensorSize<dim> n_pts)
+:f_size(n_func),
+ p_size(n_pts)
+{}
+	/**
      * Evaluate and returns one partial derivative in one point.
      * The order of the partial derivative is specified by the tensor-index
      * @p order_tensor_id,
@@ -150,14 +157,14 @@ class TensorProductFunctionEvaluator
                    const TensorIndex<dim> &func,
                    const TensorIndex<dim> &pt) const
     {
-        Real res = dim>0 ? values_.get_derivatives(order[0])[func[0]][pt[0]] : 1.;
+        Real res = dim>0 ? (*this)[0].get_derivatives(order[0])[func[0]][pt[0]] : 1.;
         for (int i = 1; i < dim; ++i)
-            res *= values_.get_derivatives(order[i])[func[i]][pt[i]];
+            res *= (*this)[i].get_derivatives(order[i])[func[i]][pt[i]];
         return res;
     }
-
 private:
-    ElemFuncValues<dim> values_;
+    TensorSizedContainer<dim> f_size;
+    TensorSizedContainer<dim> p_size;
 };
 
 

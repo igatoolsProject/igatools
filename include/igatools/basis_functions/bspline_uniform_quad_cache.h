@@ -25,7 +25,10 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
+
+//TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
 #include <igatools/utils/cartesian_product_array-template.h>
+
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/basis_functions/bspline_space.h>
@@ -60,7 +63,7 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
-    //using typename parent_t::Point;
+
     using Value = typename Space::Value;
 
 protected:
@@ -135,12 +138,30 @@ private:
      *
      * splines1d_[dir][interval][comp][order][function][point]
      */
-    DirectionTable<BasisValues> splines1d_;
+    class GlobalCache : public DirectionTable<BasisValues>
+    {
+    public:
+    	using DirectionTable<BasisValues>::DirectionTable;
+    	auto get_element_values(const TensorIndex<dim> &id)
+		{
+    		ComponentContainer<TensorProductFunctionEvaluator<dim>>
+    		result((this->entry(0,0)).get_comp_map());
+    		for (auto c : result.get_active_components_id())
+    			for (int i = 0; i < dim; ++i)
+    				result[c][i] = BasisValues1dConstView((this->entry(i, id[i]))[c]);
+    		return result;
+		}
+    };
+
+    GlobalCache splines1d_;
+
+
+
 
     ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
+   // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
 };
 

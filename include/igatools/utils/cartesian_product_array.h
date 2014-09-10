@@ -105,7 +105,7 @@ public:
      */
     explicit CartesianProductArray(const TensorSize<rank> size);
 
-    CartesianProductArray(const TensorSize<rank> size, T& val);
+    CartesianProductArray(const TensorSize<rank> size, const T &val);
 
     /**
      * Constructor. Same as CartesianProductArray(const array< int, rank > size)

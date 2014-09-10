@@ -65,7 +65,7 @@ CartesianProductArray(const TensorSize<rank> size)
 
 template< class T, int rank>
 CartesianProductArray<T,rank>::
-CartesianProductArray(const TensorSize<rank> size, T& val)
+CartesianProductArray(const TensorSize<rank> size, const T &val)
     :
     TensorSizedContainer<rank>(size)
 {
