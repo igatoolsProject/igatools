@@ -138,6 +138,19 @@ is_dof_present(const Index dof) const
 }
 
 
+Real
+LinearConstraint::
+eval_absolute_error(const vector<Real> &dof_coeffs) const
+{
+    const auto n_terms = this->get_num_coeffs();
+
+    Real error = -rhs_;
+    for (Index i = 0 ; i < n_terms ; ++i)
+        error += this->get_coeff(i) * dof_coeffs[this->get_dof_index(i)];
+
+    return fabs(error);
+}
+
 void
 LinearConstraint::
 print_info(LogStream &out) const

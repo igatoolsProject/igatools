@@ -131,9 +131,16 @@ public:
 
 
     /**
-     * Returns TRUE if the @p dof is present in the definitio of the LinearConstraint.
+     * Returns TRUE if the @p dof is present in the definition of the LinearConstraint.
      */
     bool is_dof_present(const Index dof) const;
+
+
+    /**
+     * Returns the absolute error of the constraint if applied to the global dof coefficients @p
+     * dof_coeffs.
+     */
+    Real eval_absolute_error(const vector<Real> &dof_coeffs) const;
 
 private:
 

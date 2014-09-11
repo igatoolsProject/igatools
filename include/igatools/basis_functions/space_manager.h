@@ -191,6 +191,17 @@ public:
      */
     void space_insertion_open();
 
+
+    /**
+     * Adds a space to the SpaceManager.
+     *
+     * @note An assertion will be raised (in DEBUG mode)
+     * if the passed <p>space</p> is already present in the SpaceManager.
+     */
+    template<class Space>
+    void add_space(std::shared_ptr<Space> space);
+
+
     /**
      * Sets the SpaceManager in a state that cannot receive any new space.
      *
@@ -205,13 +216,9 @@ public:
 
 
     /**
-     * Adds a space to the SpaceManager.
-     *
-     * @note An assertion will be raised (in DEBUG mode)
-     * if the passed <p>space</p> is already present in the SpaceManager.
+     * Returns true if the space insertion is open.
      */
-    template<class Space>
-    void add_space(std::shared_ptr<Space> space);
+    bool is_space_insertion_open() const;
     ///@}
 
     /** @name Functions for the insertion of the equality constraints */
@@ -277,6 +284,17 @@ public:
      * Returns the vector of linear constraints defined in the SpaceManager.
      */
     vector<std::shared_ptr<LinearConstraint> > get_linear_constraints() const;
+
+
+    /**
+     * This function tests if a vector of global dof values @p dof_values, satisfies the linear constraints
+     * (up to the tolerance @p tol).
+     * If all coefficients satisfies the linear constraints the function returns an empty vector,
+     * otherwise it returns a vector containing the linear constraints that are not satisfied.
+     */
+    vector<std::shared_ptr<LinearConstraint> > verify_linear_constraints(
+        const vector<Real> &dof_values,
+        const Real tol = 1.0e-13) const;
     ///@}
 
 
@@ -302,7 +320,7 @@ public:
     ///@}
 
 
-    /** Return the number of unique dofs in the MultiPatchSpace. */
+    /** Return the number of unique dofs in the SpaceManager. */
     Index get_num_dofs() const;
 
 
@@ -320,10 +338,6 @@ public:
      */
     void remove_equality_constraints_redundancies();
 
-    /**
-     * Returns true if the space insertion is open.
-     */
-    bool is_space_insertion_open() const;
 
 
     void add_element_dofs_view(const DofsConstView &element_dofs_view);
@@ -460,8 +474,6 @@ private:
 
     /** Number of unique dofs in the SpaceManager. */
     Index num_unique_dofs_;
-
-
 
 
 public:

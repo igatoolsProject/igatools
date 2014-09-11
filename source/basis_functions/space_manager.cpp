@@ -29,6 +29,7 @@
 using std::map;
 using std::set;
 using std::pair;
+using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
@@ -213,6 +214,7 @@ Index
 SpaceManager::
 get_num_dofs() const
 {
+    Assert(is_space_insertion_open_ == false,ExcInvalidState());
     return num_unique_dofs_;
 }
 
@@ -432,6 +434,21 @@ count_unique_dofs() const
     set<Index> unique_dofs(dofs_view_.begin(),dofs_view_.end());
 
     return unique_dofs.size();
+}
+
+vector<std::shared_ptr<LinearConstraint> >
+SpaceManager::
+verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
+{
+    Assert(dof_values.size() == this->get_num_dofs(),
+           ExcDimensionMismatch(dof_values.size(),this->get_num_dofs()));
+
+    vector<shared_ptr<LinearConstraint> > failed_linear_constraints;
+    for (const auto lc : linear_constraints_)
+        if (lc->eval_absolute_error(dof_values) >= tol)
+            failed_linear_constraints.push_back(lc);
+
+    return failed_linear_constraints;
 }
 
 
