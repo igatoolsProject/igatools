@@ -27,6 +27,8 @@
 
 #include <igatools/utils/multi_array_iterator.h>
 
+#include <algorithm>
+
 IGA_NAMESPACE_OPEN
 
 
@@ -51,10 +53,8 @@ MultiArrayIteratorBase(Container &container,const Index id,const Index stride)
 {
     Assert(container_ != nullptr,ExcNullPtr());
 
-    //the iterator must not be built if the container is empty!
-//    Assert(container_->flat_size() > 0,ExcEmptyObject());
-
-    Assert(stride_ >= 1, ExcLowerRange(stride_,1));
+    Assert(stride_ > 0 && stride < container_->flat_size(),
+    		ExcIndexRange(stride_,0,container_->flat_size()));
 
     Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
     if (container_->flat_size() > 0)
@@ -78,6 +78,8 @@ operator++()
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
 
     id_ += stride_ ;
+
+    std::cout << "id_=" << id_ << "    flat_size()=" << container_->flat_size() <<std::endl;
     if (id_ >= container_->flat_size())
         id_ = IteratorState::pass_the_end;
     return (*this);
@@ -89,7 +91,7 @@ MultiArrayIteratorBase<Container>
 MultiArrayIteratorBase<Container>::
 operator++(int)
 {
-    MultiArrayIteratorBase<Container> tmp(container_,id_,stride_);
+    MultiArrayIteratorBase<Container> tmp(*this);
     operator++();
     return tmp;
 }
@@ -217,6 +219,7 @@ MultiArrayIteratorBase<Container>
 MultiArrayIteratorBase<Container>::
 operator+(const Index n) const
 {
+	Assert(n >= 0,ExcLowerRange(n,0));
     Assert(id_ + n*stride_ < container_->flat_size(),ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
     return MultiArrayIteratorBase<Container>(*container_,id_ + n*stride_,stride_);
@@ -228,6 +231,7 @@ MultiArrayIteratorBase<Container>
 MultiArrayIteratorBase<Container>::
 operator-(const Index n) const
 {
+	Assert(n >= 0,ExcLowerRange(n,0));
     Assert(id_ - n*stride_ >=0, ExcLowerRange(id_ - n*stride_,0));
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
     return MultiArrayIteratorBase<Container>(*container_,id_ - n*stride_,stride_);

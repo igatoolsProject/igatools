@@ -145,6 +145,26 @@ void do_test_3()
 }
 
 
+//Test the std::find algorithm
+template <int dim>
+void do_test_4()
+{
+    out << "Default constructor "<< endl;
+    DynamicMultiArray<Index, dim> data1(4);
+    data1.fill_progression();
+    out << "Size: " << data1.flat_size() << endl;
+    data1.print_info(out);
+    out << endl;
+
+
+    auto it = std::find(data1.begin(),data1.end(),3);
+
+    out << "iterator id=" << it.get_id()
+    	<< "   stride=" << it.get_stride()
+    	<< "   value=" << *it << endl;
+}
+
+
 int main()
 {
     out.depth_console(10);
@@ -163,5 +183,11 @@ int main()
     do_test_3<1>();
     do_test_3<2>();
     do_test_3<3>();
+
+
+    do_test_4<1>();
+    do_test_4<2>();
+    do_test_4<3>();
+
     return 0;
 }
