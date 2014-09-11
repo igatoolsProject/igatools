@@ -36,7 +36,7 @@ test()
 
 
 
-int main ()
+int main()
 {
 
     out.depth_console(10);

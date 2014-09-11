@@ -41,7 +41,7 @@ public:
 
 
     void evaluate(const ValueVector<Point> &points,
-    		ValueVector<Value> &values) const
+                  ValueVector<Value> &values) const
     {}
 
     void evaluate_gradients(

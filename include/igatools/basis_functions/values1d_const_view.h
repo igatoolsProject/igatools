@@ -40,19 +40,19 @@ class BasisValues1d
 {
 public:
     BasisValues1d()
-{}
+    {}
     BasisValues1d(const int max_der_order, const int n_func, const int n_points)
-    :
+        :
         values_(max_der_order, DenseMatrix(n_func, n_points))
     {}
 
     Size get_num_points() const
     {
-    	return values_[0].size2();
+        return values_[0].size2();
     }
     Size get_num_functions() const
     {
-    	return values_[0].size1();
+        return values_[0].size1();
     }
     void resize(const int max_der_order, const int n_func, const int n_points)
     {
@@ -98,7 +98,7 @@ public:
      * of the DenseMatrix @p funcs.
      */
     BasisValues1dConstView(const BasisValues1d &val)
-    :funcs_(&val)
+        :funcs_(&val)
     {}
 
     /** Copy constructor. */
@@ -133,7 +133,7 @@ public:
 //    Size get_num_points() const;
 
 private:
-    BasisValues1d const* funcs_;
+    BasisValues1d const *funcs_;
 };
 
 
@@ -142,30 +142,30 @@ using ElemFuncValues = std::array<BasisValues1dConstView, dim>;
 
 template <int dim>
 class TensorProductFunctionEvaluator :
-		public ElemFuncValues<dim>
+    public ElemFuncValues<dim>
 {
 public:
     void update_size()
-	{
-	    TensorSize<dim> n_func;
-	    TensorSize<dim> n_pts;
-	    for (int i = 0; i < dim; ++i)
-	    {
-	        n_func[i] = (*this)[i]->get_num_functions();
-	        n_pts[i] = (*this)[i]->get_num_functions();
-	    }
-	    f_size = TensorSizedContainer<dim>(n_func);
-	    p_size = TensorSizedContainer<dim>(n_pts);
-	}
-	/**
+    {
+        TensorSize<dim> n_func;
+        TensorSize<dim> n_pts;
+        for (int i = 0; i < dim; ++i)
+        {
+            n_func[i] = (*this)[i]->get_num_functions();
+            n_pts[i] = (*this)[i]->get_num_functions();
+        }
+        f_size = TensorSizedContainer<dim>(n_func);
+        p_size = TensorSizedContainer<dim>(n_pts);
+    }
+    /**
      * Evaluate and returns one partial derivative in one point.
      * The order of the partial derivative is specified by the tensor-index
      * @p order_tensor_id,
      * while the point is specified by its tensor-index @p point_tensor_id.
      */
-    Real evaluate( const TensorIndex<dim> &order,
-                   const TensorIndex<dim> &func,
-                   const TensorIndex<dim> &pt) const
+    Real evaluate(const TensorIndex<dim> &order,
+                  const TensorIndex<dim> &func,
+                  const TensorIndex<dim> &pt) const
     {
         Real res = dim>0 ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.;
         for (int i = 1; i < dim; ++i)

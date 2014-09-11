@@ -40,34 +40,34 @@ test()
     const Size n_points_iga_element = writer.get_num_points_per_iga_element();
 
     vector<vector<vector<Real>>> data_scalar(n_iga_elements,
-      vector<vector<Real>>(n_points_iga_element, vector<Real>(1)));
+                                             vector<vector<Real>>(n_points_iga_element, vector<Real>(1)));
 
     vector<vector<vector<Real>>> data_vector(n_iga_elements,
-      vector<vector<Real>>(n_points_iga_element, vector<Real>(dim)));
+                                             vector<vector<Real>>(n_points_iga_element, vector<Real>(dim)));
 
     vector<vector<vector<Real>>> data_tensor(n_iga_elements,
-      vector<vector<Real>>(n_points_iga_element, vector<Real>(dim * dim)));
+                                             vector<vector<Real>>(n_points_iga_element, vector<Real>(dim * dim)));
 
     for (uint i_el = 0; i_el < n_iga_elements; ++i_el)
     {
-      for (uint i_Pt = 0; i_Pt < n_points_iga_element; ++i_Pt)
-      {
-        auto& data_scalar_el_Pt = data_scalar[i_el][i_Pt];
-        auto& data_vector_el_Pt = data_vector[i_el][i_Pt];
-        auto& data_tensor_el_Pt = data_tensor[i_el][i_Pt];
+        for (uint i_Pt = 0; i_Pt < n_points_iga_element; ++i_Pt)
+        {
+            auto &data_scalar_el_Pt = data_scalar[i_el][i_Pt];
+            auto &data_vector_el_Pt = data_vector[i_el][i_Pt];
+            auto &data_tensor_el_Pt = data_tensor[i_el][i_Pt];
 
-        // Scalar field
-        data_scalar_el_Pt[0] = i_Pt % 2;
+            // Scalar field
+            data_scalar_el_Pt[0] = i_Pt % 2;
 
-        // Vector field
-        for (uint i = 0; i < dim; ++i)
-          data_vector_el_Pt[i] = i_Pt % 2 + i;
+            // Vector field
+            for (uint i = 0; i < dim; ++i)
+                data_vector_el_Pt[i] = i_Pt % 2 + i;
 
-        // Tensor field
-        for (uint i = 0; i < dim * dim; ++i)
-          data_tensor_el_Pt[i] = i_Pt % 2 + i;
+            // Tensor field
+            for (uint i = 0; i < dim * dim; ++i)
+                data_tensor_el_Pt[i] = i_Pt % 2 + i;
 
-      }
+        }
     }
 
     writer.add_point_data(1, "scalar", data_scalar, "scalar field");

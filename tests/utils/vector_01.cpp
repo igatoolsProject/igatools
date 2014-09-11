@@ -45,9 +45,9 @@ void array_print_info()
     special_array<Real, 5> arr;
     arr.print_info(out);
     out<< endl;
-   // special_array<int, 3> a {1,2,3};
-   // for (auto e : a)
-       // out << e << endl;
+    // special_array<int, 3> a {1,2,3};
+    // for (auto e : a)
+    // out << e << endl;
 
 }
 

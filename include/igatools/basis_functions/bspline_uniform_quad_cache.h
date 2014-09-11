@@ -46,6 +46,7 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 {
     using base_t = GridUniformQuadCache<dim_>;
     using Space = BSplineSpace<dim_,range_,rank_>;
+    static const Size n_components =  Space::n_components;
     using ElementIterator = typename Space::ElementIterator;
 
     template<class T>
@@ -92,12 +93,15 @@ public:
 
     void print_info(LogStream &out) const;
 
-
-
 private:
     template <int order>
     using Val = Conditional<(order==0), Value, Derivative<order> >;
 
+    template <int order>
+    void
+    copy_to_inactive_components(const vector<Index> &inactive_comp,
+            const std::array<Index, n_components> &active_map,
+            ValueTable<Val<order>> &D_phi) const;
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
      * functions over the current element,
@@ -139,20 +143,20 @@ private:
     class GlobalCache : public DirectionTable<BasisValues>
     {
     public:
-    	using DirectionTable<BasisValues>::DirectionTable;
-    	auto get_element_values(const TensorIndex<dim> &id)
-		{
-    		ComponentContainer<TensorProductFunctionEvaluator<dim>>
-    		result((this->entry(0,0)).get_comp_map());
-    		for (auto c : result.get_active_components_id())
-    		{
-    		    for (int i = 0; i < dim; ++i)
-    		        result[c][i] = BasisValues1dConstView((this->entry(i, id[i]))[c]);
-    		    result[c].update_size();
+        using DirectionTable<BasisValues>::DirectionTable;
+        auto get_element_values(const TensorIndex<dim> &id)
+        {
+            ComponentContainer<TensorProductFunctionEvaluator<dim>>
+                                                                 result((this->entry(0,0)).get_comp_map());
+            for (auto c : result.get_active_components_id())
+            {
+                for (int i = 0; i < dim; ++i)
+                    result[c][i] = BasisValues1dConstView((this->entry(i, id[i]))[c]);
+                result[c].update_size();
 
-    		}
-    		return result;
-		}
+            }
+            return result;
+        }
     };
 
     GlobalCache splines1d_;

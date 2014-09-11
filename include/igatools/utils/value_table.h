@@ -71,11 +71,10 @@ IGA_NAMESPACE_OPEN
 template <class T>
 class ValueTable :
     public ValueContainer<T>
-//    public DynamicMultiArray<T,2>
 {
 public :
     /** Type for the iterator (non-const version). */
-    using iterator = typename ValueContainer<T>::iterator ;
+    using iterator = typename ValueContainer<T>::iterator;
 
     /** Type for the iterator (const version). */
     using const_iterator = typename ValueContainer<T>::const_iterator;
@@ -83,10 +82,8 @@ public :
     /** Type for the view (non-const version). */
     using view = ContainerView<DynamicMultiArray<T,2>>;
 
-
     /** Type for the view (const version). */
     using const_view = ConstContainerView<DynamicMultiArray<T,2>>;
-
 
     /**
      * @name Constructors
@@ -96,62 +93,49 @@ public :
      * Default constructor.
      * Constructs an empty container, with no elements.
      */
-    explicit ValueTable() ;
+    explicit ValueTable();
 
     /**
      * Constructor. Constructs a container for storing num_functions*num_points objects of type T.
      * @param[in] num_functions - Number of functions.
      * @param[in] num_points - Number of points.
      */
-    explicit ValueTable(const Size num_functions, const Size num_points) ;
+    explicit ValueTable(const Size num_functions, const Size num_points);
 
     /**
      * Copy constructor. Performs a deep copy of the ValueTable object @p table_in.
      * @warning Use this operator with caution because if the ValueTable to be copied is big,
      * this results in an CPU expensive operation.
      */
-    ValueTable(const ValueTable<T> &table_in) = default ;
+    ValueTable(const ValueTable<T> &table_in) = default;
 
     /**
      * Move constructor.
      */
-    ValueTable(ValueTable<T> &&table_in) = default ;
-
+    ValueTable(ValueTable<T> &&table_in) = default;
 
     /**
      * Destructor.
      */
-    ~ValueTable() = default ;
-
+    ~ValueTable() = default;
     ///@}
-
 
     /**
      * @name Assignment operators
      */
     ///@{
-
     /**
      * Copy assignment operator. Performs a deep copy of the ValueTable object @p table_in.
      * @warning Use this operator with caution because if the ValueTable to be copied is big,
      * this results in an CPU expensive operation.
      */
-    ValueTable<T> &operator=(const ValueTable<T> &table_in) = default ;
-
+    ValueTable<T> &operator=(const ValueTable<T> &table_in) = default;
 
     /**
      * Move assignment operator.
      */
-    ValueTable<T> &operator=(ValueTable<T> &&table_in) = default ;
-
+    ValueTable<T> &operator=(ValueTable<T> &&table_in) = default;
     ///@}
-
-
-
-
-
-
-
 
     /**
      * @name Functions for getting views
@@ -200,33 +184,28 @@ public :
      * Removes all elements from the ValueTable, leaving the container with a size of 0.
      */
     void clear() noexcept;
-
     ///@}
-
 
     /**
      * @name Printing info
      */
     ///@{
-
     /**
      * Prints the content of the ValueTable on the LogStream @p out.
      */
-    void print_info(LogStream &out) const ;
+    void print_info(LogStream &out) const;
     ///@}
-
 
     /**
      * Returns the linear combination of the function values (at each evaluation points).
      * The size of vector of the @p coefficients must be equal to the number of functions
      * represented in the ValueTable.
      */
-    ValueVector<T> evaluate_linear_combination(const vector<Real> &coefficients) const ;
-
+    ValueVector<T> evaluate_linear_combination(const vector<Real> &coefficients) const;
 
 private:
 
-} ;
+};
 
 
 IGA_NAMESPACE_CLOSE

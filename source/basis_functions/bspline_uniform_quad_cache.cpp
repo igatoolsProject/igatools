@@ -264,11 +264,11 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
     face_flags_(flag),
     quad_(quad),
     splines1d_(space->get_grid()->get_num_intervals(),
-    		BasisValues(space->get_components_map()))
-    {
+               BasisValues(space->get_components_map()))
+{
 
 
-	// Compute the component offsets
+    // Compute the component offsets
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
         comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
@@ -285,7 +285,7 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
         {
             auto &splines1d = splines1d_.entry(dir, j);
             for (auto comp : splines1d.get_active_components_id())
-            	splines1d[comp].resize(n_derivatives, n_basis_[comp][dir], n_pts);
+                splines1d[comp].resize(n_derivatives, n_basis_[comp][dir], n_pts);
         }
     }
 
@@ -302,21 +302,21 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
 
     for (int dir = 0 ; dir < dim ; ++dir)
     {
-    	// fill values and derivatives of the Bernstein's polynomials at
+        // fill values and derivatives of the Bernstein's polynomials at
         // quad points in [0,1]
-    	for (auto comp : bernstein_values.get_active_components_id())
+        for (auto comp : bernstein_values.get_active_components_id())
         {
             const int deg = degree[comp][dir];
             bernstein_values[comp].resize(n_derivatives, deg+1, n_points[dir]);
             const auto &pt_coords = points.get_data_direction(dir);
             for (int order = 0; order < n_derivatives; ++order)
-            	bernstein_values[comp].get_derivative(order) =
-            			BernsteinBasis::derivative(order, deg, pt_coords);
+                bernstein_values[comp].get_derivative(order) =
+                    BernsteinBasis::derivative(order, deg, pt_coords);
         }
 
-    	const auto& inter_lengths = lengths.get_data_direction(dir);
-    	for (int j = 0 ; j < n_inter[dir] ; ++j)
-    	{
+        const auto &inter_lengths = lengths.get_data_direction(dir);
+        for (int j = 0 ; j < n_inter[dir] ; ++j)
+        {
             auto &splines1d = splines1d_.entry(dir, j);
             for (auto comp : splines1d.get_active_components_id())
             {
@@ -329,7 +329,7 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
                     const Real scale = std::pow(one_div_size, order);
                     const auto &b_values = berns_values.get_derivative(order);
                     basis.get_derivative(order) =
-                            scale * prec_prod(oper, b_values);
+                        scale * prec_prod(oper, b_values);
                 }
             }
         }
@@ -405,6 +405,30 @@ init_element_cache(ElementIterator &elem)
 }
 
 
+template <int dim, int range, int rank>
+template <int order>
+void
+BSplineUniformQuadCache<dim, range, rank>::
+copy_to_inactive_components(const vector<Index> &inactive_comp,
+                            const std::array<Index, n_components> &active_map,
+                            ValueTable<Val<order>> &D_phi) const
+{
+    const Size num_points = quad_.get_num_points_direction().flat_size();
+    for (int comp : inactive_comp)
+    {
+        const auto act_comp = active_map[comp];
+        const auto n_basis = n_basis_.comp_dimension[comp];
+        const Size act_offset = comp_offset_[act_comp];
+        const Size offset     = comp_offset_[comp];
+        for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+        {
+            const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
+            auto inact_D_phi = D_phi.get_function_view(offset+basis_i);
+            for (int qp = 0; qp < num_points; ++qp)
+                inact_D_phi[qp](comp) = act_D_phi[qp](act_comp);
+        }
+    }
+}
 
 template <int dim, int range, int rank>
 template <int order>
@@ -436,41 +460,24 @@ evaluate_bspline_derivatives(
         const TensorIndex<dim> zero; // [0,0,..,0] tensor index
         for (int comp : elem_values.get_active_components_id())
         {
-        	auto &values = elem_values[comp];
-        	//const auto &n_basis_dir = n_basis_[comp];
-        	const int total_n_basis = n_basis_.comp_dimension[comp];
+            auto &values = elem_values[comp];
+            const int total_n_basis = n_basis_.comp_dimension[comp];
             const Size offset = comp_offset_[comp];
 
             for (int func_id = 0; func_id < total_n_basis; ++func_id)
             {
-            	auto D_phi_i = D_phi.get_function_view(offset + func_id);
-            	auto const &func = values.func_flat_to_tensor(func_id);
-
-            	for (int point_id = 0; point_id < num_points; ++point_id)
-            	{
-            	    auto const &pts  = values.points_flat_to_tensor(point_id);
-
+                auto D_phi_i = D_phi.get_function_view(offset + func_id);
+                auto const &func = values.func_flat_to_tensor(func_id);
+                for (int point_id = 0; point_id < num_points; ++point_id)
+                {
+                    auto const &pts  = values.points_flat_to_tensor(point_id);
                     D_phi_i[point_id](comp) = values.evaluate(zero, func, pts);
-            	}
+                }
             } // end func_id loop
         } // end comp loop
 
-        for (int comp : elem_values.get_inactive_components_id())
-        {
-            const auto n_basis = n_basis_.comp_dimension[comp];
-            const auto act_comp = elem_values.active(comp);
-            const Size act_offset = comp_offset_[act_comp];
-            const Size offset = comp_offset_[comp];
-            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-            {
-                const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
-                auto inact_D_phi = D_phi.get_function_view(offset+basis_i);
-
-                for (int qp = 0; qp < num_points; ++qp)
-                    inact_D_phi[qp](comp) = act_D_phi[qp](act_comp);
-            }
-        }
-
+        copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
+                              elem_values.get_comp_map(), D_phi);
     } // end if (order == 0)
 #if 0
     else // if (order != 0)

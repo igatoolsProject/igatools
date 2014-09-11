@@ -43,7 +43,7 @@ public:
     using typename Base::Gradient;
     using typename Base::Hessian;
     void evaluate(const ValueVector<Point> &points,
-    		ValueVector<Value> &values) const
+                  ValueVector<Value> &values) const
     {
         auto pt = points.begin();
         auto val = values.begin();

@@ -38,7 +38,7 @@ template <int rank>
 TensorIndex<rank>::
 TensorIndex(const Size val) noexcept
 {
-	Assert(val >= 0, ExcLowerRange(val,0));
+    Assert(val >= 0, ExcLowerRange(val,0));
     for (auto &idx : (*this))
         idx = val;
 }
