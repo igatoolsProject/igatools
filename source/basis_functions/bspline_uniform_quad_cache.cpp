@@ -74,6 +74,13 @@ partition<1>(const int n)
     return vector<TensorIndex<1>>(1,arr);
 }
 
+template<>
+vector<TensorIndex<0>>
+partition<0>(const int n)
+{
+    return vector<TensorIndex<0>>();
+}
+
 template<int dim, int order>
 class TensorFunctionDerivativesSymmetry
 {
