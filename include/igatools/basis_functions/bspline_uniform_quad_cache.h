@@ -113,7 +113,11 @@ private:
     template <int order>
     void evaluate_bspline_derivatives(
         const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-        ValueTable<Val<order>> &D_phi) const;
+        ValueTable<Derivative<order>> &D_phi) const;
+
+    void evaluate_bspline_values(
+            const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+            ValueTable<Value> &D_phi) const;
 
 private:
     // TODO (pauletti, Sep 8, 2014): to be passed some how

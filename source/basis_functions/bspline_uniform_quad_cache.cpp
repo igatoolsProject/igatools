@@ -43,211 +43,100 @@ namespace
  * is \f$ \binorm{d-1+k}{d-1} = \binorm{d-1+k}{k} \f$.
  *
  */
-// TODO (pauletti, Nov 1, 2013): Document how this class work and its internals
+template<int size>
+vector<TensorIndex<size>>
+partition(const int n)
+{
+    vector<TensorIndex<size>> v;
+    TensorIndex<size> arr(0);
+
+    arr[0] = n;
+    v.push_back(arr);
+
+    for (int j=1; j<n+1; ++j)
+    {
+        auto w = partition<size-1>(j);
+        for (auto a : w)
+        {
+            arr[0] = n-j;
+            std::copy(a.begin(), a.end(), arr.begin()+1);
+            v.push_back(arr);
+        }
+    }
+    return v;
+}
+
+template<>
+vector<TensorIndex<1>>
+partition<1>(const int n)
+{
+    TensorIndex<1> arr(n);
+    return vector<TensorIndex<1>>(1,arr);
+}
+
 template<int dim, int order>
-class DerivativeSymmetryManager
+class TensorFunctionDerivativesSymmetry
 {
 public:
-    static const int num_entries_total = pow(dim,order);
+//    static const int num_entries_total = pow(dim,order);
     static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
-    static const int num_entries_copy = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<dim,1,1,order> Derivative_t;
-
-    /** @name Constructors */
-    ///@{
-    /** Constructor */
-    DerivativeSymmetryManager();
-
-    /** Copy constructor */
-    DerivativeSymmetryManager(
-        const DerivativeSymmetryManager<dim,order> &in) = default;
-
-    /** Move constructor */
-    DerivativeSymmetryManager(
-        DerivativeSymmetryManager<dim,order> &&in) = default;
-
-    ~DerivativeSymmetryManager() = default;
-    ///@}
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator */
-    DerivativeSymmetryManager<dim,order> &operator=(
-        const DerivativeSymmetryManager<dim,order> &) = default;
-
-    /** Move assignment operator */
-    DerivativeSymmetryManager<dim,order> &operator=(
-        DerivativeSymmetryManager<dim,order> &&) = default;
-    ///@}
-
-
-    static const int new_deriv_order = order>0?order:1;
-    const array<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+    TensorFunctionDerivativesSymmetry()
     {
-        return entries_flat_id_evaluate_;
-    }
-
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_to() const
-    {
-        return entries_flat_id_copy_to_;
-    }
-
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_from() const
-    {
-        return entries_flat_id_copy_from_;
-    }
-
-    const array<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
-    {
-        return entries_tensor_id_;
-    }
-private:
-
-    bool test_if_evaluate(const array<int,order> &tensor_index) const;
-
-    /** Tensor ids of all the entries */
-
-    array<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
-
-    /** Flat ids of the entries that need to be computed */
-    array<int,num_entries_eval> entries_flat_id_evaluate_;
-
-    /** Flat ids of the destination entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_to_;
-
-    /** Flat ids of the source entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_from_;
-
-    TensorSize<order> size_deriv_index_;
-};
+        auto uni_indices = partition<dim>(order);
+        std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
 
 
 
-
-template<int dim, int order>
-DerivativeSymmetryManager<dim,order>::
-DerivativeSymmetryManager()
-{
-    size_deriv_index_.fill(dim);
-
-    typedef MultiArrayUtils<order> MAUtils;
-
-
-    Derivatives<dim,1,1,order> derivative;
-
-    int eval_id = 0;
-    int copy_id = 0;
-    if (order == 0)
-    {
-        for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
+        for (int j=0; j<num_entries_eval; ++j)
         {
-            entries_flat_id_evaluate_[eval_id] = flat_id;
-            eval_id++;
-        }
-    }
-    else
-    {
-        auto weights = MAUtils::compute_weight(size_deriv_index_);
-
-        for (Index flat_id = 0; flat_id < num_entries_total; ++flat_id)
-        {
-            entries_tensor_id_[flat_id] = derivative.flat_to_tensor_index(flat_id);
-
-            auto tensor_id = MAUtils::flat_to_tensor_index(flat_id,weights);
-
-            if (test_if_evaluate(tensor_id))
+            auto &der_ind = eval_indices[j];
+            int s=0;
+            for (int dir=0; dir<dim; ++dir)
             {
-                entries_flat_id_evaluate_[eval_id] = flat_id;
-                eval_id++;
+                for (int l=0; l<uni_indices[j][dir]; ++l)
+                    der_ind[s+l] = dir;
+                s += uni_indices[j][dir];
             }
-            else
+
+            auto ind = sequence<order>();
+            vector<TensorIndex<order>> v;
+            do
             {
-                entries_flat_id_copy_to_[copy_id] = flat_id;
-                std::sort(tensor_id.begin(),tensor_id.end());
-                std::reverse(tensor_id.begin(),tensor_id.end());
-                entries_flat_id_copy_from_[copy_id] = MAUtils::tensor_to_flat_index(tensor_id,weights);
-                copy_id++;
-            }
+                TensorIndex<order> ti;
+                for (int i=0; i<order; ++i)
+                    ti[i] = eval_indices[j][ind[i]];
+                v.push_back(ti);
+            } while ( std::next_permutation(ind.begin(),ind.end()) );
+
+            auto it = std::unique(v.begin(), v.end());
+            v.resize( std::distance(v.begin(),it) );
+
+            copy_indices[j] = v;
         }
     }
-    Assert(eval_id == num_entries_eval, ExcDimensionMismatch(eval_id,num_entries_eval));
-    Assert(copy_id == num_entries_copy, ExcDimensionMismatch(copy_id,num_entries_copy));
 
-}
-
-
-template<int dim, int order>
-inline
-bool
-DerivativeSymmetryManager<dim,order>::
-test_if_evaluate(const array<int,order> &tensor_index) const
-{
-    bool test_result = true;
-    for (int i = 0; i < order-1; ++i)
+    void print_info(LogStream &out) const
     {
-        if (tensor_index[i+1] > tensor_index[i])
-        {
-            test_result = false;
-            break;
-        }
+        out.begin_item("univariate derivative orders:");
+        univariate_order.print_info(out);
+        out.end_item();
+
+        out.begin_item("Assigment indices:");
+        eval_indices.print_info(out);
+        out.end_item();
+
+        out.begin_item("all equal indices indices:");
+        copy_indices.print_info(out);
+        out.end_item();
     }
-    return test_result;
-}
+    special_array<TensorIndex<dim>, num_entries_eval> univariate_order;
 
+    special_array<TensorIndex<order>, num_entries_eval> eval_indices;
 
-template<int order>
-class DerivativeSymmetryManager<0,order>
-{
-public:
-    static const int num_entries_total = 1;
-    static const int num_entries_eval  = 1;
-    static const int num_entries_copy  = num_entries_total - num_entries_eval;
-
-    typedef Derivatives<0,1,1,order> Derivative_t;
-
-    DerivativeSymmetryManager()
-    {
-        entries_tensor_id_[0] = {{}};
-        entries_flat_id_evaluate_[0] = 0;
-    }
-
-    const array<int,num_entries_eval> &get_entries_flat_id_evaluate() const
-    {
-        return entries_flat_id_evaluate_;
-    }
-
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_to() const
-    {
-        return entries_flat_id_copy_to_;
-    }
-
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_from() const
-    {
-        return entries_flat_id_copy_from_;
-    }
-
-    const array<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
-    {
-        return entries_tensor_id_;
-    }
-
-private:
-    /** Tensor ids of all the entries */
-    array<TensorIndex<order>,num_entries_total> entries_tensor_id_;
-
-    /** Flat ids of the entries that need to be computed */
-    array<int,num_entries_eval> entries_flat_id_evaluate_;
-
-    /** Flat ids of the destination entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_to_;
-
-    /** Flat ids of the source entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_from_;
+    special_array<vector<TensorIndex<order>>, num_entries_eval> copy_indices;
 
 };
-
 
 };
 
@@ -430,24 +319,50 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
     }
 }
 
+
+
+template <int dim, int range, int rank>
+void
+BSplineUniformQuadCache<dim, range, rank>::
+evaluate_bspline_values(
+    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+    ValueTable<Value> &D_phi) const
+{
+    const auto n_points_direction = quad_.get_num_points_direction();
+    const Size num_points = n_points_direction.flat_size();
+    const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
+    for (int comp : elem_values.get_active_components_id())
+    {
+        auto &values = elem_values[comp];
+        const int total_n_basis = n_basis_.comp_dimension[comp];
+        const Size offset = comp_offset_[comp];
+
+        for (int func_id = 0; func_id < total_n_basis; ++func_id)
+        {
+            auto D_phi_i = D_phi.get_function_view(offset + func_id);
+            auto const &func = values.func_flat_to_tensor(func_id);
+            for (int point_id = 0; point_id < num_points; ++point_id)
+            {
+                auto const &pts  = values.points_flat_to_tensor(point_id);
+                D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func, pts);
+            }
+        } // end func_id loop
+    } // end comp loop
+
+    copy_to_inactive_components<0>(elem_values.get_inactive_components_id(),
+                                   elem_values.get_comp_map(), D_phi);
+}
+
+
+
 template <int dim, int range, int rank>
 template <int order>
 void
 BSplineUniformQuadCache<dim, range, rank>::
 evaluate_bspline_derivatives(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-    ValueTable<Val<order>> &D_phi) const
+    ValueTable<Derivative<order>> &D_phi) const
 {
-
-    Assert(D_phi.size() > 0, ExcEmptyObject());
-//  Assert(D_phi.get_num_functions() == this->get_num_basis(),
-//           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
-
-    const auto n_points_direction = quad_.get_num_points_direction();
-    const Size num_points = n_points_direction.flat_size();
-    Assert(D_phi.get_num_points() == num_points,
-           ExcDimensionMismatch(D_phi.get_num_points(),num_points));
-
     /*
      * This code computes any order of derivatives for a multivariate
      * B-spline on the current element
@@ -455,130 +370,53 @@ evaluate_bspline_derivatives(
      * \partial_(\alpha_1,...,\alpha_n) B(qp) = \Pi d^{\alpha_i} B_i(qp_i)
      */
 
-    if (order == 0)
-    {
-        const TensorIndex<dim> zero; // [0,0,..,0] tensor index
-        for (int comp : elem_values.get_active_components_id())
-        {
-            auto &values = elem_values[comp];
-            const int total_n_basis = n_basis_.comp_dimension[comp];
-            const Size offset = comp_offset_[comp];
+    Assert(D_phi.size() > 0, ExcEmptyObject());
+    //  Assert(D_phi.get_num_functions() == this->get_num_basis(),
+    //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
 
-            for (int func_id = 0; func_id < total_n_basis; ++func_id)
+    const auto n_points_direction = quad_.get_num_points_direction();
+    const Size num_points = n_points_direction.flat_size();
+    Assert(D_phi.get_num_points() == num_points,
+           ExcDimensionMismatch(D_phi.get_num_points(),num_points));
+
+
+    TensorFunctionDerivativesSymmetry<dim,order> sym;
+    const auto n_der =  TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
+
+    const auto &univariate_order = sym.univariate_order ;
+    const auto &copy_indices = sym.copy_indices;
+
+    for (int comp : elem_values.get_active_components_id())
+    {
+        auto &values = elem_values[comp];
+        const int total_n_basis = n_basis_.comp_dimension[comp];
+        const Size offset = comp_offset_[comp];
+
+        for (int func_id = 0; func_id < total_n_basis; ++func_id)
+        {
+
+            auto D_phi_i = D_phi.get_function_view(offset + func_id);
+            auto const &func = values.func_flat_to_tensor(func_id);
+            for (int der_id = 0; der_id<n_der; ++der_id)
             {
-                auto D_phi_i = D_phi.get_function_view(offset + func_id);
-                auto const &func = values.func_flat_to_tensor(func_id);
+                auto const &der_tensor_id = univariate_order[der_id];
                 for (int point_id = 0; point_id < num_points; ++point_id)
                 {
                     auto const &pts  = values.points_flat_to_tensor(point_id);
-                    D_phi_i[point_id](comp) = values.evaluate(zero, func, pts);
+                    auto &der = D_phi_i[point_id];
+                    der(copy_indices[der_id][0])(comp) = values.evaluate(der_tensor_id, func, pts);
+                    for (int k=0; k<copy_indices.size(); ++k)
+                        der(copy_indices[der_id][k])(comp) = der(copy_indices[der_id][0])(comp);
                 }
-            } // end func_id loop
-        } // end comp loop
+            }
 
-        copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
-                              elem_values.get_comp_map(), D_phi);
-    } // end if (order == 0)
-#if 0
-    else // if (order != 0)
-    {
-        Assert(order >= 1, ExcLowerRange(order,1));
+        }
+    } // end comp loop
 
-        using DerSymmMngr_t = DerivativeSymmetryManager<dim,order>;
-        DerSymmMngr_t derivative_symmetry_manager;
-        const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
-        const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
-        const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
-
-        const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
-
-        const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
-        const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
-
-        using der_t = Conditional<order==0,Value,Derivative<order>>;
-
-        for (int comp : scalar_evaluators_.get_active_components_id())
-        {
-            const auto n_basis = n_basis_.comp_dimension[comp];
-            const Size comp_offset_i = comp_offset_[comp];
-
-            DynamicMultiArray<Real,dim> derivative_scalar_component(n_points_direction);
-            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
-            {
-                auto D_phi_i = D_phi.get_function_view(comp_offset_i+func_flat_id);
-
-                const auto &scalar_bspline = *scalar_evaluators_[comp][func_flat_id];
-
-                for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
-                {
-                    const int entry_flat_id = derivatives_flat_id_evaluate[entry_id];
-                    const auto entry_tensor_id = derivatives_tensor_id[entry_flat_id];
-
-                    // from the entry_tensor_id we get the right derivative order
-                    TensorIndex<dim> deriv_order_tensor_id; // [0,0,..,0] tensor index
-                    for (int i = 0; i < order; ++i)
-                        ++(deriv_order_tensor_id[entry_tensor_id[i]]);
-
-                    //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
-                    if (dim > 0)
-                    {
-                        scalar_bspline.evaluate_derivative_at_points(deriv_order_tensor_id,derivative_scalar_component);
-
-                        for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                            D_phi_i[point_flat_id](entry_flat_id)(comp) = derivative_scalar_component[point_flat_id];
-                    }
-                    else
-                    {
-                        for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                            D_phi_i[point_flat_id](entry_flat_id)(comp) = 1.0;
-                    }
-
-                } // end entry_id loop
-
-            } // end func_flat_id loop
-
-            for (int func_flat_id = 0; func_flat_id < n_basis; ++func_flat_id)
-            {
-                auto D_phi_i = D_phi.get_function_view(comp_offset_i+func_flat_id);
-                for (int point_flat_id = 0; point_flat_id < num_points; ++point_flat_id)
-                {
-                    der_t &derivative = D_phi_i[point_flat_id];
-
-                    // here we copy the computed quantities to the symmetric part of the tensor
-                    for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
-                        derivative(derivatives_flat_id_copy_to[entry_id])(comp) =
-                            derivative(derivatives_flat_id_copy_from[entry_id])(comp);
-                } // end point_flat_id loop
-            } //end func_flat_id loop
-
-        } // end comp loop
-
-        for (int comp : scalar_evaluators_.get_inactive_components_id())
-        {
-            const Size n_ders = Derivative<order>::size;
-
-
-            const auto n_basis = n_basis_.comp_dimension[comp];
-            const auto scalar_eval_act_comp = scalar_evaluators_.active(comp);
-            const Size act_offset = comp_offset_[scalar_eval_act_comp];
-            const Size offset = comp_offset_[comp];
-            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-            {
-                const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-                auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
-                for (int qp = 0; qp < num_points; ++qp)
-                {
-                    const der_t &values_0 = derivatives_phi_hat_copy_from[qp];
-                    der_t &values = derivatives_phi_hat_copy_to[qp];
-
-                    for (int der = 0; der < n_ders; ++der)
-                        values(der)(comp) = values_0(der)(scalar_eval_act_comp);
-                }
-            } //end loop basis_i
-        } // end loop comp
-    } // end if (order > 0)
-#endif
+    copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
+                                       elem_values.get_comp_map(), D_phi);
 }
+
 
 
 
@@ -607,7 +445,7 @@ fill_element_cache(ElementAccessor &elem)
     //--------------------------------------------------------------------------
     if (cache.flags_handler_.fill_values())
     {
-        evaluate_bspline_derivatives<0>(values, cache.phi_);
+        evaluate_bspline_values(values, cache.phi_);
         cache.flags_handler_.set_values_filled(true);
     }
     if (cache.flags_handler_.fill_gradients())
