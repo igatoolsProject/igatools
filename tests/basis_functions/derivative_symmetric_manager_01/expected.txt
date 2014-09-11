@@ -1,0 +1,7 @@
+univariate derivative orders:
+[ [0,0] ]
+Assigment indices:
+[ [] ]
+all equal indices indices:
+   [ [] ]
+
