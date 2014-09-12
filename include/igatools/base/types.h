@@ -390,12 +390,14 @@ inline bool contains(const Flag &a, const Flag b)
 template<class Flag>
 int bitcount(Flag a)
 {
+    using underlying_type = typename std::underlying_type<Flag>::type;
+
     //Loop the value while there are still bits
     //Remove the end bit
     int count = 0;
-    while (a != 0)
+    while (static_cast<underlying_type>(a) != 0)
     {
-        a = a & static_cast< Flag >((static_cast< int >(a) - 1));
+        a = a & static_cast<Flag>((static_cast<underlying_type>(a) - 1));
         count++;
     }
 

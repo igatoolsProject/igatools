@@ -28,13 +28,19 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * This class represent a linear constraint, i.e. a relation of the type:
+ * @brief This class represent a linear constraint, i.e. a relation of the type:
  * \f$ c_{i_1} \mathbf{x}_{i_1} + \dots + c_{i_n} \mathbf{x}_{i_n} = f \f$
  * where the indices \f$ (i_1,\dots,i_n) \f$ are the dofs indices,
  * \f$ (c_{i_1},\dots,c_{i_n}) \in \mathbb{R}^n \f$ are the coefficients and \f$ f \in \mathbb{R} \f$
  * is the right hand side that defines the linear constraint.
+ *
+ * To the LinearConstraint is associated a LinearConstraintType member variable
+ * that indicates the type of the constraint.
+ *
+ * @author M. Martinelli
+ * @date 2014
  */
-class LinearConstraint : private std::pair< vector<std::pair<Index,Real> >,Real >
+class LinearConstraint
 {
 public:
 
@@ -171,7 +177,7 @@ private:
     /**
      * Left hand side of the linear equation.
      *
-     * Each entry of this vector is a pair (dof_id-coefficient)
+     * Each entry of this vector is a pair (global dof id/coefficient).
      */
     vector<std::pair<Index,Real>> lhs_;
 

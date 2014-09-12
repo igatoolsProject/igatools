@@ -32,6 +32,10 @@ LinearConstraint(
     const vector<Real> &coeffs,
     const Real rhs)
 {
+    // No multiple types are allowed
+    Assert(bitcount(type)==1,
+           ExcMessage("The LinearConstraint flag must contain only one type."));
+
     Assert(dofs.size() == coeffs.size(),ExcDimensionMismatch(dofs.size(),coeffs.size()));
     Assert(!dofs.empty(),ExcEmptyObject());
 
@@ -42,7 +46,6 @@ LinearConstraint(
         lhs_.emplace_back(std::make_pair(dofs[i],coeffs[i]));
     }
     rhs_ = rhs;
-
     type_ = type;
 }
 
