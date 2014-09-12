@@ -309,6 +309,10 @@ enum class VerbosityLevel : int
     debug = 1 << 1
 };
 
+
+
+
+
 /**
  * Generic convert function that can be used to convert any enum class to
  * its underlying integral type.
@@ -342,7 +346,7 @@ get_enum_size() -> typename std::underlying_type<E>::type
 }
 
 
-/** Bitwise or operator to use with the Flags of igatools */
+/** Bitwise OR operator to use with the Flags of igatools */
 template<class Flag>
 constexpr
 inline Flag
@@ -351,7 +355,7 @@ operator|(const Flag a, const Flag b)
     return (static_cast< Flag >(static_cast< int >(a) | static_cast< int >(b))) ;
 }
 
-/** Bitwise and operator to use with the Flags of igatools */
+/** Bitwise AND operator to use with the Flags of igatools */
 template<class Flag>
 inline Flag
 operator&(const Flag a, const Flag b)
@@ -359,7 +363,7 @@ operator&(const Flag a, const Flag b)
     return (static_cast< Flag >(static_cast< int >(a) & static_cast< int >(b))) ;
 }
 
-/** Bitwise xor operator to use with the Flags of igatools */
+/** Bitwise XOR operator to use with the Flags of igatools */
 template<class Flag>
 inline Flag
 operator^(const Flag a, const Flag b)
@@ -386,12 +390,14 @@ inline bool contains(const Flag &a, const Flag b)
 template<class Flag>
 int bitcount(Flag a)
 {
+    using underlying_type = typename std::underlying_type<Flag>::type;
+
     //Loop the value while there are still bits
     //Remove the end bit
     int count = 0;
-    while (a != 0)
+    while (static_cast<underlying_type>(a) != 0)
     {
-        a = a & static_cast< Flag >((static_cast< int >(a) - 1));
+        a = a & static_cast<Flag>((static_cast<underlying_type>(a) - 1));
         count++;
     }
 
@@ -503,6 +509,25 @@ enum class InterfaceType : int
      * @todo Complete the documentation.
      */
     Mortar = 3
+};
+
+
+/**
+ * Bit field flags specifying the type of a linear cosntraint.
+ */
+enum class LinearConstraintType : int
+{
+    /** Lagrange multiplier. */
+    lagrange = 1 << 0,
+
+    /** Penalty. */
+    penalty = 1 << 1,
+
+    /** Augmented Lagrange multiplier. */
+    augmented_lagrange = 1 << 2,
+
+    /** Any of the above.*/
+    any = lagrange | penalty | augmented_lagrange
 };
 
 

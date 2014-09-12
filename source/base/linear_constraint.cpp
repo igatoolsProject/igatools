@@ -26,8 +26,16 @@
 IGA_NAMESPACE_OPEN
 
 LinearConstraint::
-LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs)
+LinearConstraint(
+    const LinearConstraintType &type,
+    const vector<Index> &dofs,
+    const vector<Real> &coeffs,
+    const Real rhs)
 {
+    // No multiple types are allowed
+    Assert(bitcount(type)==1,
+           ExcMessage("The LinearConstraint flag must contain only one type."));
+
     Assert(dofs.size() == coeffs.size(),ExcDimensionMismatch(dofs.size(),coeffs.size()));
     Assert(!dofs.empty(),ExcEmptyObject());
 
@@ -38,6 +46,15 @@ LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real
         lhs_.emplace_back(std::make_pair(dofs[i],coeffs[i]));
     }
     rhs_ = rhs;
+    type_ = type;
+}
+
+std::shared_ptr<LinearConstraint>
+LinearConstraint::
+create(const LinearConstraintType &type,
+       const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs)
+{
+    return std::shared_ptr<LinearConstraint>(new LinearConstraint(type,dofs,coeffs,rhs));
 }
 
 Real
@@ -99,7 +116,64 @@ get_num_coeffs() const
     return this->get_num_lhs_terms();
 }
 
+vector<Index>
+LinearConstraint::
+get_dofs_id() const
+{
+    vector<Index> dofs_id;
+    for (const auto &lhs_term : lhs_)
+        dofs_id.push_back(lhs_term.first);
 
+    return dofs_id;
+}
+
+vector<Real>
+LinearConstraint::
+get_coefficients() const
+{
+    vector<Real> coeffs;
+    for (const auto &lhs_term : lhs_)
+        coeffs.push_back(lhs_term.second);
+
+    return coeffs;
+}
+
+LinearConstraintType
+LinearConstraint::
+get_type() const
+{
+    return type_;
+}
+
+bool
+LinearConstraint::
+is_dof_present(const Index dof) const
+{
+    bool is_dof_present = false;
+
+    for (const auto &lhs_term : lhs_)
+        if (lhs_term.first == dof)
+        {
+            is_dof_present = true;
+            break;
+        }
+
+    return is_dof_present;
+}
+
+
+Real
+LinearConstraint::
+eval_absolute_error(const vector<Real> &dof_coeffs) const
+{
+    const auto n_terms = this->get_num_coeffs();
+
+    Real error = -rhs_;
+    for (Index i = 0 ; i < n_terms ; ++i)
+        error += this->get_coeff(i) * dof_coeffs[this->get_dof_index(i)];
+
+    return fabs(error);
+}
 
 void
 LinearConstraint::

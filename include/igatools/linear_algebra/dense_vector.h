@@ -66,9 +66,12 @@ public:
 
     void print_info(LogStream &out) const
     {
+    	Assert(false,ExcNotImplemented())l
         // out << vector<Real>::vector(*this);
     }
 
+    /** Returns the number of entries in the DenseVector. */
+    int size() const;
 };
 
 /**@}*/

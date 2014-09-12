@@ -1,0 +1,10 @@
+The number of entries of Tdouble is: 1
+The number of entries of Tensor<1, 1, tensor::contravariant, Tdouble> is: 1
+The number of entries of Tensor<2, 1, tensor::contravariant, Tdouble> is: 2
+The number of entries of Tensor<3, 1, tensor::contravariant, Tdouble> is: 3
+The number of entries of Tensor<1, 1, tensor::covariant, Tensor< 1, 1, tensor::contravariant, Tdouble> > is: 1
+The number of entries of Tensor<3, 1, tensor::covariant, Tensor< 2, 1, tensor::contravariant, Tdouble> > is: 6
+The number of entries of Tensor<2, 1, tensor::covariant, Tensor< 2, 1, tensor::contravariant, Tdouble> > is: 4
+The number of entries of Tensor<2, 1, tensor::covariant, Tensor< 3, 1, tensor::contravariant, Tdouble> > is: 6
+The number of entries of Tensor<3, 1, tensor::covariant, Tensor< 2, 1, tensor::contravariant, Tdouble> > is: 6
+The number of entries of Tensor<3, 1, tensor::covariant, Tensor< 3, 1, tensor::contravariant, Tdouble> > is: 9

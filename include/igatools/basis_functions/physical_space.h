@@ -74,6 +74,8 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
+    static const std::array<int, n_components> components;
+
 public:
     using Func = Function<space_dim, range, rank>;
     template <int order>
@@ -108,8 +110,6 @@ public:
     typedef GridForwardIterator<ElementAccessor> ElementIterator;
 
 
-    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
@@ -198,6 +198,10 @@ public:
 
 
 private:
+    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
+                  std::shared_ptr<PushForwardType> push_forward);
+
+
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;

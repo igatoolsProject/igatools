@@ -94,7 +94,7 @@ get_max_dof_id() const
     return *std::max_element(dofs_view_.cbegin(),dofs_view_.cend());
 }
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
@@ -110,7 +110,39 @@ DofDistribution<dim, range, rank>::
 basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
                      const Index comp) const
 {
-    return index_table_[comp].tensor_to_flat(tensor_index);
+    const auto &index_table_comp = index_table_[comp];
+    const Index basis_flat_id_patch = index_table_comp.tensor_to_flat(tensor_index);
+    return index_table_comp[basis_flat_id_patch];
+}
+#endif
+
+
+template<int dim, int range, int rank>
+bool
+DofDistribution<dim, range, rank>::
+find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const
+{
+    bool dof_is_found = false;
+
+    for (auto &comp: Space::components)
+    {
+        const auto &index_table_comp = index_table_[comp];
+
+        auto dofs_begin = index_table_comp.get_data().begin();
+        auto dofs_end   = index_table_comp.get_data().end();
+        auto it = std::find(dofs_begin, dofs_end, dof_id);
+
+        if (it != dofs_end)
+        {
+            dof_is_found = true;
+            comp_id = comp;
+            tensor_index = index_table_comp.flat_to_tensor(it-dofs_begin);
+
+            break;
+        }
+    }
+
+    return dof_is_found;
 }
 
 
@@ -122,7 +154,9 @@ create_element_loc_to_global_view(
     const MultiplicityTable &accum_mult,
     const SpaceDimensionTable &n_elem_basis)
 {
-    for (const auto elem : *grid)
+    auto elem     = grid->begin();
+    const auto elem_end = grid->end();
+    for (; elem != elem_end ; ++elem)
     {
         const auto t_index = elem.get_tensor_index();
 
@@ -285,6 +319,28 @@ get_num_dofs_element(const CartesianGridElement<dim> &element) const -> Size
     return elements_loc_to_global_flat_view_->at(element.get_flat_index()).get_num_entries();
 }
 
+
+
+template<int dim, int range, int rank>
+Index
+DofDistribution<dim, range, rank>::
+global_to_patch_local(const Index global_dof_id) const
+{
+    int comp_id;
+    TensorIndex<dim> tensor_index;
+    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp_id,tensor_index);
+    Assert(global_dof_is_found,
+           ExcMessage("The global dof id " + std::to_string(global_dof_id) +
+                      " is not present in the DofDistribution."));
+
+    Index offset = 0;
+    for (int comp = 0 ; comp < comp_id ; ++comp)
+        offset += index_table_[comp].flat_size();
+
+    const Index local_dof_id = offset + index_table_[comp_id].tensor_to_flat(tensor_index);
+
+    return local_dof_id;
+}
 
 template<int dim, int range, int rank>
 void

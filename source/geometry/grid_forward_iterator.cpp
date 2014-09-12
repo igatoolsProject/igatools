@@ -45,7 +45,9 @@ GridForwardIterator(std::shared_ptr<ContainerType> grid,
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor> &GridForwardIterator<Accessor>::operator++()
+GridForwardIterator<Accessor> &
+GridForwardIterator<Accessor>::
+operator++()
 {
     ++accessor_;
     return *this;
@@ -56,7 +58,8 @@ GridForwardIterator<Accessor> &GridForwardIterator<Accessor>::operator++()
 template <typename Accessor>
 inline
 const Accessor &
-GridForwardIterator<Accessor>::operator * () const
+GridForwardIterator<Accessor>::
+operator * () const
 {
     return accessor_;
 }
@@ -66,7 +69,8 @@ GridForwardIterator<Accessor>::operator * () const
 template <typename Accessor>
 inline
 Accessor &
-GridForwardIterator<Accessor>::operator * ()
+GridForwardIterator<Accessor>::
+operator * ()
 {
     return accessor_;
 }
@@ -76,7 +80,8 @@ GridForwardIterator<Accessor>::operator * ()
 template <typename Accessor>
 inline
 const Accessor *
-GridForwardIterator<Accessor>::operator -> () const
+GridForwardIterator<Accessor>::
+operator -> () const
 {
     return &(this->operator* ());
 }
@@ -86,7 +91,8 @@ GridForwardIterator<Accessor>::operator -> () const
 template <typename Accessor>
 inline
 Accessor *
-GridForwardIterator<Accessor>::operator -> ()
+GridForwardIterator<Accessor>::
+operator -> ()
 {
     return &(this->operator* ());
 }
@@ -96,7 +102,8 @@ GridForwardIterator<Accessor>::operator -> ()
 template <typename Accessor>
 inline
 bool
-GridForwardIterator<Accessor>::operator == (const GridForwardIterator<Accessor> &i) const
+GridForwardIterator<Accessor>::
+operator==(const GridForwardIterator<Accessor> &i) const
 {
     return accessor_ == i.accessor_;
 }
@@ -106,9 +113,28 @@ GridForwardIterator<Accessor>::operator == (const GridForwardIterator<Accessor> 
 template <typename Accessor>
 inline
 bool
-GridForwardIterator<Accessor>::operator != (const GridForwardIterator<Accessor> &i) const
+GridForwardIterator<Accessor>::
+operator!=(const GridForwardIterator<Accessor> &i) const
 {
     return accessor_.operator != (i.accessor_);
+}
+
+template <typename Accessor>
+inline
+Index
+GridForwardIterator<Accessor>::
+get_flat_index() const
+{
+    return accessor_.get_flat_index();
+}
+
+template <typename Accessor>
+inline
+auto
+GridForwardIterator<Accessor>::
+get_tensor_index() const -> TensorIndex<dim>
+{
+    return accessor_.get_tensor_index();
 }
 
 IGA_NAMESPACE_CLOSE
