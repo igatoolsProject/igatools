@@ -184,7 +184,7 @@ private:
          * h-refinement algorithm (based on knot insertion) require them to be in
          * the projective space.
          */
-        typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
+      //  typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
 
 
         /** Control mesh (the coordinates are in the projective space). */

@@ -23,6 +23,6 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-list=['BSplineElementScalarEvaluator<%d>' %dim for dim in inst.domain_dims]
-for row in list:
-	f.write('template class %s; \n' %row)
+# list=['BSplineElementScalarEvaluator<%d>' %dim for dim in inst.domain_dims]
+# for row in list:
+# 	f.write('template class %s; \n' %row)

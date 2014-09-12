@@ -27,7 +27,7 @@ include_files = ['geometry/cartesian_grid_element_accessor.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-spaces = ['NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-          for x in inst.really_all_ref_sp_dims ]
-for sp in spaces:
-   f.write('template class %s ;\n' %sp)
+# spaces = ['NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
+#           for x in inst.really_all_ref_sp_dims ]
+# for sp in spaces:
+#    f.write('template class %s ;\n' %sp)

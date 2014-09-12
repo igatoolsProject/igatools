@@ -27,17 +27,17 @@ include_files = ['geometry/cartesian_grid.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = ['NURBSElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-          for x in inst.really_all_ref_sp_dims ]
-for accessor in accessors:
-   f.write('template class %s ;\n' %accessor)
-   f.write('template class GridForwardIterator<%s> ;\n' %accessor)
-   function = ('template  ValueTable< Conditional< deriv_order==0,'+
-               accessor + '::Value,' +
-               accessor + '::Derivative<deriv_order> > > ' + 
-               accessor + 
-               '::evaluate_basis_derivatives_at_points<deriv_order>' +
-               '(const ValueVector<Point>&) const; \n')
-   fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
-   for s in fun_list:
-      f.write(s)
+# accessors = ['NURBSElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank)  
+#           for x in inst.really_all_ref_sp_dims ]
+# for accessor in accessors:
+#    f.write('template class %s ;\n' %accessor)
+#    f.write('template class GridForwardIterator<%s> ;\n' %accessor)
+#    function = ('template  ValueTable< Conditional< deriv_order==0,'+
+#                accessor + '::Value,' +
+#                accessor + '::Derivative<deriv_order> > > ' + 
+#                accessor + 
+#                '::evaluate_basis_derivatives_at_points<deriv_order>' +
+#                '(const ValueVector<Point>&) const; \n')
+#    fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
+#    for s in fun_list:
+#       f.write(s)

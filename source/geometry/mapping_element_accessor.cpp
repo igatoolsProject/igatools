@@ -53,7 +53,8 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
     }
 
 
-
+    // TODO (pauletti, Sep 12, 2014): this is not good, try to fix
+#if 0
     using NURBSSp = NURBSSpace<dim,dim+codim,1>;
     using NURBSMapping = IgMapping<NURBSSp>;
     if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
@@ -61,6 +62,7 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
         auto ig_mapping = dynamic_pointer_cast<const NURBSMapping>(mapping_);
         mapping_ .reset(new NURBSMapping(ig_mapping->get_data()));
     }
+#endif
 
     Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
 }
@@ -93,7 +95,8 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
     }
 
 
-
+    // TODO (pauletti, Sep 12, 2014): bad code, try to fix
+#if 0
     using NURBSSp = NURBSSpace<dim,dim+codim,1>;
     using NURBSMapping = IgMapping<NURBSSp>;
     if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
@@ -101,7 +104,7 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
         auto ig_mapping = dynamic_pointer_cast<const NURBSMapping>(mapping_);
         mapping_ .reset(new NURBSMapping(ig_mapping->get_data()));
     }
-
+#endif
     Assert(mapping_->get_grid() != nullptr, ExcNullPtr());
 }
 

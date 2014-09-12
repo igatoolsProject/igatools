@@ -284,8 +284,9 @@ add_field(shared_ptr<Space> space_,
 
     auto element     = space->begin();
     auto element_end = space->end();
-
-    element->init_cache(ValueFlags::value, quad_plot_);
+    // TODO (pauletti, Sep 12, 2014): fix next line
+    Assert(true, ExcMessage(" fix next line "));
+    //element->init_cache(ValueFlags::value, quad_plot_);
 
 
 
@@ -305,7 +306,9 @@ add_field(shared_ptr<Space> space_,
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
-            element->fill_cache();
+            // TODO (pauletti, Sep 12, 2014): fix next line
+            Assert(true, ExcMessage(" fix next line "));
+            // element->fill_cache();
             const auto field_values = element->evaluate_field(
                                           coefs.get_local_coefs(element->get_local_to_global()));
 
@@ -321,7 +324,9 @@ add_field(shared_ptr<Space> space_,
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
-            element->fill_cache();
+            // TODO (pauletti, Sep 12, 2014): fix next line
+            Assert(true, ExcMessage(" fix next line "));
+            // element->fill_cache();
 
             const auto field_values = element->evaluate_field(
                                           coefs.get_local_coefs(element->get_local_to_global()));
@@ -342,7 +347,9 @@ add_field(shared_ptr<Space> space_,
         int pos = 0;
         for (int iElement = 0; element != element_end; ++element, ++iElement)
         {
-            element->fill_cache();
+            // TODO (pauletti, Sep 12, 2014): fix next line
+            Assert(true, ExcMessage(" fix next line "));
+            //element->fill_cache();
 
             const auto field_values = element->evaluate_field(
                                           coefs.get_local_coefs(element->get_local_to_global()));

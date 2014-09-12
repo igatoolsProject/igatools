@@ -24,13 +24,14 @@ from init_instantiation_data import *
 include_files = ['geometry/cartesian_grid_element_accessor.h',
                  'geometry/mapping_element_accessor.h',
                  'basis_functions/bspline_space.h',
-                 'basis_functions/bspline_element_accessor.h',
-                 'basis_functions/nurbs_space.h',
-                 'basis_functions/nurbs_element_accessor.h']
+                 'basis_functions/bspline_element_accessor.h']
+# ,
+#                  'basis_functions/nurbs_space.h',
+#                  'basis_functions/nurbs_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-ref_spaces = ('BSplineSpace', 'NURBSSpace')
+ref_spaces = ['BSplineSpace']#, 'NURBSSpace')
 for sp in ref_spaces:
    for row in inst.all_mapping_dims:
       (dim, range, rank) = (row.dim, row.space_dim, 1)

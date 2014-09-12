@@ -201,13 +201,15 @@ init_cache(const ValueFlags fill_flag,
 {
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
-    ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
+    // TODO (pauletti, Sep 12, 2014): fix next line
+    // ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
 
     const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
     PfElemAccessor::init_cache(pf_flag, quad);
 
 
-    this->reset_element_and_faces_cache(fill_flag, quad);
+    // TODO (pauletti, Sep 12, 2014): fix next line
+    //this->reset_element_and_faces_cache(fill_flag, quad);
 }
 
 
@@ -236,14 +238,16 @@ fill_cache(const TopologyId<dim> &topology_id)
     if (topology_id.is_element())
     {
         PfElemAccessor::fill_cache();
-        ref_space_element_accessor_.fill_cache();
+        // TODO (pauletti, Sep 12, 2014): fix next line
+        // ref_space_element_accessor_.fill_cache();
     }
     else
     {
         //TODO: implement fill_cache in PushForwardElementAccessor
         // and RefSpaceElementAccessor accepting TopologyId
         PfElemAccessor::fill_face_cache(topology_id.get_id());
-        ref_space_element_accessor_.fill_face_cache(topology_id.get_id());
+        // TODO (pauletti, Sep 12, 2014): fix next line
+        //ref_space_element_accessor_.fill_face_cache(topology_id.get_id());
     }
 
     if (cache.flags_handler_.fill_values())

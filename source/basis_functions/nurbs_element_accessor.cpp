@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
@@ -928,3 +928,5 @@ move_to(const TensorIndex<dim> &tensor_index)
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element_accessor.inst>
+
+#endif

@@ -167,8 +167,6 @@ private:
     };
 
     GlobalCache splines1d_;
-
-    ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 };
 
 IGA_NAMESPACE_CLOSE
