@@ -345,13 +345,13 @@ linear_constraints_close()
 
 void
 SpaceManager::
-add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs)
+add_linear_constraint(const LinearConstraintType &type,
+                      const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs)
 {
     Assert(are_linear_constraints_open_ == true,
            ExcMessage("Linear constraints already closed."));
 
-    using LC = LinearConstraint;
-    linear_constraints_.emplace_back(std::shared_ptr<LC>(new LC(dofs,coeffs,rhs)));
+    linear_constraints_.emplace(type,LC::create(type,dofs,coeffs,rhs));
 }
 
 
@@ -363,15 +363,45 @@ add_linear_constraint(std::shared_ptr<LinearConstraint> linear_constraint)
            ExcMessage("Linear constraints already closed."));
 
     Assert(linear_constraint != nullptr, ExcNullPtr());
-    linear_constraints_.push_back(linear_constraint);
+    linear_constraints_.emplace(linear_constraint->get_type(),linear_constraint);
 }
 
 
 vector<std::shared_ptr<LinearConstraint> >
 SpaceManager::
-get_linear_constraints() const
+get_linear_constraints(const LinearConstraintType &type_in) const
 {
-    return linear_constraints_;
+    //--------------------------------------------------
+    // create a vector of "pure" LCType from the input argument type_in,
+    // in order to use the equal_range_function
+    vector<LinearConstraintType> pure_types;
+    if (contains(type_in, LinearConstraintType::lagrange))
+        pure_types.push_back(LinearConstraintType::lagrange);
+    if (contains(type_in, LinearConstraintType::augmented_lagrange))
+        pure_types.push_back(LinearConstraintType::augmented_lagrange);
+    if (contains(type_in, LinearConstraintType::penalty))
+        pure_types.push_back(LinearConstraintType::penalty);
+    //--------------------------------------------------
+
+
+
+    //--------------------------------------------------
+    // copying the LinearConstraints of appropriate type in the return variable
+    vector<std::shared_ptr<LC>> lcs;
+    for (const auto type : pure_types)
+    {
+        auto range = linear_constraints_.equal_range(type);
+        std::for_each(
+            range.first,
+            range.second,
+            [&lcs](const auto &lc_pair)
+        {
+            lcs.push_back(lc_pair.second);
+        });
+    }
+    //--------------------------------------------------
+
+    return lcs;
 }
 
 
@@ -444,9 +474,12 @@ verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
            ExcDimensionMismatch(dof_values.size(),this->get_num_dofs()));
 
     vector<shared_ptr<LinearConstraint> > failed_linear_constraints;
-    for (const auto lc : linear_constraints_)
+    for (const auto &lc_pair : linear_constraints_)
+    {
+        const auto &lc = lc_pair.second;
         if (lc->eval_absolute_error(dof_values) >= tol)
             failed_linear_constraints.push_back(lc);
+    }
 
     return failed_linear_constraints;
 }
@@ -506,7 +539,7 @@ print_info(LogStream &out) const
     {
         out << "Linear constraint[" << lc_counter++ << "] :" << endl;
         out.push("   ");
-        lc->print_info(out);
+        lc.second->print_info(out);
         out.pop();
     }
     out.pop();

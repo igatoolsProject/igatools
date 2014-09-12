@@ -37,41 +37,19 @@ IGA_NAMESPACE_OPEN
 class LinearConstraint : private std::pair< vector<std::pair<Index,Real> >,Real >
 {
 public:
-    /** @name Constructors ad destructor */
-    ///@{
-    /** Default constructor. Not allowed to be used. */
-    LinearConstraint() = delete;
 
     /**
-     * Constructor. It builds the LinearConstraint from a vector of @p dofs defining the constraint,
+     * It builds and returns a std::shared_ptr wrapping a
+     * LinearConstraint of the specified @type,
+     * from a vector of @p dofs defining the constraint,
      * their relative @p coefficients and the tight hand side value @p rhs.
      */
-    LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
-
-
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    LinearConstraint(const LinearConstraint &lc) = delete;
-
-
-    /**
-     * Move constructor. Not allowed to be used.
-     */
-    LinearConstraint(LinearConstraint &&lc) = delete;
-
-
-    /** Copy assignment operator. Not allowed to be used. */
-    LinearConstraint &operator=(const LinearConstraint &lc) = delete;
-
-
-    /** Move assignment operator. Not allowed to be used. */
-    LinearConstraint &operator=(LinearConstraint &&lc) = delete;
-
+    static std::shared_ptr<LinearConstraint>
+    create(const LinearConstraintType &type,
+           const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
 
     /** Destructor. */
     ~LinearConstraint() = default;
-    ///@}
 
 
     /** Returns the value of the right hand side of the LinearConstraint. */
@@ -119,6 +97,11 @@ public:
     vector<Real> get_coefficients() const;
 
     /**
+     * Returns the type of the LinearConstraint.
+     */
+    LinearConstraintType get_type() const;
+
+    /**
      * @name Printing info
      */
     ///@{
@@ -142,7 +125,45 @@ public:
      */
     Real eval_absolute_error(const vector<Real> &dof_coeffs) const;
 
+
+
 private:
+    /** @name Constructors ad destructor */
+    ///@{
+    /** Default constructor. Not allowed to be used. */
+    LinearConstraint() = delete;
+
+    /**
+     * Constructor. It builds the LinearConstraint of the specified @type,
+     * from a vector of @p dofs defining the constraint,
+     * their relative @p coefficients and the tight hand side value @p rhs.
+     *
+     * @note Not allowed to be used. Use the associated create() function.
+     */
+    LinearConstraint(const LinearConstraintType &type,
+                     const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    LinearConstraint(const LinearConstraint &lc) = delete;
+
+
+    /**
+     * Move constructor. Not allowed to be used.
+     */
+    LinearConstraint(LinearConstraint &&lc) = delete;
+
+
+    /** Copy assignment operator. Not allowed to be used. */
+    LinearConstraint &operator=(const LinearConstraint &lc) = delete;
+
+
+    /** Move assignment operator. Not allowed to be used. */
+    LinearConstraint &operator=(LinearConstraint &&lc) = delete;
+    ///@}
+
+
 
     /** Returns a const reference of the right hand side of the linear constraint. */
     const std::pair<Index,Real> &get_lhs_term(const int i) const;
@@ -159,6 +180,8 @@ private:
      */
     Real rhs_;
 
+    /** Type of the linear constraint. */
+    LinearConstraintType type_;
 };
 
 

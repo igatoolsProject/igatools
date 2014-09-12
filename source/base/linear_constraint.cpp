@@ -26,7 +26,11 @@
 IGA_NAMESPACE_OPEN
 
 LinearConstraint::
-LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs)
+LinearConstraint(
+    const LinearConstraintType &type,
+    const vector<Index> &dofs,
+    const vector<Real> &coeffs,
+    const Real rhs)
 {
     Assert(dofs.size() == coeffs.size(),ExcDimensionMismatch(dofs.size(),coeffs.size()));
     Assert(!dofs.empty(),ExcEmptyObject());
@@ -38,6 +42,16 @@ LinearConstraint(const vector<Index> &dofs,const vector<Real> &coeffs,const Real
         lhs_.emplace_back(std::make_pair(dofs[i],coeffs[i]));
     }
     rhs_ = rhs;
+
+    type_ = type;
+}
+
+std::shared_ptr<LinearConstraint>
+LinearConstraint::
+create(const LinearConstraintType &type,
+       const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs)
+{
+    return std::shared_ptr<LinearConstraint>(new LinearConstraint(type,dofs,coeffs,rhs));
 }
 
 Real
@@ -119,6 +133,13 @@ get_coefficients() const
         coeffs.push_back(lhs_term.second);
 
     return coeffs;
+}
+
+LinearConstraintType
+LinearConstraint::
+get_type() const
+{
+    return type_;
 }
 
 bool

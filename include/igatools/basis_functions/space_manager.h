@@ -161,6 +161,12 @@ public:
     /** Type alias for the ConstView on the dofs held by the SpaceManager object. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
+    /** Type alias for the LinearConstraint. */
+    using LC = LinearConstraint;
+
+    /** Type alias for the LinearConstraintType. */
+    using LCType = LinearConstraintType;
+
 
     /** @name Constructors */
     ///@{
@@ -253,7 +259,7 @@ public:
 
 
     /**
-     * Add a LinearConstraint to the SpaceManager,
+     * Add a LinearConstraint of a given @p type to the SpaceManager,
      * where @p dofs are the dofs id involved by the constraint,
      * @p coeffs their coefficients and
      * @p rhs is the right hand side that defines the linear constraint equation.
@@ -262,7 +268,8 @@ public:
      * if the space manager is not set in the proper state by the function
      * linear_constraints_open().
      */
-    void add_linear_constraint(const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
+    void add_linear_constraint(const LinearConstraintType &type,
+                               const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
 
 
     /**
@@ -281,9 +288,11 @@ public:
     void linear_constraints_close();
 
     /**
-     * Returns the vector of linear constraints defined in the SpaceManager.
+     * Returns the vector of linear constraints of a given @p type, defined in the SpaceManager.
+     * If no @type is passed at the input argument, the function returns all the linear constraints.
      */
-    vector<std::shared_ptr<LinearConstraint> > get_linear_constraints() const;
+    vector<std::shared_ptr<LinearConstraint> > get_linear_constraints(
+        const LinearConstraintType &type = LinearConstraintType::any) const;
 
 
     /**
@@ -463,7 +472,8 @@ private:
     DofsView dofs_view_;
 
 
-    vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
+//    vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
+    std::multimap<LCType,std::shared_ptr<LC>> linear_constraints_;
 
 
     vector<EqualityConstraint> equality_constraints_;
