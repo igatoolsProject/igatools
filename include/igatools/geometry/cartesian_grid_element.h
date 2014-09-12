@@ -119,7 +119,7 @@ public:
     Index get_flat_index() const;
 
     /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim>  get_tensor_index() const;
+    TensorIndex<dim> get_tensor_index() const;
     ///@}
 
 public:

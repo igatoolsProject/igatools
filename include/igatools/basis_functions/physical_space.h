@@ -110,8 +110,6 @@ public:
     typedef GridForwardIterator<ElementAccessor> ElementIterator;
 
 
-    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward);
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
@@ -195,6 +193,10 @@ public:
 
 
 private:
+    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
+                  std::shared_ptr<PushForwardType> push_forward);
+
+
     std::shared_ptr<RefSpace> ref_space_;
 
     std::shared_ptr<PushForwardType> push_forward_;

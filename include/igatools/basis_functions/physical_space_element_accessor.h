@@ -35,7 +35,6 @@ IGA_NAMESPACE_OPEN
 
 template < typename Accessor > class GridForwardIterator;
 
-//TODO: trilinos_vector.h should be called vector.h
 //TODO: document this class
 
 /**
@@ -337,8 +336,16 @@ public :
     const PfElemAccessor &get_push_forward_accessor() const;
 
 
+    /**
+     * @name Functions related to get the indices of the element.
+     */
+    ///@{
     /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const ;
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
 
 
 protected:

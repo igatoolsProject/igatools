@@ -264,6 +264,19 @@ public:
 
     ///@}
 
+
+    /**
+     * @name Functions related to the indices of the element in the CartesianGrid pointed
+     * by the iterator.
+     */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
 protected:
     /** Object holding the Real data. */
     Accessor accessor_ ;

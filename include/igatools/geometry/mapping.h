@@ -126,8 +126,6 @@ public:
     /** Default constructor.*/
     Mapping() = delete;
 
-    /** Constructs map over grid. */
-    Mapping(const std::shared_ptr<GridType> grid);
 
     /** Destructor */
     virtual ~Mapping();
@@ -233,6 +231,11 @@ public:
      * Try to call the same function on a derived class.
      */
     virtual void print_info(LogStream &out) const;
+
+protected:
+    /** Constructs map over grid. */
+    Mapping(const std::shared_ptr<GridType> grid);
+
 
 private:
 
