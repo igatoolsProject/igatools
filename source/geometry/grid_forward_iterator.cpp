@@ -137,5 +137,4 @@ get_tensor_index() const -> TensorIndex<dim>
     return accessor_.get_tensor_index();
 }
 
-
 IGA_NAMESPACE_CLOSE

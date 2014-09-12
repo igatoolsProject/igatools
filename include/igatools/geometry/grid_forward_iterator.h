@@ -29,6 +29,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
  *
@@ -286,13 +288,13 @@ protected:
 template <typename Accessor>
 bool operator> (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
 {
-    return it1->get_flat_index() > it2->get_flat_index();
+    return it1.get_flat_index() > it2.get_flat_index();
 }
 
 template <typename Accessor>
 bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
 {
-    return it1->get_flat_index() < it2->get_flat_index();
+    return it1.get_flat_index() < it2.get_flat_index();
 }
 IGA_NAMESPACE_CLOSE
 

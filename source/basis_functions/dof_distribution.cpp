@@ -154,7 +154,9 @@ create_element_loc_to_global_view(
     const MultiplicityTable &accum_mult,
     const SpaceDimensionTable &n_elem_basis)
 {
-    for (const auto elem : *grid)
+    auto elem     = grid->begin();
+    const auto elem_end = grid->end();
+    for (; elem != elem_end ; ++elem)
     {
         const auto t_index = elem.get_tensor_index();
 

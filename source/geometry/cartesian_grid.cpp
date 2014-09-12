@@ -533,7 +533,7 @@ get_face_grid(const int face_id, FaceGridMap &elem_map) const
     auto end = face_grid->end();
     for (; f_elem != end; ++f_elem)
     {
-        auto f_index = f_elem->get_tensor_index();
+        auto f_index = f_elem.get_tensor_index();
         for (int j=0; j<dim-1; ++j)
             v_index[active_dirs[j]] = f_index[j];
         v_elem->move_to(v_index);

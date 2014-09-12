@@ -29,6 +29,9 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+
 /**
  * @brief This class represents an element within a CartesianGrid.
  *
@@ -52,6 +55,7 @@ public:
 
     /** Dimension of the grid like container */
     static const auto dim = ContainerType::dim;
+
 
     /** @name Constructors */
     ///@{
@@ -112,6 +116,7 @@ public:
 
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> get_grid() const;
+
 
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
