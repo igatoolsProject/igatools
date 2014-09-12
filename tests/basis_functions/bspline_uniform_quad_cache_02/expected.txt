@@ -1,234 +1,640 @@
 ========================================================================
-void space_cache_init_elem(int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Element Cache:
-   Fill Flags:
+   Fill flags:
           points -->    fill = 0    filled = 0
         measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
    
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
 
 Face: 0 Cache:
-   Fill Flags:
+   Fill flags:
           points -->    fill = 0    filled = 0
         measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
    
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
 
 Face: 1 Cache:
-   Fill Flags:
+   Fill flags:
           points -->    fill = 0    filled = 0
         measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
    
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
 
 Space Element Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=2,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
    
-   ValueTable (num_functions=2,num_points=2) :
-   	Function[0] : [ 0 ]  [ 0 ]  
-   	Function[1] : [ 0 ]  [ 0 ]  
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 Face: 0 Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 Face: 1 Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Element Cache:
-   Fill Flags:
+   Fill flags:
           points -->    fill = 0    filled = 0
         measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
    
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
 
 Face: 0 Cache:
-   Fill Flags:
+   Fill flags:
           points -->    fill = 0    filled = 0
         measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
    
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
 
 Face: 1 Cache:
-   Fill Flags:
+   Fill flags:
           points -->    fill = 0    filled = 0
         measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
    
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Face: 2 Cache:
-   Fill Flags:
-          points -->    fill = 0    filled = 0
-        measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
-   
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Face: 3 Cache:
-   Fill Flags:
-          points -->    fill = 0    filled = 0
-        measures -->    fill = 0    filled = 0
-      w_measures -->    fill = 0    filled = 0
-   
-   0ValueVector (num_points=0) : [ ]ValueVector (num_points=0) : [ ]Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
 
 Space Element Cache:
-   Flags:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=2,num_points=2) :
+      Function 0
+      [ [ 0 ]  ]  [ [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  ]  [ [ 0 ]  ]  
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+Face: 0 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 0    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+Face: 1 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 0    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+========================================================================
+
+========================================================================
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+========================================================================
+Element Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 0 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 1 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 2 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 3 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Space Element Cache:
+   Fill flags:
          values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=4,num_points=4) :
+      Function 0
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
    
-   ValueTable (num_functions=4,num_points=4) :
-   	Function[0] : [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-   	Function[1] : [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-   	Function[2] : [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-   	Function[3] : [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 Face: 0 Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 Face: 1 Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 Face: 2 Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
 
 Face: 3 Cache:
-   Flags:
+   Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
    
-   divergences -->    fill = 0    filled = 0
+   Values:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Gradients:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Hessians:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+   Divergeces:
+       (num_functions=0,num_points=0) :
    
-   ValueTable (num_functions=0,num_points=0) :
+
+========================================================================
+
+========================================================================
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+========================================================================
+Element Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 0 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 1 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 2 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Face: 3 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   ValueVector (num_points=0) : [ ]
+   Unit weights:
+   ValueVector (num_points=0) : [ ]
+   Unit points:
+      Size: [ 0 0 ]  Weights: [0,0]
+      Direction: 0
+      [ ]
+      Direction: 1
+      [ ]
+   
+
+Space Element Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=4,num_points=4) :
+      Function 0
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 2
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 3
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+Face: 0 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 0    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+Face: 1 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 0    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+Face: 2 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 0    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
+
+Face: 3 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 0    filled = 0
+       hessians -->    fill = 0    filled = 0
+      divergences -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=0,num_points=0) :
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
+       (num_functions=0,num_points=0) :
+   
+   Divergeces:
+       (num_functions=0,num_points=0) :
+   
 
 ========================================================================
 

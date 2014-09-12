@@ -94,14 +94,17 @@ public:
     void print_info(LogStream &out) const;
 
 private:
-    template <int order>
-    using Val = Conditional<(order==0), Value, Derivative<order> >;
+
+    void
+    copy_to_inactive_components_values(const vector<Index> &inactive_comp,
+                                       const std::array<Index, n_components> &active_map,
+                                       ValueTable<Value> &D_phi) const;
 
     template <int order>
     void
     copy_to_inactive_components(const vector<Index> &inactive_comp,
-            const std::array<Index, n_components> &active_map,
-            ValueTable<Val<order>> &D_phi) const;
+                                const std::array<Index, n_components> &active_map,
+                                ValueTable<Derivative<order>> &D_phi) const;
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
      * functions over the current element,
@@ -116,8 +119,8 @@ private:
         ValueTable<Derivative<order>> &D_phi) const;
 
     void evaluate_bspline_values(
-            const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-            ValueTable<Value> &D_phi) const;
+        const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+        ValueTable<Value> &D_phi) const;
 
 private:
     // TODO (pauletti, Sep 8, 2014): to be passed some how

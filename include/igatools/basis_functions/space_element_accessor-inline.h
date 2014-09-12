@@ -695,16 +695,25 @@ auto
 SpaceElementAccessor<Space>::
 ValuesCache::print_info(LogStream &out) const -> void
 {
-    using std::endl;
+    out.begin_item("Fill flags:");
     flags_handler_.print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.begin_item("Values:");
     phi_.print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.begin_item("Gradients:");
     D1phi_.print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.begin_item("Hessians:");
     D2phi_.print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.begin_item("Divergeces:");
     div_phi_.print_info(out);
+    out.end_item();
 }
 
 template<class Space>

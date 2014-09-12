@@ -55,16 +55,16 @@ run_test(ConstantFunction<dim,rdim,rank> &fun)
 
 int main()
 {
-    ConstantFunction<0> f0( {Real(2.)});
+    ConstantFunction<0> f0({Real(2.)});
     run_test<0,1,1>(f0);
 
-    ConstantFunction<1> f1( {Real(2.)});
+    ConstantFunction<1> f1({Real(2.)});
     run_test<1,1,1>(f1);
 
-    ConstantFunction<2> f2( {Real(2.)});
+    ConstantFunction<2> f2({Real(2.)});
     run_test<2,1,1>(f2);
 
-    ConstantFunction<2,2> f22( {Real(2.), Real(3.)});
+    ConstantFunction<2,2> f22({Real(2.), Real(3.)});
     run_test<2,2,1>(f22);
 
     return 0;

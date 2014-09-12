@@ -300,11 +300,23 @@ private:
 
         void print_info(LogStream &out) const
         {
+            out.begin_item("Fill flags:");
             flags_handler_.print_info(out);
-            out << measure_;
+            out.end_item();
+
+            out << "Measure: " << measure_ << std::endl;
+
+            out.begin_item("Weigthed measure:");
             w_measure_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Unit weights:");
             unit_weights_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Unit points:");
             unit_points_.print_info(out);
+            out.end_item();
         }
 
 

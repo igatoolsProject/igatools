@@ -40,7 +40,7 @@
 
 template<int size>
 vector<TensorIndex<size>>
-partition(const int n)
+                       partition(const int n)
 {
     vector<TensorIndex<size>> v;
     TensorIndex<size> arr(0);
@@ -63,7 +63,7 @@ partition(const int n)
 
 template<>
 vector<TensorIndex<1>>
-partition<1>(const int n)
+                    partition<1>(const int n)
 {
     TensorIndex<1> arr(n);
     return vector<TensorIndex<1>>(1,arr);
@@ -111,10 +111,11 @@ public:
                 for (int i=0; i<order; ++i)
                     ti[i] = eval_indices[j][ind[i]];
                 v.push_back(ti);
-            } while ( std::next_permutation(ind.begin(),ind.end()) );
+            }
+            while (std::next_permutation(ind.begin(),ind.end()));
 
             auto it = std::unique(v.begin(), v.end());
-            v.resize( std::distance(v.begin(),it) );
+            v.resize(std::distance(v.begin(),it));
 
             copy_indices[j] = v;
         }
@@ -157,7 +158,7 @@ void indices()
 
 int main()
 {
-   // indices<3,2>();
+    // indices<3,2>();
     //indices<2,3>();
 
     //indices<0,2>();

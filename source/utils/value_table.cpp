@@ -149,21 +149,19 @@ void
 ValueTable<T>::
 print_info(LogStream &out) const
 {
-    out << "ValueTable (num_functions=" << this->get_num_functions() << ",num_points=" << this->get_num_points() << ") :" << std::endl ;
+    // TODO (pauletti, Sep 12, 2014): should just called the parent print_info
+    out << " (num_functions=" << this->get_num_functions();
+    out << ",num_points=" << this->get_num_points() << ") :" << std::endl ;
 
-    for (int iFunc = 0 ; iFunc < this->get_num_functions() ; iFunc++)
+    for (int iFunc = 0 ; iFunc < this->get_num_functions() ; ++iFunc)
     {
-        out.push("\t");
-
-        out << "Function[" << iFunc << "] : " ;
+        out.begin_item("Function " + std::to_string(iFunc));
 
         auto value_func = this->get_function_view(iFunc) ;
 
         for (auto &value : value_func)
             out << value << " " ;
-
-        out << std::endl ;
-        out.pop();
+        out.end_item();
     }
 }
 

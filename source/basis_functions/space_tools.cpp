@@ -419,7 +419,7 @@ project_boundary_values(const typename Space::Func &func,
                         std::map<Index,Real>  &boundary_values)
 {
     project_boundary_values<Space,la_pack>(
-    func, space, quad,std::set<boundary_id>( {{bdry_id}}),boundary_values);
+    func, space, quad,std::set<boundary_id>({{bdry_id}}),boundary_values);
 }
 
 

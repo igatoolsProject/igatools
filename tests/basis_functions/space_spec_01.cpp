@@ -37,7 +37,7 @@ void test_1d()
 
     auto grid = CartesianGrid<dim>::create(4);
     typename SplineSpace::DegreeTable deg {{2}};
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1,3}} }));
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
     SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 
@@ -60,10 +60,10 @@ void test_2d()
     const int dim=2;
     using SplineSpace = SplineSpace<dim>;
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-    auto grid = CartesianGrid<dim>::create( {3,5});
+    auto grid = CartesianGrid<dim>::create({3,5});
     typename SplineSpace::DegreeTable deg {{1,3}};
 
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1}, {1,3,1}} }));
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3,1}} }));
 
     SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
@@ -87,9 +87,9 @@ void test_3d()
     const int dim=3;
     using SplineSpace = SplineSpace<dim>;
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-    auto grid = CartesianGrid<dim>::create( {3,4,5});
+    auto grid = CartesianGrid<dim>::create({3,4,5});
     typename SplineSpace::DegreeTable deg {{1,3,0}};
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1}, {1,3}, {1,1,1}} }));
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}, {1,1,1}} }));
 
 
 
@@ -119,10 +119,10 @@ void test_2d_2()
     const int range=2;
     using SplineSpace = SplineSpace<dim, range, 1>;
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-    auto grid = CartesianGrid<dim>::create( {3,4});
+    auto grid = CartesianGrid<dim>::create({3,4});
     typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
 
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable( { {{1}, {1,3}},{{1}, {1,1}}}));
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}}));
 
     SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);

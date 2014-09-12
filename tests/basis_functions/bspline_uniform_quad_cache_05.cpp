@@ -62,11 +62,11 @@ int main()
 {
     out.depth_console(10);
 
-    space_cache_value_elem<1>();
-    space_cache_value_elem<2>();
+    //space_cache_value_elem<1>(3);
+    //  space_cache_value_elem<2>();
 
-    space_cache_value_elem<1,2>();
-    space_cache_value_elem<1,3>();
+    space_cache_value_elem<1,2>(2);
+    //space_cache_value_elem<1,3>();
 
     return  0;
 }

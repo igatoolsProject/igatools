@@ -131,15 +131,13 @@ ValueFlagsHandler::
 print_info(LogStream &out) const
 {
     using std::endl;
-
-    out.begin_item("Flags:");
     out << "   values -->    fill = "
         << fill_values_ << "    filled = " << values_filled_ << endl;
     out << "gradients -->    fill = "
         << fill_gradients_ << "    filled = " << gradients_filled_ << endl;
     out << " hessians -->    fill = "
         << fill_hessians_ << "    filled = " << hessians_filled_ << endl;
-    out.end_item();
+
 }
 
 //====================================================
@@ -258,15 +256,12 @@ GridElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
     using std::endl;
-
-    out.begin_item("Fill Flags:");
     out << "    points -->    fill = "
         << fill_points_ << "    filled = " << points_filled_ << endl;
     out << "  measures -->    fill = "
         << fill_measures_ << "    filled = " << measures_filled_ << endl;
     out << "w_measures -->    fill = "
-        << fill_w_measures_ << "    filled = " << w_measures_filled_ << endl;
-    out.end_item();
+        << fill_w_measures_ << "    filled = " << w_measures_filled_;
 }
 
 //====================================================

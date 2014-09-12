@@ -394,9 +394,9 @@ public:
     //it.
     template
     <typename T, typename Dummy =
-    typename std::enable_if<!std::is_same<typename std::remove_reference<Variant<First, Types...>>::type,
-             typename std::remove_reference<T>::type>::value,T>::type
-             >
+     typename std::enable_if<!std::is_same<typename std::remove_reference<Variant<First, Types...>>::type,
+                                           typename std::remove_reference<T>::type>::value,T>::type
+     >
     Variant(T&& t)
     {
         static_assert(

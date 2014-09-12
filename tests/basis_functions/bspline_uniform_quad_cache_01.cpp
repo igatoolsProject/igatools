@@ -33,14 +33,15 @@
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
 template <int dim, int range=1, int rank=1>
-void uniform_space_cache(const int n_knots = 5, const int deg=1)
+void uniform_space_cache(const ValueFlags flag,
+                         const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
 
-    auto flag = ValueFlags::value;
+
     auto quad = QGauss<dim>(2);
     BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
     cache.print_info(out);
@@ -54,8 +55,9 @@ int main()
 {
     out.depth_console(10);
 
-    uniform_space_cache<1>();
-    uniform_space_cache<2>();
+    uniform_space_cache<1>(ValueFlags::value);
+    uniform_space_cache<2>(ValueFlags::value);
 
+    uniform_space_cache<1>(ValueFlags::gradient);
     return  0;
 }

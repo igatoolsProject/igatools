@@ -45,7 +45,7 @@ namespace
  */
 template<int size>
 vector<TensorIndex<size>>
-partition(const int n)
+                       partition(const int n)
 {
     vector<TensorIndex<size>> v;
     TensorIndex<size> arr(0);
@@ -68,7 +68,7 @@ partition(const int n)
 
 template<>
 vector<TensorIndex<1>>
-partition<1>(const int n)
+                    partition<1>(const int n)
 {
     TensorIndex<1> arr(n);
     return vector<TensorIndex<1>>(1,arr);
@@ -76,7 +76,7 @@ partition<1>(const int n)
 
 template<>
 vector<TensorIndex<0>>
-partition<0>(const int n)
+                    partition<0>(const int n)
 {
     return vector<TensorIndex<0>>();
 }
@@ -114,10 +114,11 @@ public:
                 for (int i=0; i<order; ++i)
                     ti[i] = eval_indices[j][ind[i]];
                 v.push_back(ti);
-            } while ( std::next_permutation(ind.begin(),ind.end()) );
+            }
+            while (std::next_permutation(ind.begin(),ind.end()));
 
             auto it = std::unique(v.begin(), v.end());
-            v.resize( std::distance(v.begin(),it) );
+            v.resize(std::distance(v.begin(),it));
 
             copy_indices[j] = v;
         }
@@ -302,12 +303,11 @@ init_element_cache(ElementIterator &elem)
 
 
 template <int dim, int range, int rank>
-template <int order>
 void
 BSplineUniformQuadCache<dim, range, rank>::
-copy_to_inactive_components(const vector<Index> &inactive_comp,
-                            const std::array<Index, n_components> &active_map,
-                            ValueTable<Val<order>> &D_phi) const
+copy_to_inactive_components_values(const vector<Index> &inactive_comp,
+                                   const std::array<Index, n_components> &active_map,
+                                   ValueTable<Value> &D_phi) const
 {
     const Size num_points = quad_.get_num_points_direction().flat_size();
     for (int comp : inactive_comp)
@@ -325,6 +325,36 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
         }
     }
 }
+
+
+
+template <int dim, int range, int rank>
+template <int order>
+void
+BSplineUniformQuadCache<dim, range, rank>::
+copy_to_inactive_components(const vector<Index> &inactive_comp,
+                            const std::array<Index, n_components> &active_map,
+                            ValueTable<Derivative<order>> &D_phi) const
+{
+    const Size num_points = quad_.get_num_points_direction().flat_size();
+    const Size n_ders = Derivative<order>::size;
+    for (int comp : inactive_comp)
+    {
+        const auto act_comp = active_map[comp];
+        const auto n_basis = n_basis_.comp_dimension[comp];
+        const Size act_offset = comp_offset_[act_comp];
+        const Size offset     = comp_offset_[comp];
+        for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+        {
+            const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
+            auto     inact_D_phi = D_phi.get_function_view(offset+basis_i);
+            for (int qp = 0; qp < num_points; ++qp)
+                for (int der = 0; der < n_ders; ++der)
+                    inact_D_phi[qp](der)(comp) = act_D_phi[qp](der)(act_comp);
+        }
+    }
+}
+
 
 
 
@@ -356,8 +386,8 @@ evaluate_bspline_values(
         } // end func_id loop
     } // end comp loop
 
-    copy_to_inactive_components<0>(elem_values.get_inactive_components_id(),
-                                   elem_values.get_comp_map(), D_phi);
+    copy_to_inactive_components_values(elem_values.get_inactive_components_id(),
+                                       elem_values.get_comp_map(), D_phi);
 }
 
 
@@ -412,7 +442,7 @@ evaluate_bspline_derivatives(
                     auto const &pts  = values.points_flat_to_tensor(point_id);
                     auto &der = D_phi_i[point_id];
                     der(copy_indices[der_id][0])(comp) = values.evaluate(der_tensor_id, func, pts);
-                    for (int k=0; k<copy_indices.size(); ++k)
+                    for (int k=1; k<copy_indices[der_id].size(); ++k)
                         der(copy_indices[der_id][k])(comp) = der(copy_indices[der_id][0])(comp);
                 }
             }

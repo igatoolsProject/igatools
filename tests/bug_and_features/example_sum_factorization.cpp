@@ -323,7 +323,7 @@ assemble()
     vector<Index> loc_dofs(n_basis);
 
     const Size n_qp = this->elem_quad.get_num_points();
-    ConstantFunction<dim> f( {0.5});
+    ConstantFunction<dim> f({0.5});
     vector< typename Function<dim>::ValueType > f_values(n_qp);
 
 
@@ -466,7 +466,7 @@ assemble()
 
 
     TimePoint start_boundary_conditions = Clock::now();
-    ConstantFunction<dim> g( {0.0});
+    ConstantFunction<dim> g({0.0});
     std::map<Index, Real> values;
     const int dir_id = 0 ;
     project_boundary_values<Space,linear_algebra_package>(g, this->space, this->face_quad, dir_id, values);
