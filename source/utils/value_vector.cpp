@@ -75,7 +75,7 @@ void
 ValueVector<T>::
 print_info(LogStream &out) const
 {
-    out << "ValueVector (num_points=" << this->get_num_points() << ") : ";
+    out << "num_points= " << this->get_num_points() << " ";
     this->get_data().print_info(out);
 }
 
