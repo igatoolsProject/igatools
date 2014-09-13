@@ -66,7 +66,7 @@ public:
 
     void print_info(LogStream &out) const
     {
-    	Assert(false,ExcNotImplemented())l
+    	Assert(false,ExcNotImplemented());
         // out << vector<Real>::vector(*this);
     }
 
