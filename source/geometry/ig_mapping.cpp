@@ -35,50 +35,50 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
-template<class RefSpace>
-typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
-get_weights_from_ref_space(const RefSpace &ref_space,
-                           EnableIf<RefSpace::has_weights> *hw = 0)
-{
-    //in the case of NURBSSpace get the weights used in the space
-    return ref_space.get_weights();
-}
+//template<class RefSpace>
+//typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+//get_weights_from_ref_space(const RefSpace &ref_space,
+//                           EnableIf<RefSpace::has_weights> *hw = 0)
+//{
+//    //in the case of NURBSSpace get the weights used in the space
+//    return ref_space.get_weights();
+//}
+//
+//
+//
+//template<class RefSpace>
+//typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+//get_weights_from_ref_space(const RefSpace &ref_space,
+//                           EnableIf<!RefSpace::has_weights> *hw = 0)
+//{
+//    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
+//    typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+//    weights(ref_space.get_components_map());
+//
+//
+//    const auto &basis_tensor_size_table = ref_space.get_num_basis_table();
+//
+//    for (Index comp_id : weights.get_active_components_id())
+//    {
+//        auto &weights_component = weights[comp_id];
+//
+//        weights_component.resize(basis_tensor_size_table[comp_id]);
+//
+//        for (auto &w : weights_component)
+//            w = 1.0;
+//    }
+//
+//
+//    return weights;
+//}
 
 
-
-template<class RefSpace>
-typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
-get_weights_from_ref_space(const RefSpace &ref_space,
-                           EnableIf<!RefSpace::has_weights> *hw = 0)
-{
-    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
-    typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
-    weights(ref_space.get_components_map());
-
-
-    const auto &basis_tensor_size_table = ref_space.get_num_basis_table();
-
-    for (Index comp_id : weights.get_active_components_id())
-    {
-        auto &weights_component = weights[comp_id];
-
-        weights_component.resize(basis_tensor_size_table[comp_id]);
-
-        for (auto &w : weights_component)
-            w = 1.0;
-    }
-
-
-    return weights;
-}
-
-
-template<int dim, int range, int rank>
-const BSplineSpace<dim,range,rank> &
-get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
-{
-    return *nurbs_space.get_spline_space();
-}
+//template<int dim, int range, int rank>
+//const BSplineSpace<dim,range,rank> &
+//get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
+//{
+//    return *nurbs_space.get_spline_space();
+//}
 
 template<int dim, int range, int rank>
 const BSplineSpace<dim,range,rank> &
@@ -109,6 +109,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     Assert(RefSpace::rank == 1, ExcDimensionMismatch(RefSpace::rank,1));
 
+#if 0
     //----------------------------------
     // if RefSpace is NURBSSpace
     // save the weights in order to be used in the h-refinement algorithm
@@ -162,7 +163,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
             &IgMapping<RefSpace>::refine_h_control_mesh,
             this,
             std::placeholders::_1,std::placeholders::_2));
-//#endif
+#endif
 }
 
 
@@ -236,8 +237,8 @@ init_element(const ValueFlags flag,
     {
         ref_space_flag |= ValueFlags::face_hessian;
     }
-
-    cache_->init_cache(ref_space_flag, quad);
+    // TODO (pauletti, Sep 12, 2014): update to new cache
+    //cache_->init_cache(ref_space_flag, quad);
 }
 
 
@@ -247,7 +248,8 @@ void IgMapping<RefSpace>::
 set_element(const GridIterator &elem) const
 {
     cache_->move_to(elem.get_flat_index());
-    cache_->fill_cache();
+    // TODO (pauletti, Sep 12, 2014): update to new cache
+    //cache_->fill_cache();
 }
 
 
@@ -259,7 +261,9 @@ set_face_element(const Index face_id, const GridIterator &elem) const
     Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
            ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
     cache_->move_to(elem.get_flat_index());
-    cache_->fill_face_cache(face_id);
+    // TODO (pauletti, Sep 12, 2014): fix next line
+    Assert(true, ExcMessage(" fix next line "));
+    //cache_->fill_face_cache(face_id);
 }
 
 
@@ -456,6 +460,7 @@ void
 IgMapping<RefSpace>::
 set_control_points(const vector<Real> &control_points)
 {
+#if 0
     Assert(data_->control_points_.size() == control_points.size(),
            ExcDimensionMismatch(data_->control_points_.size(), control_points.size()));
 
@@ -464,7 +469,7 @@ set_control_points(const vector<Real> &control_points)
 
 
     Assert(data_->ref_space_ != nullptr, ExcNullPtr());
-    const auto weights = get_weights_from_ref_space(*(data_->ref_space_));
+    //const auto weights = get_weights_from_ref_space(*(data_->ref_space_));
 
 
     // Updating of the euclidean (in case of BSpline) or projective (in case of NURBS)
@@ -479,7 +484,7 @@ set_control_points(const vector<Real> &control_points)
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-        const auto &weights_after_refinement_comp = weights[comp_id];
+      // const auto &weights_after_refinement_comp = weights[comp_id];
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
@@ -498,6 +503,7 @@ set_control_points(const vector<Real> &control_points)
 
         } // end loop loc_id
     } // end loop comp_id
+#endif
 }
 
 template<class RefSpace>
@@ -511,7 +517,7 @@ get_control_points() const
 }
 
 
-//#if 0
+
 template<class RefSpace>
 void
 IgMapping<RefSpace>::
@@ -519,6 +525,7 @@ refine_h_control_mesh(
     const std::array<bool,dim> &refinement_directions,
     const typename base_t::GridType &grid_old1)
 {
+#if 0
     auto grid = this->get_grid();
     auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
@@ -669,9 +676,10 @@ refine_h_control_mesh(
 
 //    Assert(false,ExcNotImplemented());
 //    AssertThrow(false,ExcNotImplemented());
+#endif
 }
 
-//#endif
+
 
 
 template<class RefSpace>

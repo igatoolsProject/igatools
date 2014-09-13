@@ -38,14 +38,6 @@ ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
 
 for row in ma_list:
     f.write('template class %s; \n' % (row))
-#   f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
-  
-
-            
-evaluators = set(['DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<%d>>,%d>' %(x.dim,x.dim)
-              for x in inst.all_ref_sp_dims])
-for eval in evaluators:
-   f.write('template class %s ;\n' %eval)
 
 
 # needed by DofDistribution

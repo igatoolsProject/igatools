@@ -26,6 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
+#if 0
 IGA_NAMESPACE_OPEN
 
 template < int, int , int > class NURBSSpace ;
@@ -286,7 +287,7 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 
 #endif /* NURBS_ELEMENT_ACCESSOR_H_ */
 

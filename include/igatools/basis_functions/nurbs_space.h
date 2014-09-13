@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_space.h>
 
+#if 0
 IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including the header
@@ -390,7 +391,7 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 
 #endif /* __NURBS_SPACE_H_ */
 

@@ -301,8 +301,9 @@ class InstantiationInfo:
       IgRefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                      for x in self.igm_ref_sp_dims ]
       
-      spaces = ('BSplineSpace', 'NURBSSpace')
-      
+   #todo : for only bspsline
+   #   spaces = ('BSplineSpace', 'NURBSSpace')
+      spaces = ['BSplineSpace']
       self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
                             for dims in RefDims] )
       self.UserRefSpaces = ( ['%s%s' % (sp, dims)
@@ -319,7 +320,9 @@ class InstantiationInfo:
 
    def create_PhysSpaces(self):
       
-      spaces =('BSplineSpace', 'NURBSSpace')
+      #todo : for only bspsline
+      #   spaces = ('BSplineSpace', 'NURBSSpace')
+      spaces = ['BSplineSpace']
       self.PhysSpaces_v2 = unique( [PhysSpace(x,sp)
                                  for sp in spaces
                                  for x in self.all_phy_sp_dims] )
@@ -336,7 +339,6 @@ class InstantiationInfo:
                                     %('h_grad', x.dim, 0) for x in self.all_ref_sp_dims + self.igm_ref_sp_dims] )
       
      
-      spaces =('BSplineSpace', 'NURBSSpace')
       self.PhysSpaces = unique( ['PhysicalSpace <' +
                                    '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
                                    ', PushForward<Transformation::%s, %d, %d> >'

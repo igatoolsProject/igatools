@@ -868,10 +868,12 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     const int dim_phys = dim + codim;
     if (is_nurbs_space)
     {
+#if 0
         using ref_space_t = NURBSSpace<dim,dim_phys,1>;
         auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
+#endif
     }
     else
     {

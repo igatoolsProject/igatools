@@ -32,7 +32,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 strings = []
-spaces = ['BSplineSpace', 'NURBSSpace']
+spaces = ['BSplineSpace']#, 'NURBSSpace']
 writer_real_types = ['double','float']
 
 

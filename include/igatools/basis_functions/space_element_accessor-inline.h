@@ -425,14 +425,14 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &to
 }
 
 
-template<class Space>
-inline
-void
-SpaceElementAccessor<Space>::
-fill_face_cache(const Index face_id)
-{
-    this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
-}
+//template<class Space>
+//inline
+//void
+//SpaceElementAccessor<Space>::
+//fill_face_cache(const Index face_id)
+//{
+//    this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
+//}
 
 
 template<class Space>
@@ -617,34 +617,34 @@ resize(const BasisFaceValueFlagsHandler &flags_handler,
 
 
 
-template<class Space>
-inline
-void
-SpaceElementAccessor<Space>::
-reset_element_and_faces_cache(const ValueFlags fill_flag,
-                              const Quadrature<dim> &quad)
-{
-    //--------------------------------------------------------------------------
-    BasisElemValueFlagsHandler elem_flags(fill_flag);
-    BasisFaceValueFlagsHandler face_flags(fill_flag);
-
-
-    Assert(!elem_flags.fill_none() ||
-           !face_flags.fill_none(),
-           ExcMessage("Nothing to reset"));
-
-    if (!elem_flags.fill_none())
-        this->elem_values_.resize(elem_flags, quad, n_basis_direction_);
-
-
-    if (!face_flags.fill_none())
-    {
-        Index face_id = 0 ;
-        for (auto &face_value : this->face_values_)
-            face_value.resize(face_flags, quad, n_basis_direction_, face_id++);
-    }
-    //--------------------------------------------------------------------------
-}
+//template<class Space>
+//inline
+//void
+//SpaceElementAccessor<Space>::
+//reset_element_and_faces_cache(const ValueFlags fill_flag,
+//                              const Quadrature<dim> &quad)
+//{
+//    //--------------------------------------------------------------------------
+//    BasisElemValueFlagsHandler elem_flags(fill_flag);
+//    BasisFaceValueFlagsHandler face_flags(fill_flag);
+//
+//
+//    Assert(!elem_flags.fill_none() ||
+//           !face_flags.fill_none(),
+//           ExcMessage("Nothing to reset"));
+//
+//    if (!elem_flags.fill_none())
+//        this->elem_values_.resize(elem_flags, quad, n_basis_direction_);
+//
+//
+//    if (!face_flags.fill_none())
+//    {
+//        Index face_id = 0 ;
+//        for (auto &face_value : this->face_values_)
+//            face_value.resize(face_flags, quad, n_basis_direction_, face_id++);
+//    }
+//    //--------------------------------------------------------------------------
+//}
 
 
 

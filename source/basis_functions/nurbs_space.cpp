@@ -24,6 +24,7 @@
 #include <igatools/geometry/mapping_slice.h>
 #include <igatools/base/exceptions.h>
 
+#if 0
 using std::array;
 
 using std::endl;
@@ -601,5 +602,5 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_space.inst>
-
+#endif
 

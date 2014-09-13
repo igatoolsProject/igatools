@@ -26,7 +26,7 @@
 #include <igatools/basis_functions/space_element_accessor.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
-#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
+#include <igatools///basis_functions/bspline_element_scalar_evaluator.h>
 #include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 
 IGA_NAMESPACE_OPEN
@@ -138,33 +138,33 @@ public:
     /** @name Cache initialization and filling */
     ///@{
 
-    /**
-     * Initializes the internal cache for the efficient
-     * computation of the values requested in
-     * the fill_flag on the given quadrature points.
-     * This implies a uniform quadrature scheme
-     * (i.e. the same for all elements).
-     * @note This function should be called before fill_cache()
-     */
-    void init_cache(const ValueFlags fill_flag,
-                    const Quadrature<dim> &quad);
-
-    /**
-     * For a given face quadrature.
-     */
-    void init_face_cache(const ValueFlags fill_flag,
-                         const Quadrature<dim-1> &quad,
-                         const Index face_id);
-
-    /**
-     * Fills the element values cache according to the evaluation points
-     * and fill flags specifies in init_cache.
-     *
-     * @note The topology for which the measure is computed is specified by
-     * the input argument @p topology_id.
-     */
-    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
-    ///@}
+//    /**
+//     * Initializes the internal cache for the efficient
+//     * computation of the values requested in
+//     * the fill_flag on the given quadrature points.
+//     * This implies a uniform quadrature scheme
+//     * (i.e. the same for all elements).
+//     * @note This function should be called before fill_cache()
+//     */
+//    void init_cache(const ValueFlags fill_flag,
+//                    const Quadrature<dim> &quad);
+//
+//    /**
+//     * For a given face quadrature.
+//     */
+//    void init_face_cache(const ValueFlags fill_flag,
+//                         const Quadrature<dim-1> &quad,
+//                         const Index face_id);
+//
+//    /**
+//     * Fills the element values cache according to the evaluation points
+//     * and fill flags specifies in init_cache.
+//     *
+//     * @note The topology for which the measure is computed is specified by
+//     * the input argument @p topology_id.
+//     */
+//    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
+//    ///@}
 
 
 public:
@@ -186,11 +186,6 @@ public:
 
     ///@}
 
-//    /**
-//     * Prints internal information about the BSplineElementAccessor.
-//     * Its main use is for testing and debugging.
-//     */
-//    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
 private:
     /**
@@ -225,45 +220,45 @@ protected:
 
 private:
 
-    ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+  //  ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-    using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
+   // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
-    /**
-     * Fills the cache (accordingly with the flags_handler status)
-     * from the univariate values (and derivatives up to the order
-     * specified by @p max_deriv_order).
-     *
-     *
-     * @note The BSplineElementAccessor @p elem is needed in order to call the function
-     * elem.evaluate_bspline_derivatives<p>()
-     * that computes the @p p-th order derivatives of a BSpline from the univariate values.
-     */
-    void fill_values_cache_from_univariate(const int max_deriv_order,
-                                           const univariate_values_t &values_1D,
-                                           ValuesCache &cache);
-    ///@}
-
-
-
-    /**
-     * Computes the k-th order derivative of the non-zero B-spline basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    template <int deriv_order>
-    void evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValues1d *, dim> > &elem_values,
-                                      const ValuesCache &cache,
-                                      ValueTable<
-                                      Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
-                                      > &derivatives_phi_hat) const;
-
-
-
+//    /**
+//     * Fills the cache (accordingly with the flags_handler status)
+//     * from the univariate values (and derivatives up to the order
+//     * specified by @p max_deriv_order).
+//     *
+//     *
+//     * @note The BSplineElementAccessor @p elem is needed in order to call the function
+//     * elem.evaluate_bspline_derivatives<p>()
+//     * that computes the @p p-th order derivatives of a BSpline from the univariate values.
+//     */
+//    void fill_values_cache_from_univariate(const int max_deriv_order,
+//                                           const univariate_values_t &values_1D,
+//                                           ValuesCache &cache);
+//    ///@}
+//
+//
+//
+//    /**
+//     * Computes the k-th order derivative of the non-zero B-spline basis
+//     * functions over the current element,
+//     *   at the evaluation points pre-allocated in the cache.
+//     *
+//     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+//     * an exception will be raised.
+//     */
+//    template <int deriv_order>
+//    void evaluate_bspline_derivatives(const ComponentContainer<std::array<const BasisValues1d *, dim> > &elem_values,
+//                                      const ValuesCache &cache,
+//                                      ValueTable<
+//                                      Conditional<(deriv_order==0),Value,Derivative<deriv_order> >
+//                                      > &derivatives_phi_hat) const;
+//
+//
+//
 
 
     class GlobalCache : public CacheStatus
@@ -327,31 +322,31 @@ private:
 
 
 
-    /** Reset the global cache */
-    void reset_global_cache();
-
-    /**
-     * Initilizes (reserves memory) the
-     * univariate basis values
-     * and derivatives at quadrature points cache
-     * for efficient use of computations.
-     * This function implies a uniform quadrature schemes
-     * (the same for each element).
-     * The fill_flag provides what information to compute.
-     */
-    void reset_univariate_cache(const Quadrature<dim> &quad,
-                                const int max_der);
-
-
-    /**
-     * Tensor product style space sized cache for
-     * storing the values and derivatives of the
-     * one dimensional values of the basis
-     * function at the quadrature points
-     */
-    std::shared_ptr< GlobalElemCache > values_1d_elem_ = nullptr;
-
-    std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
+//    /** Reset the global cache */
+//    void reset_global_cache();
+//
+//    /**
+//     * Initilizes (reserves memory) the
+//     * univariate basis values
+//     * and derivatives at quadrature points cache
+//     * for efficient use of computations.
+//     * This function implies a uniform quadrature schemes
+//     * (the same for each element).
+//     * The fill_flag provides what information to compute.
+//     */
+//    void reset_univariate_cache(const Quadrature<dim> &quad,
+//                                const int max_der);
+//
+//
+//    /**
+//     * Tensor product style space sized cache for
+//     * storing the values and derivatives of the
+//     * one dimensional values of the basis
+//     * function at the quadrature points
+//     */
+//    std::shared_ptr< GlobalElemCache > values_1d_elem_ = nullptr;
+//
+//    std::array<std::shared_ptr<GlobalFaceCache>, n_faces> values_1d_faces_;
 
 
 
@@ -369,9 +364,9 @@ private:
 
 
 
-public:
-    const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
-            &get_scalar_evaluators() const;
+//public:
+//    const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
+//            &get_scalar_evaluators() const;
 };
 
 IGA_NAMESPACE_CLOSE
