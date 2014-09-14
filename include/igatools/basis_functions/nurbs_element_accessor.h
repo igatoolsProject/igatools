@@ -84,7 +84,7 @@ public:
     /**
      * Copy constructor.
      */
-    NURBSElementAccessor(const NURBSElementAccessor<dim,range,rank > &element) = default;
+    NURBSElementAccessor(const NURBSElementAccessor<dim,range,rank > &element) = delete;
 
     /**
      * Move constructor.

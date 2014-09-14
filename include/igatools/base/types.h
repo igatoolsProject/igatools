@@ -531,6 +531,15 @@ enum class LinearConstraintType : int
 };
 
 
+enum class CopyPolicy : int
+{
+	/** Use the shallow copy policy: the pointer are copied. */
+	shallow = 1,
+
+	/** Use the deep copy policy: the pointer are allocated using the copy constructor. */
+	deep = 2
+};
+
 template<int dim, int range, int rank>
 class BSplineSpace;
 

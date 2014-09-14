@@ -192,8 +192,13 @@ public:
     GridForwardIterator(std::shared_ptr<ContainerType> grid,
                         const TensorIndex<dim> &index);
 
-    /** Copy constructor. */
-    GridForwardIterator(const GridForwardIterator<Accessor> &it) = default;
+    /**
+     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
+     *
+     * @note By default it uses the shallow copy.
+     */
+    GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /** Move constructor. */
     GridForwardIterator(GridForwardIterator<Accessor> &&it) = default;

@@ -118,7 +118,7 @@ public:
      * Performs a deep copy of the MappingElementAccessor object.
      * Its cache is also deeply copied.
      */
-    MappingElementAccessor(const self_t &element) = default;
+    MappingElementAccessor(const self_t &element) = delete;
 
     /**
      * Move constructor.

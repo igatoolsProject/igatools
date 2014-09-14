@@ -95,7 +95,7 @@ public:
      * the one dimensional cache with the copied element.
      */
     BSplineElementAccessor(const BSplineElementAccessor<dim, range, rank> &elem)
-        = default;
+        = delete;
 
     /**
      * Move constructor.

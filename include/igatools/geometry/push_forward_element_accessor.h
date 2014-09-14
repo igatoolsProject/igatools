@@ -82,7 +82,7 @@ public:
     /**
      * Copy constructor.
      */
-    PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element) = default;
+    PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element) = delete;
 
     /**
      * Copy assignment operator.

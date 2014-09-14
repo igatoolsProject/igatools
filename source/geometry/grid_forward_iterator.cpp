@@ -42,6 +42,15 @@ GridForwardIterator(std::shared_ptr<ContainerType> grid,
     accessor_(grid, index)
 {}
 
+template <typename Accessor>
+inline
+GridForwardIterator<Accessor>::
+GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &copy_policy)
+:
+accessor_(it.accessor_,copy_policy)
+{}
+
+
 
 template <typename Accessor>
 inline

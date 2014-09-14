@@ -90,14 +90,8 @@ public:
     CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                                  const TensorIndex<dim> elem_index);
 
-    /**
-     * Copy constructor.
-     * @note For the constructed object it
-     * creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
-     */
-    CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem)
-        = default;
+    CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem,
+    		const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
@@ -378,12 +372,31 @@ private:
     ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
 
+    class LocalCache
+    {
+    public:
+    	LocalCache() = default;
 
-    /** Element values cache */
-    ElementValuesCache elem_values_;
+    	LocalCache(const LocalCache &in) = default;
+    	LocalCache(LocalCache &&in) = default;
 
-    /** Face values cache */
-    std::array<FaceValuesCache, n_faces> face_values_;
+    	~LocalCache() = default;
+
+
+    	LocalCache & operator=(const LocalCache &in) = delete;
+    	LocalCache & operator=(LocalCache &&in) = delete;
+
+    	void print_info(LogStream &out) const;
+
+    	/** Element values cache */
+    	ElementValuesCache elem_values_;
+
+    	/** Face values cache */
+    	std::array<FaceValuesCache, n_faces> face_values_;
+
+    };
+
+    std::shared_ptr<LocalCache> local_cache_;
 
 private:
     template <typename Accessor> friend class GridForwardIterator;

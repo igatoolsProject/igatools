@@ -137,7 +137,7 @@ public :
      * @note Performs a deep copy of the PhysicalSpaceElementAccessor<PhysSpace> @p in,
      * except for the pointer to the PhysicalSpace.
      */
-    PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in) = default;
+    PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in) = delete;
 
     /**
      * Move constructor.
