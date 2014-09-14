@@ -353,6 +353,25 @@ public:
      */
     ~QUniform() = default ;
 
+    /**
+     * Returns a uniform quadrature scheme (wrapped by a std::shared_ptr) on
+     * the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$ with \p num_points
+     * points in each coordinate direction.
+     * The eps argument allows to do a local scaling of the quadrature points.
+     */
+    static std::shared_ptr< QUniform< dim > >
+    create(const Size num_points, const Real eps_scaling = 0.0) ;
+
+    /**
+     * Returns a uniform quadrature scheme (wrapped by a std::shared_ptr) on
+     * the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$ with a (possibly)
+     * different number of points in each coordinate direction.
+     * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
+     * The eps argument allows to do a local scaling of the quadrature points.
+     */
+    static std::shared_ptr< QUniform< dim > >
+    create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0) ;
+
 private:
 
 } ;
@@ -398,6 +417,15 @@ public:
      * Destructor.
      */
     ~QTrapez() = default ;
+
+    /**
+     * Returns a uniform quadrature scheme (wrapped by a std::shared_ptr) on
+     * the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$, exact for linear
+     * polynomials.
+     * The eps argument allows to do a local scaling of the quadrature points.
+     */
+    static std::shared_ptr< QTrapez< dim > >
+    create(const Real eps_scaling = 0.0) ;
 } ;
 
 
