@@ -440,7 +440,7 @@ BSplineElementAccessor(const BSplineElementAccessor<dim,range,rank> &elem,
 //}
 
 
-
+#if 0
 template < int dim, int range, int rank>
 void
 BSplineElementAccessor<dim, range, rank>::
@@ -635,7 +635,7 @@ reset(const Space &space,
     }
 #endif
 }
-
+#endif
 
 //template <int dim, int range, int rank>
 //void

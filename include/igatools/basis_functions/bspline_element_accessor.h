@@ -262,7 +262,7 @@ private:
 //
 //
 
-
+#if 0
     class GlobalCache : public CacheStatus
     {
     public:
@@ -321,7 +321,7 @@ private:
                    const Index face_id,
                    const int max_der);
     };
-
+#endif
 
 
 //    /** Reset the global cache */
