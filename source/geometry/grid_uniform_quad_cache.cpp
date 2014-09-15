@@ -49,12 +49,12 @@ void
 GridUniformQuadCache<dim_>::
 init_element_cache(ElementAccessor &elem)
 {
-	auto cache = elem.local_cache_;
-	if (cache == nullptr)
-	{
-		using Cache = typename CartesianGridElementAccessor<dim_>::LocalCache;
-		cache = shared_ptr<Cache>(new Cache);
-	}
+    auto &cache = elem.local_cache_;
+    if (cache == nullptr)
+    {
+        using Cache = typename CartesianGridElementAccessor<dim_>::LocalCache;
+        cache = shared_ptr<Cache>(new Cache);
+    }
 
     auto &elem_cache = cache->elem_values_;
     elem_cache.resize(flags_, quad_);
@@ -86,7 +86,7 @@ fill_element_cache(ElementAccessor &elem)
     const auto &index = elem.get_tensor_index();
     auto meas = lengths_.tensor_product(index);
 
-	Assert(elem.local_cache_ != nullptr,ExcNullPtr());
+    Assert(elem.local_cache_ != nullptr,ExcNullPtr());
     auto &cache = elem.local_cache_->elem_values_;
     cache.fill(meas);
     cache.set_filled(true);
@@ -111,8 +111,8 @@ fill_face_cache(ElementIterator &elem, const int face)
 {
     const auto &index = elem->get_tensor_index();
 
-    auto & elem_accessor = elem.get_accessor();
-	Assert(elem_accessor.local_cache_ != nullptr,ExcNullPtr());
+    auto &elem_accessor = elem.get_accessor();
+    Assert(elem_accessor.local_cache_ != nullptr,ExcNullPtr());
     auto &f_cache = elem_accessor.local_cache_->face_values_[face];
     auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
     f_cache.fill(meas);

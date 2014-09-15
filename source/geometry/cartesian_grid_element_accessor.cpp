@@ -121,13 +121,12 @@ auto
 CartesianGridElementAccessor<dim_>::
 get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
 {
-    return const_cast<CartesianGridElementAccessor<dim_> &>(*this).get_values_cache(topology_id);
-#if 0
     Assert(topology_id.is_element() || topology_id.is_face(),
     ExcMessage("Only element or face topology is allowed."));
+    Assert(local_cache_ != nullptr,ExcNullPtr());
     if (topology_id.is_element())
     {
-        return elem_values_;
+        return local_cache_->elem_values_;
     }
     else
     {
@@ -136,9 +135,8 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
         std::to_string(topology_id.get_id()) +
         " is not a boundary for the element"));
 
-        return face_values_[topology_id.get_id()];
+        return local_cache_->face_values_[topology_id.get_id()];
     }
-#endif
 }
 
 

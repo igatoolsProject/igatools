@@ -2,6 +2,54 @@
 void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
+Element Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   num_points= 0 [ ]
+   Unit weights:
+   num_points= 0 [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
+   
+
+Face: 0 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   num_points= 0 [ ]
+   Unit weights:
+   num_points= 0 [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
+   
+
+Face: 1 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   num_points= 0 [ ]
+   Unit weights:
+   num_points= 0 [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
+   
+
 Number of element basis: 
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
@@ -129,6 +177,54 @@ Face: 1 Cache:
 void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
+Element Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   num_points= 0 [ ]
+   Unit weights:
+   num_points= 0 [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
+   
+
+Face: 0 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   num_points= 0 [ ]
+   Unit weights:
+   num_points= 0 [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
+   
+
+Face: 1 Cache:
+   Fill flags:
+          points -->    fill = 0    filled = 0
+        measures -->    fill = 0    filled = 0
+   w_measures -->    fill = 0    filled = 0
+   Measure: 0
+   Weigthed measure:
+   num_points= 0 [ ]
+   Unit weights:
+   num_points= 0 [ ]
+   Unit points:
+      Size: [ 0 ]  Weights: [0]
+      Direction: 0
+      [ ]
+   
+
 Number of element basis: 
    Raw componets: 
       Size: [ 1 ]  Weights: [1]

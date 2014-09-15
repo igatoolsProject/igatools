@@ -281,7 +281,7 @@ init_element_cache(ElementAccessor &elem)
     base_t::init_element_cache(elem);
 
 
-    auto cache = elem.local_cache_;
+    auto &cache = elem.local_cache_;
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::LocalCache;
