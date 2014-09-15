@@ -130,15 +130,17 @@ public:
     SpaceElementAccessor(const std::shared_ptr<const Space> space,
                          const TensorIndex<dim> &elem_index);
 
-    SpaceElementAccessor<Space> &operator=(const SpaceElementAccessor<Space> &elem) = default;
+
+
     /**
      * Copy constructor.
-     * @note For the constructed object it
-     * creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    SpaceElementAccessor(const SpaceElementAccessor<Space> &elem)
-        = default;
+    SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
+                         const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /**
      * Move constructor.
@@ -152,6 +154,43 @@ public:
     ~SpaceElementAccessor() = default;
     ///@}
 
+    /** @name Assignment operators */
+    ///@{
+    /**
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
+     */
+    SpaceElementAccessor<Space>
+    &operator=(const SpaceElementAccessor<Space> &element);
+
+    /**
+     * Move assignment operator.
+     */
+    SpaceElementAccessor<Space>
+    &operator=(SpaceElementAccessor<Space> &&elem) = default;
+    ///@}
+
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const SpaceElementAccessor<Space> &element);
+
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const SpaceElementAccessor<Space> &element);
+    ///@}
 
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
@@ -680,19 +719,44 @@ protected:
 
     };
 
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
+
+        LocalCache(const LocalCache &in) = default;
+        LocalCache(LocalCache &&in) = default;
+
+        ~LocalCache() = default;
+
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        /**
+         * Element cache to store the values and derivatives
+         * of the basis functions on the element
+         */
+        ElementValuesCache elem_values_;
+
+        /**
+         * Face cache to store the values and derivatives
+         * of the basis functions on the faces of the element
+         */
+        std::array<FaceValuesCache, n_faces> face_values_;
+    };
+
+    std::shared_ptr<LocalCache> local_cache_;
+
 
     /**
-     * Element cache to store the values and derivatives
-     * of the basis functions on the element
+     * Performs a copy of the input @p element.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
-    ElementValuesCache elem_values_;
-
-    /**
-     * Face cache to store the values and derivatives
-     * of the basis functions on the faces of the element
-     */
-    std::array<FaceValuesCache, n_faces> face_values_;
-
+    void copy_from(const SpaceElementAccessor<Space> &element,
+                   const CopyPolicy &copy_policy);
 
 //    /**
 //     * Initializes the element and faces cache according to
@@ -709,7 +773,7 @@ public:
      * Fills the values cache of the <tt>face_id</tt>-th face, according to the evaluation points
      * and fill flags specifies in init_values.
      */
- //   void fill_face_cache(const Index face_id);
+//   void fill_face_cache(const Index face_id);
 
 
     /**

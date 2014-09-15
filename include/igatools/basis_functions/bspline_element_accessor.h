@@ -87,20 +87,19 @@ public:
 
     BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                            const TensorIndex<dim> &elem_index);
-
     /**
      * Copy constructor.
-     * @note For the constructed object it
-     * creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    BSplineElementAccessor(const BSplineElementAccessor<dim, range, rank> &elem)
-        = default;
+    BSplineElementAccessor(const BSplineElementAccessor<dim,range,rank> &elem,
+                           const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
      */
-    BSplineElementAccessor(BSplineElementAccessor<dim, range, rank> &&elem)
+    BSplineElementAccessor(BSplineElementAccessor<dim,range,rank> &&elem)
         = default;
 
     /**
@@ -108,6 +107,9 @@ public:
      */
     ~BSplineElementAccessor() = default;
     ///@}
+
+
+
 
     /** @name Assignment operators */
     ///@{
@@ -131,7 +133,7 @@ public:
 private:
     auto &get_elem_cache()
     {
-        return this->elem_values_;
+        return this->get_values_cache(ElemTopology<dim>());
     }
 
 public:
@@ -220,10 +222,10 @@ protected:
 
 private:
 
-  //  ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+    //  ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-   // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
+    // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
 //    /**
 //     * Fills the cache (accordingly with the flags_handler status)
@@ -260,7 +262,7 @@ private:
 //
 //
 
-
+#if 0
     class GlobalCache : public CacheStatus
     {
     public:
@@ -319,7 +321,7 @@ private:
                    const Index face_id,
                    const int max_der);
     };
-
+#endif
 
 
 //    /** Reset the global cache */

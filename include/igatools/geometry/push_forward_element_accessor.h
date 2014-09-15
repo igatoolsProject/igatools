@@ -66,6 +66,10 @@ public:
     using RefPoint = typename PushForward_::RefPoint;
 
     /**
+     * @name Constructors.
+     */
+    ///@{
+    /**
      * Default constructor. Not allowed to be used.
      */
     PushForwardElementAccessor() = delete;
@@ -78,31 +82,66 @@ public:
     PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
                                const TensorIndex<dim> &index);
 
-
     /**
      * Copy constructor.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element) = default;
+    PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element,
+                               const CopyPolicy &copy_policy = CopyPolicy::deep);
 
-    /**
-     * Copy assignment operator.
-     */
-    PushForwardElementAccessor<PushForward_> &operator=(const PushForwardElementAccessor<PushForward_> &element) = default;
 
     /**
      * Move constructor.
      */
     PushForwardElementAccessor(PushForwardElementAccessor<PushForward_> &&element) = default;
 
-    /**
-     * Move assignment operator.
-     */
-    PushForwardElementAccessor<PushForward_> &operator=(PushForwardElementAccessor<PushForward_> &&element) = default;
 
     /**
      * Destructor.
      */
     ~PushForwardElementAccessor() = default;
+    ///@}
+
+
+
+    /** @name Assignment operators */
+    ///@{
+    /**
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
+     */
+    PushForwardElementAccessor<PushForward_> &operator=(const PushForwardElementAccessor<PushForward_> &element);
+
+    /**
+     * Move assignment operator.
+     */
+    PushForwardElementAccessor<PushForward_> &operator=(PushForwardElementAccessor<PushForward_> &&element) = default;
+    ///@}
+
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const PushForwardElementAccessor<PushForward_> &element);
+
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const PushForwardElementAccessor<PushForward_> &element);
+    ///@}
+
 
     /**
      * This function and fill_cache must be called before
@@ -258,6 +297,15 @@ public:
     void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
     void print_memory_info(LogStream &out) const;
+
+protected:
+    /**
+     * Performs a copy of the input @p element.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const PushForwardElementAccessor &element,
+                   const CopyPolicy &copy_policy);
+
 
 private:
     std::shared_ptr<ContainerType> push_forward_;

@@ -47,7 +47,7 @@ void plot_basis(const int deg)
 
     // [tensor to flat]
     TensorIndex<dim> basis_t_index(deg);
-    auto basis_index = space->basis_tensor_to_flat(basis_t_index, 0);
+    auto basis_index = space->get_global_dof_id(basis_t_index, 0);
     coeffs(basis_index) = 1.;
     // [tensor to flat]
 

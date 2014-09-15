@@ -31,6 +31,12 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
+
+template <class RefSpace_, class PushForward_>
+const std::array<int, PhysicalSpace<RefSpace_,PushForward_>::n_components>
+PhysicalSpace<RefSpace_,PushForward_>::components = sequence<PhysicalSpace<RefSpace_,PushForward_>::n_components>();
+
+
 template <class RefSpace_, class PushForward_>
 PhysicalSpace<RefSpace_,PushForward_>::
 PhysicalSpace(

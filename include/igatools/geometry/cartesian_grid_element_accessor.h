@@ -92,12 +92,12 @@ public:
 
     /**
      * Copy constructor.
-     * @note For the constructed object it
-     * creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem)
-        = default;
+    CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem,
+                                 const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
@@ -111,19 +111,37 @@ public:
     ~CartesianGridElementAccessor() = default;
     ///@}
 
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const CartesianGridElementAccessor<dim_> &element);
+
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const CartesianGridElementAccessor<dim_> &element);
+    ///@}
+
+
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator.
-     * Creates a new element cache, but it shares
-     * the one dimensional length cache with the copied element.
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(const CartesianGridElementAccessor<dim_> &elem)
-    {
-        parent_t::operator=(elem);
-        return *this;
-    }
+    &operator=(const CartesianGridElementAccessor<dim_> &element);
 
     /**
      * Move assignment operator.
@@ -378,18 +396,45 @@ private:
     ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
 
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
 
-    /** Element values cache */
-    ElementValuesCache elem_values_;
+        LocalCache(const LocalCache &in) = default;
+        LocalCache(LocalCache &&in) = default;
 
-    /** Face values cache */
-    std::array<FaceValuesCache, n_faces> face_values_;
+        ~LocalCache() = default;
+
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        /** Element values cache */
+        ElementValuesCache elem_values_;
+
+        /** Face values cache */
+        std::array<FaceValuesCache, n_faces> face_values_;
+    };
+
+    /** The local (element and face) cache. */
+    std::shared_ptr<LocalCache> local_cache_;
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
     friend class GridUniformQuadCache<dim>;
 
 protected:
+    /**
+     * Performs a copy of the input @p element.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const CartesianGridElementAccessor<dim_> &element,
+                   const CopyPolicy &copy_policy);
+
+
     /**
      * ExceptionUnsupported Value Flag.
      */

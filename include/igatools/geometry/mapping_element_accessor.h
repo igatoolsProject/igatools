@@ -113,13 +113,14 @@ public:
 
     MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
                            const TensorIndex<dim> &index);
-
     /**
      * Copy constructor.
-     * Performs a deep copy of the MappingElementAccessor object.
-     * Its cache is also deeply copied.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    MappingElementAccessor(const self_t &element) = default;
+    MappingElementAccessor(const self_t &element, const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /**
      * Move constructor.
@@ -135,17 +136,40 @@ public:
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator.
-     * @note Performs a deep copy of the MappingElementAccessor object.
-     * Its cache is also deeply copied.
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
      */
-    self_t &operator=(const self_t &element) = default;
+    self_t &operator=(const self_t &element);
 
     /**
      * Move assignment operator.
      */
     self_t &operator=(self_t &&element) = default;
     ///@}
+
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const self_t &element);
+
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const self_t &element);
+    ///@}
+
+
 
     /**
      * @name Query information that requires the use of the cache
@@ -315,6 +339,7 @@ public:
     ///@}
 
 
+    void print_cache_info(LogStream &out) const;
 
 private:
     // TODO (pauletti, Mar 21, 2014): Document this class
@@ -348,6 +373,41 @@ private:
         Size num_points_ = 0;
         Quadrature<dim> quad_;
 
+        void print_info(LogStream &out) const
+        {
+            out.begin_item("Fill flags:");
+            flags_handler_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Values:");
+            values_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Gradients:");
+            gradients_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Hessians:");
+            hessians_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Inverse Gradients:");
+            inv_gradients_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Inverse Hessians:");
+            inv_hessians_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Measures:");
+            measures_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Weights * Measures:");
+            w_measures_.print_info(out);
+            out.end_item();
+        }
+
     };
 
     /**
@@ -377,13 +437,47 @@ private:
         ValueVector< ValueMap > normals_;
         bool fill_normals_ = false;
         bool normals_filled_ = false;
+
+        void print_info(LogStream &out) const
+        {
+            ValuesCache::print_info(out);
+
+            out.begin_item("Normals:");
+            normals_.print_info(out);
+            out.end_item();
+        }
     };
 
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 
-    ElementValuesCache elem_values_;
 
-    std::array<FaceValuesCache, n_faces> face_values_;
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
+
+        LocalCache(const LocalCache &in) = default;
+        LocalCache(LocalCache &&in) = default;
+
+        ~LocalCache() = default;
+
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        /** Element values cache */
+        ElementValuesCache elem_values_;
+
+        /** Face values cache */
+        std::array<FaceValuesCache, n_faces> face_values_;
+
+    };
+
+    std::shared_ptr<LocalCache> local_cache_;
+
+
 
     std::shared_ptr<ContainerType> mapping_;
 
@@ -394,6 +488,14 @@ private:
     std::array<ValueVector<ValueMap>, codim> transform_external_normals() const;
 
 protected:
+    /**
+     * Performs a copy of the input @p element.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const MappingElementAccessor<dim_ref_,codim_> &element,
+                   const CopyPolicy &copy_policy);
+
+
     /**
      * Evaluates the gradient of F^{-1} (also when the mapping has codim > 0) using the formula
      * D(F^{-1}) = (DF^t * DF)^{-1} * DF^t

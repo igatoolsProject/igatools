@@ -53,6 +53,53 @@ PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
     push_forward_(push_forward)
 {}
 
+template< class PushForward >
+PushForwardElementAccessor<PushForward>::
+PushForwardElementAccessor(const PushForwardElementAccessor<PushForward> &element,
+                           const CopyPolicy &copy_policy)
+    :
+    MappingElementAccessor<dim, codim>(element,copy_policy),
+    push_forward_(element.push_forward_)
+{}
+
+template< class PushForward >
+PushForwardElementAccessor<PushForward> &
+PushForwardElementAccessor<PushForward>::
+operator=(const PushForwardElementAccessor<PushForward> &element)
+{
+    if (this != &element)
+        this->shallow_copy_from(element);
+
+    return (*this);
+}
+
+
+template< class PushForward >
+void
+PushForwardElementAccessor<PushForward>::
+copy_from(const PushForwardElementAccessor<PushForward> &element,
+          const CopyPolicy &copy_policy)
+{
+    MappingElementAccessor<dim, codim>::copy_from(element,copy_policy);
+    push_forward_ = element.push_forward_;
+}
+
+
+template< class PushForward >
+void
+PushForwardElementAccessor<PushForward>::
+deep_copy_from(const PushForwardElementAccessor<PushForward> &element)
+{
+    this->copy_from(element,CopyPolicy::deep);
+}
+
+template< class PushForward >
+void
+PushForwardElementAccessor<PushForward>::
+shallow_copy_from(const PushForwardElementAccessor<PushForward> &element)
+{
+    this->copy_from(element,CopyPolicy::shallow);
+}
 
 
 template< class PushForward >

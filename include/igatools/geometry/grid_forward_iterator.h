@@ -29,6 +29,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
  *
@@ -190,8 +192,13 @@ public:
     GridForwardIterator(std::shared_ptr<ContainerType> grid,
                         const TensorIndex<dim> &index);
 
-    /** Copy constructor. */
-    GridForwardIterator(const GridForwardIterator<Accessor> &it) = default;
+    /**
+     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
+     *
+     * @note By default it uses the shallow copy.
+     */
+    GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /** Move constructor. */
     GridForwardIterator(GridForwardIterator<Accessor> &&it) = default;
@@ -267,6 +274,18 @@ public:
         return accessor_;
     }
 
+    /**
+     * @name Functions related to the indices of the element in the CartesianGrid pointed
+     * by the iterator.
+     */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
 protected:
     /** Object holding the Real data. */
     Accessor accessor_ ;
@@ -276,13 +295,13 @@ protected:
 template <typename Accessor>
 bool operator> (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
 {
-    return it1->get_flat_index() > it2->get_flat_index();
+    return it1.get_flat_index() > it2.get_flat_index();
 }
 
 template <typename Accessor>
 bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
 {
-    return it1->get_flat_index() < it2->get_flat_index();
+    return it1.get_flat_index() < it2.get_flat_index();
 }
 IGA_NAMESPACE_CLOSE
 

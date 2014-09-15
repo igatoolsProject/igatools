@@ -123,6 +123,13 @@ public:
     void set_control_points(const vector<Real> &control_points) override final;
     ///@}
 
+    /**
+     * Returns a vector containing a copy of the control point values.
+     */
+    virtual vector<Real> get_control_points() const override final;
+
+
+
     std::shared_ptr<RefSpace> get_iga_space() override final
     {
         return data_->ref_space_;

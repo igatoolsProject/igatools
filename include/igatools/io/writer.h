@@ -197,12 +197,14 @@ private:
 
     std::shared_ptr<const Map> map_;
 
+protected:
     /**
      * Unit element quadrature rule used for the plot.
      */
     Quadrature< dim > quad_plot_;
 
 
+private:
     TensorSize<dim> num_points_direction_;
 
 
@@ -263,7 +265,7 @@ private:
         vector< std::array<T,3> > &points_phys_iga_element) const;
 
 
-private:
+protected:
     struct PointData
     {
 
@@ -303,6 +305,7 @@ private:
     vector<std::string> names_point_data_vector_;
     vector<std::string> names_point_data_tensor_;
 
+private:
     template<class data_type>
     struct CellData
     {

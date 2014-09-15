@@ -509,7 +509,7 @@ get_subelements(
     for (; vtk_elem != vtk_elem_end; ++vtk_elem)
     {
         int vtk_elem_flat_id = vtk_elem->get_flat_index();
-        array<Index,dim> vtk_elem_tensor_idx = vtk_elem->get_tensor_index();
+        array<Index,dim> vtk_elem_tensor_idx = vtk_elem.get_tensor_index();
 
         for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
         {

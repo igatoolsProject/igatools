@@ -33,6 +33,7 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range, int rank>
 const Size SplineSpace<dim, range, rank>::n_components;
 
+
 template<int dim, int range, int rank>
 const array<Size, SplineSpace<dim, range, rank>::n_components>
 SplineSpace<dim, range, rank>::components =

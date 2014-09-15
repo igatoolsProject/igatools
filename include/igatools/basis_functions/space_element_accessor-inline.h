@@ -85,6 +85,89 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
         comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
 }
 
+template<class Space>
+inline
+SpaceElementAccessor<Space>::
+SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
+                     const CopyPolicy &copy_policy)
+    :
+    CartesianGridElementAccessor<Space::dim>(elem,copy_policy),
+    space_(elem.space_),
+    n_basis_direction_(elem.n_basis_direction_),
+    basis_functions_indexer_(elem.basis_functions_indexer_),
+    comp_offset_(elem.comp_offset_)
+{
+    if (elem.local_cache_ != nullptr)
+    {
+        if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+    }
+}
+
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+copy_from(const SpaceElementAccessor<Space> &elem,
+          const CopyPolicy &copy_policy)
+{
+    CartesianGridElementAccessor<Space::dim>::copy_from(elem,copy_policy);
+    if (this != &elem)
+    {
+        space_ = elem.space_;
+        n_basis_direction_ = elem.n_basis_direction_;
+        basis_functions_indexer_ = elem.basis_functions_indexer_;
+        comp_offset_ = elem.comp_offset_;
+
+        if (copy_policy == CopyPolicy::deep)
+        {
+            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+        else if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+    }
+}
+
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+deep_copy_from(const SpaceElementAccessor<Space> &elem)
+{
+    this->copy_from(elem,CopyPolicy::deep);
+}
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+shallow_copy_from(const SpaceElementAccessor<Space> &elem)
+{
+    this->copy_from(elem,CopyPolicy::shallow);
+}
+
+template<class Space>
+SpaceElementAccessor<Space> &
+SpaceElementAccessor<Space>::
+operator=(const SpaceElementAccessor<Space> &element)
+{
+    this->shallow_copy_from(element);
+    return (*this);
+}
+
 
 
 template<class Space>
@@ -435,31 +518,6 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &to
 //}
 
 
-template<class Space>
-inline
-auto
-SpaceElementAccessor<Space>::
-get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-           ExcMessage("Only element or face topology is allowed."));
-    if (topology_id.is_element())
-    {
-        return elem_values_;
-    }
-    else
-    {
-        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
-               ExcIndexRange(topology_id.get_id(),0,n_faces));
-
-        Assert(this->is_boundary(topology_id.get_id()),
-               ExcMessage("The requested face_id=" +
-                          std::to_string(topology_id.get_id()) +
-                          " is not a boundary for the element"));
-        return face_values_[topology_id.get_id()];
-    }
-}
-
 
 template<class Space>
 inline
@@ -469,9 +527,11 @@ get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
     ExcMessage("Only element or face topology is allowed."));
+
+    Assert(local_cache_ != nullptr, ExcNullPtr());
     if (topology_id.is_element())
     {
-        return elem_values_;
+        return local_cache_->elem_values_;
     }
     else
     {
@@ -482,7 +542,35 @@ get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
         ExcMessage("The requested face_id=" +
         std::to_string(topology_id.get_id()) +
         " is not a boundary for the element"));
-        return face_values_[topology_id.get_id()];
+        return local_cache_->face_values_[topology_id.get_id()];
+    }
+}
+
+
+template<class Space>
+inline
+auto
+SpaceElementAccessor<Space>::
+get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
+{
+    Assert(topology_id.is_element() || topology_id.is_face(),
+           ExcMessage("Only element or face topology is allowed."));
+
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    if (topology_id.is_element())
+    {
+        return local_cache_->elem_values_;
+    }
+    else
+    {
+        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
+               ExcIndexRange(topology_id.get_id(),0,n_faces));
+
+        Assert(this->is_boundary(topology_id.get_id()),
+               ExcMessage("The requested face_id=" +
+                          std::to_string(topology_id.get_id()) +
+                          " is not a boundary for the element"));
+        return local_cache_->face_values_[topology_id.get_id()];
     }
 }
 
@@ -919,6 +1007,18 @@ SpaceElementAccessor<Space>::
 print_cache_info(LogStream &out) const
 {
     base_t::print_cache_info(out);
+
+    Assert(local_cache_ != nullptr,ExcNullPtr());
+    local_cache_->print_info(out);
+}
+
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+LocalCache::
+print_info(LogStream &out) const
+{
     out.begin_item("Space Element Cache:");
     elem_values_.print_info(out);
     out.end_item();
@@ -929,6 +1029,7 @@ print_cache_info(LogStream &out) const
         face_values_[i].print_info(out);
         out.end_item();
     }
+
 }
 
 

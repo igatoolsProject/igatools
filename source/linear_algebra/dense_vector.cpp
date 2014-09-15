@@ -34,6 +34,12 @@ operator=(const Real value)
     return *this;
 }
 
+int
+DenseVector::
+size() const
+{
+    return int(boost::numeric::ublas::vector<Real>::size());
+}
 
 IGA_NAMESPACE_CLOSE
 

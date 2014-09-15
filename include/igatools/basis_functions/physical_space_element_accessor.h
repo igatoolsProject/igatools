@@ -35,7 +35,6 @@ IGA_NAMESPACE_OPEN
 
 template < typename Accessor > class GridForwardIterator;
 
-//TODO: trilinos_vector.h should be called vector.h
 //TODO: document this class
 
 /**
@@ -132,13 +131,24 @@ public :
     PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
                                  const TensorIndex<dim> &index);
 
-
+#if 0
     /**
      * Copy constructor.
      * @note Performs a deep copy of the PhysicalSpaceElementAccessor<PhysSpace> @p in,
      * except for the pointer to the PhysicalSpace.
      */
-    PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in) = default;
+    PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in) = delete;
+#endif
+
+    /**
+     * Copy constructor.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
+     */
+    PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in,
+                                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /**
      * Move constructor.
@@ -157,9 +167,9 @@ public :
      */
     ///@{
     /**
-     * Copy assignment operator.
-     * @note Performs a deep copy of the PhysicalSpaceElementAccessor<PhysSpace> @p in,
-     * except for the pointer to the PhysicalSpace.
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
      */
     PhysicalSpaceElementAccessor<PhysSpace> &
     operator=(const PhysicalSpaceElementAccessor<PhysSpace> &in) = default;
@@ -172,6 +182,26 @@ public :
 
     ///@}
 
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const PhysicalSpaceElementAccessor<PhysSpace> &element);
+
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const PhysicalSpaceElementAccessor<PhysSpace> &element);
+    ///@}
 
 
     /**
@@ -337,8 +367,16 @@ public :
     const PfElemAccessor &get_push_forward_accessor() const;
 
 
+    /**
+     * @name Functions related to get the indices of the element.
+     */
+    ///@{
     /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const ;
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
 
 
 protected:
@@ -370,6 +408,15 @@ protected:
      * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElementAccessor).
      */
     ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
+
+
+    /**
+     * Performs a copy of the input @p element.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const PhysicalSpaceElementAccessor<PhysSpace> &element,
+                   const CopyPolicy &copy_policy);
+
 
 private:
     template <typename Accessor> friend class GridForwardIterator;

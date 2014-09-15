@@ -29,6 +29,9 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+
 /**
  * @brief This class represents an element within a CartesianGrid.
  *
@@ -52,6 +55,7 @@ public:
 
     /** Dimension of the grid like container */
     static const auto dim = ContainerType::dim;
+
 
     /** @name Constructors */
     ///@{
@@ -91,14 +95,17 @@ public:
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator. Not allowed to be used.
+     * Copy assignment operator.
      */
     CartesianGridElement<dim>
     &operator=(const CartesianGridElement<dim_> &elem)
     {
-        Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
-        flat_index_ = elem.flat_index_;
-        tensor_index_ = elem.tensor_index_;
+        if ((*this) != elem)
+        {
+            Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
+            flat_index_ = elem.flat_index_;
+            tensor_index_ = elem.tensor_index_;
+        }
         return *this;
     }
 
@@ -113,13 +120,14 @@ public:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> get_grid() const;
 
+
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
     /** Returns the index of the element in its flatten representation. */
     Index get_flat_index() const;
 
     /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim>  get_tensor_index() const;
+    TensorIndex<dim> get_tensor_index() const;
     ///@}
 
 public:

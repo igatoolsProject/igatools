@@ -506,6 +506,15 @@ set_control_points(const vector<Real> &control_points)
 #endif
 }
 
+template<class RefSpace>
+vector<Real>
+IgMapping<RefSpace>::
+get_control_points() const
+{
+    Assert(data_ != nullptr, ExcNullPtr());
+
+    return data_->control_points_;
+}
 
 
 

@@ -50,7 +50,76 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
     CartesianGridElement<dim>(grid, index)
 {}
 
+template <int dim_>
+CartesianGridElementAccessor<dim_>::
+CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem, const CopyPolicy &copy_policy)
+    :
+    CartesianGridElement<dim_>(elem)
+{
+    if (elem.local_cache_ != nullptr)
+    {
+        if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+    }
+}
 
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+copy_from(const CartesianGridElementAccessor<dim_> &elem,
+          const CopyPolicy &copy_policy)
+{
+    parent_t::operator=(elem);
+    if (this != &elem)
+    {
+        if (copy_policy == CopyPolicy::deep)
+        {
+            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+        else if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+    }
+}
+
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+deep_copy_from(const CartesianGridElementAccessor<dim_> &elem)
+{
+    this->copy_from(elem,CopyPolicy::deep);
+}
+
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+shallow_copy_from(const CartesianGridElementAccessor<dim_> &elem)
+{
+    this->copy_from(elem,CopyPolicy::shallow);
+}
+
+
+template <int dim_>
+CartesianGridElementAccessor<dim_> &
+CartesianGridElementAccessor<dim_>::
+operator=(const CartesianGridElementAccessor<dim_> &element)
+{
+    this->shallow_copy_from(element);
+    return (*this);
+}
 
 
 //template <int dim_>
@@ -82,9 +151,10 @@ get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
+    Assert(local_cache_ != nullptr,ExcNullPtr());
     if (topology_id.is_element())
     {
-        return elem_values_;
+        return local_cache_->elem_values_;
     }
     else
     {
@@ -93,7 +163,7 @@ get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache
                           std::to_string(topology_id.get_id()) +
                           " is not a boundary for the element"));
 
-        return face_values_[topology_id.get_id()];
+        return local_cache_->face_values_[topology_id.get_id()];
     }
 }
 
@@ -104,9 +174,10 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
     ExcMessage("Only element or face topology is allowed."));
+    Assert(local_cache_ != nullptr,ExcNullPtr());
     if (topology_id.is_element())
     {
-        return elem_values_;
+        return local_cache_->elem_values_;
     }
     else
     {
@@ -115,7 +186,7 @@ get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
         std::to_string(topology_id.get_id()) +
         " is not a boundary for the element"));
 
-        return face_values_[topology_id.get_id()];
+        return local_cache_->face_values_[topology_id.get_id()];
     }
 }
 
@@ -384,6 +455,9 @@ CartesianGridElementAccessor<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
     CartesianGridElement<dim_>::print_info(out,verbosity);
+
+    if (local_cache_ != nullptr)
+        local_cache_->print_info(out);
 }
 
 
@@ -391,7 +465,8 @@ print_info(LogStream &out, const VerbosityLevel verbosity) const
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
-print_cache_info(LogStream &out) const
+LocalCache::
+print_info(LogStream &out) const
 {
     out.begin_item("Element Cache:");
     elem_values_.print_info(out);
@@ -403,7 +478,15 @@ print_cache_info(LogStream &out) const
         face_values_[i].print_info(out);
         out.end_item();
     }
+}
 
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+print_cache_info(LogStream &out) const
+{
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    local_cache_->print_info(out);
 }
 
 IGA_NAMESPACE_CLOSE
