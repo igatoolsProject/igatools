@@ -18,15 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-
 #ifndef NURBS_ELEMENT_ACCESSOR_H_
 #define NURBS_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
-#if 0
+#ifdef NURBS
 IGA_NAMESPACE_OPEN
 
 template < int, int , int > class NURBSSpace ;

@@ -24,6 +24,9 @@
 #cmakedefine REAL_IS_LONG_DOUBLE
 #cmakedefine USE_TRILINOS
 #cmakedefine USE_PETSC
+#cmakedefine NURBS
+#cmakedefine MPATCH
+#cmakedefine HIERARCHICAL
 
 #define BOOST_DISABLE_ASSERT
 
@@ -36,5 +39,3 @@
 #include <cmath>
 
 #endif /* __IGA_CONFIG_H_ */
-
-

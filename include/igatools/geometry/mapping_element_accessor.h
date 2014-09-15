@@ -41,7 +41,8 @@ template <int,int> class Mapping;
  *
  * @todo document me
  */
-template<int dim_ref_, int codim_>
+//TODO(pauletti, Sep 12, 2014): change dim_ref_ by dim_
+template<int dim_ref_, int codim_ = 0>
 class MappingElementAccessor
     : public CartesianGridElementAccessor<dim_ref_>
 {
