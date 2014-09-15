@@ -87,24 +87,19 @@ public:
 
     BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                            const TensorIndex<dim> &elem_index);
-#if 0
     /**
      * Copy constructor.
-     * @note For the constructed object it
-     * creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    BSplineElementAccessor(const BSplineElementAccessor<dim, range, rank> &elem)
-        = delete;
-#endif
-
     BSplineElementAccessor(const BSplineElementAccessor<dim,range,rank> &elem,
                            const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
      */
-    BSplineElementAccessor(BSplineElementAccessor<dim, range, rank> &&elem)
+    BSplineElementAccessor(BSplineElementAccessor<dim,range,rank> &&elem)
         = default;
 
     /**
@@ -112,6 +107,9 @@ public:
      */
     ~BSplineElementAccessor() = default;
     ///@}
+
+
+
 
     /** @name Assignment operators */
     ///@{

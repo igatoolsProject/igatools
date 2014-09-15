@@ -91,8 +91,8 @@ public:
                                  const TensorIndex<dim> elem_index);
 
     /**
-     * Copy constructor. It can be used with different copy policies (i.e. deep copy
-     * or shallow copy).
+     * Copy constructor.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
      * The default behaviour (i.e. using the proper interface of a classic copy constructor)
      * uses the deep copy.
      */
@@ -113,10 +113,14 @@ public:
 
 
     /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
      * Performs a deep copy of the input @p element,
      * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
      *
-     * @note If the input local cache is not allocated, an assertion is rased in DEBUG mode.
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
      */
     void deep_copy_from(const CartesianGridElementAccessor<dim_> &element);
 
@@ -126,6 +130,7 @@ public:
      * local cache used by the input @p element.
      */
     void shallow_copy_from(const CartesianGridElementAccessor<dim_> &element);
+    ///@}
 
 
     /** @name Assignment operators */
@@ -422,6 +427,14 @@ private:
     friend class GridUniformQuadCache<dim>;
 
 protected:
+    /**
+     * Performs a copy of the input @p element.
+     * The kind of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const CartesianGridElementAccessor<dim_> &element,
+                   const CopyPolicy &copy_policy);
+
+
     /**
      * ExceptionUnsupported Value Flag.
      */

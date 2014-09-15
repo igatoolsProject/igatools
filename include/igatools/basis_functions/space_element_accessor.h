@@ -130,18 +130,7 @@ public:
     SpaceElementAccessor(const std::shared_ptr<const Space> space,
                          const TensorIndex<dim> &elem_index);
 
-    SpaceElementAccessor<Space> &operator=(const SpaceElementAccessor<Space> &elem) = default;
 
-#if 0
-    /**
-     * Copy constructor.
-     * @note For the constructed object it
-     * creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
-     */
-    SpaceElementAccessor(const SpaceElementAccessor<Space> &elem)
-        = default;
-#endif
 
     SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
                          const CopyPolicy &copy_policy = CopyPolicy::deep);
@@ -159,6 +148,43 @@ public:
     ~SpaceElementAccessor() = default;
     ///@}
 
+    /** @name Assignment operators */
+    ///@{
+    /**
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
+     */
+    SpaceElementAccessor<Space>
+    &operator=(const SpaceElementAccessor<Space> &element);
+
+    /**
+     * Move assignment operator.
+     */
+    SpaceElementAccessor<Space>
+    &operator=(SpaceElementAccessor<Space> &&elem) = default;
+    ///@}
+
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const SpaceElementAccessor<Space> &element);
+
+
+    /**
+     * Performs a deep copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const SpaceElementAccessor<Space> &element);
+    ///@}
 
 
     /** @name Functions for the basis and field evaluations without the use of the cache */
@@ -717,6 +743,14 @@ protected:
     };
 
     std::shared_ptr<LocalCache> local_cache_;
+
+
+    /**
+     * Performs a copy of the input @p element.
+     * The kind of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const SpaceElementAccessor<Space> &element,
+                   const CopyPolicy &copy_policy);
 
 //    /**
 //     * Initializes the element and faces cache according to

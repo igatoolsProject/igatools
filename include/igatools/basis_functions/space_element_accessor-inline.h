@@ -110,6 +110,66 @@ SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
     }
 }
 
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+copy_from(const SpaceElementAccessor<Space> &elem,
+          const CopyPolicy &copy_policy)
+{
+    CartesianGridElementAccessor<Space::dim>::copy_from(elem,copy_policy);
+    if (this != &elem)
+    {
+        space_ = elem.space_;
+        n_basis_direction_ = elem.n_basis_direction_;
+        basis_functions_indexer_ = elem.basis_functions_indexer_;
+        comp_offset_ = elem.comp_offset_;
+
+        if (copy_policy == CopyPolicy::deep)
+        {
+            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+        else if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+    }
+}
+
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+deep_copy_from(const SpaceElementAccessor<Space> &elem)
+{
+    this->copy_from(elem,CopyPolicy::deep);
+}
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+shallow_copy_from(const SpaceElementAccessor<Space> &elem)
+{
+    this->copy_from(elem,CopyPolicy::shallow);
+}
+
+template<class Space>
+SpaceElementAccessor<Space> &
+SpaceElementAccessor<Space>::
+operator=(const SpaceElementAccessor<Space> &element)
+{
+    this->shallow_copy_from(element);
+    return (*this);
+}
+
+
+
 template<class Space>
 inline
 auto

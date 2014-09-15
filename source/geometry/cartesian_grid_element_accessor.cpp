@@ -69,18 +69,38 @@ CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem, con
     }
 }
 
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+copy_from(const CartesianGridElementAccessor<dim_> &elem,
+          const CopyPolicy &copy_policy)
+{
+    parent_t::operator=(elem);
+    if (this != &elem)
+    {
+        if (copy_policy == CopyPolicy::deep)
+        {
+            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+        else if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+    }
+}
 
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 deep_copy_from(const CartesianGridElementAccessor<dim_> &elem)
 {
-    parent_t::operator=(elem);
-    if (this != &elem)
-    {
-        Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-        local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
-    }
+    this->copy_from(elem,CopyPolicy::deep);
 }
 
 template <int dim_>
@@ -88,9 +108,7 @@ void
 CartesianGridElementAccessor<dim_>::
 shallow_copy_from(const CartesianGridElementAccessor<dim_> &elem)
 {
-    parent_t::operator=(elem);
-    if (this != &elem)
-        local_cache_ = elem.local_cache_;
+    this->copy_from(elem,CopyPolicy::shallow);
 }
 
 
