@@ -133,9 +133,14 @@ MappingElementAccessor(const self_t &elem, const CopyPolicy &copy_policy)
         {
             local_cache_ = elem.local_cache_;
         }
-        else
+        else if (copy_policy == CopyPolicy::deep)
         {
             local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
         }
     }
 
@@ -143,6 +148,62 @@ MappingElementAccessor(const self_t &elem, const CopyPolicy &copy_policy)
     mapping_ = elem.mapping_;
 }
 
+
+template<int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+copy_from(const MappingElementAccessor<dim_ref_,codim_> &elem,
+          const CopyPolicy &copy_policy)
+{
+    CartesianGridElementAccessor<dim_ref_>::copy_from(elem,copy_policy);
+
+    Assert(elem.mapping_ != nullptr, ExcNullPtr());
+    mapping_ = elem.mapping_;
+    if (this != &elem)
+    {
+        if (copy_policy == CopyPolicy::deep)
+        {
+            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+        else if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+    }
+}
+
+
+template<int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+deep_copy_from(const MappingElementAccessor<dim_ref_,codim_> &element)
+{
+    this->copy_from(element,CopyPolicy::deep);
+}
+
+template<int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+shallow_copy_from(const MappingElementAccessor<dim_ref_,codim_> &element)
+{
+    this->copy_from(element,CopyPolicy::shallow);
+}
+
+
+template<int dim_ref_, int codim_ >
+auto
+MappingElementAccessor<dim_ref_,codim_>::
+operator=(const self_t &element) -> self_t &
+{
+    this->shallow_copy_from(element);
+    return (*this);
+}
 
 template<int dim_ref_, int codim_ >
 auto

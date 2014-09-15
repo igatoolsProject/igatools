@@ -60,6 +60,46 @@ PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in,
 {}
 
 
+
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+copy_from(const PhysicalSpaceElementAccessor<PhysSpace> &element,
+          const CopyPolicy &copy_policy)
+{
+    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
+
+    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
+
+    if (copy_policy == CopyPolicy::deep)
+        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
+    else if (copy_policy == CopyPolicy::shallow)
+        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
+    else
+    {
+        Assert(false,ExcNotImplemented());
+    }
+}
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+deep_copy_from(const PhysicalSpaceElementAccessor<PhysSpace> &element)
+{
+    this->copy_from(element,CopyPolicy::deep);
+}
+
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+shallow_copy_from(const PhysicalSpaceElementAccessor<PhysSpace> &element)
+{
+    this->copy_from(element,CopyPolicy::shallow);
+}
+
+
 template< class PhysSpace >
 ValueFlags
 PhysicalSpaceElementAccessor<PhysSpace>::

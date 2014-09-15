@@ -126,7 +126,7 @@ public:
 
 
     /**
-     * Performs a deep copy of the input @p element. The current object will contain a pointer to the
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
     void shallow_copy_from(const CartesianGridElementAccessor<dim_> &element);
@@ -136,7 +136,7 @@ public:
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator. Performs a shallow copy of the input @p element.
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
      *
      * @note Internally it uses the function shallow_copy_from().
      */
@@ -429,7 +429,7 @@ private:
 protected:
     /**
      * Performs a copy of the input @p element.
-     * The kind of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
     void copy_from(const CartesianGridElementAccessor<dim_> &element,
                    const CopyPolicy &copy_policy);

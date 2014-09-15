@@ -132,6 +132,12 @@ public:
 
 
 
+    /**
+     * Copy constructor.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
+     */
     SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
                          const CopyPolicy &copy_policy = CopyPolicy::deep);
 
@@ -180,7 +186,7 @@ public:
 
 
     /**
-     * Performs a deep copy of the input @p element. The current object will contain a pointer to the
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
     void shallow_copy_from(const SpaceElementAccessor<Space> &element);
@@ -747,7 +753,7 @@ protected:
 
     /**
      * Performs a copy of the input @p element.
-     * The kind of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
     void copy_from(const SpaceElementAccessor<Space> &element,
                    const CopyPolicy &copy_policy);

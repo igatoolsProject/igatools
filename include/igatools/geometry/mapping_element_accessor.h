@@ -112,15 +112,12 @@ public:
 
     MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
                            const TensorIndex<dim> &index);
-#if 0
     /**
      * Copy constructor.
-     * Performs a deep copy of the MappingElementAccessor object.
-     * Its cache is also deeply copied.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    MappingElementAccessor(const self_t &element) = delete;
-#endif
-
     MappingElementAccessor(const self_t &element, const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
@@ -138,17 +135,40 @@ public:
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator.
-     * @note Performs a deep copy of the MappingElementAccessor object.
-     * Its cache is also deeply copied.
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
      */
-    self_t &operator=(const self_t &element) = default;
+    self_t &operator=(const self_t &element);
 
     /**
      * Move assignment operator.
      */
     self_t &operator=(self_t &&element) = default;
     ///@}
+
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const self_t &element);
+
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const self_t &element);
+    ///@}
+
+
 
     /**
      * @name Query information that requires the use of the cache
@@ -467,6 +487,14 @@ private:
     std::array<ValueVector<ValueMap>, codim> transform_external_normals() const;
 
 protected:
+    /**
+     * Performs a copy of the input @p element.
+     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+     */
+    void copy_from(const MappingElementAccessor<dim_ref_,codim_> &element,
+                   const CopyPolicy &copy_policy);
+
+
     /**
      * Evaluates the gradient of F^{-1} (also when the mapping has codim > 0) using the formula
      * D(F^{-1}) = (DF^t * DF)^{-1} * DF^t
