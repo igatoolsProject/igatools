@@ -120,6 +120,10 @@ public:
      */
     MappingElementAccessor(const self_t &element) = delete;
 
+
+    MappingElementAccessor(const self_t &element, const CopyPolicy &copy_policy = CopyPolicy::deep);
+
+
     /**
      * Move constructor.
      */
@@ -314,6 +318,7 @@ public:
     ///@}
 
 
+    void print_cache_info(LogStream &out) const;
 
 private:
     // TODO (pauletti, Mar 21, 2014): Document this class
@@ -347,6 +352,41 @@ private:
         Size num_points_ = 0;
         Quadrature<dim> quad_;
 
+        void print_info(LogStream &out) const
+        {
+            out.begin_item("Fill flags:");
+            flags_handler_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Values:");
+            values_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Gradients:");
+            gradients_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Hessians:");
+            hessians_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Inverse Gradients:");
+            inv_gradients_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Inverse Hessians:");
+            inv_hessians_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Measures:");
+            measures_.print_info(out);
+            out.end_item();
+
+            out.begin_item("Weights * Measures:");
+            w_measures_.print_info(out);
+            out.end_item();
+        }
+
     };
 
     /**
@@ -376,13 +416,47 @@ private:
         ValueVector< ValueMap > normals_;
         bool fill_normals_ = false;
         bool normals_filled_ = false;
+
+        void print_info(LogStream &out) const
+        {
+            ValuesCache::print_info(out);
+
+            out.begin_item("Normals:");
+            normals_.print_info(out);
+            out.end_item();
+        }
     };
 
     const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 
-    ElementValuesCache elem_values_;
 
-    std::array<FaceValuesCache, n_faces> face_values_;
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
+
+        LocalCache(const LocalCache &in) = default;
+        LocalCache(LocalCache &&in) = default;
+
+        ~LocalCache() = default;
+
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        /** Element values cache */
+        ElementValuesCache elem_values_;
+
+        /** Face values cache */
+        std::array<FaceValuesCache, n_faces> face_values_;
+
+    };
+
+    std::shared_ptr<LocalCache> local_cache_;
+
+
 
     std::shared_ptr<ContainerType> mapping_;
 

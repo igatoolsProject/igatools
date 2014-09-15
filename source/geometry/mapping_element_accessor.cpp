@@ -128,9 +128,11 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
+
+    Assert(local_cache_ != nullptr,ExcNullPtr());
     if (topology_id.is_element())
     {
-        return elem_values_;
+        return local_cache_->elem_values_;
     }
     else
     {
@@ -141,7 +143,7 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
                ExcMessage("The requested face_id=" +
                           std::to_string(topology_id.get_id()) +
                           " is not a boundary for the element"));
-        return face_values_[topology_id.get_id()];
+        return local_cache_->face_values_[topology_id.get_id()];
     }
 }
 
@@ -362,14 +364,16 @@ init_cache(const ValueFlags fill_flag,
            !face_flags_handler.fill_none(),
            ExcMessage("Nothing to initialize/reset."))
 
+    //--------------------------------------------------
+    Assert(local_cache_ != nullptr,ExcNullPtr());
 
     if (!elem_flags_handler.fill_none())
-        elem_values_.reset(elem_flags_handler, quad);
+        local_cache_->elem_values_.reset(elem_flags_handler, quad);
 
     if (!face_flags_handler.fill_none())
     {
         Index face_id = 0;
-        for (auto &face_value : face_values_)
+        for (auto &face_value : local_cache_->face_values_)
         {
             // TODO: this is temporary and must be removed.
             if (contains(f_flag , ValueFlags::face_normal))
@@ -377,6 +381,7 @@ init_cache(const ValueFlags fill_flag,
             face_value.reset(face_id++, face_flags_handler, quad);
         }
     }
+    //--------------------------------------------------
 
     mapping_->init_element(f_flag, quad);
 }
@@ -402,54 +407,57 @@ fill_cache()
     //  CartesianGridElementAccessor<dim_ref_>::fill_cache();
     mapping_->set_element(GridIterator(*this));
 
-    Assert(elem_values_.is_initialized(), ExcNotInitialized());
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    auto &elem_cache = local_cache_->elem_values_;
 
-    Assert(elem_values_.num_points_ ==
-           elem_values_.quad_.get_points().flat_size(),
-           ExcDimensionMismatch(elem_values_.num_points_,
-                                elem_values_.quad_.get_points().flat_size()));
+    Assert(elem_cache.is_initialized(), ExcNotInitialized());
 
-    if (elem_values_.flags_handler_.fill_values())
+    Assert(elem_cache.num_points_ ==
+           elem_cache.quad_.get_points().flat_size(),
+           ExcDimensionMismatch(elem_cache.num_points_,
+                                elem_cache.quad_.get_points().flat_size()));
+
+    if (elem_cache.flags_handler_.fill_values())
     {
-        mapping_->evaluate(elem_values_.values_);
-        elem_values_.flags_handler_.set_values_filled(true);
-        elem_values_.flags_handler_.set_points_filled(true);
+        mapping_->evaluate(elem_cache.values_);
+        elem_cache.flags_handler_.set_values_filled(true);
+        elem_cache.flags_handler_.set_points_filled(true);
     }
 
-    if (elem_values_.flags_handler_.fill_gradients())
+    if (elem_cache.flags_handler_.fill_gradients())
     {
-        mapping_->evaluate_gradients(elem_values_.gradients_);
-        elem_values_.flags_handler_.set_gradients_filled(true);
+        mapping_->evaluate_gradients(elem_cache.gradients_);
+        elem_cache.flags_handler_.set_gradients_filled(true);
     }
 
-    if (elem_values_.flags_handler_.fill_hessians())
+    if (elem_cache.flags_handler_.fill_hessians())
     {
-        mapping_->evaluate_hessians(elem_values_.hessians_);
-        elem_values_.flags_handler_.set_hessians_filled(true);
+        mapping_->evaluate_hessians(elem_cache.hessians_);
+        elem_cache.flags_handler_.set_hessians_filled(true);
     }
 
-    elem_values_.fill_composite_values();
+    elem_cache.fill_composite_values();
 
-    if (elem_values_.flags_handler_.fill_measures() || elem_values_.flags_handler_.fill_w_measures())
+    if (elem_cache.flags_handler_.fill_measures() || elem_cache.flags_handler_.fill_w_measures())
     {
-        Assert(elem_values_.flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
-        for (Index i = 0; i < elem_values_.num_points_; i++)
-            elem_values_.measures_[i] = determinant<dim,space_dim>(elem_values_.gradients_[i]);
-        elem_values_.flags_handler_.set_measures_filled(true);
+        Assert(elem_cache.flags_handler_.gradients_filled(),ExcMessage("Gradients not filled."));
+        for (Index i = 0; i < elem_cache.num_points_; i++)
+            elem_cache.measures_[i] = determinant<dim,space_dim>(elem_cache.gradients_[i]);
+        elem_cache.flags_handler_.set_measures_filled(true);
 
-        if (elem_values_.flags_handler_.fill_w_measures())
+        if (elem_cache.flags_handler_.fill_w_measures())
         {
-            Assert(elem_values_.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
-            const ValueVector<Real> &dets_map = elem_values_.measures_;
+            Assert(elem_cache.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
+            const ValueVector<Real> &dets_map = elem_cache.measures_;
             const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
 
-            for (Index i = 0; i < elem_values_.num_points_; i++)
-                elem_values_.w_measures_[i] = dets_map[i] * weights[i];
-            elem_values_.flags_handler_.set_w_measures_filled(true);
+            for (Index i = 0; i < elem_cache.num_points_; i++)
+                elem_cache.w_measures_[i] = dets_map[i] * weights[i];
+            elem_cache.flags_handler_.set_w_measures_filled(true);
         }
     }
 
-    elem_values_.set_filled(true);
+    elem_cache.set_filled(true);
 }
 
 
@@ -464,7 +472,8 @@ fill_face_cache(const Index face_id)
     // CartesianGridElementAccessor<dim_ref_>::fill_face_cache(face_id);
     mapping_->set_face_element(face_id, *this);
 
-    auto &face_values = face_values_[face_id];
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    auto &face_values = local_cache_->face_values_[face_id];
 
     const auto &num_points = face_values.num_points_;
 
@@ -733,9 +742,11 @@ MappingElementAccessor<dim_ref_,codim_>::
 get_face_normals(const Index face_id) const -> const ValueVector<ValueMap> &
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    Assert(face_values_[face_id].is_filled(), ExcCacheNotFilled());
-    Assert(face_values_[face_id].normals_filled_, ExcMessage("Normals not filled."));
-    return face_values_[face_id].normals_;
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    auto &face_cache = local_cache_->face_values_[face_id];
+    Assert(face_cache.is_filled(), ExcCacheNotFilled());
+    Assert(face_cache.normals_filled_, ExcMessage("Normals not filled."));
+    return face_cache.normals_;
 }
 
 
@@ -745,14 +756,16 @@ auto
 MappingElementAccessor<dim_ref_,codim_>::
 transform_external_normals() const -> std::array< ValueVector<ValueMap>, codim >
 {
-    Assert(elem_values_.is_filled(), ExcMessage("The cache is not filled."));
-    Assert(elem_values_.flags_handler_.fill_gradients(), ExcNotInitialized());
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    auto &elem_cache = local_cache_->elem_values_;
+    Assert(elem_cache.is_filled(), ExcMessage("The cache is not filled."));
+    Assert(elem_cache.flags_handler_.fill_gradients(), ExcNotInitialized());
 
     array<ValueVector<ValueMap>, codim> normals;
-    normals.fill(ValueVector<Points<space_dim>>(elem_values_.num_points_));
+    normals.fill(ValueVector<Points<space_dim>>(elem_cache.num_points_));
 
 
-    for (Index i = 0; i < elem_values_.num_points_; i++)
+    for (Index i = 0; i < elem_cache.num_points_; i++)
     {
         Assert(false, ExcNotImplemented());
     }
@@ -847,23 +860,50 @@ print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 
 
     CartesianGridElementAccessor<dim_ref_>::print_info(out);
-    out << "num. points = " << elem_values_.num_points_ << endl;
+
+    if (local_cache_ != nullptr)
+        this->print_cache_info(out);
+
+#if 0
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    const auto &elem_cache = local_cache_->elem_values_;
+
+    out << "num. points = " << elem_cache.num_points_ << endl;
 
 
     if (contains(verbosity_level,VerbosityLevel::debug))
     {
-        elem_values_.flags_handler_.print_info(out);
+        elem_cache.flags_handler_.print_info(out);
 
         for (int face_id = 0; face_id < n_faces; ++face_id)
         {
-            face_values_[face_id].flags_handler_.print_info(out);
+            const auto &face_cache = local_cache_->face_values_[face_id];
+            face_cache.flags_handler_.print_info(out);
         }
     }
-
+#endif
 
     out.pop();
 }
 
+
+template< int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+LocalCache::
+print_info(LogStream &out) const
+{
+    out.begin_item("Element Cache:");
+    elem_values_.print_info(out);
+    out.end_item();
+
+    for (int i = 0 ; i < n_faces ; ++i)
+    {
+        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+        face_values_[i].print_info(out);
+        out.end_item();
+    }
+}
 
 template< int dim_ref_, int codim_ >
 void
@@ -876,8 +916,18 @@ print_memory_info(LogStream &out) const
 
     out.push("\t");
     out << "mapping_ address = " << &mapping_ << endl;
-    out << "data_ memory address = " << &elem_values_ << endl;
+    out << "local_cache_ memory address = " << local_cache_.get() << endl;
     out.pop();
+}
+
+
+template< int dim_ref_, int codim_ >
+void
+MappingElementAccessor<dim_ref_,codim_>::
+print_cache_info(LogStream &out) const
+{
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    local_cache_->print_info(out);
 }
 
 IGA_NAMESPACE_CLOSE

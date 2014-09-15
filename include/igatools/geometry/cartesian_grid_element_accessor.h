@@ -90,8 +90,14 @@ public:
     CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
                                  const TensorIndex<dim> elem_index);
 
+    /**
+     * Copy constructor. It can be used with different copy policies (i.e. deep copy
+     * or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
+     */
     CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem,
-    		const CopyPolicy &copy_policy = CopyPolicy::deep);
+                                 const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
@@ -375,24 +381,24 @@ private:
     class LocalCache
     {
     public:
-    	LocalCache() = default;
+        LocalCache() = default;
 
-    	LocalCache(const LocalCache &in) = default;
-    	LocalCache(LocalCache &&in) = default;
+        LocalCache(const LocalCache &in) = default;
+        LocalCache(LocalCache &&in) = default;
 
-    	~LocalCache() = default;
+        ~LocalCache() = default;
 
 
-    	LocalCache & operator=(const LocalCache &in) = delete;
-    	LocalCache & operator=(LocalCache &&in) = delete;
+        LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
 
-    	void print_info(LogStream &out) const;
+        void print_info(LogStream &out) const;
 
-    	/** Element values cache */
-    	ElementValuesCache elem_values_;
+        /** Element values cache */
+        ElementValuesCache elem_values_;
 
-    	/** Face values cache */
-    	std::array<FaceValuesCache, n_faces> face_values_;
+        /** Face values cache */
+        std::array<FaceValuesCache, n_faces> face_values_;
 
     };
 

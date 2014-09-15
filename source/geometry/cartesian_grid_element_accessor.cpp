@@ -53,17 +53,20 @@ CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
 template <int dim_>
 CartesianGridElementAccessor<dim_>::
 CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem, const CopyPolicy &copy_policy)
-:
-CartesianGridElement<dim_>(elem)
+    :
+    CartesianGridElement<dim_>(elem)
 {
-	if (copy_policy == CopyPolicy::shallow)
-	{
-		local_cache_ = elem.local_cache_;
-	}
-	else
-	{
-		local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
-	}
+    if (elem.local_cache_ != nullptr)
+    {
+        if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+    }
 }
 
 
@@ -118,7 +121,7 @@ auto
 CartesianGridElementAccessor<dim_>::
 get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
 {
-	return const_cast<CartesianGridElementAccessor<dim_> &>(*this).get_values_cache(topology_id);
+    return const_cast<CartesianGridElementAccessor<dim_> &>(*this).get_values_cache(topology_id);
 #if 0
     Assert(topology_id.is_element() || topology_id.is_face(),
     ExcMessage("Only element or face topology is allowed."));
@@ -403,6 +406,9 @@ CartesianGridElementAccessor<dim_>::
 print_info(LogStream &out, const VerbosityLevel verbosity) const
 {
     CartesianGridElement<dim_>::print_info(out,verbosity);
+
+    if (local_cache_ != nullptr)
+        local_cache_->print_info(out);
 }
 
 
@@ -430,8 +436,8 @@ void
 CartesianGridElementAccessor<dim_>::
 print_cache_info(LogStream &out) const
 {
-	Assert(local_cache_ != nullptr, ExcNullPtr());
-	local_cache_->print_info(out);
+    Assert(local_cache_ != nullptr, ExcNullPtr());
+    local_cache_->print_info(out);
 }
 
 IGA_NAMESPACE_CLOSE

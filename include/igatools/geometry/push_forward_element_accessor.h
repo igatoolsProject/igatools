@@ -84,6 +84,9 @@ public:
      */
     PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element) = delete;
 
+    PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element,
+                               const CopyPolicy &copy_policy = CopyPolicy::deep);
+
     /**
      * Copy assignment operator.
      */
