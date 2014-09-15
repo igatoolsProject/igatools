@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_space.h>
 
-#if 0
+#ifdef NURBS
 IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including the header
