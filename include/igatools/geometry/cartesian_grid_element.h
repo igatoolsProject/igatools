@@ -95,14 +95,17 @@ public:
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator. Not allowed to be used.
+     * Copy assignment operator.
      */
     CartesianGridElement<dim>
     &operator=(const CartesianGridElement<dim_> &elem)
     {
-        Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
-        flat_index_ = elem.flat_index_;
-        tensor_index_ = elem.tensor_index_;
+        if ((*this) != elem)
+        {
+            Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
+            flat_index_ = elem.flat_index_;
+            tensor_index_ = elem.tensor_index_;
+        }
         return *this;
     }
 

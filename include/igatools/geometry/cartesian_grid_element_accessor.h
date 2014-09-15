@@ -111,19 +111,32 @@ public:
     ~CartesianGridElementAccessor() = default;
     ///@}
 
+
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note If the input local cache is not allocated, an assertion is rased in DEBUG mode.
+     */
+    void deep_copy_from(const CartesianGridElementAccessor<dim_> &element);
+
+
+    /**
+     * Performs a deep copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const CartesianGridElementAccessor<dim_> &element);
+
+
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator.
-     * Creates a new element cache, but it shares
-     * the one dimensional length cache with the copied element.
+     * Copy assignment operator. Performs a shallow copy of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
      */
     CartesianGridElementAccessor<dim_>
-    &operator=(const CartesianGridElementAccessor<dim_> &elem)
-    {
-        parent_t::operator=(elem);
-        return *this;
-    }
+    &operator=(const CartesianGridElementAccessor<dim_> &element);
 
     /**
      * Move assignment operator.
@@ -401,6 +414,7 @@ private:
         std::array<FaceValuesCache, n_faces> face_values_;
     };
 
+    /** The local (element and face) cache. */
     std::shared_ptr<LocalCache> local_cache_;
 
 private:

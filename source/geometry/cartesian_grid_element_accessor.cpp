@@ -70,6 +70,39 @@ CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem, con
 }
 
 
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+deep_copy_from(const CartesianGridElementAccessor<dim_> &elem)
+{
+    parent_t::operator=(elem);
+    if (this != &elem)
+    {
+        Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+        local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+    }
+}
+
+template <int dim_>
+void
+CartesianGridElementAccessor<dim_>::
+shallow_copy_from(const CartesianGridElementAccessor<dim_> &elem)
+{
+    parent_t::operator=(elem);
+    if (this != &elem)
+        local_cache_ = elem.local_cache_;
+}
+
+
+template <int dim_>
+CartesianGridElementAccessor<dim_> &
+CartesianGridElementAccessor<dim_>::
+operator=(const CartesianGridElementAccessor<dim_> &element)
+{
+    this->shallow_copy_from(element);
+    return (*this);
+}
+
 
 //template <int dim_>
 //void
