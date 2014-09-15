@@ -112,14 +112,14 @@ public:
 
     MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
                            const TensorIndex<dim> &index);
-
+#if 0
     /**
      * Copy constructor.
      * Performs a deep copy of the MappingElementAccessor object.
      * Its cache is also deeply copied.
      */
     MappingElementAccessor(const self_t &element) = delete;
-
+#endif
 
     MappingElementAccessor(const self_t &element, const CopyPolicy &copy_policy = CopyPolicy::deep);
 

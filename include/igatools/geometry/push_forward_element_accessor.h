@@ -78,11 +78,12 @@ public:
     PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
                                const TensorIndex<dim> &index);
 
-
+#if 0
     /**
      * Copy constructor.
      */
     PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element) = delete;
+#endif
 
     PushForwardElementAccessor(const PushForwardElementAccessor<PushForward_> &element,
                                const CopyPolicy &copy_policy = CopyPolicy::deep);

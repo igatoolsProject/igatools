@@ -49,6 +49,16 @@ PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> phys_space,
 {}
 
 
+template< class PhysSpace >
+PhysicalSpaceElementAccessor<PhysSpace>::
+PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in,
+                             const CopyPolicy &copy_policy)
+    :
+    SpaceElementAccessor<PhysSpace>(in,copy_policy),
+    PhysSpace::PushForwardType::ElementAccessor(in,copy_policy),
+    ref_space_element_accessor_(in.ref_space_element_accessor_,copy_policy)
+{}
+
 
 template< class PhysSpace >
 ValueFlags

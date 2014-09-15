@@ -292,6 +292,14 @@ BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
 {}
 
 
+template <int dim, int range, int rank>
+BSplineElementAccessor<dim, range, rank>::
+BSplineElementAccessor(const BSplineElementAccessor<dim,range,rank> &elem,
+                       const CopyPolicy &copy_policy)
+    :
+    SpaceElementAccessor<BSplineSpace<dim,range,rank>>(elem,copy_policy)
+{}
+
 //
 //template <int dim, int range, int rank>
 //void

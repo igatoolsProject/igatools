@@ -53,7 +53,14 @@ PushForwardElementAccessor(const std::shared_ptr<ContainerType> push_forward,
     push_forward_(push_forward)
 {}
 
-
+template< class PushForward >
+PushForwardElementAccessor<PushForward>::
+PushForwardElementAccessor(const PushForwardElementAccessor<PushForward> &element,
+                           const CopyPolicy &copy_policy)
+    :
+    MappingElementAccessor<dim, codim>(element,copy_policy),
+    push_forward_(element.push_forward_)
+{}
 
 template< class PushForward >
 auto

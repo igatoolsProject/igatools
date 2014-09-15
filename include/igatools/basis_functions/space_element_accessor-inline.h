@@ -85,7 +85,24 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
         comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
 }
 
-
+template<class Space>
+inline
+SpaceElementAccessor<Space>::
+SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
+                     const CopyPolicy &copy_policy)
+{
+    if (elem.local_cache_ != nullptr)
+    {
+        if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+    }
+}
 
 template<class Space>
 inline

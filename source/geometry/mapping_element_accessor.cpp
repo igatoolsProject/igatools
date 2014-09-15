@@ -122,6 +122,29 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
 
 
 template<int dim_ref_, int codim_ >
+MappingElementAccessor<dim_ref_,codim_>::
+MappingElementAccessor(const self_t &elem, const CopyPolicy &copy_policy)
+    :
+    CartesianGridElementAccessor<dim_ref_>(elem,copy_policy)
+{
+    if (elem.local_cache_ != nullptr)
+    {
+        if (copy_policy == CopyPolicy::shallow)
+        {
+            local_cache_ = elem.local_cache_;
+        }
+        else
+        {
+            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        }
+    }
+
+    Assert(elem.mapping_ != nullptr, ExcNullPtr());
+    mapping_ = elem.mapping_;
+}
+
+
+template<int dim_ref_, int codim_ >
 auto
 MappingElementAccessor<dim_ref_,codim_>::
 get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
