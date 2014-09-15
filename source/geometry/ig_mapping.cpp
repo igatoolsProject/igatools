@@ -109,17 +109,6 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     Assert(RefSpace::rank == 1, ExcDimensionMismatch(RefSpace::rank,1));
 
-#if 0
-    //----------------------------------
-    // if RefSpace is NURBSSpace
-    // save the weights in order to be used in the h-refinement algorithm
-    // (the different possibilities for RefSpace are handled by specialization of the
-    // function get_weights_from_ref_space() in the anonymous namespace above).
-    data_->weights_pre_refinement_ = get_weights_from_ref_space(*(data_->ref_space_));
-    //----------------------------------
-
-
-
 
     //----------------------------------
     // copy the control mesh before any refinement
@@ -127,43 +116,68 @@ IgMapping(const std::shared_ptr<RefSpace> space,
     const bspline_space_t &bspline_space = get_bspline_space(*space);
     const auto &num_basis_table = bspline_space.get_num_basis_table();
 
-
-    Index ctrl_pt_fid = 0;
-    for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
+    if (RefSpace::has_weights)
     {
-        const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+#if NURBS_IS_ACTIVE
+        //----------------------------------
+        // if RefSpace is NURBSSpace
+        // save the weights in order to be used in the h-refinement algorithm
+        // (the different possibilities for RefSpace are handled by specialization of the
+        // function get_weights_from_ref_space() in the anonymous namespace above).
+        data_->weights_pre_refinement_ = get_weights_from_ref_space(*(data_->ref_space_));
+        //----------------------------------
 
-        auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
 
-        ctrl_mesh_comp.resize(num_basis_comp);
-
-        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
-
-        const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_[comp_id];
-
-        for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
+        Index ctrl_pt_fid = 0;
+        for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
         {
-            if (RefSpace::has_weights)
+            const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
+
+            auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+
+            ctrl_mesh_comp.resize(num_basis_comp);
+
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+
+            const auto &weights_pre_refinement_comp = data_->weights_pre_refinement_[comp_id];
+
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
             {
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
                 const Real &w = weights_pre_refinement_comp[loc_id];
 
-                ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid];
+                ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid++];
             }
-            else
-                ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid];
+        }
+#endif
+    }
+    else
+    {
+        Index ctrl_pt_fid = 0;
+        for (int comp_id  = 0 ; comp_id < space_dim ; ++comp_id)
+        {
+            const TensorSize<dim> &num_basis_comp = num_basis_table[comp_id];
 
-            ++ctrl_pt_fid;
+            auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+
+            ctrl_mesh_comp.resize(num_basis_comp);
+
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
+                ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid++];
         }
     }
+
 
     this->connect_refinement_h_function(
         std::bind(
             &IgMapping<RefSpace>::refine_h_control_mesh,
             this,
             std::placeholders::_1,std::placeholders::_2));
-#endif
 }
 
 
@@ -460,7 +474,6 @@ void
 IgMapping<RefSpace>::
 set_control_points(const vector<Real> &control_points)
 {
-#if 0
     Assert(data_->control_points_.size() == control_points.size(),
            ExcDimensionMismatch(data_->control_points_.size(), control_points.size()));
 
@@ -484,17 +497,21 @@ set_control_points(const vector<Real> &control_points)
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-      // const auto &weights_after_refinement_comp = weights[comp_id];
+        // const auto &weights_after_refinement_comp = weights[comp_id];
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
             if (RefSpace::has_weights)
             {
+                Assert(false,ExcNotImplemented());
+                AssertThrow(false,ExcNotImplemented());
+#if NURBS_IS_ACTIVE
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
                 const Real &w = weights_after_refinement_comp[loc_id];
 
                 ctrl_mesh_comp[loc_id] = w * data_->control_points_[ctrl_pt_fid];
+#endif
             }
             else
                 ctrl_mesh_comp[loc_id] = data_->control_points_[ctrl_pt_fid];
@@ -503,7 +520,6 @@ set_control_points(const vector<Real> &control_points)
 
         } // end loop loc_id
     } // end loop comp_id
-#endif
 }
 
 template<class RefSpace>
@@ -525,7 +541,6 @@ refine_h_control_mesh(
     const std::array<bool,dim> &refinement_directions,
     const typename base_t::GridType &grid_old1)
 {
-#if 0
     auto grid = this->get_grid();
     auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
@@ -650,25 +665,38 @@ refine_h_control_mesh(
     // copy the control mesh after the refinement
     data_->control_points_.resize(data_->ref_space_->get_num_basis());
 
-    const auto weights_after_refinement = get_weights_from_ref_space(*(data_->ref_space_));
-
-    Index ctrl_pt_id = 0;
-    for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+    if (RefSpace::has_weights)
     {
-        const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
-        const auto &weights_after_refinement_comp = weights_after_refinement[comp_id];
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+#if NURBS_IS_ACTIVE
+        const auto weights_after_refinement = get_weights_from_ref_space(*(data_->ref_space_));
 
-        const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
-        for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
+        Index ctrl_pt_id = 0;
+        for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
         {
-            if (RefSpace::has_weights)
+            const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+            const auto &weights_after_refinement_comp = weights_after_refinement[comp_id];
+
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
             {
                 // if NURBS, transform the control points from  projective to euclidean coordinates
                 const Real &w = weights_after_refinement_comp[loc_id];
 
                 data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id] / w ;
             }
-            else
+        }
+#endif
+    }
+    else
+    {
+        Index ctrl_pt_id = 0;
+        for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+        {
+            const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
                 data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id];
         }
     }
@@ -676,7 +704,6 @@ refine_h_control_mesh(
 
 //    Assert(false,ExcNotImplemented());
 //    AssertThrow(false,ExcNotImplemented());
-#endif
 }
 
 
