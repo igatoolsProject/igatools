@@ -399,7 +399,6 @@ private:
 
         /** Face values cache */
         std::array<FaceValuesCache, n_faces> face_values_;
-
     };
 
     std::shared_ptr<LocalCache> local_cache_;

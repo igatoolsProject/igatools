@@ -131,13 +131,18 @@ public :
     PhysicalSpaceElementAccessor(const std::shared_ptr<ContainerType> space,
                                  const TensorIndex<dim> &index);
 
-
+#if 0
     /**
      * Copy constructor.
      * @note Performs a deep copy of the PhysicalSpaceElementAccessor<PhysSpace> @p in,
      * except for the pointer to the PhysicalSpace.
      */
     PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in) = delete;
+#endif
+
+    PhysicalSpaceElementAccessor(const PhysicalSpaceElementAccessor<PhysSpace> &in,
+                                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /**
      * Move constructor.

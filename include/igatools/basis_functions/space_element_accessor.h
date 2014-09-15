@@ -131,6 +131,8 @@ public:
                          const TensorIndex<dim> &elem_index);
 
     SpaceElementAccessor<Space> &operator=(const SpaceElementAccessor<Space> &elem) = default;
+
+#if 0
     /**
      * Copy constructor.
      * @note For the constructed object it
@@ -139,6 +141,11 @@ public:
      */
     SpaceElementAccessor(const SpaceElementAccessor<Space> &elem)
         = default;
+#endif
+
+    SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
+                         const CopyPolicy &copy_policy = CopyPolicy::deep);
+
 
     /**
      * Move constructor.
@@ -680,19 +687,36 @@ protected:
 
     };
 
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
 
-    /**
-     * Element cache to store the values and derivatives
-     * of the basis functions on the element
-     */
-    ElementValuesCache elem_values_;
+        LocalCache(const LocalCache &in) = default;
+        LocalCache(LocalCache &&in) = default;
 
-    /**
-     * Face cache to store the values and derivatives
-     * of the basis functions on the faces of the element
-     */
-    std::array<FaceValuesCache, n_faces> face_values_;
+        ~LocalCache() = default;
 
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        /**
+         * Element cache to store the values and derivatives
+         * of the basis functions on the element
+         */
+        ElementValuesCache elem_values_;
+
+        /**
+         * Face cache to store the values and derivatives
+         * of the basis functions on the faces of the element
+         */
+        std::array<FaceValuesCache, n_faces> face_values_;
+    };
+
+    std::shared_ptr<LocalCache> local_cache_;
 
 //    /**
 //     * Initializes the element and faces cache according to
@@ -709,7 +733,7 @@ public:
      * Fills the values cache of the <tt>face_id</tt>-th face, according to the evaluation points
      * and fill flags specifies in init_values.
      */
- //   void fill_face_cache(const Index face_id);
+//   void fill_face_cache(const Index face_id);
 
 
     /**

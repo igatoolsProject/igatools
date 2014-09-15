@@ -443,9 +443,11 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
 {
     Assert(topology_id.is_element() || topology_id.is_face(),
            ExcMessage("Only element or face topology is allowed."));
+
+    Assert(local_cache_ != nullptr, ExcNullPtr());
     if (topology_id.is_element())
     {
-        return elem_values_;
+        return local_cache_->elem_values_;
     }
     else
     {
@@ -456,7 +458,7 @@ get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache 
                ExcMessage("The requested face_id=" +
                           std::to_string(topology_id.get_id()) +
                           " is not a boundary for the element"));
-        return face_values_[topology_id.get_id()];
+        return local_cache_->face_values_[topology_id.get_id()];
     }
 }
 
@@ -467,6 +469,8 @@ auto
 SpaceElementAccessor<Space>::
 get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
 {
+    return const_cast<SpaceElementAccessor<Space> &>(*this).get_values_cache(topology_id);
+#if 0
     Assert(topology_id.is_element() || topology_id.is_face(),
     ExcMessage("Only element or face topology is allowed."));
     if (topology_id.is_element())
@@ -484,6 +488,7 @@ get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
         " is not a boundary for the element"));
         return face_values_[topology_id.get_id()];
     }
+#endif
 }
 
 
@@ -919,6 +924,18 @@ SpaceElementAccessor<Space>::
 print_cache_info(LogStream &out) const
 {
     base_t::print_cache_info(out);
+
+    Assert(local_cache_ != nullptr,ExcNullPtr());
+    local_cache_->print_info(out);
+}
+
+
+template<class Space>
+void
+SpaceElementAccessor<Space>::
+LocalCache::
+print_info(LogStream &out) const
+{
     out.begin_item("Space Element Cache:");
     elem_values_.print_info(out);
     out.end_item();
@@ -929,6 +946,7 @@ print_cache_info(LogStream &out) const
         face_values_[i].print_info(out);
         out.end_item();
     }
+
 }
 
 

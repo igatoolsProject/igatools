@@ -279,11 +279,21 @@ BSplineUniformQuadCache<dim_, range_, rank_>::
 init_element_cache(ElementAccessor &elem)
 {
     base_t::init_element_cache(elem);
-    auto n_basis = space_->get_num_all_element_basis();
-    auto &cache = elem.get_elem_cache();
-    cache.resize(flags_, quad_, n_basis);
 
-    auto &face_cache = elem.face_values_;
+
+    auto cache = elem.local_cache_;
+    if (cache == nullptr)
+    {
+        using Cache = typename ElementAccessor::LocalCache;
+        cache = shared_ptr<Cache>(new Cache);
+    }
+
+
+    auto n_basis = space_->get_num_all_element_basis();
+    auto &elem_cache = cache->elem_values_;
+    elem_cache.resize(flags_, quad_, n_basis);
+
+    auto &face_cache = cache->face_values_;
     for (auto f: base_t::faces)
     {
         auto &f_cache = face_cache[f];

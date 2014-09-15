@@ -87,7 +87,7 @@ public:
 
     BSplineElementAccessor(const std::shared_ptr<ContainerType> space,
                            const TensorIndex<dim> &elem_index);
-
+#if 0
     /**
      * Copy constructor.
      * @note For the constructed object it
@@ -96,6 +96,10 @@ public:
      */
     BSplineElementAccessor(const BSplineElementAccessor<dim, range, rank> &elem)
         = delete;
+#endif
+
+    BSplineElementAccessor(const BSplineElementAccessor<dim,range,rank> &elem,
+                           const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
@@ -131,7 +135,7 @@ public:
 private:
     auto &get_elem_cache()
     {
-        return this->elem_values_;
+        return this->get_values_cache(ElemTopology<dim>());
     }
 
 public:
@@ -220,10 +224,10 @@ protected:
 
 private:
 
-  //  ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
+    //  ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim>> scalar_evaluators_;
 
 
-   // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
+    // using univariate_values_t = ComponentContainer<std::array<const BasisValues1d *,dim>>;
 
 //    /**
 //     * Fills the cache (accordingly with the flags_handler status)
