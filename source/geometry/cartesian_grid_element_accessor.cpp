@@ -426,7 +426,7 @@ resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &qu
 }
 
 
-
+#if 0
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
@@ -435,7 +435,7 @@ resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_-1> &
 {
     Assert(false, ExcNotImplemented());
 }
-
+#endif
 
 template <int dim_>
 void

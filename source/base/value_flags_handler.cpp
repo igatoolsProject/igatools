@@ -256,12 +256,14 @@ GridElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
     using std::endl;
-    out << "    points -->    fill = "
+    out.push("  ");
+    out << "points     -->  fill = "
         << fill_points_ << "    filled = " << points_filled_ << endl;
-    out << "  measures -->    fill = "
+    out << "measures   -->  fill = "
         << fill_measures_ << "    filled = " << measures_filled_ << endl;
-    out << "w_measures -->    fill = "
+    out << "w_measures -->  fill = "
         << fill_w_measures_ << "    filled = " << w_measures_filled_;
+    out.pop();
 }
 
 //====================================================

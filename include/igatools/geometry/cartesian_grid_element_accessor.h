@@ -367,10 +367,11 @@ private:
         void resize(const GridFaceValueFlagsHandler &flags_handler,
                     const Quadrature<dim_> &quad,
                     const Index face_id);
-
+#if 0
         void resize(const GridFaceValueFlagsHandler &flags_handler,
                     const Quadrature<dim_-1> &quad,
                     const Index face_id);
+#endif
     };
 
     /**
