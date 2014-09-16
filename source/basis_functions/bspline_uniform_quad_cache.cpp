@@ -44,8 +44,8 @@ namespace
  *
  */
 template<int size>
-vector<TensorIndex<size>>
-                       partition(const int n)
+vector<TensorIndex<size> >
+partition(const int n)
 {
     vector<TensorIndex<size>> v;
     TensorIndex<size> arr(0);
@@ -67,16 +67,16 @@ vector<TensorIndex<size>>
 }
 
 template<>
-vector<TensorIndex<1>>
-                    partition<1>(const int n)
+vector<TensorIndex<1> >
+partition<1>(const int n)
 {
     TensorIndex<1> arr(n);
     return vector<TensorIndex<1>>(1,arr);
 }
 
 template<>
-vector<TensorIndex<0>>
-                    partition<0>(const int n)
+vector<TensorIndex<0> >
+partition<0>(const int n)
 {
     return vector<TensorIndex<0>>();
 }

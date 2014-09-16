@@ -81,37 +81,47 @@ void do_test()
     space->print_info(out) ;
 
     const int n_points = 2;
-    QGauss< dim_domain > quad(n_points) ;
+    QGauss<dim_domain> quad(n_points) ;
 
-    auto elem = space->begin();
-    elem->init_cache(ValueFlags::value, quad);
-
-    for (; elem != space->end(); ++elem)
-    {
-        elem->fill_cache();
-        out << "Values:" << endl ;
-        elem->get_basis_values().print_info(out);
-    }
+    using BSplineCache = BSplineUniformQuadCache<dim_domain,dim_domain>;
 
     {
+        BSplineCache cache(space,ValueFlags::value,quad);
+
         auto elem = space->begin();
-        elem->init_cache(ValueFlags::gradient, quad) ;
+        cache.init_element_cache(elem);
 
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_cache();
+            cache.fill_element_cache(elem);
+            out << "Values:" << endl ;
+            elem->get_basis_values().print_info(out);
+        }
+    }
+
+    {
+        BSplineCache cache(space,ValueFlags::gradient,quad);
+
+        auto elem = space->begin();
+        cache.init_element_cache(elem);
+
+        for (; elem != space->end(); ++elem)
+        {
+            cache.fill_element_cache(elem);
             out << "Gradients:" << endl ;
             elem->get_basis_gradients().print_info(out);
         }
     }
 
     {
+        BSplineCache cache(space,ValueFlags::hessian,quad);
+
         auto elem = space->begin();
-        elem->init_cache(ValueFlags::hessian, quad) ;
+        cache.init_element_cache(elem);
 
         for (; elem != space->end(); ++elem)
         {
-            elem->fill_cache();
+            cache.fill_element_cache(elem);
             out << "Hessians:" << endl ;
             elem->get_basis_hessians().print_info(out);
         }

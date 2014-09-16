@@ -153,8 +153,8 @@ private:
         using DirectionTable<BasisValues>::DirectionTable;
         auto get_element_values(const TensorIndex<dim> &id)
         {
-            ComponentContainer<TensorProductFunctionEvaluator<dim>>
-                                                                 result((this->entry(0,0)).get_comp_map());
+            ComponentContainer<TensorProductFunctionEvaluator<dim> >
+            result((this->entry(0,0)).get_comp_map());
             for (auto c : result.get_active_components_id())
             {
                 for (int i = 0; i < dim; ++i)

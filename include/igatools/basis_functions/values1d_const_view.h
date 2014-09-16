@@ -152,7 +152,7 @@ public:
         for (int i = 0; i < dim; ++i)
         {
             n_func[i] = (*this)[i]->get_num_functions();
-            n_pts[i] = (*this)[i]->get_num_functions();
+            n_pts[i] = (*this)[i]->get_num_points();
         }
         f_size = TensorSizedContainer<dim>(n_func);
         p_size = TensorSizedContainer<dim>(n_pts);
