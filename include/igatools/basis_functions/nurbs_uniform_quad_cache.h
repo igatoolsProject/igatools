@@ -100,6 +100,8 @@ private:
     BSplineUniformQuadCache<dim_,range_,rank_> bspline_uniform_quad_cache_;
 
 
+    using ElementCache = typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache;
+
     /**
      * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
      * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
@@ -109,9 +111,36 @@ private:
      */
     void
     evaluate_nurbs_values(
-        const typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache &bspline_cache,
+        const ElementCache &bspline_cache,
         const vector<Real> &element_weights,
         ValueTable<Value> &D0_phi_hat) const ;
+
+    /**
+     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
+     * and the NURBS weights local to the element @p element_weights.
+     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void
+    evaluate_nurbs_gradients(
+        const ElementCache &bspline_cache,
+        const vector<Real> &element_weights,
+        ValueTable< Derivative<1> > &D1_phi_hat) const ;
+
+    /**
+     * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
+     * and the NURBS weights local to the element @p element_weights.
+     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void
+    evaluate_nurbs_hessians(
+        const ElementCache &bspline_cache,
+        const vector<Real> &element_weights,
+        ValueTable< Derivative<2> > &D2_phi_hat) const ;
+
 
 };
 

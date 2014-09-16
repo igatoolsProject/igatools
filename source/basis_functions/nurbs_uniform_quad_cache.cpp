@@ -494,7 +494,7 @@ template <int dim_, int range_, int rank_ >
 void
 NURBSUniformQuadCache<dim_, range_, rank_>::
 evaluate_nurbs_values(
-    const typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache &bspline_cache,
+    const ElementCache &bspline_cache,
     const vector<Real> &weights,
     ValueTable<Value> &D0_phi_hat) const
 {
@@ -530,8 +530,7 @@ evaluate_nurbs_values(
            ExcDimensionMismatch(D0_phi_hat.get_num_functions(), bspline_values.get_num_functions()));
     Assert(D0_phi_hat.get_num_points() == bspline_values.get_num_points(),
            ExcDimensionMismatch(D0_phi_hat.get_num_points(), bspline_values.get_num_points()));
-//    Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
-//           ExcDimensionMismatch(D0_phi_hat.get_num_functions(), this->get_num_basis()));
+
 
     const auto &w_table = this->space_->weights_;
     const int num_points = D0_phi_hat.get_num_points();
@@ -581,11 +580,11 @@ evaluate_nurbs_values(
         }
     }
 
-    const auto inactive_components_id = w_table.get_inactive_components_id();
-    const auto comp_map = w_table.get_comp_map();
+//    const auto inactive_components_id = w_table.get_inactive_components_id();
+//    const auto comp_map = w_table.get_comp_map();
     bspline_uniform_quad_cache_.copy_to_inactive_components_values(
-        inactive_components_id,
-        comp_map,
+        w_table.get_inactive_components_id(),
+        w_table.get_comp_map(),
         D0_phi_hat);
 
 
@@ -611,6 +610,373 @@ evaluate_nurbs_values(
 #endif
 }
 
+
+
+template <int dim_, int range_, int rank_ >
+void
+NURBSUniformQuadCache<dim_, range_, rank_>::
+evaluate_nurbs_gradients(
+    const ElementCache &bspline_cache,
+    const vector<Real> &weights,
+    ValueTable<Derivative<1> > &D1_phi_hat) const
+{
+    /*
+     * This function evaluates the derivative of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the i-th NURBS basis function is defined as
+     *
+     *         P_i
+     * R_i = -------
+     *          Q
+     *
+     *
+     *          dP_i       P_i * dQ
+     * dR_i = -------  -  ------------
+     *           Q            Q*Q
+     *
+     * and
+     *
+     * P_i = w_i * N_i
+     *
+     *
+     * dP_i = w_i * dN_i
+     *
+     *
+     *     _n_
+     *     \
+     * Q = /__  P_i
+     *    i = 0
+     *
+     *
+     *      _n_
+     *      \
+     * dQ = /__  dP_i
+     *     i = 0
+     */
+
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
+    const auto &bspline_values = bspline_cache.get_values();
+    const auto &bspline_gradients = bspline_cache.get_gradients();
+
+    Assert(D1_phi_hat.get_num_functions() == weights.size(),
+           ExcDimensionMismatch(D1_phi_hat.get_num_functions(), weights.size()));
+
+    Assert(D1_phi_hat.get_num_functions() == bspline_values.get_num_functions(),
+           ExcDimensionMismatch(D1_phi_hat.get_num_functions(), bspline_values.get_num_functions()));
+    Assert(D1_phi_hat.get_num_points() == bspline_values.get_num_points(),
+           ExcDimensionMismatch(D1_phi_hat.get_num_points(), bspline_values.get_num_points()));
+
+
+    const auto &w_table = this->space_->weights_;
+    const int num_points = D1_phi_hat.get_num_points();
+
+    const auto spline_space = this->space_->get_spline_space();
+    const auto comp_offset = spline_space->get_basis_offset();
+
+    const auto num_basis_element =  spline_space->get_num_all_element_basis();
+
+
+    using Grad = special_array<Real,dim>;
+    for (int iComp : w_table.get_active_components_id())
+    {
+        const int num_basis_comp = num_basis_element.comp_dimension[iComp];
+
+        vector<vector<Real> >  P(num_basis_comp, vector<Real>(num_points));
+        vector<vector<Grad> > dP(num_basis_comp, vector<Grad>(num_points));
+
+        vector<Real> Q(num_points);
+        vector<Grad> dQ(num_points);
+
+        for (int i = 0; i < num_basis_comp; ++i)
+        {
+            const int basis_flat_id = comp_offset[iComp] + i;
+            const auto  &N_i =    bspline_values.get_function_view(basis_flat_id);
+            const auto &dN_i = bspline_gradients.get_function_view(basis_flat_id);
+            const Real w_i = weights[basis_flat_id];
+
+            auto &P_i =  P[i];
+            auto &dP_i = dP[i];
+
+            for (int iPt = 0; iPt < num_points; iPt++)
+            {
+                P_i[iPt] = w_i * N_i[iPt](iComp);
+                Q[iPt] += P_i[iPt];
+
+                auto &dP_i_iPt = dP_i[iPt];
+                auto &dQ_iPt = dQ[iPt];
+                for (int entry_flat_id = 0; entry_flat_id < dim; ++entry_flat_id)
+                {
+                    dP_i_iPt[entry_flat_id] = w_i * dN_i[iPt](entry_flat_id)(iComp);
+                    dQ_iPt[entry_flat_id] += dP_i_iPt[entry_flat_id];
+                }
+
+            }
+        }
+
+        vector<Real>   invQ(num_points);
+        vector<Real> invQ_2(num_points);
+        vector<Grad>  dinvQ(num_points);
+        for (int iPt = 0; iPt < num_points; ++iPt)
+        {
+            const Real invQ_tmp = 1.0 / Q[iPt];
+            invQ  [iPt] = invQ_tmp;
+            invQ_2[iPt] = invQ_tmp * invQ_tmp;
+
+            for (int j = 0; j < dim; ++j)
+                dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j];
+        }
+
+        for (int i = 0; i < num_basis_comp; i++)
+        {
+            const int basis_flat_id = comp_offset[iComp] + i;
+            const auto &P_i =  P[i];
+            const auto &dP_i = dP[i];
+
+            for (int iPt = 0; iPt < num_points; ++iPt)
+            {
+                auto &dR = D1_phi_hat.get_function_view(basis_flat_id)[iPt];
+
+                const Real invQ_tmp = invQ[iPt];
+                const Real    P_tmp = P_i[iPt];
+
+                const auto &dinvQ_tmp = dinvQ[iPt];
+                const auto &dP_tmp = dP_i[iPt];
+
+                for (int entry_flat_id = 0; entry_flat_id < dim; ++entry_flat_id)
+                {
+                    dR(entry_flat_id)(iComp) = invQ_tmp * dP_tmp[entry_flat_id] + dinvQ_tmp[entry_flat_id] * P_tmp;
+                }
+            }
+        }
+    }
+
+    bspline_uniform_quad_cache_.template copy_to_inactive_components<1>(
+        w_table.get_inactive_components_id(),
+        w_table.get_comp_map(),
+        D1_phi_hat);
+#if 0
+    for (int comp : w_table.get_inactive_components_id())
+    {
+        const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+        const Size offset = this->comp_offset_[comp];
+        const Size act_offset = this->comp_offset_[w_table.active(comp)];
+
+        for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+        {
+            const auto values_phi_hat_copy_from = D1_phi_hat.get_function_view(act_offset+basis_i);
+            auto values_phi_hat_copy_to = D1_phi_hat.get_function_view(offset+basis_i);
+
+            for (int qp = 0; qp < num_points; ++qp)
+                values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+        }
+    }
+#endif
+}
+
+template <int dim_, int range_, int rank_ >
+void
+NURBSUniformQuadCache<dim_, range_, rank_>::
+evaluate_nurbs_hessians(
+    const ElementCache &bspline_cache,
+    const vector<Real> &weights,
+    ValueTable<Derivative<2> > &D2_phi_hat) const
+{
+    /*
+     * This function evaluates the derivative of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the i-th NURBS basis function is defined as
+     *
+     *         P_i
+     * R_i = -------
+     *          Q
+     *
+     *
+     *          dP_i       P_i * dQ
+     * dR_i = -------  -  ------------
+     *           Q            Q*Q
+     *
+     *
+     *           d2P_i     ( 2 * dP_i * dQ + P_i * d2Q )      2 * P_i * dQ * dQ
+     * d2R_i = -------- - ------------------------------- + ---------------------
+     *             Q                    Q*Q                        Q*Q*Q
+     *
+     * and
+     *
+     * P_i = w_i * N_i
+     *
+     *
+     * dP_i = w_i * dN_i
+     *
+     *
+     * d2P_i = w_i * d2N_i
+     *
+     *
+     *     _n_
+     *     \
+     * Q = /__  P_i
+     *    i = 0
+     *
+     *
+     *      _n_
+     *      \
+     * dQ = /__  dP_i
+     *     i = 0
+     *
+     *
+     *       _n_
+     *       \
+     * d2Q = /__  d2P_i
+     *      i = 0
+     */
+
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
+    const auto &bspline_values = bspline_cache.get_values();
+    const auto &bspline_gradients = bspline_cache.get_gradients();
+    const auto &bspline_hessians = bspline_cache.get_hessians();
+
+    Assert(D2_phi_hat.get_num_functions() == weights.size(),
+           ExcDimensionMismatch(D2_phi_hat.get_num_functions(), weights.size()));
+
+    Assert(D2_phi_hat.get_num_functions() == bspline_values.get_num_functions(),
+           ExcDimensionMismatch(D2_phi_hat.get_num_functions(), bspline_values.get_num_functions()));
+    Assert(D2_phi_hat.get_num_points() == bspline_values.get_num_points(),
+           ExcDimensionMismatch(D2_phi_hat.get_num_points(), bspline_values.get_num_points()));
+
+
+    const auto &w_table = this->space_->weights_;
+    const int num_points = D2_phi_hat.get_num_points();
+
+    const auto spline_space = this->space_->get_spline_space();
+    const auto comp_offset = spline_space->get_basis_offset();
+
+    const auto num_basis_element =  spline_space->get_num_all_element_basis();
+
+
+    using Grad = special_array<Real,dim> ;
+    using Hess = special_array<special_array<Real,dim>,dim>;
+    for (int iComp : w_table.get_active_components_id())
+    {
+        const int num_basis_comp = num_basis_element.comp_dimension[iComp];
+
+        vector<vector<Real>>   P(num_basis_comp, vector<Real>(num_points));
+        vector<vector<Grad>>  dP(num_basis_comp, vector<Grad>(num_points));
+        vector<vector<Hess>> d2P(num_basis_comp, vector<Hess>(num_points));
+
+        vector<Real>  Q(num_points);
+        vector<Grad> dQ(num_points);
+        vector<Hess> d2Q(num_points);
+
+        for (int i = 0; i < num_basis_comp; ++i)
+        {
+            const int basis_flat_id = comp_offset[iComp] + i;
+            const auto   &N_i =    bspline_values.get_function_view(basis_flat_id);
+            const auto  &dN_i = bspline_gradients.get_function_view(basis_flat_id);
+            const auto &d2N_i =  bspline_hessians.get_function_view(basis_flat_id);
+
+            const Real w_i = weights[basis_flat_id];
+            auto   &P_i =   P[i];
+            auto  &dP_i =  dP[i];
+            auto &d2P_i = d2P[i];
+
+            for (int iPt = 0; iPt < num_points; ++iPt)
+            {
+                P_i[iPt] = w_i * N_i[iPt](iComp);
+                Q[iPt] += P_i[iPt];
+
+                int hess_entry_flat_id = 0;
+                for (int j = 0; j < dim; ++j)
+                {
+                    dP_i[iPt][j] = w_i * dN_i[iPt](j)(iComp);
+                    dQ[iPt][j] += dP_i[iPt][j];
+
+                    for (int k = 0; k < dim; ++k, ++hess_entry_flat_id)
+                    {
+                        d2P_i[iPt][j][k] = w_i * d2N_i[iPt](hess_entry_flat_id)(iComp);
+                        d2Q[iPt][j][k] += d2P_i[iPt][j][k];
+                    }
+                }
+
+            }
+        }
+
+        vector<Real> invQ(num_points);
+        vector<Real> invQ_2(num_points);
+        vector<Real> two_invQ_3(num_points);
+        vector<Grad> dinvQ(num_points);
+        vector<Hess> d2invQ(num_points);
+        for (int iPt = 0; iPt < num_points; ++iPt)
+        {
+            const Real invQ_tmp = 1.0 / Q[iPt];
+            invQ  [iPt] = invQ_tmp;
+            invQ_2[iPt] = invQ_tmp * invQ_tmp;
+            two_invQ_3[iPt] = 2.0 * invQ_tmp * invQ_tmp * invQ_tmp;
+
+            for (int j = 0; j < dim; ++j)
+            {
+                dinvQ[iPt][j] = - invQ_2[iPt] * dQ[iPt][j];
+                for (int k = 0; k < dim; ++k)
+                {
+                    d2invQ[iPt][j][k] = - invQ_2[iPt] * d2Q[iPt][j][k] + two_invQ_3[iPt] * dQ[iPt][j] * dQ[iPt][k];
+                }
+            }
+        }
+
+        for (int i = 0; i < num_basis_comp; i++)
+        {
+            const int basis_flat_id = comp_offset[iComp] + i;
+
+            const auto   &P_i =   P[i];
+            const auto  &dP_i =  dP[i];
+            const auto &d2P_i = d2P[i];
+
+            for (int iPt = 0; iPt < num_points; iPt++)
+            {
+                auto &d2R = D2_phi_hat.get_function_view(basis_flat_id)[iPt];
+                const Real invQ_tmp = invQ[iPt];
+                const Real    P_tmp = P_i[iPt];
+
+                const auto &dinvQ_tmp = dinvQ[iPt];
+                const auto    &dP_tmp = dP_i[iPt];
+
+                const auto &d2invQ_tmp = d2invQ[iPt];
+                const auto    &d2P_tmp = d2P_i[iPt];
+
+                int hess_entry_flat_id = 0;
+                for (int j = 0; j < dim; ++j)
+                {
+                    for (int k = 0; k < dim; ++k, ++hess_entry_flat_id)
+                    {
+                        d2R(hess_entry_flat_id)(iComp) = d2invQ_tmp[j][k] *   P_tmp +
+                                                         dinvQ_tmp[j]     *  dP_tmp[k] +
+                                                         dinvQ_tmp[k]     *  dP_tmp[j] +
+                                                         invQ_tmp         * d2P_tmp[j][k];
+                    }
+                }
+            }
+        }
+        bspline_uniform_quad_cache_.template copy_to_inactive_components<2>(
+            w_table.get_inactive_components_id(),
+            w_table.get_comp_map(),
+            D2_phi_hat);
+#if 0
+        for (int comp : w_table.get_inactive_components_id())
+        {
+            const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+            const Size offset = this->comp_offset_[comp];
+            const Size act_offset = this->comp_offset_[w_table.active(comp)];
+
+            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+            {
+                const auto values_phi_hat_copy_from = D2_phi_hat.get_function_view(act_offset+basis_i);
+                auto values_phi_hat_copy_to = D2_phi_hat.get_function_view(offset+basis_i);
+
+                for (int qp = 0; qp < num_points; ++qp)
+                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+            }
+        }
+#endif
+    }
+}
 
 template<int dim_, int range_ , int rank_>
 void

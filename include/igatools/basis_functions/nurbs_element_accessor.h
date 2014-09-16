@@ -249,7 +249,6 @@ private:
     evaluate_nurbs_values(
         const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
         ValueTable<Value> &D0_phi_hat) const ;
-#endif
 
     /**
      * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
@@ -273,7 +272,7 @@ private:
         const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
         ValueTable< Derivative<2> > &D2_phi_hat) const ;
 
-
+#endif
 
 
 

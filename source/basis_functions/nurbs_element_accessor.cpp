@@ -239,7 +239,6 @@ evaluate_nurbs_values(
         }
     }
 }
-#endif
 
 
 
@@ -579,7 +578,7 @@ evaluate_nurbs_hessians(
         }
     }
 }
-
+#endif
 
 
 template <int dim, int range, int rank >
