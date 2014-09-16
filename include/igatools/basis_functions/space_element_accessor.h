@@ -567,6 +567,11 @@ public:
     int get_num_basis(const int i) const;
 
     /**
+     * Returns the basis function ID offset between the different components.
+     */
+    ComponentContainer<int> get_basis_offset() const;
+
+    /**
      * Returns the global dofs of the local (non zero) basis functions
      * on the element.
      * For example:

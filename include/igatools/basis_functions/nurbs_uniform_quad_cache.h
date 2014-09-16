@@ -47,6 +47,9 @@ class NURBSUniformQuadCache : public GridUniformQuadCache<dim_>
     static const Size n_components =  Space::n_components;
     using ElementIterator = typename Space::ElementIterator;
 
+    template<class T>
+    using ComponentContainer = typename Space::template ComponentContainer<T>;
+
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
 
@@ -113,6 +116,7 @@ private:
     evaluate_nurbs_values(
         const ElementCache &bspline_cache,
         const vector<Real> &element_weights,
+        const ComponentContainer<int> &elem_basis_offset,
         ValueTable<Value> &D0_phi_hat) const ;
 
     /**
@@ -126,6 +130,7 @@ private:
     evaluate_nurbs_gradients(
         const ElementCache &bspline_cache,
         const vector<Real> &element_weights,
+        const ComponentContainer<int> &elem_basis_offset,
         ValueTable< Derivative<1> > &D1_phi_hat) const ;
 
     /**
@@ -139,6 +144,7 @@ private:
     evaluate_nurbs_hessians(
         const ElementCache &bspline_cache,
         const vector<Real> &element_weights,
+        const ComponentContainer<int> &elem_basis_offset,
         ValueTable< Derivative<2> > &D2_phi_hat) const ;
 
 

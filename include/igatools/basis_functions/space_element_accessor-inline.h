@@ -938,6 +938,15 @@ get_num_basis() const
     return total_num_basis;
 }
 
+template<class Space>
+inline
+auto
+SpaceElementAccessor<Space>::
+get_basis_offset() const -> ComponentContainer<int>
+{
+    return comp_offset_;
+}
+
 
 template<class Space>
 inline

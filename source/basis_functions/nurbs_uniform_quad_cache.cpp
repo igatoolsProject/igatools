@@ -449,24 +449,27 @@ fill_element_cache(ElementAccessor &elem)
 
 
     const auto &elem_weights = elem.get_local_weights();  // NURBS weights local to the element
-
+    const auto elem_basis_offset = elem.get_basis_offset();
 
     //--------------------------------------------------------------------------
     auto &flags_handler = nurbs_cache.flags_handler_;
     if (flags_handler.fill_values())
     {
-        this->evaluate_nurbs_values(bspline_cache, elem_weights, nurbs_cache.phi_);
+        this->evaluate_nurbs_values(bspline_cache,
+                                    elem_weights, elem_basis_offset,nurbs_cache.phi_);
         flags_handler.set_values_filled(true);
     }
     if (flags_handler.fill_gradients())
     {
-        this->evaluate_nurbs_gradients(bspline_cache, elem_weights, nurbs_cache.D1phi_);
+        this->evaluate_nurbs_gradients(bspline_cache,
+                                       elem_weights, elem_basis_offset, nurbs_cache.D1phi_);
         flags_handler.set_gradients_filled(true);
     }
 
     if (flags_handler.fill_hessians())
     {
-        this->evaluate_nurbs_hessians(bspline_cache, elem_weights, nurbs_cache.D2phi_);
+        this->evaluate_nurbs_hessians(bspline_cache,
+                                      elem_weights, elem_basis_offset, nurbs_cache.D2phi_);
         flags_handler.set_hessians_filled(true);
     }
 
@@ -496,6 +499,7 @@ NURBSUniformQuadCache<dim_, range_, rank_>::
 evaluate_nurbs_values(
     const ElementCache &bspline_cache,
     const vector<Real> &weights,
+    const ComponentContainer<int> &elem_basis_offset,
     ValueTable<Value> &D0_phi_hat) const
 {
     /*
@@ -536,8 +540,6 @@ evaluate_nurbs_values(
     const int num_points = D0_phi_hat.get_num_points();
 
     const auto spline_space = this->space_->get_spline_space();
-    const auto comp_offset = spline_space->get_basis_offset();
-
     const auto num_basis_element =  spline_space->get_num_all_element_basis();
 
     for (int iComp : w_table.get_active_components_id())
@@ -549,7 +551,7 @@ evaluate_nurbs_values(
 
         for (int i = 0; i < num_basis_comp; ++i)
         {
-            const int basis_flat_id = comp_offset[iComp] + i;
+            const int basis_flat_id = elem_basis_offset[iComp] + i;
 
             const auto &N_i = bspline_values.get_function_view(basis_flat_id);
             const Real w_i = weights[basis_flat_id];
@@ -569,7 +571,7 @@ evaluate_nurbs_values(
 
         for (int i = 0; i < num_basis_comp; i++)
         {
-            const int basis_flat_id = comp_offset[iComp] + i;
+            const int basis_flat_id = elem_basis_offset[iComp] + i;
             const auto &P_i = P[i];
 
             for (int iPt = 0; iPt < num_points; ++iPt)
@@ -618,6 +620,7 @@ NURBSUniformQuadCache<dim_, range_, rank_>::
 evaluate_nurbs_gradients(
     const ElementCache &bspline_cache,
     const vector<Real> &weights,
+    const ComponentContainer<int> &elem_basis_offset,
     ValueTable<Derivative<1> > &D1_phi_hat) const
 {
     /*
@@ -671,8 +674,6 @@ evaluate_nurbs_gradients(
     const int num_points = D1_phi_hat.get_num_points();
 
     const auto spline_space = this->space_->get_spline_space();
-    const auto comp_offset = spline_space->get_basis_offset();
-
     const auto num_basis_element =  spline_space->get_num_all_element_basis();
 
 
@@ -689,7 +690,7 @@ evaluate_nurbs_gradients(
 
         for (int i = 0; i < num_basis_comp; ++i)
         {
-            const int basis_flat_id = comp_offset[iComp] + i;
+            const int basis_flat_id = elem_basis_offset[iComp] + i;
             const auto  &N_i =    bspline_values.get_function_view(basis_flat_id);
             const auto &dN_i = bspline_gradients.get_function_view(basis_flat_id);
             const Real w_i = weights[basis_flat_id];
@@ -728,7 +729,7 @@ evaluate_nurbs_gradients(
 
         for (int i = 0; i < num_basis_comp; i++)
         {
-            const int basis_flat_id = comp_offset[iComp] + i;
+            const int basis_flat_id = elem_basis_offset[iComp] + i;
             const auto &P_i =  P[i];
             const auto &dP_i = dP[i];
 
@@ -779,6 +780,7 @@ NURBSUniformQuadCache<dim_, range_, rank_>::
 evaluate_nurbs_hessians(
     const ElementCache &bspline_cache,
     const vector<Real> &weights,
+    const ComponentContainer<int> &elem_basis_offset,
     ValueTable<Derivative<2> > &D2_phi_hat) const
 {
     /*
@@ -847,7 +849,6 @@ evaluate_nurbs_hessians(
     const int num_points = D2_phi_hat.get_num_points();
 
     const auto spline_space = this->space_->get_spline_space();
-    const auto comp_offset = spline_space->get_basis_offset();
 
     const auto num_basis_element =  spline_space->get_num_all_element_basis();
 
@@ -868,7 +869,7 @@ evaluate_nurbs_hessians(
 
         for (int i = 0; i < num_basis_comp; ++i)
         {
-            const int basis_flat_id = comp_offset[iComp] + i;
+            const int basis_flat_id = elem_basis_offset[iComp] + i;
             const auto   &N_i =    bspline_values.get_function_view(basis_flat_id);
             const auto  &dN_i = bspline_gradients.get_function_view(basis_flat_id);
             const auto &d2N_i =  bspline_hessians.get_function_view(basis_flat_id);
@@ -923,7 +924,7 @@ evaluate_nurbs_hessians(
 
         for (int i = 0; i < num_basis_comp; i++)
         {
-            const int basis_flat_id = comp_offset[iComp] + i;
+            const int basis_flat_id = elem_basis_offset[iComp] + i;
 
             const auto   &P_i =   P[i];
             const auto  &dP_i =  dP[i];
