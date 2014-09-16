@@ -68,38 +68,40 @@ void do_test()
     }
 
     QGauss< dim_domain > quad_scheme1(2) ;
+    using BSplineCache = BSplineUniformQuadCache<dim_domain,dim_domain>;
 
-    auto element1 = space->begin();
-    element1->init_cache(ValueFlags::value | ValueFlags::gradient,
-                         quad_scheme1);
-    element1->fill_cache() ;
+    BSplineCache cache1(space,ValueFlags::value|ValueFlags::gradient,quad_scheme1);
 
-    auto u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
+    auto element = space->begin();
+    cache1.init_element_cache(element);
+    cache1.fill_element_cache(element);
+
+    auto u_values = element->evaluate_field(u.get_local_coefs(element->get_local_to_global()));
     u_values.print_info(out);
     out << endl;
 
-    auto values1    = element1->get_basis_values();
+    auto values1    = element->get_basis_values();
     values1.print_info(out);
     out << endl;
 
-    auto gradients1    = element1->get_basis_gradients();
+    auto gradients1    = element->get_basis_gradients();
     gradients1.print_info(out);
     out << endl;
 
     QUniform< dim_domain > quad_scheme2(3) ;
-    element1->init_cache(ValueFlags::value | ValueFlags::gradient,
-                         quad_scheme2);
-    element1->fill_cache() ;
+    BSplineCache cache2(space,ValueFlags::value|ValueFlags::gradient,quad_scheme2);
+    cache2.init_element_cache(element);
+    cache2.fill_element_cache(element);
 
-    auto values2    = element1->get_basis_values();
+    auto values2 = element->get_basis_values();
     values2.print_info(out);
     out << endl;
 
-    auto gradients2    = element1->get_basis_gradients();
+    auto gradients2 = element->get_basis_gradients();
     gradients2.print_info(out);
     out << endl;
 
-    u_values = element1->evaluate_field(u.get_local_coefs(element1->get_local_to_global()));
+    u_values = element->evaluate_field(u.get_local_coefs(element->get_local_to_global()));
     u_values.print_info(out);
     out << endl;
 
