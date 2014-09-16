@@ -658,7 +658,7 @@ resize(const BasisElemValueFlagsHandler &flags_handler,
     this->set_initialized(true);
 }
 
-
+#if 0
 template<class Space>
 inline
 void
@@ -670,6 +670,7 @@ resize(const BasisElemValueFlagsHandler &flags_handler,
 {
     ValuesCache::resize(flags_handler, quad, n_basis_direction);
 }
+#endif
 
 template<class Space>
 inline
@@ -682,13 +683,12 @@ resize(const BasisFaceValueFlagsHandler &flags_handler,
        const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-
-    const auto quad1 = quad.collapse_to_face(face_id);
-    ValuesCache::resize(flags_handler, quad1, n_basis_direction);
+//    const auto quad1 = quad.collapse_to_face(face_id);
+    ValuesCache::resize(flags_handler, quad.collapse_to_face(face_id), n_basis_direction);
 }
 
 
-
+#if 0
 template<class Space>
 inline
 void
@@ -702,7 +702,7 @@ resize(const BasisFaceValueFlagsHandler &flags_handler,
     Assert(false,ExcNotImplemented()) ;
     AssertThrow(false,ExcNotImplemented()) ;
 }
-
+#endif
 
 
 //template<class Space>

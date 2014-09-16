@@ -209,7 +209,9 @@ public:
 
     /** @name Assignment operators */
     ///@{
-    /** Copy assignment operator. */
+    /**
+     * Copy assignment operator. It performs a shallow copy of the Accessor hold by the GridForwardIterator.
+     */
     GridForwardIterator<Accessor> &
     operator=(const GridForwardIterator<Accessor> &it)
     {

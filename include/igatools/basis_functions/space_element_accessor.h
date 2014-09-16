@@ -675,7 +675,7 @@ protected:
         Quadrature<dim> quad_;
     };
 
-
+#if 0
     /**
      * Cache for the element values at quadrature points
      */
@@ -691,7 +691,7 @@ protected:
                     const SpaceDimensionTable &n_basis_direction);
 
     };
-
+#endif
 
     /**
      * Cache for the face values at quadrature points
@@ -707,7 +707,7 @@ protected:
                     const Quadrature<dim> &quad,
                     const SpaceDimensionTable &n_basis_direction,
                     const Index face_id);
-
+#if 0
         /**
          * Allocate space for the values and derivatives
          * at quadrature points for a specified face.
@@ -716,7 +716,7 @@ protected:
                     const Quadrature<dim-1> &quad,
                     const SpaceDimensionTable &n_basis_direction,
                     const Index face_id);
-
+#endif
     };
 
     class LocalCache
@@ -739,7 +739,7 @@ protected:
          * Element cache to store the values and derivatives
          * of the basis functions on the element
          */
-        ElementValuesCache elem_values_;
+        ValuesCache elem_values_;
 
         /**
          * Face cache to store the values and derivatives

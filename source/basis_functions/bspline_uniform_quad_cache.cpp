@@ -295,10 +295,7 @@ init_element_cache(ElementAccessor &elem)
 
     auto &face_cache = cache->face_values_;
     for (auto f: base_t::faces)
-    {
-        auto &f_cache = face_cache[f];
-        f_cache.resize(face_flags_, quad_, n_basis, f);
-    }
+        face_cache[f].resize(face_flags_, quad_, n_basis, f);
 }
 
 

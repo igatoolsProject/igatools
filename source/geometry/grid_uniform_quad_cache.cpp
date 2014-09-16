@@ -52,7 +52,7 @@ init_element_cache(ElementAccessor &elem)
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
     {
-        using Cache = typename CartesianGridElementAccessor<dim_>::LocalCache;
+        using Cache = typename ElementAccessor::LocalCache;
         cache = shared_ptr<Cache>(new Cache);
     }
 
@@ -60,11 +60,8 @@ init_element_cache(ElementAccessor &elem)
     elem_cache.resize(flags_, quad_);
 
     auto &face_cache = cache->face_values_;
-    for (auto f: faces)
-    {
-        auto &f_cache = face_cache[f];
-        f_cache.resize(face_flags_, quad_, f);
-    }
+    for (auto &f: faces)
+        face_cache[f].resize(face_flags_, quad_, f);
 }
 
 

@@ -48,12 +48,16 @@ void run_test()
 
     out << endl ;
 
+
+    QGauss<dim> quad(2);
+    GridUniformQuadCache<dim> cache(grid, ValueFlags::measure | ValueFlags::w_measure, quad);
+
     auto elem = grid->begin();
-    elem->init_cache(ValueFlags::measure|ValueFlags::w_measure, QGauss<dim>(2));
+    cache.init_element_cache(elem);
     for (; elem != grid->end(); ++elem)
     {
         out << elem->get_flat_index() << "   ";
-        elem->fill_cache();
+        cache.fill_element_cache(elem);
         out << elem->get_measure() << endl;
         elem->get_w_measures().print_info(out);
         out << endl;
@@ -79,13 +83,14 @@ void run_test2()
 
     out << endl ;
 
+    GridUniformQuadCache<dim> cache(grid, ValueFlags::point, QGauss<dim>(2));
+
     auto elem = grid->begin();
-    ValueFlags flag = ValueFlags::point;
-    elem->init_cache(flag, QGauss<dim>(2));
+    cache.init_element_cache(elem);
     for (; elem != grid->end(); ++elem)
     {
         out << elem->get_flat_index() << "   ";
-        elem->fill_cache();
+        cache.fill_element_cache(elem);
         elem->get_points().print_info(out);
         out << endl;
     }
