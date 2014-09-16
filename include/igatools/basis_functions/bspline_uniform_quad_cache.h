@@ -65,7 +65,8 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 
     using Value = typename Space::Value;
 
-protected:
+//protected:
+public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
     using ElementAccessor = typename Space::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);

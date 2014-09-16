@@ -26,7 +26,7 @@
 #include <igatools/basis_functions/space_element_accessor.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
-#include <igatools///basis_functions/bspline_element_scalar_evaluator.h>
+#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 #include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 
 IGA_NAMESPACE_OPEN

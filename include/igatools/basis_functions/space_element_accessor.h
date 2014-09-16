@@ -675,23 +675,6 @@ protected:
         Quadrature<dim> quad_;
     };
 
-#if 0
-    /**
-     * Cache for the element values at quadrature points
-     */
-    class ElementValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * at quadrature points
-         */
-        void resize(const BasisElemValueFlagsHandler &flags_handler,
-                    const Quadrature<dim> &quad,
-                    const SpaceDimensionTable &n_basis_direction);
-
-    };
-#endif
 
     /**
      * Cache for the face values at quadrature points

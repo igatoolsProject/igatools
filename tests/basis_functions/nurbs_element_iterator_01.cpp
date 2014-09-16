@@ -57,15 +57,19 @@ void test()
     const int n_points = 3;
     QGauss<dim> quad(n_points);
 
+
     auto elem     = space->begin();
     auto end_element = space->end();
 
     const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    elem->init_cache(flag, quad);
+
+    NURBSUniformQuadCache<dim,range,rank> cache(space,flag,quad);
+
+    cache.init_element_cache(elem);
 
     for (; elem != end_element; ++elem)
     {
-        elem->fill_cache();
+        cache.fill_element_cache(elem);
         out << "Element: " << elem->get_flat_index()<< endl;
 
         out << "Values basis functions:" << endl;

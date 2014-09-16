@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/nurbs_uniform_quad_cache.h>
 
 #ifdef NURBS
 IGA_NAMESPACE_OPEN
@@ -81,8 +82,12 @@ public:
 
     /**
      * Copy constructor.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
      */
-    NURBSElementAccessor(const NURBSElementAccessor<dim,range,rank > &element) = delete;
+    NURBSElementAccessor(const NURBSElementAccessor<dim,range,rank> &elem,
+                         const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
@@ -113,7 +118,7 @@ public:
 
 
 
-
+#if 0
     /**@name Cache initialization and filling. */
     ///@{
 
@@ -144,6 +149,7 @@ public:
      */
     void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
     ///@}
+#endif
 
     /**
      * Get the NURBS weights associated to the element.
@@ -278,6 +284,11 @@ private:
 
 
     template <typename Accessor> friend class GridForwardIterator ;
+
+
+    template <typename Accessor> friend class GridForwardIterator;
+    friend class NURBSUniformQuadCache<dim, range, rank>;
+
 } ;
 
 

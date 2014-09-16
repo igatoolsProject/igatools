@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#if 0
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
@@ -57,7 +56,17 @@ NURBSElementAccessor(const std::shared_ptr<ContainerType> space,
 {}
 
 
+template< int dim, int range, int rank >
+NURBSElementAccessor< dim, range, rank >::
+NURBSElementAccessor(const NURBSElementAccessor<dim,range,rank> &elem,
+                     const CopyPolicy &copy_policy)
+    :
+    SpaceElementAccessor<NURBSSpace<dim,range,rank> >(elem,copy_policy),
+    bspline_element_accessor_(elem.bspline_element_accessor_,copy_policy)
+{}
 
+
+#if 0
 template <int dim, int range, int rank>
 void
 NURBSElementAccessor<dim, range, rank>::
@@ -131,7 +140,7 @@ init_face_cache(const Index face_id,
 {
     AssertThrow(false,ExcNotImplemented());
 }
-
+#endif
 
 
 
@@ -786,6 +795,7 @@ evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const
     return result;
 }
 
+#if 0
 template <int dim, int range, int rank >
 void
 NURBSElementAccessor< dim, range, rank >::
@@ -825,7 +835,7 @@ fill_cache(const TopologyId<dim> &topology_id)
 
     cache.set_filled(true);
 }
-
+#endif
 
 
 template <int dim, int range, int rank >
@@ -929,4 +939,3 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element_accessor.inst>
 
-#endif
