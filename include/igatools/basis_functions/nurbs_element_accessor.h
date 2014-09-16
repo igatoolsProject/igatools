@@ -116,41 +116,6 @@ public:
     ///@}
 
 
-
-
-#if 0
-    /**@name Cache initialization and filling. */
-    ///@{
-
-    /**
-     * Prepares the internal cache for the efficient
-     * computation of the values requested in
-     * the fill_flag on the given quadrature points.
-     * This implies a uniform quadrature scheme
-     * (i.e. the same for all elements).
-     * @note This function should be called before fill_values()
-     */
-    void init_cache(const ValueFlags fill_flag,
-                    const Quadrature<dim> &quad);
-
-    /**
-     * For a given face quadrature.
-     */
-    void init_face_cache(const Index face_id,
-                         const ValueFlags fill_flag,
-                         const Quadrature<dim-1> &quad);
-
-    /**
-     * Fills the element values cache according to the evaluation points
-     * and fill flags specifies in init_values.
-     *
-     * @note The topology for which the measure is computed is specified by
-     * the input argument @p topology_id.
-     */
-    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
-    ///@}
-#endif
-
     /**
      * Get the NURBS weights associated to the element.
      */
@@ -237,42 +202,6 @@ private:
      */
     template<class T>
     using ComponentTable = StaticMultiArray<T,range,rank>;
-
-#if 0
-    /**
-     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
-     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
-     * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void
-    evaluate_nurbs_values(
-        const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
-        ValueTable<Value> &D0_phi_hat) const ;
-
-    /**
-     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
-     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
-     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void
-    evaluate_nurbs_gradients(
-        const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
-        ValueTable< Derivative<1> > &D1_phi_hat) const ;
-
-    /**
-     * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>.
-     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void
-    evaluate_nurbs_hessians(
-        const typename BSplineElementAccessor<dim,range,rank>::ValuesCache &bspline_cache,
-        ValueTable< Derivative<2> > &D2_phi_hat) const ;
-
-#endif
 
 
 
