@@ -32,18 +32,67 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 
+
+
+
 template <int dim, int range=1, int rank=1>
-void uniform_space_cache(const ValueFlags flag,
-                         const int n_knots = 5, const int deg=1)
+void uniform_space_cache(const ValueFlags flag)
 {
     OUTSTART
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = NURBSSpace<dim, range, rank>::create(deg, grid);
+    using iga::vector;
+    vector<Real> coord_x {0,1,2,3,4};
+    vector<Real> coord_y {5,6,7,8};
+    vector<Real> coord_z {9, 10, 11};
+
+    CartesianProductArray<Real, dim> coord;
+    CartesianProductArray<Index,dim>  mult;
+    TensorIndex<dim> deg;
+
+    if (dim == 1)
+    {
+        coord.copy_data_direction(0,coord_x);
+        deg[0] = 3;
+    }
+    else if (dim == 2)
+    {
+        coord.copy_data_direction(0,coord_x);
+        coord.copy_data_direction(1,coord_y);
+
+        deg[0] = 3;
+        deg[1] = 2;
+    }
+    else if (dim == 3)
+    {
+        coord.copy_data_direction(0,coord_x);
+        coord.copy_data_direction(1,coord_y);
+        coord.copy_data_direction(2,coord_z);
+
+        deg[0] = 3;
+        deg[1] = 2;
+        deg[2] = 1;
+    }
+
+
+    using Space = NURBSSpace< dim, range, rank >;
+    using WeightsTable = typename Space::WeightsTable;
+    using DegreeTable = typename Space::DegreeTable;
+    auto  knots = CartesianGrid<dim>::create(coord);
+    DegreeTable degree(deg);
+
+    auto  bsp = BSplineSpace<dim, range, rank >::create(degree, knots);
+    WeightsTable weights;
+    const auto n_basis = bsp->get_num_basis_table();
+
+    for (auto comp : Space::components)
+        weights[comp].resize(n_basis[comp],1.0);
+
+    auto nurbs_space = Space::create(degree, knots, weights);
+
 
 
     auto quad = QGauss<dim>(2);
-    NURBSUniformQuadCache<dim, range, rank> cache(space, flag, quad);
+    NURBSUniformQuadCache<dim, range, rank> cache(nurbs_space, flag, quad);
     cache.print_info(out);
 
     OUTEND

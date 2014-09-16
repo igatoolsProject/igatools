@@ -437,19 +437,21 @@ evaluate_bspline_derivatives(
 
         for (int func_id = 0; func_id < total_n_basis; ++func_id)
         {
-
             auto D_phi_i = D_phi.get_function_view(offset + func_id);
             auto const &func = values.func_flat_to_tensor(func_id);
             for (int der_id = 0; der_id<n_der; ++der_id)
             {
+                const auto &copy_indices_der = copy_indices[der_id];
+                const auto copy_indices_der_size = copy_indices_der.size();
+
                 auto const &der_tensor_id = univariate_order[der_id];
                 for (int point_id = 0; point_id < num_points; ++point_id)
                 {
                     auto const &pts  = values.points_flat_to_tensor(point_id);
                     auto &der = D_phi_i[point_id];
-                    der(copy_indices[der_id][0])(comp) = values.evaluate(der_tensor_id, func, pts);
-                    for (int k=1; k<copy_indices[der_id].size(); ++k)
-                        der(copy_indices[der_id][k])(comp) = der(copy_indices[der_id][0])(comp);
+                    der(copy_indices_der[0])(comp) = values.evaluate(der_tensor_id, func, pts);
+                    for (int k=1; k<copy_indices_der_size; ++k)
+                        der(copy_indices_der[k])(comp) = der(copy_indices_der[0])(comp);
                 }
             }
 

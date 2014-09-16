@@ -85,20 +85,11 @@ public:
     void print_info(LogStream &out) const;
 
 private:
-    // TODO (pauletti, Sep 8, 2014): to be passed some how
-//    const int n_derivatives = 3;
-
     std::shared_ptr<const Space> space_;
-
-//    SpaceDimensionTable n_basis_;
-
-//    ComponentContainer<Size> comp_offset_;
 
     BasisElemValueFlagsHandler flags_;
 
     BasisFaceValueFlagsHandler face_flags_;
-
-//    Quadrature<dim> quad_;
 
     BSplineUniformQuadCache<dim_,range_,rank_> bspline_uniform_quad_cache_;
 
