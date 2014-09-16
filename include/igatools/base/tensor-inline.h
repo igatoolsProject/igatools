@@ -212,6 +212,16 @@ tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept
 
 
 
+inline
+const Size
+Tdouble::
+get_number_of_entries()
+{
+    return size;
+}
+
+
+
 
 /*------ Inline functions: Tensor<  dim_, rank_, tensor_type, value_type > ---*/
 
@@ -474,6 +484,19 @@ flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<rank_>
     }
 
     return tensor_index;
+}
+
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
+inline
+const Size
+Tensor< dim_, rank_, tensor_type, value_type >::
+get_number_of_entries()
+{
+    Size n_entries = size;
+    n_entries *= value_type::get_number_of_entries();
+    return n_entries;
 }
 
 

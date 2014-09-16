@@ -261,6 +261,19 @@ public:
 
 
     /**
+     * Given a global dof id @p global_dof_id, this function returns
+     * its local representation, i.e. the pointer @p space relative to the space
+     * from which the dof belongs from, the component id @comp_id and the
+     * TensorIndex<dim> @p tensor_index of the dof within the space component.
+     *
+     * @note In the case of a dof owned by multiple spaces, this function returns the information of the
+     * dof relative to the first space owning the dof.
+     */
+    void global_to_local(const Index global_dof_id,
+                         PatchPtr &space, int &comp_id, TensorIndex<dim> &tensor_id) const;
+
+
+    /**
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
      */
