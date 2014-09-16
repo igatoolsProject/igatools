@@ -288,7 +288,6 @@ init_element_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-
     auto n_basis = space_->get_num_all_element_basis();
     auto &elem_cache = cache->elem_values_;
     elem_cache.resize(flags_, quad_, n_basis);
@@ -524,6 +523,14 @@ fill_element_cache(ElementAccessor &elem)
     cache.set_filled(true);
 }
 
+
+template<int dim_, int range_ , int rank_>
+auto
+BSplineUniformQuadCache<dim_, range_, rank_>::
+get_quad() const -> const Quadrature<dim> &
+{
+    return quad_;
+}
 
 
 template<int dim_, int range_ , int rank_>

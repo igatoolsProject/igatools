@@ -94,7 +94,9 @@ public:
 
     void print_info(LogStream &out) const;
 
-private:
+
+    const Quadrature<dim> &get_quad() const;
+
 
     void
     copy_to_inactive_components_values(const vector<Index> &inactive_comp,
@@ -106,6 +108,10 @@ private:
     copy_to_inactive_components(const vector<Index> &inactive_comp,
                                 const std::array<Index, n_components> &active_map,
                                 ValueTable<Derivative<order>> &D_phi) const;
+
+
+private:
+
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
      * functions over the current element,

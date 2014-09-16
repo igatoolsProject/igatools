@@ -221,6 +221,21 @@ public:
 
         return SpaceDimensionTable(n_basis);
     }
+
+    /**
+     * Component table with the offset of basis functions
+     * in each component.
+     */
+    ComponentContainer<Size> get_basis_offset() const
+    {
+        ComponentContainer<Size> offset;
+        offset[0] = 0;
+        for (int comp = 1; comp < n_components; ++comp)
+            offset[comp] = offset[comp-1] + space_dim_.comp_dimension[comp];
+
+        return offset;
+    }
+
     ///@}
 
     /**

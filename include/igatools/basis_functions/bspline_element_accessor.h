@@ -130,11 +130,6 @@ public:
         = default;
     ///@}
 
-private:
-    auto &get_elem_cache()
-    {
-        return this->get_values_cache(ElemTopology<dim>());
-    }
 
 public:
     /** @name Cache initialization and filling */

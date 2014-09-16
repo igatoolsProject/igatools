@@ -610,6 +610,16 @@ public:
     void print_cache_info(LogStream &out) const;
 
 
+    const auto &get_elem_cache() const
+    {
+        return this->get_values_cache(ElemTopology<dim>());
+    }
+
+    auto &get_elem_cache()
+    {
+        return this->get_values_cache(ElemTopology<dim>());
+    }
+
 protected:
     /**
      * Space for which the SpaceElementAccessor refers to.

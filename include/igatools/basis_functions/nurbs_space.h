@@ -28,7 +28,8 @@
 IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including the header
-template < int, int, int > class NURBSElementAccessor;
+template <int,int,int> class NURBSElementAccessor;
+template <int,int,int> class NURBSUniformQuadCache;
 
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
@@ -378,6 +379,7 @@ private:
 
 
     friend ElementAccessor;
+    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
 
     /**
      * Performs checks after the construction of the object.

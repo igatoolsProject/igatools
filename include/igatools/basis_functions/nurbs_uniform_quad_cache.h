@@ -47,6 +47,11 @@ class NURBSUniformQuadCache : public GridUniformQuadCache<dim_>
     static const Size n_components =  Space::n_components;
     using ElementIterator = typename Space::ElementIterator;
 
+    template <int order>
+    using Derivative = typename Space::template Derivative<order>;
+
+    using Value = typename Space::Value;
+
 
 protected:
     using ElementAccessor = typename Space::ElementAccessor;
@@ -90,9 +95,24 @@ private:
 
     BasisFaceValueFlagsHandler face_flags_;
 
-    Quadrature<dim> quad_;
+//    Quadrature<dim> quad_;
 
     BSplineUniformQuadCache<dim_,range_,rank_> bspline_uniform_quad_cache_;
+
+
+    /**
+     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
+     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
+     * and the NURBS weights local to the element @p element_weights.
+     * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void
+    evaluate_nurbs_values(
+        const typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache &bspline_cache,
+        const vector<Real> &element_weights,
+        ValueTable<Value> &D0_phi_hat) const ;
+
 };
 
 

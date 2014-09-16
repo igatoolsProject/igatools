@@ -143,7 +143,7 @@ init_face_cache(const Index face_id,
 #endif
 
 
-
+#if 0
 template <int dim, int range, int rank  >
 void
 NURBSElementAccessor<dim, range, rank>::
@@ -239,7 +239,7 @@ evaluate_nurbs_values(
         }
     }
 }
-
+#endif
 
 
 

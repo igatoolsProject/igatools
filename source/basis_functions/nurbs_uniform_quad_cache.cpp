@@ -94,7 +94,7 @@ NURBSUniformQuadCache(shared_ptr<const Space> space,
 //    n_basis_(space_->get_num_all_element_basis()),
     flags_(flag),
     face_flags_(flag),
-    quad_(quad),
+//    quad_(quad),
     bspline_uniform_quad_cache_(
         space->get_spline_space(),
         nurbs_to_bspline_flags(flag),
@@ -239,7 +239,7 @@ init_element_cache(ElementAccessor &elem)
 
     // init the element values for the cache of the BSplineElementAccessor
     bspline_uniform_quad_cache_.init_element_cache(elem.bspline_element_accessor_);
-
+    const auto &quad = bspline_uniform_quad_cache_.get_quad();
 
     //-----------------------------------------------------------------------------
     auto &cache = elem.local_cache_;
@@ -252,11 +252,11 @@ init_element_cache(ElementAccessor &elem)
 
     auto n_basis = space_->get_num_all_element_basis();
     auto &elem_cache = cache->elem_values_;
-    elem_cache.resize(flags_, quad_, n_basis);
+    elem_cache.resize(flags_, quad, n_basis);
 
     auto &face_cache = cache->face_values_;
     for (auto f: base_t::faces)
-        face_cache[f].resize(face_flags_, quad_, n_basis, f);
+        face_cache[f].resize(face_flags_, quad, n_basis, f);
     //-----------------------------------------------------------------------------
 }
 
@@ -441,55 +441,175 @@ void
 NURBSUniformQuadCache<dim_, range_, rank_>::
 fill_element_cache(ElementAccessor &elem)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-#if 0
     base_t::fill_element_cache(elem);
-    auto &cache = elem.get_elem_cache();
+    bspline_uniform_quad_cache_.fill_element_cache(elem.bspline_element_accessor_);
 
-    const auto &elem_id = elem.get_tensor_index();
-    auto values = splines1d_.get_element_values(elem_id);
+    const auto &bspline_cache = elem.bspline_element_accessor_.get_elem_cache();
+    auto &nurbs_cache = elem.get_elem_cache();
+
+
+    const auto &elem_weights = elem.get_local_weights();  // NURBS weights local to the element
 
 
     //--------------------------------------------------------------------------
-    if (cache.flags_handler_.fill_values())
+    auto &flags_handler = nurbs_cache.flags_handler_;
+    if (flags_handler.fill_values())
     {
-        evaluate_bspline_values(values, cache.phi_);
-        cache.flags_handler_.set_values_filled(true);
+        this->evaluate_nurbs_values(bspline_cache, elem_weights, nurbs_cache.phi_);
+        flags_handler.set_values_filled(true);
     }
-    if (cache.flags_handler_.fill_gradients())
+    if (flags_handler.fill_gradients())
     {
-        evaluate_bspline_derivatives<1>(values, cache.D1phi_);
-        cache.flags_handler_.set_gradients_filled(true);
-    }
-
-    if (cache.flags_handler_.fill_hessians())
-    {
-        evaluate_bspline_derivatives<2>(values, cache.D2phi_);
-        cache.flags_handler_.set_hessians_filled(true);
+        this->evaluate_nurbs_gradients(bspline_cache, elem_weights, nurbs_cache.D1phi_);
+        flags_handler.set_gradients_filled(true);
     }
 
-    if (cache.flags_handler_.fill_divergences())
+    if (flags_handler.fill_hessians())
+    {
+        this->evaluate_nurbs_hessians(bspline_cache, elem_weights, nurbs_cache.D2phi_);
+        flags_handler.set_hessians_filled(true);
+    }
+
+    if (flags_handler.fill_divergences())
     {
         //TODO(pauletti, Sep 7, 2014): create a specialize exception
-        Assert(cache.flags_handler_.gradients_filled(),
+        Assert(flags_handler.gradients_filled(),
                ExcMessage("Divergence requires gradient to be filled."));
 
-        auto D1  = cache.D1phi_.begin();
-        auto div = cache.div_phi_.begin();
-        auto end = cache.D1phi_.end();
+        auto D1  = nurbs_cache.D1phi_.begin();
+        auto div = nurbs_cache.div_phi_.begin();
+        auto end = nurbs_cache.D1phi_.end();
         for (; D1 != end; ++D1, ++div)
             *div = trace(*D1);
 
-        cache.flags_handler_.set_divergences_filled(true);
+        flags_handler.set_divergences_filled(true);
     }
 
     //--------------------------------------------------------------------------
 
-    cache.set_filled(true);
-#endif
+    nurbs_cache.set_filled(true);
 }
 
+template <int dim_, int range_, int rank_ >
+void
+NURBSUniformQuadCache<dim_, range_, rank_>::
+evaluate_nurbs_values(
+    const typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache &bspline_cache,
+    const vector<Real> &weights,
+    ValueTable<Value> &D0_phi_hat) const
+{
+    /*
+     * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the i-th NURBS basis function is defined as
+     *
+     *         P_i
+     * R_i = -------
+     *          Q
+     *
+     * and
+     *
+     * P_i = w_i * N_i
+     *
+     *
+     *
+     *     _n_
+     *     \
+     * Q = /__  P_i
+     *    i = 0
+     *
+     */
+
+    Assert(bspline_cache.is_initialized(),ExcNotInitialized());
+    const auto &bspline_values = bspline_cache.get_values();
+
+    Assert(D0_phi_hat.get_num_functions() == weights.size(),
+           ExcDimensionMismatch(D0_phi_hat.get_num_functions(), weights.size()));
+
+    Assert(D0_phi_hat.get_num_functions() == bspline_values.get_num_functions(),
+           ExcDimensionMismatch(D0_phi_hat.get_num_functions(), bspline_values.get_num_functions()));
+    Assert(D0_phi_hat.get_num_points() == bspline_values.get_num_points(),
+           ExcDimensionMismatch(D0_phi_hat.get_num_points(), bspline_values.get_num_points()));
+//    Assert(D0_phi_hat.get_num_functions() == this->get_num_basis(),
+//           ExcDimensionMismatch(D0_phi_hat.get_num_functions(), this->get_num_basis()));
+
+    const auto &w_table = this->space_->weights_;
+    const int num_points = D0_phi_hat.get_num_points();
+
+    const auto spline_space = this->space_->get_spline_space();
+    const auto comp_offset = spline_space->get_basis_offset();
+
+    const auto num_basis_element =  spline_space->get_num_all_element_basis();
+
+    for (int iComp : w_table.get_active_components_id())
+    {
+        const int num_basis_comp = num_basis_element.comp_dimension[iComp];
+
+        vector<vector<Real>> P(num_basis_comp, vector<Real>(num_points));
+        vector< Real > Q(num_points);
+
+        for (int i = 0; i < num_basis_comp; ++i)
+        {
+            const int basis_flat_id = comp_offset[iComp] + i;
+
+            const auto &N_i = bspline_values.get_function_view(basis_flat_id);
+            const Real w_i = weights[basis_flat_id];
+
+            auto &P_i = P[i];
+
+            for (int iPt = 0; iPt < num_points; iPt++)
+            {
+                P_i[iPt] = w_i * N_i[iPt](iComp);
+                Q[iPt] += P_i[iPt];
+            }
+        }
+
+        vector< Real >  invQ(num_points);
+        for (int iPt = 0; iPt < num_points; ++iPt)
+            invQ[iPt] = 1.0 / Q[iPt];
+
+        for (int i = 0; i < num_basis_comp; i++)
+        {
+            const int basis_flat_id = comp_offset[iComp] + i;
+            const auto &P_i = P[i];
+
+            for (int iPt = 0; iPt < num_points; ++iPt)
+            {
+                auto &R = D0_phi_hat.get_function_view(basis_flat_id)[iPt];
+                R(iComp) = invQ[iPt] * P_i[iPt];
+            }
+        }
+    }
+
+    const auto inactive_components_id = w_table.get_inactive_components_id();
+    const auto comp_map = w_table.get_comp_map();
+    bspline_uniform_quad_cache_.copy_to_inactive_components_values(
+        inactive_components_id,
+        comp_map,
+        D0_phi_hat);
+
+
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
+
+#if 0
+    for (int comp : w_table.get_inactive_components_id())
+    {
+        const auto n_basis = this->bspline_element_accessor_.get_num_basis(comp);
+        const Size offset = this->comp_offset_[comp];
+        const Size act_offset = this->comp_offset_[w_table.active(comp)];
+
+        for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+        {
+            const auto values_phi_hat_copy_from = D0_phi_hat.get_function_view(act_offset+basis_i);
+            auto values_phi_hat_copy_to = D0_phi_hat.get_function_view(offset+basis_i);
+
+            for (int qp = 0; qp < num_points; ++qp)
+                values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](w_table.active(comp));
+        }
+    }
+#endif
+}
 
 
 template<int dim_, int range_ , int rank_>
