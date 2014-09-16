@@ -356,18 +356,7 @@ private:
 
     };
 
-    /**
-     * @brief Cache for the element values at quadrature points
-     */
-    class ElementValuesCache : public ValuesCache
-    {
-    public:
-        /**
-         * Allocate space for the values at quadrature points
-         */
-        void resize(const GridElemValueFlagsHandler &flags_handler,
-                    const Quadrature<dim_> &quad);
-    };
+
 
     /**
      * @brief Cache for the face values at quadrature points
@@ -413,7 +402,7 @@ private:
         void print_info(LogStream &out) const;
 
         /** Element values cache */
-        ElementValuesCache elem_values_;
+        ValuesCache elem_values_;
 
         /** Face values cache */
         std::array<FaceValuesCache, n_faces> face_values_;

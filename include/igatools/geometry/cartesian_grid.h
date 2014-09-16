@@ -370,7 +370,7 @@ public:
 
     /**
      * Comparison operator. Returns true if the knot coordinates of two grid
-     * are identical.
+     * are equal.
      */
     bool operator==(const CartesianGrid<dim> &grid) const;
 

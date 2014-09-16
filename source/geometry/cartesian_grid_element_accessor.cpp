@@ -387,6 +387,7 @@ resize(const GridElemValueFlagsHandler &flags_handler,
         this->w_measure_.clear() ;
         this->unit_weights_.clear() ;
     }
+    this->set_initialized(true);
 }
 
 
@@ -413,28 +414,15 @@ fill(const Real measure)
     }
 }
 
-template <int dim_>
-void
-CartesianGridElementAccessor<dim_>::
-ElementValuesCache::
-resize(const GridElemValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad)
-{
-    ValuesCache::resize(flags_handler,quad);
-    this->set_initialized(true);
-}
-
-
 
 template <int dim_>
 void
 CartesianGridElementAccessor<dim_>::
 FaceValuesCache::
-resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad1, const Index face_id)
+resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad, const Index face_id)
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    const auto quad = quad1.collapse_to_face(face_id);
-    ValuesCache::resize(flags_handler,quad);
-    this->set_initialized(true);
+    ValuesCache::resize(flags_handler,quad.collapse_to_face(face_id));
 }
 
 
