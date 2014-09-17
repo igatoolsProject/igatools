@@ -35,7 +35,7 @@ data = Instantiation(iga_inc_files, other_files)
 matrix = 'DenseMatrix'
 types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
-types = types + ('Real','Real*', 'Index','ValueTable<Real>')
+types = types + ('Real','Real*', 'Index')
 ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
            for dim in inst.domain_dims for t in types]
 
