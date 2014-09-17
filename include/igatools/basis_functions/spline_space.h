@@ -358,11 +358,11 @@ public:
         {
             for (int i=0; i<n_entries; ++i)
             {
-                out << "Component[" << i << "]" << std::endl;
-                out.push("   ");
+//                out << "Component[" << i << "]" << std::endl;
+//                out.push("   ");
                 out << (*this)[i] << " ";
-                out << std::endl;
-                out.pop();
+//                out << std::endl;
+//                out.pop();
             }
         }
 
