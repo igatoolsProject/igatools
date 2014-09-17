@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifdef NURBS
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
@@ -938,3 +939,4 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element_accessor.inst>
 
+#endif //#ifdef NURBS
