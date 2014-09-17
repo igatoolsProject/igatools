@@ -27,6 +27,8 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <boost/tti/has_member_function.hpp>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -467,7 +469,11 @@ using Conditional = typename std::conditional<C,T,F>::type;
 template<bool B, typename T = void>
 using EnableIf = typename std::enable_if<B,T>::type;
 
-
+/**
+ * Macro used to generate the metafunction
+ * <tt>has_member_function_print_info</tt>
+ */
+BOOST_TTI_HAS_MEMBER_FUNCTION(print_info)
 
 /**
  * Type for specifying the type of reference space (BSpline or NURBS).

@@ -447,10 +447,35 @@ QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling
 
 
 template< int dim >
+std::shared_ptr< QUniform< dim > >
+QUniform< dim >::create(const Size num_points, const Real eps_scaling)
+{
+    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points, eps_scaling))) ;
+}
+
+
+template< int dim >
+std::shared_ptr< QUniform< dim > >
+QUniform< dim >::create(const TensorSize<dim> num_points, const Real eps_scaling)
+{
+    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points, eps_scaling))) ;
+}
+
+
+
+template< int dim >
 QTrapez<dim>::QTrapez(const Real eps_scaling)
     :
     QUniform<dim>(2, eps_scaling)
 {}
+
+
+template< int dim >
+std::shared_ptr< QTrapez< dim > >
+QTrapez< dim >::create(const Real eps_scaling)
+{
+    return (std::shared_ptr< QTrapez< dim > >(new QTrapez< dim >(eps_scaling))) ;
+}
 
 IGA_NAMESPACE_CLOSE
 
