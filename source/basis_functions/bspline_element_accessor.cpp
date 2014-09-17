@@ -807,16 +807,17 @@ fill_cache(const TopologyId<dim> &topology_id)
 
 
 
+
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
-get_univariate_derivatives(const int deriv_order) const -> ComponentDirectionTable<ValueTable<Real> >
+get_univariate_derivatives(const int deriv_order) const -> ComponentContainer< array<ValueTable<Real>,dim> >
 {
     const auto &element_tensor_id = this->get_tensor_index();
 
     const auto n_points_direction = this->get_quad_points().get_num_points_direction();
 
-    ComponentDirectionTable<ValueTable<Real> > funcs1D_table(this->space_->get_components_map());
+    ComponentContainer< array<ValueTable<Real>,dim> > funcs1D_table(this->space_->get_components_map());
 
     const auto global_elem_cache = values_1d_elem_;
     Assert(global_elem_cache->is_filled(), ExcCacheNotFilled());
@@ -824,15 +825,13 @@ get_univariate_derivatives(const int deriv_order) const -> ComponentDirectionTab
     for (int comp : funcs1D_table.get_active_components_id())
     {
         auto &funcs1D_comp = funcs1D_table[comp];
-        funcs1D_comp.resize(TensorSize<dim>(1));
-
         auto n_basis_direction = TensorSize<dim>(this->space_->get_degree()[comp]+1);
 
         const auto &values_1D_comp = global_elem_cache->splines1d_cache_data_[comp];
 
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-            auto &funcs1D_comp_dir = funcs1D_comp.entry(dir,0);
+            auto &funcs1D_comp_dir = funcs1D_comp[dir];
             funcs1D_comp_dir.resize(n_basis_direction[dir],n_points_direction[dir]);
 
             const auto &elem_values_1D_comp = values_1D_comp.entry(dir,element_tensor_id[dir])[deriv_order];
@@ -843,46 +842,64 @@ get_univariate_derivatives(const int deriv_order) const -> ComponentDirectionTab
 
                 for (int pt = 0 ; pt < n_points_direction[dir] ; ++pt)
                     fn_view[pt] = elem_values_1D_comp(fn,pt);
-            }
+            } // end fn loop
+        } // end dir loop
+    } // end comp loop
+    return funcs1D_table;
+}
 
-        }
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const
+-> ComponentContainer<std::array<ValueTable<Real>,dim> >
+{
+    const auto &element_tensor_id = this->get_tensor_index();
 
+    const auto n_points_direction = quad.get_num_points_direction();
+    const auto &eval_points = quad.get_points();
 
-//        scalar_evaluator_comp.resize(n_basis_direction);
+    ComponentContainer< array<ValueTable<Real>,dim> > funcs1D_table(this->space_->get_components_map());
 
-        /*
-                const auto &univariate_values_comp = univariate_values[comp];
+    const auto degree_table = this->space_->get_degree();
+    const auto &bezier_op_ = this->space_->operators_;
+    const auto element_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
 
-                const Size n_basis = scalar_evaluator_comp.flat_size();
+    for (int comp : funcs1D_table.get_active_components_id())
+    {
+        auto &funcs1D_comp = funcs1D_table[comp];
 
-                for (Index flat_basis_id = 0 ; flat_basis_id < n_basis ; ++flat_basis_id)
-                {
-                    const auto tensor_basis_id = scalar_evaluator_comp.flat_to_tensor(flat_basis_id);
+        const auto &degree_comp = degree_table[comp];
 
-                    for (int dir = 0 ; dir < dim ; ++dir)
-                    {
-                        const auto &basis_with_ders = univariate_values_comp[dir];
+        auto n_basis_direction = TensorSize<dim>(degree_comp+1);
 
-                        Assert(values1D.size() == basis_with_ders->size(),
-                               ExcDimensionMismatch(values1D.size(),basis_with_ders->size()));
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            const auto &pt_coords = eval_points.get_data_direction(dir);
+            const auto &M = bezier_op_.get_operator(comp,dir)[element_tensor_id[dir]];
 
-                        for (int order = 0 ; order <= max_deriv_order ; ++order)
-                        {
-                            const DenseMatrix &funcs = (*basis_with_ders)[order];
-                            values1D[order][dir] = Values1DConstView(funcs,tensor_basis_id[dir]);
-                        } //end order loop
+            const auto lengths_dir = element_lengths[dir];
+            const Real one_div_size = 1.0 / lengths_dir;
+            const Real scaling_coef = std::pow(one_div_size, deriv_order);
 
-                    } // end dir loop
+            // compute the one dimensional Bernstein at quad point on the unit interval
+            const auto B = BernsteinBasis::derivative(deriv_order,degree_comp[dir],pt_coords);
 
+            // compute the one dimensional B-splines at quad point on the reference interval
+            const auto basis = scaling_coef * prec_prod(M,B);
 
-                    scalar_evaluator_comp[flat_basis_id] =
-                        shared_ptr<BSplineElementScalarEvaluator<dim>>(
-                            new BSplineElementScalarEvaluator<dim>(values1D));
+            auto &funcs1D_comp_dir = funcs1D_comp[dir];
+            funcs1D_comp_dir.resize(n_basis_direction[dir],n_points_direction[dir]);
 
-                } // end flat_basis_id loop
-        //*/
-    } // end icomp loop
-    //--------------------------------------------------------------------------
+            for (int fn = 0 ; fn < n_basis_direction[dir] ; ++fn)
+            {
+                auto fn_view = funcs1D_comp_dir.get_function_view(fn);
+
+                for (int pt = 0 ; pt < n_points_direction[dir] ; ++pt)
+                    fn_view[pt] = basis(fn,pt);
+            } // end fn loop
+        } // end dir loop
+    } // end comp loop
 
 
     return funcs1D_table;

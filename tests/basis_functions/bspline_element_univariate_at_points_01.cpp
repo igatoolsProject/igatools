@@ -33,6 +33,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
+
 template<int dim, int range >
 void do_test()
 {
@@ -51,39 +52,34 @@ void do_test()
     QGauss< dim > quad_scheme(n_points);
 
     auto element = space->begin();
-    element->init_cache(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
-                        quad_scheme);
-    element->fill_cache();
 
-    int comp = 0;
+    vector<string> names= {"Values","Gradients","Hessians"};
+    const int max_deriv_order = names.size()-1;
 
-    auto univariate_values = element->get_univariate_derivatives(0);
-    out << "Values 1D:" << endl;
-    for (const auto values_comp : univariate_values)
+    for (int deriv_order = 0 ; deriv_order <= max_deriv_order ; ++deriv_order)
     {
-        out << "Component[" << comp++ << "] : " << endl;
-        out.push("   ");
-        values_comp.print_info(out);
-        out.pop();
+        auto univariate_values =
+            element->evaluate_univariate_derivatives_at_points(deriv_order,quad_scheme);
+
+        out << names[deriv_order] << " 1D:" << endl;
+
+        int comp = 0;
+        for (const auto &values_comp : univariate_values)
+        {
+            out << "Component[" << comp++ << "] : " << endl;
+            out.push("  ");
+            int dir = 0;
+            for (const auto &values_comp_dir : values_comp)
+            {
+                out << "Direction[" << dir++ << "]" << endl;
+                out.push("  ");
+                values_comp_dir.print_info(out);
+                out.pop();
+            }
+            out.pop();
+        }
+        out << endl;
     }
-    out << endl;
-#if 0
-    auto values    = element->get_basis_values();
-    auto gradients = element->get_basis_gradients();
-    auto hessians  = element->get_basis_hessians();
-
-    out << "Values basis functions:" << endl;
-    values.print_info(out);
-    out << endl;
-
-    out << "Gradients basis functions:" << endl;
-    gradients.print_info(out);
-    out << endl;
-
-    out << "Hessians basis functions:" << endl;
-    hessians.print_info(out);
-    out << endl << endl;
-#endif
 
     OUTEND
 }
