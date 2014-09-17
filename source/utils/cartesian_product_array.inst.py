@@ -22,7 +22,8 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-iga_inc_files = ['base/tensor.h']
+iga_inc_files = ['base/tensor.h',
+				 'utils/value_table.h']
 other_files   = [
 				#'boost/numeric/ublas/matrix.hpp',
 				#'boost/numeric/ublas/io.hpp'
@@ -34,7 +35,7 @@ data = Instantiation(iga_inc_files, other_files)
 matrix = 'DenseMatrix'
 types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
-types = types + ('Real','Real*', 'Index')
+types = types + ('Real','Real*', 'Index','ValueTable<Real>')
 ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
            for dim in inst.domain_dims for t in types]
 
