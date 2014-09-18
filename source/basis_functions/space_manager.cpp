@@ -106,6 +106,11 @@ SpaceInfo()
 SpaceManager::
 SpaceInfo::
 SpaceInfo(const SpacePtrVariant &space,
+          const int dim,
+          const int codim,
+          const int space_dim,
+          const int range,
+          const int rank,
           const Index num_dofs,
           const Index min_dofs_id,
           const Index max_dofs_id,
@@ -113,12 +118,23 @@ SpaceInfo(const SpacePtrVariant &space,
           const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
     :
     space_(space),
+    dim_(dim),
+    codim_(codim),
+    space_dim_(space_dim),
+    range_(range),
+    rank_(rank),
     num_dofs_(num_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view),
     elements_dofs_view_(elements_dofs_view)
 {
+    Assert(dim_ >= 0,ExcLowerRange(dim_,0));
+    Assert(codim_ >= 0,ExcLowerRange(codim_,0));
+    Assert(space_dim_ > 0,ExcLowerRange(space_dim_,1));
+    Assert(range_ > 0,ExcLowerRange(range_,1));
+    Assert(rank_ > 0,ExcLowerRange(rank_,1));
+
     Assert(num_dofs_ > 0,ExcEmptyObject());
     Assert(elements_dofs_view_ != nullptr,ExcNullPtr());
     Assert(!elements_dofs_view_->empty(), ExcEmptyObject());
@@ -345,13 +361,14 @@ linear_constraints_close()
 
 void
 SpaceManager::
-add_linear_constraint(const LinearConstraintType &type,
+add_linear_constraint(const Index global_dof_id,
+                      const LinearConstraintType &type,
                       const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs)
 {
     Assert(are_linear_constraints_open_ == true,
            ExcMessage("Linear constraints already closed."));
 
-    linear_constraints_.emplace(type,LC::create(type,dofs,coeffs,rhs));
+    linear_constraints_.emplace(type,LC::create(global_dof_id,type,dofs,coeffs,rhs));
 }
 
 

@@ -27,6 +27,7 @@ IGA_NAMESPACE_OPEN
 
 LinearConstraint::
 LinearConstraint(
+    const Index global_dof_id,
     const LinearConstraintType &type,
     const vector<Index> &dofs,
     const vector<Real> &coeffs,
@@ -47,14 +48,19 @@ LinearConstraint(
     }
     rhs_ = rhs;
     type_ = type;
+
+    Assert(global_dof_id >= 0,ExcLowerRange(global_dof_id,0));
+    global_dof_id_ = global_dof_id;
 }
 
 std::shared_ptr<LinearConstraint>
 LinearConstraint::
-create(const LinearConstraintType &type,
+create(const Index global_dof_id,
+       const LinearConstraintType &type,
        const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs)
 {
-    return std::shared_ptr<LinearConstraint>(new LinearConstraint(type,dofs,coeffs,rhs));
+    using LC = LinearConstraint;
+    return std::shared_ptr<LC>(new LC(global_dof_id,type,dofs,coeffs,rhs));
 }
 
 Real
@@ -143,6 +149,13 @@ LinearConstraint::
 get_type() const
 {
     return type_;
+}
+
+Index
+LinearConstraint::
+get_global_dof_id() const
+{
+    return global_dof_id_;
 }
 
 bool

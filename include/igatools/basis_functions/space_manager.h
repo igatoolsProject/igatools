@@ -260,7 +260,8 @@ public:
 
     /**
      * Add a LinearConstraint of a given @p type to the SpaceManager,
-     * where @p dofs are the dofs id involved by the constraint,
+     * where @p global_dof_id is the global dof associated with the linear constraint,
+     * @p dofs are the global dofs id involved by the constraint,
      * @p coeffs their coefficients and
      * @p rhs is the right hand side that defines the linear constraint equation.
      *
@@ -268,8 +269,11 @@ public:
      * if the space manager is not set in the proper state by the function
      * linear_constraints_open().
      */
-    void add_linear_constraint(const LinearConstraintType &type,
-                               const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs);
+    void add_linear_constraint(const Index global_dof_id,
+                               const LinearConstraintType &type,
+                               const vector<Index> &dofs,
+                               const vector<Real> &coeffs,
+                               const Real rhs);
 
 
     /**
@@ -375,6 +379,11 @@ private:
     public:
         SpaceInfo();
         SpaceInfo(const SpacePtrVariant &space,
+                  const int dim,
+                  const int codim,
+                  const int space_dim,
+                  const int range,
+                  const int rank,
                   const Index num_dofs,
                   const Index min_dofs_id,
                   const Index max_dofs_id,
@@ -430,6 +439,16 @@ private:
          * NURBSSpace and PhysicalSpace).
          */
         SpacePtrVariant space_;
+
+        int dim_;
+
+        int codim_;
+
+        int space_dim_;
+
+        int range_;
+
+        int rank_;
 
         /**
          * Nuber of active dofs in the space.
@@ -522,6 +541,11 @@ add_space(std::shared_ptr<Space> space)
 
     spaces_info_[ref_space->get_id()] =
         SpaceInfo(space,
+                  Space::dim,
+                  Space::codim,
+                  Space::space_dim,
+                  Space::range,
+                  Space::rank,
                   ref_space->get_num_basis(),
                   dof_distribution.get_min_dof_id(),
                   dof_distribution.get_max_dof_id(),
