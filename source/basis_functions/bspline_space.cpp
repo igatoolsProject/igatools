@@ -396,9 +396,9 @@ get_space_manager() -> shared_ptr<SpaceManager>
 {
     auto space_manager = make_shared<SpaceManager>(SpaceManager());
 
-    space_manager->space_insertion_open();
+    space_manager->spaces_insertion_open();
     space_manager->add_space(this->shared_from_this());
-    space_manager->space_insertion_close();
+    space_manager->spaces_insertion_close();
 
     return space_manager;
 }

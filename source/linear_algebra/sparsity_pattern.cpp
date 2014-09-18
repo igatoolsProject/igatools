@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 SparsityPattern::
 SparsityPattern(const SpaceManager &space_manager)
 {
-    Assert(space_manager.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager.is_spaces_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
 
@@ -79,7 +79,7 @@ SparsityPattern(const SpaceManager &space_manager)
     const auto &spaces_info = space_manager.get_spaces_info();
     Assert(!spaces_info.empty(),ExcEmptyObject());
     for (const auto &space : spaces_info)
-        for (const auto element_dofs : space.second.get_elements_dofs_view())
+        for (const auto element_dofs : space.second->get_elements_dofs_view())
             for (const auto &dof : element_dofs.second)
                 (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
     // adding the DOF-DOF contribution -- end
@@ -122,8 +122,8 @@ SparsityPattern(const SpaceManager &space_manager)
 SparsityPattern::
 SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols)
 {
-    Assert(space_manager_rows.is_space_insertion_open() == false,ExcInvalidState());
-    Assert(space_manager_cols.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_rows.is_spaces_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_cols.is_spaces_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
     const auto &dofs_view_rows = space_manager_rows.get_dofs_view();
@@ -161,10 +161,10 @@ SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space
     for (; space_row_iterator != space_row_iterator_end ; ++space_row_iterator, ++space_col_iterator)
     {
         const auto &space_row = space_row_iterator->second;
-        const auto dofs_elements_view_space_row = space_row.get_elements_dofs_view();
+        const auto dofs_elements_view_space_row = space_row->get_elements_dofs_view();
 
         const auto &space_col = space_col_iterator->second;
-        const auto dofs_elements_view_space_col = space_col.get_elements_dofs_view();
+        const auto dofs_elements_view_space_col = space_col->get_elements_dofs_view();
 
         //check the equality of num. elements on each patch
         Assert(dofs_elements_view_space_row.size() == dofs_elements_view_space_col.size(),

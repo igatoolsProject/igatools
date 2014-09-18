@@ -52,7 +52,7 @@ patch_insertion_open()
 {
     is_patch_insertion_open_ = true;
 
-    space_manager_->space_insertion_open();
+    space_manager_->spaces_insertion_open();
 }
 
 template <class PhysicalSpace>
@@ -95,7 +95,17 @@ patch_insertion_close(const bool automatic_dofs_renumbering)
     //------------------------------------------------------------------------
 
 
-    space_manager_->space_insertion_close(automatic_dofs_renumbering);
+    space_manager_->spaces_insertion_close(automatic_dofs_renumbering);
+
+
+    //------------------------------------------------------------------------
+    // adding the connection between the dofs of the patch and itself
+    space_manager_->spaces_connectivity_open();
+    for (const auto &patch : patches_)
+        space_manager_->add_spaces_connection(patch,patch);
+
+    space_manager_->spaces_connectivity_close();
+    //------------------------------------------------------------------------
 
     is_patch_insertion_open_ = false;
 }

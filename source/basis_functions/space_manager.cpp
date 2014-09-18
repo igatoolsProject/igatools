@@ -40,7 +40,8 @@ IGA_NAMESPACE_OPEN
 SpaceManager::
 SpaceManager()
     :
-    is_space_insertion_open_(false),
+    is_spaces_insertion_open_(false),
+    is_spaces_connectivity_open_(false),
     num_unique_dofs_(0)
 {}
 
@@ -48,17 +49,17 @@ SpaceManager()
 
 void
 SpaceManager::
-space_insertion_open()
+spaces_insertion_open()
 {
-    is_space_insertion_open_ = true;
+    is_spaces_insertion_open_ = true;
 }
 
 
 void
 SpaceManager::
-space_insertion_close(const bool automatic_dofs_renumbering)
+spaces_insertion_close(const bool automatic_dofs_renumbering)
 {
-    Assert(is_space_insertion_open_ == true,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == true,ExcInvalidState());
 
     Assert(!spaces_info_.empty(),ExcEmptyObject());
 
@@ -73,12 +74,12 @@ space_insertion_close(const bool automatic_dofs_renumbering)
 
         if (automatic_dofs_renumbering)
         {
-            space_info.add_dofs_offset(offset);
+            space_info->add_dofs_offset(offset);
 
-            offset += space_info.get_num_dofs();
+            offset += space_info->get_num_dofs();
         }
 
-        auto view_ranges = space_info.get_dofs_view().begin().get_ranges();
+        auto view_ranges = space_info->get_dofs_view().begin().get_ranges();
         dofs_components_view.insert(dofs_components_view.end(),view_ranges.begin(),view_ranges.end());
     }
     //--------------------------------------------------------------------------
@@ -87,13 +88,38 @@ space_insertion_close(const bool automatic_dofs_renumbering)
                      DofsIterator(dofs_components_view,0),
                      DofsIterator(dofs_components_view,IteratorState::pass_the_end));
 
-    is_space_insertion_open_ = false;
+    is_spaces_insertion_open_ = false;
 
 
     num_unique_dofs_ = this->count_unique_dofs();
 }
 
 
+void
+SpaceManager::
+spaces_connectivity_open()
+{
+    Assert(is_spaces_connectivity_open_ == false,ExcInvalidState());
+    is_spaces_connectivity_open_ = true;
+}
+
+void
+SpaceManager::
+spaces_connectivity_close()
+{
+    Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
+    is_spaces_connectivity_open_ = false;
+}
+
+
+bool
+SpaceManager::
+is_spaces_connectivity_open() const
+{
+    return is_spaces_connectivity_open_;
+}
+
+/*
 SpaceManager::
 SpaceInfo::
 SpaceInfo()
@@ -102,6 +128,8 @@ SpaceInfo()
     min_dofs_id_(-1),
     max_dofs_id_(-1)
 {}
+//*/
+
 
 SpaceManager::
 SpaceInfo::
@@ -207,7 +235,7 @@ auto
 SpaceManager::
 get_dofs_view() -> DofsView &
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
 //    Assert(dofs_view_ != nullptr, ExcNullPtr())
     return dofs_view_;
@@ -218,7 +246,7 @@ auto
 SpaceManager::
 get_dofs_view() const -> DofsConstView
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
 //    Assert(dofs_view_ != nullptr, ExcNullPtr())
     return DofsConstView(dofs_view_);
@@ -230,7 +258,7 @@ Index
 SpaceManager::
 get_num_dofs() const
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     return num_unique_dofs_;
 }
 
@@ -256,11 +284,11 @@ Index
 SpaceManager::
 get_global_dof(const int space_id, const Index local_dof) const
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
-    return spaces_info_.at(space_id).get_dofs_view()[local_dof];
+    return spaces_info_.at(space_id)->get_dofs_view()[local_dof];
 }
 
 
@@ -282,9 +310,9 @@ get_global_dofs(const int space_id, const vector<Index> &local_dofs) const
 
 bool
 SpaceManager::
-is_space_insertion_open() const
+is_spaces_insertion_open() const
 {
-    return is_space_insertion_open_;
+    return is_spaces_insertion_open_;
 }
 
 
@@ -299,7 +327,7 @@ get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
 
 auto
 SpaceManager::
-get_spaces_info() const -> const std::map<int,SpaceInfo> &
+get_spaces_info() const -> const std::map<int,shared_ptr<SpaceInfo>> &
 {
     return spaces_info_;
 }
@@ -474,7 +502,7 @@ Index
 SpaceManager::
 count_unique_dofs() const
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
 //    const auto &dofs = this->get_dofs_view();
 
@@ -517,7 +545,7 @@ print_info(LogStream &out) const
     out.push(tab);
 
 
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     Assert(are_equality_constraints_open_ == false,ExcInvalidState());
     Assert(are_linear_constraints_open_ == false,ExcInvalidState());
 
@@ -534,10 +562,10 @@ print_info(LogStream &out) const
     {
 
         out << "Space["<< i <<"]:   ID=" << space_info.first
-            << "   n_dofs=" << space_info.second.get_num_dofs()
+            << "   n_dofs=" << space_info.second->get_num_dofs()
             << "   DOFs=[ ";
 
-        const DofsView &dofs_space_view = space_info.second.get_dofs_view();
+        const DofsView &dofs_space_view = space_info.second->get_dofs_view();
         for (const Index &dof : dofs_space_view)
             out << dof << " ";
         out << "]" << endl;

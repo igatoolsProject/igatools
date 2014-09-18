@@ -34,6 +34,7 @@
 #include <boost/variant.hpp>
 
 #include <memory>
+#include <set>
 
 IGA_NAMESPACE_OPEN
 
@@ -126,12 +127,73 @@ using SpacePtrVariant =
  * @brief The purpose of this class is to provide an unified way to access the dofs information provided
  * by different type of function spaces.
  *
- * For example, let consider this
- * @code{.cpp}
-   auto space = BSplineSpace<3,3,1>:create();
-   @endcode
- * The space represented by the object <tt>space</tt> has 3 scalar components and its dofs are
- * organized as 3 object of type DynamicMultiArray<Index,3>.
+ * In order to correctly use the Space manager, the user is FORCED to perform (in order) the
+ * following MANDATORY steps:
+ *   1. <b>Insertion of the spaces.</b>
+ *      The purpose of this phase is to populate the SpaceManager with the spaces that must handle
+ *      and coordinate. This phase starts with the execution function spaces_insertion_open() and it is
+ *      concluded after the execution of the function spaces_insertion_close().
+ *      Between the execution of these two functions, the spaces are added to the SpaceManager with
+ *      the function add_space().
+ *      The function spaces_insertion_close() has an (optional) input argument that is used to
+ *      choose if the global dofs of the spaces must keep the original numbering or must be renumbered
+ *      in a way that no (global) dof id is used in different spaces (this is the default behaviour).
+ *      The "no-renumbering" option can be useful if the global dof numbering needs to be kept
+ *      (for any reason).
+ *      @code{.cpp}
+        SpaceManager sp_manager;
+
+        // Phase 1
+        sp_manager.spaces_insertion_open(); // starts the spaces insertion phase (phase 1)
+
+        sp_manager.add_space(space_0); // adds space_0
+        sp_manager.add_space(space_1); // adds space_1
+        sp_manager.add_space(space_2); // adds space_2
+        ...
+        sp_manager.add_space(space_last);  // adds space_last
+
+        sp_manager.spaces_insertion_close(); // ends the spaces insertion phase (phase 1) and renumbers the global dof id
+
+        @endcode
+ *
+ *      <em>After this phase is not possible to insert any new space to the SpaceManager.</em>
+ *
+ *   2. <b>Definition of the connectivity between the spaces.</b>
+ *      The purpose of this phase is to define relation between the dofs in the spaces and therefore
+ *      the active blocks in the <em>sparsity pattern</em> of the system matrix.
+ *      This phase starts with the execution function spaces_connectivity_open() and it is
+ *      concluded after the execution of the function spaces_connectivity_close().
+ *      Between the execution of these two functions, the spaces connectivities
+ *      (i.e. the blocks in the sparsity pattern) are added to the SpaceManager with the function
+ *      add_spaces_connection(). Please note that this last function takes two arguments: one argument
+ *      the for the space of test functions and the other for the space of trial functions.
+ *      This means that if a user wants to add symmetric blocks, he needs to call this function twice with
+ *      the spaces reverted. The blocks on the diagonal are added calling add_spaces_connection()
+ *      with the same spaces on both argument.
+ *
+ *      For example, if we have 3 spaces <tt>space_0</tt>, <tt>space_1</tt> and <tt>space_2</tt> and the
+ *      connectivity is defined as follows:
+ *        - <tt>space_0</tt> with <tt>space_2</tt> and it symmetric counterpart;
+ *        - <tt>space_1</tt> with <tt>space_2</tt>;
+ *        - <tt>space_0</tt> with itself (diagonal block);
+ *        - <tt>space_1</tt> with itself (diagonal block)
+ *
+ *      we should use:
+ *      @code{.cpp}
+        // Phase 2
+        sp_manager.spaces_connectivity_open();  // starts the spaces connectivity phase (phase 2)
+
+        sp_manager.add_spaces_connection(space_0,space_2); // block 0-2
+        sp_manager.add_spaces_connection(space_2,space_0); // block 2-0
+
+        sp_manager.add_spaces_connection(space_1,space_2); // block 1-2
+
+        sp_manager.add_spaces_connection(space_0,space_0); // block 0-0
+        sp_manager.add_spaces_connection(space_1,space_1); // block 1-1
+
+        sp_manager.spaces_connectivity_close();  // ends the spaces connectivity phase (phase 2)
+
+        @endcode
  *
  * @todo: complete the documentation
  * @author M. Martinelli
@@ -195,7 +257,7 @@ public:
     /**
      * Sets the SpaceManager in a state that can receive the insertion of new spaces.
      */
-    void space_insertion_open();
+    void spaces_insertion_open();
 
 
     /**
@@ -218,14 +280,44 @@ public:
      *
      * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      */
-    void space_insertion_close(const bool automatic_dofs_renumbering = true);
+    void spaces_insertion_close(const bool automatic_dofs_renumbering = true);
 
 
     /**
-     * Returns true if the space insertion is open.
+     * Returns true if the spaces insertion phase is open.
      */
-    bool is_space_insertion_open() const;
+    bool is_spaces_insertion_open() const;
     ///@}
+
+
+    /** @name Functions for managing the spaces connecitivty in the SpaceManager */
+    ///@{
+    /**
+     * Sets the SpaceManager in a state that can receive the connectivity between existing spaces.
+     */
+    void spaces_connectivity_open();
+
+    /**
+     * Defines connection between the global dofs of the @p space_test (i.e. the row dofs id)
+     * and the global dofs of the @p space_trial (i.e. the column dofs id)
+     */
+    template<class SpaceTest,class SpaceTrial>
+    void add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial);
+
+    /**
+     * Sets the SpaceManager in a state that cannnot receive any new connectivity between existing spaces.
+     */
+    void spaces_connectivity_close();
+
+
+    /**
+     * Returns true if the spaces connectivity phase is open.
+     */
+    bool is_spaces_connectivity_open() const;
+    ///@}
+
+
+
 
     /** @name Functions for the insertion of the equality constraints */
     ///@{
@@ -357,7 +449,8 @@ public:
 
 
 private:
-    bool is_space_insertion_open_ = false;
+    bool is_spaces_insertion_open_ = false;
+    bool is_spaces_connectivity_open_ = false;
     bool are_equality_constraints_open_ = false;
     bool are_linear_constraints_open_ = false;
 
@@ -377,7 +470,7 @@ private:
     class SpaceInfo
     {
     public:
-        SpaceInfo();
+        SpaceInfo() = delete;
         SpaceInfo(const SpacePtrVariant &space,
                   const int dim,
                   const int codim,
@@ -389,6 +482,12 @@ private:
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
                   const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view);
+
+        SpaceInfo(const SpaceInfo &sp) = delete;
+        SpaceInfo(SpaceInfo &&sp) = delete;
+
+        SpaceInfo &operator=(const SpaceInfo &sp) = delete;
+        SpaceInfo &operator=(SpaceInfo &&sp) = delete;
 
         /** Returns the number of dofs of the space. */
         Index get_num_dofs() const ;
@@ -482,8 +581,15 @@ private:
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
-    std::map<int,SpaceInfo> spaces_info_;
+    std::map<int,std::shared_ptr<SpaceInfo>> spaces_info_;
 
+
+    /**
+     * Connectivity between the different spaces. The key in the std::map represents the a block
+     * of dofs along the rows
+     * and the values of a give key represents the blocks of dofs along the columns of the system matrix.
+     */
+    std::map<std::shared_ptr<SpaceInfo>,std::set<std::shared_ptr<SpaceInfo>>> spaces_connectivity_;
 
     /**
      * View to the active dofs ids of all single-patch spaces handled by the SpaceManager.
@@ -511,7 +617,7 @@ public:
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
-    const std::map<Index,SpaceInfo> &get_spaces_info() const;
+    const std::map<Index,std::shared_ptr<SpaceInfo>> &get_spaces_info() const;
 };
 
 
@@ -528,31 +634,50 @@ add_space(std::shared_ptr<Space> space)
     // check that the input space is not already added
     for (auto &space_info : spaces_info_)
     {
-        Assert(space != get<std::shared_ptr<Space>>(space_info.second.get_space_variant()),
+        Assert(space != get<std::shared_ptr<Space>>(space_info.second->get_space_variant()),
                ExcMessage("Space already added in the SpaceManager."));
     }
 #endif
 
     //------------------------------------------------------------------------
-    using RefSpace = typename Space::RefSpace;
-    auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
+//    using RefSpace = typename Space::RefSpace;
+//    auto ref_space = std::const_pointer_cast<RefSpace>(space->get_reference_space());
 
-    auto &dof_distribution = ref_space->get_dof_distribution_global();
+//    auto &dof_distribution = ref_space->get_dof_distribution_global();
+    auto &dof_distribution = space->get_dof_distribution_global();
 
-    spaces_info_[ref_space->get_id()] =
-        SpaceInfo(space,
-                  Space::dim,
-                  Space::codim,
-                  Space::space_dim,
-                  Space::range,
-                  Space::rank,
-                  ref_space->get_num_basis(),
-                  dof_distribution.get_min_dof_id(),
-                  dof_distribution.get_max_dof_id(),
-                  dof_distribution.get_dofs_view(),
-                  dof_distribution.get_elements_view());
+//    spaces_info_[ref_space->get_id()] = std::shared_ptr<SpaceInfo>(
+    spaces_info_[space->get_id()] = std::shared_ptr<SpaceInfo>(
+                                        new SpaceInfo(space,
+                                                      Space::dim,
+                                                      Space::codim,
+                                                      Space::space_dim,
+                                                      Space::range,
+                                                      Space::rank,
+                                                      space->get_num_basis(),
+                                                      dof_distribution.get_min_dof_id(),
+                                                      dof_distribution.get_max_dof_id(),
+                                                      dof_distribution.get_dofs_view(),
+                                                      dof_distribution.get_elements_view()));
     //---------------------------------------------------------------------------------------------
 }
+
+template<class SpaceTest,class SpaceTrial>
+inline
+void
+SpaceManager::
+add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial)
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
+
+    auto sp_test  = spaces_info_.at(space_test ->get_id());
+    auto sp_trial = spaces_info_.at(space_trial->get_id());
+
+    spaces_connectivity_[sp_test].emplace(sp_trial);
+}
+
+
 
 
 IGA_NAMESPACE_CLOSE
