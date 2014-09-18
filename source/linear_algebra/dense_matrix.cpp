@@ -28,17 +28,17 @@ IGA_NAMESPACE_OPEN
 #if 0
 DenseMatrix::
 DenseMatrix(const Index n_rows, const Index n_cols, const bool init_to_zero)
-:
-BoostMatrix(n_rows,n_cols)
+    :
+    BoostMatrix(n_rows,n_cols)
 {
-	if (init_to_zero)
-		BoostMatrix::clear();
+    if (init_to_zero)
+        BoostMatrix::clear();
 }
 
 DenseMatrix::
 DenseMatrix(const Index n,const bool init_to_zero)
-:
-DenseMatrix(n,n,init_to_zero)
+    :
+    DenseMatrix(n,n,init_to_zero)
 {}
 #endif
 
@@ -51,12 +51,33 @@ DenseMatrix::operator=(const Real value)
     return *this;
 }
 
+
+
 auto
 DenseMatrix::
 get_row(const int row_id) const -> MatrixRowType
 {
     return MatrixRowType(*this,row_id);
 }
+
+
+
+int
+DenseMatrix::
+size1() const
+{
+    return int(boost::numeric::ublas::matrix<Real>::size1());
+}
+
+
+
+int
+DenseMatrix::
+size2() const
+{
+    return int(boost::numeric::ublas::matrix<Real>::size2());
+}
+
 
 
 DenseMatrix

@@ -188,6 +188,7 @@ public:
      */
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
+
 private:
     /**
      * @name Containers for the cache of the element values and for the
@@ -369,6 +370,19 @@ private:
 public:
     const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
             &get_scalar_evaluators() const;
+
+
+
+    ComponentContainer<std::array<ValueTable<Real>,dim> >
+    get_univariate_derivatives(const int deriv_order) const;
+
+    /*
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ComponentContainer<std::array<ValueTable<Real>,dim> >
+    evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const;
+
 };
 
 IGA_NAMESPACE_CLOSE

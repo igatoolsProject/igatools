@@ -126,6 +126,12 @@ public:
     MultiArrayIteratorBase<Container> &operator++();
 
     /**
+     *  Postfix <tt>++</tt> operator: <tt>i++</tt>.
+     */
+    MultiArrayIteratorBase<Container> operator++(int);
+
+
+    /**
      * This operator returns an iterator pointing to the entry obtained by advancing
      * @p n positions from the current one.
      *
@@ -146,15 +152,12 @@ public:
      */
     MultiArrayIteratorBase<Container> operator-(const Index n) const;
 
-#if 0
     /**
      * Returns <tt>n</tt> such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ( (*this) - a)</tt>.
      *
      */
     difference_type
     operator-(const MultiArrayIteratorBase<Container> &a) const;
-#endif
-
     ///@}
 
     /** @name Dereferencing operators */
@@ -203,6 +206,12 @@ public:
     ///@}
 
 
+
+    /** Returns the flat index of the entry in the container pointed by the iterator. */
+    Index get_id() const;
+
+    /** Returns the stride used to advance to the next entry in the container. */
+    Index get_stride() const;
 
 private:
 

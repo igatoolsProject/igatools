@@ -480,6 +480,15 @@ get_flat_index() const
 {
     return parent_t::get_flat_index();
 }
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElementAccessor<PhysSpace>::
+get_tensor_index() const -> TensorIndex<dim>
+{
+    return parent_t::get_tensor_index();
+}
+
 //*/
 
 template< class PhysSpace >

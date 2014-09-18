@@ -357,7 +357,13 @@ public:
         print_info(LogStream &out) const
         {
             for (int i=0; i<n_entries; ++i)
+            {
+//                out << "Component[" << i << "]" << std::endl;
+//                out.push("   ");
                 out << (*this)[i] << " ";
+//                out << std::endl;
+//                out.pop();
+            }
         }
 
         const std::array <Index, n_entries> &get_comp_map() const

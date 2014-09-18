@@ -61,6 +61,9 @@ public:
      * an assertion will be raised.
      */
     DenseVector &operator=(const Real value);
+
+    /** Returns the number of entries in the DenseVector. */
+    int size() const;
 };
 
 /**@}*/

@@ -29,6 +29,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
  *
@@ -264,6 +266,19 @@ public:
 
     ///@}
 
+
+    /**
+     * @name Functions related to the indices of the element in the CartesianGrid pointed
+     * by the iterator.
+     */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
 protected:
     /** Object holding the Real data. */
     Accessor accessor_ ;
@@ -273,13 +288,13 @@ protected:
 template <typename Accessor>
 bool operator> (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
 {
-    return it1->get_flat_index() > it2->get_flat_index();
+    return it1.get_flat_index() > it2.get_flat_index();
 }
 
 template <typename Accessor>
 bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
 {
-    return it1->get_flat_index() < it2->get_flat_index();
+    return it1.get_flat_index() < it2.get_flat_index();
 }
 IGA_NAMESPACE_CLOSE
 
