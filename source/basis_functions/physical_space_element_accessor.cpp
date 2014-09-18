@@ -306,8 +306,18 @@ fill_cache(const TopologyId<dim> &topology_id)
 
     if (cache.flags_handler_.fill_divergences())
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+        Assert(cache.flags_handler_.gradients_filled(),
+	       ExcMessage("Divergence requires gradient to be filled."));
+
+        auto D1  = cache.D1phi_.begin();
+        auto div = cache.div_phi_.begin();
+        auto end = cache.D1phi_.end();
+        for (; D1 != end; ++D1, ++div)
+            *div = trace(*D1);
+
+        cache.flags_handler_.set_divergences_filled(true);
+        //Assert(false,ExcNotImplemented());
+        //AssertThrow(false,ExcNotImplemented());
     }
 
     cache.set_filled(true);
