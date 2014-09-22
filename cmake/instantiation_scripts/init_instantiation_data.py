@@ -148,7 +148,7 @@ class InstantiationInfo:
 
    """
   
-   def __init__(self, filename, max_der_order):
+   def __init__(self, filename, max_der_order, nurbs):
       """The constructor."""
       self.user_phy_sp_dims =[] # Physical spaces that the library is suppussed to be used on
       self.face_phy_sp_dims =[] # Physical Spaces that are faces of the user spaces
@@ -165,7 +165,8 @@ class InstantiationInfo:
       self.all_ref_sp_dims=[]
       self.igm_ref_sp_dims=[]
       self.really_all_ref_sp_dims=[]
-       
+      
+      self.nurbs = False if nurbs == 'OFF' else True
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
       self.values=[]
@@ -195,6 +196,7 @@ class InstantiationInfo:
       
       self.create_ref_spaces()
       self.create_PhysSpaces()
+      
       return None
 
 
@@ -301,9 +303,10 @@ class InstantiationInfo:
       IgRefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
                      for x in self.igm_ref_sp_dims ]
       
-   #todo : for only bspsline
-#      spaces = ('BSplineSpace', 'NURBSSpace')
       spaces = ['BSplineSpace']
+      if self.nurbs:
+          spaces.append('NURBSSpace')
+          
       self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
                             for dims in RefDims] )
       self.UserRefSpaces = ( ['%s%s' % (sp, dims)
@@ -413,7 +416,9 @@ class Instantiation:
         args = dict([arg.split('=') for arg in sysargv[1:]])    
 
         # Reading information from dimensions file.
-        self.inst = InstantiationInfo(args['config_file'], args['max_der_order'])
+        self.inst = InstantiationInfo(args['config_file'], 
+                                      args['max_der_order'], 
+                                      args['nurbs'])
         #  Some debug information printing
         if verbose:
             print('dim codim range rank space_dim')

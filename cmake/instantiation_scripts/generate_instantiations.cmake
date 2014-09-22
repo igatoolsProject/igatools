@@ -38,6 +38,7 @@ macro(generate_instantiations)
         ${PYTHON_EXECUTABLE} -B ${py_file} out_file=${name}.inst 
         config_file=${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
         max_der_order=${max_der_order}
+	nurbs=${NURBS}
 	DEPENDS ${py_file}  
         ${inst_script} 
         ${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
