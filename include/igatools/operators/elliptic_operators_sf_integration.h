@@ -116,6 +116,20 @@ public:
         DenseMatrix &operator_gradu_gradv) const override final;
 
 
+    /**
+     * This function evaluates the local (i.e. element-based) vector \f$ f_e \f$
+     * for witch its entries are
+     * \f[
+          (f_e)_{i} = \int_{\Omega_e} \phi^{e,\text{test}}_i
+          f(x)  \; d \Omega.
+       \f]
+     */
+    virtual void eval_operator_rhs_v(
+        const ElemTest &elem_test,
+        const ValueVector<typename PhysSpaceTrial::Value> &f,
+        DenseVector &operator_rhs_v) const override final;
+
+
 private:
 
     /**
@@ -1672,6 +1686,43 @@ eval_operator_gradu_gradv(
 
 //    Assert(false,ExcNotImplemented());
 //    AssertThrow(false,ExcNotImplemented());
+}
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_rhs_v(
+    const ElemTest &elem_test,
+    const ValueVector<typename PhysSpaceTrial::Value> &f,
+    DenseVector &operator_rhs_v) const
+{
+    const Size n_basis_test  = elem_test .get_num_basis();
+
+    const auto &phi_test  = elem_test.get_basis_values();
+    const auto &w_meas  = elem_test.get_w_measures();
+
+
+    Assert(operator_rhs_v.size() == n_basis_test,
+           ExcDimensionMismatch(operator_rhs_v.size(),n_basis_test));
+
+
+    const Size n_qp = f.get_num_points();
+    Assert(n_qp == phi_test.get_num_points(),ExcDimensionMismatch(n_qp,phi_test.get_num_points()));
+
+    vector<Real> f_times_w_meas(n_qp);
+    for (int qp = 0; qp < n_qp; ++qp)
+        f_times_w_meas[qp] = f[qp](0) * w_meas[qp];
+
+
+    operator_rhs_v.clear();
+    for (int i = 0; i < n_basis_test; ++i)
+    {
+        const auto phi_i = phi_test.get_function_view(i);
+        for (int qp = 0; qp < n_qp; ++qp)
+            operator_rhs_v(i) += phi_i[qp](0) * f_times_w_meas[qp];
+    }
 }
 
 

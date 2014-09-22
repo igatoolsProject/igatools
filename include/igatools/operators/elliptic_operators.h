@@ -131,6 +131,19 @@ public:
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
         DenseMatrix &operator_gradu_gradv) const = 0;
 
+    /**
+     * This function evaluates the local (i.e. element-based) vector \f$ f_e \f$
+     * for witch its entries are
+     * \f[
+          (f_e)_{i} = \int_{\Omega_e} \phi^{e,\text{test}}_i
+          f(x)  \; d \Omega.
+       \f]
+     */
+    virtual void eval_operator_rhs_v(
+        const ElemTest &elem_test,
+        const ValueVector<typename PhysSpaceTrial::Value> &f,
+        DenseVector &operator_rhs_v) const = 0;
+
 protected:
 
     /** Returns true if the space for the test functions and the trial functions is the same. */

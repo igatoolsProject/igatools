@@ -294,14 +294,7 @@ assemble()
     const auto elem_end = this->space->end();
 
     ValueFlags fill_flags = this->get_fill_flags();
-    /*
-        ValueFlags fill_flags = ValueFlags::value |
-    //                            ValueFlags::gradient |
-                                ValueFlags::map_inv_gradient |
-                                ValueFlags::measure |
-                                ValueFlags::w_measure |
-                                ValueFlags::point;
-    //*/
+
     elem->init_cache(fill_flags, this->elem_quad);
 
 
@@ -393,12 +386,16 @@ assemble()
         //----------------------------------------------------
         // Assemblying the right hand side -- begin
         const TimePoint start_eval_rhs = Clock::now();
+        /*
         for (int i = 0; i < n_basis; ++i)
         {
             auto phi_i = phi.get_function_view(i);
             for (int qp = 0; qp < n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp]) * w_meas[qp];
         }
+        //*/
+        elliptic_operators.eval_operator_rhs_v(*elem,f_values,loc_rhs);
+
         const TimePoint end_eval_rhs = Clock::now();
         this->elapsed_time_eval_rhs_ += end_eval_rhs - start_eval_rhs;
         // Assemblying the right hand side -- end
