@@ -1698,6 +1698,7 @@ eval_operator_rhs_v(
     const ValueVector<typename PhysSpaceTrial::Value> &f,
     DenseVector &operator_rhs_v) const
 {
+    //TODO: (martinelli 22 Sep 2014): this function is not implemented using sum_factorization. Fix it!
     const Size n_basis_test  = elem_test .get_num_basis();
 
     const auto &phi_test  = elem_test.get_basis_values();

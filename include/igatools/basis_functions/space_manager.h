@@ -198,14 +198,20 @@ using SpacePtrVariant =
  *   3. <b>Definition of the <em>global dofs connectivity</em> in each spaces pair</b>.
  *   Once the relations between the spaces are defined (Phase 2), it remains to define the dofs
  *   relations within a spaces pair.
- *     - In the particular case in which the a space defines a connection
- *   with itself (i.e. a diagonal block), the dofs relations are automatically inferred from the
+ *     - In the particular case in which a space defines a connection
+ *   with itself (i.e. a the connection is represented by a diagonal block),
+ *   the dofs relations are automatically inferred from the
  *   internal structure of the space, i.e. iterating over the active elements of the space and retrieving
  *   the dofs connectivity in each element.
  *     - For the case in which the spaces connection is not defined with a single space
  *   (i.e. we are not in the block-diagonal), the user has the responsability to manage
  *   (and set) the dofs connectivity. The function for setting the dofs connectivity with a spaces pair
- *   is spaces_connection_set_dofs_connectivity()
+ *   is spaces_connection_set_dofs_connectivity(). The first two arguments of this function are the
+ *   spaces defining the block for which we want to set the dofs connectivity, the third arguments is a
+ *   <tt>std::map<Index,std::set<Index>> </tt>
+ *   in which a generic key represents an active global dofs in the block (belonging from the first space)
+ *   and the value is a <tt>std::set<Index></tt> representing the global dofs in the second space that
+ *   are in relation with the global dof in the first space represented by the key.
  *   @code{.cpp}
      sp_manager.spaces_connection_set_dofs_connectivity(space_0,space_2,dofs_connectivity_0_2);
      @endcode
