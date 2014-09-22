@@ -709,6 +709,30 @@ private:
             return *space_col_;
         }
 
+        std::set<Index> get_row_dofs() const
+        {
+            const auto &sp_dofs_view = space_row_->get_dofs_view();
+
+            std::set<Index> dofs(sp_dofs_view.begin(),sp_dofs_view.end());
+
+            for (const auto &pair : extra_dofs_connectivity_)
+                dofs.insert(pair.first);
+
+            return dofs;
+        }
+
+        std::set<Index> get_col_dofs() const
+        {
+            const auto &sp_dofs_view = space_col_->get_dofs_view();
+
+            std::set<Index> dofs(sp_dofs_view.begin(),sp_dofs_view.end());
+
+            for (const auto &pair : extra_dofs_connectivity_)
+                dofs.insert(pair.second.begin(),pair.second.end());
+
+            return dofs;
+        }
+
     private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
@@ -742,6 +766,31 @@ public:
     SpacesConnection &get_spaces_connection(
         std::shared_ptr<SpaceTest> space_test,
         std::shared_ptr<SpaceTrial> space_trial);
+
+
+    std::set<Index> get_row_dofs() const
+    {
+        std::set<Index> row_dofs;
+
+        for (const auto &sp_conn : spaces_connections_)
+        {
+            const auto row_dofs_current_space = sp_conn.get_row_dofs();
+            row_dofs.insert(row_dofs_current_space.begin(),row_dofs_current_space.end());
+        }
+        return row_dofs;
+    }
+
+    std::set<Index> get_col_dofs() const
+    {
+        std::set<Index> col_dofs;
+
+        for (const auto &sp_conn : spaces_connections_)
+        {
+            const auto col_dofs_current_space = sp_conn.get_col_dofs();
+            col_dofs.insert(col_dofs_current_space.begin(),col_dofs_current_space.end());
+        }
+        return col_dofs;
+    }
 
 };
 

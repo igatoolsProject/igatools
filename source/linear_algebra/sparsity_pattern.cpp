@@ -34,34 +34,36 @@ SparsityPattern(const SpaceManager &space_manager)
     // build the dofs graph
 
     //-----------------------------------------------------------
-    // adding the dofs id -- begin
-    const auto &dofs_view = space_manager.get_dofs_view();
+    // adding the row dofs id -- begin
+    {
+        const auto set_row_dofs = space_manager.get_row_dofs();
 
-    for (const auto &dof : dofs_view)
-        row_dofs_.push_back(dof);
-    // adding the dofs id -- end
+        row_dofs_.insert(row_dofs_.end(),set_row_dofs.begin(),set_row_dofs.end());
+    }
+    // adding the row dofs id -- end
+    //-----------------------------------------------------------
+
+    //-----------------------------------------------------------
+    // adding the col dofs id -- begin
+    {
+        const auto set_col_dofs = space_manager.get_col_dofs();
+
+        col_dofs_.insert(col_dofs_.end(),set_col_dofs.begin(),set_col_dofs.end());
+    }
+    // adding the col dofs id -- end
     //-----------------------------------------------------------
 
 
     //-----------------------------------------------------------
     // adding the linear constraints id -- begin
     const auto &linear_constraints = space_manager.get_linear_constraints();
-
+#if 0
     Index row_id = space_manager.get_num_dofs();
     for (const auto &lc : linear_constraints)
         row_dofs_.push_back(row_id++);
+#endif
     // adding the linear constraints id -- end
     //-----------------------------------------------------------
-
-
-
-    //-----------------------------------------------------------
-    // copying the row ids to the col ids -- begin
-    Assert(!row_dofs_.empty(),ExcEmptyObject());
-    col_dofs_ = row_dofs_;
-    // copying the row ids to the col ids -- end
-    //-----------------------------------------------------------
-
 
 
 
@@ -70,7 +72,7 @@ SparsityPattern(const SpaceManager &space_manager)
     DofsInRow empty_set;
 
     // adding the global dof keys to the map representing the dof connectivity
-    for (const auto &dof : dofs_view)
+    for (const auto &dof : row_dofs_)
         this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
 
@@ -105,9 +107,12 @@ SparsityPattern(const SpaceManager &space_manager)
 
     //-----------------------------------------------------------
     // adding the LC-DOF/DOF-LC contributions -- begin
-    row_id = space_manager.get_num_dofs();
     for (const auto &lc : linear_constraints)
     {
+        Assert(lc != nullptr,ExcNullPtr());
+
+        const auto row_id = lc->get_global_dof_id();
+
         const auto lc_dofs = lc->get_dofs_id();
 
         //-----------------------------------------------------------
@@ -124,9 +129,6 @@ SparsityPattern(const SpaceManager &space_manager)
             (*this)[lc_dof].emplace(row_id);
         // adding the DOF-LC contribution -- end
         //-----------------------------------------------------------
-
-
-        row_id++;
     }
     // adding the LC-DOF/DOF-LC contributions -- end
     //-----------------------------------------------------------
