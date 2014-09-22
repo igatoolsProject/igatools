@@ -240,6 +240,13 @@ get_id() const
     return id_;
 }
 
+bool
+SpaceManager::
+SpaceInfo::
+operator==(const SpaceInfo &sp) const
+{
+    return (id_ == sp.id_);
+}
 
 
 
@@ -254,6 +261,13 @@ SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col)
 {}
 
 
+bool
+SpaceManager::
+SpacesConnection::
+operator==(const SpacesConnection &conn) const
+{
+    return (space_row_ == conn.space_row_) && (space_col_ == conn.space_col_);
+}
 
 
 

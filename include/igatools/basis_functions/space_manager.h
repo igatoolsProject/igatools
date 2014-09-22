@@ -560,6 +560,11 @@ private:
         SpacePtrVariant &get_space_variant();
 
 
+        /**
+         * Return true if the id of the lhs is equal to the id of the rhs.
+         */
+        bool operator==(const SpaceInfo &sp) const;
+
     private:
         /**
          * Pointer to a generic single-patch space (it can be any of the type allowed for BSplineSpace,
@@ -673,16 +678,22 @@ private:
 
         ~SpacesConnection() = default;
 
-        SpacesConnection(const SpacesConnection &in) = delete;
-        SpacesConnection(SpacesConnection &&in) = delete;
+        SpacesConnection(const SpacesConnection &in) = default;
+        SpacesConnection(SpacesConnection &&in) = default;
 
         SpacesConnection &operator=(const SpacesConnection &in) = delete;
         SpacesConnection &operator=(SpacesConnection &&in) = delete;
+
+        bool operator==(const SpacesConnection &conn) const;
 
     private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
     };
+
+
+    vector<SpacesConnection> spaces_connections_;
+
 
 public:
     /**
@@ -690,7 +701,15 @@ public:
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      */
-    const std::map<Index,std::shared_ptr<SpaceInfo>> &get_spaces_info() const;
+    const std::map<Index,SpaceInfoPtr> &get_spaces_info() const;
+
+
+
+    template<class SpaceTest,class SpaceTrial>
+    SpacesConnection &get_spaces_connection(
+        std::shared_ptr<SpaceTest> space_test,
+        std::shared_ptr<SpaceTrial> space_trial);
+
 };
 
 
@@ -740,12 +759,48 @@ add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<Spac
     Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
 
+    Assert(space_test !=nullptr,ExcNullPtr());
+    Assert(space_trial !=nullptr,ExcNullPtr());
+
     auto sp_test  = spaces_info_.at(space_test ->get_id());
     auto sp_trial = spaces_info_.at(space_trial->get_id());
 
     spaces_connectivity_[sp_test].emplace(sp_trial);
+
+    SpacesConnection conn(sp_test,sp_trial);
+
+    Assert(std::count(spaces_connections_.begin(),spaces_connections_.end(),conn) == 0,
+           ExcMessage("Spaces connection already added."));
+    spaces_connections_.push_back(conn);
 }
 
+template<class SpaceTest,class SpaceTrial>
+inline
+auto
+SpaceManager::
+get_spaces_connection(
+    std::shared_ptr<SpaceTest> space_test,
+    std::shared_ptr<SpaceTrial> space_trial)
+-> SpacesConnection &
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+//    Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
+
+    Assert(space_test !=nullptr,ExcNullPtr());
+    Assert(space_trial !=nullptr,ExcNullPtr());
+
+    auto sp_test  = spaces_info_.at(space_test ->get_id());
+    auto sp_trial = spaces_info_.at(space_trial->get_id());
+
+    auto it = std::find(
+        spaces_connections_.begin(),
+        spaces_connections_.end(),
+        SpacesConnection(space_test,sp_trial));
+
+    Assert(it != spaces_connections_.end(),
+    ExcMessage("Spaces connection not found."));
+    return *it;
+}
 
 
 
