@@ -198,11 +198,6 @@ using SpacePtrVariant =
  *   3. <b>Definition of the <em>global dofs connectivity</em> in each spaces pair</b>.
  *   Once the relations between the spaces are defined (Phase 2), it remains to define the dofs
  *   relations within a spaces pair.
- *     - In the particular case in which a space defines a connection
- *   with itself (i.e. a the connection is represented by a diagonal block),
- *   the dofs relations are automatically inferred from the
- *   internal structure of the space, i.e. iterating over the active elements of the space and retrieving
- *   the dofs connectivity in each element.
  *     - For the case in which the spaces connection is not defined with a single space
  *   (i.e. we are not in the block-diagonal), the user has the responsability to manage
  *   (and set) the dofs connectivity. The function for setting the dofs connectivity with a spaces pair
@@ -215,6 +210,14 @@ using SpacePtrVariant =
  *   @code{.cpp}
      sp_manager.spaces_connection_set_dofs_connectivity(space_0,space_2,dofs_connectivity_0_2);
      @endcode
+ *     - In the particular case in which a space defines a connection
+ *   with itself (i.e. a the connection is represented by a diagonal block),
+ *   the dofs relations are automatically inferred (without taking any action) from the
+ *   internal structure of the space, i.e. iterating over the active elements of the space and retrieving
+ *   the dofs connectivity in each element.
+ *   If this default behaviour is not appropriate to describe the dofs connectivity,
+ *   the user can set up manually the dofs connectivity by using the function
+ *   spaces_connection_set_dofs_connectivity().
  *
  * @todo: complete the documentation
  * @author M. Martinelli
@@ -493,6 +496,7 @@ private:
     public:
         SpaceInfo() = delete;
         SpaceInfo(const SpacePtrVariant &space,
+                  const Index id,
                   const int dim,
                   const int codim,
                   const int space_dim,
@@ -509,6 +513,11 @@ private:
 
         SpaceInfo &operator=(const SpaceInfo &sp) = delete;
         SpaceInfo &operator=(SpaceInfo &&sp) = delete;
+
+        /**
+         * Returns the space global id.
+         */
+        Index get_id() const;
 
         /** Returns the number of dofs of the space. */
         Index get_num_dofs() const ;
@@ -551,14 +560,18 @@ private:
         SpacePtrVariant &get_space_variant();
 
 
-
-
     private:
         /**
          * Pointer to a generic single-patch space (it can be any of the type allowed for BSplineSpace,
          * NURBSSpace and PhysicalSpace).
          */
         SpacePtrVariant space_;
+
+        /**
+         * Global space id.
+         */
+        const Index id_;
+
 
         int dim_;
 
@@ -590,6 +603,8 @@ private:
          * Map of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
          *
+         * The std::map key represent the element flat-id for which we store the dofs view.
+         *
          * @note We use a std:shared_ptr because this container can be very big and
          * it is already present
          * the the DofDistribution class instantiated in the space itself.
@@ -597,20 +612,38 @@ private:
         std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view_;
     };
 
+    using SpaceInfoPtr = std::shared_ptr<SpaceInfo>;
+
+    /**
+     * This functor defines the relation order between the spaces.
+     */
+    struct space_comparator_less
+    {
+        bool operator()(const SpaceInfoPtr &lhs,const SpaceInfoPtr &rhs) const
+        {
+            return lhs->get_id() < rhs->get_id();
+        }
+    };
+
+
+
     /**
      * Map containing the pointers to the spaces handled by the SpaceManager,
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
+     *
+     * The std::map key is the space id.
      */
-    std::map<int,std::shared_ptr<SpaceInfo>> spaces_info_;
+    std::map<int,SpaceInfoPtr> spaces_info_;
 
 
     /**
-     * Connectivity between the different spaces. The key in the std::map represents the a block
-     * of dofs along the rows
-     * and the values of a give key represents the blocks of dofs along the columns of the system matrix.
+     * Connectivity between the different spaces/blocks.
+     * The key in the std::map represents a block of row dofs
+     * and the values of a give key represents the connected
+     * blocks of dofs along the columns of the system matrix.
      */
-    std::map<std::shared_ptr<SpaceInfo>,std::set<std::shared_ptr<SpaceInfo>>> spaces_connectivity_;
+    std::map<SpaceInfoPtr,std::set<SpaceInfoPtr>> spaces_connectivity_;
 
     /**
      * View to the active dofs ids of all single-patch spaces handled by the SpaceManager.
@@ -618,7 +651,6 @@ private:
     DofsView dofs_view_;
 
 
-//    vector<std::shared_ptr<LinearConstraint>> linear_constraints_;
     std::multimap<LCType,std::shared_ptr<LC>> linear_constraints_;
 
 
@@ -631,6 +663,26 @@ private:
     /** Number of unique dofs in the SpaceManager. */
     Index num_unique_dofs_;
 
+
+    class SpacesConnection
+    {
+    public:
+        SpacesConnection() = delete;
+
+        SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col);
+
+        ~SpacesConnection() = default;
+
+        SpacesConnection(const SpacesConnection &in) = delete;
+        SpacesConnection(SpacesConnection &&in) = delete;
+
+        SpacesConnection &operator=(const SpacesConnection &in) = delete;
+        SpacesConnection &operator=(SpacesConnection &&in) = delete;
+
+    private:
+        SpaceInfoPtr space_row_;
+        SpaceInfoPtr space_col_;
+    };
 
 public:
     /**
@@ -665,6 +717,7 @@ add_space(std::shared_ptr<Space> space)
 
     spaces_info_[space->get_id()] = std::shared_ptr<SpaceInfo>(
                                         new SpaceInfo(space,
+                                                      space->get_id(),
                                                       Space::dim,
                                                       Space::codim,
                                                       Space::space_dim,

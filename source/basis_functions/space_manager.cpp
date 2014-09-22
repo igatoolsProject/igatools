@@ -134,6 +134,7 @@ SpaceInfo()
 SpaceManager::
 SpaceInfo::
 SpaceInfo(const SpacePtrVariant &space,
+          const Index id,
           const int dim,
           const int codim,
           const int space_dim,
@@ -146,6 +147,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
     :
     space_(space),
+    id_(id),
     dim_(dim),
     codim_(codim),
     space_dim_(space_dim),
@@ -229,6 +231,41 @@ get_dofs_view() const -> const DofsView &
 {
     return dofs_view_;
 }
+
+Index
+SpaceManager::
+SpaceInfo::
+get_id() const
+{
+    return id_;
+}
+
+
+
+
+
+
+SpaceManager::
+SpacesConnection::
+SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col)
+    :
+    space_row_(space_row),
+    space_col_(space_col)
+{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 auto

@@ -130,6 +130,26 @@ public:
         DenseVector &operator_rhs_v) const override final;
 
 
+    /**
+     * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
+     * for witch its entries are
+     * \f[
+          (A_e)_{ij} = \int_{\Omega_e} \sum_{s=1}^{sp\_dim}
+          \phi^{e,\text{test}}_i
+          \, \beta_{s}(x) \,
+          \bigl( \nabla \phi^{e,\text{trial}}_j \bigr)_s \; d \Omega
+          = \int_{\Omega_e}
+          \phi^{e,\text{test}}_i
+          \, \vec{\beta}(x) \, \cdot \,
+          \nabla \phi^{e,\text{trial}}_j \; d \Omega .
+       \f]
+     */
+    virtual void eval_operator_gradu_v(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+        DenseMatrix &operator_gradu_v) const override final;
+
 private:
 
     /**
@@ -1727,7 +1747,19 @@ eval_operator_rhs_v(
 }
 
 
-
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_gradu_v(
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+    DenseMatrix &operator_gradu_v) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
 
 
 

@@ -82,6 +82,7 @@ public:
     using Derivative = typename Func::template Derivative<order>;
     using Point = typename Func::Point;
     using Value = typename Func::Value;
+    using Gradient = typename Func::Gradient;
     using Div   = typename Func::Div;
 
     using RefPoint = typename RefSpace::Point;
