@@ -45,6 +45,34 @@ GridForwardIterator(std::shared_ptr<ContainerType> grid,
 
 template <typename Accessor>
 inline
+bool
+GridForwardIterator<Accessor>::
+jump(const TensorIndex<dim> &increment)
+{
+    return accessor_.jump(increment);
+}
+
+template <typename Accessor>
+inline
+void GridForwardIterator<Accessor>::
+move_to(const Index flat_index)
+{
+    accessor_.move_to(flat_index);
+}
+
+
+template <typename Accessor>
+inline
+void
+GridForwardIterator<Accessor>::
+move_to(const TensorIndex<dim> &tensor_index)
+{
+    accessor_.move_to(tensor_index);
+}
+
+
+template <typename Accessor>
+inline
 GridForwardIterator<Accessor> &
 GridForwardIterator<Accessor>::
 operator++()

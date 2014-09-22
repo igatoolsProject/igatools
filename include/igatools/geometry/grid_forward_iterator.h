@@ -253,8 +253,37 @@ public:
     bool operator!= (const GridForwardIterator &) const;
     ///@}
 
-    /** @name Advance operator */
+
+    /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
+    /**
+     * Moves the iterator to the position that differs from the current one
+     * for the quantity given by @p increment.
+     *
+     * If the resulting position after the movement is valid (i.e. within the grid), then the function
+     * returns true, otherwise it returns false.
+     */
+    bool jump(const TensorIndex<dim> &increment);
+
+    /**
+     * Sets the index of the iterator using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index);
+
+
+    /**
+     * Sets the index of the iterator using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const TensorIndex<dim> &tensor_index);
+
     /**
      *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
      *  operator advances the iterator to
@@ -262,8 +291,6 @@ public:
      *  a reference to <tt>*this</tt>.
      */
     GridForwardIterator<Accessor> &operator++();
-
-
     ///@}
 
 

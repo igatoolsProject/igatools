@@ -307,7 +307,7 @@ fill_cache(const TopologyId<dim> &topology_id)
     if (cache.flags_handler_.fill_divergences())
     {
         Assert(cache.flags_handler_.gradients_filled(),
-	       ExcMessage("Divergence requires gradient to be filled."));
+               ExcMessage("Divergence requires gradient to be filled."));
 
         auto D1  = cache.D1phi_.begin();
         auto div = cache.div_phi_.begin();
@@ -497,6 +497,43 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
     return this->space_;
+}
+
+
+
+template< class PhysSpace >
+bool
+PhysicalSpaceElementAccessor<PhysSpace>::
+jump(const TensorIndex<dim> &increment)
+{
+    const bool jump_grid_accessor = parent_t::jump(increment);
+
+    const bool jump_push_fwd_accessor = PfElemAccessor::jump(increment);
+
+    const bool jump_ref_space_accessor = ref_space_element_accessor_.jump(increment);
+
+    return jump_grid_accessor && jump_push_fwd_accessor && jump_ref_space_accessor;
+}
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+move_to(const Index flat_index)
+{
+    parent_t::move_to(flat_index);
+    PfElemAccessor::move_to(flat_index);
+    ref_space_element_accessor_.move_to(flat_index);
+}
+
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+move_to(const TensorIndex<dim> &tensor_index)
+{
+    parent_t::move_to(tensor_index);
+    PfElemAccessor::move_to(tensor_index);
+    ref_space_element_accessor_.move_to(tensor_index);
 }
 
 
