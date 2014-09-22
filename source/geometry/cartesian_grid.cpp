@@ -292,6 +292,26 @@ end() const -> ElementIterator
 
 
 template<int dim_>
+Index
+CartesianGrid<dim_>::
+tensor_to_flat(const TensorIndex<dim_> &tensor_index) const
+{
+    return TensorSizedContainer<dim_>::tensor_to_flat(tensor_index);
+}
+
+
+
+template<int dim_>
+TensorIndex<dim_>
+CartesianGrid<dim_>::
+flat_to_tensor(const Index flat_index) const
+{
+    return TensorSizedContainer<dim_>::flat_to_tensor(flat_index);
+}
+
+
+
+template<int dim_>
 void
 CartesianGrid<dim_>::
 set_boundary_id(const int face, const boundary_id id)

@@ -318,6 +318,21 @@ public:
     ElementIterator end() const;
     ///@}
 
+
+    /** @name Functions for the index transformations */
+    ///@{
+    /**
+     * Transformation from a tensor-index to a flat-index.
+     */
+    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
+
+    /**
+     * Transformation from a flat-index to a tensor-index.
+     */
+    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
+    ///@}
+
+
     ///@name Dealing with boundary information
     ///@{
     /**
