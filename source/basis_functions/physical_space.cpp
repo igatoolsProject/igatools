@@ -210,9 +210,16 @@ get_space_manager() -> shared_ptr<SpaceManager>
 {
     auto space_manager = make_shared<SpaceManager>(SpaceManager());
 
+    auto ptr = this->shared_from_this();
+
     space_manager->spaces_insertion_open();
-    space_manager->add_space(this->shared_from_this());
+    space_manager->add_space(ptr);
     space_manager->spaces_insertion_close();
+
+
+    space_manager->spaces_connectivity_open();
+    space_manager->add_spaces_connection(ptr,ptr);
+    space_manager->spaces_connectivity_close();
 
     return space_manager;
 }

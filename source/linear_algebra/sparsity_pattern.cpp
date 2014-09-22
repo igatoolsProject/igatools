@@ -76,12 +76,27 @@ SparsityPattern(const SpaceManager &space_manager)
 
     //-----------------------------------------------------------
     // adding the DOF-DOF contribution -- begin
+    /*
     const auto &spaces_info = space_manager.get_spaces_info();
     Assert(!spaces_info.empty(),ExcEmptyObject());
     for (const auto &space : spaces_info)
         for (const auto element_dofs : space.second->get_elements_dofs_view())
             for (const auto &dof : element_dofs.second)
                 (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+    //*/
+    const auto &spaces_connections = space_manager.get_spaces_connections();
+    Assert(!spaces_connections.empty(),ExcEmptyObject());
+    for (const auto &sp_conn : spaces_connections)
+    {
+        if (sp_conn.is_unique_space())
+        {
+            const auto &space = sp_conn.get_space_row();
+            for (const auto element_dofs : space.get_elements_dofs_view())
+                for (const auto &dof : element_dofs.second)
+                    (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+        }
+    }
+
     // adding the DOF-DOF contribution -- end
     //-----------------------------------------------------------
 

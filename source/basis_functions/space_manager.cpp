@@ -270,10 +270,13 @@ operator==(const SpacesConnection &conn) const
 }
 
 
-
-
-
-
+bool
+SpaceManager::
+SpacesConnection::
+is_unique_space() const
+{
+    return (space_row_ == space_col_);
+}
 
 
 

@@ -641,7 +641,7 @@ private:
      */
     std::map<int,SpaceInfoPtr> spaces_info_;
 
-
+#if 0
     /**
      * Connectivity between the different spaces/blocks.
      * The key in the std::map represents a block of row dofs
@@ -649,6 +649,7 @@ private:
      * blocks of dofs along the columns of the system matrix.
      */
     std::map<SpaceInfoPtr,std::set<SpaceInfoPtr>> spaces_connectivity_;
+#endif
 
     /**
      * View to the active dofs ids of all single-patch spaces handled by the SpaceManager.
@@ -664,6 +665,7 @@ private:
 
     /** Counts and return the number of unique dofs in the SpaceManager. */
     Index count_unique_dofs() const;
+
 
     /** Number of unique dofs in the SpaceManager. */
     Index num_unique_dofs_;
@@ -686,16 +688,47 @@ private:
 
         bool operator==(const SpacesConnection &conn) const;
 
+        /** Returns true if the row space and the column space are equal. */
+        bool is_unique_space() const;
+
+        using DofsConnectivity = std::map<Index,std::set<Index>>;
+
+        void add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+
+        const SpaceInfo &get_space_row() const
+        {
+            return *space_row_;
+        }
+
+        const SpaceInfo &get_space_col() const
+        {
+            return *space_col_;
+        }
+
     private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
+
+
+        DofsConnectivity extra_dofs_connectivity_;
+
     };
 
 
     vector<SpacesConnection> spaces_connections_;
 
-
 public:
+
+    const vector<SpacesConnection> &get_spaces_connections() const
+    {
+        return spaces_connections_;
+    }
+
+
     /**
      * Returns a map containing the pointers to the spaces handled by the SpaceManager,
      * and some useful informations that does not depends on the template
@@ -765,7 +798,7 @@ add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<Spac
     auto sp_test  = spaces_info_.at(space_test ->get_id());
     auto sp_trial = spaces_info_.at(space_trial->get_id());
 
-    spaces_connectivity_[sp_test].emplace(sp_trial);
+//    spaces_connectivity_[sp_test].emplace(sp_trial);
 
     SpacesConnection conn(sp_test,sp_trial);
 
