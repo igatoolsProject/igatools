@@ -312,7 +312,7 @@ assemble()
 
         auto points  = elem->get_points();
         auto phi     = elem->get_basis_values();
-        auto grd_phi = elem->get_basis_gradients();
+//        auto grd_phi = elem->get_basis_gradients();
         auto w_meas  = elem->get_w_measures();
         //----------------------------------------------------
 
