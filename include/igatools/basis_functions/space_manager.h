@@ -195,6 +195,21 @@ using SpacePtrVariant =
 
         @endcode
  *
+ *   3. <b>Definition of the <em>global dofs connectivity</em> in each spaces pair</b>.
+ *   Once the relations between the spaces are defined (Phase 2), it remains to define the dofs
+ *   relations within a spaces pair.
+ *     - In the particular case in which the a space defines a connection
+ *   with itself (i.e. a diagonal block), the dofs relations are automatically inferred from the
+ *   internal structure of the space, i.e. iterating over the active elements of the space and retrieving
+ *   the dofs connectivity in each element.
+ *     - For the case in which the spaces connection is not defined with a single space
+ *   (i.e. we are not in the block-diagonal), the user has the responsability to manage
+ *   (and set) the dofs connectivity. The function for setting the dofs connectivity with a spaces pair
+ *   is spaces_connection_set_dofs_connectivity()
+ *   @code{.cpp}
+     sp_manager.spaces_connection_set_dofs_connectivity(space_0,space_2,dofs_connectivity_0_2);
+     @endcode
+ *
  * @todo: complete the documentation
  * @author M. Martinelli
  * @date 10 Jun 2014
