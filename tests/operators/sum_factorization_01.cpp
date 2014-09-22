@@ -68,6 +68,11 @@ public:
     PoissonProblem(const int n_knots, const int deg);
 
 
+    ValueFlags get_fill_flags() const;
+
+    const DerivedClass &as_derived_class() const ;
+
+
     Real get_elapsed_time_eval_basis() const;
     Real get_elapsed_time_eval_mass_matrix() const;
     Real get_elapsed_time_eval_stiffness_matrix() const;
@@ -239,7 +244,21 @@ PoissonProblem(const int n_knots, const int deg)
 }
 
 
+template<int dim,class DerivedClass>
+const DerivedClass &
+PoissonProblem<dim,DerivedClass>::
+as_derived_class() const
+{
+    return static_cast<const DerivedClass &>(*this);
+}
 
+template<int dim,class DerivedClass>
+ValueFlags
+PoissonProblem<dim,DerivedClass>::
+get_fill_flags() const
+{
+    return this->as_derived_class().get_fill_flags();
+}
 
 template<int dim,class DerivedClass>
 void
@@ -273,12 +292,16 @@ assemble()
 
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
-    ValueFlags fill_flags = ValueFlags::value |
-                            ValueFlags::gradient |
-                            ValueFlags::measure |
-                            ValueFlags::w_measure |
-                            ValueFlags::point;
 
+    ValueFlags fill_flags = this->get_fill_flags();
+    /*
+        ValueFlags fill_flags = ValueFlags::value |
+    //                            ValueFlags::gradient |
+                                ValueFlags::map_inv_gradient |
+                                ValueFlags::measure |
+                                ValueFlags::w_measure |
+                                ValueFlags::point;
+    //*/
     elem->init_cache(fill_flags, this->elem_quad);
 
 
@@ -465,6 +488,8 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
+    ValueFlags get_fill_flags() const;
+
 private:
 
     EllipticOperatorsType elliptic_operators_std_;
@@ -480,6 +505,19 @@ get_elliptic_operators() const -> const EllipticOperatorsType &
     return elliptic_operators_std_;
 }
 
+template<int dim>
+ValueFlags
+PoissonProblemStandardIntegration<dim>::
+get_fill_flags() const
+{
+    ValueFlags fill_flags = ValueFlags::value |
+                            ValueFlags::gradient |
+                            ValueFlags::measure |
+                            ValueFlags::w_measure |
+                            ValueFlags::point;
+
+    return fill_flags;
+}
 
 
 template<int dim>
@@ -519,6 +557,8 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
+    ValueFlags get_fill_flags() const;
+
 private:
     EllipticOperatorsSFIntegration<SpaceTest,SpaceTrial>
     elliptic_operators_sf_;
@@ -530,6 +570,22 @@ PoissonProblemSumFactorization<dim>::
 get_elliptic_operators() const -> const EllipticOperatorsType &
 {
     return elliptic_operators_sf_;
+}
+
+
+template<int dim>
+ValueFlags
+PoissonProblemSumFactorization<dim>::
+get_fill_flags() const
+{
+    ValueFlags fill_flags = ValueFlags::value |
+//                            ValueFlags::gradient |
+                            ValueFlags::map_inv_gradient |
+                            ValueFlags::measure |
+                            ValueFlags::w_measure |
+                            ValueFlags::point;
+
+    return fill_flags;
 }
 
 
