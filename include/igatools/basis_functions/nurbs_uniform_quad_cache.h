@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifdef NURBS
+
 #ifndef NURBS_UNIFORM_QUAD_CACHE_H_
 #define NURBS_UNIFORM_QUAD_CACHE_H_
 
@@ -148,3 +150,5 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif // #ifdef NURBS_UNIFORM_QUAD_CACHE_H_
+
+#endif

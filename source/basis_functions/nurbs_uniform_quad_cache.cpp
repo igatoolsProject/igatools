@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifdef NURBS
 #include <igatools/basis_functions/nurbs_uniform_quad_cache.h>
 #include <igatools/utils/multi_array_utils.h>
 
@@ -668,3 +669,6 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_uniform_quad_cache.inst>
+
+
+#endif

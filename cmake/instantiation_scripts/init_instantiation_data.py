@@ -302,8 +302,8 @@ class InstantiationInfo:
                      for x in self.igm_ref_sp_dims ]
       
    #todo : for only bspsline
-      spaces = ('BSplineSpace', 'NURBSSpace')
-#      spaces = ['BSplineSpace']
+#      spaces = ('BSplineSpace', 'NURBSSpace')
+      spaces = ['BSplineSpace']
       self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
                             for dims in RefDims] )
       self.UserRefSpaces = ( ['%s%s' % (sp, dims)
@@ -321,8 +321,8 @@ class InstantiationInfo:
    def create_PhysSpaces(self):
       
       #todo : for only bspsline
-      spaces = ('BSplineSpace', 'NURBSSpace')
-#      spaces = ['BSplineSpace']
+#      spaces = ('BSplineSpace', 'NURBSSpace')
+      spaces = ['BSplineSpace']
       self.PhysSpaces_v2 = unique( [PhysSpace(x,sp)
                                  for sp in spaces
                                  for x in self.all_phy_sp_dims] )
