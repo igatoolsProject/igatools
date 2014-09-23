@@ -65,8 +65,8 @@ class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
 
     using Value = typename Space::Value;
 
-//protected:
-public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
+protected:
+//public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
     using ElementAccessor = typename Space::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
@@ -95,6 +95,7 @@ public:
     void print_info(LogStream &out) const;
 
 
+private:
     const Quadrature<dim> &get_quad() const;
 
 
@@ -158,6 +159,7 @@ private:
     {
     public:
         using DirectionTable<BasisValues>::DirectionTable;
+        // TODO (pauletti, Sep 23, 2014): document and split definition
         auto get_element_values(const TensorIndex<dim> &id)
         {
             ComponentContainer<TensorProductFunctionEvaluator<dim> >

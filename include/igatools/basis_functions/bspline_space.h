@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-
+#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include<igatools/geometry/mapping.h>
 #include<igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
@@ -114,6 +114,7 @@ public:
     using RefSpace = self_t;
 
     using GridType = typename PushForwardType::GridType;
+    using UniformQuadCache = BSplineUniformQuadCache<dim_, range_, rank_>;
 
     static const int dim       = PushForwardType::dim;
     static const int codim     = PushForwardType::codim;

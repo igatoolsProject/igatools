@@ -322,10 +322,10 @@ class InstantiationInfo:
 
 
    def create_PhysSpaces(self):
-      
-      #todo : for only bspsline
-#      spaces = ('BSplineSpace', 'NURBSSpace')
       spaces = ['BSplineSpace']
+      if self.nurbs:
+          spaces.append('NURBSSpace')
+   
       self.PhysSpaces_v2 = unique( [PhysSpace(x,sp)
                                  for sp in spaces
                                  for x in self.all_phy_sp_dims] )

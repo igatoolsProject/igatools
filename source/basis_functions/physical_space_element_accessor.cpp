@@ -249,8 +249,8 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 init_cache(const ValueFlags fill_flag,
            const QuadratureType &quad)
 {
-    const ValueFlags ref_sp_flag =
-        get_reference_space_accessor_fill_flags(fill_flag);
+    //    const ValueFlags ref_sp_flag =
+    //        get_reference_space_accessor_fill_flags(fill_flag);
     // TODO (pauletti, Sep 12, 2014): fix next line
     // ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
 

@@ -72,6 +72,7 @@ template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
     public SpaceElementAccessor<PhysSpace>,
+   // todo: private PhysSpace::RefSpace::ElementAccessor,
     private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
@@ -352,6 +353,7 @@ public :
      */
     void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
 
+private:
     /**
      * Return a const reference of this object as would be viewed as reference space element accessor.
      * This means that the returned object can be queried (but not modified) as the reference space
@@ -366,6 +368,7 @@ public :
      */
     const PfElemAccessor &get_push_forward_accessor() const;
 
+public:
 
     /**
      * @name Functions related to get the indices of the element.
