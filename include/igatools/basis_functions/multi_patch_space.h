@@ -25,7 +25,9 @@
 #include <igatools/base/logstream.h>
 #include <igatools/basis_functions/space_manager.h>
 
+#ifdef USE_GRAPH
 #include <boost/graph/adjacency_list.hpp>
+#endif
 
 #include <memory>
 
@@ -65,34 +67,50 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup containers
  */
-template <class PhysicalSpace>
+template <class PhysSpace>
 class MultiPatchSpace
 {
 public:
     /** @names Type aliases used within this class */
     ///@{
     /** Type alias for the reference space. */
-    using RefSpace = typename PhysicalSpace::RefSpace;
+    using RefSpace = typename PhysSpace::RefSpace;
 
     /** Type alias for the push-forward. */
-    using PushForward = typename PhysicalSpace::PushForwardType;
+//    using PushForward = typename PhysicalSpace::PushForwardType;
 
     /** Type alias for the mapping. */
-    using Map = typename PushForward::Map;
+    using Map = typename PhysSpace::PushForwardType::Map;
 
     /** Type alias for a patch . */
-    using Patch = PhysicalSpace;
+    using Patch = PhysSpace;
 
     /** Type alias for the pointer to a patch . */
     using PatchPtr = std::shared_ptr<Patch>;
 
     /** Dimensionality of the reference domain. */
-    static const int dim = PhysicalSpace::dim;
+    static const int dim = PhysSpace::dim;
 
     /** Dimensionality of the embedding domain. */
-    static const int space_dim = PhysicalSpace::space_dim;
+    static const int space_dim = PhysSpace::space_dim;
+
+    /** Range of the space */
+    static const int range = PhysSpace::range;
+
+    /** Rank of the space */
+    static const int rank  = PhysSpace::rank;
+
+    static const int codim = PhysSpace::codim;
     ///@}
 
+
+    /** @names Type aliases used for the InterfaceMortar */
+    ///@{
+    using MortarMultiplierRefSpace = typename BSplineSpace<dim,range,rank>::RefFaceSpace;
+    using MortarMultiplierPushFwd = typename PushForward<Transformation::h_grad,dim,codim>::FacePushForward;
+    using MortarMultiplierSpace = PhysicalSpace<MortarMultiplierRefSpace,MortarMultiplierPushFwd>;
+    using MortarMultiplierSpacePtr = std::shared_ptr<MortarMultiplierSpace>;
+    ///@}
 
     /** @name Constructors */
     ///@{
@@ -104,10 +122,10 @@ public:
                         std::make_shared<SpaceManager>(SpaceManager()));
 
     /** Copy constructor. */
-    MultiPatchSpace(const MultiPatchSpace<PhysicalSpace> &multi_patch_space) = delete;
+    MultiPatchSpace(const MultiPatchSpace<PhysSpace> &multi_patch_space) = delete;
 
     /** Move constructor. */
-    MultiPatchSpace(MultiPatchSpace<PhysicalSpace> &&multi_patch_space) = delete;
+    MultiPatchSpace(MultiPatchSpace<PhysSpace> &&multi_patch_space) = delete;
 
     /** Destructor. */
     ~MultiPatchSpace() = default;
@@ -117,10 +135,10 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator.*/
-    MultiPatchSpace<PhysicalSpace> &operator=(const MultiPatchSpace<PhysicalSpace> &multi_patch_space) = delete;
+    MultiPatchSpace<PhysSpace> &operator=(const MultiPatchSpace<PhysSpace> &multi_patch_space) = delete;
 
     /** Move assignment operator.*/
-    MultiPatchSpace<PhysicalSpace> &operator=(MultiPatchSpace<PhysicalSpace> &&multi_patch_space) = delete;
+    MultiPatchSpace<PhysSpace> &operator=(MultiPatchSpace<PhysSpace> &&multi_patch_space) = delete;
     ///@}
 
     /** @name Functions for the patch insertion management. */
@@ -169,7 +187,7 @@ public:
     void interface_insertion_close();
 
     /**
-     * Adds an interface between two different patches.
+     * Adds an Interface between two different patches.
      * @note In Debug mode, an assertion will be raised if the interface is already added.
      * @pre Before calling this function, the member variable is_arrangement_open_ must be set to TRUE
      * (for example using the function arrangement_open()).
@@ -177,6 +195,18 @@ public:
     void add_interface(const InterfaceType &type,
                        PatchPtr patch_0,const int side_id_patch_0,
                        PatchPtr patch_1,const int side_id_patch_1);
+
+    /**
+     * Adds an InterfaceMortar between two different patches.
+     * @note In Debug mode, an assertion will be raised if the interface is already added.
+     * @pre Before calling this function, the member variable is_arrangement_open_ must be set to TRUE
+     * (for example using the function arrangement_open()).
+     */
+    void add_interface_mortar(
+        PatchPtr patch_0,const int side_id_patch_0,
+        PatchPtr patch_1,const int side_id_patch_1,
+        MortarMultiplierSpacePtr multiplier_space);
+
     ///@}
 
 
@@ -334,7 +364,7 @@ private:
 
 
         /** Destructor. */
-        ~Interface() = default;
+        virtual ~Interface() = default;
         ///@}
 
 
@@ -358,20 +388,123 @@ private:
         bool operator!=(const Interface &interface_to_compare) const;
         ///@}
 
+        InterfaceType get_type() const;
+
+        virtual void process()
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+        }
+
         /**
          * Prints internal information about the Interface.
          * @note Mostly used for debugging and testing.
          */
         void print_info(LogStream &out) const;
 
-        /** Interface type. */
-        InterfaceType type_;
+
+        vector<std::shared_ptr<const LinearConstraint>> get_linear_constraints() const;
+
+
+    protected:
+        /**
+         * Linear constraints due to the Interface.
+         *
+         * Depending on the Interface type,
+         * they must be filled by the process() method.
+         */
+        vector<std::shared_ptr<const LinearConstraint>> linear_constraints_;
 
         /**
          * The two pairs patch/side_id defining the interface.
          */
         std::array<std::pair<PatchPtr,int>,2> patch_and_side_;
+
+
+    private:
+        /** Interface type. */
+        InterfaceType type_;
     };
+
+
+    /**
+     * This class represent an interface between two spaces glued using the mortar method with
+     * Lagrange multipliers.
+     *
+     * @note Internally it stores the space used to define the Lagrange multipliers.
+     */
+    class InterfaceMortar : public Interface
+    {
+    public:
+
+        /** @name Constructors and destructor */
+        ///@{
+        /** Default constructor. */
+        InterfaceMortar() = delete;
+
+        InterfaceMortar(
+            PatchPtr space_slave, const int side_id_slave,
+            PatchPtr space_master,const int side_id_master,
+            MortarMultiplierSpacePtr multiplier_space);
+
+
+        /** Copy constructor. */
+        InterfaceMortar(const InterfaceMortar &interface) = delete;
+
+
+        /** Move constructor. */
+        InterfaceMortar(InterfaceMortar &&interface) = delete;
+
+
+        /** Destructor. */
+        virtual ~InterfaceMortar() = default;
+        ///@}
+
+
+        /** @name Assignment operators */
+        ///@{
+        /** Copy assignment operator. */
+        InterfaceMortar &operator=(const InterfaceMortar &interface) = delete;
+
+
+        /** Move assignment operator. */
+        InterfaceMortar &operator=(InterfaceMortar &&interface) = delete;
+        ///@}
+
+        /**
+         * Computes and fills the linear constraints due to the mortar gluing.
+         */
+        void process() override final;
+
+
+        std::pair<PatchPtr,int> get_space_slave() const;
+        std::pair<PatchPtr,int> get_space_master() const;
+
+        /**
+         * Lagrange multipliers' space
+         */
+        MortarMultiplierSpacePtr multiplier_space_;
+
+    private:
+
+        /**
+         * This function fills the dofs connectivity in the SpaceManager of the following blocks
+         *   - <tt>patch_0 -- multiplier_space</tt> and its transpose;
+         *   - <tt>patch_1 -- multiplier_space</tt> and its transpose.
+         *
+         * Then it allocates the LinearConstraints that will be filled by the function
+         * InterfaceMortar::process().
+         *
+         * At the end it copies the LinearConstraint pointers inside the space_manager.
+         */
+        void fill_space_manager_dofs_connectivity(SpaceManager &space_manager);
+
+        friend void MultiPatchSpace<PhysSpace>::add_interface_mortar(
+            PatchPtr patch_0,const int side_id_patch_0,
+            PatchPtr patch_1,const int side_id_patch_1,
+            MortarMultiplierSpacePtr);
+    };
+
 
     /** Type alias for the pointer to an interface. */
     using InterfacePtr = std::shared_ptr<const Interface>;

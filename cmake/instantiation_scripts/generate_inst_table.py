@@ -46,6 +46,7 @@ file_output.write(
  '''1          0          1         1        h_grad
     1          1          1         1        h_grad
     1          1          2         1        h_grad
+    1          1          3         1        h_grad
     1          2          1         1        h_grad
     1          2          3         1        h_grad
     2          0          1         1        h_grad

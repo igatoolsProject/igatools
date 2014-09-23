@@ -157,31 +157,46 @@ void test_evaluate()
 
 
     //---------------------------------------------------------------
-    // adding the patches and the interfaces to the multi-patch space structure
+    // adding the patches to the multi-patch space structure -- begin
     MultiPatchSpace<PhysicalSpace_t<dim>> multi_patch_space;
     multi_patch_space.patch_insertion_open();
 
     for (auto phys_space : phys_spaces)
         multi_patch_space.add_patch(phys_space);
 
-    multi_patch_space.patch_insertion_close();
 
+    multi_patch_space.patch_insertion_close();
+    // adding the patches to the multi-patch space structure -- end
+    //---------------------------------------------------------------
+
+
+
+    //---------------------------------------------------------------
+    // adding the interfaces to the multi-patch space structure -- begin
     multi_patch_space.interface_insertion_open();
-    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[0],1,phys_spaces[1],0);
-    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[2],1,phys_spaces[3],0);
-    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[0],2,phys_spaces[2],3);
-    multi_patch_space.add_interface(InterfaceType::C0_strong,phys_spaces[1],2,phys_spaces[3],3);
+
+    vector<Index> face_global_dofs;
+    const auto multiplier_space_0 = phys_spaces[1]->get_face_space(0,face_global_dofs);
+
+    multi_patch_space.add_interface_mortar(phys_spaces[0],1,phys_spaces[1],0,multiplier_space_0);
+    /*
+    multi_patch_space.add_interface_mortar(phys_spaces[2],1,phys_spaces[3],0);
+    multi_patch_space.add_interface_mortar(phys_spaces[0],2,phys_spaces[2],3);
+    multi_patch_space.add_interface_mortar(phys_spaces[1],2,phys_spaces[3],3);
+    //*/
     multi_patch_space.interface_insertion_close();
+    // adding the interfaces to the multi-patch space structure -- end
     //---------------------------------------------------------------
 
 #ifdef USE_GRAPH
     multi_patch_space.build_graph();
 #endif
 
-    const auto space_manager = multi_patch_space.get_space_manager();
 
     //---------------------------------------------------------------
     // adding (manually) the equality constraints that ensures C0 strong continuity
+    auto space_manager = multi_patch_space.get_space_manager();
+
     space_manager->equality_constraints_open();
 
     // patch 0, side 1 --- patch 1, side 0

@@ -36,13 +36,20 @@
 #include <memory>
 #include <set>
 
+
+#include <igatools/basis_functions/space_manager.inst>
+
+
 IGA_NAMESPACE_OPEN
 
 
 template<class RefSpace,class PushFwd>
 using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
+#if 0
+
 static const int rank = 1;
+
 
 using SpacePtrVariant =
     Variant<
@@ -120,7 +127,7 @@ using SpacePtrVariant =
     PhysSpacePtr<NURBSSpace<3,3,rank>,PushForward<Transformation::h_grad,3,0>>,
     PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,3>>,
     PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,3>>>;
-
+#endif
 
 
 /**
@@ -676,6 +683,7 @@ private:
     public:
         SpacesConnection() = delete;
 
+        SpacesConnection(const SpaceInfoPtr &space,const bool use_dofs_connectivity_from_space = true);
         SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col);
 
         ~SpacesConnection() = default;
@@ -737,6 +745,7 @@ private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
 
+        bool use_dofs_connectivity_from_space_;
 
         DofsConnectivity extra_dofs_connectivity_;
 
@@ -808,8 +817,9 @@ add_space(std::shared_ptr<Space> space)
     // check that the input space is not already added
     for (auto &space_info : spaces_info_)
     {
-        Assert(space != get<std::shared_ptr<Space>>(space_info.second->get_space_variant()),
-               ExcMessage("Space already added in the SpaceManager."));
+        Assert(space->get_id() != space_info.second->get_id(),
+               ExcMessage("The space with id=" + std::to_string(space->get_id()) +
+                          " is already added in the SpaceManager."));
     }
 #endif
 
@@ -838,6 +848,13 @@ void
 SpaceManager::
 add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial)
 {
+    /*
+    using std::cout;
+    using std::endl;
+    cout << "SpaceManager::add_spaces_connection()" << endl;
+    cout << "adding connection between space " << space_test->get_id()
+         << " and space " << space_trial->get_id() << endl;
+    //*/
     Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
 
