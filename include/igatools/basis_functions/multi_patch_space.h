@@ -106,9 +106,10 @@ public:
 
     /** @names Type aliases used for the InterfaceMortar */
     ///@{
+//    using MortarMultiplierRefSpace = typename BSplineSpace<dim,range,rank>::RefFaceSpace;
     using MortarMultiplierRefSpace = BSplineSpace<dim,range,rank>;
     using MortarMultiplierPushFwd = PushForward<Transformation::h_grad,dim,codim>;
-    using MortarMultiplierSpace = PhysicalSpace<MortarMultiplierRefSpace,MortarMultiplierPushFwd>;
+    using MortarMultiplierSpace = typename PhysicalSpace<MortarMultiplierRefSpace,MortarMultiplierPushFwd>::FaceSpace;
     using MortarMultiplierSpacePtr = std::shared_ptr<MortarMultiplierSpace>;
     ///@}
 
@@ -443,8 +444,8 @@ private:
         InterfaceMortar() = delete;
 
         InterfaceMortar(
-            PatchPtr patch_0,const int side_id_patch_0,
-            PatchPtr patch_1,const int side_id_patch_1,
+            PatchPtr space_slave, const int side_id_slave,
+            PatchPtr space_master,const int side_id_master,
             MortarMultiplierSpacePtr multiplier_space);
 
 
@@ -476,11 +477,33 @@ private:
          */
         void process() override final;
 
-    private:
+
+        std::pair<PatchPtr,int> get_space_slave() const;
+        std::pair<PatchPtr,int> get_space_master() const;
+
         /**
          * Lagrange multipliers' space
          */
         MortarMultiplierSpacePtr multiplier_space_;
+
+    private:
+
+        /**
+         * This function fills the dofs connectivity in the SpaceManager of the following blocks
+         *   - <tt>patch_0 -- multiplier_space</tt> and its transpose;
+         *   - <tt>patch_1 -- multiplier_space</tt> and its transpose.
+         *
+         * Then it allocates the LinearConstraints that will be filled by the function
+         * InterfaceMortar::process().
+         *
+         * At the end it copies the LinearConstraint pointers inside the space_manager.
+         */
+        void fill_space_manager_dofs_connectivity(SpaceManager &space_manager);
+
+        friend void MultiPatchSpace<PhysSpace>::add_interface_mortar(
+            PatchPtr patch_0,const int side_id_patch_0,
+            PatchPtr patch_1,const int side_id_patch_1,
+            MortarMultiplierSpacePtr);
     };
 
 

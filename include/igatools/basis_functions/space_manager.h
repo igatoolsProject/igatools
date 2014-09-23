@@ -36,13 +36,20 @@
 #include <memory>
 #include <set>
 
+
+#include <igatools/basis_functions/space_manager.inst>
+
+
 IGA_NAMESPACE_OPEN
 
 
 template<class RefSpace,class PushFwd>
 using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
+#if 0
+
 static const int rank = 1;
+
 
 using SpacePtrVariant =
     Variant<
@@ -120,7 +127,7 @@ using SpacePtrVariant =
     PhysSpacePtr<NURBSSpace<3,3,rank>,PushForward<Transformation::h_grad,3,0>>,
     PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,3>>,
     PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,3>>>;
-
+#endif
 
 
 /**

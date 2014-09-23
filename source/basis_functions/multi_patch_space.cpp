@@ -404,7 +404,7 @@ interface_insertion_close()
     is_interface_insertion_open_ = false;
 
     //Computing the constraints (linear and equality) arising from the different interfaces
-    this->process_interfaces();
+//    this->process_interfaces();
 }
 
 template <class PhysicalSpace>
@@ -456,9 +456,10 @@ add_interface(const InterfaceType &type,
     // Updating the SpaceManager --- begin
 
     // Adding the block patch_0-patch_1 and its transpose
+    space_manager_->spaces_connectivity_open();
     space_manager_->add_spaces_connection(patch_0,patch_1);
     space_manager_->add_spaces_connection(patch_1,patch_0);
-
+    space_manager_->spaces_connectivity_close();
     // Updating the SpaceManager --- end
     //------------------------------------------------------------------------
 
@@ -509,6 +510,10 @@ add_interface_mortar(
     // Adding the multiplier space to the space_manager
     space_manager_->add_space(multiplier_space);
 
+
+
+    space_manager_->spaces_connectivity_open();
+
     // Adding the block patch_0-multipliers and its transpose
     space_manager_->add_spaces_connection(patch_0,multiplier_space);
     space_manager_->add_spaces_connection(multiplier_space,patch_0);
@@ -516,6 +521,14 @@ add_interface_mortar(
     // Adding the block patch_1-multipliers and its transpose
     space_manager_->add_spaces_connection(patch_1,multiplier_space);
     space_manager_->add_spaces_connection(multiplier_space,patch_1);
+
+    space_manager_->spaces_connectivity_close();
+
+
+    // adding to the SpaceManager the dofs connectivity of the following blocks:
+    // - (patch_0, multiplier_space) and its transpose
+    // - (patch_1, multiplier_space) and its transpose
+    interface_to_be_added->fill_space_manager_dofs_connectivity(*space_manager_);
     // Updating the SpaceManager --- end
     //------------------------------------------------------------------------
 }
@@ -623,31 +636,17 @@ process_interfaces()
 {
     Assert(is_patch_insertion_open_ == false,ExcInvalidState());
     Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+#ifdef USE_GRAPH
     Assert(is_graph_built_ == true,ExcInvalidState());
-
+#endif
 //    this->process_interfaces_C0_strong();
 //    this->process_interfaces_C0_strong_renumbering();
 //    this->process_interfaces_mortar();
 
-    using std::cout;
-    using std::endl;
-
-    cout << "MultiPatchSpace<PhysicalSpace>::process_interfaces()" << endl;
-
-    int i = 0;
     for (auto &interfaces_same_type : interfaces_)
         for (auto &interface : interfaces_same_type.second)
-        {
-            cout << "Processing the interface " << i++ << endl;
             std::const_pointer_cast<Interface>(interface)->process();
-            // the const-cast is because std::set stores const objects
-        }
-
-
-    /*
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    //*/
+    // the const-cast is because std::set stores const objects
 }
 
 
@@ -750,6 +749,26 @@ InterfaceMortar(
 }
 
 template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+get_space_slave() const -> std::pair<PatchPtr,int>
+{
+    return this->patch_and_side_[0];
+}
+
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+get_space_master() const -> std::pair<PatchPtr,int>
+{
+    return this->patch_and_side_[1];
+}
+
+
+template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
 InterfaceMortar::
@@ -760,6 +779,27 @@ process()
 
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());
+}
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
+{
+    const auto &dofs_multiplier = multiplier_space_->get_dof_distribution_global().get_dofs_view();
+
+    const auto space_and_face_id_slave = this->get_space_slave();
+    const auto &slave_sp = space_and_face_id_slave.first;
+    const auto &slave_face_id = space_and_face_id_slave.second;
+
+    vector<Index> slave_face_dofs;
+    const auto slave_face_space = slave_sp->get_face_space(slave_face_id, slave_face_dofs);
+
+
+
+    Assert(false,ExcNotImplemented());
 }
 
 
