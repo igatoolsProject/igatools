@@ -42,7 +42,8 @@ SpaceManager()
     :
     is_spaces_insertion_open_(false),
     is_spaces_connectivity_open_(false),
-    num_unique_dofs_(0)
+    num_unique_dofs_(0),
+    space_dofs_offset_(0)
 {}
 
 
@@ -61,39 +62,75 @@ spaces_insertion_close(const bool automatic_dofs_renumbering)
 {
     Assert(is_spaces_insertion_open_ == true,ExcInvalidState());
 
+    is_spaces_insertion_open_ = false;
+
     Assert(!spaces_info_.empty(),ExcEmptyObject());
 
 
-    //--------------------------------------------------------------------------
-    vector<DofsComponentView> dofs_components_view;
+    if (automatic_dofs_renumbering)
+        this->perform_space_dofs_renumbering();
 
-    Index offset = 0;
-    for (auto &space_info_map_entry : spaces_info_)
-    {
-        auto &space_info = space_info_map_entry.second;
-
-        if (automatic_dofs_renumbering)
-        {
-            space_info->add_dofs_offset(offset);
-
-            offset += space_info->get_num_dofs();
-        }
-
-        auto view_ranges = space_info->get_dofs_view().begin().get_ranges();
-        dofs_components_view.insert(dofs_components_view.end(),view_ranges.begin(),view_ranges.end());
-    }
-    //--------------------------------------------------------------------------
-
-    dofs_view_ = DofsView(
-                     DofsIterator(dofs_components_view,0),
-                     DofsIterator(dofs_components_view,IteratorState::pass_the_end));
-
-    is_spaces_insertion_open_ = false;
-
+    this->update_dofs_view();
 
     num_unique_dofs_ = this->count_unique_dofs();
 }
 
+void
+SpaceManager::
+perform_space_dofs_renumbering()
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+
+    /*
+        Index offset = 0;
+        for (auto &space_info_map_entry : spaces_info_)
+        {
+            auto &space_info = space_info_map_entry.second;
+
+            space_info->add_dofs_offset(offset);
+
+            offset += space_info->get_num_dofs();
+
+            spaces_with_renumbered_dofs_.push_back(space_info);
+            spaces_with_original_dofs_.remove(space_info)
+        }
+    //*/
+    auto space_info_it = spaces_with_original_dofs_.begin();
+    while (space_info_it != spaces_with_original_dofs_.end())
+    {
+        auto space_info = (*space_info_it);
+
+        space_info->add_dofs_offset(space_dofs_offset_);
+
+        space_dofs_offset_ += space_info->get_num_dofs();
+
+        spaces_with_renumbered_dofs_.push_back(space_info);
+
+        //erase the renumbered space and move to the next one
+        space_info_it = spaces_with_original_dofs_.erase(space_info_it);
+    }
+}
+
+
+void
+SpaceManager::
+update_dofs_view()
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+
+    vector<DofsComponentView> dofs_components_view;
+    for (auto &space_info_map_entry : spaces_info_)
+    {
+        auto view_ranges = space_info_map_entry.second->get_dofs_view().begin().get_ranges();
+        dofs_components_view.insert(
+            dofs_components_view.end(),
+            view_ranges.begin(),
+            view_ranges.end());
+    }
+    dofs_view_ = DofsView(
+                     DofsIterator(dofs_components_view,0),
+                     DofsIterator(dofs_components_view,IteratorState::pass_the_end));
+}
 
 void
 SpaceManager::

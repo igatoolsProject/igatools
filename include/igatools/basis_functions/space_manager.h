@@ -36,7 +36,9 @@
 #include <memory>
 #include <set>
 
-
+/**
+ * Include file used for declare the Variant object that can take
+ */
 #include <igatools/basis_functions/space_manager.inst>
 
 
@@ -46,88 +48,6 @@ IGA_NAMESPACE_OPEN
 template<class RefSpace,class PushFwd>
 using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
-#if 0
-
-static const int rank = 1;
-
-
-using SpacePtrVariant =
-    Variant<
-    std::shared_ptr<BSplineSpace<0,1,rank>>,
-    std::shared_ptr<BSplineSpace<1,1,rank>>,
-    std::shared_ptr<BSplineSpace<2,1,rank>>,
-    std::shared_ptr<BSplineSpace<3,1,rank>>,
-    std::shared_ptr<BSplineSpace<0,2,rank>>,
-    std::shared_ptr<BSplineSpace<1,2,rank>>,
-    std::shared_ptr<BSplineSpace<2,2,rank>>,
-    std::shared_ptr<BSplineSpace<3,2,rank>>,
-    std::shared_ptr<BSplineSpace<0,3,rank>>,
-    std::shared_ptr<BSplineSpace<1,3,rank>>,
-    std::shared_ptr<BSplineSpace<2,3,rank>>,
-    std::shared_ptr<BSplineSpace<3,3,rank>>,
-    std::shared_ptr<NURBSSpace<0,1,rank>>,
-    std::shared_ptr<NURBSSpace<1,1,rank>>,
-    std::shared_ptr<NURBSSpace<2,1,rank>>,
-    std::shared_ptr<NURBSSpace<3,1,rank>>,
-    std::shared_ptr<NURBSSpace<0,2,rank>>,
-    std::shared_ptr<NURBSSpace<1,2,rank>>,
-    std::shared_ptr<NURBSSpace<2,2,rank>>,
-    std::shared_ptr<NURBSSpace<3,2,rank>>,
-    std::shared_ptr<NURBSSpace<0,3,rank>>,
-    std::shared_ptr<NURBSSpace<1,3,rank>>,
-    std::shared_ptr<NURBSSpace<2,3,rank>>,
-    std::shared_ptr<NURBSSpace<3,3,rank>>,
-    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<NURBSSpace<0,2,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,0>>,
-    PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<BSplineSpace<1,2,rank>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<BSplineSpace<1,3,rank>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<NURBSSpace<1,1,rank>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<NURBSSpace<1,2,rank>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<NURBSSpace<1,3,rank>,PushForward<Transformation::h_grad,1,0>>,
-    PhysSpacePtr<NURBSSpace<0,2,rank>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,1>>,
-    PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<BSplineSpace<1,2,rank>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<BSplineSpace<2,1,rank>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<BSplineSpace<2,2,rank>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<BSplineSpace<0,2,rank>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<BSplineSpace<2,3,rank>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<BSplineSpace<1,3,rank>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<NURBSSpace<1,1,rank>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<NURBSSpace<1,2,rank>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<NURBSSpace<2,1,rank>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<NURBSSpace<2,2,rank>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<NURBSSpace<0,2,rank>,PushForward<Transformation::h_grad,0,2>>,
-    PhysSpacePtr<NURBSSpace<2,3,rank>,PushForward<Transformation::h_grad,2,0>>,
-    PhysSpacePtr<NURBSSpace<1,3,rank>,PushForward<Transformation::h_grad,1,1>>,
-    PhysSpacePtr<BSplineSpace<1,1,rank>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<BSplineSpace<1,3,rank>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<BSplineSpace<2,1,rank>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<BSplineSpace<2,3,rank>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<BSplineSpace<3,1,rank>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<BSplineSpace<3,3,rank>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<BSplineSpace<0,1,rank>,PushForward<Transformation::h_grad,0,3>>,
-    PhysSpacePtr<BSplineSpace<0,3,rank>,PushForward<Transformation::h_grad,0,3>>,
-    PhysSpacePtr<NURBSSpace<1,1,rank>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<NURBSSpace<1,3,rank>,PushForward<Transformation::h_grad,1,2>>,
-    PhysSpacePtr<NURBSSpace<2,1,rank>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<NURBSSpace<2,3,rank>,PushForward<Transformation::h_grad,2,1>>,
-    PhysSpacePtr<NURBSSpace<3,1,rank>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<NURBSSpace<3,3,rank>,PushForward<Transformation::h_grad,3,0>>,
-    PhysSpacePtr<NURBSSpace<0,1,rank>,PushForward<Transformation::h_grad,0,3>>,
-    PhysSpacePtr<NURBSSpace<0,3,rank>,PushForward<Transformation::h_grad,0,3>>>;
-#endif
 
 
 /**
@@ -678,6 +598,33 @@ private:
     Index num_unique_dofs_;
 
 
+    /**
+     * This function update the dofs view from the underlying spaces.
+     *
+     * It performs a loop over the spaces and aggregate the partial views in one global view.
+     */
+    void update_dofs_view();
+
+
+
+    /** @name Memebr variables used to keep track of dofs renumbering */
+    ///@{
+    /** List of spaces that have the original global dofs (after the space creation). */
+    std::list<SpaceInfoPtr> spaces_with_original_dofs_;
+
+    /** List of spaces that have the global dofs renumbered. */
+    std::list<SpaceInfoPtr> spaces_with_renumbered_dofs_;
+    ///@}
+
+    /**
+     * This function renumber the dofs of the spaces that are in the list spaces_with_original_dofs_
+     * and then put the renumbered spaces in the list spaces_with_renumbered_dofs_
+     */
+    void perform_space_dofs_renumbering();
+
+    Index space_dofs_offset_;
+
+
     class SpacesConnection
     {
     public:
@@ -826,19 +773,23 @@ add_space(std::shared_ptr<Space> space)
     //------------------------------------------------------------------------
     auto &dof_distribution = space->get_dof_distribution_global();
 
-    spaces_info_[space->get_id()] = std::shared_ptr<SpaceInfo>(
-                                        new SpaceInfo(space,
-                                                      space->get_id(),
-                                                      Space::dim,
-                                                      Space::codim,
-                                                      Space::space_dim,
-                                                      Space::range,
-                                                      Space::rank,
-                                                      space->get_num_basis(),
-                                                      dof_distribution.get_min_dof_id(),
-                                                      dof_distribution.get_max_dof_id(),
-                                                      dof_distribution.get_dofs_view(),
-                                                      dof_distribution.get_elements_view()));
+    auto space_info = std::shared_ptr<SpaceInfo>(
+                          new SpaceInfo(space,
+                                        space->get_id(),
+                                        Space::dim,
+                                        Space::codim,
+                                        Space::space_dim,
+                                        Space::range,
+                                        Space::rank,
+                                        space->get_num_basis(),
+                                        dof_distribution.get_min_dof_id(),
+                                        dof_distribution.get_max_dof_id(),
+                                        dof_distribution.get_dofs_view(),
+                                        dof_distribution.get_elements_view()));
+
+    spaces_info_[space_info->get_id()] = space_info;
+
+    spaces_with_original_dofs_.push_back(space_info);
     //---------------------------------------------------------------------------------------------
 }
 

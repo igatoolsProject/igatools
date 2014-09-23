@@ -508,7 +508,9 @@ add_interface_mortar(
     // Updating the SpaceManager --- begin
 
     // Adding the multiplier space to the space_manager
-//    space_manager_->add_space(multiplier_space);
+    space_manager_->spaces_insertion_open();
+    space_manager_->add_space(multiplier_space);
+    space_manager_->spaces_insertion_close();
 
 
 

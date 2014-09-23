@@ -520,6 +520,7 @@ private:
 
 
 
+
 #ifdef USE_GRAPH
     /** @name Stuff related to the multipatch graph(implemented with the boost::graph library) */
     ///@{
