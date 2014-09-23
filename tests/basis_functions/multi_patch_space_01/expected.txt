@@ -487,18 +487,18 @@ MultiPatchSpace infos:
                   Interface id = 0
                      Interface type = 1
                         Patch 0 infos:
-                           Patch id = 4
-                           Side  id = 1
-                        Patch 1 infos:
-                           Patch id = 6
-                           Side id = 0
-                  Interface id = 1
-                     Interface type = 1
-                        Patch 0 infos:
                            Patch id = 0
                            Side  id = 1
                         Patch 1 infos:
                            Patch id = 2
+                           Side id = 0
+                  Interface id = 1
+                     Interface type = 1
+                        Patch 0 infos:
+                           Patch id = 4
+                           Side  id = 1
+                        Patch 1 infos:
+                           Patch id = 6
                            Side id = 0
                   Interface id = 2
                      Interface type = 1
