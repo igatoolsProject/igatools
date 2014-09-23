@@ -508,7 +508,7 @@ add_interface_mortar(
     // Updating the SpaceManager --- begin
 
     // Adding the multiplier space to the space_manager
-    space_manager_->add_space(multiplier_space);
+//    space_manager_->add_space(multiplier_space);
 
 
 
@@ -797,7 +797,10 @@ fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
     vector<Index> slave_face_dofs;
     const auto slave_face_space = slave_sp->get_face_space(slave_face_id, slave_face_dofs);
 
-
+    LogStream out;
+    out << "slave_face_dofs = ";
+    slave_face_dofs.print_info(out);
+    out << std::endl;
 
     Assert(false,ExcNotImplemented());
 }

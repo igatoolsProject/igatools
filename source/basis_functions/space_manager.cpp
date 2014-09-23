@@ -251,13 +251,22 @@ operator==(const SpaceInfo &sp) const
 
 
 
+SpaceManager::
+SpacesConnection::
+SpacesConnection(const SpaceInfoPtr &space,const bool use_dofs_connectivity_from_space)
+    :
+    SpacesConnection(space,space)
+{
+    use_dofs_connectivity_from_space_ = use_dofs_connectivity_from_space;
+}
 
 SpaceManager::
 SpacesConnection::
 SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col)
     :
     space_row_(space_row),
-    space_col_(space_col)
+    space_col_(space_col),
+    use_dofs_connectivity_from_space_(false)
 {}
 
 

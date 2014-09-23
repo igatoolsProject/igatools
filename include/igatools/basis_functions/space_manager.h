@@ -683,6 +683,7 @@ private:
     public:
         SpacesConnection() = delete;
 
+        SpacesConnection(const SpaceInfoPtr &space,const bool use_dofs_connectivity_from_space = true);
         SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col);
 
         ~SpacesConnection() = default;
@@ -744,6 +745,7 @@ private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
 
+        bool use_dofs_connectivity_from_space_;
 
         DofsConnectivity extra_dofs_connectivity_;
 
@@ -815,8 +817,9 @@ add_space(std::shared_ptr<Space> space)
     // check that the input space is not already added
     for (auto &space_info : spaces_info_)
     {
-        Assert(space != get<std::shared_ptr<Space>>(space_info.second->get_space_variant()),
-               ExcMessage("Space already added in the SpaceManager."));
+        Assert(space->get_id() != space_info.second->get_id(),
+               ExcMessage("The space with id=" + std::to_string(space->get_id()) +
+                          " is already added in the SpaceManager."));
     }
 #endif
 
