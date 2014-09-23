@@ -34,7 +34,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/identity_mapping.h>
 
-
+#include <igatools/basis_functions/physical_space_element_accessor.h>
 
 
 
@@ -147,7 +147,10 @@ public:
      */
     //void fill_face_cache(ElementIterator &elem, const int face);
 
-    //void print_info(LogStream &out) const;
+    void print_info(LogStream &out) const
+    {
+        base_t::print_info(out);
+    }
 private:
     ValueFlags flags_;
     Quadrature<dim> quad_;
@@ -287,7 +290,7 @@ protected:
     using ElementAccessor = typename PhysSpace::ElementAccessor;
     void init_element_cache(ElementAccessor &elem)
     {
-        RefSpaceCache::init_element_cache(elem);
+        RefSpaceCache::init_element_cache(elem.get_ref_space_accessor());
         PFCache::init_element_cache(elem);
 
     }
@@ -324,6 +327,7 @@ public:
     void print_info(LogStream &out) const
     {
         RefSpaceCache::print_info(out);
+        PFCache::print_info(out);
     }
 
 private:
@@ -360,6 +364,12 @@ void uniform_space_cache(const ValueFlags flag,
     auto quad = QGauss<dim>(2);
     SpaceUniformQuadCache<Space> cache(space, flag, quad);
     cache.print_info(out);
+
+
+    auto elem = space->begin();
+    cache.init_element_cache(elem);
+    //elem->print_cache_info(out);
+
 
     OUTEND
 }

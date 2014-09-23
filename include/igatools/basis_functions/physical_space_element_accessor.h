@@ -360,7 +360,8 @@ private:
      * element accessor that is used as partial inheritance of the physical space element accessor.
      */
     const RefElemAccessor &get_ref_space_accessor() const;
-
+    RefElemAccessor &get_ref_space_accessor()
+    { return ref_space_element_accessor_;}
     /**
      * Return a const reference of this object as would be viewed as push-forward element accessor.
      * This means that the returned object can be queried (but not modified) as the push-forward
@@ -423,7 +424,7 @@ protected:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-
+    template <typename PSpace> friend class SpaceUniformQuadCache;
     RefElemAccessor ref_space_element_accessor_;
 };
 

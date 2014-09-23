@@ -301,7 +301,7 @@ projection_l2(const typename Space::Func &func,
 
 
 
-    ValueFlags flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure;
+    //ValueFlags flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure;
     const int n_qpoints = quad.get_num_points();
 
     ValueVector< typename Space::Point> eval_points(n_qpoints);
