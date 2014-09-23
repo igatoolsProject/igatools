@@ -106,10 +106,9 @@ public:
 
     /** @names Type aliases used for the InterfaceMortar */
     ///@{
-//    using MortarMultiplierRefSpace = typename BSplineSpace<dim,range,rank>::RefFaceSpace;
-    using MortarMultiplierRefSpace = BSplineSpace<dim,range,rank>;
-    using MortarMultiplierPushFwd = PushForward<Transformation::h_grad,dim,codim>;
-    using MortarMultiplierSpace = typename PhysicalSpace<MortarMultiplierRefSpace,MortarMultiplierPushFwd>::FaceSpace;
+    using MortarMultiplierRefSpace = typename BSplineSpace<dim,range,rank>::RefFaceSpace;
+    using MortarMultiplierPushFwd = typename PushForward<Transformation::h_grad,dim,codim>::FacePushForward;
+    using MortarMultiplierSpace = PhysicalSpace<MortarMultiplierRefSpace,MortarMultiplierPushFwd>;
     using MortarMultiplierSpacePtr = std::shared_ptr<MortarMultiplierSpace>;
     ///@}
 

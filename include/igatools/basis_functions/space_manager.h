@@ -845,12 +845,13 @@ void
 SpaceManager::
 add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial)
 {
+    /*
     using std::cout;
     using std::endl;
     cout << "SpaceManager::add_spaces_connection()" << endl;
     cout << "adding connection between space " << space_test->get_id()
          << " and space " << space_trial->get_id() << endl;
-
+    //*/
     Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
 
