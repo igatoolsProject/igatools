@@ -81,20 +81,6 @@ perform_space_dofs_renumbering()
 {
     Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
-    /*
-        Index offset = 0;
-        for (auto &space_info_map_entry : spaces_info_)
-        {
-            auto &space_info = space_info_map_entry.second;
-
-            space_info->add_dofs_offset(offset);
-
-            offset += space_info->get_num_dofs();
-
-            spaces_with_renumbered_dofs_.push_back(space_info);
-            spaces_with_original_dofs_.remove(space_info)
-        }
-    //*/
     auto space_info_it = spaces_with_original_dofs_.begin();
     while (space_info_it != spaces_with_original_dofs_.end())
     {
@@ -102,11 +88,11 @@ perform_space_dofs_renumbering()
 
         space_info->add_dofs_offset(space_dofs_offset_);
 
-        space_dofs_offset_ += space_info->get_num_dofs();
+        space_dofs_offset_ = space_info->get_max_dofs_id() + 1;
 
         spaces_with_renumbered_dofs_.push_back(space_info);
 
-        //erase the renumbered space and move to the next one
+        //erase the renumbered space and move the iterator to the next space to renumber
         space_info_it = spaces_with_original_dofs_.erase(space_info_it);
     }
 }

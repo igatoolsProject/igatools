@@ -180,6 +180,8 @@ public:
     /** Type alias for the LinearConstraintType. */
     using LCType = LinearConstraintType;
 
+    /** Type alias for the dofs connectivity. */
+    using DofsConnectivity = std::map<Index,std::set<Index>>;
 
     /** @name Constructors */
     ///@{
@@ -255,6 +257,15 @@ public:
     template<class SpaceTest,class SpaceTrial>
     void add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial);
 
+	/**
+     * Defines connection between the global dofs of the @p space with itself.
+	 * If the (optional) argument @p use_dofs_connectivity_from_space is set to FALSE, then the space's internal dofs will not 
+	 * be taken into account to define the dofs connectivity.
+     */
+    template<class Space>
+    void add_spaces_connection(std::shared_ptr<Space> space, const bool use_dofs_connectivity_from_space = true);
+
+	
     /**
      * Sets the SpaceManager in a state that cannnot receive any new connectivity between existing spaces.
      */
@@ -646,7 +657,6 @@ private:
         /** Returns true if the row space and the column space are equal. */
         bool is_unique_space() const;
 
-        using DofsConnectivity = std::map<Index,std::set<Index>>;
 
         void add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
         {
@@ -823,6 +833,27 @@ add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<Spac
            ExcMessage("Spaces connection already added."));
     spaces_connections_.push_back(conn);
 }
+
+template<class Space>
+inline
+void
+SpaceManager::
+add_spaces_connection(std::shared_ptr<Space> space, const bool use_dofs_connectivity_from_space)
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
+	
+    Assert(space !=nullptr,ExcNullPtr());
+	
+    auto sp = spaces_info_.at(space->get_id());
+	
+    SpacesConnection conn(sp,use_dofs_connectivity_from_space);
+	
+    Assert(std::count(spaces_connections_.begin(),spaces_connections_.end(),conn) == 0,
+           ExcMessage("Spaces connection already added."));
+    spaces_connections_.push_back(conn);
+}
+
 
 template<class SpaceTest,class SpaceTrial>
 inline

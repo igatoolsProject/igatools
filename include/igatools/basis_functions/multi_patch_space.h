@@ -325,6 +325,8 @@ private:
     /** Vector of patches defining the MultiPatchSpace. */
     vector< PatchPtr > patches_;
 
+
+#if 0
     /**
      * Add the proper offset to the dofs id in the reference spaces in order to avoid same
      * dof ids between different spaces.
@@ -333,7 +335,7 @@ private:
      * define the physical spaces (i.e. the patches).
      */
     void perform_ref_spaces_add_dofs_offset();
-
+#endif
 
     /**
      * @brief This class represent an interface between two patches.

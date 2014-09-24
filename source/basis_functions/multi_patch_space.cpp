@@ -102,7 +102,7 @@ patch_insertion_close(const bool automatic_dofs_renumbering)
     // adding the connection between the dofs of the patch and itself
     space_manager_->spaces_connectivity_open();
     for (const auto &patch : patches_)
-        space_manager_->add_spaces_connection(patch,patch);
+        space_manager_->add_spaces_connection(patch);
 
     space_manager_->spaces_connectivity_close();
     //------------------------------------------------------------------------
@@ -184,7 +184,7 @@ compute_constraints()
     are_constraints_computed_ = true;
 }
 
-
+#if 0
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
@@ -199,6 +199,8 @@ perform_ref_spaces_add_dofs_offset()
         dofs_offset += ref_space->get_num_basis();
     }
 }
+#endif
+
 
 template <class PhysicalSpace>
 void
@@ -253,9 +255,7 @@ get_num_interfaces() const
 {
     Index n_interfaces = 0;
     for (const auto &interfaces_same_type : interfaces_)
-    {
         n_interfaces += interfaces_same_type.second.size();
-    }
 
     return n_interfaces;
 }
@@ -790,20 +790,31 @@ MultiPatchSpace<PhysicalSpace>::
 InterfaceMortar::
 fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
 {
-    const auto &dofs_multiplier = multiplier_space_->get_dof_distribution_global().get_dofs_view();
+	using DofsSet = std::set<Index>;
+
+    const auto &dofs_multiplier_vec = multiplier_space_->get_dof_distribution_global().get_dofs_view();
+    DofsSet dofs_multiplier(dofs_multiplier_vec.begin(),dofs_multiplier_vec.end());
 
     const auto space_and_face_id_slave = this->get_space_slave();
     const auto &slave_sp = space_and_face_id_slave.first;
     const auto &slave_face_id = space_and_face_id_slave.second;
 
-    vector<Index> slave_face_dofs;
-    const auto slave_face_space = slave_sp->get_face_space(slave_face_id, slave_face_dofs);
+    vector<Index> slave_face_dofs_vec;
+    const auto slave_face_space = slave_sp->get_face_space(slave_face_id, slave_face_dofs_vec);
+    DofsSet slave_face_dofs(slave_face_dofs_vec.begin(),slave_face_dofs_vec.end());
 
-    LogStream out;
-    out << "slave_face_dofs = ";
-    slave_face_dofs.print_info(out);
-    out << std::endl;
+    using DofsConnectivity = typename SpaceManager::DofsConnectivity;
 
+    DofsConnectivity dofs_connectivity_multiplier_slave;
+    for (const Index multiplier_dof : dofs_multiplier)
+    	dofs_connectivity_multiplier_slave[multiplier_dof].insert(slave_face_dofs.begin(),slave_face_dofs.end());
+
+    DofsConnectivity dofs_connectivity_slave_multiplier;
+	for (const Index slave_dof : slave_face_dofs)
+    	dofs_connectivity_slave_multiplier[slave_dof].insert(dofs_multiplier.begin(),dofs_multiplier.end());
+
+	
+	
     Assert(false,ExcNotImplemented());
 }
 
