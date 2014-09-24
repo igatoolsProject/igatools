@@ -408,6 +408,12 @@ private:
         vector<std::shared_ptr<const LinearConstraint>> get_linear_constraints() const;
 
 
+        /** Return the space (i.e. the patch) on the given @p interface_side. */
+        PatchPtr get_space(const int interface_side) const;
+
+        /** Return the the face id of the space (i.e. the patch) on the given @p interface_side. */
+        int get_face_id(const int interface_side) const;
+
     protected:
         /**
          * Linear constraints due to the Interface.

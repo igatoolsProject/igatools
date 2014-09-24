@@ -50,6 +50,8 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
 
 
+
+
 /**
  * @brief The purpose of this class is to provide an unified way to access the dofs information provided
  * by different type of function spaces.
@@ -257,15 +259,15 @@ public:
     template<class SpaceTest,class SpaceTrial>
     void add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial);
 
-	/**
+    /**
      * Defines connection between the global dofs of the @p space with itself.
-	 * If the (optional) argument @p use_dofs_connectivity_from_space is set to FALSE, then the space's internal dofs will not 
-	 * be taken into account to define the dofs connectivity.
+     * If the (optional) argument @p use_dofs_connectivity_from_space is set to FALSE, then the space's internal dofs will not
+     * be taken into account to define the dofs connectivity.
      */
     template<class Space>
     void add_spaces_connection(std::shared_ptr<Space> space, const bool use_dofs_connectivity_from_space = true);
 
-	
+
     /**
      * Sets the SpaceManager in a state that cannnot receive any new connectivity between existing spaces.
      */
@@ -418,6 +420,13 @@ private:
 
 
     /**
+     * This class represent a <em>space</em> (BSplineSpace, NURBSSpace or PhysicalSpace) without
+     * the difficulties (and limits) of the template technology.
+     *
+     * This class is not templetized, and it stores a certain kind of space through the use of
+     * a modified version of the boost::variant class.
+     *
+     *
      * This is an helper class in order to store a pointer to a certain space variant,
      * and store some useful space information, without the necessity to know the template parameters
      * defining the space.
@@ -698,6 +707,7 @@ private:
             return dofs;
         }
 
+
     private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
@@ -842,13 +852,13 @@ add_spaces_connection(std::shared_ptr<Space> space, const bool use_dofs_connecti
 {
     Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
-	
+
     Assert(space !=nullptr,ExcNullPtr());
-	
+
     auto sp = spaces_info_.at(space->get_id());
-	
+
     SpacesConnection conn(sp,use_dofs_connectivity_from_space);
-	
+
     Assert(std::count(spaces_connections_.begin(),spaces_connections_.end(),conn) == 0,
            ExcMessage("Spaces connection already added."));
     spaces_connections_.push_back(conn);
@@ -876,7 +886,7 @@ get_spaces_connection(
     auto it = std::find(
         spaces_connections_.begin(),
         spaces_connections_.end(),
-        SpacesConnection(space_test,sp_trial));
+        SpacesConnection(sp_test,sp_trial));
 
     Assert(it != spaces_connections_.end(),
     ExcMessage("Spaces connection not found."));

@@ -316,7 +316,6 @@ is_unique_space() const
 
 
 
-
 auto
 SpaceManager::
 get_dofs_view() -> DofsView &

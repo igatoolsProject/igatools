@@ -28,12 +28,32 @@
 #include <igatools/base/logstream.h>
 
 using std::string;
+using std::set;
+using std::map;
 
 using std::shared_ptr;
 using std::unique_ptr;
 
 
 IGA_NAMESPACE_OPEN
+
+namespace
+{
+/**
+ * This function returns the connectivity of two sets of dofs index, using an all-to-all
+ * strategy, i.e. each dof in the set @p row_dofs is connected with all dofs in the set @p col_dofs.
+ */
+map<Index,set<Index>>
+                   get_dofs_connectvity_all_to_all(const set<Index> &row_dofs,const set<Index> &col_dofs)
+{
+    map<Index,set<Index>> dofs_connectivity;
+    for (const Index row_dof : row_dofs)
+        dofs_connectivity[row_dof].insert(col_dofs.begin(),col_dofs.end());
+
+    return dofs_connectivity;
+}
+
+};
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
@@ -587,6 +607,27 @@ get_type() const
 }
 
 
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+get_space(const int interface_side) const -> PatchPtr
+{
+    Assert(interface_side == 0 || interface_side == 1,ExcIndexRange(interface_side,0,2));
+    return patch_and_side_[interface_side].first;
+}
+
+template <class PhysicalSpace>
+int
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+get_face_id(const int interface_side) const
+{
+    Assert(interface_side == 0 || interface_side == 1,ExcIndexRange(interface_side,0,2));
+    return patch_and_side_[interface_side].second;
+}
+
+
 
 template <class PhysicalSpace>
 void
@@ -790,31 +831,50 @@ MultiPatchSpace<PhysicalSpace>::
 InterfaceMortar::
 fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
 {
-	using DofsSet = std::set<Index>;
+    using DofsSet = std::set<Index>;
 
     const auto &dofs_multiplier_vec = multiplier_space_->get_dof_distribution_global().get_dofs_view();
     DofsSet dofs_multiplier(dofs_multiplier_vec.begin(),dofs_multiplier_vec.end());
 
-    const auto space_and_face_id_slave = this->get_space_slave();
-    const auto &slave_sp = space_and_face_id_slave.first;
-    const auto &slave_face_id = space_and_face_id_slave.second;
+    for (int i :
+         {
+             0,1
+         })
+    {
+        const auto &space = this->get_space(i);
+        const auto &face_id = this->get_face_id(i);
 
-    vector<Index> slave_face_dofs_vec;
-    const auto slave_face_space = slave_sp->get_face_space(slave_face_id, slave_face_dofs_vec);
-    DofsSet slave_face_dofs(slave_face_dofs_vec.begin(),slave_face_dofs_vec.end());
+        vector<Index> face_dofs_vec;
+        const auto face_space = space->get_face_space(face_id, face_dofs_vec);
+        DofsSet face_dofs(face_dofs_vec.begin(),face_dofs_vec.end());
+        face_dofs_vec.clear();
 
-    using DofsConnectivity = typename SpaceManager::DofsConnectivity;
+//        using DofsConnectivity = typename SpaceManager::DofsConnectivity;
+        {
+            /*
+                       DofsConnectivity connectivity_multiplier_facespace =
+                               get_dofs_connectvity_all_to_all(dofs_multiplier,face_dofs);
 
-    DofsConnectivity dofs_connectivity_multiplier_slave;
-    for (const Index multiplier_dof : dofs_multiplier)
-    	dofs_connectivity_multiplier_slave[multiplier_dof].insert(slave_face_dofs.begin(),slave_face_dofs.end());
+                       space_manager.get_spaces_connection(multiplier_space_,space).
+                               add_dofs_connectivity(connectivity_multiplier_facespace);
+            //*/
 
-    DofsConnectivity dofs_connectivity_slave_multiplier;
-	for (const Index slave_dof : slave_face_dofs)
-    	dofs_connectivity_slave_multiplier[slave_dof].insert(dofs_multiplier.begin(),dofs_multiplier.end());
+            space_manager.get_spaces_connection(multiplier_space_,space).
+            add_dofs_connectivity(
+                get_dofs_connectvity_all_to_all(dofs_multiplier,face_dofs));
+            /*
+                        DofsConnectivity connectivity_facespace_multiplier =
+                                get_dofs_connectvity_all_to_all(face_dofs,dofs_multiplier);
+                        space_manager.get_spaces_connection(space,multiplier_space_).
+                                add_dofs_connectivity(connectivity_facespace_multiplier);
+            //*/
+            space_manager.get_spaces_connection(space,multiplier_space_).
+            add_dofs_connectivity(
+                get_dofs_connectvity_all_to_all(face_dofs,dofs_multiplier));
+        }
+    }//end block related to slave space
 
-	
-	
+
     Assert(false,ExcNotImplemented());
 }
 
