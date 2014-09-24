@@ -834,12 +834,10 @@ fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
     using DofsSet = std::set<Index>;
 
     const auto &dofs_multiplier_vec = multiplier_space_->get_dof_distribution_global().get_dofs_view();
-    DofsSet dofs_multiplier(dofs_multiplier_vec.begin(),dofs_multiplier_vec.end());
+    DofsSet multiplier_dofs(dofs_multiplier_vec.begin(),dofs_multiplier_vec.end());
 
-    for (int i :
-         {
-             0,1
-         })
+    vector<Index> slave_dofs;
+    for (int i = 0 ; i <= 1 ; ++i)
     {
         const auto &space = this->get_space(i);
         const auto &face_id = this->get_face_id(i);
@@ -849,33 +847,34 @@ fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
         DofsSet face_dofs(face_dofs_vec.begin(),face_dofs_vec.end());
         face_dofs_vec.clear();
 
-//        using DofsConnectivity = typename SpaceManager::DofsConnectivity;
-        {
-            /*
-                       DofsConnectivity connectivity_multiplier_facespace =
-                               get_dofs_connectvity_all_to_all(dofs_multiplier,face_dofs);
+        //inserting the face dofs in the container that will be used to create the the linear constraints
+        slave_dofs.insert(slave_dofs.end(),face_dofs.begin(),face_dofs.end());
 
-                       space_manager.get_spaces_connection(multiplier_space_,space).
-                               add_dofs_connectivity(connectivity_multiplier_facespace);
-            //*/
+        space_manager.get_spaces_connection(multiplier_space_,space).
+        add_dofs_connectivity(
+            get_dofs_connectvity_all_to_all(multiplier_dofs,face_dofs));
 
-            space_manager.get_spaces_connection(multiplier_space_,space).
-            add_dofs_connectivity(
-                get_dofs_connectvity_all_to_all(dofs_multiplier,face_dofs));
-            /*
-                        DofsConnectivity connectivity_facespace_multiplier =
-                                get_dofs_connectvity_all_to_all(face_dofs,dofs_multiplier);
-                        space_manager.get_spaces_connection(space,multiplier_space_).
-                                add_dofs_connectivity(connectivity_facespace_multiplier);
-            //*/
-            space_manager.get_spaces_connection(space,multiplier_space_).
-            add_dofs_connectivity(
-                get_dofs_connectvity_all_to_all(face_dofs,dofs_multiplier));
-        }
+        space_manager.get_spaces_connection(space,multiplier_space_).
+        add_dofs_connectivity(
+            get_dofs_connectvity_all_to_all(face_dofs,multiplier_dofs));
     }//end block related to slave space
 
+    //sorting the slave dofs before inserting them into a LinearConstraint object
+    std::sort(slave_dofs.begin(),slave_dofs.end());
 
-    Assert(false,ExcNotImplemented());
+    vector<Real> dofs_coefficients(slave_dofs.size(),0.0);
+
+    space_manager.linear_constraints_open();
+    for (const Index multiplier_dof : multiplier_dofs)
+    {
+        space_manager.add_linear_constraint(
+            multiplier_dof,
+            LinearConstraintType::lagrange,
+            slave_dofs,
+            dofs_coefficients,
+            0.0);
+    }
+    space_manager.linear_constraints_close();
 }
 
 

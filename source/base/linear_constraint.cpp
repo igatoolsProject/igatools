@@ -192,14 +192,17 @@ void
 LinearConstraint::
 print_info(LogStream &out) const
 {
+    using std::endl;
+
     const int n_dofs = this->get_num_dofs();
 
+    out << "Global dof id = "<< this->get_global_dof_id() << endl;
     for (int i = 0 ; i < n_dofs ; ++i)
     {
-        out << "Dof[" << i << "] = " << this->get_dof_index(i)
-            << "      Coef = " << this->get_coeff(i) << std::endl;
+        out << "Dof[" << i <<"] = " << this->get_dof_index(i)
+            << "      Coef = " << this->get_coeff(i) << endl;
     }
-    out << "Rhs value = " << this->get_rhs() << std::endl;
+    out << "Rhs value = " << this->get_rhs() << endl;
 }
 
 

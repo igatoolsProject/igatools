@@ -667,11 +667,7 @@ private:
         bool is_unique_space() const;
 
 
-        void add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
-        {
-            Assert(false,ExcNotImplemented());
-            AssertThrow(false,ExcNotImplemented());
-        }
+        void add_dofs_connectivity(const DofsConnectivity &dofs_connectivity);
 
         const SpaceInfo &get_space_row() const
         {
@@ -707,6 +703,13 @@ private:
             return dofs;
         }
 
+        /**
+         * Returns the extra dofs connectivity added to the SpacesConnection
+         */
+        const DofsConnectivity &get_extra_dofs_connectivity() const
+        {
+            return extra_dofs_connectivity_;
+        }
 
     private:
         SpaceInfoPtr space_row_;

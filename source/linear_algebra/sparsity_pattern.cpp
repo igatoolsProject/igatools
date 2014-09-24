@@ -68,35 +68,41 @@ SparsityPattern(const SpaceManager &space_manager)
 
 
 
-    using DofsInRow = set<Index>;
-    DofsInRow empty_set;
-
+//    using DofsInRow = set<Index>;
+//    DofsInRow empty_set;
     // adding the global dof keys to the map representing the dof connectivity
-    for (const auto &dof : row_dofs_)
-        this->insert(pair<Index,DofsInRow>(dof,empty_set));
+//    for (const auto &dof : row_dofs_)
+//        this->insert(pair<Index,DofsInRow>(dof,empty_set));
 
 
     //-----------------------------------------------------------
     // adding the DOF-DOF contribution -- begin
-    /*
-    const auto &spaces_info = space_manager.get_spaces_info();
-    Assert(!spaces_info.empty(),ExcEmptyObject());
-    for (const auto &space : spaces_info)
-        for (const auto element_dofs : space.second->get_elements_dofs_view())
-            for (const auto &dof : element_dofs.second)
-                (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
-    //*/
     const auto &spaces_connections = space_manager.get_spaces_connections();
     Assert(!spaces_connections.empty(),ExcEmptyObject());
     for (const auto &sp_conn : spaces_connections)
     {
         if (sp_conn.is_unique_space())
         {
+            // adding the contribution of the dofs defined within the space itself-- begin
             const auto &space = sp_conn.get_space_row();
             for (const auto element_dofs : space.get_elements_dofs_view())
                 for (const auto &dof : element_dofs.second)
                     (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+            // adding the contribution of the dofs defined within the space -- end
         }
+
+
+
+        // adding the extra contribution to the connectivity defined within the spaces connection -- begin
+        const auto &extra_dofs_connectivity = sp_conn.get_extra_dofs_connectivity();
+        for (const auto &connectivity_map_entry : extra_dofs_connectivity)
+        {
+            const auto   row_id = connectivity_map_entry.first;
+            const auto &cols_id = connectivity_map_entry.second;
+
+            (*this)[row_id].insert(cols_id.begin(),cols_id.end());
+        }
+        // adding the extra contribution to the connectivity defined within the spaces connection -- end
     }
 
     // adding the DOF-DOF contribution -- end
@@ -104,7 +110,7 @@ SparsityPattern(const SpaceManager &space_manager)
 
 
 
-
+#if 0
     //-----------------------------------------------------------
     // adding the LC-DOF/DOF-LC contributions -- begin
     for (const auto &lc : linear_constraints)
@@ -132,6 +138,7 @@ SparsityPattern(const SpaceManager &space_manager)
     }
     // adding the LC-DOF/DOF-LC contributions -- end
     //-----------------------------------------------------------
+#endif
 
 
 }
