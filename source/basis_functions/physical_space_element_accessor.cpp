@@ -249,8 +249,8 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 init_cache(const ValueFlags fill_flag,
            const QuadratureType &quad)
 {
-    //    const ValueFlags ref_sp_flag =
-    //        get_reference_space_accessor_fill_flags(fill_flag);
+    const ValueFlags ref_sp_flag =
+            get_reference_space_accessor_fill_flags(fill_flag);
     // TODO (pauletti, Sep 12, 2014): fix next line
     // ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
 
@@ -667,21 +667,20 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
-print_info(LogStream &out, const VerbosityLevel verbosity_level) const
+print_info(LogStream &out) const
 {
-    using std::endl ;
-
-    std::string tab = "   ";
-
-    out << "PhysicalSpaceElementAccessor info:" << endl;
-    out.push(tab);
-
     ref_space_element_accessor_.print_info(out);
     PfElemAccessor::print_info(out);
-
-    out.pop();
 }
 
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+print_cache_info(LogStream &out) const
+{
+    ref_space_element_accessor_.print_cache_info(out);
+    PfElemAccessor::print_cache_info(out);
+}
 
 IGA_NAMESPACE_CLOSE
 

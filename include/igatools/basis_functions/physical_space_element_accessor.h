@@ -351,7 +351,9 @@ public :
      * Prints internal information about the BSplineElementAccessor.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out, const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
+    void print_info(LogStream &out) const;
+
+    void print_cache_info(LogStream &out) const;
 
 private:
     /**

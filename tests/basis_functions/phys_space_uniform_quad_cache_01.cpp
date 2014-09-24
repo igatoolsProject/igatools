@@ -274,6 +274,121 @@ private:
 };
 
 
+ValueFlags
+get_reference_space_accessor_fill_flags(const ValueFlags fill_flag,
+                                        const Transformation transformation_type )
+{
+    bool fill_values = false;
+    bool fill_gradients = false;
+    bool fill_hessians = false;
+    bool fill_face_values = false;
+    bool fill_face_gradients = false;
+    bool fill_face_hessians = false;
+
+    if (contains(fill_flag , ValueFlags::value))
+        fill_values = true;
+
+    if (contains(fill_flag , ValueFlags::gradient))
+        fill_gradients = true;
+
+    if (contains(fill_flag , ValueFlags::hessian))
+        fill_hessians = true;
+
+    if (contains(fill_flag , ValueFlags::face_value))
+        fill_face_values = true;
+
+    if (contains(fill_flag , ValueFlags::face_gradient))
+        fill_face_gradients = true;
+
+    if (contains(fill_flag , ValueFlags::face_hessian))
+        fill_face_hessians = true;
+
+
+    bool fill_D0_phi_hat = false;
+    bool fill_D1_phi_hat = false;
+    bool fill_D2_phi_hat = false;
+    bool fill_face_D0_phi_hat = false;
+    bool fill_face_D1_phi_hat = false;
+    bool fill_face_D2_phi_hat = false;
+    if (transformation_type == Transformation::h_grad)
+    {
+        fill_D0_phi_hat = fill_values;
+        fill_D1_phi_hat = fill_gradients || fill_hessians;
+        fill_D2_phi_hat = fill_hessians;
+        fill_face_D0_phi_hat = fill_face_values;
+        fill_face_D1_phi_hat = fill_face_gradients || fill_face_hessians;
+        fill_face_D2_phi_hat = fill_face_hessians;
+    }
+    else if (transformation_type == Transformation::h_div  ||
+             transformation_type == Transformation::h_curl ||
+             transformation_type == Transformation::l_2)
+    {
+        fill_D0_phi_hat = fill_values || fill_gradients || fill_hessians;
+        fill_D1_phi_hat = fill_gradients || fill_hessians;
+        fill_D2_phi_hat = fill_hessians;
+        fill_face_D0_phi_hat = fill_face_values || fill_face_gradients || fill_face_hessians;
+        fill_face_D1_phi_hat = fill_face_gradients || fill_face_hessians;
+        fill_face_D2_phi_hat = fill_face_hessians;
+    }
+
+
+    ValueFlags reference_space_accessor_fill_flags = ValueFlags::none;
+    if (fill_D0_phi_hat)
+        reference_space_accessor_fill_flags |= ValueFlags::value;
+
+    if (fill_D1_phi_hat)
+        reference_space_accessor_fill_flags |= ValueFlags::gradient;
+
+    if (fill_D2_phi_hat)
+        reference_space_accessor_fill_flags |= ValueFlags::hessian;
+
+    if (fill_face_D0_phi_hat)
+        reference_space_accessor_fill_flags |= ValueFlags::face_value;
+
+    if (fill_face_D1_phi_hat)
+        reference_space_accessor_fill_flags |= ValueFlags::face_gradient;
+
+    if (fill_face_D2_phi_hat)
+        reference_space_accessor_fill_flags |= ValueFlags::face_hessian;
+
+    if (contains(fill_flag , ValueFlags::measure))
+        reference_space_accessor_fill_flags |= ValueFlags::measure;
+
+
+    return reference_space_accessor_fill_flags;
+}
+
+
+ValueFlags
+get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
+{
+    const ValueFlags common_flag =
+        ValueFlags::point|
+        ValueFlags::map_value|
+        ValueFlags::map_gradient|
+        ValueFlags::map_hessian|
+        ValueFlags::measure|
+        ValueFlags::w_measure|
+        ValueFlags::face_point|
+        ValueFlags::map_face_value|
+        ValueFlags::map_face_gradient|
+        ValueFlags::map_face_hessian|
+        ValueFlags::face_w_measure|
+        ValueFlags::face_normal;
+
+    ValueFlags pf_flags = fill_flag & common_flag;
+
+    if (contains(fill_flag , ValueFlags::value) || contains(fill_flag , ValueFlags::face_value))
+        pf_flags |= ValueFlags::tran_value;
+
+    if (contains(fill_flag , ValueFlags::gradient) || contains(fill_flag , ValueFlags::face_gradient))
+        pf_flags |= ValueFlags::tran_gradient;
+
+    if (contains(fill_flag , ValueFlags::hessian) || contains(fill_flag , ValueFlags::face_hessian))
+        pf_flags |= ValueFlags::tran_hessian;
+
+    return pf_flags;
+}
 
 
 template<class PhysSpace>
@@ -305,8 +420,8 @@ public:
                           const ValueFlags flag,
                           const Quadrature<dim> &quad)
     :
-        RefSpaceCache(space->get_reference_space(), flag, quad),
-        PFCache(space->get_push_forward(), flag, quad)
+        RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::transformation_type), quad),
+        PFCache(space->get_push_forward(), get_push_forward_accessor_fill_flags(flag), quad)
     {}
 
     //Allocates the ElementIterator element_cache
@@ -368,7 +483,7 @@ void uniform_space_cache(const ValueFlags flag,
 
     auto elem = space->begin();
     cache.init_element_cache(elem);
-    //elem->print_cache_info(out);
+    elem->print_cache_info(out);
 
 
     OUTEND

@@ -54,7 +54,7 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
 
 
     // TODO (pauletti, Sep 12, 2014): this is not good, try to fix
-#if 0
+#if NURBS
     using NURBSSp = NURBSSpace<dim,dim+codim,1>;
     using NURBSMapping = IgMapping<NURBSSp>;
     if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
@@ -408,6 +408,19 @@ init_cache(const ValueFlags fill_flag,
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
            typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
+
+    auto &cache = local_cache_;
+    if (cache == nullptr)
+    {
+        cache = shared_ptr<LocalCache>(new LocalCache);
+    }
+
+//    auto &elem_cache = cache->elem_values_;
+//    elem_cache.resize(flags_, quad_);
+
+//    auto &face_cache = cache->face_values_;
+//    for (auto &f: faces)
+//        face_cache[f].resize(face_flags_, quad_, f);
 
     // initializing the cache of the CartesianGridElementAccessor
     {
