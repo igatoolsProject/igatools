@@ -37,23 +37,6 @@ using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
-namespace
-{
-/**
- * This function returns the connectivity of two sets of dofs index, using an all-to-all
- * strategy, i.e. each dof in the set @p row_dofs is connected with all dofs in the set @p col_dofs.
- */
-map<Index,set<Index>>
-                   get_dofs_connectvity_all_to_all(const set<Index> &row_dofs,const set<Index> &col_dofs)
-{
-    map<Index,set<Index>> dofs_connectivity;
-    for (const Index row_dof : row_dofs)
-        dofs_connectivity[row_dof].insert(col_dofs.begin(),col_dofs.end());
-
-    return dofs_connectivity;
-}
-
-};
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
@@ -852,11 +835,11 @@ fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
 
         space_manager.get_spaces_connection(multiplier_space_,space).
         add_dofs_connectivity(
-            get_dofs_connectvity_all_to_all(multiplier_dofs,face_dofs));
+            dof_tools::get_dofs_connectvity_all_to_all(multiplier_dofs,face_dofs));
 
         space_manager.get_spaces_connection(space,multiplier_space_).
         add_dofs_connectivity(
-            get_dofs_connectvity_all_to_all(face_dofs,multiplier_dofs));
+            dof_tools::get_dofs_connectvity_all_to_all(face_dofs,multiplier_dofs));
     }//end block related to slave space
 
     //sorting the slave dofs before inserting them into a LinearConstraint object

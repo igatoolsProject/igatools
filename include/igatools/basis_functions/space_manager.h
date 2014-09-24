@@ -94,11 +94,15 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
  *      concluded after the execution of the function spaces_connectivity_close().
  *      Between the execution of these two functions, the spaces connectivities
  *      (i.e. the blocks in the sparsity pattern) are added to the SpaceManager with the function
- *      add_spaces_connection(). Please note that this last function takes two arguments: one argument
- *      the for the space of test functions and the other for the space of trial functions.
- *      This means that if a user wants to add symmetric blocks, he needs to call this function twice with
- *      the spaces reverted. The blocks on the diagonal are added calling add_spaces_connection()
- *      with the same spaces on both argument.
+ *      add_spaces_connection().
+ *      Please note that this last function can be used with two different signatures:
+ *        - the first version takes two arguments for the spaces: one argument is used to define the
+ *        space of test functions (i.e. the space defining the block of dofs along the rows)
+ *        and the other is used to define the space of trial functions
+ *        (i.e. the space defining the block of dofs along the columns).
+ *        This means that if a user wants to add symmetric blocks, he needs to call this function twice with
+ *        the spaces reverted.
+ *        - the second version takes only one space: this can be used to define blocks along the diagonal.
  *
  *      For example, if we have 3 spaces <tt>space_0</tt>, <tt>space_1</tt> and <tt>space_2</tt> and the
  *      connectivity is defined as follows:
@@ -117,8 +121,8 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
 
         sp_manager.add_spaces_connection(space_1,space_2); // block 1-2
 
-        sp_manager.add_spaces_connection(space_0,space_0); // block 0-0
-        sp_manager.add_spaces_connection(space_1,space_1); // block 1-1
+        sp_manager.add_spaces_connection(space_0); // block 0-0
+        sp_manager.add_spaces_connection(space_1); // block 1-1
 
         sp_manager.spaces_connectivity_close();  // ends the spaces connectivity phase (phase 2)
 
@@ -127,26 +131,47 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
  *   3. <b>Definition of the <em>global dofs connectivity</em> in each spaces pair</b>.
  *   Once the relations between the spaces are defined (Phase 2), it remains to define the dofs
  *   relations within a spaces pair.
- *     - For the case in which the spaces connection is not defined with a single space
+ *     - For the case in which the SpacesConnection is not defined with a single space
  *   (i.e. we are not in the block-diagonal), the user has the responsability to manage
- *   (and set) the dofs connectivity. The function for setting the dofs connectivity with a spaces pair
- *   is spaces_connection_set_dofs_connectivity(). The first two arguments of this function are the
- *   spaces defining the block for which we want to set the dofs connectivity, the third arguments is a
+ *   (and set) the dofs connectivity. In order to do so, the SpacesConnection can be retrieved with
+ *   the function get_spaces_connection(), and then the dofs connectivity can be added using
+ *   SpacesConnection::add_dofs_connectivity().
+ *   The input argument arguments of this last function is a
  *   <tt>std::map<Index,std::set<Index>> </tt>
- *   in which a generic key represents an active global dofs in the block (belonging from the first space)
- *   and the value is a <tt>std::set<Index></tt> representing the global dofs in the second space that
- *   are in relation with the global dof in the first space represented by the key.
+ *   in which the <tt>key</tt> represents an active global dofs in the block
+ *   (belonging from the first space, i.e. a row dof id)
+ *   and the <tt>value</tt> is a <tt>std::set<Index></tt> representing the global dofs in the second space
+ *   (i.e. a set colum dofs id) that are in relation with the global dof in the first space represented by the key.
  *   @code{.cpp}
-     sp_manager.spaces_connection_set_dofs_connectivity(space_0,space_2,dofs_connectivity_0_2);
+
+     map<Index,set<Index>> dofs_connectivity_0_2;
+     ...
+     ... // here we fill in some way (this is problem specific) the dofs connectivity between space_0 and space_2
+     ...
+
+     auto & conn_0_2 = sp_manager.get_spaces_connection(space_0,space_2); //get the connection between space_0 and space_2
+     conn_0_2.add_dofs_connectivity(dofs_connectivity_0_2);
+
      @endcode
+ *
  *     - In the particular case in which a space defines a connection
  *   with itself (i.e. a the connection is represented by a diagonal block),
- *   the dofs relations are automatically inferred (without taking any action) from the
+ *   the dofs relations are automatically (by default) inferred (without taking any action) from the
  *   internal structure of the space, i.e. iterating over the active elements of the space and retrieving
  *   the dofs connectivity in each element.
  *   If this default behaviour is not appropriate to describe the dofs connectivity,
- *   the user can set up manually the dofs connectivity by using the function
- *   spaces_connection_set_dofs_connectivity().
+ *   the user must define the space connectivity as follows:
+ *   @code{.cpp}
+
+     sp_manager.add_spaces_connection(space_0,false); // the internal dofs strucure of space_0 will not be used
+     @endcode
+ *    instead of
+ *   @code{.cpp}
+
+     sp_manager.add_spaces_connection(space_0); // the internal dofs strucure of space_0 will be used
+     @endcode
+ *   In any case extra dofs connectivity can be added as explained above, retrieving the SpacesConnection
+ *   and then using SpacesConnection::add_dofs_connectivity().
  *
  * @todo: complete the documentation
  * @author M. Martinelli

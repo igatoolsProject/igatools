@@ -55,6 +55,23 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<la_pack> &rhs,
                            Vector<la_pack> &solution);
 
+
+/**
+ * This function returns the connectivity of two sets of dofs index, using an all-to-all
+ * strategy, i.e. each dof in the set @p row_dofs is connected with all dofs in the set @p col_dofs.
+ */
+inline
+std::map<Index,std::set<Index> >
+get_dofs_connectvity_all_to_all(const std::set<Index> &row_dofs,const std::set<Index> &col_dofs)
+{
+    std::map<Index,std::set<Index>> dofs_connectivity;
+    for (const Index row_dof : row_dofs)
+        dofs_connectivity[row_dof].insert(col_dofs.begin(),col_dofs.end());
+
+    return dofs_connectivity;
+}
+
+
 } // end of namespace dof_tools
 
 IGA_NAMESPACE_CLOSE

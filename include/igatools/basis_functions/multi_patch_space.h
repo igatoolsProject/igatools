@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/basis_functions/space_manager.h>
+#include <igatools/linear_algebra/dof_tools.h>
 
 #ifdef USE_GRAPH
 #include <boost/graph/adjacency_list.hpp>

@@ -76,10 +76,10 @@ public:
 
     /**
      * Construct a vector that gets a consecutive indexing
-     * for @p dof_ids degrees of freedom.
+     * for @p n degrees of freedom.
      * All entries are set to zero.
      */
-    Vector(const Index size);
+    Vector(const Index n);
 
     /**
      * Construct a vector that gets a non consecutive indexing
@@ -126,10 +126,10 @@ public:
 
     /**
      * Create a vector that gets an consecutive indexing
-     * for @p dof_ids degrees of freedom.
+     * for @p n degrees of freedom.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<self_t> create(const Index size);
+    static std::shared_ptr<self_t> create(const Index n);
 
     /**
      * Create a vector that gets an non consecutive indexing
@@ -139,13 +139,14 @@ public:
      */
     static std::shared_ptr<self_t> create(const vector<Index> &dof_ids);
 
-
+#if 0
     /**
      * Create a distributed vector with its index distribution
      * specified by the Space @p space.
      */
     template<class Space>
     static inline std::shared_ptr<self_t> create(const Space &space);
+#endif
     ///@}
 
 
@@ -154,10 +155,10 @@ public:
     ///@{
 
     /**
-     * Add the value @p input to the vector entry (i).
-     * @note @p i is the global index of the entry (i).
+     * Add the value @p input to the vector entry @p global_id.
+     * @note @p global_id is the global index of the entry.
      */
-    void add_entry(const Index i, const Real input);
+    void add_entry(const Index global_id, const Real input);
 
 
     /**
@@ -177,14 +178,12 @@ public:
 
 
     /**
-     * Returns the const reference to the i-th entry of the vector.
-     * @note @p i is the global index of the i-th entry.
+     * Returns the const reference to the entry of the vector identified by the @p global_id
      */
     const Real &operator()(const Index global_id) const;
 
     /**
-     * Returns the reference to the i-th entry of the vector.
-     * @note @p i is the global index of the i-th entry.
+     * Returns the reference to the entry of the vector identified by the @p global_id
      */
     Real &operator()(const Index global_id);
 
@@ -240,15 +239,6 @@ private:
      * Smart pointer wrapping a Tpetra::Vector
      */
     Teuchos::RCP<WrappedVectorType> vector_;
-
-    /*
-        DeclException3(ExcVectorAccessToNonLocalElement,
-                       Index, Index, Index,
-                       << "You tried to access element (" << arg1 << ")"
-                       << " of a distributed vector, but only rows "
-                       << arg2 << " through " << arg2
-                       << " are stored locally and can be accessed.");
-    //*/
 };
 
 #endif //#ifdef USE_TRILINOS

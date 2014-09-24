@@ -55,28 +55,6 @@ SparsityPattern(const SpaceManager &space_manager)
 
 
     //-----------------------------------------------------------
-    // adding the linear constraints id -- begin
-    const auto &linear_constraints = space_manager.get_linear_constraints();
-#if 0
-    Index row_id = space_manager.get_num_dofs();
-    for (const auto &lc : linear_constraints)
-        row_dofs_.push_back(row_id++);
-#endif
-    // adding the linear constraints id -- end
-    //-----------------------------------------------------------
-
-
-
-
-//    using DofsInRow = set<Index>;
-//    DofsInRow empty_set;
-    // adding the global dof keys to the map representing the dof connectivity
-//    for (const auto &dof : row_dofs_)
-//        this->insert(pair<Index,DofsInRow>(dof,empty_set));
-
-
-    //-----------------------------------------------------------
-    // adding the DOF-DOF contribution -- begin
     const auto &spaces_connections = space_manager.get_spaces_connections();
     Assert(!spaces_connections.empty(),ExcEmptyObject());
     for (const auto &sp_conn : spaces_connections)
@@ -104,45 +82,11 @@ SparsityPattern(const SpaceManager &space_manager)
         }
         // adding the extra contribution to the connectivity defined within the spaces connection -- end
     }
-
-    // adding the DOF-DOF contribution -- end
     //-----------------------------------------------------------
-
+}
 
 
 #if 0
-    //-----------------------------------------------------------
-    // adding the LC-DOF/DOF-LC contributions -- begin
-    for (const auto &lc : linear_constraints)
-    {
-        Assert(lc != nullptr,ExcNullPtr());
-
-        const auto row_id = lc->get_global_dof_id();
-
-        const auto lc_dofs = lc->get_dofs_id();
-
-        //-----------------------------------------------------------
-        // adding the LC-DOF contribution -- begin
-        for (const auto lc_dof : lc_dofs)
-            (*this)[row_id].emplace(lc_dof);
-        // adding the LC-DOF contribution -- end
-        //-----------------------------------------------------------
-
-
-        //-----------------------------------------------------------
-        // adding the DOF-LC contribution -- begin
-        for (const auto lc_dof : lc_dofs)
-            (*this)[lc_dof].emplace(row_id);
-        // adding the DOF-LC contribution -- end
-        //-----------------------------------------------------------
-    }
-    // adding the LC-DOF/DOF-LC contributions -- end
-    //-----------------------------------------------------------
-#endif
-
-
-}
-
 SparsityPattern::
 SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols)
 {
@@ -203,6 +147,7 @@ SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space
                 (*this)[dof_row].insert(dofs_col_iterator->second.cbegin(),dofs_col_iterator->second.cend());
     }
 }
+#endif
 
 SparsityPattern::SparsityPattern(const SparsityPattern &sparsity_pattern)
     :
@@ -243,11 +188,11 @@ SparsityPattern::get_num_overlapping_funcs() const
 
     vector< long unsigned int > num_overlapping_funcs ;
 
-    auto dof     = row_dofs_.cbegin() ;
-    auto dof_end = row_dofs_.cend() ;
-
-    for (; dof != dof_end ; ++dof)
-        num_overlapping_funcs.emplace_back(this->at(*dof).size()) ;
+    for (const auto &map_entry : (*this))
+    {
+//      const Index row_id = map_entry.first;
+        num_overlapping_funcs.emplace_back(map_entry.second.size()) ;
+    }
 
     return (num_overlapping_funcs) ;
 }
