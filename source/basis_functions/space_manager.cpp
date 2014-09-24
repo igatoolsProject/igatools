@@ -42,7 +42,6 @@ SpaceManager()
     :
     is_spaces_insertion_open_(false),
     is_spaces_connectivity_open_(false),
-    num_unique_dofs_(0),
     space_dofs_offset_(0)
 {}
 
@@ -71,8 +70,6 @@ spaces_insertion_close(const bool automatic_dofs_renumbering)
         this->perform_space_dofs_renumbering();
 
     this->update_dofs_view();
-
-    num_unique_dofs_ = this->count_unique_dofs();
 }
 
 void
@@ -142,16 +139,6 @@ is_spaces_connectivity_open() const
     return is_spaces_connectivity_open_;
 }
 
-/*
-SpaceManager::
-SpaceInfo::
-SpaceInfo()
-    :
-    num_dofs_(0),
-    min_dofs_id_(-1),
-    max_dofs_id_(-1)
-{}
-//*/
 
 
 SpaceManager::
@@ -346,18 +333,7 @@ get_dofs_view() const -> DofsConstView
 {
     Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
-//    Assert(dofs_view_ != nullptr, ExcNullPtr())
     return DofsConstView(dofs_view_);
-}
-
-
-
-Index
-SpaceManager::
-get_num_dofs() const
-{
-    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
-    return num_unique_dofs_;
 }
 
 
@@ -595,26 +571,12 @@ remove_equality_constraints_redundancies()
 
 
 
-
-Index
-SpaceManager::
-count_unique_dofs() const
-{
-    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
-
-//    const auto &dofs = this->get_dofs_view();
-
-    set<Index> unique_dofs(dofs_view_.begin(),dofs_view_.end());
-
-    return unique_dofs.size();
-}
-
 vector<std::shared_ptr<LinearConstraint> >
 SpaceManager::
 verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
 {
-    Assert(dof_values.size() == this->get_num_dofs(),
-           ExcDimensionMismatch(dof_values.size(),this->get_num_dofs()));
+    Assert(dof_values.size() == this->get_num_col_dofs(),
+           ExcDimensionMismatch(dof_values.size(),this->get_num_col_dofs()));
 
     vector<shared_ptr<LinearConstraint> > failed_linear_constraints;
     for (const auto &lc_pair : linear_constraints_)
@@ -627,6 +589,88 @@ verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
     return failed_linear_constraints;
 }
 
+
+
+std::set<Index>
+SpaceManager::
+get_row_dofs() const
+{
+    std::set<Index> row_dofs;
+
+    for (const auto &sp_conn : spaces_connections_)
+    {
+        const auto row_dofs_current_space = sp_conn.get_row_dofs();
+        row_dofs.insert(row_dofs_current_space.begin(),row_dofs_current_space.end());
+    }
+    return row_dofs;
+}
+
+std::set<Index>
+SpaceManager::
+get_col_dofs() const
+{
+    std::set<Index> col_dofs;
+
+    for (const auto &sp_conn : spaces_connections_)
+    {
+        const auto col_dofs_current_space = sp_conn.get_col_dofs();
+        col_dofs.insert(col_dofs_current_space.begin(),col_dofs_current_space.end());
+    }
+    return col_dofs;
+}
+
+Index
+SpaceManager::
+get_num_row_dofs() const
+{
+    return this->get_row_dofs().size();
+}
+
+Index
+SpaceManager::
+get_num_col_dofs() const
+{
+    return this->get_col_dofs().size();
+}
+
+
+
+auto
+SpaceManager::
+get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
+{
+    auto sparsity_pattern = shared_ptr<DofsConnectivity>(new DofsConnectivity);
+
+
+    Assert(!spaces_connections_.empty(),ExcEmptyObject());
+    for (const auto &sp_conn : spaces_connections_)
+    {
+        if (sp_conn.is_unique_space())
+        {
+            // adding the contribution of the dofs defined within the space itself-- begin
+            const auto &space = sp_conn.get_space_row();
+            for (const auto element_dofs : space.get_elements_dofs_view())
+                for (const auto &dof : element_dofs.second)
+                    (*sparsity_pattern)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+            // adding the contribution of the dofs defined within the space -- end
+        }
+
+
+
+        // adding the extra contribution to the connectivity defined within the spaces connection -- begin
+        const auto &extra_dofs_connectivity = sp_conn.get_extra_dofs_connectivity();
+        for (const auto &connectivity_map_entry : extra_dofs_connectivity)
+        {
+            const auto   row_id = connectivity_map_entry.first;
+            const auto &cols_id = connectivity_map_entry.second;
+
+            (*sparsity_pattern)[row_id].insert(cols_id.begin(),cols_id.end());
+        }
+        // adding the extra contribution to the connectivity defined within the spaces connection -- end
+    }
+
+    return sparsity_pattern;
+}
 
 
 
@@ -672,7 +716,8 @@ print_info(LogStream &out) const
         //*/
     }
 
-    out << "Num. unique dofs          = " << this->get_num_dofs() << endl;
+    out << "Num. row   dofs = " << this->get_num_row_dofs() << endl;
+    out << "Num. colum dofs = " << this->get_num_col_dofs() << endl;
 
 
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;

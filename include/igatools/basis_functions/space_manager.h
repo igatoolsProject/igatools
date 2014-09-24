@@ -389,10 +389,6 @@ public:
     ///@}
 
 
-    /** Return the number of unique dofs in the SpaceManager. */
-    Index get_num_dofs() const;
-
-
     /** Returns the number of linear constraints. */
     Index get_num_linear_constraints() const;
 
@@ -566,6 +562,7 @@ private:
 
     using SpaceInfoPtr = std::shared_ptr<SpaceInfo>;
 
+#if 0
     /**
      * This functor defines the relation order between the spaces.
      */
@@ -576,7 +573,7 @@ private:
             return lhs->get_id() < rhs->get_id();
         }
     };
-
+#endif
 
 
     /**
@@ -584,19 +581,10 @@ private:
      * and some useful informations that does not depends on the template
      * parameters needed to instantiate the spaces.
      *
-     * The std::map key is the space id.
+     * The <tt>key</tt> of the std::map is the space id.
      */
     std::map<int,SpaceInfoPtr> spaces_info_;
 
-#if 0
-    /**
-     * Connectivity between the different spaces/blocks.
-     * The key in the std::map represents a block of row dofs
-     * and the values of a give key represents the connected
-     * blocks of dofs along the columns of the system matrix.
-     */
-    std::map<SpaceInfoPtr,std::set<SpaceInfoPtr>> spaces_connectivity_;
-#endif
 
     /**
      * View to the active dofs ids of all single-patch spaces handled by the SpaceManager.
@@ -609,14 +597,14 @@ private:
 
     vector<EqualityConstraint> equality_constraints_;
 
-
+#if 0
     /** Counts and return the number of unique dofs in the SpaceManager. */
     Index count_unique_dofs() const;
 
 
     /** Number of unique dofs in the SpaceManager. */
     Index num_unique_dofs_;
-
+#endif
 
     /**
      * This function update the dofs view from the underlying spaces.
@@ -740,37 +728,46 @@ public:
     const std::map<Index,SpaceInfoPtr> &get_spaces_info() const;
 
 
-
+    /**
+     * Returns the SpacesConnection corresponding to the row space @p space_test and
+     * column space @p space_trial.
+     */
     template<class SpaceTest,class SpaceTrial>
     SpacesConnection &get_spaces_connection(
         std::shared_ptr<SpaceTest> space_test,
         std::shared_ptr<SpaceTrial> space_trial);
 
 
-    std::set<Index> get_row_dofs() const
-    {
-        std::set<Index> row_dofs;
+    /**
+     * Returns the row dofs id.
+     */
+    std::set<Index> get_row_dofs() const;
 
-        for (const auto &sp_conn : spaces_connections_)
-        {
-            const auto row_dofs_current_space = sp_conn.get_row_dofs();
-            row_dofs.insert(row_dofs_current_space.begin(),row_dofs_current_space.end());
-        }
-        return row_dofs;
-    }
+    /**
+     * Returns the column dofs id.
+     */
+    std::set<Index> get_col_dofs() const;
 
-    std::set<Index> get_col_dofs() const
-    {
-        std::set<Index> col_dofs;
+    /**
+     * Returns the number of row dofs id.
+     */
+    Index get_num_row_dofs() const;
 
-        for (const auto &sp_conn : spaces_connections_)
-        {
-            const auto col_dofs_current_space = sp_conn.get_col_dofs();
-            col_dofs.insert(col_dofs_current_space.begin(),col_dofs_current_space.end());
-        }
-        return col_dofs;
-    }
+    /**
+     * Returns the number of column dofs id.
+     */
+    Index get_num_col_dofs() const;
 
+
+    /**
+     * Returns the sparsity pattern associated to the information stored into the SpaceManager.
+     *
+     * The sparsity pattern is a <tt>std::map<Index,std::set<Index>></tt> in which the
+     * <tt>key-value</tt> pair represents a single row in the system matrix
+     * (the <tt>key</tt> is the row dof id and the <tt>value</tt> are the column dofs id connected
+     * with the row dof id.
+     */
+    std::shared_ptr<const DofsConnectivity> get_sparsity_pattern() const;
 };
 
 

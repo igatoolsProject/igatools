@@ -177,13 +177,17 @@ void test_evaluate()
 
     vector<Index> face_global_dofs;
     const auto multiplier_space_0 = phys_spaces[1]->get_face_space(0,face_global_dofs);
-
     multi_patch_space.add_interface_mortar(phys_spaces[0],1,phys_spaces[1],0,multiplier_space_0);
-    /*
-    multi_patch_space.add_interface_mortar(phys_spaces[2],1,phys_spaces[3],0);
-    multi_patch_space.add_interface_mortar(phys_spaces[0],2,phys_spaces[2],3);
-    multi_patch_space.add_interface_mortar(phys_spaces[1],2,phys_spaces[3],3);
-    //*/
+
+    const auto multiplier_space_1 = phys_spaces[2]->get_face_space(1,face_global_dofs);
+    multi_patch_space.add_interface_mortar(phys_spaces[2],1,phys_spaces[3],0,multiplier_space_1);
+
+    const auto multiplier_space_2 = phys_spaces[0]->get_face_space(2,face_global_dofs);
+    multi_patch_space.add_interface_mortar(phys_spaces[0],2,phys_spaces[2],3,multiplier_space_2);
+
+    const auto multiplier_space_3 = phys_spaces[1]->get_face_space(2,face_global_dofs);
+    multi_patch_space.add_interface_mortar(phys_spaces[1],2,phys_spaces[3],3,multiplier_space_3);
+
     multi_patch_space.interface_insertion_close();
     // adding the interfaces to the multi-patch space structure -- end
     //---------------------------------------------------------------
