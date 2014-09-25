@@ -621,6 +621,10 @@ get_row_dofs() const
         const auto row_dofs_current_space = sp_conn.get_row_dofs();
         row_dofs.insert(row_dofs_current_space.begin(),row_dofs_current_space.end());
     }
+
+    for (const auto extra_row : extra_dofs_connectivity_)
+    	row_dofs.insert(extra_row.first);
+
     return row_dofs;
 }
 
@@ -635,6 +639,10 @@ get_col_dofs() const
         const auto col_dofs_current_space = sp_conn.get_col_dofs();
         col_dofs.insert(col_dofs_current_space.begin(),col_dofs_current_space.end());
     }
+
+    for (const auto extra_row : extra_dofs_connectivity_)
+    	col_dofs.insert(extra_row.second.begin(),extra_row.second.end());
+
     return col_dofs;
 }
 

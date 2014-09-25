@@ -49,19 +49,78 @@ DeclException0(ExcNotQuadratic);
 
 #ifdef USE_TRILINOS
 
+namespace trilinos
+{
+DofsMapPtr build_row_map(const SpaceManager & space_manager,CommPtr comm)
+{
+    const auto dofs_set = space_manager.get_row_dofs();
+    const vector<GO> dofs_vec(dofs_set.begin(),dofs_set.end());
 
+    return Teuchos::rcp(new DofsMap(dofs_vec.size(),dofs_vec,0,comm));
+}
+
+DofsMapPtr build_col_map(const SpaceManager & space_manager,const CommPtr comm)
+{
+    const auto dofs_set = space_manager.get_col_dofs();
+    const vector<GO> dofs_vec(dofs_set.begin(),dofs_set.end());
+
+    return Teuchos::rcp(new DofsMap(dofs_vec.size(),dofs_vec,0,comm));
+}
+
+GraphPtr build_graph(const SpaceManager & space_manager,const DofsMapPtr row_map,const DofsMapPtr col_map)
+{
+	const auto sparsity_pattern_ptr = space_manager.get_sparsity_pattern();
+
+
+    using LongUInt = long unsigned int;
+    vector<LongUInt> num_dof_connections ;
+    for (const auto &map_entry : *sparsity_pattern_ptr)
+        num_dof_connections.emplace_back(map_entry.second.size()) ;
+
+    Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
+        Teuchos::arcp(
+            Teuchos::RCP<const std::vector<LongUInt> >(
+                new vector<LongUInt>(num_dof_connections))) ;
+
+    GraphPtr graph = Teuchos::rcp(new Graph(row_map,row_map,n_dofs_per_row,Tpetra::StaticProfile));
+    for (const auto &row : *sparsity_pattern_ptr)
+    {
+        const Index row_id = row.first ;
+        const auto &cols_id = row.second;
+
+        auto cols_id_vec = vector<Index>(cols_id.begin(),cols_id.end());
+
+        auto cols_id_view = Teuchos::ArrayView<const GO>(std::move(cols_id_vec));
+
+        graph->insertGlobalIndices(row_id,cols_id_view);
+    }
+    graph->fillComplete(col_map,row_map);
+
+    return graph;
+}
+
+};
+
+Matrix<LAPack::trilinos>::
+Matrix(const SpaceManager &space_manager,
+       Teuchos::RCP<const Teuchos::Comm<int>> comm)
+:
+	comm_(comm)
+{
+    row_space_map_ = trilinos::build_row_map(space_manager,comm);
+    column_space_map_ = trilinos::build_col_map(space_manager,comm);
+
+    graph_ = trilinos::build_graph(space_manager,row_space_map_,column_space_map_);
+
+    matrix_.reset(new MatrixImpl(graph_));
+    matrix_->setAllToScalar(0.0);
+}
+
+#if 0
 Matrix<LAPack::trilinos>::
 Matrix(const SparsityPattern &sparsity_pattern,Teuchos::RCP<const Teuchos::Comm<int>> comm)
     :
     comm_(comm)
-{
-    init(sparsity_pattern) ;
-};
-
-
-void
-Matrix<LAPack::trilinos>::
-init(const SparsityPattern &sparsity_pattern)
 {
     //-------------------------------------------------------------------------------------
     const auto row_dofs = sparsity_pattern.get_row_dofs();
@@ -72,9 +131,10 @@ init(const SparsityPattern &sparsity_pattern)
 
     //-------------------------------------------------------------------------------------
 
-    row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
 
     column_space_map_.reset(new DofsMap(col_dofs.size(),col_dofs,0,comm_));
+
+    row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
 
     using LongUInt = long unsigned int;
     Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
@@ -104,12 +164,11 @@ init(const SparsityPattern &sparsity_pattern)
     graph_->fillComplete(column_space_map_,row_space_map_);
     //-------------------------------------------------------------------------------------
 
-    matrix_.reset(new WrappedMatrixType(graph_));
+    matrix_.reset(new MatrixImpl(graph_));
     matrix_->setAllToScalar(0.0);
     //-------------------------------------------------------------------------------------
-
 };
-//*/
+
 
 
 shared_ptr<Matrix<LAPack::trilinos> >
@@ -117,6 +176,15 @@ Matrix<LAPack::trilinos>::
 create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<Matrix>(Matrix(sparsity_pattern));
+}
+#endif
+
+
+shared_ptr<Matrix<LAPack::trilinos> >
+Matrix<LAPack::trilinos>::
+create(const SpaceManager &space_manager)
+{
+    return std::make_shared<Matrix>(Matrix(space_manager));
 }
 
 void
@@ -179,14 +247,14 @@ resume_fill()
 
 auto
 Matrix<LAPack::trilinos>::
-get_trilinos_matrix() -> Teuchos::RCP<WrappedMatrixType>
+get_trilinos_matrix() -> Teuchos::RCP<MatrixImpl>
 {
     return matrix_;
 };
 
 auto
 Matrix<LAPack::trilinos>::
-get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
+get_trilinos_matrix() const -> Teuchos::RCP<const MatrixImpl>
 {
     return matrix_;
 };

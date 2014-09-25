@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/space_manager.h>
 #include <igatools/basis_functions/space_tools.h>
 
 #include <igatools/geometry/mapping_slice.h>
