@@ -294,7 +294,7 @@ public:
 
     ///@}
 
-    void print_info(LogStream &out,const VerbosityLevel verbosity_level = VerbosityLevel::normal) const;
+    void print_info(LogStream &out) const;
 
     void print_memory_info(LogStream &out) const;
 

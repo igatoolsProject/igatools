@@ -249,17 +249,17 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 init_cache(const ValueFlags fill_flag,
            const QuadratureType &quad)
 {
-    const ValueFlags ref_sp_flag =
-            get_reference_space_accessor_fill_flags(fill_flag);
+    //const ValueFlags ref_sp_flag =
+           // get_reference_space_accessor_fill_flags(fill_flag);
     // TODO (pauletti, Sep 12, 2014): fix next line
     // ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
 
-    const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
-    PfElemAccessor::init_cache(pf_flag, quad);
+    //const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
+    //PfElemAccessor::init_cache(pf_flag, quad);
 
 
     // TODO (pauletti, Sep 12, 2014): fix next line
-    //this->reset_element_and_faces_cache(fill_flag, quad);
+   // this->reset_element_and_faces_cache(fill_flag, quad);
 }
 
 
@@ -669,8 +669,13 @@ void
 PhysicalSpaceElementAccessor<PhysSpace>::
 print_info(LogStream &out) const
 {
+    out.begin_item("Reference space:");
     ref_space_element_accessor_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Pushforward:");
     PfElemAccessor::print_info(out);
+    out.end_item();
 }
 
 template< class PhysSpace >
@@ -678,8 +683,12 @@ void
 PhysicalSpaceElementAccessor<PhysSpace>::
 print_cache_info(LogStream &out) const
 {
+    out.begin_item("Reference space:");
     ref_space_element_accessor_.print_cache_info(out);
+    out.end_item();
+    out.begin_item("Pushforward:");
     PfElemAccessor::print_cache_info(out);
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

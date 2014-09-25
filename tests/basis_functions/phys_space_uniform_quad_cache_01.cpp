@@ -396,20 +396,57 @@ class SpaceUniformQuadCache :
         public PhysSpace::RefSpace::UniformQuadCache,
         public PushFowardUniformQuadCache<typename PhysSpace::PushForwardType>
 {
+    using RefSpace =  typename PhysSpace::RefSpace;
     using RefSpaceCache = typename PhysSpace::RefSpace::UniformQuadCache;
     using PFCache = PushFowardUniformQuadCache<typename PhysSpace::PushForwardType>;
-
     using ElementIterator = typename PhysSpace::ElementIterator;
+    using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
+
 
 protected:
     using ElementAccessor = typename PhysSpace::ElementAccessor;
+
     void init_element_cache(ElementAccessor &elem)
     {
         RefSpaceCache::init_element_cache(elem.get_ref_space_accessor());
         PFCache::init_element_cache(elem);
+        auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
+        if (cache == nullptr)
+        {
+            using Cache = typename PhysSpace::ElementAccessor::parent_t::LocalCache;
+            cache = shared_ptr<Cache>(new Cache);
+        }
+
+        auto n_basis = space_->get_num_all_element_basis();
+        auto &elem_cache = cache->elem_values_;
+        elem_cache.resize(flags_, quad_, n_basis);
+
+        //        auto &face_cache = cache->face_values_;
+        //        for (auto f: base_t::faces)
+        //            face_cache[f].resize(face_flags_, quad_, n_basis, f);
 
     }
-    void fill_element_cache(ElementAccessor &elem);
+
+    void fill_element_cache(ElementAccessor &elem)
+    {
+        auto &ref_elem = elem.get_ref_space_accessor();
+        RefSpaceCache::fill_element_cache(ref_elem);
+        PFCache::fill_element_cache(elem);
+
+        auto &cache = elem.get_elem_cache();
+
+        if (cache.flags_handler_.fill_values())
+        {
+            elem.template transform_values<RefSpace::range,RefSpace::rank>
+            (ref_elem.get_basis_values(), cache.phi_);
+
+            cache.flags_handler_.set_values_filled(true);
+        }
+
+        cache.set_filled(true);
+    }
+
+
     void fill_face_cache(ElementAccessor &elem, const int face);
 
 public:
@@ -421,7 +458,10 @@ public:
                           const Quadrature<dim> &quad)
     :
         RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::transformation_type), quad),
-        PFCache(space->get_push_forward(), get_push_forward_accessor_fill_flags(flag), quad)
+        PFCache(space->get_push_forward(), get_push_forward_accessor_fill_flags(flag), quad),
+        space_(space),
+        flags_(flag),
+        quad_(quad)
     {}
 
     //Allocates the ElementIterator element_cache
@@ -431,8 +471,10 @@ public:
     }
 
     //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem);
-
+    void fill_element_cache(ElementIterator &elem)
+    {
+        fill_element_cache(elem.get_accessor());
+    }
     /**
      * Fills the ElementIterator face_cache
      * element dependent part
@@ -450,7 +492,7 @@ private:
     std::shared_ptr<const PhysSpace> space_;
 
 
-
+    ValueFlags flags_;
    // BasisElemValueFlagsHandler flags_;
 
   //  BasisFaceValueFlagsHandler face_flags_;
@@ -478,12 +520,25 @@ void uniform_space_cache(const ValueFlags flag,
     auto space = Space::create(ref_space, push_forward);
     auto quad = QGauss<dim>(2);
     SpaceUniformQuadCache<Space> cache(space, flag, quad);
-    cache.print_info(out);
+   // cache.print_info(out);
 
 
     auto elem = space->begin();
+    //cache.init_element_cache(elem);
+    //elem->print_cache_info(out);
+
+  //  cache.fill_element_cache(elem);
+   // elem->print_cache_info(out);
+
+
+    auto end = space->end();
+
     cache.init_element_cache(elem);
-    elem->print_cache_info(out);
+    for (; elem != end; ++elem)
+    {
+        cache.fill_element_cache(elem);
+        elem->get_basis_values().print_info(out);
+    }
 
 
     OUTEND

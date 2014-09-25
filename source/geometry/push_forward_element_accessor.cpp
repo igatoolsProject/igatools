@@ -645,13 +645,13 @@ transform_basis_derivatives_at_points(
 template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
-print_info(LogStream &out,const VerbosityLevel verbosity_level) const
+print_info(LogStream &out) const
 {
-    using std::endl;
-    out << "PushForwardElementAccessor info" << endl;
+
+    out << "PushForwardElementAccessor info" << std::endl;
 
     out.push("\t");
-    out << "transformation type = " << int(transformation_type) << endl;
+    out << "transformation type = " << int(transformation_type) << std::endl;
     push_forward_->print_info(out);
     base_t::print_info(out);
 

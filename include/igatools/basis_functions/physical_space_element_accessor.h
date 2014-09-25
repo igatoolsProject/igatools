@@ -78,6 +78,7 @@ class PhysicalSpaceElementAccessor
 public :
     using parent_t = SpaceElementAccessor<PhysSpace>;
 
+    using parent_t::LocalCache;
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const PhysSpace;
