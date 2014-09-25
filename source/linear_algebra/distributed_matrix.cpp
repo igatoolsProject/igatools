@@ -278,14 +278,18 @@ print(LogStream &out) const
 {
     using std::endl;
 
-    const auto n_global_rows = this->get_num_rows();
+    const auto n_rows = this->get_num_rows();
+
 
     out << "-----------------------------" << endl;
     // Commented as different trilinos version show different information here
     //   out << *matrix_ ;
-
+    out << "Num. rows    = " << n_rows << endl;
+    out << "Num. cols    = " << this->get_num_columns() << endl;
+    out << "Num. entries = " << this->get_num_entries() << endl;
+    out << endl;
     out << "Row Index        Col Index        Value" << endl;
-    for (Index row_id = 0 ; row_id < n_global_rows ; ++row_id)
+    for (Index row_id = 0 ; row_id < n_rows ; ++row_id)
     {
         auto n_entries_row = matrix_->getNumEntriesInGlobalRow(row_id);
 
@@ -295,10 +299,10 @@ print(LogStream &out) const
 
         matrix_->getGlobalRowCopy(row_id,columns_id,values,n_entries_row);
 
-        for (uint col = 0 ; col < n_entries_row ; ++col)
+        for (const auto col_id : columns_id)
             out << row_id << "       "
-                << columns_id[col] << "        "
-                << values[col] << endl;
+                << col_id << "        "
+                << (*this)(row_id,col_id) << endl;
     }
     out << "-----------------------------" << endl;
 
@@ -320,6 +324,13 @@ Matrix<LAPack::trilinos>::
 get_num_columns() const -> Index
 {
     return matrix_->getGlobalNumCols() ;
+}
+
+auto
+Matrix<LAPack::trilinos>::
+get_num_entries() const -> Index
+{
+    return matrix_->getGlobalNumEntries() ;
 }
 
 

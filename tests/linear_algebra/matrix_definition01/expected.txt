@@ -1,5 +1,9 @@
 Domain dim: 2 Range dim: 1 Degree: 2
 -----------------------------
+Num. rows    = 16
+Num. cols    = 16
+Num. entries = 196
+
 Row Index        Col Index        Value
 0       0        2.00000
 0       1        0

@@ -93,9 +93,7 @@ int main(int argc, char *argv[])
 
     auto &sp_conn = space_manager.get_spaces_connection(bspline_space_rows,bspline_space_cols);
     sp_conn.add_dofs_connectivity(
-        dof_tools::get_dofs_connectvity_all_to_all(
-            set<Index>(dofs_view_row.begin(),dofs_view_row.end()),
-            set<Index>(dofs_view_col.begin(),dofs_view_col.end())));
+        dof_tools::build_dofs_connectvity_all_to_all(dofs_view_row,dofs_view_col));
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;

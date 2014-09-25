@@ -7,6 +7,10 @@ Number of dofs of columns space: 3
 
 A matrix
 -----------------------------
+Num. rows    = 4
+Num. cols    = 3
+Num. entries = 12
+
 Row Index        Col Index        Value
 0       4        2.00000
 0       5        0

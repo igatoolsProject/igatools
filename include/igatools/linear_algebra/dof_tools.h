@@ -59,10 +59,20 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 /**
  * This function returns the connectivity of two sets of dofs index, using an all-to-all
  * strategy, i.e. each dof in the set @p row_dofs is connected with all dofs in the set @p col_dofs.
+ *
+ * @note The type of the input variables @p row_dofs and @p col_dofs is <tt>Container</tt>,
+ * and in order to be a valid type, it must be a container of indices (of type <tt>Index</tt>)
+ * and provide a valid iterator range with the begin()/end()
+ * methods. Examples of valid types for <tt>Container</tt> are:
+ *   - <tt>std::vector<Index></tt>;
+ *   - <tt>std::set<Index></tt>;
+ *   - <tt>std::list<Index></tt>;
+ *   - etc.
  */
+template < class Container >
 inline
 std::map<Index,std::set<Index> >
-get_dofs_connectvity_all_to_all(const std::set<Index> &row_dofs,const std::set<Index> &col_dofs)
+build_dofs_connectvity_all_to_all(const Container &row_dofs,const Container &col_dofs)
 {
     std::map<Index,std::set<Index>> dofs_connectivity;
     for (const Index row_dof : row_dofs)

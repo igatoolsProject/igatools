@@ -216,6 +216,10 @@ public:
 
     /** Return the number of global columns of the matrix */
     Index get_num_columns() const ;
+
+    /** Return the number of entries in the matrix.*/
+    Index get_num_entries() const ;
+
     ///@}
 
     /** @name Matrix-by-vector multiplication */

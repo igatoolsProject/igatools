@@ -835,11 +835,11 @@ fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
 
         space_manager.get_spaces_connection(multiplier_space_,space).
         add_dofs_connectivity(
-            dof_tools::get_dofs_connectvity_all_to_all(multiplier_dofs,face_dofs));
+            dof_tools::build_dofs_connectvity_all_to_all(multiplier_dofs,face_dofs));
 
         space_manager.get_spaces_connection(space,multiplier_space_).
         add_dofs_connectivity(
-            dof_tools::get_dofs_connectvity_all_to_all(face_dofs,multiplier_dofs));
+            dof_tools::build_dofs_connectvity_all_to_all(face_dofs,multiplier_dofs));
     }//end block related to slave space
 
     //sorting the slave dofs before inserting them into a LinearConstraint object
