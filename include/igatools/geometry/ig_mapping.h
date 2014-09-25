@@ -191,8 +191,9 @@ private:
          * h-refinement algorithm (based on knot insertion) require them to be in
          * the projective space.
          */
-      //  typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
-
+#ifdef NURBS
+        typename NURBSSpace<dim,space_dim,1>::WeightsTable weights_pre_refinement_;
+#endif
 
         /** Control mesh (the coordinates are in the projective space). */
         ComponentTable<DynamicMultiArray<Real,dim>> ctrl_mesh_;

@@ -18,12 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifdef NURBS
 #include <igatools/basis_functions/nurbs_uniform_quad_cache.h>
 #include <igatools/utils/multi_array_utils.h>
 
 #include <algorithm>
 using std::shared_ptr;
+
+#ifdef NURBS
 
 IGA_NAMESPACE_OPEN
 
@@ -650,20 +651,9 @@ void
 NURBSUniformQuadCache<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-#if 0
-
-    out.begin_item("Grid Cache:");
-    base_t::print_info(out);
+    out.begin_item("BSpline Cache:");
+    bspline_uniform_quad_cache_.print_info(out);
     out.end_item();
-
-
-    out.begin_item("One dimensional splines cache:");
-    splines1d_.print_info(out);
-
-    out.end_item();
-#endif
 }
 
 IGA_NAMESPACE_CLOSE

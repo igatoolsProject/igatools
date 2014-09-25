@@ -22,9 +22,10 @@
 #define __NURBS_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/bspline_space.h>
 
 #ifdef NURBS
+#include <igatools/basis_functions/bspline_space.h>
+
 IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including the header

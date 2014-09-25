@@ -35,50 +35,50 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
-//template<class RefSpace>
-//typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
-//get_weights_from_ref_space(const RefSpace &ref_space,
-//                           EnableIf<RefSpace::has_weights> *hw = 0)
-//{
-//    //in the case of NURBSSpace get the weights used in the space
-//    return ref_space.get_weights();
-//}
-//
-//
-//
-//template<class RefSpace>
-//typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
-//get_weights_from_ref_space(const RefSpace &ref_space,
-//                           EnableIf<!RefSpace::has_weights> *hw = 0)
-//{
-//    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
-//    typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
-//    weights(ref_space.get_components_map());
-//
-//
-//    const auto &basis_tensor_size_table = ref_space.get_num_basis_table();
-//
-//    for (Index comp_id : weights.get_active_components_id())
-//    {
-//        auto &weights_component = weights[comp_id];
-//
-//        weights_component.resize(basis_tensor_size_table[comp_id]);
-//
-//        for (auto &w : weights_component)
-//            w = 1.0;
-//    }
-//
-//
-//    return weights;
-//}
+template<class RefSpace>
+typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+get_weights_from_ref_space(const RefSpace &ref_space,
+                           EnableIf<RefSpace::has_weights> *hw = 0)
+{
+    //in the case of NURBSSpace get the weights used in the space
+    return ref_space.get_weights();
+}
 
 
-//template<int dim, int range, int rank>
-//const BSplineSpace<dim,range,rank> &
-//get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
-//{
-//    return *nurbs_space.get_spline_space();
-//}
+
+template<class RefSpace>
+typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+get_weights_from_ref_space(const RefSpace &ref_space,
+                           EnableIf<!RefSpace::has_weights> *hw = 0)
+{
+    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
+    typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
+    weights(ref_space.get_components_map());
+
+
+    const auto &basis_tensor_size_table = ref_space.get_num_basis_table();
+
+    for (Index comp_id : weights.get_active_components_id())
+    {
+        auto &weights_component = weights[comp_id];
+
+        weights_component.resize(basis_tensor_size_table[comp_id]);
+
+        for (auto &w : weights_component)
+            w = 1.0;
+    }
+
+
+    return weights;
+}
+
+
+template<int dim, int range, int rank>
+const BSplineSpace<dim,range,rank> &
+get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
+{
+    return *nurbs_space.get_spline_space();
+}
 
 template<int dim, int range, int rank>
 const BSplineSpace<dim,range,rank> &
@@ -118,9 +118,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     if (RefSpace::has_weights)
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-#if NURBS_IS_ACTIVE
+#ifdef NURBS
         //----------------------------------
         // if RefSpace is NURBSSpace
         // save the weights in order to be used in the h-refinement algorithm
@@ -482,8 +480,9 @@ set_control_points(const vector<Real> &control_points)
 
 
     Assert(data_->ref_space_ != nullptr, ExcNullPtr());
-    //const auto weights = get_weights_from_ref_space(*(data_->ref_space_));
-
+#ifdef NURBS
+    const auto weights = get_weights_from_ref_space(*(data_->ref_space_));
+#endif
 
     // Updating of the euclidean (in case of BSpline) or projective (in case of NURBS)
     // coordinates of the control_points .
@@ -497,15 +496,15 @@ set_control_points(const vector<Real> &control_points)
 
         const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
 
-        // const auto &weights_after_refinement_comp = weights[comp_id];
+#ifdef NURBS
+        const auto &weights_after_refinement_comp = weights[comp_id];
+#endif
 
         for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id)
         {
             if (RefSpace::has_weights)
             {
-                Assert(false,ExcNotImplemented());
-                AssertThrow(false,ExcNotImplemented());
-#if NURBS_IS_ACTIVE
+#ifdef NURBS
                 // If NURBS, transform the control points from euclidean to
                 // projective coordinates.
                 const Real &w = weights_after_refinement_comp[loc_id];
@@ -667,9 +666,7 @@ refine_h_control_mesh(
 
     if (RefSpace::has_weights)
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-#if NURBS_IS_ACTIVE
+#ifdef NURBS
         const auto weights_after_refinement = get_weights_from_ref_space(*(data_->ref_space_));
 
         Index ctrl_pt_id = 0;

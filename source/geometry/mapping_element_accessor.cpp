@@ -54,7 +54,7 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
 
 
     // TODO (pauletti, Sep 12, 2014): this is not good, try to fix
-#if NURBS
+#ifdef NURBS
     using NURBSSp = NURBSSpace<dim,dim+codim,1>;
     using NURBSMapping = IgMapping<NURBSSp>;
     if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
@@ -96,7 +96,7 @@ MappingElementAccessor(const shared_ptr<ContainerType> mapping,
 
 
     // TODO (pauletti, Sep 12, 2014): bad code, try to fix
-#if 0
+#ifdef NURBS
     using NURBSSp = NURBSSpace<dim,dim+codim,1>;
     using NURBSMapping = IgMapping<NURBSSp>;
     if (dynamic_pointer_cast<const NURBSMapping>(mapping_))
