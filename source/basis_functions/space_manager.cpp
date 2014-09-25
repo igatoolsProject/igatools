@@ -664,7 +664,7 @@ get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
     Assert(!spaces_connections_.empty(),ExcEmptyObject());
     for (const auto &sp_conn : spaces_connections_)
     {
-        if (sp_conn.is_unique_space())
+        if (sp_conn.is_unique_space() && sp_conn.use_dofs_connectivity_from_space())
         {
             // adding the contribution of the dofs defined within the space itself-- begin
             const auto &space = sp_conn.get_space_row();

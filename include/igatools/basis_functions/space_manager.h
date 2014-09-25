@@ -738,6 +738,7 @@ private:
             return extra_dofs_connectivity_;
         }
 
+
     private:
         SpaceInfoPtr space_row_;
         SpaceInfoPtr space_col_;
@@ -745,6 +746,12 @@ private:
         bool use_dofs_connectivity_from_space_;
 
         DofsConnectivity extra_dofs_connectivity_;
+
+    public:
+        bool use_dofs_connectivity_from_space() const
+        {
+            return use_dofs_connectivity_from_space_;
+        }
 
     };
 
