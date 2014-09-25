@@ -218,12 +218,16 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
         ValueFlags::map_value|
         ValueFlags::map_gradient|
         ValueFlags::map_hessian|
+        ValueFlags::map_inv_gradient|
+        ValueFlags::map_inv_hessian|
         ValueFlags::measure|
         ValueFlags::w_measure|
         ValueFlags::face_point|
         ValueFlags::map_face_value|
         ValueFlags::map_face_gradient|
         ValueFlags::map_face_hessian|
+        ValueFlags::map_face_inv_gradient|
+        ValueFlags::map_face_inv_hessian|
         ValueFlags::face_w_measure|
         ValueFlags::face_normal;
 
@@ -360,8 +364,18 @@ fill_cache(const TopologyId<dim> &topology_id)
 
     if (cache.flags_handler_.fill_divergences())
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+        Assert(cache.flags_handler_.gradients_filled(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
+        auto D1  = cache.D1phi_.begin();
+        auto div = cache.div_phi_.begin();
+        auto end = cache.D1phi_.end();
+        for (; D1 != end; ++D1, ++div)
+            *div = trace(*D1);
+
+        cache.flags_handler_.set_divergences_filled(true);
+        //Assert(false,ExcNotImplemented());
+        //AssertThrow(false,ExcNotImplemented());
     }
 
     cache.set_filled(true);
@@ -380,7 +394,7 @@ fill_face_cache(const Index face_id)
 template< class PhysSpace >
 auto
 PhysicalSpaceElementAccessor<PhysSpace>::
-get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Point &
+get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const PhysPoint &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
     return (PfElemAccessor::get_map_values(topology_id))[qp];
@@ -541,6 +555,43 @@ PhysicalSpaceElementAccessor<PhysSpace>::
 get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
     return this->space_;
+}
+
+
+
+template< class PhysSpace >
+bool
+PhysicalSpaceElementAccessor<PhysSpace>::
+jump(const TensorIndex<dim> &increment)
+{
+    const bool jump_grid_accessor = parent_t::jump(increment);
+
+    const bool jump_push_fwd_accessor = PfElemAccessor::jump(increment);
+
+    const bool jump_ref_space_accessor = ref_space_element_accessor_.jump(increment);
+
+    return jump_grid_accessor && jump_push_fwd_accessor && jump_ref_space_accessor;
+}
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+move_to(const Index flat_index)
+{
+    parent_t::move_to(flat_index);
+    PfElemAccessor::move_to(flat_index);
+    ref_space_element_accessor_.move_to(flat_index);
+}
+
+
+template< class PhysSpace >
+void
+PhysicalSpaceElementAccessor<PhysSpace>::
+move_to(const TensorIndex<dim> &tensor_index)
+{
+    parent_t::move_to(tensor_index);
+    PfElemAccessor::move_to(tensor_index);
+    ref_space_element_accessor_.move_to(tensor_index);
 }
 
 

@@ -40,72 +40,116 @@ IGA_NAMESPACE_OPEN
 SpaceManager::
 SpaceManager()
     :
-    is_space_insertion_open_(false),
-    num_unique_dofs_(0)
+    is_spaces_insertion_open_(false),
+    is_spaces_connectivity_open_(false),
+    space_dofs_offset_(0)
 {}
 
 
 
 void
 SpaceManager::
-space_insertion_open()
+spaces_insertion_open()
 {
-    is_space_insertion_open_ = true;
+    is_spaces_insertion_open_ = true;
 }
 
 
 void
 SpaceManager::
-space_insertion_close(const bool automatic_dofs_renumbering)
+spaces_insertion_close(const bool automatic_dofs_renumbering)
 {
-    Assert(is_space_insertion_open_ == true,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == true,ExcInvalidState());
+
+    is_spaces_insertion_open_ = false;
 
     Assert(!spaces_info_.empty(),ExcEmptyObject());
 
 
-    //--------------------------------------------------------------------------
-    vector<DofsComponentView> dofs_components_view;
+    if (automatic_dofs_renumbering)
+        this->perform_space_dofs_renumbering();
 
-    Index offset = 0;
-    for (auto &space_info_map_entry : spaces_info_)
+    this->update_dofs_view();
+}
+
+void
+SpaceManager::
+perform_space_dofs_renumbering()
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+
+    auto space_info_it = spaces_with_original_dofs_.begin();
+    while (space_info_it != spaces_with_original_dofs_.end())
     {
-        auto &space_info = space_info_map_entry.second;
+        auto space_info = (*space_info_it);
 
-        if (automatic_dofs_renumbering)
-        {
-            space_info.add_dofs_offset(offset);
+        space_info->add_dofs_offset(space_dofs_offset_);
 
-            offset += space_info.get_num_dofs();
-        }
+        space_dofs_offset_ = space_info->get_max_dofs_id() + 1;
 
-        auto view_ranges = space_info.get_dofs_view().begin().get_ranges();
-        dofs_components_view.insert(dofs_components_view.end(),view_ranges.begin(),view_ranges.end());
+        spaces_with_renumbered_dofs_.push_back(space_info);
+
+        //erase the renumbered space and move the iterator to the next space to renumber
+        space_info_it = spaces_with_original_dofs_.erase(space_info_it);
     }
-    //--------------------------------------------------------------------------
-
-    dofs_view_ = DofsView(
-                     DofsIterator(dofs_components_view,0),
-                     DofsIterator(dofs_components_view,IteratorState::pass_the_end));
-
-    is_space_insertion_open_ = false;
-
-
-    num_unique_dofs_ = this->count_unique_dofs();
 }
 
 
+void
 SpaceManager::
-SpaceInfo::
-SpaceInfo()
-    :
-    num_dofs_(0),
-    min_dofs_id_(-1),
-    max_dofs_id_(-1)
-{}
+update_dofs_view()
+{
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
+
+    vector<DofsComponentView> dofs_components_view;
+    for (auto &space_info_map_entry : spaces_info_)
+    {
+        auto view_ranges = space_info_map_entry.second->get_dofs_view().begin().get_ranges();
+        dofs_components_view.insert(
+            dofs_components_view.end(),
+            view_ranges.begin(),
+            view_ranges.end());
+    }
+    dofs_view_ = DofsView(
+                     DofsIterator(dofs_components_view,0),
+                     DofsIterator(dofs_components_view,IteratorState::pass_the_end));
+}
+
+void
+SpaceManager::
+spaces_connectivity_open()
+{
+    Assert(is_spaces_connectivity_open_ == false,ExcInvalidState());
+    is_spaces_connectivity_open_ = true;
+}
+
+void
+SpaceManager::
+spaces_connectivity_close()
+{
+    Assert(is_spaces_connectivity_open_ == true,ExcInvalidState());
+    is_spaces_connectivity_open_ = false;
+}
+
+
+bool
+SpaceManager::
+is_spaces_connectivity_open() const
+{
+    return is_spaces_connectivity_open_;
+}
+
+
 
 SpaceManager::
 SpaceInfo::
 SpaceInfo(const SpacePtrVariant &space,
+          const Index id,
+          const int dim,
+          const int codim,
+          const int space_dim,
+          const int range,
+          const int rank,
           const Index num_dofs,
           const Index min_dofs_id,
           const Index max_dofs_id,
@@ -113,12 +157,24 @@ SpaceInfo(const SpacePtrVariant &space,
           const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
     :
     space_(space),
+    id_(id),
+    dim_(dim),
+    codim_(codim),
+    space_dim_(space_dim),
+    range_(range),
+    rank_(rank),
     num_dofs_(num_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view),
     elements_dofs_view_(elements_dofs_view)
 {
+    Assert(dim_ >= 0,ExcLowerRange(dim_,0));
+    Assert(codim_ >= 0,ExcLowerRange(codim_,0));
+    Assert(space_dim_ > 0,ExcLowerRange(space_dim_,1));
+    Assert(range_ > 0,ExcLowerRange(range_,1));
+    Assert(rank_ > 0,ExcLowerRange(rank_,1));
+
     Assert(num_dofs_ > 0,ExcEmptyObject());
     Assert(elements_dofs_view_ != nullptr,ExcNullPtr());
     Assert(!elements_dofs_view_->empty(), ExcEmptyObject());
@@ -186,12 +242,85 @@ get_dofs_view() const -> const DofsView &
     return dofs_view_;
 }
 
+Index
+SpaceManager::
+SpaceInfo::
+get_id() const
+{
+    return id_;
+}
+
+bool
+SpaceManager::
+SpaceInfo::
+operator==(const SpaceInfo &sp) const
+{
+    return (id_ == sp.id_);
+}
+
+
+
+
+SpaceManager::
+SpacesConnection::
+SpacesConnection(const SpaceInfoPtr &space,const bool use_dofs_connectivity_from_space)
+    :
+    SpacesConnection(space,space)
+{
+    use_dofs_connectivity_from_space_ = use_dofs_connectivity_from_space;
+}
+
+SpaceManager::
+SpacesConnection::
+SpacesConnection(const SpaceInfoPtr &space_row,const SpaceInfoPtr &space_col)
+    :
+    space_row_(space_row),
+    space_col_(space_col),
+    use_dofs_connectivity_from_space_(false)
+{}
+
+
+bool
+SpaceManager::
+SpacesConnection::
+operator==(const SpacesConnection &conn) const
+{
+    return (space_row_ == conn.space_row_) && (space_col_ == conn.space_col_);
+}
+
+
+bool
+SpaceManager::
+SpacesConnection::
+is_unique_space() const
+{
+    return (space_row_ == space_col_);
+}
+
+
+
+void
+SpaceManager::
+SpacesConnection::
+add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
+{
+    for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
+    {
+        const auto row_dof = dofs_connectivity_map_entry.first;
+        const auto &col_dofs = dofs_connectivity_map_entry.second;
+
+        extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
+    }
+}
+
+
+
 
 auto
 SpaceManager::
 get_dofs_view() -> DofsView &
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
 //    Assert(dofs_view_ != nullptr, ExcNullPtr())
     return dofs_view_;
@@ -202,20 +331,9 @@ auto
 SpaceManager::
 get_dofs_view() const -> DofsConstView
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
-//    Assert(dofs_view_ != nullptr, ExcNullPtr())
     return DofsConstView(dofs_view_);
-}
-
-
-
-Index
-SpaceManager::
-get_num_dofs() const
-{
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
-    return num_unique_dofs_;
 }
 
 
@@ -240,11 +358,11 @@ Index
 SpaceManager::
 get_global_dof(const int space_id, const Index local_dof) const
 {
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
 
     Assert(space_id >= 0,ExcLowerRange(space_id,0));
 
-    return spaces_info_.at(space_id).get_dofs_view()[local_dof];
+    return spaces_info_.at(space_id)->get_dofs_view()[local_dof];
 }
 
 
@@ -266,9 +384,9 @@ get_global_dofs(const int space_id, const vector<Index> &local_dofs) const
 
 bool
 SpaceManager::
-is_space_insertion_open() const
+is_spaces_insertion_open() const
 {
-    return is_space_insertion_open_;
+    return is_spaces_insertion_open_;
 }
 
 
@@ -283,7 +401,7 @@ get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
 
 auto
 SpaceManager::
-get_spaces_info() const -> const std::map<int,SpaceInfo> &
+get_spaces_info() const -> const std::map<int,shared_ptr<SpaceInfo>> &
 {
     return spaces_info_;
 }
@@ -345,13 +463,14 @@ linear_constraints_close()
 
 void
 SpaceManager::
-add_linear_constraint(const LinearConstraintType &type,
+add_linear_constraint(const Index global_dof_id,
+                      const LinearConstraintType &type,
                       const vector<Index> &dofs, const vector<Real> &coeffs, const Real rhs)
 {
     Assert(are_linear_constraints_open_ == true,
            ExcMessage("Linear constraints already closed."));
 
-    linear_constraints_.emplace(type,LC::create(type,dofs,coeffs,rhs));
+    linear_constraints_.emplace(type,LC::create(global_dof_id,type,dofs,coeffs,rhs));
 }
 
 
@@ -452,26 +571,12 @@ remove_equality_constraints_redundancies()
 
 
 
-
-Index
-SpaceManager::
-count_unique_dofs() const
-{
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
-
-//    const auto &dofs = this->get_dofs_view();
-
-    set<Index> unique_dofs(dofs_view_.begin(),dofs_view_.end());
-
-    return unique_dofs.size();
-}
-
 vector<std::shared_ptr<LinearConstraint> >
 SpaceManager::
 verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
 {
-    Assert(dof_values.size() == this->get_num_dofs(),
-           ExcDimensionMismatch(dof_values.size(),this->get_num_dofs()));
+    Assert(dof_values.size() == this->get_num_col_dofs(),
+           ExcDimensionMismatch(dof_values.size(),this->get_num_col_dofs()));
 
     vector<shared_ptr<LinearConstraint> > failed_linear_constraints;
     for (const auto &lc_pair : linear_constraints_)
@@ -484,6 +589,88 @@ verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
     return failed_linear_constraints;
 }
 
+
+
+std::set<Index>
+SpaceManager::
+get_row_dofs() const
+{
+    std::set<Index> row_dofs;
+
+    for (const auto &sp_conn : spaces_connections_)
+    {
+        const auto row_dofs_current_space = sp_conn.get_row_dofs();
+        row_dofs.insert(row_dofs_current_space.begin(),row_dofs_current_space.end());
+    }
+    return row_dofs;
+}
+
+std::set<Index>
+SpaceManager::
+get_col_dofs() const
+{
+    std::set<Index> col_dofs;
+
+    for (const auto &sp_conn : spaces_connections_)
+    {
+        const auto col_dofs_current_space = sp_conn.get_col_dofs();
+        col_dofs.insert(col_dofs_current_space.begin(),col_dofs_current_space.end());
+    }
+    return col_dofs;
+}
+
+Index
+SpaceManager::
+get_num_row_dofs() const
+{
+    return this->get_row_dofs().size();
+}
+
+Index
+SpaceManager::
+get_num_col_dofs() const
+{
+    return this->get_col_dofs().size();
+}
+
+
+
+auto
+SpaceManager::
+get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
+{
+    auto sparsity_pattern = shared_ptr<DofsConnectivity>(new DofsConnectivity);
+
+
+    Assert(!spaces_connections_.empty(),ExcEmptyObject());
+    for (const auto &sp_conn : spaces_connections_)
+    {
+        if (sp_conn.is_unique_space())
+        {
+            // adding the contribution of the dofs defined within the space itself-- begin
+            const auto &space = sp_conn.get_space_row();
+            for (const auto element_dofs : space.get_elements_dofs_view())
+                for (const auto &dof : element_dofs.second)
+                    (*sparsity_pattern)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+            // adding the contribution of the dofs defined within the space -- end
+        }
+
+
+
+        // adding the extra contribution to the connectivity defined within the spaces connection -- begin
+        const auto &extra_dofs_connectivity = sp_conn.get_extra_dofs_connectivity();
+        for (const auto &connectivity_map_entry : extra_dofs_connectivity)
+        {
+            const auto   row_id = connectivity_map_entry.first;
+            const auto &cols_id = connectivity_map_entry.second;
+
+            (*sparsity_pattern)[row_id].insert(cols_id.begin(),cols_id.end());
+        }
+        // adding the extra contribution to the connectivity defined within the spaces connection -- end
+    }
+
+    return sparsity_pattern;
+}
 
 
 
@@ -500,7 +687,7 @@ print_info(LogStream &out) const
     out.push(tab);
 
 
-    Assert(is_space_insertion_open_ == false,ExcInvalidState());
+    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
     Assert(are_equality_constraints_open_ == false,ExcInvalidState());
     Assert(are_linear_constraints_open_ == false,ExcInvalidState());
 
@@ -517,10 +704,10 @@ print_info(LogStream &out) const
     {
 
         out << "Space["<< i <<"]:   ID=" << space_info.first
-            << "   n_dofs=" << space_info.second.get_num_dofs()
+            << "   n_dofs=" << space_info.second->get_num_dofs()
             << "   DOFs=[ ";
 
-        const DofsView &dofs_space_view = space_info.second.get_dofs_view();
+        const DofsView &dofs_space_view = space_info.second->get_dofs_view();
         for (const Index &dof : dofs_space_view)
             out << dof << " ";
         out << "]" << endl;
@@ -529,7 +716,8 @@ print_info(LogStream &out) const
         //*/
     }
 
-    out << "Num. unique dofs          = " << this->get_num_dofs() << endl;
+    out << "Num. row   dofs = " << this->get_num_row_dofs() << endl;
+    out << "Num. colum dofs = " << this->get_num_col_dofs() << endl;
 
 
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;

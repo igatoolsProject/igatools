@@ -44,11 +44,12 @@ for acc in accessors:
 #     for s in fun_list:
 #         f.write(s)
 
-    function = ('template ValueTable< Conditional< order==0,'+
+    fun_2 = ('template ValueTable< Conditional< order==0,'+
                acc[0] + '::Value,' +
                acc[0] + '::Derivative<order> > > ' + 
                acc[0] + '::evaluate_basis_derivatives_at_points<order>' +
                '(const ValueVector<Point>&) const; \n')
-    fun_list = [function.replace('order', str(d)) for d in inst.deriv_order]
-    for s in fun_list:
+    fun_2_list = [fun_2.replace('order', str(d)) for d in inst.deriv_order]
+    for s in fun_2_list:
         f.write(s)
+

@@ -116,6 +116,40 @@ public:
         DenseMatrix &operator_gradu_gradv) const override final;
 
 
+    /**
+     * This function evaluates the local (i.e. element-based) vector \f$ f_e \f$
+     * for witch its entries are
+     * \f[
+          (f_e)_{i} = \int_{\Omega_e} \phi^{e,\text{test}}_i
+          f(x)  \; d \Omega.
+       \f]
+     */
+    virtual void eval_operator_rhs_v(
+        const ElemTest &elem_test,
+        const ValueVector<typename PhysSpaceTrial::Value> &f,
+        DenseVector &operator_rhs_v) const override final;
+
+
+    /**
+     * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
+     * for witch its entries are
+     * \f[
+          (A_e)_{ij} = \int_{\Omega_e} \sum_{s=1}^{sp\_dim}
+          \phi^{e,\text{test}}_i
+          \, \beta_{s}(x) \,
+          \bigl( \nabla \phi^{e,\text{trial}}_j \bigr)_s \; d \Omega
+          = \int_{\Omega_e}
+          \phi^{e,\text{test}}_i
+          \, \vec{\beta}(x) \, \cdot \,
+          \nabla \phi^{e,\text{trial}}_j \; d \Omega .
+       \f]
+     */
+    virtual void eval_operator_gradu_v(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+        DenseMatrix &operator_gradu_v) const override final;
+
 private:
 
     /**
@@ -1151,7 +1185,6 @@ eval_operator_u_v(
     TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
-    const Size n_basis_test_flat = n_basis_elem_test.flat_size();
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
            ExcDimensionMismatch(n_basis_elem_test.flat_size(),elem_test.get_num_basis()));
 
@@ -1165,7 +1198,6 @@ eval_operator_u_v(
     TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_trial(degree_trial+1);
 
-    const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
            ExcDimensionMismatch(n_basis_elem_trial.flat_size(),elem_trial.get_num_basis()));
 
@@ -1185,30 +1217,11 @@ eval_operator_u_v(
         const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
 
         const auto &quad_points = ref_elem_accessor.get_quad_points();
-        const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
+        const auto phi_1D_test_table =
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
 
-        for (int i = 0 ; i < dim ; ++i)
-            phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
-
-        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_test_flat ; ++flat_fn_id)
-        {
-            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_test);
-
-            const auto &bspline1D_values =
-                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
-
-            for (int i = 0 ; i < dim ; ++i)
-            {
-                auto phi_1D_ifn = phi_1D_test[i].get_function_view(tensor_fn_id[i]);
-
-                const auto &bsp_val = bspline1D_values[i];
-
-                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-                    phi_1D_ifn[jpt] = bsp_val(jpt);
-            }
-        }
+        phi_1D_test = phi_1D_test_table[0]; // only valid for scalar spaces
     }
     // getting the 1D values for the test space -- end
     //--------------------------------------------------------------------------
@@ -1221,30 +1234,11 @@ eval_operator_u_v(
         const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
 
         const auto &quad_points = ref_elem_accessor.get_quad_points();
-        const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
+        const auto phi_1D_trial_table =
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
 
-        for (int i = 0 ; i < dim ; ++i)
-            phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
-
-        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_trial_flat ; ++flat_fn_id)
-        {
-            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_trial);
-
-            const auto &bspline1D_values =
-                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
-
-            for (int i = 0 ; i < dim ; ++i)
-            {
-                auto phi_1D_ifn =  phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
-
-                const auto &bsp_val = bspline1D_values[i];
-
-                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-                    phi_1D_ifn[jpt] = bsp_val(jpt);
-            }
-        }
+        phi_1D_trial = phi_1D_trial_table[0]; // only valid for scalar spaces
     }
     // getting the 1D values for the trial space -- end
     //--------------------------------------------------------------------------
@@ -1428,7 +1422,6 @@ eval_operator_gradu_gradv(
     TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
-    const Size n_basis_test_flat = n_basis_elem_test.flat_size();
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
            ExcDimensionMismatch(n_basis_elem_test.flat_size(),elem_test.get_num_basis()));
 
@@ -1442,7 +1435,6 @@ eval_operator_gradu_gradv(
     TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_trial(degree_trial + 1);
 
-    const Size n_basis_trial_flat = n_basis_elem_trial.flat_size();
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
            ExcDimensionMismatch(n_basis_elem_trial.flat_size(),elem_trial.get_num_basis()));
 
@@ -1463,40 +1455,15 @@ eval_operator_gradu_gradv(
         const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
 
         const auto &quad_points = ref_elem_accessor.get_quad_points();
-        const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
+        const auto phi_1D_test_table =
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
 
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
-            grad_phi_1D_test[i].resize(n_basis_elem_test[i],n_quad_points[i]);
-        }
+        const auto grad_phi_1D_test_table =
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(1,quad_points);
 
-        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_test_flat ; ++flat_fn_id)
-        {
-            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_test);
-
-            const auto &bspline1D_values =
-                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
-            const auto &bspline1D_gradients =
-                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(1);
-
-            for (int i = 0 ; i < dim ; ++i)
-            {
-                auto      phi_1D_ifn =      phi_1D_test[i].get_function_view(tensor_fn_id[i]);
-                auto grad_phi_1D_ifn = grad_phi_1D_test[i].get_function_view(tensor_fn_id[i]);
-
-                const auto &bsp_val  = bspline1D_values[i];
-                const auto &bsp_grad = bspline1D_gradients[i];
-
-                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-                {
-                    phi_1D_ifn[jpt] = bsp_val(jpt);
-                    grad_phi_1D_ifn[jpt] = bsp_grad(jpt);
-                }
-            }
-        }
+        phi_1D_test = phi_1D_test_table[0]; // only valid for scalar spaces
+        grad_phi_1D_test = grad_phi_1D_test_table[0];  // only valid for scalar spaces
     }
     // getting the 1D values for the test space -- end
     //--------------------------------------------------------------------------
@@ -1510,40 +1477,15 @@ eval_operator_gradu_gradv(
         const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
 
         const auto &quad_points = ref_elem_accessor.get_quad_points();
-        const auto n_quad_points = quad_points.get_num_points_direction();
 
-        const auto &bspline_scalar_evaluators = ref_elem_accessor.get_scalar_evaluators()[comp];
+        const auto phi_1D_trial_table =
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
 
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
-            grad_phi_1D_trial[i].resize(n_basis_elem_trial[i],n_quad_points[i]);
-        }
+        const auto grad_phi_1D_trial_table =
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(1,quad_points);
 
-        for (Index flat_fn_id = 0 ; flat_fn_id < n_basis_trial_flat ; ++flat_fn_id)
-        {
-            const TensorIndex<dim> tensor_fn_id = MultiArrayUtils<dim>::flat_to_tensor_index(flat_fn_id,weight_basis_trial);
-
-            const auto &bspline1D_values =
-                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(0);
-            const auto &bspline1D_gradients =
-                bspline_scalar_evaluators(tensor_fn_id)->get_derivative_components_view(1);
-
-            for (int i = 0 ; i < dim ; ++i)
-            {
-                auto      phi_1D_ifn =      phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
-                auto grad_phi_1D_ifn = grad_phi_1D_trial[i].get_function_view(tensor_fn_id[i]);
-
-                const auto &bsp_val  = bspline1D_values[i];
-                const auto &bsp_grad = bspline1D_gradients[i];
-
-                for (int jpt = 0 ; jpt < n_quad_points[i] ; ++jpt)
-                {
-                    phi_1D_ifn[jpt] = bsp_val(jpt);
-                    grad_phi_1D_ifn[jpt] = bsp_grad(jpt);
-                }
-            }
-        }
+        phi_1D_trial = phi_1D_trial_table[0]; // only valid for scalar spaces
+        grad_phi_1D_trial = grad_phi_1D_trial_table[0];  // only valid for scalar spaces
     }
     // getting the 1D values for the trial space -- end
     //--------------------------------------------------------------------------
@@ -1767,7 +1709,57 @@ eval_operator_gradu_gradv(
 }
 
 
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_rhs_v(
+    const ElemTest &elem_test,
+    const ValueVector<typename PhysSpaceTrial::Value> &f,
+    DenseVector &operator_rhs_v) const
+{
+    //TODO: (martinelli 22 Sep 2014): this function is not implemented using sum_factorization. Fix it!
+    const Size n_basis_test  = elem_test .get_num_basis();
 
+    const auto &phi_test  = elem_test.get_basis_values();
+    const auto &w_meas  = elem_test.get_w_measures();
+
+
+    Assert(operator_rhs_v.size() == n_basis_test,
+           ExcDimensionMismatch(operator_rhs_v.size(),n_basis_test));
+
+
+    const Size n_qp = f.get_num_points();
+    Assert(n_qp == phi_test.get_num_points(),ExcDimensionMismatch(n_qp,phi_test.get_num_points()));
+
+    vector<Real> f_times_w_meas(n_qp);
+    for (int qp = 0; qp < n_qp; ++qp)
+        f_times_w_meas[qp] = f[qp](0) * w_meas[qp];
+
+
+    operator_rhs_v.clear();
+    for (int i = 0; i < n_basis_test; ++i)
+    {
+        const auto phi_i = phi_test.get_function_view(i);
+        for (int qp = 0; qp < n_qp; ++qp)
+            operator_rhs_v(i) += phi_i[qp](0) * f_times_w_meas[qp];
+    }
+}
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_gradu_v(
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+    DenseMatrix &operator_gradu_v) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
 
 
 

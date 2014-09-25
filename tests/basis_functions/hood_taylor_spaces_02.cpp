@@ -107,6 +107,12 @@ void StokesProblem<dim>::assemble_Bt()
         out << loc_mat << endl;
     }
     Bt_->fill_complete();
+
+    out << endl;
+    out << "B^t matrix" << endl;
+    Bt_->print(out);
+    out << endl;
+
 }
 
 template <int dim>
@@ -145,11 +151,29 @@ StokesProblem(const int deg, const int n_knots)
     const typename VelSpace::DegreeTable vel_deg(TensorIndex<dim>(deg+1));
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    pre_space_ = PreSpace::create(pre_deg, grid, pres_m);
 
     vel_space_ = VelSpace::create(vel_deg, grid,vel_m);
+    const auto dofs_view_vel = vel_space_->get_dof_distribution_global().get_dofs_view();
 
-    const SparsityPattern sparsity_pattern(*vel_space_->get_space_manager(),*pre_space_->get_space_manager());
+    pre_space_ = PreSpace::create(pre_deg, grid, pres_m);
+    const auto dofs_view_pre = pre_space_->get_dof_distribution_global().get_dofs_view();
+
+
+    SpaceManager space_manager;
+    space_manager.spaces_insertion_open();
+    space_manager.add_space(vel_space_);
+    space_manager.add_space(pre_space_);
+    space_manager.spaces_insertion_close();
+
+    space_manager.spaces_connectivity_open();
+    space_manager.add_spaces_connection(vel_space_,pre_space_);
+    space_manager.spaces_connectivity_close();
+
+    auto &sp_conn = space_manager.get_spaces_connection(vel_space_,pre_space_);
+    sp_conn.add_dofs_connectivity(
+        dof_tools::build_dofs_connectvity_all_to_all(dofs_view_vel,dofs_view_pre));
+
+    const SparsityPattern sparsity_pattern(space_manager);
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
@@ -158,6 +182,8 @@ StokesProblem(const int deg, const int n_knots)
 #endif
 
     Bt_ = Matrix<la_pack>::create(sparsity_pattern);
+
+
 }
 
 

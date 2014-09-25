@@ -77,6 +77,10 @@ public:
 
     static const std::array<int, dim> dims;
 
+    /**
+     * Type alias for the boundary conditions on each face of each scalar component of the space.
+     */
+    using BCTable = typename spline_space_t::BCTable;
 
 
 public:
@@ -345,6 +349,46 @@ public:
      */
     void print_info(LogStream &out) const;
 
+
+    /**
+     * Returns a const-reference to the table containing
+     * the boundary conditions on each face of each scalar component of the space.
+     *
+     * For example, with the code
+     * @code{.cpp}
+       const auto &bc_table = space.get_boundary_conditions_table();
+
+       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
+       @endcode
+     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
+     * on the face 3 of the space component 1.
+     *
+     * @sa BoundaryConditionType
+     */
+    const BCTable &get_boundary_conditions_table() const
+    {
+        return sp_space_->get_boundary_conditions_table();
+    }
+
+    /**
+     * Returns a reference to the table containing
+     * the boundary conditions on each face of each scalar component of the space.
+     *
+     * For example, with the code
+     * @code{.cpp}
+       auto &bc_table = space.get_boundary_conditions_table();
+
+       bc_table[1][3] = BoundaryConditionType::DirichletHomogeneous; // setting Dirichlet homogeneous boundary condition on face 3 of space's component 1
+       @endcode
+     * we assign the value <tt>BoundaryConditionType::DirichletHomogeneous</tt> to the
+     * boundary condition on the face 3 of the space component 1.
+     *
+     * @sa BoundaryConditionType
+     */
+    BCTable &get_boundary_conditions_table()
+    {
+        return sp_space_->get_boundary_conditions_table();
+    }
 
 private:
     /**

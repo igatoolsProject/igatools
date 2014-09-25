@@ -1,6 +1,10 @@
 ==========================================================
 Dim=1         space_deg=3
 -----------------------------
+Num. rows    = 5
+Num. cols    = 5
+Num. entries = 23
+
 Row Index        Col Index        Value
 0       0        7.20000
 0       1        0
@@ -31,6 +35,10 @@ Row Index        Col Index        Value
 ==========================================================
 Dim=2         space_deg=3
 -----------------------------
+Num. rows    = 25
+Num. cols    = 25
+Num. entries = 529
+
 Row Index        Col Index        Value
 0       0        6.20143
 0       1        0
@@ -567,6 +575,10 @@ Row Index        Col Index        Value
 ==========================================================
 Dim=3         space_deg=3
 -----------------------------
+Num. rows    = 125
+Num. cols    = 125
+Num. entries = 12167
+
 Row Index        Col Index        Value
 0       0        0.221579
 0       1        0
@@ -12741,6 +12753,10 @@ Row Index        Col Index        Value
 ==========================================================
 Dim=1         space_deg=3
 -----------------------------
+Num. rows    = 5
+Num. cols    = 5
+Num. entries = 23
+
 Row Index        Col Index        Value
 0       0        7.20000
 0       1        0
@@ -12771,6 +12787,10 @@ Row Index        Col Index        Value
 ==========================================================
 Dim=2         space_deg=3
 -----------------------------
+Num. rows    = 25
+Num. cols    = 25
+Num. entries = 529
+
 Row Index        Col Index        Value
 0       0        6.20143
 0       1        0
@@ -13307,6 +13327,10 @@ Row Index        Col Index        Value
 ==========================================================
 Dim=3         space_deg=3
 -----------------------------
+Num. rows    = 125
+Num. cols    = 125
+Num. entries = 12167
+
 Row Index        Col Index        Value
 0       0        0.221579
 0       1        0

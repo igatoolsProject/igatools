@@ -28,12 +28,15 @@
 #include <igatools/base/logstream.h>
 
 using std::string;
+using std::set;
+using std::map;
 
 using std::shared_ptr;
 using std::unique_ptr;
 
 
 IGA_NAMESPACE_OPEN
+
 
 template <class PhysicalSpace>
 MultiPatchSpace<PhysicalSpace>::
@@ -52,7 +55,7 @@ patch_insertion_open()
 {
     is_patch_insertion_open_ = true;
 
-    space_manager_->space_insertion_open();
+    space_manager_->spaces_insertion_open();
 }
 
 template <class PhysicalSpace>
@@ -95,7 +98,17 @@ patch_insertion_close(const bool automatic_dofs_renumbering)
     //------------------------------------------------------------------------
 
 
-    space_manager_->space_insertion_close(automatic_dofs_renumbering);
+    space_manager_->spaces_insertion_close(automatic_dofs_renumbering);
+
+
+    //------------------------------------------------------------------------
+    // adding the connection between the dofs of the patch and itself
+    space_manager_->spaces_connectivity_open();
+    for (const auto &patch : patches_)
+        space_manager_->add_spaces_connection(patch);
+
+    space_manager_->spaces_connectivity_close();
+    //------------------------------------------------------------------------
 
     is_patch_insertion_open_ = false;
 }
@@ -174,7 +187,7 @@ compute_constraints()
     are_constraints_computed_ = true;
 }
 
-
+#if 0
 template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
@@ -189,6 +202,8 @@ perform_ref_spaces_add_dofs_offset()
         dofs_offset += ref_space->get_num_basis();
     }
 }
+#endif
+
 
 template <class PhysicalSpace>
 void
@@ -243,9 +258,7 @@ get_num_interfaces() const
 {
     Index n_interfaces = 0;
     for (const auto &interfaces_same_type : interfaces_)
-    {
         n_interfaces += interfaces_same_type.second.size();
-    }
 
     return n_interfaces;
 }
@@ -392,6 +405,9 @@ MultiPatchSpace<PhysicalSpace>::
 interface_insertion_close()
 {
     is_interface_insertion_open_ = false;
+
+    //Computing the constraints (linear and equality) arising from the different interfaces
+//    this->process_interfaces();
 }
 
 template <class PhysicalSpace>
@@ -402,6 +418,14 @@ add_interface(const InterfaceType &type,
               PatchPtr patch_1,const int side_id_patch_1)
 {
     Assert(is_interface_insertion_open_ == true,ExcInvalidState());
+
+
+
+    using std::cout;
+    using std::endl;
+    cout << "MultiPatchSpace<PhysicalSpace>::add_interface()    "
+         << "adding the interface made of space " << patch_0->get_id()
+         << " and space " << patch_1->get_id() <<endl;
 
     //------------------------------------------------------------------------
     // Verify that patch 0 is present in the vector of patches -- begin
@@ -428,6 +452,90 @@ add_interface(const InterfaceType &type,
 #endif
 
     interfaces_[type].insert(interface_to_be_added);
+
+
+
+    //------------------------------------------------------------------------
+    // Updating the SpaceManager --- begin
+
+    // Adding the block patch_0-patch_1 and its transpose
+    space_manager_->spaces_connectivity_open();
+    space_manager_->add_spaces_connection(patch_0,patch_1);
+    space_manager_->add_spaces_connection(patch_1,patch_0);
+    space_manager_->spaces_connectivity_close();
+    // Updating the SpaceManager --- end
+    //------------------------------------------------------------------------
+
+}
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+add_interface_mortar(
+    PatchPtr patch_0,const int side_id_patch_0,
+    PatchPtr patch_1,const int side_id_patch_1,
+    MortarMultiplierSpacePtr multiplier_space)
+{
+    Assert(is_interface_insertion_open_ == true,ExcInvalidState());
+
+    //------------------------------------------------------------------------
+    // Verify that patch 0 is present in the vector of patches -- begin
+    Assert(std::count(patches_.begin(),patches_.end(),patch_0) == 1,
+           ExcMessage("Patch 0 is not present in the vector of patches."))
+    // Verify that patch 0 is present in the vector of patches -- end
+    //------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------
+    // Verify that patch 1 is present in the vector of patches -- begin
+    Assert(std::count(patches_.begin(),patches_.end(),patch_1) == 1,
+           ExcMessage("Patch 1 is not present in the vector of patches."))
+    // Verify that patch 1 is present in the vector of patches -- end
+    //------------------------------------------------------------------------
+
+
+    std::shared_ptr<InterfaceMortar> interface_to_be_added(
+        new InterfaceMortar(patch_0,side_id_patch_0,patch_1,side_id_patch_1,multiplier_space));
+
+#ifndef NDEBUG
+    for (const auto &interface : interfaces_[InterfaceType::Mortar])
+        Assert(*interface_to_be_added != *interface, ExcMessage("Interface already added."));
+#endif
+
+    interfaces_[InterfaceType::Mortar].insert(interface_to_be_added);
+
+
+
+    //------------------------------------------------------------------------
+    // Updating the SpaceManager --- begin
+
+    // Adding the multiplier space to the space_manager
+    space_manager_->spaces_insertion_open();
+    space_manager_->add_space(multiplier_space);
+    space_manager_->spaces_insertion_close();
+
+
+
+    space_manager_->spaces_connectivity_open();
+
+    // Adding the block patch_0-multipliers and its transpose
+    space_manager_->add_spaces_connection(patch_0,multiplier_space);
+    space_manager_->add_spaces_connection(multiplier_space,patch_0);
+
+    // Adding the block patch_1-multipliers and its transpose
+    space_manager_->add_spaces_connection(patch_1,multiplier_space);
+    space_manager_->add_spaces_connection(multiplier_space,patch_1);
+
+    space_manager_->spaces_connectivity_close();
+
+
+    // adding to the SpaceManager the dofs connectivity of the following blocks:
+    // - (patch_0, multiplier_space) and its transpose
+    // - (patch_1, multiplier_space) and its transpose
+    interface_to_be_added->fill_space_manager_dofs_connectivity(*space_manager_);
+    // Updating the SpaceManager --- end
+    //------------------------------------------------------------------------
 }
 
 
@@ -472,6 +580,36 @@ operator!=(const Interface &interface_to_compare) const
     return !(*this == interface_to_compare);
 }
 
+template <class PhysicalSpace>
+InterfaceType
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+get_type() const
+{
+    return type_;
+}
+
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+get_space(const int interface_side) const -> PatchPtr
+{
+    Assert(interface_side == 0 || interface_side == 1,ExcIndexRange(interface_side,0,2));
+    return patch_and_side_[interface_side].first;
+}
+
+template <class PhysicalSpace>
+int
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+get_face_id(const int interface_side) const
+{
+    Assert(interface_side == 0 || interface_side == 1,ExcIndexRange(interface_side,0,2));
+    return patch_and_side_[interface_side].second;
+}
+
 
 
 template <class PhysicalSpace>
@@ -509,12 +647,11 @@ process_interfaces_mortar()
     Assert(is_interface_insertion_open_ == false,ExcInvalidState());
     Assert(is_graph_built_ == true,ExcInvalidState());
 
-    this->process_interfaces_C0_strong();
-    this->process_interfaces_C0_strong_renumbering();
-    this->process_interfaces_mortar();
 
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    auto &mortar_interfaces = interfaces_[InterfaceType::Mortar];
+    for (auto &interface : mortar_interfaces)
+        std::const_pointer_cast<Interface>(interface)->process();
+    // the const-cast is because std::set stores const objects
 }
 
 
@@ -523,8 +660,19 @@ void
 MultiPatchSpace<PhysicalSpace>::
 process_interfaces()
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    Assert(is_patch_insertion_open_ == false,ExcInvalidState());
+    Assert(is_interface_insertion_open_ == false,ExcInvalidState());
+#ifdef USE_GRAPH
+    Assert(is_graph_built_ == true,ExcInvalidState());
+#endif
+//    this->process_interfaces_C0_strong();
+//    this->process_interfaces_C0_strong_renumbering();
+//    this->process_interfaces_mortar();
+
+    for (auto &interfaces_same_type : interfaces_)
+        for (auto &interface : interfaces_same_type.second)
+            std::const_pointer_cast<Interface>(interface)->process();
+    // the const-cast is because std::set stores const objects
 }
 
 
@@ -571,6 +719,15 @@ global_to_local(
 
 
 template <class PhysicalSpace>
+vector<std::shared_ptr<const LinearConstraint> >
+MultiPatchSpace<PhysicalSpace>::
+Interface::
+get_linear_constraints() const
+{
+    return linear_constraints_;
+}
+
+template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
 Interface::
@@ -602,6 +759,106 @@ print_info(LogStream &out) const
 
 }
 
+
+template <class PhysicalSpace>
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+InterfaceMortar(
+    PatchPtr patch_0,const int side_id_patch_0,
+    PatchPtr patch_1,const int side_id_patch_1,
+    MortarMultiplierSpacePtr multiplier_space)
+    :
+    Interface(InterfaceType::Mortar,patch_0,side_id_patch_0,patch_1,side_id_patch_1),
+    multiplier_space_(multiplier_space)
+{
+    Assert(multiplier_space_ != nullptr,ExcNullPtr());
+}
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+get_space_slave() const -> std::pair<PatchPtr,int>
+{
+    return this->patch_and_side_[0];
+}
+
+
+template <class PhysicalSpace>
+auto
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+get_space_master() const -> std::pair<PatchPtr,int>
+{
+    return this->patch_and_side_[1];
+}
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+process()
+{
+    using std::cout;
+    cout << "MultiPatchSpace<PhysicalSpace>::InterfaceMortar::process()\n";
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+template <class PhysicalSpace>
+void
+MultiPatchSpace<PhysicalSpace>::
+InterfaceMortar::
+fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
+{
+    using DofsSet = std::set<Index>;
+
+    const auto &dofs_multiplier_vec = multiplier_space_->get_dof_distribution_global().get_dofs_view();
+    DofsSet multiplier_dofs(dofs_multiplier_vec.begin(),dofs_multiplier_vec.end());
+
+    vector<Index> slave_dofs;
+    for (int i = 0 ; i <= 1 ; ++i)
+    {
+        const auto &space = this->get_space(i);
+        const auto &face_id = this->get_face_id(i);
+
+        vector<Index> face_dofs_vec;
+        const auto face_space = space->get_face_space(face_id, face_dofs_vec);
+        DofsSet face_dofs(face_dofs_vec.begin(),face_dofs_vec.end());
+        face_dofs_vec.clear();
+
+        //inserting the face dofs in the container that will be used to create the the linear constraints
+        slave_dofs.insert(slave_dofs.end(),face_dofs.begin(),face_dofs.end());
+
+        space_manager.get_spaces_connection(multiplier_space_,space).
+        add_dofs_connectivity(
+            dof_tools::build_dofs_connectvity_all_to_all(multiplier_dofs,face_dofs));
+
+        space_manager.get_spaces_connection(space,multiplier_space_).
+        add_dofs_connectivity(
+            dof_tools::build_dofs_connectvity_all_to_all(face_dofs,multiplier_dofs));
+    }//end block related to slave space
+
+    //sorting the slave dofs before inserting them into a LinearConstraint object
+    std::sort(slave_dofs.begin(),slave_dofs.end());
+
+    vector<Real> dofs_coefficients(slave_dofs.size(),0.0);
+
+    space_manager.linear_constraints_open();
+    for (const Index multiplier_dof : multiplier_dofs)
+    {
+        space_manager.add_linear_constraint(
+            multiplier_dof,
+            LinearConstraintType::lagrange,
+            slave_dofs,
+            dofs_coefficients,
+            0.0);
+    }
+    space_manager.linear_constraints_close();
+}
 
 
 IGA_NAMESPACE_CLOSE

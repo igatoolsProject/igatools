@@ -129,6 +129,12 @@ public:
     void clear() noexcept ;
     ///@}
 
+
+    /**
+     * Returns TRUE if the container is empty.
+     */
+    bool empty() const;
+
     /**
      * Extract a sub multi-array from the array and return it
      * in the tensor range start with the tensor increment inc.

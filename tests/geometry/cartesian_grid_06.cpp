@@ -18,36 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for find algorith on grid container iterator
+ *  Test for CartesianGrid::find_elements_of_points
  *
  *  author: pauletti
- *  date:
+ *  date: 2014-08-07
  */
 
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
-
-
-template<int dim>
-bool IsOdd(const typename CartesianGrid<dim>::ElementAccessor &elem)
-{
-    return ((elem.get_flat_index()%2)==1);
-}
 
 template<int dim>
 void do_test()
 {
     TensorSize<dim> n_knots;
     for (int i = 0; i < dim; ++i)
-        n_knots[i] = 2*i+2;
+        n_knots[i] = 2*i+3;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    auto it = std::find_if(grid->begin(), grid->end(), IsOdd<dim>);
-
+    out << "Dimension: " << dim << endl;
+    const auto n_elems = grid->get_num_active_elems();
+    for (int i = 0; i < n_elems; ++i)
+    {
+        const auto ti = grid->flat_to_tensor(i);
+        const auto fi = grid->tensor_to_flat(ti);
+        out << "Element " << fi << ": " << ti << endl;
+    }
+    out << endl;
+    out << endl;
 }
-
 
 int main()
 {

@@ -29,101 +29,69 @@ IGA_NAMESPACE_OPEN
 SparsityPattern::
 SparsityPattern(const SpaceManager &space_manager)
 {
-    Assert(space_manager.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager.is_spaces_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
 
     //-----------------------------------------------------------
-    // adding the dofs id -- begin
-    const auto &dofs_view = space_manager.get_dofs_view();
-
-    for (const auto &dof : dofs_view)
-        row_dofs_.push_back(dof);
-    // adding the dofs id -- end
-    //-----------------------------------------------------------
-
-
-    //-----------------------------------------------------------
-    // adding the linear constraints id -- begin
-    const auto &linear_constraints = space_manager.get_linear_constraints();
-
-    Index row_id = space_manager.get_num_dofs();
-    for (const auto &lc : linear_constraints)
-        row_dofs_.push_back(row_id++);
-    // adding the linear constraints id -- end
-    //-----------------------------------------------------------
-
-
-
-    //-----------------------------------------------------------
-    // copying the row ids to the col ids -- begin
-    Assert(!row_dofs_.empty(),ExcEmptyObject());
-    col_dofs_ = row_dofs_;
-    // copying the row ids to the col ids -- end
-    //-----------------------------------------------------------
-
-
-
-
-
-    using DofsInRow = set<Index>;
-    DofsInRow empty_set;
-
-    // adding the global dof keys to the map representing the dof connectivity
-    for (const auto &dof : dofs_view)
-        this->insert(pair<Index,DofsInRow>(dof,empty_set));
-
-
-    //-----------------------------------------------------------
-    // adding the DOF-DOF contribution -- begin
-    const auto &spaces_info = space_manager.get_spaces_info();
-    Assert(!spaces_info.empty(),ExcEmptyObject());
-    for (const auto &space : spaces_info)
-        for (const auto element_dofs : space.second.get_elements_dofs_view())
-            for (const auto &dof : element_dofs.second)
-                (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
-    // adding the DOF-DOF contribution -- end
-    //-----------------------------------------------------------
-
-
-
-
-    //-----------------------------------------------------------
-    // adding the LC-DOF/DOF-LC contributions -- begin
-    row_id = space_manager.get_num_dofs();
-    for (const auto &lc : linear_constraints)
+    // adding the row dofs id -- begin
     {
-        const auto lc_dofs = lc->get_dofs_id();
+        const auto set_row_dofs = space_manager.get_row_dofs();
 
-        //-----------------------------------------------------------
-        // adding the LC-DOF contribution -- begin
-        for (const auto lc_dof : lc_dofs)
-            (*this)[row_id].emplace(lc_dof);
-        // adding the LC-DOF contribution -- end
-        //-----------------------------------------------------------
-
-
-        //-----------------------------------------------------------
-        // adding the DOF-LC contribution -- begin
-        for (const auto lc_dof : lc_dofs)
-            (*this)[lc_dof].emplace(row_id);
-        // adding the DOF-LC contribution -- end
-        //-----------------------------------------------------------
-
-
-        row_id++;
+        row_dofs_.insert(row_dofs_.end(),set_row_dofs.begin(),set_row_dofs.end());
     }
-    // adding the LC-DOF/DOF-LC contributions -- end
+    // adding the row dofs id -- end
+    //-----------------------------------------------------------
+
+    //-----------------------------------------------------------
+    // adding the col dofs id -- begin
+    {
+        const auto set_col_dofs = space_manager.get_col_dofs();
+
+        col_dofs_.insert(col_dofs_.end(),set_col_dofs.begin(),set_col_dofs.end());
+    }
+    // adding the col dofs id -- end
     //-----------------------------------------------------------
 
 
+    //-----------------------------------------------------------
+    const auto &spaces_connections = space_manager.get_spaces_connections();
+    Assert(!spaces_connections.empty(),ExcEmptyObject());
+    for (const auto &sp_conn : spaces_connections)
+    {
+        if (sp_conn.is_unique_space())
+        {
+            // adding the contribution of the dofs defined within the space itself-- begin
+            const auto &space = sp_conn.get_space_row();
+            for (const auto element_dofs : space.get_elements_dofs_view())
+                for (const auto &dof : element_dofs.second)
+                    (*this)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+            // adding the contribution of the dofs defined within the space -- end
+        }
+
+
+
+        // adding the extra contribution to the connectivity defined within the spaces connection -- begin
+        const auto &extra_dofs_connectivity = sp_conn.get_extra_dofs_connectivity();
+        for (const auto &connectivity_map_entry : extra_dofs_connectivity)
+        {
+            const auto   row_id = connectivity_map_entry.first;
+            const auto &cols_id = connectivity_map_entry.second;
+
+            (*this)[row_id].insert(cols_id.begin(),cols_id.end());
+        }
+        // adding the extra contribution to the connectivity defined within the spaces connection -- end
+    }
+    //-----------------------------------------------------------
 }
 
+
+#if 0
 SparsityPattern::
 SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols)
 {
-    Assert(space_manager_rows.is_space_insertion_open() == false,ExcInvalidState());
-    Assert(space_manager_cols.is_space_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_rows.is_spaces_insertion_open() == false,ExcInvalidState());
+    Assert(space_manager_cols.is_spaces_insertion_open() == false,ExcInvalidState());
 
     // build the dofs graph
     const auto &dofs_view_rows = space_manager_rows.get_dofs_view();
@@ -161,10 +129,10 @@ SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space
     for (; space_row_iterator != space_row_iterator_end ; ++space_row_iterator, ++space_col_iterator)
     {
         const auto &space_row = space_row_iterator->second;
-        const auto dofs_elements_view_space_row = space_row.get_elements_dofs_view();
+        const auto dofs_elements_view_space_row = space_row->get_elements_dofs_view();
 
         const auto &space_col = space_col_iterator->second;
-        const auto dofs_elements_view_space_col = space_col.get_elements_dofs_view();
+        const auto dofs_elements_view_space_col = space_col->get_elements_dofs_view();
 
         //check the equality of num. elements on each patch
         Assert(dofs_elements_view_space_row.size() == dofs_elements_view_space_col.size(),
@@ -179,6 +147,7 @@ SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space
                 (*this)[dof_row].insert(dofs_col_iterator->second.cbegin(),dofs_col_iterator->second.cend());
     }
 }
+#endif
 
 SparsityPattern::SparsityPattern(const SparsityPattern &sparsity_pattern)
     :
@@ -219,11 +188,11 @@ SparsityPattern::get_num_overlapping_funcs() const
 
     vector< long unsigned int > num_overlapping_funcs ;
 
-    auto dof     = row_dofs_.cbegin() ;
-    auto dof_end = row_dofs_.cend() ;
-
-    for (; dof != dof_end ; ++dof)
-        num_overlapping_funcs.emplace_back(this->at(*dof).size()) ;
+    for (const auto &map_entry : (*this))
+    {
+//      const Index row_id = map_entry.first;
+        num_overlapping_funcs.emplace_back(map_entry.second.size()) ;
+    }
 
     return (num_overlapping_funcs) ;
 }
