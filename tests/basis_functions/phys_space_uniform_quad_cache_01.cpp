@@ -36,65 +36,7 @@
 
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 
-
-
-template<int dim_, int codim_ = 0>
-class MappingUniformQuadCache : public GridUniformQuadCache<dim_>
-{
-    using base_t = GridUniformQuadCache<dim_>;
-    using Map = Mapping<dim_, codim_>;
-    using ElementIterator = typename Map::ElementIterator;
-protected:
-    using ElementAccessor = typename Map::ElementAccessor;
-    void init_element_cache(ElementAccessor &elem)
-    {
-        base_t::init_element_cache(elem);
-        elem.init_cache(flags_, quad_);
-    }
-    void fill_element_cache(ElementAccessor &elem)
-    {
-        base_t::fill_element_cache(elem);
-        elem.fill_cache();
-    }
-  //  void fill_face_cache(ElementAccessor &elem, const int face);
-
-public:
-    static const int dim = dim_;
-
-    //Allocates and fill the (global) cache
-    MappingUniformQuadCache(std::shared_ptr<const Map> map,
-                            const ValueFlags flag,
-                            const Quadrature<dim> &quad)
-    :
-        base_t(map->get_grid(), flag, quad),
-        flags_(flag),
-        quad_(quad)
-        {}
-
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem)
-    {
-        init_element_cache(elem.get_accessor());
-    }
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem)
-    {
-        fill_element_cache(elem.get_accessor());
-    }
-
-    /**
-     * Fills the ElementIterator face_cache
-     * element dependent part
-     */
-    //void fill_face_cache(ElementIterator &elem, const int face);
-
-    //void print_info(LogStream &out) const;
-private:
-    ValueFlags flags_;
-    Quadrature<dim> quad_;
-};
-
-
+#include<igatools/geometry/mapping_uniform_quad_cache.h>
 
 template <class PushForward_>
 class PushFowardUniformQuadCache :
