@@ -207,8 +207,22 @@ public:
     /** Type alias for the LinearConstraintType. */
     using LCType = LinearConstraintType;
 
-    /** Type alias for the dofs connectivity. */
-    using DofsConnectivity = std::map<Index,std::set<Index>>;
+    class DofsConnectivity : public std::map<Index,std::set<Index>>
+    {
+    public:
+        void merge(const DofsConnectivity &dofs_connectivity)
+        {
+            Assert(this != &dofs_connectivity,ExcInvalidState());
+
+            for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
+            {
+                const auto row_dof = dofs_connectivity_map_entry.first;
+                const auto &col_dofs = dofs_connectivity_map_entry.second;
+
+                (*this)[row_dof].insert(col_dofs.begin(),col_dofs.end());
+            }
+        }
+    };
 
     /** @name Constructors */
     ///@{
@@ -737,12 +751,32 @@ private:
 
     vector<SpacesConnection> spaces_connections_;
 
+    /**
+     * Extra dofs connectivity that is not related to any SpacesConnection object.
+     */
+    DofsConnectivity extra_dofs_connectivity_;
+
 public:
 
     const vector<SpacesConnection> &get_spaces_connections() const
     {
         return spaces_connections_;
     }
+
+    /**
+     * Returns the extra dofs connectivity added to the SpaceManager.
+     * @note These connection are not related to any SpacesConnection object.
+     */
+    const DofsConnectivity &get_extra_dofs_connectivity() const
+    {
+        return extra_dofs_connectivity_;
+    }
+
+    /**
+     * Add extra dofs connectivity added to the SpaceManager.
+     * @note The added dofs connectivity will not be related to any SpacesConnection object.
+     */
+    void add_dofs_connectivity(const DofsConnectivity &dofs_connectivity);
 
 
     /**

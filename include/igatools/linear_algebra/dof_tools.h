@@ -71,10 +71,10 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
  */
 template < class Container >
 inline
-std::map<Index,std::set<Index> >
+typename SpaceManager::DofsConnectivity
 build_dofs_connectvity_all_to_all(const Container &row_dofs,const Container &col_dofs)
 {
-    std::map<Index,std::set<Index>> dofs_connectivity;
+    typename SpaceManager::DofsConnectivity dofs_connectivity;
     for (const Index row_dof : row_dofs)
         dofs_connectivity[row_dof].insert(col_dofs.begin(),col_dofs.end());
 

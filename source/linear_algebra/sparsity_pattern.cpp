@@ -183,18 +183,15 @@ SparsityPattern::get_row_dofs() const
 
 
 vector< long unsigned int >
-SparsityPattern::get_num_overlapping_funcs() const
+SparsityPattern::get_num_dof_connections() const
 {
 
-    vector< long unsigned int > num_overlapping_funcs ;
+    vector< long unsigned int > num_dof_connections ;
 
     for (const auto &map_entry : (*this))
-    {
-//      const Index row_id = map_entry.first;
-        num_overlapping_funcs.emplace_back(map_entry.second.size()) ;
-    }
+        num_dof_connections.emplace_back(map_entry.second.size()) ;
 
-    return (num_overlapping_funcs) ;
+    return (num_dof_connections) ;
 }
 
 IGA_NAMESPACE_CLOSE

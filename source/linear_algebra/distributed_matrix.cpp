@@ -70,27 +70,17 @@ init(const SparsityPattern &sparsity_pattern)
     const auto col_dofs = sparsity_pattern.get_col_dofs();
 //  std::sort(col_dofs.begin(),col_dofs.end());
 
-    /*
-    vector<Index> all_dofs(row_dofs.size()+col_dofs.size());
-    auto it = std::set_union(row_dofs.begin(),row_dofs.end(),
-                             col_dofs.begin(),col_dofs.end(),
-                             all_dofs.begin());
-    all_dofs.resize(it-all_dofs.begin());
-    //*/
     //-------------------------------------------------------------------------------------
 
     row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
 
     column_space_map_.reset(new DofsMap(col_dofs.size(),col_dofs,0,comm_));
 
-//    all_dofs_map_.reset(new DofsMap(all_dofs.size(),all_dofs,0,comm_));
-
-
     using LongUInt = long unsigned int;
     Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
         Teuchos::arcp(
             Teuchos::RCP<const std::vector<LongUInt> >(
-                new vector<LongUInt>(sparsity_pattern.get_num_overlapping_funcs()))) ;
+                new vector<LongUInt>(sparsity_pattern.get_num_dof_connections()))) ;
     //-------------------------------------------------------------------------------------
 
 

@@ -81,7 +81,7 @@ public:
     /**
      * todo: document me.
      */
-    vector< long unsigned int > get_num_overlapping_funcs() const ;
+    vector< long unsigned int > get_num_dof_connections() const ;
 
 
 private:
