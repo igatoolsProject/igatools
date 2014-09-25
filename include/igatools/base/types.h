@@ -489,7 +489,35 @@ enum class RefSpaceType : int
 
 
 /**
- * Type for specifying the kind of interface between two patches.
+ * Type for specifying the kind of boundary condition on a face of a space-component.
+ */
+enum class BoundaryConditionType : int
+{
+    /** Dirichlet boundary condition. */
+    Dirichlet = 0,
+
+    /** Dirichlet homogeneous boundary condition. */
+    DirichletHomogeneous = 1,
+
+    /** Neumann boundary condition. */
+    Neumann = 2,
+
+    /** Neumann homogeneous boundary condition. */
+    NeumannHomogeneous = 3,
+
+    /** Robin boundary condition. */
+    Robin = 4,
+
+    /**
+     * The boundary part of an interface, i.e. has a relation with another space-component face.
+     * @sa InterfaceType
+     * @sa MultiPatchSpace
+     */
+    Interface = 5
+};
+
+/**
+ * Type for specifying the kind of interface between two faces of a space-component.
  * @sa MultiPatchSpace
  */
 enum class InterfaceType : int
@@ -519,7 +547,7 @@ enum class InterfaceType : int
 
 
 /**
- * Bit field flags specifying the type of a linear cosntraint.
+ * Bit field flags specifying the type of a linear constraint.
  */
 enum class LinearConstraintType : int
 {
