@@ -47,23 +47,23 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
     {
         Index row_id = dof->first;
         const Real bc_value  = dof->second;
-		
+
         const Real mat_value = matrix(row_id,row_id);
 
-		
+
         // set the matrix in write mode
         matrix.resume_fill();
-        
-		
+
+
         // set the selected row to 0.0
         matrix.clear_row(row_id);
 
-		
+
         // set the diagonal element corresponding to the entry
         // (row_id,row_id) to mat_value
         matrix.add_entry(row_id, row_id, mat_value);
-		
-		
+
+
         // communicate the matrix values to the different processors
         matrix.fill_complete();
 
@@ -82,19 +82,19 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<LAPack::petsc> &rhs,
                            Vector<LAPack::petsc> &solution)
 {
-    
-	PetscErrorCode ierr;
+
+    PetscErrorCode ierr;
 
     vector<Index> rows;
     vector<PetscScalar> values;
 
-	
+
     for (const auto &bv : boundary_values)
     {
         rows.push_back(bv.first);
         values.push_back(bv.second);
     }
-	
+
 
     // Set the matrix in write mode.
     matrix.resume_fill();

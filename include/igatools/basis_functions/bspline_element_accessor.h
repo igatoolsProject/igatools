@@ -363,14 +363,15 @@ private:
 
 
 public:
-/*
-    const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
-            &get_scalar_evaluators() const;
-//*/
+    /*
+        const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
+                &get_scalar_evaluators() const;
+    //*/
 
-
+#if 0
     ComponentContainer<std::array<ValueTable<Real>,dim> >
     get_univariate_derivatives(const int deriv_order) const;
+#endif
 
     /*
      * Returns a component table with the derivatives (of order @p deriv_order)

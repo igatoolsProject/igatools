@@ -72,7 +72,7 @@ template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
     public SpaceElementAccessor<PhysSpace>,
-   // todo: private PhysSpace::RefSpace::ElementAccessor,
+    // todo: private PhysSpace::RefSpace::ElementAccessor,
     private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
@@ -364,7 +364,9 @@ private:
      */
     const RefElemAccessor &get_ref_space_accessor() const;
     RefElemAccessor &get_ref_space_accessor()
-    { return ref_space_element_accessor_;}
+    {
+        return ref_space_element_accessor_;
+    }
     /**
      * Return a const reference of this object as would be viewed as push-forward element accessor.
      * This means that the returned object can be queried (but not modified) as the push-forward
