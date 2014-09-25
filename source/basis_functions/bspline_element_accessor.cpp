@@ -848,12 +848,86 @@ get_univariate_derivatives(const int deriv_order) const -> ComponentContainer< a
     return funcs1D_table;
 }
 
+
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_univariate_derivatives_at_points(
+    const int deriv_order,
+    const std::array<vector<Real>,dim> &points) const
+-> ComponentContainer<std::array<ValueTable<Real>,dim> >
+{
+    TensorSize<dim> n_points_direction;
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        Assert(points[i].empty() == false,ExcEmptyObject());
+
+        n_points_direction[i] = points[i].size();
+    }
+
+    const auto &element_tensor_id = this->get_tensor_index();
+
+    ComponentContainer< array<ValueTable<Real>,dim> > funcs1D_table(this->space_->get_components_map());
+
+    const auto degree_table = this->space_->get_degree();
+    const auto &bezier_op_ = this->space_->operators_;
+    const auto element_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
+
+    for (int comp : funcs1D_table.get_active_components_id())
+    {
+        auto &funcs1D_comp = funcs1D_table[comp];
+
+        const auto &degree_comp = degree_table[comp];
+
+        auto n_basis_direction = TensorSize<dim>(degree_comp+1);
+
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            const auto &M = bezier_op_.get_operator(comp,i)[element_tensor_id[i]];
+
+            const auto lengths_dir = element_lengths[i];
+            const Real one_div_size = Real(1.0) / lengths_dir;
+            const Real scaling_coef = std::pow(one_div_size, deriv_order);
+
+            // compute the one dimensional Bernstein at quad point on the unit interval
+            const auto B = BernsteinBasis::derivative(deriv_order,degree_comp[i],points[i]);
+
+            // compute the one dimensional B-splines at quad point on the reference interval
+            const auto basis = scaling_coef * prec_prod(M,B);
+
+            auto &funcs1D_comp_dir = funcs1D_comp[i];
+            funcs1D_comp_dir.resize(n_basis_direction[i],n_points_direction[i]);
+
+            for (int fn = 0 ; fn < n_basis_direction[i] ; ++fn)
+            {
+                auto fn_view = funcs1D_comp_dir.get_function_view(fn);
+
+                for (int pt = 0 ; pt < n_points_direction[i] ; ++pt)
+                    fn_view[pt] = basis(fn,pt);
+            } // end fn loop
+        } // end dir loop
+    } // end comp loop
+
+
+    return funcs1D_table;
+}
+
+
 template <int dim, int range, int rank>
 auto
 BSplineElementAccessor<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const
 -> ComponentContainer<std::array<ValueTable<Real>,dim> >
 {
+    std::array<vector<Real>,dim> points_coords;
+    for (int i = 0 ; i < dim ; ++i)
+        points_coords[i] = quad.get_points().get_data_direction(i);
+
+    return this->evaluate_univariate_derivatives_at_points(deriv_order,points_coords);
+
+#if 0
+
     const auto &element_tensor_id = this->get_tensor_index();
 
     const auto n_points_direction = quad.get_num_points_direction();
@@ -873,29 +947,29 @@ evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadratur
 
         auto n_basis_direction = TensorSize<dim>(degree_comp+1);
 
-        for (int dir = 0 ; dir < dim ; ++dir)
+        for (int i = 0 ; i < dim ; ++i)
         {
-            const auto &pt_coords = eval_points.get_data_direction(dir);
-            const auto &M = bezier_op_.get_operator(comp,dir)[element_tensor_id[dir]];
+            const auto &pt_coords = eval_points.get_data_direction(i);
+            const auto &M = bezier_op_.get_operator(comp,i)[element_tensor_id[i]];
 
-            const auto lengths_dir = element_lengths[dir];
+            const auto lengths_dir = element_lengths[i];
             const Real one_div_size = 1.0 / lengths_dir;
             const Real scaling_coef = std::pow(one_div_size, deriv_order);
 
             // compute the one dimensional Bernstein at quad point on the unit interval
-            const auto B = BernsteinBasis::derivative(deriv_order,degree_comp[dir],pt_coords);
+            const auto B = BernsteinBasis::derivative(deriv_order,degree_comp[i],pt_coords);
 
             // compute the one dimensional B-splines at quad point on the reference interval
             const auto basis = scaling_coef * prec_prod(M,B);
 
-            auto &funcs1D_comp_dir = funcs1D_comp[dir];
-            funcs1D_comp_dir.resize(n_basis_direction[dir],n_points_direction[dir]);
+            auto &funcs1D_comp_dir = funcs1D_comp[i];
+            funcs1D_comp_dir.resize(n_basis_direction[i],n_points_direction[i]);
 
-            for (int fn = 0 ; fn < n_basis_direction[dir] ; ++fn)
+            for (int fn = 0 ; fn < n_basis_direction[i] ; ++fn)
             {
                 auto fn_view = funcs1D_comp_dir.get_function_view(fn);
 
-                for (int pt = 0 ; pt < n_points_direction[dir] ; ++pt)
+                for (int pt = 0 ; pt < n_points_direction[i] ; ++pt)
                     fn_view[pt] = basis(fn,pt);
             } // end fn loop
         } // end dir loop
@@ -903,7 +977,24 @@ evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadratur
 
 
     return funcs1D_table;
+#endif
 }
+
+template <int dim, int range, int rank>
+auto
+BSplineElementAccessor<dim, range, rank>::
+evaluate_univariate_derivatives_at_points(
+    const int deriv_order,
+    const ValueVector<Point> &points) const -> ComponentContainer<std::array<ValueTable<Real>,dim> >
+{
+    std::array<vector<Real>,dim> points_coords;
+    for (const auto &pt : points)
+        for (int i = 0 ; i < dim ; ++i)
+            points_coords[i].push_back(pt[i]);
+
+    return this->evaluate_univariate_derivatives_at_points(deriv_order,points_coords);
+}
+
 
 
 template <int dim, int range, int rank>

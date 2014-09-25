@@ -377,11 +377,29 @@ public:
     get_univariate_derivatives(const int deriv_order) const;
 
     /*
+     * Returns a component table with the derivatives (of order @p deriv_order)
+     * of the 1D basis function in each direction.
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ComponentContainer<std::array<ValueTable<Real>,dim> >
     evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const;
+
+    /*
+     * Returns a component table with the derivatives (of order @p deriv_order)
+     * of the 1D basis function in each direction.
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    ComponentContainer<std::array<ValueTable<Real>,dim> >
+    evaluate_univariate_derivatives_at_points(const int deriv_order, const ValueVector<Point> &points) const;
+
+
+private:
+    ComponentContainer<std::array<ValueTable<Real>,dim> >
+    evaluate_univariate_derivatives_at_points(
+        const int deriv_order,
+        const std::array<vector<Real>,dim> &points) const;
 
 };
 
