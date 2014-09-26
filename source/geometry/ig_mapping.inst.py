@@ -31,10 +31,9 @@ include_files = ['geometry/cartesian_grid_element_accessor.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-ref_spaces = ['BSplineSpace']#, 'NURBSSpace')
-for sp in ref_spaces:
-   for row in inst.all_mapping_dims:
-      (dim, range, rank) = (row.dim, row.space_dim, 1)
-      space = '%s< %d, %d, %d >' %(sp, dim, range, rank)
-      f.write('template class IgMapping< %s > ;\n' %space)
+for sp in inst.IgmRefSpaces:
+#   for row in inst.all_mapping_dims:
+#      (dim, range, rank) = (row.dim, row.space_dim, 1)
+#      space = '%s< %d, %d, %d >' %(sp.name, dim, range, rank)
+      f.write('template class IgMapping< %s > ;\n' %sp)
         

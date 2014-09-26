@@ -18,12 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifdef NURBS
 
 #ifndef NURBS_UNIFORM_QUAD_CACHE_H_
 #define NURBS_UNIFORM_QUAD_CACHE_H_
 
 #include <igatools/base/config.h>
+
+#ifdef NURBS
+
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
@@ -34,6 +36,7 @@
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/basis_functions/nurbs_space.h>
+
 
 IGA_NAMESPACE_OPEN
 

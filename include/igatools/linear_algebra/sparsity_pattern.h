@@ -54,16 +54,6 @@ public:
      */
     SparsityPattern(const SpaceManager &space_manager);
 
-    /**
-     * Construct the sparsity pattern associated with the SpaceManager of two spaces.
-     *
-     * @warning This function only works when both spaces have the same number of elements.
-     */
-    SparsityPattern(const SpaceManager &space_manager_rows,const SpaceManager &space_manager_cols);
-    /*
-        SparsityPattern(const vector< Index > row_dofs,
-                        const vector< Index > col_dofs) ;
-    //*/
     SparsityPattern(const SparsityPattern &) ;
 
     /**

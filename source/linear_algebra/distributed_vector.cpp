@@ -102,8 +102,10 @@ const Real &
 Vector<LAPack::trilinos>::
 operator()(const Index global_id) const
 {
+    /*
     Assert(global_id < Index(vector_->getGlobalLength()),
            ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
+    //*/
 
     const auto map = vector_->getMap();
     const auto local_id = map->getLocalElement(global_id) ;
@@ -123,9 +125,10 @@ Real &
 Vector<LAPack::trilinos>::
 operator()(const Index global_id)
 {
+    /*
     Assert(global_id < Index(vector_->getGlobalLength()),
            ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
-
+    //*/
     const auto map = vector_->getMap();
     const auto local_id = map->getLocalElement(global_id) ;
 
@@ -207,10 +210,29 @@ print(LogStream &out) const
 
     const Index n_entries = vec.size();
 
-    out << "Global_ID        Value" << std::endl;
+    const auto map = vector_->getMap();
+
+    out << "Global_ID        Value" << endl;
     for (Index i = 0 ; i < n_entries ; ++i)
-        out << i << "        " << vec[i] << endl ;
+    {
+        const auto global_id = map->getGlobalElement(i) ;
+
+        out << global_id << "        " << (*this)(global_id) <<endl ;
+    }
     out << "-----------------------------" << endl;
+
+
+#if 0
+    out << "-----------------------------" << endl;
+    out << "Local_ID        Value" << endl;
+    auto vector_data = vector_->get1dView();
+    const int local_length = vector_->getLocalLength();
+    for (int local_id = 0; local_id < local_length; ++local_id)
+    {
+        out << local_id << "        " << vector_data[local_id] <<endl ;
+    }
+    out << "-----------------------------" << endl;
+#endif
 }
 
 #endif // #ifdef USE_TRILINOS

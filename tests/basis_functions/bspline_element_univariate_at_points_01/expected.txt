@@ -1,0 +1,864 @@
+========================================================================
+void do_test() [with int dim = 1; int range = 1]
+========================================================================
+do_test<1,1>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 1; int range = 2]
+========================================================================
+do_test<1,2>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 1; int range = 3]
+========================================================================
+do_test<1,3>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 2; int range = 1]
+========================================================================
+do_test<2,1>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 2; int range = 2]
+========================================================================
+do_test<2,2>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 2; int range = 3]
+========================================================================
+do_test<2,3>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 3; int range = 1]
+========================================================================
+do_test<3,1>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+
+========================================================================
+void do_test() [with int dim = 3; int range = 3]
+========================================================================
+do_test<3,3>
+Values 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    0.787298 0.250000 0.0127017 
+    Function 1
+    0.200000 0.500000 0.200000 
+    Function 2
+    0.0127017 0.250000 0.787298 
+
+Gradients 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    -1.77460 -1.00000 -0.225403 
+    Function 1
+    1.54919 0 -1.54919 
+    Function 2
+    0.225403 1.00000 1.77460 
+
+Hessians 1D:
+Component[0] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[1] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+Component[2] : 
+  Direction[0]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[1]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+  Direction[2]
+     (num_functions=3,num_points=3) :
+    Function 0
+    2.00000 2.00000 2.00000 
+    Function 1
+    -4.00000 -4.00000 -4.00000 
+    Function 2
+    2.00000 2.00000 2.00000 
+
+========================================================================
+

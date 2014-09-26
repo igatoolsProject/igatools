@@ -110,6 +110,40 @@ public:
         const ElemTrial &elem_trial,
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
         DenseMatrix &operator_gradu_gradv) const override final;
+
+    /**
+     * This function evaluates the local (i.e. element-based) vector \f$ f_e \f$
+     * for witch its entries are
+     * \f[
+          (f_e)_{i} = \int_{\Omega_e} \phi^{e,\text{test}}_i
+          f(x)  \; d \Omega.
+       \f]
+     */
+    virtual void eval_operator_rhs_v(
+        const ElemTest &elem_test,
+        const ValueVector<typename PhysSpaceTrial::Value> &f,
+        DenseVector &operator_rhs_v) const override final;
+
+    /**
+     * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
+     * for witch its entries are
+     * \f[
+          (A_e)_{ij} = \int_{\Omega_e} \sum_{s=1}^{sp\_dim}
+          \phi^{e,\text{test}}_i
+          \, \beta_{s}(x) \,
+          \bigl( \nabla \phi^{e,\text{trial}}_j \bigr)_s \; d \Omega
+          = \int_{\Omega_e}
+          \phi^{e,\text{test}}_i
+          \, \vec{\beta}(x) \, \cdot \,
+          \nabla \phi^{e,\text{trial}}_j \; d \Omega .
+       \f]
+     */
+    virtual void eval_operator_gradu_v(
+        const ElemTest &elem_test,
+        const ElemTrial &elem_trial,
+        const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+        DenseMatrix &operator_gradu_v) const override final;
+
 };
 
 
@@ -308,6 +342,59 @@ eval_operator_gradu_gradv(
     // Assembly of the local mass matrix using the standard quadrature -- begin
     //----------------------------------------------------
 }
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsStdIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_rhs_v(
+    const ElemTest &elem_test,
+    const ValueVector<typename PhysSpaceTrial::Value> &f,
+    DenseVector &operator_rhs_v) const
+{
+    const Size n_basis_test  = elem_test .get_num_basis();
+
+    const auto &phi_test  = elem_test.get_basis_values();
+    const auto &w_meas  = elem_test.get_w_measures();
+
+
+    Assert(operator_rhs_v.size() == n_basis_test,
+           ExcDimensionMismatch(operator_rhs_v.size(),n_basis_test));
+
+
+    const Size n_qp = f.get_num_points();
+    Assert(n_qp == phi_test.get_num_points(),ExcDimensionMismatch(n_qp,phi_test.get_num_points()));
+
+    vector<Real> f_times_w_meas(n_qp);
+    for (int qp = 0; qp < n_qp; ++qp)
+        f_times_w_meas[qp] = f[qp](0) * w_meas[qp];
+
+
+    operator_rhs_v.clear();
+    for (int i = 0; i < n_basis_test; ++i)
+    {
+        const auto phi_i = phi_test.get_function_view(i);
+        for (int qp = 0; qp < n_qp; ++qp)
+            operator_rhs_v(i) += phi_i[qp](0) * f_times_w_meas[qp];
+    }
+}
+
+
+template <class PhysSpaceTest,class PhysSpaceTrial>
+inline
+void
+EllipticOperatorsStdIntegration<PhysSpaceTest,PhysSpaceTrial>::
+eval_operator_gradu_v(
+    const ElemTest &elem_test,
+    const ElemTrial &elem_trial,
+    const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+    DenseMatrix &operator_gradu_v) const
+{
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -51,7 +51,9 @@ DeclException0(ExcNotQuadratic);
 
 
 Matrix<LAPack::trilinos>::
-Matrix(const SparsityPattern &sparsity_pattern)
+Matrix(const SparsityPattern &sparsity_pattern,Teuchos::RCP<const Teuchos::Comm<int>> comm)
+    :
+    comm_(comm)
 {
     init(sparsity_pattern) ;
 };
@@ -62,43 +64,60 @@ Matrix<LAPack::trilinos>::
 init(const SparsityPattern &sparsity_pattern)
 {
     //-------------------------------------------------------------------------------------
-    row_space_map_.reset(new dofs_map_t(sparsity_pattern.get_num_row_dofs(),
-                                        sparsity_pattern.get_row_dofs(),
-                                        0,comm_));
+    const auto row_dofs = sparsity_pattern.get_row_dofs();
+//  std::sort(row_dofs.begin(),row_dofs.end());
 
-    column_space_map_.reset(new dofs_map_t(sparsity_pattern.get_num_col_dofs(),
-                                           sparsity_pattern.get_col_dofs(),
-                                           0,comm_));
-    Teuchos::ArrayRCP<const long unsigned int> n_overlapping_funcs_per_row =
+    const auto col_dofs = sparsity_pattern.get_col_dofs();
+//  std::sort(col_dofs.begin(),col_dofs.end());
+
+    /*
+    vector<Index> all_dofs(row_dofs.size()+col_dofs.size());
+    auto it = std::set_union(row_dofs.begin(),row_dofs.end(),
+                             col_dofs.begin(),col_dofs.end(),
+                             all_dofs.begin());
+    all_dofs.resize(it-all_dofs.begin());
+    //*/
+    //-------------------------------------------------------------------------------------
+
+    row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
+
+    column_space_map_.reset(new DofsMap(col_dofs.size(),col_dofs,0,comm_));
+
+//    all_dofs_map_.reset(new DofsMap(all_dofs.size(),all_dofs,0,comm_));
+
+
+    using LongUInt = long unsigned int;
+    Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
         Teuchos::arcp(
-            Teuchos::RCP<const std::vector<long unsigned int> >(
-                new vector<long unsigned int>(sparsity_pattern.get_num_overlapping_funcs()))) ;
-
-    matrix_.reset(new WrappedMatrixType(row_space_map_,
-                                        column_space_map_,
-                                        n_overlapping_funcs_per_row));
+            Teuchos::RCP<const std::vector<LongUInt> >(
+                new vector<LongUInt>(sparsity_pattern.get_num_overlapping_funcs()))) ;
     //-------------------------------------------------------------------------------------
 
 
 
     //-------------------------------------------------------------------------------------
-    // allocating the entries (to 0.0) in the matrix corresponding to the sparsitiy pattern
+    // allocating the entries in the graph corresponding to the sparsitiy pattern
     // (this step is required by the Tpetra matrix, in order to use sumIntoGlobalValues()
-    auto row     = sparsity_pattern.cbegin() ;
-    auto row_end = sparsity_pattern.cend() ;
-    for (; row != row_end ; ++row)
+
+    graph_.reset(new Graph(row_space_map_,column_space_map_,n_dofs_per_row,Tpetra::StaticProfile));
+    for (const auto &row : sparsity_pattern)
     {
-        const Index row_id = row->first ;
+        const Index row_id = row.first ;
+        const auto &cols_id = row.second;
 
-        const vector<Index> columns_id(row->second.begin(),row->second.end()) ;
+        auto cols_id_vec = vector<Index>(cols_id.begin(),cols_id.end());
 
-        const auto num_columns = columns_id.size() ;
+        auto cols_id_view = Teuchos::ArrayView<const GO>(std::move(cols_id_vec));
 
-        vector<Real> values(num_columns, 0.0) ;
-
-        matrix_->insertGlobalValues(row_id, columns_id, values) ;
+        graph_->insertGlobalIndices(row_id,cols_id_view);
     }
+    graph_->fillComplete(column_space_map_,row_space_map_);
     //-------------------------------------------------------------------------------------
+
+    matrix_.reset(new WrappedMatrixType(graph_));
+    matrix_->setAllToScalar(0.0);
+    //-------------------------------------------------------------------------------------
+
 };
 //*/
 
@@ -157,7 +176,7 @@ void
 Matrix<LAPack::trilinos>::
 fill_complete()
 {
-    matrix_->fillComplete();
+    matrix_->fillComplete(graph_->getDomainMap(),graph_->getRangeMap());
 };
 
 void
@@ -259,14 +278,18 @@ print(LogStream &out) const
 {
     using std::endl;
 
-    const auto n_global_rows = this->get_num_rows();
+    const auto n_rows = this->get_num_rows();
+
 
     out << "-----------------------------" << endl;
     // Commented as different trilinos version show different information here
     //   out << *matrix_ ;
-
+    out << "Num. rows    = " << n_rows << endl;
+    out << "Num. cols    = " << this->get_num_columns() << endl;
+    out << "Num. entries = " << this->get_num_entries() << endl;
+    out << endl;
     out << "Row Index        Col Index        Value" << endl;
-    for (Index row_id = 0 ; row_id < n_global_rows ; ++row_id)
+    for (Index row_id = 0 ; row_id < n_rows ; ++row_id)
     {
         auto n_entries_row = matrix_->getNumEntriesInGlobalRow(row_id);
 
@@ -276,10 +299,10 @@ print(LogStream &out) const
 
         matrix_->getGlobalRowCopy(row_id,columns_id,values,n_entries_row);
 
-        for (uint row_entry = 0 ; row_entry < n_entries_row ; ++row_entry)
-            out << row_id << "       " <<
-                columns_id[row_entry] << "        " <<
-                values[row_entry] << endl;
+        for (const auto col_id : columns_id)
+            out << row_id << "       "
+                << col_id << "        "
+                << (*this)(row_id,col_id) << endl;
     }
     out << "-----------------------------" << endl;
 
@@ -301,6 +324,13 @@ Matrix<LAPack::trilinos>::
 get_num_columns() const -> Index
 {
     return matrix_->getGlobalNumCols() ;
+}
+
+auto
+Matrix<LAPack::trilinos>::
+get_num_entries() const -> Index
+{
+    return matrix_->getGlobalNumEntries() ;
 }
 
 

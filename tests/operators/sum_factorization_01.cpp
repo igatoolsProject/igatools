@@ -68,6 +68,11 @@ public:
     PoissonProblem(const int n_knots, const int deg);
 
 
+    ValueFlags get_fill_flags() const;
+
+    const DerivedClass &as_derived_class() const ;
+
+
     Real get_elapsed_time_eval_basis() const;
     Real get_elapsed_time_eval_mass_matrix() const;
     Real get_elapsed_time_eval_stiffness_matrix() const;
@@ -239,7 +244,21 @@ PoissonProblem(const int n_knots, const int deg)
 }
 
 
+template<int dim,class DerivedClass>
+const DerivedClass &
+PoissonProblem<dim,DerivedClass>::
+as_derived_class() const
+{
+    return static_cast<const DerivedClass &>(*this);
+}
 
+template<int dim,class DerivedClass>
+ValueFlags
+PoissonProblem<dim,DerivedClass>::
+get_fill_flags() const
+{
+    return this->as_derived_class().get_fill_flags();
+}
 
 template<int dim,class DerivedClass>
 void
@@ -273,11 +292,8 @@ assemble()
 
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
-    ValueFlags fill_flags = ValueFlags::value |
-                            ValueFlags::gradient |
-                            ValueFlags::measure |
-                            ValueFlags::w_measure |
-                            ValueFlags::point;
+
+    ValueFlags fill_flags = this->get_fill_flags();
 
     elem->init_cache(fill_flags, this->elem_quad);
 
@@ -312,7 +328,7 @@ assemble()
 
         auto points  = elem->get_points();
         auto phi     = elem->get_basis_values();
-        auto grd_phi = elem->get_basis_gradients();
+//        auto grd_phi = elem->get_basis_gradients();
         auto w_meas  = elem->get_w_measures();
         //----------------------------------------------------
 
@@ -370,12 +386,16 @@ assemble()
         //----------------------------------------------------
         // Assemblying the right hand side -- begin
         const TimePoint start_eval_rhs = Clock::now();
+        /*
         for (int i = 0; i < n_basis; ++i)
         {
             auto phi_i = phi.get_function_view(i);
             for (int qp = 0; qp < n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp]) * w_meas[qp];
         }
+        //*/
+        elliptic_operators.eval_operator_rhs_v(*elem,f_values,loc_rhs);
+
         const TimePoint end_eval_rhs = Clock::now();
         this->elapsed_time_eval_rhs_ += end_eval_rhs - start_eval_rhs;
         // Assemblying the right hand side -- end
@@ -465,6 +485,8 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
+    ValueFlags get_fill_flags() const;
+
 private:
 
     EllipticOperatorsType elliptic_operators_std_;
@@ -480,6 +502,19 @@ get_elliptic_operators() const -> const EllipticOperatorsType &
     return elliptic_operators_std_;
 }
 
+template<int dim>
+ValueFlags
+PoissonProblemStandardIntegration<dim>::
+get_fill_flags() const
+{
+    ValueFlags fill_flags = ValueFlags::value |
+                            ValueFlags::gradient |
+                            ValueFlags::measure |
+                            ValueFlags::w_measure |
+                            ValueFlags::point;
+
+    return fill_flags;
+}
 
 
 template<int dim>
@@ -519,6 +554,8 @@ public:
 
     const EllipticOperatorsType &get_elliptic_operators() const;
 
+    ValueFlags get_fill_flags() const;
+
 private:
     EllipticOperatorsSFIntegration<SpaceTest,SpaceTrial>
     elliptic_operators_sf_;
@@ -530,6 +567,22 @@ PoissonProblemSumFactorization<dim>::
 get_elliptic_operators() const -> const EllipticOperatorsType &
 {
     return elliptic_operators_sf_;
+}
+
+
+template<int dim>
+ValueFlags
+PoissonProblemSumFactorization<dim>::
+get_fill_flags() const
+{
+    ValueFlags fill_flags = ValueFlags::value |
+//                            ValueFlags::gradient |
+                            ValueFlags::map_inv_gradient |
+                            ValueFlags::measure |
+                            ValueFlags::w_measure |
+                            ValueFlags::point;
+
+    return fill_flags;
 }
 
 

@@ -50,56 +50,72 @@ reason we plan to provide input file convertes from a given file version to a ne
   <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
     <NURBSSpace Dim="2" Range="2" Rank="1">
       <CartesianGrid Dim="2">
-        <Knots Direction="0" Size="2">
-          0.0 1.0
+        <Knots Direction="0" Size="3">
+          0.000000 0.500000 1.000000
         </Knots>
-        <Knots Direction="1" Size="2">
-          0.0 1.0
+        <Knots Direction="1" Size="3">
+          0.000000 0.500000 1.000000
         </Knots>
       </CartesianGrid>
       <NURBSSpaceScalarComponents Size="2">
+        <ComponentsMap Size="2">
+          0 1
+        </ComponentsMap>
         <NURBSSpaceScalarComponent Id="0">
           <DofsTensorSize Dim="2">
-            3 2
+            4 4
           </DofsTensorSize>
           <Degrees Dim="2">
-            2 1
+            2 2
           </Degrees>
-          <Multiplicities Dim="2">
-            <Multiplicity Direction="0" Size="2">
-              3 3
-            </Multiplicity>
-            <Multiplicity Direction="1" Size="2">
-              2 2
-            </Multiplicity>
-          </Multiplicities>
-          <Weights Size="6">
-            1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
+          <InteriorMultiplicities Dim="2">
+            <InteriorMultiplicity Direction="0" Size="1">
+              1
+            </InteriorMultiplicity>
+            <InteriorMultiplicity Direction="1" Size="1">
+              1
+            </InteriorMultiplicity>
+          </InteriorMultiplicities>
+          <Weights Size="16">
+            1.000000 1.000000 1.000000 1.000000
+            0.853553 0.853553 0.853553 0.853553
+            0.853553 0.853553 0.853553 0.853553
+            1.000000 1.000000 1.000000 1.000000
           </Weights>
         </NURBSSpaceScalarComponent>
         <NURBSSpaceScalarComponent Id="1">
           <DofsTensorSize Dim="2">
-            3 2
+            4 4
           </DofsTensorSize>
           <Degrees Dim="2">
-            2 1
+            2 2
           </Degrees>
-          <Multiplicities Dim="2">
-            <Multiplicity Direction="0" Size="2">
-              3 3
-            </Multiplicity>
-            <Multiplicity Direction="1" Size="2">
-              2 2
-            </Multiplicity>
-          </Multiplicities>
-          <Weights Size="6">
-             1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
+          <InteriorMultiplicities Dim="2">
+            <InteriorMultiplicity Direction="0" Size="1">
+              1
+            </InteriorMultiplicity>
+            <InteriorMultiplicity Direction="1" Size="1">
+              1
+            </InteriorMultiplicity>
+          </InteriorMultiplicities>
+          <Weights Size="16">
+            1.000000 1.000000 1.000000 1.000000
+            0.853553 0.853553 0.853553 0.853553
+            0.853553 0.853553 0.853553 0.853553
+            1.000000 1.000000 1.000000 1.000000
           </Weights>
         </NURBSSpaceScalarComponent>
       </NURBSSpaceScalarComponents>
     </NURBSSpace>
-    <ControlPoints Dim="1" Size="12">
-      0.8 0.8 0.4 1.0 1.0 0.5 0.0 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01
+    <ControlPoints Dim="1" Size="32">
+      1.000000 1.750000 3.250000 4.000000
+      1.000000 1.750000 3.250000 4.000000
+      0.414214 0.724874 1.346194 1.656854
+      0.000000 0.000000 0.000000 0.000000
+      0.000000 0.000000 0.000000 0.000000
+      0.414214 0.724874 1.346194 1.656854
+      1.000000 1.750000 3.250000 4.000000
+      1.000000 1.750000 3.250000 4.000000
     </ControlPoints>
   </IgMapping>
 </Igatools>

@@ -109,9 +109,13 @@ value_to_mapping_flag(
     const ValueFlags v_flag) const -> ValueFlags
 {
     const ValueFlags common_flag =
-        ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian|
-        ValueFlags::w_measure|ValueFlags::face_point|ValueFlags::map_face_gradient|
-        ValueFlags::map_face_hessian|ValueFlags::face_w_measure|ValueFlags::face_normal;
+        ValueFlags::point|
+        ValueFlags::map_gradient|ValueFlags::map_hessian|
+        ValueFlags::map_inv_gradient|ValueFlags::map_inv_hessian|
+        ValueFlags::w_measure|ValueFlags::face_point|
+        ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
+        ValueFlags::map_face_inv_gradient|ValueFlags::map_face_inv_hessian|
+        ValueFlags::face_w_measure|ValueFlags::face_normal;
 
     /*
      * For each MappingValueFlags there is an if that checks for all

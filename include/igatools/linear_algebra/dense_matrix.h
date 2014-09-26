@@ -81,6 +81,12 @@ public:
     MatrixRowType
     get_row(const int row_id) const;
 
+    /** Returns the number of rows in the DenseMatrix. */
+    int size1() const;
+
+    /** Returns the number of columns in the DenseMatrix. */
+    int size2() const;
+
 
     /**
      * Matrix inversion routine.

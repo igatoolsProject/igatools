@@ -51,12 +51,33 @@ DenseMatrix::operator=(const Real value)
     return *this;
 }
 
+
+
 auto
 DenseMatrix::
 get_row(const int row_id) const -> MatrixRowType
 {
     return MatrixRowType(*this,row_id);
 }
+
+
+
+int
+DenseMatrix::
+size1() const
+{
+    return int(boost::numeric::ublas::matrix<Real>::size1());
+}
+
+
+
+int
+DenseMatrix::
+size2() const
+{
+    return int(boost::numeric::ublas::matrix<Real>::size2());
+}
+
 
 
 DenseMatrix

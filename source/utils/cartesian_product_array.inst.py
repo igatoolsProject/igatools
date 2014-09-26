@@ -22,7 +22,8 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-iga_inc_files = ['base/tensor.h']
+iga_inc_files = ['base/tensor.h',
+				 'utils/value_table.h']
 other_files   = [
 				#'boost/numeric/ublas/matrix.hpp',
 				#'boost/numeric/ublas/io.hpp'

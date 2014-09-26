@@ -1,0 +1,31 @@
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.500000 1.00000 ]
+	Num elements: 4
+		Direction[0] = 2
+		Direction[1] = 2
+CartesianGrid<2>
+	Knot coordinates:
+		Direction[0] = [ 0 0.500000 1.00000 ]
+		Direction[1] = [ 0 0.500000 1.00000 ]
+	Num elements: 4
+		Direction[0] = 2
+		Direction[1] = 2
+Number of multiplier dof2
+Number of primal dof5
+mult dof nb: 0, primal dof index: 0, primal dof nb: 1, primal dof coef val: 0.333333
+mult dof nb: 0, primal dof index: 1, primal dof nb: 3, primal dof coef val: 0.166667
+mult dof nb: 0, primal dof index: 2, primal dof nb: 4, primal dof coef val: 0.208333
+mult dof nb: 0, primal dof index: 3, primal dof nb: 7, primal dof coef val: 0.250000
+mult dof nb: 0, primal dof index: 4, primal dof nb: 10, primal dof coef val: 0.0416667
+, in the rhs: 0
+-----------
+Number of primal dof5
+mult dof nb: 1, primal dof index: 0, primal dof nb: 1, primal dof coef val: 0.166667
+mult dof nb: 1, primal dof index: 1, primal dof nb: 3, primal dof coef val: 0.333333
+mult dof nb: 1, primal dof index: 2, primal dof nb: 4, primal dof coef val: 0.0416667
+mult dof nb: 1, primal dof index: 3, primal dof nb: 7, primal dof coef val: 0.250000
+mult dof nb: 1, primal dof index: 4, primal dof nb: 10, primal dof coef val: 0.208333
+, in the rhs: 0
+-----------

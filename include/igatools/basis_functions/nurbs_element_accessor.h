@@ -22,10 +22,12 @@
 #define NURBS_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
+
+
+#ifdef NURBS
 #include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/basis_functions/nurbs_uniform_quad_cache.h>
 
-#ifdef NURBS
 IGA_NAMESPACE_OPEN
 
 template < int, int , int > class NURBSSpace ;

@@ -27,6 +27,8 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <boost/tti/has_member_function.hpp>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -467,7 +469,11 @@ using Conditional = typename std::conditional<C,T,F>::type;
 template<bool B, typename T = void>
 using EnableIf = typename std::enable_if<B,T>::type;
 
-
+/**
+ * Macro used to generate the metafunction
+ * <tt>has_member_function_print_info</tt>
+ */
+BOOST_TTI_HAS_MEMBER_FUNCTION(print_info)
 
 /**
  * Type for specifying the type of reference space (BSpline or NURBS).
@@ -483,7 +489,35 @@ enum class RefSpaceType : int
 
 
 /**
- * Type for specifying the kind of interface between two patches.
+ * Type for specifying the kind of boundary condition on a face of a space-component.
+ */
+enum class BoundaryConditionType : int
+{
+    /** Dirichlet boundary condition. */
+    Dirichlet = 0,
+
+    /** Dirichlet homogeneous boundary condition. */
+    DirichletHomogeneous = 1,
+
+    /** Neumann boundary condition. */
+    Neumann = 2,
+
+    /** Neumann homogeneous boundary condition. */
+    NeumannHomogeneous = 3,
+
+    /** Robin boundary condition. */
+    Robin = 4,
+
+    /**
+     * The boundary part of an interface, i.e. has a relation with another space-component face.
+     * @sa InterfaceType
+     * @sa MultiPatchSpace
+     */
+    Interface = 5
+};
+
+/**
+ * Type for specifying the kind of interface between two faces of a space-component.
  * @sa MultiPatchSpace
  */
 enum class InterfaceType : int
@@ -513,7 +547,7 @@ enum class InterfaceType : int
 
 
 /**
- * Bit field flags specifying the type of a linear cosntraint.
+ * Bit field flags specifying the type of a linear constraint.
  */
 enum class LinearConstraintType : int
 {
@@ -533,11 +567,11 @@ enum class LinearConstraintType : int
 
 enum class CopyPolicy : int
 {
-	/** Use the shallow copy policy: the pointer are copied. */
-	shallow = 1,
+    /** Use the shallow copy policy: the pointer are copied. */
+    shallow = 1,
 
-	/** Use the deep copy policy: the pointer are allocated using the copy constructor. */
-	deep = 2
+    /** Use the deep copy policy: the pointer are allocated using the copy constructor. */
+    deep = 2
 };
 
 template<int dim, int range, int rank>

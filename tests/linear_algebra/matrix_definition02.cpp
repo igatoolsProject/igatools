@@ -35,6 +35,9 @@
 
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/linear_algebra/dof_tools.h>
+
+using std::set;
 
 int main(int argc, char *argv[])
 {
@@ -68,12 +71,29 @@ int main(int argc, char *argv[])
     auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
     auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
 
+    const auto dofs_view_row = bspline_space_rows->get_dof_distribution_global().get_dofs_view();
+    const auto dofs_view_col = bspline_space_cols->get_dof_distribution_global().get_dofs_view();
+
     const auto n_basis_sp_rows = bspline_space_rows->get_num_basis();
     const auto n_basis_sp_cols = bspline_space_cols->get_num_basis();
     out << endl;
     out << "Number of dofs of rows space: " << n_basis_sp_rows << std::endl;
     out << "Number of dofs of columns space: " << n_basis_sp_cols << std::endl;
     out << endl;
+
+    SpaceManager space_manager;
+    space_manager.spaces_insertion_open();
+    space_manager.add_space(bspline_space_rows);
+    space_manager.add_space(bspline_space_cols);
+    space_manager.spaces_insertion_close();
+
+    space_manager.spaces_connectivity_open();
+    space_manager.add_spaces_connection(bspline_space_rows,bspline_space_cols);
+    space_manager.spaces_connectivity_close();
+
+    auto &sp_conn = space_manager.get_spaces_connection(bspline_space_rows,bspline_space_cols);
+    sp_conn.add_dofs_connectivity(
+        dof_tools::build_dofs_connectvity_all_to_all(dofs_view_row,dofs_view_col));
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
@@ -84,19 +104,19 @@ int main(int argc, char *argv[])
     using MatrixType = Matrix<la_pack>;
 
 
-    MatrixType A(SparsityPattern(
-                     *bspline_space_rows->get_space_manager(),
-                     *bspline_space_cols->get_space_manager()));
+    SparsityPattern sparsity_pattern(space_manager);
+
+    MatrixType A(sparsity_pattern);
 
 
     const auto num_rows = n_basis_sp_rows ;
     const auto num_cols = n_basis_sp_cols ;
 
     for (Index i = 0; i < num_cols ; i++)
-        A.add_entry(i, i, 2.0);
+        A.add_entry(dofs_view_row[i], dofs_view_col[i], 2.0);
 
     for (Index i = 0; i < num_rows - num_cols ; i++)
-        A.add_entry(num_cols + i, i, 1.0);
+        A.add_entry(dofs_view_row[num_cols + i], dofs_view_col[i], 1.0);
 
     A.fill_complete();
 
@@ -106,15 +126,19 @@ int main(int argc, char *argv[])
     out << endl;
 
 
-    VectorType b(bspline_space_cols->get_num_basis());
-    for (Index i = 0; i < num_cols ; i++)
-        b.add_entry(i,i + 1.0);
+    VectorType b(vector<Index>(dofs_view_col.begin(),dofs_view_col.end()));
+    Real val = 1.0;
+    for (const Index id : dofs_view_col)
+    {
+        b.add_entry(id,val);
+        val += 1;
+    }
 
     out << "b vector" << endl;
     b.print(out);
     out << endl;
 
-    VectorType c(bspline_space_rows->get_num_basis());
+    VectorType c(vector<Index>(dofs_view_row.begin(),dofs_view_row.end()));
 
 
     // c = A . b

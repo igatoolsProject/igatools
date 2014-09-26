@@ -234,6 +234,15 @@ clear() noexcept
     this->resize(0);
 }
 
+
+template<class T, int rank>
+bool
+DynamicMultiArray<T,rank>::
+empty() const
+{
+    return this->get_data().empty();
+}
+
 //template<class T, int rank>
 //LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)
 //{

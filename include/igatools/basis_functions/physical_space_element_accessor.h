@@ -72,7 +72,7 @@ template<class PhysSpace>
 class PhysicalSpaceElementAccessor
     :
     public SpaceElementAccessor<PhysSpace>,
-   // todo: private PhysSpace::RefSpace::ElementAccessor,
+    // todo: private PhysSpace::RefSpace::ElementAccessor,
     private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
@@ -103,7 +103,7 @@ public :
 
 
     using Value = typename PhysSpace::Value;
-    using Point = typename PhysSpace::Point;
+    using PhysPoint = typename PhysSpace::Point;
     using RefPoint = typename RefSpace::Point;
 
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
@@ -277,7 +277,7 @@ public :
     /**
      * @todo Document this function
      */
-    const Point &
+    const PhysPoint &
     get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
 
     /**
@@ -364,7 +364,9 @@ private:
      */
     const RefElemAccessor &get_ref_space_accessor() const;
     RefElemAccessor &get_ref_space_accessor()
-    { return ref_space_element_accessor_;}
+    {
+        return ref_space_element_accessor_;
+    }
     /**
      * Return a const reference of this object as would be viewed as push-forward element accessor.
      * This means that the returned object can be queried (but not modified) as the push-forward
@@ -396,7 +398,42 @@ protected:
      */
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
+
+    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+    ///@{
+    /**
+     * Moves the element to the position that differs from the current one
+     * for the quantity given by @p increment.
+     *
+     * If the resulting position after the movement is valid (i.e. within the grid), then the function
+     * returns true, otherwise it returns false.
+     */
+    bool jump(const TensorIndex<dim> &increment);
+
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index);
+
+
+    /**
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const TensorIndex<dim> &tensor_index);
+
+    /** Moves the element to the next valid element in the CartesianGrid. */
     void operator++();
+    ///@}
+
+
 
     bool operator==(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;
     bool operator!=(const PhysicalSpaceElementAccessor<PhysSpace> &a) const;

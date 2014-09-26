@@ -46,12 +46,13 @@ public:
 
     /**
      * It builds and returns a std::shared_ptr wrapping a
-     * LinearConstraint of the specified @type,
+     * LinearConstraint (associated to the @p global_dof_id) of the specified @type,
      * from a vector of @p dofs defining the constraint,
      * their relative @p coefficients and the tight hand side value @p rhs.
      */
     static std::shared_ptr<LinearConstraint>
-    create(const LinearConstraintType &type,
+    create(const Index global_dof_id,
+           const LinearConstraintType &type,
            const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
 
     /** Destructor. */
@@ -108,6 +109,11 @@ public:
     LinearConstraintType get_type() const;
 
     /**
+     * Returns the global dof id associated to the linear constraint.
+     */
+    Index get_global_dof_id() const;
+
+    /**
      * @name Printing info
      */
     ///@{
@@ -140,13 +146,14 @@ private:
     LinearConstraint() = delete;
 
     /**
-     * Constructor. It builds the LinearConstraint of the specified @type,
-     * from a vector of @p dofs defining the constraint,
+     * Constructor. It builds the LinearConstraint (associated to the @p global_dof_id)
+     * of the specified @type, from a vector of @p dofs defining the constraint,
      * their relative @p coefficients and the tight hand side value @p rhs.
      *
      * @note Not allowed to be used. Use the associated create() function.
      */
-    LinearConstraint(const LinearConstraintType &type,
+    LinearConstraint(const Index global_dof_id,
+                     const LinearConstraintType &type,
                      const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
 
     /**
@@ -188,6 +195,10 @@ private:
 
     /** Type of the linear constraint. */
     LinearConstraintType type_;
+
+
+    /** Global dof id associated to the linear constraint. */
+    Index global_dof_id_;
 };
 
 
