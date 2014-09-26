@@ -20,6 +20,8 @@
 
 #include <igatools/linear_algebra/sparsity_pattern.h>
 
+#ifdef USE_PETSC
+
 using std::set;
 
 using std::pair;
@@ -196,3 +198,4 @@ SparsityPattern::get_num_dof_connections() const
 
 IGA_NAMESPACE_CLOSE
 
+#endif

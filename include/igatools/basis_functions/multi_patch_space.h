@@ -204,8 +204,8 @@ public:
      * (for example using the function arrangement_open()).
      */
     void add_interface_mortar(
-        PatchPtr patch_0,const int side_id_patch_0,
-        PatchPtr patch_1,const int side_id_patch_1,
+        PatchPtr slave_space,const int face_id_slave,
+        PatchPtr master_space,const int face_id_master,
         MortarMultiplierSpacePtr multiplier_space);
 
     ///@}

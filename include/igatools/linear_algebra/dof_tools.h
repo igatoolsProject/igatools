@@ -23,6 +23,7 @@
 #define __DOF_TOOLS_H_
 
 #include <igatools/base/config.h>
+#include <igatools/basis_functions/space_manager.h>
 #include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/basis_functions/function_space.h>
 

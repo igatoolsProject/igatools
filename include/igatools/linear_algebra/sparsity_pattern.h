@@ -22,6 +22,8 @@
 #define SPARSITY_PATTERN_H_
 
 #include <igatools/base/config.h>
+
+#ifdef USE_PETSC
 #include <igatools/basis_functions/space_manager.h>
 
 #include <set>
@@ -101,5 +103,7 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
+
+#endif
 
 #endif
