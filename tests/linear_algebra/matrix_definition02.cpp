@@ -104,9 +104,9 @@ int main(int argc, char *argv[])
     using MatrixType = Matrix<la_pack>;
 
 
-    SparsityPattern sparsity_pattern(space_manager);
+//    SparsityPattern sparsity_pattern(space_manager);
 
-    MatrixType A(sparsity_pattern);
+    MatrixType A(space_manager);
 
 
     const auto num_rows = n_basis_sp_rows ;
