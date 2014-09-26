@@ -246,6 +246,11 @@ public:
             }
         }
 
+        Index get_num_rows() const
+        {
+            return connectivity_.size();
+        }
+
         void print_info(LogStream &out) const
         {
             Index counter = 0;

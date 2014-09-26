@@ -23,16 +23,14 @@
 
 #include <igatools/base/config.h>
 //#include <igatools/base/logstream.h>
-#include <igatools/basis_functions/space_manager.h>
-#include <igatools/linear_algebra/dense_matrix.h>
-#if 0
-#include <igatools/linear_algebra/sparsity_pattern.h>
-#endif
-#include <igatools/linear_algebra/distributed_vector.h>
 
 #ifdef USE_TRILINOS
-#include <Tpetra_CrsMatrix.hpp>
+#include <igatools/linear_algebra/trilinos_tools.h>
 #endif
+
+#include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/linear_algebra/distributed_vector.h>
+
 
 #ifdef USE_PETSC
 #include <petscmat.h>
@@ -46,37 +44,6 @@ template <LAPack la_pack>
 class Matrix;
 
 #ifdef USE_TRILINOS
-
-
-/** Type alias for the local ordinal types (i.e. the types for the local indices). */
-using LO = Index;
-
-/** Type alias for the global ordinal types (i.e. the types for the global indices). */
-using GO = Index;
-
-/** Type alias for the communicator. */
-using Comm = Teuchos::Comm<int>;
-using CommPtr = Teuchos::RCP<const Comm>;
-
-/** Type alias for the dofs map across the processors */
-using DofsMap = Tpetra::Map<LO,GO>;
-using DofsMapPtr = Teuchos::RCP<DofsMap>;
-
-/** Type alias for the connecitivty graph */
-using Graph = Tpetra::CrsGraph<LO,GO>;
-using GraphPtr = Teuchos::RCP<Graph>;
-
-using MatrixImpl = Tpetra::CrsMatrix<Real,LO,GO>;
-
-
-namespace trilinos
-{
-DofsMapPtr build_row_map(const SpaceManager & space_manager, const CommPtr comm);
-
-DofsMapPtr build_col_map(const SpaceManager & space_manager, const CommPtr comm);
-
-GraphPtr build_graph(const SpaceManager & space_manager,const DofsMapPtr row_map,const DofsMapPtr col_map);
-};
 
 
 
@@ -146,7 +113,7 @@ public:
      * specified by the SpaceManager @p space_manager.
      */
     Matrix(const SpaceManager &space_manager,
-           Teuchos::RCP<const Teuchos::Comm<int>> comm = Teuchos::createSerialComm<int>());
+           CommPtr comm = Teuchos::createSerialComm<int>());
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -309,17 +276,9 @@ public:
     ///@}
 
 private:
+
     /** The real Trilinos::TPetra matrix */
     Teuchos::RCP<MatrixImpl> matrix_ ;
-
-
-//    Teuchos::RCP<DofsMap> all_dofs_map_;
-    Teuchos::RCP<DofsMap> row_space_map_;
-    Teuchos::RCP<DofsMap> column_space_map_;
-
-    Teuchos::RCP<Graph> graph_;
-
-    Teuchos::RCP<const Teuchos::Comm<int>> comm_;
 };
 #endif // #ifdef USE_TRILINOS
 

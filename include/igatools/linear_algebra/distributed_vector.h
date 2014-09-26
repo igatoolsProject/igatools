@@ -30,6 +30,7 @@
 
 
 #ifdef USE_TRILINOS
+#include <igatools/linear_algebra/trilinos_tools.h>
 #include <Tpetra_Vector.hpp>
 #endif
 
@@ -79,7 +80,7 @@ public:
      * for @p n degrees of freedom.
      * All entries are set to zero.
      */
-    Vector(const Index n);
+    Vector(const Index n,CommPtr comm = Teuchos::createSerialComm<int>());
 
     /**
      * Construct a vector that gets a non consecutive indexing
@@ -87,7 +88,9 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const vector<Index> &dof_ids);
+    Vector(const vector<Index> &dof_ids,CommPtr comm = Teuchos::createSerialComm<int>());
+
+    Vector(DofsMapPtr map);
 
     /**
      * Copy constructor. Performs a shallow copy of the object (i.e.)
@@ -233,8 +236,6 @@ public:
     ///@}
 
 private:
-    Teuchos::RCP<const Teuchos::Comm<int>> comm_ = Teuchos::createSerialComm<int>();
-
     /**
      * Smart pointer wrapping a Tpetra::Vector
      */
