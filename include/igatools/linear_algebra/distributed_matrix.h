@@ -22,14 +22,15 @@
 #define DISTRIBUTED_MATRIX_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/logstream.h>
-#include <igatools/linear_algebra/dense_matrix.h>
-#include <igatools/linear_algebra/sparsity_pattern.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+//#include <igatools/base/logstream.h>
 
 #ifdef USE_TRILINOS
-#include <Tpetra_CrsMatrix.hpp>
+#include <igatools/linear_algebra/trilinos_tools.h>
 #endif
+
+#include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/linear_algebra/distributed_vector.h>
+
 
 #ifdef USE_PETSC
 #include <petscmat.h>
@@ -37,10 +38,15 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 template <LAPack la_pack>
 class Matrix;
 
 #ifdef USE_TRILINOS
+
+
+
 /**
  * @todo Missing documentation
  *
@@ -49,55 +55,7 @@ class Matrix;
 template <>
 class Matrix<LAPack::trilinos>
 {
-private:
-    /** Type alias for the local ordinal types (i.e. the types for the local indices). */
-    using LO = Index;
-
-    /** Type alias for the global ordinal types (i.e. the types for the global indices). */
-    using GO = Index;
-#if 0
-    /**
-     The Kokkos "Node" type describes the type of shared-memory
-     parallelism that Tpetra will use _within_ an MPI process.  The
-     available Node types depend on Trilinos' build options and the
-     availability of certain third-party libraries.  Here are a few
-     examples:
-
-     Kokkos::SerialNode: No parallelism
-
-     Kokkos::TPINode: Uses a custom Pthreads wrapper
-
-     Kokkos::TBBNode: Uses Intel's Threading Building Blocks
-
-     Kokkos::ThrustNode: Uses Thrust, a C++ CUDA wrapper,
-     for GPU parallelism.
-
-     Using a GPU-oriented Node means that Tpetra objects that store a
-     lot of data (vectors and sparse matrices, for example) will store
-     that data on the GPU, and operate on it there whenever possible.
-
-     Kokkos::DefaultNode gives you a default Node type.  It may be
-     different, depending on Trilinos' build options.  Currently, for
-     example, building Trilinos with Pthreads enabled gives you
-     Kokkos::TPINode by default.  That means your default Node is a
-     parallel node!
-    */
-    using Node = typename Kokkos::SerialNode;
-#endif
-
-    /** Type alias for the dofs map across the processors */
-    using DofsMap = typename Tpetra::Map<LO,GO>;
-
-
-    /** Type alias for the connecitivty graph */
-    using Graph = typename Tpetra::CrsGraph<LO,GO>;
-
-
-
 public:
-    /** Typedef for the matrix type */
-    using WrappedMatrixType = Tpetra::CrsMatrix<Real,LO,GO> ;
-
     using self_t = Matrix<LAPack::trilinos>;
 
     using vector_t = Vector<LAPack::trilinos>;
@@ -108,12 +66,13 @@ public:
     /** Default constructor */
     Matrix() = delete;
 
+
     /**
      * Construct a distributed matrix with the dof distribution for its rows and column
-     * specified by the SparsityPattern @p sparsity_pattern.
+     * specified by the SpaceManager @p space_manager.
      */
-    Matrix(const SparsityPattern &sparsity_pattern,
-           Teuchos::RCP<const Teuchos::Comm<int>> comm = Teuchos::createSerialComm<int>());
+    Matrix(const SpaceManager &space_manager,
+           CommPtr comm = Teuchos::createSerialComm<int>());
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -135,12 +94,13 @@ public:
      * a Matrix object wrapped by a std::shared_ptr
      */
     ///@{
+
     /**
      * Create a distributed matrix with the dof dostribution for its rows and column
-     * specified by the SparsityPattern @p sparsity_pattern.
+     * specified by the SpaceManager @p space_manager.
      */
-    static std::shared_ptr<self_t> create(const SparsityPattern &sparsity_pattern);
-    ///@}
+    static std::shared_ptr<self_t> create(const SpaceManager &space_manager);
+///@}
 
     /** @name Assignment operators */
     ///@{
@@ -198,13 +158,13 @@ public:
      * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
      * concrete Trilinos distributed matrix. Const version.
      */
-    Teuchos::RCP<const WrappedMatrixType> get_trilinos_matrix() const ;
+    Teuchos::RCP<const MatrixImpl> get_trilinos_matrix() const ;
 
     /**
      * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
      * concrete Trilinos distributed matrix. Non-const version.
      */
-    Teuchos::RCP<WrappedMatrixType> get_trilinos_matrix() ;
+    Teuchos::RCP<MatrixImpl> get_trilinos_matrix() ;
     ///@}
 
     /** @name Methods for retrieving or printing the matrix informations */
@@ -268,19 +228,9 @@ public:
     ///@}
 
 private:
+
     /** The real Trilinos::TPetra matrix */
-    Teuchos::RCP<WrappedMatrixType> matrix_ ;
-
-
-//    Teuchos::RCP<DofsMap> all_dofs_map_;
-    Teuchos::RCP<DofsMap> row_space_map_;
-    Teuchos::RCP<DofsMap> column_space_map_;
-
-    Teuchos::RCP<Graph> graph_;
-
-    Teuchos::RCP<const Teuchos::Comm<int>> comm_;
-
-    void init(const SparsityPattern &sparsity_pattern);
+    Teuchos::RCP<MatrixImpl> matrix_ ;
 };
 #endif // #ifdef USE_TRILINOS
 

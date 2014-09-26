@@ -100,7 +100,7 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     space     = Space::create(ref_space, PushFw::create(map));
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LAPack::trilinos>::create(SparsityPattern(*space->get_space_manager()));
+    matrix   = Matrix<LAPack::trilinos>::create(*space->get_space_manager());
     rhs      = Vector<LAPack::trilinos>::create(n_basis);
     solution = Vector<LAPack::trilinos>::create(n_basis);
 }

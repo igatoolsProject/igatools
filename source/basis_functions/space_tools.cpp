@@ -292,10 +292,11 @@ projection_l2(const typename Space::Func &func,
 {
     const auto space_manager = space->get_space_manager();
 
-    const SparsityPattern sparsity_pattern(*space_manager);
-    Matrix<la_pack> matrix(sparsity_pattern);
+//    const SparsityPattern sparsity_pattern(*space_manager);
+    Matrix<la_pack> matrix(*space_manager);
 
-    const auto space_dofs = sparsity_pattern.get_row_dofs();
+    const auto space_dofs_set = space_manager->get_row_dofs();
+    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 

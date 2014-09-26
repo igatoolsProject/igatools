@@ -304,6 +304,8 @@ SpaceManager::
 SpacesConnection::
 add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
 {
+    extra_dofs_connectivity_.merge(dofs_connectivity);
+#if 0
     for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
     {
         const auto row_dof = dofs_connectivity_map_entry.first;
@@ -311,8 +313,25 @@ add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
 
         extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
     }
+#endif
 }
 
+
+void
+SpaceManager::
+add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
+{
+    extra_dofs_connectivity_.merge(dofs_connectivity);
+#if 0
+    for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
+    {
+        const auto row_dof = dofs_connectivity_map_entry.first;
+        const auto &col_dofs = dofs_connectivity_map_entry.second;
+
+        extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
+    }
+#endif
+}
 
 
 
@@ -602,6 +621,10 @@ get_row_dofs() const
         const auto row_dofs_current_space = sp_conn.get_row_dofs();
         row_dofs.insert(row_dofs_current_space.begin(),row_dofs_current_space.end());
     }
+
+    for (const auto extra_row : extra_dofs_connectivity_)
+        row_dofs.insert(extra_row.first);
+
     return row_dofs;
 }
 
@@ -616,6 +639,10 @@ get_col_dofs() const
         const auto col_dofs_current_space = sp_conn.get_col_dofs();
         col_dofs.insert(col_dofs_current_space.begin(),col_dofs_current_space.end());
     }
+
+    for (const auto extra_row : extra_dofs_connectivity_)
+        col_dofs.insert(extra_row.second.begin(),extra_row.second.end());
+
     return col_dofs;
 }
 
@@ -641,33 +668,25 @@ get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
 {
     auto sparsity_pattern = shared_ptr<DofsConnectivity>(new DofsConnectivity);
 
-
     Assert(!spaces_connections_.empty(),ExcEmptyObject());
     for (const auto &sp_conn : spaces_connections_)
     {
-        if (sp_conn.is_unique_space())
+        if (sp_conn.is_unique_space() && sp_conn.use_dofs_connectivity_from_space())
         {
-            // adding the contribution of the dofs defined within the space itself-- begin
+            // adding the contribution of the dofs defined within the space itself
             const auto &space = sp_conn.get_space_row();
             for (const auto element_dofs : space.get_elements_dofs_view())
                 for (const auto &dof : element_dofs.second)
                     (*sparsity_pattern)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
-            // adding the contribution of the dofs defined within the space -- end
         }
 
-
-
-        // adding the extra contribution to the connectivity defined within the spaces connection -- begin
-        const auto &extra_dofs_connectivity = sp_conn.get_extra_dofs_connectivity();
-        for (const auto &connectivity_map_entry : extra_dofs_connectivity)
-        {
-            const auto   row_id = connectivity_map_entry.first;
-            const auto &cols_id = connectivity_map_entry.second;
-
-            (*sparsity_pattern)[row_id].insert(cols_id.begin(),cols_id.end());
-        }
-        // adding the extra contribution to the connectivity defined within the spaces connection -- end
+        // adding the extra contribution to the connectivity defined within the spaces connection
+        sparsity_pattern->merge(sp_conn.get_extra_dofs_connectivity());
     }
+
+    // adding the extra contribution to the remaining extra connectivity
+    // (i.e. the connectivity not declared within a SpacesConnection obj)
+    sparsity_pattern->merge(extra_dofs_connectivity_);
 
     return sparsity_pattern;
 }

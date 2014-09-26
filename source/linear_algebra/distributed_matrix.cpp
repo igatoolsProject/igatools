@@ -51,17 +51,29 @@ DeclException0(ExcNotQuadratic);
 
 
 Matrix<LAPack::trilinos>::
+Matrix(const SpaceManager &space_manager,CommPtr comm)
+    :
+    matrix_(trilinos_tools::build_matrix(
+                trilinos_tools::build_graph(
+                    space_manager,
+                    trilinos_tools::build_row_map(space_manager,comm),
+                    trilinos_tools::build_col_map(space_manager,comm))))
+{
+    /*
+    matrix_.reset(new MatrixImpl(
+                trilinos_tools::build_graph(
+                        space_manager,
+                        trilinos_tools::build_row_map(space_manager,comm),
+                        trilinos_tools::build_col_map(space_manager,comm))));
+    matrix_->setAllToScalar(0.0);
+    //*/
+}
+
+#if 0
+Matrix<LAPack::trilinos>::
 Matrix(const SparsityPattern &sparsity_pattern,Teuchos::RCP<const Teuchos::Comm<int>> comm)
     :
     comm_(comm)
-{
-    init(sparsity_pattern) ;
-};
-
-
-void
-Matrix<LAPack::trilinos>::
-init(const SparsityPattern &sparsity_pattern)
 {
     //-------------------------------------------------------------------------------------
     const auto row_dofs = sparsity_pattern.get_row_dofs();
@@ -70,27 +82,18 @@ init(const SparsityPattern &sparsity_pattern)
     const auto col_dofs = sparsity_pattern.get_col_dofs();
 //  std::sort(col_dofs.begin(),col_dofs.end());
 
-    /*
-    vector<Index> all_dofs(row_dofs.size()+col_dofs.size());
-    auto it = std::set_union(row_dofs.begin(),row_dofs.end(),
-                             col_dofs.begin(),col_dofs.end(),
-                             all_dofs.begin());
-    all_dofs.resize(it-all_dofs.begin());
-    //*/
     //-------------------------------------------------------------------------------------
 
-    row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
 
     column_space_map_.reset(new DofsMap(col_dofs.size(),col_dofs,0,comm_));
 
-//    all_dofs_map_.reset(new DofsMap(all_dofs.size(),all_dofs,0,comm_));
-
+    row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
 
     using LongUInt = long unsigned int;
     Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
         Teuchos::arcp(
             Teuchos::RCP<const std::vector<LongUInt> >(
-                new vector<LongUInt>(sparsity_pattern.get_num_overlapping_funcs()))) ;
+                new vector<LongUInt>(sparsity_pattern.get_num_dof_connections()))) ;
     //-------------------------------------------------------------------------------------
 
 
@@ -114,12 +117,11 @@ init(const SparsityPattern &sparsity_pattern)
     graph_->fillComplete(column_space_map_,row_space_map_);
     //-------------------------------------------------------------------------------------
 
-    matrix_.reset(new WrappedMatrixType(graph_));
+    matrix_.reset(new MatrixImpl(graph_));
     matrix_->setAllToScalar(0.0);
     //-------------------------------------------------------------------------------------
-
 };
-//*/
+
 
 
 shared_ptr<Matrix<LAPack::trilinos> >
@@ -127,6 +129,15 @@ Matrix<LAPack::trilinos>::
 create(const SparsityPattern &sparsity_pattern)
 {
     return std::make_shared<Matrix>(Matrix(sparsity_pattern));
+}
+#endif
+
+
+shared_ptr<Matrix<LAPack::trilinos> >
+Matrix<LAPack::trilinos>::
+create(const SpaceManager &space_manager)
+{
+    return std::make_shared<Matrix>(Matrix(space_manager));
 }
 
 void
@@ -176,7 +187,8 @@ void
 Matrix<LAPack::trilinos>::
 fill_complete()
 {
-    matrix_->fillComplete(graph_->getDomainMap(),graph_->getRangeMap());
+    const auto graph = matrix_->getGraph();
+    matrix_->fillComplete(graph->getDomainMap(),graph->getRangeMap());
 };
 
 void
@@ -189,14 +201,14 @@ resume_fill()
 
 auto
 Matrix<LAPack::trilinos>::
-get_trilinos_matrix() -> Teuchos::RCP<WrappedMatrixType>
+get_trilinos_matrix() -> Teuchos::RCP<MatrixImpl>
 {
     return matrix_;
 };
 
 auto
 Matrix<LAPack::trilinos>::
-get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrixType>
+get_trilinos_matrix() const -> Teuchos::RCP<const MatrixImpl>
 {
     return matrix_;
 };
