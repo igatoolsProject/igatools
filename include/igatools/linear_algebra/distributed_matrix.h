@@ -55,10 +55,6 @@ class Matrix;
 template <>
 class Matrix<LAPack::trilinos>
 {
-private:
-
-
-
 public:
     using self_t = Matrix<LAPack::trilinos>;
 
