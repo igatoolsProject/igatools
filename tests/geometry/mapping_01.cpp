@@ -30,6 +30,7 @@
 #include <igatools/geometry/mapping_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/mapping_element_accessor.h>
+#include <igatools/geometry/mapping_uniform_quad_cache.h>
 
 template <int dim, int codim >
 void test_evaluate()
@@ -51,11 +52,17 @@ void test_evaluate()
     out << "A =" << endl << A << endl;
     out << "b =" << b << endl << endl;
 
+    const auto flag = ValueFlags::point|ValueFlags::map_gradient|
+            ValueFlags::map_hessian;
     QTrapez<dim> quad;
 
+    MappingUniformQuadCache<dim, codim> cache(map, flag, quad);
+
+
     auto elem = map->begin();
-    elem->init_cache(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
-    elem->fill_cache();
+    cache.init_element_cache(elem);
+    cache.fill_element_cache(elem);
+
     auto values=elem->get_map_values();
     auto gradients = elem->get_map_gradients();
     auto hessians = elem->get_map_hessians();
