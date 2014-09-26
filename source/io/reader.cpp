@@ -20,7 +20,11 @@
 
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
+
+#ifdef NURBS
 #include <igatools/basis_functions/nurbs_element_accessor.h>
+#endif
+
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/utils/vector_tools.h>
@@ -489,6 +493,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());
 #if 0
+		
         using space_t = NURBSSpace<dim,dim_phys,1>;
         auto space = space_t::create(
                          grid,
@@ -656,6 +661,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     return ref_space;
 }
 
+#ifdef NURBS
 template <int dim, int range, int rank>
 shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
@@ -812,7 +818,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     return ref_space;
 }
-
+#endif
 
 template <int dim, int codim = 0>
 std::shared_ptr< Mapping<dim,codim> >
@@ -868,11 +874,14 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     const int dim_phys = dim + codim;
     if (is_nurbs_space)
     {
-#if 0
+#ifdef NURBS
         using ref_space_t = NURBSSpace<dim,dim_phys,1>;
         auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
+#else
+		Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+		AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
     }
     else
