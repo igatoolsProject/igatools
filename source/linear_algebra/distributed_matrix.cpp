@@ -51,7 +51,7 @@ DeclException0(ExcNotQuadratic);
 
 namespace trilinos
 {
-DofsMapPtr build_row_map(const SpaceManager & space_manager,CommPtr comm)
+DofsMapPtr build_row_map(const SpaceManager &space_manager,CommPtr comm)
 {
     const auto dofs_set = space_manager.get_row_dofs();
     const vector<GO> dofs_vec(dofs_set.begin(),dofs_set.end());
@@ -59,7 +59,7 @@ DofsMapPtr build_row_map(const SpaceManager & space_manager,CommPtr comm)
     return Teuchos::rcp(new DofsMap(dofs_vec.size(),dofs_vec,0,comm));
 }
 
-DofsMapPtr build_col_map(const SpaceManager & space_manager,const CommPtr comm)
+DofsMapPtr build_col_map(const SpaceManager &space_manager,const CommPtr comm)
 {
     const auto dofs_set = space_manager.get_col_dofs();
     const vector<GO> dofs_vec(dofs_set.begin(),dofs_set.end());
@@ -67,14 +67,16 @@ DofsMapPtr build_col_map(const SpaceManager & space_manager,const CommPtr comm)
     return Teuchos::rcp(new DofsMap(dofs_vec.size(),dofs_vec,0,comm));
 }
 
-GraphPtr build_graph(const SpaceManager & space_manager,const DofsMapPtr row_map,const DofsMapPtr col_map)
+GraphPtr build_graph(const SpaceManager &space_manager,const DofsMapPtr row_map,const DofsMapPtr col_map)
 {
-	const auto sparsity_pattern_ptr = space_manager.get_sparsity_pattern();
+    auto sparsity_pattern_ptr = space_manager.get_sparsity_pattern();
+    Assert(sparsity_pattern_ptr!=nullptr,ExcNullPtr());
 
+    const auto &sparsity_pattern = *sparsity_pattern_ptr;
 
     using LongUInt = long unsigned int;
     vector<LongUInt> num_dof_connections ;
-    for (const auto &map_entry : *sparsity_pattern_ptr)
+    for (const auto &map_entry : sparsity_pattern)
         num_dof_connections.emplace_back(map_entry.second.size()) ;
 
     Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
@@ -82,8 +84,10 @@ GraphPtr build_graph(const SpaceManager & space_manager,const DofsMapPtr row_map
             Teuchos::RCP<const std::vector<LongUInt> >(
                 new vector<LongUInt>(num_dof_connections))) ;
 
-    GraphPtr graph = Teuchos::rcp(new Graph(row_map,row_map,n_dofs_per_row,Tpetra::StaticProfile));
-    for (const auto &row : *sparsity_pattern_ptr)
+
+
+    GraphPtr graph = Teuchos::rcp(new Graph(row_map,col_map,n_dofs_per_row,Tpetra::StaticProfile));
+    for (const auto &row : sparsity_pattern)
     {
         const Index row_id = row.first ;
         const auto &cols_id = row.second;
@@ -96,6 +100,12 @@ GraphPtr build_graph(const SpaceManager & space_manager,const DofsMapPtr row_map
     }
     graph->fillComplete(col_map,row_map);
 
+    /*
+    Teuchos::RCP<Teuchos::FancyOStream>
+          tout = Teuchos::VerboseObjectBase::getDefaultOStream();
+    graph->describe(*tout, Teuchos::EVerbosityLevel::VERB_EXTREME);
+    graph->print(std::cout);
+    //*/
     return graph;
 }
 
@@ -104,8 +114,8 @@ GraphPtr build_graph(const SpaceManager & space_manager,const DofsMapPtr row_map
 Matrix<LAPack::trilinos>::
 Matrix(const SpaceManager &space_manager,
        Teuchos::RCP<const Teuchos::Comm<int>> comm)
-:
-	comm_(comm)
+    :
+    comm_(comm)
 {
     row_space_map_ = trilinos::build_row_map(space_manager,comm);
     column_space_map_ = trilinos::build_col_map(space_manager,comm);

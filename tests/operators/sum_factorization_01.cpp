@@ -236,7 +236,7 @@ PoissonProblem(const int n_knots, const int deg)
     space     = Space::create(ref_space, PushFw::create(map));
 
     num_dofs_ = space->get_num_basis();
-    matrix   = MatrixType::create(SparsityPattern(*space->get_space_manager()));
+    matrix   = MatrixType::create(*space->get_space_manager());
     rhs      = VectorType::create(num_dofs_);
     solution = VectorType::create(num_dofs_);
     out_screen << "PoissonProblem constructor -- end" << endl;

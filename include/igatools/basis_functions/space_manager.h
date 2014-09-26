@@ -207,21 +207,62 @@ public:
     /** Type alias for the LinearConstraintType. */
     using LCType = LinearConstraintType;
 
-    class DofsConnectivity : public std::map<Index,std::set<Index>>
+    class DofsConnectivity
     {
     public:
+        decltype(auto) begin()
+        {
+            return connectivity_.begin();
+        }
+
+        decltype(auto) end()
+        {
+            return connectivity_.end();
+        }
+
+        decltype(auto) begin() const
+        {
+            return connectivity_.begin();
+        }
+
+        decltype(auto) end() const
+        {
+            return connectivity_.end();
+        }
+
+        decltype(auto) operator[](const Index row_global_id)
+        {
+            return connectivity_[row_global_id];
+        }
+
         void merge(const DofsConnectivity &dofs_connectivity)
         {
-            Assert(this != &dofs_connectivity,ExcInvalidState());
-
             for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
             {
                 const auto row_dof = dofs_connectivity_map_entry.first;
-                const auto &col_dofs = dofs_connectivity_map_entry.second;
+                const auto &cols_dof = dofs_connectivity_map_entry.second;
 
-                (*this)[row_dof].insert(col_dofs.begin(),col_dofs.end());
+                connectivity_[row_dof].insert(cols_dof.begin(),cols_dof.end());
             }
         }
+
+        void print_info(LogStream &out) const
+        {
+            Index counter = 0;
+            for (const auto &dofs_connectivity_map_entry : connectivity_)
+            {
+                const auto row_dof = dofs_connectivity_map_entry.first;
+                const auto &cols_dof = dofs_connectivity_map_entry.second;
+
+                out << "row[" << counter++ << ", global id = " << row_dof << "] : [ ";
+                for (const auto &col_dof : cols_dof)
+                    out << col_dof << " ";
+                out << "]" << std::endl;
+            }
+        }
+
+    private:
+        std::map<Index,std::set<Index>> connectivity_;
     };
 
     /** @name Constructors */
@@ -696,6 +737,15 @@ private:
 
         void add_dofs_connectivity(const DofsConnectivity &dofs_connectivity);
 
+    private:
+        SpaceInfoPtr space_row_;
+        SpaceInfoPtr space_col_;
+
+        bool use_dofs_connectivity_from_space_;
+
+        DofsConnectivity extra_dofs_connectivity_;
+
+    public:
         const SpaceInfo &get_space_row() const
         {
             return *space_row_;
@@ -708,9 +758,12 @@ private:
 
         std::set<Index> get_row_dofs() const
         {
-            const auto &sp_dofs_view = space_row_->get_dofs_view();
-
-            std::set<Index> dofs(sp_dofs_view.begin(),sp_dofs_view.end());
+            std::set<Index> dofs;
+            if (use_dofs_connectivity_from_space_)
+            {
+                const auto &sp_dofs_view = space_row_->get_dofs_view();
+                dofs.insert(sp_dofs_view.begin(),sp_dofs_view.end());
+            }
 
             for (const auto &pair : extra_dofs_connectivity_)
                 dofs.insert(pair.first);
@@ -720,9 +773,13 @@ private:
 
         std::set<Index> get_col_dofs() const
         {
-            const auto &sp_dofs_view = space_col_->get_dofs_view();
+            std::set<Index> dofs;
+            if (use_dofs_connectivity_from_space_)
+            {
+                const auto &sp_dofs_view = space_col_->get_dofs_view();
 
-            std::set<Index> dofs(sp_dofs_view.begin(),sp_dofs_view.end());
+                dofs.insert(sp_dofs_view.begin(),sp_dofs_view.end());
+            }
 
             for (const auto &pair : extra_dofs_connectivity_)
                 dofs.insert(pair.second.begin(),pair.second.end());
@@ -739,15 +796,7 @@ private:
         }
 
 
-    private:
-        SpaceInfoPtr space_row_;
-        SpaceInfoPtr space_col_;
 
-        bool use_dofs_connectivity_from_space_;
-
-        DofsConnectivity extra_dofs_connectivity_;
-
-    public:
         bool use_dofs_connectivity_from_space() const
         {
             return use_dofs_connectivity_from_space_;

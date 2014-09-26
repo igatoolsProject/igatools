@@ -623,7 +623,7 @@ get_row_dofs() const
     }
 
     for (const auto extra_row : extra_dofs_connectivity_)
-    	row_dofs.insert(extra_row.first);
+        row_dofs.insert(extra_row.first);
 
     return row_dofs;
 }
@@ -641,7 +641,7 @@ get_col_dofs() const
     }
 
     for (const auto extra_row : extra_dofs_connectivity_)
-    	col_dofs.insert(extra_row.second.begin(),extra_row.second.end());
+        col_dofs.insert(extra_row.second.begin(),extra_row.second.end());
 
     return col_dofs;
 }
@@ -668,33 +668,25 @@ get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
 {
     auto sparsity_pattern = shared_ptr<DofsConnectivity>(new DofsConnectivity);
 
-
     Assert(!spaces_connections_.empty(),ExcEmptyObject());
     for (const auto &sp_conn : spaces_connections_)
     {
         if (sp_conn.is_unique_space() && sp_conn.use_dofs_connectivity_from_space())
         {
-            // adding the contribution of the dofs defined within the space itself-- begin
+            // adding the contribution of the dofs defined within the space itself
             const auto &space = sp_conn.get_space_row();
             for (const auto element_dofs : space.get_elements_dofs_view())
                 for (const auto &dof : element_dofs.second)
                     (*sparsity_pattern)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
-            // adding the contribution of the dofs defined within the space -- end
         }
 
-
-
-        // adding the extra contribution to the connectivity defined within the spaces connection -- begin
-//        const auto &extra_dofs_connectivity = sp_conn.get_extra_dofs_connectivity();
+        // adding the extra contribution to the connectivity defined within the spaces connection
         sparsity_pattern->merge(sp_conn.get_extra_dofs_connectivity());
-        // adding the extra contribution to the connectivity defined within the spaces connection -- end
     }
 
-    //-----------------------------------------------------------------------------
-    // adding the extra contribution to the remaining extra connectivity -- begin
+    // adding the extra contribution to the remaining extra connectivity
+    // (i.e. the connectivity not declared within a SpacesConnection obj)
     sparsity_pattern->merge(extra_dofs_connectivity_);
-    // adding the extra contribution to the remaining extra connectivity -- end
-    //-----------------------------------------------------------------------------
 
     return sparsity_pattern;
 }

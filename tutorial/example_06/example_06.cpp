@@ -93,7 +93,7 @@ PoissonProblem(const int n_knots, const int deg)
     face_quad(QGauss<dim-1>(deg+1))
 {
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LAPack::trilinos>::create(SparsityPattern(*space->get_space_manager()));
+    matrix   = Matrix<LAPack::trilinos>::create(*space->get_space_manager());
     rhs      = Vector<LAPack::trilinos>::create(n_basis);
     solution = Vector<LAPack::trilinos>::create(n_basis);
 }
