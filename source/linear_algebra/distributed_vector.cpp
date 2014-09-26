@@ -47,27 +47,31 @@ DeclException3(ExcVectorAccessToNonLocalElement,
 #ifdef USE_TRILINOS
 
 Vector<LAPack::trilinos>::
-Vector(const Index num_global_dofs)
+Vector(const Index num_global_dofs, CommPtr comm)
     :
-    comm_(Teuchos::createSerialComm<int>()),
-    vector_(Tpetra::createMultiVector<Real,Index,Index>(
-                Tpetra::createUniformContigMap<Index,Index>(
+    vector_(Tpetra::createMultiVector<Real,LO,GO>(
+                Tpetra::createUniformContigMap<LO,GO>(
                     num_global_dofs,
-                    comm_),
+                    comm),
                 1))
 {}
 
 
 
 Vector<LAPack::trilinos>::
-Vector(const vector<Index> &dofs_id)
+Vector(const vector<Index> &dofs_id, CommPtr comm)
     :
-    comm_(Teuchos::createSerialComm<int>()),
-    vector_(Tpetra::createMultiVector<Real,Index,Index>(
-                Tpetra::createNonContigMap<Index,Index>(
+    vector_(Tpetra::createMultiVector<Real,LO,GO>(
+                Tpetra::createNonContigMap<LO,GO>(
                     dofs_id,
-                    comm_),
+                    comm),
                 1))
+{}
+
+Vector<LAPack::trilinos>::
+Vector(DofsMapPtr map)
+    :
+    vector_(Tpetra::createMultiVector<Real,LO,GO>(map,1))
 {}
 
 

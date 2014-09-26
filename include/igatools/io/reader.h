@@ -110,7 +110,7 @@ template <int dim, int range, int rank>
 std::shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree);
 
-
+#ifdef NURBS
 /**
  * Returns a NURBSSpace object (wrapped by a std::shared_ptr) from a Boost XML tree
  * containing exactly one node with the tag "NURBSSpace".
@@ -123,7 +123,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree);
 template <int dim, int range, int rank>
 std::shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree);
-
+#endif
 
 /**
  * Collection of useful functions for reading xml trees.

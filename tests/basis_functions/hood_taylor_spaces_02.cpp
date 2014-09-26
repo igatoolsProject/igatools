@@ -173,7 +173,6 @@ StokesProblem(const int deg, const int n_knots)
     sp_conn.add_dofs_connectivity(
         dof_tools::build_dofs_connectvity_all_to_all(dofs_view_vel,dofs_view_pre));
 
-    const SparsityPattern sparsity_pattern(space_manager);
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
@@ -181,7 +180,7 @@ StokesProblem(const int deg, const int n_knots)
     const auto la_pack = LAPack::petsc;
 #endif
 
-    Bt_ = Matrix<la_pack>::create(sparsity_pattern);
+    Bt_ = Matrix<la_pack>::create(space_manager);
 
 
 }

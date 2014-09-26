@@ -473,30 +473,33 @@ template <class PhysicalSpace>
 void
 MultiPatchSpace<PhysicalSpace>::
 add_interface_mortar(
-    PatchPtr patch_0,const int side_id_patch_0,
-    PatchPtr patch_1,const int side_id_patch_1,
+    PatchPtr slave_space,const int face_id_slave,
+    PatchPtr master_space,const int face_id_master,
     MortarMultiplierSpacePtr multiplier_space)
 {
     Assert(is_interface_insertion_open_ == true,ExcInvalidState());
 
     //------------------------------------------------------------------------
     // Verify that patch 0 is present in the vector of patches -- begin
-    Assert(std::count(patches_.begin(),patches_.end(),patch_0) == 1,
-           ExcMessage("Patch 0 is not present in the vector of patches."))
+    Assert(std::count(patches_.begin(),patches_.end(),slave_space) == 1,
+           ExcMessage("The slave space is not present in the vector of spaces."))
     // Verify that patch 0 is present in the vector of patches -- end
     //------------------------------------------------------------------------
 
 
     //------------------------------------------------------------------------
     // Verify that patch 1 is present in the vector of patches -- begin
-    Assert(std::count(patches_.begin(),patches_.end(),patch_1) == 1,
-           ExcMessage("Patch 1 is not present in the vector of patches."))
+    Assert(std::count(patches_.begin(),patches_.end(),master_space) == 1,
+           ExcMessage("The master space is not present in the vector of spaces."))
     // Verify that patch 1 is present in the vector of patches -- end
     //------------------------------------------------------------------------
 
 
     std::shared_ptr<InterfaceMortar> interface_to_be_added(
-        new InterfaceMortar(patch_0,side_id_patch_0,patch_1,side_id_patch_1,multiplier_space));
+        new InterfaceMortar(
+            slave_space, face_id_slave,
+            master_space,face_id_master,
+            multiplier_space));
 
 #ifndef NDEBUG
     for (const auto &interface : interfaces_[InterfaceType::Mortar])
@@ -519,20 +522,20 @@ add_interface_mortar(
 
     space_manager_->spaces_connectivity_open();
 
-    // Adding the block patch_0-multipliers and its transpose
-    space_manager_->add_spaces_connection(patch_0,multiplier_space);
-    space_manager_->add_spaces_connection(multiplier_space,patch_0);
+    // Adding the block slave-multipliers and its transpose
+    space_manager_->add_spaces_connection(slave_space,multiplier_space);
+    space_manager_->add_spaces_connection(multiplier_space,slave_space);
 
-    // Adding the block patch_1-multipliers and its transpose
-    space_manager_->add_spaces_connection(patch_1,multiplier_space);
-    space_manager_->add_spaces_connection(multiplier_space,patch_1);
+    // Adding the block master-multipliers and its transpose
+    space_manager_->add_spaces_connection(master_space,multiplier_space);
+    space_manager_->add_spaces_connection(multiplier_space,master_space);
 
     space_manager_->spaces_connectivity_close();
 
 
     // adding to the SpaceManager the dofs connectivity of the following blocks:
-    // - (patch_0, multiplier_space) and its transpose
-    // - (patch_1, multiplier_space) and its transpose
+    // - ( slave_space, multiplier_space) and its transpose
+    // - (master_space, multiplier_space) and its transpose
     interface_to_be_added->fill_space_manager_dofs_connectivity(*space_manager_);
     // Updating the SpaceManager --- end
     //------------------------------------------------------------------------
