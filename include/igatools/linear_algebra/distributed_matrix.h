@@ -56,35 +56,6 @@ template <>
 class Matrix<LAPack::trilinos>
 {
 private:
-#if 0
-    /**
-     The Kokkos "Node" type describes the type of shared-memory
-     parallelism that Tpetra will use _within_ an MPI process.  The
-     available Node types depend on Trilinos' build options and the
-     availability of certain third-party libraries.  Here are a few
-     examples:
-
-     Kokkos::SerialNode: No parallelism
-
-     Kokkos::TPINode: Uses a custom Pthreads wrapper
-
-     Kokkos::TBBNode: Uses Intel's Threading Building Blocks
-
-     Kokkos::ThrustNode: Uses Thrust, a C++ CUDA wrapper,
-     for GPU parallelism.
-
-     Using a GPU-oriented Node means that Tpetra objects that store a
-     lot of data (vectors and sparse matrices, for example) will store
-     that data on the GPU, and operate on it there whenever possible.
-
-     Kokkos::DefaultNode gives you a default Node type.  It may be
-     different, depending on Trilinos' build options.  Currently, for
-     example, building Trilinos with Pthreads enabled gives you
-     Kokkos::TPINode by default.  That means your default Node is a
-     parallel node!
-    */
-    using Node = typename Kokkos::SerialNode;
-#endif
 
 
 
@@ -99,14 +70,6 @@ public:
     /** Default constructor */
     Matrix() = delete;
 
-#if 0
-    /**
-     * Construct a distributed matrix with the dof distribution for its rows and column
-     * specified by the SparsityPattern @p sparsity_pattern.
-     */
-    Matrix(const SparsityPattern &sparsity_pattern,
-           Teuchos::RCP<const Teuchos::Comm<int>> comm = Teuchos::createSerialComm<int>());
-#endif
 
     /**
      * Construct a distributed matrix with the dof distribution for its rows and column
@@ -135,13 +98,6 @@ public:
      * a Matrix object wrapped by a std::shared_ptr
      */
     ///@{
-#if 0
-    /**
-     * Create a distributed matrix with the dof dostribution for its rows and column
-     * specified by the SparsityPattern @p sparsity_pattern.
-     */
-    static std::shared_ptr<self_t> create(const SparsityPattern &sparsity_pattern);
-#endif
 
     /**
      * Create a distributed matrix with the dof dostribution for its rows and column
