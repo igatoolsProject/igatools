@@ -179,6 +179,11 @@ public:
         const DenseVector &local_vector);
 
 
+    self_t &operator+=(const self_t& vec)
+        {
+        vector_->update(1., *(vec.vector_), 1.);
+        return *this;
+        }
 
     /**
      * Returns the const reference to the entry of the vector identified by the @p global_id
@@ -196,6 +201,10 @@ public:
     ///@}
 
 
+    Real norm2() const
+    {
+        return vector_->getVector(0)->norm2();
+    }
 
     /**
      * Returns the local coefficients of the distributed vector,
