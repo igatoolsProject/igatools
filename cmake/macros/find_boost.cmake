@@ -17,10 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Boost library (Required)
 #-------------------------------------------------------------------------------
 macro(find_boost)
-  find_package(Boost 1.48.0 REQUIRED)
+  find_package(Boost 1.54.0 REQUIRED)
   include_directories(${Boost_INCLUDE_DIRS})
 endmacro(find_boost)
