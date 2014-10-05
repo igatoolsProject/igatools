@@ -178,12 +178,8 @@ public:
         const vector< Index > &local_to_global,
         const DenseVector &local_vector);
 
-
-    self_t &operator+=(const self_t& vec)
-        {
-        vector_->update(1., *(vec.vector_), 1.);
-        return *this;
-        }
+    /** Add vec onto current vector */
+    self_t &operator+=(const self_t& vec);
 
     /**
      * Returns the const reference to the entry of the vector identified by the @p global_id
@@ -197,15 +193,12 @@ public:
 
     /** Returns the number of entries in the vector. */
     Index size() const;
-
     ///@}
 
+    /** norm2 of the vector */
+    Real norm2();
 
-    Real norm2() const
-    {
-        return vector_->getVector(0)->norm2();
-    }
-
+    void clear();
     /**
      * Returns the local coefficients of the distributed vector,
      * from the vector of local-to-global indices.

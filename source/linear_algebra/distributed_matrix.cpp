@@ -140,6 +140,18 @@ create(const SpaceManager &space_manager)
     return std::make_shared<Matrix>(Matrix(space_manager));
 }
 
+
+
+void
+Matrix<LAPack::trilinos>::
+clear()
+{
+	matrix_->resumeFill();
+	matrix_->setAllToScalar(0.);
+}
+
+
+
 void
 Matrix<LAPack::trilinos>::
 add_entry(const Index row_id, const Index column_id, const Real value)

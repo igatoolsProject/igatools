@@ -22,7 +22,6 @@
 #define DISTRIBUTED_MATRIX_H_
 
 #include <igatools/base/config.h>
-//#include <igatools/base/logstream.h>
 
 #ifdef USE_TRILINOS
 #include <igatools/linear_algebra/trilinos_tools.h>
@@ -31,22 +30,16 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 
-
 #ifdef USE_PETSC
 #include <petscmat.h>
 #endif
 
 IGA_NAMESPACE_OPEN
 
-
-
 template <LAPack la_pack>
 class Matrix;
 
 #ifdef USE_TRILINOS
-
-
-
 /**
  * @todo Missing documentation
  *
@@ -55,10 +48,6 @@ class Matrix;
 template <>
 class Matrix<LAPack::trilinos>
 {
-private:
-
-
-
 public:
     using self_t = Matrix<LAPack::trilinos>;
 
@@ -69,7 +58,6 @@ public:
     ///@{
     /** Default constructor */
     Matrix() = delete;
-
 
     /**
      * Construct a distributed matrix with the dof distribution for its rows and column
@@ -100,15 +88,14 @@ public:
     ///@{
 
     /**
-     * Create a distributed matrix with the dof dostribution for its rows and column
-     * specified by the SpaceManager @p space_manager.
+     * Create a distributed matrix with the dof dostribution for its rows and
+     * column specified by the SpaceManager @p space_manager.
      */
     static std::shared_ptr<self_t> create(const SpaceManager &space_manager);
 ///@}
 
     /** @name Assignment operators */
     ///@{
-
     /**
      * Copy assignment operator. Not allowed to be used.
      */
@@ -118,11 +105,12 @@ public:
      * Move assignment operator. Not allowed to be used.
      */
     Matrix &operator=(self_t &&matrix) = delete;
-
     ///@}
 
     /** @name Methods for getting and/or modifying the matrix entries */
     ///@{
+    /** set all entries to zero */
+    void clear();
 
     /**
      * Add the value @p input to the matrix entry (i,j).
@@ -131,8 +119,8 @@ public:
     void add_entry(const Index i,const  Index j,const Real input);
 
     /**
-     * \brief This function add the local matrix values to the global matrix, the local-to-global ids
-     * are passed as input argument.
+     * \brief This function add the local matrix values to the global matrix,
+     * the local-to-global ids are passed as input argument.
      * \param[in] row_glob_ids The vector containing the row global ids
      * associated to the local matrix entries
      * \param[in] col_glob_ids The vector containing the colume global ids
