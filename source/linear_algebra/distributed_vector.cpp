@@ -108,18 +108,18 @@ add_entry(const Index i, const Real value)
 
 
 
-self_t &
+auto
 Vector<LAPack::trilinos>::
-operator+=(const self_t& vec)
+operator+=(const self_t& vec) -> self_t &
 {
 	vector_->update(1., *(vec.vector_), 1.);
 	return *this;
 }
 
 
-Real
+auto
 Vector<LAPack::trilinos>::
-norm2() const
+norm2() const -> Real
 {
 	return vector_->getVector(0)->norm2();
 }

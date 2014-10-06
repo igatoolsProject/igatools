@@ -196,7 +196,7 @@ public:
     ///@}
 
     /** norm2 of the vector */
-    Real norm2();
+    Real norm2() const;
 
     void clear();
     /**
