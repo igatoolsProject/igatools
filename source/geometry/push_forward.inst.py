@@ -18,9 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-data = Instantiation()
+
+include_files = ['geometry/push_forward_element_accessor.h']
+data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
  
 pf_args = unique (inst.AllPushForwards + inst.RefPushForwards)

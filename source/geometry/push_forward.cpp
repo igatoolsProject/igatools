@@ -50,7 +50,30 @@ PushForward<transformation_type_, dim_, codim_>::
 PushForward(const Self &push_forward)
     :
     map_(push_forward.map_)
-{};
+{}
+
+
+
+template< Transformation transformation_type_, int dim_, int codim_>
+auto
+PushForward<transformation_type_, dim_, codim_>::
+begin() const -> ElementIterator
+{
+    return ElementIterator(this->shared_from_this(), 0);
+}
+
+
+
+template< Transformation transformation_type_, int dim_, int codim_>
+auto
+PushForward<transformation_type_, dim_, codim_>::
+end() const -> ElementIterator
+{
+    return ElementIterator(this->shared_from_this(),
+                           IteratorState::pass_the_end);
+}
+
+
 
 template< Transformation transformation_type_, int dim_, int codim_>
 void

@@ -54,6 +54,8 @@ template < class PushForward > class PushForwardElementAccessor;
  */
 template<Transformation transformation_type_, int dim_, int codim_ = 0 >
 class PushForward
+    :
+    public std::enable_shared_from_this<PushForward<transformation_type_,dim_, codim_>>
 {
 public:
     using Map = Mapping<dim_, codim_>;
@@ -119,7 +121,6 @@ public:
      */
     PushForward() = delete ;
 
-
     /**
      * Constructor. As input argument, it takes the Mapping @p map used to define the push-forward.
      */
@@ -134,6 +135,9 @@ public:
      */
     PushForward(const Self &push_forward) ;
 
+    ElementIterator begin() const;
+
+    ElementIterator end() const;
 
     void reset_map(const std::shared_ptr< Map > map) ;
 

@@ -41,7 +41,6 @@ void uniform_space_cache(const ValueFlags flag,
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
 
-
     auto quad = QGauss<dim>(2);
     BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
     cache.print_info(out);

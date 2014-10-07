@@ -159,8 +159,8 @@ void do_test_4()
     auto it = std::find(data1.begin(),data1.end(),3);
 
     out << "iterator id=" << it.get_id()
-    	<< "   stride=" << it.get_stride()
-    	<< "   value=" << *it << endl;
+        << "   stride=" << it.get_stride()
+        << "   value=" << *it << endl;
 }
 
 

@@ -24,6 +24,7 @@
 #ifdef NURBS
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #endif
+#include <igatools/basis_functions/bspline_element_accessor.h>
 
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/ig_mapping.h>
@@ -493,7 +494,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());
 #if 0
-		
+
         using space_t = NURBSSpace<dim,dim_phys,1>;
         auto space = space_t::create(
                          grid,
@@ -880,8 +881,8 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
         map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
 #else
-		Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-		AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
     }
     else

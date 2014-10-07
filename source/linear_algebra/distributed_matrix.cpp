@@ -146,8 +146,8 @@ void
 Matrix<LAPack::trilinos>::
 clear()
 {
-	matrix_->resumeFill();
-	matrix_->setAllToScalar(0.);
+    matrix_->resumeFill();
+    matrix_->setAllToScalar(0.);
 }
 
 

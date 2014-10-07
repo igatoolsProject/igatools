@@ -53,7 +53,7 @@ void test_evaluate()
     out << "b =" << b << endl << endl;
 
     const auto flag = ValueFlags::point|ValueFlags::map_gradient|
-            ValueFlags::map_hessian;
+                      ValueFlags::map_hessian;
     QTrapez<dim> quad;
 
     MappingUniformQuadCache<dim, codim> cache(map, flag, quad);

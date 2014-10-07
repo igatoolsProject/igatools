@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace UniformQuadCache
+ *  Test for developing the  PhysicalUniformQuadCache
  *
  *  author: pauletti
  *  date: Aug 21, 2014
@@ -40,7 +40,7 @@
 
 template <class PushForward_>
 class PushFowardUniformQuadCache :
-        public MappingUniformQuadCache<PushForward_::dim, PushForward_::codim>
+    public MappingUniformQuadCache<PushForward_::dim, PushForward_::codim>
 {
     using base_t = MappingUniformQuadCache<PushForward_::dim, PushForward_::codim>;
     using PF = PushForward_;
@@ -57,7 +57,7 @@ protected:
         base_t::fill_element_cache(elem);
         elem.fill_cache();
     }
-  //  void fill_face_cache(ElementAccessor &elem, const int face);
+    //  void fill_face_cache(ElementAccessor &elem, const int face);
 
 public:
     static const int dim = PF::dim;
@@ -66,11 +66,11 @@ public:
     PushFowardUniformQuadCache(std::shared_ptr<const PF> pf,
                                const ValueFlags flag,
                                const Quadrature<dim> &quad)
-    :
+        :
         base_t(pf->get_mapping(), value_to_mapping_flag(flag), quad),
         flags_(value_to_mapping_flag(flag)),
         quad_(quad)
-        {}
+    {}
 
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem)
@@ -218,7 +218,7 @@ private:
 
 ValueFlags
 get_reference_space_accessor_fill_flags(const ValueFlags fill_flag,
-                                        const Transformation transformation_type )
+                                        const Transformation transformation_type)
 {
     bool fill_values = false;
     bool fill_gradients = false;
@@ -335,8 +335,8 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
 
 template<class PhysSpace>
 class SpaceUniformQuadCache :
-        public PhysSpace::RefSpace::UniformQuadCache,
-        public PushFowardUniformQuadCache<typename PhysSpace::PushForwardType>
+    public PhysSpace::RefSpace::UniformQuadCache,
+    public PushFowardUniformQuadCache<typename PhysSpace::PushForwardType>
 {
     using RefSpace =  typename PhysSpace::RefSpace;
     using RefSpaceCache = typename PhysSpace::RefSpace::UniformQuadCache;
@@ -398,7 +398,7 @@ public:
     SpaceUniformQuadCache(std::shared_ptr<const PhysSpace> space,
                           const ValueFlags flag,
                           const Quadrature<dim> &quad)
-    :
+        :
         RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::transformation_type), quad),
         PFCache(space->get_push_forward(), get_push_forward_accessor_fill_flags(flag), quad),
         space_(space),
@@ -435,9 +435,9 @@ private:
 
 
     ValueFlags flags_;
-   // BasisElemValueFlagsHandler flags_;
+    // BasisElemValueFlagsHandler flags_;
 
-  //  BasisFaceValueFlagsHandler face_flags_;
+    //  BasisFaceValueFlagsHandler face_flags_;
 
     Quadrature<dim> quad_;
 
@@ -462,15 +462,15 @@ void uniform_space_cache(const ValueFlags flag,
     auto space = Space::create(ref_space, push_forward);
     auto quad = QGauss<dim>(2);
     SpaceUniformQuadCache<Space> cache(space, flag, quad);
-   // cache.print_info(out);
+    // cache.print_info(out);
 
 
     auto elem = space->begin();
     //cache.init_element_cache(elem);
     //elem->print_cache_info(out);
 
-  //  cache.fill_element_cache(elem);
-   // elem->print_cache_info(out);
+    //  cache.fill_element_cache(elem);
+    // elem->print_cache_info(out);
 
 
     auto end = space->end();

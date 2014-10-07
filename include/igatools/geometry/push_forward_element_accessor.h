@@ -34,6 +34,7 @@ IGA_NAMESPACE_OPEN
  * See module on @ref accessors_iterators for a general overview.
  * @ingroup accessors
  */
+// TODO (pauletti, Oct 7, 2014): the template argument should be similar as the container type
 template<class PushForward_>
 class PushForwardElementAccessor
     : public MappingElementAccessor<PushForward_::dim, PushForward_::codim>

@@ -30,11 +30,11 @@ MappingUniformQuadCache<dim_, codim_>::
 MappingUniformQuadCache(std::shared_ptr<const Map> map,
                         const ValueFlags flag,
                         const Quadrature<dim> &quad)
-                        :
-                        base_t(map->get_grid(), flag, quad),
-                        flags_(flag),
-                        quad_(quad)
-                        {}
+    :
+    base_t(map->get_grid(), flag, quad),
+    flags_(flag),
+    quad_(quad)
+{}
 
 
 

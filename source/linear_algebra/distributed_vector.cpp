@@ -110,10 +110,10 @@ add_entry(const Index i, const Real value)
 
 auto
 Vector<LAPack::trilinos>::
-operator+=(const self_t& vec) -> self_t &
+operator+=(const self_t &vec) -> self_t &
 {
-	vector_->update(1., *(vec.vector_), 1.);
-	return *this;
+    vector_->update(1., *(vec.vector_), 1.);
+    return *this;
 }
 
 
@@ -121,7 +121,7 @@ auto
 Vector<LAPack::trilinos>::
 norm2() const -> Real
 {
-	return vector_->getVector(0)->norm2();
+    return vector_->getVector(0)->norm2();
 }
 
 
@@ -130,7 +130,7 @@ void
 Vector<LAPack::trilinos>::
 clear()
 {
-	vector_->putScalar(0.);
+    vector_->putScalar(0.);
 }
 
 
