@@ -36,6 +36,6 @@ for space in inst.AllRefSpaces_v2:
     f.write( 'std::shared_ptr<%s>,\n' %space.name)
 for space in inst.PhysSpaces_v2:
     f.write( 'std::shared_ptr<%s>,\n' %space.name)
-f.seek(-2,2);
+f.seek(f.tell()-2);
 f.write( '>;\n')
 

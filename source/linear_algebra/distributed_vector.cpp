@@ -68,11 +68,14 @@ Vector(const vector<Index> &dofs_id, CommPtr comm)
                 1))
 {}
 
+
+
 Vector<LAPack::trilinos>::
 Vector(DofsMapPtr map)
     :
     vector_(Tpetra::createMultiVector<Real,LO,GO>(map,1))
 {}
+
 
 
 auto
@@ -81,6 +84,8 @@ create(const Index size) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(size));
 }
+
+
 
 auto
 Vector<LAPack::trilinos>::
@@ -99,7 +104,35 @@ add_entry(const Index i, const Real value)
     Assert(!std::isinf(value),ExcNumberNotFinite());
 
     vector_->sumIntoGlobalValue(i,0,value);
-};
+}
+
+
+
+auto
+Vector<LAPack::trilinos>::
+operator+=(const self_t& vec) -> self_t &
+{
+	vector_->update(1., *(vec.vector_), 1.);
+	return *this;
+}
+
+
+auto
+Vector<LAPack::trilinos>::
+norm2() const -> Real
+{
+	return vector_->getVector(0)->norm2();
+}
+
+
+
+void
+Vector<LAPack::trilinos>::
+clear()
+{
+	vector_->putScalar(0.);
+}
+
 
 
 const Real &
