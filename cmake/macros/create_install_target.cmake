@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Create the install target
 macro(create_install_target use_other_templates)
@@ -35,6 +36,8 @@ macro(create_install_target use_other_templates)
   endif(${use_other_templates})
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/basis_functions/space_manager.inst 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/basis_functions/)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake 
     ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

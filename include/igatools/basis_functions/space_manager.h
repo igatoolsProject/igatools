@@ -36,6 +36,10 @@
 #include <memory>
 #include <set>
 
+
+// TODO (pauletti, Oct 3, 2014): the next line is very developer stage
+// should not be in this format for main branch
+// Update the naming and the pyhton script as well as the install option
 /**
  * Include file used for declare the Variant object that can take
  */
