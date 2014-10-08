@@ -70,32 +70,51 @@ void pf_cache_init_elem(const ValueFlags flag,
     cache.init_element_cache(elem);
     elem->print_cache_info(out);
 
-    //  cache.fill_element_cache(elem);
-    // elem->print_cache_info(out);
+    OUTEND
+}
 
 
-//    auto end = space->end();
-//
-//    cache.init_element_cache(elem);
-//    for (; elem != end; ++elem)
-//    {
-//        cache.fill_element_cache(elem);
-//        elem->get_basis_values().print_info(out);
-//    }
 
+template <int dim, int range=1, int rank=1>
+void pf_cache_fill_elem(const ValueFlags flag,
+                        const int n_knots = 5)
+{
+    OUTSTART
+
+    using PF = PushForward<Transformation::h_grad,dim,0>;
+    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto map = IdentityMapping<dim>::create(grid);
+    auto push_forward = PF::create(map);
+
+    auto quad = QGauss<dim>(2);
+    PushFowardUniformQuadCache<PF> cache(push_forward, flag, quad);
+
+    auto elem = push_forward->begin();
+    auto end = push_forward->end();
+
+    cache.init_element_cache(elem);
+
+    for (; elem != end; ++elem)
+    {
+        cache.fill_element_cache(elem);
+        elem->print_cache_info(out);
+    }
 
     OUTEND
 }
+
+
 
 
 int main()
 {
     out.depth_console(10);
 
-   //uniform_pf_cache<1>(ValueFlags::value);
-    //uniform_pf_cache<2>(ValueFlags::value);
+    uniform_pf_cache<1>(ValueFlags::value);
+    uniform_pf_cache<2>(ValueFlags::value);
 
     pf_cache_init_elem<1>(ValueFlags::tran_value);
+    pf_cache_fill_elem<1>(ValueFlags::tran_value);
 
     return  0;
 }
