@@ -291,8 +291,6 @@ projection_l2(const typename Space::Func &func,
               const Quadrature<Space::dim> &quad)
 {
     const auto space_manager = space->get_space_manager();
-
-//    const SparsityPattern sparsity_pattern(*space_manager);
     Matrix<la_pack> matrix(*space_manager);
 
     const auto space_dofs_set = space_manager->get_row_dofs();
@@ -300,76 +298,56 @@ projection_l2(const typename Space::Func &func,
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
+    const int n_qp = quad.get_num_points();
+    ValueVector< typename Space::Value> f_at_qp(n_qp);
 
-
-    //ValueFlags flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure;
-    const int n_qpoints = quad.get_num_points();
-
-    ValueVector< typename Space::Point> eval_points(n_qpoints);
-    ValueVector< typename Space::Value> func_at_eval_pts(n_qpoints);
+    auto flag = ValueFlags::point | ValueFlags::value| ValueFlags::w_measure;
+    typename Space::UniformQuadCache cache(space, flag, quad);
 
     auto elem = space->begin();
-    const auto elem_end = space->end();
-    // TODO (pauletti, Sep 12, 2014): fix next line
-    Assert(true, ExcMessage(" fix next line "));
-    //elem->init_cache(flag, quad);
+    const auto end = space->end();
+    cache.init_element_cache(elem);
+
     const int n_basis = elem->get_num_basis();
+    DenseVector loc_rhs(n_basis);
+    DenseMatrix loc_mat(n_basis, n_basis);
 
-    DenseVector local_rhs(n_basis);
-    DenseMatrix local_matrix(n_basis,n_basis);
-
-    for (; elem != elem_end; ++elem)
+    for (; elem != end; ++elem)
     {
-        // TODO (pauletti, Sep 12, 2014): fix next line
-        Assert(true, ExcMessage(" fix next line "));
-        //elem->fill_cache();
+        cache.fill_element_cache(elem);
+        loc_mat = 0.;
+        loc_rhs = 0.;
 
-        const auto eval_points = elem->get_points();
-        func.evaluate(eval_points, func_at_eval_pts);
+        func.evaluate(elem->get_points(), f_at_qp);
 
-        local_matrix.clear();
-        local_rhs.clear();
-
-        const auto local_dofs = elem->get_local_to_global();
-
-        // computing the upper triangular part of the local
-        auto w_measures = elem->get_w_measures();
+        // computing the upper triangular part of the local matrix
+        auto w_meas = elem->get_w_measures();
         for (int i = 0; i < n_basis; ++i)
         {
             const auto phi_i = elem->get_basis_values(i);
-
             for (int j = i; j < n_basis; ++j)
             {
                 const auto phi_j = elem->get_basis_values(j);
-
-                Real matrix_entry_ij = 0.0;
-                for (int q = 0; q < n_qpoints; ++q)
-                    matrix_entry_ij += scalar_product(phi_i[q], phi_j[q]) * w_measures[q];
-
-                local_matrix(i,j) = matrix_entry_ij;
+                for (int q = 0; q < n_qp; ++q)
+                    loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
             }
 
-
-            Real rhs_entry = 0.0;
-            for (int q = 0; q < n_qpoints; q++)
-                rhs_entry += scalar_product(func_at_eval_pts[q], phi_i[q]) * w_measures[q];
-
-            local_rhs(i) = rhs_entry;
+            for (int q = 0; q < n_qp; q++)
+                loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
         }
 
-
-        // copying the upper triangular part of the local matrix to the lower triangular part
+        // filling symmetric ;lower part of local matrix
         for (int i = 0; i < n_basis; ++i)
             for (int j = 0; j < i; ++j)
-                local_matrix(i, j) = local_matrix(j, i);
+                loc_mat(i, j) = loc_mat(j, i);
 
-
-        matrix.add_block(local_dofs,local_dofs,local_matrix);
-
-        rhs.add_block(local_dofs,local_rhs);
+        const auto local_dofs = elem->get_local_to_global();
+        matrix.add_block(local_dofs,local_dofs,loc_mat);
+        rhs.add_block(local_dofs,loc_rhs);
     }
     matrix.fill_complete();
 
+    // TODO (pauletti, Oct 9, 2014): the solver must use a precon
     const Real tolerance = 1.0e-15;
     const int max_num_iter = 1000;
     using LinSolver = LinearSolver<la_pack>;

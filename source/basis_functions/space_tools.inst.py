@@ -22,13 +22,17 @@
 from init_instantiation_data import *
 include_files = ['basis_functions/bspline_space.h',
                  'basis_functions/bspline_element_accessor.h',
+                 'basis_functions/bspline_uniform_quad_cache.h',
                  'basis_functions/nurbs_space.h',
                  'basis_functions/nurbs_element_accessor.h',
+                 'basis_functions/nurbs_uniform_quad_cache.h',
                  'basis_functions/physical_space.h',
                  'geometry/cartesian_grid_element_accessor.h',
                  'geometry/mapping_element_accessor.h',
                  'geometry/push_forward_element_accessor.h',
-                 'basis_functions/physical_space_element_accessor.h']
+                 'geometry/push_forward_uniform_quad_cache.h',
+                 'basis_functions/physical_space_element_accessor.h',
+                 'basis_functions/space_uniform_quad_cache.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 

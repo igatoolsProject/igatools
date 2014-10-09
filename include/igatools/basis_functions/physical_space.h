@@ -36,8 +36,8 @@ IGA_NAMESPACE_OPEN
 class SpaceManager;
 
 //Forward declaration to avoid including the header
-template < class > class PhysicalSpaceElementAccessor;
-
+template <class> class PhysicalSpaceElementAccessor;
+template <class> class SpaceUniformQuadCache;
 /**
  *
  * @sa FunctionSpace
@@ -62,6 +62,8 @@ public:
 
     using GridType = typename PushForwardType::GridType;
     ///@}
+    using UniformQuadCache = SpaceUniformQuadCache<PhysicalSpace<RefSpace_, PushForward_>>;
+
     static const int dim = PushForwardType::dim;
 
     static const int codim = PushForwardType::codim;
