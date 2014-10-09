@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef MAPPING_ELEMENT_ACCESSOR_H_
-#define MAPPING_ELEMENT_ACCESSOR_H_
+#ifndef NEW_MAPPING_ELEMENT_ACCESSOR_H_
+#define NEW_MAPPING_ELEMENT_ACCESSOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
@@ -33,7 +33,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int,int> class Mapping;
+template <int,int> class NewMapping;
 
 /**
  * See module on @ref accessors_iterators for a general overview.
@@ -41,22 +41,21 @@ template <int,int> class Mapping;
  *
  * @todo document me
  */
-//TODO(pauletti, Sep 12, 2014): change dim_ref_ by dim_
-template<int dim_ref_, int codim_ = 0>
-class MappingElementAccessor
-    : public CartesianGridElement<dim_ref_>
+template<int dim_, int codim_ = 0>
+class MappingElement
+    : public CartesianGridElement<dim_>
 {
 private:
-    using self_t =  MappingElementAccessor<dim_ref_,codim_>;
+    using self_t =  MappingElement<dim_, codim_>;
 
 public:
     /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = const Mapping<dim_ref_,codim_>;
+    using ContainerType = const Mapping<dim_,codim_>;
 
     using GridIterator = typename ContainerType::GridIterator;
 
     /** Dimension of the reference domain */
-    using CartesianGridElement<dim_ref_>::dim;
+    using CartesianGridElement<dim_>::dim;
 
     /** Codimension of the deformed domain */
     static const auto codim = ContainerType::codim;
@@ -79,59 +78,62 @@ public:
     using HessianMap  = typename ContainerType::Hessian;
 
 public:
-    /** Fill flags supported by this iterator */
-    static const ValueFlags admisible_flag =
-        ValueFlags::measure |
-        ValueFlags::w_measure |
-        ValueFlags::face_point |
-        ValueFlags::face_measure |
-        ValueFlags::face_w_measure |
-        ValueFlags::face_normal |
-        ValueFlags::map_value |
-        ValueFlags::map_gradient |
-        ValueFlags::map_hessian |
-        ValueFlags::map_inv_gradient |
-        ValueFlags::map_inv_hessian |
-        ValueFlags::map_face_value |
-        ValueFlags::map_face_gradient |
-        ValueFlags::map_face_hessian |
-        ValueFlags::map_face_inv_gradient |
-        ValueFlags::map_face_inv_hessian;
+//    /** Fill flags supported by this iterator */
+//    static const ValueFlags admisible_flag =
+//        ValueFlags::measure |
+//        ValueFlags::w_measure |
+//        ValueFlags::face_point |
+//        ValueFlags::face_measure |
+//        ValueFlags::face_w_measure |
+//        ValueFlags::face_normal |
+//        ValueFlags::map_value |
+//        ValueFlags::map_gradient |
+//        ValueFlags::map_hessian |
+//        ValueFlags::map_inv_gradient |
+//        ValueFlags::map_inv_hessian |
+//        ValueFlags::map_face_value |
+//        ValueFlags::map_face_gradient |
+//        ValueFlags::map_face_hessian |
+//        ValueFlags::map_face_inv_gradient |
+//        ValueFlags::map_face_inv_hessian;
 
     /** @name Constructors */
     ///@{
     /**
      * Default constructor. Not allowed to be used.
      */
-    MappingElementAccessor() = delete;
+    MappingElement() = delete;
 
     /**
      * Constructs an accessor to element number @p index of a
      * Mapping.
      */
-    MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
-                           const Index index);
+    MappingElement(const std::shared_ptr<ContainerType> mapping,
+                   const Index index);
 
-    MappingElementAccessor(const std::shared_ptr<ContainerType> mapping,
-                           const TensorIndex<dim> &index);
+    MappingElement(const std::shared_ptr<ContainerType> mapping,
+                   const TensorIndex<dim> &index);
+
+private:
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow copy).
      * The default behaviour (i.e. using the proper interface of a classic copy constructor)
      * uses the deep copy.
      */
-    MappingElementAccessor(const self_t &element, const CopyPolicy &copy_policy = CopyPolicy::deep);
+    MappingElement(const self_t &element, const CopyPolicy &copy_policy = CopyPolicy::deep);
 
+public:
 
     /**
      * Move constructor.
      */
-    MappingElementAccessor(self_t &&element) = default;
+    MappingElement(self_t &&element) = default;
 
     /**
      * Destructor.
      */
-    ~MappingElementAccessor() = default;
+    ~MappingElement() = default;
     ///@}
 
     /** @name Assignment operators */
@@ -170,54 +172,6 @@ public:
     void shallow_copy_from(const self_t &element);
     ///@}
 
-
-
-    /**
-     * @name Query information that requires the use of the cache
-     */
-    ///@{
-    /**
-     * Initializes the internal cache for the efficient
-     * computation of the values requested in
-     * the fill_flag on the given @p quadrature points.
-     * This implies a uniform quadrature scheme
-     * (i.e. the same for all elements).
-     * @note This function should be called before fill_values()
-     */
-    void init_cache(const ValueFlags fill_flag,
-                    const Quadrature<dim> &quadrature);
-
-    /**
-     * Initializes the internal cache for the efficient
-     * computation of the values requested in
-     * the fill_flag on the given @p quadrature points,
-     * on the face specified by @p face_id.
-     * This implies a uniform quadrature scheme
-     * (i.e. the same for all elements).
-     * @note This function should be called before fill_face_values()
-     */
-    void init_face_cache(const Index face_id,
-                         const ValueFlags fill_flag,
-                         const Quadrature<dim-1> &quadrature);
-
-    /**
-     * Fills the cache in accordance with the flag specifications used in the
-     * init_values() function.
-     *
-     * Precondition Before invoking this function, you must call init_values().
-     */
-    void fill_cache();
-
-    /**
-     * Fills the cache in accordance with the flag specifications used in the
-     * init_face_values() function.
-     * @param face_id Face identifier.
-     *
-     * Precondition Before invoking this function, you must call
-     * init_face_values().
-     */
-    void fill_face_cache(const Index face_id);
-    ///@}
 
     /**
      * @name Getting the mapping-related values stored in the cache.
@@ -298,49 +252,8 @@ public:
      * Prints some internal memory information.
      * @note Mostly used for testing and debugging.
      */
-    void print_memory_info(LogStream &out) const;
-
-
-    /** @name Functions for the mapping evaluations without the use of the cache */
-    ///@{
-    /**
-     * Returns the value of the map
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values() / fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueVector< ValueMap >
-    evaluate_values_at_points(const ValueVector<Point> &points) const;
-
-    /**
-     * Returns the gradient of the map (i.e. the Jacobian)
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values() / fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueVector< GradientMap >
-    evaluate_gradients_at_points(const ValueVector<Point> &points) const;
-
-
-    /**
-     * Returns the hessian of the map
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values() / fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ValueVector< HessianMap >
-    evaluate_hessians_at_points(const ValueVector<Point> &points) const;
-
-    ///@}
-
-
     void print_cache_info(LogStream &out) const;
+
 
 private:
     // TODO (pauletti, Mar 21, 2014): Document this class
@@ -493,7 +406,7 @@ protected:
      * Performs a copy of the input @p element.
      * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
-    void copy_from(const MappingElementAccessor<dim_ref_,codim_> &element,
+    void copy_from(const MappingElementAccessor<dim_,codim_> &element,
                    const CopyPolicy &copy_policy);
 
 

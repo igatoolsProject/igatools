@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef MAPPING_H_
-#define MAPPING_H_
+#ifndef NEW_MAPPING_H_
+#define NEW_MAPPING_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
@@ -32,9 +32,7 @@ IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including header file.
 template <int> class CartesianGridElement;
-
-//Forward declaration to avoid including header file.
-template <int, int> class MappingElementAccessor;
+template <int, int> class NewMappingElementAccessor;
 
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
@@ -50,15 +48,11 @@ template <int, int> class MappingElementAccessor;
  *
  * @ingroup containers
  *
- * @author M.S. Pauletti 2012, 2013, 2014
- * @author M. Martinelli 2013, 2014
- * @author P. Antolin 2014
- * @author N. Cavallini  2012
- *
+ * @author pauletti 2014
  */
 template<int dim_, int codim_ = 0>
-class Mapping
-    :  public std::enable_shared_from_this<Mapping<dim_, codim_> >,
+class NewMapping
+    :  public std::enable_shared_from_this<NewMapping<dim_, codim_> >,
        public GridWrapper<CartesianGrid<dim_>>
 {
 public:
@@ -112,7 +106,7 @@ public:
     using Hessian = typename Func::Hessian;
 
 public:
-    using FaceMapping = Conditional<(dim>0), Mapping<dim-1, codim+1>, self_t >;
+    using FaceMapping = Conditional<(dim>0), NewMapping<dim-1, codim+1>, self_t >;
 
     /** Type of the element accessor */
     using ElementAccessor = MappingElementAccessor<dim, codim>;
@@ -124,29 +118,26 @@ public:
     /** @name Constructors and destructor */
     ///@{
     /** Default constructor.*/
-    Mapping() = delete;
+    NewMapping() = delete;
 
 
     /** Destructor */
-    virtual ~Mapping();
+    virtual ~NewMapping();
 
     /**
      * Copy constructor. The new object has a deep copy (i.e. a new instance)
      * of the grid held by the copied object @p map.
      */
-    Mapping(const Mapping<dim_,codim_> &map);
+    NewMapping(const NewMapping<dim_,codim_> &map);
     ///@}
 
     /** @name Assignment operators. */
     ///@{
 
     /** Copy assignment operator. Not allowed to be used. */
-    Mapping<dim_,codim_> &operator=(const Mapping<dim_,codim_> &map) = delete;
+    NewMapping<dim_,codim_> &operator=(const NewMapping<dim_,codim_> &map) = delete;
     ///@}
-//TODO(pauletti, Aug 6, 2014): use template<order> evaluate_derivative()
 
-    /** @name Mapping as a standard function (using the cache).*/
-    ///@{
     virtual void evaluate(ValueVector<Value> &values) const;
 
     virtual void evaluate_gradients(ValueVector<Gradient> &gradients) const;

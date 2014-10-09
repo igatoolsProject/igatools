@@ -134,6 +134,16 @@ protected:
 class GridElemValueFlagsHandler
 {
 public:
+    //
+    //    /** Fill flags supported by this iterator */
+    //    static const ValueFlags admisible_flag =
+    //        ValueFlags::point|
+    //        ValueFlags::measure |
+    //        ValueFlags::w_measure |
+    //        ValueFlags::face_point |
+    //        ValueFlags::face_measure |
+    //        ValueFlags::face_w_measure |
+    //        ValueFlags::face_normal;
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */

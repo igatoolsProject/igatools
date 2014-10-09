@@ -60,10 +60,10 @@ template <typename Accessor> class GridForwardIterator;
  * @date 13 May 2014
  */
 template<class Space>
-class SpaceElementAccessor : public CartesianGridElementAccessor<Space::dim>
+class SpaceElementAccessor : public CartesianGridElement<Space::dim>
 {
 private:
-    using base_t = CartesianGridElementAccessor<Space::dim>;
+    using base_t = CartesianGridElement<Space::dim>;
 public:
     /** @name Types and aliases used and/or returned by the
      * SpaceElementAccessor's methods. */
@@ -786,11 +786,11 @@ public:
 
 
     /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor();
+    CartesianGridElement<dim> &as_cartesian_grid_element_accessor();
 
 
     /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    const CartesianGridElementAccessor<dim> &as_cartesian_grid_element_accessor() const;
+    const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const;
 
 private:
 

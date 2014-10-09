@@ -26,7 +26,7 @@
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/topology.h>
-#include <igatools/geometry/cartesian_grid_element.h>
+
 #include <igatools/geometry/grid_uniform_quad_cache.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
@@ -49,28 +49,22 @@ IGA_NAMESPACE_OPEN
  * @author M.Martinelli, 2013, 2014
  */
 template <int dim_>
-class CartesianGridElementAccessor :
-    public CartesianGridElement<dim_>
+class CartesianGridElement
 {
 private:
-    using parent_t = CartesianGridElement<dim_>;
+    using self_t = CartesianGridElement<dim_>;
 
 public:
-    using typename parent_t::ContainerType;
-    using parent_t::dim;
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const CartesianGrid<dim_>;
 
-    /** Fill flags supported by this iterator */
-    static const ValueFlags admisible_flag =
-        ValueFlags::point|
-        ValueFlags::measure |
-        ValueFlags::w_measure |
-        ValueFlags::face_point |
-        ValueFlags::face_measure |
-        ValueFlags::face_w_measure |
-        ValueFlags::face_normal;
+    /** Dimension of the grid like container */
+    static const auto dim = ContainerType::dim;
 
     /** Number of faces of the element. */
     static const Size n_faces = UnitElement<dim_>::faces_per_element;
+
+    using Point = Points<dim>;
 
 public:
     /** @name Constructors */
@@ -78,37 +72,39 @@ public:
     /**
      * Default constructor.
      */
-    CartesianGridElementAccessor() = default;
+    CartesianGridElement() = default;
 
     /**
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
-                                 const Index elem_index);
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+                         const Index elem_index);
 
-    CartesianGridElementAccessor(const std::shared_ptr<ContainerType> grid,
-                                 const TensorIndex<dim> elem_index);
+    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+                         const TensorIndex<dim> elem_index);
 
     /**
      * Copy constructor.
-     * It can be used with different copy policies (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * It can be used with different copy policies
+     * (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a
+     * classic copy constructor)
      * uses the deep copy.
      */
-    CartesianGridElementAccessor(const CartesianGridElementAccessor<dim_> &elem,
-                                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+    CartesianGridElement(const self_t &elem,
+                         const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
      */
-    CartesianGridElementAccessor(CartesianGridElementAccessor<dim_> &&elem)
+    CartesianGridElement(self_t &&elem)
         = default;
 
     /**
      * Destructor.
      */
-    ~CartesianGridElementAccessor() = default;
+    ~CartesianGridElement() = default;
     ///@}
 
 
@@ -122,14 +118,14 @@ public:
      *
      * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
      */
-    void deep_copy_from(const CartesianGridElementAccessor<dim_> &element);
+    void deep_copy_from(const self_t &element);
 
 
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
-    void shallow_copy_from(const CartesianGridElementAccessor<dim_> &element);
+    void shallow_copy_from(const self_t &element);
     ///@}
 
 
@@ -140,59 +136,94 @@ public:
      *
      * @note Internally it uses the function shallow_copy_from().
      */
-    CartesianGridElementAccessor<dim_>
-    &operator=(const CartesianGridElementAccessor<dim_> &element);
+    self_t
+    &operator=(const self_t &element);
 
     /**
      * Move assignment operator.
      */
-    CartesianGridElementAccessor<dim_>
-    &operator=(CartesianGridElementAccessor<dim_> &&elem) = default;
+    self_t
+    &operator=(self_t &&elem) = default;
     ///@}
 
-    /** @name Functions for the cache initialization and filling. */
+
+private:
+    /** Return the cartesian grid from which the element belongs.*/
+    const std::shared_ptr<ContainerType> get_grid() const;
+public:
+    /** @name Functions related to the indices of the element in the cartesian grid. */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
+
+    bool is_influence() const;
+    void set_influence(const bool influence_flag);
+
+    bool is_active() const;
+    void set_active(const bool active_flag);
+
+
+
+    /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
     /**
-     * Initializes the internal cache for the efficient
-     * computation of the values requested in
-     * the @p fill_flag at the given quadrature points.
+     * Moves the element to the position that differs from the current one
+     * for the quantity given by @p increment.
      *
-     * For the face values, it allows the reuse of the element
-     * cache, i.e. it is like using a projected quadrature on
-     * the faces.
+     * If the resulting position after the movement is valid (i.e. within the grid), then the function
+     * returns true, otherwise it returns false.
      */
-    //  void init_cache(const ValueFlags flag,
-    //                  const Quadrature<dim_> &quad);
+    bool jump(const TensorIndex<dim> &increment);
 
     /**
-     * Initializes the internal cache for the efficient
-     * computation of the values requested in
-     * the @p fill_flag when no quadrature point is necessary
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
      */
-//   void init_cache(const ValueFlags flag);
+    void move_to(const Index flat_index);
+
 
     /**
-     * To use a different quadrature on the face instead of
-     * the projected element quadrature
+     * Sets the index of the element using the tensor representation.
+     * @note This function also updates the index for the flatten representation.
+     * @warning this may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
      */
-//    void init_face_cache(const Index face_id,
-//                         const ValueFlags flag,
-//                         const Quadrature<dim_-1> &quad);
+    void move_to(const TensorIndex<dim> &tensor_index);
 
-    /**
-     * Fills the element values cache according to the evaluation points
-     * and fill flags specifies in init_values.
-     */
-    //  void fill_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
+    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
+    // someone made them public due to hackish code in NURBSelementaccessor
+    // we must rethink that code
 
-    /**
-     * Fills the i-th face values cache according to the evaluation points
-     * and fill flags specified in init_values.
-     */
-//    void fill_face_cache(const Index face_id);
+    /** Moves the element to the next valid element in the CartesianGrid. */
+    void operator++();
     ///@}
 
 
+    /** @name Comparison operators */
+    ///@{
+    /**
+     * True if the elements have the same index.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator==(const CartesianGridElement<dim_> &elem) const;
+
+    /**
+     * True if the elements have different indeces.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator!=(const CartesianGridElement<dim_> &elem) const;
+    ///@}
 
     ///@name Query information that requires the use of the cache
     ///@{
@@ -207,7 +238,33 @@ public:
        \endcode
      */
     //  std::array<Real,dim_> get_coordinate_lengths() const;
+    /**
+       * Test if the element has a boundary face.
+       */
+    bool is_boundary() const;
 
+    /**
+     * Test if the face identified by @p face_id on the current element is on the
+     * boundary of the cartesian grid.
+     */
+    bool is_boundary(const Index face_id) const;
+    ///@}
+
+    const auto &get_elem_cache() const
+    {
+        return get_values_cache(ElemTopology<dim>());
+    }
+
+    auto &get_elem_cache()
+    {
+        return get_values_cache(ElemTopology<dim>());
+    }
+    /**
+     * Return the @p i-th vertex
+     */
+    Point vertex(const int i) const;
+
+    const std::array<Real, dim> &get_coordinate_lengths() const;
 
     /**
      * Returns measure of the element or of the element-face in the
@@ -264,8 +321,7 @@ public:
      * Prints internal information about the CartesianGridElementAccessor.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out, const VerbosityLevel verbosity =
-                        VerbosityLevel::normal) const;
+    void print_info(LogStream &out) const;
 
     void print_cache_info(LogStream &out) const;
 
@@ -308,14 +364,6 @@ private:
         void resize(const GridElemValueFlagsHandler &flags_handler,
                     const Quadrature<dim_> &quad);
 
-        /**
-         * Fill the cache member.
-         * @note The @p measure is an input argument because of the different
-         * function calls
-         * between element-measure and face-measure.
-         */
-        void fill(const Real measure);
-
         void print_info(LogStream &out) const
         {
             out.begin_item("Fill flags:");
@@ -348,6 +396,8 @@ private:
 
         /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
+
+        std::array<Real, dim> length_;
 
         TensorProductArray<dim_> unit_points_;
 
@@ -385,6 +435,17 @@ private:
      */
     ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
 
+private:
+    template <typename Accessor> friend class GridForwardIterator;
+    friend class GridUniformQuadCache<dim>;
+    /** Cartesian grid from which the element belongs.*/
+    std::shared_ptr<ContainerType> grid_;
+
+    /** Flat (linear) index assigned to the current (sub)-element. */
+    Index flat_index_;
+
+    /** Tensor product indices of the current struct index @p flat_index_. */
+    TensorIndex<dim> tensor_index_;
 
     class LocalCache
     {
@@ -412,16 +473,14 @@ private:
     /** The local (element and face) cache. */
     std::shared_ptr<LocalCache> local_cache_;
 
-private:
-    template <typename Accessor> friend class GridForwardIterator;
-    friend class GridUniformQuadCache<dim>;
+
 
 protected:
     /**
      * Performs a copy of the input @p element.
      * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
-    void copy_from(const CartesianGridElementAccessor<dim_> &element,
+    void copy_from(const self_t &element,
                    const CopyPolicy &copy_policy);
 
 

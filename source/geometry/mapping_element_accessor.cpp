@@ -41,7 +41,7 @@ MappingElementAccessor<dim_ref_,codim_>::
 MappingElementAccessor(const shared_ptr<ContainerType> mapping,
                        const Index index)
     :
-    CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
+    CartesianGridElement<dim>(mapping->get_grid(), index),
     mapping_(mapping)
 {
     using BSplineSp = BSplineSpace<dim,dim+codim,1>;
@@ -72,7 +72,7 @@ MappingElementAccessor<0, 0>::
 MappingElementAccessor(const shared_ptr<ContainerType> mapping,
                        const int index)
     :
-    CartesianGridElementAccessor<0>(mapping->get_grid(), index),
+    CartesianGridElement<0>(mapping->get_grid(), index),
     mapping_(mapping)
 {}
 
@@ -83,7 +83,7 @@ MappingElementAccessor<dim_ref_,codim_>::
 MappingElementAccessor(const shared_ptr<ContainerType> mapping,
                        const TensorIndex<dim> &index)
     :
-    CartesianGridElementAccessor<dim>(mapping->get_grid(), index),
+    CartesianGridElement<dim>(mapping->get_grid(), index),
     mapping_(mapping)
 {
     using BSplineSp = BSplineSpace<dim,dim+codim,1>;
@@ -115,7 +115,7 @@ MappingElementAccessor<0, 0>::
 MappingElementAccessor(const shared_ptr<ContainerType> mapping,
                        const TensorIndex<0> &index)
     :
-    CartesianGridElementAccessor<0>(mapping->get_grid(), index),
+    CartesianGridElement<0>(mapping->get_grid(), index),
     mapping_(mapping)
 {}
 
@@ -125,7 +125,7 @@ template<int dim_ref_, int codim_ >
 MappingElementAccessor<dim_ref_,codim_>::
 MappingElementAccessor(const self_t &elem, const CopyPolicy &copy_policy)
     :
-    CartesianGridElementAccessor<dim_ref_>(elem,copy_policy)
+    CartesianGridElement<dim_ref_>(elem,copy_policy)
 {
     if (elem.local_cache_ != nullptr)
     {
@@ -155,7 +155,7 @@ MappingElementAccessor<dim_ref_,codim_>::
 copy_from(const MappingElementAccessor<dim_ref_,codim_> &elem,
           const CopyPolicy &copy_policy)
 {
-    CartesianGridElementAccessor<dim_ref_>::copy_from(elem,copy_policy);
+    CartesianGridElement<dim_ref_>::copy_from(elem,copy_policy);
 
     Assert(elem.mapping_ != nullptr, ExcNullPtr());
     mapping_ = elem.mapping_;
@@ -407,7 +407,7 @@ init_cache(const ValueFlags fill_flag,
            const Quadrature<dim> &quad)
 {
     Assert((fill_flag|admisible_flag) == admisible_flag,
-           typename CartesianGridElementAccessor<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
+           typename CartesianGridElement<dim_ref_>::ExcFillFlagNotSupported(admisible_flag, fill_flag));
 
     auto &cache = local_cache_;
     if (cache == nullptr)
@@ -546,7 +546,7 @@ fill_cache()
         {
             Assert(elem_cache.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = elem_cache.measures_;
-            const auto weights = CartesianGridElementAccessor<dim_ref_>::get_w_measures();
+            const auto weights = CartesianGridElement<dim_ref_>::get_w_measures();
 
             for (Index i = 0; i < elem_cache.num_points_; i++)
                 elem_cache.w_measures_[i] = dets_map[i] * weights[i];
@@ -624,7 +624,7 @@ fill_face_cache(const Index face_id)
             Assert(face_values.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = face_values.measures_;
             const auto weights =
-                CartesianGridElementAccessor<dim_ref_>::get_w_measures(FaceTopology<dim_ref_>(face_id));
+                CartesianGridElement<dim_ref_>::get_w_measures(FaceTopology<dim_ref_>(face_id));
 
             for (Index i = 0; i < face_values.num_points_; i++)
                 face_values.w_measures_[i] = dets_map[i] * weights[i];
@@ -884,7 +884,7 @@ get_num_points(const TopologyId<dim> &topology_id) const
 
 
 
-
+#if 0
 
 template< int dim_ref_, int codim_ >
 auto
@@ -956,7 +956,7 @@ print_info(LogStream &out,const VerbosityLevel verbosity_level) const
     out.push(tab);
 
 
-    CartesianGridElementAccessor<dim_ref_>::print_info(out);
+    CartesianGridElement<dim_ref_>::print_info(out);
 
     if (local_cache_ != nullptr)
         this->print_cache_info(out);
@@ -982,7 +982,7 @@ print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 
     out.pop();
 }
-
+#endif
 
 template< int dim_ref_, int codim_ >
 void

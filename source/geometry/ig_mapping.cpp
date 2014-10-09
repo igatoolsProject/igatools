@@ -365,7 +365,7 @@ evaluate_face_hessians(const Index face_id, ValueVector<Hessian> &hessians) cons
 }
 
 
-
+#if 0
 // TODO (pauletti, Aug 7, 2014): evaluate_at_points, evaluate_gradients_at_points, etc
 // should eventually be a template function template<order> eval_derivative_at_point
 template<class RefSpace>
@@ -465,7 +465,7 @@ evaluate_hessians_at_points(const ValueVector<Point> &points,
     }
 
 }
-
+#endif
 
 template<class RefSpace>
 void

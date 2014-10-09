@@ -30,6 +30,7 @@
 #include <igatools/base/array_utils.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 
+// TODO (pauletti, Oct 9, 2014): should we use iga array
 #include <array>
 #include <memory>
 
@@ -38,7 +39,6 @@
 IGA_NAMESPACE_OPEN
 
 template <int> class CartesianGridElement;
-template <int> class CartesianGridElementAccessor;
 
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
@@ -100,7 +100,7 @@ public:
     using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
 
     /** Type for the element accessor. */
-    using ElementAccessor = CartesianGridElementAccessor<dim>;
+    using ElementAccessor = CartesianGridElement<dim>;
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
@@ -507,10 +507,7 @@ private:
      */
     signal_refine_t refine_signals_;
 
-
     friend class CartesianGridElement<dim>;
-
-    friend class CartesianGridElementAccessor<dim>;
 };
 
 IGA_NAMESPACE_CLOSE

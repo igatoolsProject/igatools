@@ -39,7 +39,7 @@ template <int dim>
 void test_accessor1()
 {
     auto grid = CartesianGrid<dim>::create();
-    GridForwardIterator<CartesianGridElementAccessor<dim> > element(grid, 0);
+    GridForwardIterator<CartesianGridElement<dim> > element(grid, 0);
 
     for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
         out << element->vertex(i) << endl;
@@ -77,7 +77,7 @@ void test_accessor3()
 
     auto grid = CartesianGrid<dim>::create(coords);
 
-    GridForwardIterator<CartesianGridElementAccessor<dim> > element(grid, 0);
+    GridForwardIterator<CartesianGridElement<dim> > element(grid, 0);
 
     const int n_elements = grid->get_num_active_elems();
     for (int j = 0; j < n_elements; ++j, ++element)

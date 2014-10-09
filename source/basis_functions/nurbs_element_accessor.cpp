@@ -907,7 +907,7 @@ void
 NURBSElementAccessor<dim, range, rank>::
 operator++()
 {
-    CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
+    CartesianGridElement<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
     ++grid_element_accessor;
     ++bspline_element_accessor_;
 }
@@ -919,7 +919,7 @@ void
 NURBSElementAccessor<dim, range, rank>::
 move_to(const Index flat_index)
 {
-    CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
+    CartesianGridElement<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
     grid_element_accessor.move_to(flat_index);
     bspline_element_accessor_.move_to(flat_index);
 }
@@ -931,7 +931,7 @@ void
 NURBSElementAccessor<dim, range, rank>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
-    CartesianGridElementAccessor<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
+    CartesianGridElement<dim> &grid_element_accessor = this->as_cartesian_grid_element_accessor();
     grid_element_accessor.move_to(tensor_index);
     bspline_element_accessor_.move_to(tensor_index);
 }

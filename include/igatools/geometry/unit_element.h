@@ -35,7 +35,7 @@ constexpr int skel_size(int dim, int k)
            (((k==-1)||(k>dim)) ? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
 }
 
-#if 1
+
 template <int dim, int k>
 EnableIf< (dim==0) || (k<0),
           std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
@@ -44,6 +44,8 @@ EnableIf< (dim==0) || (k<0),
     std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     return res;
 }
+
+
 
 template <int dim, int k>
 EnableIf< (dim==k) && (k>0),
@@ -105,6 +107,8 @@ EnableIf< (dim>k)  &&(k>=0),
     return elements;
 }
 
+
+
 template<int dim, std::size_t... I>
 auto tuple_of_elements(std::index_sequence<I...>)
 -> decltype(std::make_tuple(fill_cube_elements<dim, I>() ...))
@@ -112,13 +116,15 @@ auto tuple_of_elements(std::index_sequence<I...>)
     return std::make_tuple(fill_cube_elements<dim, I>() ...);
 }
 
+
+
 template<std::size_t dim, typename Indices = std::make_index_sequence<dim+1>>
 auto construct_cube_elements()
 -> decltype(tuple_of_elements<dim>(Indices()))
 {
     return tuple_of_elements<dim>(Indices());
 }
-#endif
+
 /**
  * @brief This class provides dimension independent information of all topological
  * structures that make up the elements in the reference patch or knotspans.
@@ -147,14 +153,22 @@ struct UnitElement
         std::array<Size, k>       active_directions;
     };
 
+    /**
+     * This tuple of size dim+1 provides the caracterization of all
+     * j dimensional skeleton of the unit cube
+     */
     static const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))
     all_elems;
 
-    //static const Size n_faces = skeleton_size[dim-1];
-    //static const std::array<SubElement<dim-1>, skel_size(dim, dim-1)> faces1;
 
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;
+
+    /** Number of faces per element.*/
+    static constexpr Size faces_per_element = 2 * dim;
+
+    static constexpr std::array<Size, faces_per_element> faces =
+        sequence<faces_per_element>();
 
     /**
      * Converts the local vertex index to the unit hypercube coordinates.
@@ -170,11 +184,7 @@ struct UnitElement
     /** Dimension of the face. */
     static const int face_dim = (dim >= 1)? dim-1 : 0;
 
-    /** Number of faces per element.*/
-    static constexpr Size faces_per_element = 2 * dim;
 
-    static constexpr std::array<Size, faces_per_element> faces =
-        sequence<faces_per_element>();
     /**
      * Converts the local face index of the unit element
      * to the hyperplane it belongs to.

@@ -32,111 +32,111 @@ IGA_NAMESPACE_OPEN
 
 //TODO: inline the appropriate method and put in separate file
 
-template <int dim_>
-CartesianGridElement<dim_>::
-CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                     const Index index)
-    :
-    grid_(grid)
-{
-    move_to(index);
-}
+//template <int dim_>
+//CartesianGridElement<dim_>::
+//CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+//                     const Index index)
+//    :
+//    grid_(grid)
+//{
+//    move_to(index);
+//}
+//
+//
+//
+//template <int dim_>
+//CartesianGridElement<dim_>::
+//CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+//                     const TensorIndex<dim> &index)
+//    :
+//    grid_(grid)
+//{
+//    move_to(index);
+//}
 
 
 
-template <int dim_>
-CartesianGridElement<dim_>::
-CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                     const TensorIndex<dim> &index)
-    :
-    grid_(grid)
-{
-    move_to(index);
-}
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//get_grid() const -> const std::shared_ptr<ContainerType>
+//{
+//    return grid_;
+//}
+//
+//
+//template <int dim_>
+//inline
+//auto
+//CartesianGridElement<dim_>::
+//get_flat_index() const -> Index
+//{
+//    return flat_index_ ;
+//}
+//
+//
+//template <int dim_>
+//inline
+//auto
+//CartesianGridElement<dim_>::
+//get_tensor_index() const -> TensorIndex<dim>
+//{
+//    return tensor_index_ ;
+//}
 
 
 
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-get_grid() const -> const std::shared_ptr<ContainerType>
-{
-    return grid_;
-}
+//template <int dim_>
+//void
+//CartesianGridElement<dim_>::
+//move_to(const Index flat_index)
+//{
+//    Assert((flat_index == IteratorState::pass_the_end) ||
+//           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
+//           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
+//
+//    flat_index_ = flat_index ;
+//
+//    //Fill tensor_index_
+//    if (flat_index_ != IteratorState::pass_the_end)
+//        tensor_index_ = grid_->flat_to_tensor(flat_index_);
+//    else
+//        tensor_index_.fill(IteratorState::pass_the_end);
+//}
+//
+//
+//
+//template <int dim_>
+//void
+//CartesianGridElement<dim_>::
+//move_to(const TensorIndex<dim> &tensor_index)
+//{
+//    tensor_index_= tensor_index;
+//    flat_index_ = grid_->tensor_to_flat(tensor_index_);
+//
+//    Assert((flat_index_ == IteratorState::pass_the_end) ||
+//           ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
+//           ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
+//}
 
 
-template <int dim_>
-inline
-auto
-CartesianGridElement<dim_>::
-get_flat_index() const -> Index
-{
-    return flat_index_ ;
-}
-
-
-template <int dim_>
-inline
-auto
-CartesianGridElement<dim_>::
-get_tensor_index() const -> TensorIndex<dim>
-{
-    return tensor_index_ ;
-}
-
-
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-move_to(const Index flat_index)
-{
-    Assert((flat_index == IteratorState::pass_the_end) ||
-           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
-           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
-
-    flat_index_ = flat_index ;
-
-    //Fill tensor_index_
-    if (flat_index_ != IteratorState::pass_the_end)
-        tensor_index_ = grid_->flat_to_tensor(flat_index_);
-    else
-        tensor_index_.fill(IteratorState::pass_the_end);
-}
-
-
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-move_to(const TensorIndex<dim> &tensor_index)
-{
-    tensor_index_= tensor_index;
-    flat_index_ = grid_->tensor_to_flat(tensor_index_);
-
-    Assert((flat_index_ == IteratorState::pass_the_end) ||
-           ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
-           ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
-}
-
-
-
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-vertex(const int i) const -> Points<dim>
-{
-    Assert(i < UnitElement<dim>::vertices_per_element,
-    ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
-
-    TensorIndex<dim> index = this->get_tensor_index();
-
-    for (int j = 0; j < dim; ++j)
-        index[j] += UnitElement<dim>::vertex_to_component[i][j];
-
-
-    return this->get_grid()->get_knot_coordinates().cartesian_product(index);
-};
+#if 0
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//vertex(const int i) const -> Points<dim>
+//{
+//    Assert(i < UnitElement<dim>::vertices_per_element,
+//    ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
+//
+//    TensorIndex<dim> index = this->get_tensor_index();
+//
+//    for (int j = 0; j < dim; ++j)
+//        index[j] += UnitElement<dim>::vertex_to_component[i][j];
+//
+//
+//    return this->get_grid()->get_knot_coordinates().cartesian_product(index);
+//};
 
 
 template <int dim_>
@@ -246,37 +246,37 @@ is_point_on_boundary(const Points< dim > &point) const
 }
 
 
-template <int dim_>
-bool CartesianGridElement<dim_>::
-is_boundary() const
-{
-    const auto num_elements_dim = this->get_grid()->get_num_intervals();
-
-    const auto &element_index = this->get_tensor_index() ;
-
-    for (int i = 0; i < dim; ++i)
-    {
-        if (element_index[i] == 0 or element_index[i] == num_elements_dim[i] - 1)
-            return true;
-    }
-
-    return false;
-}
-
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-is_boundary(const Index face_id) const
-{
-    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
-    const int face_side = UnitElement<dim>::face_side[face_id];
-
-    const auto element_id_dir = this->get_tensor_index()[const_direction] ;
-    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
-
-    return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
-}
+//template <int dim_>
+//bool CartesianGridElement<dim_>::
+//is_boundary() const
+//{
+//    const auto num_elements_dim = this->get_grid()->get_num_intervals();
+//
+//    const auto &element_index = this->get_tensor_index() ;
+//
+//    for (int i = 0; i < dim; ++i)
+//    {
+//        if (element_index[i] == 0 or element_index[i] == num_elements_dim[i] - 1)
+//            return true;
+//    }
+//
+//    return false;
+//}
+//
+//
+//template <int dim_>
+//bool
+//CartesianGridElement<dim_>::
+//is_boundary(const Index face_id) const
+//{
+//    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
+//    const int face_side = UnitElement<dim>::face_side[face_id];
+//
+//    const auto element_id_dir = this->get_tensor_index()[const_direction] ;
+//    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
+//
+//    return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
+//}
 
 
 
@@ -349,115 +349,82 @@ is_valid() const
     return (flat_index_ >= 0 && flat_index_ < grid_->get_num_active_elems())?true:false;
 }
 
+#endif
 
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-is_influence() const
-{
-    return grid_->marked_elems_[flat_index_];
-}
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-is_active() const
-{
-    return grid_->active_elems_[flat_index_];
-}
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-set_influence(const bool influence_flag)
-{
-    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             marked_elems_[flat_index_] = influence_flag;
-}
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-set_active(const bool active_flag)
-{
-    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
-    active_elems_[flat_index_] = active_flag;
-}
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-jump(const TensorIndex<dim> &increment)
-{
-    tensor_index_ += increment;
-
-    const auto n_elems = grid_->get_num_intervals();
-    bool valid_tensor_index = true;
-    for (int i = 0 ; i < dim ; ++i)
-        if (tensor_index_[i] < 0 || tensor_index_[i] >= n_elems[i])
-        {
-            valid_tensor_index = false;
-            flat_index_ = IteratorState::invalid;
-            break;
-        }
-
-    if (valid_tensor_index)
-        flat_index_ = grid_->tensor_to_flat(tensor_index_);
-
-    return valid_tensor_index;
-}
-
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-operator++()
-{
-    const auto n_elem = this->grid_->get_num_all_elems();
-    Index index = this->get_flat_index();
-    do
-    {
-        ++index;
-    }
-    while (index<n_elem && (!this->grid_->active_elems_[index]));
-
-    if (index >= n_elem)
-        index = IteratorState::pass_the_end;
-
-    this->move_to(index);
-}
-
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-operator==(const CartesianGridElement<dim_> &elem) const
-{
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_flat_index() == elem.get_flat_index());
-}
-
-
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-operator!=(const CartesianGridElement<dim_> &elem) const
-{
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_flat_index() != elem.get_flat_index());
-}
-
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-print_info(LogStream &out, const VerbosityLevel verbosity) const
-{
-    out << "Flat id = "   << flat_index_ << "    ";
-    out << "Tensor id = " << tensor_index_ << endl;
-}
+//template <int dim_>
+//bool
+//CartesianGridElement<dim_>::
+//jump(const TensorIndex<dim> &increment)
+//{
+//    tensor_index_ += increment;
+//
+//    const auto n_elems = grid_->get_num_intervals();
+//    bool valid_tensor_index = true;
+//    for (int i = 0 ; i < dim ; ++i)
+//        if (tensor_index_[i] < 0 || tensor_index_[i] >= n_elems[i])
+//        {
+//            valid_tensor_index = false;
+//            flat_index_ = IteratorState::invalid;
+//            break;
+//        }
+//
+//    if (valid_tensor_index)
+//        flat_index_ = grid_->tensor_to_flat(tensor_index_);
+//
+//    return valid_tensor_index;
+//}
+//
+//
+//template <int dim_>
+//void
+//CartesianGridElement<dim_>::
+//operator++()
+//{
+//    const auto n_elem = this->grid_->get_num_all_elems();
+//    Index index = this->get_flat_index();
+//    do
+//    {
+//        ++index;
+//    }
+//    while (index<n_elem && (!this->grid_->active_elems_[index]));
+//
+//    if (index >= n_elem)
+//        index = IteratorState::pass_the_end;
+//
+//    this->move_to(index);
+//}
+//
+//
+//template <int dim_>
+//bool
+//CartesianGridElement<dim_>::
+//operator==(const CartesianGridElement<dim_> &elem) const
+//{
+//    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+//    return (this->get_flat_index() == elem.get_flat_index());
+//}
+//
+//
+//
+//template <int dim_>
+//bool
+//CartesianGridElement<dim_>::
+//operator!=(const CartesianGridElement<dim_> &elem) const
+//{
+//    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+//    return (this->get_flat_index() != elem.get_flat_index());
+//}
+//
+//
+//template <int dim_>
+//void
+//CartesianGridElement<dim_>::
+//print_info(LogStream &out, const VerbosityLevel verbosity) const
+//{
+//    out << "Flat id = "   << flat_index_ << "    ";
+//    out << "Tensor id = " << tensor_index_ << endl;
+//}
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/cartesian_grid_element.inst>
+//#include <igatools/geometry/cartesian_grid_element.inst>

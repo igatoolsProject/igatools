@@ -35,7 +35,7 @@ SpaceElementAccessor<Space>::
 SpaceElementAccessor(const std::shared_ptr<const Space> space,
                      const Index elem_index)
     :
-    CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
+    CartesianGridElement<dim>(space->get_grid(), elem_index),
     space_(space),
     n_basis_direction_(space->get_num_all_element_basis())
 {
@@ -63,7 +63,7 @@ SpaceElementAccessor<Space>::
 SpaceElementAccessor(const std::shared_ptr<const Space> space,
                      const TensorIndex<dim> &elem_index)
     :
-    CartesianGridElementAccessor<dim>(space->get_grid(), elem_index),
+    CartesianGridElement<dim>(space->get_grid(), elem_index),
     space_(space)
 {
     Assert(space_ != nullptr, ExcNullPtr());
@@ -91,7 +91,7 @@ SpaceElementAccessor<Space>::
 SpaceElementAccessor(const SpaceElementAccessor<Space> &elem,
                      const CopyPolicy &copy_policy)
     :
-    CartesianGridElementAccessor<Space::dim>(elem,copy_policy),
+    CartesianGridElement<Space::dim>(elem,copy_policy),
     space_(elem.space_),
     n_basis_direction_(elem.n_basis_direction_),
     basis_functions_indexer_(elem.basis_functions_indexer_),
@@ -117,7 +117,7 @@ SpaceElementAccessor<Space>::
 copy_from(const SpaceElementAccessor<Space> &elem,
           const CopyPolicy &copy_policy)
 {
-    CartesianGridElementAccessor<Space::dim>::copy_from(elem,copy_policy);
+    CartesianGridElement<Space::dim>::copy_from(elem,copy_policy);
     if (this != &elem)
     {
         space_ = elem.space_;
@@ -174,18 +174,18 @@ template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-as_cartesian_grid_element_accessor() -> CartesianGridElementAccessor<dim> &
+as_cartesian_grid_element_accessor() -> CartesianGridElement<dim> &
 {
-    return static_cast<CartesianGridElementAccessor<dim> &>(*this);
+    return static_cast<CartesianGridElement<dim> &>(*this);
 }
 
 template<class Space>
 inline
 auto
 SpaceElementAccessor<Space>::
-as_cartesian_grid_element_accessor() const -> const CartesianGridElementAccessor<dim> &
+as_cartesian_grid_element_accessor() const -> const CartesianGridElement<dim> &
 {
-    return static_cast<const CartesianGridElementAccessor<dim> &>(*this);
+    return static_cast<const CartesianGridElement<dim> &>(*this);
 }
 
 

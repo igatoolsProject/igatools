@@ -50,87 +50,88 @@ template <int dim_>
 class CartesianGridElement
 {
 public:
-    /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = const CartesianGrid<dim_>;
+//    /** Type required by the GridForwardIterator templated iterator */
+//    using ContainerType = const CartesianGrid<dim_>;
+//
+//    /** Dimension of the grid like container */
+//    static const auto dim = ContainerType::dim;
+//
+//
+//    /** @name Constructors */
+//    ///@{
+//    /**
+//     * Default constructor.
+//     */
+//    CartesianGridElement() = default;
+//
+//    /**
+//     * Construct an object pointing to the element with
+//     * flat index @p elem_index of the CartesianGrid @p grid.
+//     */
+//    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+//                         const Index elem_index);
+//
+//    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+//                         const TensorIndex<dim> &elem_index);
+//
+//    /**
+//     * Copy constructor.
+//     */
+//    CartesianGridElement(const CartesianGridElement<dim_> &elem)
+//        = default;
+//
+//    /**
+//     * Move constructor.
+//     */
+//    CartesianGridElement(CartesianGridElement<dim_> &&elem)
+//        = default;
+//
+//    /**
+//     * Destructor.
+//     */
+//    ~CartesianGridElement() = default;
+//    ///@}
+//
+//    /** @name Assignment operators */
+//    ///@{
+//    /**
+//     * Copy assignment operator.
+//     */
+//    CartesianGridElement<dim>
+//    &operator=(const CartesianGridElement<dim_> &elem)
+//    {
+//        if ((*this) != elem)
+//        {
+//            Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
+//            flat_index_ = elem.flat_index_;
+//            tensor_index_ = elem.tensor_index_;
+//        }
+//        return *this;
+//    }
+//
 
-    /** Dimension of the grid like container */
-    static const auto dim = ContainerType::dim;
+//    /**
+//     * Move assignment operator. Not allowed to be used.
+//     */
+//    CartesianGridElement<dim>
+//    &operator=(CartesianGridElement<dim_> &&elem) = default;
+//    ///@}
+//    /** Return the cartesian grid from which the element belongs.*/
+//      const std::shared_ptr<ContainerType> get_grid() const;
 
 
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor.
-     */
-    CartesianGridElement() = default;
 
-    /**
-     * Construct an object pointing to the element with
-     * flat index @p elem_index of the CartesianGrid @p grid.
-     */
-    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                         const Index elem_index);
-
-    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                         const TensorIndex<dim> &elem_index);
-
-    /**
-     * Copy constructor.
-     */
-    CartesianGridElement(const CartesianGridElement<dim_> &elem)
-        = default;
-
-    /**
-     * Move constructor.
-     */
-    CartesianGridElement(CartesianGridElement<dim_> &&elem)
-        = default;
-
-    /**
-     * Destructor.
-     */
-    ~CartesianGridElement() = default;
-    ///@}
-
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    CartesianGridElement<dim>
-    &operator=(const CartesianGridElement<dim_> &elem)
-    {
-        if ((*this) != elem)
-        {
-            Assert(grid_ == elem.grid_, ExcMessage("should be same mesh"));
-            flat_index_ = elem.flat_index_;
-            tensor_index_ = elem.tensor_index_;
-        }
-        return *this;
-    }
-
-
-    /**
-     * Move assignment operator. Not allowed to be used.
-     */
-    CartesianGridElement<dim>
-    &operator=(CartesianGridElement<dim_> &&elem) = default;
-    ///@}
-
-    /** Return the cartesian grid from which the element belongs.*/
-    const std::shared_ptr<ContainerType> get_grid() const;
-
-
-    /** @name Functions related to the indices of the element in the cartesian grid. */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
-
-    /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
-    ///@}
+//    /** @name Functions related to the indices of the element in the cartesian grid. */
+//    ///@{
+//    /** Returns the index of the element in its flatten representation. */
+//    Index get_flat_index() const;
+//
+//    /** Returns the index of the element in its tensor representation. */
+//    TensorIndex<dim> get_tensor_index() const;
+//    ///@}
 
 public:
+#if 0
     /** @name Query geometrical/topological information without use of cache */
     ///@{
     /**
@@ -177,17 +178,17 @@ public:
      */
     bool is_point_on_boundary(const Points<dim> &point) const;
 
-    /**
-     * Test if the element has a boundary face.
-     */
-    bool is_boundary() const;
-
-    /**
-     * Test if the face identified by @p face_id on the current element is on the
-     * boundary of the cartesian grid.
-     */
-    bool is_boundary(const Index face_id) const;
-    ///@}
+//    /**
+//     * Test if the element has a boundary face.
+//     */
+//    bool is_boundary() const;
+//
+//    /**
+//     * Test if the face identified by @p face_id on the current element is on the
+//     * boundary of the cartesian grid.
+//     */
+//    bool is_boundary(const Index face_id) const;
+//    ///@}
 
 
     /**
@@ -207,23 +208,23 @@ public:
      */
     ValueVector<Points<dim> >
     transform_points_reference_to_unit(const ValueVector<Points<dim>> &point_reference_domain) const;
+#endif
 
+//    /**
+//     * Prints internal information about the CartesianGridElement.
+//     * Its main use is for testing and debugging.
+//     */
+//    void print_info(LogStream &out,
+//                    const VerbosityLevel verbosity = VerbosityLevel::normal) const;
+//
 
-    /**
-     * Prints internal information about the CartesianGridElement.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out,
-                    const VerbosityLevel verbosity = VerbosityLevel::normal) const;
+//    bool is_influence() const;
+//    void set_influence(const bool influence_flag);
+//
+//    bool is_active() const;
+//    void set_active(const bool active_flag);
 
-
-    bool is_influence() const;
-    void set_influence(const bool influence_flag);
-
-    bool is_active() const;
-    void set_active(const bool active_flag);
-
-
+#if 0
     /**
      * True if the element index valid (i.e. inside the grid from which the element belongs from).
      *
@@ -231,67 +232,67 @@ public:
      * the grid from which belongs from.
      */
     bool is_valid() const;
+#endif
+//    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+//    ///@{
+//    /**
+//     * Moves the element to the position that differs from the current one
+//     * for the quantity given by @p increment.
+//     *
+//     * If the resulting position after the movement is valid (i.e. within the grid), then the function
+//     * returns true, otherwise it returns false.
+//     */
+//    bool jump(const TensorIndex<dim> &increment);
+//
+//    /**
+//     * Sets the index of the element using the flatten representation.
+//     * @note This function also updates the index for the tensor representation.
+//     * @warning This may be a dangerous function, be careful when using it
+//     * as it is easy to use incorrectly. Only use it if you know what you
+//     * are doing.
+//     */
+//    void move_to(const Index flat_index);
+//
+//
+//    /**
+//     * Sets the index of the element using the tensor representation.
+//     * @note This function also updates the index for the flatten representation.
+//     * @warning this may be a dangerous function, be careful when using it
+//     * as it is easy to use incorrectly. Only use it if you know what you
+//     * are doing.
+//     */
+//    void move_to(const TensorIndex<dim> &tensor_index);
+//
+//    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
+//    // someone made them public due to hackish code in NURBSelementaccessor
+//    // we must rethink that code
+//
+//    /** Moves the element to the next valid element in the CartesianGrid. */
+//    void operator++();
+//    ///@}
 
-    /** @name Functions/operators for moving the element in the CartesianGrid.*/
-    ///@{
-    /**
-     * Moves the element to the position that differs from the current one
-     * for the quantity given by @p increment.
-     *
-     * If the resulting position after the movement is valid (i.e. within the grid), then the function
-     * returns true, otherwise it returns false.
-     */
-    bool jump(const TensorIndex<dim> &increment);
+//    /** @name Comparison operators*/
+//    ///@{
+//    bool operator==(const CartesianGridElement<dim_> &elem) const;
+//
+//    /**
+//     * Returns true if the the CartesianGridElement @p elem has a different flat index w.r.t.
+//     * the calling object.
+//     * @note The calling object and the CartesianGridElement @p elem must refers to the same
+//     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
+//     */
+//    bool operator!=(const CartesianGridElement<dim_> &elem) const;
+//    ///@}
 
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const Index flat_index);
-
-
-    /**
-     * Sets the index of the element using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const TensorIndex<dim> &tensor_index);
-
-    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
-    // someone made them public due to hackish code in NURBSelementaccessor
-    // we must rethink that code
-
-    /** Moves the element to the next valid element in the CartesianGrid. */
-    void operator++();
-    ///@}
-
-    /** @name Comparison operators*/
-    ///@{
-    bool operator==(const CartesianGridElement<dim_> &elem) const;
-
-    /**
-     * Returns true if the the CartesianGridElement @p elem has a different flat index w.r.t.
-     * the calling object.
-     * @note The calling object and the CartesianGridElement @p elem must refers to the same
-     * CartesianGrid, otherwise an exception will be raised (in Debug mode).
-     */
-    bool operator!=(const CartesianGridElement<dim_> &elem) const;
-    ///@}
-
-protected:
-    /** Cartesian grid from which the element belongs.*/
-    std::shared_ptr<ContainerType> grid_;
-
-    /** Flat (linear) index assigned to the current (sub)-element. */
-    Index flat_index_;
-
-    /** Tensor product indices of the current struct index @p flat_index_. */
-    TensorIndex<dim> tensor_index_;
+//protected:
+//    /** Cartesian grid from which the element belongs.*/
+//    std::shared_ptr<ContainerType> grid_;
+//
+//    /** Flat (linear) index assigned to the current (sub)-element. */
+//    Index flat_index_;
+//
+//    /** Tensor product indices of the current struct index @p flat_index_. */
+//    TensorIndex<dim> tensor_index_;
 };
 
 IGA_NAMESPACE_CLOSE

@@ -46,7 +46,7 @@ public:
     using parent_t = SpaceElementAccessor<BSplineSpace<dim,range,rank>>;
 
     /** Type for the grid accessor. */
-    using GridAccessor = CartesianGridElementAccessor<dim>;
+    using GridAccessor = CartesianGridElement<dim>;
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const BSplineSpace<dim, range, rank> ;
