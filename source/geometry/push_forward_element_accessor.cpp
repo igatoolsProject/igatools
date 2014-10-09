@@ -226,7 +226,7 @@ value_to_mapping_flag(
 }
 
 
-
+#if 0
 template< class PushForward >
 void
 PushForwardElementAccessor<PushForward>::
@@ -248,7 +248,7 @@ init_face_cache(const Index face_id,
     AssertThrow(false,ExcNotImplemented());
 }
 
-
+#endif
 
 template< class PushForward >
 template < int dim_range, int rank,Transformation ttype >

@@ -246,7 +246,7 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
 }
 
 
-
+#if 0
 template< class PhysSpace >
 void
 PhysicalSpaceElementAccessor<PhysSpace>::
@@ -393,6 +393,7 @@ fill_face_cache(const Index face_id)
     this->fill_cache(FaceTopology<dim>(face_id));
 }
 
+#endif
 
 template< class PhysSpace >
 auto

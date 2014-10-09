@@ -33,6 +33,8 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
+#include <igatools/basis_functions/space_uniform_quad_cache.h>
+
 #include <igatools/geometry/identity_mapping.h>
 
 template <int dim>
@@ -56,17 +58,20 @@ void test_evaluate()
     auto space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
 
     auto elem = space->begin() ;
-    const auto elem_end = space->end() ;
+    const auto end = space->end() ;
 
     const int n_qpoints = 1;
     QGauss<dim> quad(n_qpoints);
 
     ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::w_measure;
-    elem->init_cache(flag, quad);
 
-    for (; elem != elem_end ; ++elem)
+    SpaceUniformQuadCache<PhysicalSpace_t<dim>> cache(space, flag, quad);
+
+
+    cache.init_element_cache(elem);
+    for (; elem != end; ++elem)
     {
-        elem->fill_cache();
+        cache.fill_element_cache(elem);
         elem->get_basis_values().print_info(out);
         elem->get_basis_gradients().print_info(out);
         // elem->get_basis_hessians().print_info(out);

@@ -149,14 +149,14 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
 template<class PhysSpace>
 SpaceUniformQuadCache<PhysSpace>::
 SpaceUniformQuadCache(std::shared_ptr<const PhysSpace> space,
-                          const ValueFlags flag,
-                          const Quadrature<dim> &quad)
-        :
-        RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::transformation_type), quad),
-        PFCache(space->get_push_forward(), get_push_forward_accessor_fill_flags(flag), quad),
-        space_(space),
-        flags_(flag),
-        quad_(quad)
+                      const ValueFlags flag,
+                      const Quadrature<dim> &quad)
+    :
+    RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::transformation_type), quad),
+    PFCache(space->get_push_forward(), get_push_forward_accessor_fill_flags(flag), quad),
+    space_(space),
+    flags_(flag),
+    quad_(quad)
 {}
 
 
@@ -205,6 +205,59 @@ fill_element_cache(ElementAccessor &elem) -> void
 
         cache.flags_handler_.set_values_filled(true);
     }
+
+
+    if (cache.flags_handler_.fill_gradients())
+    {
+        elem.template transform_gradients<PhysSpace::range,PhysSpace::rank>
+        (ref_elem.get_basis_values(),
+        ref_elem.get_basis_gradients(),
+        cache.D1phi_);
+        cache.flags_handler_.set_gradients_filled(true);
+    }
+
+#if 0
+
+    if (cache.flags_handler_.fill_hessians())
+    {
+        if (transformation_type == Transformation::h_grad)
+        {
+            ValueTable<typename RefElemAccessor::Value> dummy;
+            PfElemAccessor::
+            template transform_hessians<PhysSpace::range,PhysSpace::rank>(
+                dummy,
+                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                ref_space_element_accessor_.get_basis_hessians(topology_id),
+                cache.D2phi_,
+                topology_id);
+
+        }
+        else
+        {
+            Assert(false,ExcNotImplemented());
+            AssertThrow(false,ExcNotImplemented());
+
+        }
+        cache.flags_handler_.set_hessians_filled(true);
+    }
+
+    if (cache.flags_handler_.fill_divergences())
+    {
+        Assert(cache.flags_handler_.gradients_filled(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
+        auto D1  = cache.D1phi_.begin();
+        auto div = cache.div_phi_.begin();
+        auto end = cache.D1phi_.end();
+        for (; D1 != end; ++D1, ++div)
+            *div = trace(*D1);
+
+        cache.flags_handler_.set_divergences_filled(true);
+        //Assert(false,ExcNotImplemented());
+        //AssertThrow(false,ExcNotImplemented());
+    }
+
+#endif
 
     cache.set_filled(true);
 }

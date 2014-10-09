@@ -143,7 +143,7 @@ public:
     void shallow_copy_from(const PushForwardElementAccessor<PushForward_> &element);
     ///@}
 
-
+#if 0
     /**
      * This function and fill_cache must be called before
      * to call the transformation functions.
@@ -159,7 +159,7 @@ public:
     void init_face_cache(const Index face_id,
                          const ValueFlags fill_flag,
                          const Quadrature<dim-1> &quad);
-
+#endif
     /** @name Mapping used for transforming quantities with the use of the cache  */
     ///@{
     /**
