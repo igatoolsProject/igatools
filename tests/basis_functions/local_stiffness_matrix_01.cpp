@@ -19,17 +19,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-// TODO (pauletti, Jun 11, 2014): put appropriate header or delete
-
 /*
- * Test to figure out gradient bug
+ *  Test the assembling of local stiffness matrix
+ *
+ *  author: pauletti
+ *  date: Oct 09, 2014
+ *
  */
+
 #include "../tests.h"
 
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
-
+#include <igatools/basis_functions/space_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/identity_mapping.h>
 
@@ -37,8 +40,9 @@
 
 
 template<int dim>
-void assemble_stiffness_matrix(const int n_knots, const int deg)
+void loc_stiff_matrix(const int n_knots, const int deg)
 {
+    OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
     typedef BSplineSpace<dim> RefSpace;
@@ -50,24 +54,21 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
     typedef PhysicalSpace<RefSpace,PushForward> PhysSpace;
     auto phys_space = PhysSpace::create(ref_space, push_forward) ;
 
-    const Quadrature<dim> elem_quad(QGauss<dim>(deg+1)) ;
+    auto quad = QGauss<dim>(deg+1);
+    auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
+    SpaceUniformQuadCache<PhysSpace> cache(phys_space, flag, quad);
 
-    ValueFlags flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
-
-    const int n_qpoints =  elem_quad.get_num_points();
-
+    const int n_qpoints =  quad.get_num_points();
 
     auto elem           = phys_space->begin();
     const auto elem_end = phys_space->end();
-    elem->init_cache(flag, elem_quad);
+    cache.init_element_cache(elem);
+    const int n_basis = elem->get_num_basis();
+    DenseMatrix loc_mat(n_basis,n_basis);
 
     for (; elem != elem_end; ++elem)
     {
-        elem->fill_cache();
-
-        const int n_basis = elem->get_num_basis();
-
-        DenseMatrix loc_mat(n_basis,n_basis);
+        cache.fill_element_cache(elem);
         loc_mat = 0.0;
 
         const auto w_meas = elem->get_w_measures();
@@ -79,13 +80,15 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
             for (int j=0; j<n_basis; ++j)
             {
                 const auto grad_j = elem->get_basis_gradients(j);
-
                 for (int qp = 0; qp < n_qpoints; ++qp)
                     loc_mat(i,j) += scalar_product(grad_i[qp], grad_j[qp]) * w_meas[qp];
             }
         }
-        out << loc_mat << endl;
+        loc_mat.print_info(out);
+        out << endl;
     }
+
+    OUTEND
 
 }
 
@@ -94,11 +97,12 @@ void assemble_stiffness_matrix(const int n_knots, const int deg)
 
 int main()
 {
-    out.depth_console(1);
     const int n_knots = 6;
     const int deg = 1;
 
-    assemble_stiffness_matrix<1>(n_knots, deg);
+    loc_stiff_matrix<1>(n_knots, deg);
+    loc_stiff_matrix<2>(n_knots, deg);
+    loc_stiff_matrix<3>(n_knots, deg);
 
     return  0;
 }
