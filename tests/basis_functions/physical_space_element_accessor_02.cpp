@@ -26,7 +26,7 @@
  *  date: 2013-07-05
  *
  */
-
+// TODO (pauletti, Oct 9, 2014): this test description is wrong for the test itself
 #include "../tests.h"
 
 #include <igatools/geometry/ig_mapping.h>
@@ -36,7 +36,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
-
+#include <igatools/basis_functions/space_uniform_quad_cache.h>
 
 using std::shared_ptr;
 
@@ -137,15 +137,11 @@ void test_evaluate()
     auto knots = CartesianGrid<dim>::create(num_knots);
 
     auto ref_space = RefSpace_t<dim>::create(p, knots);
-    // ref_space->print_info(out);
-
     auto map = create_mapping<dim>(ref_space);
     auto push_forward=PushForward_t<dim>::create(map);
-    // push_forward->print_info(out) ;
 
     auto ref_space1 = RefSpace_t<dim>::create(p, knots);
     auto physical_space = PhysicalSpace_t<dim>::create(ref_space1, push_forward) ;
-    //physical_space.print_info(out) ;
 
 
     auto element = physical_space->begin() ;
@@ -153,14 +149,13 @@ void test_evaluate()
 
     QGauss<dim> quad(3);
     const int n_qpoints = quad.get_num_points();
+    ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::w_measure;
+    SpaceUniformQuadCache<PhysicalSpace_t<dim>> cache(physical_space, flag, quad);
 
-    element->init_cache(ValueFlags::value |
-                        ValueFlags::gradient |
-                        ValueFlags::w_measure,
-                        quad) ;
+    cache.init_element_cache(element);
     for (; element != element_end ; ++element)
     {
-        element->fill_cache() ;
+        cache.fill_element_cache(element);
 
         const int n_basis = element->get_num_basis() ;
 

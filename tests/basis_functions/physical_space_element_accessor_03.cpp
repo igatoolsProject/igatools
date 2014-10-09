@@ -26,6 +26,7 @@
  *
  */
 
+// TODO (pauletti, Oct 9, 2014): should these tested functions be private?
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
@@ -34,9 +35,7 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/geometry/identity_mapping.h>
-
-using namespace std ;
-using namespace iga ;
+#include <igatools/basis_functions/space_uniform_quad_cache.h>
 
 template <int dim>
 using RefSpace_t = BSplineSpace<dim>  ;
@@ -68,12 +67,13 @@ void test_evaluate()
     const int n_qpoints = 1;
     QGauss<dim> quad(n_qpoints);
     ValueFlags flag = ValueFlags::map_gradient|ValueFlags::value;
-    elem->init_cache(flag, quad);
+    SpaceUniformQuadCache<PhysicalSpace_t<dim>> cache(space, flag, quad);
+    cache.init_element_cache(elem);
 
 
     for (; elem != elem_end ; ++elem)
     {
-        elem->fill_cache() ;
+        cache.fill_element_cache(elem);
         elem->get_basis_values().print_info(out) ;
         out << endl;
         elem_pf.get_map_gradients().print_info(out) ;

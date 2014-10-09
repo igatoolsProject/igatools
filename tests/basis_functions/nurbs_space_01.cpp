@@ -17,11 +17,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+// TODO (pauletti, Oct 9, 2014): this test is missing header
+// TODO (pauletti, Oct 9, 2014): update the code style (its obsolete)
 #include "../tests.h"
 
 #include <igatools/basis_functions/nurbs_space.h>
-
 
 template< int dim, int range, int rank = 1>
 void do_test()
