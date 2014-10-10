@@ -884,7 +884,7 @@ get_num_points(const TopologyId<dim> &topology_id) const
 
 
 
-#if 0
+
 
 template< int dim_ref_, int codim_ >
 auto
@@ -894,12 +894,12 @@ ValueVector< ValueMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
-
-    const auto points_ref_domain = this->transform_points_unit_to_reference(points);
+//
+//    const auto points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<ValueMap> map_value(n_points);
 
-    mapping_->evaluate_at_points(points_ref_domain,map_value);
+//    mapping_->evaluate_at_points(points_ref_domain,map_value);
 
     return map_value;
 }
@@ -912,12 +912,12 @@ ValueVector< GradientMap >
 {
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
-
-    const auto points_ref_domain = this->transform_points_unit_to_reference(points);
+//
+//    const auto points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<GradientMap> map_gradient(n_points);
 
-    mapping_->evaluate_gradients_at_points(points_ref_domain,map_gradient);
+//    mapping_->evaluate_gradients_at_points(points_ref_domain,map_gradient);
 
     return map_gradient;
 }
@@ -931,11 +931,11 @@ ValueVector< HessianMap >
     const int n_points = points.size();
     Assert(n_points >= 0, ExcEmptyObject());
 
-    const auto points_ref_domain = this->transform_points_unit_to_reference(points);
+//    const auto points_ref_domain = this->transform_points_unit_to_reference(points);
 
     ValueVector<HessianMap> map_hessian(n_points);
 
-    mapping_->evaluate_hessians_at_points(points_ref_domain,map_hessian);
+//    mapping_->evaluate_hessians_at_points(points_ref_domain,map_hessian);
 
     return map_hessian;
 }
@@ -982,7 +982,7 @@ print_info(LogStream &out,const VerbosityLevel verbosity_level) const
 
     out.pop();
 }
-#endif
+
 
 template< int dim_ref_, int codim_ >
 void

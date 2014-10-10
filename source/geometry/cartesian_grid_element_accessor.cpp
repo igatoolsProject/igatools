@@ -491,39 +491,7 @@ get_face_measure(const Index face_id) const
 
 
 
-//template <int dim_>
-//void
-//CartesianGridElement<dim_>::
-//init_face_cache(const Index face_id,
-//                const ValueFlags flag,
-//                const Quadrature<dim_-1> &quad)
-//{
-//    Assert(false, ExcNotImplemented());
-//}
 
-
-
-//template <int dim_>
-//void
-//CartesianGridElement<dim_>::
-//fill_cache(const TopologyId<dim_> &topology_id)
-//{
-//    auto &cache = get_values_cache(topology_id);
-//
-//    cache.fill(CartesianGridElement<dim_>::get_measure(topology_id));
-//
-//    cache.set_filled(true);
-//}
-
-
-
-//template <int dim_>
-//void
-//CartesianGridElement<dim_>::
-//fill_face_cache(const Index face_id)
-//{
-//    fill_cache(FaceTopology<dim_>(face_id));
-//}
 
 
 
@@ -611,7 +579,7 @@ void
 CartesianGridElement<dim_>::
 ValuesCache::
 resize(const GridElemValueFlagsHandler &flags_handler,
-       const Quadrature<dim_> &quad)
+       const Quadrature<dim> &quad)
 {
     const auto n_points_direction = quad.get_num_points_direction();
     const Size n_points = n_points_direction.flat_size();
@@ -643,27 +611,8 @@ resize(const GridElemValueFlagsHandler &flags_handler,
 
 
 
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-FaceValuesCache::
-resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_> &quad, const Index face_id)
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    ValuesCache::resize(flags_handler,quad.collapse_to_face(face_id));
-}
 
 
-#if 0
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-FaceValuesCache::
-resize(const GridFaceValueFlagsHandler &flags_handler,const Quadrature<dim_-1> &quad1, const Index face_id)
-{
-    Assert(false, ExcNotImplemented());
-}
-#endif
 
 
 

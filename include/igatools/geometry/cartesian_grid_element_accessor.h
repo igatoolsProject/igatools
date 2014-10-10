@@ -327,42 +327,15 @@ public:
 
 private:
 
-//    /**
-//     * @brief Global CartesianGrid cache, storing the interval length
-//     * in each direction.
-//     *
-//     * For now only a uniform quad is taken care of.
-//     */
-//    class LengthCache : public CacheStatus
-//    {
-//    public:
-//        /**
-//         * Allocates space for the cache
-//         */
-//        void resize(const CartesianGrid<dim_> &grid);
-//
-//        /** pointer to the current entry of of length,
-//         *  it could be used for optimization of uniform grid
-//         */
-//        CartesianProductArray<Real *, dim_> length_;
-//
-//        /** stores the interval length */
-//        CartesianProductArray<Real , dim_> length_data_;
-//
-//    };
-
-
     /**
-     * @brief Base class for cache of CartesianGridElementAccessor.
+     * @brief Base class for cache of CartesianGridElement
      */
     class ValuesCache : public CacheStatus
     {
     public:
-        /**
-         * Allocate space for the values at quadrature points
-         */
+
         void resize(const GridElemValueFlagsHandler &flags_handler,
-                    const Quadrature<dim_> &quad);
+                    const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const
         {
@@ -399,7 +372,7 @@ private:
 
         std::array<Real, dim> length_;
 
-        TensorProductArray<dim_> unit_points_;
+        TensorProductArray<dim> unit_points_;
 
         ValueVector<Real> unit_weights_;
         ///@}
@@ -407,22 +380,6 @@ private:
     };
 
 
-
-    /**
-     * @brief Cache for the face values at quadrature points
-     */
-    class FaceValuesCache : public ValuesCache
-    {
-    public:
-        void resize(const GridFaceValueFlagsHandler &flags_handler,
-                    const Quadrature<dim_> &quad,
-                    const Index face_id);
-#if 0
-        void resize(const GridFaceValueFlagsHandler &flags_handler,
-                    const Quadrature<dim_-1> &quad,
-                    const Index face_id);
-#endif
-    };
 
     /**
      * @todo Document this function
@@ -467,7 +424,7 @@ private:
         ValuesCache elem_values_;
 
         /** Face values cache */
-        std::array<FaceValuesCache, n_faces> face_values_;
+        std::array<ValuesCache, n_faces> face_values_;
     };
 
     /** The local (element and face) cache. */

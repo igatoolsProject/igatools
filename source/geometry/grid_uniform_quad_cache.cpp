@@ -61,8 +61,9 @@ init_element_cache(ElementAccessor &elem)
 
     auto &face_cache = cache->face_values_;
     for (auto &f: faces)
-        face_cache[f].resize(face_flags_, quad_, f);
+        face_cache[f].resize(face_flags_, quad_.collapse_to_face(f));
 }
+
 
 
 
