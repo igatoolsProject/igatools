@@ -509,7 +509,7 @@ get_w_measures(const TopologyId<dim_> &topology_id) const
     const auto &cache = local_cache_->template get_value_cache<0>(0);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
-    return  (cache.measure_ * cache.unit_weights_);
+    return (cache.measure_ * cache.unit_weights_);
 }
 
 

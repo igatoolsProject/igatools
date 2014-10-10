@@ -295,7 +295,7 @@ public:
      * scheme used to initialize the accessor's cache.
      */
     ValueVector<Real> get_w_measures(const TopologyId<dim_> &topology_id
-                                            = ElemTopology<dim_>()) const;
+                                     = ElemTopology<dim_>()) const;
 
     /**
      * Returns the element-face measure multiplied by the weights of the
@@ -436,7 +436,7 @@ private:
         }
 
         std::tuple<std::array<ValuesCache, 1>,
-        std::array<ValuesCache, n_faces> > values_;
+            std::array<ValuesCache, n_faces> > values_;
 
     };
 
