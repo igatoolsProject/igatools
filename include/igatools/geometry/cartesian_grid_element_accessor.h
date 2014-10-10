@@ -288,8 +288,10 @@ public:
      */
     Real get_face_measure(const int j) const;
 
+private:
+    template <int k> ValueVector<Real> get_w_measures_(const int j) const;
 
-
+public:
     /**
      * Returns the element measure multiplied by the weights of the quadrature
      * scheme used to initialize the accessor's cache.
@@ -303,7 +305,7 @@ public:
      * used to initialize the accessor's cache.
      * The face is specified by the input argument @p face_id
      */
-    ValueVector<Real> const &get_face_w_measures(const Index face_id) const;
+    ValueVector<Real> get_face_w_measures(const Index face_id) const;
 
 
     /**
@@ -364,9 +366,6 @@ private:
             unit_points_.print_info(out);
             out.end_item();
         }
-
-
-//TODO(pauletti, Sep 6, 2014): should the next be private?
 
         GridElemValueFlagsHandler flags_handler_;
 

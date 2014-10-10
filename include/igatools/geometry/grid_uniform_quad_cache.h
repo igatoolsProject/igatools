@@ -47,7 +47,7 @@ protected:
     using ElementAccessor = typename GridType::ElementAccessor;
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
-
+    // void fill_face_cache(ElementAccessor &elem, const int face);
 public:
     static const int dim = dim_;
 
@@ -77,13 +77,16 @@ public:
     void fill_face_cache(ElementIterator &elem, const int face);
 
     void print_info(LogStream &out) const;
+private:
+    template <int k>
+    void fill_element_cache_(ElementAccessor &elem, const int j);
 
 private:
     std::shared_ptr<const GridType> grid_;
 
-    GridElemValueFlagsHandler flags_;
+    std::tuple<GridElemValueFlagsHandler, GridFaceValueFlagsHandler> flags_;
 
-    GridFaceValueFlagsHandler face_flags_;
+    // GridFaceValueFlagsHandler face_flags_;
 
 protected:
     TensorProductArray<dim> lengths_;

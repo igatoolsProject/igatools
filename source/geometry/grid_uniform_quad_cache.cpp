@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/grid_uniform_quad_cache.h>
-
+#include <igatools/geometry/unit_element.h>
 using std::shared_ptr;
 using std::array;
 
@@ -36,10 +36,9 @@ GridUniformQuadCache(shared_ptr<const GridType> grid,
                      const Quadrature<dim> &quad)
     :
     grid_(grid),
-    flags_(flag),
-    face_flags_(flag),
-    lengths_(grid->get_element_lengths()),
-    quad_(quad)
+    flags_ {flag, flag},
+       lengths_(grid->get_element_lengths()),
+       quad_(quad)
 {}
 
 
@@ -57,13 +56,13 @@ init_element_cache(ElementAccessor &elem)
     }
 
     auto &elem_cache = cache->template get_value_cache<0>(0);
-    elem_cache.resize(flags_, quad_);
+    elem_cache.resize(std::get<0>(flags_), quad_);
 
 
     for (auto &f: faces)
     {
         auto &face_cache = cache->template get_value_cache<1>(f);
-        face_cache.resize(face_flags_, quad_.collapse_to_face(f));
+        face_cache.resize(std::get<1>(flags_), quad_.collapse_to_face(f));
     }
 }
 
@@ -78,20 +77,24 @@ init_element_cache(ElementIterator &elem)
     init_element_cache(elem.get_accessor());
 }
 
-
 template <int dim_>
+template <int k>
 void
 GridUniformQuadCache<dim_>::
-fill_element_cache(ElementAccessor &elem)
+fill_element_cache_(ElementAccessor &elem, const int j)
 {
     Assert(elem.local_cache_ != nullptr,ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_value_cache<0>(0);
+    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
     const auto &index = elem.get_tensor_index();
     auto &flags = cache.flags_handler_;
+    auto all_elems = UnitElement<dim>::all_elems;
+    static const int a = dim >0? dim-k : 0;
+    auto elements = std::get<a>(all_elems);
 
-    auto meas = lengths_.tensor_product(index);
-
+    const TensorIndex<a> active(elements[j].active_directions);
+    //auto meas = lengths_.tensor_product(index);
+    auto meas = lengths_.template sub_tensor_product<a>(index, active);
 
     if (flags.fill_measures())
     {
@@ -117,6 +120,42 @@ fill_element_cache(ElementAccessor &elem)
 template <int dim_>
 void
 GridUniformQuadCache<dim_>::
+fill_element_cache(ElementAccessor &elem)
+{
+    fill_element_cache_<0>(elem, 0);
+//    Assert(elem.local_cache_ != nullptr,ExcNullPtr());
+//    auto &cache = elem.local_cache_->template get_value_cache<0>(0);
+//
+//    const auto &index = elem.get_tensor_index();
+//    auto &flags = cache.flags_handler_;
+//
+//    auto meas = lengths_.tensor_product(index);
+//
+//
+//    if (flags.fill_measures())
+//    {
+//        cache.measure_ = meas;
+//        flags.set_measures_filled(true);
+//    }
+//    if (flags.fill_w_measures())
+//    {
+//        cache.w_measure_ = meas * cache.unit_weights_;
+//        flags.set_w_measures_filled(true);
+//    }
+//    if (flags.fill_lengths())
+//    {
+//        cache.lengths_ = lengths_.cartesian_product(index);
+//        flags.set_lengths_filled(true);
+//    }
+//
+//    cache.set_filled(true);
+}
+
+
+
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
     fill_element_cache(elem.get_accessor());
@@ -129,15 +168,16 @@ void
 GridUniformQuadCache<dim_>::
 fill_face_cache(ElementIterator &elem, const int face)
 {
-    //const auto &index = elem->get_tensor_index();
-
-    auto &elem_accessor = elem.get_accessor();
-    Assert(elem_accessor.local_cache_ != nullptr,ExcNullPtr());
-    auto &f_cache = elem_accessor.local_cache_->template get_value_cache<1>(face);
-    // auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
-    Assert(false, ExcMessage("update as needed"));
-    //f_cache.fill(meas);
-    f_cache.set_filled(true);
+    fill_element_cache_<1>(elem.get_accessor(), face);
+//    //const auto &index = elem->get_tensor_index();
+//
+//    auto &elem_accessor = elem.get_accessor();
+//    Assert(elem_accessor.local_cache_ != nullptr,ExcNullPtr());
+//    auto &f_cache = elem_accessor.local_cache_->template get_value_cache<1>(face);
+//    // auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
+//    Assert(false, ExcMessage("update as needed"));
+//    //f_cache.fill(meas);
+//    f_cache.set_filled(true);
 }
 
 

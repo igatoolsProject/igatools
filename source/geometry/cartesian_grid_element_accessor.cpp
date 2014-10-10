@@ -502,25 +502,36 @@ get_face_measure(const Index face_id) const
 
 
 template <int dim_>
+template <int k>
+ValueVector<Real>
+CartesianGridElement<dim_>::
+get_w_measures_(const int j) const
+{
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
+    Assert(cache.is_filled(), ExcNotInitialized());
+    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
+    //Assert(cache.flags_handler_.weights_filled(), ExcNotInitialized());
+    return (cache.measure_ * cache.unit_weights_);
+}
+
+template <int dim_>
 ValueVector<Real>
 CartesianGridElement<dim_>::
 get_w_measures(const TopologyId<dim_> &topology_id) const
 {
-    const auto &cache = local_cache_->template get_value_cache<0>(0);
-    Assert(cache.is_filled(), ExcNotInitialized());
-    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
-    return (cache.measure_ * cache.unit_weights_);
+    return get_w_measures_<0>(0);
 }
 
 
 
 template <int dim_>
-ValueVector<Real> const &
+ValueVector<Real>
 CartesianGridElement<dim_>::
 get_face_w_measures(const Index face_id) const
 {
-    return get_w_measures(FaceTopology<dim_>(face_id));
+    return get_w_measures_<1>(face_id);
 }
+
 
 
 template <int dim_>
@@ -532,7 +543,6 @@ get_coordinate_lengths() const -> const Point &
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
     return cache.lengths_;
-
 }
 
 
