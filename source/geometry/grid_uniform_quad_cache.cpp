@@ -56,12 +56,15 @@ init_element_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    auto &elem_cache = cache->elem_values_;
+    auto &elem_cache = cache->template get_value_cache<0>(0);
     elem_cache.resize(flags_, quad_);
 
-    auto &face_cache = cache->face_values_;
+
     for (auto &f: faces)
-        face_cache[f].resize(face_flags_, quad_.collapse_to_face(f));
+    {
+        auto &face_cache = cache->template get_value_cache<1>(f);
+        face_cache.resize(face_flags_, quad_.collapse_to_face(f));
+    }
 }
 
 
@@ -85,8 +88,7 @@ fill_element_cache(ElementAccessor &elem)
     auto meas = lengths_.tensor_product(index);
 
     Assert(elem.local_cache_ != nullptr,ExcNullPtr());
-    auto &cache = elem.get_elem_cache();
-    //auto &cache = elem.local_cache_->elem_values_;
+    auto &cache = elem.local_cache_->template get_value_cache<0>(0);
     if (cache.flags_handler_.fill_measures())
     {
         cache.measure_ = meas;
@@ -127,7 +129,7 @@ fill_face_cache(ElementIterator &elem, const int face)
 
     auto &elem_accessor = elem.get_accessor();
     Assert(elem_accessor.local_cache_ != nullptr,ExcNullPtr());
-    auto &f_cache = elem_accessor.local_cache_->face_values_[face];
+    auto &f_cache = elem_accessor.local_cache_->template get_value_cache<1>(face);
     // auto meas = lengths_.sub_tensor_product(index, UnitElement<dim_>::face_active_directions[face]);
     Assert(false, ExcMessage("update as needed"));
     //f_cache.fill(meas);

@@ -347,53 +347,53 @@ vertex(const int i) const -> Point
 
 
 
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-           ExcMessage("Only element or face topology is allowed."));
-    Assert(local_cache_ != nullptr,ExcNullPtr());
-    if (topology_id.is_element())
-    {
-        return local_cache_->elem_values_;
-    }
-    else
-    {
-        // TODO (pauletti, Oct 9, 2014): reinsert this assertion
-//        Assert(this->is_boundary(topology_id.get_id()),
-//               ExcMessage("The requested face_id=" +
-//                          std::to_string(topology_id.get_id()) +
-//                          " is not a boundary for the element"));
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache &
+//{
+//    Assert(topology_id.is_element() || topology_id.is_face(),
+//           ExcMessage("Only element or face topology is allowed."));
+//    Assert(local_cache_ != nullptr,ExcNullPtr());
+//    if (topology_id.is_element())
+//    {
+//        return local_cache_->elem_values_;
+//    }
+//    else
+//    {
+//        // TODO (pauletti, Oct 9, 2014): reinsert this assertion
+////        Assert(this->is_boundary(topology_id.get_id()),
+////               ExcMessage("The requested face_id=" +
+////                          std::to_string(topology_id.get_id()) +
+////                          " is not a boundary for the element"));
+//
+//        return local_cache_->face_values_[topology_id.get_id()];
+//    }
+//}
 
-        return local_cache_->face_values_[topology_id.get_id()];
-    }
-}
-
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-    ExcMessage("Only element or face topology is allowed."));
-    Assert(local_cache_ != nullptr,ExcNullPtr());
-    if (topology_id.is_element())
-    {
-        return local_cache_->elem_values_;
-    }
-    else
-    {
-        // TODO (pauletti, Oct 9, 2014): reinsert this assertion
-//        Assert(this->is_boundary(topology_id.get_id()),
-//        ExcMessage("The requested face_id=" +
-//        std::to_string(topology_id.get_id()) +
-//        " is not a boundary for the element"));
-
-        return local_cache_->face_values_[topology_id.get_id()];
-    }
-}
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
+//{
+//    Assert(topology_id.is_element() || topology_id.is_face(),
+//    ExcMessage("Only element or face topology is allowed."));
+//    Assert(local_cache_ != nullptr,ExcNullPtr());
+//    if (topology_id.is_element())
+//    {
+//        return local_cache_->elem_values_;
+//    }
+//    else
+//    {
+//        // TODO (pauletti, Oct 9, 2014): reinsert this assertion
+////        Assert(this->is_boundary(topology_id.get_id()),
+////        ExcMessage("The requested face_id=" +
+////        std::to_string(topology_id.get_id()) +
+////        " is not a boundary for the element"));
+//
+//        return local_cache_->face_values_[topology_id.get_id()];
+//    }
+//}
 
 
 //template <int dim_>
@@ -469,7 +469,7 @@ inline Real
 CartesianGridElement<dim_>::
 get_measure(const TopologyId<dim_> &topology_id) const
 {
-    const auto &cache = this->get_values_cache(topology_id);
+    const auto &cache = local_cache_->template get_value_cache<0>(0);
     Assert(cache.is_filled(), ExcMessage("Cache not filed."));
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
 
@@ -501,7 +501,7 @@ ValueVector<Real> const &
 CartesianGridElement<dim_>::
 get_w_measures(const TopologyId<dim_> &topology_id) const
 {
-    const auto &cache = this->get_values_cache(topology_id);
+    const auto &cache = local_cache_->template get_value_cache<0>(0);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.w_measures_filled(), ExcNotInitialized());
     return cache.w_measure_;
@@ -521,7 +521,7 @@ auto
 CartesianGridElement<dim_>::
 get_coordinate_lengths() const -> const array<Real, dim> &
 {
-    const auto &cache = get_values_cache();
+    const auto &cache = local_cache_->template get_value_cache<0>(0);
     Assert(cache.is_filled(), ExcNotInitialized());
     //Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
     return cache.length_;
@@ -534,7 +534,7 @@ auto
 CartesianGridElement<dim_>::
 get_points(const TopologyId<dim_> &topology_id) const -> ValueVector<Points<dim>> const
 {
-    const auto &cache = this->get_values_cache(topology_id);
+    const auto &cache =  local_cache_->template get_value_cache<0>(0);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = vertex(0);
     auto dilate    = get_coordinate_lengths();
@@ -634,13 +634,13 @@ LocalCache::
 print_info(LogStream &out) const
 {
     out.begin_item("Element Cache:");
-    elem_values_.print_info(out);
+    std::get<0>(values_)[0].print_info(out);
     out.end_item();
 
     for (int i = 0 ; i < n_faces ; ++i)
     {
         out.begin_item("Face: "+ std::to_string(i) + " Cache:");
-        face_values_[i].print_info(out);
+        std::get<1>(values_)[i].print_info(out);
         out.end_item();
     }
 }

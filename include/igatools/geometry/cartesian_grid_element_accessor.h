@@ -31,6 +31,8 @@
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
 
+#include<tuple>
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -252,12 +254,12 @@ public:
 
     const auto &get_elem_cache() const
     {
-        return get_values_cache(ElemTopology<dim>());
+        return local_cache_->template get_value_cache<0>(0);
     }
 
     auto &get_elem_cache()
     {
-        return get_values_cache(ElemTopology<dim>());
+        return local_cache_->template get_value_cache<0>(0);
     }
     /**
      * Return the @p i-th vertex
@@ -380,7 +382,7 @@ private:
     };
 
 
-
+#if 0
     /**
      * @todo Document this function
      */
@@ -391,6 +393,7 @@ private:
      * @todo Document this function
      */
     ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
+#endif
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
@@ -420,11 +423,16 @@ private:
 
         void print_info(LogStream &out) const;
 
-        /** Element values cache */
-        ValuesCache elem_values_;
+        template <int k>
+        ValuesCache &
+        get_value_cache(const int j)
+        {
+            return std::get<k>(values_)[j];
+        }
 
-        /** Face values cache */
-        std::array<ValuesCache, n_faces> face_values_;
+        std::tuple<std::array<ValuesCache, 1>,
+        std::array<ValuesCache, n_faces> > values_;
+
     };
 
     /** The local (element and face) cache. */
