@@ -42,6 +42,7 @@ CartesianProductIndexer(const TensorSize<rank> &num_indices_direction)
 }
 
 
+
 template <int rank>
 TensorIndex<rank>
 CartesianProductIndexer<rank>::
@@ -53,6 +54,7 @@ get_tensor_index(const Index flat_index) const
     //*/
     return this->get_data()[flat_index] ;
 }
+
 
 
 template <int rank>

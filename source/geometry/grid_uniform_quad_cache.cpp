@@ -84,26 +84,30 @@ void
 GridUniformQuadCache<dim_>::
 fill_element_cache(ElementAccessor &elem)
 {
-    const auto &index = elem.get_tensor_index();
-    auto meas = lengths_.tensor_product(index);
-
     Assert(elem.local_cache_ != nullptr,ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<0>(0);
-    if (cache.flags_handler_.fill_measures())
+
+    const auto &index = elem.get_tensor_index();
+    auto &flags = cache.flags_handler_;
+
+    auto meas = lengths_.tensor_product(index);
+
+
+    if (flags.fill_measures())
     {
         cache.measure_ = meas;
-        cache.flags_handler_.set_measures_filled(true);
+        flags.set_measures_filled(true);
     }
-    if (cache.flags_handler_.fill_w_measures())
+    if (flags.fill_w_measures())
     {
         cache.w_measure_ = meas * cache.unit_weights_;
-        cache.flags_handler_.set_w_measures_filled(true);
+        flags.set_w_measures_filled(true);
     }
-//    if (cache.flags_handler_.fill_lengths())
-//    {
-//        cache.lenths_ = lengths_.cartesian_product(index);
-//        cache.flags_handler_.set_lengths_filled(true);
-//    }
+    if (flags.fill_lengths())
+    {
+        cache.lengths_ = lengths_.cartesian_product(index);
+        flags.set_lengths_filled(true);
+    }
 
     cache.set_filled(true);
 }

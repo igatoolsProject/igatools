@@ -701,7 +701,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
         const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
         const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
 
-        const array<Real,dim> elem_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
+        const auto elem_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
 
         for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
         {

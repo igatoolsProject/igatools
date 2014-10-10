@@ -111,7 +111,7 @@ public :
     /** @name Functions for performing dilation and translation of the values in the container */
     ///@{
     /** Dilation followed by a translation of the TensorProductArray data. */
-    void dilate_translate(const std::array<Real,rank> &dilate,
+    void dilate_translate(const Points<rank> &dilate,
                           const Points<rank> &translate) ;
 
     /** Dilation of the TensorProductArray data.*/

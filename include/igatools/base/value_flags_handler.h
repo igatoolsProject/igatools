@@ -28,8 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
 class ValueFlagsHandler
 {
 public:
@@ -109,8 +107,6 @@ protected:
     bool fill_hessians_ = false;
     bool hessians_filled_ = false;
 };
-
-
 
 /**
  * @brief This is an helper class that is intended to be used as a filter for the flags that
@@ -208,6 +204,9 @@ public:
     /** Sets the filled status for w_measures. */
     void set_w_measures_filled(const bool status);
 
+    bool fill_lengths() const;
+    bool lengths_filled() const;
+    void set_lengths_filled(const bool status);
 
     /**
      * Prints internal information about the ElementValuesCache.
@@ -228,6 +227,10 @@ protected:
     bool fill_w_measures_ = false;
 
     bool w_measures_filled_ = false;
+
+    bool fill_lengths_   = false;
+
+    bool lengths_filled_ = false;
 };
 
 

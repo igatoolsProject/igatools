@@ -145,16 +145,40 @@ print_info(LogStream &out) const
 
 
 //====================================================
-GridElemValueFlagsHandler::
-GridElemValueFlagsHandler()
-    :
-    fill_points_(false),
-    points_filled_(false),
-    fill_measures_(false),
-    measures_filled_(false),
-    fill_w_measures_(false),
-    w_measures_filled_(false)
+GridElemValueFlagsHandler::GridElemValueFlagsHandler()
 {}
+
+
+
+GridElemValueFlagsHandler::
+GridElemValueFlagsHandler(const ValueFlags &flags)
+{
+    /*
+     * meas -> lengths
+     * points -> lengths
+     * general_points -> meas
+     * w_meas -> meas
+     */
+    if (contains(flags, ValueFlags::point))
+    {
+        fill_points_  = true;
+        fill_lengths_ = true;
+    }
+
+    if (contains(flags, ValueFlags::measure))
+    {
+        fill_measures_ = true;
+        fill_lengths_  = true;
+    }
+
+    if (contains(flags, ValueFlags::w_measure))
+    {
+        fill_measures_ = true;
+        fill_w_measures_ = true;
+    }
+}
+
+
 
 bool
 GridElemValueFlagsHandler::
@@ -166,26 +190,6 @@ fill_none() const
         fill_none = false;
 
     return fill_none;
-}
-
-GridElemValueFlagsHandler::
-GridElemValueFlagsHandler(const ValueFlags &flags)
-{
-    if (contains(flags, ValueFlags::point))
-    {
-        fill_points_ = true;
-    }
-
-    if (contains(flags, ValueFlags::measure))
-    {
-        fill_measures_ = true ;
-    }
-
-    if (contains(flags, ValueFlags::w_measure))
-    {
-        fill_measures_ = true ;
-        fill_w_measures_ = true ;
-    }
 }
 
 bool
@@ -249,6 +253,27 @@ GridElemValueFlagsHandler::
 set_w_measures_filled(const bool status)
 {
     w_measures_filled_ = status;
+}
+
+bool
+GridElemValueFlagsHandler::
+fill_lengths() const
+{
+    return fill_lengths_;
+}
+
+bool
+GridElemValueFlagsHandler::
+lengths_filled() const
+{
+    return lengths_filled_;
+}
+
+void
+GridElemValueFlagsHandler::
+set_lengths_filled(const bool status)
+{
+    lengths_filled_ = status;
 }
 
 void

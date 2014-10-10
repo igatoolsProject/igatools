@@ -464,16 +464,29 @@ is_boundary(const Index face_id) const
     return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
 }
 
+
+
 template <int dim_>
-inline Real
+template <int k>
+Real
 CartesianGridElement<dim_>::
-get_measure(const TopologyId<dim_> &topology_id) const
+get_measure_(const int j) const
 {
-    const auto &cache = local_cache_->template get_value_cache<0>(0);
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcMessage("Cache not filed."));
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
 
     return cache.measure_;
+}
+
+
+
+template <int dim_>
+inline Real
+CartesianGridElement<dim_>::
+get_measure() const
+{
+    return get_measure_<0>(0);
 }
 
 
@@ -483,29 +496,23 @@ CartesianGridElement<dim_>::
 get_face_measure(const Index face_id) const
 {
     Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-
-    return this->get_measure(FaceTopology<dim_>(face_id));
+    return get_measure_<1>(face_id);
 }
 
 
 
-
-
-
-
-
-
-
 template <int dim_>
-ValueVector<Real> const &
+ValueVector<Real>
 CartesianGridElement<dim_>::
 get_w_measures(const TopologyId<dim_> &topology_id) const
 {
     const auto &cache = local_cache_->template get_value_cache<0>(0);
     Assert(cache.is_filled(), ExcNotInitialized());
-    Assert(cache.flags_handler_.w_measures_filled(), ExcNotInitialized());
-    return cache.w_measure_;
+    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
+    return  (cache.measure_ * cache.unit_weights_);
 }
+
+
 
 template <int dim_>
 ValueVector<Real> const &
@@ -519,12 +526,12 @@ get_face_w_measures(const Index face_id) const
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-get_coordinate_lengths() const -> const array<Real, dim> &
+get_coordinate_lengths() const -> const Point &
 {
     const auto &cache = local_cache_->template get_value_cache<0>(0);
     Assert(cache.is_filled(), ExcNotInitialized());
-    //Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
-    return cache.length_;
+    Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
+    return cache.lengths_;
 
 }
 

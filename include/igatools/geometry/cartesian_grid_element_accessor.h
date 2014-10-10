@@ -266,16 +266,21 @@ public:
      */
     Point vertex(const int i) const;
 
-    const std::array<Real, dim> &get_coordinate_lengths() const;
+    const Point &get_coordinate_lengths() const;
 
+
+private:
+    template <int k>
+    Real get_measure_(const int j) const;
+
+public:
     /**
      * Returns measure of the element or of the element-face in the
      * CartesianGrid.
      * @note The topology for which the measure is computed is specified by
      * the input argument @p topology_id.
      */
-    Real get_measure(const TopologyId<dim_> &topology_id
-                     = ElemTopology<dim_>()) const;
+    Real get_measure() const;
 
 
     /**
@@ -289,7 +294,7 @@ public:
      * Returns the element measure multiplied by the weights of the quadrature
      * scheme used to initialize the accessor's cache.
      */
-    ValueVector<Real> const &get_w_measures(const TopologyId<dim_> &topology_id
+    ValueVector<Real> get_w_measures(const TopologyId<dim_> &topology_id
                                             = ElemTopology<dim_>()) const;
 
     /**
@@ -372,7 +377,7 @@ private:
         /** Element measure multiplied by the quadrature weights. */
         ValueVector<Real> w_measure_;
 
-        std::array<Real, dim> length_;
+        Points<dim> lengths_;
 
         TensorProductArray<dim> unit_points_;
 

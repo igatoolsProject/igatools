@@ -52,11 +52,17 @@ TensorProductArray(const CartesianProductArray<Real,rank> &data)
 template<int rank>
 void
 TensorProductArray<rank>::
-dilate_translate(const array<Real,rank> &dilate,
+dilate_translate(const Points<rank> &dilate,
                  const Points<rank> &translate)
 {
-    this->dilate(dilate) ;
-    this->translate(translate) ;
+    const TensorSize<rank> size = this->tensor_size();
+    for (int i=0; i<rank; ++i)
+        for (int j = 0 ; j < size[i] ; ++j)
+        {
+            this->data_[i][j] *= dilate[i];
+            this->data_[i][j]+= translate[i];
+        }
+
 }
 
 template<int rank>
