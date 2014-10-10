@@ -76,6 +76,7 @@ class PhysicalSpaceElementAccessor
     private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
+    using SpaceElementAccessor<PhysSpace>::get_elem_cache;
     using parent_t = SpaceElementAccessor<PhysSpace>;
 
     using parent_t::LocalCache;
