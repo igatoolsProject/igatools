@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
  *  Test for the CartesianGrid element iterator
  *  when getting face related values.
@@ -41,7 +42,6 @@ void face_values(const TensorSize<dim> &n_knots)
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     ValueFlags flag = ValueFlags::face_measure|
-
                       ValueFlags::face_w_measure|
                       ValueFlags::face_point|
                       ValueFlags::point|
