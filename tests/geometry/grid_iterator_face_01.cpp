@@ -75,7 +75,6 @@ void face_values(const TensorSize<dim> &n_knots)
                 out << "points: " << endl;
                 elem->get_face_points(face_id).print_info(out);
                 out << endl;
-
             }
         }
     }
