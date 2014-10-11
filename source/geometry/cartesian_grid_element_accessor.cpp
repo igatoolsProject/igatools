@@ -622,8 +622,8 @@ ValuesCache::
 resize(const GridElemValueFlagsHandler &flags_handler,
        const Quadrature<dim> &quad)
 {
-    const auto n_points_direction = quad.get_num_points_direction();
-    const Size n_points = n_points_direction.flat_size();
+    //const auto n_points_direction = quad.get_num_points_direction();
+    //const Size n_points = n_points_direction.flat_size();
 
     flags_handler_ = flags_handler;
 
@@ -635,25 +635,36 @@ resize(const GridElemValueFlagsHandler &flags_handler,
 
     if (flags_handler_.fill_w_measures())
     {
-        if (this->w_measure_.size() != n_points)
-            this->w_measure_.resize(n_points);
-
-        this->unit_weights_ = quad.get_weights().get_flat_tensor_product();
+    	this->unit_weights_ = quad.get_weights().get_flat_tensor_product();
     }
     else
     {
-        this->w_measure_.clear() ;
-        this->unit_weights_.clear() ;
+    	this->unit_weights_.clear() ;
     }
     this->set_initialized(true);
 }
 
 
 
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+ValuesCache::print_info(LogStream &out) const
+{
+	out.begin_item("Fill flags:");
+	flags_handler_.print_info(out);
+	out.end_item();
 
+	out << "Measure: " << measure_ << std::endl;
+	out << "Lengths: " << lengths_ << std::endl;
+	out.begin_item("Unit weights:");
+	unit_weights_.print_info(out);
+	out.end_item();
 
-
-
+	out.begin_item("Unit points:");
+	unit_points_.print_info(out);
+	out.end_item();
+}
 
 
 

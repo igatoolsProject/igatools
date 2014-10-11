@@ -101,11 +101,6 @@ fill_element_cache_(ElementAccessor &elem, const int j)
         cache.measure_ = meas;
         flags.set_measures_filled(true);
     }
-    if (flags.fill_w_measures())
-    {
-        cache.w_measure_ = meas * cache.unit_weights_;
-        flags.set_w_measures_filled(true);
-    }
     if (flags.fill_lengths())
     {
         cache.lengths_ = lengths_.cartesian_product(index);

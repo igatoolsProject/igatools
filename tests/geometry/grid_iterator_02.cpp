@@ -45,11 +45,6 @@ void run_test()
     const int n_knots = 5;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    grid->print_info(out);
-
-    out << endl ;
-
-
     QGauss<dim> quad(2);
     GridUniformQuadCache<dim> cache(grid, ValueFlags::measure | ValueFlags::w_measure, quad);
 
@@ -79,10 +74,6 @@ void run_test2()
 
     const int n_knots = 5;
     auto grid = CartesianGrid<dim>::create(n_knots);
-
-    grid->print_info(out);
-
-    out << endl ;
 
     GridUniformQuadCache<dim> cache(grid, ValueFlags::point, QGauss<dim>(2));
 

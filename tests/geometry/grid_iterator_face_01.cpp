@@ -43,10 +43,7 @@ void face_values(const TensorSize<dim> &n_knots)
 
     ValueFlags flag = ValueFlags::face_measure|
                       ValueFlags::face_w_measure|
-                      ValueFlags::face_point|
-                      ValueFlags::point|
-                      ValueFlags::measure|
-                      ValueFlags::w_measure;
+                      ValueFlags::face_point;
     QUniform<dim> quad(2);
     GridUniformQuadCache<dim> cache(grid, flag, quad);
 
