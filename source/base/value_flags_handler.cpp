@@ -320,21 +320,22 @@ GridFaceValueFlagsHandler::
 GridFaceValueFlagsHandler(const ValueFlags &flags)
 {
     if (contains(flags, ValueFlags::face_point))
-        fill_points_ = true;
-
+    {
+    	fill_points_  = true;
+    	fill_lengths_ = true;
+    }
     if (contains(flags, ValueFlags::face_measure))
-        fill_measures_ = true ;
-
+    {
+    	fill_measures_ = true;
+    	fill_lengths_  = true;
+    }
     if (contains(flags, ValueFlags::face_w_measure))
     {
-        fill_measures_ = true ;
+        fill_measures_ = true;
+        fill_lengths_  = true;
         fill_w_measures_ = true ;
     }
 
-    if (contains(flags, ValueFlags::face_normal))
-    {
-        fill_normals_ = true ;
-    }
 }
 
 

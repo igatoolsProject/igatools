@@ -141,6 +141,8 @@ enum class ValueFlags : std::int64_t
     /** Face outer (element boundary) normal at the quadrature points */
     face_normal    =    1L << 7,
 
+    /** element coordinates length */
+    length         =    1L << 8,
     ///@}
 
     ///@name Reference element related values
