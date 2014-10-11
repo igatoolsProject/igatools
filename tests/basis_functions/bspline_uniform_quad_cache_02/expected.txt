@@ -7,8 +7,7 @@ Element Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -23,8 +22,7 @@ Face: 0 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -39,8 +37,7 @@ Face: 1 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -124,8 +121,7 @@ Element Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -140,8 +136,7 @@ Face: 0 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -156,8 +151,7 @@ Face: 1 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -241,8 +235,7 @@ Element Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -259,8 +252,7 @@ Face: 0 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -277,8 +269,7 @@ Face: 1 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -295,8 +286,7 @@ Face: 2 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -313,8 +303,7 @@ Face: 3 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -444,8 +433,7 @@ Element Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -462,8 +450,7 @@ Face: 0 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -480,8 +467,7 @@ Face: 1 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -498,8 +484,7 @@ Face: 2 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
@@ -516,8 +501,7 @@ Face: 3 Cache:
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
-   Weigthed measure:
-   ValueVector (num_points=0) : [ ]
+   Lengths: [ 0 0 ] 
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:

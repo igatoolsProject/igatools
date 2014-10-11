@@ -52,7 +52,7 @@ template <int, int> class NewMappingElementAccessor;
  */
 template<int dim_, int codim_ = 0>
 class NewMapping
-    :  public std::enable_shared_from_this<NewMapping<dim_, codim_> >,
+    :  public std::enable_shared_from_this<NewMapping<dim_, codim_>>,
        public GridWrapper<CartesianGrid<dim_>>
 {
 public:
@@ -138,36 +138,6 @@ public:
     NewMapping<dim_,codim_> &operator=(const NewMapping<dim_,codim_> &map) = delete;
     ///@}
 
-    virtual void evaluate(ValueVector<Value> &values) const;
-
-    virtual void evaluate_gradients(ValueVector<Gradient> &gradients) const;
-
-    virtual void evaluate_hessians(ValueVector<Hessian> &hessians) const;
-
-    virtual void evaluate_face(const Index face_id,
-                               ValueVector<Value> &values) const;
-
-    virtual void evaluate_face_gradients(const Index face_id,
-                                         ValueVector<Gradient> &gradients) const;
-
-    virtual void evaluate_face_hessians(const Index face_id,
-                                        ValueVector<Hessian> &hessians) const;
-    ///@}
-
-
-    /** @name Mapping as a standard function (without the use of the cache).*/
-    ///@{
-    virtual void evaluate_at_points(const ValueVector<Point> &points,
-                                    ValueVector<Value> &values) const ;
-
-    virtual void evaluate_gradients_at_points(const ValueVector<Point> &points,
-                                              ValueVector<Gradient> &gradients) const;
-
-    virtual void evaluate_hessians_at_points(const ValueVector<Point> &points,
-                                             ValueVector<Hessian> &hessians) const;
-    ///@}
-
-
     /** @name Virtual user functions to define the map */
     ///@{
     /**
@@ -177,24 +147,17 @@ public:
      * class of Mapping.
      */
     virtual void init_element(const ValueFlags flag,
-                              const Quadrature<dim> &quad) const = 0;
+    		const Quadrature<dim> &quad) const = 0;
 
-    virtual void set_element(const GridIterator &elem) const = 0;
+    virtual void fill_element(const ElementIterator &elem) const = 0;
 
     /**
      *
      * @todo evaluate if index should be flat index, tensor index, and
      * or GridElement iterator
      */
-    virtual void set_face_element(const Index face_id,
-                                  const GridIterator &elem) const = 0;
-
-
-    virtual ValueVector<Value> values() const;
-
-    virtual ValueVector<Gradient> gradients() const;
-
-    virtual ValueVector<Hessian> hessians() const;
+    virtual void fill_face_element(const Index face_id,
+    		const GridIterator &elem) const = 0;
     ///@}
 
     /** @name Dealing with the element-based iterator. */
@@ -202,17 +165,17 @@ public:
     /**
      * Returns a element iterator to the first element of the patch.
      */
-    virtual ElementIterator begin() const;
+    ElementIterator begin() const;
 
     /**
      * Returns a element iterator to the last element of the patch.
      */
-    virtual ElementIterator last() const;
+    ElementIterator last() const;
 
     /**
      * Returns a element iterator to one-pass the end of patch.
      */
-    virtual ElementIterator end() const;
+    ElementIterator end() const;
     ///@}
 
     /**
@@ -225,21 +188,12 @@ public:
 
 protected:
     /** Constructs map over grid. */
-    Mapping(const std::shared_ptr<GridType> grid);
-
+    NewMapping(const std::shared_ptr<GridType> grid);
 
 private:
-
-    //TODO(pauletti, Jun 21, 2014): the reason of this functions is unclear
-    /**
-     * Returns the flag required to evaluate this mapping.
-     * This is used from the mapping accessor.
-     */
-    virtual ValueFlags required_flags() const;
-
     friend ElementAccessor;
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* MAPPING_H_ */
+#endif

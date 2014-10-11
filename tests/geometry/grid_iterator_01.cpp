@@ -19,16 +19,15 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test the CartesianGrid accessor and the forward iterator for that accessor.
+ *  Test the CartesianGrid iterator accessor .
  *  author: pauletti
- *  date:  2012-11-18 (Updated 2014-04-24)
+ *  date:  2014-04-24
  *
  */
 
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
-
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/geometry/unit_element.h>
@@ -39,10 +38,10 @@ template <int dim>
 void test_accessor1()
 {
     auto grid = CartesianGrid<dim>::create();
-    GridForwardIterator<CartesianGridElement<dim> > element(grid, 0);
+    GridForwardIterator<CartesianGridElement<dim> > elem(grid, 0);
 
     for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
-        out << element->vertex(i) << endl;
+        out << elem->vertex(i) << endl;
 }
 
 
@@ -52,11 +51,11 @@ template <int dim>
 void test_accessor2()
 {
     auto grid    = CartesianGrid<dim>::create();
-    auto element = grid->begin();
+    auto elem = grid->begin();
     auto end     = grid->end();
-    for (; element != end; ++element)
+    for (; elem != end; ++elem)
         for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
-            out<<element->vertex(i) << endl;
+            out<<elem->vertex(i) << endl;
 }
 
 
@@ -77,20 +76,18 @@ void test_accessor3()
 
     auto grid = CartesianGrid<dim>::create(coords);
 
-    GridForwardIterator<CartesianGridElement<dim> > element(grid, 0);
+    GridForwardIterator<CartesianGridElement<dim> > elem(grid, 0);
 
     const int n_elements = grid->get_num_active_elems();
-    for (int j = 0; j < n_elements; ++j, ++element)
+    for (int j = 0; j < n_elements; ++j, ++elem)
     {
         out << "Element: " << j << endl;
         for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
         {
-            out << "\t" << element->vertex(i) << endl;
+            out << "\t" << elem->vertex(i) << endl;
 
         }
     }
-
-
 }
 
 
@@ -111,11 +108,11 @@ void test_accessor4()
 
     auto grid = CartesianGrid<dim>::create(coords);
 
-    auto element = grid->begin();
+    auto elem = grid->begin();
     auto end     = grid->end();
-    for (; element != end; ++element)
+    for (; elem != end; ++elem)
         for (int i = 0; i < UnitElement<dim>::vertices_per_element; ++i)
-            out<<element->vertex(i) << endl;
+            out<<elem->vertex(i) << endl;
 }
 
 
