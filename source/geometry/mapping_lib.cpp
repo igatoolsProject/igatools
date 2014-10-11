@@ -97,7 +97,7 @@ LinearMapping<dim_, codim_>::
 set_face_element(const Index face_id,
                  const GridIterator &elem) const
 {
-    face_points_[face_id] = elem.get_points(FaceTopology<dim_>(face_id));
+    face_points_[face_id] = elem.get_face_points(face_id);
 }
 
 
@@ -270,7 +270,7 @@ BallMapping<dim_>::set_face_element(const Index face_id,
     auto &f_cos_val = face_cos_val[face_id] ;
     auto &f_sin_val = face_sin_val[face_id] ;
 
-    face_points = elem.get_points(FaceTopology<dim_>(face_id));
+    face_points = elem.get_face_points(face_id);
     const int n_points = face_points.size();
 
     for (int der = 0; der < order; ++der)
@@ -851,7 +851,7 @@ SphereMapping<dim_>::set_face_element(const Index face_id,
     auto &f_cos_val = face_cos_val[face_id] ;
     auto &f_sin_val = face_sin_val[face_id] ;
 
-    face_points = elem.get_points(FaceTopology<dim_>(face_id));
+    face_points = elem.get_face_points(face_id);
     const int n_points = face_points.size();
 
     for (int der = 0; der < order; ++der)
@@ -1265,7 +1265,7 @@ CylindricalAnnulus::
 set_face_element(const Index face_id,
                  const GridIterator &elem) const
 {
-    face_points_[face_id] = elem.get_points(FaceTopology<3>(face_id));
+    face_points_[face_id] = elem.get_face_points(face_id);
 }
 
 

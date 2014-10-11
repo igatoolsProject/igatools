@@ -197,7 +197,7 @@ IdentityMapping< dim, codim>::
 set_face_element(const Index face_id,
                  const GridIterator &elem) const
 {
-    face_points_[face_id] = elem.get_points(FaceTopology<dim>(face_id));
+    face_points_[face_id] = elem.get_face_points(face_id);
 }
 
 

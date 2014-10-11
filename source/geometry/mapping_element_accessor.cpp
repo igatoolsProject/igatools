@@ -624,7 +624,7 @@ fill_face_cache(const Index face_id)
             Assert(face_values.flags_handler_.measures_filled(),ExcMessage("Measures not filled."));
             const ValueVector<Real> &dets_map = face_values.measures_;
             const auto weights =
-                CartesianGridElement<dim_ref_>::get_w_measures(FaceTopology<dim_ref_>(face_id));
+                CartesianGridElement<dim_ref_>::get_face_w_measures(face_id);
 
             for (Index i = 0; i < face_values.num_points_; i++)
                 face_values.w_measures_[i] = dets_map[i] * weights[i];

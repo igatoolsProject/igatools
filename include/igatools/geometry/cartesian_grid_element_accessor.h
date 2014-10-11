@@ -239,7 +239,7 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-    //  std::array<Real,dim_> get_coordinate_lengths() const;
+    const Point &get_coordinate_lengths() const;
     /**
        * Test if the element has a boundary face.
        */
@@ -266,7 +266,9 @@ public:
      */
     Point vertex(const int i) const;
 
-    const Point &get_coordinate_lengths() const;
+private:
+    template<int k>
+    const Point &get_coordinate_lengths_(const int j) const;
 
 
 private:
@@ -296,8 +298,7 @@ public:
      * Returns the element measure multiplied by the weights of the quadrature
      * scheme used to initialize the accessor's cache.
      */
-    ValueVector<Real> get_w_measures(const TopologyId<dim_> &topology_id
-                                     = ElemTopology<dim_>()) const;
+    ValueVector<Real> get_w_measures() const;
 
     /**
      * Returns the element-face measure multiplied by the weights of the
@@ -307,24 +308,24 @@ public:
      */
     ValueVector<Real> get_face_w_measures(const Index face_id) const;
 
+private:
+    template <int k>
+    ValueVector<Point> get_points_(const int j) const;
 
+public:
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points.
      */
-    ValueVector<Points<dim>> const get_points(const TopologyId<dim_> &topology_id
-                                              = ElemTopology<dim_>()) const;
+    ValueVector<Point> const get_points() const;
 
     /**
      * Return a const reference to the one-dimensional container with the
      * values of the map at the evaluation points on the face specified
      * by @p face_id.
      */
-    ValueVector<Points<dim>> const get_face_points(const Index face_id) const;
-
+    ValueVector<Point> const get_face_points(const Index face_id) const;
     ///@}
-
-
 
     /**
      * Prints internal information about the CartesianGridElementAccessor.

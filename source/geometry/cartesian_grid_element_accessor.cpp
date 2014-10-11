@@ -142,47 +142,6 @@ move_to(const TensorIndex<dim> &tensor_index)
 template <int dim_>
 bool
 CartesianGridElement<dim_>::
-is_influence() const
-{
-    return grid_->marked_elems_[flat_index_];
-}
-
-
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
-is_active() const
-{
-    return grid_->active_elems_[flat_index_];
-}
-
-
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-set_influence(const bool influence_flag)
-{
-    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             marked_elems_[flat_index_] = influence_flag;
-}
-
-
-
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-set_active(const bool active_flag)
-{
-    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
-    active_elems_[flat_index_] = active_flag;
-}
-
-
-template <int dim_>
-bool
-CartesianGridElement<dim_>::
 jump(const TensorIndex<dim> &increment)
 {
     tensor_index_ += increment;
@@ -223,6 +182,47 @@ operator++()
     this->move_to(index);
 }
 
+
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_influence() const
+{
+    return grid_->marked_elems_[flat_index_];
+}
+
+
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_active() const
+{
+    return grid_->active_elems_[flat_index_];
+}
+
+
+
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+set_influence(const bool influence_flag)
+{
+    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
+                                             marked_elems_[flat_index_] = influence_flag;
+}
+
+
+
+template <int dim_>
+void
+CartesianGridElement<dim_>::
+set_active(const bool active_flag)
+{
+    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
+    active_elems_[flat_index_] = active_flag;
+}
 
 
 template <int dim_>
@@ -514,10 +514,12 @@ get_w_measures_(const int j) const
     return (cache.measure_ * cache.unit_weights_);
 }
 
+
+
 template <int dim_>
 ValueVector<Real>
 CartesianGridElement<dim_>::
-get_w_measures(const TopologyId<dim_> &topology_id) const
+get_w_measures() const
 {
     return get_w_measures_<0>(0);
 }
@@ -535,11 +537,12 @@ get_face_w_measures(const Index face_id) const
 
 
 template <int dim_>
+template <int k>
 auto
 CartesianGridElement<dim_>::
-get_coordinate_lengths() const -> const Point &
+get_coordinate_lengths_(const int j) const -> const Point &
 {
-    const auto &cache = local_cache_->template get_value_cache<0>(0);
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
     return cache.lengths_;
@@ -549,26 +552,46 @@ get_coordinate_lengths() const -> const Point &
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-get_points(const TopologyId<dim_> &topology_id) const -> ValueVector<Points<dim>> const
+get_coordinate_lengths() const -> const Point &
 {
-    const auto &cache =  local_cache_->template get_value_cache<0>(0);
-    Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
-    auto translate = vertex(0);
-    auto dilate    = get_coordinate_lengths();
-
-    auto ref_points = cache.unit_points_;
-    ref_points.dilate_translate(dilate, translate);
-
-    return ref_points.get_flat_cartesian_product();
+	return get_coordinate_lengths_<0>(0);
 }
+
+
+template <int dim_>
+template <int k>
+auto
+CartesianGridElement<dim_>::get_points_(const int j) const ->ValueVector<Point>
+{
+	const auto &cache =  local_cache_->template get_value_cache<k>(j);
+	Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
+	auto translate = vertex(0);
+	auto dilate    = get_coordinate_lengths_<k>(j);
+
+	auto ref_points = cache.unit_points_;
+	ref_points.dilate_translate(dilate, translate);
+
+	return ref_points.get_flat_cartesian_product();
+}
+
 
 
 template <int dim_>
 auto
 CartesianGridElement<dim_>::
-get_face_points(const Index face_id) const -> ValueVector<Points<dim>> const
+get_points() const -> ValueVector<Point> const
 {
-    return this->get_points(FaceTopology<dim_>(face_id));
+	return get_points_<0>(0);
+}
+
+
+
+template <int dim_>
+auto
+CartesianGridElement<dim_>::
+get_face_points(const Index face_id) const -> ValueVector<Point> const
+{
+	return get_points_<1>(face_id);
 }
 
 
@@ -589,6 +612,7 @@ get_face_points(const Index face_id) const -> ValueVector<Points<dim>> const
 //    }
 //    return coord_length;
 //}
+
 
 
 template <int dim_>
