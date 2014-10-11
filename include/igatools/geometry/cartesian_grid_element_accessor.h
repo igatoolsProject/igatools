@@ -361,22 +361,7 @@ private:
 
         ValueVector<Real> unit_weights_;
         ///@}
-
     };
-
-
-#if 0
-    /**
-     * @todo Document this function
-     */
-    const ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>())
-    const;
-
-    /**
-     * @todo Document this function
-     */
-    ValuesCache &get_values_cache(const TopologyId<dim_> &topology_id = ElemTopology<dim_>());
-#endif
 
 private:
     template <typename Accessor> friend class GridForwardIterator;

@@ -29,7 +29,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+//TODO(pauletti, Oct 11, 2014): the class name should be change to GridIterator
 
 /**
  * @brief Forward iterator on objects that have a "grid-like" structure.
