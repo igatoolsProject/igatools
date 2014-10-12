@@ -53,7 +53,7 @@ template <int, int> class NewMappingElementAccessor;
 template<int dim_, int codim_ = 0>
 class NewMapping
     :  public std::enable_shared_from_this<NewMapping<dim_, codim_>>,
-       public GridWrapper<CartesianGrid<dim_>>
+   public GridWrapper<CartesianGrid<dim_>>
 {
 public:
     /** Type of the Grid */
@@ -147,7 +147,7 @@ public:
      * class of Mapping.
      */
     virtual void init_element(const ValueFlags flag,
-    		const Quadrature<dim> &quad) const = 0;
+                              const Quadrature<dim> &quad) const = 0;
 
     virtual void fill_element(const ElementIterator &elem) const = 0;
 
@@ -157,7 +157,7 @@ public:
      * or GridElement iterator
      */
     virtual void fill_face_element(const Index face_id,
-    		const GridIterator &elem) const = 0;
+                                   const GridIterator &elem) const = 0;
     ///@}
 
     /** @name Dealing with the element-based iterator. */

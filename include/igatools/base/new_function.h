@@ -74,8 +74,8 @@ class NewFunction : public GridUniformQuadCache<dim>
 {
 public:
 
-	using ElementAccessor = FunctionElement<dim, range, rank>;
-	using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementAccessor = FunctionElement<dim, range, rank>;
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
     /** Types for the input/output evaluation arguments */
     ///@{
@@ -115,10 +115,10 @@ public:
     ///@{
     /** Constructor */
     NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-    		const ValueFlags flag,
-            const Quadrature<dim> &quad)
-    :
-    	GridUniformQuadCache<dim>(grid, flag, quad)
+                const ValueFlags flag,
+                const Quadrature<dim> &quad)
+        :
+        GridUniformQuadCache<dim>(grid, flag, quad)
     {}
 
     /** Destructor */
@@ -126,9 +126,11 @@ public:
     ///@}
 
 
-    virtual void init_element(ElementIterator& elem) = 0;
-    virtual void fill_element(ElementIterator& elem) = 0;
+    virtual void init_element(ElementIterator &elem) = 0;
+    virtual void fill_element(ElementIterator &elem) = 0;
 
+protected:
+    std::shared_ptr<typename ElementAccessor::CacheType> &get_cache(ElementIterator &elem);
 };
 
 IGA_NAMESPACE_CLOSE

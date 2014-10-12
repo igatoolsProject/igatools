@@ -27,7 +27,7 @@
 #include <igatools/base/logstream.h>
 
 IGA_NAMESPACE_OPEN
-
+//TODO(pauletti, Oct 11, 2014): a better name would be FunctionFlags(Handler?)
 class ValueFlagsHandler
 {
 public:
@@ -37,6 +37,8 @@ public:
      * Default constructor. Sets all boolean flags to false.
      */
     ValueFlagsHandler();
+
+    ValueFlagsHandler(const ValueFlags &flag);
 
     /** Copy constructor. */
     ValueFlagsHandler(const ValueFlagsHandler &in) = default;

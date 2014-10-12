@@ -58,7 +58,7 @@ public:
      */
     explicit ValueContainer(const Size num_functions, const Size num_points)
         :
-        DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions}))
+        DynamicMultiArray<T,2>(TensorSize<2>( {num_points,num_functions}))
     {
         Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
         Assert(num_points >= 0, ExcLowerRange(num_points,0));
@@ -161,7 +161,7 @@ protected:
 
         if (num_functions != this->get_num_functions() ||
             num_points != this->get_num_points())
-            DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points,num_functions}));
+            DynamicMultiArray<T,2>::resize(TensorSize<2>( {num_points,num_functions}));
     }
 
 #if 0

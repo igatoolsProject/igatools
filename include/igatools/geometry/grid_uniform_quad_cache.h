@@ -86,8 +86,6 @@ private:
 
     std::tuple<GridElemValueFlagsHandler, GridFaceValueFlagsHandler> flags_;
 
-    // GridFaceValueFlagsHandler face_flags_;
-
 protected:
     TensorProductArray<dim> lengths_;
 private:

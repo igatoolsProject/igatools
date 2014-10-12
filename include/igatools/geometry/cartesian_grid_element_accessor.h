@@ -343,7 +343,6 @@ private:
     class ValuesCache : public CacheStatus
     {
     public:
-
         void resize(const GridElemValueFlagsHandler &flags_handler,
                     const Quadrature<dim> &quad);
 

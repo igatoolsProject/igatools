@@ -554,7 +554,7 @@ auto
 CartesianGridElement<dim_>::
 get_coordinate_lengths() const -> const Point &
 {
-	return get_coordinate_lengths_<0>(0);
+    return get_coordinate_lengths_<0>(0);
 }
 
 
@@ -563,15 +563,15 @@ template <int k>
 auto
 CartesianGridElement<dim_>::get_points_(const int j) const ->ValueVector<Point>
 {
-	const auto &cache =  local_cache_->template get_value_cache<k>(j);
-	Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
-	auto translate = vertex(0);
-	auto dilate    = get_coordinate_lengths_<k>(j);
+    const auto &cache =  local_cache_->template get_value_cache<k>(j);
+    Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
+    auto translate = vertex(0);
+    auto dilate    = get_coordinate_lengths_<k>(j);
 
-	auto ref_points = cache.unit_points_;
-	ref_points.dilate_translate(dilate, translate);
+    auto ref_points = cache.unit_points_;
+    ref_points.dilate_translate(dilate, translate);
 
-	return ref_points.get_flat_cartesian_product();
+    return ref_points.get_flat_cartesian_product();
 }
 
 
@@ -581,7 +581,7 @@ auto
 CartesianGridElement<dim_>::
 get_points() const -> ValueVector<Point> const
 {
-	return get_points_<0>(0);
+    return get_points_<0>(0);
 }
 
 
@@ -591,7 +591,7 @@ auto
 CartesianGridElement<dim_>::
 get_face_points(const Index face_id) const -> ValueVector<Point> const
 {
-	return get_points_<1>(face_id);
+    return get_points_<1>(face_id);
 }
 
 
@@ -635,11 +635,11 @@ resize(const GridElemValueFlagsHandler &flags_handler,
 
     if (flags_handler_.fill_w_measures())
     {
-    	this->unit_weights_ = quad.get_weights().get_flat_tensor_product();
+        this->unit_weights_ = quad.get_weights().get_flat_tensor_product();
     }
     else
     {
-    	this->unit_weights_.clear() ;
+        this->unit_weights_.clear() ;
     }
     this->set_initialized(true);
 }
@@ -651,19 +651,19 @@ void
 CartesianGridElement<dim_>::
 ValuesCache::print_info(LogStream &out) const
 {
-	out.begin_item("Fill flags:");
-	flags_handler_.print_info(out);
-	out.end_item();
+    out.begin_item("Fill flags:");
+    flags_handler_.print_info(out);
+    out.end_item();
 
-	out << "Measure: " << measure_ << std::endl;
-	out << "Lengths: " << lengths_ << std::endl;
-	out.begin_item("Unit weights:");
-	unit_weights_.print_info(out);
-	out.end_item();
+    out << "Measure: " << measure_ << std::endl;
+    out << "Lengths: " << lengths_ << std::endl;
+    out.begin_item("Unit weights:");
+    unit_weights_.print_info(out);
+    out.end_item();
 
-	out.begin_item("Unit points:");
-	unit_points_.print_info(out);
-	out.end_item();
+    out.begin_item("Unit points:");
+    unit_points_.print_info(out);
+    out.end_item();
 }
 
 

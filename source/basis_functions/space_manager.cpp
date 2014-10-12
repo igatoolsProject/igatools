@@ -723,8 +723,8 @@ print_info(LogStream &out) const
     {
 
         out << "Space["<< i <<"]:   ID=" << space_info.first
-            << "   n_dofs=" << space_info.second->get_num_dofs()
-            << "   DOFs=[ ";
+        << "   n_dofs=" << space_info.second->get_num_dofs()
+        << "   DOFs=[ ";
 
         const DofsView &dofs_space_view = space_info.second->get_dofs_view();
         for (const Index &dof : dofs_space_view)
