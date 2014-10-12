@@ -31,49 +31,10 @@ IGA_NAMESPACE_OPEN
 
 template <int, int, int> class FunctionElement;
 
-/**
- *  @brief Scalar, vector or tensor valued function
- *
- *  Function
- *  \f$ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r_{times}}}. \f$
- *
- *  For example:
- *  - Function<n> is a scalar valued function on <i> R <sup> n </sup> </i>.
- *  - Function<n,m> is an m-dimensional vector valued function on
- *    <i> R <sup> n </sup> </i>.
- *  - Function<n,m,2> is a tensor valued function on <i> R <sup> n </sup> </i>.
- *
- *  This is a pure abstract class and cannot be instantiated.
- *  Its purpose is to give an unified interface for concrete classes implementing
- *  function evaluation through the specialization of Function::evaluate().
- *
- *  For example to define a linear function from R^m to R^n
- *  \code
- *  template<int m, int n>
- *  class LinearFunction : public Function<m, n>
- *  {
- *  public:
- *  using Function<m, n>::
- *    LinearFunction();
- *    void evaluate(ValueVector< typename LinearFunction<dim,rdim>::Point >  & points,
- *                  ValueVector< typename LinearFunction<dim,rdim>::Value >  & values
- *                 ) const
- *    {
- *      for (int i=0; i<points.size(); i++)
- *          values[i] = action(A,points[i]) + b;
- *    }
- *  private:
- *    Tensor <dim, 1, tensor::covariant, Tensor<rdim, 1, tensor::contravariant, Real> > A;
- *    Tensor<rdim, 1, tensor::contravariant, Real> b;
- *  };
- *  \endcode
- */
-
 template<int dim, int range = 1, int rank = 1>
 class NewFunction : public GridUniformQuadCache<dim>
 {
 public:
-
     using ElementAccessor = FunctionElement<dim, range, rank>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
@@ -116,10 +77,7 @@ public:
     /** Constructor */
     NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
                 const ValueFlags flag,
-                const Quadrature<dim> &quad)
-        :
-        GridUniformQuadCache<dim>(grid, flag, quad)
-    {}
+                const Quadrature<dim> &quad);
 
     /** Destructor */
     virtual ~NewFunction() = default;
@@ -130,7 +88,8 @@ public:
     virtual void fill_element(ElementIterator &elem) = 0;
 
 protected:
-    std::shared_ptr<typename ElementAccessor::CacheType> &get_cache(ElementIterator &elem);
+    std::shared_ptr<typename ElementAccessor::CacheType>
+    &get_cache(ElementIterator &elem);
 };
 
 IGA_NAMESPACE_CLOSE

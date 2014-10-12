@@ -19,119 +19,18 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for Function class, we define a linear function
+ *  Test for Function class, as a prototype for an analytical function
  *  author: pauletti
- *  date: Jun 19, 2014
+ *  date: Oct 11, 2014
  */
 
 #include "../tests.h"
-#include <igatools/base/new_function.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
-IGA_NAMESPACE_OPEN
-template<int dim, int range = 1, int rank = 1>
-class FunctionElement : public CartesianGridElement<dim>
-{
-public:
-    using Func = NewFunction<dim, range, rank>;
-    using Point = typename Func::Point;
-    using Value = typename Func::Value;
-    using Gradient = typename Func::Gradient;
-    using Hessian  = typename Func::Hessian;
-    using ContainerType = CartesianGrid<dim>;
+#include <igatools/base/function_element.h>
 
-private:
-//  template<int k>
-//  ValueVector<Derivative<k>> get_derivative() const;
-    template <int order>
-    using Derivative = typename Func::template Derivative<order>;
-public:
-    using CartesianGridElement<dim>::CartesianGridElement;
-    ValueVector<Point> get_points() const
-    {
-        return CartesianGridElement<dim>::get_points();
-    }
+//#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
 
-    ValueVector<Value> const &get_values() const
-    {
-        return elem_cache_->values_;
-    }
-
-    template<int order>
-    auto const &get_derivative() const
-    {
-        return std::get<order>(elem_cache_->derivatives_);
-    }
-
-    ValueVector<Gradient> const &get_gradients() const
-    {
-        return get_derivative<1>();
-    }
-
-    ValueVector<Hessian> const &get_hessians() const
-    {
-        return get_derivative<2>();
-    }
-
-private:
-    struct Cache : public CacheStatus
-    {
-        void resize(const ValueFlagsHandler &flags_handler,
-                    const int n_points)
-        {
-            //TODO(pauletti, Oct 11, 2014): missing all necesary clears
-            flags_handler_ = flags_handler;
-
-            if (flags_handler_.fill_values())
-                values_.resize(n_points);
-
-            if (flags_handler_.fill_gradients())
-                std::get<1>(derivatives_).resize(n_points);
-
-            if (flags_handler_.fill_hessians())
-                std::get<2>(derivatives_).resize(n_points);
-
-            set_initialized(true);
-        }
-
-        void print_info(LogStream &out) const
-        {
-            flags_handler_.print_info(out);
-            values_.print_info(out);
-            std::get<1>(derivatives_).print_info(out);
-            std::get<2>(derivatives_).print_info(out);
-        }
-
-        ValueVector<Value> values_;
-        std::tuple<ValueVector<Derivative<0>>,
-            ValueVector<Derivative<1>>,
-            ValueVector<Derivative<2>>> derivatives_;
-        ValueFlagsHandler flags_handler_;
-    };
-
-    std::shared_ptr<Cache> elem_cache_;
-public:
-    using CacheType = Cache;
-private:
-    template <typename Accessor> friend class GridForwardIterator;
-    friend class NewFunction<dim, range, rank>;
-};
-
-template<int dim, int range, int rank>
-auto
-NewFunction<dim,range,rank>::
-get_cache(NewFunction<dim,range,rank>::ElementIterator &elem) -> std::shared_ptr<typename ElementAccessor::CacheType> &
-{
-    return elem.get_accessor().elem_cache_;
-}
-template class NewFunction<2,2,1>;
-template class FunctionElement<2,2,1>;
-template class GridForwardIterator<FunctionElement<2,2,1>>;
-IGA_NAMESPACE_CLOSE
-
-//template class CartesianGridElement<1>;
-//template class GridForwardIterator<CartesianGridElement<1>>;
 
 template<int dim, int range>
 class LinearFunction : public NewFunction<dim, range>
@@ -153,8 +52,8 @@ public:
         parent_t::NewFunction(grid, flag, quad),
         flag_(flag),
         quad_(quad),
-        A_ {A},
-       b_ {b}
+        A_ (A),
+        b_ (b)
     {}
 
     void init_element(ElementIterator &elem)
