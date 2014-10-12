@@ -85,7 +85,7 @@ public:
 
     void init_element(ElementIterator& elem)
     {
-    	auto el    = elem.get_accessor();
+    	auto &el    = elem.get_accessor();
     	GridUniformQuadCache<dim>::init_element_cache(el);
     	//auto cache = el.get_cache();
     	//cache.resize(flag_, quad_);
@@ -93,7 +93,7 @@ public:
 
     void fill_element(ElementIterator& elem)
     {
-    	auto el    = elem.get_accessor();
+    	auto &el    = elem.get_accessor();
     	GridUniformQuadCache<dim>::fill_element_cache(el);
     	auto points = el.get_points();
     	//auto cache = el.get_cache();
@@ -145,11 +145,15 @@ void test()
 
 
     GridForwardIterator<FunctionElement<dim,range,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim,range,1>> end(grid, IteratorState::pass_the_end);
 
     F.init_element(elem);
-    F.fill_element(elem);
-    elem->get_points().print_info(out);
-
+    for(;elem != end; ++elem)
+    {
+    	F.fill_element(elem);
+    	elem->get_points().print_info(out);
+    	out << endl;
+    }
 }
 
 
