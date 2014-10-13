@@ -27,71 +27,8 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/base/formula_function.h>
 #include <igatools/base/function_element.h>
-
-template<int dim, int range, int rank>
-class FormulaFunction : public NewFunction<dim, range>
-{
-private:
-	using parent_t = NewFunction<dim, range>;
-public:
-	using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-
-    FormulaFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                   const ValueFlags &flag, const Quadrature<dim> &quad)
-        :
-        parent_t::NewFunction(grid, flag, quad),
-        flag_(flag),
-        quad_(quad)
-    {}
-
-    void init_element(ElementIterator &elem)
-    {
-        auto &el    = elem.get_accessor();
-        GridUniformQuadCache<dim>::init_element_cache(el);
-        auto &cache = this->get_cache(elem);
-        if (cache == nullptr)
-        {
-            using Cache = typename ElementAccessor::CacheType;
-            cache = shared_ptr<Cache>(new Cache);
-        }
-        cache->resize(flag_, quad_.get_num_points());
-    }
-
-    void fill_element(ElementIterator &elem)
-    {
-        auto &el    = elem.get_accessor();
-        GridUniformQuadCache<dim>::fill_element_cache(el);
-        const auto points = el.get_points();
-        auto &cache = this->get_cache(elem);
-        if (flag_.fill_values())
-            this->evaluate_0(points, cache->values_);
-        if (flag_.fill_gradients())
-            this->evaluate_1(points, std::get<1>(cache->derivatives_));
-        if (flag_.fill_hessians())
-            this->evaluate_2(points, std::get<2>(cache->derivatives_));
-    }
-
-private:
-    virtual void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const = 0;
-
-    virtual void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const = 0;
-
-    virtual void evaluate_2(const ValueVector<Point> &points,
-    		       ValueVector<Derivative<2>> &values) const = 0;
-
-private:
-    ValueFlagsHandler flag_;
-    Quadrature<dim> quad_;
- };
 
 
 template<int dim, int range>
@@ -112,8 +49,8 @@ public:
                    const Gradient &A, const Value &b)
         :
         parent_t::FormulaFunction(grid, flag, quad),
-        A_ (A),
-        b_ (b)
+        A_(A),
+        b_(b)
     {}
 
 
@@ -128,7 +65,6 @@ private:
             ++point;
         }
     }
-
 
     void evaluate_1(const ValueVector<Point> &points,
                     ValueVector<Derivative<1>> &values) const
@@ -154,16 +90,16 @@ private:
 template<int dim, int range>
 void test(NewFunction<dim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 {
-	GridForwardIterator<FunctionElement<dim,range,1>> elem(grid, 0);
-	GridForwardIterator<FunctionElement<dim,range,1>> end(grid, IteratorState::pass_the_end);
+    GridForwardIterator<FunctionElement<dim,range,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim,range,1>> end(grid, IteratorState::pass_the_end);
 
-	F.init_element(elem);
-	for (; elem != end; ++elem)
-	{
-		F.fill_element(elem);
-		elem->get_points().print_info(out);
-		out << endl;
-		elem->get_values().print_info(out);
+    F.init_element(elem);
+    for (; elem != end; ++elem)
+    {
+        F.fill_melement(elem);
+        elem->get_points().print_info(out);
+        out << endl;
+        elem->get_values().print_info(out);
         out << endl;
         elem->get_gradients().print_info(out);
         out << endl;
@@ -176,7 +112,7 @@ void test(NewFunction<dim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 template<int dim, int range>
 void create_fun()
 {
-	using Function = LinearFunction<dim, range>;
+    using Function = LinearFunction<dim, range>;
 
     typename Function::Value    b;
     typename Function::Gradient A;

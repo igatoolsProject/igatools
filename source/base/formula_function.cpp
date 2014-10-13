@@ -18,20 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/formula_function.h>
 #include <igatools/base/function_element.h>
-IGA_NAMESPACE_OPEN
 
+IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank >
 FormulaFunction<dim, range, rank >::
 FormulaFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-		const ValueFlags flag,
-		const Quadrature<dim> &quad)
-		 :
-		parent_t::NewFunction(grid, flag, quad),
-		flag_(flag),
-		quad_(quad)
+                const ValueFlags flag,
+                const Quadrature<dim> &quad)
+    :
+    parent_t::NewFunction(grid, flag, quad),
+    flag_(flag),
+    quad_(quad)
 {}
 
 
@@ -41,15 +41,15 @@ auto
 FormulaFunction<dim, range, rank >::
 init_element(ElementIterator &elem) -> void
 {
-	auto &el = elem.get_accessor();
-	GridUniformQuadCache<dim>::init_element_cache(el);
-	auto &cache = this->get_cache(elem);
-	if (cache == nullptr)
-	{
-		using Cache = typename ElementAccessor::CacheType;
-		cache = shared_ptr<Cache>(new Cache);
-	}
-	cache->resize(flag_, quad_.get_num_points());
+    auto &el = elem.get_accessor();
+    GridUniformQuadCache<dim>::init_element_cache(el);
+    auto &cache = this->get_cache(elem);
+    if (cache == nullptr)
+    {
+        using Cache = typename ElementAccessor::CacheType;
+        cache = shared_ptr<Cache>(new Cache);
+    }
+    cache->resize(flag_, quad_.get_num_points());
 }
 
 
@@ -59,16 +59,16 @@ auto
 FormulaFunction<dim, range, rank >::
 fill_element(ElementIterator &elem) -> void
 {
-	auto &el    = elem.get_accessor();
-	GridUniformQuadCache<dim>::fill_element_cache(el);
-	const auto points = el.get_points();
-	auto &cache = this->get_cache(elem);
-	if (flag_.fill_values())
-		this->evaluate_0(points, cache->values_);
-	if (flag_.fill_gradients())
-		this->evaluate_1(points, std::get<1>(cache->derivatives_));
-	if (flag_.fill_hessians())
-		this->evaluate_2(points, std::get<2>(cache->derivatives_));
+    auto &el    = elem.get_accessor();
+    GridUniformQuadCache<dim>::fill_element_cache(el);
+    const auto points = el.get_points();
+    auto &cache = this->get_cache(elem);
+    if (flag_.fill_values())
+        this->evaluate_0(points, cache->values_);
+    if (flag_.fill_gradients())
+        this->evaluate_1(points, std::get<1>(cache->derivatives_));
+    if (flag_.fill_hessians())
+        this->evaluate_2(points, std::get<2>(cache->derivatives_));
 }
 
 

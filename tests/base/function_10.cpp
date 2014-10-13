@@ -36,9 +36,9 @@ template<class Space>
 class IgFunction : public NewFunction<Space::dim, Space::range, Space::rank>
 {
 public:
-	static const int dim = Space::dim;
-	static const int range = Space::range;
-	static const int rank = Space::rank;
+    static const int dim = Space::dim;
+    static const int range = Space::range;
+    static const int rank = Space::rank;
 
     using parent_t = NewFunction<dim, range>;
     using typename NewFunction<dim, range>::Point;
@@ -52,13 +52,13 @@ public:
     using CoeffType = Vector<LAPack::trilinos>;
 
     IgFunction(const ValueFlags &flag, const Quadrature<dim> &quad,
-    		std::shared_ptr<const Space> space,
-    		const CoeffType &coeff)
-    :
+               std::shared_ptr<const Space> space,
+               const CoeffType &coeff)
+        :
         parent_t::NewFunction(space->get_grid(), flag, quad),
         flag_(flag),
         quad_(quad),
-        space_ (space),
+        space_(space),
         coeff_(coeff),
         elem_(space_->begin()),
         space_filler_(space_, flag, quad)
@@ -90,11 +90,11 @@ public:
         elem_.move_to(elem->get_flat_index());
         const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
         if (flag_.fill_values())
-        	cache->values_ = elem_->evaluate_field(loc_coeff);
+            cache->values_ = elem_->evaluate_field(loc_coeff);
         if (flag_.fill_gradients())
-        	std::get<1>(cache->derivatives_) = elem_->evaluate_field_gradients(loc_coeff);
+            std::get<1>(cache->derivatives_) = elem_->evaluate_field_gradients(loc_coeff);
         if (flag_.fill_hessians())
-        	std::get<2>(cache->derivatives_) = elem_->evaluate_field_hessians(loc_coeff);
+            std::get<2>(cache->derivatives_) = elem_->evaluate_field_hessians(loc_coeff);
     }
 
 private:
@@ -112,8 +112,8 @@ private:
 template<int dim, int range>
 void test()
 {
-	using Space = BSplineSpace<dim>;
-	using Function = IgFunction<Space>;
+    using Space = BSplineSpace<dim>;
+    using Function = IgFunction<Space>;
 
 
     auto flag = ValueFlags::value| ValueFlags::gradient |  ValueFlags::hessian;

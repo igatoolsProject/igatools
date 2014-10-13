@@ -29,7 +29,7 @@ auto
 FunctionElement<dim, range, rank>::
 get_points() const -> ValueVector<Point>
 {
-	return CartesianGridElement<dim>::get_points();
+    return CartesianGridElement<dim>::get_points();
 }
 
 
@@ -39,7 +39,7 @@ auto
 FunctionElement<dim, range, rank>::
 get_values() const -> ValueVector<Value> const &
 {
-	return elem_cache_->values_;
+    return elem_cache_->values_;
 }
 
 
@@ -50,7 +50,7 @@ auto const &
 FunctionElement<dim, range, rank>::
 get_derivative() const
 {
-	return std::get<order>(elem_cache_->derivatives_);
+    return std::get<order>(elem_cache_->derivatives_);
 }
 
 
@@ -60,7 +60,7 @@ auto
 FunctionElement<dim, range, rank>::
 get_gradients() const -> ValueVector<Gradient> const &
 {
-	return get_derivative<1>();
+    return get_derivative<1>();
 }
 
 
@@ -70,7 +70,7 @@ auto
 FunctionElement<dim, range, rank>::
 get_hessians() const -> ValueVector<Hessian> const &
 {
-	return get_derivative<2>();
+    return get_derivative<2>();
 }
 
 IGA_NAMESPACE_CLOSE

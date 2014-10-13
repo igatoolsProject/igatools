@@ -25,11 +25,11 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range, int rank >
 NewFunction<dim, range, rank >::
 NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-		const ValueFlags flag,
-		const Quadrature<dim> &quad)
-:
-		GridUniformQuadCache<dim>(grid, flag, quad)
-		{}
+            const ValueFlags flag,
+            const Quadrature<dim> &quad)
+    :
+    GridUniformQuadCache<dim>(grid, flag, quad)
+{}
 
 
 

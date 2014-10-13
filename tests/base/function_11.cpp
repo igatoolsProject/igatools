@@ -49,8 +49,8 @@ public:
         parent_t::NewFunction(grid, flag, quad),
         flag_(flag),
         quad_(quad),
-        A_ (A),
-        b_ (b)
+        A_(A),
+        b_(b)
     {}
 
     void init_element(ElementIterator &elem)
