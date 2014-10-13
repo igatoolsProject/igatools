@@ -31,7 +31,6 @@
 IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including header file.
-template <int> class CartesianGridElement;
 template <int, int> class NewMappingElementAccessor;
 
 /**
