@@ -76,7 +76,6 @@ public:
             this->evaluate_1(points, std::get<1>(cache->derivatives_));
         if (flag_.fill_hessians())
             this->evaluate_2(points, std::get<2>(cache->derivatives_));
-
     }
 
 private:
