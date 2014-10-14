@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for Function class, as a prototype for an spline function
+ *  Test for linear mapping class
  *  author: pauletti
  *  date: Oct 11, 2014
  */
@@ -29,25 +29,31 @@
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/geometry/new_mapping_element_accessor.h>
 #include <igatools/../../source/geometry/grid_forward_iterator.cpp>
-#include <igatools/base/ig_function.h>
+#include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/base/function_element.h>
 
 template<int dim, int codim>
 void test()
 {
-    using Space = BSplineSpace<dim, dim+codim>;
-    using Function = IgFunction<Space>;
-    auto flag =  ValueFlags::value| ValueFlags::gradient | ValueFlags::hessian;
+    const int space_dim = dim+codim;
+    using Function = functions::LinearFunction<dim, codim, space_dim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
+    for (int i=0; i<space_dim; i++)
+    {
+        for (int j=0; j<dim; j++)
+            if (j == i)
+                A[j][j] = 2.;
+        b[i] = i;
+    }
+
+    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
-    const int deg = 1;
-    auto space = Space::create(deg, grid);
-    typename Function::CoeffType coeff(space->get_num_basis());
-    coeff(0) = 1.;
-    auto F = make_shared<Function>(flag, quad, space, coeff);
+
+    auto F = Function::create(grid, flag, quad, A, b);
 
 
     using Mapping   = NewMapping<dim, codim>;
@@ -63,8 +69,8 @@ void test()
     for (; elem != end; ++elem)
     {
         map.fill_element(elem);
-//        elem->get_points().print_info(out);
-//        out << endl;
+        elem->get_points().print_info(out);
+        out << endl;
         elem->get_values().print_info(out);
         out << endl;
         elem->get_gradients().print_info(out);

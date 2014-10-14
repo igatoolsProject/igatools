@@ -38,7 +38,9 @@ template<int dim, int codim, int range>
 class LinearFunction : public FormulaFunction<dim, codim, range, 1>
 {
 public:
+    using base_t = NewFunction<dim, codim, range, 1>;
     using parent_t = FormulaFunction<dim, codim, range, 1>;
+    using self_t = LinearFunction<dim, codim, range>;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -51,7 +53,10 @@ public:
                    const ValueFlags &flag, const Quadrature<dim> &quad,
                    const Gradient &A, const Value &b);
 
-
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<const CartesianGrid<dim>> grid,
+           const ValueFlags &flag, const Quadrature<dim> &quad,
+           const Gradient &A, const Value &b);
 private:
     void evaluate_0(const ValueVector<Point> &points,
                     ValueVector<Value> &values) const;

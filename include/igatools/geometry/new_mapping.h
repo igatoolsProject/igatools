@@ -47,11 +47,10 @@ template <int, int> class MappingElement;
  */
 template<int dim, int codim = 0>
 class NewMapping
-//   :  public NewFunction<dim, codim>
 {
 private:
     using self_t = NewMapping<dim, codim>;
-    using FuncType = NewFunction<dim, codim>;
+    using FuncType = NewFunction<dim, codim, dim+codim>;
 public:
     using ElementAccessor = MappingElement<dim, codim>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;

@@ -37,6 +37,20 @@ LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
     b_(b)
 {}
 
+
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+create(std::shared_ptr<const CartesianGrid<dim>> grid,
+       const ValueFlags &flag, const Quadrature<dim> &quad,
+       const Gradient &A, const Value &b) ->  std::shared_ptr<base_t>
+{
+    return std::shared_ptr<base_t>(new self_t(grid, flag, quad, A, b));
+}
+
+
+
 template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::

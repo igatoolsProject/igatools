@@ -28,11 +28,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim = 0>
 class MappingElement
-    : public FunctionElement<dim, codim>
+    : public FunctionElement<dim, codim, dim+codim>
 {
 private:
     using self_t  = MappingElement<dim, codim>;
-    using paren_t = FunctionElement<dim, codim>;
+    using paren_t = FunctionElement<dim, codim, dim+codim>;
     using Map = NewMapping<dim, codim>;
 public:
     using paren_t::FunctionElement;
