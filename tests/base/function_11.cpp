@@ -30,10 +30,10 @@
 #include <igatools/base/function_element.h>
 
 template<int dim, int range>
-class LinearFunction : public NewFunction<dim, range>
+class LinearFunction : public NewFunction<dim, 0, range>
 {
 public:
-    using parent_t = NewFunction<dim, range>;
+    using parent_t = NewFunction<dim, 0, range>;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -141,8 +141,8 @@ void test()
     Function F(grid, flag, quad, A, b);
 
 
-    GridForwardIterator<FunctionElement<dim,range,1>> elem(grid, 0);
-    GridForwardIterator<FunctionElement<dim,range,1>> end(grid, IteratorState::pass_the_end);
+    GridForwardIterator<FunctionElement<dim, 0, range,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim, 0, range,1>> end(grid, IteratorState::pass_the_end);
 
     F.init_element(elem);
     for (; elem != end; ++elem)

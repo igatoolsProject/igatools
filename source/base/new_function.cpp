@@ -22,8 +22,8 @@
 #include <igatools/base/function_element.h>
 IGA_NAMESPACE_OPEN
 
-template<int dim, int range, int rank >
-NewFunction<dim, range, rank >::
+template<int dim, int codim, int range, int rank >
+NewFunction<dim, codim, range, rank >::
 NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
             const ValueFlags flag,
             const Quadrature<dim> &quad)
@@ -33,10 +33,10 @@ NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
 
 
 
-template<int dim, int range, int rank>
+template<int dim, int codim, int range, int rank>
 auto
-NewFunction<dim,range,rank>::
-get_cache(NewFunction<dim,range,rank>::ElementIterator &elem)
+NewFunction<dim, codim, range, rank >::
+get_cache(ElementIterator &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {
     return elem.get_accessor().elem_cache_;

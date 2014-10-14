@@ -108,7 +108,14 @@ class FunctionRow:
       self.rank       = arg_list[2]
       return None
 
-
+class NewFunctionRow:
+   #function dim, range and rank
+   def __init__(self, arg_list):
+      self.dim        = arg_list[0]
+      self.codim      = arg_list[1]
+      self.range      = arg_list[2]  
+      self.rank       = arg_list[3]
+      return None
 
 class MappingRow:
    #mappings dim, codim and space_dim
@@ -156,7 +163,9 @@ class InstantiationInfo:
       self.igm_phy_sp_dims=[]
 
       self.function_dims=[] # table of dim, range, rank for functions
-      
+      self.newfunction_dims=[] # table of dim, range, rank for functions
+         
+
       self.user_mapping_dims =[] # table of dim codim
       self.all_mapping_dims  =[] # table of dim codim
       
@@ -261,6 +270,18 @@ class InstantiationInfo:
                  
       for row in unique(dims_list):
           self.function_dims.append(FunctionRow(row))
+
+      newdims_list=[]
+      for row in self.all_phy_sp_dims:
+          newdims_list.append((row.dim, row.codim, row.range, row.rank))
+          newdims_list.append((row.space_dim, 0, row.phys_range, row.phys_rank))
+      for row in self.igm_ref_sp_dims:
+         newdims_list.append((row.dim, 0, row.range, 1))  
+      for row in self.all_mapping_dims:
+         newdims_list.append((row.dim,  0, row.space_dim, 1))
+         newdims_list.append((row.space_dim, 0, row.dim, 1))
+      for row in unique(newdims_list):
+          self.newfunction_dims.append(NewFunctionRow(row))
      
       #print(dims_list)
       return None

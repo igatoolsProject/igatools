@@ -29,32 +29,35 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int> class FunctionElement;
+template <int, int, int, int> class FunctionElement;
 
-template<int dim, int range = 1, int rank = 1>
+template<int dim, int codim = 0, int range = 1, int rank = 1>
 class NewFunction : public GridUniformQuadCache<dim>
 {
+private:
+    using self_t = NewFunction<dim, codim, range, rank>;
 public:
-    using ElementAccessor = FunctionElement<dim, range, rank>;
+    using ElementAccessor = FunctionElement<dim, codim, range, rank>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
+    static const int space_dim = dim + codim;
     /** Types for the input/output evaluation arguments */
     ///@{
     /**
      * Type for the input argument of the function.
      */
-    using Point = Points<dim>;
+    using Point = Points<space_dim>;
 
     /**
      * Type for the return of the function.
      */
-    using Value = Values<dim, range, rank>;
+    using Value = Values<space_dim, range, rank>;
 
     /**
      * Type for the derivative of the function.
      */
     template <int order>
-    using Derivative = Derivatives<dim, range, rank, order>;
+    using Derivative = Derivatives<space_dim, range, rank, order>;
 
     /**
      * Type for the gradient of the function.
@@ -69,7 +72,7 @@ public:
     /**
      * Type for the divergence of function.
      */
-    using Div = Values<dim, range, rank-1>;
+    using Div = Values<space_dim, range, rank-1>;
     ///@}
 
     /** @name Constructors and destructor. */

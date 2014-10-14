@@ -26,10 +26,11 @@ data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
-for row in inst.function_dims:
-    s = 'template class NewFunction< %d, %d, %d > ;\n' %(row.dim, row.range, row.rank)
+for row in inst.newfunction_dims:
+    dims = '<%d, %d, %d, %d>' %(row.dim, row.codim, row.range, row.rank)
+    s = 'template class NewFunction%s ;\n' %(dims)
     f.write(s)
-    s = 'template class FunctionElement< %d, %d, %d > ;\n' %(row.dim, row.range, row.rank)
+    s = 'template class FunctionElement%s ;\n' %(dims)
     f.write(s)
-    s = 'template class GridForwardIterator<FunctionElement<%d, %d, %d>> ;\n' %(row.dim, row.range, row.rank)
+    s = 'template class GridForwardIterator<FunctionElement%s> ;\n' %(dims)
     f.write(s)

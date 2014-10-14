@@ -18,32 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/formula_function.h>
+#include <igatools/base/ig_function.h>
 #include <igatools/base/function_element.h>
 
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int codim, int range, int rank>
-FormulaFunction<dim, codim, range, rank>::
-FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
-                const ValueFlags &flag,
-                const Quadrature<dim> &quad)
+template<class Space>
+IgFunction<Space>::
+IgFunction(const ValueFlags &flag, const Quadrature<dim> &quad,
+           std::shared_ptr<const Space> space,
+           const CoeffType &coeff)
     :
-    parent_t::NewFunction(grid, flag, quad),
+    parent_t::NewFunction(space->get_grid(), flag, quad),
     flag_(flag),
-    quad_(quad)
+    quad_(quad),
+    space_(space),
+    coeff_(coeff),
+    elem_(space_->begin()),
+    space_filler_(space_, flag, quad)
 {}
 
 
 
-template<int dim, int codim, int range, int rank>
+template<class Space>
 auto
-FormulaFunction<dim, codim, range, rank>::
+IgFunction<Space>::
 init_element(ElementIterator &elem) -> void
 {
-    auto &el = elem.get_accessor();
+    auto &el    = elem.get_accessor();
     GridUniformQuadCache<dim>::init_element_cache(el);
     auto &cache = this->get_cache(elem);
     if (cache == nullptr)
@@ -52,29 +56,32 @@ init_element(ElementIterator &elem) -> void
         cache = shared_ptr<Cache>(new Cache);
     }
     cache->resize(flag_, quad_.get_num_points());
+
+    space_filler_.init_element_cache(elem_);
 }
 
 
 
-template<int dim, int codim, int range, int rank>
+template<class Space>
 auto
-FormulaFunction<dim, codim, range, rank>::
+IgFunction<Space>::
 fill_element(ElementIterator &elem) -> void
 {
     auto &el    = elem.get_accessor();
     GridUniformQuadCache<dim>::fill_element_cache(el);
-    const auto points = el.CartesianGridElement<dim>::get_points();
+    space_filler_.fill_element_cache(elem_);
     auto &cache = this->get_cache(elem);
-    if (flag_.fill_points())
-        this->parametrization(points, cache->points_);
+
+    elem_.move_to(elem->get_flat_index());
+    const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
     if (flag_.fill_values())
-        this->evaluate_0(cache->points_, cache->values_);
+        cache->values_ = elem_->evaluate_field(loc_coeff);
     if (flag_.fill_gradients())
-        this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
+        std::get<1>(cache->derivatives_) = elem_->evaluate_field_gradients(loc_coeff);
     if (flag_.fill_hessians())
-        this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
+        std::get<2>(cache->derivatives_) = elem_->evaluate_field_hessians(loc_coeff);
 }
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/formula_function.inst>
+#include <igatools/base/ig_function.inst>

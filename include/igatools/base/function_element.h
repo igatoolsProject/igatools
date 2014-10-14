@@ -26,11 +26,11 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int range = 1, int rank = 1>
+template<int dim, int codim, int range = 1, int rank = 1>
 class FunctionElement : public CartesianGridElement<dim>
 {
 public:
-    using Func = NewFunction<dim, range, rank>;
+    using Func = NewFunction<dim, codim, range, rank>;
     using Point = typename Func::Point;
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
@@ -38,14 +38,12 @@ public:
     using ContainerType = CartesianGrid<dim>;
 
 private:
-//  template<int k>
-//  ValueVector<Derivative<k>> get_derivative() const;
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
 public:
     using CartesianGridElement<dim>::CartesianGridElement;
 
-    ValueVector<Point> get_points() const;
+    ValueVector<Point> const &get_points() const;
 
     ValueVector<Value> const &get_values() const;
 
@@ -65,6 +63,9 @@ private:
         {
             //TODO(pauletti, Oct 11, 2014): missing all necesary clears
             flags_handler_ = flags_handler;
+
+            if (flags_handler_.fill_points())
+                points_.resize(n_points);
 
             if (flags_handler_.fill_values())
                 values_.resize(n_points);
@@ -86,6 +87,7 @@ private:
             std::get<2>(derivatives_).print_info(out);
         }
 
+        ValueVector<Point> points_;
         ValueVector<Value> values_;
         std::tuple<ValueVector<Derivative<0>>,
             ValueVector<Derivative<1>>,
@@ -98,7 +100,7 @@ public:
     using CacheType = Cache;
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewFunction<dim, range, rank>;
+    friend class NewFunction<dim, codim, range, rank>;
 };
 
 IGA_NAMESPACE_CLOSE

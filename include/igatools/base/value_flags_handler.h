@@ -66,6 +66,15 @@ public:
     bool fill_none() const;
 
     /** Returns true if the values must be filled. */
+    bool fill_points() const;
+
+    /** Returns true if the values are filled. */
+    bool points_filled() const;
+
+    /** Sets the filled status for values. */
+    void set_points_filled(const bool status);
+
+    /** Returns true if the values must be filled. */
     bool fill_values() const;
 
     /** Returns true if the values are filled. */
@@ -100,6 +109,9 @@ public:
     void print_info(LogStream &out) const;
 
 protected:
+    bool fill_points_ = false;
+    bool points_filled_ = false;
+
     bool fill_values_ = false;
     bool values_filled_ = false;
 

@@ -45,6 +45,9 @@ ValueFlagsHandler::ValueFlagsHandler()
 ValueFlagsHandler::
 ValueFlagsHandler(const ValueFlags &flags)
 {
+    if (contains(flags, ValueFlags::point))
+        fill_points_ = true;
+
     if (contains(flags, ValueFlags::value))
         fill_values_ = true;
 
@@ -66,6 +69,33 @@ fill_none() const
 
     return fill_none;
 }
+
+
+bool
+ValueFlagsHandler::
+fill_points() const
+{
+    return fill_points_;
+}
+
+
+
+bool
+ValueFlagsHandler::
+points_filled() const
+{
+    return points_filled_;
+}
+
+
+
+void
+ValueFlagsHandler::
+set_points_filled(const bool status)
+{
+    points_filled_ = status;
+}
+
 
 
 bool
@@ -403,7 +433,7 @@ MappingElemValueFlagsHandler(const ValueFlags &flags)
     if (contains(flags, ValueFlags::point) ||
         contains(flags, ValueFlags::map_value))
     {
-        fill_points_ = true;
+        GridElemValueFlagsHandler::fill_points_ = true;
         fill_values_ = true;
     }
 
@@ -529,7 +559,7 @@ MappingFaceValueFlagsHandler(const ValueFlags &flags)
     if (contains(flags, ValueFlags::face_point) ||
         contains(flags, ValueFlags::map_face_value))
     {
-        fill_points_ = true;
+        GridElemValueFlagsHandler::fill_points_ = true;
         fill_values_ = true;
     }
 

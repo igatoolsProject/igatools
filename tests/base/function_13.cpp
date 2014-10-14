@@ -32,10 +32,10 @@
 
 
 template<int dim, int range>
-class LinearFunction : public FormulaFunction<dim, range, 1>
+class LinearFunction : public FormulaFunction<dim, 0, range, 1>
 {
 public:
-    using parent_t = FormulaFunction<dim, range, 1>;
+    using parent_t = FormulaFunction<dim, 0, range, 1>;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -88,10 +88,10 @@ private:
 
 
 template<int dim, int range>
-void test(NewFunction<dim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
+void test(NewFunction<dim, 0, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 {
-    GridForwardIterator<FunctionElement<dim,range,1>> elem(grid, 0);
-    GridForwardIterator<FunctionElement<dim,range,1>> end(grid, IteratorState::pass_the_end);
+    GridForwardIterator<FunctionElement<dim, 0, range,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim, 0, range,1>> end(grid, IteratorState::pass_the_end);
 
     F.init_element(elem);
     for (; elem != end; ++elem)

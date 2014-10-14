@@ -20,13 +20,27 @@
 
 from init_instantiation_data import *
 
-include_files = ['../../source/base/function_element.cpp',
-                 '../../source/geometry/grid_forward_iterator.cpp']
+include_files = ['basis_functions/bspline_space.h',
+                 'basis_functions/bspline_element_accessor.h',
+                 'basis_functions/bspline_uniform_quad_cache.h',
+                 'basis_functions/nurbs_space.h',
+                 'basis_functions/nurbs_element_accessor.h',
+                 'basis_functions/nurbs_uniform_quad_cache.h',
+                 'basis_functions/physical_space.h',
+                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/mapping_element_accessor.h',
+                 'geometry/push_forward_element_accessor.h',
+                 'geometry/push_forward_uniform_quad_cache.h',
+                 'basis_functions/physical_space_element_accessor.h',
+                 'basis_functions/space_uniform_quad_cache.h']
+#include_files = ['../../source/base/function_element.cpp',
+#                 '../../source/geometry/grid_forward_iterator.cpp']
+
 data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
-for row in inst.newfunction_dims:
-    s = 'template class FormulaFunction<%d, %d, %d, %d > ;\n' %(row.dim, row.codim, row.range, row.rank)
-    f.write(s)
+for sp in inst.UserPhysSpaces + inst.UserRefSpaces:	
+	s = 'template class IgFunction<%s> ;\n' %(sp)
+	f.write(s)
    

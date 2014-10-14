@@ -26,12 +26,14 @@
 
 #include "../tests.h"
 
+#include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+//#include <igatools/linear_algebra/distributed_vector.h>
 
+#if 0
 template<class Space>
 class IgFunction : public NewFunction<Space::dim, Space::range, Space::rank>
 {
@@ -107,7 +109,7 @@ private:
 };
 
 
-
+#endif
 
 template<int dim, int range>
 void test()
@@ -128,8 +130,8 @@ void test()
     Function F(flag, quad, space, coeff);
 
 
-    GridForwardIterator<FunctionElement<dim,range,1>> elem(grid, 0);
-    GridForwardIterator<FunctionElement<dim,range,1>> end(grid, IteratorState::pass_the_end);
+    GridForwardIterator<FunctionElement<dim,0,range,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim,0,range,1>> end(grid, IteratorState::pass_the_end);
 
     F.init_element(elem);
     for (; elem != end; ++elem)

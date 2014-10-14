@@ -24,19 +24,19 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int range, int rank>
+template<int dim, int codim, int range, int rank>
 auto
-FunctionElement<dim, range, rank>::
-get_points() const -> ValueVector<Point>
+FunctionElement<dim, codim, range, rank>::
+get_points() const -> ValueVector<Point> const &
 {
-    return CartesianGridElement<dim>::get_points();
+    return elem_cache_->points_;
 }
 
 
 
-template<int dim, int range, int rank>
+template<int dim, int codim, int range, int rank>
 auto
-FunctionElement<dim, range, rank>::
+FunctionElement<dim, codim, range, rank>::
 get_values() const -> ValueVector<Value> const &
 {
     return elem_cache_->values_;
@@ -44,10 +44,10 @@ get_values() const -> ValueVector<Value> const &
 
 
 
-template<int dim, int range, int rank>
+template<int dim, int codim, int range, int rank>
 template<int order>
 auto const &
-FunctionElement<dim, range, rank>::
+FunctionElement<dim, codim, range, rank>::
 get_derivative() const
 {
     return std::get<order>(elem_cache_->derivatives_);
@@ -55,9 +55,9 @@ get_derivative() const
 
 
 
-template<int dim, int range, int rank>
+template<int dim, int codim, int range, int rank>
 auto
-FunctionElement<dim, range, rank>::
+FunctionElement<dim, codim, range, rank>::
 get_gradients() const -> ValueVector<Gradient> const &
 {
     return get_derivative<1>();
@@ -65,9 +65,9 @@ get_gradients() const -> ValueVector<Gradient> const &
 
 
 
-template<int dim, int range, int rank>
+template<int dim, int codim, int range, int rank>
 auto
-FunctionElement<dim, range, rank>::
+FunctionElement<dim, codim, range, rank>::
 get_hessians() const -> ValueVector<Hessian> const &
 {
     return get_derivative<2>();

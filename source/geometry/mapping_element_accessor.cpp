@@ -255,7 +255,7 @@ reset(const MappingElemValueFlagsHandler &flags_handler,
         this->values_.clear();
     }
     flags_handler_.set_values_filled(false);
-    flags_handler_.set_points_filled(false);
+    flags_handler_.GridElemValueFlagsHandler::set_points_filled(false);
 
     if (flags_handler_.fill_gradients())
     {
@@ -518,7 +518,7 @@ fill_cache()
     {
         mapping_->evaluate(elem_cache.values_);
         elem_cache.flags_handler_.set_values_filled(true);
-        elem_cache.flags_handler_.set_points_filled(true);
+        elem_cache.flags_handler_.GridElemValueFlagsHandler::set_points_filled(true);
     }
 
     if (elem_cache.flags_handler_.fill_gradients())
@@ -585,7 +585,7 @@ fill_face_cache(const Index face_id)
     {
         mapping_->evaluate_face(face_id, face_values.values_);
         face_values.flags_handler_.set_values_filled(true);
-        face_values.flags_handler_.set_points_filled(true);
+        face_values.flags_handler_.GridElemValueFlagsHandler::set_points_filled(true);
     }
 
     if (face_values.flags_handler_.fill_gradients())

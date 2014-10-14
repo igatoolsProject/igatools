@@ -18,68 +18,56 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef FORMULA_FUNCTIONS_H
-#define FORMULA_FUNCTIONS_H
+#ifndef IG_FUNCTIONS_H
+#define IG_FUNCTIONS_H
 
 #include <igatools/base/new_function.h>
+#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
-
-template<int dim, int codim=0, int range = 1, int rank = 1>
-class FormulaFunction : public NewFunction<dim, codim, range, rank>
+template<class Space>
+class IgFunction : public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
 {
+public:
+    static const int dim = Space::dim;
+    static const int codim = Space::codim;
+    static const int range = Space::range;
+    static const int rank = Space::rank;
+
 private:
     using parent_t = NewFunction<dim, codim, range, rank>;
+
 public:
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
     using typename parent_t::ElementIterator;
     using typename parent_t::ElementAccessor;
-    using parent_t::space_dim;
-
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    FormulaFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                    const ValueFlags &flag, const Quadrature<dim> &quad);
+    using CoeffType = Vector<LAPack::trilinos>;
 
+    IgFunction(const ValueFlags &flag, const Quadrature<dim> &quad,
+               std::shared_ptr<const Space> space,
+               const CoeffType &coeff);
 
     void init_element(ElementIterator &elem);
 
     void fill_element(ElementIterator &elem);
 
 private:
-    virtual void parametrization(const ValueVector<Points<dim>> &points_,
-                                 ValueVector<Point> &values) const
-    {
-        const int num_points = points_.size();
-        for (int i = 0; i<num_points; i++)
-        {
-            const auto &x = points_[i];
-            for (int k = 0; k < dim; ++k)
-            {
-                values[i][k] = x[k];
-            }
-            for (int k = dim; k < codim; ++k)
-            {
-                values[i][k] = 0.;
-            }
-        }
-    }
-
-    virtual void evaluate_0(const ValueVector<Point> &points,
-                            ValueVector<Value> &values) const = 0;
-
-    virtual void evaluate_1(const ValueVector<Point> &points,
-                            ValueVector<Derivative<1>> &values) const = 0;
-
-    virtual void evaluate_2(const ValueVector<Point> &points,
-                            ValueVector<Derivative<2>> &values) const = 0;
-
-private:
     ValueFlagsHandler flag_;
+
     Quadrature<dim> quad_;
+
+    std::shared_ptr<const Space> space_;
+
+    const CoeffType coeff_;
+
+    typename Space::ElementIterator elem_;
+
+    typename Space::UniformQuadCache space_filler_;
 };
 
 IGA_NAMESPACE_CLOSE
