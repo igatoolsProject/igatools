@@ -21,12 +21,14 @@
 #include <igatools/base/formula_function.h>
 #include <igatools/base/function_element.h>
 
+using std::shared_ptr;
+
 IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank >
 FormulaFunction<dim, range, rank >::
-FormulaFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                const ValueFlags flag,
+FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
+                const ValueFlags &flag,
                 const Quadrature<dim> &quad)
     :
     parent_t::NewFunction(grid, flag, quad),
@@ -71,24 +73,6 @@ fill_element(ElementIterator &elem) -> void
         this->evaluate_2(points, std::get<2>(cache->derivatives_));
 }
 
-
-template<int dim, int range, int rank >
-auto
-FormulaFunction<dim, range, rank >::
-->
-
-template<int dim, int range, int rank>
-auto
-NewFunction<dim,range,rank>::
-get_cache(NewFunction<dim,range,rank>::ElementIterator &elem)
--> std::shared_ptr<typename ElementAccessor::CacheType> &
-{
-    return elem.get_accessor().elem_cache_;
-}
-
-
-
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/new_function.inst>
-
+#include <igatools/base/formula_function.inst>

@@ -96,7 +96,7 @@ void test(NewFunction<dim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
     F.init_element(elem);
     for (; elem != end; ++elem)
     {
-        F.fill_melement(elem);
+        F.fill_element(elem);
         elem->get_points().print_info(out);
         out << endl;
         elem->get_values().print_info(out);
