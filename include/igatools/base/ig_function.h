@@ -52,9 +52,9 @@ public:
                std::shared_ptr<const Space> space,
                const CoeffType &coeff);
 
-    void init_element(ElementIterator &elem);
+    void init_elem(ElementAccessor &elem);
 
-    void fill_element(ElementIterator &elem);
+    void fill_elem(ElementAccessor &elem);
 
 private:
     ValueFlagsHandler flag_;

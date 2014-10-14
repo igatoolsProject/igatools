@@ -45,6 +45,8 @@ class GridUniformQuadCache
 protected:
     static const std::array<Size, UnitElement<dim_>::faces_per_element> faces;
     using ElementAccessor = typename GridType::ElementAccessor;
+
+protected:
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
     // void fill_face_cache(ElementAccessor &elem, const int face);
@@ -77,6 +79,7 @@ public:
     void fill_face_cache(ElementIterator &elem, const int face);
 
     void print_info(LogStream &out) const;
+
 private:
     template <int k>
     void fill_element_cache_(ElementAccessor &elem, const int j);

@@ -45,9 +45,9 @@ public:
                     const ValueFlags &flag, const Quadrature<dim> &quad);
 
 
-    void init_element(ElementIterator &elem);
+    void init_elem(ElementAccessor &elem);
 
-    void fill_element(ElementIterator &elem);
+    void fill_elem(ElementAccessor &elem);
 
 private:
     virtual void parametrization(const ValueVector<Points<dim>> &points_,

@@ -86,13 +86,26 @@ public:
     virtual ~NewFunction() = default;
     ///@}
 
+    // TODO (pauletti, Oct 14, 2014): should be private after iterator instead
+    // of accessor inheritance is solved
+    //protected:
+    virtual void init_elem(ElementAccessor &elem) = 0;
 
-    virtual void init_element(ElementIterator &elem) = 0;
-    virtual void fill_element(ElementIterator &elem) = 0;
+    virtual void fill_elem(ElementAccessor &elem) = 0;
+
+    virtual void init_elem(ElementIterator &elem)
+    {
+        this->init_elem(elem.get_accessor());
+    }
+
+    virtual void fill_elem(ElementIterator &elem)
+    {
+        this->fill_elem(elem.get_accessor());
+    }
 
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
-    &get_cache(ElementIterator &elem);
+    &get_cache(ElementAccessor &elem);
 };
 
 IGA_NAMESPACE_CLOSE

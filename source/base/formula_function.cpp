@@ -41,10 +41,9 @@ FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
 template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
-init_element(ElementIterator &elem) -> void
+init_elem(ElementAccessor &elem) -> void
 {
-    auto &el = elem.get_accessor();
-    GridUniformQuadCache<dim>::init_element_cache(el);
+    GridUniformQuadCache<dim>::init_element_cache(elem);
     auto &cache = this->get_cache(elem);
     if (cache == nullptr)
     {
@@ -59,11 +58,10 @@ init_element(ElementIterator &elem) -> void
 template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
-fill_element(ElementIterator &elem) -> void
+fill_elem(ElementAccessor &elem) -> void
 {
-    auto &el    = elem.get_accessor();
-    GridUniformQuadCache<dim>::fill_element_cache(el);
-    const auto points = el.CartesianGridElement<dim>::get_points();
+    GridUniformQuadCache<dim>::fill_element_cache(elem);
+    const auto points = elem.CartesianGridElement<dim>::get_points();
     auto &cache = this->get_cache(elem);
     if (flag_.fill_points())
         this->parametrization(points, cache->points_);

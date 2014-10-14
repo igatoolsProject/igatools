@@ -543,8 +543,8 @@ int main()
     const boundary_id mortar_id = 7;
     ////////
     vector<set<boundary_id>> mortar_faces;
-    mortar_faces.push_back( {1});
-    mortar_faces.push_back( {0});
+    mortar_faces.push_back({1});
+    mortar_faces.push_back({0});
 
 
     for (int i=0; i!=maps_d21.size(); ++i)

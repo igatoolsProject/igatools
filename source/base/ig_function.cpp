@@ -45,10 +45,9 @@ IgFunction(const ValueFlags &flag, const Quadrature<dim> &quad,
 template<class Space>
 auto
 IgFunction<Space>::
-init_element(ElementIterator &elem) -> void
+init_elem(ElementAccessor &elem) -> void
 {
-    auto &el    = elem.get_accessor();
-    GridUniformQuadCache<dim>::init_element_cache(el);
+    GridUniformQuadCache<dim>::init_element_cache(elem);
     auto &cache = this->get_cache(elem);
     if (cache == nullptr)
     {
@@ -65,14 +64,13 @@ init_element(ElementIterator &elem) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-fill_element(ElementIterator &elem) -> void
+fill_elem(ElementAccessor &elem) -> void
 {
-    auto &el    = elem.get_accessor();
-    GridUniformQuadCache<dim>::fill_element_cache(el);
+    GridUniformQuadCache<dim>::fill_element_cache(elem);
     space_filler_.fill_element_cache(elem_);
     auto &cache = this->get_cache(elem);
 
-    elem_.move_to(elem->get_flat_index());
+    elem_.move_to(elem.get_flat_index());
     const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
     if (flag_.fill_values())
         cache->values_ = elem_->evaluate_field(loc_coeff);

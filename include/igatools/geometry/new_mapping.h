@@ -22,16 +22,12 @@
 #define NEW_MAPPING_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/quadrature.h>
-#include <igatools/base/function.h>
-#include <igatools/geometry/grid_wrapper.h>
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/utils/value_vector.h>
+#include <igatools/base/new_function.h>
 
 IGA_NAMESPACE_OPEN
 
 //Forward declaration to avoid including header file.
-template <int, int> class NewMappingElementAccessor;
+template <int, int> class MappingElement;
 
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
@@ -49,41 +45,24 @@ template <int, int> class NewMappingElementAccessor;
  *
  * @author pauletti 2014
  */
-template<int dim_, int codim_ = 0>
+template<int dim, int codim = 0>
 class NewMapping
-    :  public std::enable_shared_from_this<NewMapping<dim_, codim_>>,
-   public GridWrapper<CartesianGrid<dim_>>
+//   :  public NewFunction<dim, codim>
 {
-public:
-    /** Type of the Grid */
-    //TODO(pauletti, Aug 4, 2014): for some reason the current compiler doesn't
-    // understand something like GridIterator if the
-    // following commneted using is used
-    //using typename GridWrapper<CartesianGrid<dim_>>::GridType;
-    using GridType = CartesianGrid<dim_>;
-
-    using GridIterator = typename GridType::ElementAccessor;
-
-    /** Dimension of the reference domain */
-    static const int dim = dim_;
-
-    /** Codimension of the deformed domain. */
-    static const int codim = codim_;
-
-    /** Dimension of the deformed domain embedding space. */
-    static const int space_dim = dim + codim;
-
 private:
-    using self_t = Mapping<dim, codim>;
+    using self_t = NewMapping<dim, codim>;
+    using FuncType = NewFunction<dim, codim>;
+public:
+    using ElementAccessor = MappingElement<dim, codim>;
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
-    /** Function type of the mapping as a Function */
-    using Func = Function<dim, space_dim>;
+    static const int space_dim = FuncType::space_dim;
 
 private:
     /** Type for the given order derivatives of the
      *  the mapping. */
     template<int order>
-    using Derivative = typename Func::template Derivative<order>;
+    using Derivative = typename FuncType::template Derivative<order>;
 
     /** Type for the diferent order derivatives of the inverse of
      * the mapping
@@ -93,105 +72,92 @@ private:
 
 public:
     /** Type of the mapping evaluation point. */
-    using Point = typename Func::Point;
+    using Point = typename FuncType::Point;
 
     /** Type of the mapping return value. */
-    using Value = typename Func::Value;
+    using Value = typename FuncType::Value;
 
     /** Type of the mapping gradient. */
-    using Gradient = typename Func::Gradient;
+    using Gradient = typename FuncType::Gradient;
 
     /** Typedef for the mapping hessian. */
-    using Hessian = typename Func::Hessian;
+    using Hessian = typename FuncType::Hessian;
 
 public:
-    using FaceMapping = Conditional<(dim>0), NewMapping<dim-1, codim+1>, self_t >;
 
-    /** Type of the element accessor */
-    using ElementAccessor = MappingElementAccessor<dim, codim>;
+    NewMapping(std::shared_ptr<FuncType> F,
+               const ValueFlags flag,
+               const Quadrature<dim> &quad);
 
-    /** Type of the element iterator */
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
-
-public:
-    /** @name Constructors and destructor */
-    ///@{
-    /** Default constructor.*/
     NewMapping() = delete;
 
+    ~NewMapping();
 
-    /** Destructor */
-    virtual ~NewMapping();
+    void init_element(ElementIterator &elem);
 
-    /**
-     * Copy constructor. The new object has a deep copy (i.e. a new instance)
-     * of the grid held by the copied object @p map.
-     */
-    NewMapping(const NewMapping<dim_,codim_> &map);
-    ///@}
-
-    /** @name Assignment operators. */
-    ///@{
-
-    /** Copy assignment operator. Not allowed to be used. */
-    NewMapping<dim_,codim_> &operator=(const NewMapping<dim_,codim_> &map) = delete;
-    ///@}
-
-    /** @name Virtual user functions to define the map */
-    ///@{
-    /**
-     * An element based mapping may require some initialization.
-     *
-     * @warning This function must be reimplemented by in every concrete child
-     * class of Mapping.
-     */
-    virtual void init_element(const ValueFlags flag,
-                              const Quadrature<dim> &quad) const = 0;
-
-    virtual void fill_element(const ElementIterator &elem) const = 0;
-
-    /**
-     *
-     * @todo evaluate if index should be flat index, tensor index, and
-     * or GridElement iterator
-     */
-    virtual void fill_face_element(const Index face_id,
-                                   const GridIterator &elem) const = 0;
-    ///@}
-
-    /** @name Dealing with the element-based iterator. */
-    ///@{
-    /**
-     * Returns a element iterator to the first element of the patch.
-     */
-    ElementIterator begin() const;
-
-    /**
-     * Returns a element iterator to the last element of the patch.
-     */
-    ElementIterator last() const;
-
-    /**
-     * Returns a element iterator to one-pass the end of patch.
-     */
-    ElementIterator end() const;
-    ///@}
-
-    /**
-     * Prints internal information about the mapping.
-     * @note Mostly used for debugging and testing.
-     * @warning Calling this function will throw an assertion.
-     * Try to call the same function on a derived class.
-     */
-    virtual void print_info(LogStream &out) const;
-
-protected:
-    /** Constructs map over grid. */
-    NewMapping(const std::shared_ptr<GridType> grid);
+    void fill_element(ElementIterator &elem);
 
 private:
+    std::shared_ptr<FuncType> F_;
+
     friend ElementAccessor;
 };
+
+
+template<int dim, int codim>
+NewMapping<dim, codim>::
+NewMapping(std::shared_ptr<FuncType> F,
+           const ValueFlags flag,
+           const Quadrature<dim> &quad)
+    :
+    F_(F)
+{}
+
+
+
+template<int dim, int codim>
+NewMapping<dim, codim>::
+~NewMapping()
+{}
+
+
+
+template<int dim, int codim>
+auto
+NewMapping<dim, codim>::
+init_element(ElementIterator &elem) -> void
+{
+    auto &el = elem.get_accessor();
+    F_->init_elem(el);
+//    auto &cache = this->get_cache(elem);
+//    if (cache == nullptr)
+//    {
+//        using Cache = typename ElementAccessor::CacheType;
+//        cache = shared_ptr<Cache>(new Cache);
+//    }
+//    cache->resize(flag_, quad_.get_num_points());
+}
+
+
+
+template<int dim, int codim>
+auto
+NewMapping<dim, codim>::
+fill_element(ElementIterator &elem) -> void
+{
+    auto &el    = elem.get_accessor();
+    F_->fill_elem(el);
+    //const auto points = el.CartesianGridElement<dim>::get_points();
+//    auto &cache = this->get_cache(elem);
+//    if (flag_.fill_points())
+//        this->parametrization(points, cache->points_);
+//    if (flag_.fill_values())
+//        this->evaluate_0(cache->points_, cache->values_);
+//    if (flag_.fill_gradients())
+//        this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
+//    if (flag_.fill_hessians())
+//        this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
+}
 
 IGA_NAMESPACE_CLOSE
 

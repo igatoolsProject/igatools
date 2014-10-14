@@ -93,10 +93,10 @@ void test(NewFunction<dim, 0, range> &F, shared_ptr<CartesianGrid<dim>> grid)
     GridForwardIterator<FunctionElement<dim, 0, range,1>> elem(grid, 0);
     GridForwardIterator<FunctionElement<dim, 0, range,1>> end(grid, IteratorState::pass_the_end);
 
-    F.init_element(elem);
+    F.init_elem(elem);
     for (; elem != end; ++elem)
     {
-        F.fill_element(elem);
+        F.fill_elem(elem);
         elem->get_points().print_info(out);
         out << endl;
         elem->get_values().print_info(out);

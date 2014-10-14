@@ -36,10 +36,10 @@ NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
 template<int dim, int codim, int range, int rank>
 auto
 NewFunction<dim, codim, range, rank >::
-get_cache(ElementIterator &elem)
+get_cache(ElementAccessor &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {
-    return elem.get_accessor().elem_cache_;
+    return elem.elem_cache_;
 }
 
 
