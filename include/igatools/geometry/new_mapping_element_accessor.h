@@ -26,23 +26,59 @@
 
 IGA_NAMESPACE_OPEN
 
+
 template<int dim, int codim = 0>
 class MappingElement
-    : public FunctionElement<dim, codim, dim+codim>
+    : public FunctionElement<dim, 0, dim+codim>
 {
 private:
     using self_t  = MappingElement<dim, codim>;
-    using paren_t = FunctionElement<dim, codim, dim+codim>;
+    using paren_t = FunctionElement<dim, 0, dim+codim>;
     using Map = NewMapping<dim, codim>;
 public:
     using paren_t::FunctionElement;
 
+    ValueVector<Real> const &get_measures() const;
+    ValueVector<Real> const &get_w_measures() const;
+
+private:
+    struct Cache : public CacheStatus
+    {
+        void resize(const MappingElemValueFlagsHandler &flags_handler,
+                    const int n_points)
+        {
+            //TODO(pauletti, Oct 11, 2014): missing all necesary clears
+            flags_handler_ = flags_handler;
+
+            if (flags_handler_.fill_measures())
+                measures_.resize(n_points);
+            if (flags_handler_.fill_w_measures())
+                w_measures_.resize(n_points);
+
+            set_initialized(true);
+        }
+
+        void print_info(LogStream &out) const
+        {
+            flags_handler_.print_info(out);
+            measures_.print_info(out);
+        }
+
+        ValueVector< Real > measures_;
+        ValueVector< Real > w_measures_;
+        MappingElemValueFlagsHandler flags_handler_;
+    };
+
+    std::shared_ptr<Cache> elem_cache_;
+public:
+    using CacheType = Cache;
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
     friend class NewMapping<dim, codim>;
 
 };
+
 
 
 

@@ -50,12 +50,12 @@ class NewMapping
 {
 private:
     using self_t = NewMapping<dim, codim>;
-    using FuncType = NewFunction<dim, codim, dim+codim>;
+    using FuncType = NewFunction<dim, 0, dim + codim>;
 public:
     using ElementAccessor = MappingElement<dim, codim>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
-    static const int space_dim = FuncType::space_dim;
+    static const int space_dim = dim + codim;
 
 private:
     /** Type for the given order derivatives of the
@@ -96,67 +96,16 @@ public:
 
     void fill_element(ElementIterator &elem);
 
+protected:
+    std::shared_ptr<typename ElementAccessor::CacheType>
+    &get_cache(ElementAccessor &elem);
+
 private:
     std::shared_ptr<FuncType> F_;
-
+    MappingElemValueFlagsHandler flag_;
+    Quadrature<dim> quad_;
     friend ElementAccessor;
 };
-
-
-template<int dim, int codim>
-NewMapping<dim, codim>::
-NewMapping(std::shared_ptr<FuncType> F,
-           const ValueFlags flag,
-           const Quadrature<dim> &quad)
-    :
-    F_(F)
-{}
-
-
-
-template<int dim, int codim>
-NewMapping<dim, codim>::
-~NewMapping()
-{}
-
-
-
-template<int dim, int codim>
-auto
-NewMapping<dim, codim>::
-init_element(ElementIterator &elem) -> void
-{
-    auto &el = elem.get_accessor();
-    F_->init_elem(el);
-//    auto &cache = this->get_cache(elem);
-//    if (cache == nullptr)
-//    {
-//        using Cache = typename ElementAccessor::CacheType;
-//        cache = shared_ptr<Cache>(new Cache);
-//    }
-//    cache->resize(flag_, quad_.get_num_points());
-}
-
-
-
-template<int dim, int codim>
-auto
-NewMapping<dim, codim>::
-fill_element(ElementIterator &elem) -> void
-{
-    auto &el    = elem.get_accessor();
-    F_->fill_elem(el);
-    //const auto points = el.CartesianGridElement<dim>::get_points();
-//    auto &cache = this->get_cache(elem);
-//    if (flag_.fill_points())
-//        this->parametrization(points, cache->points_);
-//    if (flag_.fill_values())
-//        this->evaluate_0(cache->points_, cache->values_);
-//    if (flag_.fill_gradients())
-//        this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
-//    if (flag_.fill_hessians())
-//        this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
-}
 
 IGA_NAMESPACE_CLOSE
 

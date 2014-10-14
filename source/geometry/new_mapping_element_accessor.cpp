@@ -18,34 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/new_function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/geometry/new_mapping_element_accessor.h>
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int codim, int range, int rank >
-NewFunction<dim, codim, range, rank >::
-NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-            const ValueFlags flag,
-            const Quadrature<dim> &quad)
-    :
-    GridUniformQuadCache<dim>(grid, flag, quad)
-{}
-
-
-
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim>
 auto
-NewFunction<dim, codim, range, rank >::
-get_cache(ElementAccessor &elem)
--> std::shared_ptr<typename ElementAccessor::CacheType> &
+MappingElement<dim, codim>::
+get_measures() const -> ValueVector<Real> const &
 {
-    return elem.elem_cache_;
+    return elem_cache_->measures_;
 }
 
 
+template<int dim, int codim>
+auto
+MappingElement<dim, codim>::
+get_w_measures() const -> ValueVector<Real> const &
+{
+    return elem_cache_->w_measures_;
+}
 
 IGA_NAMESPACE_CLOSE
-
-#include <igatools/base/new_function.inst>
-
