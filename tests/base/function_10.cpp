@@ -39,28 +39,27 @@ void test()
     using Space = BSplineSpace<dim>;
     using Function = IgFunction<Space>;
 
-
-    auto flag = ValueFlags::value| ValueFlags::gradient |  ValueFlags::hessian;
-//    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-//                ValueFlags::hessian;
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
     const int deg = 1;
     auto space = Space::create(deg, grid);
     typename Function::CoeffType coeff(space->get_num_basis());
     coeff(0) = 1.;
-    Function F(flag, quad, space, coeff);
+    shared_ptr<NewFunction<dim,0,range,1>> F
+    = std::make_shared<Function>(flag, quad, space, coeff);
 
 
     GridForwardIterator<FunctionElement<dim,0,range,1>> elem(grid, 0);
     GridForwardIterator<FunctionElement<dim,0,range,1>> end(grid, IteratorState::pass_the_end);
 
-    F.NewFunction<dim,0,range,1>::init_elem(elem);
+    F->init_elem(elem);
     for (; elem != end; ++elem)
     {
-        F.NewFunction<dim,0,range,1>::fill_elem(elem);
-        //elem->get_points().print_info(out);
-        //out << endl;
+        F->fill_elem(elem);
+//        elem->get_points().print_info(out);
+//        out << endl;
         elem->get_values().print_info(out);
         out << endl;
         elem->get_gradients().print_info(out);

@@ -71,6 +71,8 @@ fill_elem(ElementAccessor &elem) -> void
     auto &cache = this->get_cache(elem);
 
     elem_.move_to(elem.get_flat_index());
+    if (flag_.fill_points())
+        Assert(false, ExcNotImplemented());//cache->points_ = elem_->get_points();
     const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
     if (flag_.fill_values())
         cache->values_ = elem_->evaluate_field(loc_coeff);
