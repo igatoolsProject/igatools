@@ -48,7 +48,7 @@ void test()
     typename Function::CoeffType coeff(space->get_num_basis());
     coeff(0) = 1.;
     shared_ptr<NewFunction<dim,0,range,1>> F
-    = std::make_shared<Function>(flag, quad, space, coeff);
+                                        = std::make_shared<Function>(flag, quad, space, coeff);
 
 
     GridForwardIterator<FunctionElement<dim,0,range,1>> elem(grid, 0);

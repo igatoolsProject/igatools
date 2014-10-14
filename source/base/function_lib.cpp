@@ -19,13 +19,64 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/base/function_lib.h>
-#include <igatools/base/exceptions.h>
+#include <igatools/base/function_element.h>
 
 IGA_NAMESPACE_OPEN
 
-
 namespace functions
 {
+
+template<int dim, int codim, int range>
+LinearFunction<dim, codim, range>::
+LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+               const ValueFlags &flag, const Quadrature<dim> &quad,
+               const Gradient &A, const Value &b)
+    :
+    parent_t::FormulaFunction(grid, flag, quad),
+    A_(A),
+    b_(b)
+{}
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+evaluate_0(const ValueVector<Point> &points,
+           ValueVector<Value> &values) const -> void
+{
+    auto point = points.begin();
+    for (auto &val : values)
+    {
+        val = action(A_, *point) + b_;
+        ++point;
+    }
+}
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+evaluate_1(const ValueVector<Point> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+    for (auto &val : values)
+        val = A_;
+}
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+evaluate_2(const ValueVector<Point> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+    for (auto &val : values)
+        val = 0.;
+}
+
+
+
+//------------------------------------------------------------------------------
+
+
+
 template<int dim, int range, int rank>
 ConstantFunction<dim, range, rank>::
 ConstantFunction(const Value value)

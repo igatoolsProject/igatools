@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Development of AnaliticalFunction
+ *  Test for LinearFunction
  *  author: pauletti
  *  date: Oct 12, 2014
  */
@@ -27,71 +27,17 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/formula_function.h>
+#include <igatools/base/function_lib.h>
 #include <igatools/base/function_element.h>
 
 
-template<int dim, int range>
-class LinearFunction : public FormulaFunction<dim, 0, range, 1>
+
+template<int dim, int codim, int range>
+void test(NewFunction<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 {
-public:
-    using parent_t = FormulaFunction<dim, 0, range, 1>;
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-
-    LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                   const ValueFlags &flag, const Quadrature<dim> &quad,
-                   const Gradient &A, const Value &b)
-        :
-        parent_t::FormulaFunction(grid, flag, quad),
-        A_(A),
-        b_(b)
-    {}
-
-
-private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const
-    {
-        auto point = points.begin();
-        for (auto &val : values)
-        {
-            val = action(A_, *point) + b_;
-            ++point;
-        }
-    }
-
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const
-    {
-        for (auto &val : values)
-            val = A_;
-    }
-
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const
-    {
-        for (auto &val : values)
-            val = 0.;
-    }
-
-private:
-    const Gradient A_;
-    const Value    b_;
-};
-
-
-
-template<int dim, int range>
-void test(NewFunction<dim, 0, range> &F, shared_ptr<CartesianGrid<dim>> grid)
-{
-    GridForwardIterator<FunctionElement<dim, 0, range,1>> elem(grid, 0);
-    GridForwardIterator<FunctionElement<dim, 0, range,1>> end(grid, IteratorState::pass_the_end);
+    using ElementIterator = typename  NewFunction<dim, codim, range>::ElementIterator;
+    ElementIterator elem(grid, 0);
+    ElementIterator end(grid, IteratorState::pass_the_end);
 
     F.init_elem(elem);
     for (; elem != end; ++elem)
@@ -109,10 +55,10 @@ void test(NewFunction<dim, 0, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 }
 
 
-template<int dim, int range>
+template<int dim, int codim, int range>
 void create_fun()
 {
-    using Function = LinearFunction<dim, range>;
+    using Function = functions::LinearFunction<dim, codim, range>;
 
     typename Function::Value    b;
     typename Function::Gradient A;
@@ -129,7 +75,7 @@ void create_fun()
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
     Function F(grid, flag, quad, A, b);
-    test<dim,range>(F, grid);
+    test<dim, codim, range>(F, grid);
 }
 
 
@@ -137,7 +83,7 @@ void create_fun()
 
 int main()
 {
-    create_fun<2,2>();
+    create_fun<2, 0, 2>();
 //    test<3,3>();
 
     return 0;

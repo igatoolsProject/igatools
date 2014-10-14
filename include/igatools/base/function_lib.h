@@ -24,6 +24,8 @@
 #include <igatools/base/config.h>
 #include <igatools/base/function.h>
 
+#include <igatools/base/formula_function.h>
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -31,6 +33,42 @@ IGA_NAMESPACE_OPEN
  */
 namespace functions
 {
+
+template<int dim, int codim, int range>
+class LinearFunction : public FormulaFunction<dim, codim, range, 1>
+{
+public:
+    using parent_t = FormulaFunction<dim, codim, range, 1>;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+
+    LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+                   const ValueFlags &flag, const Quadrature<dim> &quad,
+                   const Gradient &A, const Value &b);
+
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const;
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const;
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const;
+
+private:
+    const Gradient A_;
+    const Value    b_;
+};
+
+//------------------------------------------------------------------------------
+
 /**
  * Constant scalar function.
  */
@@ -71,6 +109,16 @@ private:
     const Value value_;
 
 };
+
+
+
+
+
+
+
+
+
+
 
 } // of namespace functions.
 
