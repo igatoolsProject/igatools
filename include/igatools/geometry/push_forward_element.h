@@ -18,45 +18,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifndef NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
+#define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
+
+#include <igatools/geometry/new_push_forward.h>
 #include <igatools/geometry/new_mapping_element_accessor.h>
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int codim>
-auto
-MappingElement<dim, codim>::
-get_measures() const -> ValueVector<Real> const &
+
+template<Transformation type, int dim, int codim = 0>
+class PushForwardElement
+    : public MappingElement<dim, codim>
 {
-    return elem_cache_->measures_;
-}
+private:
+    using self_t  = PushForwardElement<type, dim, codim>;
+    using paren_t = MappingElement<dim, codim>;
+    using PF      = NewPushForward<type, dim, codim>;
+public:
+   // using ContainerType = const PF;
+    using paren_t::MappingElement;
+
+#if 0
+    template<int order>
+    using InvDerivative = typename Map::template InvDerivative<order>;
+
+    ValueVector<Real> const &get_measures() const;
+
+    ValueVector<Real> const &get_w_measures() const;
+
+    ValueVector<InvDerivative<1>> const &get_inverse_gradients() const;
+
+    ValueVector<InvDerivative<2>> const &get_inverse_hessians() const;
+#endif
+private:
 
 
-template<int dim, int codim>
-auto
-MappingElement<dim, codim>::
-get_w_measures() const -> ValueVector<Real> const &
-{
-    return elem_cache_->w_measures_;
-}
+private:
+    template <typename Accessor> friend class GridForwardIterator;
+    friend class NewPushForward<type, dim, codim>;
 
-
-
-template<int dim, int codim>
-auto
-MappingElement<dim, codim>::
-get_inverse_gradients() const -> ValueVector<InvDerivative<1>> const &
-{
-	return std::get<1>(elem_cache_->inv_derivatives_);
-}
-
-
-
-template<int dim, int codim>
-auto
-MappingElement<dim, codim>::
-get_inverse_hessians() const -> ValueVector<InvDerivative<2>> const &
-{
-	return std::get<2>(elem_cache_->inv_derivatives_);
-}
+};
 
 IGA_NAMESPACE_CLOSE
+
+#endif

@@ -56,15 +56,13 @@ NewMapping<dim, codim>::
 {}
 
 
-
 template<int dim, int codim>
 auto
 NewMapping<dim, codim>::
-init_element(ElementIterator &elem) -> void
+init_element(ElementAccessor &elem) -> void
 {
-    auto &el = elem.get_accessor();
-    F_->init_elem(el);
-    auto &cache = this->get_cache(el);
+    F_->init_elem(elem);
+    auto &cache = this->get_cache(elem);
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
@@ -78,17 +76,16 @@ init_element(ElementIterator &elem) -> void
 template<int dim, int codim>
 auto
 NewMapping<dim, codim>::
-fill_element(ElementIterator &elem) -> void
+fill_element(ElementAccessor &elem) -> void
 {
-    auto &el    = elem.get_accessor();
-    F_->fill_elem(el);
-    //const auto points = el.CartesianGridElement<dim>::get_points();
+    F_->fill_elem(elem);
+    //const auto points = elem.CartesianGridElement<dim>::get_points();
     const auto n_points = quad_.get_num_points();
 
-    auto &cache = this->get_cache(el);
+    auto &cache = this->get_cache(elem);
     if (flag_.fill_measures())
     {
-        const auto &DF = el.get_gradients();
+        const auto &DF = elem.get_gradients();
         for (int i=0; i<n_points; ++i)
             cache->measures_[i] = determinant<dim,space_dim>(DF[i]);
 
@@ -97,14 +94,14 @@ fill_element(ElementIterator &elem) -> void
     if (flag_.fill_w_measures())
     {
         const auto &meas = cache->measures_;
-        const auto &w = el.CartesianGridElement<dim>::get_w_measures();
+        const auto &w = elem.CartesianGridElement<dim>::get_w_measures();
         for (int i=0; i<n_points; ++i)
             cache->w_measures_[i] = w[i] * meas[i];
     }
 
     if (flag_.fill_inv_gradients())
     {
-    	const auto &DF = el.get_gradients();
+    	const auto &DF = elem.get_gradients();
     	auto &D_invF = std::get<1>(cache->inv_derivatives_);
     	for (int i=0; i<n_points; ++i)
     		inverse<dim, space_dim>(DF[i], D_invF[i]);
@@ -112,8 +109,8 @@ fill_element(ElementIterator &elem) -> void
 
     if (flag_.fill_inv_hessians())
     {
-    	const auto &D1_F = el.get_gradients();
-    	const auto &D2_F = el.get_hessians();
+    	const auto &D1_F = elem.get_gradients();
+    	const auto &D2_F = elem.get_hessians();
     	const auto &D1_invF = std::get<1>(cache->inv_derivatives_);
     	auto &D2_invF = std::get<2>(cache->inv_derivatives_);
 
@@ -135,6 +132,26 @@ fill_element(ElementIterator &elem) -> void
 //        this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
 //    if (flag_.fill_hessians())
 //        this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
+}
+
+
+
+template<int dim, int codim>
+auto
+NewMapping<dim, codim>::
+init_element(ElementIterator &elem) -> void
+{
+    init_element(elem.get_accessor());
+}
+
+
+
+template<int dim, int codim>
+auto
+NewMapping<dim, codim>::
+fill_element(ElementIterator &elem) -> void
+{
+    fill_element(elem.get_accessor());
 }
 
 IGA_NAMESPACE_CLOSE

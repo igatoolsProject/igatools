@@ -98,6 +98,10 @@ public:
     void fill_element(ElementIterator &elem);
 
 protected:
+    void init_element(ElementAccessor &elem);
+
+    void fill_element(ElementAccessor &elem);
+
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);
 
