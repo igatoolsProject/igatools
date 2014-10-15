@@ -91,9 +91,6 @@ void test()
 
 int main()
 {
-
-
-
     test<2,0>();
 //    test<3,3>();
 

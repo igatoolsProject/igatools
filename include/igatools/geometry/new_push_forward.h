@@ -26,6 +26,11 @@
 #include <igatools/geometry/new_mapping_element_accessor.h>
 
 IGA_NAMESPACE_OPEN
+constexpr
+int physical_range(const int ref_range, const int space_dim, const Transformation type)
+{
+    return type == Transformation::h_grad ? ref_range : space_dim;
+}
 
 //Forward declaration to avoid including header file.
 template <Transformation, int, int> class PushForwardElement;
@@ -40,9 +45,28 @@ private:
 public:
     using ElementAccessor = PushForwardElement<type, dim, codim>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
-#if 0
-    static const int space_dim = dim + codim;
+    using MapType::space_dim;
 
+    template<int ref_range>
+    struct PhysRange
+    {
+        static const int value = physical_range(ref_range, space_dim, type);
+    };
+
+    template <int range, int rank>
+    using RefValue = Values<dim, range, rank>;
+
+    template <int range, int rank, int order>
+    using RefDerivative = Derivatives<dim, range, rank, order>;
+
+    template <int range, int rank>
+    using PhysValue = Values<space_dim, PhysRange<range>::value,rank>;
+
+    template <int range, int rank, int order>
+    using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;
+
+
+#if 0
 private:
     /** Type for the given order derivatives of the
      *  the mapping. */
