@@ -63,13 +63,14 @@ private:
     template<int order>
     using Derivative = typename FuncType::template Derivative<order>;
 
+public:
     /** Type for the diferent order derivatives of the inverse of
      * the mapping
      */
     template<int order>
     using InvDerivative = Derivatives<space_dim, dim, 1, order>;
 
-public:
+
     /** Type of the mapping evaluation point. */
     using Point = typename FuncType::Point;
 

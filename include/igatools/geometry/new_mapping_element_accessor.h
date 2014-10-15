@@ -38,8 +38,16 @@ private:
 public:
     using paren_t::FunctionElement;
 
+    template<int order>
+    using InvDerivative = typename Map::template InvDerivative<order>;
+
     ValueVector<Real> const &get_measures() const;
+
     ValueVector<Real> const &get_w_measures() const;
+
+    ValueVector<InvDerivative<1>> const &get_inverse_gradients() const;
+
+    ValueVector<InvDerivative<2>> const &get_inverse_hessians() const;
 
 private:
     struct Cache : public CacheStatus
@@ -54,6 +62,10 @@ private:
                 measures_.resize(n_points);
             if (flags_handler_.fill_w_measures())
                 w_measures_.resize(n_points);
+            if (flags_handler_.fill_inv_gradients())
+            	std::get<1>(inv_derivatives_).resize(n_points);
+            if (flags_handler_.fill_inv_hessians())
+            	std::get<2>(inv_derivatives_).resize(n_points);
 
             set_initialized(true);
         }
@@ -64,8 +76,13 @@ private:
             measures_.print_info(out);
         }
 
-        ValueVector< Real > measures_;
-        ValueVector< Real > w_measures_;
+        ValueVector<Real> measures_;
+        ValueVector<Real> w_measures_;
+
+        std::tuple<ValueVector<InvDerivative<0>>,
+                   ValueVector<InvDerivative<1>>,
+                   ValueVector<InvDerivative<2>>> inv_derivatives_;
+
         MappingElemValueFlagsHandler flags_handler_;
     };
 
