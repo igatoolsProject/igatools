@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/new_bspline_space.h>
 
 
 template< int dim_domain, int dim_range, int rank >
@@ -52,7 +52,7 @@ void do_test()
     coord_z.push_back(10.0) ;
     coord_z.push_back(11.0) ;
 
-    using Space = BSplineSpace<dim_domain, dim_range, rank>;
+    using Space = NewBSplineSpace<dim_domain, dim_range, rank>;
 
     CartesianProductArray< Real, dim_domain > coord ;
     TensorIndex<dim_domain> degree ;

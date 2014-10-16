@@ -28,30 +28,30 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 
 template <int dim, int range=1, int rank=1>
 void space_cache_value_elem(const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
+    using Space = NewBSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
+    auto space = Space::create(deg, grid);
 
     auto flag = ValueFlags::gradient;
     auto quad = QGauss<dim>(2);
-    BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
+    typename Space::ElementHandler value_handler(space, flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
 
-    cache.init_element_cache(elem);
+    value_handler.init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        cache.fill_element_cache(elem);
+        value_handler.fill_element_cache(elem);
         elem->get_basis_gradients().print_info(out);
     }
     OUTEND

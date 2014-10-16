@@ -27,10 +27,9 @@
  */
 
 #include "../tests.h"
-
-#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 
 template <int dim, int range=1, int rank=1>
 void uniform_space_cache(const ValueFlags flag,
@@ -38,12 +37,14 @@ void uniform_space_cache(const ValueFlags flag,
 {
     OUTSTART
 
+    using Space = NewBSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = BSplineSpace<dim, range, rank>::create(deg, grid);
+    auto space = Space::create(deg, grid);
+
 
     auto quad = QGauss<dim>(2);
-    BSplineUniformQuadCache<dim, range, rank> cache(space, flag, quad);
-    cache.print_info(out);
+    typename Space::ElementHandler value_handler(space, flag, quad);
+    value_handler.print_info(out);
 
     OUTEND
 }

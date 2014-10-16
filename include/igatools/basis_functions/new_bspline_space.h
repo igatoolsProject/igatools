@@ -112,7 +112,7 @@ public:
     using RefSpace = self_t;
 
     using GridType = CartesianGrid<dim_>;
-    using UniformQuadCache = BSplineElementHandler<dim_, range_, rank_>;
+    using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
 
     static const int dim       = PushForwardType::dim;
     static const int codim     = PushForwardType::codim;
