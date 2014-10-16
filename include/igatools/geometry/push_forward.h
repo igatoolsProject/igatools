@@ -26,7 +26,7 @@
 IGA_NAMESPACE_OPEN
 
 constexpr
-int physical_range(const int ref_range, const int space_dim, const Transformation type)
+int physical_range1(const int ref_range, const int space_dim, const Transformation type)
 {
     return type == Transformation::h_grad ? ref_range : space_dim;
 }
@@ -73,7 +73,7 @@ public:
     template<int ref_range>
     struct PhysRange
     {
-        static const int value = physical_range(ref_range, space_dim, type);
+        static const int value = physical_range1(ref_range, space_dim, type);
     };
 
     /**

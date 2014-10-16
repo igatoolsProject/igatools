@@ -34,6 +34,10 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
+
 template<int dim, int codim>
 void test()
 {
@@ -54,12 +58,16 @@ void test()
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
+
+    using Space = BSplineSpace<dim>;
+    auto space  = Space::create(1, grid);
+    typename Space::UniformQuadCache cache(space, ValueFlags::value, quad);
+    auto sp_elem = space->begin();
+    cache.init_element_cache(sp_elem);
+
     auto F = Function::create(grid, flag, quad, A, b);
-
-
     using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
     using ElementIt = typename PForward::ElementIterator;
-
     PForward pf(F, flag, quad);
 
 
@@ -70,6 +78,7 @@ void test()
     pf.init_element(elem);
     for (; elem != end; ++elem)
     {
+        cache.fill_element_cache(sp_elem);
         pf.fill_element(elem);
         elem->get_points().print_info(out);
         out << endl;
@@ -82,6 +91,17 @@ void test()
         elem->get_measures().print_info(out);
         out << endl;
         elem->get_w_measures().print_info(out);
+        out << endl;
+
+        const auto &ref_values = sp_elem->get_basis_values();
+        ValueTable<typename PForward::template PhysValue<Space::range, Space::rank>>
+        values(ref_values.get_num_functions(), ref_values.get_num_points());
+        elem->template transform_0<Space::range, Space::rank>
+        (ref_values, values);
+
+        ref_values.print_info(out);
+        out << endl;
+        values.print_info(out);
         out << endl;
     }
 
