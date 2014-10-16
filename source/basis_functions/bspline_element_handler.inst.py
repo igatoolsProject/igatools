@@ -20,24 +20,12 @@
 
 from init_instantiation_data import *
 
-include_files = []
-
+include_files = ['basis_functions/bspline_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-#spaces = []
-#for space in inst.AllRefSpaces_v2:
-#    spaces.append( '%s' %space.name)
-#for space in inst.PhysSpaces_v2:
-#    spaces.append( '%s' %space.name)
-
-f.write( 'using SpacePtrVariant = Variant<\n')
-for space in inst.AllRefSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)
-for space in inst.new_AllRefSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)    
-for space in inst.PhysSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)
-f.seek(f.tell()-2);
-f.write( '>;\n')
-
+space_caches = ['BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
+                for x in inst.really_all_ref_sp_dims]
+for row in space_caches:
+   f.write('template class %s; \n' % (row))
+   

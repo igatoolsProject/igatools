@@ -35,22 +35,24 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
 //Forward declaration to avoid including header file.
 template <Transformation, int, int> class PushForwardElement;
 
-template<Transformation type, int dim, int codim = 0>
-class NewPushForward : public NewMapping<dim, codim>
+template<Transformation type_, int dim_, int codim_ = 0>
+class NewPushForward : public NewMapping<dim_, codim_>
 {
 private:
-    using self_t = NewPushForward<type, dim, codim>;
-    using MapType = NewMapping<dim, codim>;
+    using self_t = NewPushForward<type_, dim_, codim_>;
+    using MapType = NewMapping<dim_, codim_>;
     using typename MapType::FuncType;
 public:
-    using ElementAccessor = PushForwardElement<type, dim, codim>;
+    using ElementAccessor = PushForwardElement<type_, dim_, codim_>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
     using MapType::space_dim;
+    static const int dim   = dim_;
+    static const int codim = codim_;
 
     template<int ref_range>
     struct PhysRange
     {
-        static const int value = physical_range(ref_range, space_dim, type);
+        static const int value = physical_range(ref_range, space_dim, type_);
     };
 
     template <int range, int rank>

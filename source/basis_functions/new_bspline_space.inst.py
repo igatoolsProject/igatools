@@ -18,26 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
 
-include_files = []
-
+include_files = ['geometry/cartesian_grid_element_accessor.h',
+                 'basis_functions/bspline_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-#spaces = []
-#for space in inst.AllRefSpaces_v2:
-#    spaces.append( '%s' %space.name)
-#for space in inst.PhysSpaces_v2:
-#    spaces.append( '%s' %space.name)
-
-f.write( 'using SpacePtrVariant = Variant<\n')
-for space in inst.AllRefSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)
-for space in inst.new_AllRefSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)    
-for space in inst.PhysSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)
-f.seek(f.tell()-2);
-f.write( '>;\n')
-
+spaces = ['NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
+          for x in inst.really_all_ref_sp_dims ]
+for sp in spaces:
+   f.write('template class %s ;\n' %sp)

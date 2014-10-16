@@ -88,9 +88,9 @@ class PhysSpaceSpecs:
 
 
 class PhysSpace:
-    def __init__(self, specs, ref_space):
+    def __init__(self, specs, ref_space, name):
        self.spec   = specs
-       self.name   = ( 'PhysicalSpace <' + ref_space + 
+       self.name   = ( '%s <' %name + ref_space + 
                        '<%d,%d,%d>' % (specs.dim, specs.range, specs.rank) +
                        ', PushForward<Transformation::%s, %d, %d> >' 
                        %(specs.trans_type, specs.dim, specs.codim) )
@@ -343,17 +343,33 @@ class InstantiationInfo:
 
 
    def create_PhysSpaces(self):
+       
+      spaces = ['NewBSplineSpace']
+      if self.nurbs:
+          spaces.append('NURBSSpace')
+   
+      self.new_PhysSpaces_v2 = unique( [PhysSpace(x,sp,'NewPhysicalSpace')
+                                 for sp in spaces
+                                 for x in self.all_phy_sp_dims] )
+      
+      self.new_AllRefSpaces_v2 = unique( [RefSpace(x,sp)
+                                      for sp in spaces
+                                      for x in self.really_all_ref_sp_dims ] )
+      
       spaces = ['BSplineSpace']
       if self.nurbs:
           spaces.append('NURBSSpace')
    
-      self.PhysSpaces_v2 = unique( [PhysSpace(x,sp)
+      self.PhysSpaces_v2 = unique( [PhysSpace(x,sp,'PhysicalSpace')
                                  for sp in spaces
                                  for x in self.all_phy_sp_dims] )
       
       self.AllRefSpaces_v2 = unique( [RefSpace(x,sp)
                                       for sp in spaces
                                       for x in self.really_all_ref_sp_dims ] )
+      
+        
+      
       
       
       self.AllPushForwards = unique(['PushForward<Transformation::%s, %d, %d>'
