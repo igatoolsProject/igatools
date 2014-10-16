@@ -49,7 +49,8 @@ void test()
     }
 
     auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
+                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure
+                |ValueFlags::map_inv_gradient;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
@@ -69,17 +70,7 @@ void test()
     for (; elem != end; ++elem)
     {
         map.fill_element(elem);
-        elem->get_points().print_info(out);
-        out << endl;
-        elem->get_values().print_info(out);
-        out << endl;
-        elem->get_gradients().print_info(out);
-        out << endl;
-        elem->get_hessians().print_info(out);
-        out << endl;
-        elem->get_measures().print_info(out);
-        out << endl;
-        elem->get_w_measures().print_info(out);
+        elem->get_inverse_gradients().print_info(out);
         out << endl;
     }
 

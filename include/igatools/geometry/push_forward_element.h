@@ -73,23 +73,65 @@ public:
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
                 EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
-        const auto Dv_hat = std::get<1>(ref_values);
+        const auto &Dv_hat = std::get<1>(ref_values);
 
         const int n_func   = Dv_hat.get_num_functions();
         const int n_points = Dv_hat.get_num_points();
         auto Dv_it     = Dv.begin();
         auto Dv_hat_it = Dv_hat.cbegin();
 
-        const auto &DF_inv = this->get_inv_gradients();
+        const auto &DF_inv = this->get_inverse_gradients();
         for (int i_fn = 0; i_fn < n_func; ++i_fn)
             for (Index j_pt = 0; j_pt < n_points; ++j_pt)
             {
-                const auto &DF_inv = DF_inv[j_pt];
-                (*Dv_it) = compose((*Dv_hat_it), DF_inv);
+                (*Dv_it) = compose((*Dv_hat_it), DF_inv[j_pt]);
                 ++Dv_hat_it;
                 ++Dv_it;
             }
     }
+
+
+    template <int range, int rank, Transformation ttype=type >
+    void
+    transform_2(const std::tuple<
+                ValueContainer<RefValue<range, rank>>,
+                ValueContainer<RefDerivative<range, rank, 1>>,
+                ValueContainer<RefDerivative<range, rank, 2>> > &ref_values,
+                const std::tuple<
+                ValueContainer<PhysValue<range, rank>>,
+                ValueContainer<PhysDerivative<range, rank, 1>>> &phys_values,
+                ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
+                EnableIf<ttype == Transformation::h_grad> * = 0) const
+    {
+            const auto &D2v_hat = std::get<2>(ref_values);
+            const auto &D1v     = std::get<1>(phys_values);
+
+            const int n_func   = D2v_hat.get_num_functions();
+            const int n_points = D2v_hat.get_num_points();
+            auto D2v_it     = D2v.begin();
+            auto D1v_it     = D1v.cbegin();
+            auto D2v_hat_it = D2v_hat.cbegin();
+            const auto D2F     = this->get_hessians();
+            const auto &DF_inv = this->get_inverse_gradients();
+
+            for (int i_fn = 0; i_fn < n_func; ++i_fn)
+                for (Index j_pt = 0; j_pt < n_points; ++j_pt)
+                {
+                    for (int u=0; u<dim; ++u)
+                    {
+                        (*D2v_it)[u] = compose(
+                                (*D2v_hat_it)[u] - compose((*D1v_it),D2F[j_pt][u]),
+                                DF_inv[j_pt]);
+                    }
+                    ++D2v_hat_it;
+                    ++D1v_it;
+                    ++D2v_it;
+                }
+
+    }
+
+
+
 
 
 #if 0
