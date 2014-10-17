@@ -27,7 +27,7 @@ include_files = ['basis_functions/new_bspline_space.h',
                  'basis_functions/nurbs_element_accessor.h',
                  'basis_functions/new_physical_space.h',
                  'geometry/cartesian_grid_element_accessor.h',
-                 'geometry/mapping_element.h',
+                 'geometry/new_mapping_element_accessor.h',
                  'geometry/push_forward_element.h',
                  'basis_functions/physical_space_element.h',
                  '../../source/geometry/grid_forward_iterator.cpp']
@@ -39,7 +39,7 @@ for space in inst.PhysSpaces_v2:
     ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
     phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>' 
              %(ref_space, x.codim, x.trans_type))
-    accessor = ('PhysicalSpaceElementAccessor<%s>' %phys_sp)
+    accessor = ('PhysicalSpaceElement<%s>' %phys_sp)
     f.write('template class %s;\n' %accessor)
     f.write('template class GridForwardIterator<%s> ;\n' %accessor)
 #    function = ('template  ValueTable< Conditional< deriv_order==0,'+

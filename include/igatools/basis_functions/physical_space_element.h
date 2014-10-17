@@ -132,7 +132,6 @@ public :
     PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
                                  const TensorIndex<dim> &index);
 
-
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow copy).

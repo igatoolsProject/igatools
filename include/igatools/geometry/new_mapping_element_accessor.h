@@ -100,7 +100,9 @@ private:
 };
 
 
+IGA_NAMESPACE_CLOSE
 
+#endif // MAPPING_ELEMENT_ACCESSOR_H_
 
 
 #if 0
@@ -483,6 +485,4 @@ static void evaluate_inverse_hessian(const HessianMap &D2F,
 };
 
 #endif
-IGA_NAMESPACE_CLOSE
 
-#endif // MAPPING_ELEMENT_ACCESSOR_H_

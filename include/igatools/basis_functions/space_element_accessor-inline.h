@@ -69,11 +69,10 @@ SpaceElementAccessor(const std::shared_ptr<const Space> space,
     Assert(space_ != nullptr, ExcNullPtr());
 
     using Indexer = CartesianProductIndexer<dim>;
-    const auto degree_table = space->get_degree();
+    n_basis_direction_ = space_->get_num_all_element_basis();
     for (int comp_id : basis_functions_indexer_.get_active_components_id())
     {
-        n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
-
+        //n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
         // creating the objects for fast conversion from flat-to-tensor indexing
         // (in practice it is an hash-table from flat to tensor indices)
         basis_functions_indexer_[comp_id] =

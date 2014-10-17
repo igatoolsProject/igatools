@@ -32,7 +32,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                              const Index index)
     :
     SpaceElementAccessor<PhysSpace>(phys_space,index),
-    PfElemAccessor(phys_space->get_push_forward(), index),
+    PfElemAccessor(phys_space->get_grid(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}
 
@@ -44,7 +44,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                              const TensorIndex<dim> &index)
     :
     SpaceElementAccessor<PhysSpace>(phys_space,index),
-    PfElemAccessor(phys_space->get_push_forward(), index),
+    PfElemAccessor(phys_space->get_grid(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}
 
@@ -53,10 +53,10 @@ template< class PhysSpace >
 PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
                              const CopyPolicy &copy_policy)
-    :
-    SpaceElementAccessor<PhysSpace>(in,copy_policy),
-    PhysSpace::PushForwardType::ElementAccessor(in,copy_policy),
-    ref_space_element_accessor_(in.ref_space_element_accessor_,copy_policy)
+ //   :
+//    SpaceElementAccessor<PhysSpace>(in,copy_policy),
+//    PhysSpace::PushForwardType::ElementAccessor(in,copy_policy),
+//    ref_space_element_accessor_(in.ref_space_element_accessor_,copy_policy)
 {}
 
 
@@ -68,18 +68,18 @@ PhysicalSpaceElement<PhysSpace>::
 copy_from(const PhysicalSpaceElement<PhysSpace> &element,
           const CopyPolicy &copy_policy)
 {
-    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
-
-    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
-
-    if (copy_policy == CopyPolicy::deep)
-        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
-    else if (copy_policy == CopyPolicy::shallow)
-        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
-    else
-    {
-        Assert(false,ExcNotImplemented());
-    }
+//    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
+//
+//    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
+//
+//    if (copy_policy == CopyPolicy::deep)
+//        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
+//    else if (copy_policy == CopyPolicy::shallow)
+//        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
+//    else
+//    {
+//        Assert(false,ExcNotImplemented());
+//    }
 }
 
 template< class PhysSpace >
@@ -87,7 +87,7 @@ void
 PhysicalSpaceElement<PhysSpace>::
 deep_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
 {
-    this->copy_from(element,CopyPolicy::deep);
+    //this->copy_from(element,CopyPolicy::deep);
 }
 
 
@@ -96,7 +96,7 @@ void
 PhysicalSpaceElement<PhysSpace>::
 shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
 {
-    this->copy_from(element,CopyPolicy::shallow);
+//    this->copy_from(element,CopyPolicy::shallow);
 }
 
 #if 0
@@ -554,7 +554,7 @@ get_tensor_index() const -> TensorIndex<dim>
 }
 
 //*/
-
+#if 0
 template< class PhysSpace >
 auto
 PhysicalSpaceElement<PhysSpace>::
@@ -562,7 +562,7 @@ get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
     return this->space_;
 }
-
+#endif
 
 
 template< class PhysSpace >

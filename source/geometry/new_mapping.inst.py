@@ -34,4 +34,11 @@ for row in inst.all_mapping_dims:
     f.write(s)
     s = 'template class GridForwardIterator<MappingElement%s> ;\n' %(dims)
     f.write(s)
-    
+   
+s = 'template class NewMapping<0,0> ;\n' 
+f.write(s)      
+s = 'template class MappingElement<0,0> ;\n' %(dims)
+f.write(s)
+s = 'template class GridForwardIterator<MappingElement<0,0> ;\n' %(dims)
+f.write(s) 
+
