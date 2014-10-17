@@ -29,121 +29,114 @@ IGA_NAMESPACE_OPEN
 
 namespace{
 auto
-pushforward_to_mapping_flag(const ValueFlags v_flag) -> ValueFlags
+pushforward_to_mapping_flag(const Transformation type, const ValueFlags v_flag)
+-> ValueFlags
 {
-    const ValueFlags common_flag =
-        ValueFlags::point|
-        ValueFlags::map_gradient|ValueFlags::map_hessian|
-        ValueFlags::map_inv_gradient|ValueFlags::map_inv_hessian|
-        ValueFlags::w_measure|ValueFlags::face_point|
-        ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
-        ValueFlags::map_face_inv_gradient|ValueFlags::map_face_inv_hessian|
-        ValueFlags::face_w_measure|ValueFlags::face_normal;
+//    const ValueFlags common_flag =
+//        ValueFlags::value|
+//        ValueFlags::gradient|ValueFlags::map_hessian|
+//        ValueFlags::map_inv_gradient|ValueFlags::map_inv_hessian|
+//        ValueFlags::w_measure|ValueFlags::face_point|
+//        ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
+//        ValueFlags::map_face_inv_gradient|ValueFlags::map_face_inv_hessian|
+//        ValueFlags::face_w_measure|ValueFlags::face_normal;
 
-    /*
-     * For each MappingValueFlags there is an if that checks for all
-     * ValueFlags that activate the given value flag.
-     */
-    ValueFlags fill_flag = common_flag & v_flag;
+//    /*
+//     * For each MappingValueFlags there is an if that checks for all
+//     * ValueFlags that activate the given value flag.
+//     */
+//    ValueFlags fill_flag = common_flag & v_flag;
 
-    if (contains(v_flag, ValueFlags::point))
-        fill_flag |= ValueFlags::point;
+    ValueFlags fill_flag;
 
-    if (contains(v_flag, ValueFlags::w_measure))
-        fill_flag |= (ValueFlags::measure |
-                      ValueFlags::map_gradient);
+//    if (contains(v_flag, ValueFlags::point))
+//        fill_flag |= ValueFlags::point;
+//
+//    if (contains(v_flag, ValueFlags::w_measure))
+//        fill_flag |= (ValueFlags::measure |
+//                      ValueFlags::map_gradient);
+//
+//    if (contains(v_flag, ValueFlags::face_point))
+//        fill_flag |= ValueFlags::face_point;
+//
+//    if (contains(v_flag, ValueFlags::face_w_measure))
+//        fill_flag |= (ValueFlags::face_measure |
+//                      ValueFlags::map_face_gradient);
+//
+//    if (contains(v_flag, ValueFlags::face_normal))
+//        fill_flag |= (ValueFlags::map_face_inv_gradient |
+//                      ValueFlags::map_face_gradient);
 
-    if (contains(v_flag, ValueFlags::face_point))
-        fill_flag |= ValueFlags::face_point;
-
-    if (contains(v_flag, ValueFlags::face_w_measure))
-        fill_flag |= (ValueFlags::face_measure |
-                      ValueFlags::map_face_gradient);
-
-    if (contains(v_flag, ValueFlags::face_normal))
-        fill_flag |= (ValueFlags::map_face_inv_gradient |
-                      ValueFlags::map_face_gradient);
-
-
-
-
-    if (transformation_type == Transformation::h_grad)
+    if (type == Transformation::h_grad)
     {
-        auto flag = v_flag;
-        if (contains(v_flag,ValueFlags::tran_hessian))
+        if (contains(v_flag, ValueFlags::tran_hessian))
         {
-            flag |= ValueFlags::tran_gradient;
-            fill_flag |= (ValueFlags::map_hessian|
-                          ValueFlags::map_inv_gradient|
-                          ValueFlags::map_face_hessian|
-                          ValueFlags::map_face_inv_hessian |
-                          ValueFlags::map_face_inv_gradient);
+            fill_flag |= (ValueFlags::hessian|
+                          ValueFlags::map_inv_gradient);
         }
-        if (contains(flag,ValueFlags::tran_value))
-            fill_flag |= (ValueFlags::point | ValueFlags::face_point);
 
-        if (contains(flag,ValueFlags::tran_gradient))
-            fill_flag |= (ValueFlags::map_gradient |
-                          ValueFlags::map_inv_gradient|
-                          ValueFlags::map_face_gradient |
-                          ValueFlags::map_face_inv_gradient);
+        if (contains(v_flag, ValueFlags::tran_value))
+        {}
+
+        if (contains(v_flag, ValueFlags::tran_gradient))
+            fill_flag |= (ValueFlags::map_inv_gradient);
 
 
     }
-    else if (transformation_type == Transformation::h_div)
-    {
-        if (contains(v_flag,ValueFlags::tran_value))
-            fill_flag |= (ValueFlags::map_gradient |
-                          ValueFlags::map_face_gradient);
-        if (contains(v_flag,ValueFlags::tran_gradient))
-            fill_flag |= (ValueFlags::map_gradient |
-                          ValueFlags::map_hessian |
-                          ValueFlags::map_face_gradient |
-                          ValueFlags::map_face_hessian);
-        if (contains(v_flag,ValueFlags::tran_hessian))
-            AssertThrow(false,ExcNotImplemented());
-    }
-    else if (transformation_type == Transformation::h_curl)
-    {
-        AssertThrow(false,ExcNotImplemented());
-        if (contains(v_flag,ValueFlags::tran_value))
-            fill_flag |= (ValueFlags::map_gradient |
-                          ValueFlags::map_face_gradient);
-        if (contains(v_flag,ValueFlags::tran_gradient))
-            fill_flag |= (ValueFlags::map_gradient |
-                          ValueFlags::map_hessian |
-                          ValueFlags::map_face_gradient |
-                          ValueFlags::map_face_hessian);
-        if (contains(v_flag,ValueFlags::tran_hessian))
-            AssertThrow(false,ExcNotImplemented());
-    }
-    else if (transformation_type == Transformation::l_2)
-    {
-        AssertThrow(false,ExcNotImplemented());
-        if (contains(v_flag,ValueFlags::tran_value))
-            AssertThrow(false,ExcNotImplemented());
-        if (contains(v_flag,ValueFlags::tran_gradient))
-            AssertThrow(false,ExcNotImplemented());
-        if (contains(v_flag,ValueFlags::tran_hessian))
-            AssertThrow(false,ExcNotImplemented());
-    }
-
-
-
-    // We fill extra stuff as the computation is performed anyways
-    if (contains(fill_flag , ValueFlags::measure))
-        fill_flag |= (ValueFlags::map_gradient |
-                      ValueFlags::map_face_gradient);
-
-    if (contains(fill_flag , ValueFlags::map_inv_gradient))
-        fill_flag |= (ValueFlags::map_gradient |
-                      ValueFlags::measure |
-                      ValueFlags::map_face_gradient |
-                      ValueFlags::face_measure);
-
-    if (contains(fill_flag , ValueFlags::map_inv_hessian))
-        fill_flag |= (ValueFlags::map_hessian |
-                      ValueFlags::map_face_hessian);
+//    else if (type == Transformation::h_div)
+//    {
+//        if (contains(v_flag,ValueFlags::tran_value))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_face_gradient);
+//        if (contains(v_flag,ValueFlags::tran_gradient))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_hessian |
+//                          ValueFlags::map_face_gradient |
+//                          ValueFlags::map_face_hessian);
+//        if (contains(v_flag,ValueFlags::tran_hessian))
+//            AssertThrow(false,ExcNotImplemented());
+//    }
+//    else if (type == Transformation::h_curl)
+//    {
+//        AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_value))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_face_gradient);
+//        if (contains(v_flag,ValueFlags::tran_gradient))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_hessian |
+//                          ValueFlags::map_face_gradient |
+//                          ValueFlags::map_face_hessian);
+//        if (contains(v_flag,ValueFlags::tran_hessian))
+//            AssertThrow(false,ExcNotImplemented());
+//    }
+//    else if (type == Transformation::l_2)
+//    {
+//        AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_value))
+//            AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_gradient))
+//            AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_hessian))
+//            AssertThrow(false,ExcNotImplemented());
+//    }
+//
+//
+//
+//    // We fill extra stuff as the computation is performed anyways
+//    if (contains(fill_flag , ValueFlags::measure))
+//        fill_flag |= (ValueFlags::map_gradient |
+//                      ValueFlags::map_face_gradient);
+//
+//    if (contains(fill_flag , ValueFlags::map_inv_gradient))
+//        fill_flag |= (ValueFlags::map_gradient |
+//                      ValueFlags::measure |
+//                      ValueFlags::map_face_gradient |
+//                      ValueFlags::face_measure);
+//
+//    if (contains(fill_flag , ValueFlags::map_inv_hessian))
+//        fill_flag |= (ValueFlags::map_hessian |
+//                      ValueFlags::map_face_hessian);
 
     return fill_flag;
 }
@@ -157,7 +150,7 @@ NewPushForward(std::shared_ptr<FuncType> F,
                const ValueFlags flag,
                const Quadrature<dim> &quad)
                :
-               MapType::NewMapping(F, pushforward_to_mapping_flag(flag), quad)
+               MapType::NewMapping(F, pushforward_to_mapping_flag(type, flag), quad)
                {}
 
 

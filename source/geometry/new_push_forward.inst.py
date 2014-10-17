@@ -36,10 +36,10 @@ for row in inst.all_mapping_dims:
     s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
     f.write(s)
    
-s = 'template class NewPushForward<0,0> ;\n' 
+s = 'template class NewPushForward<Transformation::h_grad, 0,0> ;\n' 
 f.write(s)      
-s = 'template class PushForwardElement<0,0> ;\n'
+s = 'template class PushForwardElement<Transformation::h_grad, 0,0> ;\n'
 f.write(s)
-s = 'template class GridForwardIterator<PushForwardElement<0,0>> ;\n' 
+s = 'template class GridForwardIterator<PushForwardElement<Transformation::h_grad, 0,0>> ;\n' 
 f.write(s) 
 

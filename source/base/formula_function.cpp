@@ -23,6 +23,15 @@
 
 using std::shared_ptr;
 
+//namespace
+//{
+//auto function_to_grid_flag(const ValueFlags &fun_flag)
+//{
+//    ValueFlags grid_flag;
+//    if (contain)
+//}
+//
+//}
 IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank>
@@ -61,16 +70,19 @@ FormulaFunction<dim, codim, range, rank>::
 fill_elem(ElementAccessor &elem) -> void
 {
     GridUniformQuadCache<dim>::fill_element_cache(elem);
-    const auto points = elem.CartesianGridElement<dim>::get_points();
-    auto &cache = this->get_cache(elem);
-    if (flag_.fill_points())
-        this->parametrization(points, cache->points_);
-    if (flag_.fill_values())
-        this->evaluate_0(cache->points_, cache->values_);
-    if (flag_.fill_gradients())
-        this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
-    if (flag_.fill_hessians())
-        this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
+    if (!flag_.fill_none())
+    {
+        const auto points = elem.CartesianGridElement<dim>::get_points();
+        auto &cache = this->get_cache(elem);
+        if (flag_.fill_points())
+            this->parametrization(points, cache->points_);
+        if (flag_.fill_values())
+            this->evaluate_0(cache->points_, cache->values_);
+        if (flag_.fill_gradients())
+            this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
+        if (flag_.fill_hessians())
+            this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
+    }
 }
 
 IGA_NAMESPACE_CLOSE
