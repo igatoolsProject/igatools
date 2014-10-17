@@ -48,6 +48,7 @@ public:
     using MapType::space_dim;
     static const int dim   = dim_;
     static const int codim = codim_;
+    static const Transformation type = type_;
 
     template<int ref_range>
     struct PhysRange
@@ -105,6 +106,13 @@ public:
 
     ~NewPushForward() = default;
 
+protected:
+    void init_element(ElementAccessor &elem);
+
+    void fill_element(ElementAccessor &elem);
+
+
+public:
     void init_element(ElementIterator &elem);
 
     void fill_element(ElementIterator &elem);
@@ -134,10 +142,27 @@ NewPushForward(std::shared_ptr<FuncType> F,
 template<Transformation type, int dim, int codim>
 auto
 NewPushForward<type, dim, codim>::
+init_element(ElementAccessor &elem) ->void
+{
+    MapType::init_element(elem);
+}
+
+
+
+template<Transformation type, int dim, int codim>
+auto
+NewPushForward<type, dim, codim>::
+fill_element(ElementAccessor &elem) ->void
+{
+    MapType::fill_element(elem);
+}
+
+template<Transformation type, int dim, int codim>
+auto
+NewPushForward<type, dim, codim>::
 init_element(ElementIterator &elem) ->void
 {
-    auto &el = elem.get_accessor();
-    MapType::init_element(el);
+    init_element(elem.get_accessor());
 }
 
 
@@ -147,8 +172,7 @@ auto
 NewPushForward<type, dim, codim>::
 fill_element(ElementIterator &elem) ->void
 {
-    auto &el = elem.get_accessor();
-    MapType::fill_element(el);
+    fill_element(elem.get_accessor());
 }
 
 IGA_NAMESPACE_CLOSE

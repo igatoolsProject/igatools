@@ -27,15 +27,18 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim, int codim = 0>
+template<int dim_, int codim_ = 0>
 class MappingElement
-    : public FunctionElement<dim, 0, dim+codim>
+    : public FunctionElement<dim_, 0, dim_+codim_>
 {
 private:
-    using self_t  = MappingElement<dim, codim>;
-    using paren_t = FunctionElement<dim, 0, dim+codim>;
-    using Map = NewMapping<dim, codim>;
+    using self_t  = MappingElement<dim_, codim_>;
+    using paren_t = FunctionElement<dim_, 0, dim_+codim_>;
+    using Map = NewMapping<dim_, codim_>;
 public:
+    static const int dim = dim_;
+    static const int codim = codim_;
+    static const int space_dim = dim_+codim_;
     using paren_t::FunctionElement;
 
     template<int order>

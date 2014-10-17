@@ -106,7 +106,7 @@ private:
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
     using PushForwardType = NewPushForward<Transformation::h_grad,dim_,0>;
-    using PhysSpace = NewPhysicalSpace<self_t, PushForwardType>;
+    using PhysSpace = NewPhysicalSpace<self_t, 0, Transformation::h_grad>;
 
     /** Required type for space templated functions */
     using RefSpace = self_t;

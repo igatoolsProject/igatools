@@ -26,9 +26,9 @@
 
 #include <igatools/geometry/mapping.h>
 #include <igatools/base/quadrature.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/basis_functions/nurbs_element_accessor.h>
-#include <igatools/geometry/push_forward_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
+//#include <igatools/basis_functions/nurbs_element_accessor.h>
+#include <igatools/geometry/push_forward_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -90,11 +90,12 @@ public :
     using PfElemAccessor::dim;
     using PfElemAccessor::space_dim;
     using PfElemAccessor::codim;
-    using PfElemAccessor::transformation_type;
+    using PfElemAccessor::type;
 
 
     /** Type for the quadrature scheme. */
     using QuadratureType = Quadrature<dim>;
+#if 0
     using QuadratureFaceType = Quadrature<dim-1>;
 
     static const Size n_faces = UnitElement<dim>::faces_per_element;
@@ -114,7 +115,7 @@ public :
     using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
 
     using Div = typename PhysSpace::Div;
-
+#endif
     /**
      * @name Constructors
      */
@@ -195,7 +196,7 @@ public :
     void shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element);
     ///@}
 
-
+#if 0
     /** @name Functions for the basis and field evaluations without the use of the cache */
     ///@{
 
@@ -213,7 +214,7 @@ public :
 
     ///@}
 
-
+#endif
     /**
      * @name Getting quantities that are geometry-related
      */
@@ -224,12 +225,13 @@ public :
      */
     using PhysSpace::PushForwardType::ElementAccessor::get_measures;
 
+#if 0
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points
      * on the face specified by @p face_id.
      */
     using PhysSpace::PushForwardType::ElementAccessor::get_face_measures;
-
+#endif
 
     /**
      * Returns the quadrature weights multiplied by the
@@ -237,6 +239,7 @@ public :
      */
     using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
 
+#if 0
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points
@@ -317,7 +320,7 @@ public :
     using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
 
 
-
+#endif
 
     /**
      * Prints internal information about the BSplineElementAccessor.
@@ -328,6 +331,7 @@ public :
     void print_cache_info(LogStream &out) const;
 
 private:
+
     /**
      * Return a const reference of this object as would be viewed as reference space element accessor.
      * This means that the returned object can be queried (but not modified) as the reference space
@@ -338,13 +342,15 @@ private:
     {
         return ref_space_element_accessor_;
     }
+ #if 0
+
     /**
      * Return a const reference of this object as would be viewed as push-forward element accessor.
      * This means that the returned object can be queried (but not modified) as the push-forward
      * element accessor that is used as partial inheritance of the physical space element accessor.
      */
     const PfElemAccessor &get_push_forward_accessor() const;
-
+#endif
 public:
 
     /**
@@ -361,7 +367,7 @@ public:
 
 protected:
 
-
+#if 0
     /**
      * For a given flags input argument identifies the face quantities and
      * returns a new ValueFlags variable containing only face quantities.
@@ -369,7 +375,7 @@ protected:
      */
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
-
+#endif
     /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
     /**
@@ -408,8 +414,7 @@ protected:
 
     bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
     bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
-
-
+#if 0
     /**
      * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
      * in order to compute the quantities specified by the input argument
@@ -424,7 +429,7 @@ protected:
      */
     ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
 
-
+#endif
     /**
      * Performs a copy of the input @p element.
      * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
@@ -435,11 +440,11 @@ protected:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    template <typename PSpace> friend class SpaceUniformQuadCache;
+    template <typename PSpace> friend class SpaceElementHandler;
     RefElemAccessor ref_space_element_accessor_;
 };
 
 
 IGA_NAMESPACE_CLOSE
 
-#endif // PHYSICAL_SPACE_ELEMENT_ACCESSOR_H
+#endif

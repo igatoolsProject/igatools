@@ -34,33 +34,33 @@ IGA_NAMESPACE_OPEN
 class SpaceManager;
 
 //Forward declaration to avoid including the header
-template <class> class PhysicalSpaceElementAccessor;
-template <class> class SpaceUniformQuadCache;
+template <class> class PhysicalSpaceElement;
+template <class> class SpaceElementHandler;
 /**
  *
  * @sa FunctionSpace
  *
  * @ingroup containers
  */
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_, int codim_, Transformation type_>
 class NewPhysicalSpace :
-    public std::enable_shared_from_this<NewPhysicalSpace<RefSpace_, PushForward_>>,
-            public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
+    public std::enable_shared_from_this<NewPhysicalSpace<RefSpace_, codim_, type_>>,
+    public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
 {
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >;
-    using self_t = NewPhysicalSpace<RefSpace_, PushForward_>;
+    using self_t = NewPhysicalSpace<RefSpace_, codim_, type_>;
 
 public:
     ///@{
     /** see documentation in \ref FunctionSpaceOnGrid */
-    using PushForwardType = PushForward_;
+    using PushForwardType = NewPushForward<type_, RefSpace_::dim, codim_>;
 
     using RefSpace = RefSpace_;
 
-    using GridType = typename PushForwardType::GridType;
+    //using GridType = typename PushForwardType::GridType;
     ///@}
-    using UniformQuadCache = SpaceUniformQuadCache<NewPhysicalSpace<RefSpace_, PushForward_>>;
+    using ElementHandler = SpaceElementHandler<self_t>;
 
     static const int dim = PushForwardType::dim;
 
@@ -71,6 +71,8 @@ public:
     static const int range = PushForwardType::template PhysRange<RefSpace::range>::value;
 
     static const int rank = RefSpace::rank;
+
+    using MapFunc =  NewFunction<dim, 0, space_dim>;
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
@@ -102,54 +104,26 @@ public:
     using DegreeTable = typename RefSpace::DegreeTable;
 
 public:
+#if 0
     /** Type for the reference space on the face. */
     using RefFaceSpace = typename RefSpace_::RefFaceSpace;
     using FaceSpace = NewPhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
-    /**
-     * Type for the element accessor.
-     */
-    using ElementAccessor = PhysicalSpaceElementAccessor<self_t>;
+#endif
 
-    /**
-     * Typedef for the element iterator
-     */
-    typedef GridForwardIterator<ElementAccessor> ElementIterator;
-
+    using ElementAccessor = PhysicalSpaceElement<self_t>;
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
 
     NewPhysicalSpace(const self_t &phys_space) = delete;
 
     static std::shared_ptr<self_t> create(
         std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<PushForwardType> push_forward);
+        std::shared_ptr<MapFunc> push_forward);
 
     /**
      * Total number of dofs of the space.
      */
     Index get_num_basis() const;
-
-    /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
-
-    /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &get_dof_distribution_global();
-
-    /** Returns the container with the patch dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &get_dof_distribution_patch() const;
-
-    /** Returns the container with the patch dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &get_dof_distribution_patch();
-
-    SpaceDimensionTable get_num_all_element_basis() const
-    {
-        return ref_space_->get_num_all_element_basis();
-    }
-
-    const DegreeTable &get_degree() const;
-
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
-
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
     /**
      * Returns a element iterator to the first element of the patch.
@@ -165,6 +139,31 @@ public:
      * Returns a element iterator to one-pass the end of patch.
      */
     ElementIterator end() const;
+#if 0
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
+
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_global();
+
+    /** Returns the container with the patch dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &get_dof_distribution_patch() const;
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &get_dof_distribution_patch();
+#endif
+    auto get_num_all_element_basis() const
+    {
+        return ref_space_->get_num_all_element_basis();
+    }
+#if 0
+    const DegreeTable &get_degree() const;
+
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+
+
 
     /**
      * Returns the element accessor with its flat id corresponding to @p elem_flat_id.
@@ -176,26 +175,26 @@ public:
 
 
     std::shared_ptr<const PushForwardType> get_push_forward() const;
-
+#endif
     std::shared_ptr<const RefSpace> get_reference_space() const;
+    std::shared_ptr<MapFunc> get_map_func() const
+        {
+        return map_func_;
+        }
 
-
+#if 0
     std::shared_ptr<FaceSpace>
     get_face_space(const Index face_id,
                    vector<Index> &face_to_element_dofs) const;
 
+    Index get_id() const;
 
+
+#endif
     void print_info(LogStream &out) const;
 
 
-
-    Index get_id() const;
-
-    // TODO (pauletti, Jun 12, 2014): if we are using this it should be
-    // implemented in all library classes
-    void print_memory_info(LogStream &out) const;
-
-
+#if 0
     std::shared_ptr<SpaceManager> get_space_manager();
 
     std::shared_ptr<const SpaceManager> get_space_manager() const;
@@ -241,15 +240,16 @@ public:
     {
         return ref_space_->get_boundary_conditions_table();
     }
+#endif
 
 private:
     NewPhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<PushForwardType> push_forward);
+                     std::shared_ptr<MapFunc> push_forward);
 
 
     std::shared_ptr<RefSpace> ref_space_;
+    std::shared_ptr<MapFunc>  map_func_;
 
-    std::shared_ptr<PushForwardType> push_forward_;
 
     friend ElementAccessor;
 };

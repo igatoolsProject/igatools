@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/basis_functions/new_physical_space.h>
+//#include <igatools/geometry/mapping_slice.h>
 #include <igatools/basis_functions/space_manager.h>
 
 
@@ -32,49 +32,44 @@ using std::endl;
 IGA_NAMESPACE_OPEN
 
 
-template <class RefSpace_, class PushForward_>
-const std::array<int, NewPhysicalSpace<RefSpace_,PushForward_>::n_components>
-NewPhysicalSpace<RefSpace_,PushForward_>::components = sequence<NewPhysicalSpace<RefSpace_,PushForward_>::n_components>();
+template <class RefSpace_,int codim_, Transformation type_>
+const std::array<int, NewPhysicalSpace<RefSpace_, codim_, type_>::n_components>
+NewPhysicalSpace<RefSpace_, codim_, type_>::components = sequence<NewPhysicalSpace<RefSpace_, codim_, type_>::n_components>();
 
 
-template <class RefSpace_, class PushForward_>
-NewPhysicalSpace<RefSpace_,PushForward_>::
-NewPhysicalSpace(
-    shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward)
+template <class RefSpace_,int codim_, Transformation type_>
+NewPhysicalSpace<RefSpace_, codim_, type_>::
+NewPhysicalSpace(shared_ptr<RefSpace> ref_space,
+                 shared_ptr<MapFunc> map_func)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
-    push_forward_(push_forward)
+    map_func_(map_func)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
-    Assert(push_forward_ != nullptr, ExcNullPtr());
+    Assert(map_func_ != nullptr, ExcNullPtr());
 
-    Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
-           ExcMessage("Reference space and mapping grids are not the same."))
+//    Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
+//           ExcMessage("Reference space and mapping grids are not the same."))
 }
 
 
 
-
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
-create(
-    shared_ptr<RefSpace> ref_space,
-    shared_ptr<PushForwardType> push_forward) -> shared_ptr<self_t>
+NewPhysicalSpace<RefSpace_, codim_, type_>::
+create(shared_ptr<RefSpace> ref_space,
+       shared_ptr<MapFunc> map_func) -> shared_ptr<self_t>
 {
-    Assert(ref_space != nullptr, ExcNullPtr());
-    Assert(push_forward != nullptr, ExcNullPtr());
-    return shared_ptr<self_t>(new self_t(ref_space,push_forward));
+    return shared_ptr<self_t>(new self_t(ref_space, map_func));
 }
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 begin() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(), 0);
@@ -82,9 +77,9 @@ begin() const -> ElementIterator
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 last() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
@@ -93,18 +88,19 @@ last() const -> ElementIterator
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 end() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
                            IteratorState::pass_the_end);
 }
 
-template <class RefSpace_, class PushForward_>
+#if 0
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_element(const Index elem_flat_id) const -> ElementAccessor
 {
     Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_active_elems(),
@@ -117,11 +113,11 @@ get_element(const Index elem_flat_id) const -> ElementAccessor
     return *elem;
 }
 
+#endif
 
-
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 Index
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_num_basis() const
 {
     return ref_space_->get_num_basis();
@@ -129,38 +125,38 @@ get_num_basis() const
 
 
 #if 0
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 int
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_num_basis_per_element() const
 {
     return ref_space_->get_num_basis_per_element();
 }
-#endif
 
 
-template <class RefSpace_, class PushForward_>
+
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_push_forward() const -> shared_ptr<const PushForwardType>
 {
     return shared_ptr<const PushForwardType>(push_forward_);
 }
 
 
-
-template <class RefSpace_, class PushForward_>
+#endif
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_reference_space() const -> shared_ptr<const RefSpace>
 {
     return shared_ptr<const RefSpace>(ref_space_);
 }
 
-
-template <class RefSpace_, class PushForward_>
+#if 0
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_face_space(const Index face_id,
                vector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
@@ -177,36 +173,36 @@ get_face_space(const Index face_id,
 }
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 Index
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_id() const
 {
     return ref_space_->get_id();
 }
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 vector<Index>
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
     return ref_space_->get_loc_to_global(element);
 }
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 vector<Index>
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
     return ref_space_->get_loc_to_patch(element);
 }
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_space_manager() -> shared_ptr<SpaceManager>
 {
     auto space_manager = make_shared<SpaceManager>(SpaceManager());
@@ -225,9 +221,9 @@ get_space_manager() -> shared_ptr<SpaceManager>
     return space_manager;
 }
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
@@ -235,9 +231,9 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_global();
@@ -245,9 +241,9 @@ get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_global();
@@ -255,9 +251,9 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_patch();
@@ -265,56 +261,36 @@ get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
 
 
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_patch();
 }
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 get_degree() const -> const DegreeTable &
 {
     return ref_space_->get_degree();
 }
 
+#endif
 
-template <class RefSpace_, class PushForward_>
+template <class RefSpace_,int codim_, Transformation type_>
 void
-NewPhysicalSpace<RefSpace_,PushForward_>::
+NewPhysicalSpace<RefSpace_, codim_, type_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
     ref_space_->print_info(out);
     out.end_item();
 
-    out.begin_item("Push-forward:");
-    push_forward_->print_info(out);
-    out.end_item();
-}
-
-
-template <class RefSpace_, class PushForward_>
-void
-NewPhysicalSpace<RefSpace_,PushForward_>::
-print_memory_info(LogStream &out) const
-{
-    using std::endl;
-    out << "PHYSICAL SPACE memory info" << endl;
-    out << "this address = " << this << endl;
-
-    out.push("\t");
-    out << "ref_space_ memory address = " << ref_space_ << endl;
-    out << endl;
-
-    out << "push_forward_ memory address = " << push_forward_ << endl;
-    push_forward_->print_memory_info(out);
-    out << endl;
-
-    out.pop();
+//    out.begin_item("Push-forward:");
+//    push_forward_->print_info(out);
+//    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

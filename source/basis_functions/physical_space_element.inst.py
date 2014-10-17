@@ -22,19 +22,32 @@
 from init_instantiation_data import *
 
 include_files = ['basis_functions/new_bspline_space.h',
-                 'basis_functions/nurbs_space.h',
-                 'geometry/new_push_forward.h',
-                 'geometry/cartesian_grid_element_accessor.h',
-                 'geometry/new_mapping_element_accessor.h',
-                 'geometry/push_forward_element.h',
                  'basis_functions/bspline_element.h',
+                 'basis_functions/nurbs_space.h',
                  'basis_functions/nurbs_element_accessor.h',
-                 'basis_functions/physical_space_element.h']
+                 'basis_functions/new_physical_space.h',
+                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/mapping_element.h',
+                 'geometry/push_forward_element.h',
+                 'basis_functions/physical_space_element.h',
+                 '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 for space in inst.PhysSpaces_v2:
     x = space.spec
     ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
-    f.write( 'template class NewPhysicalSpace<%s, %d, Transformation::%s>;\n' 
+    phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>' 
              %(ref_space, x.codim, x.trans_type))
+    accessor = ('PhysicalSpaceElementAccessor<%s>' %phys_sp)
+    f.write('template class %s;\n' %accessor)
+    f.write('template class GridForwardIterator<%s> ;\n' %accessor)
+#    function = ('template  ValueTable< Conditional< deriv_order==0,'+
+#                accessor + '::Value,' +
+#                accessor + '::Derivative<deriv_order> > > ' + 
+#                accessor + 
+#                '::evaluate_basis_derivatives_at_points<deriv_order>' +
+#                '(const ValueVector<'+ accessor + '::RefPoint>&) const; \n')
+#    fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
+#    for s in fun_list:
+#       f.write(s)

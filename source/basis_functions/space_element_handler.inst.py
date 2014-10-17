@@ -18,23 +18,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['basis_functions/new_bspline_space.h',
-                 'basis_functions/nurbs_space.h',
-                 'geometry/new_push_forward.h',
-                 'geometry/cartesian_grid_element_accessor.h',
-                 'geometry/new_mapping_element_accessor.h',
-                 'geometry/push_forward_element.h',
-                 'basis_functions/bspline_element.h',
+include_files = ['basis_functions/bspline_element.h',
                  'basis_functions/nurbs_element_accessor.h',
+                 'geometry/push_forward_element.h',
                  'basis_functions/physical_space_element.h']
+
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 for space in inst.PhysSpaces_v2:
     x = space.spec
     ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
-    f.write( 'template class NewPhysicalSpace<%s, %d, Transformation::%s>;\n' 
+    phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>' 
              %(ref_space, x.codim, x.trans_type))
+    f.write('template class SpaceElementHandler<%s>; \n' %phys_sp)
+    
+   

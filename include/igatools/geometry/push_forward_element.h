@@ -27,17 +27,23 @@
 IGA_NAMESPACE_OPEN
 
 
-template<Transformation type, int dim, int codim = 0>
+template<Transformation type_, int dim_, int codim_ = 0>
 class PushForwardElement
-    : public MappingElement<dim, codim>
+    : public MappingElement<dim_, codim_>
 {
 private:
-    using self_t  = PushForwardElement<type, dim, codim>;
-    using paren_t = MappingElement<dim, codim>;
-    using PF      = NewPushForward<type, dim, codim>;
+    using self_t  = PushForwardElement<type_, dim_, codim_>;
+    using parent_t = MappingElement<dim_, codim_>;
+    using PF      = NewPushForward<type_, dim_, codim_>;
 public:
+
+    using parent_t::dim;
+    using parent_t::codim;
+    using parent_t::space_dim;
+
+    static const Transformation type = type_;
    // using ContainerType = const PF;
-    using paren_t::MappingElement;
+    using parent_t::MappingElement;
 
     template <int range, int rank>
     using RefValue = typename PF::template RefValue<range, rank>;
@@ -54,7 +60,7 @@ public:
 
 public:
 
-    template <int range, int rank, Transformation ttype=type >
+    template <int range, int rank, Transformation ttype=type_>
     void
     transform_0(const ValueContainer<RefValue<range, rank>> &v_hat,
                 ValueContainer< PhysValue<range, rank> > &v,
@@ -64,7 +70,7 @@ public:
     }
 
 
-    template <int range, int rank, Transformation ttype=type >
+    template <int range, int rank, Transformation ttype=type_>
     void
     transform_1(const std::tuple<
                 ValueContainer<RefValue<range, rank>>,
@@ -91,7 +97,7 @@ public:
     }
 
 
-    template <int range, int rank, Transformation ttype=type >
+    template <int range, int rank, Transformation ttype=type_>
     void
     transform_2(const std::tuple<
                 ValueContainer<RefValue<range, rank>>,
@@ -153,7 +159,7 @@ public:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewPushForward<type, dim, codim>;
+    friend class NewPushForward<type_, dim_, codim_>;
 
 };
 
