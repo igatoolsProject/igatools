@@ -116,9 +116,9 @@ public:
 
     NewPhysicalSpace(const self_t &phys_space) = delete;
 
-    static std::shared_ptr<self_t> create(
-        std::shared_ptr<RefSpace> ref_space,
-        std::shared_ptr<MapFunc> push_forward);
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<RefSpace> ref_space,
+           std::shared_ptr<MapFunc> push_forward);
 
     /**
      * Total number of dofs of the space.

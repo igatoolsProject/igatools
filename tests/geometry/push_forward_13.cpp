@@ -28,7 +28,7 @@
 
 #include <igatools/geometry/new_push_forward.h>
 #include <igatools/geometry/push_forward_element.h>
-#include <igatools/geometry/new_mapping_element_accessor.h>
+#include <igatools/geometry/mapping_element.h>
 #include <igatools/../../source/geometry/grid_forward_iterator.cpp>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>

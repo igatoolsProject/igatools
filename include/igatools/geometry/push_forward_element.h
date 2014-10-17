@@ -22,7 +22,7 @@
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
 #include <igatools/geometry/new_push_forward.h>
-#include <igatools/geometry/new_mapping_element_accessor.h>
+#include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -135,9 +135,6 @@ public:
                 }
 
     }
-
-
-
 
 
 #if 0

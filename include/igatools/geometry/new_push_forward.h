@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/new_mapping.h>
-#include <igatools/geometry/new_mapping_element_accessor.h>
+#include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
 constexpr
@@ -128,52 +128,6 @@ private:
     //friend ElementAccessor;
 };
 
-
-template<Transformation type, int dim, int codim>
-NewPushForward<type, dim, codim>::
-NewPushForward(std::shared_ptr<FuncType> F,
-               const ValueFlags flag,
-               const Quadrature<dim> &quad)
-               :
-               MapType::NewMapping(F, flag, quad)
-               {}
-
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-init_element(ElementAccessor &elem) ->void
-{
-    MapType::init_element(elem);
-}
-
-
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-fill_element(ElementAccessor &elem) ->void
-{
-    MapType::fill_element(elem);
-}
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-init_element(ElementIterator &elem) ->void
-{
-    init_element(elem.get_accessor());
-}
-
-
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-fill_element(ElementIterator &elem) ->void
-{
-    fill_element(elem.get_accessor());
-}
 
 IGA_NAMESPACE_CLOSE
 

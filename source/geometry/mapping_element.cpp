@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/new_mapping_element_accessor.h>
+#include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
 

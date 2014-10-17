@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef NEW_MAPPING_ELEMENT_ACCESSOR_H_
-#define NEW_MAPPING_ELEMENT_ACCESSOR_H_
+#ifndef MAPPING_ELEMENT_H_
+#define MAPPING_ELEMENT_H_
 
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/base/function_element.h>

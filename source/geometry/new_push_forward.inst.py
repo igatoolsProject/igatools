@@ -18,23 +18,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['basis_functions/new_bspline_space.h',
-                 'basis_functions/nurbs_space.h',
-                 'geometry/new_push_forward.h',
-                 'geometry/cartesian_grid_element_accessor.h',
-                 'geometry/mapping_element.h',
-                 'geometry/push_forward_element.h',
-                 'basis_functions/bspline_element.h',
-                 'basis_functions/nurbs_element_accessor.h',
-                 'basis_functions/physical_space_element.h']
+include_files = ['../../source/base/function_element.cpp',
+                 '../../source/geometry/mapping_element.cpp',
+                 '../../source/geometry/push_forward_element.cpp',
+                 '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces_v2:
-    x = space.spec
-    ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
-    f.write( 'template class NewPhysicalSpace<%s, %d, Transformation::%s>;\n' 
-             %(ref_space, x.codim, x.trans_type))
+for row in inst.all_mapping_dims:
+    dims = '<Transformation::h_grad, %d, %d>' %(row.dim, row.codim)
+    s = 'template class NewPushForward%s ;\n' %(dims)
+    f.write(s)
+    s = 'template class PushForwardElement%s ;\n' %(dims)
+    f.write(s)
+    s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
+    f.write(s)
+   
+s = 'template class NewPushForward<0,0> ;\n' 
+f.write(s)      
+s = 'template class PushForwardElement<0,0> ;\n'
+f.write(s)
+s = 'template class GridForwardIterator<PushForwardElement<0,0>> ;\n' 
+f.write(s) 
+

@@ -32,7 +32,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template < typename Accessor > class GridForwardIterator;
+template <typename Accessor> class GridForwardIterator;
 
 /**
  *

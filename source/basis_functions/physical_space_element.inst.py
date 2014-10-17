@@ -27,7 +27,7 @@ include_files = ['basis_functions/new_bspline_space.h',
                  'basis_functions/nurbs_element_accessor.h',
                  'basis_functions/new_physical_space.h',
                  'geometry/cartesian_grid_element_accessor.h',
-                 'geometry/new_mapping_element_accessor.h',
+                 'geometry/mapping_element.h',
                  'geometry/push_forward_element.h',
                  'basis_functions/physical_space_element.h',
                  '../../source/geometry/grid_forward_iterator.cpp']

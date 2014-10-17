@@ -29,100 +29,129 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/identity_mapping.h>
+#include <igatools/base/function_lib.h>
 
-#include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/geometry/push_forward_element_accessor.h>
-
-#include <igatools/basis_functions/space_uniform_quad_cache.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-
+#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/geometry/push_forward_element.h>
 
 
-
-template <int dim, int range=1, int rank=1>
+template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init(const ValueFlags flag,
                 const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
-    using RefSpace = BSplineSpace<dim, range, rank>;
-    using PF = PushForward<Transformation::h_grad,dim,0>;
-    using Space = PhysicalSpace<RefSpace, PF>;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
-    auto map = IdentityMapping<dim>::create(grid);
-    auto push_forward = PF::create(map);
-    auto space = Space::create(ref_space, push_forward);
-    auto quad = QGauss<dim>(2);
 
-    SpaceUniformQuadCache<Space> cache(space, flag, quad);
-    cache.print_info(out);
+    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
+    for (int i=0; i<Space::space_dim; i++)
+    {
+        for (int j=0; j<dim; j++)
+            if (j == i)
+                A[j][j] = 2.;
+        b[i] = i;
+    }
+
+    auto quad = QGauss<dim>(2);
+    auto map_func = Function::create(grid, flag, quad, A, b);
+    auto space = Space::create(ref_space, map_func);
+
+
+    typename Space::ElementHandler sp_values(space, flag, quad);
+    sp_values.print_info(out);
 
     OUTEND
 }
 
-#if 0
 
-template <int dim, int range=1, int rank=1>
+
+template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
-    using RefSpace = BSplineSpace<dim, range, rank>;
-    using PF = PushForward<Transformation::h_grad,dim,0>;
-    using Space = PhysicalSpace<RefSpace, PF>;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
-    auto map = IdentityMapping<dim>::create(grid);
-    auto push_forward = PF::create(map);
-    auto space = Space::create(ref_space, push_forward);
-    auto quad = QGauss<dim>(2);
 
-    SpaceUniformQuadCache<Space> cache(space, flag, quad);
+    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
+    for (int i=0; i<Space::space_dim; i++)
+    {
+        for (int j=0; j<dim; j++)
+            if (j == i)
+                A[j][j] = 2.;
+        b[i] = i;
+    }
+
+    auto quad = QGauss<dim>(2);
+    auto map_func = Function::create(grid, flag, quad, A, b);
+    auto space = Space::create(ref_space, map_func);
+
+    typename Space::ElementHandler sp_values(space, flag, quad);
 
     auto elem = space->begin();
-    cache.init_element_cache(elem);
+    sp_values.init_element_cache(elem);
     elem->print_cache_info(out);
 
     OUTEND
 }
 
 
-template <int dim, int range=1, int rank=1>
+template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_fill_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
-    using RefSpace = BSplineSpace<dim, range, rank>;
-    using PF = PushForward<Transformation::h_grad,dim,0>;
-    using Space = PhysicalSpace<RefSpace, PF>;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
-    auto map = IdentityMapping<dim>::create(grid);
-    auto push_forward = PF::create(map);
-    auto space = Space::create(ref_space, push_forward);
-    auto quad = QGauss<dim>(2);
 
-    SpaceUniformQuadCache<Space> cache(space, flag, quad);
+    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
+    for (int i=0; i<Space::space_dim; i++)
+    {
+        for (int j=0; j<dim; j++)
+            if (j == i)
+                A[j][j] = 2.;
+        b[i] = i;
+    }
+
+    auto quad = QGauss<dim>(2);
+    auto map_func = Function::create(grid, flag, quad, A, b);
+    auto space = Space::create(ref_space, map_func);
+
+    typename Space::ElementHandler sp_values(space, flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    cache.init_element_cache(elem);
+    sp_values.init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        cache.fill_element_cache(elem);
+        sp_values.fill_element_cache(elem);
         elem->print_cache_info(out);
     }
 
     OUTEND
 }
 
+#if 0
 
 
 template <int dim, int range=1, int rank=1>
@@ -162,9 +191,9 @@ int main()
 {
     out.depth_console(10);
 
-    cache_init<1>(ValueFlags::value);
-//    cache_init_elem<1>(ValueFlags::value);
-//    cache_fill_elem<1>(ValueFlags::value);
+ //   cache_init<1>(ValueFlags::value);
+ //   cache_init_elem<1>(ValueFlags::value);
+    cache_fill_elem<1>(ValueFlags::value);
 //    cache_get_elem_values<1>(ValueFlags::value);
 
     return  0;

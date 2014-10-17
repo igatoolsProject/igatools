@@ -21,7 +21,7 @@
 from init_instantiation_data import *
 
 include_files = ['../../source/base/function_element.cpp',
-                 '../../source/geometry/new_mapping_element_accessor.cpp',
+                 '../../source/geometry/mapping_element.cpp',
                  '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
