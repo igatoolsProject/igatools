@@ -45,7 +45,7 @@ template <class> class SpaceElementHandler;
 template <class RefSpace_, int codim_, Transformation type_>
 class NewPhysicalSpace :
     public std::enable_shared_from_this<NewPhysicalSpace<RefSpace_, codim_, type_>>,
-    public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
+            public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
 {
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >;
@@ -178,9 +178,9 @@ public:
 #endif
     std::shared_ptr<const RefSpace> get_reference_space() const;
     std::shared_ptr<MapFunc> get_map_func() const
-        {
+    {
         return map_func_;
-        }
+    }
 
 #if 0
     std::shared_ptr<FaceSpace>

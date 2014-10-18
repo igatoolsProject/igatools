@@ -546,8 +546,8 @@ int main()
     const boundary_id mortar_id = 7;
     ////////
     vector<set<boundary_id>> mortar_faces;
-    mortar_faces.push_back({1});
-    mortar_faces.push_back({0});
+    mortar_faces.push_back( {1});
+    mortar_faces.push_back( {0});
 
 
     for (int i=0; i!=maps_d21.size(); ++i)
@@ -665,7 +665,7 @@ int main()
         auto face_quad=QGauss<dim-1>(2+1);
         ///->get_space_variant();//.print_info(out);
         const int n_qp = elem_quad.get_num_points();
-        ConstantFunction<dim> f({0.5});
+        ConstantFunction<dim> f( {0.5});
         ValueVector<Value> f_values(n_qp);
 
         auto elem = curr_space->begin();
@@ -725,7 +725,7 @@ int main()
         auto face_quad=QGauss<dim-1>(2+1);
 
         // [dirichlet constraint]
-        ConstantFunction<dim> g({0.0});
+        ConstantFunction<dim> g( {0.0});
         std::map<Index, Real> values;
         const boundary_id dir_id = 0;
         project_boundary_values<PhySpace,LAPack::trilinos>(g,curr_space,face_quad,dir_id,values);

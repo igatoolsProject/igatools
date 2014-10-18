@@ -75,8 +75,8 @@ create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
 template<int dim_, int range_, int rank_>
 NewBSplineSpace<dim_, range_, rank_>::
 NewBSplineSpace(const DegreeTable &deg,
-             std::shared_ptr<GridType> knots,
-             const bool homogeneous_range)
+                std::shared_ptr<GridType> knots,
+                const bool homogeneous_range)
     :
     BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
@@ -110,9 +110,9 @@ create(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 NewBSplineSpace<dim_, range_, rank_>::
 NewBSplineSpace(const DegreeTable &deg,
-             std::shared_ptr<GridType> knots,
-             std::shared_ptr<const MultiplicityTable> interior_mult,
-             const EndBehaviourTable &ends)
+                std::shared_ptr<GridType> knots,
+                std::shared_ptr<const MultiplicityTable> interior_mult,
+                const EndBehaviourTable &ends)
     :
     BaseSpace(deg, knots, interior_mult),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),

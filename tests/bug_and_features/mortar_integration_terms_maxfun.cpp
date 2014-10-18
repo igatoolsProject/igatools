@@ -865,8 +865,8 @@ void Mortar_Interface<dim, dim_field>::integration()
             //mortar_faces.push_back({1});
             //mortar_faces.push_back({0});
             //3D
-            mortar_faces.push_back({1});
-            mortar_faces.push_back({0});
+            mortar_faces.push_back( {1});
+            mortar_faces.push_back( {0});
 
             for (uint i=0; i!=maps_d21.size(); ++i)
             {

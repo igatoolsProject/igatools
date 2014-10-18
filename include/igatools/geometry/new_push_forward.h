@@ -102,7 +102,7 @@ public:
                    const ValueFlags flag,
                    const Quadrature<dim> &quad);
 
-   // NewMapping() = delete;
+    // NewMapping() = delete;
 
     ~NewPushForward() = default;
 

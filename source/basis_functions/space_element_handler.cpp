@@ -116,9 +116,9 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
 {
     const ValueFlags common_flag =
         ValueFlags::point|
-        ValueFlags::map_value|
-        ValueFlags::map_gradient|
-        ValueFlags::map_hessian|
+        ValueFlags::value|
+        ValueFlags::gradient|
+        ValueFlags::hessian|
         ValueFlags::measure|
         ValueFlags::w_measure|
         ValueFlags::face_point|
@@ -149,8 +149,8 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
 template<class PhysSpace>
 SpaceElementHandler<PhysSpace>::
 SpaceElementHandler(std::shared_ptr<const PhysSpace> space,
-                      const ValueFlags flag,
-                      const Quadrature<dim> &quad)
+                    const ValueFlags flag,
+                    const Quadrature<dim> &quad)
     :
     RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::type), quad),
     PFCache(space->get_map_func(), get_push_forward_accessor_fill_flags(flag), quad),
@@ -292,7 +292,7 @@ SpaceElementHandler<PhysSpace>::
 print_info(LogStream &out) const -> void
 {
     RefSpaceCache::print_info(out);
-  //  PFCache::print_info(out);
+    //  PFCache::print_info(out);
 }
 
 

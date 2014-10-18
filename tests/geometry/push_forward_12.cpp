@@ -98,7 +98,7 @@ void test()
 
         const auto &ref_der_1 = sp_elem->get_basis_gradients();
         ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 1>>
-            gradients(ref_values.get_num_functions(), ref_values.get_num_points());
+        gradients(ref_values.get_num_functions(), ref_values.get_num_points());
         elem->template transform_1<Space::range, Space::rank>
         (std::make_tuple(ref_values, ref_der_1), values, gradients);
 

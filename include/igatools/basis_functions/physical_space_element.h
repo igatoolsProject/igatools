@@ -68,9 +68,9 @@ template <typename Accessor> class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
-    public SpaceElementAccessor<PhysSpace>,
+public SpaceElementAccessor<PhysSpace>,
     // todo: private PhysSpace::RefSpace::ElementAccessor,
-    private PhysSpace::PushForwardType::ElementAccessor
+private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
     using SpaceElementAccessor<PhysSpace>::get_elem_cache;
@@ -126,11 +126,11 @@ public :
     PhysicalSpaceElement() = delete;
 
     PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
-                                 const Index index);
+                         const Index index);
 
 
     PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
-                                 const TensorIndex<dim> &index);
+                         const TensorIndex<dim> &index);
 
     /**
      * Copy constructor.
@@ -139,7 +139,7 @@ public :
      * uses the deep copy.
      */
     PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
-                                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+                         const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /**
@@ -341,7 +341,7 @@ private:
     {
         return ref_space_element_accessor_;
     }
- #if 0
+#if 0
 
     /**
      * Return a const reference of this object as would be viewed as push-forward element accessor.

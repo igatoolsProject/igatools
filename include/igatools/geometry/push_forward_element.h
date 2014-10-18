@@ -42,7 +42,7 @@ public:
     using parent_t::space_dim;
 
     static const Transformation type = type_;
-   // using ContainerType = const PF;
+    // using ContainerType = const PF;
     using parent_t::MappingElement;
 
     template <int range, int rank>
@@ -64,7 +64,7 @@ public:
     void
     transform_0(const ValueContainer<RefValue<range, rank>> &v_hat,
                 ValueContainer< PhysValue<range, rank> > &v,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const
+                EnableIf<ttype == Transformation::h_grad> *= 0) const
     {
         v = v_hat;
     }
@@ -77,7 +77,7 @@ public:
                 ValueContainer<RefDerivative<range, rank, 1>>> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const
+                EnableIf<ttype == Transformation::h_grad> *= 0) const
     {
         const auto &Dv_hat = std::get<1>(ref_values);
 
@@ -107,32 +107,32 @@ public:
                 ValueContainer<PhysValue<range, rank>>,
                 ValueContainer<PhysDerivative<range, rank, 1>>> &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const
+                EnableIf<ttype == Transformation::h_grad> *= 0) const
     {
-            const auto &D2v_hat = std::get<2>(ref_values);
-            const auto &D1v     = std::get<1>(phys_values);
+        const auto &D2v_hat = std::get<2>(ref_values);
+        const auto &D1v     = std::get<1>(phys_values);
 
-            const int n_func   = D2v_hat.get_num_functions();
-            const int n_points = D2v_hat.get_num_points();
-            auto D2v_it     = D2v.begin();
-            auto D1v_it     = D1v.cbegin();
-            auto D2v_hat_it = D2v_hat.cbegin();
-            const auto D2F     = this->get_hessians();
-            const auto &DF_inv = this->get_inverse_gradients();
+        const int n_func   = D2v_hat.get_num_functions();
+        const int n_points = D2v_hat.get_num_points();
+        auto D2v_it     = D2v.begin();
+        auto D1v_it     = D1v.cbegin();
+        auto D2v_hat_it = D2v_hat.cbegin();
+        const auto D2F     = this->get_hessians();
+        const auto &DF_inv = this->get_inverse_gradients();
 
-            for (int i_fn = 0; i_fn < n_func; ++i_fn)
-                for (Index j_pt = 0; j_pt < n_points; ++j_pt)
+        for (int i_fn = 0; i_fn < n_func; ++i_fn)
+            for (Index j_pt = 0; j_pt < n_points; ++j_pt)
+            {
+                for (int u=0; u<dim; ++u)
                 {
-                    for (int u=0; u<dim; ++u)
-                    {
-                        (*D2v_it)[u] = compose(
-                                (*D2v_hat_it)[u] - compose((*D1v_it),D2F[j_pt][u]),
-                                DF_inv[j_pt]);
-                    }
-                    ++D2v_hat_it;
-                    ++D1v_it;
-                    ++D2v_it;
+                    (*D2v_it)[u] = compose(
+                                       (*D2v_hat_it)[u] - compose((*D1v_it),D2F[j_pt][u]),
+                                       DF_inv[j_pt]);
                 }
+                ++D2v_hat_it;
+                ++D1v_it;
+                ++D2v_it;
+            }
 
     }
 
@@ -142,16 +142,16 @@ public:
     void
     transform_0(const ValueContainer<RefValue<range, rank>> &D0v_hat,
                 ValueContainer< PhysValue<range, rank> > &D0v,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const;
+                EnableIf<ttype == Transformation::h_grad> *= 0) const;
 
 
 
     template < int range, int rank, Transformation ttype=type >
     void
     transform_values(
-            const ValueContainer< RefValue<range, rank> > &D0v_hat,
-            ValueContainer< PhysValue<range, rank> > &D0v,
-            EnableIf<ttype == Transformation::h_div> * = 0) const;
+        const ValueContainer< RefValue<range, rank> > &D0v_hat,
+        ValueContainer< PhysValue<range, rank> > &D0v,
+        EnableIf<ttype == Transformation::h_div> *= 0) const;
 #endif
 
 private:

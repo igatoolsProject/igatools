@@ -152,8 +152,8 @@ public:
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space,
-                        const ValueFlags flag,
-                        const Quadrature<dim> &quad)
+                      const ValueFlags flag,
+                      const Quadrature<dim> &quad)
     :
     GridUniformQuadCache<dim_>(space->get_grid(), flag, quad),
     space_(space),

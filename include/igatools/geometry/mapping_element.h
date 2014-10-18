@@ -66,9 +66,9 @@ private:
             if (flags_handler_.fill_w_measures())
                 w_measures_.resize(n_points);
             if (flags_handler_.fill_inv_gradients())
-            	std::get<1>(inv_derivatives_).resize(n_points);
+                std::get<1>(inv_derivatives_).resize(n_points);
             if (flags_handler_.fill_inv_hessians())
-            	std::get<2>(inv_derivatives_).resize(n_points);
+                std::get<2>(inv_derivatives_).resize(n_points);
 
             set_initialized(true);
         }
@@ -83,8 +83,8 @@ private:
         ValueVector<Real> w_measures_;
 
         std::tuple<ValueVector<InvDerivative<0>>,
-                   ValueVector<InvDerivative<1>>,
-                   ValueVector<InvDerivative<2>>> inv_derivatives_;
+            ValueVector<InvDerivative<1>>,
+            ValueVector<InvDerivative<2>>> inv_derivatives_;
 
         MappingElemValueFlagsHandler flags_handler_;
     };

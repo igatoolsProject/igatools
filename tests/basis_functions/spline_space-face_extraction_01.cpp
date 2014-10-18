@@ -33,7 +33,7 @@ template< int dim, int range, int rank >
 void run_test()
 {
     using SplineSpace = SplineSpace<dim, range, rank>;
-    auto grid = CartesianGrid<dim>::create({3,4});
+    auto grid = CartesianGrid<dim>::create( {3,4});
     typename SplineSpace::DegreeTable deg {{1,3}};
     SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
 

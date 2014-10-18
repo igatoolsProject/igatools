@@ -79,10 +79,12 @@ NewMapping<dim, codim>::
 fill_element(ElementAccessor &elem) -> void
 {
     F_->fill_elem(elem);
+
     //const auto points = elem.CartesianGridElement<dim>::get_points();
     const auto n_points = quad_.get_num_points();
 
     auto &cache = this->get_cache(elem);
+
     if (flag_.fill_measures())
     {
         const auto &DF = elem.get_gradients();
@@ -90,7 +92,6 @@ fill_element(ElementAccessor &elem) -> void
             cache->measures_[i] = determinant<dim,space_dim>(DF[i]);
 
     }
-
     if (flag_.fill_w_measures())
     {
         const auto &meas = cache->measures_;
@@ -101,29 +102,29 @@ fill_element(ElementAccessor &elem) -> void
 
     if (flag_.fill_inv_gradients())
     {
-    	const auto &DF = elem.get_gradients();
-    	auto &D_invF = std::get<1>(cache->inv_derivatives_);
-    	for (int i=0; i<n_points; ++i)
-    		inverse<dim, space_dim>(DF[i], D_invF[i]);
+        const auto &DF = elem.get_gradients();
+        auto &D_invF = std::get<1>(cache->inv_derivatives_);
+        for (int i=0; i<n_points; ++i)
+            inverse<dim, space_dim>(DF[i], D_invF[i]);
     }
 
     if (flag_.fill_inv_hessians())
     {
-    	const auto &D1_F = elem.get_gradients();
-    	const auto &D2_F = elem.get_hessians();
-    	const auto &D1_invF = std::get<1>(cache->inv_derivatives_);
-    	auto &D2_invF = std::get<2>(cache->inv_derivatives_);
+        const auto &D1_F = elem.get_gradients();
+        const auto &D2_F = elem.get_hessians();
+        const auto &D1_invF = std::get<1>(cache->inv_derivatives_);
+        auto &D2_invF = std::get<2>(cache->inv_derivatives_);
 
-    	for (int i=0; i<n_points; ++i)
-    		for (int u=0; u<dim; ++u)
-    		{
-    			const auto tmp_u = action(D2_F[i], D1_invF[i][u]);
-    			for (int v=0; v<dim; ++v)
-    			{
-    				const auto tmp_u_v = action(tmp_u, D1_invF[i][v]);
-    				D2_invF[i][u][v] = - action(D1_invF[i], tmp_u_v);
-    			}
-    		}
+        for (int i=0; i<n_points; ++i)
+            for (int u=0; u<dim; ++u)
+            {
+                const auto tmp_u = action(D2_F[i], D1_invF[i][u]);
+                for (int v=0; v<dim; ++v)
+                {
+                    const auto tmp_u_v = action(tmp_u, D1_invF[i][v]);
+                    D2_invF[i][u][v] = - action(D1_invF[i], tmp_u_v);
+                }
+            }
     }
 
     //    if (flag_.fill_values())

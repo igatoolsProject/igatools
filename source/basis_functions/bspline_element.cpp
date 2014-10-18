@@ -276,7 +276,7 @@ private:
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
-                       const Index index)
+               const Index index)
     :
     SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>(space,index)
 {}
@@ -286,7 +286,7 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
-                       const TensorIndex<dim> &index)
+               const TensorIndex<dim> &index)
     :
     SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>(space,index)
 {}
@@ -295,7 +295,7 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
 BSplineElement(const BSplineElement<dim,range,rank> &elem,
-                       const CopyPolicy &copy_policy)
+               const CopyPolicy &copy_policy)
     :
     SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>(elem,copy_policy)
 {}

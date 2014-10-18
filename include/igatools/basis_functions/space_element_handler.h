@@ -53,8 +53,8 @@ public:
 
     //Allocates and fill the (global) cache
     SpaceElementHandler(std::shared_ptr<const PhysSpace> space,
-                          const ValueFlags flag,
-                          const Quadrature<dim> &quad);
+                        const ValueFlags flag,
+                        const Quadrature<dim> &quad);
 
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem);

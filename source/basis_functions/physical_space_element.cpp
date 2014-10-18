@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 template< class PhysSpace >
 PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
-                             const Index index)
+                     const Index index)
     :
     SpaceElementAccessor<PhysSpace>(phys_space,index),
     PfElemAccessor(phys_space->get_grid(), index),
@@ -41,7 +41,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 template< class PhysSpace >
 PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
-                             const TensorIndex<dim> &index)
+                     const TensorIndex<dim> &index)
     :
     SpaceElementAccessor<PhysSpace>(phys_space,index),
     PfElemAccessor(phys_space->get_grid(), index),
@@ -52,8 +52,8 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 template< class PhysSpace >
 PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
-                             const CopyPolicy &copy_policy)
- //   :
+                     const CopyPolicy &copy_policy)
+//   :
 //    SpaceElementAccessor<PhysSpace>(in,copy_policy),
 //    PhysSpace::PushForwardType::ElementAccessor(in,copy_policy),
 //    ref_space_element_accessor_(in.ref_space_element_accessor_,copy_policy)

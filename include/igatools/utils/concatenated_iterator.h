@@ -183,7 +183,7 @@ private:
 template <class ViewType>
 class ConcatenatedIterator
     :
-    public ConcatenatedIteratorData< ViewType, ConcatenatedIterator<ViewType> >
+public ConcatenatedIteratorData< ViewType, ConcatenatedIterator<ViewType> >
 {
 public:
     using value_type = typename ViewType::iterator::value_type;

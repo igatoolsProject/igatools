@@ -27,7 +27,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-namespace{
+namespace
+{
 auto
 pushforward_to_mapping_flag(const Transformation type, const ValueFlags v_flag)
 -> ValueFlags
@@ -47,7 +48,7 @@ pushforward_to_mapping_flag(const Transformation type, const ValueFlags v_flag)
 //     */
 //    ValueFlags fill_flag = common_flag & v_flag;
 
-    ValueFlags fill_flag;
+    ValueFlags fill_flag = ValueFlags::none;
 
 //    if (contains(v_flag, ValueFlags::point))
 //        fill_flag |= ValueFlags::point;
@@ -72,7 +73,7 @@ pushforward_to_mapping_flag(const Transformation type, const ValueFlags v_flag)
         if (contains(v_flag, ValueFlags::tran_hessian))
         {
             fill_flag |= (ValueFlags::hessian|
-                          ValueFlags::map_inv_gradient);
+            ValueFlags::map_inv_gradient);
         }
 
         if (contains(v_flag, ValueFlags::tran_value))
@@ -149,9 +150,9 @@ NewPushForward<type, dim, codim>::
 NewPushForward(std::shared_ptr<FuncType> F,
                const ValueFlags flag,
                const Quadrature<dim> &quad)
-               :
-               MapType::NewMapping(F, pushforward_to_mapping_flag(type, flag), quad)
-               {}
+    :
+    MapType::NewMapping(F, pushforward_to_mapping_flag(type, flag), quad)
+{}
 
 
 

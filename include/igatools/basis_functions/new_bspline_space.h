@@ -235,7 +235,7 @@ protected:
      * in all components.
      */
     explicit NewBSplineSpace(const TensorIndex<dim> &degree,
-                          std::shared_ptr<GridType> knots);
+                             std::shared_ptr<GridType> knots);
 
 
     /**
@@ -244,8 +244,8 @@ protected:
      * component.
      */
     explicit NewBSplineSpace(const DegreeTable &degree,
-                          std::shared_ptr<GridType> knots,
-                          const bool homogeneous_range = false);
+                             std::shared_ptr<GridType> knots,
+                             const bool homogeneous_range = false);
 
 
     /**
@@ -256,9 +256,9 @@ protected:
      * component.
      */
     explicit NewBSplineSpace(const DegreeTable &deg,
-                          std::shared_ptr<GridType> knots,
-                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                          const EndBehaviourTable &ends);
+                             std::shared_ptr<GridType> knots,
+                             std::shared_ptr<const MultiplicityTable> interior_mult,
+                             const EndBehaviourTable &ends);
 
 
     /**

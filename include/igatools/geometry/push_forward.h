@@ -55,7 +55,7 @@ template < class PushForward > class PushForwardElementAccessor;
 template<Transformation transformation_type_, int dim_, int codim_ = 0 >
 class PushForward
     :
-    public std::enable_shared_from_this<PushForward<transformation_type_,dim_, codim_>>
+public std::enable_shared_from_this<PushForward<transformation_type_,dim_, codim_>>
 {
 public:
     using Map = Mapping<dim_, codim_>;
