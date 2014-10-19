@@ -36,6 +36,8 @@ class NewFunction : public GridUniformQuadCache<dim>
 {
 private:
     using self_t = NewFunction<dim, codim, range, rank>;
+    using parent_t = GridUniformQuadCache<dim>;
+
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
@@ -79,8 +81,13 @@ public:
     ///@{
     /** Constructor */
     NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                const ValueFlags flag,
-                const Quadrature<dim> &quad);
+                const ValueFlags &flag = ValueFlags::none,
+                const Quadrature<dim> &quad = Quadrature<dim>());
+
+    virtual void reset(const ValueFlags &flag, const Quadrature<dim> &quad)
+    {
+    	parent_t::reset(flag, quad);
+    }
 
     /** Destructor */
     virtual ~NewFunction() = default;

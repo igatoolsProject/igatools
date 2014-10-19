@@ -64,7 +64,7 @@ public:
     void
     transform_0(const ValueContainer<RefValue<range, rank>> &v_hat,
                 ValueContainer< PhysValue<range, rank> > &v,
-                EnableIf<ttype == Transformation::h_grad> *= 0) const
+                EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         v = v_hat;
     }
@@ -77,7 +77,7 @@ public:
                 ValueContainer<RefDerivative<range, rank, 1>>> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
-                EnableIf<ttype == Transformation::h_grad> *= 0) const
+                EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         const auto &Dv_hat = std::get<1>(ref_values);
 
@@ -107,7 +107,7 @@ public:
                 ValueContainer<PhysValue<range, rank>>,
                 ValueContainer<PhysDerivative<range, rank, 1>>> &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
-                EnableIf<ttype == Transformation::h_grad> *= 0) const
+                EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         const auto &D2v_hat = std::get<2>(ref_values);
         const auto &D1v     = std::get<1>(phys_values);

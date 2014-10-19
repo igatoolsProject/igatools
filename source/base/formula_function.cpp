@@ -48,6 +48,17 @@ FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
 
 
 template<int dim, int codim, int range, int rank>
+void
+FormulaFunction<dim, codim, range, rank>::
+reset(const ValueFlags &flag, const Quadrature<dim> &quad)
+{
+	parent_t::reset(flag, quad);
+    flag_ = flag;
+    quad_ = quad;
+}
+
+
+template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
 init_elem(ElementAccessor &elem) -> void

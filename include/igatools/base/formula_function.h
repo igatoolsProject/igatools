@@ -42,8 +42,10 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 
     FormulaFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                    const ValueFlags &flag, const Quadrature<dim> &quad);
+                    const ValueFlags &flag,
+                    const Quadrature<dim> &quad = Quadrature<dim>());
 
+    void reset(const ValueFlags &flag, const Quadrature<dim> &quad);
 
     void init_elem(ElementAccessor &elem);
 

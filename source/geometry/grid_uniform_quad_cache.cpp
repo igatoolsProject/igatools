@@ -37,9 +37,20 @@ GridUniformQuadCache(shared_ptr<const GridType> grid,
     :
     grid_(grid),
     flags_ {flag, flag},
-       lengths_(grid->get_element_lengths()),
-       quad_(quad)
+    quad_(quad),
+       lengths_(grid->get_element_lengths())
 {}
+
+
+template <int dim_>
+void
+GridUniformQuadCache<dim_>::
+reset(const ValueFlags flag,
+      const Quadrature<dim> &quad)
+{
+	flags_ = std::make_tuple(flag, flag);
+	quad_ = quad;
+}
 
 
 

@@ -37,9 +37,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Global BSplineSpace uniform quadrature
- * computational optimization cache, storing the interval length
- * in each direction
+ * BSplineSpace element value handler
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
@@ -79,6 +77,8 @@ public:
     BSplineUniformQuadCache(std::shared_ptr<const Space> space,
                             const ValueFlags flag,
                             const Quadrature<dim> &quad);
+
+    void reset(const ValueFlags flag, const Quadrature<dim> &quad);
 
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem);
