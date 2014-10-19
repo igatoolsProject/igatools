@@ -25,8 +25,8 @@
 IGA_NAMESPACE_OPEN
 
 //====================================================
-GridElemValueFlagsHandler::
-GridElemValueFlagsHandler(const ValueFlags &flags)
+GridFlags::
+GridFlags(const ValueFlags &flags)
 {
     /*
      * meas -> lengths
@@ -54,7 +54,7 @@ GridElemValueFlagsHandler(const ValueFlags &flags)
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 fill_none() const
 {
     bool fill_none = true;
@@ -66,7 +66,7 @@ fill_none() const
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 fill_points() const
 {
     return fill_points_;
@@ -75,7 +75,7 @@ fill_points() const
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 points_filled() const
 {
     return points_filled_;
@@ -84,7 +84,7 @@ points_filled() const
 
 
 void
-GridElemValueFlagsHandler::
+GridFlags::
 set_points_filled(const bool status)
 {
     points_filled_ = status;
@@ -93,7 +93,7 @@ set_points_filled(const bool status)
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 fill_measures() const
 {
     return fill_measures_;
@@ -102,7 +102,7 @@ fill_measures() const
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 measures_filled() const
 {
     return measures_filled_;
@@ -111,7 +111,7 @@ measures_filled() const
 
 
 void
-GridElemValueFlagsHandler::
+GridFlags::
 set_measures_filled(const bool status)
 {
     measures_filled_ = status;
@@ -120,7 +120,7 @@ set_measures_filled(const bool status)
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 fill_w_measures() const
 {
     return fill_w_measures_;
@@ -129,7 +129,7 @@ fill_w_measures() const
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 w_measures_filled() const
 {
     return w_measures_filled_;
@@ -138,7 +138,7 @@ w_measures_filled() const
 
 
 void
-GridElemValueFlagsHandler::
+GridFlags::
 set_w_measures_filled(const bool status)
 {
     w_measures_filled_ = status;
@@ -147,7 +147,7 @@ set_w_measures_filled(const bool status)
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 fill_lengths() const
 {
     return fill_lengths_;
@@ -156,7 +156,7 @@ fill_lengths() const
 
 
 bool
-GridElemValueFlagsHandler::
+GridFlags::
 lengths_filled() const
 {
     return lengths_filled_;
@@ -165,7 +165,7 @@ lengths_filled() const
 
 
 void
-GridElemValueFlagsHandler::
+GridFlags::
 set_lengths_filled(const bool status)
 {
     lengths_filled_ = status;
@@ -174,7 +174,7 @@ set_lengths_filled(const bool status)
 
 
 void
-GridElemValueFlagsHandler::
+GridFlags::
 print_info(LogStream &out) const
 {
     using std::endl;
@@ -346,7 +346,7 @@ print_info(LogStream &out) const
 GridFaceValueFlagsHandler::
 GridFaceValueFlagsHandler()
     :
-    GridElemValueFlagsHandler(),
+    GridFlags(),
     fill_normals_(false),
     normals_filled_(false)
 {}
@@ -357,7 +357,7 @@ fill_none() const
 {
     bool fill_none = true;
 
-    if (fill_normals_ || !GridElemValueFlagsHandler::fill_none())
+    if (fill_normals_ || !GridFlags::fill_none())
         fill_none = false;
 
     return fill_none;
@@ -415,7 +415,7 @@ MappingElemValueFlagsHandler::
 MappingElemValueFlagsHandler()
     :
     ValueFlagsHandler(),
-    GridElemValueFlagsHandler(),
+    GridFlags(),
     fill_inv_gradients_(false),
     inv_gradients_filled_(false),
     fill_inv_hessians_(false),
@@ -432,7 +432,7 @@ fill_none() const
     if (fill_inv_gradients_ ||
         fill_inv_hessians_ ||
         !ValueFlagsHandler::fill_none() ||
-        !GridElemValueFlagsHandler::fill_none())
+        !GridFlags::fill_none())
         fill_none = false;
 
     return fill_none;
@@ -444,7 +444,7 @@ MappingElemValueFlagsHandler(const ValueFlags &flags)
     if (contains(flags, ValueFlags::point) ||
         contains(flags, ValueFlags::map_value))
     {
-        GridElemValueFlagsHandler::fill_points_ = true;
+        GridFlags::fill_points_ = true;
         fill_values_ = true;
     }
 
@@ -534,7 +534,7 @@ MappingElemValueFlagsHandler::
 print_info(LogStream &out) const
 {
     ValueFlagsHandler::print_info(out);
-    GridElemValueFlagsHandler::print_info(out);
+    GridFlags::print_info(out);
 }
 //====================================================
 
@@ -570,7 +570,7 @@ MappingFaceValueFlagsHandler(const ValueFlags &flags)
     if (contains(flags, ValueFlags::face_point) ||
         contains(flags, ValueFlags::map_face_value))
     {
-        GridElemValueFlagsHandler::fill_points_ = true;
+        GridFlags::fill_points_ = true;
         fill_values_ = true;
     }
 
