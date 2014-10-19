@@ -26,7 +26,7 @@
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/value_table.h>
-#include <igatools/geometry/grid_uniform_quad_cache.h>
+#include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/mapping.h>
 
 IGA_NAMESPACE_OPEN

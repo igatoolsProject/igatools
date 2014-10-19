@@ -25,7 +25,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/geometry/grid_forward_iterator.h>
-#include <igatools/geometry/grid_uniform_quad_cache.h>
+#include <igatools/geometry/grid_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 

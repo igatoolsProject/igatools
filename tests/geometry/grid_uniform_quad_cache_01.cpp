@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/grid_uniform_quad_cache.h>
+#include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
 

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid_uniform_quad_cache.h>
+#include <igatools/geometry/grid_element_handler
 #include <igatools/geometry/unit_element.h>
 using std::shared_ptr;
 using std::array;
@@ -165,4 +165,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/grid_uniform_quad_cache.inst>
+#include <igatools/geometry/grigrid_element_handler

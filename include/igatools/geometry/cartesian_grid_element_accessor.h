@@ -27,7 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/topology.h>
 
-#include <igatools/geometry/grid_uniform_quad_cache.h>
+#include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
 
