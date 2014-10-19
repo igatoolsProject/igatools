@@ -268,6 +268,9 @@ enum class NewValueFlags : std::int64_t
      * quadrature points times the unit quadrature weights */
     w_measure      =    1L << 3,
 
+    /** normal space */
+    normal  =    1L << 4,
+
     /** element coordinates length */
     length         =    1L << 8,
     ///@}
