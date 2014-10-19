@@ -24,7 +24,7 @@ include_files = ['geometry/cartesian_grid_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['GridUniformQuadCache<%d>' % (dim) for dim in inst.domain_dims]
+cartesian_grids = ['GridElementHandler<%d>' % (dim) for dim in inst.domain_dims]
 for row in cartesian_grids:
    f.write('template class %s; \n' % (row))
    

@@ -37,10 +37,10 @@ IGA_NAMESPACE_OPEN
  * in each direction
  */
 template<int dim_, int codim_ = 0>
-class MappingUniformQuadCache : public GridUniformQuadCache<dim_>
+class MappingUniformQuadCache : public GridElementHandler<dim_>
 {
 private:
-    using base_t = GridUniformQuadCache<dim_>;
+    using base_t = GridElementHandler<dim_>;
     using Map = Mapping<dim_, codim_>;
     using ElementIterator = typename Map::ElementIterator;
 public:

@@ -32,11 +32,11 @@ IGA_NAMESPACE_OPEN
 template <int, int, int, int> class FunctionElement;
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-class NewFunction : public GridUniformQuadCache<dim>
+class NewFunction : public GridElementHandler<dim>
 {
 private:
     using self_t = NewFunction<dim, codim, range, rank>;
-    using parent_t = GridUniformQuadCache<dim>;
+    using parent_t = GridElementHandler<dim>;
 
 public:
     static const ValueFlags valid_flags =

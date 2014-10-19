@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template <int dim_>
-class GridUniformQuadCache
+class GridElementHandler
 {
 private:
     using GridType = CartesianGrid<dim_>;
@@ -60,7 +60,7 @@ public:
                                    ValueFlags::length;
 
     //Allocates and fill the (global) cache
-    GridUniformQuadCache(std::shared_ptr<const GridType> grid,
+    GridElementHandler(std::shared_ptr<const GridType> grid,
                          const ValueFlags flag,
                          const Quadrature<dim> &quad);
 

@@ -43,7 +43,7 @@ void elem_points(const int n_knots = 5)
 
     auto flag = ValueFlags::point;
     QGauss<dim> quad(2);
-    GridUniformQuadCache<dim> cache(grid, flag, quad);
+    GridElementHandler<dim> cache(grid, flag, quad);
     auto elem = grid->begin();
     cache.init_element_cache(elem);
 

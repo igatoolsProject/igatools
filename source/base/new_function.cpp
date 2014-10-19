@@ -29,7 +29,7 @@ NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
             const ValueFlags &flag,
             const Quadrature<dim> &quad)
     :
-    GridUniformQuadCache<dim>(grid, flag, quad)
+    GridElementHandler<dim>(grid, flag, quad)
 {}
 
 

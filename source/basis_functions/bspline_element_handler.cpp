@@ -155,7 +155,7 @@ BSplineElementHandler(shared_ptr<const Space> space,
                       const ValueFlags flag,
                       const Quadrature<dim> &quad)
     :
-    GridUniformQuadCache<dim_>(space->get_grid(), flag, quad),
+    GridElementHandler<dim_>(space->get_grid(), flag, quad),
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
     flags_(flag),

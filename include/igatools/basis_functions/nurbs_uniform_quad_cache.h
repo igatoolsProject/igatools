@@ -45,9 +45,9 @@ IGA_NAMESPACE_OPEN
  * computational optimization cache.
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class NURBSUniformQuadCache : public GridUniformQuadCache<dim_>
+class NURBSUniformQuadCache : public GridElementHandler<dim_>
 {
-    using base_t = GridUniformQuadCache<dim_>;
+    using base_t = GridElementHandler<dim_>;
     using Space = NURBSSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
     using ElementIterator = typename Space::ElementIterator;

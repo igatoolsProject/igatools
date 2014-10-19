@@ -27,11 +27,11 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 const array<Size, UnitElement<dim_>::faces_per_element>
-GridUniformQuadCache<dim_>::faces  = UnitElement<dim_>::faces;
+GridElementHandler<dim_>::faces  = UnitElement<dim_>::faces;
 
 template <int dim_>
-GridUniformQuadCache<dim_>::
-GridUniformQuadCache(shared_ptr<const GridType> grid,
+GridElementHandler<dim_>::
+GridElementHandler(shared_ptr<const GridType> grid,
                      const ValueFlags flag,
                      const Quadrature<dim> &quad)
     :
@@ -44,7 +44,7 @@ GridUniformQuadCache(shared_ptr<const GridType> grid,
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 reset(const ValueFlags flag,
       const Quadrature<dim> &quad)
 {
@@ -56,7 +56,7 @@ reset(const ValueFlags flag,
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 init_element_cache(ElementAccessor &elem)
 {
     auto &cache = elem.local_cache_;
@@ -82,7 +82,7 @@ init_element_cache(ElementAccessor &elem)
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 init_element_cache(ElementIterator &elem)
 {
     init_element_cache(elem.get_accessor());
@@ -91,7 +91,7 @@ init_element_cache(ElementIterator &elem)
 template <int dim_>
 template <int k>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 fill_element_cache_(ElementAccessor &elem, const int j)
 {
     Assert(elem.local_cache_ != nullptr,ExcNullPtr());
@@ -125,7 +125,7 @@ fill_element_cache_(ElementAccessor &elem, const int j)
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 fill_element_cache(ElementAccessor &elem)
 {
     fill_element_cache_<0>(elem, 0);
@@ -135,7 +135,7 @@ fill_element_cache(ElementAccessor &elem)
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
     fill_element_cache(elem.get_accessor());
@@ -145,7 +145,7 @@ fill_element_cache(ElementIterator &elem)
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 fill_face_cache(ElementIterator &elem, const int face)
 {
     fill_element_cache_<1>(elem.get_accessor(), face);
@@ -155,7 +155,7 @@ fill_face_cache(ElementIterator &elem, const int face)
 
 template <int dim_>
 void
-GridUniformQuadCache<dim_>::
+GridElementHandler<dim_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Lengths:");

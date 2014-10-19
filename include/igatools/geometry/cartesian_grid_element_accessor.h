@@ -364,7 +364,7 @@ private:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class GridUniformQuadCache<dim>;
+    friend class GridElementHandler<dim>;
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;
 

@@ -40,9 +40,9 @@ IGA_NAMESPACE_OPEN
  * BSplineSpace element value handler
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class BSplineUniformQuadCache : public GridUniformQuadCache<dim_>
+class BSplineUniformQuadCache : public GridElementHandler<dim_>
 {
-    using base_t = GridUniformQuadCache<dim_>;
+    using base_t = GridElementHandler<dim_>;
     using Space = BSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
     using ElementIterator = typename Space::ElementIterator;

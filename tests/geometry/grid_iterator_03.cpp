@@ -42,10 +42,10 @@ void run_test()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     QGauss<dim> q1(2);
-    GridUniformQuadCache<dim> cache1(grid, ValueFlags::w_measure, q1);
+    GridElementHandler<dim> cache1(grid, ValueFlags::w_measure, q1);
 
     QGauss<dim> q2(1);
-    GridUniformQuadCache<dim> cache2(grid, ValueFlags::w_measure, q2);
+    GridElementHandler<dim> cache2(grid, ValueFlags::w_measure, q2);
 
 
 

@@ -154,7 +154,7 @@ BSplineUniformQuadCache(shared_ptr<const Space> space,
                         const ValueFlags flag,
                         const Quadrature<dim> &quad)
     :
-    GridUniformQuadCache<dim_>(space->get_grid(), flag, quad),
+    GridElementHandler<dim_>(space->get_grid(), flag, quad),
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
     flags_(flag),
@@ -242,7 +242,7 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 reset(const ValueFlags flag, const Quadrature<dim> &quad)
 {
-	GridUniformQuadCache<dim_>::reset(flag, quad);
+	GridElementHandler<dim_>::reset(flag, quad);
 	flags_ = flag;
     face_flags_ = flag;
     quad_ = quad;

@@ -41,7 +41,7 @@ void run_test()
     auto grid = CartesianGrid<dim>::create(n_knots);
     auto flag = ValueFlags::measure|ValueFlags::w_measure;
     auto quad = QGauss<dim>(2);
-    GridUniformQuadCache<dim> cache(grid, flag, quad);
+    GridElementHandler<dim> cache(grid, flag, quad);
     cache.print_info(out);
     out << endl;
 

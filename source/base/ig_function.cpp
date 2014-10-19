@@ -47,7 +47,7 @@ auto
 IgFunction<Space>::
 init_elem(ElementAccessor &elem) -> void
 {
-    GridUniformQuadCache<dim>::init_element_cache(elem);
+    GridElementHandler<dim>::init_element_cache(elem);
     auto &cache = this->get_cache(elem);
     if (cache == nullptr)
     {
@@ -66,7 +66,7 @@ auto
 IgFunction<Space>::
 fill_elem(ElementAccessor &elem) -> void
 {
-    GridUniformQuadCache<dim>::fill_element_cache(elem);
+    GridElementHandler<dim>::fill_element_cache(elem);
     space_filler_.fill_element_cache(elem_);
     auto &cache = this->get_cache(elem);
 

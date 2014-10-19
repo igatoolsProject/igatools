@@ -63,7 +63,7 @@ auto
 FormulaFunction<dim, codim, range, rank>::
 init_elem(ElementAccessor &elem) -> void
 {
-    GridUniformQuadCache<dim>::init_element_cache(elem);
+    GridElementHandler<dim>::init_element_cache(elem);
     auto &cache = this->get_cache(elem);
     if (cache == nullptr)
     {
@@ -80,7 +80,7 @@ auto
 FormulaFunction<dim, codim, range, rank>::
 fill_elem(ElementAccessor &elem) -> void
 {
-    GridUniformQuadCache<dim>::fill_element_cache(elem);
+    GridElementHandler<dim>::fill_element_cache(elem);
     if (!flag_.fill_none())
     {
         const auto points = elem.CartesianGridElement<dim>::get_points();
