@@ -200,10 +200,10 @@ int main()
 {
     out.depth_console(10);
 
-//   cache_init<1>(ValueFlags::value);
-//   cache_init_elem<1>(ValueFlags::value);
-//   cache_fill_elem<1>(ValueFlags::value);
-    cache_get_elem_values<1>(ValueFlags::value);
+   cache_init<1>(ValueFlags::value);
+   cache_init_elem<1>(ValueFlags::value);
+   cache_fill_elem<1>(ValueFlags::value);
+   cache_get_elem_values<1>(ValueFlags::value);
 
     return  0;
 }

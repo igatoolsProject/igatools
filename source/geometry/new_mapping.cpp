@@ -26,6 +26,17 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+namespace{
+auto
+mapping_to_function_flags(const ValueFlags m_flag)
+{
+	ValueFlags f_flag = ValueFlags::none;
+
+}
+};
+
+
+
 template<int dim, int codim>
 auto
 NewMapping<dim, codim>::
@@ -46,7 +57,12 @@ NewMapping(std::shared_ptr<FuncType> F,
     F_(F),
     flag_(flag),
     quad_(quad)
-{}
+{
+//todo : if F_->flags_ not compatible with this->flag
+	//F_->reset(mapping_to_function_flags(flag), quad);
+	F_->reset(flag, quad);
+
+}
 
 
 
@@ -92,6 +108,7 @@ fill_element(ElementAccessor &elem) -> void
             cache->measures_[i] = determinant<dim,space_dim>(DF[i]);
 
     }
+#if 0
     if (flag_.fill_w_measures())
     {
         const auto &meas = cache->measures_;
@@ -126,7 +143,7 @@ fill_element(ElementAccessor &elem) -> void
                 }
             }
     }
-
+#endif
     //    if (flag_.fill_values())
 //        this->evaluate_0(cache->points_, cache->values_);
 //    if (flag_.fill_gradients())

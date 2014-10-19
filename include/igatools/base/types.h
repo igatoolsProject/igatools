@@ -249,6 +249,69 @@ enum class ValueFlags : std::int64_t
 };
 
 
+
+enum class NewValueFlags : std::int64_t
+{
+    /** Fill nothing */
+    none           =    0,
+
+    ///@name Applicable to elements of all grid-like containers
+    ///@{
+    /** Quadrature points on the element */
+    point          =    1L << 1,
+
+    /** Differential of measure (length, area, volume) at the
+     * quadrature points */
+    measure        =    1L << 2,
+
+    /** Differential of measure (length, area, volume) at the
+     * quadrature points times the unit quadrature weights */
+    w_measure      =    1L << 3,
+
+    /** element coordinates length */
+    length         =    1L << 8,
+    ///@}
+
+
+    /** compute the values of the map */
+    value              =  1L << 9,
+
+    /** compute the gradients of the map */
+    gradient           =    1L << 14,
+
+    /** compute the gradients of the map */
+    hessian            =    1L << 15,
+
+    /** compute the gradients of the map */
+    inv_gradient       =    1L << 16,
+
+    /** compute the gradients of the map */
+    inv_hessian        =    1L << 17,
+
+
+
+
+    ///@name Transformation (pushforward) related
+    ///@{
+    /** transform the values of basis functions */
+    tran_value    =    1L << 22,
+
+    /** transform the gradients of basis functions */
+    tran_gradient =    1L << 23,
+
+    /** transform the second derivatives of basis functions */
+    tran_hessian  =    1L << 24,
+
+    ///@}
+
+    /** compute the second derivatives of basis functions */
+    divergence    =    1L << 28
+};
+
+
+
+
+
 /**
  * Type of transformation for values and derivatives of basis functions.
  * If \f$\vec F\f$ is the mapping, the transform functions are defined

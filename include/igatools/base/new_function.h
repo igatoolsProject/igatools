@@ -39,6 +39,14 @@ private:
     using parent_t = GridUniformQuadCache<dim>;
 
 public:
+    static const ValueFlags valid_flags =
+    		ValueFlags::value |
+    		ValueFlags::gradient |
+    		ValueFlags::hessian |
+    		ValueFlags::measure |
+    		ValueFlags::w_measure|
+    		ValueFlags::point;
+
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 

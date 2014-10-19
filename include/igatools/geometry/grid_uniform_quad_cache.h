@@ -54,6 +54,10 @@ protected:
     // void fill_face_cache(ElementAccessor &elem, const int face);
 public:
     static const int dim = dim_;
+    static const ValueFlags valid_flags = ValueFlags::measure |
+                                   ValueFlags::w_measure |
+                                   ValueFlags::point|
+                                   ValueFlags::length;
 
     //Allocates and fill the (global) cache
     GridUniformQuadCache(std::shared_ptr<const GridType> grid,
