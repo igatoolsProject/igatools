@@ -316,15 +316,24 @@ protected:
     bool normals_filled_ = false;
 };
 
+#endif
 
 class MappingFlags :
     public FunctionFlags
 {
 public:
+
+    static const NewValueFlags valid_flags =
+            FunctionFlags::valid_flags |
+                NewValueFlags::inv_gradient|
+                NewValueFlags::inv_hessian;
+
+    static NewValueFlags to_function_flags(const NewValueFlags &flag);
+
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */
-    MappingFlags();
+    MappingFlags() = default;
 
     /**
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
@@ -344,7 +353,7 @@ public:
     ///@}
 
 
-    NewValueFlags to_function_flags(const NewValueFlags &flag);
+
 
     /** @name Assignment operators */
     ///@{
@@ -377,7 +386,23 @@ public:
     /** Sets the filled status for hessians. */
     void set_inv_hessians_filled(const bool status);
 
+    /** Returns true if the element measure must be filled. */
+    bool fill_measures() const;
 
+    /** Returns true if the measures are filled. */
+    bool measures_filled() const;
+
+    /** Sets the filled status for measures. */
+    void set_measures_filled(const bool status);
+
+    /** Returns true if the quadrature weight multiplied by the element measure must be filled. */
+    bool fill_w_measures() const;
+
+    /** Returns true if the w_measures are filled. */
+    bool w_measures_filled() const;
+
+    /** Sets the filled status for w_measures. */
+    void set_w_measures_filled(const bool status);
     /**
      * Prints internal information about the ElementValuesCache.
      * Its main use is for testing and debugging.
@@ -392,9 +417,18 @@ protected:
     bool fill_inv_hessians_ = false;
 
     bool inv_hessians_filled_ = false;
+
+    bool fill_measures_ = false;
+
+    bool measures_filled_ = false;
+
+    bool fill_w_measures_ = false;
+
+    bool w_measures_filled_ = false;
+
 };
 
-
+#if 0
 
 class PushFowardFlags
 {

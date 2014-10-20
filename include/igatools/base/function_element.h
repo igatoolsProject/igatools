@@ -58,7 +58,7 @@ public:
 private:
     struct Cache : public CacheStatus
     {
-        void resize(const ValueFlagsHandler &flags_handler,
+        void resize(const FunctionFlags &flags_handler,
                     const int n_points)
         {
             //TODO(pauletti, Oct 11, 2014): missing all necesary clears
@@ -92,7 +92,7 @@ private:
         std::tuple<ValueVector<Derivative<0>>,
             ValueVector<Derivative<1>>,
             ValueVector<Derivative<2>>> derivatives_;
-        ValueFlagsHandler flags_handler_;
+        FunctionFlags flags_handler_;
     };
 
     std::shared_ptr<Cache> elem_cache_;

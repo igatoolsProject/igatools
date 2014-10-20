@@ -55,7 +55,7 @@ public:
 private:
     struct Cache : public CacheStatus
     {
-        void resize(const MappingElemValueFlagsHandler &flags_handler,
+        void resize(const MappingFlags &flags_handler,
                     const int n_points)
         {
             //TODO(pauletti, Oct 11, 2014): missing all necesary clears
@@ -86,7 +86,7 @@ private:
             ValueVector<InvDerivative<1>>,
             ValueVector<InvDerivative<2>>> inv_derivatives_;
 
-        MappingElemValueFlagsHandler flags_handler_;
+        MappingFlags flags_handler_;
     };
 
     std::shared_ptr<Cache> elem_cache_;
@@ -317,7 +317,7 @@ private:
 class ValuesCache : public CacheStatus
 {
 public:
-    void reset(const MappingElemValueFlagsHandler &flags_handler,
+    void reset(const MappingFlags &flags_handler,
                const Quadrature<dim> &quad);
 
     //TODO: the next member variables should be protected
@@ -331,7 +331,7 @@ public:
      */
     void fill_composite_values();
 
-    MappingElemValueFlagsHandler flags_handler_;
+    MappingFlags flags_handler_;
 
     ValueVector< ValueMap > values_;
     ValueVector< GradientMap > gradients_;
@@ -388,7 +388,7 @@ public:
  */
 struct ElementValuesCache : ValuesCache
 {
-    void reset(const MappingElemValueFlagsHandler &flags_handler,
+    void reset(const MappingFlags &flags_handler,
                const Quadrature<dim> &quad);
 
 };

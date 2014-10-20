@@ -30,59 +30,27 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 auto
-pushforward_to_mapping_flag(const Transformation type, const ValueFlags v_flag)
--> ValueFlags
+pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags)
+-> NewValueFlags
 {
-//    const ValueFlags common_flag =
-//        ValueFlags::value|
-//        ValueFlags::gradient|ValueFlags::map_hessian|
-//        ValueFlags::map_inv_gradient|ValueFlags::map_inv_hessian|
-//        ValueFlags::w_measure|ValueFlags::face_point|
-//        ValueFlags::map_face_gradient|ValueFlags::map_face_hessian|
-//        ValueFlags::map_face_inv_gradient|ValueFlags::map_face_inv_hessian|
-//        ValueFlags::face_w_measure|ValueFlags::face_normal;
+    NewValueFlags transfer_flag = NewValueFlags::measure |
+            NewValueFlags::w_measure |
+            NewValueFlags::normal;
 
-//    /*
-//     * For each MappingValueFlags there is an if that checks for all
-//     * ValueFlags that activate the given value flag.
-//     */
-//    ValueFlags fill_flag = common_flag & v_flag;
-
-    ValueFlags fill_flag = ValueFlags::none;
-
-//    if (contains(v_flag, ValueFlags::point))
-//        fill_flag |= ValueFlags::point;
-//
-//    if (contains(v_flag, ValueFlags::w_measure))
-//        fill_flag |= (ValueFlags::measure |
-//                      ValueFlags::map_gradient);
-//
-//    if (contains(v_flag, ValueFlags::face_point))
-//        fill_flag |= ValueFlags::face_point;
-//
-//    if (contains(v_flag, ValueFlags::face_w_measure))
-//        fill_flag |= (ValueFlags::face_measure |
-//                      ValueFlags::map_face_gradient);
-//
-//    if (contains(v_flag, ValueFlags::face_normal))
-//        fill_flag |= (ValueFlags::map_face_inv_gradient |
-//                      ValueFlags::map_face_gradient);
+    NewValueFlags map_flag = flags & transfer_flag;
 
     if (type == Transformation::h_grad)
     {
-        if (contains(v_flag, ValueFlags::tran_hessian))
-        {
-            fill_flag |= (ValueFlags::hessian|
-            ValueFlags::map_inv_gradient);
-        }
-
-        if (contains(v_flag, ValueFlags::tran_value))
+        if (contains(flags, NewValueFlags::tran_value))
         {}
 
-        if (contains(v_flag, ValueFlags::tran_gradient))
-            fill_flag |= (ValueFlags::map_inv_gradient);
+        if (contains(flags, NewValueFlags::tran_gradient))
+            map_flag|= (NewValueFlags::inv_gradient);
 
-
+        if (contains(flags, NewValueFlags::tran_hessian))
+        {
+            map_flag |= (NewValueFlags::hessian | NewValueFlags::inv_gradient);
+        }
     }
 //    else if (type == Transformation::h_div)
 //    {
@@ -139,16 +107,15 @@ pushforward_to_mapping_flag(const Transformation type, const ValueFlags v_flag)
 //        fill_flag |= (ValueFlags::map_hessian |
 //                      ValueFlags::map_face_hessian);
 
-    return fill_flag;
+    return map_flag;
 }
 }
-
 
 
 template<Transformation type, int dim, int codim>
 NewPushForward<type, dim, codim>::
 NewPushForward(std::shared_ptr<FuncType> F,
-               const ValueFlags flag,
+               const NewValueFlags flag,
                const Quadrature<dim> &quad)
     :
     MapType::NewMapping(F, pushforward_to_mapping_flag(type, flag), quad)

@@ -426,144 +426,182 @@ set_normals_filled(const bool status)
 }
 //====================================================
 
+#endif
 
-//====================================================
-MappingElemValueFlagsHandler::
-MappingElemValueFlagsHandler()
-    :
-    ValueFlagsHandler(),
-    GridFlags(),
-    fill_inv_gradients_(false),
-    inv_gradients_filled_(false),
-    fill_inv_hessians_(false),
-    inv_hessians_filled_(false)
-{}
 
 
 bool
-MappingElemValueFlagsHandler::
+MappingFlags::
 fill_none() const
 {
     bool fill_none = true;
 
     if (fill_inv_gradients_ ||
         fill_inv_hessians_ ||
-        !ValueFlagsHandler::fill_none() ||
-        !GridFlags::fill_none())
+        !FunctionFlags::fill_none())
         fill_none = false;
 
     return fill_none;
 }
 
-MappingElemValueFlagsHandler::
-MappingElemValueFlagsHandler(const NewValueFlags &flags)
+MappingFlags::
+MappingFlags(const NewValueFlags &flags)
+:
+FunctionFlags::FunctionFlags(to_function_flags(flags))
 {
-    if (contains(flags, NewValueFlags::point) ||
-        contains(flags, NewValueFlags::map_value))
-    {
-        GridFlags::fill_points_ = true;
-        fill_values_ = true;
-    }
-
-    if (contains(flags, NewValueFlags::map_gradient))
-    {
-        fill_gradients_ = true;
-    }
-
-    if (contains(flags, NewValueFlags::map_hessian))
-    {
-        fill_hessians_ = true;
-    }
-
-    if (contains(flags, NewValueFlags::map_inv_gradient))
-    {
-        fill_gradients_ = true;
-        fill_measures_ = true;
+    if (contains(flags, NewValueFlags::inv_gradient))
         fill_inv_gradients_ = true;
-    }
 
-    if (contains(flags, NewValueFlags::map_inv_hessian))
-    {
-        fill_hessians_ = true;
-        fill_inv_hessians_ = true;
-    }
-
-    if (contains(flags, NewValueFlags::measure))
-    {
-        fill_gradients_ = true;
-        fill_measures_ = true;
-    }
-
-    if (contains(flags, NewValueFlags::w_measure))
-    {
-        fill_gradients_ = true;
-        fill_measures_ = true;
-        fill_w_measures_ = true;
-    }
+    if (contains(flags, NewValueFlags::inv_hessian))
+          fill_inv_hessians_ = true;
 }
 
 
+
+NewValueFlags
+MappingFlags::to_function_flags(const NewValueFlags &flags)
+{
+    NewValueFlags transfer_flag = NewValueFlags::measure |
+                 NewValueFlags::w_measure |
+                 NewValueFlags::normal | FunctionFlags::valid_flags;
+
+
+    NewValueFlags f_flag = flags & transfer_flag;
+
+    if (contains(flags,
+                 NewValueFlags::measure | NewValueFlags::w_measure | NewValueFlags::normal))
+        f_flag |=  NewValueFlags::gradient;
+
+    if (contains(flags, NewValueFlags::inv_gradient))
+        f_flag |=  NewValueFlags::gradient;
+
+    if (contains(flags, NewValueFlags::inv_hessian))
+    {
+        f_flag |=  NewValueFlags::gradient | NewValueFlags::hessian;
+    }
+    return f_flag;
+}
+
+
+
 bool
-MappingElemValueFlagsHandler::
+MappingFlags::
 fill_inv_gradients() const
 {
     return fill_inv_gradients_;
 }
 
 bool
-MappingElemValueFlagsHandler::
+MappingFlags::
 inv_gradients_filled() const
 {
     return inv_gradients_filled_;
 }
 
 void
-MappingElemValueFlagsHandler::
+MappingFlags::
 set_inv_gradients_filled(const bool status)
 {
     inv_gradients_filled_ = status;
 }
 
 bool
-MappingElemValueFlagsHandler::
+MappingFlags::
 fill_inv_hessians() const
 {
     return fill_inv_hessians_;
 }
 
 bool
-MappingElemValueFlagsHandler::
+MappingFlags::
 inv_hessians_filled() const
 {
     return inv_hessians_filled_;
 }
 
 void
-MappingElemValueFlagsHandler::
+MappingFlags::
 set_inv_hessians_filled(const bool status)
 {
     inv_hessians_filled_ = status;
 }
+bool
+MappingFlags::
+fill_measures() const
+{
+    return fill_measures_;
+}
+
+
+
+bool
+MappingFlags::
+measures_filled() const
+{
+    return measures_filled_;
+}
+
 
 
 void
-MappingElemValueFlagsHandler::
+MappingFlags::
+set_measures_filled(const bool status)
+{
+    measures_filled_ = status;
+}
+
+
+
+bool
+MappingFlags::
+fill_w_measures() const
+{
+    return fill_w_measures_;
+}
+
+
+
+bool
+MappingFlags::
+w_measures_filled() const
+{
+    return w_measures_filled_;
+}
+
+
+
+void
+MappingFlags::
+set_w_measures_filled(const bool status)
+{
+    w_measures_filled_ = status;
+}
+
+
+void
+MappingFlags::
 print_info(LogStream &out) const
 {
-    ValueFlagsHandler::print_info(out);
-    GridFlags::print_info(out);
+    FunctionFlags::print_info(out);
+    using std::endl;
+    out << "   inv grad -->    fill = "
+            << fill_inv_gradients_ << "    filled = " << inv_gradients_filled_ << endl;
+    out << "inv hessians -->    fill = "
+            << fill_inv_hessians_ << "    filled = " << inv_hessians_filled_ << endl;
+
+
 }
 //====================================================
 
 
 
-
+#if 0
 
 //====================================================
 MappingFaceValueFlagsHandler::
 MappingFaceValueFlagsHandler()
     :
-    MappingElemValueFlagsHandler(),
+    MappingFlags(),
     fill_normals_(false),
     normals_filled_(false)
 {}
@@ -575,7 +613,7 @@ fill_none() const
 {
     bool fill_none = true;
 
-    if (fill_normals_ || !MappingElemValueFlagsHandler::fill_none())
+    if (fill_normals_ || !MappingFlags::fill_none())
         fill_none = false;
 
     return fill_none;

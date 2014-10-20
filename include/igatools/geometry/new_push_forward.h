@@ -99,10 +99,8 @@ public:
 public:
 
     NewPushForward(std::shared_ptr<FuncType> F,
-                   const ValueFlags flag,
+                   const NewValueFlags flag,
                    const Quadrature<dim> &quad);
-
-    // NewMapping() = delete;
 
     ~NewPushForward() = default;
 

@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim, int range, int rank >
 NewFunction<dim, codim, range, rank >::
 NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-            const ValueFlags &flag,
+            const NewValueFlags &flag,
             const Quadrature<dim> &quad)
     :
     GridElementHandler<dim>(grid, flag, quad)

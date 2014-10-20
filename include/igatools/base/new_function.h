@@ -39,18 +39,11 @@ private:
     using parent_t = GridElementHandler<dim>;
 
 public:
-    static const ValueFlags valid_flags =
-    		ValueFlags::value |
-    		ValueFlags::gradient |
-    		ValueFlags::hessian |
-    		ValueFlags::measure |
-    		ValueFlags::w_measure|
-    		ValueFlags::point;
-
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
     static const int space_dim = dim + codim;
+
     /** Types for the input/output evaluation arguments */
     ///@{
     /**
@@ -89,10 +82,10 @@ public:
     ///@{
     /** Constructor */
     NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                const ValueFlags &flag = ValueFlags::none,
+                const NewValueFlags &flag = NewValueFlags::none,
                 const Quadrature<dim> &quad = Quadrature<dim>());
 
-    virtual void reset(const ValueFlags &flag, const Quadrature<dim> &quad)
+    virtual void reset(const NewValueFlags &flag, const Quadrature<dim> &quad)
     {
     	parent_t::reset(flag, quad);
     }

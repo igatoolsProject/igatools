@@ -86,7 +86,7 @@ public:
 public:
 
     NewMapping(std::shared_ptr<FuncType> F,
-               const ValueFlags flag,
+               const NewValueFlags flag,
                const Quadrature<dim> &quad);
 
     NewMapping() = delete;
@@ -107,7 +107,7 @@ protected:
 
 private:
     std::shared_ptr<FuncType> F_;
-    MappingElemValueFlagsHandler flag_;
+    MappingFlags flag_;
     Quadrature<dim> quad_;
     friend ElementAccessor;
 };

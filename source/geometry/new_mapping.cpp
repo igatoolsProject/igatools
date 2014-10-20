@@ -26,17 +26,6 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-namespace{
-auto
-mapping_to_function_flags(const ValueFlags m_flag)
-{
-	ValueFlags f_flag = ValueFlags::none;
-
-}
-};
-
-
-
 template<int dim, int codim>
 auto
 NewMapping<dim, codim>::
@@ -51,17 +40,14 @@ get_cache(ElementAccessor &elem)
 template<int dim, int codim>
 NewMapping<dim, codim>::
 NewMapping(std::shared_ptr<FuncType> F,
-           const ValueFlags flag,
+           const NewValueFlags flag,
            const Quadrature<dim> &quad)
     :
     F_(F),
     flag_(flag),
     quad_(quad)
 {
-//todo : if F_->flags_ not compatible with this->flag
-	//F_->reset(mapping_to_function_flags(flag), quad);
-	F_->reset(flag, quad);
-
+	F_->reset(MappingFlags::to_function_flags(flag), quad);
 }
 
 
