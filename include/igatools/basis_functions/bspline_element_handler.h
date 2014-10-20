@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/value_flags_handler.h>
+#include <igatools/base/new_flags_handler.h>
 #include <igatools/base/quadrature.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
@@ -77,7 +77,7 @@ public:
 
     //Allocates and fill the (global) cache
     BSplineElementHandler(std::shared_ptr<const Space> space,
-                          const ValueFlags flag,
+                          const NewValueFlags flag,
                           const Quadrature<dim> &quad);
 
     //Allocates the ElementIterator element_cache
@@ -139,9 +139,9 @@ private:
 
     ComponentContainer<Size> comp_offset_;
 
-    BasisElemValueFlagsHandler flags_;
+    FunctionFlags flags_;
 
-    BasisFaceValueFlagsHandler face_flags_;
+    FunctionFlags face_flags_;
 
     Quadrature<dim> quad_;
 

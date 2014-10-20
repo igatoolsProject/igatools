@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/value_flags_handler.h>
+#include <igatools/base/new_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/topology.h>
 
@@ -343,12 +343,12 @@ private:
     class ValuesCache : public CacheStatus
     {
     public:
-        void resize(const GridElemValueFlagsHandler &flags_handler,
+        void resize(const GridFlags &flags_handler,
                     const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const;
 
-        GridElemValueFlagsHandler flags_handler_;
+        GridFlags flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
@@ -419,7 +419,7 @@ protected:
     /**
      * ExceptionUnsupported Value Flag.
      */
-    DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
+    DeclException2(ExcFillFlagNotSupported, NewValueFlags, NewValueFlags,
                    << "The passed ValueFlag " << arg2
                    << " contains a non admissible flag " << (arg1 ^arg2));
 

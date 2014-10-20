@@ -152,10 +152,10 @@ public:
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space,
-                      const ValueFlags flag,
+                      const NewValueFlags flag,
                       const Quadrature<dim> &quad)
     :
-    GridElementHandler<dim_>(space->get_grid(), flag, quad),
+    GridElementHandler<dim_>(space->get_grid(), FunctionFlags::to_grid_flags(flag), quad),
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
     flags_(flag),

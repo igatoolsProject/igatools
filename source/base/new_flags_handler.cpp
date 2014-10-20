@@ -199,10 +199,11 @@ DeclException2(ExcFillFlagNotSupported, NewValueFlags, NewValueFlags,
                << "The passed ValueFlag " << arg2
                << " contains a non admissible flag " << (arg1 ^arg2));
 
+#endif
 
 
-ValueFlagsHandler::
-ValueFlagsHandler(const NewValueFlags &flags)
+FunctionFlags::
+FunctionFlags(const NewValueFlags &flags)
 {
     if (contains(flags, NewValueFlags::point))
         fill_points_ = true;
@@ -217,8 +218,24 @@ ValueFlagsHandler(const NewValueFlags &flags)
         fill_hessians_ = true;
 }
 
+
+NewValueFlags
+FunctionFlags::to_grid_flags(const NewValueFlags &flags)
+{
+	NewValueFlags transfer_flag = NewValueFlags::measure |
+			 NewValueFlags::w_measure |
+			 NewValueFlags::normal;
+	NewValueFlags g_flag = flags & transfer_flag;
+	if (contains(flags, NewValueFlags::point) || contains(flags, NewValueFlags::value))
+	{
+		g_flag |= NewValueFlags::point;
+	}
+	return g_flag;
+}
+
+
 bool
-ValueFlagsHandler::
+FunctionFlags::
 fill_none() const
 {
     bool fill_none = true;
@@ -231,7 +248,7 @@ fill_none() const
 
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 fill_points() const
 {
     return fill_points_;
@@ -240,7 +257,7 @@ fill_points() const
 
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 points_filled() const
 {
     return points_filled_;
@@ -249,7 +266,7 @@ points_filled() const
 
 
 void
-ValueFlagsHandler::
+FunctionFlags::
 set_points_filled(const bool status)
 {
     points_filled_ = status;
@@ -258,7 +275,7 @@ set_points_filled(const bool status)
 
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 fill_values() const
 {
     return fill_values_;
@@ -266,56 +283,56 @@ fill_values() const
 
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 values_filled() const
 {
     return values_filled_;
 }
 
 void
-ValueFlagsHandler::
+FunctionFlags::
 set_values_filled(const bool status)
 {
     values_filled_ = status;
 }
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 fill_gradients() const
 {
     return fill_gradients_;
 }
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 gradients_filled() const
 {
     return gradients_filled_;
 }
 
 void
-ValueFlagsHandler::
+FunctionFlags::
 set_gradients_filled(const bool status)
 {
     gradients_filled_ = status;
 }
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 fill_hessians() const
 {
     return fill_hessians_;
 }
 
 bool
-ValueFlagsHandler::
+FunctionFlags::
 hessians_filled() const
 {
     return hessians_filled_;
 }
 
 void
-ValueFlagsHandler::
+FunctionFlags::
 set_hessians_filled(const bool status)
 {
     hessians_filled_ = status;
@@ -323,7 +340,7 @@ set_hessians_filled(const bool status)
 
 
 void
-ValueFlagsHandler::
+FunctionFlags::
 print_info(LogStream &out) const
 {
     using std::endl;
@@ -340,7 +357,7 @@ print_info(LogStream &out) const
 
 
 
-
+#if 0
 
 //====================================================
 GridFaceValueFlagsHandler::

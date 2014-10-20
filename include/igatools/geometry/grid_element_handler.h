@@ -18,12 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef GRID_UNIFORM_QUAD_CACHE_H_
-#define GRID_UNIFORM_QUAD_CACHE_H_
+#ifndef GRID_ELEMENT_HANDLER_H_
+#define GRID_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/value_flags_handler.h>
+#include <igatools/base/new_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
@@ -54,17 +54,17 @@ protected:
     // void fill_face_cache(ElementAccessor &elem, const int face);
 public:
     static const int dim = dim_;
-    static const ValueFlags valid_flags = ValueFlags::measure |
-                                   ValueFlags::w_measure |
-                                   ValueFlags::point|
-                                   ValueFlags::length;
+    static const NewValueFlags valid_flags = NewValueFlags::measure |
+                                   NewValueFlags::w_measure |
+                                   NewValueFlags::point|
+                                   NewValueFlags::length;
 
     //Allocates and fill the (global) cache
     GridElementHandler(std::shared_ptr<const GridType> grid,
-                         const ValueFlags flag,
+                         const NewValueFlags flag,
                          const Quadrature<dim> &quad);
 
-    void reset(const ValueFlags flag, const Quadrature<dim> &quad);
+    void reset(const NewValueFlags flag, const Quadrature<dim> &quad);
     /**
      * Allocates the space in ElementIterator element_cache
      * necessary for the given quadrature and flag combination.
@@ -93,7 +93,7 @@ private:
 
 private:
     std::shared_ptr<const GridType> grid_;
-    std::tuple<GridElemValueFlagsHandler, GridFaceValueFlagsHandler> flags_;
+    std::tuple<GridFlags, GridFlags> flags_;
     Quadrature<dim> quad_;
 
 protected:

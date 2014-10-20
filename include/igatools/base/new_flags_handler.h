@@ -131,46 +131,49 @@ protected:
     bool lengths_filled_ = false;
 };
 
-#if 0
-class SpaceFlags
+
+
+class FunctionFlags
 {
 public:
-	static const NewValueFlags valid_flags = NewValueFlags::point|
-	 NewValueFlags::value|
-	 NewValueFlags::gradient|
-	 NewValueFlags::hessian;
+	static const NewValueFlags valid_flags =
+			NewValueFlags::point|
+			NewValueFlags::value|
+			NewValueFlags::gradient|
+			NewValueFlags::hessian;
 
+	 static NewValueFlags to_grid_flags(const NewValueFlags &flag);
 
     /** @name Constructors */
     ///@{
     /**
      * Default constructor. Sets all boolean flags to false.
      */
-    SpaceFlags();
+    FunctionFlags();
 
-    SpaceFlags(const NewValueFlags &flag);
+    FunctionFlags(const NewValueFlags &flag);
 
     /** Copy constructor. */
-    SpaceFlags(const SpaceFlags &in) = default;
+    FunctionFlags(const FunctionFlags &in) = default;
 
     /** Move constructor. */
-    SpaceFlags(SpaceFlags &&in) = default;
+    FunctionFlags(FunctionFlags &&in) = default;
 
 
     /** Destructor. */
-    ~SpaceFlags() = default;
+    ~FunctionFlags() = default;
     ///@}
 
-    NewValueFlags to_grid_flags(const NewValueFlags &flag);
+
 
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    SpaceFlags &operator=(const SpaceFlags &in) = default;
+    FunctionFlags &operator=(const FunctionFlags &in) = default;
 
 
     /** Move assignment operator. */
-    SpaceFlags &operator=(SpaceFlags &&in) = default;
+    FunctionFlags &operator=(FunctionFlags &&in) = default;
     ///@}
 
     /** Returns true if the nothing must be filled. */
@@ -235,7 +238,7 @@ protected:
 
 
 
-
+#if 0
 
 /**
  * @brief This is an helper class that is intended to be used as a filter for the flags that
@@ -315,7 +318,7 @@ protected:
 
 
 class MappingFlags :
-    public SpaceFlags
+    public FunctionFlags
 {
 public:
     /** @name Constructors */
@@ -501,8 +504,6 @@ public:
     ///@}
 
     NewValueFlags to_grid_flags(const NewValueFlags &flag);
-
-
     NewValueFlags to_ref_space_flag(const NewValueFlags &flag);
     NewValueFlags to_push_forward_flag(const NewValueFlags &flag);
 

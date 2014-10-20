@@ -32,7 +32,7 @@ GridElementHandler<dim_>::faces  = UnitElement<dim_>::faces;
 template <int dim_>
 GridElementHandler<dim_>::
 GridElementHandler(shared_ptr<const GridType> grid,
-                     const ValueFlags flag,
+                     const NewValueFlags flag,
                      const Quadrature<dim> &quad)
     :
     grid_(grid),
@@ -45,7 +45,7 @@ GridElementHandler(shared_ptr<const GridType> grid,
 template <int dim_>
 void
 GridElementHandler<dim_>::
-reset(const ValueFlags flag,
+reset(const NewValueFlags flag,
       const Quadrature<dim> &quad)
 {
 	flags_ = std::make_tuple(flag, flag);

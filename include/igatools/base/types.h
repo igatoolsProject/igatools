@@ -482,7 +482,11 @@ std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
     return (stream << static_cast< int >(flag));
 }
 
-
+inline
+std::ostream &operator<< (std::ostream &stream, const NewValueFlags &flag)
+{
+    return (stream << static_cast< int >(flag));
+}
 
 /**
  * Const expression power
