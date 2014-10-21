@@ -450,35 +450,11 @@ public:
     ///@}
 
 
-
-
-#if 0
-    //most likely unnecessary
-    /**
-     * Get the quadrature points used to initialize the element or a given element-face.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    const Quadrature<dim> &
-    get_quad_points(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-#endif
-
     void print_info(LogStream &out) const;
 
     void print_cache_info(LogStream &out) const;
 
 
-    const auto &get_elem_cache() const
-    {
-        return this->get_values_cache(ElemTopology<dim>());
-    }
-
-    auto &get_elem_cache()
-    {
-        return this->get_values_cache(ElemTopology<dim>());
-    }
 
 protected:
     /**

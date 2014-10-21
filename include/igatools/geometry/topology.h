@@ -22,6 +22,7 @@
 #ifndef TOPOLOGY_H_
 #define TOPOLOGY_H_
 
+#if 0
 #include <igatools/base/config.h>
 
 #include <vector>
@@ -214,7 +215,8 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // TOPOLOGY_H_
+
 
 #include <igatools/geometry/topology-inline.h>
-
+#endif
+#endif // TOPOLOGY_H_
