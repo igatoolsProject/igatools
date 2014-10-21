@@ -20,7 +20,7 @@
 
 #ifndef MAPPING_LIB_H_
 #define MAPPING_LIB_H_
-
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/geometry/analytical_mapping.h>
 
@@ -396,5 +396,5 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-
+#endif
 #endif /* MAPPING_LIB_H_ */

@@ -32,12 +32,12 @@ data = Instantiation(include_files)
 #    spaces.append( '%s' %space.name)
 
 f.write( 'using SpacePtrVariant = Variant<\n')
-for space in inst.AllRefSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)
+# for space in inst.AllRefSpaces_v2:
+#     f.write( 'std::shared_ptr<%s>,\n' %space.name)
 for space in inst.new_AllRefSpaces_v2:
     f.write( 'std::shared_ptr<%s>,\n' %space.name)    
-for space in inst.PhysSpaces_v2:
-    f.write( 'std::shared_ptr<%s>,\n' %space.name)
+# for space in inst.PhysSpaces_v2:
+#     f.write( 'std::shared_ptr<%s>,\n' %space.name)
 f.seek(f.tell()-2);
 f.write( '>;\n')
 

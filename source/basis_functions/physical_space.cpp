@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/geometry/mapping_slice.h>
 #include <igatools/basis_functions/space_manager.h>
@@ -321,4 +322,4 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/physical_space.inst>
 
-
+#endif

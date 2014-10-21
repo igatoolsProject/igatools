@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 #include <igatools/base/exceptions.h>
 
@@ -749,3 +749,4 @@ print_cache_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/physical_space_element_accessor.inst>
+#endif

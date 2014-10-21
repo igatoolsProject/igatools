@@ -21,6 +21,8 @@
 #ifndef MULTI_PATCH_SPACE_H_
 #define MULTI_PATCH_SPACE_H_
 
+#ifdef MPATCH
+
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/basis_functions/space_manager.h>
@@ -570,6 +572,6 @@ public:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif //MPATCH
 
 #endif // #ifndef MULTI_PATCH_SPACE_H_

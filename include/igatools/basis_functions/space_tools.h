@@ -20,7 +20,7 @@
 
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
-
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid.h>
@@ -152,4 +152,5 @@ void reference_to_element(
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifndef SPACE_TOOLS_H_
+#endif
 

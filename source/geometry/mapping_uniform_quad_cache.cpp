@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/geometry/mapping_uniform_quad_cache.h>
 
 using std::shared_ptr;
@@ -81,3 +81,4 @@ fill_element_cache(ElementIterator &elem)
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_uniform_quad_cache.inst>
+#endif

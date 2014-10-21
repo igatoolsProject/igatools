@@ -20,6 +20,7 @@
 
 #ifndef __BSPLINE_SPACE_H_
 #define __BSPLINE_SPACE_H_
+#if 0
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -421,5 +422,5 @@ public:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif /* __BSPLINE_SPACE_H_ */

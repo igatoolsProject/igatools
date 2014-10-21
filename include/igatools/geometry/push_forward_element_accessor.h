@@ -21,6 +21,7 @@
 #ifndef __PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 #define __PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/utils/value_table.h>
 #include <igatools/utils/value_vector.h>
@@ -325,5 +326,5 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif // __PUSH_FORWARD_ELEMENT_ACCESSOR_H_

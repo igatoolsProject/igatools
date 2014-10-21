@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
 
@@ -951,3 +952,5 @@ get_mapping_from_file(const std::string &filename)
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/reader.inst>
+
+#endif

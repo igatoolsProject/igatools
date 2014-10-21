@@ -20,7 +20,7 @@
 
 // TODO: should be unified with dof tools?
 //TODO Add doxygen description to the content of this file
-
+#if 0
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/basis_functions/physical_space_element_accessor.h>
 
@@ -488,3 +488,4 @@ void reference_to_element(
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/space_tools.inst>
+#endif

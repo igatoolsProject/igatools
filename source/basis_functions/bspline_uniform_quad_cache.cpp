@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/utils/multi_array_utils.h>
@@ -593,3 +594,4 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_uniform_quad_cache.inst>
+#endif

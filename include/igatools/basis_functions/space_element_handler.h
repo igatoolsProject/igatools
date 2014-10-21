@@ -34,7 +34,7 @@ class SpaceElementHandler :
 {
 
     using RefSpace =  typename PhysSpace::RefSpace;
-    using RefSpaceCache = typename PhysSpace::RefSpace::ElementHandler;
+    using RefSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
     using PFCache = typename PhysSpace::PushForwardType;
     using ElementIterator = typename PhysSpace::ElementIterator;
     using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
@@ -53,7 +53,7 @@ public:
 
     //Allocates and fill the (global) cache
     SpaceElementHandler(std::shared_ptr<const PhysSpace> space,
-                        const ValueFlags flag,
+                        const NewValueFlags flag,
                         const Quadrature<dim> &quad);
 
     //Allocates the ElementIterator element_cache
@@ -73,7 +73,7 @@ public:
 private:
     std::shared_ptr<const PhysSpace> space_;
 
-    ValueFlags flags_;
+    std::tuple<FunctionFlags, FunctionFlags> flags_;
 
     Quadrature<dim> quad_;
 };

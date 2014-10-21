@@ -32,14 +32,15 @@ GridElementHandler<dim_>::faces  = UnitElement<dim_>::faces;
 template <int dim_>
 GridElementHandler<dim_>::
 GridElementHandler(shared_ptr<const GridType> grid,
-                     const NewValueFlags flag,
-                     const Quadrature<dim> &quad)
+                   const NewValueFlags flag,
+                   const Quadrature<dim> &quad)
     :
     grid_(grid),
     flags_ {flag, flag},
     quad_(quad),
-       lengths_(grid->get_element_lengths())
+    lengths_(grid->get_element_lengths())
 {}
+
 
 
 template <int dim_>
@@ -69,7 +70,6 @@ init_element_cache(ElementAccessor &elem)
     auto &elem_cache = cache->template get_value_cache<0>(0);
     elem_cache.resize(std::get<0>(flags_), quad_);
 
-
     for (auto &f: faces)
     {
         auto &face_cache = cache->template get_value_cache<1>(f);
@@ -87,6 +87,8 @@ init_element_cache(ElementIterator &elem)
 {
     init_element_cache(elem.get_accessor());
 }
+
+
 
 template <int dim_>
 template <int k>

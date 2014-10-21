@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 IgFunction<Space>::
-IgFunction(const ValueFlags &flag, const Quadrature<dim> &quad,
+IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
            std::shared_ptr<const Space> space,
            const CoeffType &coeff)
     :
@@ -74,12 +74,15 @@ fill_elem(ElementAccessor &elem) -> void
     if (flag_.fill_points())
         Assert(false, ExcNotImplemented());//cache->points_ = elem_->get_points();
     const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+
     if (flag_.fill_values())
-        cache->values_ = elem_->evaluate_field(loc_coeff);
-    if (flag_.fill_gradients())
-        std::get<1>(cache->derivatives_) = elem_->evaluate_field_gradients(loc_coeff);
+        cache->values_ = elem_->template eval_field_ders<0, 0>(0, loc_coeff);
+   if (flag_.fill_gradients())
+        std::get<1>(cache->derivatives_) =
+                elem_->template eval_field_ders<0, 1>(0, loc_coeff);
     if (flag_.fill_hessians())
-        std::get<2>(cache->derivatives_) = elem_->evaluate_field_hessians(loc_coeff);
+        std::get<2>(cache->derivatives_) =
+                elem_->template eval_field_ders<0, 2>(0, loc_coeff);
 }
 
 IGA_NAMESPACE_CLOSE

@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/basis_functions/space_tools.h>
@@ -787,3 +788,4 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/ig_mapping.inst>
+#endif

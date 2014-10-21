@@ -101,6 +101,7 @@ using Index = int;
  */
 using Size = int;
 
+#if 0
 /**
  * Bit field flags for specifying which element values will be needed
  * through the iterator on the grid like containers.
@@ -247,7 +248,7 @@ enum class ValueFlags : std::int64_t
 
                             ///@}
 };
-
+#endif
 
 
 enum class NewValueFlags : std::int64_t
@@ -474,14 +475,14 @@ int bitcount(Flag a)
     return count;
 }
 
-
+#if 0
 //TODO(pauletti, Feb 19, 2014): the item below should be documented
 inline
 std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
 {
     return (stream << static_cast< int >(flag));
 }
-
+#endif
 inline
 std::ostream &operator<< (std::ostream &stream, const NewValueFlags &flag)
 {

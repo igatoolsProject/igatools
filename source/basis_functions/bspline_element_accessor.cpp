@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
+
 #include <igatools/basis_functions/bspline_element_accessor.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/base/exceptions.h>
@@ -852,5 +854,5 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_element_accessor.inst>
-
+#endif
 

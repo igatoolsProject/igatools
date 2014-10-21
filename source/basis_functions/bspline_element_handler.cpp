@@ -155,17 +155,14 @@ BSplineElementHandler(shared_ptr<const Space> space,
                       const NewValueFlags flag,
                       const Quadrature<dim> &quad)
     :
-    GridElementHandler<dim_>(space->get_grid(), FunctionFlags::to_grid_flags(flag), quad),
+    base_t(space->get_grid(), FunctionFlags::to_grid_flags(flag), quad),
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
-    flags_(flag),
-    face_flags_(flag),
+    flags_ {flag, flag},
     quad_(quad),
     splines1d_(space->get_grid()->get_num_intervals(),
                BasisValues(space->get_components_map()))
 {
-
-
     // Compute the component offsets
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
@@ -252,12 +249,16 @@ init_element_cache(ElementAccessor &elem)
     }
 
     auto n_basis = space_->get_num_all_element_basis();
-    auto &elem_cache = cache->elem_values_;
-    elem_cache.resize(flags_, quad_, n_basis);
 
-    auto &face_cache = cache->face_values_;
-    for (auto f: base_t::faces)
-        face_cache[f].resize(face_flags_, quad_, n_basis, f);
+    auto &elem_cache = cache->template get_value_cache<0>(0);
+    elem_cache.resize(std::get<0>(flags_), quad_, n_basis);
+
+    for (auto &f: base_t::faces)
+    {
+        auto &face_cache = cache->template get_value_cache<1>(f);
+        face_cache.resize(std::get<1>(flags_), quad_.collapse_to_face(f), n_basis);
+    }
+
 }
 
 
@@ -438,64 +439,65 @@ fill_element_cache(ElementIterator &elem)
 
 
 
-template<int dim_, int range_ , int rank_>
+template <int dim_, int range_ , int rank_>
+template <int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-fill_element_cache(ElementAccessor &elem)
+fill_element_cache_(ElementAccessor &elem, const int j)
 {
-    base_t::fill_element_cache(elem);
-    auto &cache = elem.get_elem_cache();
+    base_t::template fill_element_cache_<k> (elem, j);
 
-    const auto &elem_id = elem.get_tensor_index();
-    auto values = splines1d_.get_element_values(elem_id);
+    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
-
-    //--------------------------------------------------------------------------
+    const auto &index = elem.get_tensor_index();
+    auto val_1d = splines1d_.get_element_values(index);
     if (cache.flags_handler_.fill_values())
     {
-        evaluate_bspline_values(values, cache.phi_);
+        auto &values = cache.template get_der<0>();
+        evaluate_bspline_values(val_1d, values);
         cache.flags_handler_.set_values_filled(true);
     }
     if (cache.flags_handler_.fill_gradients())
     {
-        evaluate_bspline_derivatives<1>(values, cache.D1phi_);
+        auto &values = cache.template get_der<1>();
+        evaluate_bspline_derivatives<1>(val_1d, values);
         cache.flags_handler_.set_gradients_filled(true);
     }
-
     if (cache.flags_handler_.fill_hessians())
     {
-        evaluate_bspline_derivatives<2>(values, cache.D2phi_);
+        auto &values = cache.template get_der<2>();
+        evaluate_bspline_derivatives<2>(val_1d, values);
         cache.flags_handler_.set_hessians_filled(true);
     }
 
-    if (cache.flags_handler_.fill_divergences())
-    {
-        //TODO(pauletti, Sep 7, 2014): create a specialize exception
-        Assert(cache.flags_handler_.gradients_filled(),
-               ExcMessage("Divergence requires gradient to be filled."));
-
-        auto D1  = cache.D1phi_.begin();
-        auto div = cache.div_phi_.begin();
-        auto end = cache.D1phi_.end();
-        for (; D1 != end; ++D1, ++div)
-            *div = trace(*D1);
-
-        cache.flags_handler_.set_divergences_filled(true);
-    }
-
-    //--------------------------------------------------------------------------
+//    if (cache.flags_handler_.fill_divergences())
+//    {
+//        //TODO(pauletti, Sep 7, 2014): create a specialize exception
+//        Assert(cache.flags_handler_.gradients_filled(),
+//               ExcMessage("Divergence requires gradient to be filled."));
+//
+//        auto D1  = cache.D1phi_.begin();
+//        auto div = cache.div_phi_.begin();
+//        auto end = cache.D1phi_.end();
+//        for (; D1 != end; ++D1, ++div)
+//            *div = trace(*D1);
+//
+//        cache.flags_handler_.set_divergences_filled(true);
+//    }
 
     cache.set_filled(true);
 }
 
 
 template<int dim_, int range_ , int rank_>
-auto
+void
 BSplineElementHandler<dim_, range_, rank_>::
-get_quad() const -> const Quadrature<dim> &
+fill_element_cache(ElementAccessor &elem)
 {
-    return quad_;
+    this->template fill_element_cache_<0>(elem, 0);
 }
+
 
 
 template<int dim_, int range_ , int rank_>
@@ -510,7 +512,6 @@ print_info(LogStream &out) const
 
     out.begin_item("One dimensional splines cache:");
     splines1d_.print_info(out);
-
     out.end_item();
 }
 

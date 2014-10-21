@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#ifdef MPATCH
 #include <igatools/basis_functions/multi_patch_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/utils/vector_tools.h>
@@ -863,8 +863,7 @@ fill_space_manager_dofs_connectivity(SpaceManager &space_manager)
     space_manager.linear_constraints_close();
 }
 
-
 IGA_NAMESPACE_CLOSE
 
-
 #include <igatools/basis_functions/multi_patch_space.inst>
+#endif //MPATCH

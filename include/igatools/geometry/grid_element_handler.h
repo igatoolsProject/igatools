@@ -87,7 +87,7 @@ public:
 
     void print_info(LogStream &out) const;
 
-private:
+protected:
     template <int k>
     void fill_element_cache_(ElementAccessor &elem, const int j);
 

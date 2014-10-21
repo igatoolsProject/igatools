@@ -23,6 +23,7 @@
 #ifndef VALUE_FLAGS_HANDLER_H_
 #define VALUE_FLAGS_HANDLER_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
@@ -674,5 +675,5 @@ public:
 IGA_NAMESPACE_CLOSE
 
 
-
+#endif
 #endif // #ifndef VALUE_FLAGS_HANDLER_H_

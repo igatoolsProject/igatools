@@ -24,7 +24,6 @@
 
 #include <igatools/base/config.h>
 
-#include <igatools/geometry/mapping.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/basis_functions/bspline_element.h>
 //#include <igatools/basis_functions/nurbs_element_accessor.h>
@@ -34,48 +33,16 @@ IGA_NAMESPACE_OPEN
 
 template <typename Accessor> class GridForwardIterator;
 
-/**
- *
- * This class represents a single element in the physical space.
- *
- * Its main use is for the evaluation of quantities (at some evaluation points specified as input argument)
- * defined over the element. Namely, it provides the methods to evaluate:
- * - non-zero basis functions. The quantities that can be computed are:
- *   - values;
- *   - gradients;
- *   - hessians;
- *   - divergence.
- * - fields (i.e. a linear combination of the non-zero basis function). The quantities that can be computed are:
- *   - values;
- *   - gradients;
- *   - hessians;
- * - weights of the quadrature points;
- * - evaluation points in the physical space (i.e. the image of the evaluation points from the \f$ [0,1]^{\text{dim\_domain}} \f$ domain to
- * the physical element using the mapping defined in the PushForward.
- *
- * Many of the above quantities can be retrieved with two different interfaces:
- * - the first set of interfaces need as input argument the evaluation point index.
- *   The retrieved quantities relates to the evaluation point specified by the input index.
- * - the second set of interfaces retrieve the quantity of interests for all the evaluation point.
- *   This kind of interfaces return the reference of a container (no copy is made) and should be used when
- *   good performances are requested.
- *
- * See module on @ref accessors_iterators for a general overview.
- * @ingroup accessors
- *
- * @tparam PhysSpace - type for the space in the physical domain
- */
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
-public SpaceElementAccessor<PhysSpace>,
+public SpaceElement<PhysSpace>,
     // todo: private PhysSpace::RefSpace::ElementAccessor,
 private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using SpaceElementAccessor<PhysSpace>::get_elem_cache;
-    using parent_t = SpaceElementAccessor<PhysSpace>;
-
+    using parent_t = SpaceElement<PhysSpace>;
+    using parent_t::get_elem_cache;
     using parent_t::LocalCache;
 
     /** Type required by the GridForwardIterator templated iterator */

@@ -152,9 +152,23 @@ public:
     void shallow_copy_from(const self_t &element);
     ///@}
 
-    template<int skel_dim, int der_order>
+    template<int skel_codim, int der_order>
     auto
-    get_basis_ders(const int j) const;
+    get_basis_ders(const int j) const
+    {
+        const auto &cache = local_cache_->template get_value_cache<skel_codim>(j);
+        Assert(cache.is_filled() == true, ExcCacheNotFilled());
+        return cache.template get_der<der_order>();
+    }
+
+    template<int skel_codim, int der_order>
+    auto
+    eval_field_ders(const int j, const vector<Real> &local_coefs) const
+    {
+        const auto &basis_values =
+                this->template get_basis_ders<skel_codim,der_order>(j);
+        return basis_values.evaluate_linear_combination(local_coefs) ;
+    }
 
 #if 0
     /** @name Functions returning the value of the basis functions. */
@@ -512,7 +526,13 @@ protected:
         ValueTable<Derivative<2>>> values_;
 
         template<int k>
-        const auto &get_der()
+        auto &get_der()
+        {
+            return std::get<k>(values_);
+        }
+
+        template<int k>
+        const auto &get_der() const
         {
             return std::get<k>(values_);
         }
@@ -561,6 +581,14 @@ protected:
         {
             return std::get<k>(values_)[j];
         }
+
+        template <int k>
+        const ValuesCache &
+        get_value_cache(const int j) const
+        {
+            return std::get<k>(values_)[j];
+        }
+
 
         std::tuple<std::array<ValuesCache, 1>,
         std::array<ValuesCache, n_faces> > values_;

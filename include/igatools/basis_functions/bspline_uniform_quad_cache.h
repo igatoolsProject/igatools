@@ -21,6 +21,7 @@
 #ifndef BSPLINE_UNIFORM_QUAD_CACHE_H_
 #define BSPLINE_UNIFORM_QUAD_CACHE_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
@@ -178,5 +179,5 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif /* BSPLINE_UNIFORM_QUAD_CACHE_H_ */

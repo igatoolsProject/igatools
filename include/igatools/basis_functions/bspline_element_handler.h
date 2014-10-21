@@ -65,9 +65,11 @@ class BSplineElementHandler : public GridElementHandler<dim_>
 
     using Value = typename Space::Value;
 
-//protected:
-public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
+protected:
+//public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
     using ElementAccessor = typename Space::ElementAccessor;
+    template <int k>
+            void fill_element_cache_(ElementAccessor &elem, const int j);
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
     void fill_face_cache(ElementAccessor &elem, const int face);
@@ -139,10 +141,7 @@ private:
 
     ComponentContainer<Size> comp_offset_;
 
-    FunctionFlags flags_;
-
-    FunctionFlags face_flags_;
-
+    std::tuple<FunctionFlags, FunctionFlags> flags_;
     Quadrature<dim> quad_;
 
     template <class T>
@@ -166,7 +165,8 @@ private:
             for (auto c : result.get_active_components_id())
             {
                 for (int i = 0; i < dim; ++i)
-                    result[c][i] = BasisValues1dConstView((this->entry(i, id[i]))[c]);
+                    result[c][i] =
+                            BasisValues1dConstView((this->entry(i, id[i]))[c]);
                 result[c].update_size();
 
             }

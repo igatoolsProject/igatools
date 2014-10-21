@@ -21,6 +21,7 @@
 #ifndef ANALYTICAL_MAPPING_H_
 #define ANALYTICAL_MAPPING_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
 
@@ -68,5 +69,5 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-
+#endif
 #endif // #ifndef ANALYTICAL_MAPPING_H_

@@ -20,7 +20,7 @@
 
 #ifndef SPACE_UNIFORM_QUAD_CACHE_H_
 #define SPACE_UNIFORM_QUAD_CACHE_H_
-
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_uniform_quad_cache.h>
 #include <igatools/geometry/push_forward_uniform_quad_cache.h>
@@ -82,5 +82,5 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif

@@ -31,7 +31,7 @@ PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const Index index)
     :
-    SpaceElementAccessor<PhysSpace>(phys_space,index),
+    parent_t(phys_space,index),
     PfElemAccessor(phys_space->get_grid(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}
@@ -43,7 +43,7 @@ PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const TensorIndex<dim> &index)
     :
-    SpaceElementAccessor<PhysSpace>(phys_space,index),
+    parent_t(phys_space,index),
     PfElemAccessor(phys_space->get_grid(), index),
     ref_space_element_accessor_(phys_space->get_reference_space(),index)
 {}

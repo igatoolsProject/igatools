@@ -21,6 +21,7 @@
 #ifndef IDENTITY_MAPPING_H_
 #define IDENTITY_MAPPING_H_
 
+#if 0
 #include <igatools/geometry/analytical_mapping.h>
 
 IGA_NAMESPACE_OPEN
@@ -97,5 +98,5 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif /* MAPPING_H_ */

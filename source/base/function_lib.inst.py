@@ -28,7 +28,7 @@ for row in inst.newfunction_dims:
          %(row.dim, row.codim, row.range) )
     f.write(s)
 
-for row in inst.function_dims:
-    s = ('template class functions::ConstantFunction<%d, %d, %d>;\n' 
-         %(row.dim, row.range, row.rank) )
-    f.write(s)
+# for row in inst.function_dims:
+#     s = ('template class functions::ConstantFunction<%d, %d, %d>;\n' 
+#          %(row.dim, row.range, row.rank) )
+#     f.write(s)

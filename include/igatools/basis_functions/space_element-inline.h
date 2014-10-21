@@ -205,18 +205,18 @@ as_derived_element_accessor() const -> const DerivedElementAccessor &
 
 
 
-template<class Space>
-template<int skel_dim, int der_order>
-auto
-SpaceElement<Space>::
-get_basis_ders(const int j) const
-{
-    const auto &cache = local_cache_->template get_value_cache<skel_dim>(j);
-    Assert(cache.is_filled() == true, ExcCacheNotFilled());
-   // Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
-
-    return cache.template get_der<der_order>();
-}
+//template<class Space>
+//template<int skel_dim, int der_order>
+//auto
+//SpaceElement<Space>::
+//get_basis_ders(const int j) const
+//{
+//    const auto &cache = local_cache_->template get_value_cache<skel_dim>(j);
+//    Assert(cache.is_filled() == true, ExcCacheNotFilled());
+//   // Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
+//
+//    return cache.template get_der<der_order>();
+//}
 
 
 #if 0

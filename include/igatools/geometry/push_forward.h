@@ -20,7 +20,7 @@
 
 #ifndef PUSH_FORWARD_H_
 #define PUSH_FORWARD_H_
-
+#if 0
 #include <igatools/geometry/mapping.h>
 
 IGA_NAMESPACE_OPEN
@@ -175,5 +175,5 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif // PUSH_FORWARD_H_

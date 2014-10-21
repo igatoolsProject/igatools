@@ -21,6 +21,7 @@
 #ifndef MAPPING_ELEMENT_ACCESSOR_H_
 #define MAPPING_ELEMENT_ACCESSOR_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
@@ -515,5 +516,5 @@ protected:
 };
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif // MAPPING_ELEMENT_ACCESSOR_H_

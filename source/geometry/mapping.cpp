@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/geometry/mapping.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
@@ -234,3 +235,4 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping.inst>
+#endif

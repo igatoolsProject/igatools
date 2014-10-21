@@ -21,6 +21,7 @@
 #ifndef __WRITER_H_
 #define __WRITER_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/geometry/cartesian_grid.h>
@@ -370,5 +371,6 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
+#endif
 
 #endif /* __WRITER_H_ */

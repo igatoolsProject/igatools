@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #ifndef PHYSICAL_SPACE_ELEMENT_ACCESSOR_H
 #define PHYSICAL_SPACE_ELEMENT_ACCESSOR_H
 
@@ -471,5 +471,5 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif // PHYSICAL_SPACE_ELEMENT_ACCESSOR_H

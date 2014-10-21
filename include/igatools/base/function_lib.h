@@ -21,9 +21,6 @@
 #ifndef __IGA_FUNCTION_LIB_H_
 #define __IGA_FUNCTION_LIB_H_
 
-#include <igatools/base/config.h>
-#include <igatools/base/function.h>
-
 #include <igatools/base/formula_function.h>
 
 IGA_NAMESPACE_OPEN
@@ -50,12 +47,12 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 
     LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                   const ValueFlags &flag, const Quadrature<dim> &quad,
+                   const NewValueFlags &flag, const Quadrature<dim> &quad,
                    const Gradient &A, const Value &b);
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<const CartesianGrid<dim>> grid,
-           const ValueFlags &flag, const Quadrature<dim> &quad,
+           const NewValueFlags &flag, const Quadrature<dim> &quad,
            const Gradient &A, const Value &b);
 private:
     void evaluate_0(const ValueVector<Point> &points,
@@ -72,6 +69,7 @@ private:
     const Value    b_;
 };
 
+#if 0
 //------------------------------------------------------------------------------
 
 /**
@@ -115,18 +113,9 @@ private:
 
 };
 
-
-
-
-
-
-
-
-
-
+#endif
 
 } // of namespace functions.
-
 
 IGA_NAMESPACE_CLOSE
 

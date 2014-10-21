@@ -21,6 +21,7 @@
 #ifndef MAPPING_H_
 #define MAPPING_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/base/function.h>
@@ -250,5 +251,5 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif /* MAPPING_H_ */

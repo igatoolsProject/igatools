@@ -23,21 +23,12 @@
 
 using std::shared_ptr;
 
-//namespace
-//{
-//auto function_to_grid_flag(const ValueFlags &fun_flag)
-//{
-//    ValueFlags grid_flag;
-//    if (contain)
-//}
-//
-//}
 IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
-                const ValueFlags &flag,
+                const NewValueFlags &flag,
                 const Quadrature<dim> &quad)
     :
     parent_t::NewFunction(grid, flag, quad),
@@ -50,7 +41,7 @@ FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
 template<int dim, int codim, int range, int rank>
 void
 FormulaFunction<dim, codim, range, rank>::
-reset(const ValueFlags &flag, const Quadrature<dim> &quad)
+reset(const NewValueFlags &flag, const Quadrature<dim> &quad)
 {
 	parent_t::reset(flag, quad);
     flag_ = flag;

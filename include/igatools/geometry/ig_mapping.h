@@ -20,7 +20,7 @@
 
 #ifndef IG_MAPPING_H_
 #define IG_MAPPING_H_
-
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/geometry/spline_mapping.h>
 #include <igatools/utils/dynamic_multi_array.h>
@@ -263,5 +263,5 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 #endif // #ifndef IG_MAPPING_

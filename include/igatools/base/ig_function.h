@@ -48,7 +48,7 @@ public:
 
     using CoeffType = Vector<LAPack::trilinos>;
 
-    IgFunction(const ValueFlags &flag, const Quadrature<dim> &quad,
+    IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
                std::shared_ptr<const Space> space,
                const CoeffType &coeff);
 
@@ -57,7 +57,7 @@ public:
     void fill_elem(ElementAccessor &elem);
 
 private:
-    ValueFlagsHandler flag_;
+    FunctionFlags flag_;
 
     Quadrature<dim> quad_;
 
@@ -67,7 +67,7 @@ private:
 
     typename Space::ElementIterator elem_;
 
-    typename Space::UniformQuadCache space_filler_;
+    typename Space::ElementHandler space_filler_;
 };
 
 IGA_NAMESPACE_CLOSE

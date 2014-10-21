@@ -26,50 +26,50 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
-ValueFlags
-get_reference_space_accessor_fill_flags(const ValueFlags fill_flag,
+NewValueFlags
+get_reference_space_accessor_fill_flags(const NewValueFlags fill_flag,
                                         const Transformation transformation_type)
 {
     bool fill_values = false;
     bool fill_gradients = false;
     bool fill_hessians = false;
-    bool fill_face_values = false;
-    bool fill_face_gradients = false;
-    bool fill_face_hessians = false;
+//    bool fill_face_values = false;
+//    bool fill_face_gradients = false;
+//    bool fill_face_hessians = false;
 
-    if (contains(fill_flag , ValueFlags::value))
+    if (contains(fill_flag , NewValueFlags::value))
         fill_values = true;
 
-    if (contains(fill_flag , ValueFlags::gradient))
+    if (contains(fill_flag , NewValueFlags::gradient))
         fill_gradients = true;
 
-    if (contains(fill_flag , ValueFlags::hessian))
+    if (contains(fill_flag , NewValueFlags::hessian))
         fill_hessians = true;
 
-    if (contains(fill_flag , ValueFlags::face_value))
-        fill_face_values = true;
-
-    if (contains(fill_flag , ValueFlags::face_gradient))
-        fill_face_gradients = true;
-
-    if (contains(fill_flag , ValueFlags::face_hessian))
-        fill_face_hessians = true;
+//    if (contains(fill_flag , NewValueFlags::face_value))
+//        fill_face_values = true;
+//
+//    if (contains(fill_flag , NewValueFlags::face_gradient))
+//        fill_face_gradients = true;
+//
+//    if (contains(fill_flag , NewValueFlags::face_hessian))
+//        fill_face_hessians = true;
 
 
     bool fill_D0_phi_hat = false;
     bool fill_D1_phi_hat = false;
     bool fill_D2_phi_hat = false;
-    bool fill_face_D0_phi_hat = false;
-    bool fill_face_D1_phi_hat = false;
-    bool fill_face_D2_phi_hat = false;
+//    bool fill_face_D0_phi_hat = false;
+//    bool fill_face_D1_phi_hat = false;
+//    bool fill_face_D2_phi_hat = false;
     if (transformation_type == Transformation::h_grad)
     {
         fill_D0_phi_hat = fill_values;
         fill_D1_phi_hat = fill_gradients || fill_hessians;
         fill_D2_phi_hat = fill_hessians;
-        fill_face_D0_phi_hat = fill_face_values;
-        fill_face_D1_phi_hat = fill_face_gradients || fill_face_hessians;
-        fill_face_D2_phi_hat = fill_face_hessians;
+//        fill_face_D0_phi_hat = fill_face_values;
+//        fill_face_D1_phi_hat = fill_face_gradients || fill_face_hessians;
+//        fill_face_D2_phi_hat = fill_face_hessians;
     }
     else if (transformation_type == Transformation::h_div  ||
              transformation_type == Transformation::h_curl ||
@@ -78,66 +78,67 @@ get_reference_space_accessor_fill_flags(const ValueFlags fill_flag,
         fill_D0_phi_hat = fill_values || fill_gradients || fill_hessians;
         fill_D1_phi_hat = fill_gradients || fill_hessians;
         fill_D2_phi_hat = fill_hessians;
-        fill_face_D0_phi_hat = fill_face_values || fill_face_gradients || fill_face_hessians;
-        fill_face_D1_phi_hat = fill_face_gradients || fill_face_hessians;
-        fill_face_D2_phi_hat = fill_face_hessians;
+//        fill_face_D0_phi_hat = fill_face_values || fill_face_gradients || fill_face_hessians;
+//        fill_face_D1_phi_hat = fill_face_gradients || fill_face_hessians;
+//        fill_face_D2_phi_hat = fill_face_hessians;
     }
 
 
-    ValueFlags reference_space_accessor_fill_flags = ValueFlags::none;
+    NewValueFlags reference_space_accessor_fill_flags = NewValueFlags::none;
     if (fill_D0_phi_hat)
-        reference_space_accessor_fill_flags |= ValueFlags::value;
+        reference_space_accessor_fill_flags |= NewValueFlags::value;
 
     if (fill_D1_phi_hat)
-        reference_space_accessor_fill_flags |= ValueFlags::gradient;
+        reference_space_accessor_fill_flags |= NewValueFlags::gradient;
 
     if (fill_D2_phi_hat)
-        reference_space_accessor_fill_flags |= ValueFlags::hessian;
+        reference_space_accessor_fill_flags |= NewValueFlags::hessian;
 
-    if (fill_face_D0_phi_hat)
-        reference_space_accessor_fill_flags |= ValueFlags::face_value;
+//    if (fill_face_D0_phi_hat)
+//        reference_space_accessor_fill_flags |= NewValueFlags::face_value;
+//
+//    if (fill_face_D1_phi_hat)
+//        reference_space_accessor_fill_flags |= NewValueFlags::face_gradient;
+//
+//    if (fill_face_D2_phi_hat)
+//        reference_space_accessor_fill_flags |= NewValueFlags::face_hessian;
 
-    if (fill_face_D1_phi_hat)
-        reference_space_accessor_fill_flags |= ValueFlags::face_gradient;
-
-    if (fill_face_D2_phi_hat)
-        reference_space_accessor_fill_flags |= ValueFlags::face_hessian;
-
-    if (contains(fill_flag , ValueFlags::measure))
-        reference_space_accessor_fill_flags |= ValueFlags::measure;
+    if (contains(fill_flag , NewValueFlags::measure))
+        reference_space_accessor_fill_flags |= NewValueFlags::measure;
 
 
     return reference_space_accessor_fill_flags;
 }
 
 
-ValueFlags
-get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
+NewValueFlags
+get_push_forward_accessor_fill_flags(const NewValueFlags fill_flag)
 {
-    const ValueFlags common_flag =
-        ValueFlags::point|
-        ValueFlags::value|
-        ValueFlags::gradient|
-        ValueFlags::hessian|
-        ValueFlags::measure|
-        ValueFlags::w_measure|
-        ValueFlags::face_point|
-        ValueFlags::map_face_value|
-        ValueFlags::map_face_gradient|
-        ValueFlags::map_face_hessian|
-        ValueFlags::face_w_measure|
-        ValueFlags::face_normal;
+    const NewValueFlags common_flag =
+        NewValueFlags::point|
+        NewValueFlags::value|
+        NewValueFlags::gradient|
+        NewValueFlags::hessian|
+        NewValueFlags::measure|
+        NewValueFlags::w_measure;
 
-    ValueFlags pf_flags = fill_flag & common_flag;
+//        NewValueFlags::face_point|
+//        NewValueFlags::map_face_value|
+//        NewValueFlags::map_face_gradient|
+//        NewValueFlags::map_face_hessian|
+//        NewValueFlags::face_w_measure|
+//        NewValueFlags::face_normal;
 
-    if (contains(fill_flag , ValueFlags::value) || contains(fill_flag , ValueFlags::face_value))
-        pf_flags |= ValueFlags::tran_value;
+    NewValueFlags pf_flags = fill_flag & common_flag;
 
-    if (contains(fill_flag , ValueFlags::gradient) || contains(fill_flag , ValueFlags::face_gradient))
-        pf_flags |= ValueFlags::tran_gradient;
+    if (contains(fill_flag , NewValueFlags::value) )
+        pf_flags |= NewValueFlags::tran_value;
 
-    if (contains(fill_flag , ValueFlags::hessian) || contains(fill_flag , ValueFlags::face_hessian))
-        pf_flags |= ValueFlags::tran_hessian;
+    if (contains(fill_flag , NewValueFlags::gradient) )
+        pf_flags |= NewValueFlags::tran_gradient;
+
+    if (contains(fill_flag , NewValueFlags::hessian) )
+        pf_flags |= NewValueFlags::tran_hessian;
 
     return pf_flags;
 }
@@ -149,13 +150,13 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag)
 template<class PhysSpace>
 SpaceElementHandler<PhysSpace>::
 SpaceElementHandler(std::shared_ptr<const PhysSpace> space,
-                    const ValueFlags flag,
+                    const NewValueFlags flag,
                     const Quadrature<dim> &quad)
     :
-    RefSpaceCache(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::type), quad),
+    RefSpaceElementHandler(space->get_reference_space(), get_reference_space_accessor_fill_flags(flag, PhysSpace::PushForwardType::type), quad),
     PFCache(space->get_map_func(), get_push_forward_accessor_fill_flags(flag), quad),
     space_(space),
-    flags_(flag),
+    flags_ {flag, flag},
     quad_(quad)
 {}
 
@@ -166,8 +167,9 @@ auto
 SpaceElementHandler<PhysSpace>::
 init_element_cache(ElementAccessor &elem) -> void
 {
-    RefSpaceCache::init_element_cache(elem.get_ref_space_accessor());
+    RefSpaceElementHandler::init_element_cache(elem.get_ref_space_accessor());
     PFCache::init_element(elem);
+
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     if (cache == nullptr)
     {
@@ -176,13 +178,14 @@ init_element_cache(ElementAccessor &elem) -> void
     }
 
     auto n_basis = space_->get_num_all_element_basis();
-    auto &elem_cache = cache->elem_values_;
-    elem_cache.resize(flags_, quad_, n_basis);
+    auto &elem_cache = cache->template get_value_cache<0>(0);
+    elem_cache.resize(std::get<0>(flags_), quad_, n_basis);
 
-    //        auto &face_cache = cache->face_values_;
-    //        for (auto f: base_t::faces)
-    //            face_cache[f].resize(face_flags_, quad_, n_basis, f);
-
+    for (auto &f : RefSpaceElementHandler::faces)
+    {
+        auto &face_cache = cache->template get_value_cache<1>(f);
+        face_cache.resize(std::get<1>(flags_), quad_.collapse_to_face(f), n_basis);
+    }
 }
 
 
@@ -193,30 +196,32 @@ SpaceElementHandler<PhysSpace>::
 fill_element_cache(ElementAccessor &elem) -> void
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-    RefSpaceCache::fill_element_cache(ref_elem);
+    RefSpaceElementHandler::fill_element_cache(ref_elem);
     PFCache::fill_element(elem);
 
-    auto &cache = elem.get_elem_cache();
+    auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
+    auto &elem_cache = cache->template get_value_cache<0>(0);
 
-    if (cache.flags_handler_.fill_values())
+    if (elem_cache.flags_handler_.fill_values())
     {
-        const auto &ref_values = ref_elem.get_basis_values();
+        const auto &ref_values = ref_elem.template get_basis_ders<0,0>(0);
         elem.template transform_0<RefSpace::range,RefSpace::rank>
-        (ref_values, cache.phi_);
+        (ref_values, elem_cache.template get_der<0>());
 
-        cache.flags_handler_.set_values_filled(true);
+        elem_cache.flags_handler_.set_values_filled(true);
     }
 
 
-    if (cache.flags_handler_.fill_gradients())
+    if (elem_cache.flags_handler_.fill_gradients())
     {
-        const auto &ref_values = ref_elem.get_basis_values();
-        const auto &ref_der_1  = ref_elem.get_basis_gradients();
-        const auto &values = cache.phi_;
+        const auto &ref_values = ref_elem.template get_basis_ders<0,0>(0);
+        const auto &ref_der_1  = ref_elem.template get_basis_ders<0,1>(0);
+        const auto &values = elem_cache.template get_der<0>();
         elem.template transform_1<PhysSpace::range,PhysSpace::rank>
-        (std::make_tuple(ref_values, ref_der_1), values, cache.D1phi_);
+        (std::make_tuple(ref_values, ref_der_1), values,
+         elem_cache.template get_der<1>());
 
-        cache.flags_handler_.set_gradients_filled(true);
+        elem_cache.flags_handler_.set_gradients_filled(true);
     }
 
 #if 0
@@ -231,7 +236,7 @@ fill_element_cache(ElementAccessor &elem) -> void
                 dummy,
                 ref_space_element_accessor_.get_basis_gradients(topology_id),
                 ref_space_element_accessor_.get_basis_hessians(topology_id),
-                cache.D2phi_,
+                elem_cache.template get_ders<2>(),
                 topology_id);
 
         }
@@ -262,7 +267,7 @@ fill_element_cache(ElementAccessor &elem) -> void
 
 #endif
 
-    cache.set_filled(true);
+    elem_cache.set_filled(true);
 }
 
 
@@ -291,7 +296,7 @@ auto
 SpaceElementHandler<PhysSpace>::
 print_info(LogStream &out) const -> void
 {
-    RefSpaceCache::print_info(out);
+    RefSpaceElementHandler::print_info(out);
     //  PFCache::print_info(out);
 }
 
