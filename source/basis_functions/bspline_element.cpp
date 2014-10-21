@@ -18,18 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+
+#include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bernstein_basis.h>
-#include <igatools/base/exceptions.h>
-#include <igatools/basis_functions/new_bspline_space.h>
-#include <igatools/base/function.h>
+
 #include <igatools/utils/multi_array_utils.h>
 
 #include <algorithm>
 #include <numeric>
 #include <memory>
-
-#include <boost/numeric/ublas/io.hpp>
 
 using std::reverse;
 using std::accumulate;
@@ -278,7 +276,7 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const Index index)
     :
-    SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>(space,index)
+    parent_t(space,index)
 {}
 
 
@@ -288,16 +286,16 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const TensorIndex<dim> &index)
     :
-    SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>(space,index)
+    parent_t(space,index)
 {}
 
 
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
-BSplineElement(const BSplineElement<dim,range,rank> &elem,
+BSplineElement(const self_t &elem,
                const CopyPolicy &copy_policy)
     :
-    SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>(elem,copy_policy)
+    parent_t(elem,copy_policy)
 {}
 
 

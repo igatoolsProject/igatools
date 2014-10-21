@@ -80,7 +80,7 @@ private:
                             ValueVector<Derivative<2>> &values) const = 0;
 
 private:
-    ValueFlagsHandler flag_;
+    FunctionFlags flag_;
     Quadrature<dim> quad_;
 };
 

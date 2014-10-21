@@ -521,10 +521,10 @@ protected:
         void resize_der(const int n_basis, const int n_points)
         {
             auto &value = std::get<0>(values_);
-            if (value.get_num_points() != total_n_points ||
-                    value.get_num_functions() != total_n_basis)
+            if (value.get_num_points() != n_points ||
+                    value.get_num_functions() != n_basis)
             {
-                value.resize(total_n_basis,total_n_points);
+                value.resize(n_basis, n_points);
                 value.zero();
             }
         }

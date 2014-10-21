@@ -703,14 +703,14 @@ SpaceElement<Space>::
 LocalCache::
 print_info(LogStream &out) const
 {
-    out.begin_item("Space Element Cache:");
-    elem_values_.print_info(out);
+    out.begin_item("Element Cache:");
+    get_value_cache<0>(0).print_info(out);
     out.end_item();
 
     for (int i = 0 ; i < n_faces ; ++i)
     {
-        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
-        face_values_[i].print_info(out);
+        out.begin_item("Face "+ std::to_string(i) + " Cache:");
+        get_value_cache<1>(i).print_info(out);
         out.end_item();
     }
 

@@ -23,11 +23,12 @@
 #define BSPLINE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space_element_accessor.h>
+#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
+
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -40,11 +41,13 @@ template <typename Accessor> class GridForwardIterator;
  */
 template <int dim, int range, int rank>
 class BSplineElement :
-    public SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>
+    public SpaceElement<NewBSplineSpace<dim,range,rank>>
 {
-public:
-    using parent_t = SpaceElementAccessor<NewBSplineSpace<dim,range,rank>>;
+private:
+    using self_t = BSplineElement<dim,range,rank>;
+    using parent_t = SpaceElement<NewBSplineSpace<dim,range,rank>>;
 
+public:
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElement<dim>;
 
@@ -58,9 +61,6 @@ public:
     using parent_t::n_faces;
 
     using ValuesCache = typename parent_t::ValuesCache;
-
-    using parent_t::admisible_flag;
-
 
 public:
     template <int order>
@@ -93,23 +93,19 @@ public:
      * The default behaviour (i.e. using the proper interface of a classic copy constructor)
      * uses the deep copy.
      */
-    BSplineElement(const BSplineElement<dim,range,rank> &elem,
+    BSplineElement(const self_t &elem,
                    const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
      */
-    BSplineElement(BSplineElement<dim,range,rank> &&elem)
-        = default;
+    BSplineElement(self_t &&elem) = default;
 
     /**
      * Destructor.
      */
     ~BSplineElement() = default;
     ///@}
-
-
-
 
     /** @name Assignment operators */
     ///@{
@@ -118,57 +114,18 @@ public:
      * @note Creates a new element cache, but it shares
      * the one dimensional cache with the copied element.
      */
-    BSplineElement<dim, range, rank> &
-    operator=(const BSplineElement<dim, range, rank> &elem)
-        = default;
+    self_t &operator=(const self_t &elem) = default;
 
     /**
      * Move assignment operator.
      */
-    BSplineElement<dim, range, rank> &
-    operator=(BSplineElement<dim, range, rank> &&elem)
-        = default;
+    self_t &operator=(self_t &&elem) = default;
     ///@}
 
-
 public:
-    /** @name Cache initialization and filling */
+    /** @name Functions for the basis and field evaluations without the use of
+     * the cache */
     ///@{
-
-//    /**
-//     * Initializes the internal cache for the efficient
-//     * computation of the values requested in
-//     * the fill_flag on the given quadrature points.
-//     * This implies a uniform quadrature scheme
-//     * (i.e. the same for all elements).
-//     * @note This function should be called before fill_cache()
-//     */
-//    void init_cache(const ValueFlags fill_flag,
-//                    const Quadrature<dim> &quad);
-//
-//    /**
-//     * For a given face quadrature.
-//     */
-//    void init_face_cache(const ValueFlags fill_flag,
-//                         const Quadrature<dim-1> &quad,
-//                         const Index face_id);
-//
-//    /**
-//     * Fills the element values cache according to the evaluation points
-//     * and fill flags specifies in init_cache.
-//     *
-//     * @note The topology for which the measure is computed is specified by
-//     * the input argument @p topology_id.
-//     */
-//    void fill_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
-//    ///@}
-
-
-public:
-
-    /** @name Functions for the basis and field evaluations without the use of the cache */
-    ///@{
-
     /**
      * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
