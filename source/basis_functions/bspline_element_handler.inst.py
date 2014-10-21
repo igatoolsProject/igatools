@@ -20,7 +20,7 @@
 
 from init_instantiation_data import *
 
-include_files = ['basis_functions/bspline_element_accessor.h']
+include_files = ['basis_functions/bspline_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
