@@ -20,12 +20,18 @@
 
 from init_instantiation_data import *
 
-include_files = ['basis_functions/bspline_element.h']
+include_files = ['basis_functions/bspline_element.h',
+                 '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-space_caches = ['BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
-                for x in inst.really_all_ref_sp_dims]
-for row in space_caches:
-   f.write('template class %s; \n' % (row))
+
+for x in inst.really_all_ref_sp_dims:
+    f.write('template class BSplineElement<%d, %d, %d>; \n' 
+            %(x.dim, x.range, x.rank))
+    f.write('template class GridForwardIterator<BSplineElement<%d, %d, %d>>; \n' 
+            %(x.dim, x.range, x.rank))
+    f.write('template class BSplineElementHandler<%d, %d, %d>; \n' 
+            %(x.dim, x.range, x.rank))
+                
    
