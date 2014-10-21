@@ -24,10 +24,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/new_value_flags_handler.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/new_flags_handler.h>
 
+#include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid_element_accessor.h>
+
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
 #include <igatools/utils/static_multi_array.h>
@@ -37,16 +38,15 @@ IGA_NAMESPACE_OPEN
 
 template <typename Accessor> class GridForwardIterator;
 
-
 template<class Space>
 class SpaceElement : public CartesianGridElement<Space::dim>
 {
 private:
-    using base_t = CartesianGridElement<Space::dim>;
+    using base_t =  CartesianGridElement<Space::dim>;
+    using self_t = SpaceElement<Space>;
+
 public:
-    /** @name Types and aliases used and/or returned by the
-     * SpaceElement's methods. */
-    ///@{
+
     using DerivedElementAccessor = typename Space::ElementAccessor;
 
     using RefPoint = typename Space::RefPoint;
@@ -84,16 +84,17 @@ public:
 
     /**
      * Constructs an accessor to element number index of a
-     * BsplineSpace space.
+     * function space.
      */
     SpaceElement(const std::shared_ptr<const Space> space,
                  const Index elem_index);
 
-
+    /**
+     * Constructs an accessor to element number index of a
+     * function space.
+     */
     SpaceElement(const std::shared_ptr<const Space> space,
                  const TensorIndex<dim> &elem_index);
-
-
 
     /**
      * Copy constructor.
@@ -101,15 +102,14 @@ public:
      * The default behaviour (i.e. using the proper interface of a classic copy constructor)
      * uses the deep copy.
      */
-    SpaceElement(const SpaceElement<Space> &elem,
-                         const CopyPolicy &copy_policy = CopyPolicy::deep);
+    SpaceElement(const self_t &elem,
+                 const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /**
      * Move constructor.
      */
-    SpaceElement(SpaceElement<Space> &&elem)
-        = default;
+    SpaceElement(self_t &&elem) = default;
 
     /**
      * Destructor.
@@ -124,16 +124,13 @@ public:
      *
      * @note Internally it uses the function shallow_copy_from().
      */
-    SpaceElement<Space>
-    &operator=(const SpaceElement<Space> &element);
+    self_t &operator=(const self_t &element);
 
     /**
      * Move assignment operator.
      */
-    SpaceElement<Space>
-    &operator=(SpaceElement<Space> &&elem) = default;
+    self_t &operator=(self_t &&elem) = default;
     ///@}
-
 
     /**
      * @name Functions for performing different kind of copy.
@@ -145,18 +142,21 @@ public:
      *
      * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
      */
-    void deep_copy_from(const SpaceElement<Space> &element);
+    void deep_copy_from(const self_t &element);
 
 
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
-    void shallow_copy_from(const SpaceElement<Space> &element);
+    void shallow_copy_from(const self_t &element);
     ///@}
 
+    template<int skel_dim, int der_order>
+    auto
+    get_basis_ders(const int j) const;
 
-
+#if 0
     /** @name Functions returning the value of the basis functions. */
     ///@{
     /**
@@ -184,15 +184,13 @@ public:
      * @note The @p topology_id parameter can be used to select values on the element
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
-    Value const &
-    get_basis_value(const Index basis, const Index qp);
+    Value const & get_basis_value(const Index basis, const Index qp);
 
     /**
      * Returns the const reference to a ValueTable with the values of all local basis function
      * at each evaluation point on the face specified by @p face_id.
      */
-    ValueTable<Value> const &
-    get_face_basis_values(const Index face_id) const;
+    ValueTable<Value> const & get_face_basis_values(const Index face_id) const;
     ///@}
 
 
@@ -242,7 +240,7 @@ public:
      * @note The @p topology_id parameter can be used to select values on the element
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
-    ValueTable<Derivative<2>> const &get_basis_hessians(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    ValueTable<Derivative<2>> const &get_basis_hessians() const;
 
     /**
      * Returns a const view to the hessians of the <tt>i</tt>-th basis function at each evaluation point.
@@ -261,7 +259,7 @@ public:
      * @note The @p topology_id parameter can be used to select values on the element
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
-    Derivative<2> const &get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    Derivative<2> const &get_basis_hessian(const Index basis, const Index qp) const;
 
     /**
      * Returns the const reference to a ValueTable with the hessians of all local basis function
@@ -278,7 +276,7 @@ public:
      * @note The @p topology_id parameter can be used to select values on the element
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
-    ValueTable<Div> const &get_basis_divergences(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    ValueTable<Div> const &get_basis_divergences() const;
 
     /**
      * Returns a const view to the divergences of the <tt>i</tt>-th basis function at each evaluation point.
@@ -286,7 +284,7 @@ public:
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
     typename ValueTable<Div>::const_view
-    get_basis_divergences(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    get_basis_divergences(const Index i) const;
 
     /**
      * Returns the const reference to the divergence of a local basis function
@@ -388,7 +386,7 @@ public:
                                     const vector<Real> &local_coefs) const;
     ///@}
 
-
+#endif
 
     /** @name Query information without use of cache */
     ///@{
@@ -499,17 +497,10 @@ protected:
                     const Quadrature<dim> &quad,
                     const SpaceDimensionTable &n_basis_);
 
-        /** Returns the values. */
-        const ValueTable<Value> &get_values() const;
-
-        /** Returns the gradients. */
-        const ValueTable<Derivative<1>> &get_gradients() const;
-
-        /** Returns the hessians. */
-        const ValueTable<Derivative<2>> &get_hessians() const;
 
         /** Returns the divergences. */
-        const ValueTable<Div> &get_divergences() const;
+        //const ValueTable<Div> &get_divergences() const;
+
 
     public:
         void print_info(LogStream &out) const;
@@ -520,8 +511,31 @@ protected:
         ValueTable<Derivative<1>>,
         ValueTable<Derivative<2>>> values_;
 
-        //TODO(pauletti, Sep 6, 2014): should be removed
-      //  Quadrature<dim> quad_;
+        template<int k>
+        const auto &get_der()
+        {
+            return std::get<k>(values_);
+        }
+
+        template<int k>
+        void resize_der(const int n_basis, const int n_points)
+        {
+            auto &value = std::get<0>(values_);
+            if (value.get_num_points() != total_n_points ||
+                    value.get_num_functions() != total_n_basis)
+            {
+                value.resize(total_n_basis,total_n_points);
+                value.zero();
+            }
+        }
+
+        template<int k>
+        void clear_der(const int n_basis, const int n_points)
+        {
+            auto &value = std::get<0>(values_);
+            value.clear();
+        }
+
     };
 
 
@@ -554,33 +568,19 @@ protected:
     };
 
     /** The local (element and face) cache. */
-            std::shared_ptr<LocalCache> local_cache_;
+    std::shared_ptr<LocalCache> local_cache_;
 
 
     /**
      * Performs a copy of the input @p element.
      * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
-    void copy_from(const SpaceElement<Space> &element,
+    void copy_from(const self_t &element,
                    const CopyPolicy &copy_policy);
 
 
 
 public:
-
-
-
-
-    /**
-     * @todo Document this function
-     */
-    const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * @todo Document this function
-     */
-    ValuesCache &get_values_cache(const TopologyId<dim> &topology_id = ElemTopology<dim>());
-
 
     /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
     CartesianGridElement<dim> &as_cartesian_grid_element_accessor();

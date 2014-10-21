@@ -36,7 +36,7 @@ SpaceElement<Space>::
 SpaceElement(const std::shared_ptr<const Space> space,
                      const Index elem_index)
     :
-    CartesianGridElement<dim>(space->get_grid(), elem_index),
+    base_t(space->get_grid(), elem_index),
     space_(space),
     n_basis_direction_(space->get_num_all_element_basis())
 {
@@ -53,7 +53,8 @@ SpaceElement(const std::shared_ptr<const Space> space,
 
     comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_[comp_id] = comp_offset_[comp_id-1] + n_basis_direction_.comp_dimension[comp_id-1];
+        comp_offset_[comp_id] = comp_offset_[comp_id-1] +
+        n_basis_direction_.comp_dimension[comp_id-1];
 }
 
 
@@ -62,28 +63,12 @@ template<class Space>
 inline
 SpaceElement<Space>::
 SpaceElement(const std::shared_ptr<const Space> space,
-                     const TensorIndex<dim> &elem_index)
+             const TensorIndex<dim> &elem_index)
     :
-    CartesianGridElement<dim>(space->get_grid(), elem_index),
-    space_(space)
-{
-    Assert(space_ != nullptr, ExcNullPtr());
+    SpaceElement(space->get_grid(), space->get_grid()->tensor_to_flat(elem_index))
+{}
 
-    using Indexer = CartesianProductIndexer<dim>;
-    n_basis_direction_ = space_->get_num_all_element_basis();
-    for (int comp_id : basis_functions_indexer_.get_active_components_id())
-    {
-        //n_basis_direction_[comp_id] = TensorSize<dim>(degree_table[comp_id]+1);
-        // creating the objects for fast conversion from flat-to-tensor indexing
-        // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_[comp_id] =
-            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
-    }
 
-    comp_offset_[0] = 0;
-    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_[comp_id]= comp_offset_[comp_id-1] + n_basis_direction_[comp_id].flat_size();
-}
 
 template<class Space>
 inline
@@ -109,6 +94,7 @@ SpaceElement(const SpaceElement<Space> &elem,
         }
     }
 }
+
 
 
 template<class Space>
@@ -143,6 +129,7 @@ copy_from(const SpaceElement<Space> &elem,
 }
 
 
+
 template<class Space>
 void
 SpaceElement<Space>::
@@ -151,6 +138,8 @@ deep_copy_from(const SpaceElement<Space> &elem)
     this->copy_from(elem,CopyPolicy::deep);
 }
 
+
+
 template<class Space>
 void
 SpaceElement<Space>::
@@ -158,6 +147,8 @@ shallow_copy_from(const SpaceElement<Space> &elem)
 {
     this->copy_from(elem,CopyPolicy::shallow);
 }
+
+
 
 template<class Space>
 SpaceElement<Space> &
@@ -179,6 +170,8 @@ as_cartesian_grid_element_accessor() -> CartesianGridElement<dim> &
     return static_cast<CartesianGridElement<dim> &>(*this);
 }
 
+
+
 template<class Space>
 inline
 auto
@@ -187,6 +180,7 @@ as_cartesian_grid_element_accessor() const -> const CartesianGridElement<dim> &
 {
     return static_cast<const CartesianGridElement<dim> &>(*this);
 }
+
 
 
 template<class Space>
@@ -198,6 +192,8 @@ as_derived_element_accessor() -> DerivedElementAccessor &
     return static_cast<DerivedElementAccessor &>(*this);
 }
 
+
+
 template<class Space>
 inline
 auto
@@ -207,138 +203,29 @@ as_derived_element_accessor() const -> const DerivedElementAccessor &
     return static_cast<const DerivedElementAccessor &>(*this);
 }
 
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_basis_values_at_points(const ValueVector<RefPoint> &points) const -> ValueTable<Value>
-{
-    return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<0>(points);
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_basis_gradients_at_points(const ValueVector<RefPoint> &points) const -> ValueTable<Derivative<1> >
-{
-    return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<1>(points);
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_basis_hessians_at_points(const ValueVector<RefPoint> &points) const -> ValueTable<Derivative<2> >
-{
-    return this->as_derived_element_accessor().template evaluate_basis_derivatives_at_points<2>(points);
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-get_basis_values(const Quadrature<dim> &quad) const -> ValueTable< Value >
-{
-    this->evaluate_basis_values_at_points(quad.get_points());
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-get_basis_gradients(const Quadrature<dim> &quad) const -> ValueTable< Derivative<1> >
-{
-    this->evaluate_basis_gradients_at_points(quad.get_points());
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-get_basis_hessians(const Quadrature<dim> &quad) const -> ValueTable< Derivative<2> >
-{
-    this->evaluate_basis_hessians_at_points(quad.get_points());
-}
-
-
 
 
 template<class Space>
-template <int deriv_order>
-inline
+template<int skel_dim, int der_order>
 auto
 SpaceElement<Space>::
-evaluate_field_derivatives_at_points(
-    const vector<Real> &local_coefs,
-    const ValueVector<RefPoint> &points) const ->
-ValueVector< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
+get_basis_ders(const int j) const
 {
-    const auto &derived_element_accessor = this->as_derived_element_accessor();
-    Assert(derived_element_accessor.get_num_basis() == local_coefs.size(),
-    ExcDimensionMismatch(derived_element_accessor.get_num_basis(),local_coefs.size()));
-
-    const auto derivatives_phi_hat =
-    derived_element_accessor.template evaluate_basis_derivatives_at_points<deriv_order>(points);
-    Assert(derivatives_phi_hat.get_num_functions() == derived_element_accessor.get_num_basis(),
-    ExcDimensionMismatch(derivatives_phi_hat.get_num_functions(), derived_element_accessor.get_num_basis())) ;
-
-    return derivatives_phi_hat.evaluate_linear_combination(local_coefs) ;
-}
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_field_values_at_points(
-    const vector<Real> &local_coefs,
-    const ValueVector<RefPoint> &points) const -> ValueVector<Value>
-{
-    return this->evaluate_field_derivatives_at_points<0>(local_coefs,points);
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_field_gradients_at_points(
-    const vector<Real> &local_coefs,
-    const ValueVector<RefPoint> &points) const -> ValueVector<Derivative<1> >
-{
-    return this->evaluate_field_derivatives_at_points<1>(local_coefs,points);
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_field_hessians_at_points(
-    const vector<Real> &local_coefs,
-    const ValueVector<RefPoint> &points) const -> ValueVector<Derivative<2> >
-{
-    return this->evaluate_field_derivatives_at_points<2>(local_coefs,points);
-}
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-get_basis_values(const TopologyId<dim> &topology_id) const -> ValueTable<Value> const &
-{
-    const auto &cache = this->get_values_cache(topology_id);
+    const auto &cache = local_cache_->template get_value_cache<skel_dim>(j);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
-    Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
+   // Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
 
-    return cache.phi_;
+    return cache.template get_der<der_order>();
 }
 
+
+#if 0
 template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_face_basis_values(const Index face_id) const -> ValueTable<Value> const &
+get_face_basis_values(const Index face_id) const
+-> ValueTable<Value> const &
 {
     return this->get_basis_values(FaceTopology<dim>(face_id));
 }
@@ -349,16 +236,18 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_values(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Value>::const_view
+get_basis_values(const Index i,) const
+-> typename ValueTable<Value>::const_view
 {
     return this->get_basis_values(topology_id).get_function_view(i);
 }
+
 
 template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_value(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Value const &
+get_basis_value(const Index basis, const Index qp,) const -> Value const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
            ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
@@ -372,7 +261,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_gradients(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<1>> const &
+get_basis_gradients() const -> ValueTable<Derivative<1>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -396,7 +285,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_gradients(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Derivative<1>>::const_view
+get_basis_gradients(const Index i,) const -> typename ValueTable<Derivative<1>>::const_view
 {
     return this->get_basis_gradients(topology_id).get_function_view(i);
 }
@@ -405,7 +294,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_gradient(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<1> const &
+get_basis_gradient(const Index basis, const Index qp,) const -> Derivative<1> const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
            ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
@@ -420,7 +309,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_hessians(const TopologyId<dim> &topology_id) const -> ValueTable<Derivative<2>> const &
+get_basis_hessians() const -> ValueTable<Derivative<2>> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -444,7 +333,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_hessians(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Derivative<2>>::const_view
+get_basis_hessians(const Index i,) const -> typename ValueTable<Derivative<2>>::const_view
 {
     return this->get_basis_hessians(topology_id).get_function_view(i);
 }
@@ -453,7 +342,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_hessian(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Derivative<2> const &
+get_basis_hessian(const Index basis, const Index qp,) const -> Derivative<2> const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
            ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
@@ -467,7 +356,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_divergences(const TopologyId<dim> &topology_id) const -> ValueTable<Div> const &
+get_basis_divergences() const -> ValueTable<Div> const &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_filled() == true, ExcCacheNotFilled());
@@ -491,7 +380,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_divergences(const Index i,const TopologyId<dim> &topology_id) const -> typename ValueTable<Div>::const_view
+get_basis_divergences(const Index i,) const -> typename ValueTable<Div>::const_view
 {
     return this->get_basis_divergences(topology_id).get_function_view(i);
 }
@@ -500,7 +389,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id) const -> Div const &
+get_basis_divergence(const Index basis, const Index qp,) const -> Div const &
 {
     Assert(qp >= 0 && qp < this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size(),
            ExcIndexRange(qp,0,this->get_values_cache(topology_id).quad_.get_num_points_direction().flat_size()));
@@ -508,14 +397,7 @@ get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &to
 }
 
 
-//template<class Space>
-//inline
-//void
-//SpaceElement<Space>::
-//fill_face_cache(const Index face_id)
-//{
-//    this->as_derived_element_accessor().fill_cache(FaceTopology<dim>(face_id));
-//}
+
 
 
 
@@ -523,292 +405,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_values_cache(const TopologyId<dim> &topology_id) -> ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-    ExcMessage("Only element or face topology is allowed."));
-
-    Assert(local_cache_ != nullptr, ExcNullPtr());
-    if (topology_id.is_element())
-    {
-        return local_cache_->elem_values_;
-    }
-    else
-    {
-        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
-        ExcIndexRange(topology_id.get_id(),0,n_faces));
-
-        Assert(this->is_boundary(topology_id.get_id()),
-        ExcMessage("The requested face_id=" +
-        std::to_string(topology_id.get_id()) +
-        " is not a boundary for the element"));
-        return local_cache_->face_values_[topology_id.get_id()];
-    }
-}
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-get_values_cache(const TopologyId<dim> &topology_id) const -> const ValuesCache &
-{
-    Assert(topology_id.is_element() || topology_id.is_face(),
-           ExcMessage("Only element or face topology is allowed."));
-
-    Assert(local_cache_ != nullptr, ExcNullPtr());
-    if (topology_id.is_element())
-    {
-        return local_cache_->elem_values_;
-    }
-    else
-    {
-        Assert(topology_id.get_id()>=0 && topology_id.get_id() < n_faces,
-               ExcIndexRange(topology_id.get_id(),0,n_faces));
-
-        Assert(this->is_boundary(topology_id.get_id()),
-               ExcMessage("The requested face_id=" +
-                          std::to_string(topology_id.get_id()) +
-                          " is not a boundary for the element"));
-        return local_cache_->face_values_[topology_id.get_id()];
-    }
-}
-
-
-template<class Space>
-inline
-void
-SpaceElement<Space>::
-ValuesCache::
-resize(const BasisElemValueFlagsHandler &flags_handler,
-       const Quadrature<dim> &quad,
-       const  SpaceDimensionTable &n_basis_direction)
-{
-    quad_ = quad;
-    flags_handler_ = flags_handler;
-
-    const auto n_points_direction = quad.get_num_points_direction();
-    const auto total_n_points = n_points_direction.flat_size();
-    const auto total_n_basis = n_basis_direction.total_dimension;
-
-    Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
-    Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
-
-
-    if (flags_handler_.fill_values())
-    {
-        if (phi_.get_num_points() != total_n_points ||
-            phi_.get_num_functions() != total_n_basis)
-        {
-            phi_.resize(total_n_basis,total_n_points);
-            phi_.zero();
-        }
-    }
-    else
-    {
-        phi_.clear();
-    }
-
-    if (flags_handler_.fill_gradients())
-    {
-        if (D1phi_.get_num_points() != total_n_points ||
-            D1phi_.get_num_functions() != total_n_basis)
-        {
-            D1phi_.resize(total_n_basis,total_n_points);
-            D1phi_.zero();
-        }
-    }
-    else
-    {
-        D1phi_.clear();
-    }
-
-
-    if (flags_handler_.fill_divergences())
-    {
-        Assert(flags_handler_.fill_gradients(),
-               ExcMessage("Divergence requires gradient to be filled."));
-
-        if (div_phi_.get_num_points() != total_n_points ||
-            div_phi_.get_num_functions() != total_n_basis)
-        {
-            div_phi_.resize(total_n_basis,total_n_points);
-            div_phi_.zero();
-        }
-    }
-    else
-    {
-        div_phi_.clear();
-    }
-
-    if (flags_handler_.fill_hessians())
-    {
-        if (D2phi_.get_num_points() != total_n_points ||
-            D2phi_.get_num_functions() != total_n_basis)
-        {
-            D2phi_.resize(total_n_basis,total_n_points);
-            D2phi_.zero();
-        }
-    }
-    else
-    {
-        D2phi_.clear();
-    }
-
-    this->set_initialized(true);
-}
-
-#if 0
-template<class Space>
-inline
-void
-SpaceElement<Space>::
-ElementValuesCache::
-resize(const BasisElemValueFlagsHandler &flags_handler,
-       const Quadrature<dim> &quad,
-       const SpaceDimensionTable &n_basis_direction)
-{
-    ValuesCache::resize(flags_handler, quad, n_basis_direction);
-}
-#endif
-
-template<class Space>
-inline
-void
-SpaceElement<Space>::
-FaceValuesCache::
-resize(const BasisFaceValueFlagsHandler &flags_handler,
-       const Quadrature<dim> &quad,
-       const SpaceDimensionTable &n_basis_direction,
-       const Index face_id)
-{
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-//    const auto quad1 = quad.collapse_to_face(face_id);
-    ValuesCache::resize(flags_handler, quad.collapse_to_face(face_id), n_basis_direction);
-}
-
-
-#if 0
-template<class Space>
-inline
-void
-SpaceElement<Space>::
-FaceValuesCache::
-resize(const BasisFaceValueFlagsHandler &flags_handler,
-       const Quadrature<dim-1> &quad,
-       const SpaceDimensionTable &n_basis_direction,
-       const Index face_id)
-{
-    Assert(false,ExcNotImplemented()) ;
-    AssertThrow(false,ExcNotImplemented()) ;
-}
-#endif
-
-
-//template<class Space>
-//inline
-//void
-//SpaceElement<Space>::
-//reset_element_and_faces_cache(const ValueFlags fill_flag,
-//                              const Quadrature<dim> &quad)
-//{
-//    //--------------------------------------------------------------------------
-//    BasisElemValueFlagsHandler elem_flags(fill_flag);
-//    BasisFaceValueFlagsHandler face_flags(fill_flag);
-//
-//
-//    Assert(!elem_flags.fill_none() ||
-//           !face_flags.fill_none(),
-//           ExcMessage("Nothing to reset"));
-//
-//    if (!elem_flags.fill_none())
-//        this->elem_values_.resize(elem_flags, quad, n_basis_direction_);
-//
-//
-//    if (!face_flags.fill_none())
-//    {
-//        Index face_id = 0 ;
-//        for (auto &face_value : this->face_values_)
-//            face_value.resize(face_flags, quad, n_basis_direction_, face_id++);
-//    }
-//    //--------------------------------------------------------------------------
-//}
-
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-ValuesCache::
-get_values() const -> const ValueTable<Value> &
-{
-    return phi_;
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-ValuesCache::
-get_gradients() const -> const ValueTable<Derivative<1>> &
-{
-    return D1phi_;
-}
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-ValuesCache::
-get_hessians() const -> const ValueTable<Derivative<2>> &
-{
-    return D2phi_;
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-ValuesCache::
-get_divergences() const -> const ValueTable<Div> &
-{
-    return div_phi_;
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-ValuesCache::print_info(LogStream &out) const -> void
-{
-    out.begin_item("Fill flags:");
-    flags_handler_.print_info(out);
-    out.end_item();
-
-    out.begin_item("Values:");
-    phi_.print_info(out);
-    out.end_item();
-
-    out.begin_item("Gradients:");
-    D1phi_.print_info(out);
-    out.end_item();
-
-    out.begin_item("Hessians:");
-    D2phi_.print_info(out);
-    out.end_item();
-
-    out.begin_item("Divergeces:");
-    div_phi_.print_info(out);
-    out.end_item();
-}
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+evaluate_field(const vector<Real> &local_coefs,) const
 -> ValueVector<Value>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -838,7 +435,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const
+evaluate_field_gradients(const vector<Real> &local_coefs,) const
 -> ValueVector< Derivative<1> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
@@ -869,7 +466,7 @@ auto
 SpaceElement<Space>::
 evaluate_field_divergences(
     const vector<Real> &local_coefs,
-    const TopologyId<dim> &topology_id) const -> ValueVector<Div>
+    ) const -> ValueVector<Div>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_divergences() == true, ExcCacheNotFilled());
@@ -887,7 +484,8 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-evaluate_face_field_divergences(const Index face_id, const vector<Real> &local_coefs) const
+evaluate_face_field_divergences(const Index face_id,
+                                const vector<Real> &local_coefs) const
 -> ValueVector<Div>
 {
     return this->evaluate_field_divergences(local_coefs,FaceTopology<dim>(face_id));
@@ -897,7 +495,7 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
+evaluate_field_hessians(const vector<Real> &local_coefs,) const -> ValueVector< Derivative<2> >
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_hessians() == true, ExcCacheNotFilled());
@@ -915,14 +513,15 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-evaluate_face_field_hessians(const Index face_id, const vector<Real> &local_coefs) const
+evaluate_face_field_hessians(const Index face_id,
+                             const vector<Real> &local_coefs) const
 -> ValueVector< Derivative<2> >
 {
     return this->evaluate_field_hessians(local_coefs,FaceTopology<dim>(face_id));
 }
 
 
-
+#endif
 
 
 template<class Space>
@@ -992,12 +591,88 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_quad_points(const TopologyId<dim> &topology_id) const -> const Quadrature<dim> &
+get_quad_points() const -> const Quadrature<dim> &
 {
     const auto &cache = this->get_values_cache(topology_id);
     Assert(cache.is_initialized(), ExcNotInitialized());
 
     return cache.quad_;
+}
+
+template<class Space>
+inline
+void
+SpaceElement<Space>::
+ValuesCache::
+resize(const FunctionFlags &flags_handler,
+       const Quadrature<dim> &quad,
+       const SpaceDimensionTable &n_basis_)
+{
+    flags_handler_ = flags_handler;
+
+    const auto n_points_direction = quad.get_num_points_direction();
+    const auto total_n_points = n_points_direction.flat_size();
+    const auto total_n_basis = n_basis_direction.total_dimension;
+
+    Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
+    Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
+
+    if (flags_handler_.fill_values())
+        resize_der<0>(total_n_basis,total_n_points);
+    if (flags_handler_.fill_gradients())
+        resize_der<1>(total_n_basis,total_n_points);
+    if (flags_handler_.fill_hessians())
+        resize_der<2>(total_n_basis,total_n_points);
+
+#if 0
+    if (flags_handler_.fill_divergences())
+    {
+        Assert(flags_handler_.fill_gradients(),
+               ExcMessage("Divergence requires gradient to be filled."));
+
+        if (div_phi_.get_num_points() != total_n_points ||
+            div_phi_.get_num_functions() != total_n_basis)
+        {
+            div_phi_.resize(total_n_basis,total_n_points);
+            div_phi_.zero();
+        }
+    }
+    else
+    {
+        div_phi_.clear();
+    }
+#endif
+
+    this->set_initialized(true);
+}
+
+
+
+template<class Space>
+inline
+auto
+SpaceElement<Space>::
+ValuesCache::print_info(LogStream &out) const -> void
+{
+    out.begin_item("Fill flags:");
+    flags_handler_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Values:");
+    get_der<0>().print_info(out);
+    out.end_item();
+
+    out.begin_item("Gradients:");
+    get_der<1>().print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    get_der<2>().print_info(out);
+    out.end_item();
+
+//    out.begin_item("Divergeces:");
+//    div_phi_.print_info(out);
+//    out.end_item();
 }
 
 template<class Space>
