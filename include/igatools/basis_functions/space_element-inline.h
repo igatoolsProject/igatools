@@ -26,7 +26,7 @@
 // there is no need for inlining, it is only ignorance on how to
 // provide proper instantiation, needs to be improved
 
-#include <igatools/basis_functions/space_element_accessor.h>
+#include <igatools/basis_functions/space_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -65,7 +65,7 @@ SpaceElement<Space>::
 SpaceElement(const std::shared_ptr<const Space> space,
              const TensorIndex<dim> &elem_index)
     :
-    SpaceElement(space->get_grid(), space->get_grid()->tensor_to_flat(elem_index))
+    SpaceElement(space, space->get_grid()->tensor_to_flat(elem_index))
 {}
 
 
@@ -586,7 +586,7 @@ get_space() const -> std::shared_ptr<const Space>
     return space_;
 }
 
-
+#if 0
 template<class Space>
 inline
 auto
@@ -598,6 +598,9 @@ get_quad_points() const -> const Quadrature<dim> &
 
     return cache.quad_;
 }
+#endif
+
+
 
 template<class Space>
 inline
@@ -612,7 +615,7 @@ resize(const FunctionFlags &flags_handler,
 
     const auto n_points_direction = quad.get_num_points_direction();
     const auto total_n_points = n_points_direction.flat_size();
-    const auto total_n_basis = n_basis_direction.total_dimension;
+    const auto total_n_basis = n_basis_.total_dimension;
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));

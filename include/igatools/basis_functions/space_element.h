@@ -465,12 +465,13 @@ protected:
 
     /** Number of scalar basis functions along each direction, for all space components. */
     typename Space::SpaceDimensionTable n_basis_direction_;
-    /** Basis function ID offset between the different components. */
-    ComponentContainer<int> comp_offset_;
+
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
     ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
 
+    /** Basis function ID offset between the different components. */
+    ComponentContainer<int> comp_offset_;
     /**
      * Base class for the cache of the element values and
      * for the cache of the face values.
@@ -606,7 +607,6 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-//TODO(pauletti, Sep 7, 2014): why not include only in optimize mode?
-#include <igatools/basis_functions/space_element_accessor-inline.h>
+#include <igatools/basis_functions/space_element-inline.h>
 
 #endif // #ifndef SPACE_ELEMENT_ACCESSOR_

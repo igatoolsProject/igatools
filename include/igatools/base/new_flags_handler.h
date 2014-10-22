@@ -149,7 +149,7 @@ public:
     /**
      * Default constructor. Sets all boolean flags to false.
      */
-    FunctionFlags();
+    FunctionFlags() = default;
 
     FunctionFlags(const NewValueFlags &flag);
 

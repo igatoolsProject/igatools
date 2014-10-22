@@ -444,4 +444,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/new_bspline_space.inst>
+//#include <igatools/basis_functions/new_bspline_space.inst>

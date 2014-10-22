@@ -27,7 +27,7 @@
 #include <igatools/base/quadrature.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
-#include <igatools/utils/cartesian_product_array.h>
+#include <igatools/utils/cartesian_product_array-template.h>
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_element_handler.h>

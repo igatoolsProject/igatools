@@ -303,4 +303,4 @@ print_info(LogStream &out) const -> void
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/space_element_handler.inst>
+//#include <igatools/basis_functions/space_element_handler.inst>

@@ -21,14 +21,10 @@
 
 #ifndef SPACE_ELEMENT_ACCESSOR_INLINE_H_
 #define SPACE_ELEMENT_ACCESSOR_INLINE_H_
-
 #if 0
 #include <igatools/basis_functions/space_element_accessor.h>
 
-
 IGA_NAMESPACE_OPEN
-
-
 
 template<class Space>
 inline

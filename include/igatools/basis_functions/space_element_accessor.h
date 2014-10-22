@@ -22,6 +22,7 @@
 #ifndef SPACE_ELEMENT_ACCESSOR_H_
 #define SPACE_ELEMENT_ACCESSOR_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
 #include <igatools/base/value_flags_handler.h>
@@ -807,5 +808,5 @@ IGA_NAMESPACE_CLOSE
 
 //TODO(pauletti, Sep 7, 2014): why not include only in optimize mode?
 #include <igatools/basis_functions/space_element_accessor-inline.h>
-
+#endif
 #endif // #ifndef SPACE_ELEMENT_ACCESSOR_

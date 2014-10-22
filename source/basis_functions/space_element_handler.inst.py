@@ -29,14 +29,14 @@ include_files = ['basis_functions/bspline_element.h',
                  'basis_functions/space_element.h',
                  '../../source/geometry/grid_forward_iterator.cpp']
 
-# data = Instantiation(include_files)
-# (f, inst) = (data.file_output, data.inst)
-# 
-# for space in inst.PhysSpaces_v2:
-#     x = space.spec
-#     ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
-#     phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>' 
-#              %(ref_space, x.codim, x.trans_type))
-#     f.write('template class SpaceElementHandler<%s>; \n' %phys_sp)
-#     f.write('template class PhysicalSpaceElement<%s>; \n' %phys_sp)
-#     f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' %phys_sp)
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
+
+for space in inst.PhysSpaces_v2:
+    x = space.spec
+    ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
+    phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>'
+             %(ref_space, x.codim, x.trans_type))
+    f.write('template class SpaceElementHandler<%s>; \n' %phys_sp)
+    f.write('template class PhysicalSpaceElement<%s>; \n' %phys_sp)
+    f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' %phys_sp)
