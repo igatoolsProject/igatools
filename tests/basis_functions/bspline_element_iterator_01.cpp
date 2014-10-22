@@ -30,9 +30,9 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 template<int dim, int range, int rank = 1>
 void bspline_iterator(const int deg = 2)
@@ -40,14 +40,14 @@ void bspline_iterator(const int deg = 2)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-    using Space = BSplineSpace<dim, range, rank>;
-    using SpaceCache = BSplineUniformQuadCache<dim, range, rank >;
+    using Space = NewBSplineSpace<dim, range, rank>;
+    using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 
     const int n_qp = 3;
     QGauss< dim > quad(n_qp);
-    auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
-    SpaceCache cache(space, flag, quad);
+    auto flag = NewValueFlags::value|NewValueFlags::gradient|NewValueFlags::hessian;
+    ElementHandler cache(space, flag, quad);
 
     auto elem = space->begin();
     cache.init_element_cache(elem);

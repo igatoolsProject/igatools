@@ -39,8 +39,8 @@ void test()
     using Space = BSplineSpace<dim>;
     using Function = IgFunction<Space>;
 
-    auto flag = ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian;
+    auto flag = NewValueFlags::value | NewValueFlags::gradient |
+                NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
     const int deg = 1;
