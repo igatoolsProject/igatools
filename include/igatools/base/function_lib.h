@@ -30,6 +30,51 @@ IGA_NAMESPACE_OPEN
  */
 namespace functions
 {
+template<int dim, int codim, int range, int rank = 1>
+class ConstantFunction : public FormulaFunction<dim, codim, range, rank>
+{
+private:
+    using base_t = NewFunction<dim, codim, range, rank>;
+    using parent_t = FormulaFunction<dim, codim, range, rank>;
+    using self_t = ConstantFunction<dim, codim, range, rank>;
+public:
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<const CartesianGrid<dim>> grid,
+           const Value &b,
+           const NewValueFlags &flag = NewValueFlags::none,
+           const Quadrature<dim> &quad = Quadrature<dim>());
+
+protected:
+    ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+                     const Value &b,
+                     const NewValueFlags &flag,
+                     const Quadrature<dim> &quad);
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const;
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const;
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const;
+
+private:
+      const Value b_;
+};
+
+
+
+//------------------------------------------------------------------------------
 
 template<int dim, int codim, int range>
 class LinearFunction : public FormulaFunction<dim, codim, range, 1>
@@ -46,14 +91,19 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                   const NewValueFlags &flag, const Quadrature<dim> &quad,
-                   const Gradient &A, const Value &b);
-
     static std::shared_ptr<base_t>
     create(std::shared_ptr<const CartesianGrid<dim>> grid,
-           const NewValueFlags &flag, const Quadrature<dim> &quad,
-           const Gradient &A, const Value &b);
+           const Gradient &A,
+           const Value &b,
+           const NewValueFlags &flag = NewValueFlags::none,
+           const Quadrature<dim> &quad = Quadrature<dim>());
+
+protected:
+    LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+                   const Gradient &A, const Value &b,
+                   const NewValueFlags &flag,
+                   const Quadrature<dim> &quad);
+
 private:
     void evaluate_0(const ValueVector<Point> &points,
                     ValueVector<Value> &values) const;

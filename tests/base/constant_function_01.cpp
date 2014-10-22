@@ -27,45 +27,59 @@
 
 #include "../tests.h"
 #include <igatools/base/function_lib.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/base/function_element.h>
 
 using namespace functions;
 
-template<int dim, int rdim, int rank>
+template<int dim, int codim, int range, int rank>
 void
-run_test(ConstantFunction<dim,rdim,rank> &fun)
+test(shared_ptr<NewFunction<dim,codim, range,rank>> F,
+     shared_ptr<CartesianGrid<dim>> grid)
 {
-    using value_t = typename Function<dim,rdim,rank>::Value;
-    using point_t = typename Function<dim,rdim,rank>::Point;
+    using ElementIterator = typename  NewFunction<dim, codim, range, rank>::ElementIterator;
+    ElementIterator elem(grid, 0);
+    ElementIterator end(grid, IteratorState::pass_the_end);
 
-
-    const int n_pts = 3;
-    ValueVector<point_t> points(n_pts);
-    ValueVector<value_t> values(n_pts);
-
-    fun.evaluate(points, values);
-
-    points.print_info(out);
-    out << endl;
-    values.print_info(out);
-    out << endl;
+    F->init_elem(elem);
+    for (; elem != end; ++elem)
+    {
+        F->fill_elem(elem);
+        elem->get_points().print_info(out);
+        out << endl;
+        elem->get_values().print_info(out);
+        out << endl;
+        elem->get_gradients().print_info(out);
+        out << endl;
+        elem->get_hessians().print_info(out);
+        out << endl;
+    }
 
 }
 
+template<int dim, int codim, int range, int rank>
+void create_fun()
+{
+    using Function = functions::ConstantFunction<dim, codim, range, rank>;
 
+    typename Function::Value b;
+
+    for (int i=0; i<range; ++i)
+        for (int j=0; j<rank; ++j)
+            b[i] = i;
+
+    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
+                NewValueFlags::hessian;
+    auto quad = QGauss<dim>(2);
+    auto grid = CartesianGrid<dim>::create(3);
+    auto F = Function::create(grid, b, flag, quad);
+    test<dim, codim, range>(F, grid);
+}
 
 int main()
 {
-    ConstantFunction<0> f0( {Real(2.)});
-    run_test<0,1,1>(f0);
-
-    ConstantFunction<1> f1( {Real(2.)});
-    run_test<1,1,1>(f1);
-
-    ConstantFunction<2> f2( {Real(2.)});
-    run_test<2,1,1>(f2);
-
-    ConstantFunction<2,2> f22( {Real(2.), Real(3.)});
-    run_test<2,2,1>(f22);
+    create_fun<1,0,1,1>();
+    create_fun<2,0,2,1>();
 
     return 0;
 }

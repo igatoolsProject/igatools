@@ -70,12 +70,12 @@ void create_fun()
         b[i] = i;
     }
 
-    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian;
+    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
+                NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
-    Function F(grid, flag, quad, A, b);
-    test<dim, codim, range>(F, grid);
+    auto F = Function::create(grid, A, b, flag, quad);
+    test<dim, codim, range>(*F, grid);
 }
 
 
@@ -84,7 +84,6 @@ void create_fun()
 int main()
 {
     create_fun<2, 0, 2>();
-//    test<3,3>();
 
     return 0;
 }

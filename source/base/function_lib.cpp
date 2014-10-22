@@ -26,11 +26,74 @@ IGA_NAMESPACE_OPEN
 namespace functions
 {
 
+template<int dim, int codim, int range, int rank>
+ConstantFunction<dim, codim, range, rank>::
+ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+                 const Value &b,
+                 const NewValueFlags &flag,
+                 const Quadrature<dim> &quad)
+    :
+    parent_t::FormulaFunction(grid, flag, quad),
+    b_(b)
+{}
+
+
+
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+create(std::shared_ptr<const CartesianGrid<dim>> grid,
+       const Value &b,
+       const NewValueFlags &flag,
+       const Quadrature<dim> &quad) ->  std::shared_ptr<base_t>
+{
+    return std::shared_ptr<base_t>(new self_t(grid, b, flag, quad));
+}
+
+
+
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+evaluate_0(const ValueVector<Point> &points,
+           ValueVector<Value> &values) const -> void
+{
+    for (auto &val : values)
+        val =  b_;
+}
+
+
+
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+evaluate_1(const ValueVector<Point> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+    for (auto &val : values)
+            val = 0.;
+}
+
+
+
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+evaluate_2(const ValueVector<Point> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+    for (auto &val : values)
+        val = 0.;
+}
+
+
+
+//------------------------------------------------------------------------------
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
 LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-               const NewValueFlags &flag, const Quadrature<dim> &quad,
-               const Gradient &A, const Value &b)
+               const Gradient &A, const Value &b,
+               const NewValueFlags &flag, const Quadrature<dim> &quad)
     :
     parent_t::FormulaFunction(grid, flag, quad),
     A_(A),
@@ -43,10 +106,11 @@ template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
 create(std::shared_ptr<const CartesianGrid<dim>> grid,
-       const NewValueFlags &flag, const Quadrature<dim> &quad,
-       const Gradient &A, const Value &b) ->  std::shared_ptr<base_t>
+       const Gradient &A, const Value &b,
+       const NewValueFlags &flag,
+       const Quadrature<dim> &quad) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, flag, quad, A, b));
+    return std::shared_ptr<base_t>(new self_t(grid, A, b, flag, quad));
 }
 
 
@@ -64,6 +128,8 @@ evaluate_0(const ValueVector<Point> &points,
         ++point;
     }
 }
+
+
 
 template<int dim, int codim, int range>
 auto
@@ -85,43 +151,7 @@ evaluate_2(const ValueVector<Point> &points,
         val = 0.;
 }
 
-
-#if 0
-//------------------------------------------------------------------------------
-
-
-
-template<int dim, int range, int rank>
-ConstantFunction<dim, range, rank>::
-ConstantFunction(const Value value)
-    :value_ {value}
-{}
-
-
-
-template<int dim, int range, int rank>
-ConstantFunction<dim, range, rank>::
-~ConstantFunction()
-{}
-
-
-
-template<int dim, int range, int rank>
-void
-ConstantFunction<dim, range, rank>::
-evaluate(
-    const ValueVector<Point> &points,
-    ValueVector<Value> &values) const
-{
-    Assert(points.size() == values.size(),
-           ExcDimensionMismatch(points.size(), values.size())) ;
-
-    for (auto &value : values)
-        value = value_;
-}
-#endif
 } // of namespace functions.
-
 
 IGA_NAMESPACE_CLOSE
 
