@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the CartesianGrid ElementIterator using UniformQuadCache
+ *   CartesianGrid Iterator and ElementHandler interaction
  *
  *  author: pauletti
  *  date: 2014-08-15
@@ -37,17 +37,17 @@
 template <int dim>
 void run_test()
 {
-
+    using Grid = CartesianGrid<dim>;
+    using ElementHandler = typename Grid::ElementHandler;
     const int n_knots = 5;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+
+    auto grid = Grid::create(n_knots);
 
     QGauss<dim> q1(2);
-    GridElementHandler<dim> cache1(grid, ValueFlags::w_measure, q1);
+    ElementHandler cache1(grid, NewValueFlags::w_measure, q1);
 
     QGauss<dim> q2(1);
-    GridElementHandler<dim> cache2(grid, ValueFlags::w_measure, q2);
-
-
+    ElementHandler cache2(grid, NewValueFlags::w_measure, q2);
 
     auto el1 = grid->begin();
     cache1.init_element_cache(el1);

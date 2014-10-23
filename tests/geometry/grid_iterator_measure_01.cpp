@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the CartesianGrid ElementIterator using UniformQuadCache
+ *  Test for the CartesianGrid Iterator get_measure()
  *
  *  author: pauletti
  *  date: 2014-08-15
