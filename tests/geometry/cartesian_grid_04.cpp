@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 
 template<int dim>
 void face_uniform(const int n_knots)

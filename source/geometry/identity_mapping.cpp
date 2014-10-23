@@ -20,7 +20,7 @@
 #if 0
 #include <igatools/geometry/identity_mapping.h>
 #include <igatools/base/exceptions.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 
 
 using std::shared_ptr;

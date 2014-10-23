@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 // [old_includes]
 // [acc_includes]
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 // [acc_includes]
 #include <igatools/base/logstream.h>

@@ -21,7 +21,7 @@
 # QA (pauletti, Mar 19, 2014): review the transform value how is handle
 from init_instantiation_data import *
 include_files = ['geometry/push_forward.h',
-                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/cartesian_grid_element.h',
                  'geometry/mapping_element_accessor.h',
                  '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)

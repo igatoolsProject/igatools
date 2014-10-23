@@ -21,7 +21,7 @@
 # QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
 
-include_files = ['geometry/cartesian_grid_element_accessor.h',
+include_files = ['geometry/cartesian_grid_element.h',
                  'basis_functions/bspline_element_accessor.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)

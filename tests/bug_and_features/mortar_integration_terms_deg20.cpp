@@ -9,7 +9,7 @@
 #include <igatools/geometry/identity_mapping.h>
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/geometry/grid_tools.h>
 #include <igatools/geometry/topology.h>
 

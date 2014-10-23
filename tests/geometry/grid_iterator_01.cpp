@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/geometry/unit_element.h>
 

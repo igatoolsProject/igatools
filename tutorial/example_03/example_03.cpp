@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_accessor.h>
 // [quad include]

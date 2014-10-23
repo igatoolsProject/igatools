@@ -28,7 +28,7 @@
 #include <igatools/base/value_flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/topology.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
 #include <igatools/utils/static_multi_array.h>

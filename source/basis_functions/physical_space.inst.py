@@ -24,7 +24,7 @@ from init_instantiation_data import *
 include_files = ['basis_functions/bspline_space.h',
                  'basis_functions/nurbs_space.h',
                  'geometry/push_forward.h',
-                 'geometry/cartesian_grid_element_accessor.h',
+                 'geometry/cartesian_grid_element.h',
                  'geometry/mapping_element_accessor.h',
                  'geometry/push_forward_element_accessor.h',
                  'basis_functions/bspline_element_accessor.h',

@@ -21,7 +21,7 @@
 #include <igatools/geometry/mapping_lib.h>
 
 #include <igatools/base/exceptions.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 
 
 using std::shared_ptr;

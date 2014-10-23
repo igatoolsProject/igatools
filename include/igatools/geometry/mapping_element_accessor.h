@@ -29,7 +29,7 @@
 #include <igatools/utils/value_table.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/topology.h>
-#include <igatools/geometry/cartesian_grid_element_accessor.h>
+#include <igatools/geometry/cartesian_grid_element.h>
 #include <memory>
 
 IGA_NAMESPACE_OPEN
