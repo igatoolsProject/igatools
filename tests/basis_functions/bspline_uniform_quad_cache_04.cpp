@@ -32,8 +32,11 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
-template <int dim, int range=1, int rank=1>
-void space_cache_value_elem(const int n_knots = 5, const int deg=1)
+const std::array<NewValueFlags, 3> der_flag = {NewValueFlags::value,
+        NewValueFlags::gradient, NewValueFlags::hessian};
+
+template <int der, int dim, int range=1, int rank=1>
+void elem_derivatives(const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
@@ -41,7 +44,7 @@ void space_cache_value_elem(const int n_knots = 5, const int deg=1)
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);
 
-    auto flag = ValueFlags::value;
+    auto flag = der_flag[der];
     auto quad = QGauss<dim>(2);
     typename Space::ElementHandler value_handler(space, flag, quad);
 
@@ -52,7 +55,7 @@ void space_cache_value_elem(const int n_knots = 5, const int deg=1)
     for (; elem != end; ++elem)
     {
         value_handler.fill_element_cache(elem);
-        elem->get_basis_values().print_info(out);
+        elem->template get_basis_ders<0,der>(0).print_info(out);
     }
     OUTEND
 }
@@ -62,11 +65,26 @@ int main()
 {
     out.depth_console(10);
 
-    space_cache_value_elem<1>();
-    space_cache_value_elem<2>();
+    const int values = 0;
+    const int grad   = 1;
+    const int hess   = 2;
 
-    space_cache_value_elem<1,2>();
-    space_cache_value_elem<1,3>();
+    elem_derivatives<values, 1>();
+    elem_derivatives<values, 2>();
+    elem_derivatives<values,1,2>();
+    elem_derivatives<values,1,3>();
+
+
+    elem_derivatives<grad, 1>(3);
+    elem_derivatives<grad, 2>();
+    elem_derivatives<grad,1,2>(2);
+    elem_derivatives<grad,1,3>();
+
+    elem_derivatives<hess, 1>(3);
+    elem_derivatives<hess, 2>();
+    elem_derivatives<hess,1,2>(2);
+    elem_derivatives<hess,1,3>();
+
 
     return  0;
 }

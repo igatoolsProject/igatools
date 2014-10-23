@@ -33,7 +33,7 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 template <int dim, int range=1, int rank=1>
-void space_cache_fill_elem(const ValueFlags flag,
+void space_cache_fill_elem(const NewValueFlags flag,
                            const int n_knots = 5, const int deg=1)
 {
     OUTSTART
@@ -63,8 +63,9 @@ int main()
 {
     out.depth_console(10);
 
-    space_cache_fill_elem<1>(ValueFlags::value, 2);
-    space_cache_fill_elem<1>(ValueFlags::gradient, 2);
+    space_cache_fill_elem<1>(NewValueFlags::value, 2);
+    space_cache_fill_elem<1>(NewValueFlags::gradient, 2);
+    space_cache_fill_elem<1>(NewValueFlags::hessian, 2);
     //  space_cache_fill_elem<2>();
 
     return  0;

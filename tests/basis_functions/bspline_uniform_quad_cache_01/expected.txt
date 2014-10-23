@@ -1,5 +1,5 @@
 ========================================================================
-void uniform_space_cache(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void uniform_space_cache(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Grid Cache:
    Lengths:
@@ -64,7 +64,7 @@ One dimensional splines cache:
 ========================================================================
 
 ========================================================================
-void uniform_space_cache(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void uniform_space_cache(iga::NewValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Grid Cache:
    Lengths:
@@ -181,7 +181,7 @@ One dimensional splines cache:
 ========================================================================
 
 ========================================================================
-void uniform_space_cache(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void uniform_space_cache(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Grid Cache:
    Lengths:

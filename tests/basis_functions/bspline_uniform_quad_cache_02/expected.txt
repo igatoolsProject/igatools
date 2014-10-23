@@ -1,9 +1,9 @@
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Element Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -11,14 +11,14 @@ Element Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 ]  Weights: [0]
+      Size: [ 2 ]  Weights: [2]
       Direction: 0
-      [ ]
+      [ 0.211325 0.788675 ]
    
 
 Face: 0 Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -26,14 +26,14 @@ Face: 0 Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 ]  Weights: [0]
+      Size: [ 1 ]  Weights: [1]
       Direction: 0
-      [ ]
+      [ 0 ]
    
 
 Face: 1 Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -41,17 +41,16 @@ Face: 1 Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 ]  Weights: [0]
+      Size: [ 1 ]  Weights: [1]
       Direction: 0
-      [ ]
+      [ 1.00000 ]
    
 
-Space Element Cache:
+Element Cache:
    Fill flags:
          values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
        (num_functions=2,num_points=2) :
@@ -66,19 +65,19 @@ Space Element Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 0 Cache:
+Face 0 Cache:
    Fill flags:
-         values -->    fill = 0    filled = 0
+         values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=2,num_points=1) :
+      Function 0
+      [ 0 ]  
+      Function 1
+      [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -86,19 +85,19 @@ Face: 0 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 1 Cache:
+Face 1 Cache:
    Fill flags:
-         values -->    fill = 0    filled = 0
+         values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=2,num_points=1) :
+      Function 0
+      [ 0 ]  
+      Function 1
+      [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -106,14 +105,11 @@ Face: 1 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Element Cache:
    Fill flags:
@@ -160,39 +156,18 @@ Face: 1 Cache:
       [ ]
    
 
-Space Element Cache:
+Element Cache:
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 1    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
        (num_functions=2,num_points=2) :
       Function 0
-      [ [ 0 ]  ]  [ [ 0 ]  ]  
+      [ 0 ]  [ 0 ]  
       Function 1
-      [ [ 0 ]  ]  [ [ 0 ]  ]  
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
-
-Face: 0 Cache:
-   Fill flags:
-         values -->    fill = 0    filled = 0
-      gradients -->    fill = 0    filled = 0
-       hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -200,19 +175,19 @@ Face: 0 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 1 Cache:
+Face 0 Cache:
    Fill flags:
          values -->    fill = 0    filled = 0
-      gradients -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=2,num_points=1) :
+      Function 0
+      [ 0 ]  
+      Function 1
+      [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -220,18 +195,35 @@ Face: 1 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
+
+Face 1 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
+       hessians -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=2,num_points=1) :
+      Function 0
+      [ 0 ]  
+      Function 1
+      [ 0 ]  
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
        (num_functions=0,num_points=0) :
    
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Element Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -239,16 +231,16 @@ Element Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 0 ]  Weights: [0,0]
+      Size: [ 2 2 ]  Weights: [2,4]
       Direction: 0
-      [ ]
+      [ 0.211325 0.788675 ]
       Direction: 1
-      [ ]
+      [ 0.211325 0.788675 ]
    
 
 Face: 0 Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -256,16 +248,16 @@ Face: 0 Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 0 ]  Weights: [0,0]
+      Size: [ 1 2 ]  Weights: [1,2]
       Direction: 0
-      [ ]
+      [ 0 ]
       Direction: 1
-      [ ]
+      [ 0.211325 0.788675 ]
    
 
 Face: 1 Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -273,16 +265,16 @@ Face: 1 Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 0 ]  Weights: [0,0]
+      Size: [ 1 2 ]  Weights: [1,2]
       Direction: 0
-      [ ]
+      [ 1.00000 ]
       Direction: 1
-      [ ]
+      [ 0.211325 0.788675 ]
    
 
 Face: 2 Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -290,16 +282,16 @@ Face: 2 Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 0 ]  Weights: [0,0]
+      Size: [ 2 1 ]  Weights: [2,2]
       Direction: 0
-      [ ]
+      [ 0.211325 0.788675 ]
       Direction: 1
-      [ ]
+      [ 0 ]
    
 
 Face: 3 Cache:
    Fill flags:
-        points     -->  fill = 0    filled = 0
+        points     -->  fill = 1    filled = 1
         measures   -->  fill = 0    filled = 0
    w_measures -->  fill = 0    filled = 0
    Measure: 0
@@ -307,19 +299,18 @@ Face: 3 Cache:
    Unit weights:
    ValueVector (num_points=0) : [ ]
    Unit points:
-      Size: [ 0 0 ]  Weights: [0,0]
+      Size: [ 2 1 ]  Weights: [2,2]
       Direction: 0
-      [ ]
+      [ 0.211325 0.788675 ]
       Direction: 1
-      [ ]
+      [ 1.00000 ]
    
 
-Space Element Cache:
+Element Cache:
    Fill flags:
          values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
        (num_functions=4,num_points=4) :
@@ -338,19 +329,23 @@ Space Element Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 0 Cache:
+Face 0 Cache:
    Fill flags:
-         values -->    fill = 0    filled = 0
+         values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -358,19 +353,23 @@ Face: 0 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 1 Cache:
+Face 1 Cache:
    Fill flags:
-         values -->    fill = 0    filled = 0
+         values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -378,19 +377,23 @@ Face: 1 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 2 Cache:
+Face 2 Cache:
    Fill flags:
-         values -->    fill = 0    filled = 0
+         values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -398,34 +401,35 @@ Face: 2 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 3 Cache:
+Face 3 Cache:
    Fill flags:
-         values -->    fill = 0    filled = 0
+         values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
    
    Hessians:
-       (num_functions=0,num_points=0) :
-   
-   Divergeces:
        (num_functions=0,num_points=0) :
    
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Element Cache:
    Fill flags:
@@ -512,43 +516,22 @@ Face: 3 Cache:
       [ ]
    
 
-Space Element Cache:
+Element Cache:
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 1    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
        (num_functions=4,num_points=4) :
       Function 0
-      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
       Function 1
-      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
       Function 2
-      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
       Function 3
-      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
-
-Face: 0 Cache:
-   Fill flags:
-         values -->    fill = 0    filled = 0
-      gradients -->    fill = 0    filled = 0
-       hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
+      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -556,19 +539,23 @@ Face: 0 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 1 Cache:
+Face 0 Cache:
    Fill flags:
          values -->    fill = 0    filled = 0
-      gradients -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -576,19 +563,23 @@ Face: 1 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 2 Cache:
+Face 1 Cache:
    Fill flags:
          values -->    fill = 0    filled = 0
-      gradients -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -596,19 +587,23 @@ Face: 2 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
-       (num_functions=0,num_points=0) :
-   
 
-Face: 3 Cache:
+Face 2 Cache:
    Fill flags:
          values -->    fill = 0    filled = 0
-      gradients -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
        hessians -->    fill = 0    filled = 0
-      divergences -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
    
    Gradients:
        (num_functions=0,num_points=0) :
@@ -616,7 +611,28 @@ Face: 3 Cache:
    Hessians:
        (num_functions=0,num_points=0) :
    
-   Divergeces:
+
+Face 3 Cache:
+   Fill flags:
+         values -->    fill = 0    filled = 0
+      gradients -->    fill = 1    filled = 0
+       hessians -->    fill = 0    filled = 0
+   
+   Values:
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
+   
+   Gradients:
+       (num_functions=0,num_points=0) :
+   
+   Hessians:
        (num_functions=0,num_points=0) :
    
 

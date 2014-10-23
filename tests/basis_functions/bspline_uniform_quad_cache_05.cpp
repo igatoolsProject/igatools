@@ -41,7 +41,7 @@ void space_cache_value_elem(const int n_knots = 5, const int deg=1)
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);
 
-    auto flag = ValueFlags::gradient;
+    auto flag = NewValueFlags::gradient;
     auto quad = QGauss<dim>(2);
     typename Space::ElementHandler value_handler(space, flag, quad);
 
@@ -52,7 +52,8 @@ void space_cache_value_elem(const int n_knots = 5, const int deg=1)
     for (; elem != end; ++elem)
     {
         value_handler.fill_element_cache(elem);
-        elem->get_basis_gradients().print_info(out);
+        elem->template get_basis_ders<0,1>(0).print_info(out);
+        //elem->get_basis_gradients().print_info(out);
     }
     OUTEND
 }

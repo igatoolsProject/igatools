@@ -517,7 +517,7 @@ protected:
         template<int k>
         void resize_der(const int n_basis, const int n_points)
         {
-            auto &value = std::get<0>(values_);
+            auto &value = std::get<k>(values_);
             if (value.get_num_points() != n_points ||
                     value.get_num_functions() != n_basis)
             {
@@ -527,9 +527,9 @@ protected:
         }
 
         template<int k>
-        void clear_der(const int n_basis, const int n_points)
+        void clear_der()
         {
-            auto &value = std::get<0>(values_);
+            auto &value = std::get<k>(values_);
             value.clear();
         }
 
