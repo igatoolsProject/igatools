@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the iterator evaluate field values and dertivatives
+ *  Test for the iterator evaluate field values and derivatives
  *  author: pauletti
  *  date: 2014-10-23
  *
