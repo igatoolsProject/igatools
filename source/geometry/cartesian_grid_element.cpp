@@ -710,4 +710,4 @@ print_cache_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/cartesian_grid_element_accessor.inst>
+#include <igatools/geometry/cartesian_grid_element.inst>

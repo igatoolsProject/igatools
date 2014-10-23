@@ -47,7 +47,7 @@ void ig_mapping(const int deg = 1)
     using ElementIt = typename Mapping::ElementIterator;
 
     auto flag =  NewValueFlags::value| NewValueFlags::gradient
-            | NewValueFlags::hessian;
+                 | NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
