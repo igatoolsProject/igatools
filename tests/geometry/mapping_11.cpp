@@ -36,6 +36,8 @@
 template<int dim, int codim>
 void test()
 {
+    OUTSTART
+
     const int space_dim = dim+codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
     typename Function::Value    b;
@@ -48,12 +50,12 @@ void test()
         b[i] = i;
     }
 
-    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
+    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
+                NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
-    auto F = Function::create(grid, flag, quad, A, b);
+    auto F = Function::create(grid, A, b, flag, quad);
 
 
     using Mapping   = NewMapping<dim, codim>;
@@ -77,19 +79,19 @@ void test()
         out << endl;
         elem->get_hessians().print_info(out);
         out << endl;
-        elem->get_measures().print_info(out);
-        out << endl;
-        elem->get_w_measures().print_info(out);
-        out << endl;
+//        elem->get_measures().print_info(out);
+//        out << endl;
+//        elem->get_w_measures().print_info(out);
+//        out << endl;
     }
 
+    OUTEND
 }
 
 
 int main()
 {
     test<2,0>();
-//    test<3,3>();
 
     return 0;
 }
