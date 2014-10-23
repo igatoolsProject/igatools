@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the CartesianGrid ElementIterator using UniformQuadCache
+ *  Test for the CartesianGrid ElementIterator get_points()
  *
  *  author: pauletti
  *  date: 2014-08-15
@@ -39,11 +39,14 @@ void elem_points(const int n_knots = 5)
 {
     OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
+    using Grid = CartesianGrid<dim>;
+    using ElementHandler = typename Grid::ElementHandler;
 
-    auto flag = ValueFlags::point;
+    auto grid = Grid::create(n_knots);
+
+    auto flag = NewValueFlags::point;
     QGauss<dim> quad(2);
-    GridElementHandler<dim> cache(grid, flag, quad);
+    ElementHandler cache(grid, flag, quad);
     auto elem = grid->begin();
     cache.init_element_cache(elem);
 

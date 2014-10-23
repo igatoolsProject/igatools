@@ -39,7 +39,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int> class CartesianGridElement;
-
+template <int> class GridElementHandler;
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
@@ -104,7 +104,7 @@ public:
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
-
+    using ElementHandler = GridElementHandler<dim>;
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim>;
 
