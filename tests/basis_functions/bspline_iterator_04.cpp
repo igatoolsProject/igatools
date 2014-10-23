@@ -17,124 +17,70 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for BSplineBasis using a non range-homogeneous space
- *  Evaluates values gradients and derivatives at two quad point
- *  on each element
- *
- *  author: martinelli
- *  date: Oct 04, 2013
+ *  Test for the BSplineSpace element iterator derivatives values
+ *  in a non homogenous range
+ *  author: pauletti
+ *  date: Aug 21, 2014
  *
  */
 
 #include "../tests.h"
 
-
-#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 
-using std::shared_ptr;
+const std::array<NewValueFlags, 3> der_flag = {NewValueFlags::value,
+        NewValueFlags::gradient, NewValueFlags::hessian};
 
-template <int dim>
-shared_ptr<BSplineSpace<dim,dim,1> >
-create_space(const int num_knots) ;
-
-template <>
-shared_ptr<BSplineSpace<2,2,1> >
-create_space<2>(const int num_knots)
+template <int der, int dim, int range=1, int rank=1>
+void elem_derivatives(const int n_knots,
+                      typename SplineSpace<dim,range,rank>::DegreeTable &deg)
 {
-    auto knots = CartesianGrid<2>::create(num_knots);
+    OUTSTART
 
-    typename BSplineSpace<2,2,1>::DegreeTable degree = { {{3,2}},
-        {{2,3}}
-    } ;
+    using Space = NewBSplineSpace<dim, range, rank>;
+    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto space = Space::create(deg, grid);
 
-    return BSplineSpace<2,2,1>::create(degree, knots) ;
-}
+    auto flag = der_flag[der];
+    auto quad = QGauss<dim>(2);
+    typename Space::ElementHandler value_handler(space, flag, quad);
 
+    auto elem = space->begin();
+    auto end = space->end();
 
-template <>
-shared_ptr<BSplineSpace<3,3,1> >
-create_space<3>(const int num_knots)
-{
-    auto knots = CartesianGrid<3>::create(num_knots);
-
-    typename BSplineSpace<3,3,1>::DegreeTable degree = { {{3,2,2}},
-        {{2,3,2}},
-        {{2,2,3}}
-    } ;
-
-    return BSplineSpace<3,3,1>::create(degree, knots) ;
-}
-
-
-template< int dim_domain>
-void do_test()
-{
-    out << "domain, range and rank: " << dim_domain << "," << dim_domain << ",1" << endl ;
-
-    const int num_knots = 3 ;
-
-    auto space = create_space<dim_domain>(num_knots) ;
-
-    space->print_info(out) ;
-
-    const int n_points = 2;
-    QGauss<dim_domain> quad(n_points) ;
-
-    using BSplineCache = BSplineUniformQuadCache<dim_domain,dim_domain>;
-
+    value_handler.init_element_cache(elem);
+    for (; elem != end; ++elem)
     {
-        BSplineCache cache(space,ValueFlags::value,quad);
-
-        auto elem = space->begin();
-        cache.init_element_cache(elem);
-
-        for (; elem != space->end(); ++elem)
-        {
-            cache.fill_element_cache(elem);
-            out << "Values:" << endl ;
-            elem->get_basis_values().print_info(out);
-        }
+        value_handler.fill_element_cache(elem);
+        elem->template get_basis_ders<0,der>(0).print_info(out);
     }
-
-    {
-        BSplineCache cache(space,ValueFlags::gradient,quad);
-
-        auto elem = space->begin();
-        cache.init_element_cache(elem);
-
-        for (; elem != space->end(); ++elem)
-        {
-            cache.fill_element_cache(elem);
-            out << "Gradients:" << endl ;
-            elem->get_basis_gradients().print_info(out);
-        }
-    }
-
-    {
-        BSplineCache cache(space,ValueFlags::hessian,quad);
-
-        auto elem = space->begin();
-        cache.init_element_cache(elem);
-
-        for (; elem != space->end(); ++elem)
-        {
-            cache.fill_element_cache(elem);
-            out << "Hessians:" << endl ;
-            elem->get_basis_hessians().print_info(out);
-        }
-    }
+    OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10); //to be removed after test finished
+    out.depth_console(10);
 
-    do_test<2>() ;
-    do_test<3>() ;
+    const int values = 0;
+    const int grad   = 1;
+    const int hess   = 2;
 
-    return 0;
+    const int n_knots = 3;
+    typename SplineSpace<2,2,1>::DegreeTable deg1 = { {{3,2}}, {{2,3}} };
+    elem_derivatives<values, 2, 2>(n_knots, deg1);
+    elem_derivatives<grad,   2, 2>(n_knots, deg1);
+    elem_derivatives<hess,   2, 2>(n_knots, deg1);
+
+    typename SplineSpace<3,3,1>::DegreeTable
+    deg2 = { {{3,2,2}}, {{2,3,2}}, {{2,2,3}} };
+    elem_derivatives<values, 3, 3>(n_knots, deg2);
+    elem_derivatives<grad,   3, 3>(n_knots, deg2);
+    elem_derivatives<hess,   3, 3>(n_knots, deg2);
+
 }
+
