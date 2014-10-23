@@ -163,14 +163,14 @@ Element Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=2,num_points=2) :
-      Function 0
-      [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=2,num_points=2) :
+      Function 0
+      [ [ 0 ]  ]  [ [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  ]  [ [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -183,14 +183,14 @@ Face 0 Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=2,num_points=1) :
-      Function 0
-      [ 0 ]  
-      Function 1
-      [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=2,num_points=1) :
+      Function 0
+      [ [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -203,14 +203,14 @@ Face 1 Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=2,num_points=1) :
-      Function 0
-      [ 0 ]  
-      Function 1
-      [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=2,num_points=1) :
+      Function 0
+      [ [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -523,18 +523,18 @@ Element Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=4,num_points=4) :
-      Function 0
-      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-      Function 2
-      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-      Function 3
-      [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=4) :
+      Function 0
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 2
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 3
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -547,18 +547,18 @@ Face 0 Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=4,num_points=2) :
-      Function 0
-      [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  
-      Function 2
-      [ 0 ]  [ 0 ]  
-      Function 3
-      [ 0 ]  [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 2
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 3
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -571,18 +571,18 @@ Face 1 Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=4,num_points=2) :
-      Function 0
-      [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  
-      Function 2
-      [ 0 ]  [ 0 ]  
-      Function 3
-      [ 0 ]  [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 2
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 3
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -595,18 +595,18 @@ Face 2 Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=4,num_points=2) :
-      Function 0
-      [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  
-      Function 2
-      [ 0 ]  [ 0 ]  
-      Function 3
-      [ 0 ]  [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 2
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 3
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :
@@ -619,18 +619,18 @@ Face 3 Cache:
        hessians -->    fill = 0    filled = 0
    
    Values:
-       (num_functions=4,num_points=2) :
-      Function 0
-      [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  
-      Function 2
-      [ 0 ]  [ 0 ]  
-      Function 3
-      [ 0 ]  [ 0 ]  
+       (num_functions=0,num_points=0) :
    
    Gradients:
-       (num_functions=0,num_points=0) :
+       (num_functions=4,num_points=2) :
+      Function 0
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 1
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 2
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+      Function 3
+      [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
    
    Hessians:
        (num_functions=0,num_points=0) :

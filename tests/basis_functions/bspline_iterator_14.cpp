@@ -19,8 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace UniformQuadCache
- *  Testing the element values
+ *  Test for the BSplineSpace element iterator derivatives values
  *  author: pauletti
  *  date: Aug 21, 2014
  *
