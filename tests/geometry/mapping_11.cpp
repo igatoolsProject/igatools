@@ -39,7 +39,7 @@ void test()
     OUTSTART
 
     const int space_dim = dim+codim;
-    using Function = functions::LinearFunction<dim, codim, space_dim>;
+    using Function = functions::LinearFunction<dim, 0, space_dim>;
     typename Function::Value    b;
     typename Function::Gradient A;
     for (int i=0; i<space_dim; i++)
@@ -71,12 +71,16 @@ void test()
     for (; elem != end; ++elem)
     {
         map.fill_element(elem);
+        out << "Points:" << endl;
         elem->get_points().print_info(out);
         out << endl;
+        out << "Values:" << endl;
         elem->get_values().print_info(out);
         out << endl;
+        out << "Gradients:" << endl;
         elem->get_gradients().print_info(out);
         out << endl;
+        out << "Hessians:" << endl;
         elem->get_hessians().print_info(out);
         out << endl;
 //        elem->get_measures().print_info(out);
@@ -92,6 +96,8 @@ void test()
 int main()
 {
     test<2,0>();
+    test<3,0>();
+    test<2,1>();
 
     return 0;
 }
