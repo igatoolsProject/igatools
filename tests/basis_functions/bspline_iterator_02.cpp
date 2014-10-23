@@ -70,5 +70,12 @@ int main()
     elem_dofs< 3, 1, 1 >();
     elem_dofs< 3, 3, 1 >();
 
+    for (int p=0; p<3; p++)
+    {
+        elem_dofs< 1, 1, 1 >(4,p);
+        elem_dofs< 1, 2, 1 >(4,p);
+        elem_dofs< 1, 3, 1 >(4,p);
+    }
+
     return  0;
 }
