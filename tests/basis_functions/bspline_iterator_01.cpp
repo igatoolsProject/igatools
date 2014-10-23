@@ -26,7 +26,7 @@
  *  date: Aug 28, 2014
  *
  */
-
+// TODO (pauletti, Oct 23, 2014): this test is very similar bspline_iterator_14
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
@@ -46,7 +46,8 @@ void bspline_iterator(const int deg = 2)
 
     const int n_qp = 3;
     QGauss< dim > quad(n_qp);
-    auto flag = NewValueFlags::value|NewValueFlags::gradient|NewValueFlags::hessian;
+    auto flag = NewValueFlags::value|NewValueFlags::gradient
+            |NewValueFlags::hessian;
     ElementHandler cache(space, flag, quad);
 
     auto elem = space->begin();
@@ -54,20 +55,20 @@ void bspline_iterator(const int deg = 2)
     cache.fill_element_cache(elem);
 
     auto values    = elem->template get_basis_ders<0,0>(0);//
-//    auto gradients = elem->template get_basis_ders<0,1>(0);//elem->get_basis_gradients();
-//    auto hessians  = elem->template get_basis_ders<0,2>(0);//get_basis_hessians();
-//
-//    out.begin_item("Values basis functions:");
-//    values.print_info(out);
-//    out.end_item();
-//
-//    out.begin_item("Gradients basis functions:");
-//    gradients.print_info(out);
-//    out.end_item();
-//
-//    out.begin_item("Hessians basis functions:");
-//    hessians.print_info(out);
-//    out.end_item();
+    auto gradients = elem->template get_basis_ders<0,1>(0);//elem->get_basis_gradients();
+    auto hessians  = elem->template get_basis_ders<0,2>(0);//get_basis_hessians();
+
+    out.begin_item("Values basis functions:");
+    values.print_info(out);
+    out.end_item();
+
+    out.begin_item("Gradients basis functions:");
+    gradients.print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians basis functions:");
+    hessians.print_info(out);
+    out.end_item();
 }
 
 
@@ -76,15 +77,15 @@ int main()
     out.depth_console(10);
 
     bspline_iterator<1,1>();
-//    bspline_iterator<1,2>();
-//    bspline_iterator<1,3>();
-//
-//    bspline_iterator<2,1>();
-//    bspline_iterator<2,2>();
-//    bspline_iterator<2,3>();
-//
-//    bspline_iterator<3,1>();
-//    bspline_iterator<3,3>();
+    bspline_iterator<1,2>();
+    bspline_iterator<1,3>();
+
+    bspline_iterator<2,1>();
+    bspline_iterator<2,2>();
+    bspline_iterator<2,3>();
+
+    bspline_iterator<3,1>();
+    bspline_iterator<3,3>();
 
     return 0;
 }
