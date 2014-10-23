@@ -38,14 +38,17 @@ template <int dim>
 void face_values(const TensorSize<dim> &n_knots)
 {
     OUTSTART
+    using Grid = CartesianGrid<dim>;
+    using ElementHandler = typename Grid::ElementHandler;
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto grid = Grid::create(n_knots);
 
-    ValueFlags flag = ValueFlags::face_measure|
-                      ValueFlags::face_w_measure|
-                      ValueFlags::face_point;
+    NewValueFlags flag = NewValueFlags::measure|
+            NewValueFlags::w_measure|
+            NewValueFlags::point;
+
     QUniform<dim> quad(2);
-    GridElementHandler<dim> cache(grid, flag, quad);
+    ElementHandler cache(grid, flag, quad);
 
     auto elem = grid->begin();
     cache.init_element_cache(elem);
