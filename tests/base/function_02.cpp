@@ -38,7 +38,7 @@ public:
     LinearFunction(const Gradient &A, const Value &b)
         :
         A_ {A},
-       b_ {b}
+    b_ {b}
     {}
 
     void evaluate(const ValueVector<Point> &points,

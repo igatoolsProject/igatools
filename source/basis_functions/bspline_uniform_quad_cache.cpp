@@ -243,8 +243,8 @@ void
 BSplineUniformQuadCache<dim_, range_, rank_>::
 reset(const ValueFlags flag, const Quadrature<dim> &quad)
 {
-	GridElementHandler<dim_>::reset(flag, quad);
-	flags_ = flag;
+    GridElementHandler<dim_>::reset(flag, quad);
+    flags_ = flag;
     face_flags_ = flag;
     quad_ = quad;
 

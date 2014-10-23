@@ -34,7 +34,7 @@ namespace grid
 {
 template<int dim>
 shared_ptr<CartesianGrid<dim>>
-uniform(const int n_knots)
+                            uniform(const int n_knots)
 {
     return CartesianGrid<dim>::create(n_knots);
 }

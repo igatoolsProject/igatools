@@ -34,7 +34,7 @@ template<class Space>
 inline
 SpaceElement<Space>::
 SpaceElement(const std::shared_ptr<const Space> space,
-                     const Index elem_index)
+             const Index elem_index)
     :
     base_t(space->get_grid(), elem_index),
     space_(space),
@@ -54,7 +54,7 @@ SpaceElement(const std::shared_ptr<const Space> space,
     comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
         comp_offset_[comp_id] = comp_offset_[comp_id-1] +
-        n_basis_direction_.comp_dimension[comp_id-1];
+                                n_basis_direction_.comp_dimension[comp_id-1];
 }
 
 
@@ -74,7 +74,7 @@ template<class Space>
 inline
 SpaceElement<Space>::
 SpaceElement(const SpaceElement<Space> &elem,
-                     const CopyPolicy &copy_policy)
+             const CopyPolicy &copy_policy)
     :
     CartesianGridElement<Space::dim>(elem,copy_policy),
     space_(elem.space_),
@@ -466,7 +466,7 @@ auto
 SpaceElement<Space>::
 evaluate_field_divergences(
     const vector<Real> &local_coefs,
-    ) const -> ValueVector<Div>
+) const -> ValueVector<Div>
 {
     Assert(this->get_values_cache(topology_id).is_filled() == true, ExcCacheNotFilled());
     Assert(this->get_values_cache(topology_id).flags_handler_.fill_divergences() == true, ExcCacheNotFilled());

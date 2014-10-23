@@ -32,11 +32,11 @@ IGA_NAMESPACE_OPEN
 class GridFlags
 {
 public:
-	static const NewValueFlags valid_flags =
-			NewValueFlags::point|
-            NewValueFlags::measure |
-            NewValueFlags::w_measure |
-            NewValueFlags::length;
+    static const NewValueFlags valid_flags =
+        NewValueFlags::point|
+        NewValueFlags::measure |
+        NewValueFlags::w_measure |
+        NewValueFlags::length;
 
     /** @name Constructors */
     ///@{
@@ -136,13 +136,13 @@ protected:
 class FunctionFlags
 {
 public:
-	static const NewValueFlags valid_flags =
-			NewValueFlags::point|
-			NewValueFlags::value|
-			NewValueFlags::gradient|
-			NewValueFlags::hessian;
+    static const NewValueFlags valid_flags =
+        NewValueFlags::point|
+        NewValueFlags::value|
+        NewValueFlags::gradient|
+        NewValueFlags::hessian;
 
-	 static NewValueFlags to_grid_flags(const NewValueFlags &flag);
+    static NewValueFlags to_grid_flags(const NewValueFlags &flag);
 
     /** @name Constructors */
     ///@{
@@ -324,9 +324,9 @@ class MappingFlags :
 public:
 
     static const NewValueFlags valid_flags =
-            FunctionFlags::valid_flags |
-                NewValueFlags::inv_gradient|
-                NewValueFlags::inv_hessian;
+        FunctionFlags::valid_flags |
+        NewValueFlags::inv_gradient|
+        NewValueFlags::inv_hessian;
 
     static NewValueFlags to_function_flags(const NewValueFlags &flag);
 
@@ -436,19 +436,19 @@ public:
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */
-	PushFowardFlags();
+    PushFowardFlags();
 
     /**
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
      * that specify the quantities that must be computed/filled.
      */
-	PushFowardFlags(const NewValueFlags &flags);
+    PushFowardFlags(const NewValueFlags &flags);
 
     /** Copy constructor. */
-	PushFowardFlags(const PushFowardFlags &in) = default;
+    PushFowardFlags(const PushFowardFlags &in) = default;
 
     /** Move constructor. */
-	PushFowardFlags(PushFowardFlags &&in) = default;
+    PushFowardFlags(PushFowardFlags &&in) = default;
 
 
     /** Destructor. */
@@ -510,11 +510,11 @@ protected:
 class SpaceFlags
 {
 public:
-	static const NewValueFlags valid_flags =
-	 NewValueFlags::value|
-	 NewValueFlags::gradient|
-	 NewValueFlags::hessian |
-	 NewValueFlags::w_measure;
+    static const NewValueFlags valid_flags =
+        NewValueFlags::value|
+        NewValueFlags::gradient|
+        NewValueFlags::hessian |
+        NewValueFlags::w_measure;
 
 
     /** @name Constructors */
@@ -555,7 +555,7 @@ public:
     /** Returns true if the nothing must be filled. */
     bool fill_none() const;
 
-     /** Returns true if the values must be filled. */
+    /** Returns true if the values must be filled. */
     bool fill_values() const;
 
     /** Returns true if the values are filled. */

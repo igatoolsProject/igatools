@@ -78,7 +78,8 @@ template < int, int, int> class BSplineElementHandler;
  * \section bezier Storage of the basis functions (Bezier Extraction)
  * The basis functions on each element are stored in the Bspline space
  * as the 1D Bezier extraction operator.
- * When they need to be evaluated the operator applied to the Berenstein polynomials,
+ * When they need to be evaluated the operator applied to the
+ * Berenstein polynomials,
  * allows to compute the values at the quadrature points.
  *
  * @todo write a module about cache optimization and handling.
@@ -179,7 +180,6 @@ public:
     static std::shared_ptr<self_t>
     create(const int degree, std::shared_ptr<GridType> knots);
 
-
     /**
      * Builds and returns a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree[i] in the i-th direction and homogeneous
@@ -187,7 +187,6 @@ public:
      */
     static std::shared_ptr<self_t>
     create(const TensorIndex<dim> &degree, std::shared_ptr<GridType> knots);
-
 
     /**
      * Builds and returns a maximum regularity BSpline space over CartesianGrid
@@ -216,7 +215,6 @@ public:
     /** Destructor. */
     ~NewBSplineSpace() = default;
 
-
 protected:
     /** @name Constructors */
     ///@{
@@ -227,7 +225,6 @@ protected:
      */
     explicit NewBSplineSpace(const int degree, std::shared_ptr<GridType> knots);
 
-
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree[i] in the i-th direction and homogeneous
@@ -235,7 +232,6 @@ protected:
      */
     explicit NewBSplineSpace(const TensorIndex<dim> &degree,
                              std::shared_ptr<GridType> knots);
-
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -245,7 +241,6 @@ protected:
     explicit NewBSplineSpace(const DegreeTable &degree,
                              std::shared_ptr<GridType> knots,
                              const bool homogeneous_range = false);
-
 
     /**
      * Constructs a BSpline space over the CartesianGrid
@@ -259,23 +254,18 @@ protected:
                              std::shared_ptr<const MultiplicityTable> interior_mult,
                              const EndBehaviourTable &ends);
 
-
     /**
      * Copy constructor. Not allowed to be used.
      */
     NewBSplineSpace(const self_t &space) = delete;
-
     ///@}
-
 
     /** @name Assignment operators */
     ///@{
-
     /** Copy assignment. Not allowed to be used. */
     self_t &
     operator=(const self_t &space) = delete;
     ///@}
-
 
 public:
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
@@ -301,8 +291,6 @@ public:
      */
     ElementIterator end() const;
     ///@}
-
-
 
 
 #if 0
@@ -340,7 +328,6 @@ public:
     const DofDistribution<dim, range, rank> &
     get_dof_distribution_global() const;
 
-
     /** Returns the container with the global dof distribution (non const version). */
     DofDistribution<dim, range, rank> &
     get_dof_distribution_global();
@@ -353,7 +340,6 @@ public:
     /** Returns the container with the patch dof distribution (non const version). */
     DofDistribution<dim, range, rank> &
     get_dof_distribution_patch();
-
     ///@}
 
     /**
@@ -412,13 +398,11 @@ private:
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
-
 public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
 };
-
 
 IGA_NAMESPACE_CLOSE
 

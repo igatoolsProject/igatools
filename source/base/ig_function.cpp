@@ -77,12 +77,12 @@ fill_elem(ElementAccessor &elem) -> void
 
     if (flag_.fill_values())
         cache->values_ = elem_->template eval_field_ders<0, 0>(0, loc_coeff);
-   if (flag_.fill_gradients())
+    if (flag_.fill_gradients())
         std::get<1>(cache->derivatives_) =
-                elem_->template eval_field_ders<0, 1>(0, loc_coeff);
+        elem_->template eval_field_ders<0, 1>(0, loc_coeff);
     if (flag_.fill_hessians())
         std::get<2>(cache->derivatives_) =
-                elem_->template eval_field_ders<0, 2>(0, loc_coeff);
+        elem_->template eval_field_ders<0, 2>(0, loc_coeff);
 }
 
 IGA_NAMESPACE_CLOSE

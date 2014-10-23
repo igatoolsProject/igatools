@@ -36,9 +36,9 @@ template <typename Accessor> class GridForwardIterator;
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
-public SpaceElement<PhysSpace>,
+    public SpaceElement<PhysSpace>,
     // todo: private PhysSpace::RefSpace::ElementAccessor,
-private PhysSpace::PushForwardType::ElementAccessor
+    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
     using parent_t = SpaceElement<PhysSpace>;

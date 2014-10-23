@@ -47,7 +47,7 @@ void bspline_iterator(const int deg = 2)
     const int n_qp = 3;
     QGauss< dim > quad(n_qp);
     auto flag = NewValueFlags::value|NewValueFlags::gradient
-            |NewValueFlags::hessian;
+                |NewValueFlags::hessian;
     ElementHandler cache(space, flag, quad);
 
     auto elem = space->begin();

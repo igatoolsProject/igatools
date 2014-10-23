@@ -55,14 +55,14 @@ protected:
 public:
     static const int dim = dim_;
     static const NewValueFlags valid_flags = NewValueFlags::measure |
-                                   NewValueFlags::w_measure |
-                                   NewValueFlags::point|
-                                   NewValueFlags::length;
+                                             NewValueFlags::w_measure |
+                                             NewValueFlags::point|
+                                             NewValueFlags::length;
 
     //Allocates and fill the (global) cache
     GridElementHandler(std::shared_ptr<const GridType> grid,
-                         const NewValueFlags flag,
-                         const Quadrature<dim> &quad);
+                       const NewValueFlags flag,
+                       const Quadrature<dim> &quad);
 
     void reset(const NewValueFlags flag, const Quadrature<dim> &quad);
     /**

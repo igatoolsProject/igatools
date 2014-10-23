@@ -131,13 +131,13 @@ get_push_forward_accessor_fill_flags(const NewValueFlags fill_flag)
 
     NewValueFlags pf_flags = fill_flag & common_flag;
 
-    if (contains(fill_flag , NewValueFlags::value) )
+    if (contains(fill_flag , NewValueFlags::value))
         pf_flags |= NewValueFlags::tran_value;
 
-    if (contains(fill_flag , NewValueFlags::gradient) )
+    if (contains(fill_flag , NewValueFlags::gradient))
         pf_flags |= NewValueFlags::tran_gradient;
 
-    if (contains(fill_flag , NewValueFlags::hessian) )
+    if (contains(fill_flag , NewValueFlags::hessian))
         pf_flags |= NewValueFlags::tran_hessian;
 
     return pf_flags;
@@ -157,7 +157,7 @@ SpaceElementHandler(std::shared_ptr<const PhysSpace> space,
     PFCache(space->get_map_func(), get_push_forward_accessor_fill_flags(flag), quad),
     space_(space),
     flags_ {flag, flag},
-    quad_(quad)
+       quad_(quad)
 {}
 
 
@@ -219,7 +219,7 @@ fill_element_cache(ElementAccessor &elem) -> void
         const auto &values = elem_cache.template get_der<0>();
         elem.template transform_1<PhysSpace::range,PhysSpace::rank>
         (std::make_tuple(ref_values, ref_der_1), values,
-         elem_cache.template get_der<1>());
+        elem_cache.template get_der<1>());
 
         elem_cache.flags_handler_.set_gradients_filled(true);
     }

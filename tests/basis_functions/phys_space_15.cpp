@@ -46,19 +46,19 @@ auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
 
-	using Function = functions::LinearFunction<dim, 0, dim+codim>;
-	typename Function::Value    b;
-	typename Function::Gradient A;
-	for (int i=0; i<dim+codim; i++)
-	{
-		for (int j=0; j<dim; j++)
-			if (j == i)
-				A[j][j] = 2.;
-		b[i] = i;
-	}
+    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
+    for (int i=0; i<dim+codim; i++)
+    {
+        for (int j=0; j<dim; j++)
+            if (j == i)
+                A[j][j] = 2.;
+        b[i] = i;
+    }
 
-	auto quad = QGauss<dim>(2);
-	return Function::create(grid, ValueFlags::none, quad, A, b);
+    auto quad = QGauss<dim>(2);
+    return Function::create(grid, ValueFlags::none, quad, A, b);
 }
 
 
@@ -98,7 +98,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
     {
         sp_values.fill_element_cache(elem);
         elem->get_basis_values().print_info(out);
-       // elem->get_basis_gradients().print_info(out);
+        // elem->get_basis_gradients().print_info(out);
     }
 
     OUTEND
@@ -111,7 +111,7 @@ int main()
     out.depth_console(10);
 
 
-   elem_values<1>();
+    elem_values<1>();
 
     return  0;
 }

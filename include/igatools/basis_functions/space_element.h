@@ -166,7 +166,7 @@ public:
     eval_field_ders(const int j, const vector<Real> &local_coefs) const
     {
         const auto &basis_values =
-                this->template get_basis_ders<skel_codim,der_order>(j);
+            this->template get_basis_ders<skel_codim,der_order>(j);
         return basis_values.evaluate_linear_combination(local_coefs) ;
     }
 
@@ -198,13 +198,13 @@ public:
      * @note The @p topology_id parameter can be used to select values on the element
      * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
      */
-    Value const & get_basis_value(const Index basis, const Index qp);
+    Value const &get_basis_value(const Index basis, const Index qp);
 
     /**
      * Returns the const reference to a ValueTable with the values of all local basis function
      * at each evaluation point on the face specified by @p face_id.
      */
-    ValueTable<Value> const & get_face_basis_values(const Index face_id) const;
+    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
     ///@}
 
 
@@ -243,7 +243,7 @@ public:
      * at each evaluation point on the face specified by @p face_id.
      */
     ValueTable<Derivative<1>> const
-    &get_face_basis_gradients(const Index face_id) const;
+                           &get_face_basis_gradients(const Index face_id) const;
     ///@}
 
     /** @name Functions returning the hessian of the basis functions. */
@@ -499,8 +499,8 @@ protected:
         FunctionFlags flags_handler_;
 
         std::tuple<ValueTable<Value>,
-        ValueTable<Derivative<1>>,
-        ValueTable<Derivative<2>>> values_;
+            ValueTable<Derivative<1>>,
+            ValueTable<Derivative<2>>> values_;
 
         template<int k>
         auto &get_der()
@@ -519,7 +519,7 @@ protected:
         {
             auto &value = std::get<k>(values_);
             if (value.get_num_points() != n_points ||
-                    value.get_num_functions() != n_basis)
+                value.get_num_functions() != n_basis)
             {
                 value.resize(n_basis, n_points);
                 value.zero();
@@ -568,7 +568,7 @@ protected:
 
 
         std::tuple<std::array<ValuesCache, 1>,
-        std::array<ValuesCache, n_faces> > values_;
+            std::array<ValuesCache, n_faces> > values_;
 
     };
 

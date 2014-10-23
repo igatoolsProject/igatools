@@ -43,7 +43,7 @@ void
 FormulaFunction<dim, codim, range, rank>::
 reset(const NewValueFlags &flag, const Quadrature<dim> &quad)
 {
-	parent_t::reset(flag, quad);
+    parent_t::reset(flag, quad);
     flag_ = flag;
     quad_ = quad;
 }

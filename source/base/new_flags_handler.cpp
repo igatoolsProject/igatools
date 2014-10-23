@@ -222,15 +222,15 @@ FunctionFlags(const NewValueFlags &flags)
 NewValueFlags
 FunctionFlags::to_grid_flags(const NewValueFlags &flags)
 {
-	NewValueFlags transfer_flag = NewValueFlags::measure |
-			 NewValueFlags::w_measure |
-			 NewValueFlags::normal;
-	NewValueFlags g_flag = flags & transfer_flag;
-	if (contains(flags, NewValueFlags::point) || contains(flags, NewValueFlags::value))
-	{
-		g_flag |= NewValueFlags::point;
-	}
-	return g_flag;
+    NewValueFlags transfer_flag = NewValueFlags::measure |
+                                  NewValueFlags::w_measure |
+                                  NewValueFlags::normal;
+    NewValueFlags g_flag = flags & transfer_flag;
+    if (contains(flags, NewValueFlags::point) || contains(flags, NewValueFlags::value))
+    {
+        g_flag |= NewValueFlags::point;
+    }
+    return g_flag;
 }
 
 
@@ -446,14 +446,14 @@ fill_none() const
 
 MappingFlags::
 MappingFlags(const NewValueFlags &flags)
-:
-FunctionFlags::FunctionFlags(to_function_flags(flags))
+    :
+    FunctionFlags::FunctionFlags(to_function_flags(flags))
 {
     if (contains(flags, NewValueFlags::inv_gradient))
         fill_inv_gradients_ = true;
 
     if (contains(flags, NewValueFlags::inv_hessian))
-          fill_inv_hessians_ = true;
+        fill_inv_hessians_ = true;
 }
 
 
@@ -462,8 +462,8 @@ NewValueFlags
 MappingFlags::to_function_flags(const NewValueFlags &flags)
 {
     NewValueFlags transfer_flag = NewValueFlags::measure |
-                 NewValueFlags::w_measure |
-                 NewValueFlags::normal | FunctionFlags::valid_flags;
+                                  NewValueFlags::w_measure |
+                                  NewValueFlags::normal | FunctionFlags::valid_flags;
 
 
     NewValueFlags f_flag = flags & transfer_flag;
@@ -585,9 +585,9 @@ print_info(LogStream &out) const
     FunctionFlags::print_info(out);
     using std::endl;
     out << "   inv grad -->    fill = "
-            << fill_inv_gradients_ << "    filled = " << inv_gradients_filled_ << endl;
+        << fill_inv_gradients_ << "    filled = " << inv_gradients_filled_ << endl;
     out << "inv hessians -->    fill = "
-            << fill_inv_hessians_ << "    filled = " << inv_hessians_filled_ << endl;
+        << fill_inv_hessians_ << "    filled = " << inv_hessians_filled_ << endl;
 
 
 }

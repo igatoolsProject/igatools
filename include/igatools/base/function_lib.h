@@ -69,7 +69,7 @@ private:
                     ValueVector<Derivative<2>> &values) const;
 
 private:
-      const Value b_;
+    const Value b_;
 };
 
 

@@ -37,8 +37,8 @@ GridElementHandler(shared_ptr<const GridType> grid,
     :
     grid_(grid),
     flags_ {flag, flag},
-    quad_(quad),
-    lengths_(grid->get_element_lengths())
+       quad_(quad),
+       lengths_(grid->get_element_lengths())
 {}
 
 
@@ -49,8 +49,8 @@ GridElementHandler<dim_>::
 reset(const NewValueFlags flag,
       const Quadrature<dim> &quad)
 {
-	flags_ = std::make_tuple(flag, flag);
-	quad_ = quad;
+    flags_ = std::make_tuple(flag, flag);
+    quad_ = quad;
 }
 
 

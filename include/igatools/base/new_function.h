@@ -87,7 +87,7 @@ public:
 
     virtual void reset(const NewValueFlags &flag, const Quadrature<dim> &quad)
     {
-    	parent_t::reset(flag, quad);
+        parent_t::reset(flag, quad);
     }
 
     /** Destructor */

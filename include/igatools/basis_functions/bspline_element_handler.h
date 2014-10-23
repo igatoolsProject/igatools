@@ -69,7 +69,7 @@ protected:
 //public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
     using ElementAccessor = typename Space::ElementAccessor;
     template <int k>
-            void fill_element_cache_(ElementAccessor &elem, const int j);
+    void fill_element_cache_(ElementAccessor &elem, const int j);
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
     void fill_face_cache(ElementAccessor &elem, const int face);
@@ -166,7 +166,7 @@ private:
             {
                 for (int i = 0; i < dim; ++i)
                     result[c][i] =
-                            BasisValues1dConstView((this->entry(i, id[i]))[c]);
+                        BasisValues1dConstView((this->entry(i, id[i]))[c]);
                 result[c].update_size();
 
             }

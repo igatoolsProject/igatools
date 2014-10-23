@@ -159,9 +159,9 @@ BSplineElementHandler(shared_ptr<const Space> space,
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
     flags_ {flag, flag},
-    quad_(quad),
-    splines1d_(space->get_grid()->get_num_intervals(),
-               BasisValues(space->get_components_map()))
+       quad_(quad),
+       splines1d_(space->get_grid()->get_num_intervals(),
+                  BasisValues(space->get_components_map()))
 {
     // Compute the component offsets
     comp_offset_[0] = 0;

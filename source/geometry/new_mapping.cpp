@@ -47,7 +47,7 @@ NewMapping(std::shared_ptr<FuncType> F,
     flag_(flag),
     quad_(quad)
 {
-	F_->reset(MappingFlags::to_function_flags(flag), quad);
+    F_->reset(MappingFlags::to_function_flags(flag), quad);
 }
 
 

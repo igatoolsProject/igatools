@@ -71,7 +71,7 @@ evaluate_1(const ValueVector<Point> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
     for (auto &val : values)
-            val = 0.;
+        val = 0.;
 }
 
 
