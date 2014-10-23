@@ -29,14 +29,14 @@
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 
 template<int dim, int range>
 void test()
 {
-    using Space = BSplineSpace<dim>;
+    using Space = NewBSplineSpace<dim>;
     using Function = IgFunction<Space>;
 
     auto flag = NewValueFlags::value | NewValueFlags::gradient |
