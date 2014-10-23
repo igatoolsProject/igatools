@@ -18,40 +18,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the bspline element iterator
- *  Computes values and derivatives of the basis functions
- *  This test was added to trace a bug due to bad cleaning of the cache
- *
+ *  Test for the iterator evaluate field values and dertivatives
  *  author: pauletti
- *  date: Aug 28, 2013
+ *  date: 2014-10-23
  *
  */
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
-template< int dim_domain, int dim_range >
-void do_test()
+template<LAPack la_pack, int dim, int range, int rank =  1>
+void evaluate_field(const int deg = 1)
 {
-    auto grid = CartesianGrid<dim_domain>::create();
+    OUTSTART
 
-    const int degree = 1;
-    const int rank =  1 ;
-    typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(degree, grid);
+    auto grid = CartesianGrid<dim>::create();
 
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
+    using Space = NewBSplineSpace<dim,range,rank>;
+    using ElementHandler = typename Space::ElementHandler;
+
+    auto space = Space::create(deg, grid);
+
     Vector<la_pack> u(space->get_num_basis());
-
     {
         int id = 0 ;
         u(id++) = 0.0 ;
@@ -67,62 +60,38 @@ void do_test()
         u(id++) = 1.0 ;
     }
 
-    QGauss< dim_domain > quad_scheme1(2) ;
-    using BSplineCache = BSplineUniformQuadCache<dim_domain,dim_domain>;
+    QGauss<dim> quad(2) ;
+    const auto flag = NewValueFlags::value|NewValueFlags::gradient;
 
-    BSplineCache cache1(space,ValueFlags::value|ValueFlags::gradient,quad_scheme1);
+    ElementHandler cache1(space, flag, quad);
 
-    auto element = space->begin();
-    cache1.init_element_cache(element);
-    cache1.fill_element_cache(element);
+    auto elem = space->begin();
+    cache1.init_element_cache(elem);
+    cache1.fill_element_cache(elem);
 
-    auto u_values = element->evaluate_field(u.get_local_coefs(element->get_local_to_global()));
-    u_values.print_info(out);
+    elem->template eval_field_ders<0,0>(0,
+            u.get_local_coefs(elem->get_local_to_global())).print_info(out);
+    out << endl;
+    elem->template eval_field_ders<0,1>(0,
+                u.get_local_coefs(elem->get_local_to_global())).print_info(out);
     out << endl;
 
-    auto values1    = element->get_basis_values();
-    values1.print_info(out);
-    out << endl;
-
-    auto gradients1    = element->get_basis_gradients();
-    gradients1.print_info(out);
-    out << endl;
-
-    QUniform< dim_domain > quad_scheme2(3) ;
-    BSplineCache cache2(space,ValueFlags::value|ValueFlags::gradient,quad_scheme2);
-    cache2.init_element_cache(element);
-    cache2.fill_element_cache(element);
-
-    auto values2 = element->get_basis_values();
-    values2.print_info(out);
-    out << endl;
-
-    auto gradients2 = element->get_basis_gradients();
-    gradients2.print_info(out);
-    out << endl;
-
-    u_values = element->evaluate_field(u.get_local_coefs(element->get_local_to_global()));
-    u_values.print_info(out);
-    out << endl;
-
-
+    OUTEND
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
     out.depth_console(10);
 
-//   do_test<1,1>();
-//    do_test<1,2>();
-//    do_test<1,3>();
-//
-//    do_test<2,1>();
-    do_test<2,2>();
-//    do_test<2,3>();
-//
-//    do_test<3,1>();
-    do_test<3,3>();
+#if defined(USE_TRILINOS)
+    const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    const auto la_pack = LAPack::petsc;
+#endif
+
+    evaluate_field<la_pack,2,2>();
+    evaluate_field<la_pack,3,3>();
 
     return 0;
 }
