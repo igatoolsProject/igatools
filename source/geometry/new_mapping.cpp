@@ -94,7 +94,7 @@ fill_element(ElementAccessor &elem) -> void
             cache->measures_[i] = determinant<dim,space_dim>(DF[i]);
 
     }
-#if 0
+
     if (flag_.fill_w_measures())
     {
         const auto &meas = cache->measures_;
@@ -129,7 +129,7 @@ fill_element(ElementAccessor &elem) -> void
                 }
             }
     }
-#endif
+
     //    if (flag_.fill_values())
 //        this->evaluate_0(cache->points_, cache->values_);
 //    if (flag_.fill_gradients())

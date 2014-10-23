@@ -48,13 +48,11 @@ void test()
         b[i] = i;
     }
 
-    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure
-                |NewValueFlags::inv_gradient;
+    auto flag = NewValueFlags::inv_hessian|NewValueFlags::inv_gradient|NewValueFlags::point;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
-    auto F = Function::create(grid, A, b, flag, quad);
+    auto F = Function::create(grid, A, b);
 
 
     using Mapping   = NewMapping<dim, codim>;
@@ -71,6 +69,8 @@ void test()
     {
         map.fill_element(elem);
         elem->get_inverse_gradients().print_info(out);
+        out << endl;
+        elem->get_inverse_hessians().print_info(out);
         out << endl;
     }
 
