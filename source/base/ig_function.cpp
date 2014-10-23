@@ -45,6 +45,17 @@ IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
 template<class Space>
 auto
 IgFunction<Space>::
+create(const NewValueFlags &flag, const Quadrature<dim> &quad,
+       std::shared_ptr<const Space> space,
+       const CoeffType &coeff) ->  std::shared_ptr<base_t>
+{
+    return std::shared_ptr<base_t>(new self_t(flag, quad, space, coeff));
+}
+
+
+template<class Space>
+auto
+IgFunction<Space>::
 init_elem(ElementAccessor &elem) -> void
 {
     GridElementHandler<dim>::init_element_cache(elem);

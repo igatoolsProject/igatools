@@ -19,9 +19,9 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for Function class, as a prototype for an spline function
+ *  Test for IgFunction in a Mapping
  *  author: pauletti
- *  date: Oct 11, 2014
+ *  date: Oct 23, 2014
  */
 
 #include "../tests.h"
@@ -31,31 +31,32 @@
 #include <igatools/../../source/geometry/grid_forward_iterator.cpp>
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/function_element.h>
 
+
 template<int dim, int codim>
-void test()
+void ig_mapping(const int deg = 1)
 {
-    using Space = BSplineSpace<dim, dim+codim>;
+    OUTSTART
+
+    using Space = NewBSplineSpace<dim, dim+codim>;
     using Function = IgFunction<Space>;
-    auto flag =  ValueFlags::value| ValueFlags::gradient | ValueFlags::hessian;
-    auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
-    const int deg = 1;
-    auto space = Space::create(deg, grid);
-    typename Function::CoeffType coeff(space->get_num_basis());
-    coeff(0) = 1.;
-    auto F = make_shared<Function>(flag, quad, space, coeff);
-
-
     using Mapping   = NewMapping<dim, codim>;
     using ElementIt = typename Mapping::ElementIterator;
 
+    auto flag =  NewValueFlags::value| NewValueFlags::gradient
+            | NewValueFlags::hessian;
+    auto quad = QGauss<dim>(2);
+    auto grid = CartesianGrid<dim>::create(3);
+
+    auto space = Space::create(deg, grid);
+    typename Function::CoeffType coeff(space->get_num_basis());
+    coeff(0) = 1.;
+    auto F = Function::create(flag, quad, space, coeff);
+
     Mapping map(F, flag, quad);
-
-
     ElementIt elem(grid, 0);
     ElementIt end(grid, IteratorState::pass_the_end);
 
@@ -63,8 +64,6 @@ void test()
     for (; elem != end; ++elem)
     {
         map.fill_element(elem);
-//        elem->get_points().print_info(out);
-//        out << endl;
         elem->get_values().print_info(out);
         out << endl;
         elem->get_gradients().print_info(out);
@@ -73,13 +72,14 @@ void test()
         out << endl;
     }
 
+    OUTEND
 }
 
 
 int main()
 {
-    test<2,0>();
-//    test<3,3>();
+    ig_mapping<2,0>();
+    ig_mapping<3,0>();
 
     return 0;
 }

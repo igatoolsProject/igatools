@@ -25,6 +25,7 @@
 #include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
+
 template<class Space>
 class IgFunction : public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
 {
@@ -35,7 +36,9 @@ public:
     static const int rank = Space::rank;
 
 private:
+    using base_t = NewFunction<dim, codim, range, rank>;
     using parent_t = NewFunction<dim, codim, range, rank>;
+    using self_t = IgFunction<Space>;
 
 public:
     using typename parent_t::Point;
@@ -51,6 +54,11 @@ public:
     IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
                std::shared_ptr<const Space> space,
                const CoeffType &coeff);
+
+    static std::shared_ptr<base_t>
+    create(const NewValueFlags &flag, const Quadrature<dim> &quad,
+           std::shared_ptr<const Space> space,
+           const CoeffType &coeff);
 
     void init_elem(ElementAccessor &elem);
 
