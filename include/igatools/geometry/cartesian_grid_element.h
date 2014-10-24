@@ -252,15 +252,6 @@ public:
     bool is_boundary(const Index face_id) const;
     ///@}
 
-    const auto &get_elem_cache() const
-    {
-        return local_cache_->template get_value_cache<0>(0);
-    }
-
-    auto &get_elem_cache()
-    {
-        return local_cache_->template get_value_cache<0>(0);
-    }
     /**
      * Return the @p i-th vertex
      */
@@ -283,7 +274,6 @@ public:
      * the input argument @p topology_id.
      */
     Real get_measure() const;
-
 
     /**
      * Returns measure of j-th face.
@@ -362,6 +352,37 @@ private:
         ///@}
     };
 
+
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
+
+        LocalCache(const LocalCache &in) = default;
+
+        LocalCache(LocalCache &&in) = default;
+
+        ~LocalCache() = default;
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        template <int k>
+        ValuesCache &get_value_cache(const int j)
+        {
+            return std::get<k>(values_)[j];
+        }
+
+        std::tuple<std::array<ValuesCache, 1>,
+        std::array<ValuesCache, n_faces> > values_;
+
+    };
+
+
+
 private:
     template <typename Accessor> friend class GridForwardIterator;
     friend class GridElementHandler<dim>;
@@ -373,34 +394,6 @@ private:
 
     /** Tensor product indices of the current struct index @p flat_index_. */
     TensorIndex<dim> tensor_index_;
-
-    class LocalCache
-    {
-    public:
-        LocalCache() = default;
-
-        LocalCache(const LocalCache &in) = default;
-        LocalCache(LocalCache &&in) = default;
-
-        ~LocalCache() = default;
-
-
-        LocalCache &operator=(const LocalCache &in) = delete;
-        LocalCache &operator=(LocalCache &&in) = delete;
-
-        void print_info(LogStream &out) const;
-
-        template <int k>
-        ValuesCache &
-        get_value_cache(const int j)
-        {
-            return std::get<k>(values_)[j];
-        }
-
-        std::tuple<std::array<ValuesCache, 1>,
-            std::array<ValuesCache, n_faces> > values_;
-
-    };
 
     /** The local (element and face) cache. */
     std::shared_ptr<LocalCache> local_cache_;

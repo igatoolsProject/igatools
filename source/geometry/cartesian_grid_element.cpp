@@ -306,27 +306,6 @@ shallow_copy_from(const CartesianGridElement<dim_> &elem)
 }
 
 
-//template <int dim_>
-//void
-//CartesianGridElement<dim_>::
-//LengthCache::
-//resize(const CartesianGrid<dim_> &grid)
-//{
-//    length_data_ = grid.get_element_lengths();
-//
-//    auto const size = length_data_.tensor_size();
-//    length_.resize(size);
-//    this->set_initialized(true);
-//
-//
-//    for (int i = 0; i < dim_; ++i)
-//        for (int j = 0; j < size(i); ++j)
-//            length_.entry(i,j) = &length_data_.entry(i,j);
-//
-//    this->set_filled(true);
-//}
-
-
 
 template <int dim_>
 auto
@@ -347,91 +326,6 @@ vertex(const int i) const -> Point
 
 
 
-//template <int dim_>
-//auto
-//CartesianGridElement<dim_>::
-//get_values_cache(const TopologyId<dim_> &topology_id) const -> const ValuesCache &
-//{
-//    Assert(topology_id.is_element() || topology_id.is_face(),
-//           ExcMessage("Only element or face topology is allowed."));
-//    Assert(local_cache_ != nullptr,ExcNullPtr());
-//    if (topology_id.is_element())
-//    {
-//        return local_cache_->elem_values_;
-//    }
-//    else
-//    {
-//        // TODO (pauletti, Oct 9, 2014): reinsert this assertion
-////        Assert(this->is_boundary(topology_id.get_id()),
-////               ExcMessage("The requested face_id=" +
-////                          std::to_string(topology_id.get_id()) +
-////                          " is not a boundary for the element"));
-//
-//        return local_cache_->face_values_[topology_id.get_id()];
-//    }
-//}
-
-//template <int dim_>
-//auto
-//CartesianGridElement<dim_>::
-//get_values_cache(const TopologyId<dim_> &topology_id) -> ValuesCache &
-//{
-//    Assert(topology_id.is_element() || topology_id.is_face(),
-//    ExcMessage("Only element or face topology is allowed."));
-//    Assert(local_cache_ != nullptr,ExcNullPtr());
-//    if (topology_id.is_element())
-//    {
-//        return local_cache_->elem_values_;
-//    }
-//    else
-//    {
-//        // TODO (pauletti, Oct 9, 2014): reinsert this assertion
-////        Assert(this->is_boundary(topology_id.get_id()),
-////        ExcMessage("The requested face_id=" +
-////        std::to_string(topology_id.get_id()) +
-////        " is not a boundary for the element"));
-//
-//        return local_cache_->face_values_[topology_id.get_id()];
-//    }
-//}
-
-
-//template <int dim_>
-//void
-//CartesianGridElement<dim_>::
-//init_cache(const ValueFlags flag,
-//           const Quadrature<dim_> &quad)
-//{
-//    Assert((flag|admisible_flag) == admisible_flag,
-//           ExcFillFlagNotSupported(admisible_flag, flag));
-//    Assert(length_cache_.use_count() == 1, ExcCacheInUse(length_cache_.use_count()));
-//
-//
-//    length_cache_->resize(*this->get_grid());
-//
-//    GridElemValueFlagsHandler elem_flags_handler(flag);
-//    GridFaceValueFlagsHandler face_flags_handler(flag);
-//
-//    elem_values_.resize(elem_flags_handler, quad);
-//
-//    Index face_id = 0 ;
-//    for (auto &face_value : face_values_)
-//        face_value.resize(face_flags_handler, quad, face_id++);
-//}
-
-
-
-//template <int dim_>
-//void
-//CartesianGridElement<dim_>::
-//init_cache(const ValueFlags flag)
-//{
-//    length_cache_->resize(*this->get_grid());
-//
-//    Assert(false,ExcNotImplemented());
-//    AssertThrow(false,ExcNotImplemented());
-//}
-
 template <int dim_>
 bool CartesianGridElement<dim_>::
 is_boundary() const
@@ -448,6 +342,7 @@ is_boundary() const
 
     return false;
 }
+
 
 
 template <int dim_>
@@ -488,6 +383,7 @@ get_measure() const
 {
     return get_measure_<0>(0);
 }
+
 
 
 template <int dim_>
@@ -622,9 +518,6 @@ ValuesCache::
 resize(const GridFlags &flags_handler,
        const Quadrature<dim> &quad)
 {
-    //const auto n_points_direction = quad.get_num_points_direction();
-    //const Size n_points = n_points_direction.flat_size();
-
     flags_handler_ = flags_handler;
 
     if (flags_handler_.fill_points())

@@ -135,41 +135,7 @@ using GradientMap = typename ContainerType::Gradient;
 using HessianMap  = typename ContainerType::Hessian;
 
 public:
-//    /** Fill flags supported by this iterator */
-//    static const ValueFlags admisible_flag =
-//        ValueFlags::measure |
-//        ValueFlags::w_measure |
-//        ValueFlags::face_point |
-//        ValueFlags::face_measure |
-//        ValueFlags::face_w_measure |
-//        ValueFlags::face_normal |
-//        ValueFlags::map_value |
-//        ValueFlags::map_gradient |
-//        ValueFlags::map_hessian |
-//        ValueFlags::map_inv_gradient |
-//        ValueFlags::map_inv_hessian |
-//        ValueFlags::map_face_value |
-//        ValueFlags::map_face_gradient |
-//        ValueFlags::map_face_hessian |
-//        ValueFlags::map_face_inv_gradient |
-//        ValueFlags::map_face_inv_hessian;
 
-/** @name Constructors */
-///@{
-/**
- * Default constructor. Not allowed to be used.
- */
-MappingElement() = delete;
-
-/**
- * Constructs an accessor to element number @p index of a
- * Mapping.
- */
-MappingElement(const std::shared_ptr<ContainerType> mapping,
-               const Index index);
-
-MappingElement(const std::shared_ptr<ContainerType> mapping,
-               const TensorIndex<dim> &index);
 
 private:
 /**

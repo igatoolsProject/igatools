@@ -35,12 +35,23 @@ GridElementHandler(shared_ptr<const GridType> grid,
                    const NewValueFlags flag,
                    const Quadrature<dim> &quad)
     :
-    grid_(grid),
-    flags_ {flag, flag},
-       quad_(quad),
-       lengths_(grid->get_element_lengths())
+GridElementHandler(grid, flag, flag, quad)
 {}
 
+
+
+template <int dim_>
+GridElementHandler<dim_>::
+GridElementHandler(shared_ptr<const GridType> grid,
+                   const NewValueFlags elem_flag,
+                   const NewValueFlags face_flag,
+                   const Quadrature<dim> &quad)
+                   :
+                   grid_(grid),
+                   flags_ {elem_flag, face_flag},
+                   quad_(quad),
+                   lengths_(grid->get_element_lengths())
+                   {}
 
 
 template <int dim_>

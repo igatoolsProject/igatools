@@ -64,6 +64,11 @@ public:
                        const NewValueFlags flag,
                        const Quadrature<dim> &quad);
 
+    GridElementHandler(std::shared_ptr<const GridType> grid,
+                       const NewValueFlags elem_flag,
+                       const NewValueFlags face_flag,
+                       const Quadrature<dim> &quad);
+
     void reset(const NewValueFlags flag, const Quadrature<dim> &quad);
     /**
      * Allocates the space in ElementIterator element_cache
@@ -93,6 +98,7 @@ protected:
 
 private:
     std::shared_ptr<const GridType> grid_;
+
     std::tuple<GridFlags, GridFlags> flags_;
     Quadrature<dim> quad_;
 

@@ -42,7 +42,7 @@ class PhysicalSpaceElement
 {
 public :
     using parent_t = SpaceElement<PhysSpace>;
-    using parent_t::get_elem_cache;
+   // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
 
     /** Type required by the GridForwardIterator templated iterator */
