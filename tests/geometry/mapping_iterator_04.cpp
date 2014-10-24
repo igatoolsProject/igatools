@@ -82,8 +82,7 @@ void run_test()
 
     auto map = IgMapping<RefSpace_t>::create(ref_space, control_pts);
     map->refine_h_direction(0, 2);
-//    map->print_info(out);
-//    out << endl;
+
 
     shared_ptr<Quadrature<dim>> quad = std::make_shared<Quadrature<dim>>(QTrapez<dim>());
 

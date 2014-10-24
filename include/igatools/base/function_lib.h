@@ -119,54 +119,66 @@ private:
     const Value    b_;
 };
 
-#if 0
 //------------------------------------------------------------------------------
-
 /**
- * Constant scalar function.
+ * Maps a hyper rectangle into a spherical ball sector using the
+ * dim-dimensional spherical coordinates, maps a hyper-rectangle
+ * r in [0,R], phi_1 in [0, 2 pi], and phi_2, phi_dim-1 in [0,pi]
+ * such that
+ * x1 = r cos (phi_1)
+ * x2 = r sin (phi_1) cos (phi_2)
+ * etc
+ *
  */
-template<int dim, int range = 1, int rank = 1>
-class ConstantFunction
-    : public Function<dim, range, rank>
+template<int dim>
+class BallFunction : public FormulaFunction<dim, 0, dim, 1>
 {
+private:
+    using base_t = NewFunction<dim, 0, dim, 1>;
+    using parent_t = FormulaFunction<dim, 0, dim, 1>;
+    using self_t = BallFunction<dim>;
 public:
-    /**
-     * Type for the input argument of the function.
-     */
-    using Point = typename Function<dim, range, rank>::Point;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
 
-    /**
-     * Type for the return of the function.
-     */
-    using Value = typename Function<dim, range, rank>::Value;
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<const CartesianGrid<dim>> grid,
+           const NewValueFlags &flag = NewValueFlags::none,
+           const Quadrature<dim> &quad = Quadrature<dim>());
 
-    /**
-     * Construct a constant function with the given value.
-     */
-    ConstantFunction(const Value value);
-
-    /**
-     * Destructor.
-     */
-    virtual ~ConstantFunction();
-
-    /**
-     * Compute the @p values of Function at some @p points.
-     */
-    void
-    evaluate(const ValueVector<Point> &points,
-             ValueVector<Value> &values) const;
+protected:
+    BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+                 const NewValueFlags &flag,
+                 const Quadrature<dim> &quad);
 
 private:
-    /** Constant given value that defines the function. */
-    const Value value_;
+    template<int order>
+    auto
+    get_aux_vals(const ValueVector<Point> &points) const;
 
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const;
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const;
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const;
+
+private:
+    const Value b_;
 };
 
-#endif
+
 
 } // of namespace functions.
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* __IGA_FUNCTION_LIB_H_ */
+#endif
