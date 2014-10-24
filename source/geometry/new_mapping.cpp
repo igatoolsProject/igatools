@@ -129,13 +129,6 @@ fill_element(ElementAccessor &elem) -> void
                 }
             }
     }
-
-    //    if (flag_.fill_values())
-//        this->evaluate_0(cache->points_, cache->values_);
-//    if (flag_.fill_gradients())
-//        this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
-//    if (flag_.fill_hessians())
-//        this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
 }
 
 

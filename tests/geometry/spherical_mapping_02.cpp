@@ -18,67 +18,84 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the spherical mapping class.
+ *  Test for the BallFunction class as a mapping
+ *  Computing the volume
  *
  *  author: pauletti
- *  date: 2013-02-20
- *
+ *  date: 2014-10-24
  */
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/mapping_element_accessor.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping_element.h>
+#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
+#include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/io/writer.h>
+#include <igatools/base/function_element.h>
+#include <igatools/base/function_lib.h>
 
 template <int dim>
-void test_evaluate()
+Real ball_volume(const int n_knots)
 {
-    auto grid = CartesianGrid<dim>::create();
-    auto map = BallMapping<dim>::create(grid);
+    using Function = functions::BallFunction<dim>;
 
-    QGauss<dim> quad(1);
-    ValueFlags flag = ValueFlags::point|ValueFlags::map_gradient
-                      |ValueFlags::map_hessian;
+    auto flag = NewValueFlags::w_measure|NewValueFlags::point;
 
-    auto elem = map->begin();
-    elem->init_cache(flag, quad);
-    elem->fill_cache();
+    auto quad = QGauss<dim>(3);
 
-    auto values    = elem->get_map_values();
-    auto gradients = elem->get_map_gradients();
-    auto hessians  = elem->get_map_hessians();
 
-    out << "Points: (r,phi1,...,phi_n) :" << endl;
-    quad.get_points().get_flat_cartesian_product().print_info(out);
-    out << endl;
+    BBox<dim> box;
+    box[0] = {0., 1.};
+    for (int i=1; i<dim-1; ++i)
+        box[i] = {0., M_PI};
+    if (dim>1)
+        box[dim-1] = {0., 2. * M_PI};
 
-    out << "Values (x1,x2,...):" << endl;
-    values.print_info(out);
-    out << endl;
+    auto grid = CartesianGrid<dim>::create(box, n_knots);
 
-    out << "Gradients (x1,x2,...):" << endl;
-    gradients.print_info(out);
-    out << endl;
+    auto F = Function::create(grid, flag, quad);
 
-    out << "Hessians:" << endl;
-    hessians.print_info(out);
-    out << endl;
+    using Mapping   = NewMapping<dim, 0>;
+    using ElementIt = typename Mapping::ElementIterator;
+    Mapping map(F, flag, quad);
 
-    string filename = "spherical_map-" + to_string(dim) + "d";
-    Writer<dim> writer(map, 10);
-    writer.save(filename);
+    ElementIt elem(grid, 0);
+    ElementIt end(grid, IteratorState::pass_the_end);
+
+    map.init_element(elem);
+    Real vol = 0.;
+    for (; elem != end; ++elem)
+    {
+        map.fill_element(elem);
+        const auto w_meas = elem->get_w_measures();
+
+        for (auto &w : w_meas)
+            vol += w;
+    }
+    return vol;
 }
 
+template<int dim>
+void
+comp_volume()
+{
+    OUTSTART
+    for (int n_knots = 2; n_knots < 6; ++n_knots)
+        out << n_knots << "\t" << ball_volume<dim>(n_knots) << endl;
+
+    auto exact = std::pow(M_PI, dim/2.) / tgamma(dim/ 2. + 1);
+    out << "Exact volume: " <<  exact << endl;
+    OUTEND
+ }
 
 int main()
 {
     out.depth_console(10);
 
-    test_evaluate<1>();
-    test_evaluate<2>();
-    test_evaluate<3>();
+    comp_volume<1>();
+    comp_volume<2>();
+    comp_volume<3>();
 
     return 0;
 }

@@ -94,4 +94,5 @@ int main()
     mapping_values<2>();
     mapping_values<3>();
 
+    return 0;
 }
