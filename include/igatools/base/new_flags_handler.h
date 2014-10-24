@@ -326,7 +326,9 @@ public:
     static const NewValueFlags valid_flags =
         FunctionFlags::valid_flags |
         NewValueFlags::inv_gradient|
-        NewValueFlags::inv_hessian;
+        NewValueFlags::inv_hessian |
+        NewValueFlags::measure|
+        NewValueFlags::w_measure;
 
     static NewValueFlags to_function_flags(const NewValueFlags &flag);
 

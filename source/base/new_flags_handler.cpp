@@ -454,6 +454,12 @@ MappingFlags(const NewValueFlags &flags)
 
     if (contains(flags, NewValueFlags::inv_hessian))
         fill_inv_hessians_ = true;
+
+    if (contains(flags, NewValueFlags::measure))
+        fill_measures_ = true;
+
+    if (contains(flags, NewValueFlags::w_measure))
+        fill_w_measures_ = true;
 }
 
 

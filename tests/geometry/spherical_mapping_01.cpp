@@ -76,6 +76,12 @@ void mapping_values()
         out << "Hessians:" << endl;
         elem->get_hessians().print_info(out);
         out << endl;
+        out << "Measure:" << endl;
+        elem->get_measures().print_info(out);
+        out << endl;
+        out << "weight * measure:" << endl;
+        elem->get_w_measures().print_info(out);
+        out << endl;
     }
 }
 
