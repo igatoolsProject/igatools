@@ -1,8 +1,0 @@
-Linear mapping<1,1>
-A =
-[ [ 3.00000 ]  ] 
-b =[ 1.00000 ] 
-
-wdets    = 
-ValueVector (num_points=2) : [ 0.750000 0.750000 ]
-
