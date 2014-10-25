@@ -24,18 +24,22 @@ from init_instantiation_data import *
 
 iga_inc_files = ['base/tensor.h',
 				 'utils/value_table.h']
-other_files   = [
-				#'boost/numeric/ublas/matrix.hpp',
-				#'boost/numeric/ublas/io.hpp'
-				 'igatools/linear_algebra/dense_matrix.h' ]
+other_files   = ['igatools/linear_algebra/dense_matrix.h' ]
 data = Instantiation(iga_inc_files, other_files)
 (f, inst) = (data.file_output, data.inst)
 
-#matrix = 'boost::numeric::ublas::matrix<Real>'
+types = ('Real','Real*', 'Index')
+for dim in inst.domain_dims:
+    for t in types:
+        row = 'CartesianProductArray<%s,%d>' %(t,dim)
+        f.write('template class %s; \n' % (row))
+        for k in range(max(0,dim-1),dim):
+            f.write('template %s::SubProduct<%d> ' %(row, k) +
+                    '%s::get_sub_product(const TensorIndex<%d> &index) const; \n'  %(row, k))
 matrix = 'DenseMatrix'
 types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
-types = types + ('Real','Real*', 'Index')
+#types = types + ('Real','Real*', 'Index')
 ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
            for dim in inst.domain_dims for t in types]
 

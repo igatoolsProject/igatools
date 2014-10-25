@@ -71,7 +71,7 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup multi_array_containers
  * @author Martinelli, 2012, 2013, 2014
- * @author Pauletti, 2012,2013
+ * @author Pauletti, 2012, 2013, 2014
  */
 template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
@@ -81,9 +81,8 @@ public:
     /**
      * Type for the <tt>rank-1</tt> CartesianProductArray
      */
-    using SubProduct = Conditional< (rank > 0),
-          CartesianProductArray<T,rank-1>,
-          CartesianProductArray<T,0> >;
+    template<int k>
+    using SubProduct = CartesianProductArray<T, k>;
 
 
 
@@ -194,9 +193,8 @@ public:
 
     ///@}
 
-    /** @name Functions returning rank-1 and rank+1 objects */
+    /** @name Functions returning sub objects */
     ///@{
-    using SubProductTensorIndex = Conditional<(rank>0),TensorIndex<rank-1>,TensorIndex<0>>;
 
     /**
      * Returns a rank-1 CartesianProductArray built
@@ -214,7 +212,8 @@ public:
        @endcode
      *
      */
-    SubProduct get_sub_product(const SubProductTensorIndex &index) const;
+    template<int k>
+    SubProduct<k> get_sub_product(const TensorIndex<k> &index) const;
 
 
 

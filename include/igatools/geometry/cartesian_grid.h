@@ -92,8 +92,6 @@ public:
 
     static constexpr std::array<Size, dim_> dims = sequence<dim>();
 
-    //using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
-
     using Point = Points<dim>;
 
     /** Type for the element accessor. */
@@ -349,23 +347,26 @@ public:
 
     /**
      * Returns the outward pointing
-     * unit normal vector to the face number @p face_no.
+     * unit normal vector space.
      */
     template<int k>
     std::array<Points<dim>, k> get_normal_space(const int j) const;
 
-#if 0
-    using FaceGridMap = std::map<typename FaceType::ElementIterator, ElementIterator>;
+    template<int k>
+    using InterGridMap = std::map<typename CartesianGrid<k>::ElementIterator, ElementIterator>;
+
     /**
-     * Construct a cartesian grid of dim-1 conforming to
-     * the grid face face_id and a map from the elements of
-     * the face grid to the corresponding element of the current
+     * Construct a sub grid of dimension k conforming to
+     * the grid sub element sub_elem_id and a map from the elements of
+     * the sub_element grid to the corresponding element of the current
      * grid.
      */
-    std::shared_ptr<FaceType>
-    get_face_grid(const int face_id, FaceGridMap &elem_map) const;
+    template<int k>
+    std::shared_ptr<CartesianGrid<k>>
+    get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
+
     ///@}
-#endif
+
     /**
      * Given a vector of points, this function return a map with
      * entries indexed by the grid element each point belongs to
@@ -511,6 +512,10 @@ private:
 
     friend class CartesianGridElement<dim>;
 };
+
+//template<int dim>
+//std::shared_ptr<CartesianGrid::SubGrid<dim-1>>
+//get_face_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
 
 IGA_NAMESPACE_CLOSE
 

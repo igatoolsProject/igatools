@@ -545,43 +545,42 @@ print_info(LogStream &out) const
 }
 
 
-#if 0
 template <int dim_>
+template<int k>
 auto
 CartesianGrid<dim_>::
-get_face_grid(const int face_id, FaceGridMap &elem_map) const
--> shared_ptr<FaceType>
+get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
+-> std::shared_ptr<CartesianGrid<k>>
 {
-    Assert(dim > 0, ExcLowerRange(dim, 1));
+	auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+	const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
+	auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
+	auto sub_grid = CartesianGrid<k>::create(sub_knots);
 
-    const auto active_dirs = UnitElement<dim>::face_active_directions[face_id];
-    const int const_dir = UnitElement<dim>::face_constant_direction[face_id];
-    const int const_value = UnitElement<dim>::face_side[face_id];
+	TensorIndex<dim> grid_index;
+	const int n_dir = k_elem.constant_directions.size();
+	for (int j=0; j<n_dir; ++j)
+	{
+		auto dir = k_elem.constant_directions[j];
+		auto val = k_elem.constant_values[j];
+		grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
+	}
 
-    TensorIndex<dim> v_index;
-    //auto knot_coordinates_ = this->get_knot_coordinates();
-    v_index[const_dir] = const_value == 0 ?
-    0 :
-    (knot_coordinates_.tensor_size()[const_dir]-2);
+	auto v_elem = begin();
+	auto s_elem = sub_grid->begin();
+	auto s_end  = sub_grid->end();
+	for (; s_elem != s_end; ++s_elem)
+	{
+		auto s_index = s_elem.get_tensor_index();
+		for (int j=0; j<k; ++j)
+			grid_index[active_dirs[j]] = s_index[j];
+		v_elem->move_to(grid_index);
+		elem_map.emplace(s_elem, v_elem);
+	}
 
-    auto face_knots = knot_coordinates_.get_sub_product(active_dirs);
-    auto face_grid = FaceType::create(face_knots);
-
-    auto v_elem = begin();
-    auto f_elem = face_grid->begin();
-    auto f_end    = face_grid->end();
-    for (; f_elem != f_end; ++f_elem)
-    {
-        auto f_index = f_elem.get_tensor_index();
-        for (int j=0; j<dim-1; ++j)
-            v_index[active_dirs[j]] = f_index[j];
-        v_elem->move_to(v_index);
-        elem_map.emplace(f_elem, v_elem);
-    }
-
-    return face_grid;
+	return sub_grid;
 }
-#endif
+
 
 
 template <int dim_>
@@ -658,10 +657,6 @@ operator==(const CartesianGrid<dim> &grid) const
     }
     return same_knots_coordinates;
 }
-
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

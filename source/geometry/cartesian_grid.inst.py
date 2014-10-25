@@ -18,14 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.domain_dims]
-for row in cartesian_grids:
-   f.write('template class %s; \n' % (row))
-   
+for dim in inst.domain_dims:
+    grid = 'CartesianGrid<%d>' %(dim)
+    f.write('template class %s; \n' % (grid))
+    for k in range(max(0,dim-1),dim):
+        f.write('template std::shared_ptr<CartesianGrid<%d>> %s::get_sub_grid(const int sub_elem_id, InterGridMap<%d> &elem_map) const; \n' % (k,grid,k))

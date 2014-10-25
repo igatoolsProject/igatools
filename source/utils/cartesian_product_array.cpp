@@ -181,15 +181,16 @@ Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t
 
 
 template< class T, int rank>
+template<int k>
 auto
 CartesianProductArray<T,rank>::
-get_sub_product(const SubProductTensorIndex &index) const -> SubProduct
+get_sub_product(const TensorIndex<k> &index) const -> SubProduct<k>
 {
-    SubProduct sub_data;
-    for (int i=0; i<rank-1; ++i)
+    SubProduct<k> sub_data;
+    for (int i=0; i<k; ++i)
     {
-        Assert(index[i]<rank, ExcIndexRange(index[i],0,rank));
-        sub_data.copy_data_direction(i,data_[index[i]]);
+        Assert(index[i]<rank, ExcIndexRange(index[i], 0, rank));
+        sub_data.copy_data_direction(i, data_[index[i]]);
     }
 
     return sub_data;
