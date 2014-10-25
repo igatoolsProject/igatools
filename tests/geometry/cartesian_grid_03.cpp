@@ -17,39 +17,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for CartesianGrid face outer normal
+ *  Test for CartesianGrid normal spaces
  *
  *  author: pauletti
- *  date: 2012-11-27
- *  QA: v0.2 (pauletti, 2013-10-25)
+ *  date: 2014-10-27
  */
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
 
-template <int dim>
-void test_face_outer_normal()
+template <int dim, int k>
+void normal_space()
 {
-    auto cartesian_grid = CartesianGrid< dim >::create() ;
-    out << endl << "Cartesian Grid Dimension: " << dim << endl;
+	OUTSTART
 
-    for (int j = 0; j < UnitElement<dim>::faces_per_element; ++j)
-    {
-        out << "Face number : " << j << endl;
-        out << "Outer normal: " << cartesian_grid->get_face_normal(j) << endl;
-    }
+	auto grid = CartesianGrid<dim>::create();
+	const int n_elems = UnitElement<dim>::template num_elem<k>();
+	for (int j = 0; j < n_elems; ++j)
+	{
+		out << "Sub element index: " << j << endl;
+		auto normals = grid->template get_normal_space<dim-k>(j);
+		out << "Outer normals: ";
+		for (int i=0; i<dim-k; ++i)
+			out << normals[i] << " " << endl;
+	}
 
+	OUTEND
 }
 
 
 
 int main()
 {
-//  test_face_outer_normal<0>();
-    test_face_outer_normal<1>();
-    test_face_outer_normal<2>();
-    test_face_outer_normal<3>();
+	normal_space<1, 0>();
+	normal_space<2, 1>();
+	normal_space<3, 2>();
 
     return 0;
 }

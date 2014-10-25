@@ -347,7 +347,7 @@ public:
 
     /**
      * Returns the outward pointing
-     * unit normal vector space.
+     * unit normal vector space to the element of codimension k.
      */
     template<int k>
     std::array<Points<dim>, k> get_normal_space(const int j) const;
