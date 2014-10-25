@@ -37,12 +37,19 @@ auto tuple_of_quads(std::index_sequence<I...>)
     return std::make_tuple(Quadrature<I>() ...);
 }
 
+template<int dim>
+using QuadList = decltype(tuple_of_quads(std::make_index_sequence<dim+1>()));
+
+
 int main()
 {
+
+	UnitElement<2>::num_elem<1>();
+	UnitElement<2>::get_elem<1>(0);
+
     const int dim=3;
     out.depth_console(20);
-    decltype(tuple_of_quads(std::make_index_sequence<dim+1>()))
-        list_of_quad;
+    QuadList<dim>  list_of_quad;
 
     auto &quad0 = std::get<0>(list_of_quad);
     quad0.print_info(out);

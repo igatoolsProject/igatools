@@ -125,9 +125,15 @@ auto construct_cube_elements()
     return tuple_of_elements<dim>(Indices());
 }
 
+
+template<int dim>
+using AllCubeElements = decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()));
+
 /**
- * @brief This class provides dimension independent information of all topological
- * structures that make up the elements in the reference patch or knotspans.
+ * @brief This class provides dimension independent information
+ * of all topological structures that make up the hypercube
+ * of dimension dim, which is the topological structure of the isogeometric
+ * "element"
  *
  */
 template <int dim>
@@ -157,9 +163,20 @@ struct UnitElement
      * This tuple of size dim+1 provides the caracterization of all
      * j dimensional skeleton of the unit cube
      */
-    static const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))
-    all_elems;
+    static const AllCubeElements<dim> all_elems;
 
+template<int k>
+static Size
+num_elem()
+{
+	return sub_elements_size[k];
+}
+
+template<int k>
+static const SubElement<k> &get_elem(const int j)
+{
+	return (std::get<k>(all_elems)[j]);
+}
 
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;
@@ -167,19 +184,9 @@ struct UnitElement
     /** Number of faces per element.*/
     static constexpr Size faces_per_element = 2 * dim;
 
-    static constexpr std::array<Size, faces_per_element> faces =
-        sequence<faces_per_element>();
+    static const std::array<Size, faces_per_element> faces;
+    //sequence<faces_per_element>();
 
-    /**
-     * Converts the local vertex index to the unit hypercube coordinates.
-     * For example in dim==2 the hypercube is the square
-     * and:
-     * - vertex 0 has coordinates (0,0)
-     * - vertex 1 has coordinates (1,0)
-     * - vertex 2 has coordinates (0,1)
-     * - vertex 3 has coordinates (1,1)
-     */
-    static const int vertex_to_component[vertices_per_element][dim];
 
     /** Dimension of the face. */
     static const int face_dim = (dim >= 1)? dim-1 : 0;

@@ -34,24 +34,22 @@ template<int dim, int k>
 void all_cube_elements()
 {
     OUTSTART
-    auto all_elems = UnitElement<dim>::all_elems;
 
-    auto elements = std::get<k>(all_elems);
-    const auto size = elements.size();
+    const auto size = UnitElement<dim>::template num_elem<k>();
     out << "Number of elements: " << size << endl;
     for (auto i=0; i<size; ++i)
     {
         out.begin_item("Element: " + std::to_string(i));
-        auto &face = elements[i];
-        const auto n_dir = face.constant_directions.size();
-        out << "constant directions" << endl;
+        auto &k_elem = UnitElement<dim>::template get_elem<k>(i);
+        const int n_dir = k_elem.constant_directions.size();
+        out << "Constant directions" << endl;
         for (int j=0; j<n_dir; ++j)
         {
-            out << "x["<<face.constant_directions[j]<< "]";
-            out << " = " << face.constant_values[j] << endl;
+            out << "x["<< k_elem.constant_directions[j]<< "]";
+            out << " = " << k_elem.constant_values[j] << endl;
         }
         out << "Active directions" << endl;
-        for (auto &dir : face.active_directions)
+        for (auto &dir : k_elem.active_directions)
             out << "x[" << dir << "]" << endl;
         out.end_item();
     }

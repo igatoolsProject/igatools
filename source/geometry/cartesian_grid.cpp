@@ -348,15 +348,22 @@ get_boundary_id(const int face) const
 
 
 template<int dim_>
+template<int k>
 auto
 CartesianGrid<dim_>::
-get_face_normal(const int face_no) const -> Points<dim>
+get_normal_space(const int j) const -> std::array<Point, k>
 {
-    Points<dim> normal;
-    normal[UnitElement<dim>::face_to_component[face_no][0]] =
-    UnitElement<dim>::face_normal_direction[face_no];
+	auto all_elems = UnitElement<dim>::all_elems;
+	auto element = std::get<k>(all_elems)[j];
 
-    return normal;
+	std::array<Point, k> normals;
+	for (int i=0; i<k; ++i)
+	{
+		auto val = 2*element.constant_values[i]-1;
+		normals[i][element.constant_directions[i]] = val;
+   	}
+
+	return normals;
 }
 
 
@@ -538,7 +545,7 @@ print_info(LogStream &out) const
 }
 
 
-
+#if 0
 template <int dim_>
 auto
 CartesianGrid<dim_>::
@@ -574,7 +581,7 @@ get_face_grid(const int face_id, FaceGridMap &elem_map) const
 
     return face_grid;
 }
-
+#endif
 
 
 template <int dim_>

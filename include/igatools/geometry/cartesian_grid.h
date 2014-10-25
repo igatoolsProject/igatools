@@ -92,18 +92,16 @@ public:
 
     static constexpr std::array<Size, dim_> dims = sequence<dim>();
 
-    /** Type for the face of the grid
-     * @note for the case dim==0 (with non existent face type)
-     * we use CartesianGrid<0>, but any function dealing with face
-     * should generate an exception if called with dim=0.
-     */
-    using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
+    //using FaceType = Conditional<(dim>0), CartesianGrid<dim-1>, CartesianGrid<0>>;
+
+    using Point = Points<dim>;
 
     /** Type for the element accessor. */
     using ElementAccessor = CartesianGridElement<dim>;
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
+
     using ElementHandler = GridElementHandler<dim>;
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim>;
@@ -216,8 +214,9 @@ public:
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
-     * @note In Debug mode, a check for this precondition (up to machine precision)
-     * is perform and if not satistified an exception is raised.
+     * @note In Debug mode, a check for this precondition
+     * (up to machine precision)
+     * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
     create(const KnotCoordinates &knot_coordinates);
@@ -228,8 +227,9 @@ public:
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
-     * @note In Debug mode, a check for this precondition (up to machine precision)
-     * is perform and if not satistified an exception is raised.
+     * @note In Debug mode, a check for this precondition
+     * (up to machine precision)
+     * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
     create(const std::array<vector<Real>,dim> &knot_coordinates);
@@ -351,8 +351,10 @@ public:
      * Returns the outward pointing
      * unit normal vector to the face number @p face_no.
      */
-    Points<dim> get_face_normal(const int face_no) const;
+    template<int k>
+    std::array<Points<dim>, k> get_normal_space(const int j) const;
 
+#if 0
     using FaceGridMap = std::map<typename FaceType::ElementIterator, ElementIterator>;
     /**
      * Construct a cartesian grid of dim-1 conforming to
@@ -363,7 +365,7 @@ public:
     std::shared_ptr<FaceType>
     get_face_grid(const int face_id, FaceGridMap &elem_map) const;
     ///@}
-
+#endif
     /**
      * Given a vector of points, this function return a map with
      * entries indexed by the grid element each point belongs to
@@ -461,7 +463,7 @@ private:
     Kind kind_ = Kind::non_uniform;
 
     /** Boundary ids, one id per face */
-    std::array< boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
+    std::array<boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
 
     /**
      *  Knot coordinates along each coordinate direction.

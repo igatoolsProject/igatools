@@ -312,14 +312,17 @@ auto
 CartesianGridElement<dim_>::
 vertex(const int i) const -> Point
 {
-    Assert(i < UnitElement<dim>::vertices_per_element,
-           ExcIndexRange(i,0,UnitElement<dim>::vertices_per_element));
+    Assert(i < UnitElement<dim>::sub_elements_size[0],
+           ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
     TensorIndex<dim> index = this->get_tensor_index();
 
+    auto all_elems = UnitElement<dim>::all_elems;
     for (int j = 0; j < dim; ++j)
-        index[j] += UnitElement<dim>::vertex_to_component[i][j];
-
+    {
+       auto vertex = std::get<0>(all_elems)[i];
+       index[j] += vertex.constant_values[j];
+    }
 
     return grid_->get_knot_coordinates().cartesian_product(index);
 }
