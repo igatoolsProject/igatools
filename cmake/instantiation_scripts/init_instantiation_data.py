@@ -157,8 +157,10 @@ class InstantiationInfo:
   
    def __init__(self, filename, max_der_order, nurbs):
       """The constructor."""
+      self.n_sub_element = 1 #1 for faces, 2 for faces and faces-1, max dim for all
       self.user_phy_sp_dims =[] # Physical spaces that the library is suppussed to be used on
       self.face_phy_sp_dims =[] # Physical Spaces that are faces of the user spaces
+      self.sub_phy_sp_dims =[] # Physical Spaces that are faces of the user spaces
       self.all_phy_sp_dims  =[] #the physical spaces the user provides plus the one that are necesary on top
       self.igm_phy_sp_dims=[]
 
@@ -175,7 +177,7 @@ class InstantiationInfo:
       self.igm_ref_sp_dims=[]
       self.really_all_ref_sp_dims=[]
       
-      self.nurbs = False if nurbs == 'OFF' else True
+      self.ig_spaces = ['NewBSplineSpace'] if nurbs == 'OFF' else ['NewBSplineSpace', 'NURBSSpace']
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
       self.values=[]
@@ -227,12 +229,19 @@ class InstantiationInfo:
          self.user_phy_sp_dims.append(PhysSpaceSpecs(row))
          self.all_phy_sp_dims.append(PhysSpaceSpecs(row))
 
-      #Add the spaces for the faces     
+         
+      #Sub spaces, Add the spaces for the faces     
       face_spaces = unique ([ [sp.dim-1, sp.codim+1, sp.range, sp.rank, sp.trans_type]
                     for sp in self.user_phy_sp_dims ] )
+      
+      sub_spaces = unique ([ [sp.dim-k, sp.codim+k, sp.range, sp.rank, sp.trans_type]
+                            for sp in self.user_phy_sp_dims for k in range(0, min(self.n_sub_element, sp.dim) + 1)] )
+
 
       for row in face_spaces:
          self.face_phy_sp_dims.append(PhysSpaceSpecs(row))
+      for row in sub_spaces:   
+         self.sub_phy_sp_dims.append(PhysSpaceSpecs(row))
          self.all_phy_sp_dims.append(PhysSpaceSpecs(row))
 
       self.all_phy_sp_dims = unique(self.all_phy_sp_dims)
@@ -240,7 +249,6 @@ class InstantiationInfo:
       self.domain_dims = unique([sp.dim for sp in self.all_phy_sp_dims])
            
       return None
-
 
 
    def create_mapping_dims(self):
@@ -251,6 +259,60 @@ class InstantiationInfo:
       dims_list = unique([ [row.dim,  row.codim] for row in self.user_phy_sp_dims])
       self.user_mapping_dims = [MappingRow(row) for row in dims_list]     
       return None
+
+
+
+   def create_ref_spaces(self):
+      ''' Creates a list of Reference spaces as table and as classes'''
+       
+      self.user_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
+                                       for x in self.user_phy_sp_dims] )
+      self.all_ref_sp_dims  = unique( [RefSpaceRow([x.dim, x.range, x.rank]) 
+                                       for x in self.all_phy_sp_dims] )
+      self.face_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
+                                       for x in self.face_phy_sp_dims] )
+
+      self.igm_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.space_dim, 1])
+                                       for x in self.all_mapping_dims] )
+      
+      self.really_all_ref_sp_dims=unique(self.all_ref_sp_dims + self.igm_ref_sp_dims)
+     
+      #self.all_phy_sp_dims.append(  
+      a= unique( [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
+                                           for x in self.really_all_ref_sp_dims] +
+                                         [PhysSpaceSpecs([x.dim-1, 1, x.range, x.rank, 'h_grad'])
+                                          for x in self.user_ref_sp_dims])
+                                    #)
+      
+     # self.all_phy_sp_dims = unique(self.all_phy_sp_dims+a)
+     
+#       self.igm_phy_sp_dims = unique( [PhysSpaceRow([x.dim, 0, x.space_dim, 1, 'h_grad'])
+#                                        for x in self.igm_ref_sp_dims] )
+     
+ #     RefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+  #                              for x in self.all_ref_sp_dims ]  
+
+  #    UserRefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+   #                  for x in self.user_ref_sp_dims ] 
+
+      IgRefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
+                    for x in self.igm_ref_sp_dims ]
+      
+     
+          
+      # self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
+      #                       for dims in RefDims] )
+      # self.UserRefSpaces = ( ['%s%s' % (sp, dims)
+      #                           for sp in spaces
+      #                           for dims in UserRefDims] )
+      self.IgmRefSpaces = ( ['%s%s' % (sp, dims)
+                             for sp in self.ig_spaces
+                             for dims in IgRefDims] )
+      
+
+      return None
+
+
 
 
    
@@ -288,84 +350,23 @@ class InstantiationInfo:
  
      
 
-   def create_ref_spaces(self):
-      ''' Creates a list of Reference spaces as table and as classes'''
-       
-      self.user_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
-                                       for x in self.user_phy_sp_dims] )
-      self.all_ref_sp_dims  = unique( [RefSpaceRow([x.dim, x.range, x.rank]) 
-                                       for x in self.all_phy_sp_dims] )
-      self.face_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
-                                       for x in self.face_phy_sp_dims] )
-
-      self.igm_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.space_dim, 1])
-                                       for x in self.all_mapping_dims] )
-      
-      self.really_all_ref_sp_dims=unique(self.all_ref_sp_dims + self.igm_ref_sp_dims)
-     
-      #self.all_phy_sp_dims.append(  
-      a= unique( [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
-                                           for x in self.really_all_ref_sp_dims] +
-                                         [PhysSpaceSpecs([x.dim-1, 1, x.range, x.rank, 'h_grad'])
-                                          for x in self.user_ref_sp_dims])
-                                    #)
-      
-      self.all_phy_sp_dims = unique(self.all_phy_sp_dims+a)
-     
-#       self.igm_phy_sp_dims = unique( [PhysSpaceRow([x.dim, 0, x.space_dim, 1, 'h_grad'])
-#                                        for x in self.igm_ref_sp_dims] )
-     
-      RefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
-                                for x in self.all_ref_sp_dims ]  
-
-      UserRefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
-                     for x in self.user_ref_sp_dims ] 
-
-      IgRefDims = ['<%d,%d,%d>' % (x.dim, x.range, x.rank)
-                     for x in self.igm_ref_sp_dims ]
-      
-      spaces = ['BSplineSpace']
-      if self.nurbs:
-          spaces.append('NURBSSpace')
-          
-      self.RefSpaces = ( ['%s%s' % (sp, dims) for sp in spaces
-                            for dims in RefDims] )
-      self.UserRefSpaces = ( ['%s%s' % (sp, dims)
-                                for sp in spaces
-                                for dims in UserRefDims] )
-      self.IgmRefSpaces = ( ['%s%s' % (sp, dims)
-                             for sp in spaces
-                             for dims in IgRefDims] )
-      
-
-      return None
-
-
-
+  
    def create_PhysSpaces(self):
        
-      spaces = ['NewBSplineSpace']
-      if self.nurbs:
-          spaces.append('NURBSSpace')
-   
       self.new_PhysSpaces_v2 = unique( [PhysSpace(x,sp,'NewPhysicalSpace')
-                                 for sp in spaces
+                                 for sp in self.ig_spaces
                                  for x in self.all_phy_sp_dims] )
       
       self.new_AllRefSpaces_v2 = unique( [RefSpace(x,sp)
-                                      for sp in spaces
+                                      for sp in self.ig_spaces
                                       for x in self.really_all_ref_sp_dims ] )
       
-      spaces = ['BSplineSpace']
-      if self.nurbs:
-          spaces.append('NURBSSpace')
-   
       self.PhysSpaces_v2 = unique( [PhysSpace(x,sp,'PhysicalSpace')
-                                 for sp in spaces
+                                 for sp in self.ig_spaces
                                  for x in self.all_phy_sp_dims] )
       
       self.AllRefSpaces_v2 = unique( [RefSpace(x,sp)
-                                      for sp in spaces
+                                      for sp in self.ig_spaces
                                       for x in self.really_all_ref_sp_dims ] )
       
         
@@ -383,7 +384,7 @@ class InstantiationInfo:
                                    '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
                                    ', PushForward<Transformation::%s, %d, %d> >'
                                    %(x.trans_type, x.dim, x.codim)
-                                   for sp in spaces
+                                   for sp in self.ig_spaces
                                    for x in self.all_phy_sp_dims] )
       
       
@@ -393,7 +394,7 @@ class InstantiationInfo:
                                      '%s<%d,%d,%d>' % (sp, x.dim, x.range, x.rank) +
                                      ', PushForward<Transformation::%s, %d, %d> >'
                                      %(x.trans_type, x.dim, x.codim)
-                                     for sp in spaces
+                                     for sp in self.ig_spaces
                                      for x in self.user_phy_sp_dims] )
 
 

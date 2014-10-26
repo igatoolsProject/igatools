@@ -105,29 +105,29 @@ private:
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
-    using PushForwardType = NewPushForward<Transformation::h_grad,dim_,0>;
-    using PhysSpace = NewPhysicalSpace<self_t, 0, Transformation::h_grad>;
-
-    /** Required type for space templated functions */
-    using RefSpace = self_t;
+//    using PushForwardType = NewPushForward<Transformation::h_grad,dim_,0>;
+//    using PhysSpace = NewPhysicalSpace<self_t, 0, Transformation::h_grad>;
+//
+//    /** Required type for space templated functions */
+//    using RefSpace = self_t;
 
     using GridType = CartesianGrid<dim_>;
     using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
 
-    static const int dim       = PushForwardType::dim;
-    static const int codim     = PushForwardType::codim;
-    static const int space_dim = PushForwardType::space_dim;
+    static const int dim       = dim_;
+    static const int codim     = 0;
+    static const int space_dim = dim_;
     static const int range     = range_;
     static const int rank      = rank_;
 
-    // TODO (pauletti, Oct 16, 2014): delete this
-    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(0);
+//    // TODO (pauletti, Oct 16, 2014): delete this
+//    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(0);
 
     using BaseSpace::n_components;
     using BaseSpace::components;
     using BaseSpace::dims;
 
-    static const bool has_weights = false;
+ //   static const bool has_weights = false;
 
 public:
     using typename BaseSpace::Func;
