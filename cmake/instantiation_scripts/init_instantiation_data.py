@@ -269,8 +269,8 @@ class InstantiationInfo:
                                        for x in self.user_phy_sp_dims] )
       self.all_ref_sp_dims  = unique( [RefSpaceRow([x.dim, x.range, x.rank]) 
                                        for x in self.all_phy_sp_dims] )
-      self.face_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
-                                       for x in self.face_phy_sp_dims] )
+     # self.face_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.range, x.rank])
+     #                                  for x in self.face_phy_sp_dims] )
 
       self.igm_ref_sp_dims = unique( [RefSpaceRow([x.dim, x.space_dim, 1])
                                        for x in self.all_mapping_dims] )
@@ -401,7 +401,7 @@ class InstantiationInfo:
    def create_ref_dim(self):
       self.ref_dom_dims = unique([x.dim for x in self.all_phy_sp_dims])
       self.user_ref_dom_dims = unique([x.dim for x in self.user_phy_sp_dims])
-      self.face_ref_dom_dims = unique([x.dim for x in self.face_phy_sp_dims])
+ #     self.face_ref_dom_dims = unique([x.dim for x in self.face_phy_sp_dims])
       return None
 
   

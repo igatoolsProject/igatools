@@ -24,8 +24,11 @@ data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
 for dim in inst.ref_dom_dims:
-    f.write('template class Quadrature<%d> ;\n' %dim)
-
-for dim in inst.face_ref_dom_dims:
-    f.write('template Quadrature<%d> extend_face_quad<%d>' %(dim+1, dim) +
-            '(const Quadrature <%d> &, const int);\n' %(dim))
+    f.write('template class Quadrature<%d>; \n' %dim)
+    for k in range(dim, max(0, dim - inst.n_sub_element), -1):
+        f.write('template Quadrature<%d> Quadrature<%d>::' %(dim, dim) +
+                'collapse_to_sub_element<%d>(const int id) const; \n' %(k-1) )
+          
+# for dim in inst.face_ref_dom_dims:
+#     f.write('template Quadrature<%d> extend_face_quad<%d>' %(dim+1, dim) +
+#             '(const Quadrature <%d> &, const int);\n' %(dim))

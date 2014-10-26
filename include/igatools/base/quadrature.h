@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 #ifndef QUADRATURE_H_
 #define QUADRATURE_H_
 
@@ -40,9 +41,11 @@ IGA_NAMESPACE_OPEN
 template<int dim>
 class Quadrature
 {
+private:
+	using self_t = Quadrature<dim>;
+	using WeigthArray = TensorProductArray<dim>;
+	using PointArray  = CartesianProductArray<Real, dim>;
 public:
-    using QuadArray = TensorProductArray<dim>;
-
     ///@name Constructors
     ///@{
     /**
@@ -55,7 +58,7 @@ public:
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
      * with @p num_points[i] number of points in the i-th dimension.
      */
-    explicit Quadrature(const TensorSize<dim > num_points);
+    explicit Quadrature(const TensorSize<dim> num_points);
 
     /**
      * Creates a tensor product quadrature rule
@@ -81,12 +84,12 @@ public:
      * Copy constructor.
      * It performs a deep copy of the Quadrature object.
      */
-    Quadrature(const Quadrature<dim> &quad_scheme) = default;
+    Quadrature(const self_t &quad_scheme) = default;
 
     /**
     * Move constructor.
     */
-    Quadrature(Quadrature<dim> &&quad_scheme) = default;
+    Quadrature(self_t &&quad_scheme) = default;
     ///@}
 
     ///@name Assignment operators
@@ -95,7 +98,7 @@ public:
      * Copy assignment operator.
      * It performs a deep copy of the Quadrature object.
      */
-    Quadrature<dim> &operator=(const Quadrature< dim > &quad_scheme) = default;
+    Quadrature<dim> &operator=(const self_t &quad_scheme) = default;
 
     /**
      * Move assignment operator.
@@ -138,7 +141,8 @@ public:
      * @todo write example
      * Usually use for face values
      */
-    Quadrature<dim> collapse_to_face(const int face_id) const;
+    template<int k>
+    Quadrature<dim> collapse_to_sub_element(const int id) const;
 
     /**
      * Prints internal information about the quadrature scheme.
@@ -150,17 +154,16 @@ protected:
     /**
      * Quadrature points.
      */
-    CartesianProductArray<Real,dim> points_ ;
+    PointArray points_;
 
     /**
      * Quadrature weights.
      */
-    TensorProductArray<dim> weights_ ;
-
-} ;
-
+    WeigthArray weights_;
+};
 
 
+#if 0
 /**
  * Given a quadrature rule on a dim dimensional face, of a dim+1
  * domain, this functions creates an extended dimension
@@ -172,7 +175,7 @@ template< int face_dim >
 Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
                                         const int face_id);
 
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

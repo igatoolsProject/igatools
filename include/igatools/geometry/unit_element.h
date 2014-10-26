@@ -175,6 +175,7 @@ num_elem()
 template<int k>
 static const SubElement<k> &get_elem(const int j)
 {
+	//TODO: put assetion on j in proper range
 	return (std::get<k>(all_elems)[j]);
 }
 
