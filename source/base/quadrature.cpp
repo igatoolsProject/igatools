@@ -134,24 +134,24 @@ Quadrature<dim>
 Quadrature<dim>::
 collapse_to_sub_element(const int sub_elem_id) const
 {
-	auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 
-	PointArray  new_points;
-	WeigthArray new_weights;
+    PointArray  new_points;
+    WeigthArray new_weights;
 
-	const int n_dir = k_elem.constant_directions.size();
-	for (int j=0; j<n_dir; ++j)
-	{
-		auto dir = k_elem.constant_directions[j];
-		auto val = k_elem.constant_values[j];
-		new_points.copy_data_direction(dir,vector<Real>(1, val));
-		new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
+    const int n_dir = k_elem.constant_directions.size();
+    for (int j=0; j<n_dir; ++j)
+    {
+        auto dir = k_elem.constant_directions[j];
+        auto val = k_elem.constant_values[j];
+        new_points.copy_data_direction(dir,vector<Real>(1, val));
+        new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
 
-	}
+    }
 
     for (auto i : k_elem.active_directions)
     {
-    	new_points.copy_data_direction(i,points_.get_data_direction(i));
+        new_points.copy_data_direction(i,points_.get_data_direction(i));
         new_weights.copy_data_direction(i,weights_.get_data_direction(i));
     }
 

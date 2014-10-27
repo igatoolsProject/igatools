@@ -471,15 +471,15 @@ NewValueFlags
 MappingFlags::to_function_flags(const NewValueFlags &flags)
 {
     NewValueFlags transfer_flag = NewValueFlags::measure |
-            NewValueFlags::w_measure |
-            NewValueFlags::normal | FunctionFlags::valid_flags;
+                                  NewValueFlags::w_measure |
+                                  NewValueFlags::normal | FunctionFlags::valid_flags;
 
 
     NewValueFlags f_flag = flags & transfer_flag;
 
     if (contains(flags, NewValueFlags::measure) ||
-            contains(flags, NewValueFlags::w_measure) ||
-            contains(flags,  NewValueFlags::normal))
+        contains(flags, NewValueFlags::w_measure) ||
+        contains(flags,  NewValueFlags::normal))
         f_flag |=  NewValueFlags::gradient;
 
     if (contains(flags, NewValueFlags::inv_gradient))

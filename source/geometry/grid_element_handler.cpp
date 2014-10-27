@@ -26,16 +26,12 @@ using std::array;
 IGA_NAMESPACE_OPEN
 
 template <int dim_>
-const array<Size, UnitElement<dim_>::faces_per_element>
-GridElementHandler<dim_>::faces  = UnitElement<dim_>::faces;
-
-template <int dim_>
 GridElementHandler<dim_>::
 GridElementHandler(shared_ptr<const GridType> grid,
                    const NewValueFlags flag,
                    const Quadrature<dim> &quad)
     :
-GridElementHandler(grid, flag, flag, quad)
+    GridElementHandler(grid, flag, flag, quad)
 {}
 
 
@@ -46,12 +42,12 @@ GridElementHandler(shared_ptr<const GridType> grid,
                    const NewValueFlags elem_flag,
                    const NewValueFlags face_flag,
                    const Quadrature<dim> &quad)
-                   :
-                   grid_(grid),
-                   flags_ {elem_flag, face_flag},
-                   quad_(quad),
-                   lengths_(grid->get_element_lengths())
-                   {}
+    :
+    grid_(grid),
+    flags_ {elem_flag, face_flag},
+       quad_(quad),
+       lengths_(grid->get_element_lengths())
+{}
 
 
 template <int dim_>
@@ -67,9 +63,10 @@ reset(const NewValueFlags flag,
 
 
 template <int dim_>
+template <int k>
 void
 GridElementHandler<dim_>::
-init_element_cache(ElementAccessor &elem)
+init_cache(ElementAccessor &elem)
 {
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
@@ -78,15 +75,22 @@ init_element_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    auto &elem_cache = cache->template get_value_cache<0>(0);
-    elem_cache.resize(std::get<0>(flags_), quad_);
-
-
-    for (auto &f: faces)
+    for (auto &s_id: sequence<UnitElement<dim>::template num_elem<dim-k>()>())
     {
-        auto &face_cache = cache->template get_value_cache<1>(f);
-       // face_cache.resize(std::get<1>(flags_), quad_.template collapse_to_sub_element<dim==0?0:dim-1>(f));
+        auto &s_cache = cache->template get_value_cache<k>(s_id);
+        s_cache.resize(std::get<k>(flags_),
+                       quad_.template collapse_to_sub_element<dim-k>(s_id));
     }
+}
+
+
+
+template <int dim_>
+void
+GridElementHandler<dim_>::
+init_element_cache(ElementAccessor &elem)
+{
+    init_cache<0>(elem);
 }
 
 
@@ -108,18 +112,15 @@ void
 GridElementHandler<dim_>::
 fill_element_cache_(ElementAccessor &elem, const int j)
 {
-    Assert(elem.local_cache_ != nullptr,ExcNullPtr());
+    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
     const auto &index = elem.get_tensor_index();
-    auto &flags = cache.flags_handler_;
-    auto all_elems = UnitElement<dim>::all_elems;
-    static const int a = dim >0? dim-k : 0;
-    auto elements = std::get<a>(all_elems);
+    const TensorIndex<dim-k> active(UnitElement<dim>::template get_elem<dim-k>(j).active_directions);
 
-    const TensorIndex<a> active(elements[j].active_directions);
-    //auto meas = lengths_.tensor_product(index);
-    auto meas = lengths_.template sub_tensor_product<a>(index, active);
+    auto &flags = cache.flags_handler_;
+
+    auto meas = lengths_.template sub_tensor_product<dim-k>(index, active);
 
     if (flags.fill_measures())
     {
@@ -153,16 +154,6 @@ GridElementHandler<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
     fill_element_cache(elem.get_accessor());
-}
-
-
-
-template <int dim_>
-void
-GridElementHandler<dim_>::
-fill_face_cache(ElementIterator &elem, const int face)
-{
-    fill_element_cache_<1>(elem.get_accessor(), face);
 }
 
 

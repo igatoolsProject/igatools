@@ -294,7 +294,7 @@ evaluate_1(const ValueVector<Point> &points,
             grad[j][i] = djy;
         }
     }
- }
+}
 
 
 
@@ -342,7 +342,7 @@ evaluate_2(const ValueVector<Point> &points,
                         factor = (i+1)==j ? c_2p[qp][i] : c[qp][i];
                     else
                         factor = ((i+1)==j || (i+1)==k) ?
-                                c_p[qp][i] : c[qp][i];
+                                 c_p[qp][i] : c[qp][i];
 
                     hessian[j][k][i] = d2jy * factor;
                 }

@@ -87,7 +87,7 @@ comp_volume()
     auto exact = std::pow(M_PI, dim/2.) / tgamma(dim/ 2. + 1);
     out << "Exact volume: " <<  exact << endl;
     OUTEND
- }
+}
 
 int main()
 {

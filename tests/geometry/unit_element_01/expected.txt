@@ -1,3 +1,10 @@
+0
+0
+0
+0
+0
+0
+0
 Number of points:1
 weights:
 Size: [ ]  Weights: []

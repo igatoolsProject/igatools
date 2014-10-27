@@ -28,6 +28,9 @@
 #cmakedefine MPATCH
 #cmakedefine HIERARCHICAL
 
+#define max_der @max_der_order@ + 1
+#define num_sub_elem @num_sub_elem@
+
 #define BOOST_DISABLE_ASSERT
 
 #define IGA_NAMESPACE_OPEN namespace iga {

@@ -127,7 +127,7 @@ public:
     using BaseSpace::components;
     using BaseSpace::dims;
 
- //   static const bool has_weights = false;
+//   static const bool has_weights = false;
 
 public:
     using typename BaseSpace::Func;

@@ -165,19 +165,19 @@ struct UnitElement
      */
     static const AllCubeElements<dim> all_elems;
 
-template<int k>
-static constexpr Size
-num_elem()
-{
-	return skel_size(dim, k);//sub_elements_size[k];
-}
+    template<int k>
+    static constexpr Size
+    num_elem()
+    {
+        return skel_size(dim, k);//sub_elements_size[k];
+    }
 
-template<int k>
-static const SubElement<k> &get_elem(const int j)
-{
-	//TODO: put assetion on j in proper range
-	return (std::get<k>(all_elems)[j]);
-}
+    template<int k>
+    static const SubElement<k> &get_elem(const int j)
+    {
+        //TODO: put assetion on j in proper range
+        return (std::get<k>(all_elems)[j]);
+    }
 
     /** Number of vertices of a element. */
     static const int vertices_per_element = 1 << dim;

@@ -137,6 +137,7 @@ set(range CACHE STRINGS "list of reference space range dim")
 set(rank  CACHE STRINGS "list of reference space rank")
 set(trans_type  CACHE STRINGS "list of transformation type")
 set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
+set(num_sub_elem 1 CACHE STRINGS "number of sub element to consider 1 for faces")
 #
 #-------------------------------------------------------------------------------
 

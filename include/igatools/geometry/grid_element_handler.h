@@ -46,12 +46,10 @@ private:
 protected:
     using ElementIterator = typename GridType::ElementIterator;
     using ElementAccessor = typename GridType::ElementAccessor;
-    static const std::array<Size, UnitElement<dim_>::faces_per_element> faces;
 
 protected:
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
-    // void fill_face_cache(ElementAccessor &elem, const int face);
 public:
     static const int dim = dim_;
     static const NewValueFlags valid_flags = NewValueFlags::measure |
@@ -70,6 +68,10 @@ public:
                        const Quadrature<dim> &quad);
 
     void reset(const NewValueFlags flag, const Quadrature<dim> &quad);
+
+
+    template <int k>
+    void init_cache(ElementAccessor &elem);
     /**
      * Allocates the space in ElementIterator element_cache
      * necessary for the given quadrature and flag combination.
@@ -84,11 +86,6 @@ public:
      */
     void fill_element_cache(ElementIterator &elem);
 
-    /**
-     * Fills the ElementIterator face_cache
-     * element dependent part
-     */
-    void fill_face_cache(ElementIterator &elem, const int face);
 
     void print_info(LogStream &out) const;
 

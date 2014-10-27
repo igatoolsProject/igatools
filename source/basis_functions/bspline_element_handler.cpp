@@ -253,11 +253,13 @@ init_element_cache(ElementAccessor &elem)
     auto &elem_cache = cache->template get_value_cache<0>(0);
     elem_cache.resize(std::get<0>(flags_), quad_, n_basis);
 
+#if 0
     for (auto &f: base_t::faces)
     {
         auto &face_cache = cache->template get_value_cache<1>(f);
-      //  face_cache.resize(std::get<1>(flags_), quad_.template collapse_to_sub_element<dim==0?0:dim-1>(f), n_basis);
+        //  face_cache.resize(std::get<1>(flags_), quad_.template collapse_to_sub_element<dim==0?0:dim-1>(f), n_basis);
     }
+#endif
 
 }
 

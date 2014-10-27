@@ -31,29 +31,29 @@
 template <int dim, int k>
 void normal_space()
 {
-	OUTSTART
+    OUTSTART
 
-	auto grid = CartesianGrid<dim>::create();
-	const int n_elems = UnitElement<dim>::template num_elem<k>();
-	for (int j = 0; j < n_elems; ++j)
-	{
-		out << "Sub element index: " << j << endl;
-		auto normals = grid->template get_normal_space<dim-k>(j);
-		out << "Outer normals: ";
-		for (int i=0; i<dim-k; ++i)
-			out << normals[i] << " " << endl;
-	}
+    auto grid = CartesianGrid<dim>::create();
+    const int n_elems = UnitElement<dim>::template num_elem<k>();
+    for (int j = 0; j < n_elems; ++j)
+    {
+        out << "Sub element index: " << j << endl;
+        auto normals = grid->template get_normal_space<dim-k>(j);
+        out << "Outer normals: ";
+        for (int i=0; i<dim-k; ++i)
+            out << normals[i] << " " << endl;
+    }
 
-	OUTEND
+    OUTEND
 }
 
 
 
 int main()
 {
-	normal_space<1, 0>();
-	normal_space<2, 1>();
-	normal_space<3, 2>();
+    normal_space<1, 0>();
+    normal_space<2, 1>();
+    normal_space<3, 2>();
 
     return 0;
 }

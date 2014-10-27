@@ -353,17 +353,17 @@ auto
 CartesianGrid<dim_>::
 get_normal_space(const int j) const -> std::array<Point, k>
 {
-	auto all_elems = UnitElement<dim>::all_elems;
-	auto element = std::get<dim-k>(all_elems)[j];
+    auto all_elems = UnitElement<dim>::all_elems;
+    auto element = std::get<dim-k>(all_elems)[j];
 
-	std::array<Point, k> normals;
-	for (int i=0; i<k; ++i)
-	{
-		auto val = 2*element.constant_values[i]-1;
-		normals[i][element.constant_directions[i]] = val;
-   	}
+    std::array<Point, k> normals;
+    for (int i=0; i<k; ++i)
+    {
+        auto val = 2*element.constant_values[i]-1;
+        normals[i][element.constant_directions[i]] = val;
+    }
 
-	return normals;
+    return normals;
 }
 
 
@@ -552,33 +552,33 @@ CartesianGrid<dim_>::
 get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
 -> std::shared_ptr<CartesianGrid<k>>
 {
-	auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
-	const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
-	auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
-	auto sub_grid = CartesianGrid<k>::create(sub_knots);
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
+    auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
+    auto sub_grid = CartesianGrid<k>::create(sub_knots);
 
-	TensorIndex<dim> grid_index;
-	const int n_dir = k_elem.constant_directions.size();
-	for (int j=0; j<n_dir; ++j)
-	{
-		auto dir = k_elem.constant_directions[j];
-		auto val = k_elem.constant_values[j];
-		grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
-	}
+    TensorIndex<dim> grid_index;
+    const int n_dir = k_elem.constant_directions.size();
+    for (int j=0; j<n_dir; ++j)
+    {
+        auto dir = k_elem.constant_directions[j];
+        auto val = k_elem.constant_values[j];
+        grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
+    }
 
-	auto v_elem = begin();
-	auto s_elem = sub_grid->begin();
-	auto s_end  = sub_grid->end();
-	for (; s_elem != s_end; ++s_elem)
-	{
-		auto s_index = s_elem.get_tensor_index();
-		for (int j=0; j<k; ++j)
-			grid_index[active_dirs[j]] = s_index[j];
-		v_elem->move_to(grid_index);
-		elem_map.emplace(s_elem, v_elem);
-	}
+    auto v_elem = begin();
+    auto s_elem = sub_grid->begin();
+    auto s_end  = sub_grid->end();
+    for (; s_elem != s_end; ++s_elem)
+    {
+        auto s_index = s_elem.get_tensor_index();
+        for (int j=0; j<k; ++j)
+            grid_index[active_dirs[j]] = s_index[j];
+        v_elem->move_to(grid_index);
+        elem_map.emplace(s_elem, v_elem);
+    }
 
-	return sub_grid;
+    return sub_grid;
 }
 
 

@@ -35,6 +35,24 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template<class ValuesCache, int dim, std::size_t... I>
+auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const ValuesCache &)
+-> decltype(std::make_tuple(std::array<ValuesCache,
+                            UnitElement<dim>::template num_elem<dim-I>()>() ...))
+{
+    return std::make_tuple(std::array<ValuesCache,
+                           UnitElement<dim>::template num_elem<dim-I>()>() ...);
+}
+
+
+template<class ValuesCache, int dim, int n_sub_elem>
+using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1>(),
+                                           Quadrature<dim>(),
+                                           ValuesCache()));
+
+
+
 /**
  * @brief Element accessor for the CartesianGrid.
  *
@@ -352,17 +370,7 @@ private:
         ///@}
     };
 
-#if 0
-    template<std::size_t... I>
-    auto tuple_of_quads(std::index_sequence<I...>)
-    -> decltype(std::make_tuple(std::array<ValuesCache, I>() ...))
-    {
-        return std::make_tuple(std::array<ValuesCache, I>() ...);
-    }
 
-    template<int dim>
-    using QuadList = decltype(tuple_of_quads(std::make_index_sequence<dim+1>()));
-#endif
     class LocalCache
     {
     public:
@@ -386,8 +394,9 @@ private:
             return std::get<k>(values_)[j];
         }
 
-        std::tuple<std::array<ValuesCache, 1>,
-        std::array<ValuesCache, UnitElement<dim>::template num_elem<dim==0?0:dim-1>()> > values_;
+        CacheList<ValuesCache, dim, (dim < num_sub_elem) ? num_sub_elem : dim> values_;
+//        std::tuple<std::array<ValuesCache, 1>,
+//        std::array<ValuesCache, UnitElement<dim>::template num_elem<dim==0?0:dim-1>()> > values_;
 
     };
 

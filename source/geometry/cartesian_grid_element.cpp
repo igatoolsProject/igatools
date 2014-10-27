@@ -320,8 +320,8 @@ vertex(const int i) const -> Point
     auto all_elems = UnitElement<dim>::all_elems;
     for (int j = 0; j < dim; ++j)
     {
-       auto vertex = std::get<0>(all_elems)[i];
-       index[j] += vertex.constant_values[j];
+        auto vertex = std::get<0>(all_elems)[i];
+        index[j] += vertex.constant_values[j];
     }
 
     return grid_->get_knot_coordinates().cartesian_product(index);
@@ -394,7 +394,7 @@ inline Real
 CartesianGridElement<dim_>::
 get_face_measure(const Index face_id) const
 {
-   // Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+    // Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     return get_measure_<1>(face_id);
 }
 

@@ -42,9 +42,9 @@ template<int dim>
 class Quadrature
 {
 private:
-	using self_t = Quadrature<dim>;
-	using WeigthArray = TensorProductArray<dim>;
-	using PointArray  = CartesianProductArray<Real, dim>;
+    using self_t = Quadrature<dim>;
+    using WeigthArray = TensorProductArray<dim>;
+    using PointArray  = CartesianProductArray<Real, dim>;
 public:
     ///@name Constructors
     ///@{
