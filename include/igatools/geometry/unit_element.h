@@ -129,6 +129,7 @@ auto construct_cube_elements()
 template<int dim>
 using AllCubeElements = decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()));
 
+
 /**
  * @brief This class provides dimension independent information
  * of all topological structures that make up the hypercube
@@ -144,7 +145,6 @@ struct UnitElement
      * hyper-cube of dimension dim
      */
     static const std::array<Size, dim + 1> sub_elements_size;
-
 
     /**
      * Element of dimension k in a cube of dimension dim
@@ -166,10 +166,10 @@ struct UnitElement
     static const AllCubeElements<dim> all_elems;
 
 template<int k>
-static Size
+static constexpr Size
 num_elem()
 {
-	return sub_elements_size[k];
+	return skel_size(dim, k);//sub_elements_size[k];
 }
 
 template<int k>

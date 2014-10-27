@@ -394,7 +394,7 @@ inline Real
 CartesianGridElement<dim_>::
 get_face_measure(const Index face_id) const
 {
-    Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+   // Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
     return get_measure_<1>(face_id);
 }
 
@@ -585,7 +585,7 @@ print_info(LogStream &out) const
     std::get<0>(values_)[0].print_info(out);
     out.end_item();
 
-    for (int i = 0 ; i < n_faces ; ++i)
+    for (int i = 0 ; i < UnitElement<dim>::template num_elem<dim==0? 0 : dim-1>() ; ++i)
     {
         out.begin_item("Face: "+ std::to_string(i) + " Cache:");
         std::get<1>(values_)[i].print_info(out);

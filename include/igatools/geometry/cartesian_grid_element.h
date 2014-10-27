@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef CARTESIAN_GRID_ELEMENT_ACCESSORS_H_
-#define CARTESIAN_GRID_ELEMENT_ACCESSORS_H_
+#ifndef CARTESIAN_GRID_ELEMENT_H_
+#define CARTESIAN_GRID_ELEMENT_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
@@ -63,8 +63,8 @@ public:
     /** Dimension of the grid like container */
     static const auto dim = ContainerType::dim;
 
-    /** Number of faces of the element. */
-    static const Size n_faces = UnitElement<dim_>::faces_per_element;
+//    /** Number of faces of the element. */
+//    static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
     using Point = Points<dim>;
 
@@ -352,7 +352,17 @@ private:
         ///@}
     };
 
+#if 0
+    template<std::size_t... I>
+    auto tuple_of_quads(std::index_sequence<I...>)
+    -> decltype(std::make_tuple(std::array<ValuesCache, I>() ...))
+    {
+        return std::make_tuple(std::array<ValuesCache, I>() ...);
+    }
 
+    template<int dim>
+    using QuadList = decltype(tuple_of_quads(std::make_index_sequence<dim+1>()));
+#endif
     class LocalCache
     {
     public:
@@ -377,7 +387,7 @@ private:
         }
 
         std::tuple<std::array<ValuesCache, 1>,
-        std::array<ValuesCache, n_faces> > values_;
+        std::array<ValuesCache, UnitElement<dim>::template num_elem<dim==0?0:dim-1>()> > values_;
 
     };
 
