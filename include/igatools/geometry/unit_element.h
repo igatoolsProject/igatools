@@ -179,20 +179,27 @@ struct UnitElement
         return (std::get<k>(all_elems)[j]);
     }
 
-    /** Number of vertices of a element. */
-    static const int vertices_per_element = 1 << dim;
+    template<int k>
+    static constexpr std::array<Index,num_elem<k>()>
+    elems_ids()
+    {
+        return sequence<num_elem<k>()>();
+    }
 
-    /** Number of faces per element.*/
-    static constexpr Size faces_per_element = 2 * dim;
+    static constexpr auto n_faces = num_elem<dim-1>();
 
-    static const std::array<Size, faces_per_element> faces;
-    //sequence<faces_per_element>();
-
-
-    /** Dimension of the face. */
-    static const int face_dim = (dim >= 1)? dim-1 : 0;
+//    /** Number of vertices of a element. */
+//    static const int vertices_per_element = 1 << dim;
+//
+//    /** Number of faces per element.*/
+//    static constexpr Size faces_per_element = 2 * dim;
 
 
+
+
+
+
+#if 0
     /**
      * Converts the local face index of the unit element
      * to the hyperplane it belongs to.
@@ -243,6 +250,7 @@ struct UnitElement
 
     /** Gives the outer boundary normal for every face. */
     static const Points<dim> face_normal[faces_per_element];
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

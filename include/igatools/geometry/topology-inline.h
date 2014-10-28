@@ -116,8 +116,8 @@ FaceTopology(const Index face_id)
     :
     TopologyId<dim>(face_id)
 {
-    Assert(face_id >= 0 && face_id < UnitElement<dim>::faces_per_element,
-           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    Assert(face_id >= 0 && face_id < UnitElement<dim>::n_faces,
+           ExcIndexRange(face_id,0,UnitElement<dim>::n_faces));
 };
 
 

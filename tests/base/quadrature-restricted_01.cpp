@@ -40,7 +40,7 @@ void do_test()
     out << "Original quadrature:" << endl;
     quad.print_info(out);
 
-    for (int face_id = 0; face_id<UnitElement<dim>::faces_per_element; ++face_id)
+    for (int face_id = 0; face_id<UnitElement<dim>::n_faces; ++face_id)
     {
         auto new_quad = quad.collapse_to_face(face_id);
         out << "Restricted quadrature to face: "<< face_id << endl;

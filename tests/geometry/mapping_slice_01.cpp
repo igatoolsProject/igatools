@@ -40,7 +40,7 @@ void run_test()
     auto grid = CartesianGrid<dim>::create(n_elem+1);
     auto map = IdentityMapping<dim>::create(grid);
 
-    for (int face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
+    for (int face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
     {
         out << "Face: " << face_id << endl;
         auto elem_map = std::make_shared<typename CartesianGrid<dim>::FaceGridMap>();

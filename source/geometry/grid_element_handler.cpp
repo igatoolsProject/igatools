@@ -75,7 +75,7 @@ init_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    for (auto &s_id: sequence<UnitElement<dim>::template num_elem<dim-k>()>())
+    for (auto &s_id: UnitElement<dim>::template elems_ids<dim-k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
         s_cache.resize(std::get<k>(flags_),

@@ -34,7 +34,7 @@ void face_uniform(const int n_knots)
 {
     auto grid = CartesianGrid<dim>::create(n_knots);
     grid->print_info(out);
-    for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)
+    for (int i = 0; i < UnitElement<dim>::n_faces; ++i)
     {
         out << "Face: " << i << endl;
         std::map<int, int> elem_map;
@@ -56,7 +56,7 @@ void face_non_uniform()
         n_knots[i] = 2+i;
     auto grid = Grid::create(n_knots);
     grid->print_info(out);
-    for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)
+    for (int i = 0; i < UnitElement<dim>::n_faces; ++i)
     {
         out << "Face: " << i << endl;
         typename Grid::FaceGridMap elem_map;

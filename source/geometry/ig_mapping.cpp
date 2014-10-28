@@ -271,8 +271,8 @@ template<class RefSpace>
 void IgMapping<RefSpace>::
 set_face_element(const Index face_id, const GridIterator &elem) const
 {
-    Assert(face_id < UnitElement<dim>::faces_per_element && face_id >= 0,
-           ExcIndexRange(face_id,0,UnitElement<dim>::faces_per_element));
+    Assert(face_id < UnitElement<dim>::n_faces && face_id >= 0,
+           ExcIndexRange(face_id,0,UnitElement<dim>::n_faces));
     cache_->move_to(elem.get_flat_index());
     // TODO (pauletti, Sep 12, 2014): fix next line
     Assert(true, ExcMessage(" fix next line "));

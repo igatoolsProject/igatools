@@ -44,14 +44,14 @@ void test_evaluate()
     ValueFlags flag = ValueFlags::face_w_measure|ValueFlags::face_point;
     elem->init_cache(flag, quad);
 
-    std::array<Real, UnitElement<dim>::faces_per_element> face_area ;
+    std::array<Real, UnitElement<dim>::n_faces> face_area ;
     std::fill(face_area.begin(), face_area.end(), 0.0) ;
 
     for (; elem != elem_end; ++elem)
     {
         if (elem->is_boundary())
         {
-            for (Index face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
+            for (Index face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
             {
                 if (elem->is_boundary(face_id))
                 {
@@ -65,7 +65,7 @@ void test_evaluate()
     }
 
     out << "Dimension " << dim << endl;
-    for (Index face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
+    for (Index face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
     {
         out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
     }

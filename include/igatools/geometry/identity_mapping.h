@@ -90,11 +90,11 @@ public:
 
 private:
     Gradient A_;
-    std::array<Gradient, UnitElement<dim>::faces_per_element> face_A_;
+    std::array<Gradient, UnitElement<dim>::n_faces> face_A_;
 
     //The cache
     mutable ValueVector<Point> points_;
-    mutable std::array<ValueVector<Point>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim>::n_faces> face_points_;
 };
 
 IGA_NAMESPACE_CLOSE

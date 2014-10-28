@@ -173,13 +173,13 @@ private:
     static const int order = 3;
 
     mutable ValueVector<Points<dim>> points_;
-    mutable std::array<ValueVector<Point>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim>::n_faces> face_points_;
     mutable std::array<vector<std::array<double, dim> >, order> cos_val;
     mutable std::array<vector<std::array<double, dim> >, order> sin_val;
     mutable std::array<std::array<vector<std::array<double, dim> >, order>,
-            UnitElement<dim>::faces_per_element> face_cos_val;
+            UnitElement<dim>::n_faces> face_cos_val;
     mutable std::array<std::array<vector<std::array<double, dim> >, order>,
-            UnitElement<dim>::faces_per_element> face_sin_val;
+            UnitElement<dim>::n_faces> face_sin_val;
 
 };
 
@@ -234,13 +234,13 @@ public:
 private:
     static const int order = 3;
     mutable ValueVector<Points<dim>> points_;
-    mutable std::array<ValueVector<Point>, UnitElement<dim>::faces_per_element> face_points_;
+    mutable std::array<ValueVector<Point>, UnitElement<dim>::n_faces> face_points_;
     mutable std::array<vector<std::array<double, space_dim> >, order> cos_val;
     mutable std::array<vector<std::array<double, space_dim> >, order> sin_val;
     mutable std::array<std::array<vector<std::array<double, dim> >, order>,
-            UnitElement<dim>::faces_per_element> face_cos_val;
+            UnitElement<dim>::n_faces> face_cos_val;
     mutable std::array<std::array<vector<std::array<double, dim> >, order>,
-            UnitElement<dim>::faces_per_element> face_sin_val;
+            UnitElement<dim>::n_faces> face_sin_val;
     const double R = 1.;
 };
 

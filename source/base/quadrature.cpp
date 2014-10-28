@@ -167,7 +167,7 @@ Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
 {
     const int dim = face_dim + 1;
 
-    AssertIndexRange(face_id, UnitElement<dim>::faces_per_element);
+    AssertIndexRange(face_id, UnitElement<dim>::n_faces);
     const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
 
     CartesianProductArray<Real,face_dim> points_old = quad.get_points();

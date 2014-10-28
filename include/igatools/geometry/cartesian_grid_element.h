@@ -318,7 +318,7 @@ public:
 //     */
 //    ValueVector<Real> get_face_w_measures(const Index face_id) const;
 
-    template <int k=dim>
+    template <int k = dim>
     ValueVector<Point> get_points(const int j = 0) const;
 
 public:

@@ -165,7 +165,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     :
     TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
-    boundary_id_(filled_array<int,UnitElement<dim>::faces_per_element>(0)),
+    boundary_id_(filled_array<int,UnitElement<dim>::n_faces>(0)),
     knot_coordinates_(knot_coordinates),
     marked_elems_(this->tensor_size(), true),
     active_elems_(this->tensor_size(), true)
@@ -328,8 +328,8 @@ void
 CartesianGrid<dim_>::
 set_boundary_id(const int face, const boundary_id id)
 {
-    Assert(face < UnitElement<dim>::faces_per_element,
-           ExcIndexRange(face,0, UnitElement<dim>::faces_per_element));
+    Assert(face < UnitElement<dim>::n_faces,
+           ExcIndexRange(face,0, UnitElement<dim>::n_faces));
     boundary_id_[face] = id;
 }
 
@@ -340,8 +340,8 @@ boundary_id
 CartesianGrid<dim_>::
 get_boundary_id(const int face) const
 {
-    Assert(face < UnitElement<dim>::faces_per_element,
-           ExcIndexRange(face,0, UnitElement<dim>::faces_per_element));
+    Assert(face < UnitElement<dim>::n_faces,
+           ExcIndexRange(face,0, UnitElement<dim>::n_faces));
     return (boundary_id_[face]);
 }
 

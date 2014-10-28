@@ -99,7 +99,7 @@ public:
     /**
      * Type alias for the boundary conditions on each face of each scalar component of the space.
      */
-    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::faces_per_element>>;
+    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
 
 
     /**

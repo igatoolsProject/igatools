@@ -95,7 +95,7 @@ public:
     ///@}
 
     /** Number of faces per element. */
-    static const Size n_faces = UnitElement<dim>::faces_per_element;
+    static const Size n_faces = UnitElement<dim>::n_faces;
 
     /** Fill flags supported by this iterator */
     static const ValueFlags admisible_flag =

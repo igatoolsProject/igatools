@@ -550,10 +550,10 @@ Interface(const InterfaceType &type, PatchPtr patch_0,const int side_id_patch_0,
     type_(type)
 {
     Assert(patch_0 != patch_1,ExcMessage("Impossible to use the same patch to define an interface."));
-    Assert(side_id_patch_0 >= 0 && side_id_patch_0 < (UnitElement<dim>::faces_per_element),
-           ExcIndexRange(side_id_patch_0,0,UnitElement<dim>::faces_per_element));
-    Assert(side_id_patch_1 >= 0 && side_id_patch_1 < (UnitElement<dim>::faces_per_element),
-           ExcIndexRange(side_id_patch_1,0,UnitElement<dim>::faces_per_element));
+    Assert(side_id_patch_0 >= 0 && side_id_patch_0 < (UnitElement<dim>::n_faces),
+           ExcIndexRange(side_id_patch_0,0,UnitElement<dim>::n_faces));
+    Assert(side_id_patch_1 >= 0 && side_id_patch_1 < (UnitElement<dim>::n_faces),
+           ExcIndexRange(side_id_patch_1,0,UnitElement<dim>::n_faces));
 
 
     patch_and_side_[0] = std::make_pair(patch_0, side_id_patch_0);

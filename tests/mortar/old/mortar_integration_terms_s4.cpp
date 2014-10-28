@@ -368,7 +368,7 @@ int main()
     {
         if (elem_Js.is_boundary())
         {
-            for (Index face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
+            for (Index face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
             {
                 if (elem_Js.is_boundary(face_id))
                 {
@@ -417,7 +417,7 @@ int main()
     {
         if (elem_Js.is_boundary())
         {
-            for (Index face_id = 0; face_id < UnitElement<dim>::faces_per_element; ++face_id)
+            for (Index face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
             {
                 if (elem_Js.is_boundary(face_id))
                 {

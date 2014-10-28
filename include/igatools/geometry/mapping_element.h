@@ -121,7 +121,7 @@ static const auto codim = ContainerType::codim;
 static const auto space_dim = ContainerType::space_dim;
 
 private:
-static const Size n_faces = UnitElement<dim>::faces_per_element;
+static const Size n_faces = UnitElement<dim>::n_faces;
 
 public:
 /**

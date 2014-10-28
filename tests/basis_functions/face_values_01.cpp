@@ -48,7 +48,7 @@ void run_test(const int num_knots, const int p)
     auto map = IdentityMapping<dim>::create(grid);
     auto space = space_t::create(ref_space, pf_t::create(map));
 
-    const int num_faces = UnitElement<dim>::faces_per_element;
+    const int num_faces = UnitElement<dim>::n_faces;
     QGauss<dim> quad(2);
 
     ValueFlags flag = ValueFlags::face_value;

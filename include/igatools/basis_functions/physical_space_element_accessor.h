@@ -100,7 +100,7 @@ public :
     using QuadratureType = Quadrature<dim>;
     using QuadratureFaceType = Quadrature<dim-1>;
 
-    static const Size n_faces = UnitElement<dim>::faces_per_element;
+    static const Size n_faces = UnitElement<dim>::n_faces;
 
 
     using Value = typename PhysSpace::Value;

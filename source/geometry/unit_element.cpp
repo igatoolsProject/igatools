@@ -43,12 +43,12 @@ const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))
 UnitElement<dim>::all_elems = construct_cube_elements<dim>();
 
 
-template <int dim>
-const std::array<int, UnitElement<dim>::faces_per_element>
-UnitElement<dim>::faces = sequence<UnitElement<dim>::faces_per_element>();
+//template <int dim>
+//const std::array<int, UnitElement<dim>::template num_elem<k>()>
+//UnitElement<dim>::faces = sequence<UnitElement<dim>::template num_elem<k>()>();
 
 
-
+#if 0
 template <>
 const int
 UnitElement<0>::face_to_component[faces_per_element][2]
@@ -280,34 +280,35 @@ template <>
 const int
 UnitElement<4>::face_normal_direction[faces_per_element]
     = {-1, 1, -1, 1, -1, 1, -1, 1};
+#endif
+//template <>
+//const int
+//UnitElement<0>::opposite_vertex[vertices_per_element]
+//    = {0};
+//
+//template <>
+//const int
+//UnitElement<1>::opposite_vertex[vertices_per_element]
+//    = {1,0};
+//
+//
+//template <>
+//const int
+//UnitElement<2>::opposite_vertex[vertices_per_element]
+//    = {3,2,1,0};
+//
+//
+//template <>
+//const int
+//UnitElement<3>::opposite_vertex[vertices_per_element]
+//    = {7,6,5,4,3,2,1,0};
+//
+//template <>
+//const int
+//UnitElement<4>::opposite_vertex[vertices_per_element]
+//    = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
 
-template <>
-const int
-UnitElement<0>::opposite_vertex[vertices_per_element]
-    = {0};
-
-template <>
-const int
-UnitElement<1>::opposite_vertex[vertices_per_element]
-    = {1,0};
-
-
-template <>
-const int
-UnitElement<2>::opposite_vertex[vertices_per_element]
-    = {3,2,1,0};
-
-
-template <>
-const int
-UnitElement<3>::opposite_vertex[vertices_per_element]
-    = {7,6,5,4,3,2,1,0};
-
-template <>
-const int
-UnitElement<4>::opposite_vertex[vertices_per_element]
-    = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
-
+#if 0
 template <>
 const Points<0>
 UnitElement<0>::face_normal[faces_per_element]=
@@ -357,7 +358,7 @@ UnitElement<4>::face_normal[faces_per_element]=
     Points<4>({Real(0.0),Real(0.0),Real(0.0),Real(1.0)}),
     Points<4>({Real(0.0),Real(0.0),Real(0.0),Real(-1.0)})
 };
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

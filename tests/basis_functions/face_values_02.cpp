@@ -38,7 +38,7 @@ void run_test(const int num_knots, const int p)
     auto grid = CartesianGrid<dim>::create(num_knots);
     auto space = space_t::create(p, grid);
 
-    const int num_faces = UnitElement<dim>::faces_per_element;
+    const int num_faces = UnitElement<dim>::n_faces;
     QGauss<dim> quad(2);
 
     ValueFlags flag = ValueFlags::face_value|ValueFlags::value;

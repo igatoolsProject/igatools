@@ -464,7 +464,7 @@ private:
     Kind kind_ = Kind::non_uniform;
 
     /** Boundary ids, one id per face */
-    std::array<boundary_id, UnitElement<dim>::faces_per_element > boundary_id_;
+    std::array<boundary_id, UnitElement<dim>::template num_elem<dim-1>()> boundary_id_;
 
     /**
      *  Knot coordinates along each coordinate direction.
