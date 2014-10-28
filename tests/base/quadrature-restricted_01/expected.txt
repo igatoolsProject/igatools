@@ -1,4 +1,6 @@
-Dimension: 1
+========================================================================
+void quad_collapse(int) [with int dim = 1; int k = 0]
+========================================================================
 Original quadrature:
 Number of points:3
 weights:
@@ -16,7 +18,7 @@ Direction: 0
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
 
-Restricted quadrature to face: 0
+Quad collapse to subelement: 0
 Number of points:1
 weights:
 Size: [ 1 ]  Weights: [1]
@@ -33,7 +35,8 @@ Direction: 0
 coordinates (flat cartesian_product):
 ValueVector (num_points=1) : [ [ 0 ]  ]
 
-Restricted quadrature to face: 1
+
+Quad collapse to subelement: 1
 Number of points:1
 weights:
 Size: [ 1 ]  Weights: [1]
@@ -50,7 +53,12 @@ Direction: 0
 coordinates (flat cartesian_product):
 ValueVector (num_points=1) : [ [ 1.00000 ]  ]
 
-Dimension: 2
+
+========================================================================
+
+========================================================================
+void quad_collapse(int) [with int dim = 2; int k = 1]
+========================================================================
 Original quadrature:
 Number of points:9
 weights:
@@ -72,7 +80,7 @@ Direction: 1
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
 
-Restricted quadrature to face: 0
+Quad collapse to subelement: 0
 Number of points:3
 weights:
 Size: [ 1 3 ]  Weights: [1,3]
@@ -93,7 +101,8 @@ Direction: 1
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0 0.112702 ]  [ 0 0.500000 ]  [ 0 0.887298 ]  ]
 
-Restricted quadrature to face: 1
+
+Quad collapse to subelement: 1
 Number of points:3
 weights:
 Size: [ 1 3 ]  Weights: [1,3]
@@ -114,7 +123,8 @@ Direction: 1
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 1.00000 0.112702 ]  [ 1.00000 0.500000 ]  [ 1.00000 0.887298 ]  ]
 
-Restricted quadrature to face: 2
+
+Quad collapse to subelement: 2
 Number of points:3
 weights:
 Size: [ 3 1 ]  Weights: [3,3]
@@ -135,7 +145,8 @@ Direction: 1
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 0 ]  [ 0.500000 0 ]  [ 0.887298 0 ]  ]
 
-Restricted quadrature to face: 3
+
+Quad collapse to subelement: 3
 Number of points:3
 weights:
 Size: [ 3 1 ]  Weights: [3,3]
@@ -156,7 +167,12 @@ Direction: 1
 coordinates (flat cartesian_product):
 ValueVector (num_points=3) : [ [ 0.112702 1.00000 ]  [ 0.500000 1.00000 ]  [ 0.887298 1.00000 ]  ]
 
-Dimension: 3
+
+========================================================================
+
+========================================================================
+void quad_collapse(int) [with int dim = 3; int k = 2]
+========================================================================
 Original quadrature:
 Number of points:27
 weights:
@@ -182,7 +198,7 @@ Direction: 2
 coordinates (flat cartesian_product):
 ValueVector (num_points=27) : [ [ 0.112702 0.112702 0.112702 ]  [ 0.500000 0.112702 0.112702 ]  [ 0.887298 0.112702 0.112702 ]  [ 0.112702 0.500000 0.112702 ]  [ 0.500000 0.500000 0.112702 ]  [ 0.887298 0.500000 0.112702 ]  [ 0.112702 0.887298 0.112702 ]  [ 0.500000 0.887298 0.112702 ]  [ 0.887298 0.887298 0.112702 ]  [ 0.112702 0.112702 0.500000 ]  [ 0.500000 0.112702 0.500000 ]  [ 0.887298 0.112702 0.500000 ]  [ 0.112702 0.500000 0.500000 ]  [ 0.500000 0.500000 0.500000 ]  [ 0.887298 0.500000 0.500000 ]  [ 0.112702 0.887298 0.500000 ]  [ 0.500000 0.887298 0.500000 ]  [ 0.887298 0.887298 0.500000 ]  [ 0.112702 0.112702 0.887298 ]  [ 0.500000 0.112702 0.887298 ]  [ 0.887298 0.112702 0.887298 ]  [ 0.112702 0.500000 0.887298 ]  [ 0.500000 0.500000 0.887298 ]  [ 0.887298 0.500000 0.887298 ]  [ 0.112702 0.887298 0.887298 ]  [ 0.500000 0.887298 0.887298 ]  [ 0.887298 0.887298 0.887298 ]  ]
 
-Restricted quadrature to face: 0
+Quad collapse to subelement: 0
 Number of points:9
 weights:
 Size: [ 1 3 3 ]  Weights: [1,3,9]
@@ -207,7 +223,8 @@ Direction: 2
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0 0.112702 0.112702 ]  [ 0 0.500000 0.112702 ]  [ 0 0.887298 0.112702 ]  [ 0 0.112702 0.500000 ]  [ 0 0.500000 0.500000 ]  [ 0 0.887298 0.500000 ]  [ 0 0.112702 0.887298 ]  [ 0 0.500000 0.887298 ]  [ 0 0.887298 0.887298 ]  ]
 
-Restricted quadrature to face: 1
+
+Quad collapse to subelement: 1
 Number of points:9
 weights:
 Size: [ 1 3 3 ]  Weights: [1,3,9]
@@ -232,7 +249,8 @@ Direction: 2
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 1.00000 0.112702 0.112702 ]  [ 1.00000 0.500000 0.112702 ]  [ 1.00000 0.887298 0.112702 ]  [ 1.00000 0.112702 0.500000 ]  [ 1.00000 0.500000 0.500000 ]  [ 1.00000 0.887298 0.500000 ]  [ 1.00000 0.112702 0.887298 ]  [ 1.00000 0.500000 0.887298 ]  [ 1.00000 0.887298 0.887298 ]  ]
 
-Restricted quadrature to face: 2
+
+Quad collapse to subelement: 2
 Number of points:9
 weights:
 Size: [ 3 1 3 ]  Weights: [3,3,9]
@@ -257,7 +275,8 @@ Direction: 2
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0 0.112702 ]  [ 0.500000 0 0.112702 ]  [ 0.887298 0 0.112702 ]  [ 0.112702 0 0.500000 ]  [ 0.500000 0 0.500000 ]  [ 0.887298 0 0.500000 ]  [ 0.112702 0 0.887298 ]  [ 0.500000 0 0.887298 ]  [ 0.887298 0 0.887298 ]  ]
 
-Restricted quadrature to face: 3
+
+Quad collapse to subelement: 3
 Number of points:9
 weights:
 Size: [ 3 1 3 ]  Weights: [3,3,9]
@@ -282,7 +301,8 @@ Direction: 2
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 1.00000 0.112702 ]  [ 0.500000 1.00000 0.112702 ]  [ 0.887298 1.00000 0.112702 ]  [ 0.112702 1.00000 0.500000 ]  [ 0.500000 1.00000 0.500000 ]  [ 0.887298 1.00000 0.500000 ]  [ 0.112702 1.00000 0.887298 ]  [ 0.500000 1.00000 0.887298 ]  [ 0.887298 1.00000 0.887298 ]  ]
 
-Restricted quadrature to face: 4
+
+Quad collapse to subelement: 4
 Number of points:9
 weights:
 Size: [ 3 3 1 ]  Weights: [3,9,9]
@@ -307,7 +327,8 @@ Direction: 2
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 0 ]  [ 0.500000 0.112702 0 ]  [ 0.887298 0.112702 0 ]  [ 0.112702 0.500000 0 ]  [ 0.500000 0.500000 0 ]  [ 0.887298 0.500000 0 ]  [ 0.112702 0.887298 0 ]  [ 0.500000 0.887298 0 ]  [ 0.887298 0.887298 0 ]  ]
 
-Restricted quadrature to face: 5
+
+Quad collapse to subelement: 5
 Number of points:9
 weights:
 Size: [ 3 3 1 ]  Weights: [3,9,9]
@@ -331,4 +352,7 @@ Direction: 2
 
 coordinates (flat cartesian_product):
 ValueVector (num_points=9) : [ [ 0.112702 0.112702 1.00000 ]  [ 0.500000 0.112702 1.00000 ]  [ 0.887298 0.112702 1.00000 ]  [ 0.112702 0.500000 1.00000 ]  [ 0.500000 0.500000 1.00000 ]  [ 0.887298 0.500000 1.00000 ]  [ 0.112702 0.887298 1.00000 ]  [ 0.500000 0.887298 1.00000 ]  [ 0.887298 0.887298 1.00000 ]  ]
+
+
+========================================================================
 

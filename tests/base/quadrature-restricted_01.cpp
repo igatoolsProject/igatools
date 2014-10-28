@@ -25,36 +25,37 @@
  */
 
 #include "../tests.h"
-#include <igatools/base/quadrature.h>
+
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/unit_element.h>
 
 
-template<int dim>
-void do_test()
+template<int dim, int k = dim-1>
+void quad_collapse(const int num_pts = 3)
 {
-    out<< "Dimension: " << dim << endl;
-    const int num_pts = 3;
+    OUTSTART
 
     QGauss<dim> quad(num_pts);
     out << "Original quadrature:" << endl;
     quad.print_info(out);
 
-    for (int face_id = 0; face_id<UnitElement<dim>::n_faces; ++face_id)
+    for (auto &id : UnitElement<dim>::template elems_ids<k>())
     {
-        auto new_quad = quad.collapse_to_face(face_id);
-        out << "Restricted quadrature to face: "<< face_id << endl;
-        new_quad.print_info(out);
+        auto collapsed_quad = quad.template collapse_to_sub_element<k>(id);
+        out << "Quad collapse to subelement: "<< id << endl;
+        collapsed_quad.print_info(out);
+        out << endl;
     }
 
+    OUTEND
 }
 
 int main()
 {
 
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
+    quad_collapse<1>();
+    quad_collapse<2>();
+    quad_collapse<3>();
 
     return 0;
 }
