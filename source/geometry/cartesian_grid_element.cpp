@@ -330,16 +330,21 @@ vertex(const int i) const -> Point
 
 
 template <int dim_>
+template <int k>
 bool CartesianGridElement<dim_>::
-is_boundary() const
+is_boundary(const Index id) const
 {
-    const auto num_elements_dim = this->get_grid()->get_num_intervals();
+    const auto &n_elem = this->get_grid()->get_num_intervals();
+    const auto &index = this->get_tensor_index();
 
-    const auto &element_index = this->get_tensor_index() ;
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
 
-    for (int i = 0; i < dim; ++i)
+    for (int i = 0; i < dim-k; ++i)
     {
-        if (element_index[i] == 0 or element_index[i] == num_elements_dim[i] - 1)
+        auto dir = k_elem.constant_directions[i];
+        auto val = k_elem.constant_values[i];
+        if ( ((index[dir] == 0)               && (val == 0)) ||
+             ((index[dir] == n_elem[dir] - 1) && (val == 1)) )
             return true;
     }
 
@@ -349,18 +354,27 @@ is_boundary() const
 
 
 template <int dim_>
+template <int k>
 bool
 CartesianGridElement<dim_>::
-is_boundary(const Index face_id) const
+is_boundary() const
 {
-    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
-    const int face_side = UnitElement<dim>::face_side[face_id];
-
-    const auto element_id_dir = this->get_tensor_index()[const_direction] ;
-    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
-
-    return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
+    for (auto &id : UnitElement<dim>::template elems_ids<k>())
+    {
+        auto res = is_boundary<k>(id);
+        if (res)
+            return res;
+    }
+    return false;
 }
+//    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
+//    const int face_side = UnitElement<dim>::face_side[face_id];
+//
+//    const auto element_id_dir = this->get_tensor_index()[const_direction] ;
+//    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
+//
+//    return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
+
 
 
 

@@ -244,6 +244,7 @@ public:
 
     ///@}
 
+#if 0
     /**
      * Returns the multiplicity of the face space face_id
      */
@@ -255,7 +256,7 @@ public:
      */
     typename FaceSpace::DegreeTable
     get_face_degree(const Index face_id) const;
-
+#endif
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 

@@ -261,13 +261,15 @@ public:
     /**
        * Test if the element has a boundary face.
        */
+    template<int k = dim-1>
     bool is_boundary() const;
 
     /**
      * Test if the face identified by @p face_id on the current element is on the
      * boundary of the cartesian grid.
      */
-    bool is_boundary(const Index face_id) const;
+    template<int k = dim-1>
+    bool is_boundary(const Index sub_elem_id) const;
     ///@}
 
     /**

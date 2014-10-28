@@ -265,7 +265,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
 }
 
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
@@ -300,7 +300,7 @@ get_face_degree(const Index face_id) const
     }
     return f_degree;
 }
-
+#endif
 
 
 template<int dim, int range, int rank>
