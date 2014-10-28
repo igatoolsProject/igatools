@@ -1,226 +1,337 @@
-======  Extension from 2D to 3D  ======
+========================================================================
+void quad_extension(int) [with int k = 0; int dim = 1]
+========================================================================
 Original quadrature
-Number of points:9
+Number of points:1
 weights:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
+Size: [ ]  Weights: []
 
 weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
+ValueVector (num_points=1) : [ 1.00000 ]
 coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
+Size: [ ]  Weights: []
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+ValueVector (num_points=1) : [ [ ]  ]
 
 
-Number of points:9
+Extended to subelement: 0
+Number of points:1
 weights:
-Size: [ 3 3 ]  Weights: [3,9]
+Size: [ 1 ]  Weights: [1]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
+[ 1.00000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
+ValueVector (num_points=1) : [ 1.00000 ]
 coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
+Size: [ 1 ]  Weights: [1]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
+[ 0 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+ValueVector (num_points=1) : [ [ 0 ]  ]
 
-Number of points:9
+Extended to subelement: 1
+Number of points:1
 weights:
-Size: [ 3 3 ]  Weights: [3,9]
+Size: [ 1 ]  Weights: [1]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
+[ 1.00000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
+ValueVector (num_points=1) : [ 1.00000 ]
 coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
+Size: [ 1 ]  Weights: [1]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
+[ 1.00000 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
+ValueVector (num_points=1) : [ [ 1.00000 ]  ]
 
-Number of points:9
-weights:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
+========================================================================
 
-weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
-coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
-
-coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
-
-Number of points:9
-weights:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
-
-weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
-coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
-
-coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
-
-Number of points:9
-weights:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
-
-weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
-coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
-
-coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
-
-Number of points:9
-weights:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.277778 0.444444 0.277778 ]
-Direction: 1
-[ 0.277778 0.444444 0.277778 ]
-
-weights (flat tensor product):
-ValueVector (num_points=9) : [ 0.0771605 0.123457 0.0771605 0.123457 0.197531 0.123457 0.0771605 0.123457 0.0771605 ]
-coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.112702 0.500000 0.887298 ]
-Direction: 1
-[ 0.112702 0.500000 0.887298 ]
-
-coordinates (flat cartesian_product):
-ValueVector (num_points=9) : [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
-
-======  Extension from 1D to 2D  ======
+========================================================================
+void quad_extension(int) [with int k = 1; int dim = 2]
+========================================================================
 Original quadrature
-Number of points:3
+Number of points:2
 weights:
-Size: [ 3 ]  Weights: [3]
+Size: [ 2 ]  Weights: [2]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
+[ 0.500000 0.500000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=3) : [ 0.277778 0.444444 0.277778 ]
+ValueVector (num_points=2) : [ 0.500000 0.500000 ]
 coordinates:
-Size: [ 3 ]  Weights: [3]
+Size: [ 2 ]  Weights: [2]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
+[ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 
-Number of points:3
+Extended to subelement: 0
+Number of points:2
 weights:
-Size: [ 3 ]  Weights: [3]
+Size: [ 1 2 ]  Weights: [1,2]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
+[ 1.00000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=3) : [ 0.277778 0.444444 0.277778 ]
+ValueVector (num_points=2) : [ 0.500000 0.500000 ]
 coordinates:
-Size: [ 3 ]  Weights: [3]
+Size: [ 1 2 ]  Weights: [1,2]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
+[ 0 ]
+Direction: 1
+[ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+ValueVector (num_points=2) : [ [ 0 0.211325 ]  [ 0 0.788675 ]  ]
 
-Number of points:3
+Extended to subelement: 1
+Number of points:2
 weights:
-Size: [ 3 ]  Weights: [3]
+Size: [ 1 2 ]  Weights: [1,2]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
+[ 1.00000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=3) : [ 0.277778 0.444444 0.277778 ]
+ValueVector (num_points=2) : [ 0.500000 0.500000 ]
 coordinates:
-Size: [ 3 ]  Weights: [3]
+Size: [ 1 2 ]  Weights: [1,2]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
+[ 1.00000 ]
+Direction: 1
+[ 0.211325 0.788675 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+ValueVector (num_points=2) : [ [ 1.00000 0.211325 ]  [ 1.00000 0.788675 ]  ]
 
-Number of points:3
+Extended to subelement: 2
+Number of points:2
 weights:
-Size: [ 3 ]  Weights: [3]
+Size: [ 2 1 ]  Weights: [2,2]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 1.00000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=3) : [ 0.277778 0.444444 0.277778 ]
+ValueVector (num_points=2) : [ 0.500000 0.500000 ]
 coordinates:
-Size: [ 3 ]  Weights: [3]
+Size: [ 2 1 ]  Weights: [2,2]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 0 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+ValueVector (num_points=2) : [ [ 0.211325 0 ]  [ 0.788675 0 ]  ]
 
-Number of points:3
+Extended to subelement: 3
+Number of points:2
 weights:
-Size: [ 3 ]  Weights: [3]
+Size: [ 2 1 ]  Weights: [2,2]
 Direction: 0
-[ 0.277778 0.444444 0.277778 ]
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 1.00000 ]
 
 weights (flat tensor product):
-ValueVector (num_points=3) : [ 0.277778 0.444444 0.277778 ]
+ValueVector (num_points=2) : [ 0.500000 0.500000 ]
 coordinates:
-Size: [ 3 ]  Weights: [3]
+Size: [ 2 1 ]  Weights: [2,2]
 Direction: 0
-[ 0.112702 0.500000 0.887298 ]
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 1.00000 ]
 
 coordinates (flat cartesian_product):
-ValueVector (num_points=3) : [ [ 0.112702 ]  [ 0.500000 ]  [ 0.887298 ]  ]
+ValueVector (num_points=2) : [ [ 0.211325 1.00000 ]  [ 0.788675 1.00000 ]  ]
+
+========================================================================
+
+========================================================================
+void quad_extension(int) [with int k = 2; int dim = 3]
+========================================================================
+Original quadrature
+Number of points:4
+weights:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
+
+
+Extended to subelement: 0
+Number of points:4
+weights:
+Size: [ 1 2 2 ]  Weights: [1,2,4]
+Direction: 0
+[ 1.00000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
+Direction: 2
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 1 2 2 ]  Weights: [1,2,4]
+Direction: 0
+[ 0 ]
+Direction: 1
+[ 0.211325 0.788675 ]
+Direction: 2
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0 0.211325 0.211325 ]  [ 0 0.788675 0.211325 ]  [ 0 0.211325 0.788675 ]  [ 0 0.788675 0.788675 ]  ]
+
+Extended to subelement: 1
+Number of points:4
+weights:
+Size: [ 1 2 2 ]  Weights: [1,2,4]
+Direction: 0
+[ 1.00000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
+Direction: 2
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 1 2 2 ]  Weights: [1,2,4]
+Direction: 0
+[ 1.00000 ]
+Direction: 1
+[ 0.211325 0.788675 ]
+Direction: 2
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 1.00000 0.211325 0.211325 ]  [ 1.00000 0.788675 0.211325 ]  [ 1.00000 0.211325 0.788675 ]  [ 1.00000 0.788675 0.788675 ]  ]
+
+Extended to subelement: 2
+Number of points:4
+weights:
+Size: [ 2 1 2 ]  Weights: [2,2,4]
+Direction: 0
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 1.00000 ]
+Direction: 2
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 2 1 2 ]  Weights: [2,2,4]
+Direction: 0
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 0 ]
+Direction: 2
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0.211325 0 0.211325 ]  [ 0.788675 0 0.211325 ]  [ 0.211325 0 0.788675 ]  [ 0.788675 0 0.788675 ]  ]
+
+Extended to subelement: 3
+Number of points:4
+weights:
+Size: [ 2 1 2 ]  Weights: [2,2,4]
+Direction: 0
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 1.00000 ]
+Direction: 2
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 2 1 2 ]  Weights: [2,2,4]
+Direction: 0
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 1.00000 ]
+Direction: 2
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0.211325 1.00000 0.211325 ]  [ 0.788675 1.00000 0.211325 ]  [ 0.211325 1.00000 0.788675 ]  [ 0.788675 1.00000 0.788675 ]  ]
+
+Extended to subelement: 4
+Number of points:4
+weights:
+Size: [ 2 2 1 ]  Weights: [2,4,4]
+Direction: 0
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
+Direction: 2
+[ 1.00000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 2 2 1 ]  Weights: [2,4,4]
+Direction: 0
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 0.211325 0.788675 ]
+Direction: 2
+[ 0 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0.211325 0.211325 0 ]  [ 0.788675 0.211325 0 ]  [ 0.211325 0.788675 0 ]  [ 0.788675 0.788675 0 ]  ]
+
+Extended to subelement: 5
+Number of points:4
+weights:
+Size: [ 2 2 1 ]  Weights: [2,4,4]
+Direction: 0
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
+Direction: 2
+[ 1.00000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 2 2 1 ]  Weights: [2,4,4]
+Direction: 0
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 0.211325 0.788675 ]
+Direction: 2
+[ 1.00000 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0.211325 0.211325 1.00000 ]  [ 0.788675 0.211325 1.00000 ]  [ 0.211325 0.788675 1.00000 ]  [ 0.788675 0.788675 1.00000 ]  ]
+
+========================================================================
 

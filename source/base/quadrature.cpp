@@ -27,8 +27,8 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
-template< int dim >
-Quadrature< dim >::Quadrature(const TensorSize<dim> num_points)
+template<int dim>
+Quadrature<dim>::Quadrature(const TensorSize<dim> num_points)
     :
     points_(num_points),
     weights_(num_points)
@@ -36,8 +36,8 @@ Quadrature< dim >::Quadrature(const TensorSize<dim> num_points)
 
 
 
-template< int dim >
-Quadrature< dim >::Quadrature(const Index num_points)
+template<int dim>
+Quadrature<dim>::Quadrature(const Index num_points)
     :
     points_(num_points),
     weights_(num_points)
@@ -45,8 +45,8 @@ Quadrature< dim >::Quadrature(const Index num_points)
 
 
 
-template< int dim >
-Quadrature< dim >::
+template<int dim>
+Quadrature<dim>::
 Quadrature(const CartesianProductArray<Real,dim> &points,
            const TensorProductArray<dim> &weights)
     :
@@ -60,9 +60,9 @@ Quadrature(const CartesianProductArray<Real,dim> &points,
 
 
 
-template< int dim >
+template<int dim>
 CartesianProductArray<Real,dim>
-Quadrature< dim >::
+Quadrature<dim>::
 get_points() const noexcept
 {
     return points_;
@@ -70,9 +70,9 @@ get_points() const noexcept
 
 
 
-template< int dim >
+template<int dim>
 TensorProductArray<dim>
-Quadrature< dim >::
+Quadrature<dim>::
 get_weights() const noexcept
 {
     return weights_;
@@ -80,9 +80,9 @@ get_weights() const noexcept
 
 
 
-template< int dim >
+template<int dim>
 TensorSize<dim>
-Quadrature< dim >::
+Quadrature<dim>::
 get_num_points_direction() const noexcept
 {
     return points_.tensor_size();
@@ -90,9 +90,9 @@ get_num_points_direction() const noexcept
 
 
 
-template< int dim >
+template<int dim>
 Size
-Quadrature< dim >::
+Quadrature<dim>::
 get_num_points() const noexcept
 {
     return points_.flat_size();
@@ -100,9 +100,9 @@ get_num_points() const noexcept
 
 
 
-template< int dim >
+template<int dim>
 void
-Quadrature< dim >::
+Quadrature<dim>::
 print_info(LogStream &out) const
 {
     out << "Number of points:" << get_num_points() << endl;
@@ -128,7 +128,7 @@ print_info(LogStream &out) const
     out << endl;
 }
 
-template< int dim >
+template<int dim>
 template<int k>
 Quadrature<dim>
 Quadrature<dim>::
@@ -160,42 +160,38 @@ collapse_to_sub_element(const int sub_elem_id) const
 
 
 
-#if 0
-template< int face_dim >
-Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
-                                        const int face_id)
+template<int k, int dim>
+Quadrature<dim>
+extend_sub_elem_quad(const Quadrature<k> &quad,
+                     const int sub_elem_id)
 {
-    const int dim = face_dim + 1;
 
-    AssertIndexRange(face_id, UnitElement<dim>::n_faces);
-    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 
-    CartesianProductArray<Real,face_dim> points_old = quad.get_points();
-    TensorProductArray<face_dim> weights_old = quad.get_weights();
+    typename Quadrature<dim>::PointArray  new_points;
+    typename Quadrature<dim>::WeigthArray new_weights;
 
-    CartesianProductArray<Real,dim> points_new;
-    TensorProductArray<dim> weights_new;
-
-    for (int i = 0, j = 0; i < dim ; ++i, ++j)
+    const int n_dir = k_elem.constant_directions.size();
+    for (int j=0; j<n_dir; ++j)
     {
-        if (i != const_direction)
-        {
-            points_new.copy_data_direction(i,points_old.get_data_direction(j));
-            weights_new.copy_data_direction(i,weights_old.get_data_direction(j));
-        }
-        else
-        {
-            points_new.copy_data_direction(
-                i,
-                vector<Real>(1,UnitElement<dim>::face_constant_coordinate[face_id]));
-            weights_new.copy_data_direction(i,vector<Real>(1,1.0));
-            --j;
-        }
+        auto dir = k_elem.constant_directions[j];
+        auto val = k_elem.constant_values[j];
+        new_points.copy_data_direction(dir,vector<Real>(1, val));
+        new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
+
     }
 
-    return Quadrature<dim>(points_new, weights_new);
+    int ind = 0;
+    for (auto i : k_elem.active_directions)
+    {
+        new_points.copy_data_direction(i,quad.get_points().get_data_direction(ind));
+        new_weights.copy_data_direction(i,quad.get_weights().get_data_direction(ind));
+        ++ind;
+    }
+
+    return Quadrature<dim>(new_points, new_weights);
 }
-#endif
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/quadrature.inst>

@@ -26,32 +26,35 @@
  */
 
 #include "../tests.h"
-#include <igatools/base/quadrature.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/unit_element.h>
 
-template <int dim>
-void run_test()
+template <int k, int dim = k+1>
+void quad_extension(const int num_pts = 2)
 {
-    const int num_pts = 3;
-    out << "======  Extension from "<< dim <<"D to "<<dim+1<<"D  ======" << endl;
-    QGauss<dim> quad_surf(num_pts);
+    OUTSTART
+
+    QGauss<k> sub_quad(num_pts);
     out << "Original quadrature" << endl;
-    quad_surf.print_info(out);
+    sub_quad.print_info(out);
     out << endl;
-    for (int i = 0; i < UnitElement<dim+1>::faces_per_element; ++i)
+
+    for (int i = 0; i < UnitElement<dim>::n_faces; ++i)
     {
-        Quadrature<dim+1> quad_extended = extend_face_quad(quad_surf, i);
-        quad_surf.print_info(out);
+        out << "Extended to subelement: " << i << endl;
+        Quadrature<dim> vol_quad = extend_sub_elem_quad<k, dim>(sub_quad, i);
+        vol_quad.print_info(out);
     }
+    OUTEND
 }
 
 
 int main()
 {
 
-    run_test<2>();
-    run_test<1>();
+    quad_extension<0>();
+    quad_extension<1>();
+    quad_extension<2>();
 
     return 0;
 }

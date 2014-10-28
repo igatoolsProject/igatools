@@ -25,10 +25,14 @@ data = Instantiation()
 
 for dim in inst.ref_dom_dims:
     f.write('template class Quadrature<%d>; \n' %dim)
-    for k in range(dim+1, max(0, dim - inst.n_sub_element), -1):
+    for k in range(dim, max(0, dim - inst.n_sub_element) - 1, -1):
         f.write('template Quadrature<%d> Quadrature<%d>::' %(dim, dim) +
-                'collapse_to_sub_element<%d>(const int id) const; \n' %(k-1) )
-          
-# for dim in inst.face_ref_dom_dims:
-#     f.write('template Quadrature<%d> extend_face_quad<%d>' %(dim+1, dim) +
-#             '(const Quadrature <%d> &, const int);\n' %(dim))
+                'collapse_to_sub_element<%d>(const int id) const; \n' %(k) )
+
+ext_members = [ 'Quadrature<dim> extend_sub_elem_quad<k,dim>(const Quadrature<k> &quad, const int sub_elem_id);']   
+for dim in inst.domain_dims:
+    for fun in ext_members:
+        for k in range(dim, max(0,dim - inst.n_sub_element) - 1, -1):
+            s = fun.replace('dim','%d' %dim).replace('k','%d' %k);
+            f.write('template ' + s + '\n')
+

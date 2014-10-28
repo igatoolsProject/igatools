@@ -43,6 +43,7 @@ class Quadrature
 {
 private:
     using self_t = Quadrature<dim>;
+public:
     using WeigthArray = TensorProductArray<dim>;
     using PointArray  = CartesianProductArray<Real, dim>;
 public:
@@ -163,7 +164,7 @@ protected:
 };
 
 
-#if 0
+
 /**
  * Given a quadrature rule on a dim dimensional face, of a dim+1
  * domain, this functions creates an extended dimension
@@ -171,11 +172,10 @@ protected:
  *
  * @relates Quadrature
  */
-template< int face_dim >
-Quadrature<face_dim+1> extend_face_quad(const Quadrature<face_dim> &quad,
-                                        const int face_id);
+template<int k, int dim>
+Quadrature<dim>
+extend_sub_elem_quad(const Quadrature<k> &quad, const int sub_elem_id);
 
-#endif
 
 IGA_NAMESPACE_CLOSE
 
