@@ -368,9 +368,9 @@ template <int dim_>
 template <int k>
 Real
 CartesianGridElement<dim_>::
-get_measure_(const int j) const
+get_measure(const int j) const
 {
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
+    const auto &cache = local_cache_->template get_value_cache<dim-k>(j);
     Assert(cache.is_filled(), ExcMessage("Cache not filed."));
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
 
@@ -379,24 +379,24 @@ get_measure_(const int j) const
 
 
 
-template <int dim_>
-inline Real
-CartesianGridElement<dim_>::
-get_measure() const
-{
-    return get_measure_<0>(0);
-}
+//template <int dim_>
+//inline Real
+//CartesianGridElement<dim_>::
+//get_measure() const
+//{
+//    return get_measure_<0>(0);
+//}
 
 
 
-template <int dim_>
-inline Real
-CartesianGridElement<dim_>::
-get_face_measure(const Index face_id) const
-{
-    // Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-    return get_measure_<1>(face_id);
-}
+//template <int dim_>
+//inline Real
+//CartesianGridElement<dim_>::
+//get_face_measure(const Index face_id) const
+//{
+//    // Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
+//    return get_measure_<1>(face_id);
+//}
 
 
 
@@ -404,9 +404,9 @@ template <int dim_>
 template <int k>
 ValueVector<Real>
 CartesianGridElement<dim_>::
-get_w_measures_(const int j) const
+get_w_measures(const int j) const
 {
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
+    const auto &cache = local_cache_->template get_value_cache<dim-k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
     //Assert(cache.flags_handler_.weights_filled(), ExcNotInitialized());
@@ -415,23 +415,23 @@ get_w_measures_(const int j) const
 
 
 
-template <int dim_>
-ValueVector<Real>
-CartesianGridElement<dim_>::
-get_w_measures() const
-{
-    return get_w_measures_<0>(0);
-}
+//template <int dim_>
+//ValueVector<Real>
+//CartesianGridElement<dim_>::
+//get_w_measures() const
+//{
+//    return get_w_measures_<0>(0);
+//}
 
 
 
-template <int dim_>
-ValueVector<Real>
-CartesianGridElement<dim_>::
-get_face_w_measures(const Index face_id) const
-{
-    return get_w_measures_<1>(face_id);
-}
+//template <int dim_>
+//ValueVector<Real>
+//CartesianGridElement<dim_>::
+//get_face_w_measures(const Index face_id) const
+//{
+//    return get_w_measures_<1>(face_id);
+//}
 
 
 
@@ -439,33 +439,34 @@ template <int dim_>
 template <int k>
 auto
 CartesianGridElement<dim_>::
-get_coordinate_lengths_(const int j) const -> const Point &
+get_coordinate_lengths(const int j) const -> const Point &
 {
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
+    const auto &cache = local_cache_->template get_value_cache<dim-k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
     return cache.lengths_;
 }
 
 
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-get_coordinate_lengths() const -> const Point &
-{
-    return get_coordinate_lengths_<0>(0);
-}
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//get_coordinate_lengths() const -> const Point &
+//{
+//    return get_coordinate_lengths_<0>(0);
+//}
 
 
 template <int dim_>
 template <int k>
 auto
-CartesianGridElement<dim_>::get_points_(const int j) const ->ValueVector<Point>
+CartesianGridElement<dim_>::
+get_points(const int j) const ->ValueVector<Point>
 {
-    const auto &cache =  local_cache_->template get_value_cache<k>(j);
+    const auto &cache =  local_cache_->template get_value_cache<dim-k>(j);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = vertex(0);
-    auto dilate    = get_coordinate_lengths_<k>(j);
+    auto dilate    = get_coordinate_lengths<k>(j);
 
     auto ref_points = cache.unit_points_;
     ref_points.dilate_translate(dilate, translate);
@@ -475,23 +476,23 @@ CartesianGridElement<dim_>::get_points_(const int j) const ->ValueVector<Point>
 
 
 
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-get_points() const -> ValueVector<Point> const
-{
-    return get_points_<0>(0);
-}
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//get_points() const -> ValueVector<Point> const
+//{
+//    return get_points_<0>(0);
+//}
 
 
 
-template <int dim_>
-auto
-CartesianGridElement<dim_>::
-get_face_points(const Index face_id) const -> ValueVector<Point> const
-{
-    return get_points_<1>(face_id);
-}
+//template <int dim_>
+//auto
+//CartesianGridElement<dim_>::
+//get_face_points(const Index face_id) const -> ValueVector<Point> const
+//{
+//    return get_points_<1>(face_id);
+//}
 
 
 //template <int dim_>

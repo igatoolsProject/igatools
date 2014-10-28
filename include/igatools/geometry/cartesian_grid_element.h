@@ -257,7 +257,7 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-    const Point &get_coordinate_lengths() const;
+   // const Point &get_coordinate_lengths() const;
     /**
        * Test if the element has a boundary face.
        */
@@ -275,65 +275,66 @@ public:
      */
     Point vertex(const int i) const;
 
-private:
-    template<int k>
-    const Point &get_coordinate_lengths_(const int j) const;
-
-
-private:
-    template <int k>
-    Real get_measure_(const int j) const;
-
 public:
+    template<int k = dim>
+    const Point &get_coordinate_lengths(const int j = 0) const;
+
+    template <int k = dim>
+    Real get_measure(const int j = 0) const;
+
+    /**
+     * Returns the k dimiensional j-th sub-element measure
+     * multiplied by the weights of the quadrature.
+     */
+    template <int k = dim>
+    ValueVector<Real> get_w_measures(const int j = 0) const;
+
     /**
      * Returns measure of the element or of the element-face in the
      * CartesianGrid.
      * @note The topology for which the measure is computed is specified by
      * the input argument @p topology_id.
      */
-    Real get_measure() const;
+//    Real get_measure() const;
+//    /**
+//     * Returns measure of j-th face.
+//     */
+//    Real get_face_measure(const int j) const;
 
-    /**
-     * Returns measure of j-th face.
-     */
-    Real get_face_measure(const int j) const;
 
-private:
-    template <int k> ValueVector<Real> get_w_measures_(const int j) const;
 
-public:
-    /**
-     * Returns the element measure multiplied by the weights of the quadrature
-     * scheme used to initialize the accessor's cache.
-     */
-    ValueVector<Real> get_w_measures() const;
+//public:
+//    /**
+//     * Returns the element measure multiplied by the weights of the quadrature
+//     * scheme used to initialize the accessor's cache.
+//     */
+//    ValueVector<Real> get_w_measures() const;
 
-    /**
-     * Returns the element-face measure multiplied by the weights of the
-     * quadrature scheme
-     * used to initialize the accessor's cache.
-     * The face is specified by the input argument @p face_id
-     */
-    ValueVector<Real> get_face_w_measures(const Index face_id) const;
+//    /**
+//     * Returns the element-face measure multiplied by the weights of the
+//     * quadrature scheme
+//     * used to initialize the accessor's cache.
+//     * The face is specified by the input argument @p face_id
+//     */
+//    ValueVector<Real> get_face_w_measures(const Index face_id) const;
 
-private:
-    template <int k>
-    ValueVector<Point> get_points_(const int j) const;
+    template <int k=dim>
+    ValueVector<Point> get_points(const int j = 0) const;
 
 public:
-    /**
-     * Return a const reference to the one-dimensional container with the
-     * values of the map at the evaluation points.
-     */
-    ValueVector<Point> const get_points() const;
-
-    /**
-     * Return a const reference to the one-dimensional container with the
-     * values of the map at the evaluation points on the face specified
-     * by @p face_id.
-     */
-    ValueVector<Point> const get_face_points(const Index face_id) const;
-    ///@}
+//    /**
+//     * Return a const reference to the one-dimensional container with the
+//     * values of the map at the evaluation points.
+//     */
+//    ValueVector<Point> const get_points() const;
+//
+//    /**
+//     * Return a const reference to the one-dimensional container with the
+//     * values of the map at the evaluation points on the face specified
+//     * by @p face_id.
+//     */
+//    ValueVector<Point> const get_face_points(const Index face_id) const;
+//    ///@}
 
     /**
      * Prints internal information about the CartesianGridElementAccessor.
@@ -394,10 +395,9 @@ private:
             return std::get<k>(values_)[j];
         }
 
+        // TODO (pauletti, Oct 28, 2014): this should be std::max, but in
+        // current gcc 4.9 not constexpr as it should be
         CacheList<ValuesCache, dim, (dim < num_sub_elem) ? num_sub_elem : dim> values_;
-//        std::tuple<std::array<ValuesCache, 1>,
-//        std::array<ValuesCache, UnitElement<dim>::template num_elem<dim==0?0:dim-1>()> > values_;
-
     };
 
 
