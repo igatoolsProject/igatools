@@ -155,7 +155,7 @@ BSplineElementHandler(shared_ptr<const Space> space,
                       const NewValueFlags flag,
                       const Quadrature<dim> &quad)
     :
-    base_t(space->get_grid(), FunctionFlags::to_grid_flags(flag), quad),
+    base_t(space->get_grid()),
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
     flags_ {flag, flag},
@@ -163,6 +163,7 @@ BSplineElementHandler(shared_ptr<const Space> space,
        splines1d_(space->get_grid()->get_num_intervals(),
                   BasisValues(space->get_components_map()))
 {
+        base_t::reset(FunctionFlags::to_grid_flags(flag), quad);
     // Compute the component offsets
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
@@ -447,7 +448,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_element_cache_(ElementAccessor &elem, const int j)
 {
-    base_t::template fill_element_cache_<k> (elem, j);
+    base_t::template fill_cache<dim-k> (elem, j);
 
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
@@ -497,7 +498,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_element_cache(ElementAccessor &elem)
 {
-    this->template fill_cache<0>(elem, 0);
+    base_t::template fill_cache<dim>(elem, 0);
 }
 
 

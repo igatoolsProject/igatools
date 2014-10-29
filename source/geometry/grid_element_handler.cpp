@@ -27,37 +27,23 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 GridElementHandler<dim_>::
-GridElementHandler(shared_ptr<const GridType> grid,
-                   const NewValueFlags flag,
-                   const Quadrature<dim> &quad)
-    :
-    GridElementHandler(grid, flag, flag, quad)
-{}
-
-
-
-template <int dim_>
-GridElementHandler<dim_>::
-GridElementHandler(shared_ptr<const GridType> grid,
-                   const NewValueFlags elem_flag,
-                   const NewValueFlags face_flag,
-                   const Quadrature<dim> &quad)
-    :
+GridElementHandler(shared_ptr<const GridType> grid)
+                   :
     grid_(grid),
-    flags_ {elem_flag, face_flag},
-       quad_(quad),
-       lengths_(grid->get_element_lengths())
+    lengths_(grid->get_element_lengths())
 {}
 
 
 template <int dim_>
+template<int k>
 void
 GridElementHandler<dim_>::
 reset(const NewValueFlags flag,
-      const Quadrature<dim> &quad)
+      const Quadrature<k> &quad)
 {
-    flags_ = std::make_tuple(flag, flag);
-    quad_ = quad;
+    flags_[k] = flag;
+    auto &quad_k = std::get<k>(quad_);
+    quad_k = quad;
 }
 
 
@@ -75,11 +61,11 @@ init_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<dim-k>())
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        s_cache.resize(std::get<k>(flags_),
-                       quad_.template collapse_to_sub_element<dim-k>(s_id));
+        auto &quad = std::get<k>(quad_);
+        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id) );
     }
 }
 
@@ -90,7 +76,7 @@ void
 GridElementHandler<dim_>::
 init_element_cache(ElementAccessor &elem)
 {
-    init_cache<0>(elem);
+    init_cache<dim>(elem);
 }
 
 
@@ -143,7 +129,7 @@ void
 GridElementHandler<dim_>::
 fill_element_cache(ElementAccessor &elem)
 {
-    fill_cache<0>(elem, 0);
+    fill_cache<dim>(elem, 0);
 }
 
 

@@ -29,8 +29,10 @@ NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
             const NewValueFlags &flag,
             const Quadrature<dim> &quad)
     :
-    GridElementHandler<dim>(grid, flag, quad)
-{}
+    GridElementHandler<dim>(grid)
+{
+    GridElementHandler<dim>::template reset<dim>(flag, quad);
+}
 
 
 

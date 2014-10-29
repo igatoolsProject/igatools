@@ -30,6 +30,17 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template<std::size_t... I>
+auto tuple_of_quads(std::index_sequence<I...>)
+-> decltype(std::make_tuple(Quadrature<I>() ...))
+{
+    return std::make_tuple(Quadrature<I>() ...);
+}
+
+template<int dim>
+using QuadList = decltype(tuple_of_quads(std::make_index_sequence<dim+1>()));
+
 /**
  * Grid element value manager
  *
@@ -58,16 +69,10 @@ public:
                                              NewValueFlags::length;
 
     //Allocates and fill the (global) cache
-    GridElementHandler(std::shared_ptr<const GridType> grid,
-                       const NewValueFlags flag,
-                       const Quadrature<dim> &quad);
+    GridElementHandler(std::shared_ptr<const GridType> grid);
 
-    GridElementHandler(std::shared_ptr<const GridType> grid,
-                       const NewValueFlags elem_flag,
-                       const NewValueFlags face_flag,
-                       const Quadrature<dim> &quad);
-
-    void reset(const NewValueFlags flag, const Quadrature<dim> &quad);
+    template<int k>
+    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
 protected:
     template <int k>
@@ -106,13 +111,12 @@ public:
 
     void print_info(LogStream &out) const;
 
-
-
 private:
     std::shared_ptr<const GridType> grid_;
 
-    std::tuple<GridFlags, GridFlags> flags_;
-    Quadrature<dim> quad_;
+    std::array<GridFlags, dim> flags_;
+
+    QuadList<dim> quad_;
 
 protected:
     TensorProductArray<dim> lengths_;

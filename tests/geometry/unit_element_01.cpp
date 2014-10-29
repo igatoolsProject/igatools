@@ -57,8 +57,28 @@ using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1
                                            Quadrature<dim>(),
                                            3));
 
+
+template<int dim>
+void print(Quadrature<dim> &q)
+{
+    q.print_info(out);
+}
+
+template <Tuple, std::size_t... Indices>
+    std::array<int, std::tuple_size<Tuple>::value> f_them_all(Tuple&& t, indices<Indices...>) {
+        return std::array<int, std::tuple_size<Tuple>::value> { { f(std::get<Indices>(std::forward<Tuple>(t)))... } };
+    }
+
+template <typename Tuple>
+    std::array<int, std::tuple_size<Tuple>::value> f_them_all(Tuple&& t) {
+        return f_them_all(std::forward<Tuple>(t), std::index_sequence_for<Args...>{});
+    }
+
+
+
 int main()
 {
+    CacheList<3,1> list_values;
 
 
     CacheList<3,1> list_values;
