@@ -110,7 +110,7 @@ template <int dim_>
 template <int k>
 void
 GridElementHandler<dim_>::
-fill_element_cache_(ElementAccessor &elem, const int j)
+fill_cache(ElementAccessor &elem, const int j)
 {
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
@@ -143,7 +143,7 @@ void
 GridElementHandler<dim_>::
 fill_element_cache(ElementAccessor &elem)
 {
-    fill_element_cache_<0>(elem, 0);
+    fill_cache<0>(elem, 0);
 }
 
 

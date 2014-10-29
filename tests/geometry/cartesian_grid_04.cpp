@@ -17,55 +17,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for the  CartesianGrid::get_face_grid
+ *  Test for the  CartesianGrid::get_sub_grid<k>
  *
  *  author: pauletti
- *  date: 2013-01-27
- *  QA: v0.2 (pauletti, 2013-10-25)
- */
+ *  date: 2014-10-27
+  */
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 
-template<int dim>
-void face_uniform(const int n_knots)
+template<int dim, int k = dim-1>
+void get_subgrid(const TensorSize<dim> &n_knots)
 {
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    grid->print_info(out);
-    for (int i = 0; i < UnitElement<dim>::n_faces; ++i)
-    {
-        out << "Face: " << i << endl;
-        std::map<int, int> elem_map;
-        auto face_grid = grid->get_face_grid(i, elem_map);
-        face_grid->print_info(out);
-        for (auto x : elem_map)
-            out << x.first << " " << x.second << endl;
-    }
-    out << endl;
-}
-
-
-template<int dim>
-void face_non_uniform()
-{
+	OUTSTART
     using Grid =  CartesianGrid<dim>;
-    TensorSize<dim> n_knots;
-    for (int i = 0; i < dim; ++i)
-        n_knots[i] = 2+i;
+    using SubGridMap = typename Grid::template InterGridMap<k>;
+
     auto grid = Grid::create(n_knots);
+    out.begin_item("Grid:");
     grid->print_info(out);
-    for (int i = 0; i < UnitElement<dim>::n_faces; ++i)
+    out.end_item();
+
+    for (auto &i : UnitElement<dim>::template elems_ids<k>())
     {
-        out << "Face: " << i << endl;
-        typename Grid::FaceGridMap elem_map;
-        auto face_grid = grid->get_face_grid(i, elem_map);
-        face_grid->print_info(out);
+    	out.begin_item("Sub element: " + to_string(i));
+        SubGridMap elem_map;
+        auto sub_grid = grid->template get_sub_grid<k>(i, elem_map);
+        sub_grid->print_info(out);
         for (auto x : elem_map)
             out << x.first->get_flat_index() << " " << x.second->get_flat_index() << endl;
+        out.end_item();
     }
     out << endl;
+
+    OUTEND
 }
 
 
@@ -74,9 +62,9 @@ int main()
 {
     out.depth_console(10);
 
-    face_non_uniform<1>();
-    face_non_uniform<2>();
-    face_non_uniform<3>();
+    get_subgrid<1>(TensorSize<1>(arr::sequence<1>(2)));
+    get_subgrid<2>(TensorSize<2>(arr::sequence<2>(2)));
+    get_subgrid<3>(TensorSize<3>(arr::sequence<3>(2)));
 
     return  0;
 }

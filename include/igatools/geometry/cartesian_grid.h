@@ -362,8 +362,8 @@ public:
      * grid.
      */
     template<int k>
-    std::shared_ptr<CartesianGrid<k>>
-                                   get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
+    std::shared_ptr<CartesianGrid<k> >
+    get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
 
     ///@}
 

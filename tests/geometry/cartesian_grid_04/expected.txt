@@ -1,164 +1,197 @@
-Number of active elements: 1
-Number of intervals per direction: [ 1 ]
-Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0 1.00000 ]
+========================================================================
+void get_subgrid(const iga::TensorSize<rank>&) [with int dim = 1; int k = 0]
+========================================================================
+Grid:
+   Number of active elements: 1
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
-Face: 0
-Number of active elements: 1
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
+Sub element: 0
+   Number of active elements: 1
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
+   0 0
 
-0 0
-Face: 1
-Number of active elements: 1
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
+Sub element: 1
+   Number of active elements: 1
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
+   0 0
 
-0 0
 
-Number of active elements: 2
-Number of intervals per direction: [ 1 2 ]
-Knot coordinates:
-   Size: [ 2 3 ]  Weights: [2,6]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.500000 1.00000 ]
+========================================================================
 
-Face: 0
-Number of active elements: 2
-Number of intervals per direction: [ 2 ]
-Knot coordinates:
-   Size: [ 3 ]  Weights: [3]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
+========================================================================
+void get_subgrid(const iga::TensorSize<rank>&) [with int dim = 2; int k = 1]
+========================================================================
+Grid:
+   Number of active elements: 2
+   Number of intervals per direction: [ 1 2 ]
+   Knot coordinates:
+      Size: [ 2 3 ]  Weights: [2,6]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+   
 
-0 0
-1 1
-Face: 1
-Number of active elements: 2
-Number of intervals per direction: [ 2 ]
-Knot coordinates:
-   Size: [ 3 ]  Weights: [3]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
+Sub element: 0
+   Number of active elements: 2
+   Number of intervals per direction: [ 2 ]
+   Knot coordinates:
+      Size: [ 3 ]  Weights: [3]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+   
+   0 0
+   1 1
 
-0 0
-1 1
-Face: 2
-Number of active elements: 1
-Number of intervals per direction: [ 1 ]
-Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0 1.00000 ]
+Sub element: 1
+   Number of active elements: 2
+   Number of intervals per direction: [ 2 ]
+   Knot coordinates:
+      Size: [ 3 ]  Weights: [3]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+   
+   0 0
+   1 1
 
-0 0
-Face: 3
-Number of active elements: 1
-Number of intervals per direction: [ 1 ]
-Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0 1.00000 ]
+Sub element: 2
+   Number of active elements: 1
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+   0 0
 
-0 1
+Sub element: 3
+   Number of active elements: 1
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+   0 1
 
-Number of active elements: 6
-Number of intervals per direction: [ 1 2 3 ]
-Knot coordinates:
-   Size: [ 2 3 4 ]  Weights: [2,6,24]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.500000 1.00000 ]
-   Direction: 2
-   [ 0 0.333333 0.666667 1.00000 ]
 
-Face: 0
-Number of active elements: 6
-Number of intervals per direction: [ 2 3 ]
-Knot coordinates:
-   Size: [ 3 4 ]  Weights: [3,12]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
-   Direction: 1
-   [ 0 0.333333 0.666667 1.00000 ]
+========================================================================
 
-0 0
-1 1
-2 2
-3 3
-4 4
-5 5
-Face: 1
-Number of active elements: 6
-Number of intervals per direction: [ 2 3 ]
-Knot coordinates:
-   Size: [ 3 4 ]  Weights: [3,12]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
-   Direction: 1
-   [ 0 0.333333 0.666667 1.00000 ]
+========================================================================
+void get_subgrid(const iga::TensorSize<rank>&) [with int dim = 3; int k = 2]
+========================================================================
+Grid:
+   Number of active elements: 6
+   Number of intervals per direction: [ 1 2 3 ]
+   Knot coordinates:
+      Size: [ 2 3 4 ]  Weights: [2,6,24]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+      Direction: 2
+      [ 0 0.333333 0.666667 1.00000 ]
+   
 
-0 0
-1 1
-2 2
-3 3
-4 4
-5 5
-Face: 2
-Number of active elements: 3
-Number of intervals per direction: [ 1 3 ]
-Knot coordinates:
-   Size: [ 2 4 ]  Weights: [2,8]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.333333 0.666667 1.00000 ]
+Sub element: 0
+   Number of active elements: 6
+   Number of intervals per direction: [ 2 3 ]
+   Knot coordinates:
+      Size: [ 3 4 ]  Weights: [3,12]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   0 0
+   1 1
+   2 2
+   3 3
+   4 4
+   5 5
 
-0 0
-1 2
-2 4
-Face: 3
-Number of active elements: 3
-Number of intervals per direction: [ 1 3 ]
-Knot coordinates:
-   Size: [ 2 4 ]  Weights: [2,8]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.333333 0.666667 1.00000 ]
+Sub element: 1
+   Number of active elements: 6
+   Number of intervals per direction: [ 2 3 ]
+   Knot coordinates:
+      Size: [ 3 4 ]  Weights: [3,12]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   0 0
+   1 1
+   2 2
+   3 3
+   4 4
+   5 5
 
-0 1
-1 3
-2 5
-Face: 4
-Number of active elements: 2
-Number of intervals per direction: [ 1 2 ]
-Knot coordinates:
-   Size: [ 2 3 ]  Weights: [2,6]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.500000 1.00000 ]
+Sub element: 2
+   Number of active elements: 3
+   Number of intervals per direction: [ 1 3 ]
+   Knot coordinates:
+      Size: [ 2 4 ]  Weights: [2,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   0 0
+   1 2
+   2 4
 
-0 0
-1 1
-Face: 5
-Number of active elements: 2
-Number of intervals per direction: [ 1 2 ]
-Knot coordinates:
-   Size: [ 2 3 ]  Weights: [2,6]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.500000 1.00000 ]
+Sub element: 3
+   Number of active elements: 3
+   Number of intervals per direction: [ 1 3 ]
+   Knot coordinates:
+      Size: [ 2 4 ]  Weights: [2,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   0 1
+   1 3
+   2 5
 
-0 4
-1 5
+Sub element: 4
+   Number of active elements: 2
+   Number of intervals per direction: [ 1 2 ]
+   Knot coordinates:
+      Size: [ 2 3 ]  Weights: [2,6]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+   
+   0 0
+   1 1
+
+Sub element: 5
+   Number of active elements: 2
+   Number of intervals per direction: [ 1 2 ]
+   Knot coordinates:
+      Size: [ 2 3 ]  Weights: [2,6]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+   
+   0 4
+   1 5
+
+
+========================================================================
 

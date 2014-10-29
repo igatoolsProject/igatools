@@ -34,7 +34,7 @@
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 
-template <int dim>
+template <int dim, int k = dim-1>
 void face_values(const TensorSize<dim> &n_knots)
 {
     OUTSTART
@@ -46,7 +46,6 @@ void face_values(const TensorSize<dim> &n_knots)
     NewValueFlags flag = NewValueFlags::measure|
                          NewValueFlags::w_measure|
                          NewValueFlags::point;
-
     QUniform<dim> quad(2);
     ElementHandler cache(grid, flag, quad);
 
@@ -59,21 +58,21 @@ void face_values(const TensorSize<dim> &n_knots)
         elem->print_info(out);
         out << endl;
 
-        for (auto &face_id : UnitElement<dim>::faces)
+        for (auto &face_id : UnitElement<dim>::template elems_ids<k>() )
         {
             if (elem->is_boundary(face_id))
             {
-                cache.fill_face_cache(elem, face_id);
+                cache.template fill_cache<1>(elem, face_id);
                 out << "face: " << face_id << endl;
 
-                out << "meas: "<< elem->get_face_measure(face_id) << endl;
+                out << "meas: "<< elem->template get_measure<k>(face_id) << endl;
 
                 out << "w_meas: " << endl;
-                elem->get_face_w_measures(face_id).print_info(out);
+                elem->template get_w_measures<k>(face_id).print_info(out);
                 out << endl;
 
                 out << "points: " << endl;
-                elem->get_face_points(face_id).print_info(out);
+                elem->template get_points<k>(face_id).print_info(out);
                 out << endl;
             }
         }

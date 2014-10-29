@@ -188,69 +188,6 @@ struct UnitElement
 
     static constexpr auto n_faces = num_elem<dim-1>();
 
-//    /** Number of vertices of a element. */
-//    static const int vertices_per_element = 1 << dim;
-//
-//    /** Number of faces per element.*/
-//    static constexpr Size faces_per_element = 2 * dim;
-
-
-
-
-
-
-#if 0
-    /**
-     * Converts the local face index of the unit element
-     * to the hyperplane it belongs to.
-     * More specifically it gives the constant coordinate
-     * and its value.
-     * For example in dim==2 the element is the unit square
-     * and:
-     * - face 0  is given by x=0 represented by {0,-1}
-     * - face 1  is given by x=1 represented by {0, 1}, etc.
-     *
-     *todo: call it  face_to_plane or/and replace by face_constant_direction
-     */
-    static const int face_to_component[faces_per_element][2];
-
-    /**
-     * Given a constant direction, in dimension <em>dim</em>, there are <em>dim-1</em>
-     * active directions.
-     */
-    static const
-    Conditional< dim != 0, std::array<int,dim-1>, std::array<int,0> > active_directions[dim];
-
-    /**
-     * For each face id, in dimension <em>dim</em>, there are <em>dim-1</em>
-     * active directions.
-     */
-    static const
-    Conditional<dim != 0, TensorIndex<dim-1>, TensorIndex<0> >
-    face_active_directions[faces_per_element];
-
-    /** Direction along which the face coordinates are constant. */
-    static const int face_constant_direction[faces_per_element];
-
-    /** For each face gives the side (0 or 1). */
-    static const int face_side[faces_per_element];
-
-    /** Value of the constant coordinate locating the face. */
-    static const Real face_constant_coordinate[faces_per_element];
-
-    /**
-     * For each face x_i=constant, the unit normal is (0,..0,+-1,0,...0)
-     * here we store the sign (-1 or +1) corresponding to the outer
-     * direction.
-     */
-    static const int face_normal_direction[faces_per_element];
-
-    /** For each vertex, gives the opposite vertex index. */
-    static const int opposite_vertex[vertices_per_element];
-
-    /** Gives the outer boundary normal for every face. */
-    static const Points<dim> face_normal[faces_per_element];
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

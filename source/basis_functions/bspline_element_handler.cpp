@@ -497,7 +497,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_element_cache(ElementAccessor &elem)
 {
-    this->template fill_element_cache_<0>(elem, 0);
+    this->template fill_cache<0>(elem, 0);
 }
 
 

@@ -69,9 +69,26 @@ public:
 
     void reset(const NewValueFlags flag, const Quadrature<dim> &quad);
 
+protected:
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
 
     template <int k>
     void init_cache(ElementAccessor &elem);
+
+public:
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+    	fill_cache<k>(elem.get_accessor(), j);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+    	init_cache<k>(elem.get_accessor());
+    }
+
     /**
      * Allocates the space in ElementIterator element_cache
      * necessary for the given quadrature and flag combination.
@@ -89,9 +106,7 @@ public:
 
     void print_info(LogStream &out) const;
 
-protected:
-    template <int k>
-    void fill_element_cache_(ElementAccessor &elem, const int j);
+
 
 private:
     std::shared_ptr<const GridType> grid_;
