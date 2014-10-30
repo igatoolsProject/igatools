@@ -43,7 +43,8 @@ void elem_measure(const int n_knots = 5)
     auto flag = NewValueFlags::measure|NewValueFlags::w_measure;
 
     QGauss<dim> quad(2);
-    GridElementHandler<dim> cache(grid, flag, quad);
+    GridElementHandler<dim> cache(grid);
+    cache.template reset<dim>(flag, quad);
     auto elem = grid->begin();
     cache.init_element_cache(elem);
 

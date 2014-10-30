@@ -35,24 +35,24 @@
 
 IGA_NAMESPACE_OPEN
 
-//template<class Func, class Tuple, std::size_t N, std::size_t Min>
-//struct TupleFunc {
-//    static void apply_func(const Tuple& t)
-//    {
-//        TupleFunc<Func,Tuple, N-1, Min>::apply_func(t);
-//        if (N>Min)
-//            Func::func(std::get<N-1>(t));
-//    }
-//};
-//
-//template<class Func, class Tuple, std::size_t N>
-//struct TupleFunc<Func, Tuple, N, N>
-//{
-//    static void apply_func(const Tuple& t)
-//    {
-//        Func::func(std::get<N>(t));
-//    }
-//};
+template<class Func, class Tuple, std::size_t N, std::size_t Min>
+struct TupleFunc {
+    static void apply_func(Func &F, const Tuple& t)
+    {
+        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
+        if (N>Min)
+            F.func(std::get<N-1>(t));
+    }
+};
+
+template<class Func, class Tuple, std::size_t N>
+struct TupleFunc<Func, Tuple, N, N>
+{
+    static void apply_func(Func &F, const Tuple& t)
+    {
+        F.func(std::get<N>(t));
+    }
+};
 
 
 template<class ValuesCache, int dim, std::size_t... I>

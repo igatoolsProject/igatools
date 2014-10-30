@@ -28,25 +28,31 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
-//namespace
-//{
-//struct print_cache_func
-//{
-//public:
-//    static const void func(const auto &c, LogStream &out)
-//    {
-//        for (auto &e : c)
-//            e.print_info(out);
-//        out << endl;
-//    }
-//};
-//
-//template<class... Args>
-//void print_quads(const std::tuple<Args...>& t, LogStream &out)
-//{
-//    TupleFunc<print_quads_func, decltype(t), sizeof...(Args), 2>::apply_func(t);
-//}
-//};
+namespace
+{
+struct PrintCacheFunc
+{
+    PrintCacheFunc(LogStream &out1)
+    :out(out1)
+    {}
+
+    void func(const auto &c)
+    {
+        for (auto &e : c)
+            e.print_info(out);
+        out << endl;
+    }
+    LogStream &out;
+};
+
+template<class... Args>
+void print_caches(const std::tuple<Args...>& t, LogStream &out)
+{
+    PrintCacheFunc f(out);
+    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
+}
+};
+
 
 
 template <int dim_>
@@ -360,7 +366,7 @@ is_boundary(const Index id) const
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
 
-    for (int i = 0; i < dim-k; ++i)
+    for (int i = 0; i < k; ++i)
     {
         auto dir = k_elem.constant_directions[i];
         auto val = k_elem.constant_values[i];
@@ -405,7 +411,7 @@ Real
 CartesianGridElement<dim_>::
 get_measure(const int j) const
 {
-    const auto &cache = local_cache_->template get_value_cache<dim-k>(j);
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcMessage("Cache not filed."));
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
 
@@ -441,7 +447,7 @@ ValueVector<Real>
 CartesianGridElement<dim_>::
 get_w_measures(const int j) const
 {
-    const auto &cache = local_cache_->template get_value_cache<dim-k>(j);
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
     //Assert(cache.flags_handler_.weights_filled(), ExcNotInitialized());
@@ -476,7 +482,7 @@ auto
 CartesianGridElement<dim_>::
 get_coordinate_lengths(const int j) const -> const Point &
 {
-    const auto &cache = local_cache_->template get_value_cache<dim-k>(j);
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
     return cache.lengths_;
@@ -498,7 +504,7 @@ auto
 CartesianGridElement<dim_>::
 get_points(const int j) const ->ValueVector<Point>
 {
-    const auto &cache =  local_cache_->template get_value_cache<dim-k>(j);
+    const auto &cache =  local_cache_->template get_value_cache<k>(j);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = vertex(0);
     auto dilate    = get_coordinate_lengths<k>(j);
@@ -617,9 +623,10 @@ CartesianGridElement<dim_>::
 LocalCache::
 print_info(LogStream &out) const
 {
-    out.begin_item("Element Cache:");
-    std::get<dim>(values_)[0].print_info(out);
-    out.end_item();
+    print_caches(values_, out);
+//    out.begin_item("Element Cache:");
+//    std::get<dim>(values_)[0].print_info(out);
+//    out.end_item();
 
 //    for (int i = 0 ; i < UnitElement<dim>::template num_elem<dim==0? 0 : dim-1>() ; ++i)
 //    {

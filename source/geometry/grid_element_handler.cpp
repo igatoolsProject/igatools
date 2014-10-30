@@ -20,10 +20,52 @@
 
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/unit_element.h>
+
+
 using std::shared_ptr;
 using std::array;
 
 IGA_NAMESPACE_OPEN
+
+template<class Func, class Args, class Tuple, std::size_t N, std::size_t Min>
+struct TupleFunc1 {
+    static void apply_func(Func &F, const Args &quad, Tuple& t)
+    {
+        TupleFunc1<Func, Args, Tuple, N-1, Min>::apply_func(F, quad, t);
+        if (N>Min)
+            F.func(std::get<N-1>(t), quad);
+    }
+};
+
+template<class Func, class Args, class Tuple, std::size_t N>
+struct TupleFunc1<Func, Args, Tuple, N, N>
+{
+    static void apply_func(Func &F, const Args &quad, Tuple& t)
+    {
+        F.func(std::get<N>(t), quad);
+    }
+};
+
+namespace
+{
+struct UniformQuadFunc
+{
+    void func(auto &val_cache, const auto &quad)
+    {
+        for (auto &s_cache : val_cache)
+            s_cache.resize(NewValueFlags::none, quad);
+    }
+};
+
+template<class Quad, class... Args>
+void init_unif_caches(const Quad& quad, std::tuple<Args...>& t)
+{
+    UniformQuadFunc f;
+    TupleFunc1<UniformQuadFunc, Quad, decltype(t), sizeof...(Args), 0>::apply_func(f, quad, t);
+}
+};
+
+
 
 template <int dim_>
 GridElementHandler<dim_>::
@@ -44,6 +86,21 @@ reset(const NewValueFlags flag,
     flags_[k] = flag;
     auto &quad_k = std::get<k>(quad_);
     quad_k = quad;
+}
+
+
+template <int dim_>
+void
+GridElementHandler<dim_>::
+init_all_caches(ElementAccessor &elem)
+{
+    auto &cache = elem.local_cache_;
+    if (cache == nullptr)
+    {
+        using Cache = typename ElementAccessor::LocalCache;
+        cache = shared_ptr<Cache>(new Cache);
+    }
+    init_unif_caches(std::get<dim>(quad_), cache->values_);
 }
 
 
@@ -102,11 +159,11 @@ fill_cache(ElementAccessor &elem, const int j)
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
     const auto &index = elem.get_tensor_index();
-    const TensorIndex<dim-k> active(UnitElement<dim>::template get_elem<dim-k>(j).active_directions);
+    const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
 
     auto &flags = cache.flags_handler_;
 
-    auto meas = lengths_.template sub_tensor_product<dim-k>(index, active);
+    auto meas = lengths_.template sub_tensor_product<k>(index, active);
 
     if (flags.fill_measures())
     {

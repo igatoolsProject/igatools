@@ -85,7 +85,7 @@ struct PrintQuadFunc
     PrintQuadFunc(LogStream &out1)
     :out(out1)
     {}
-
+    template<std::size_t... I>
     void func(const auto &q)
     {
         q.print_info(out);
@@ -101,8 +101,42 @@ void print_quads(const std::tuple<Args...>& t, LogStream &out1)
     TupleFunc<PrintQuadFunc, decltype(t), sizeof...(Args), 2>::apply_func(f,t);
 }
 
+
+template<int dim>
+struct Q
+{
+
+
+
+
+    template<std::size_t N>
+    struct init
+    {
+        static void func(auto &quad)
+        {
+            auto q = quad.template collapse_to_sub_element<N>(0);
+            init<N-1>::func(quad);
+        }
+    };
+
+    Quadrature<dim> quad;
+};
+
+template<int dim>
+template<>
+Q<dim>::init<0>
+    {
+        static void func(auto &quad)
+        {
+            auto q = quad.template collapse_to_sub_element<N>(0);
+        }
+    };
+
 int main()
 {
+
+    Q<3> q;
+    q.init<>;
 
     const int dim=3;
     QuadList<dim>  list_of_quad;

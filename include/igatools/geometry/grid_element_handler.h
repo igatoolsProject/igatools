@@ -94,6 +94,13 @@ public:
     	init_cache<k>(elem.get_accessor());
     }
 
+    void init_all_caches(ElementAccessor &elem);
+
+    void init_all_caches(ElementIterator &elem)
+    {
+        init_all_caches(elem.get_accessor());
+    }
+
     /**
      * Allocates the space in ElementIterator element_cache
      * necessary for the given quadrature and flag combination.
