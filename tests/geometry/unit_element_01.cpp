@@ -58,28 +58,57 @@ using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1
                                            3));
 
 
-template<int dim>
-void print(Quadrature<dim> &q)
+
+
+
+template<template <int dim> class Func, class Tuple, std::size_t N>
+struct TupleFunc {
+    static void apply_func(const Tuple& t)
+    {
+        TupleFunc<Func,Tuple, N-1>::apply_func(t);
+        Func<N-1>::func(std::get<N-1>(t));
+    }
+};
+
+template<template <int dim> class Func, class Tuple>
+struct TupleFunc<Func, Tuple, 1>
 {
-    q.print_info(out);
+    static void apply_func(const Tuple& t)
+    {
+        Func<0>::func(std::get<0>(t));
+    }
+};
+
+
+
+template<int dim>
+struct print_quads_func
+{
+public:
+    static const void func(const Quadrature<dim> &q)
+    {
+        q.print_info(out);
+        out << endl;
+    }
+};
+
+template<class... Args>
+void print_quads(const std::tuple<Args...>& t)
+{
+    TupleFunc<print_quads_func, decltype(t), sizeof...(Args)>::apply_func(t);
 }
 
-template <Tuple, std::size_t... Indices>
-    std::array<int, std::tuple_size<Tuple>::value> f_them_all(Tuple&& t, indices<Indices...>) {
-        return std::array<int, std::tuple_size<Tuple>::value> { { f(std::get<Indices>(std::forward<Tuple>(t)))... } };
-    }
-
-template <typename Tuple>
-    std::array<int, std::tuple_size<Tuple>::value> f_them_all(Tuple&& t) {
-        return f_them_all(std::forward<Tuple>(t), std::index_sequence_for<Args...>{});
-    }
 
 
 
 int main()
 {
-    CacheList<3,1> list_values;
 
+    const int dim=3;
+    QuadList<dim>  list_of_quad;
+    print_quads(list_of_quad);
+
+#if 1
 
     CacheList<3,1> list_values;
     auto &cache0 = std::get<0>(list_values);
@@ -93,22 +122,9 @@ int main()
 
     UnitElement<2>::num_elem<1>();
     UnitElement<2>::get_elem<1>(0);
-
-    const int dim=3;
-    out.depth_console(20);
-    QuadList<dim>  list_of_quad;
-
-    auto &quad0 = std::get<0>(list_of_quad);
-    quad0.print_info(out);
-    out << endl;
-
-    auto &quad1 = std::get<1>(list_of_quad);
-    quad1.print_info(out);
-    out << endl;
+#endif
 
 
-    auto &quad2 = std::get<2>(list_of_quad);
-    quad2.print_info(out);
-    out << endl;
+
     return 0;
 }

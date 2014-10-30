@@ -1,10 +1,3 @@
-0
-0
-0
-0
-0
-0
-0
 Number of points:1
 weights:
 Size: [ ]  Weights: []
@@ -56,3 +49,35 @@ coordinates (flat cartesian_product):
 ValueVector (num_points=0) : [ ]
 
 
+Number of points:0
+weights:
+Size: [ 0 0 0 ]  Weights: [0,0,0]
+Direction: 0
+[ ]
+Direction: 1
+[ ]
+Direction: 2
+[ ]
+
+weights (flat tensor product):
+ValueVector (num_points=0) : [ ]
+coordinates:
+Size: [ 0 0 0 ]  Weights: [0,0,0]
+Direction: 0
+[ ]
+Direction: 1
+[ ]
+Direction: 2
+[ ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=0) : [ ]
+
+
+0
+0
+0
+0
+0
+0
+0
