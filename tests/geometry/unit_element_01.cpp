@@ -60,40 +60,45 @@ using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>
 struct TupleFunc {
-    static void apply_func(const Tuple& t)
+    static void apply_func(Func &F, const Tuple& t)
     {
-        TupleFunc<Func,Tuple, N-1, Min>::apply_func(t);
+        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
         if (N>Min)
-            Func::func(std::get<N-1>(t));
+            F.func(std::get<N-1>(t));
     }
 };
 
 template<class Func, class Tuple, std::size_t N>
 struct TupleFunc<Func, Tuple, N, N>
 {
-    static void apply_func(const Tuple& t)
+    static void apply_func(Func &F, const Tuple& t)
     {
-        Func::func(std::get<N>(t));
+        F.func(std::get<N>(t));
     }
 };
 
 
 
 
-struct print_quads_func
+struct PrintQuadFunc
 {
-public:
-    static const void func(const auto &q)
+    PrintQuadFunc(LogStream &out1)
+    :out(out1)
+    {}
+
+    void func(const auto &q)
     {
         q.print_info(out);
         out << endl;
     }
+    LogStream &out;
 };
 
 template<class... Args>
-void print_quads(const std::tuple<Args...>& t)
+void print_quads(const std::tuple<Args...>& t, LogStream &out1)
 {
-    TupleFunc<print_quads_func, decltype(t), sizeof...(Args), 2>::apply_func(t);
+    PrintQuadFunc f(out1);
+    TupleFunc<PrintQuadFunc, decltype(t), sizeof...(Args), 2>::apply_func(f,t);
 }
 
 int main()
@@ -101,7 +106,7 @@ int main()
 
     const int dim=3;
     QuadList<dim>  list_of_quad;
-    print_quads(list_of_quad);
+    print_quads(list_of_quad, out);
 
 #if 1
 
