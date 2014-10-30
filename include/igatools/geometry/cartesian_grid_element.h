@@ -35,19 +35,38 @@
 
 IGA_NAMESPACE_OPEN
 
+//template<class Func, class Tuple, std::size_t N, std::size_t Min>
+//struct TupleFunc {
+//    static void apply_func(const Tuple& t)
+//    {
+//        TupleFunc<Func,Tuple, N-1, Min>::apply_func(t);
+//        if (N>Min)
+//            Func::func(std::get<N-1>(t));
+//    }
+//};
+//
+//template<class Func, class Tuple, std::size_t N>
+//struct TupleFunc<Func, Tuple, N, N>
+//{
+//    static void apply_func(const Tuple& t)
+//    {
+//        Func::func(std::get<N>(t));
+//    }
+//};
+
 
 template<class ValuesCache, int dim, std::size_t... I>
 auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const ValuesCache &)
 -> decltype(std::make_tuple(std::array<ValuesCache,
-                            UnitElement<dim>::template num_elem<dim-I>()>() ...))
+                            UnitElement<dim>::template num_elem<I>()>() ...))
 {
     return std::make_tuple(std::array<ValuesCache,
-                           UnitElement<dim>::template num_elem<dim-I>()>() ...);
+                           UnitElement<dim>::template num_elem<I>()>() ...);
 }
 
 
-template<class ValuesCache, int dim, int n_sub_elem>
-using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1>(),
+template<class ValuesCache, int dim>
+using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
                                            Quadrature<dim>(),
                                            ValuesCache()));
 
@@ -397,9 +416,7 @@ private:
             return std::get<k>(values_)[j];
         }
 
-        // TODO (pauletti, Oct 28, 2014): this should be std::max, but in
-        // current gcc 4.9 not constexpr as it should be
-        CacheList<ValuesCache, dim, (dim < num_sub_elem) ? num_sub_elem : dim> values_;
+        CacheList<ValuesCache, dim> values_;
     };
 
 

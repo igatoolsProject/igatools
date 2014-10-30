@@ -28,6 +28,27 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
+//namespace
+//{
+//struct print_cache_func
+//{
+//public:
+//    static const void func(const auto &c, LogStream &out)
+//    {
+//        for (auto &e : c)
+//            e.print_info(out);
+//        out << endl;
+//    }
+//};
+//
+//template<class... Args>
+//void print_quads(const std::tuple<Args...>& t, LogStream &out)
+//{
+//    TupleFunc<print_quads_func, decltype(t), sizeof...(Args), 2>::apply_func(t);
+//}
+//};
+
+
 template <int dim_>
 CartesianGridElement<dim_>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
@@ -597,15 +618,15 @@ LocalCache::
 print_info(LogStream &out) const
 {
     out.begin_item("Element Cache:");
-    std::get<0>(values_)[0].print_info(out);
+    std::get<dim>(values_)[0].print_info(out);
     out.end_item();
 
-    for (int i = 0 ; i < UnitElement<dim>::template num_elem<dim==0? 0 : dim-1>() ; ++i)
-    {
-        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
-        std::get<1>(values_)[i].print_info(out);
-        out.end_item();
-    }
+//    for (int i = 0 ; i < UnitElement<dim>::template num_elem<dim==0? 0 : dim-1>() ; ++i)
+//    {
+//        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
+//        std::get<1>(values_)[i].print_info(out);
+//        out.end_item();
+//    }
 }
 
 

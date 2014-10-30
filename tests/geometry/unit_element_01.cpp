@@ -58,34 +58,32 @@ using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1
                                            3));
 
 
-
-
-
-template<template <int dim> class Func, class Tuple, std::size_t N>
+template<class Func, class Tuple, std::size_t N, std::size_t Min>
 struct TupleFunc {
     static void apply_func(const Tuple& t)
     {
-        TupleFunc<Func,Tuple, N-1>::apply_func(t);
-        Func<N-1>::func(std::get<N-1>(t));
+        TupleFunc<Func,Tuple, N-1, Min>::apply_func(t);
+        if (N>Min)
+            Func::func(std::get<N-1>(t));
     }
 };
 
-template<template <int dim> class Func, class Tuple>
-struct TupleFunc<Func, Tuple, 1>
+template<class Func, class Tuple, std::size_t N>
+struct TupleFunc<Func, Tuple, N, N>
 {
     static void apply_func(const Tuple& t)
     {
-        Func<0>::func(std::get<0>(t));
+        Func::func(std::get<N>(t));
     }
 };
 
 
 
-template<int dim>
+
 struct print_quads_func
 {
 public:
-    static const void func(const Quadrature<dim> &q)
+    static const void func(const auto &q)
     {
         q.print_info(out);
         out << endl;
@@ -95,11 +93,8 @@ public:
 template<class... Args>
 void print_quads(const std::tuple<Args...>& t)
 {
-    TupleFunc<print_quads_func, decltype(t), sizeof...(Args)>::apply_func(t);
+    TupleFunc<print_quads_func, decltype(t), sizeof...(Args), 2>::apply_func(t);
 }
-
-
-
 
 int main()
 {
