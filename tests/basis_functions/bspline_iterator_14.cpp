@@ -46,7 +46,9 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
 
     auto flag = der_flag[der];
     auto quad = QGauss<dim>(2);
-    typename Space::ElementHandler value_handler(space, flag, quad);
+
+    typename Space::ElementHandler value_handler(space);
+    value_handler.template reset<dim>(flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
@@ -55,7 +57,7 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
     for (; elem != end; ++elem)
     {
         value_handler.fill_element_cache(elem);
-        elem->template get_basis_ders<0,der>(0).print_info(out);
+        elem->template get_values<der, dim>(0).print_info(out);
     }
     OUTEND
 }

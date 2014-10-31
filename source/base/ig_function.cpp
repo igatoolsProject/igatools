@@ -37,8 +37,10 @@ IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
     space_(space),
     coeff_(coeff),
     elem_(space_->begin()),
-    space_filler_(space_, flag, quad)
-{}
+    space_filler_(space_)
+{
+    space_filler_.template reset<dim>(flag, quad);
+}
 
 
 
@@ -77,6 +79,8 @@ auto
 IgFunction<Space>::
 fill_elem(ElementAccessor &elem) -> void
 {
+    const int s_id = 0;
+    const int k = dim;
     GridElementHandler<dim>::fill_element_cache(elem);
     space_filler_.fill_element_cache(elem_);
     auto &cache = this->get_cache(elem);
@@ -87,13 +91,14 @@ fill_elem(ElementAccessor &elem) -> void
     const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
 
     if (flag_.fill_values())
-        cache->values_ = elem_->template eval_field_ders<0, 0>(0, loc_coeff);
+        cache->values_ =
+                elem_->template linear_combination<0, k>(loc_coeff, s_id);
     if (flag_.fill_gradients())
         std::get<1>(cache->derivatives_) =
-        elem_->template eval_field_ders<0, 1>(0, loc_coeff);
+                elem_->template linear_combination<1, k>(loc_coeff, s_id);
     if (flag_.fill_hessians())
         std::get<2>(cache->derivatives_) =
-        elem_->template eval_field_ders<0, 2>(0, loc_coeff);
+                elem_->template linear_combination<2, k>(loc_coeff, s_id);
 }
 
 IGA_NAMESPACE_CLOSE

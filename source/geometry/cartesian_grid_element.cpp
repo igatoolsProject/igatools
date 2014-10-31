@@ -28,30 +28,54 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
-namespace
-{
-struct PrintCacheFunc
-{
-    PrintCacheFunc(LogStream &out1)
-    :out(out1)
-    {}
 
-    void func(const auto &c)
-    {
-        for (auto &e : c)
-            e.print_info(out);
-        out << endl;
-    }
-    LogStream &out;
-};
+//template<class Func, class Tuple, std::size_t N, std::size_t Min>
+//struct TupleFunc {
+//    static void apply_func(Func &F, const Tuple& t)
+//    {
+//        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
+//        if (N>Min)
+//            F.func(std::get<N-1>(t));
+//    }
+//};
+//
+//template<class Func, class Tuple, std::size_t N>
+//struct TupleFunc<Func, Tuple, N, N>
+//{
+//    static void apply_func(Func &F, const Tuple& t)
+//    {
+//        F.func(std::get<N>(t));
+//    }
+//};
+//
+//
 
-template<class... Args>
-void print_caches(const std::tuple<Args...>& t, LogStream &out)
-{
-    PrintCacheFunc f(out);
-    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
-}
-};
+
+
+//namespace
+//{
+//struct PrintCacheFunc
+//{
+//    PrintCacheFunc(LogStream &out1)
+//    :out(out1)
+//    {}
+//
+//    void func(const auto &c)
+//    {
+//        for (auto &e : c)
+//            e.print_info(out);
+//        out << endl;
+//    }
+//    LogStream &out;
+//};
+//
+//template<class... Args>
+//void print_caches(const std::tuple<Args...>& t, LogStream &out)
+//{
+//    PrintCacheFunc f(out);
+//    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
+//}
+//};
 
 
 
@@ -619,11 +643,10 @@ print_info(LogStream &out) const
 
 template <int dim_>
 void
-CartesianGridElement<dim_>::
-LocalCache::
+CartesianGridElement<dim_>::LocalCache::
 print_info(LogStream &out) const
 {
-    print_caches(values_, out);
+    cacheutils::print_caches(values_, out);
 //    out.begin_item("Element Cache:");
 //    std::get<dim>(values_)[0].print_info(out);
 //    out.end_item();

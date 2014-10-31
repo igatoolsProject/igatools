@@ -205,19 +205,6 @@ as_derived_element_accessor() const -> const DerivedElementAccessor &
 
 
 
-//template<class Space>
-//template<int skel_dim, int der_order>
-//auto
-//SpaceElement<Space>::
-//get_basis_ders(const int j) const
-//{
-//    const auto &cache = local_cache_->template get_value_cache<skel_dim>(j);
-//    Assert(cache.is_filled() == true, ExcCacheNotFilled());
-//   // Assert(cache.flags_handler_.values_filled(), ExcCacheNotFilled());
-//
-//    return cache.template get_der<der_order>();
-//}
-
 
 #if 0
 template<class Space>
@@ -702,20 +689,21 @@ print_cache_info(LogStream &out) const
 
 template<class Space>
 void
-SpaceElement<Space>::
-LocalCache::
+SpaceElement<Space>::LocalCache::
 print_info(LogStream &out) const
 {
-    out.begin_item("Element Cache:");
-    get_value_cache<0>(0).print_info(out);
-    out.end_item();
+    cacheutils::print_caches(values_, out);
 
-    for (int i = 0 ; i < n_faces ; ++i)
-    {
-        out.begin_item("Face "+ std::to_string(i) + " Cache:");
-        get_value_cache<1>(i).print_info(out);
-        out.end_item();
-    }
+//    out.begin_item("Element Cache:");
+//    get_value_cache<0>(0).print_info(out);
+//    out.end_item();
+//
+//    for (int i = 0 ; i < n_faces ; ++i)
+//    {
+//        out.begin_item("Face "+ std::to_string(i) + " Cache:");
+//        get_value_cache<1>(i).print_info(out);
+//        out.end_item();
+//    }
 
 }
 

@@ -151,26 +151,37 @@ public:
 
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
-BSplineElementHandler(shared_ptr<const Space> space,
-                      const NewValueFlags flag,
-                      const Quadrature<dim> &quad)
+BSplineElementHandler(shared_ptr<const Space> space)
     :
     base_t(space->get_grid()),
     space_(space),
     n_basis_(space_->get_num_all_element_basis()),
-    flags_ {flag, flag},
-       quad_(quad),
-       splines1d_(space->get_grid()->get_num_intervals(),
-                  BasisValues(space->get_components_map()))
+    splines1d_(space->get_grid()->get_num_intervals(),
+               BasisValues(space->get_components_map()))
 {
-        base_t::reset(FunctionFlags::to_grid_flags(flag), quad);
+
     // Compute the component offsets
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
         comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
 
 
-    const auto &n_inter = space->get_grid()->get_num_intervals();
+
+}
+
+template<int dim_, int range_ , int rank_>
+template<int k>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+reset(const NewValueFlags flag,
+      const Quadrature<k> &quad)
+{
+    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad);
+    flags_[k] = flag;
+
+
+
+    const auto &n_inter = space_->get_grid()->get_num_intervals();
     const auto &n_points = quad.get_num_points_direction();
 
     // Allocate space for the BasisValues1D
@@ -181,7 +192,7 @@ BSplineElementHandler(shared_ptr<const Space> space,
         {
             auto &splines1d = splines1d_.entry(dir, j);
             for (auto comp : splines1d.get_active_components_id())
-                splines1d[comp].resize(n_derivatives, n_basis_[comp][dir], n_pts);
+                splines1d[comp].resize(max_der, n_basis_[comp][dir], n_pts);
         }
     }
 
@@ -189,9 +200,9 @@ BSplineElementHandler(shared_ptr<const Space> space,
      * For each direction, interval and component we compute the 1D bspline
      * basis evaluate at the 1D component of the tensor product quadrature
      */
-    const auto &degree      = space->get_degree();
+    const auto &degree      = space_->get_degree();
     const auto &bezier_op   = space_->operators_;
-    const auto &points      = quad_.get_points();
+    const auto &points      = quad.get_points();
     const auto &lengths = this->lengths_;
 
     BasisValues bernstein_values(n_basis_.get_comp_map());
@@ -203,11 +214,11 @@ BSplineElementHandler(shared_ptr<const Space> space,
         for (auto comp : bernstein_values.get_active_components_id())
         {
             const int deg = degree[comp][dir];
-            bernstein_values[comp].resize(n_derivatives, deg+1, n_points[dir]);
+            bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
             const auto &pt_coords = points.get_data_direction(dir);
-            for (int order = 0; order < n_derivatives; ++order)
+            for (int order = 0; order < max_der; ++order)
                 bernstein_values[comp].get_derivative(order) =
-                    BernsteinBasis::derivative(order, deg, pt_coords);
+                        BernsteinBasis::derivative(order, deg, pt_coords);
         }
 
         const auto &inter_lengths = lengths.get_data_direction(dir);
@@ -220,27 +231,29 @@ BSplineElementHandler(shared_ptr<const Space> space,
                 auto &basis = splines1d[comp];
                 const auto &oper = bezier_op.get_operator(comp,dir)[j];
                 const Real one_div_size = 1.0 / inter_lengths[j];
-                for (int order = 0; order < n_derivatives; ++order)
+                for (int order = 0; order < max_der; ++order)
                 {
                     const Real scale = std::pow(one_div_size, order);
                     const auto &b_values = berns_values.get_derivative(order);
                     basis.get_derivative(order) =
-                        scale * prec_prod(oper, b_values);
+                            scale * prec_prod(oper, b_values);
                 }
             }
         }
 
     }
+
 }
 
 
 
 template<int dim_, int range_ , int rank_>
+template<int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-init_element_cache(ElementAccessor &elem)
+init_cache(ElementAccessor &elem)
 {
-    base_t::init_element_cache(elem);
+    base_t::template init_cache<k>(elem);
 
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
@@ -251,18 +264,30 @@ init_element_cache(ElementAccessor &elem)
 
     auto n_basis = space_->get_num_all_element_basis();
 
-    auto &elem_cache = cache->template get_value_cache<0>(0);
-    elem_cache.resize(std::get<0>(flags_), quad_, n_basis);
-
-#if 0
-    for (auto &f: base_t::faces)
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
-        auto &face_cache = cache->template get_value_cache<1>(f);
-        //  face_cache.resize(std::get<1>(flags_), quad_.template collapse_to_sub_element<dim==0?0:dim-1>(f), n_basis);
+        auto &s_cache = cache->template get_value_cache<k>(s_id);
+        auto &quad = std::get<k>(this->quad_);
+        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id), n_basis);
     }
-#endif
-
 }
+
+
+
+//template<int dim_, int range_ , int rank_>
+//template<int k>
+//void
+//BSplineElementHandler<dim_, range_, rank_>::
+//init_all_caches(ElementAccessor &elem)
+//{
+//    auto &cache = elem.local_cache_;
+//    if (cache == nullptr)
+//    {
+//        using Cache = typename ElementAccessor::LocalCache;
+//        cache = shared_ptr<Cache>(new Cache);
+//    }
+//    init_unif_caches(flags_[dim], std::get<dim>(quad_), cache->values_);
+//}
 
 
 
@@ -271,7 +296,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-    init_element_cache(elem.get_accessor());
+    init_cache<dim>(elem.get_accessor());
 }
 
 
@@ -282,7 +307,9 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
                                    const std::array<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-    const Size num_points = quad_.get_num_points_direction().flat_size();
+    // TODO (pauletti, Oct 31, 2014): fix for faces, etc
+    auto &quad = std::get<dim>(this->quad_);
+    const Size num_points = quad.get_num_points_direction().flat_size();
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
@@ -309,7 +336,8 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
                             const std::array<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-    const Size num_points = quad_.get_num_points_direction().flat_size();
+    auto &quad = std::get<dim>(this->quad_);
+    const Size num_points = quad.get_num_points_direction().flat_size();
     const Size n_ders = Derivative<order>::size;
     for (int comp : inactive_comp)
     {
@@ -338,7 +366,8 @@ evaluate_bspline_values(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-    const auto n_points_direction = quad_.get_num_points_direction();
+    auto &quad = std::get<dim>(this->quad_);
+    const auto n_points_direction = quad.get_num_points_direction();
     const Size num_points = n_points_direction.flat_size();
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
     for (int comp : elem_values.get_active_components_id())
@@ -383,8 +412,8 @@ evaluate_bspline_derivatives(
     Assert(D_phi.size() > 0, ExcEmptyObject());
     //  Assert(D_phi.get_num_functions() == this->get_num_basis(),
     //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
-
-    const auto n_points_direction = quad_.get_num_points_direction();
+    auto &quad = std::get<dim>(this->quad_);
+    const auto n_points_direction = quad.get_num_points_direction();
     const Size num_points = n_points_direction.flat_size();
     Assert(D_phi.get_num_points() == num_points,
            ExcDimensionMismatch(D_phi.get_num_points(),num_points));
@@ -433,73 +462,113 @@ evaluate_bspline_derivatives(
 
 
 template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-fill_element_cache(ElementIterator &elem)
-{
-    fill_element_cache(elem.get_accessor());
-}
-
-
-
-template <int dim_, int range_ , int rank_>
 template <int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-fill_element_cache_(ElementAccessor &elem, const int j)
+fill_cache(ElementAccessor &elem, const int j)
 {
-    base_t::template fill_cache<dim-k> (elem, j);
+    base_t::template fill_cache<k> (elem, j);
 
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
     const auto &index = elem.get_tensor_index();
+    //const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
+
+    auto &flags = cache.flags_handler_;
     auto val_1d = splines1d_.get_element_values(index);
-    if (cache.flags_handler_.fill_values())
+    if (flags.fill_values())
     {
         auto &values = cache.template get_der<0>();
         evaluate_bspline_values(val_1d, values);
-        cache.flags_handler_.set_values_filled(true);
+        flags.set_values_filled(true);
     }
-    if (cache.flags_handler_.fill_gradients())
+    if (flags.fill_gradients())
     {
         auto &values = cache.template get_der<1>();
         evaluate_bspline_derivatives<1>(val_1d, values);
-        cache.flags_handler_.set_gradients_filled(true);
+        flags.set_gradients_filled(true);
     }
-    if (cache.flags_handler_.fill_hessians())
+    if (flags.fill_hessians())
     {
         auto &values = cache.template get_der<2>();
         evaluate_bspline_derivatives<2>(val_1d, values);
-        cache.flags_handler_.set_hessians_filled(true);
+        flags.set_hessians_filled(true);
     }
-
-//    if (cache.flags_handler_.fill_divergences())
-//    {
-//        //TODO(pauletti, Sep 7, 2014): create a specialize exception
-//        Assert(cache.flags_handler_.gradients_filled(),
-//               ExcMessage("Divergence requires gradient to be filled."));
-//
-//        auto D1  = cache.D1phi_.begin();
-//        auto div = cache.div_phi_.begin();
-//        auto end = cache.D1phi_.end();
-//        for (; D1 != end; ++D1, ++div)
-//            *div = trace(*D1);
-//
-//        cache.flags_handler_.set_divergences_filled(true);
-//    }
 
     cache.set_filled(true);
 }
 
 
+
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-fill_element_cache(ElementAccessor &elem)
+fill_element_cache(ElementIterator &elem)
 {
-    base_t::template fill_cache<dim>(elem, 0);
+    fill_cache<dim>(elem.get_accessor(), 0);
 }
+
+
+
+//template <int dim_, int range_ , int rank_>
+//template <int k>
+//void
+//BSplineElementHandler<dim_, range_, rank_>::
+//fill_element_cache_(ElementAccessor &elem, const int j)
+//{
+//    base_t::template fill_cache<dim-k> (elem, j);
+//
+//    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
+//    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
+//
+//    const auto &index = elem.get_tensor_index();
+//    auto val_1d = splines1d_.get_element_values(index);
+//    if (cache.flags_handler_.fill_values())
+//    {
+//        auto &values = cache.template get_der<0>();
+//        evaluate_bspline_values(val_1d, values);
+//        cache.flags_handler_.set_values_filled(true);
+//    }
+//    if (cache.flags_handler_.fill_gradients())
+//    {
+//        auto &values = cache.template get_der<1>();
+//        evaluate_bspline_derivatives<1>(val_1d, values);
+//        cache.flags_handler_.set_gradients_filled(true);
+//    }
+//    if (cache.flags_handler_.fill_hessians())
+//    {
+//        auto &values = cache.template get_der<2>();
+//        evaluate_bspline_derivatives<2>(val_1d, values);
+//        cache.flags_handler_.set_hessians_filled(true);
+//    }
+//
+////    if (cache.flags_handler_.fill_divergences())
+////    {
+////        //TODO(pauletti, Sep 7, 2014): create a specialize exception
+////        Assert(cache.flags_handler_.gradients_filled(),
+////               ExcMessage("Divergence requires gradient to be filled."));
+////
+////        auto D1  = cache.D1phi_.begin();
+////        auto div = cache.div_phi_.begin();
+////        auto end = cache.D1phi_.end();
+////        for (; D1 != end; ++D1, ++div)
+////            *div = trace(*D1);
+////
+////        cache.flags_handler_.set_divergences_filled(true);
+////    }
+//
+//    cache.set_filled(true);
+//}
+
+
+//template<int dim_, int range_ , int rank_>
+//void
+//BSplineElementHandler<dim_, range_, rank_>::
+//fill_element_cache(ElementAccessor &elem)
+//{
+//    base_t::template fill_cache<dim>(elem, 0);
+//}
 
 
 

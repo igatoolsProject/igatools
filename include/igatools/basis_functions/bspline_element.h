@@ -57,8 +57,8 @@ public:
     /** Type required for the generic algorithm on the spaces (plots??) */
     using Space = NewBSplineSpace<dim, range, rank> ;
 
-    /** Number of faces of the element. */
-    using parent_t::n_faces;
+//    /** Number of faces of the element. */
+//    using parent_t::n_faces;
 
     using ValuesCache = typename parent_t::ValuesCache;
 

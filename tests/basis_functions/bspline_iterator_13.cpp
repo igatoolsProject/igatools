@@ -43,8 +43,9 @@ void space_cache_fill_elem(const NewValueFlags flag,
     auto space = Space::create(deg, grid);
 
     auto quad = QGauss<dim>(2);
-    typename Space::ElementHandler value_handler(space, flag, quad);
 
+    typename Space::ElementHandler value_handler(space);
+    value_handler.template reset<dim>(flag, quad);
     auto elem = space->begin();
     auto end = space->end();
 

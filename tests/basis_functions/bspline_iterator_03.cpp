@@ -63,17 +63,17 @@ void evaluate_field(const int deg = 1)
     QGauss<dim> quad(2) ;
     const auto flag = NewValueFlags::value|NewValueFlags::gradient;
 
-    ElementHandler cache1(space, flag, quad);
+    ElementHandler cache1(space);
+    cache1.template reset<dim>(flag, quad);
 
     auto elem = space->begin();
     cache1.init_element_cache(elem);
     cache1.fill_element_cache(elem);
 
-    elem->template eval_field_ders<0,0>(0,
-                                        u.get_local_coefs(elem->get_local_to_global())).print_info(out);
+    const auto &loc_coef = u.get_local_coefs(elem->get_local_to_global());
+    elem->template linear_combination<0,dim>(loc_coef,0).print_info(out);
     out << endl;
-    elem->template eval_field_ders<0,1>(0,
-                                        u.get_local_coefs(elem->get_local_to_global())).print_info(out);
+    elem->template linear_combination<1,dim>(loc_coef,0).print_info(out);
     out << endl;
 
     OUTEND

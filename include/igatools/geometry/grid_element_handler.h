@@ -81,6 +81,8 @@ protected:
     template <int k>
     void init_cache(ElementAccessor &elem);
 
+    void init_all_caches(ElementAccessor &elem);
+
 public:
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
@@ -93,8 +95,6 @@ public:
     {
     	init_cache<k>(elem.get_accessor());
     }
-
-    void init_all_caches(ElementAccessor &elem);
 
     void init_all_caches(ElementIterator &elem)
     {
@@ -123,9 +123,9 @@ private:
 
     std::array<GridFlags, dim + 1> flags_;
 
+protected:
     QuadList<dim> quad_;
 
-protected:
     TensorProductArray<dim> lengths_;
 };
 

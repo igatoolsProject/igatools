@@ -23,6 +23,10 @@
 
 #include <igatools/base/config.h>
 
+#include<igatools/geometry/unit_element.h>
+#include<igatools/base/quadrature.h>
+#include<tuple>
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -127,6 +131,65 @@ private:
 
     /** True if the cache is copied from another object. */
     bool copied_ = false;
+};
+
+template<class ValuesCache, int dim, std::size_t... I>
+auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const ValuesCache &)
+-> decltype(std::make_tuple(std::array<ValuesCache,
+                            UnitElement<dim>::template num_elem<I>()>() ...))
+{
+    return std::make_tuple(std::array<ValuesCache,
+                           UnitElement<dim>::template num_elem<I>()>() ...);
+}
+
+
+template<class ValuesCache, int dim>
+using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
+                                           Quadrature<dim>(),
+                                           ValuesCache()));
+
+template<class Func, class Tuple, std::size_t N, std::size_t Min>
+struct TupleFunc {
+    static void apply_func(Func &F, const Tuple& t)
+    {
+        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
+        if (N>Min)
+            F.func(std::get<N-1>(t));
+    }
+};
+
+template<class Func, class Tuple, std::size_t N>
+struct TupleFunc<Func, Tuple, N, N>
+{
+    static void apply_func(Func &F, const Tuple& t)
+    {
+        F.func(std::get<N>(t));
+    }
+};
+
+namespace cacheutils
+{
+struct PrintCacheFunc
+{
+    PrintCacheFunc(LogStream &out1)
+    :out(out1)
+    {}
+
+    void func(const auto &c)
+    {
+        for (auto &e : c)
+            e.print_info(out);
+        out << std::endl;
+    }
+    LogStream &out;
+};
+
+template<class... Args>
+void print_caches(const std::tuple<Args...>& t, LogStream &out)
+{
+    PrintCacheFunc f(out);
+    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
+}
 };
 
 IGA_NAMESPACE_CLOSE

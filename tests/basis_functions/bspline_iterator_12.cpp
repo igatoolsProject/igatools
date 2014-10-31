@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace UniformQuadCache
+ *  Test for the BSplineSpace ElementHandler init_element_cache()
  *
  *  author: pauletti
  *  date: Aug 21, 2014
@@ -43,8 +43,9 @@ void space_cache_init_elem(
     auto space = Space::create(deg, grid);
 
     auto quad = QGauss<dim>(2);
-    typename Space::ElementHandler value_handler(space, flag, quad);
 
+    typename Space::ElementHandler value_handler(space);
+    value_handler.template reset<dim>(flag, quad);
     auto elem = space->begin();
 
     value_handler.init_element_cache(elem);

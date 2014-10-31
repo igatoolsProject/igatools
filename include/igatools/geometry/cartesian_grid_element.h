@@ -31,44 +31,9 @@
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
 
-#include<tuple>
+
 
 IGA_NAMESPACE_OPEN
-
-template<class Func, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc {
-    static void apply_func(Func &F, const Tuple& t)
-    {
-        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
-        if (N>Min)
-            F.func(std::get<N-1>(t));
-    }
-};
-
-template<class Func, class Tuple, std::size_t N>
-struct TupleFunc<Func, Tuple, N, N>
-{
-    static void apply_func(Func &F, const Tuple& t)
-    {
-        F.func(std::get<N>(t));
-    }
-};
-
-
-template<class ValuesCache, int dim, std::size_t... I>
-auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const ValuesCache &)
--> decltype(std::make_tuple(std::array<ValuesCache,
-                            UnitElement<dim>::template num_elem<I>()>() ...))
-{
-    return std::make_tuple(std::array<ValuesCache,
-                           UnitElement<dim>::template num_elem<I>()>() ...);
-}
-
-
-template<class ValuesCache, int dim>
-using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
-                                           Quadrature<dim>(),
-                                           ValuesCache()));
 
 
 
@@ -99,9 +64,6 @@ public:
 
     /** Dimension of the grid like container */
     static const auto dim = ContainerType::dim;
-
-//    /** Number of faces of the element. */
-//    static const Size n_faces = UnitElement<dim_>::faces_per_element;
 
     using Point = Points<dim>;
 
@@ -137,15 +99,13 @@ public:
     /**
      * Move constructor.
      */
-    CartesianGridElement(self_t &&elem)
-        = default;
+    CartesianGridElement(self_t &&elem) = default;
 
     /**
      * Destructor.
      */
     ~CartesianGridElement() = default;
     ///@}
-
 
     /**
      * @name Functions for performing different kind of copy.
@@ -159,14 +119,12 @@ public:
      */
     void deep_copy_from(const self_t &element);
 
-
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
     void shallow_copy_from(const self_t &element);
     ///@}
-
 
     /** @name Assignment operators */
     ///@{
@@ -175,14 +133,12 @@ public:
      *
      * @note Internally it uses the function shallow_copy_from().
      */
-    self_t
-    &operator=(const self_t &element);
+    self_t &operator=(const self_t &element);
 
     /**
      * Move assignment operator.
      */
-    self_t
-    &operator=(self_t &&elem) = default;
+    self_t &operator=(self_t &&elem) = default;
     ///@}
 
 

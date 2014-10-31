@@ -46,7 +46,6 @@ private:
     using self_t = SpaceElement<Space>;
 
 public:
-
     using DerivedElementAccessor = typename Space::ElementAccessor;
 
     using RefPoint = typename Space::RefPoint;
@@ -69,10 +68,6 @@ public:
     using ComponentContainer = typename Space::template ComponentContainer<T>;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
     ///@}
-
-    /** Number of faces per element. */
-    static const Size n_faces = UnitElement<dim>::n_faces;
-
 
 
     /** @name Constructors */
@@ -104,7 +99,6 @@ public:
      */
     SpaceElement(const self_t &elem,
                  const CopyPolicy &copy_policy = CopyPolicy::deep);
-
 
     /**
      * Move constructor.
@@ -144,7 +138,6 @@ public:
      */
     void deep_copy_from(const self_t &element);
 
-
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
@@ -152,22 +145,22 @@ public:
     void shallow_copy_from(const self_t &element);
     ///@}
 
-    template<int skel_codim, int der_order>
+    template<int order = 0, int k = dim>
     auto
-    get_basis_ders(const int j) const
+    get_values(const int j = 0) const
     {
-        const auto &cache = local_cache_->template get_value_cache<skel_codim>(j);
+        const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-        return cache.template get_der<der_order>();
+        return cache.template get_der<order>();
     }
 
-    template<int skel_codim, int der_order>
+    template<int order = 0, int k = dim>
     auto
-    eval_field_ders(const int j, const vector<Real> &local_coefs) const
+    linear_combination(const vector<Real> &loc_coefs, const int id) const
     {
         const auto &basis_values =
-            this->template get_basis_ders<skel_codim,der_order>(j);
-        return basis_values.evaluate_linear_combination(local_coefs) ;
+            this->template get_values<order, k>(id);
+        return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
 #if 0
@@ -472,6 +465,7 @@ protected:
 
     /** Basis function ID offset between the different components. */
     ComponentContainer<int> comp_offset_;
+
     /**
      * Base class for the cache of the element values and
      * for the cache of the face values.
@@ -486,7 +480,7 @@ protected:
          */
         void resize(const FunctionFlags &flags_handler,
                     const Quadrature<dim> &quad,
-                    const SpaceDimensionTable &n_basis_);
+                    const SpaceDimensionTable &n_basis);
 
 
         /** Returns the divergences. */
@@ -542,12 +536,14 @@ protected:
         LocalCache() = default;
 
         LocalCache(const LocalCache &in) = default;
+
         LocalCache(LocalCache &&in) = default;
 
         ~LocalCache() = default;
 
 
         LocalCache &operator=(const LocalCache &in) = delete;
+
         LocalCache &operator=(LocalCache &&in) = delete;
 
         void print_info(LogStream &out) const;
@@ -566,10 +562,7 @@ protected:
             return std::get<k>(values_)[j];
         }
 
-
-        std::tuple<std::array<ValuesCache, 1>,
-            std::array<ValuesCache, n_faces> > values_;
-
+        CacheList<ValuesCache, dim> values_;
     };
 
     /** The local (element and face) cache. */

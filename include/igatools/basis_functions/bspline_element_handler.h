@@ -47,7 +47,7 @@ class BSplineElementHandler : public GridElementHandler<dim_>
     using base_t = GridElementHandler<dim_>;
     using Space = NewBSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
-    using ElementIterator = typename Space::ElementIterator;
+
 
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
@@ -66,21 +66,46 @@ class BSplineElementHandler : public GridElementHandler<dim_>
     using Value = typename Space::Value;
 
 protected:
-//public: //(MM 16 Sep 2014) made it public because the next 3 functions are called inside NURBSUniformQuadCache
+    using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
-    template <int k>
-    void fill_element_cache_(ElementAccessor &elem, const int j);
-    void init_element_cache(ElementAccessor &elem);
-    void fill_element_cache(ElementAccessor &elem);
-    void fill_face_cache(ElementAccessor &elem, const int face);
+
+
 
 public:
     static const int dim = dim_;
 
     //Allocates and fill the (global) cache
-    BSplineElementHandler(std::shared_ptr<const Space> space,
-                          const NewValueFlags flag,
-                          const Quadrature<dim> &quad);
+    BSplineElementHandler(std::shared_ptr<const Space> space);
+
+    template<int k>
+    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
+
+protected:
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
+
+    template <int k>
+    void init_cache(ElementAccessor &elem);
+
+//    void init_all_caches(ElementAccessor &elem);
+public:
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(elem.get_accessor(), j);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+        init_cache<k>(elem.get_accessor());
+    }
+
+//    void init_all_caches(ElementIterator &elem)
+//    {
+//        init_all_caches(elem.get_accessor());
+//    }
+
 
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem);
@@ -88,17 +113,12 @@ public:
     //Fill the ElementIterator element_cache
     void fill_element_cache(ElementIterator &elem);
 
-    /**
-     * Fills the ElementIterator face_cache
-     * element dependent part
-     */
-    void fill_face_cache(ElementIterator &elem, const int face);
-
     void print_info(LogStream &out) const;
 
-
+private:
     const Quadrature<dim> &get_quad() const;
 
+public:
 
     void
     copy_to_inactive_components_values(const vector<Index> &inactive_comp,
@@ -132,17 +152,15 @@ private:
         ValueTable<Value> &D_phi) const;
 
 private:
-    // TODO (pauletti, Sep 8, 2014): to be passed some how
-    const int n_derivatives = 3;
-
     std::shared_ptr<const Space> space_;
 
     SpaceDimensionTable n_basis_;
 
     ComponentContainer<Size> comp_offset_;
 
-    std::tuple<FunctionFlags, FunctionFlags> flags_;
-    Quadrature<dim> quad_;
+    std::array<FunctionFlags, dim + 1> flags_;
+
+    //QuadList<dim> quad_;
 
     template <class T>
     using DirectionTable = CartesianProductArray<T, dim_>;

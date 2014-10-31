@@ -37,7 +37,14 @@ for x in inst.really_all_ref_sp_dims:
             %(x.dim, x.range, x.rank))
     f.write('template class GridForwardIterator<BSplineElement<%d, %d, %d>>; \n' 
             %(x.dim, x.range, x.rank))
+    elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class BSplineElementHandler<%d, %d, %d>; \n' 
             %(x.dim, x.range, x.rank))
-                
+    k_members = ['void %s::fill_cache<k>(ElementAccessor &elem, const int j);' %elemhandler,
+             'void %s::init_cache<k>(ElementAccessor &elem);' %elemhandler,
+             'void %s::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);' %elemhandler]
+    for fun in k_members:
+        for k in range(x.dim, max(0, x.dim - inst.n_sub_element) - 1, -1):
+            s = fun.replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')           
    

@@ -48,15 +48,16 @@ void bspline_iterator(const int deg = 2)
     QGauss< dim > quad(n_qp);
     auto flag = NewValueFlags::value|NewValueFlags::gradient
                 |NewValueFlags::hessian;
-    ElementHandler cache(space, flag, quad);
+    ElementHandler cache(space);
+    cache.template reset<dim>(flag, quad);
 
     auto elem = space->begin();
     cache.init_element_cache(elem);
     cache.fill_element_cache(elem);
 
-    auto values    = elem->template get_basis_ders<0,0>(0);//
-    auto gradients = elem->template get_basis_ders<0,1>(0);//elem->get_basis_gradients();
-    auto hessians  = elem->template get_basis_ders<0,2>(0);//get_basis_hessians();
+    auto values    = elem->template get_values<0,dim>(0);
+    auto gradients = elem->template get_values<1,dim>(0);
+    auto hessians  = elem->template get_values<2,dim>(0);
 
     out.begin_item("Values basis functions:");
     values.print_info(out);
