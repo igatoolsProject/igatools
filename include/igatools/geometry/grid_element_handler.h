@@ -121,7 +121,7 @@ public:
 private:
     std::shared_ptr<const GridType> grid_;
 
-    std::array<GridFlags, dim> flags_;
+    std::array<GridFlags, dim + 1> flags_;
 
     QuadList<dim> quad_;
 

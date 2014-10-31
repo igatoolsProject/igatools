@@ -366,7 +366,7 @@ is_boundary(const Index id) const
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
 
-    for (int i = 0; i < k; ++i)
+    for (int i = 0; i < dim-k; ++i)
     {
         auto dir = k_elem.constant_directions[i];
         auto val = k_elem.constant_values[i];

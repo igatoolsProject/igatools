@@ -46,11 +46,12 @@ void face_values(const TensorSize<dim> &n_knots)
     NewValueFlags flag = NewValueFlags::measure|
                          NewValueFlags::w_measure|
                          NewValueFlags::point;
-    QUniform<dim> quad(2);
-    ElementHandler cache(grid, flag, quad);
+    QUniform<k> quad(2);
+    ElementHandler cache(grid);
+    cache.template reset<k>(flag, quad);
 
     auto elem = grid->begin();
-    cache.init_element_cache(elem);
+    cache.template init_cache<k>(elem);
 
     for (; elem != grid->end(); ++elem)
     {
@@ -62,7 +63,7 @@ void face_values(const TensorSize<dim> &n_knots)
         {
             if (elem->is_boundary(face_id))
             {
-                cache.template fill_cache<1>(elem, face_id);
+                cache.template fill_cache<k>(elem, face_id);
                 out << "face: " << face_id << endl;
 
                 out << "meas: "<< elem->template get_measure<k>(face_id) << endl;
