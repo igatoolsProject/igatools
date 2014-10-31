@@ -27,8 +27,8 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim>
-Quadrature<dim>::Quadrature(const TensorSize<dim> num_points)
+template<int dim_>
+Quadrature<dim_>::Quadrature(const TensorSize<dim> num_points)
     :
     points_(num_points),
     weights_(num_points)
@@ -36,8 +36,8 @@ Quadrature<dim>::Quadrature(const TensorSize<dim> num_points)
 
 
 
-template<int dim>
-Quadrature<dim>::Quadrature(const Index num_points)
+template<int dim_>
+Quadrature<dim_>::Quadrature(const Index num_points)
     :
     points_(num_points),
     weights_(num_points)
@@ -45,8 +45,8 @@ Quadrature<dim>::Quadrature(const Index num_points)
 
 
 
-template<int dim>
-Quadrature<dim>::
+template<int dim_>
+Quadrature<dim_>::
 Quadrature(const CartesianProductArray<Real,dim> &points,
            const TensorProductArray<dim> &weights)
     :
@@ -60,39 +60,37 @@ Quadrature(const CartesianProductArray<Real,dim> &points,
 
 
 
-template<int dim>
-CartesianProductArray<Real,dim>
-Quadrature<dim>::
-get_points() const noexcept
+template<int dim_>
+auto
+Quadrature<dim_>::get_points() const noexcept -> PointArray
 {
     return points_;
 }
 
 
 
-template<int dim>
-TensorProductArray<dim>
-Quadrature<dim>::
-get_weights() const noexcept
+template<int dim_>
+auto
+Quadrature<dim_>::get_weights() const noexcept -> WeigthArray
 {
     return weights_;
 }
 
 
 
-template<int dim>
-TensorSize<dim>
-Quadrature<dim>::
-get_num_points_direction() const noexcept
+template<int dim_>
+auto
+Quadrature<dim_>::
+get_num_points_direction() const noexcept -> TensorSize<dim>
 {
     return points_.tensor_size();
 }
 
 
 
-template<int dim>
+template<int dim_>
 Size
-Quadrature<dim>::
+Quadrature<dim_>::
 get_num_points() const noexcept
 {
     return points_.flat_size();
@@ -100,9 +98,9 @@ get_num_points() const noexcept
 
 
 
-template<int dim>
+template<int dim_>
 void
-Quadrature<dim>::
+Quadrature<dim_>::
 print_info(LogStream &out) const
 {
     out << "Number of points:" << get_num_points() << endl;
@@ -128,11 +126,11 @@ print_info(LogStream &out) const
     out << endl;
 }
 
-template<int dim>
+template<int dim_>
 template<int k>
-Quadrature<dim>
-Quadrature<dim>::
-collapse_to_sub_element(const int sub_elem_id) const
+auto
+Quadrature<dim_>::
+collapse_to_sub_element(const int sub_elem_id) const -> self_t
 {
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 

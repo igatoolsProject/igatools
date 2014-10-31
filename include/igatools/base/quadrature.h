@@ -38,12 +38,13 @@ IGA_NAMESPACE_OPEN
  * \f$ [0,1]^\text{dim+1} \f$.
  *
  */
-template<int dim>
+template<int dim_>
 class Quadrature
 {
 private:
-    using self_t = Quadrature<dim>;
+    using self_t = Quadrature<dim_>;
 public:
+    static const int dim = dim_;
     using WeigthArray = TensorProductArray<dim>;
     using PointArray  = CartesianProductArray<Real, dim>;
 public:
@@ -73,8 +74,8 @@ public:
      * weights and the domain coordinates of the d-dimensional hypercube
      * upon which the quadrature is referred to.
      */
-    explicit Quadrature(const CartesianProductArray<Real,dim> &points,
-                        const TensorProductArray<dim> &weights);
+    explicit Quadrature(const PointArray &points,
+                        const WeigthArray &weights);
 
     /**
      * Destructor.
@@ -104,7 +105,7 @@ public:
     /**
      * Move assignment operator.
      */
-    Quadrature<dim> &operator=(Quadrature< dim > &&quad_scheme) = default;
+    Quadrature<dim> &operator=(self_t  &&quad_scheme) = default;
     ///@}
 
     ///@name Getting informations about the points and the domain.
@@ -126,13 +127,13 @@ public:
      * Return all quadrature weights in
      * a tensor-product structure.
      */
-    TensorProductArray<dim> get_weights() const noexcept ;
+    WeigthArray get_weights() const noexcept ;
 
     /**
      * Return all quadrature points in
      * a tensor-product structure.
      */
-    CartesianProductArray<Real,dim> get_points() const noexcept;
+    PointArray get_points() const noexcept;
 
     ///@}
 
@@ -143,7 +144,7 @@ public:
      * Usually use for face values
      */
     template<int k>
-    Quadrature<dim> collapse_to_sub_element(const int id) const;
+    self_t collapse_to_sub_element(const int id) const;
 
     /**
      * Prints internal information about the quadrature scheme.

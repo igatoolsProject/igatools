@@ -41,7 +41,6 @@ class QGauss :
     public Quadrature< dim >
 {
 public:
-
     /**
      * Default constructor. Not allowed to be used.
      */

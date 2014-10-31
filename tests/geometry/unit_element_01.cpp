@@ -102,41 +102,29 @@ void print_quads(const std::tuple<Args...>& t, LogStream &out1)
 }
 
 
-template<int dim>
-struct Q
-{
-
-
-
-
-    template<std::size_t N>
-    struct init
+template<class Tuple, std::size_t N, std::size_t Min, class Func, class... Args>
+struct TupleFunc1 {
+    static void apply_func(Func &F, const Args... &args, Tuple& t)
     {
-        static void func(auto &quad)
-        {
-            auto q = quad.template collapse_to_sub_element<N>(0);
-            init<N-1>::func(quad);
-        }
-    };
-
-    Quadrature<dim> quad;
+        TupleFunc1<Func, Args, Tuple, N-1, Min>::apply_func(F, args..., t);
+        if (N>Min)
+            F.func(std::get<N-1>(t), args...);
+    }
 };
 
-template<int dim>
-template<>
-Q<dim>::init<0>
+template< class Tuple, std::size_t N, class Func, class... Args>
+struct TupleFunc1<Tuple, N, N, Func, Args>
+{
+    static void apply_func(Func &F, const Args... &args, Tuple& t)
     {
-        static void func(auto &quad)
-        {
-            auto q = quad.template collapse_to_sub_element<N>(0);
-        }
-    };
+        F.func(std::get<N>(t), args);
+    }
+};
 
 int main()
 {
 
-    Q<3> q;
-    q.init<>;
+
 
     const int dim=3;
     QuadList<dim>  list_of_quad;
