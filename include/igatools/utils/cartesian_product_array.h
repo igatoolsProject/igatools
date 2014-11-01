@@ -256,6 +256,9 @@ public:
      */
     void resize(const TensorSize<rank> &size);
 
+    void resize(const TensorSize<rank> size, const T &val);
+
+    void clear();
     /**
      * Prints some internal informations. Mainly used for testing and debugging purposes.
      */

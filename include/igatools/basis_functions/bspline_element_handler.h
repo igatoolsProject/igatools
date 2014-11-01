@@ -192,9 +192,9 @@ private:
         }
     };
 
-    GlobalCache splines1d_;
+    CacheList<GlobalCache, dim> splines1d_;
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* BSPLINE_UNIFORM_QUAD_CACHE_H_ */
+#endif

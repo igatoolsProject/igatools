@@ -22,6 +22,7 @@
 #define GRID_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/tuple_utils.h>
 #include <igatools/base/cache_status.h>
 #include <igatools/base/new_flags_handler.h>
 #include <igatools/base/quadrature.h>
@@ -30,16 +31,8 @@
 
 IGA_NAMESPACE_OPEN
 
-
-template<std::size_t... I>
-auto tuple_of_quads(std::index_sequence<I...>)
--> decltype(std::make_tuple(Quadrature<I>() ...))
-{
-    return std::make_tuple(Quadrature<I>() ...);
-}
-
 template<int dim>
-using QuadList = decltype(tuple_of_quads(std::make_index_sequence<dim+1>()));
+using QuadList = TupleList<dim, Quadrature>;
 
 /**
  * Grid element value manager

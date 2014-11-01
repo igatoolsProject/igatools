@@ -155,9 +155,7 @@ BSplineElementHandler(shared_ptr<const Space> space)
     :
     base_t(space->get_grid()),
     space_(space),
-    n_basis_(space_->get_num_all_element_basis()),
-    splines1d_(space->get_grid()->get_num_intervals(),
-               BasisValues(space->get_components_map()))
+    n_basis_(space_->get_num_all_element_basis())
 {
 
     // Compute the component offsets
@@ -174,75 +172,80 @@ template<int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 reset(const NewValueFlags flag,
-      const Quadrature<k> &quad)
+      const Quadrature<k> &quad1)
 {
-    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad);
+    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);
     flags_[k] = flag;
 
-
-
-    const auto &n_inter = space_->get_grid()->get_num_intervals();
-    const auto &n_points = quad.get_num_points_direction();
-
-    // Allocate space for the BasisValues1D
-    for (int dir = 0 ; dir < dim ; ++dir)
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
-        const auto &n_pts = n_points[dir];
-        for (int j = 0 ; j < n_inter[dir] ; ++j)
-        {
-            auto &splines1d = splines1d_.entry(dir, j);
-            for (auto comp : splines1d.get_active_components_id())
-                splines1d[comp].resize(max_der, n_basis_[comp][dir], n_pts);
-        }
+    	auto &g_cache = std::get<k>(splines1d_)[s_id];
+    	g_cache.clear();
+    	g_cache.resize(space_->get_grid()->get_num_intervals(),
+    	               BasisValues(space_->get_components_map()));
+    	const auto &n_inter = space_->get_grid()->get_num_intervals();
+    	const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
+    	const auto &n_points = quad.get_num_points_direction();
+
+    	// Allocate space for the BasisValues1D
+    	for (int dir = 0 ; dir < dim ; ++dir)
+    	{
+    		const auto &n_pts = n_points[dir];
+    		for (int j = 0 ; j < n_inter[dir] ; ++j)
+    		{
+    			auto &splines1d = g_cache.entry(dir, j);
+    			for (auto comp : splines1d.get_active_components_id())
+    				splines1d[comp].resize(max_der, n_basis_[comp][dir], n_pts);
+    		}
+    	}
+
+    	/*
+    	 * For each direction, interval and component we compute the 1D bspline
+    	 * basis evaluate at the 1D component of the tensor product quadrature
+    	 */
+    	const auto &degree      = space_->get_degree();
+    	const auto &bezier_op   = space_->operators_;
+    	const auto &points      = quad.get_points();
+    	const auto &lengths = this->lengths_;
+
+    	BasisValues bernstein_values(n_basis_.get_comp_map());
+
+    	for (int dir = 0 ; dir < dim ; ++dir)
+    	{
+    		// fill values and derivatives of the Bernstein's polynomials at
+    		// quad points in [0,1]
+    		for (auto comp : bernstein_values.get_active_components_id())
+    		{
+    			const int deg = degree[comp][dir];
+    			bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+    			const auto &pt_coords = points.get_data_direction(dir);
+    			for (int order = 0; order < max_der; ++order)
+    				bernstein_values[comp].get_derivative(order) =
+    						BernsteinBasis::derivative(order, deg, pt_coords);
+    		}
+
+    		const auto &inter_lengths = lengths.get_data_direction(dir);
+    		for (int j = 0 ; j < n_inter[dir] ; ++j)
+    		{
+    			auto &splines1d = g_cache.entry(dir, j);
+    			for (auto comp : splines1d.get_active_components_id())
+    			{
+    				const auto &berns_values = bernstein_values[comp];
+    				auto &basis = splines1d[comp];
+    				const auto &oper = bezier_op.get_operator(comp,dir)[j];
+    				const Real one_div_size = 1.0 / inter_lengths[j];
+    				for (int order = 0; order < max_der; ++order)
+    				{
+    					const Real scale = std::pow(one_div_size, order);
+    					const auto &b_values = berns_values.get_derivative(order);
+    					basis.get_derivative(order) =
+    							scale * prec_prod(oper, b_values);
+    				}
+    			}
+    		}
+
+    	}
     }
-
-    /*
-     * For each direction, interval and component we compute the 1D bspline
-     * basis evaluate at the 1D component of the tensor product quadrature
-     */
-    const auto &degree      = space_->get_degree();
-    const auto &bezier_op   = space_->operators_;
-    const auto &points      = quad.get_points();
-    const auto &lengths = this->lengths_;
-
-    BasisValues bernstein_values(n_basis_.get_comp_map());
-
-    for (int dir = 0 ; dir < dim ; ++dir)
-    {
-        // fill values and derivatives of the Bernstein's polynomials at
-        // quad points in [0,1]
-        for (auto comp : bernstein_values.get_active_components_id())
-        {
-            const int deg = degree[comp][dir];
-            bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
-            const auto &pt_coords = points.get_data_direction(dir);
-            for (int order = 0; order < max_der; ++order)
-                bernstein_values[comp].get_derivative(order) =
-                        BernsteinBasis::derivative(order, deg, pt_coords);
-        }
-
-        const auto &inter_lengths = lengths.get_data_direction(dir);
-        for (int j = 0 ; j < n_inter[dir] ; ++j)
-        {
-            auto &splines1d = splines1d_.entry(dir, j);
-            for (auto comp : splines1d.get_active_components_id())
-            {
-                const auto &berns_values = bernstein_values[comp];
-                auto &basis = splines1d[comp];
-                const auto &oper = bezier_op.get_operator(comp,dir)[j];
-                const Real one_div_size = 1.0 / inter_lengths[j];
-                for (int order = 0; order < max_der; ++order)
-                {
-                    const Real scale = std::pow(one_div_size, order);
-                    const auto &b_values = berns_values.get_derivative(order);
-                    basis.get_derivative(order) =
-                            scale * prec_prod(oper, b_values);
-                }
-            }
-        }
-
-    }
-
 }
 
 
@@ -307,9 +310,7 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
                                    const std::array<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-    // TODO (pauletti, Oct 31, 2014): fix for faces, etc
-    auto &quad = std::get<dim>(this->quad_);
-    const Size num_points = quad.get_num_points_direction().flat_size();
+	const Size n_points = D_phi.get_num_points();
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
@@ -336,8 +337,7 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
                             const std::array<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-    auto &quad = std::get<dim>(this->quad_);
-    const Size num_points = quad.get_num_points_direction().flat_size();
+	const Size n_points = D_phi.get_num_points();
     const Size n_ders = Derivative<order>::size;
     for (int comp : inactive_comp)
     {
@@ -366,9 +366,7 @@ evaluate_bspline_values(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-    auto &quad = std::get<dim>(this->quad_);
-    const auto n_points_direction = quad.get_num_points_direction();
-    const Size num_points = n_points_direction.flat_size();
+    const Size n_points = D_phi.get_num_points();
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
     for (int comp : elem_values.get_active_components_id())
     {
@@ -380,7 +378,7 @@ evaluate_bspline_values(
         {
             auto D_phi_i = D_phi.get_function_view(offset + func_id);
             auto const &func = values.func_flat_to_tensor(func_id);
-            for (int point_id = 0; point_id < num_points; ++point_id)
+            for (int point_id = 0; point_id < n_points; ++point_id)
             {
                 auto const &pts  = values.points_flat_to_tensor(point_id);
                 D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func, pts);
@@ -412,11 +410,7 @@ evaluate_bspline_derivatives(
     Assert(D_phi.size() > 0, ExcEmptyObject());
     //  Assert(D_phi.get_num_functions() == this->get_num_basis(),
     //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
-    auto &quad = std::get<dim>(this->quad_);
-    const auto n_points_direction = quad.get_num_points_direction();
-    const Size num_points = n_points_direction.flat_size();
-    Assert(D_phi.get_num_points() == num_points,
-           ExcDimensionMismatch(D_phi.get_num_points(),num_points));
+    const Size n_points = D_phi.get_num_points();
 
 
     TensorFunctionDerivativesSymmetry<dim,order> sym;
@@ -441,7 +435,7 @@ evaluate_bspline_derivatives(
                 const auto copy_indices_der_size = copy_indices_der.size();
 
                 auto const &der_tensor_id = univariate_order[der_id];
-                for (int point_id = 0; point_id < num_points; ++point_id)
+                for (int point_id = 0; point_id < n_points; ++point_id)
                 {
                     auto const &pts  = values.points_flat_to_tensor(point_id);
                     auto &der = D_phi_i[point_id];
@@ -469,6 +463,8 @@ fill_cache(ElementAccessor &elem, const int j)
 {
     base_t::template fill_cache<k> (elem, j);
 
+    auto &g_cache = std::get<k>(splines1d_)[j];
+
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
@@ -476,7 +472,7 @@ fill_cache(ElementAccessor &elem, const int j)
     //const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
 
     auto &flags = cache.flags_handler_;
-    auto val_1d = splines1d_.get_element_values(index);
+    auto val_1d = g_cache.get_element_values(index);
     if (flags.fill_values())
     {
         auto &values = cache.template get_der<0>();
@@ -581,10 +577,10 @@ print_info(LogStream &out) const
     base_t::print_info(out);
     out.end_item();
 
-
-    out.begin_item("One dimensional splines cache:");
-    splines1d_.print_info(out);
-    out.end_item();
+    cacheutils::print_caches(splines1d_, out);
+    //out.begin_item("One dimensional splines cache:");
+    //splines1d_.print_info(out);
+    //out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

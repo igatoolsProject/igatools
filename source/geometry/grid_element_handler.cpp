@@ -27,39 +27,6 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
-template<class Func, class Args1, class Args2, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc1 {
-    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple& t)
-    {
-        TupleFunc1<Func, Args1, Args2, Tuple, N-1, Min>::apply_func(F, flag, quad, t);
-        if (N>Min)
-        {
-            auto &val_cache = std::get<N-1>(t);
-            int j=0;
-            for (auto &s_cache : val_cache)
-            {
-                F.func(s_cache, flag, quad.template collapse_to_sub_element<N-1>(j));
-                ++j;
-            }
-        }
-    }
-};
-
-template<class Func, class Args1, class Args2, class Tuple, std::size_t N>
-struct TupleFunc1<Func, Args1, Args2, Tuple, N, N>
-{
-    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple& t)
-    {
-        auto &val_cache = std::get<N>(t);
-        int j=0;
-        for (auto &s_cache : val_cache)
-        {
-            F.func(s_cache, flag, quad.template collapse_to_sub_element<N>(j));
-            ++j;
-        }
-    }
-};
-
 namespace
 {
 struct UniformQuadFunc
@@ -92,6 +59,7 @@ GridElementHandler(shared_ptr<const GridType> grid)
 {}
 
 
+
 template <int dim_>
 template<int k>
 void
@@ -103,6 +71,7 @@ reset(const NewValueFlags flag,
     auto &quad_k = std::get<k>(quad_);
     quad_k = quad;
 }
+
 
 
 template <int dim_>
@@ -151,7 +120,6 @@ init_element_cache(ElementAccessor &elem)
 {
     init_cache<dim>(elem);
 }
-
 
 
 

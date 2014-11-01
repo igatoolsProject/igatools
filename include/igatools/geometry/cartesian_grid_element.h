@@ -375,8 +375,6 @@ private:
         CacheList<ValuesCache, dim> values_;
     };
 
-
-
 private:
     template <typename Accessor> friend class GridForwardIterator;
     friend class GridElementHandler<dim>;
@@ -392,8 +390,6 @@ private:
     /** The local (element and face) cache. */
     std::shared_ptr<LocalCache> local_cache_;
 
-
-
 protected:
     /**
      * Performs a copy of the input @p element.
@@ -401,7 +397,6 @@ protected:
      */
     void copy_from(const self_t &element,
                    const CopyPolicy &copy_policy);
-
 
     /**
      * ExceptionUnsupported Value Flag.
@@ -417,4 +412,4 @@ protected:
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* CARTESIAN_GRID_ELEMENT_ACCESSORS_H_ */
+#endif

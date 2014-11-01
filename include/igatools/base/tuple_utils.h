@@ -18,17 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test of unit element
- *  author: pauletti
- *  date: 2014-08-18
- *
- */
+#ifndef __IGA_TUPLE_UTILS_H_
+#define __IGA_TUPLE_UTILS_H_
 
-#include "../tests.h"
-
+#include <igatools/base/config.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>
+#include <tuple>
+
+IGA_NAMESPACE_OPEN
 
 template<template<int> class Q, std::size_t... I>
 auto tuple_of_quads(std::index_sequence<I...>)
@@ -40,26 +38,20 @@ auto tuple_of_quads(std::index_sequence<I...>)
 template<int dim, template<int> class Q>
 using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()));
 
-template<int dim>
-using QuadList = TupleList<dim, Quadrature>;
-
-
-
 template<class ValuesCache, int dim, std::size_t... I>
 auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const ValuesCache &)
 -> decltype(std::make_tuple(std::array<ValuesCache,
-                            UnitElement<dim>::template num_elem<dim-I>()>() ...))
+                            UnitElement<dim>::template num_elem<I>()>() ...))
 {
     return std::make_tuple(std::array<ValuesCache,
-                           UnitElement<dim>::template num_elem<dim-I>()>() ...);
+                           UnitElement<dim>::template num_elem<I>()>() ...);
 }
 
 
-template<int dim, int n_sub_elem>
-using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1>(),
+template<class ValuesCache, int dim>
+using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
                                            Quadrature<dim>(),
-                                           3));
-
+                                           ValuesCache()));
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>
 struct TupleFunc {
@@ -81,58 +73,67 @@ struct TupleFunc<Func, Tuple, N, N>
 };
 
 
+template<class Func, class Args1, class Args2, class Tuple, std::size_t N, std::size_t Min>
+struct TupleFunc1 {
+    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple& t)
+    {
+        TupleFunc1<Func, Args1, Args2, Tuple, N-1, Min>::apply_func(F, flag, quad, t);
+        if (N>Min)
+        {
+            auto &val_cache = std::get<N-1>(t);
+            int j=0;
+            for (auto &s_cache : val_cache)
+            {
+                F.func(s_cache, flag, quad.template collapse_to_sub_element<N-1>(j));
+                ++j;
+            }
+        }
+    }
+};
 
-
-struct PrintQuadFunc
+template<class Func, class Args1, class Args2, class Tuple, std::size_t N>
+struct TupleFunc1<Func, Args1, Args2, Tuple, N, N>
 {
-    PrintQuadFunc(LogStream &out1)
+    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple& t)
+    {
+        auto &val_cache = std::get<N>(t);
+        int j=0;
+        for (auto &s_cache : val_cache)
+        {
+            F.func(s_cache, flag, quad.template collapse_to_sub_element<N>(j));
+            ++j;
+        }
+    }
+};
+
+
+
+namespace cacheutils
+{
+struct PrintCacheFunc
+{
+    PrintCacheFunc(LogStream &out1)
     :out(out1)
     {}
-    template<std::size_t... I>
-    void func(const auto &q)
+
+    void func(const auto &c)
     {
-        q.print_info(out);
-        out << endl;
+        for (auto &e : c)
+            e.print_info(out);
+        out << std::endl;
     }
     LogStream &out;
 };
 
 template<class... Args>
-void print_quads(const std::tuple<Args...>& t, LogStream &out1)
+void print_caches(const std::tuple<Args...>& t, LogStream &out)
 {
-    PrintQuadFunc f(out1);
-    TupleFunc<PrintQuadFunc, decltype(t), sizeof...(Args), 2>::apply_func(f,t);
+    PrintCacheFunc f(out);
+    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
 }
+};
 
 
+IGA_NAMESPACE_CLOSE
 
-
-int main()
-{
-
-
-
-    const int dim=3;
-    QuadList<dim>  list_of_quad;
-    print_quads(list_of_quad, out);
-
-#if 1
-
-    CacheList<3,1> list_values;
-    auto &cache0 = std::get<0>(list_values);
-    auto &cache1 = std::get<1>(list_values);
-
-    for (auto &c : cache0)
-        out << c << endl;
-
-    for (auto &c : cache1)
-        out << c << endl;
-
-    UnitElement<2>::num_elem<1>();
-    UnitElement<2>::get_elem<1>(0);
 #endif
-
-
-
-    return 0;
-}

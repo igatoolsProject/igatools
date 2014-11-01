@@ -25,51 +25,95 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/unit_element.h>
 
-template<int dim>
-void run_test(const int num_knots, const int p)
+
+template<int dim, int k=dim-1>
+void sub_elem_values(const int n_knots, const int deg)
 {
-    using space_t = BSplineSpace<dim>;
+	OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(num_knots);
-    auto space = space_t::create(p, grid);
+	auto grid = CartesianGrid<dim>::create(n_knots);
+	using Space = NewBSplineSpace<dim>;
+	using ElementHandler = typename Space::ElementHandler;
+	auto space = Space::create(deg, grid);
 
-    const int num_faces = UnitElement<dim>::n_faces;
-    QGauss<dim> quad(2);
-
-    ValueFlags flag = ValueFlags::face_value|ValueFlags::value;
-
-    auto elem = space->begin();
-    auto end =  space->end();
-    elem->init_cache(flag, quad);
-
-    for (; elem != end; ++elem)
-    {
-        if (elem->is_boundary())
-        {
-            elem->fill_cache();
-            out << "Element" << elem->get_flat_index() << endl;
-            elem->get_basis_values().print_info(out);
-
-            for (int face = 0; face < num_faces; ++face)
-            {
-                if (elem->is_boundary(face))
-                {
-                    elem->fill_face_cache(face);
-                    out << "Face " << face << endl;
-                    out << "values: " << endl;
-                    elem->get_face_basis_values(face).print_info(out);
-                    out << endl;
-                }
-            }
-        }
-    }
-    out << endl;
+	const int n_qp = 2;
+	QGauss<k>   k_quad(n_qp);
+	QGauss<dim> quad(n_qp);
+	auto flag = NewValueFlags::value;//|NewValueFlags::gradient|NewValueFlags::hessian;
+	ElementHandler cache(space);
+	cache.template reset<k>(flag, k_quad);
+	cache.template reset<dim>(flag, quad);
+	auto elem = space->begin();
+	auto end =  space->end();
+	cache.template init_cache<k>(elem);
+	cache.template init_cache<dim>(elem);
+	for (; elem != end; ++elem)
+	{
+		if (elem->is_boundary())
+		{
+			cache.template fill_cache<dim>(elem, 0);
+			out << "Element" << elem->get_flat_index() << endl;
+			elem->template get_values<0,dim>(0).print_info(out);
+			for(auto &s_id : UnitElement<dim>::template elems_ids<k>())
+			{
+				if (elem->is_boundary(s_id))
+				{
+					cache.template fill_cache<k>(elem, s_id);
+					out << "Sub Element: " << s_id << endl;
+					out.begin_item("Values basis functions:");
+					auto values = elem->template get_values<0,k>(s_id);
+					values.print_info(out);
+					out.end_item();
+				}
+			}
+		}
+	}
+	OUTEND
 }
+//	auto values    = elem->template get_values<0,k>(0);
+//	auto gradients = elem->template get_values<1,k>(0);
+//	auto hessians  = elem->template get_values<2,k>(0);
+
+//	out.begin_item("Values basis functions:");
+//	values.print_info(out);
+//	out.end_item();
+
+//	out.begin_item("Gradients basis functions:");
+//	gradients.print_info(out);
+//	out.end_item();
+//
+//	out.begin_item("Hessians basis functions:");
+//	hessians.print_info(out);
+//	out.end_item();
+
+
+//    for (; elem != end; ++elem)
+//    {
+//        if (elem->is_boundary())
+//        {
+//            elem->fill_cache();
+//            out << "Element" << elem->get_flat_index() << endl;
+//            elem->get_basis_values().print_info(out);
+//
+//            for (int face = 0; face < num_faces; ++face)
+//            {
+//                if (elem->is_boundary(face))
+//                {
+//                    elem->fill_face_cache(face);
+//                    out << "Face " << face << endl;
+//                    out << "values: " << endl;
+//                    elem->get_face_basis_values(face).print_info(out);
+//                    out << endl;
+//                }
+//            }
+//        }
+//    }
+//    out << endl;
+//}
 
 
 
@@ -77,8 +121,7 @@ void run_test(const int num_knots, const int p)
 int main()
 {
     out.depth_console(10);
-    run_test<2>(2,1);
-    //do_test<2>(3,1);
+    sub_elem_values<2,1>(2,1);
 
     return 0;
 }

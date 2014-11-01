@@ -94,6 +94,18 @@ CartesianProductArray(const array<vector<T>,rank> &data_directions)
 }
 
 
+
+template< class T, int rank>
+void CartesianProductArray<T,rank>::
+clear()
+{
+	TensorSizedContainer<rank>::reset_size(TensorSize<rank>());
+    for (auto &v : data_)
+        v.clear();
+}
+
+
+
 template< class T, int rank>
 void CartesianProductArray<T,rank>::
 resize(const TensorSize<rank> &size)
@@ -103,6 +115,19 @@ resize(const TensorSize<rank> &size)
     for (int i = 0 ; i < rank ; i++)
         data_[i].resize(size[i]) ;
 }
+
+
+
+template< class T, int rank>
+void CartesianProductArray<T,rank>::
+resize(const TensorSize<rank> size, const T &val)
+{
+    TensorSizedContainer<rank>::reset_size(size);
+
+    for (int i = 0 ; i < rank ; i++)
+        data_[i].resize(size[i], val) ;
+}
+
 
 
 template< class T, int rank>
@@ -130,6 +155,8 @@ entry(const int i, const int j) const
 
     return data_[i][j];
 }
+
+
 
 template< class T, int rank>
 void
@@ -261,15 +288,6 @@ print_info(LogStream &out) const
     }
 }
 
-
-
-
-
 IGA_NAMESPACE_CLOSE
-
-#ifndef NDEBUG
-#include <igatools/utils/cartesian_product_array-inline.h>
-#endif
-
 
 #include <igatools/utils/cartesian_product_array.inst>
