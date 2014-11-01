@@ -321,7 +321,7 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
             auto inact_D_phi = D_phi.get_function_view(offset+basis_i);
-            for (int qp = 0; qp < num_points; ++qp)
+            for (int qp = 0; qp < n_points; ++qp)
                 inact_D_phi[qp](comp) = act_D_phi[qp](act_comp);
         }
     }
@@ -349,7 +349,7 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
             auto     inact_D_phi = D_phi.get_function_view(offset+basis_i);
-            for (int qp = 0; qp < num_points; ++qp)
+            for (int qp = 0; qp < n_points; ++qp)
                 for (int der = 0; der < n_ders; ++der)
                     inact_D_phi[qp](der)(comp) = act_D_phi[qp](der)(act_comp);
         }
