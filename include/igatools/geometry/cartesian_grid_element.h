@@ -31,11 +31,7 @@
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/utils/value_vector.h>
 
-
-
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  * @brief Element accessor for the CartesianGrid.
@@ -322,7 +318,6 @@ public:
     void print_cache_info(LogStream &out) const;
 
 private:
-
     /**
      * @brief Base class for cache of CartesianGridElement
      */

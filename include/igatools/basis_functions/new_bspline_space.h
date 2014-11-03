@@ -120,14 +120,9 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-//    // TODO (pauletti, Oct 16, 2014): delete this
-//    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(0);
-
     using BaseSpace::n_components;
     using BaseSpace::components;
     using BaseSpace::dims;
-
-//   static const bool has_weights = false;
 
 public:
     using typename BaseSpace::Func;
@@ -294,6 +289,22 @@ public:
 
 
 #if 0
+    template <int k>
+    using InterGridMap = typename GridType::template InterGridMap<k>;
+
+    template <int k>
+    using InterSpaceMap = vector<Index>;
+
+    /**
+     * Construct a sub space of dimension k conforming to
+     * the subspace sub element sub_elem_id and a map from the elements of
+     * the sub_element grid to the corresponding element of the current
+     * grid.
+     */
+    template<int k>
+    std::shared_ptr<NewBSplineSpace<k, range, rank> >
+    get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
+
     /** Getting some underlying objects */
     ///@{
     std::shared_ptr<RefFaceSpace>

@@ -69,20 +69,14 @@ public:
 
 protected:
     template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
-
-    template <int k>
     void init_cache(ElementAccessor &elem);
 
     void init_all_caches(ElementAccessor &elem);
 
-public:
     template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-    	fill_cache<k>(elem.get_accessor(), j);
-    }
+    void fill_cache(ElementAccessor &elem, const int j);
 
+public:
     template <int k>
     void init_cache(ElementIterator &elem)
     {
@@ -94,6 +88,14 @@ public:
         init_all_caches(elem.get_accessor());
     }
 
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+    	fill_cache<k>(elem.get_accessor(), j);
+    }
+
+
+public:
     /**
      * Allocates the space in ElementIterator element_cache
      * necessary for the given quadrature and flag combination.
