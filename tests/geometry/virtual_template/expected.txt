@@ -1,0 +1,36 @@
+Number of points:2
+weights:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=2) : [ 0.500000 0.500000 ]
+coordinates:
+Size: [ 2 ]  Weights: [2]
+Direction: 0
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
+
+Number of points:4
+weights:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ 0.500000 0.500000 ]
+Direction: 1
+[ 0.500000 0.500000 ]
+
+weights (flat tensor product):
+ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
+coordinates:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ 0.211325 0.788675 ]
+Direction: 1
+[ 0.211325 0.788675 ]
+
+coordinates (flat cartesian_product):
+ValueVector (num_points=4) : [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
+
