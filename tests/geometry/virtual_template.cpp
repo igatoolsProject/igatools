@@ -28,10 +28,11 @@
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/grid_element_handler.h>
-
+//#include <igatools/base/function_element.h>
 #include <boost/variant.hpp>
 
-
+#include <igatools/base/function_element-template.h>
+#include <igatools/geometry/grid_forward_iterator-template.h>
 
 //class function {
 //public:
@@ -47,7 +48,8 @@ class Function : public GridElementHandler<dim>
             Quadrature<1>,
             Quadrature<2> > ;
 
-
+    using ElementAccessor = FunctionElement<dim, 0, 1, 1>;
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
     using parent_t = GridElementHandler<dim>;
 public:
     Function(std::shared_ptr<const CartesianGrid<dim>> grid)
@@ -55,17 +57,27 @@ public:
         GridElementHandler<dim>(grid)
         {}
 
+    void fill_cache(ElementIterator &elem, const int j, const variant_type& quad)
+        {
+        fill_cache(elem.get_accessor(), j, quad);
+        }
+
+    void fill_cache(ElementAccessor &elem, const int j, const variant_type& quad)
+    {
+    	fill_cache_impl.j = j;
+    	fill_cache_impl.grid = this;
+    	boost::apply_visitor(fill_cache_impl, elem, quad);
+    }
 
     virtual void reset(const NewValueFlags &flag, const variant_type& quad)
     {
-        impl.flag = flag;
-        impl.grid = this;
-        boost::apply_visitor(impl, quad);
+        reset_impl.flag = flag;
+        reset_impl.grid = this;
+        boost::apply_visitor(reset_impl, quad);
     }
 
 private:
-    // A class that works with boost::apply_visitor
-    struct dispatcher : boost::static_visitor<void>
+    struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>
         void operator()(const T& quad)
@@ -77,7 +89,25 @@ private:
         NewValueFlags flag;
         parent_t *grid;
     };
-    dispatcher impl;
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+    	template<class T>
+    	void operator()(ElementAccessor& elem, const T& quad)
+    	{
+    		grid->template fill_cache<T::dim>(elem, j);
+    		quad.print_info(out);
+    	}
+
+    	int j;
+    	parent_t *grid;
+    };
+
+    ResetDispatcher reset_impl;
+
+    FillCacheDispatcher fill_cache_impl;
+
+
 };
 
 
@@ -86,8 +116,13 @@ int main() {
     auto grid = CartesianGrid<dim>::create(3);
     Function<2> x(grid);
 
+    GridForwardIterator<FunctionElement<dim,0,1,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim,0,1,1>> end(grid, IteratorState::pass_the_end);
+
     x.reset(NewValueFlags::none, QGauss<1>(2));
     x.reset(NewValueFlags::none, QGauss<2>(2));
+
+    x.fill_cache(elem, 0, QGauss<2>(2));
 
 }
 
