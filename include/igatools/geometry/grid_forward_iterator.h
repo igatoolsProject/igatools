@@ -334,6 +334,7 @@ bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardItera
 {
     return it1.get_flat_index() < it2.get_flat_index();
 }
+
 IGA_NAMESPACE_CLOSE
 
 #endif /* PATCH_ITERATORS_H_ */

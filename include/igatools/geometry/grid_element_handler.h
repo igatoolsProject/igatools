@@ -67,7 +67,8 @@ public:
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
-protected:
+//protected:
+public:
     template <int k>
     void init_cache(ElementAccessor &elem);
 

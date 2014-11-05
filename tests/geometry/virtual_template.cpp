@@ -31,8 +31,17 @@
 //#include <igatools/base/function_element.h>
 #include <boost/variant.hpp>
 
-#include <igatools/base/function_element-template.h>
-#include <igatools/geometry/grid_forward_iterator-template.h>
+#include <igatools/base/new_function-template.h>
+#include <igatools/base/function_element.cpp>
+#include <igatools/geometry/grid_forward_iterator.cpp>
+
+#include <boost/mpl/vector.hpp>
+
+
+template class NewFunction<2, 0, 1, 1> ;
+template class FunctionElement<2, 0, 1, 1> ;
+template class GridForwardIterator<FunctionElement<2, 0, 1, 1>> ;
+
 
 //class function {
 //public:
@@ -40,10 +49,36 @@
 //    virtual void reset() const;
 //};
 
+template<template<int> class Q, int start, std::size_t N>
+struct seq;
+
+template<template<int> class Q, int start>
+struct seq<Q, start, start>
+{
+    using type = boost::mpl::vector<Q<start>>;
+};
+
+
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq
+{
+    using v1 = typename seq<Q, start, N-1>::type;
+
+    using type = typename boost::mpl::push_back<v1, Q<N>>::type;
+
+
+};
+
+
+
+//using v = seq<Quadrature, 1, 2>::type;//boost::mpl::vector<Quadrature<1>,Quadrature<2>>;
 
 template<int dim>
 class Function : public GridElementHandler<dim>
 {
+    using v = typename seq<Quadrature, dim-1, dim>::type;
+    using variant_1 = typename boost::make_variant_over<v>::type;
     using variant_type = boost::variant<
             Quadrature<1>,
             Quadrature<2> > ;
@@ -53,20 +88,33 @@ class Function : public GridElementHandler<dim>
     using parent_t = GridElementHandler<dim>;
 public:
     Function(std::shared_ptr<const CartesianGrid<dim>> grid)
-    :
-        GridElementHandler<dim>(grid)
-        {}
+:
+    GridElementHandler<dim>(grid)
+    {}
+
+    void init_cache(ElementIterator &elem, const variant_1& quad)
+    {
+        init_cache(elem.get_accessor(), quad);
+    }
+
+    void init_cache(ElementAccessor &elem, const variant_1& quad)
+    {
+        init_cache_impl.grid = this;
+        init_cache_impl.elem = &elem;
+        boost::apply_visitor(init_cache_impl, quad);
+    }
 
     void fill_cache(ElementIterator &elem, const int j, const variant_type& quad)
-        {
+    {
         fill_cache(elem.get_accessor(), j, quad);
-        }
+    }
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_type& quad)
     {
-    	fill_cache_impl.j = j;
-    	fill_cache_impl.grid = this;
-    	boost::apply_visitor(fill_cache_impl, elem, quad);
+        fill_cache_impl.j = j;
+        fill_cache_impl.grid = this;
+        fill_cache_impl.elem = &elem;
+        boost::apply_visitor(fill_cache_impl, quad);
     }
 
     virtual void reset(const NewValueFlags &flag, const variant_type& quad)
@@ -83,7 +131,6 @@ private:
         void operator()(const T& quad)
         {
             grid->template reset<T::dim>(flag, quad);
-            quad.print_info(out);
         }
 
         NewValueFlags flag;
@@ -92,22 +139,34 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-    	template<class T>
-    	void operator()(ElementAccessor& elem, const T& quad)
-    	{
-    		grid->template fill_cache<T::dim>(elem, j);
-    		quad.print_info(out);
-    	}
+        template<class T>
+        void operator()(const T& quad)
+        {
+            grid->template fill_cache<T::dim>(*elem, j);
+        }
 
-    	int j;
-    	parent_t *grid;
+        int j;
+        parent_t *grid;
+        ElementAccessor *elem;
+    };
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            grid->template init_cache<T::dim>(*elem);
+        }
+
+        parent_t *grid;
+        ElementAccessor *elem;
     };
 
     ResetDispatcher reset_impl;
 
     FillCacheDispatcher fill_cache_impl;
 
-
+    InitCacheDispatcher init_cache_impl;
 };
 
 
@@ -117,11 +176,11 @@ int main() {
     Function<2> x(grid);
 
     GridForwardIterator<FunctionElement<dim,0,1,1>> elem(grid, 0);
-    GridForwardIterator<FunctionElement<dim,0,1,1>> end(grid, IteratorState::pass_the_end);
-
-    x.reset(NewValueFlags::none, QGauss<1>(2));
-    x.reset(NewValueFlags::none, QGauss<2>(2));
-
+    //    GridForwardIterator<FunctionElement<dim,0,1,1>> end(grid, IteratorState::pass_the_end);
+    //
+    //    x.reset(NewValueFlags::none, QGauss<1>(2));
+    x.reset(NewValueFlags::value, QGauss<2>(2));
+    x.init_cache(elem, QGauss<2>(2));
     x.fill_cache(elem, 0, QGauss<2>(2));
 
 }
