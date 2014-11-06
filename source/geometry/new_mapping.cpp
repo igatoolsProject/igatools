@@ -90,26 +90,26 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (flags.fill_w_measures())
     {
-        const auto &meas = cache->measures_;
+        const auto &meas = cache.measures_;
         const auto &w = elem.CartesianGridElement<dim>::get_w_measures();
         for (int i=0; i<n_points; ++i)
-            cache->w_measures_[i] = w[i] * meas[i];
+            cache.w_measures_[i] = w[i] * meas[i];
     }
 
     if (flags.fill_inv_gradients())
     {
-        const auto &DF = elem.get_gradients();
-        auto &D_invF = std::get<1>(cache->inv_derivatives_);
+        const auto &DF = elem.template get_values<1, k>(j);
+        auto &D_invF = std::get<1>(cache.inv_derivatives_);
         for (int i=0; i<n_points; ++i)
             inverse<dim, space_dim>(DF[i], D_invF[i]);
     }
 
     if (flags.fill_inv_hessians())
     {
-        const auto &D1_F = elem.get_gradients();
-        const auto &D2_F = elem.get_hessians();
-        const auto &D1_invF = std::get<1>(cache->inv_derivatives_);
-        auto &D2_invF = std::get<2>(cache->inv_derivatives_);
+        const auto &D1_F = elem.template get_values<1, k>(j);
+        const auto &D2_F = elem.template get_values<2, k>(j);
+        const auto &D1_invF = std::get<1>(cache.inv_derivatives_);
+        auto &D2_invF = std::get<2>(cache.inv_derivatives_);
 
         for (int i=0; i<n_points; ++i)
             for (int u=0; u<dim; ++u)
@@ -122,6 +122,9 @@ fill_cache(ElementAccessor &elem, const int j) -> void
                 }
             }
     }
+
+    cache.set_filled(true);
+
 }
 
 

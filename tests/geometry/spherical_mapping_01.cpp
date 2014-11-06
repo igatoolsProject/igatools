@@ -50,19 +50,21 @@ void mapping_values()
     auto quad = QUniform<dim>(3);
     auto grid = CartesianGrid<dim>::create();
 
-    auto F = Function::create(grid, flag, quad);
+    auto F = Function::create(grid);
+
 
     using Mapping   = NewMapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
-    Mapping map(F, flag, quad);
+    Mapping map(F);
+    map.reset(flag, quad);
 
     ElementIt elem(grid, 0);
     ElementIt end(grid, IteratorState::pass_the_end);
 
-    map.init_element(elem);
+    map.template init_cache<dim>(elem);
     for (; elem != end; ++elem)
     {
-        map.fill_element(elem);
+        map.template fill_cache<dim>(elem, 0);
 
         out << "Points:" << endl;
         elem->get_points().print_info(out);
@@ -71,16 +73,16 @@ void mapping_values()
         elem->get_values().print_info(out);
         out << endl;
         out << "Gradients:" << endl;
-        elem->get_gradients().print_info(out);
+        elem->template get_values<1>().print_info(out);
         out << endl;
         out << "Hessians:" << endl;
-        elem->get_hessians().print_info(out);
+        elem->template get_values<2>().print_info(out);
         out << endl;
         out << "Measure:" << endl;
-        elem->get_measures().print_info(out);
+        elem->template get_measures<dim>(0).print_info(out);
         out << endl;
         out << "weight * measure:" << endl;
-        elem->get_w_measures().print_info(out);
+        elem->template get_w_measures<dim>(0).print_info(out);
         out << endl;
     }
 }
