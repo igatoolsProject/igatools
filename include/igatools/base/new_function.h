@@ -26,17 +26,56 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
+#include <igatools/base/quadrature.h>
 
+#include <boost/variant.hpp>
+#include <boost/mpl/vector.hpp>
 IGA_NAMESPACE_OPEN
+
+template<int k_>
+struct Int
+{
+    static const int k = k_;
+};
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq;
+
+template<template<int> class Q, int start>
+struct seq<Q, start, start>
+{
+    using type = boost::mpl::vector<Q<start>>;
+};
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq
+{
+    using v1 = typename seq<Q, start, N-1>::type;
+    using type = typename boost::mpl::push_back<v1, Q<N>>::type;
+};
 
 template <int, int, int, int> class FunctionElement;
 
+/**
+ * Function Class
+ */
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 class NewFunction : public GridElementHandler<dim>
 {
 private:
     using self_t = NewFunction<dim, codim, range, rank>;
     using parent_t = GridElementHandler<dim>;
+
+protected:
+    using typename parent_t::GridType;
+
+public:
+    static const int l= iga::max(0, dim-num_sub_elem);
+    using v1 = typename seq<Quadrature, l, dim>::type;
+    using variant_1 = typename boost::make_variant_over<v1>::type;
+
+    using v2 = typename seq<Int, l, dim>::type;
+    using variant_2 = typename boost::make_variant_over<v2>::type;
 
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
@@ -81,39 +120,132 @@ public:
     /** @name Constructors and destructor. */
     ///@{
     /** Constructor */
-    NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                const NewValueFlags &flag = NewValueFlags::none,
-                const Quadrature<dim> &quad = Quadrature<dim>());
-
-    virtual void reset(const NewValueFlags &flag, const Quadrature<dim> &quad)
-    {
-        parent_t::reset(flag, quad);
-    }
+    NewFunction(std::shared_ptr<const GridType> grid);
 
     /** Destructor */
     virtual ~NewFunction() = default;
     ///@}
 
-    // TODO (pauletti, Oct 14, 2014): should be private after iterator instead
-    // of accessor inheritance is solved
-    //protected:
-    virtual void init_elem(ElementAccessor &elem) = 0;
-
-    virtual void fill_elem(ElementAccessor &elem) = 0;
-
-    virtual void init_elem(ElementIterator &elem)
+    virtual void reset(const NewValueFlags &flag, const variant_1& quad)
     {
-        this->init_elem(elem.get_accessor());
+        reset_impl.flag = flag;
+        reset_impl.grid_handler = this;
+        reset_impl.flags_ = &flags_;
+        boost::apply_visitor(reset_impl, quad);
     }
 
-    virtual void fill_elem(ElementIterator &elem)
+
+    virtual void init_cache(ElementAccessor &elem, const variant_2& k)
     {
-        this->fill_elem(elem.get_accessor());
+        init_cache_impl.grid_handler = this;
+        init_cache_impl.elem = &elem;
+        init_cache_impl.flags_ = &flags_;
+        init_cache_impl.quad_ = &(this->quad_);
+        boost::apply_visitor(init_cache_impl, k);
     }
 
-protected:
+
+    virtual void fill_cache(ElementAccessor &elem, const int j, const variant_2& k)
+    {
+        fill_cache_impl.j = j;
+        fill_cache_impl.grid_handler = this;
+        fill_cache_impl.elem = &elem;
+        boost::apply_visitor(fill_cache_impl, k);
+    }
+
+    void fill_cache(ElementIterator &elem, const int j, const variant_2& k)
+    {
+        fill_cache(elem.get_accessor(), j, k);
+    }
+
+    void init_cache(ElementIterator &elem, const variant_2& k)
+    {
+        init_cache(elem.get_accessor(), k);
+    }
+
+private:
+    struct ResetDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            (*flags_)[T::dim] = flag;
+            grid_handler->template reset<T::dim>(flag, quad);
+        }
+
+        NewValueFlags flag;
+        parent_t *grid_handler;
+        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            grid_handler->template fill_cache<T::k>(*elem, j);
+        }
+
+        int j;
+        parent_t *grid_handler;
+        ElementAccessor *elem;
+    };
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            grid_handler->template init_cache<T::k>(*elem);
+
+            auto &cache = elem->local_cache_;
+            if (cache == nullptr)
+            {
+                using Cache = typename ElementAccessor::LocalCache;
+                cache = std::shared_ptr<Cache>(new Cache);
+            }
+
+            for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+            {
+                auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+                auto &quad = std::get<T::k>(*quad_);
+                s_cache.resize((*flags_)[T::k], quad.get_num_points());
+            }
+        }
+
+        parent_t *grid_handler;
+        ElementAccessor *elem;
+        std::array<FunctionFlags, dim + 1> *flags_;
+        QuadList<dim> *quad_;
+    };
+
+    ResetDispatcher reset_impl;
+    FillCacheDispatcher fill_cache_impl;
+    InitCacheDispatcher init_cache_impl;
+
+
+
+//    virtual void init_elem(ElementAccessor &elem) = 0;
+//
+//    virtual void fill_elem(ElementAccessor &elem) = 0;
+//
+//    virtual void init_elem(ElementIterator &elem)
+//    {
+//        this->init_elem(elem.get_accessor());
+//    }
+//
+//    virtual void fill_elem(ElementIterator &elem)
+//    {
+//        this->fill_elem(elem.get_accessor());
+//    }
+
+//protected:
+public:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);
+
+protected:
+    std::array<FunctionFlags, dim + 1> flags_;
 };
 
 IGA_NAMESPACE_CLOSE

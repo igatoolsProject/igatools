@@ -659,7 +659,7 @@ using RefSpace = Conditional<(space_type == RefSpaceType::bspline),
       BSplineSpace<dim,range,rank>,
       NURBSSpace<dim,range,rank> >;
 
-
+constexpr int max(int a, int b) { return a>b ? a : b; }
 
 IGA_NAMESPACE_CLOSE
 

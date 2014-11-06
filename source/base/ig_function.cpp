@@ -27,20 +27,17 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 IgFunction<Space>::
-IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
-           std::shared_ptr<const Space> space,
+IgFunction(std::shared_ptr<const Space> space,
            const CoeffType &coeff)
     :
-    parent_t::NewFunction(space->get_grid(), flag, quad),
-    flag_(flag),
-    quad_(quad),
+    parent_t::NewFunction(space->get_grid()),
     space_(space),
     coeff_(coeff),
     elem_(space_->begin()),
     space_filler_(space_)
-{
-    space_filler_.template reset<dim>(flag, quad);
-}
+{}
+
+
 
 
 
@@ -51,25 +48,36 @@ create(const NewValueFlags &flag, const Quadrature<dim> &quad,
        std::shared_ptr<const Space> space,
        const CoeffType &coeff) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(flag, quad, space, coeff));
+    return std::shared_ptr<base_t>(new self_t(space, coeff));
 }
 
 
 template<class Space>
 auto
 IgFunction<Space>::
-init_elem(ElementAccessor &elem) -> void
+reset(const NewValueFlags &flag, const variant_1& quad) -> void
 {
-    GridElementHandler<dim>::init_element_cache(elem);
-    auto &cache = this->get_cache(elem);
-    if (cache == nullptr)
-    {
-        using Cache = typename ElementAccessor::CacheType;
-        cache = shared_ptr<Cache>(new Cache);
-    }
-    cache->resize(flag_, quad_.get_num_points());
+    parent_t::reset(flag, quad);
+    reset_impl.flag = flag;
+    reset_impl.space_handler_ = &space_filler_;
+    reset_impl.flags_ = &(this->flags_);
+    boost::apply_visitor(reset_impl, quad);
+}
 
-    space_filler_.init_element_cache(elem_);
+
+
+
+
+
+template<class Space>
+auto
+IgFunction<Space>::
+init_cache(ElementAccessor &elem, const variant_2& k) -> void
+{
+    parent_t::init_cache(elem, k);
+    init_cache_impl.space_handler_ = &space_filler_;
+    init_cache_impl.space_elem = &(elem_.get_accessor());
+    boost::apply_visitor(init_cache_impl, k);
 }
 
 
@@ -77,28 +85,21 @@ init_elem(ElementAccessor &elem) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-fill_elem(ElementAccessor &elem) -> void
+fill_cache(ElementAccessor &elem, const int j, const variant_2& k) -> void
 {
-    const int s_id = 0;
-    const int k = dim;
-    GridElementHandler<dim>::fill_element_cache(elem);
-    space_filler_.fill_element_cache(elem_);
-    auto &cache = this->get_cache(elem);
+    parent_t::fill_cache(elem, j, k);
 
     elem_.move_to(elem.get_flat_index());
-    if (flag_.fill_points())
-        Assert(false, ExcNotImplemented());//cache->points_ = elem_->get_points();
-    const auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
 
-    if (flag_.fill_values())
-        cache->values_ =
-                elem_->template linear_combination<0, k>(loc_coeff, s_id);
-    if (flag_.fill_gradients())
-        std::get<1>(cache->derivatives_) =
-                elem_->template linear_combination<1, k>(loc_coeff, s_id);
-    if (flag_.fill_hessians())
-        std::get<2>(cache->derivatives_) =
-                elem_->template linear_combination<2, k>(loc_coeff, s_id);
+    fill_cache_impl.space_handler_ = &space_filler_;
+    fill_cache_impl.space_elem = &(elem_.get_accessor());
+    fill_cache_impl.func_elem = &elem;
+    fill_cache_impl.function = this;
+    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+    fill_cache_impl.loc_coeff = &loc_coeff;
+
+    boost::apply_visitor(fill_cache_impl, k);
+
 }
 
 IGA_NAMESPACE_CLOSE

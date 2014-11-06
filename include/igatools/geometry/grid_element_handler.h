@@ -44,7 +44,7 @@ using QuadList = TupleList<dim, Quadrature>;
 template <int dim_>
 class GridElementHandler
 {
-private:
+protected:
     using GridType = CartesianGrid<dim_>;
 
 protected:
@@ -56,6 +56,8 @@ protected:
     void fill_element_cache(ElementAccessor &elem);
 public:
     static const int dim = dim_;
+
+    // TODO (pauletti, Nov 6, 2014): do we need this?
     static const NewValueFlags valid_flags = NewValueFlags::measure |
                                              NewValueFlags::w_measure |
                                              NewValueFlags::point|

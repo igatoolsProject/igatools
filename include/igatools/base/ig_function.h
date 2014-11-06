@@ -41,6 +41,8 @@ private:
     using self_t = IgFunction<Space>;
 
 public:
+    using typename parent_t::variant_1;
+    using typename parent_t::variant_2;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -51,23 +53,21 @@ public:
 
     using CoeffType = Vector<LAPack::trilinos>;
 
-    IgFunction(const NewValueFlags &flag, const Quadrature<dim> &quad,
-               std::shared_ptr<const Space> space,
-               const CoeffType &coeff);
+    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
     static std::shared_ptr<base_t>
     create(const NewValueFlags &flag, const Quadrature<dim> &quad,
            std::shared_ptr<const Space> space,
            const CoeffType &coeff);
 
-    void init_elem(ElementAccessor &elem);
+    void reset(const NewValueFlags &flag, const variant_1& quad) override;
 
-    void fill_elem(ElementAccessor &elem);
+    void init_cache(ElementAccessor &elem, const variant_2& k) override;
+
+    void fill_cache(ElementAccessor &elem, const int j, const variant_2& k) override;
+
 
 private:
-    FunctionFlags flag_;
-
-    Quadrature<dim> quad_;
 
     std::shared_ptr<const Space> space_;
 
@@ -76,6 +76,77 @@ private:
     typename Space::ElementIterator elem_;
 
     typename Space::ElementHandler space_filler_;
+
+
+private:
+    struct ResetDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            (*flags_)[T::dim] = flag;
+            space_handler_->template reset<T::dim>(flag, quad);
+        }
+
+        NewValueFlags flag;
+        typename Space::ElementHandler *space_handler_;
+        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            space_handler_->template init_cache<T::k>(*space_elem);
+        }
+
+        typename Space::ElementHandler  *space_handler_;
+        typename Space::ElementAccessor *space_elem;
+
+
+    };
+
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            space_handler_->template fill_cache<T::k>(*space_elem, j);
+
+            auto &local_cache = function->get_cache(*func_elem);
+            auto &cache = local_cache->template get_value_cache<T::k>(j);
+            auto &flags = cache.flags_handler_;
+
+            if (flags.fill_values())
+                std::get<0>(cache.values_) =
+                        space_elem->template linear_combination<0, T::k>(*loc_coeff, j);
+            if (flags.fill_gradients())
+                std::get<1>(cache.values_) =
+                        space_elem->template linear_combination<1, T::k>(*loc_coeff, j);
+            if (flags.fill_hessians())
+                std::get<2>(cache.values_) =
+                        space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
+
+        }
+
+        int j;
+        self_t *function;
+        typename Space::ElementHandler *space_handler_;
+        ElementAccessor *func_elem;
+        typename Space::ElementAccessor *space_elem;
+        vector<Real> *loc_coeff;
+    };
+
+
+
+    ResetDispatcher reset_impl;
+    InitCacheDispatcher init_cache_impl;
+    FillCacheDispatcher fill_cache_impl;
+
+
 };
 
 IGA_NAMESPACE_CLOSE

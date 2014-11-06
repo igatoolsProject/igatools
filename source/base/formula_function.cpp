@@ -27,65 +27,27 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
-FormulaFunction(shared_ptr<const CartesianGrid<dim>> grid,
-                const NewValueFlags &flag,
-                const Quadrature<dim> &quad)
+FormulaFunction(std::shared_ptr<const GridType> grid)
     :
-    parent_t::NewFunction(grid, flag, quad),
-    flag_(flag),
-    quad_(quad)
+    parent_t::NewFunction(grid)
 {}
 
 
 
 template<int dim, int codim, int range, int rank>
-void
-FormulaFunction<dim, codim, range, rank>::
-reset(const NewValueFlags &flag, const Quadrature<dim> &quad)
-{
-    parent_t::reset(flag, quad);
-    flag_ = flag;
-    quad_ = quad;
-}
-
-
-template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
-init_elem(ElementAccessor &elem) -> void
+fill_cache(ElementAccessor &elem, const int j, const variant_2& k) -> void
 {
-    GridElementHandler<dim>::init_element_cache(elem);
-    auto &cache = this->get_cache(elem);
-    if (cache == nullptr)
-    {
-        using Cache = typename ElementAccessor::CacheType;
-        cache = shared_ptr<Cache>(new Cache);
-    }
-    cache->resize(flag_, quad_.get_num_points());
+    parent_t::fill_cache(elem, j, k);
+    fill_cache_impl.j = j;
+    fill_cache_impl.function = this;
+    fill_cache_impl.elem = &elem;
+    fill_cache_impl.flags_ = &(this->flags_);
+    boost::apply_visitor(fill_cache_impl, k);
 }
 
 
-
-template<int dim, int codim, int range, int rank>
-auto
-FormulaFunction<dim, codim, range, rank>::
-fill_elem(ElementAccessor &elem) -> void
-{
-    GridElementHandler<dim>::fill_element_cache(elem);
-    if (!flag_.fill_none())
-    {
-        const auto points = elem.CartesianGridElement<dim>::get_points();
-        auto &cache = this->get_cache(elem);
-        if (flag_.fill_points())
-            this->parametrization(points, cache->points_);
-        if (flag_.fill_values())
-            this->evaluate_0(cache->points_, cache->values_);
-        if (flag_.fill_gradients())
-            this->evaluate_1(cache->points_, std::get<1>(cache->derivatives_));
-        if (flag_.fill_hessians())
-            this->evaluate_2(cache->points_, std::get<2>(cache->derivatives_));
-    }
-}
 
 IGA_NAMESPACE_CLOSE
 

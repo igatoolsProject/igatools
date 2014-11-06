@@ -24,6 +24,7 @@
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 template<int dim, int codim, int range, int rank>
 auto
 FunctionElement<dim, codim, range, rank>::
@@ -72,6 +73,6 @@ get_hessians() const -> ValueVector<Hessian> const &
 {
     return get_derivative<2>();
 }
-
+#endif
 IGA_NAMESPACE_CLOSE
 

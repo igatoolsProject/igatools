@@ -43,8 +43,17 @@ private:
 public:
     using CartesianGridElement<dim>::CartesianGridElement;
 
-    ValueVector<Point> const &get_points() const;
+    template<int order = 0, int k = dim>
+    auto
+    get_values(const int j = 0) const
+    {
+        const auto &cache = local_cache_->template get_value_cache<k>(j);
+        Assert(cache.is_filled() == true, ExcCacheNotFilled());
+        return cache.template get_der<order>();
+    }
 
+#if 0
+    ValueVector<Point> const &get_points() const;
     ValueVector<Value> const &get_values() const;
 
 private:
@@ -54,10 +63,12 @@ public:
     ValueVector<Gradient> const &get_gradients() const;
 
     ValueVector<Hessian> const &get_hessians() const;
+#endif
 
 private:
-    struct Cache : public CacheStatus
+    class ValuesCache : public CacheStatus
     {
+    public:
         void resize(const FunctionFlags &flags_handler,
                     const int n_points)
         {
@@ -68,13 +79,13 @@ private:
                 points_.resize(n_points);
 
             if (flags_handler_.fill_values())
-                values_.resize(n_points);
+                std::get<0>(values_).resize(n_points);
 
             if (flags_handler_.fill_gradients())
-                std::get<1>(derivatives_).resize(n_points);
+                std::get<1>(values_).resize(n_points);
 
             if (flags_handler_.fill_hessians())
-                std::get<2>(derivatives_).resize(n_points);
+                std::get<2>(values_).resize(n_points);
 
             set_initialized(true);
         }
@@ -82,22 +93,59 @@ private:
         void print_info(LogStream &out) const
         {
             flags_handler_.print_info(out);
-            values_.print_info(out);
-            std::get<1>(derivatives_).print_info(out);
-            std::get<2>(derivatives_).print_info(out);
+            std::get<0>(values_).print_info(out);
+            std::get<1>(values_).print_info(out);
+            std::get<2>(values_).print_info(out);
         }
 
-        ValueVector<Point> points_;
-        ValueVector<Value> values_;
-        std::tuple<ValueVector<Derivative<0>>,
-            ValueVector<Derivative<1>>,
-            ValueVector<Derivative<2>>> derivatives_;
         FunctionFlags flags_handler_;
+
+        ValueVector<Point> points_;
+        std::tuple<ValueVector<Value>,
+        ValueVector<Derivative<1>>,
+        ValueVector<Derivative<2>>> values_;
+
     };
 
-    std::shared_ptr<Cache> elem_cache_;
+    class LocalCache
+    {
+    public:
+        LocalCache() = default;
+
+        LocalCache(const LocalCache &in) = default;
+
+        LocalCache(LocalCache &&in) = default;
+
+        ~LocalCache() = default;
+
+
+        LocalCache &operator=(const LocalCache &in) = delete;
+
+        LocalCache &operator=(LocalCache &&in) = delete;
+
+        void print_info(LogStream &out) const;
+
+        template <int k>
+        ValuesCache &
+        get_value_cache(const int j)
+        {
+            return std::get<k>(values_)[j];
+        }
+
+        template <int k>
+        const ValuesCache &
+        get_value_cache(const int j) const
+        {
+            return std::get<k>(values_)[j];
+        }
+
+        CacheList<ValuesCache, dim> values_;
+    };
+
+    std::shared_ptr<LocalCache> local_cache_;
+
 public:
-    using CacheType = Cache;
+    using CacheType = LocalCache;
 private:
     template <typename Accessor> friend class GridForwardIterator;
     friend class NewFunction<dim, codim, range, rank>;

@@ -94,15 +94,11 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<const CartesianGrid<dim>> grid,
            const Gradient &A,
-           const Value &b,
-           const NewValueFlags &flag = NewValueFlags::none,
-           const Quadrature<dim> &quad = Quadrature<dim>());
+           const Value &b);
 
 protected:
     LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                   const Gradient &A, const Value &b,
-                   const NewValueFlags &flag,
-                   const Quadrature<dim> &quad);
+                   const Gradient &A, const Value &b);
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
@@ -147,14 +143,10 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<const CartesianGrid<dim>> grid,
-           const NewValueFlags &flag = NewValueFlags::none,
-           const Quadrature<dim> &quad = Quadrature<dim>());
+    create(std::shared_ptr<const CartesianGrid<dim>> grid);
 
 protected:
-    BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                 const NewValueFlags &flag,
-                 const Quadrature<dim> &quad);
+    BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid);
 
 private:
     template<int order>

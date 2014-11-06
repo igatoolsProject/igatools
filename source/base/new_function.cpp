@@ -25,14 +25,10 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank >
 NewFunction<dim, codim, range, rank >::
-NewFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-            const NewValueFlags &flag,
-            const Quadrature<dim> &quad)
+NewFunction(std::shared_ptr<const GridType> grid)
     :
     GridElementHandler<dim>(grid)
-{
-    GridElementHandler<dim>::template reset<dim>(flag, quad);
-}
+{}
 
 
 
@@ -42,7 +38,7 @@ NewFunction<dim, codim, range, rank >::
 get_cache(ElementAccessor &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {
-    return elem.elem_cache_;
+    return elem.local_cache_;
 }
 
 

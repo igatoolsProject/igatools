@@ -92,10 +92,9 @@ evaluate_2(const ValueVector<Point> &points,
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
 LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-               const Gradient &A, const Value &b,
-               const NewValueFlags &flag, const Quadrature<dim> &quad)
+               const Gradient &A, const Value &b)
     :
-    parent_t::FormulaFunction(grid, flag, quad),
+    parent_t::FormulaFunction(grid),
     A_(A),
     b_(b)
 {}
@@ -106,11 +105,9 @@ template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
 create(std::shared_ptr<const CartesianGrid<dim>> grid,
-       const Gradient &A, const Value &b,
-       const NewValueFlags &flag,
-       const Quadrature<dim> &quad) ->  std::shared_ptr<base_t>
+       const Gradient &A, const Value &b) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, A, b, flag, quad));
+    return std::shared_ptr<base_t>(new self_t(grid, A, b));
 }
 
 
@@ -158,11 +155,9 @@ evaluate_2(const ValueVector<Point> &points,
 
 template<int dim>
 BallFunction<dim>::
-BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-             const NewValueFlags &flag,
-             const Quadrature<dim> &quad)
+BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid)
     :
-    parent_t::FormulaFunction(grid, flag, quad)
+    parent_t::FormulaFunction(grid)
 {}
 
 
@@ -170,11 +165,9 @@ BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
 template<int dim>
 auto
 BallFunction<dim>::
-create(std::shared_ptr<const CartesianGrid<dim>> grid,
-       const NewValueFlags &flag,
-       const Quadrature<dim> &quad) ->  std::shared_ptr<base_t>
+create(std::shared_ptr<const CartesianGrid<dim>> grid) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, flag, quad));
+    return std::shared_ptr<base_t>(new self_t(grid));
 }
 
 
