@@ -49,7 +49,7 @@ public:
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-        return cache.template get_der<order>();
+        return std::get<order>(cache.values_);
     }
 
 #if 0

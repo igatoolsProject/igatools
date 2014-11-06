@@ -39,17 +39,17 @@ void test(NewFunction<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid
     ElementIterator elem(grid, 0);
     ElementIterator end(grid, IteratorState::pass_the_end);
 
-    F.init_elem(elem);
+    F.init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)
     {
-        F.fill_elem(elem);
+        F.fill_cache(elem, 0, Int<dim>());
         elem->get_points().print_info(out);
         out << endl;
         elem->get_values().print_info(out);
         out << endl;
-        elem->get_gradients().print_info(out);
+        elem->template get_values<1>().print_info(out);
         out << endl;
-        elem->get_hessians().print_info(out);
+        elem->template get_values<2>().print_info(out);
         out << endl;
     }
 }
@@ -74,7 +74,8 @@ void create_fun()
                 NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, A, b, flag, quad);
+    auto F = Function::create(grid, A, b);
+    F->reset(flag, quad);
     test<dim, codim, range>(*F, grid);
 }
 

@@ -130,6 +130,7 @@ private:
                 std::get<2>(cache.values_) =
                         space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
 
+            cache.set_filled(true);
         }
 
         int j;

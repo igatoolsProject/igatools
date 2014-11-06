@@ -48,25 +48,26 @@ void test()
     typename Function::CoeffType coeff(space->get_num_basis());
     coeff(0) = 1.;
     shared_ptr<NewFunction<dim,0,range,1>> F
-                                        = std::make_shared<Function>(flag, quad, space, coeff);
-
+                                        = std::make_shared<Function>(space, coeff);
+    F->reset(flag, quad);
 
     GridForwardIterator<FunctionElement<dim,0,range,1>> elem(grid, 0);
     GridForwardIterator<FunctionElement<dim,0,range,1>> end(grid, IteratorState::pass_the_end);
 
-    F->init_elem(elem);
+    F->init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)
     {
-        F->fill_elem(elem);
+        F->fill_cache(elem, 0, Int<dim>());
 //        elem->get_points().print_info(out);
 //        out << endl;
         elem->get_values().print_info(out);
         out << endl;
-        elem->get_gradients().print_info(out);
+        elem->template get_values<1>().print_info(out);
         out << endl;
-        elem->get_hessians().print_info(out);
+        elem->template get_values<2>().print_info(out);
         out << endl;
     }
+
 }
 
 

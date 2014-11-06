@@ -111,6 +111,7 @@ private:
                     function->evaluate_2(cache.points_, std::get<2>(cache.values_));
             }
 
+            cache.set_filled(true);
         }
 
         int j;
