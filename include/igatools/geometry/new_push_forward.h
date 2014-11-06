@@ -98,32 +98,15 @@ public:
 #endif
 public:
 
-    NewPushForward(std::shared_ptr<FuncType> F,
-                   const NewValueFlags flag,
-                   const Quadrature<dim> &quad);
+    NewPushForward(std::shared_ptr<FuncType> F);
 
     ~NewPushForward() = default;
 
-protected:
-    void init_element(ElementAccessor &elem);
-
-    void fill_element(ElementAccessor &elem);
-
-
-public:
-    void init_element(ElementIterator &elem);
-
-    void fill_element(ElementIterator &elem);
-
-//protected:
-//    std::shared_ptr<typename ElementAccessor::CacheType>
-//    &get_cache(ElementAccessor &elem);
+    template<int k>
+    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
 private:
-//    std::shared_ptr<MapType> F_;
-//    MappingElemValueFlagsHandler flag_;
-//    Quadrature<dim> quad_;
-    //friend ElementAccessor;
+
 };
 
 

@@ -48,15 +48,11 @@ public:
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<const CartesianGrid<dim>> grid,
-           const Value &b,
-           const NewValueFlags &flag = NewValueFlags::none,
-           const Quadrature<dim> &quad = Quadrature<dim>());
+           const Value &b);
 
 protected:
     ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                     const Value &b,
-                     const NewValueFlags &flag,
-                     const Quadrature<dim> &quad);
+                     const Value &b);
 
 private:
     void evaluate_0(const ValueVector<Point> &points,

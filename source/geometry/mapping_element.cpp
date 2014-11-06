@@ -21,7 +21,7 @@
 #include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 template<int dim, int codim>
 auto
 MappingElement<dim, codim>::
@@ -58,5 +58,5 @@ get_inverse_hessians() const -> ValueVector<InvDerivative<2>> const &
 {
     return std::get<2>(elem_cache_->inv_derivatives_);
 }
-
+#endif
 IGA_NAMESPACE_CLOSE

@@ -85,30 +85,47 @@ public:
 
 public:
 
-    NewMapping(std::shared_ptr<FuncType> F,
-               const NewValueFlags flag,
-               const Quadrature<dim> &quad);
+    NewMapping(std::shared_ptr<FuncType> F);
 
     NewMapping() = delete;
 
     ~NewMapping();
 
-    void init_element(ElementIterator &elem);
 
-    void fill_element(ElementIterator &elem);
+public:
+
+    template<int k>
+    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
 protected:
-    void init_element(ElementAccessor &elem);
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
 
-    void fill_element(ElementAccessor &elem);
+    template <int k>
+    void init_cache(ElementAccessor &elem);
 
+public:
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(elem.get_accessor(), j);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+        init_cache<k>(elem.get_accessor());
+    }
+
+protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);
 
 private:
     std::shared_ptr<FuncType> F_;
-    MappingFlags flag_;
-    Quadrature<dim> quad_;
+
+    std::array<MappingFlags, dim + 1> flags_;
+//    Quadrature<dim> quad_;
     friend ElementAccessor;
 };
 

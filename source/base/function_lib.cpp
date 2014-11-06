@@ -29,11 +29,9 @@ namespace functions
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
 ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
-                 const Value &b,
-                 const NewValueFlags &flag,
-                 const Quadrature<dim> &quad)
+                 const Value &b)
     :
-    parent_t::FormulaFunction(grid, flag, quad),
+    parent_t::FormulaFunction(grid),
     b_(b)
 {}
 
@@ -43,11 +41,9 @@ template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
 create(std::shared_ptr<const CartesianGrid<dim>> grid,
-       const Value &b,
-       const NewValueFlags &flag,
-       const Quadrature<dim> &quad) ->  std::shared_ptr<base_t>
+       const Value &b) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, b, flag, quad));
+    return std::shared_ptr<base_t>(new self_t(grid, b));
 }
 
 

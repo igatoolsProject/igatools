@@ -44,17 +44,35 @@ public:
     template<int order>
     using InvDerivative = typename Map::template InvDerivative<order>;
 
-    ValueVector<Real> const &get_measures() const;
+    template<int k>
+    ValueVector<Real> const &get_measures(const int j) const
+    {
+        const auto &cache = local_cache_->template get_value_cache<k>(j);
+        return cache.measures_;
+    }
 
-    ValueVector<Real> const &get_w_measures() const;
+    template<int k>
+    ValueVector<Real> const &get_w_measures(const int j) const
+    {
+        const auto &cache = local_cache_->template get_value_cache<k>(j);
+        return cache.w_measures_;
+    }
 
-    ValueVector<InvDerivative<1>> const &get_inverse_gradients() const;
+    template<int order = 0, int k = dim>
+    auto
+    get_inverse_values(const int j = 0) const
+    {
+        const auto &cache = local_cache_->template get_value_cache<k>(j);
+        Assert(cache.is_filled() == true, ExcCacheNotFilled());
+        return cache.template get_der<order>();
+    }
 
-    ValueVector<InvDerivative<2>> const &get_inverse_hessians() const;
 
 private:
-    struct Cache : public CacheStatus
+    class ValuesCache : public CacheStatus
     {
+    public:
+
         void resize(const MappingFlags &flags_handler,
                     const int n_points)
         {
@@ -79,19 +97,57 @@ private:
             measures_.print_info(out);
         }
 
+        MappingFlags flags_handler_;
+
         ValueVector<Real> measures_;
         ValueVector<Real> w_measures_;
 
         std::tuple<ValueVector<InvDerivative<0>>,
-            ValueVector<InvDerivative<1>>,
-            ValueVector<InvDerivative<2>>> inv_derivatives_;
+        ValueVector<InvDerivative<1>>,
+        ValueVector<InvDerivative<2>>> inv_derivatives_;
 
-        MappingFlags flags_handler_;
+
     };
 
-    std::shared_ptr<Cache> elem_cache_;
+    class LocalCache
+       {
+       public:
+           LocalCache() = default;
+
+           LocalCache(const LocalCache &in) = default;
+
+           LocalCache(LocalCache &&in) = default;
+
+           ~LocalCache() = default;
+
+
+           LocalCache &operator=(const LocalCache &in) = delete;
+
+           LocalCache &operator=(LocalCache &&in) = delete;
+
+           void print_info(LogStream &out) const;
+
+           template <int k>
+           ValuesCache &
+           get_value_cache(const int j)
+           {
+               return std::get<k>(values_)[j];
+           }
+
+           template <int k>
+           const ValuesCache &
+           get_value_cache(const int j) const
+           {
+               return std::get<k>(values_)[j];
+           }
+
+           CacheList<ValuesCache, dim> values_;
+       };
+
+       std::shared_ptr<LocalCache> local_cache_;
+
 public:
-    using CacheType = Cache;
+    using CacheType = LocalCache;
 
 private:
     template <typename Accessor> friend class GridForwardIterator;

@@ -114,50 +114,23 @@ pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags
 
 template<Transformation type, int dim, int codim>
 NewPushForward<type, dim, codim>::
-NewPushForward(std::shared_ptr<FuncType> F,
-               const NewValueFlags flag,
-               const Quadrature<dim> &quad)
+NewPushForward(std::shared_ptr<FuncType> F)
     :
-    MapType::NewMapping(F, pushforward_to_mapping_flag(type, flag), quad)
+    MapType::NewMapping(F)
 {}
 
 
 
 template<Transformation type, int dim, int codim>
+template<int k>
 auto
 NewPushForward<type, dim, codim>::
-init_element(ElementAccessor &elem) ->void
+reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
 {
-    MapType::init_element(elem);
+    MapType::template reset<k>(pushforward_to_mapping_flag(type, flag), quad);
 }
 
 
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-fill_element(ElementAccessor &elem) ->void
-{
-    MapType::fill_element(elem);
-}
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-init_element(ElementIterator &elem) ->void
-{
-    init_element(elem.get_accessor());
-}
-
-
-
-template<Transformation type, int dim, int codim>
-auto
-NewPushForward<type, dim, codim>::
-fill_element(ElementIterator &elem) ->void
-{
-    fill_element(elem.get_accessor());
-}
 
 IGA_NAMESPACE_CLOSE
 
