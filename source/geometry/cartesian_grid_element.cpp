@@ -489,19 +489,6 @@ get_points(const int j) const ->ValueVector<Point>
 }
 
 
-
-template <int dim_>
-template <int k>
-auto
-CartesianGridElement<dim_>::
-get_num_points(const int j) const -> Size
-{
-    const auto &cache =  local_cache_->template get_value_cache<k>(j);
-
-    Assert(cache.is_initialized(), ExcNotInitialized());
-    return cache.unit_weights_.size();
-}
-
 //template <int dim_>
 //auto
 //CartesianGridElement<dim_>::

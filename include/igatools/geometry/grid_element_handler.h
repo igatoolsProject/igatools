@@ -97,6 +97,11 @@ public:
     	fill_cache<k>(elem.get_accessor(), j);
     }
 
+    template <int k = dim>
+    Size get_num_points(const int j = 0) const
+    {
+        return std::get<k>(quad_)[j].get_num_points();
+    }
 
 public:
     /**

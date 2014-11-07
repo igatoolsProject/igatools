@@ -295,8 +295,7 @@ public:
     template <int k = dim>
     ValueVector<Point> get_points(const int j = 0) const;
 
-    template <int k = dim>
-    Size get_num_points(const int j = 0) const;
+
 public:
 //    /**
 //     * Return a const reference to the one-dimensional container with the
