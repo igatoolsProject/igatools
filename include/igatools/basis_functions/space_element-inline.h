@@ -595,13 +595,10 @@ void
 SpaceElement<Space>::
 ValuesCache::
 resize(const FunctionFlags &flags_handler,
-       const Quadrature<dim> &quad,
+       const Size total_n_points,
        const SpaceDimensionTable &n_basis_)
 {
     flags_handler_ = flags_handler;
-
-    const auto n_points_direction = quad.get_num_points_direction();
-    const auto total_n_points = n_points_direction.flat_size();
     const auto total_n_basis = n_basis_.total_dimension;
 
     Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));

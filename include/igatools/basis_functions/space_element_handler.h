@@ -27,6 +27,9 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * Element handler for an isogeometric space
+ */
 template<class PhysSpace>
 class SpaceElementHandler :
     public PhysSpace::RefSpace::ElementHandler,
@@ -36,46 +39,56 @@ class SpaceElementHandler :
     using RefSpace =  typename PhysSpace::RefSpace;
     using RefSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
     using PFCache = typename PhysSpace::PushForwardType;
+
     using ElementIterator = typename PhysSpace::ElementIterator;
-    using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
-
-protected:
     using ElementAccessor = typename PhysSpace::ElementAccessor;
-
-    void init_element_cache(ElementAccessor &elem);
-
-    void fill_element_cache(ElementAccessor &elem);
-
-    void fill_face_cache(ElementAccessor &elem, const int face);
+    using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
 
 public:
     static const int dim = PhysSpace::dim;
 
+    using PhysSpace::PushForwardType::type;
+
     //Allocates and fill the (global) cache
-    SpaceElementHandler(std::shared_ptr<const PhysSpace> space,
-                        const NewValueFlags flag,
-                        const Quadrature<dim> &quad);
+    SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
 
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem);
+    template<int k>
+    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem);
+    //protected:
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
 
-    /**
-     * Fills the ElementIterator face_cache
-     * element dependent part
-     */
-    void fill_face_cache(ElementIterator &elem, const int face);
+    template <int k>
+    void init_cache(ElementAccessor &elem);
+
+    //    void init_all_caches(ElementAccessor &elem);
+public:
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(elem.get_accessor(), j);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+        init_cache<k>(elem.get_accessor());
+    }
+
+    //    void init_all_caches(ElementIterator &elem)
+    //    {
+    //        init_all_caches(elem.get_accessor());
+    //    }
+
 
     void print_info(LogStream &out) const;
 
 private:
     std::shared_ptr<const PhysSpace> space_;
 
-    std::tuple<FunctionFlags, FunctionFlags> flags_;
+    std::array<FunctionFlags, dim + 1> flags_;
 
-    Quadrature<dim> quad_;
 };
 
 

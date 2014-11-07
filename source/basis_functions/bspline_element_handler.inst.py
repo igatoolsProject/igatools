@@ -29,8 +29,8 @@ data = Instantiation(include_files)
 
 
 for x in inst.really_all_ref_sp_dims:
-    f.write('template class NewBSplineSpace<%d, %d, %d>; \n'
-            %(x.dim, x.range, x.rank))
+#     f.write('template class NewBSplineSpace<%d, %d, %d>; \n'
+#             %(x.dim, x.range, x.rank))
     f.write('template class SpaceElement<NewBSplineSpace<%d, %d, %d>>; \n'
             %(x.dim, x.range, x.rank))
     f.write('template class BSplineElement<%d, %d, %d>; \n' 

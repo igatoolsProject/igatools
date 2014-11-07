@@ -38,15 +38,15 @@
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init(const ValueFlags flag,
+void cache_init(const NewValueFlags flag,
                 const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
     using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space    = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto grid      = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
 
     using Function = functions::LinearFunction<dim, 0, dim+codim>;
@@ -61,7 +61,7 @@ void cache_init(const ValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, flag, quad, A, b);
+    auto map_func = Function::create(grid, A, b);
     auto space = Space::create(ref_space, map_func);
 
 
@@ -72,9 +72,9 @@ void cache_init(const ValueFlags flag,
 }
 
 
-
+#if 0
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init_elem(const ValueFlags flag,
+void cache_init_elem(const NewValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
     OUTSTART
@@ -111,7 +111,7 @@ void cache_init_elem(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_fill_elem(const ValueFlags flag,
+void cache_fill_elem(const NewValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
     OUTSTART
@@ -134,7 +134,7 @@ void cache_fill_elem(const ValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, ValueFlags::none, quad, A, b);
+    auto map_func = Function::create(grid, NewValueFlags::none, quad, A, b);
     auto space = Space::create(ref_space, map_func);
 
     typename Space::ElementHandler sp_values(space, flag, quad);
@@ -154,7 +154,7 @@ void cache_fill_elem(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_get_elem_values(const ValueFlags flag,
+void cache_get_elem_values(const NewValueFlags flag,
                            const int n_knots = 5, const int deg=1)
 {
     OUTSTART
@@ -177,7 +177,7 @@ void cache_get_elem_values(const ValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, ValueFlags::none, quad, A, b);
+    auto map_func = Function::create(grid, NewValueFlags::none, quad, A, b);
     auto space = Space::create(ref_space, map_func);
 
     typename Space::ElementHandler sp_values(space, flag, quad);
@@ -194,16 +194,16 @@ void cache_get_elem_values(const ValueFlags flag,
     OUTEND
 }
 
-
+#endif
 
 int main()
 {
     out.depth_console(10);
 
-    cache_init<1>(ValueFlags::value);
-    cache_init_elem<1>(ValueFlags::value);
-    cache_fill_elem<1>(ValueFlags::value);
-    cache_get_elem_values<1>(ValueFlags::value);
+    cache_init<1>(NewValueFlags::value);
+//    cache_init_elem<1>(NewValueFlags::value);
+//    cache_fill_elem<1>(NewValueFlags::value);
+//    cache_get_elem_values<1>(NewValueFlags::value);
 
     return  0;
 }

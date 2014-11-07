@@ -27,31 +27,27 @@
 
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+//#include <igatools/basis_functions/space_tools.h>
 
-template< int dim_domain, int dim_range, int rank >
-void run_test()
+template<int k, int dim, int range=1, int rank=1>
+void run_test(TensorSize<dim> n, const int degree = 1)
 {
-    using space_t = BSplineSpace<dim_domain, dim_range, rank>;
-    const int degree = 1;
-    TensorSize<dim_domain> n;
-    for (int i = 0; i < dim_domain; ++i)
+    using Space = NewBSplineSpace<dim, range, rank>;
+
+    auto grid = CartesianGrid<dim>::create(n);
+    auto space = Space::create(degree, grid);
+
+    typename Space::template InterSpaceMap<k> dof_map;
+    typename CartesianGrid<dim>::template InterGridMap<k> elem_map;
+
+    for (auto i : UnitElement<dim>::template elems_ids<k>())
     {
-        n[i]=2+i;
-    }
-    auto grid = CartesianGrid<dim_domain>::create(n);
-    auto space = space_t::create(degree, grid);
 
-
-
-    vector<Index> dof_map;
-
-    for (int i = 0; i < UnitElement<dim_domain>::faces_per_element; ++i)
-    {
         out << "Face space: " << i << endl;
-        auto face_space = space->get_face_space(i, dof_map);
-        face_space->print_info(out);
+        auto sub_space =
+                space->template get_ref_sub_space<k>(i, dof_map, elem_map);
+        sub_space->print_info(out);
 
         out << "Dofs face to space mapping: " << endl;
         dof_map.print_info(out);
@@ -65,9 +61,10 @@ int main()
 {
     //out.depth_console(10);
 
-    run_test<1,1,1>();
-    run_test<2,1,1>();
-    run_test<3,1,1>();
+    run_test<0,1>(TensorSize<1>(arr::sequence<1>(2)));
+    run_test<1,2>(TensorSize<2>(arr::sequence<2>(2)));
+    //run_test<1,2,3>(TensorSize<2>(arr::sequence<2>(2)));
+    run_test<2,3>(TensorSize<3>(arr::sequence<3>(2)));
 
     return  0;
 }

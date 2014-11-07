@@ -160,8 +160,6 @@ private:
 
     std::array<FunctionFlags, dim + 1> flags_;
 
-    //QuadList<dim> quad_;
-
     template <class T>
     using DirectionTable = CartesianProductArray<T, dim_>;
     using BasisValues = ComponentContainer<BasisValues1d>;

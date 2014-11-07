@@ -69,33 +69,6 @@ public:
     using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;
 
 
-#if 0
-private:
-    /** Type for the given order derivatives of the
-     *  the mapping. */
-    template<int order>
-    using Derivative = typename MapType::template Derivative<order>;
-
-public:
-    /** Type for the diferent order derivatives of the inverse of
-     * the mapping
-     */
-    template<int order>
-    using InvDerivative = Derivatives<space_dim, dim, 1, order>;
-
-
-    /** Type of the mapping evaluation point. */
-    using Point = typename MapType::Point;
-
-    /** Type of the mapping return value. */
-    using Value = typename MapType::Value;
-
-    /** Type of the mapping gradient. */
-    using Gradient = typename MapType::Gradient;
-
-    /** Typedef for the mapping hessian. */
-    using Hessian = typename MapType::Hessian;
-#endif
 public:
 
     NewPushForward(std::shared_ptr<FuncType> F);

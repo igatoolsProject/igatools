@@ -186,24 +186,59 @@ end() const -> ElementIterator
                            IteratorState::pass_the_end);
 }
 
-#if 0
+
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
-get_ref_sub_space(const int sub_elem_id,
+NewBSplineSpace<dim_, range_, rank_>::
+get_ref_sub_space(const int s_id,
                   InterSpaceMap<k> &dof_map,
                   InterGridMap<k>  &elem_map) const
--> std::shared_ptr<NewBSplineSpace<k, range, rank> >
+-> std::shared_ptr<SubRefSpace<k> >
 {
-    auto sub_grid   = this->get_grid()->template get_sub_grid<k>(sub_elem_id, elem_map);
-    auto face_mult   = this->get_face_mult(face_id);
-    auto face_degree = this->get_face_degree(face_id);
+    auto sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+    auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
+    auto sub_degree = this->template get_sub_space_degree<k>(s_id);
 
-    auto f_space = RefFaceSpace::create(face_degree, face_grid, face_mult);
+    auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);
 
-    return f_space;
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
+
+    // Crating the mapping between the space degrees of freedom
+    const auto &active_dirs = k_elem.active_directions;
+    const int n_dir = k_elem.constant_directions.size();
+
+    TensorIndex<dim> tensor_index;
+    int comp_i = 0;
+    dof_map.resize(sub_space->get_num_basis());
+    for (auto comp : components)
+    {
+        const int n_basis = sub_space->get_num_basis(comp);
+        const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
+
+        for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
+        {
+            const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
+
+            for (int j=0; j<k; ++j)
+                tensor_index[active_dirs[j]] =  sub_base_id[j];
+            for (int j=0; j<n_dir; ++j)
+            {
+                auto dir = k_elem.constant_directions[j];
+                auto val = k_elem.constant_values[j];
+                const int fixed_id = val * (this->get_num_basis(comp, dir) - 1);
+                tensor_index[dir] = fixed_id;
+
+            }
+            dof_map[comp_i] = elem_global_indices(tensor_index);
+        }
+
+    }
+
+    return sub_space;
 }
-#endif
+
 
 #if 0
 template<int dim_, int range_, int rank_>
@@ -462,4 +497,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/basis_functions/new_bspline_space.inst>
+#include <igatools/basis_functions/new_bspline_space.inst>

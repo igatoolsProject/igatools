@@ -244,7 +244,7 @@ public:
 
 private:
     NewPhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                     std::shared_ptr<MapFunc> push_forward);
+                     std::shared_ptr<MapFunc>  map_func);
 
 
     std::shared_ptr<RefSpace> ref_space_;

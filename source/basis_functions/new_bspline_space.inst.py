@@ -26,7 +26,16 @@ include_files = ['geometry/cartesian_grid_element.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-spaces = ['NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-          for x in inst.really_all_ref_sp_dims ]
-for sp in spaces:
-   f.write('template class %s ;\n' %sp)
+k_members = ['std::shared_ptr<typename class::template SubRefSpace<k>> ' + 
+             'class::get_ref_sub_space<k>(const int sub_elem_id, ' +
+             'InterSpaceMap<k> &dof_map, InterGridMap<k> &elem_map) const;']
+
+
+for x in inst.really_all_ref_sp_dims:
+    space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+    for fun in k_members:
+        for k in range(max(0, x.dim - inst.n_sub_element), x.dim + 1):
+            s = fun.replace('class', space).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')
+                        

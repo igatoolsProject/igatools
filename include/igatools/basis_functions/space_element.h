@@ -479,7 +479,7 @@ protected:
          * as specify by the flag
          */
         void resize(const FunctionFlags &flags_handler,
-                    const Quadrature<dim> &quad,
+                    const Size total_n_points,
                     const SpaceDimensionTable &n_basis);
 
 

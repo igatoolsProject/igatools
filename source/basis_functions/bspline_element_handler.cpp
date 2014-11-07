@@ -270,8 +270,8 @@ init_cache(ElementAccessor &elem)
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        auto &quad = std::get<k>(this->quad_);
-        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id), n_basis);
+        //auto &quad = std::get<k>(this->quad_);
+        s_cache.resize(flags_[k], elem.template get_num_points<k>(s_id), n_basis);
     }
 }
 

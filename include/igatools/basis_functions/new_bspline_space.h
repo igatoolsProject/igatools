@@ -295,6 +295,11 @@ public:
     template <int k>
     using InterSpaceMap = vector<Index>;
 
+    template <int k>
+    using SubRefSpace = NewBSplineSpace<k, range, rank>;
+
+//    template <int k>
+//    using SubSpace = NewBSplineSpace<k, range, rank>;
     /**
      * Construct a sub space of dimension k conforming to
      * the subspace sub element sub_elem_id and a map from the elements of
@@ -302,7 +307,7 @@ public:
      * grid.
      */
     template<int k>
-    std::shared_ptr<NewBSplineSpace<k, range, rank> >
+    std::shared_ptr<SubRefSpace<k>>
     get_ref_sub_space(const int sub_elem_id,
                       InterSpaceMap<k> &dof_map,
                       InterGridMap<k> &elem_map) const;
