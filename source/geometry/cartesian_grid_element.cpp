@@ -28,57 +28,6 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
-
-//template<class Func, class Tuple, std::size_t N, std::size_t Min>
-//struct TupleFunc {
-//    static void apply_func(Func &F, const Tuple& t)
-//    {
-//        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
-//        if (N>Min)
-//            F.func(std::get<N-1>(t));
-//    }
-//};
-//
-//template<class Func, class Tuple, std::size_t N>
-//struct TupleFunc<Func, Tuple, N, N>
-//{
-//    static void apply_func(Func &F, const Tuple& t)
-//    {
-//        F.func(std::get<N>(t));
-//    }
-//};
-//
-//
-
-
-
-//namespace
-//{
-//struct PrintCacheFunc
-//{
-//    PrintCacheFunc(LogStream &out1)
-//    :out(out1)
-//    {}
-//
-//    void func(const auto &c)
-//    {
-//        for (auto &e : c)
-//            e.print_info(out);
-//        out << endl;
-//    }
-//    LogStream &out;
-//};
-//
-//template<class... Args>
-//void print_caches(const std::tuple<Args...>& t, LogStream &out)
-//{
-//    PrintCacheFunc f(out);
-//    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
-//}
-//};
-
-
-
 template <int dim_>
 CartesianGridElement<dim_>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
@@ -540,6 +489,18 @@ get_points(const int j) const ->ValueVector<Point>
 }
 
 
+
+template <int dim_>
+template <int k>
+auto
+CartesianGridElement<dim_>::
+get_num_points(const int j) const -> Size
+{
+    const auto &cache =  local_cache_->template get_value_cache<k>(j);
+
+    Assert(cache.is_initialized(), ExcNotInitialized());
+    return cache.unit_weights_.size();
+}
 
 //template <int dim_>
 //auto

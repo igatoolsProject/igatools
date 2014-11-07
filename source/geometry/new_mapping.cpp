@@ -65,7 +65,6 @@ reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
 
 
 
-
 template<int dim, int codim>
 template <int k>
 auto
@@ -75,7 +74,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     F_->template fill_cache(elem, j, Int<k>());
 
     // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
-    const auto n_points = elem.template get_points<k>(j).size();
+    const auto n_points = elem.template get_num_points<k>(j);
 
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
     auto &flags = cache.flags_handler_;
@@ -85,7 +84,6 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         const auto &DF = elem.template get_values<1, k>(j);
         for (int i=0; i<n_points; ++i)
             cache.measures_[i] = determinant<dim,space_dim>(DF[i]);
-
     }
 
     if (flags.fill_w_measures())
@@ -124,8 +122,8 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     }
 
     cache.set_filled(true);
-
 }
+
 
 
 template<int dim, int codim>
@@ -146,7 +144,7 @@ init_cache(ElementAccessor &elem) -> void
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        const auto n_points = elem.template get_points<k>(s_id).size();
+        const auto n_points = elem.template get_num_points<k>(s_id);
         s_cache.resize(flags_[k], n_points);
     }
 

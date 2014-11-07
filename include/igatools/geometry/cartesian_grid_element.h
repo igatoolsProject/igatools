@@ -25,7 +25,7 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/new_flags_handler.h>
 #include <igatools/base/quadrature.h>
-#include <igatools/geometry/topology.h>
+
 
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/grid_forward_iterator.h>
@@ -150,6 +150,7 @@ public:
     /** Returns the index of the element in its tensor representation. */
     TensorIndex<dim> get_tensor_index() const;
     ///@}
+
 
 
     bool is_influence() const;
@@ -294,6 +295,8 @@ public:
     template <int k = dim>
     ValueVector<Point> get_points(const int j = 0) const;
 
+    template <int k = dim>
+    Size get_num_points(const int j = 0) const;
 public:
 //    /**
 //     * Return a const reference to the one-dimensional container with the

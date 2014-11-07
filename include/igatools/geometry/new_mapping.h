@@ -93,7 +93,6 @@ public:
 
 
 public:
-
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
@@ -125,7 +124,7 @@ private:
     std::shared_ptr<FuncType> F_;
 
     std::array<MappingFlags, dim + 1> flags_;
-//    Quadrature<dim> quad_;
+
     friend ElementAccessor;
 };
 
