@@ -1,28 +1,101 @@
-face: 0
-Multiplicity:
-Size: [ 2 ]  Weights: [2]
-Direction: 0
-[ 1 1 ]
-Degree:
-[3]
-face: 1
-Multiplicity:
-Size: [ 2 ]  Weights: [2]
-Direction: 0
-[ 1 1 ]
-Degree:
-[3]
-face: 2
-Multiplicity:
-Size: [ 1 ]  Weights: [1]
-Direction: 0
-[ 1 ]
-Degree:
-[1]
-face: 3
-Multiplicity:
-Size: [ 1 ]  Weights: [1]
-Direction: 0
-[ 1 ]
-Degree:
-[1]
+========================================================================
+void sub_space(const iga::TensorSize<rank>&, const iga::TensorIndex<rank_>&) [with int k = 1; int dim = 2; int range = 1; int rank = 1]
+========================================================================
+Sub element id: 0
+   Multiplicity
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Size: [ 2 ]  Weights: [2]
+         Direction: 0
+         [ 1 1 ]
+         
+      
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Degree
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ [3] ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+
+Sub element id: 1
+   Multiplicity
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Size: [ 2 ]  Weights: [2]
+         Direction: 0
+         [ 1 1 ]
+         
+      
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Degree
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ [3] ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+
+Sub element id: 2
+   Multiplicity
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Size: [ 1 ]  Weights: [1]
+         Direction: 0
+         [ 1 ]
+         
+      
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Degree
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ [1] ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+
+Sub element id: 3
+   Multiplicity
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Size: [ 1 ]  Weights: [1]
+         Direction: 0
+         [ 1 ]
+         
+      
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Degree
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ [1] ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+
+========================================================================
+

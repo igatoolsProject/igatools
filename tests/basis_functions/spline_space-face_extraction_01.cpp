@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the SplineSpace class face subspace extraction function.
- *  Here we print the information of the face spaces thus extracted.
+ *  Test for the SplineSpace class  subspace extraction facilities.
+ *  get_sub_space_mult and get_sub_space_degree
  *
  *  author: pauletti
- *  date:
+ *  date: 2014-11-07
  */
 
 #include "../tests.h"
@@ -30,31 +30,32 @@
 #include <igatools/basis_functions/spline_space.h>
 
 
-template< int dim, int range, int rank >
-void run_test()
+template<int k, int dim, int range=1, int rank=1>
+void sub_space(const TensorSize<dim>& n_knots, const TensorIndex<dim>& degree)
 {
-    const int k=dim-1;
-
+    OUTSTART
     using SplineSpace = SplineSpace<dim, range, rank>;
-    auto grid = CartesianGrid<dim>::create({3,4});
-    typename SplineSpace::DegreeTable deg {{1,3}};
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    typename SplineSpace::DegreeTable deg {degree};
     SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
 
     for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        out << "face: " << s_id << endl;
+        out.begin_item("Sub element id: " + std::to_string(s_id));
 
-        out << "Multiplicity:\n";
-        auto f_mult = space.template get_sub_space_mult<k>(s_id);
-        for (auto x: *f_mult)
-            x.print_info(out);
+        out.begin_item("Multiplicity");
+        auto sub_mult = space.template get_sub_space_mult<k>(s_id);
+        sub_mult->print_info(out);
+        out.end_item();
 
-        out << "Degree:\n";
-        auto f_deg = space.template get_sub_space_degree<k>(s_id);
-        for (auto x: f_deg)
-            out << x;
-        out << endl;
+        out.begin_item("Degree");
+        auto sub_deg = space.template get_sub_space_degree<k>(s_id);
+        sub_deg.print_info(out);
+        out.end_item();
+
+        out.end_item();
     }
+    OUTEND
 }
 
 
@@ -63,9 +64,7 @@ int main()
 {
     out.depth_console(10);
 
-//   run_test<1,1,1>();
-    run_test<2,1,1>();
-//   run_test<3,1,1>();
+    sub_space<1,2>(TensorSize<2>({3,4}), TensorIndex<2>({1,3}));
 
     return  0;
 }
