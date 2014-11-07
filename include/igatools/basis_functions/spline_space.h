@@ -63,9 +63,8 @@ private:
 public:
     using GridSpace::dims;
 
-//    using FaceSpace = Conditional<(dim>0),
-//          SplineSpace<dim-1, range, rank>,
-//          SplineSpace<    0, range, rank> >;
+
+
 
     using Func = NewFunction<dim, 0, range, rank>;
 
@@ -244,6 +243,18 @@ public:
     }
 
     ///@}
+
+    template<int k>
+    using SubSpace = SplineSpace<k, range, rank>;
+
+    template<int k>
+    std::shared_ptr<typename SubSpace<k>::MultiplicityTable>
+    get_sub_space_mult(const Index s_id) const;
+
+    template<int k>
+    typename SubSpace<k>::DegreeTable
+    get_sub_space_degree(const Index s_id) const;
+
 
 #if 0
     /**

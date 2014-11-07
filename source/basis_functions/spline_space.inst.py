@@ -23,7 +23,14 @@ from init_instantiation_data import *
 data = Instantiation()
 f = data.file_output
 inst = data.inst
-              
+
+k_members = ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
+             'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
+
 for x in inst.really_all_ref_sp_dims:
-    f.write('template class SplineSpace<%d, %d, %d> ;\n' 
-            %(x.dim, x.range, x.rank))
+    space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+    for fun in k_members:
+        for k in range(max(0, x.dim - inst.n_sub_element), x.dim + 1):
+            s = fun.replace('class', space).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')

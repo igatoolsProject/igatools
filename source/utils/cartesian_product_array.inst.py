@@ -33,7 +33,7 @@ for dim in inst.domain_dims:
     for t in types:
         row = 'CartesianProductArray<%s,%d>' %(t,dim)
         f.write('template class %s; \n' % (row))
-        for k in range(max(0,dim-1),dim):
+        for k in range(0, dim+1):
             f.write('template %s::SubProduct<%d> ' %(row, k) +
                     '%s::get_sub_product(const TensorIndex<%d> &index) const; \n'  %(row, k))
 matrix = 'DenseMatrix'

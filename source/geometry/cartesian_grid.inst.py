@@ -27,7 +27,7 @@ data = Instantiation(include_files)
 for dim in inst.domain_dims:
     grid = 'CartesianGrid<%d>' %(dim)
     f.write('template class %s; \n' % (grid))
-    for k in range(max(0,dim-1),dim):
+    for k in range(max(0,dim-inst.n_sub_element),dim+1):
         f.write('template std::shared_ptr<CartesianGrid<%d>> %s::get_sub_grid(const int sub_elem_id, InterGridMap<%d> &elem_map) const; \n' % (k,grid,k))
         f.write('template std::array<Points<%d>, %d> ' %(dim,dim-k) +
                 '%s::get_normal_space<%d>(const int j) const; \n' % (grid,dim-k))

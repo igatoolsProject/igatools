@@ -265,6 +265,50 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
 }
 
 
+template<int dim, int range, int rank>
+template<int k>
+auto
+SplineSpace<dim, range, rank>::
+get_sub_space_mult(const Index sub_elem_id) const
+-> std::shared_ptr<typename SubSpace<k>::MultiplicityTable >
+{
+    using SubMultT = typename SubSpace<k>::MultiplicityTable;
+    const auto &v_mult = *interior_mult_;
+
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    const auto &active_dirs = k_elem.active_directions;
+
+    auto sub_mult_ptr = make_shared<SubMultT> (v_mult.get_comp_map());
+    auto &sub_mult = *sub_mult_ptr;
+    for (int comp : sub_mult.get_active_components_id())
+    {
+        for (int j=0; j<k; ++j)
+            sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
+    }
+    return sub_mult_ptr;
+}
+
+
+template<int dim, int range, int rank>
+template<int k>
+auto
+SplineSpace<dim, range, rank>::
+get_sub_space_degree(const Index sub_elem_id) const
+-> typename SubSpace<k>::DegreeTable
+{
+    using SubDegreeT = typename SubSpace<k>::DegreeTable;
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    const auto &active_dirs = k_elem.active_directions;
+
+    SubDegreeT sub_degree(deg_.get_comp_map());
+
+    for (int comp : sub_degree.get_active_components_id())
+        for (int j=0; j<k; ++j)
+            sub_degree[comp][j] = deg_[comp][active_dirs[j]];
+
+    return sub_degree;
+}
+
 #if 0
 template<int dim, int range, int rank>
 auto

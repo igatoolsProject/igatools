@@ -18,8 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the BsplineSpace class face subspace extraction function.
+ *  Test for the SplineSpace class face subspace extraction function.
  *  Here we print the information of the face spaces thus extracted.
+ *
  *  author: pauletti
  *  date:
  */
@@ -32,22 +33,24 @@
 template< int dim, int range, int rank >
 void run_test()
 {
+    const int k=dim-1;
+
     using SplineSpace = SplineSpace<dim, range, rank>;
     auto grid = CartesianGrid<dim>::create({3,4});
     typename SplineSpace::DegreeTable deg {{1,3}};
     SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
 
-    for (auto  f : UnitElement<dim>::faces)
+    for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        out << "face: " << f << endl;
+        out << "face: " << s_id << endl;
 
         out << "Multiplicity:\n";
-        auto f_mult = space.get_face_mult(f);
+        auto f_mult = space.template get_sub_space_mult<k>(s_id);
         for (auto x: *f_mult)
             x.print_info(out);
 
         out << "Degree:\n";
-        auto f_deg = space.get_face_degree(f);
+        auto f_deg = space.template get_sub_space_degree<k>(s_id);
         for (auto x: f_deg)
             out << x;
         out << endl;
