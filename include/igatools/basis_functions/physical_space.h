@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #ifndef __PHYSICAL_SPACE_H_
 #define __PHYSICAL_SPACE_H_
 
@@ -258,4 +258,5 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#endif
 #endif

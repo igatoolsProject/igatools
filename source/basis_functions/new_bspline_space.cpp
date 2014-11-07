@@ -186,6 +186,24 @@ end() const -> ElementIterator
                            IteratorState::pass_the_end);
 }
 
+#if 0
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+get_ref_sub_space(const int sub_elem_id,
+                  InterSpaceMap<k> &dof_map,
+                  InterGridMap<k>  &elem_map) const
+-> std::shared_ptr<NewBSplineSpace<k, range, rank> >
+{
+    auto sub_grid   = this->get_grid()->template get_sub_grid<k>(sub_elem_id, elem_map);
+    auto face_mult   = this->get_face_mult(face_id);
+    auto face_degree = this->get_face_degree(face_id);
+
+    auto f_space = RefFaceSpace::create(face_degree, face_grid, face_mult);
+
+    return f_space;
+}
+#endif
 
 #if 0
 template<int dim_, int range_, int rank_>

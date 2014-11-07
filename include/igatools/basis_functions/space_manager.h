@@ -28,7 +28,7 @@
 #include <igatools/utils/concatenated_iterator.h>
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/new_physical_space.h>
 
 
 #include <igatools/contrib/variant.h>
@@ -50,9 +50,9 @@
 IGA_NAMESPACE_OPEN
 
 
-template<class RefSpace,class PushFwd>
-using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
-
+//template<class RefSpace, class PushFwd>
+//using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
+//
 
 /**
  * @brief The purpose of this class is to provide an unified way to access the dofs information provided

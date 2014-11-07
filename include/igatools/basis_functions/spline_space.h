@@ -23,7 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
-#include <igatools/base/function.h>
+#include <igatools/base/new_function.h>
+#include <igatools/base/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
@@ -62,11 +63,11 @@ private:
 public:
     using GridSpace::dims;
 
-    using FaceSpace = Conditional<(dim>0),
-          SplineSpace<dim-1, range, rank>,
-          SplineSpace<    0, range, rank> >;
+//    using FaceSpace = Conditional<(dim>0),
+//          SplineSpace<dim-1, range, rank>,
+//          SplineSpace<    0, range, rank> >;
 
-    using Func = Function<dim, range, rank>;
+    using Func = NewFunction<dim, 0, range, rank>;
 
 public:
     template <int order>

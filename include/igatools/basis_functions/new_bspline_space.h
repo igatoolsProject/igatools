@@ -288,7 +288,7 @@ public:
     ///@}
 
 
-#if 0
+
     template <int k>
     using InterGridMap = typename GridType::template InterGridMap<k>;
 
@@ -303,8 +303,11 @@ public:
      */
     template<int k>
     std::shared_ptr<NewBSplineSpace<k, range, rank> >
-    get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
+    get_ref_sub_space(const int sub_elem_id,
+                      InterSpaceMap<k> &dof_map,
+                      InterGridMap<k> &elem_map) const;
 
+#if 0
     /** Getting some underlying objects */
     ///@{
     std::shared_ptr<RefFaceSpace>

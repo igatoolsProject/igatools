@@ -25,7 +25,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
 
-
+#if 0
 IGA_NAMESPACE_OPEN
 
 /**
@@ -158,3 +158,4 @@ using TensorFunction = Function<dim, dim, 2>;
 IGA_NAMESPACE_CLOSE
 
 #endif /* __FUNCTIONS_H */
+#endif

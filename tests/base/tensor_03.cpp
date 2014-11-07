@@ -19,17 +19,18 @@
 //-+--------------------------------------------------------------------
 
 
+// TODO (pauletti, Nov 7, 2014): write header and update or delete
 #include "../tests.h"
 
 
-#include <igatools/base/function.h>
+#include <igatools/base/new_function.h>
+#include <igatools/base/function_element.h>
 
 
-
-int main(int argc, char *argv[])
+int main()
 {
     {
-        typedef Function< 1, 1, 1 > Func ;
+        typedef NewFunction< 1, 0, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 1, 1, 0 >::Value" << endl ;
         Func::Value v ;
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
 
 
     {
-        typedef Function< 2, 1, 1 > Func ;
+        typedef NewFunction< 2, 0, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 2, 1, 0 >::Value" << endl ;
         Func::Value v ;
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
 
 
     {
-        typedef Function< 2, 2, 1 > Func ;
+        typedef NewFunction< 2, 0, 2, 1 > Func ;
 
         out << "FunctionWithGradient< 2, 2, 1 >::Value" << endl ;
         Func::Value v ;
@@ -113,7 +114,7 @@ int main(int argc, char *argv[])
     }
 
     {
-        typedef Function< 2, 2, 2 > Func ;
+        typedef NewFunction< 2, 0, 2, 2 > Func ;
 
         out << "FunctionWithGradient< 2, 2, 2 >::Value" << endl ;
         Func::Value v ;
@@ -149,7 +150,7 @@ int main(int argc, char *argv[])
     }
 
     {
-        typedef Function< 3, 1, 1 > Func ;
+        typedef NewFunction< 3, 0, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 3, 1, 0 >::Value" << endl ;
         Func::Value v ;
@@ -179,7 +180,7 @@ int main(int argc, char *argv[])
 
 
     {
-        typedef Function< 3, 3, 1 > Func ;
+        typedef NewFunction< 3, 0, 3, 1 > Func ;
 
         out << "FunctionWithGradient< 3, 3, 0 >::Value" << endl ;
         Func::Value v ;
@@ -217,7 +218,7 @@ int main(int argc, char *argv[])
 
 
     {
-        typedef Function< 3, 3, 2 > Func ;
+        typedef NewFunction< 3, 0, 3, 2 > Func ;
 
         out << "FunctionWithGradient< 3, 3, 2 >::Value" << endl ;
         Func::Value v ;

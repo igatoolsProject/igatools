@@ -1,4 +1,0 @@
-ValueVector (num_points=2) : [ [ 0 0 ]  [ 1.00000 0 ]  ]
-ValueVector (num_points=2) : [ [ 0 1.00000 ]  [ 2.00000 1.00000 ]  ]
-ValueVector (num_points=2) : [ [ 0 0 0 ]  [ 1.00000 0 0 ]  ]
-ValueVector (num_points=2) : [ [ 0 1.00000 2.00000 ]  [ 2.00000 1.00000 2.00000 ]  ]

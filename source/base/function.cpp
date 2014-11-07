@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+#if 0
 
 #include <igatools/base/function.h>
 #include <igatools/base/exceptions.h>
@@ -64,4 +65,4 @@ evaluate_values_and_gradients(
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/function.inst>
-
+#endif
