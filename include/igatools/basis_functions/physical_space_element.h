@@ -44,6 +44,7 @@ public :
     using parent_t = SpaceElement<PhysSpace>;
     // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
+    using parent_t::get_values;
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const PhysSpace;

@@ -161,8 +161,8 @@ SpaceElementHandler<PhysSpace>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-    RefSpaceElementHandler::template init_cache<k>(ref_elem);
-    PFCache::template init_cache<k>(elem);
+    RefSpaceElementHandler::template fill_cache<k>(ref_elem, j);
+    PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     Assert(local_cache != nullptr, ExcNullPtr());

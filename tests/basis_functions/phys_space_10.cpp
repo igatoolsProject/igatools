@@ -45,7 +45,7 @@ void cache_init(const NewValueFlags flag,
 
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space    = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
-
+    using ElementHandler = typename Space::ElementHandler;
     auto grid      = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
 
@@ -65,7 +65,7 @@ void cache_init(const NewValueFlags flag,
     auto space = Space::create(ref_space, map_func);
 
 
-    typename Space::ElementHandler sp_values(space);
+    ElementHandler sp_values(space);
     sp_values.template reset<dim> (flag, quad);
     sp_values.print_info(out);
 
@@ -73,15 +73,17 @@ void cache_init(const NewValueFlags flag,
 }
 
 
-#if 0
+
 template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init_elem(const NewValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
+	const int k = dim;
     OUTSTART
 
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
@@ -98,13 +100,14 @@ void cache_init_elem(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, flag, quad, A, b);
+    auto map_func = Function::create(grid, A, b);
     auto space = Space::create(ref_space, map_func);
 
-    typename Space::ElementHandler sp_values(space, flag, quad);
+    ElementHandler sp_values(space);
+    sp_values.template reset<dim> (flag, quad);
 
     auto elem = space->begin();
-    sp_values.init_element_cache(elem);
+    sp_values.template init_cache<k>(elem);
     elem->print_cache_info(out);
 
     OUTEND
@@ -117,8 +120,10 @@ void cache_fill_elem(const NewValueFlags flag,
 {
     OUTSTART
 
+	const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
@@ -135,17 +140,18 @@ void cache_fill_elem(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, NewValueFlags::none, quad, A, b);
+    auto map_func = Function::create(grid, A, b);
     auto space = Space::create(ref_space, map_func);
 
-    typename Space::ElementHandler sp_values(space, flag, quad);
+    ElementHandler sp_values(space);
+    sp_values.template reset<dim> (flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    sp_values.template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
+        sp_values.template fill_cache<k>(elem, 0);
         elem->print_cache_info(out);
     }
 
@@ -159,9 +165,10 @@ void cache_get_elem_values(const NewValueFlags flag,
                            const int n_knots = 5, const int deg=1)
 {
     OUTSTART
-
+	const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
@@ -178,33 +185,34 @@ void cache_get_elem_values(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, NewValueFlags::none, quad, A, b);
+    auto map_func = Function::create(grid, A, b);
     auto space = Space::create(ref_space, map_func);
 
-    typename Space::ElementHandler sp_values(space, flag, quad);
+    ElementHandler sp_values(space);
+    sp_values.template reset<dim> (flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    sp_values.template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
-        elem->get_basis_values().print_info(out);
+        sp_values.template fill_cache<k>(elem,0);
+        elem->template get_values<0, k>().print_info(out);
     }
 
     OUTEND
 }
 
-#endif
+
 
 int main()
 {
     out.depth_console(10);
 
     cache_init<1>(NewValueFlags::value);
-//    cache_init_elem<1>(NewValueFlags::value);
-//    cache_fill_elem<1>(NewValueFlags::value);
-//    cache_get_elem_values<1>(NewValueFlags::value);
+    cache_init_elem<1>(NewValueFlags::value);
+    cache_fill_elem<1>(NewValueFlags::value);
+    cache_get_elem_values<1>(NewValueFlags::value);
 
     return  0;
 }
