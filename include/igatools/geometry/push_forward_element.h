@@ -70,13 +70,14 @@ public:
     }
 
 
-    template <int range, int rank, Transformation ttype=type_>
+    template <int range, int rank, int k, Transformation ttype=type_>
     void
     transform_1(const std::tuple<
                 ValueContainer<RefValue<range, rank>>,
                 ValueContainer<RefDerivative<range, rank, 1>>> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
+				const int s_id,
                 EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         const auto &Dv_hat = std::get<1>(ref_values);
@@ -86,7 +87,7 @@ public:
         auto Dv_it     = Dv.begin();
         auto Dv_hat_it = Dv_hat.cbegin();
 
-        const auto &DF_inv = this->get_inverse_gradients();
+        const auto &DF_inv = this->template get_inverse_values<1,k>(s_id);
         for (int i_fn = 0; i_fn < n_func; ++i_fn)
             for (Index j_pt = 0; j_pt < n_points; ++j_pt)
             {
@@ -97,7 +98,7 @@ public:
     }
 
 
-    template <int range, int rank, Transformation ttype=type_>
+    template <int range, int rank, int k, Transformation ttype=type_>
     void
     transform_2(const std::tuple<
                 ValueContainer<RefValue<range, rank>>,
@@ -107,6 +108,7 @@ public:
                 ValueContainer<PhysValue<range, rank>>,
                 ValueContainer<PhysDerivative<range, rank, 1>>> &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
+				const int s_id,
                 EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         const auto &D2v_hat = std::get<2>(ref_values);
@@ -117,8 +119,8 @@ public:
         auto D2v_it     = D2v.begin();
         auto D1v_it     = D1v.cbegin();
         auto D2v_hat_it = D2v_hat.cbegin();
-        const auto D2F     = this->get_hessians();
-        const auto &DF_inv = this->get_inverse_gradients();
+        const auto D2F     =  this->template get_values<2,k>(s_id);
+        const auto &DF_inv =  this->template get_inverse_values<1,k>(s_id);
 
         for (int i_fn = 0; i_fn < n_func; ++i_fn)
             for (Index j_pt = 0; j_pt < n_points; ++j_pt)

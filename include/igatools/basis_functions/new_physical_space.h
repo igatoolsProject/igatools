@@ -84,7 +84,7 @@ public:
     using BCTable = typename RefSpace::BCTable;
 
 public:
-    using Func = NewFunction<space_dim, codim, range, rank>;
+    using Func = NewFunction<dim, codim, range, rank>;
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
     using Point = typename Func::Point;

@@ -74,7 +74,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     F_->template fill_cache(elem, j, Int<k>());
 
     // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
-    const auto n_points = elem.template get_num_points<k>(j);
+    const auto n_points = F_->template get_num_points<k>();
 
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
     auto &flags = cache.flags_handler_;
@@ -97,7 +97,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     if (flags.fill_inv_gradients())
     {
         const auto &DF = elem.template get_values<1, k>(j);
-        auto &D_invF = std::get<1>(cache.inv_derivatives_);
+        auto &D_invF = cache.template get_inv_values<1>();
         for (int i=0; i<n_points; ++i)
             inverse<dim, space_dim>(DF[i], D_invF[i]);
     }
@@ -106,8 +106,8 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     {
         const auto &D1_F = elem.template get_values<1, k>(j);
         const auto &D2_F = elem.template get_values<2, k>(j);
-        const auto &D1_invF = std::get<1>(cache.inv_derivatives_);
-        auto &D2_invF = std::get<2>(cache.inv_derivatives_);
+        const auto &D1_invF = cache.template get_inv_values<1>();
+        auto &D2_invF       = cache.template get_inv_values<2>();
 
         for (int i=0; i<n_points; ++i)
             for (int u=0; u<dim; ++u)
@@ -144,7 +144,7 @@ init_cache(ElementAccessor &elem) -> void
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        const auto n_points = elem.template get_num_points<k>(s_id);
+        const auto n_points = F_->template get_num_points<k>();
         s_cache.resize(flags_[k], n_points);
     }
 

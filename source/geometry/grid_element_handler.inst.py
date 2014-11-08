@@ -31,7 +31,8 @@ for row in cartesian_grids:
 
 k_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j);',
              'void GridElementHandler<dim>::init_cache<k>(ElementAccessor &elem);',
-             'void GridElementHandler<dim>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+             'void GridElementHandler<dim>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);',
+             'Size GridElementHandler<dim>::get_num_points<k>() const;']
 for dim in inst.domain_dims:
     for fun in k_members:
         for k in range(dim, max(0,dim-inst.n_sub_element) - 1, -1):

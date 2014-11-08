@@ -41,7 +41,7 @@ k_members = ['void NewMapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, con
 
 for row in inst.all_mapping_dims:
     for fun in k_members:
-        for k in range(row.dim, max(0,row.dim-inst.n_sub_element) - 1, -1):
+        for k in range(max(0,row.dim-inst.n_sub_element), row.dim+1):
             s = fun.replace('dim','%d' %row.dim).replace('k','%d' %(k)).replace('cod','%d' %row.codim);
             f.write('template ' + s + '\n')
  

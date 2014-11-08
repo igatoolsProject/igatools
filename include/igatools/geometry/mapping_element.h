@@ -64,7 +64,7 @@ public:
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-        return cache.template get_der<order>();
+        return cache.template get_inv_values<order>();
     }
 
 
@@ -84,9 +84,9 @@ private:
             if (flags_handler_.fill_w_measures())
                 w_measures_.resize(n_points);
             if (flags_handler_.fill_inv_gradients())
-                std::get<1>(inv_derivatives_).resize(n_points);
+                std::get<1>(inv_values_).resize(n_points);
             if (flags_handler_.fill_inv_hessians())
-                std::get<2>(inv_derivatives_).resize(n_points);
+                std::get<2>(inv_values_).resize(n_points);
 
             set_initialized(true);
         }
@@ -97,6 +97,19 @@ private:
             measures_.print_info(out);
         }
 
+
+        template<int k>
+        auto &get_inv_values()
+        {
+        	return std::get<k>(inv_values_);
+        }
+
+        template<int k>
+        const auto &get_inv_values() const
+        {
+        	return std::get<k>(inv_values_);
+        }
+
         MappingFlags flags_handler_;
 
         ValueVector<Real> measures_;
@@ -104,7 +117,7 @@ private:
 
         std::tuple<ValueVector<InvDerivative<0>>,
         ValueVector<InvDerivative<1>>,
-        ValueVector<InvDerivative<2>>> inv_derivatives_;
+        ValueVector<InvDerivative<2>>> inv_values_;
 
 
     };

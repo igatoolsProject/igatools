@@ -35,7 +35,15 @@ for row in inst.all_mapping_dims:
     f.write(s)
     s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
     f.write(s)
-   
+
+k_members = ['void NewPushForward<Transformation::h_grad,dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+
+for row in inst.all_mapping_dims:
+    for fun in k_members:
+        for k in range(max(0,row.dim-inst.n_sub_element), row.dim+1):
+            s = fun.replace('dim','%d' %row.dim).replace('k','%d' %(k)).replace('cod','%d' %row.codim);
+            f.write('template ' + s + '\n')
+            
 s = 'template class NewPushForward<Transformation::h_grad, 0,0> ;\n' 
 f.write(s)      
 s = 'template class PushForwardElement<Transformation::h_grad, 0,0> ;\n'

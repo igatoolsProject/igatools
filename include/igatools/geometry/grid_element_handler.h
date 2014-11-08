@@ -98,9 +98,9 @@ public:
     }
 
     template <int k = dim>
-    Size get_num_points(const int j = 0) const
+    Size get_num_points() const
     {
-        return std::get<k>(quad_)[j].get_num_points();
+        return std::get<k>(quad_).get_num_points();
     }
 
 public:

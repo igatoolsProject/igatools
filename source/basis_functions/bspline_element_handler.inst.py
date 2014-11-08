@@ -20,7 +20,7 @@
 
 from init_instantiation_data import *
 
-include_files = ['../../source/basis_functions/new_bspline_space.cpp',
+include_files = ['basis_functions/new_bspline_space.h',
                  '../../source/basis_functions/bspline_element.cpp',
                  '../../source/geometry/grid_forward_iterator.cpp'
                  ]

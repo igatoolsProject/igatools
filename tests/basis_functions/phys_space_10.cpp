@@ -65,7 +65,8 @@ void cache_init(const NewValueFlags flag,
     auto space = Space::create(ref_space, map_func);
 
 
-    typename Space::ElementHandler sp_values(space, flag, quad);
+    typename Space::ElementHandler sp_values(space);
+    sp_values.template reset<dim> (flag, quad);
     sp_values.print_info(out);
 
     OUTEND

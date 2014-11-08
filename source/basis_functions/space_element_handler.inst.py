@@ -40,3 +40,12 @@ for space in inst.PhysSpaces_v2:
     f.write('template class SpaceElementHandler<%s>; \n' %phys_sp)
     f.write('template class PhysicalSpaceElement<%s>; \n' %phys_sp)
     f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' %phys_sp)
+    
+    elemhandler = 'SpaceElementHandler<%s>' %phys_sp
+    k_members = ['void %s::fill_cache<k>(ElementAccessor &elem, const int j);' %elemhandler,
+                 'void %s::init_cache<k>(ElementAccessor &elem);' %elemhandler,
+                 'void %s::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);' %elemhandler]
+    for fun in k_members:
+        for k in range(max(0, x.dim - inst.n_sub_element), x.dim + 1):
+            s = fun.replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')        

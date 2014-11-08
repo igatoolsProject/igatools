@@ -62,15 +62,12 @@ public :
 
     /** Type for the quadrature scheme. */
     using QuadratureType = Quadrature<dim>;
+
 #if 0
-    using QuadratureFaceType = Quadrature<dim-1>;
-
-    static const Size n_faces = UnitElement<dim>::n_faces;
-
-
     using Value = typename PhysSpace::Value;
     using PhysPoint = typename PhysSpace::Point;
     using RefPoint = typename RefSpace::Point;
+
 
     using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
 

@@ -480,7 +480,7 @@ protected:
          */
         void resize(const FunctionFlags &flags_handler,
                     const Size total_n_points,
-                    const SpaceDimensionTable &n_basis);
+                    const Size n_basis);
 
 
         /** Returns the divergences. */

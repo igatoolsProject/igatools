@@ -146,7 +146,7 @@ init_cache(ElementAccessor &elem)
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        const auto n_points = elem.template get_num_points<k>(s_id);
+        const auto n_points = this->template get_num_points<k>();
 
         s_cache.resize(flags_[k], n_points, n_basis);
     }
@@ -164,15 +164,16 @@ fill_cache(ElementAccessor &elem, const int j)
     RefSpaceElementHandler::template init_cache<k>(ref_elem);
     PFCache::template init_cache<k>(elem);
 
-    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
+    auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
+    Assert(local_cache != nullptr, ExcNullPtr());
+    auto &cache =  local_cache->template get_value_cache<k>(j);
 
     auto &flags = cache.flags_handler_;
 
     if (flags.fill_values())
     {
         auto &result = cache.template get_der<0>();
-        const auto &ref_values = ref_elem.template get_basis_ders<0,k>(j);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j);
         elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
@@ -180,26 +181,26 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_gradients())
     {
-        const auto &ref_values = ref_elem.template get_basis_ders<0,k>(j);
-        const auto &ref_der_1  = ref_elem.template get_basis_ders<1,k>(j);
-        const auto &values = elem.template get_der<0>();
-        elem.template transform_1<PhysSpace::range,PhysSpace::rank>
+        const auto &ref_values = ref_elem.template get_values<0,k>(j);
+        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j);
+        const auto &values = cache.template get_der<0>();
+        elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
-         cache.template get_der<1>());
+         cache.template get_der<1>(), j);
 
         flags.set_gradients_filled(true);
     }
     if (flags.fill_hessians())
     {
-        const auto &ref_values = ref_elem.template get_basis_ders<0,k>(j);
-        const auto &ref_der_1  = ref_elem.template get_basis_ders<1,k>(j);
-        const auto &ref_der_2  = ref_elem.template get_basis_ders<2,k>(j);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j);
+        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j);
+        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j);
         const auto &values = cache.template get_der<0>();
         const auto &der_1  = cache.template get_der<1>();
-        elem.template transform_2<PhysSpace::range,PhysSpace::rank>
+        elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1, ref_der_2),
          std::make_tuple(values,der_1),
-         cache.template get_der<2>());
+         cache.template get_der<2>(), j);
 
         flags.set_hessians_filled(true);
     }

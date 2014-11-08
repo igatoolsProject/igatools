@@ -35,8 +35,7 @@ k_members = [
              'const typename CartesianGridElement<dim>::Point &CartesianGridElement<dim>::get_coordinate_lengths<k>(const int j) const;',
              'ValueVector<typename CartesianGridElement<dim>::Point> CartesianGridElement<dim>::get_points<k>(const int j) const;',
              'bool CartesianGridElement<dim>::is_boundary<k>(const Index sub_elem_id) const;',
-             'bool CartesianGridElement<dim>::is_boundary<k>() const;',
-             'Size CartesianGridElement<dim>::get_num_points<k>(const int j) const;']
+             'bool CartesianGridElement<dim>::is_boundary<k>() const;']
 for dim in inst.domain_dims:
     for fun in k_members:
         for k in range(dim, max(0,dim-inst.n_sub_element) - 1, -1):
