@@ -17,180 +17,144 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for the physical space element accessor when is used IgMapping on a coarser mesh.
- *  The mesh for the IgMapping is made by one element (i.e. 2 knots) in each direction.
- *  The mesh for the BSplineSpace is made by two element (i.e. 3 knots) in each direction.
  *
- *  author: martinelli
- *  date: 2013-07-05
+ *  Test for the evaluation of physical space basis functions
+ *  values and gradients with an ig function for the map
+ *  author:
+ *  date: 2014-11-08
  *
  */
-// TODO (pauletti, Oct 9, 2014): this test description is wrong for the test itself
+
 #include "../tests.h"
 
-#include <igatools/geometry/ig_mapping.h>
+#include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/linear_algebra/dof_tools.h>
-#include <igatools/geometry/push_forward.h>
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/space_uniform_quad_cache.h>
-
-using std::shared_ptr;
-
-template <int dim>
-using RefSpace_t = BSplineSpace<dim,dim,1>  ;
-
-template <int dim>
-using PushForward_t = PushForward< Transformation::h_grad,dim,0> ;
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/space_element_handler.h>
 
 
-template <int dim>
-using PhysicalSpace_t = PhysicalSpace< RefSpace_t<dim>, PushForward_t<dim> > ;
-
-
-
-template <int dim>
-shared_ptr< IgMapping< RefSpace_t<dim> > >
-create_mapping(shared_ptr<RefSpace_t<dim>> bspline_space)
+template<int dim, int codim=0>
+auto
+create_function(shared_ptr<NewBSplineSpace<dim, dim + codim>> space)
 {
-    // bspline_space->print_info(out) ;
+	using Space = NewBSplineSpace<dim, dim + codim>;
+    using Function = IgFunction<Space>;
 
-    vector<Real> control_pts(bspline_space->get_num_basis());
-
+    typename Function::CoeffType control_pts(space->get_num_basis());
     if (dim == 1)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
-    }
-    else if (dim == 2)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+        {
+            int id = 0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
+        }
+        else if (dim == 2)
+        {
+            int id = 0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-    }
-    else if (dim == 3)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 1.0 ;
+            control_pts(id++) = 1.0 ;
+        }
+        else if (dim == 3)
+        {
+            int id = 0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 1.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 1.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 0.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+            control_pts(id++) = 0.0 ;
+            control_pts(id++) = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 1.0 ;
+            control_pts(id++) = 1.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+            control_pts(id++) = 1.0 ;
+            control_pts(id++) = 1.0 ;
 
-    }
+        }
 
-    return shared_ptr< IgMapping< RefSpace_t<dim> > >(new IgMapping< RefSpace_t<dim> >(bspline_space, control_pts)) ;
+    return Function::create(space, control_pts);
 }
 
 
 
-template <int dim>
-void test_evaluate()
+template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
+void elem_values(const int n_knots = 2, const int deg=1)
 {
+	const int k = dim;
+	using RefSpace = NewBSplineSpace<dim, range, rank>;
+	using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+	using ElementHandler = typename Space::ElementHandler;
 
-    const int num_knots = 2 ;
-    out << "Dim: " << dim << endl ;
-    const int p = 1 ;
-    auto knots = CartesianGrid<dim>::create(num_knots);
+	auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = RefSpace_t<dim>::create(p, knots);
-    auto map = create_mapping<dim>(ref_space);
-    auto push_forward=PushForward_t<dim>::create(map);
+	auto ref_space = RefSpace::create(deg, grid);
+	auto map_func = create_function(ref_space);
 
-    auto ref_space1 = RefSpace_t<dim>::create(p, knots);
-    auto physical_space = PhysicalSpace_t<dim>::create(ref_space1, push_forward) ;
+	auto space = Space::create(ref_space, map_func);
 
+	const int n_qp = 3;
+	auto quad = QGauss<k>(n_qp);
 
-    auto element = physical_space->begin() ;
-    const auto element_end = physical_space->end() ;
+    auto flag = NewValueFlags::value |
+    		NewValueFlags::gradient |
+			NewValueFlags::w_measure;
 
-    QGauss<dim> quad(3);
-    const int n_qpoints = quad.get_num_points();
-    ValueFlags flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::w_measure;
-    SpaceUniformQuadCache<PhysicalSpace_t<dim>> cache(physical_space, flag, quad);
+    ElementHandler sp_values(space);
+    sp_values.template reset<k> (flag, quad);
 
-    cache.init_element_cache(element);
-    for (; element != element_end ; ++element)
+    auto elem = space->begin();
+    auto end = space->end();
+    sp_values.template init_cache<k>(elem);
+    for (; elem != end; ++elem)
     {
-        cache.fill_element_cache(element);
-
-        const int n_basis = element->get_num_basis() ;
-
-        for (int i = 0 ; i < n_basis ; ++i)
-        {
-            out << "Values basis[" << i << "] = " << endl ;
-            for (int jpt = 0 ; jpt < n_qpoints ; ++jpt)
-                out << element->get_basis_value(i,jpt) << endl ;
-            out << endl ;
-        }
-
-
-        for (int i = 0 ; i < n_basis ; ++i)
-        {
-            out << "Gradients basis[" << i << "] = " << endl ;
-            for (int jpt = 0 ; jpt < n_qpoints ; ++jpt)
-                out << element->get_basis_gradient(i,jpt) << endl ;
-            out << endl ;
-        }
-
-        out << "w * dets = " << endl;
-        for (int jpt =0 ; jpt < n_qpoints ; ++jpt)
-        {
-            out << element->get_w_measures()[jpt] << endl ;
-        }
-        out << endl ;
+       	sp_values.template fill_cache<k>(elem,0);
+       	elem->template get_values<0, k>().print_info(out);
+       	elem->template get_values<1, k>().print_info(out);
+       	elem->template get_w_measures<k>(0).print_info(out);
     }
 }
 
 int main()
 {
-    out.depth_console(10);
+	out.depth_console(10);
 
-    test_evaluate<1>();
-    test_evaluate<2>();
-    test_evaluate<3>();
+	elem_values<1>();
+	elem_values<2>();
+	elem_values<3>();
 
 }

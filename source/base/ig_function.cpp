@@ -44,12 +44,12 @@ IgFunction(std::shared_ptr<const Space> space,
 template<class Space>
 auto
 IgFunction<Space>::
-create(const NewValueFlags &flag, const Quadrature<dim> &quad,
-       std::shared_ptr<const Space> space,
+create(std::shared_ptr<const Space> space,
        const CoeffType &coeff) ->  std::shared_ptr<base_t>
 {
     return std::shared_ptr<base_t>(new self_t(space, coeff));
 }
+
 
 
 template<class Space>
@@ -63,9 +63,6 @@ reset(const NewValueFlags &flag, const variant_1& quad) -> void
     reset_impl.flags_ = &(this->flags_);
     boost::apply_visitor(reset_impl, quad);
 }
-
-
-
 
 
 
@@ -99,7 +96,6 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2& k) -> void
     fill_cache_impl.loc_coeff = &loc_coeff;
 
     boost::apply_visitor(fill_cache_impl, k);
-
 }
 
 IGA_NAMESPACE_CLOSE

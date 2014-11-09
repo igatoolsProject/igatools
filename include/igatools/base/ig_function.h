@@ -56,8 +56,7 @@ public:
     IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
     static std::shared_ptr<base_t>
-    create(const NewValueFlags &flag, const Quadrature<dim> &quad,
-           std::shared_ptr<const Space> space,
+    create(std::shared_ptr<const Space> space,
            const CoeffType &coeff);
 
     void reset(const NewValueFlags &flag, const variant_1& quad) override;

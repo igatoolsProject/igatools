@@ -79,7 +79,8 @@ space_to_pf_flag(const NewValueFlags flags)
     NewValueFlags transfer_flag =
             NewValueFlags::measure |
             NewValueFlags::w_measure |
-            NewValueFlags::normal;
+            NewValueFlags::normal |
+            NewValueFlags::point;
 
     NewValueFlags pf_flag = flags & transfer_flag;
 
