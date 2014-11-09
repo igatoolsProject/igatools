@@ -127,8 +127,9 @@ public:
             {
                 for (int u=0; u<dim; ++u)
                 {
+                	auto &w = DF_inv[j_pt][u];
                     (*D2v_it)[u] = compose(
-                                       (*D2v_hat_it)[u] - compose((*D1v_it),D2F[j_pt][u]),
+                                       action(*D2v_hat_it, w) - compose((*D1v_it),action(D2F[j_pt],w)),
                                        DF_inv[j_pt]);
                 }
                 ++D2v_hat_it;

@@ -20,10 +20,10 @@
 
 /*
  *  Test for the evaluation of physical space basis functions
- *  values and gradients with the identity mapping
+ *  with the ball function as a map.
  *
  *  author: pauletti
- *  date: 2013-10-02
+ *  date: 2014/11/10
  *
  */
 
@@ -36,41 +36,39 @@
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
 
+
 template<int dim, int codim=0>
 auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
-
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-
-    for (int j=0; j<dim; j++)
-    	A[j][j] = 1.;
-
-    return Function::create(grid, A, b);
+    using Function = functions::BallFunction<dim>;
+    return Function::create(grid);
 }
 
 
 template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
-void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
+void elem_values(const int n_knots = 2, const int deg=1)
 {
-	const int k = dim;
-	using RefSpace = NewBSplineSpace<dim, range, rank>;
-	using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
-	using ElementHandler = typename Space::ElementHandler;
+	OUTSTART
 
-	auto grid  = CartesianGrid<dim>::create(n_knots);
+    const int k = dim;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
-	auto ref_space = RefSpace::create(deg, grid);
-	auto map_func = create_function(grid);
+    auto grid  = CartesianGrid<dim>::create(n_knots);
 
-	auto space = Space::create(ref_space, map_func);
+    auto ref_space = RefSpace::create(deg, grid);
+    auto map_func = create_function(grid);
 
+    auto space = Space::create(ref_space, map_func);
 
+    const int n_qp = 2;
     auto quad = QGauss<k>(n_qp);
-    auto flag = NewValueFlags::value|NewValueFlags::gradient|
-    		    NewValueFlags::hessian | NewValueFlags::point;
+    auto flag = NewValueFlags::value |
+    		NewValueFlags::gradient |
+			NewValueFlags::hessian |
+			NewValueFlags::point;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);
@@ -78,15 +76,26 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
     auto elem = space->begin();
     auto end = space->end();
     sp_values.template init_cache<k>(elem);
+
     for (; elem != end; ++elem)
     {
     	sp_values.template fill_cache<k>(elem,0);
+
+    	out << "Basis values: " << endl;
     	elem->template get_values<0, k>().print_info(out);
+    	out << endl;
+
+    	out << "Basis gradients: " << endl;
     	elem->template get_values<1, k>().print_info(out);
+    	out << endl;
+
+    	out << "Basis hessians: " << endl;
     	elem->template get_values<2, k>().print_info(out);
     }
 
+    OUTEND
 }
+
 
 int main()
 {
