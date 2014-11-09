@@ -34,8 +34,8 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-template<int dim, int range, int rank = 1>
-void bspline_iterator(const int deg = 2)
+template<int dim, int k=dim, int range = 1, int rank = 1>
+void bspline_iterator(const int deg = 2,const int n_qp = 3)
 {
     OUTSTART
 
@@ -44,32 +44,37 @@ void bspline_iterator(const int deg = 2)
     using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 
-    const int n_qp = 3;
-    QGauss< dim > quad(n_qp);
+
+    QGauss<k> quad(n_qp);
     auto flag = NewValueFlags::value|NewValueFlags::gradient
                 |NewValueFlags::hessian;
     ElementHandler cache(space);
-    cache.template reset<dim>(flag, quad);
+    cache.template reset<k>(flag, quad);
 
     auto elem = space->begin();
-    cache.init_element_cache(elem);
-    cache.fill_element_cache(elem);
+    cache.template init_cache<k>(elem);
 
-    auto values    = elem->template get_values<0,dim>(0);
-    auto gradients = elem->template get_values<1,dim>(0);
-    auto hessians  = elem->template get_values<2,dim>(0);
+    for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+    {
+    	cache.template fill_cache<k>(elem, s_id);
 
-    out.begin_item("Values basis functions:");
-    values.print_info(out);
-    out.end_item();
+    	out << "Sub Element: " << s_id << endl;
+    	auto values    = elem->template get_values<0,k>(s_id);
+    	auto gradients = elem->template get_values<1,k>(s_id);
+    	auto hessians  = elem->template get_values<2,k>(s_id);
 
-    out.begin_item("Gradients basis functions:");
-    gradients.print_info(out);
-    out.end_item();
+    	out.begin_item("Values basis functions:");
+    	values.print_info(out);
+    	out.end_item();
 
-    out.begin_item("Hessians basis functions:");
-    hessians.print_info(out);
-    out.end_item();
+    	out.begin_item("Gradients basis functions:");
+    	gradients.print_info(out);
+    	out.end_item();
+
+    	out.begin_item("Hessians basis functions:");
+    	hessians.print_info(out);
+    	out.end_item();
+    }
 }
 
 
@@ -77,16 +82,16 @@ int main()
 {
     out.depth_console(10);
 
-    bspline_iterator<1,1>();
-    bspline_iterator<1,2>();
-    bspline_iterator<1,3>();
+    bspline_iterator<1,1,1>();
+    bspline_iterator<1,1,2>();
+    bspline_iterator<1,1,3>();
 
-    bspline_iterator<2,1>();
-    bspline_iterator<2,2>();
-    bspline_iterator<2,3>();
+    bspline_iterator<2,2,1>();
+    bspline_iterator<2,2,2>();
+    bspline_iterator<2,2,3>();
 
-    bspline_iterator<3,1>();
-    bspline_iterator<3,3>();
+    bspline_iterator<3,3,1>();
+    bspline_iterator<3,3,3>();
 
     return 0;
 }

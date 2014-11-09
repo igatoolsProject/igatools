@@ -41,8 +41,9 @@ template <typename Accessor> class GridForwardIterator;
 template<class Space>
 class SpaceElement : public CartesianGridElement<Space::dim>
 {
-private:
+protected:
     using base_t =  CartesianGridElement<Space::dim>;
+private:
     using self_t = SpaceElement<Space>;
 
 public:

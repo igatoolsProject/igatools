@@ -39,7 +39,7 @@ void quad_extension(const int num_pts = 2)
     sub_quad.print_info(out);
     out << endl;
 
-    for (int i = 0; i < UnitElement<dim>::n_faces; ++i)
+    for (auto &i : UnitElement<dim>::template elems_ids<k>())
     {
         out << "Extended to subelement: " << i << endl;
         Quadrature<dim> vol_quad = extend_sub_elem_quad<k, dim>(sub_quad, i);

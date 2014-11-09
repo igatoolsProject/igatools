@@ -17,85 +17,104 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for the PhysicalSpace element iterator to get the face values
- *  author: antolin, pauletti
- *  date: 2014-02-10
- */
 
+/*
+ *  Test for the evaluation of physical space basis functions
+ *  values and gradients with the identity mapping
+ *
+ *  author: pauletti
+ *  date: 2013-10-02
+ *
+ */
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/identity_mapping.h>
-#include <igatools/geometry/unit_element.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/space_element_handler.h>
 
-
-template<int dim>
-void run_test(const int num_knots, const int p)
+template<int dim, int codim=0>
+auto
+create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
-    using ref_space_t = BSplineSpace<dim>;
-    using pf_t = PushForward<Transformation::h_grad,dim>;
-    using space_t = PhysicalSpace<ref_space_t, pf_t>;
 
-    auto grid = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = ref_space_t::create(p, grid);
-    auto map = IdentityMapping<dim>::create(grid);
-    auto space = space_t::create(ref_space, pf_t::create(map));
+    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
 
-    const int num_faces = UnitElement<dim>::n_faces;
-    QGauss<dim> quad(2);
+    for (int j=0; j<dim; j++)
+    	A[j][j] = 1.;
 
-    ValueFlags flag = ValueFlags::face_value;
-
-    auto elem = space->begin();
-    auto end =  space->end();
-
-    elem->init_cache(flag, quad);
-
-    for (; elem != end; ++elem)
-    {
-        if (elem->is_boundary())
-        {
-            out << "Element" << elem->get_flat_index() << endl;
-
-            for (Index face = 0; face < num_faces; ++face)
-            {
-                if (elem->is_boundary(face))
-                {
-                    out << "Face " << face << endl;
-                    elem->fill_face_cache(face);
-                    out << "values: " << endl;
-                    elem->get_face_basis_values(face).print_info(out);
-                    out << endl;
-                }
-            }
-        }
-    }
-    out << endl;
+    return Function::create(grid, A, b);
 }
 
+
+template <int dim, int k=dim, int range=1, int rank=1, int codim = 0>
+void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
+{
+	using RefSpace = NewBSplineSpace<dim, range, rank>;
+	using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+	using ElementHandler = typename Space::ElementHandler;
+
+	auto grid  = CartesianGrid<dim>::create(n_knots);
+
+	auto ref_space = RefSpace::create(deg, grid);
+	auto map_func = create_function(grid);
+
+	auto space = Space::create(ref_space, map_func);
+
+
+    auto quad = QGauss<k>(n_qp);
+    auto flag = NewValueFlags::value|NewValueFlags::gradient|
+    		    NewValueFlags::hessian | NewValueFlags::point;
+
+    ElementHandler sp_values(space);
+    sp_values.template reset<k> (flag, quad);
+
+    auto elem = space->begin();
+    auto end = space->end();
+    sp_values.template init_cache<k>(elem);
+    for (; elem != end; ++elem)
+    {
+    	if (elem->SpaceElement<Space>::is_boundary())
+    	{
+    		out << "Element" << elem->get_flat_index() << endl;
+    		for (auto &s_id : UnitElement<dim>::template elems_ids<k>() )
+    		{
+    			if (elem->SpaceElement<Space>::is_boundary(s_id))
+    			{
+    				out << "Face " << s_id << endl;
+    				sp_values.template fill_cache<k>(elem, s_id);
+    				out << "values: " << endl;
+    				elem->template get_values<0, k>(s_id).print_info(out);
+//    				out << "values: " << endl;
+//    				elem->template get_values<1, k>(s_id).print_info(out);
+//    				elem->template get_values<2, k>(s_id).print_info(out);
+    			}
+    		}
+    	}
+    }
+}
 
 
 int main()
 {
-    out.depth_console(20);
+    out.depth_console(10);
 
     const int p = 1;
-//    const int num_knots = 2;
-//    run_test<2>(num_knots, p);
 
     for (int num_knots = 2; num_knots<4; ++num_knots)
     {
-        run_test<2>(num_knots, p);
-        run_test<3>(num_knots, p);
+    	elem_values<2,1>(num_knots, p, 2);
+    	elem_values<3,2>(num_knots, p, 2);
     }
 
     return 0;
 }
+
+
+
 

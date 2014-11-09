@@ -33,6 +33,7 @@ IGA_NAMESPACE_OPEN
 
 template <typename Accessor> class GridForwardIterator;
 
+
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
@@ -45,6 +46,7 @@ public :
     // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
     using parent_t::get_values;
+    using parent_t::is_boundary;
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const PhysSpace;
