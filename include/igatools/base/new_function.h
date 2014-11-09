@@ -120,7 +120,7 @@ public:
     /** @name Constructors and destructor. */
     ///@{
     /** Constructor */
-    NewFunction(std::shared_ptr<const GridType> grid);
+    NewFunction(std::shared_ptr<GridType> grid);
 
     /** Destructor */
     virtual ~NewFunction() = default;
@@ -161,6 +161,17 @@ public:
     void init_cache(ElementIterator &elem, const variant_2& k)
     {
         init_cache(elem.get_accessor(), k);
+    }
+
+    auto begin()  -> ElementIterator
+    {
+    	return ElementIterator(this->get_grid(), 0);
+    }
+
+    auto end() -> ElementIterator
+    {
+        return ElementIterator(this->get_grid(),
+                               IteratorState::pass_the_end);
     }
 
 private:

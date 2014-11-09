@@ -64,7 +64,7 @@ public:
                                              NewValueFlags::length;
 
     //Allocates and fill the (global) cache
-    GridElementHandler(std::shared_ptr<const GridType> grid);
+    GridElementHandler(std::shared_ptr<GridType> grid);
 
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);
@@ -121,8 +121,14 @@ public:
 
     void print_info(LogStream &out) const;
 
+protected:
+    auto get_grid()
+    {
+    	return grid_;
+    }
+
 private:
-    std::shared_ptr<const GridType> grid_;
+    std::shared_ptr<GridType> grid_;
 
     std::array<GridFlags, dim + 1> flags_;
 

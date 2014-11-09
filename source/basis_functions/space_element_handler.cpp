@@ -102,7 +102,7 @@ space_to_pf_flag(const NewValueFlags flags)
 
 template<class PhysSpace>
 SpaceElementHandler<PhysSpace>::
-SpaceElementHandler(std::shared_ptr<const PhysSpace> space)
+SpaceElementHandler(std::shared_ptr<PhysSpace> space)
     :
     RefSpaceElementHandler(space->get_reference_space()),
     PFCache(space->get_map_func()),

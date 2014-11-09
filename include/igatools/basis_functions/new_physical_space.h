@@ -177,6 +177,7 @@ public:
     std::shared_ptr<const PushForwardType> get_push_forward() const;
 #endif
     std::shared_ptr<const RefSpace> get_reference_space() const;
+    std::shared_ptr<RefSpace> get_reference_space();
     std::shared_ptr<MapFunc> get_map_func() const
     {
         return map_func_;

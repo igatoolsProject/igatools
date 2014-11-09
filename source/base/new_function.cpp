@@ -25,7 +25,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank >
 NewFunction<dim, codim, range, rank >::
-NewFunction(std::shared_ptr<const GridType> grid)
+NewFunction(std::shared_ptr<GridType> grid)
     :
     GridElementHandler<dim>(grid)
 {}

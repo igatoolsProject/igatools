@@ -28,7 +28,7 @@ namespace functions
 
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
-ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+ConstantFunction(std::shared_ptr<GridType> grid,
                  const Value &b)
     :
     parent_t::FormulaFunction(grid),
@@ -40,7 +40,7 @@ ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
-create(std::shared_ptr<const CartesianGrid<dim>> grid,
+create(std::shared_ptr<GridType> grid,
        const Value &b) ->  std::shared_ptr<base_t>
 {
     return std::shared_ptr<base_t>(new self_t(grid, b));
@@ -87,7 +87,7 @@ evaluate_2(const ValueVector<Point> &points,
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
-LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+LinearFunction(std::shared_ptr<GridType> grid,
                const Gradient &A, const Value &b)
     :
     parent_t::FormulaFunction(grid),
@@ -100,7 +100,7 @@ LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
 template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
-create(std::shared_ptr<const CartesianGrid<dim>> grid,
+create(std::shared_ptr<GridType> grid,
        const Gradient &A, const Value &b) ->  std::shared_ptr<base_t>
 {
     return std::shared_ptr<base_t>(new self_t(grid, A, b));
@@ -151,7 +151,7 @@ evaluate_2(const ValueVector<Point> &points,
 
 template<int dim>
 BallFunction<dim>::
-BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid)
+BallFunction(std::shared_ptr<GridType> grid)
     :
     parent_t::FormulaFunction(grid)
 {}
@@ -161,7 +161,7 @@ BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid)
 template<int dim>
 auto
 BallFunction<dim>::
-create(std::shared_ptr<const CartesianGrid<dim>> grid) ->  std::shared_ptr<base_t>
+create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
 {
     return std::shared_ptr<base_t>(new self_t(grid));
 }

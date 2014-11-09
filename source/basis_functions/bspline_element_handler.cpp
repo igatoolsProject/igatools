@@ -151,7 +151,7 @@ public:
 
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
-BSplineElementHandler(shared_ptr<const Space> space)
+BSplineElementHandler(shared_ptr<Space> space)
     :
     base_t(space->get_grid()),
     space_(space),

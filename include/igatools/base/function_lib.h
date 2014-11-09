@@ -37,6 +37,7 @@ private:
     using base_t = NewFunction<dim, codim, range, rank>;
     using parent_t = FormulaFunction<dim, codim, range, rank>;
     using self_t = ConstantFunction<dim, codim, range, rank>;
+    using typename base_t::GridType;
 public:
     using typename parent_t::Point;
     using typename parent_t::Value;
@@ -47,11 +48,11 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<const CartesianGrid<dim>> grid,
+    create(std::shared_ptr<GridType> grid,
            const Value &b);
 
 protected:
-    ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+    ConstantFunction(std::shared_ptr<GridType> grid,
                      const Value &b);
 
 private:
@@ -75,10 +76,12 @@ private:
 template<int dim, int codim, int range>
 class LinearFunction : public FormulaFunction<dim, codim, range, 1>
 {
+
 public:
     using base_t = NewFunction<dim, codim, range, 1>;
     using parent_t = FormulaFunction<dim, codim, range, 1>;
     using self_t = LinearFunction<dim, codim, range>;
+    using typename base_t::GridType;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -88,12 +91,12 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<const CartesianGrid<dim>> grid,
+    create(std::shared_ptr<GridType> grid,
            const Gradient &A,
            const Value &b);
 
 protected:
-    LinearFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+    LinearFunction(std::shared_ptr<GridType> grid,
                    const Gradient &A, const Value &b);
 
 private:
@@ -129,6 +132,7 @@ private:
     using base_t = NewFunction<dim, 0, dim, 1>;
     using parent_t = FormulaFunction<dim, 0, dim, 1>;
     using self_t = BallFunction<dim>;
+    using typename base_t::GridType;
 public:
     using typename parent_t::Point;
     using typename parent_t::Value;
@@ -139,10 +143,10 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<const CartesianGrid<dim>> grid);
+    create(std::shared_ptr<GridType> grid);
 
 protected:
-    BallFunction(std::shared_ptr<const CartesianGrid<dim>> grid);
+    BallFunction(std::shared_ptr<GridType> grid);
 
 private:
     template<int order>

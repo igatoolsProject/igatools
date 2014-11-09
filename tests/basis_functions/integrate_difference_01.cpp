@@ -28,47 +28,64 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/base/formula_function.h>
+#include <igatools/base/function_lib.h>
 #include <igatools/basis_functions/space_tools.h>
-#include <igatools/io/writer.h>
+//#include <igatools/io/writer.h>
 
 /**
  * The p-norm of this function on the unit square is
  * (1/(p+1))^(n/p)
  */
-template<int dim>
-class ProductFunction : public Function<dim>
+template<int dim, int codim=0, int range = 1, int rank = 1>
+class ProductFunction : public FormulaFunction<dim>
 {
+private:
+    using base_t = NewFunction<dim, codim, range, rank>;
+    using parent_t = FormulaFunction<dim, codim, range, rank>;
+    using self_t = ProductFunction<dim, codim, range, rank>;
 public:
-    using Base = Function<dim>;
-    using typename Base::Point;
-    using typename Base::Value;
-    using typename Base::Gradient;
-    using typename Base::Hessian;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
 
-    void evaluate(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const
+    using parent_t::FormulaFunction;
+//    static std::shared_ptr<base_t>
+//    create(std::shared_ptr<const CartesianGrid<dim>> grid,
+//           const Value &b);
+
+//protected:
+//    ConstantFunction(std::shared_ptr<const CartesianGrid<dim>> grid,
+//                     const Value &b);
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const
     {
-        auto pt = points.begin();
-        auto val = values.begin();
+    	auto pt = points.begin();
+    	auto val = values.begin();
 
-        for (; pt != points.end(); ++pt, ++val)
-        {
-            *val = 1.;
-            for (int i=0; i<dim; ++i)
-                (*val) *= (*pt)[i];
-        }
+    	for (; pt != points.end(); ++pt, ++val)
+    	{
+    		*val = 1.;
+    		for (int i=0; i<dim; ++i)
+    			(*val) *= (*pt)[i];
+    	}
     }
 
-    void evaluate_gradients(
-        const ValueVector<Point> &points,
-        ValueVector<Gradient> &gradient) const
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const
     {}
 
-    void evaluate_hessians(
-        const ValueVector<Point> &points,
-        ValueVector<Hessian> &hessians) const
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const
     {}
+
 };
 
 
@@ -76,24 +93,34 @@ public:
 template<int dim, int range = 1, int rank = 1>
 void do_test(const int deg)
 {
-    using Space = BSplineSpace<dim, range, rank>;
+    using Space = NewBSplineSpace<dim, range, rank>;
 
     const int n_knots = 10;
-    auto knots = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, knots);
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto space = Space::create(deg, grid);
 
     const int n_qpoints = ceil((2*dim + 1)/2.);
     QGauss<dim> quad(n_qpoints);
 
-    ProductFunction<dim> f;
+    ProductFunction<dim> f(grid);
+    typename functions::ConstantFunction<dim,0,1>::Value val{0.};
+    auto g = functions::ConstantFunction<dim,0,1>::create(grid, val);
 
+    vector<Real> elem_err(grid->get_num_active_elems());
+    Real err = space_tools::integrate_difference<dim>
+                   (f, *g, quad, Norm::L2, elem_err);
+
+    const Real p=2;
+    out << std::pow(p+1, -dim/p) << "\t" << err << endl;
+
+#if 0
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif
 
-    const Real p=2;
+
 
     Vector<la_pack> coeffs(space->get_num_basis());
     vector<Real> elem_err(space->get_grid()->get_num_active_elems());
@@ -108,6 +135,7 @@ void do_test(const int deg)
 //    output.add_field(space, proj_values, "projected function");
 //    string filename = "proj_function-" + to_string(dim) +"d";
 //    output.save(filename);
+#endif
 }
 
 

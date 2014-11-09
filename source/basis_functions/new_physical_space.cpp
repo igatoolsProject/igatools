@@ -153,6 +153,16 @@ get_reference_space() const -> shared_ptr<const RefSpace>
     return shared_ptr<const RefSpace>(ref_space_);
 }
 
+
+
+template <class RefSpace_,int codim_, Transformation type_>
+auto
+NewPhysicalSpace<RefSpace_, codim_, type_>::
+get_reference_space() -> shared_ptr<RefSpace>
+{
+    return ref_space_;
+}
+
 #if 0
 template <class RefSpace_,int codim_, Transformation type_>
 auto

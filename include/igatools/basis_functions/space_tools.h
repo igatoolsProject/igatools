@@ -20,6 +20,135 @@
 
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
+
+#include <igatools/base/new_function.h>
+
+IGA_NAMESPACE_OPEN
+namespace space_tools
+{
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
+		                  NewFunction<dim, codim, range, rank> &g,
+                          const Quadrature<dim> &quad,
+                          const Norm &norm_flag,
+                          vector<Real> &element_error)
+{
+	using Func = NewFunction<dim, codim, range, rank>;
+
+    bool is_L2_norm     = contains(norm_flag, Norm::L2);
+    bool is_H1_norm     = contains(norm_flag, Norm::H1);
+    bool is_H1_seminorm = contains(norm_flag, Norm::H1_semi);
+
+    Assert(is_L2_norm || is_H1_seminorm || is_H1_norm,
+           ExcMessage("No active flag for the error norm."));
+
+
+    Assert(!((is_L2_norm && is_H1_seminorm) ||
+             (is_L2_norm && is_H1_norm) ||
+             (is_H1_seminorm && is_H1_norm)),
+           ExcMessage("Only a single flag for the error norm can be used."));
+
+
+    if (is_H1_norm)
+    {
+        is_L2_norm     = true;
+        is_H1_seminorm = true;
+    }
+
+    auto flag = NewValueFlags::point | NewValueFlags::w_measure;
+
+    if (is_L2_norm)
+        flag |= NewValueFlags::value;
+
+    if (is_H1_seminorm)
+        flag |= NewValueFlags::gradient;
+
+    f.reset(flag, quad);
+    g.reset(flag, quad);
+    const int n_points   =  quad.get_num_points();
+    //const int n_elements =  element_error.size();
+    auto elem_f = f.begin();
+    auto elem_g = g.begin();
+    auto end = f.end();
+
+    f.init_cache(elem_f, Int<dim>());
+    g.init_cache(elem_g, Int<dim>());
+    typename Func::Value err;
+    for (; elem_f != end; ++elem_f, ++elem_g)
+    {
+            f.fill_cache(elem_g, 0, Int<dim>());
+            g.fill_cache(elem_f, 0, Int<dim>());
+
+            const int elem_id = elem_f->get_flat_index();
+            element_error[ elem_id ] = 0.0;
+
+            if (is_L2_norm)
+            {
+            	auto f_val = elem_f->template get_values<0,dim>(0);
+            	auto g_val = elem_g->template get_values<0,dim>(0);
+            	auto w_meas = elem_f->template get_w_measures<dim>(0);
+
+            	Real element_err_L2_pow2 = 0.0;
+            	for (int iPt = 0; iPt < n_points; ++iPt)
+            	{
+            		err = f_val[iPt] - g_val[iPt];
+            		element_err_L2_pow2 += err.norm_square() * w_meas[iPt];
+            	}
+            	element_error[ elem_id ] += element_err_L2_pow2;
+            }
+            element_error[ elem_id ] = sqrt(element_error[ elem_id ]);
+    }
+
+#if 0
+    using Value = typename Space::Func::Value;
+    using Gradient = typename Space::Func::Gradient;
+
+    ValueVector<Value>    u(n_points);
+    ValueVector<Gradient> grad_u(n_points);
+
+    Value err;
+    Gradient grad_err;
+
+    vector<Real>     norm_err_L2_square(n_elements);
+    vector<Real> seminorm_err_H1_square(n_elements);
+
+    for (; elem != end; ++elem)
+    {
+
+
+
+        if (is_H1_seminorm)
+        {
+            const auto &grad_uh = elem->evaluate_field_gradients(solution_coefs_elem);
+            exact_solution.evaluate_gradients(map_at_points, grad_u);
+
+            Real element_err_semiH1_pow2 = 0.0;
+            for (int iPt = 0; iPt < n_points; ++iPt)
+            {
+                grad_err = grad_uh[iPt] - grad_u[iPt];
+
+                element_err_semiH1_pow2 += grad_err.norm_square() * elem->get_w_measures()[iPt];
+            }
+            element_error[ elem_id ] += element_err_semiH1_pow2;
+        }
+
+
+    }
+#endif
+    Real err_pow2 = 0.0;
+    for (const Real &elem_err : element_error)
+        err_pow2 += elem_err * elem_err;
+
+    Real total_error = sqrt(err_pow2);
+
+    return total_error;
+
+}
+
+};
+
+IGA_NAMESPACE_CLOSE
+
 #if 0
 #include <igatools/base/config.h>
 #include <igatools/base/quadrature.h>

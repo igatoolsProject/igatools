@@ -22,16 +22,13 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/dof_tools.h>
-
-using std::shared_ptr;
-using std::make_shared;
 
 template <int dim>
 class StokesProblem
@@ -43,13 +40,13 @@ private:
     void assemble_Bt();
 
 private:
-    using PreSpace = BSplineSpace<dim>;
-    using VelSpace = BSplineSpace<dim, dim>;
+    using PreSpace = NewBSplineSpace<dim>;
+    using VelSpace = NewBSplineSpace<dim, dim>;
 
     shared_ptr<PreSpace> pre_space_;
     shared_ptr<VelSpace> vel_space_;
 
-    const Quadrature<dim> elem_quad_;
+    const Quadrature<dim> quad;
 
 #if defined(USE_TRILINOS)
     const static auto la_pack = LAPack::trilinos;
@@ -63,16 +60,26 @@ private:
 template <int dim>
 void StokesProblem<dim>::assemble_Bt()
 {
+    const int k=dim;
+	using PreElementHandler = typename PreSpace::ElementHandler;
+	using VelElementHandler = typename VelSpace::ElementHandler;
+
+	const auto vel_flag = NewValueFlags::divergence | NewValueFlags::w_measure;
+	const auto pre_flag = NewValueFlags::value;
+	PreElementHandler pre_sp_values(pre_space_);
+	pre_sp_values.template reset<k> (pre_flag, quad);
+	VelElementHandler vel_sp_values(vel_space_);
+	vel_sp_values.template reset<k> (vel_flag, quad);
+
     auto vel_el = vel_space_->begin();
     auto pre_el = pre_space_->begin();
     auto end_el = vel_space_->end();
 
-    ValueFlags vel_flag = ValueFlags::divergence | ValueFlags::w_measure;
-    ValueFlags pre_flag = ValueFlags::value;
-    vel_el->init_cache(vel_flag,elem_quad_);
-    pre_el->init_cache(pre_flag,elem_quad_);
 
-    const int n_qp = elem_quad_.get_num_points();
+    vel_sp_values.template init_cache<k>(vel_el);
+    pre_sp_values.template init_cache<k>(pre_el);
+
+    const int n_qp = quad.get_num_points();
 
     for (; vel_el != end_el; ++vel_el, ++pre_el)
     {
@@ -82,24 +89,24 @@ void StokesProblem<dim>::assemble_Bt()
         DenseMatrix loc_mat(vel_n_basis, pre_n_basis);
         loc_mat = 0.0;
 
-        vel_el->fill_cache();
-        pre_el->fill_cache();
+        vel_sp_values.template fill_cache<k>(vel_el, 0);
+        pre_sp_values.template fill_cache<k>(pre_el, 0);
 
-        auto q      = pre_el->get_basis_values();
-        auto div_v  = vel_el->get_basis_divergences();
-        auto w_meas = vel_el->get_w_measures();
-
-        for (int i=0; i<vel_n_basis; ++i)
-        {
-            auto div_i = div_v.get_function_view(i);
-            for (int j=0; j<pre_n_basis; ++j)
-            {
-                auto q_j = q.get_function_view(j);
-                for (int qp=0; qp<n_qp; ++qp)
-                    loc_mat(i,j) -=  scalar_product(div_i[qp], q_j[qp])
-                                     * w_meas[qp];
-            }
-        }
+        auto q      = pre_el->template get_values<0,k>(0);
+//        auto div_v  = vel_el->get_basis_divergences();
+//        auto w_meas = vel_el->get_w_measures();
+//
+//        for (int i=0; i<vel_n_basis; ++i)
+//        {
+//            auto div_i = div_v.get_function_view(i);
+//            for (int j=0; j<pre_n_basis; ++j)
+//            {
+//                auto q_j = q.get_function_view(j);
+//                for (int qp=0; qp<n_qp; ++qp)
+//                    loc_mat(i,j) -=  scalar_product(div_i[qp], q_j[qp])
+//                                     * w_meas[qp];
+//            }
+//        }
         vector<Index> vel_loc_dofs = vel_el->get_local_to_global();
         vector<Index> pre_loc_dofs = pre_el->get_local_to_global();
         Bt_->add_block(vel_loc_dofs, pre_loc_dofs, loc_mat);
@@ -126,7 +133,7 @@ template <int dim>
 StokesProblem<dim>::
 StokesProblem(const int deg, const int n_knots)
     :
-    elem_quad_(QGauss<dim>(deg+3))
+    quad(QGauss<dim>(deg+3))
 {
     const int reg = 0;
 

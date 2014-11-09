@@ -52,7 +52,7 @@ void init_unif_caches(const GridFlags &flag, const Quad& quad, std::tuple<Args..
 
 template <int dim_>
 GridElementHandler<dim_>::
-GridElementHandler(shared_ptr<const GridType> grid)
+GridElementHandler(shared_ptr<GridType> grid)
                    :
     grid_(grid),
     lengths_(grid->get_element_lengths())

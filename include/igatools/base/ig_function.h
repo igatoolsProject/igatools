@@ -53,10 +53,10 @@ public:
 
     using CoeffType = Vector<LAPack::trilinos>;
 
-    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
+    IgFunction(std::shared_ptr<Space> space, const CoeffType &coeff);
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<const Space> space,
+    create(std::shared_ptr<Space> space,
            const CoeffType &coeff);
 
     void reset(const NewValueFlags &flag, const variant_1& quad) override;
@@ -68,7 +68,7 @@ public:
 
 private:
 
-    std::shared_ptr<const Space> space_;
+    std::shared_ptr<Space> space_;
 
     const CoeffType coeff_;
 

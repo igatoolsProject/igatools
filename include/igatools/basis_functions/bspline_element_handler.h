@@ -75,7 +75,7 @@ public:
     static const int dim = dim_;
 
     //Allocates and fill the (global) cache
-    BSplineElementHandler(std::shared_ptr<const Space> space);
+    BSplineElementHandler(std::shared_ptr<Space> space);
 
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);

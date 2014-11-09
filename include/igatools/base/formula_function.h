@@ -49,7 +49,7 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    FormulaFunction(std::shared_ptr<const GridType> grid);
+    FormulaFunction(std::shared_ptr<GridType> grid);
 
 //    void reset(const NewValueFlags &flag, const variant_1& quad) override;
 //
