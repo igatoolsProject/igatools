@@ -19,10 +19,10 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for "New" physical space
+ *  Test for physical space element values
  *
  *  author: pauletti
- *  date: Oct 08, 2014
+ *  date: 2014-11-08
  *
  */
 
@@ -38,10 +38,10 @@
 
 
 template<int dim, int codim>
-using MapFunc = Function<dim, 0, dim+codim>;
+using MapFunc = NewFunction<dim, 0, dim+codim>;
 
 
-template<int dim, int codim>
+template<int dim, int codim=0>
 auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
@@ -57,48 +57,52 @@ create_function(shared_ptr<CartesianGrid<dim>> grid)
         b[i] = i;
     }
 
-    auto quad = QGauss<dim>(2);
-    return Function::create(grid, ValueFlags::none, quad, A, b);
+    return Function::create(grid, A, b);
 }
 
 
-template <int dim, int range=1, int rank=1, int codim = 0>
+template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 5, const int deg=1)
 {
     OUTSTART
-
+	const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
+
     auto ref_space = RefSpace::create(deg, grid);
+    auto map_func = create_function(grid);
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<Space::space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
-
-    auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, ValueFlags::none, quad, A, b);
     auto space = Space::create(ref_space, map_func);
 
-    auto flag = ValueFlags::value | ValueFlags::gradient;
-    typename Space::ElementHandler sp_values(space, flag, quad);
+    auto flag = NewValueFlags::none;
+    switch (order)
+    {
+    case 0:
+    	flag |= NewValueFlags::value;
+    	break;
+    case 1:
+    	flag |= NewValueFlags::gradient;
+    	break;
+    case 2:
+    	flag |= NewValueFlags::hessian;
+    	break;
+    }
+
+    auto quad = QGauss<k>(2);
+
+    ElementHandler sp_values(space);
+    sp_values.template reset<k> (flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    sp_values.template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
-        elem->get_basis_values().print_info(out);
-        // elem->get_basis_gradients().print_info(out);
+    	sp_values.template fill_cache<k>(elem,0);
+    	elem->template get_values<0, k>().print_info(out);
     }
 
     OUTEND
