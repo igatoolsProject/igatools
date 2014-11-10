@@ -17,125 +17,133 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
-#ifndef MAPPING_SLICE_H_
-#define MAPPING_SLICE_H_
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element_accessor.h>
+#ifndef SUB_MAPPING_H_
+#define SUB_MAPPING_H_
+
+#include <igatools/base/new_function.h>
+#include <igatools/base/function_element.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * \brief It is a mapping obtained as the restriction of a given mapping
- * over a coordinate plane.
- * For example g(x,y) = F(c,x,y)
+ *
+ * @author pauletti 2014
  */
-template<int dim_, int codim_>
-class MappingSlice : public Mapping<dim_, codim_>
+template<int k, int dim, int spacedim>
+class SubFunction : public NewFunction<dim - k, 0, spacedim, 1>
 {
 public:
-    using base_t = Mapping<dim_, codim_>;
-    using base_t::dim;
-    using base_t::codim;
-    using base_t::space_dim;
+    using base_t = NewFunction<dim - k, 0, spacedim, 1>;
+    using SupFunc = NewFunction<dim, 0, spacedim, 1>;
 
     using typename base_t::GridType;
-    using typename base_t::GridIterator;
 
-    using typename base_t::Point;
-    using typename base_t::Value;
-    using typename base_t::Gradient;
-    using typename base_t::Hessian;
-
-private:
-    using SupMap = Mapping<dim + 1, codim - 1>;
-    using self_t = MappingSlice<dim, codim>;
+    using SuperGrid = typename SupFunc::GridType;
+    template <int j>
+    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
 
 public:
-    /**
-     *  Given a <em>map</em>, we restrict to a slice perpendicular to
-     *  reference <em>direction</em> and located at reference <em>value</em>
-     *  on <em>direction</em>.
-     */
-    MappingSlice(const std::shared_ptr<const SupMap> map,
-                 const int face_id,
-                 const std::shared_ptr<GridType> grid,
-                 const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map);
 
-    /**
-     * Copy constructor
-     */
-    MappingSlice(const self_t &map_slice);
+    SubFunction(std::shared_ptr<GridType> grid,
+                std::shared_ptr<SupFunc> func,
+                const int s_id,
+                InterGridMap<k> &elem_map)
+:
+    base_t(grid),
+    func_(std::make_shared<SupFunc>(*func)),
+    s_id_(s_id),
+    elem_map_(elem_map)
+{}
 
-    /**
-     * Copy assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(const self_t &map) = delete;
 
-    static std::shared_ptr<base_t>
-    create(const std::shared_ptr<const SupMap> map,
-           const int face_id,
-           const std::shared_ptr<GridType> grid,
-           const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map);
+ //   void reset(const NewValueFlags &flag, const variant_1& quad) override;
 
-    static std::shared_ptr<base_t>
-    create(const std::shared_ptr<const base_t> map,
-           const int face_id,
-           const std::shared_ptr<GridType > grid,
-           const std::shared_ptr<typename base_t::GridType::FaceGridMap> elem_map)
+//    void init_cache(ElementAccessor &elem, const variant_2& k) override;
+//
+//    void fill_cache(ElementAccessor &elem, const int j, const variant_2& k) override;
+
+
+private:
+    std::shared_ptr<SupFunc> func_;
+    const int s_id_;
+    InterGridMap<k> &elem_map_;
+
+    typename SupFunc::ElementIterator elem_;
+
+
+private:
+    struct ResetDispatcher : boost::static_visitor<void>
     {
-        AssertThrow(true, ExcImpossibleInDim(-1));
-        return std::shared_ptr<base_t>();//Should never reach this
-    }
+        template<class T>
+        void operator()(const T& quad)
+        {
+            (*flags_)[T::dim] = flag;
+            auto sup_quad = extend_sub_elem_quad<T::dim, dim>(quad, s_id);
+            func_->template reset<T::dim+k>(flag, sup_quad);
+        }
 
-    void evaluate(ValueVector<Value> &values) const override;
+        NewValueFlags flag;
+        SupFunc *func_;
+        std::array<FunctionFlags, dim - k + 1> *flags_;
+        int s_id;
+    };
 
-    void evaluate_gradients(ValueVector<Gradient> &gradients) const override;
+#if 0
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            func_->template init_cache<T::k>(*sup_elem);
+        }
+
+        SupFunc *func_;
+        typename SupFunc::ElementIterator *sup_elem;
 
 
-    /** @name Evaluating the quantities related to the MappingSlice without the use of the cache. */
-    ///@{
-    void evaluate_at_points(const ValueVector<Point> &points, ValueVector<Value> &values) const override final;
-    void evaluate_gradients_at_points(const ValueVector<Point> &points, ValueVector<Gradient> &gradients) const override final;
-    void evaluate_hessians_at_points(const ValueVector<Point> &points, ValueVector<Hessian> &hessians) const override final;
-    ///@}
+    };
 
 
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T& quad)
+        {
+            space_handler_->template fill_cache<T::k>(*space_elem, j);
 
-    void init_element(const ValueFlags flag, const Quadrature<dim> &quad)  const override;
+            auto &local_cache = function->get_cache(*func_elem);
+            auto &cache = local_cache->template get_value_cache<T::k>(j);
+            auto &flags = cache.flags_handler_;
 
-    void set_element(const GridIterator &elem) const override ;
+            if (flags.fill_values())
+                std::get<0>(cache.values_) =
+                        space_elem->template linear_combination<0, T::k>(*loc_coeff, j);
+            if (flags.fill_gradients())
+                std::get<1>(cache.values_) =
+                        space_elem->template linear_combination<1, T::k>(*loc_coeff, j);
+            if (flags.fill_hessians())
+                std::get<2>(cache.values_) =
+                        space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
 
-    void set_face_element(const Index face_id,
-                          const GridIterator &elem) const override;
+            cache.set_filled(true);
+        }
 
-    /**
-     * Prints internal information about the mapping.
-     * @note Mostly used for debugging and testing.
-     */
-    void print_info(LogStream &out) const override;
+        int j;
+        self_t *function;
+        typename Space::ElementHandler *space_handler_;
+        ElementAccessor *func_elem;
+        typename Space::ElementAccessor *space_elem;
+        vector<Real> *loc_coeff;
+    };
+#endif
 
-    //TODO: should be private
-public:
-    Quadrature<dim+1>
-    build_extended_quadrature(const Quadrature<dim> &quad) const;
 
-private:
-    const std::shared_ptr<const SupMap> map_;
-    const int direction_;
-    const int value_;
+    ResetDispatcher reset_impl;
+//    InitCacheDispatcher init_cache_impl;
+//    FillCacheDispatcher fill_cache_impl;
 
-    // the cache
-    mutable typename SupMap::ElementIterator element;
-
-    const std::shared_ptr<typename SupMap::GridType::FaceGridMap> elem_map_;
-
-    /**
-     * This function injects the points belonging to the domain of MappingSlice (that has dimension == dim_)
-     * to the domain of the Mapping from which the MappingSlice is obtained (that has dimension == dim_+1).
-     */
-    ValueVector<typename SupMap::Point> inject_points(const ValueVector<Point> &points) const;
 };
 
 
@@ -143,4 +151,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif /* MAPPING_SLICE_H_ */
-#endif
+

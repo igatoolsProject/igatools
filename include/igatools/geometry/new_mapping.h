@@ -116,6 +116,11 @@ public:
         init_cache<k>(elem.get_accessor());
     }
 
+    auto get_function()
+    {
+        return F_;
+    }
+
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);

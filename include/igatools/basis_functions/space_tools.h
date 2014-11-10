@@ -76,8 +76,8 @@ Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
     typename Func::Value err;
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
-            f.fill_cache(elem_g, 0, Int<dim>());
-            g.fill_cache(elem_f, 0, Int<dim>());
+            f.fill_cache(elem_f, 0, Int<dim>());
+            g.fill_cache(elem_g, 0, Int<dim>());
 
             const int elem_id = elem_f->get_flat_index();
             element_error[ elem_id ] = 0.0;

@@ -19,9 +19,6 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/new_bspline_space.h>
-
-#include <igatools/geometry/identity_mapping.h>
-#include <igatools/geometry/mapping_slice.h>
 #include <igatools/basis_functions/space_manager.h>
 
 using std::endl;

@@ -29,7 +29,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/function_element.h>
-#include <igatools/geometry/mapping_slice.h>
+
 
 
 template<int dim, int codim, int range>
@@ -75,19 +75,6 @@ void create_fun()
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, A, b);
-
-
-    const int k = dim - 1;
-    const int s_id = 0;
-    using Grid =  CartesianGrid<dim>;
-    using SubGridMap = typename Grid::template InterGridMap<k>;
-    SubGridMap elem_map;
-    auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
-
-    SubFunction<dim-1, dim, range> subF(sub_grid,F, 0, elem_map);
-
-
-
     F->reset(flag, quad);
     test<dim, codim, range>(*F, grid);
 }

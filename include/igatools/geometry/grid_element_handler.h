@@ -44,7 +44,10 @@ using QuadList = TupleList<dim, Quadrature>;
 template <int dim_>
 class GridElementHandler
 {
-protected:
+private:
+    using self_t = GridElementHandler<dim_>;
+
+public:
     using GridType = CartesianGrid<dim_>;
 
 protected:
@@ -57,14 +60,11 @@ protected:
 public:
     static const int dim = dim_;
 
-    // TODO (pauletti, Nov 6, 2014): do we need this?
-    static const NewValueFlags valid_flags = NewValueFlags::measure |
-                                             NewValueFlags::w_measure |
-                                             NewValueFlags::point|
-                                             NewValueFlags::length;
-
     //Allocates and fill the (global) cache
     GridElementHandler(std::shared_ptr<GridType> grid);
+
+    GridElementHandler(const self_t &) = default;
+
 
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);

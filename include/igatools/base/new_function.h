@@ -66,7 +66,7 @@ private:
     using self_t = NewFunction<dim, codim, range, rank>;
     using parent_t = GridElementHandler<dim>;
 
-protected:
+public:
     using typename parent_t::GridType;
 
 public:
@@ -125,6 +125,10 @@ public:
     /** Destructor */
     virtual ~NewFunction() = default;
     ///@}
+
+    NewFunction(const self_t &) = default;
+
+
 
     virtual void reset(const NewValueFlags &flag, const variant_1& quad)
     {
