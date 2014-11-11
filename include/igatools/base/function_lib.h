@@ -131,6 +131,24 @@ private:
 };
 
 //------------------------------------------------------------------------------
+
+template<int dim, int codim=0>
+auto
+create_identity(std::shared_ptr<const CartesianGrid<dim>> grid)
+{
+    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
+
+    for (int j=0; j<dim; j++)
+        A[j][j] = 1.;
+
+    return Function::create(grid, A, b);
+}
+
+
+
+//------------------------------------------------------------------------------
 /**
  * Maps a hyper rectangle into a spherical ball sector using the
  * dim-dimensional spherical coordinates, maps a hyper-rectangle

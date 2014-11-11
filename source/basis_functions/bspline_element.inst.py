@@ -29,7 +29,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
-             for x in inst.really_all_ref_sp_dims]
+             for x in inst.all_ref_sp_dims]
 
 for acc in accessors:
     f.write('template class %s ;\n' %acc[0])
@@ -44,12 +44,12 @@ for acc in accessors:
 #     for s in fun_list:
 #         f.write(s)
 
-    fun_2 = ('template ValueTable< Conditional< order==0,'+
-               acc[0] + '::Value,' +
-               acc[0] + '::Derivative<order> > > ' + 
-               acc[0] + '::evaluate_basis_derivatives_at_points<order>' +
-               '(const ValueVector<Point>&) const; \n')
-    fun_2_list = [fun_2.replace('order', str(d)) for d in inst.deriv_order]
-    for s in fun_2_list:
-        f.write(s)
+#     fun_2 = ('template ValueTable< Conditional< order==0,'+
+#                acc[0] + '::Value,' +
+#                acc[0] + '::Derivative<order> > > ' + 
+#                acc[0] + '::evaluate_basis_derivatives_at_points<order>' +
+#                '(const ValueVector<Point>&) const; \n')
+#     fun_2_list = [fun_2.replace('order', str(d)) for d in inst.deriv_order]
+#     for s in fun_2_list:
+#         f.write(s)
 

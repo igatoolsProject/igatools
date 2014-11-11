@@ -24,5 +24,5 @@ include_files = ['geometry/cartesian_grid.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for dim in inst.ref_dom_dims:
+for dim in inst.all_domain_dims:
     f.write("template class FunctionSpaceOnGrid<CartesianGrid<%d>> ;\n" %(dim))

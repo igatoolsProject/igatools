@@ -28,7 +28,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-for x in inst.really_all_ref_sp_dims:
+for x in inst.all_ref_sp_dims:
 #     f.write('template class NewBSplineSpace<%d, %d, %d>; \n'
 #             %(x.dim, x.range, x.rank))
     f.write('template class SpaceElement<NewBSplineSpace<%d, %d, %d>>; \n'
@@ -44,7 +44,7 @@ for x in inst.really_all_ref_sp_dims:
              'void %s::init_cache<k>(ElementAccessor &elem);' %elemhandler,
              'void %s::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);' %elemhandler]
     for fun in k_members:
-        for k in range(x.dim, max(0, x.dim - inst.n_sub_element) - 1, -1):
+        for k in inst.sub_dims(x.dim):
             s = fun.replace('k', '%d' % (k));
             f.write('template ' + s + '\n')           
    

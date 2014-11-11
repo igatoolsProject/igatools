@@ -257,4 +257,6 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#include<igatools/basis_functions/new_physical_space-inline.h>
+
 #endif

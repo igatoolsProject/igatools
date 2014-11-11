@@ -48,7 +48,7 @@ private:
     using self_t = GridElementHandler<dim_>;
 
 public:
-    using GridType = CartesianGrid<dim_>;
+    using GridType = const CartesianGrid<dim_>;
 
 protected:
     using ElementIterator = typename GridType::ElementIterator;

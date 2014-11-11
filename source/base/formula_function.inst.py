@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
-for row in inst.newfunction_dims:
+for row in inst.function_dims:
     s = 'template class FormulaFunction<%d, %d, %d, %d > ;\n' %(row.dim, row.codim, row.range, row.rank)
     f.write(s)
    

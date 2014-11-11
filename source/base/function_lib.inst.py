@@ -22,17 +22,16 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-for row in inst.newfunction_dims:
+for row in inst.function_dims:
     s = ('template class functions::LinearFunction<%d, %d, %d>;\n' 
          %(row.dim, row.codim, row.range) )
     f.write(s)
     
-for row in inst.newfunction_dims:
+for row in inst.function_dims:
     s = ('template class functions::ConstantFunction<%d, %d, %d>;\n' 
          % (row.dim, row.codim, row.range))
     f.write(s) 
 
-dims = [1,2,3]
-for d in dims:
-    s = ('template class functions::BallFunction<%d>;\n' %d )
+for dim in inst.domain_dims:
+    s = ('template class functions::BallFunction<%d>;\n' %dim )
     f.write(s)

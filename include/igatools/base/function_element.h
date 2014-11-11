@@ -35,7 +35,7 @@ public:
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
     using Hessian  = typename Func::Hessian;
-    using ContainerType = CartesianGrid<dim>;
+    using ContainerType = const CartesianGrid<dim>;
 
 private:
     template <int order>

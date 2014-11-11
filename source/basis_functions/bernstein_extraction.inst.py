@@ -25,6 +25,6 @@ data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
 classes = ['BernsteinExtraction<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-          for x in inst.really_all_ref_sp_dims]
+          for x in inst.all_ref_sp_dims]
 for c in classes:
    f.write('template class %s ;\n' %c)

@@ -24,10 +24,13 @@ include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for dim in inst.domain_dims:
+for dim in inst.all_domain_dims:
     grid = 'CartesianGrid<%d>' %(dim)
     f.write('template class %s; \n' % (grid))
-    for k in range(max(0,dim-inst.n_sub_element),dim+1):
+    
+for dim in inst.domain_dims:
+    grid = 'CartesianGrid<%d>' %(dim)   
+    for k in inst.sub_dims(dim):
         f.write('template std::shared_ptr<CartesianGrid<%d>> %s::get_sub_grid(const int sub_elem_id, InterGridMap<%d> &elem_map) const; \n' % (k,grid,k))
         f.write('template std::array<Points<%d>, %d> ' %(dim,dim-k) +
                 '%s::get_normal_space<%d>(const int j) const; \n' % (grid,dim-k))

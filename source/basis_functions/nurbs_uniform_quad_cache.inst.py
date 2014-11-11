@@ -18,14 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-from init_instantiation_data import *
-
-include_files = ['basis_functions/nurbs_element_accessor.h']
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
-
-space_caches = ['NURBSUniformQuadCache<%d, %d, %d>' %(x.dim, x.range, x.rank)
-                for x in inst.really_all_ref_sp_dims]
-for row in space_caches:
-   f.write('template class %s; \n' % (row))
+# from init_instantiation_data import *
+# 
+# include_files = ['basis_functions/nurbs_element_accessor.h']
+# data = Instantiation(include_files)
+# (f, inst) = (data.file_output, data.inst)
+# 
+# space_caches = ['NURBSUniformQuadCache<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#                 for x in inst.really_all_ref_sp_dims]
+# for row in space_caches:
+#    f.write('template class %s; \n' % (row))
    

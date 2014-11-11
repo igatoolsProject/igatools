@@ -26,7 +26,8 @@ include_files = ['../../source/geometry/grid_forward_iterator.cpp',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = ['FunctionElement<%d, %d, %d>' %(row.dim, row.range, row.rank) for row in inst.function_dims]
+accessors = ['FunctionElement<%d, %d, %d>' %(row.dim, row.range, row.rank) 
+			for row in inst.all_function_dims]
 for row in accessors:
     f.write('template class %s; \n' %(row))
     f.write('template class GridForwardIterator<%s>;\n' %(row))

@@ -20,6 +20,8 @@
 
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/space_manager.h>
+#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/function_lib.h>
 
 using std::endl;
 using std::array;
@@ -190,11 +192,15 @@ auto
 NewBSplineSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
                   InterSpaceMap<k> &dof_map,
-                  InterGridMap<k>  &elem_map) const
+                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
-    auto sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
-    auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
+    if (!(sub_grid))
+    {
+        typename GridType::template InterGridMap<k>  elem_map;
+        sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+    }
+        auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
     auto sub_degree = this->template get_sub_space_degree<k>(s_id);
 
     auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);
@@ -233,6 +239,26 @@ get_ref_sub_space(const int s_id,
 
     }
 
+    return sub_space;
+}
+
+
+
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+NewBSplineSpace<dim_, range_, rank_>::
+get_sub_space(const int s_id, InterSpaceMap<k> &dof_map) const
+-> std::shared_ptr<SubSpace<k> >
+{
+    auto grid =  this->get_grid();
+    typename GridType::template InterGridMap<k> elem_map;
+    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+
+    auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
+    auto F = functions::create_identity<dim>(grid);
+    auto sub_map_func = SubFunction<k, dim, dim>::create(sub_grid, F, s_id, elem_map);
+    auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
     return sub_space;
 }
 

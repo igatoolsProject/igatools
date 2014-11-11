@@ -24,7 +24,7 @@ include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['GridElementHandler<%d>' % (dim) for dim in inst.domain_dims]
+cartesian_grids = ['GridElementHandler<%d>' % (dim) for dim in inst.all_domain_dims]
 for row in cartesian_grids:
    f.write('template class %s; \n' % (row))
 
@@ -35,6 +35,6 @@ k_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor &elem,
              'Size GridElementHandler<dim>::get_num_points<k>() const;']
 for dim in inst.domain_dims:
     for fun in k_members:
-        for k in range(dim, max(0,dim-inst.n_sub_element) - 1, -1):
+        for k in inst.sub_dims(dim):
             s = fun.replace('dim','%d' %dim).replace('k','%d' %(k));
             f.write('template ' + s + '\n')

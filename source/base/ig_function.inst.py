@@ -41,8 +41,9 @@ include_files = ['basis_functions/new_bspline_space.h',
 data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
-for x in  inst.really_all_ref_sp_dims: 
-    s = 'template class IgFunction<NewBSplineSpace<%d,%d,%d>> ;\n' %(x.dim, x.range, x.rank)
+for x in  inst.all_ref_sp_dims: 
+    s = ( 'template class IgFunction<NewBSplineSpace<%d,%d,%d>> ;\n' 
+          %(x.dim, x.range, x.rank) )
     f.write(s)
     
 # for sp in inst.UserPhysSpaces + inst.UserRefSpaces:	

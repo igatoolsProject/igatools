@@ -18,19 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-from init_instantiation_data import *
-
-include_files = ['basis_functions/bspline_element_accessor.h',
-                 'basis_functions/nurbs_element_accessor.h',
-                 'geometry/push_forward_element_accessor.h',
-                 'basis_functions/physical_space_element_accessor.h']
-
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
-
-space_caches = ['SpaceUniformQuadCache<%s>' %x.name
-                for x in inst.PhysSpaces_v2]
-
-for row in space_caches:
-   f.write('template class %s; \n' % (row))
-   
+# from init_instantiation_data import *
+# 
+# include_files = ['basis_functions/bspline_element_accessor.h',
+#                  'basis_functions/nurbs_element_accessor.h',
+#                  'geometry/push_forward_element_accessor.h',
+#                  'basis_functions/physical_space_element_accessor.h']
+# 
+# data = Instantiation(include_files)
+# (f, inst) = (data.file_output, data.inst)
+# 
+# space_caches = ['SpaceUniformQuadCache<%s>' %x.name
+#                 for x in inst.PhysSpaces_v2]
+# 
+# for row in space_caches:
+#    f.write('template class %s; \n' % (row))
+#    

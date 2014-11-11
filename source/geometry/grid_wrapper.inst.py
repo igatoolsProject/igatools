@@ -25,6 +25,6 @@ include_files = ['geometry/cartesian_grid.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['CartesianGrid<%d>' %(dim) for dim in inst.domain_dims]
+cartesian_grids = ['CartesianGrid<%d>' %(dim) for dim in inst.all_domain_dims]
 for row in cartesian_grids:
    f.write('template class GridWrapper<%s>; \n' % (row))

@@ -24,7 +24,7 @@ include_files = ['../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = ['CartesianGridElement<%d>' %(dim) for dim in inst.domain_dims]
+accessors = ['CartesianGridElement<%d>' %(dim) for dim in inst.all_domain_dims]
 for row in accessors:
     f.write('template class %s; \n' %(row))
     f.write('template class GridForwardIterator<%s>;\n' %(row))
@@ -38,7 +38,7 @@ k_members = [
              'bool CartesianGridElement<dim>::is_boundary<k>() const;']
 for dim in inst.domain_dims:
     for fun in k_members:
-        for k in range(dim, max(0,dim-inst.n_sub_element) - 1, -1):
+        for k in inst.sub_dims(dim):
             s = fun.replace('dim','%d' %dim).replace('k','%d' %k);
             f.write('template ' + s + '\n')
             

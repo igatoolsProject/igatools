@@ -34,16 +34,16 @@ include_files = ['basis_functions/bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces_v2:
+for space in inst.AllPhysSpaces:
    accessor = ('PhysicalSpaceElementAccessor<%s>' %space.name)
    f.write('template class %s;\n' %accessor)
    f.write('template class GridForwardIterator<%s> ;\n' %accessor)
-   function = ('template  ValueTable< Conditional< deriv_order==0,'+
-               accessor + '::Value,' +
-               accessor + '::Derivative<deriv_order> > > ' + 
-               accessor + 
-               '::evaluate_basis_derivatives_at_points<deriv_order>' +
-               '(const ValueVector<'+ accessor + '::RefPoint>&) const; \n')
-   fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
-   for s in fun_list:
-      f.write(s)
+#    function = ('template  ValueTable< Conditional< deriv_order==0,'+
+#                accessor + '::Value,' +
+#                accessor + '::Derivative<deriv_order> > > ' + 
+#                accessor + 
+#                '::evaluate_basis_derivatives_at_points<deriv_order>' +
+#                '(const ValueVector<'+ accessor + '::RefPoint>&) const; \n')
+#    fun_list = [function.replace('deriv_order', str(d)) for d in inst.deriv_order]
+#    for s in fun_list:
+#       f.write(s)

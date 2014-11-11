@@ -46,7 +46,7 @@ void run_test(TensorSize<dim> n, const int degree = 1)
 
         out << "Face space: " << i << endl;
         auto sub_space =
-            space->template get_ref_sub_space<k>(i, dof_map, elem_map);
+            space->template get_ref_sub_space<k>(i, dof_map);
         sub_space->print_info(out);
 
         out << "Dofs face to space mapping: " << endl;
