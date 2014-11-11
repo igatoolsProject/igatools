@@ -56,6 +56,8 @@ struct seq
 
 template <int, int, int, int> class FunctionElement;
 
+
+
 /**
  * Function Class
  */
@@ -63,6 +65,7 @@ template<int dim, int codim = 0, int range = 1, int rank = 1>
 class NewFunction : public GridElementHandler<dim>
 {
 private:
+    using base_t = NewFunction<dim, codim, range, rank>;
     using self_t = NewFunction<dim, codim, range, rank>;
     using parent_t = GridElementHandler<dim>;
 
@@ -128,7 +131,11 @@ public:
 
     NewFunction(const self_t &) = default;
 
-
+    virtual std::shared_ptr<base_t> clone()
+    {
+        Assert(false, ExcNotImplemented());
+        return std::make_shared<base_t>(self_t(*this));
+    }
 
     virtual void reset(const NewValueFlags &flag, const variant_1& quad)
     {

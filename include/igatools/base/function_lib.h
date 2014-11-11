@@ -51,6 +51,13 @@ public:
     create(std::shared_ptr<GridType> grid,
            const Value &b);
 
+    std::shared_ptr<base_t> clone() override
+            {
+        return std::make_shared<self_t>(self_t(*this));
+            }
+
+    ConstantFunction(const self_t&) = default;
+
 protected:
     ConstantFunction(std::shared_ptr<GridType> grid,
                      const Value &b);
@@ -95,9 +102,18 @@ public:
            const Gradient &A,
            const Value &b);
 
+    std::shared_ptr<base_t> clone() override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
+    LinearFunction(const self_t&) = default;
+
 protected:
     LinearFunction(std::shared_ptr<GridType> grid,
                    const Gradient &A, const Value &b);
+
+
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
@@ -144,6 +160,13 @@ public:
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid);
+
+    std::shared_ptr<base_t> clone() override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
+    BallFunction(const self_t&) = default;
 
 protected:
     BallFunction(std::shared_ptr<GridType> grid);

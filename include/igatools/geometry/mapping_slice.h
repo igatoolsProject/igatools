@@ -58,7 +58,7 @@ public:
                 InterGridMap<sub_dim> &elem_map)
 :
     base_t(grid),
-    sup_func_(func),
+    sup_func_(func->clone()),
     s_id_(s_id),
     elem_map_(elem_map),
 	sup_elem_(sup_func_->begin())

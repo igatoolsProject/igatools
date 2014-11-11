@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for LinearFunction
+ *  Test for SubFunction class
  *  author: pauletti
  *  date: Oct 12, 2014
  */
