@@ -137,7 +137,7 @@ public:
         return std::make_shared<base_t>(self_t(*this));
     }
 
-    virtual void reset(const NewValueFlags &flag, const variant_1& quad)
+    virtual void reset(const NewValueFlags &flag, const variant_1 &quad)
     {
         reset_impl.flag = flag;
         reset_impl.grid_handler = this;
@@ -146,7 +146,7 @@ public:
     }
 
 
-    virtual void init_cache(ElementAccessor &elem, const variant_2& k)
+    virtual void init_cache(ElementAccessor &elem, const variant_2 &k)
     {
         init_cache_impl.grid_handler = this;
         init_cache_impl.elem = &elem;
@@ -156,7 +156,7 @@ public:
     }
 
 
-    virtual void fill_cache(ElementAccessor &elem, const int j, const variant_2& k)
+    virtual void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k)
     {
         fill_cache_impl.j = j;
         fill_cache_impl.grid_handler = this;
@@ -164,32 +164,32 @@ public:
         boost::apply_visitor(fill_cache_impl, k);
     }
 
-    void fill_cache(ElementIterator &elem, const int j, const variant_2& k)
+    void fill_cache(ElementIterator &elem, const int j, const variant_2 &k)
     {
         fill_cache(elem.get_accessor(), j, k);
     }
 
-    void init_cache(ElementIterator &elem, const variant_2& k)
+    void init_cache(ElementIterator &elem, const variant_2 &k)
     {
         init_cache(elem.get_accessor(), k);
     }
 
     auto begin()  -> ElementIterator
     {
-    	return ElementIterator(this->get_grid(), 0);
+        return ElementIterator(this->get_grid(), 0);
     }
 
     auto end() -> ElementIterator
     {
         return ElementIterator(this->get_grid(),
-                               IteratorState::pass_the_end);
+        IteratorState::pass_the_end);
     }
 
 private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             (*flags_)[T::dim] = flag;
             grid_handler->template reset<T::dim>(flag, quad);
@@ -203,7 +203,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             grid_handler->template fill_cache<T::k>(*elem, j);
         }
@@ -216,7 +216,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             grid_handler->template init_cache<T::k>(*elem);
 

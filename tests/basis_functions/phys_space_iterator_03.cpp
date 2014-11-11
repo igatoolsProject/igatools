@@ -49,7 +49,7 @@ create_function(shared_ptr<CartesianGrid<dim>> grid)
 template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
-	OUTSTART
+    OUTSTART
 
     const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
@@ -66,9 +66,9 @@ void elem_values(const int n_knots = 2, const int deg=1)
     const int n_qp = 2;
     auto quad = QGauss<k>(n_qp);
     auto flag = NewValueFlags::value |
-    		NewValueFlags::gradient |
-			NewValueFlags::hessian |
-			NewValueFlags::point;
+                NewValueFlags::gradient |
+                NewValueFlags::hessian |
+                NewValueFlags::point;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);
@@ -79,18 +79,18 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     for (; elem != end; ++elem)
     {
-    	sp_values.template fill_cache<k>(elem,0);
+        sp_values.template fill_cache<k>(elem,0);
 
-    	out << "Basis values: " << endl;
-    	elem->template get_values<0, k>().print_info(out);
-    	out << endl;
+        out << "Basis values: " << endl;
+        elem->template get_values<0, k>().print_info(out);
+        out << endl;
 
-    	out << "Basis gradients: " << endl;
-    	elem->template get_values<1, k>().print_info(out);
-    	out << endl;
+        out << "Basis gradients: " << endl;
+        elem->template get_values<1, k>().print_info(out);
+        out << endl;
 
-    	out << "Basis hessians: " << endl;
-    	elem->template get_values<2, k>().print_info(out);
+        out << "Basis hessians: " << endl;
+        elem->template get_values<2, k>().print_info(out);
     }
 
     OUTEND

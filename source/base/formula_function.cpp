@@ -37,7 +37,7 @@ FormulaFunction(std::shared_ptr<GridType> grid)
 template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
-fill_cache(ElementAccessor &elem, const int j, const variant_2& k) -> void
+fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
 {
     parent_t::fill_cache(elem, j, k);
     fill_cache_impl.j = j;

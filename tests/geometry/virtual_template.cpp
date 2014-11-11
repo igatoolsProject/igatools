@@ -53,7 +53,7 @@ template class NewFunction<2, 0, 1, 1> ;
 template<int k_>
 struct Int
 {
-	static const int k = k_;
+    static const int k = k_;
 };
 
 template<template<int> class Q, int start, std::size_t N>
@@ -90,28 +90,28 @@ class Function : public GridElementHandler<dim>
     using parent_t = GridElementHandler<dim>;
 public:
     Function(std::shared_ptr<const CartesianGrid<dim>> grid)
-:
-    GridElementHandler<dim>(grid)
+        :
+        GridElementHandler<dim>(grid)
     {}
 
-    void init_cache(ElementIterator &elem, const variant_2& k)
+    void init_cache(ElementIterator &elem, const variant_2 &k)
     {
         init_cache(elem.get_accessor(), k);
     }
 
-    void init_cache(ElementAccessor &elem, const variant_2& k)
+    void init_cache(ElementAccessor &elem, const variant_2 &k)
     {
         init_cache_impl.grid_handler = this;
         init_cache_impl.elem = &elem;
         boost::apply_visitor(init_cache_impl, k);
     }
 
-    void fill_cache(ElementIterator &elem, const int j, const variant_2& k)
+    void fill_cache(ElementIterator &elem, const int j, const variant_2 &k)
     {
         fill_cache(elem.get_accessor(), j, k);
     }
 
-    void fill_cache(ElementAccessor &elem, const int j, const variant_2& k)
+    void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k)
     {
         fill_cache_impl.j = j;
         fill_cache_impl.grid_handler = this;
@@ -119,7 +119,7 @@ public:
         boost::apply_visitor(fill_cache_impl, k);
     }
 
-    virtual void reset(const NewValueFlags &flag, const variant_1& quad)
+    virtual void reset(const NewValueFlags &flag, const variant_1 &quad)
     {
         reset_impl.flag = flag;
         reset_impl.grid_handler = this;
@@ -130,7 +130,7 @@ private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             grid_handler->template reset<T::dim>(flag, quad);
         }
@@ -142,7 +142,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             grid_handler->template fill_cache<T::k>(*elem, j);
         }
@@ -155,7 +155,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             grid_handler->template init_cache<T::k>(*elem);
         }
@@ -174,17 +174,17 @@ private:
 template <int dim, int k>
 void test()
 {
-	auto grid = CartesianGrid<dim>::create(3);
-	Function<dim> x(grid);
+    auto grid = CartesianGrid<dim>::create(3);
+    Function<dim> x(grid);
 
-	GridForwardIterator<FunctionElement<dim,0,1,1>> elem(grid, 0);
-	GridForwardIterator<FunctionElement<dim,0,1,1>> end(grid, IteratorState::pass_the_end);
+    GridForwardIterator<FunctionElement<dim,0,1,1>> elem(grid, 0);
+    GridForwardIterator<FunctionElement<dim,0,1,1>> end(grid, IteratorState::pass_the_end);
 
-	x.reset(NewValueFlags::value, QGauss<k>(2));
-	x.init_cache(elem, Int<k>());
-	x.fill_cache(elem, 0, Int<k>());
+    x.reset(NewValueFlags::value, QGauss<k>(2));
+    x.init_cache(elem, Int<k>());
+    x.fill_cache(elem, 0, Int<k>());
 
-	//elem->get_points().print_info(out);
+    //elem->get_points().print_info(out);
 }
 
 int main()

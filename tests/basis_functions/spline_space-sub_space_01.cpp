@@ -31,7 +31,7 @@
 
 
 template<int k, int dim, int range=1, int rank=1>
-void sub_space(const TensorSize<dim>& n_knots, const TensorIndex<dim>& degree)
+void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
 {
     OUTSTART
     using SplineSpace = SplineSpace<dim, range, rank>;

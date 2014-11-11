@@ -62,8 +62,9 @@ using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1
 
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc {
-    static void apply_func(Func &F, const Tuple& t)
+struct TupleFunc
+{
+    static void apply_func(Func &F, const Tuple &t)
     {
         TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
         if (N>Min)
@@ -74,7 +75,7 @@ struct TupleFunc {
 template<class Func, class Tuple, std::size_t N>
 struct TupleFunc<Func, Tuple, N, N>
 {
-    static void apply_func(Func &F, const Tuple& t)
+    static void apply_func(Func &F, const Tuple &t)
     {
         F.func(std::get<N>(t));
     }
@@ -86,7 +87,7 @@ struct TupleFunc<Func, Tuple, N, N>
 struct PrintQuadFunc
 {
     PrintQuadFunc(LogStream &out1)
-    :out(out1)
+        :out(out1)
     {}
     template<std::size_t... I>
     void func(const auto &q)
@@ -98,7 +99,7 @@ struct PrintQuadFunc
 };
 
 template<class... Args>
-void print_quads(const std::tuple<Args...>& t, LogStream &out1)
+void print_quads(const std::tuple<Args...> &t, LogStream &out1)
 {
     PrintQuadFunc f(out1);
     TupleFunc<PrintQuadFunc, decltype(t), sizeof...(Args), 2>::apply_func(f,t);

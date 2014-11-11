@@ -67,15 +67,15 @@ private:
     void evaluate_0(const ValueVector<Point> &points,
                     ValueVector<Value> &values) const
     {
-    	auto pt = points.begin();
-    	auto val = values.begin();
+        auto pt = points.begin();
+        auto val = values.begin();
 
-    	for (; pt != points.end(); ++pt, ++val)
-    	{
-    		*val = 1.;
-    		for (int i=0; i<dim; ++i)
-    			(*val) *= (*pt)[i];
-    	}
+        for (; pt != points.end(); ++pt, ++val)
+        {
+            *val = 1.;
+            for (int i=0; i<dim; ++i)
+                (*val) *= (*pt)[i];
+        }
     }
 
     void evaluate_1(const ValueVector<Point> &points,
@@ -103,12 +103,12 @@ void do_test(const int deg)
     QGauss<dim> quad(n_qpoints);
 
     ProductFunction<dim> f(grid);
-    typename functions::ConstantFunction<dim,0,1>::Value val{0.};
+    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
     auto g = functions::ConstantFunction<dim,0,1>::create(grid, val);
 
     vector<Real> elem_err(grid->get_num_active_elems());
     Real err = space_tools::integrate_difference<dim>
-                   (f, *g, quad, Norm::L2, elem_err);
+               (f, *g, quad, Norm::L2, elem_err);
 
     const Real p=2;
     out << std::pow(p+1, -dim/p) << "\t" << err << endl;

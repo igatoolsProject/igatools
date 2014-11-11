@@ -308,9 +308,9 @@ public:
      */
     template<int k>
     std::shared_ptr<SubRefSpace<k>>
-    get_ref_sub_space(const int sub_elem_id,
-                      InterSpaceMap<k> &dof_map,
-                      InterGridMap<k> &elem_map) const;
+                                 get_ref_sub_space(const int sub_elem_id,
+                                                   InterSpaceMap<k> &dof_map,
+                                                   InterGridMap<k> &elem_map) const;
 
 #if 0
     /** Getting some underlying objects */

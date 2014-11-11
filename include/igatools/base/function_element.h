@@ -102,8 +102,8 @@ private:
 
         ValueVector<Point> points_;
         std::tuple<ValueVector<Value>,
-        ValueVector<Derivative<1>>,
-        ValueVector<Derivative<2>>> values_;
+            ValueVector<Derivative<1>>,
+            ValueVector<Derivative<2>>> values_;
 
     };
 

@@ -54,8 +54,9 @@ using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
                                            ValuesCache()));
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc {
-    static void apply_func(Func &F, const Tuple& t)
+struct TupleFunc
+{
+    static void apply_func(Func &F, const Tuple &t)
     {
         TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
         if (N>Min)
@@ -66,7 +67,7 @@ struct TupleFunc {
 template<class Func, class Tuple, std::size_t N>
 struct TupleFunc<Func, Tuple, N, N>
 {
-    static void apply_func(Func &F, const Tuple& t)
+    static void apply_func(Func &F, const Tuple &t)
     {
         F.func(std::get<N>(t));
     }
@@ -74,8 +75,9 @@ struct TupleFunc<Func, Tuple, N, N>
 
 
 template<class Func, class Args1, class Args2, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc1 {
-    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple& t)
+struct TupleFunc1
+{
+    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple &t)
     {
         TupleFunc1<Func, Args1, Args2, Tuple, N-1, Min>::apply_func(F, flag, quad, t);
         if (N>Min)
@@ -94,7 +96,7 @@ struct TupleFunc1 {
 template<class Func, class Args1, class Args2, class Tuple, std::size_t N>
 struct TupleFunc1<Func, Args1, Args2, Tuple, N, N>
 {
-    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple& t)
+    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple &t)
     {
         auto &val_cache = std::get<N>(t);
         int j=0;
@@ -113,7 +115,7 @@ namespace cacheutils
 struct PrintCacheFunc
 {
     PrintCacheFunc(LogStream &out1)
-    :out(out1)
+        :out(out1)
     {}
 
     void func(const auto &c)
@@ -126,7 +128,7 @@ struct PrintCacheFunc
 };
 
 template<class... Args>
-void print_caches(const std::tuple<Args...>& t, LogStream &out)
+void print_caches(const std::tuple<Args...> &t, LogStream &out)
 {
     PrintCacheFunc f(out);
     TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);

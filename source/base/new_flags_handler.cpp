@@ -473,7 +473,7 @@ MappingFlags::to_function_flags(const NewValueFlags &flags)
     NewValueFlags transfer_flag = NewValueFlags::measure |
                                   NewValueFlags::w_measure |
                                   NewValueFlags::normal |
-								  FunctionFlags::valid_flags;
+                                  FunctionFlags::valid_flags;
 
 
     NewValueFlags f_flag = flags & transfer_flag;

@@ -46,7 +46,7 @@ create_function(shared_ptr<CartesianGrid<dim>> grid)
     typename Function::Gradient A;
 
     for (int j=0; j<dim; j++)
-    	A[j][j] = 1.;
+        A[j][j] = 1.;
 
     return Function::create(grid, A, b);
 }
@@ -55,21 +55,21 @@ create_function(shared_ptr<CartesianGrid<dim>> grid)
 template <int dim, int k=dim, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
-	using RefSpace = NewBSplineSpace<dim, range, rank>;
-	using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
-	using ElementHandler = typename Space::ElementHandler;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
-	auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto grid  = CartesianGrid<dim>::create(n_knots);
 
-	auto ref_space = RefSpace::create(deg, grid);
-	auto map_func = create_function(grid);
+    auto ref_space = RefSpace::create(deg, grid);
+    auto map_func = create_function(grid);
 
-	auto space = Space::create(ref_space, map_func);
+    auto space = Space::create(ref_space, map_func);
 
 
     auto quad = QGauss<k>(n_qp);
     auto flag = NewValueFlags::value|NewValueFlags::gradient|
-    		    NewValueFlags::hessian | NewValueFlags::point;
+                NewValueFlags::hessian | NewValueFlags::point;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);
@@ -79,23 +79,23 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
     sp_values.template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
-    	if (elem->SpaceElement<Space>::is_boundary())
-    	{
-    		out << "Element" << elem->get_flat_index() << endl;
-    		for (auto &s_id : UnitElement<dim>::template elems_ids<k>() )
-    		{
-    			if (elem->SpaceElement<Space>::is_boundary(s_id))
-    			{
-    				out << "Face " << s_id << endl;
-    				sp_values.template fill_cache<k>(elem, s_id);
-    				out << "values: " << endl;
-    				elem->template get_values<0, k>(s_id).print_info(out);
-//    				out << "values: " << endl;
-//    				elem->template get_values<1, k>(s_id).print_info(out);
-//    				elem->template get_values<2, k>(s_id).print_info(out);
-    			}
-    		}
-    	}
+        if (elem->SpaceElement<Space>::is_boundary())
+        {
+            out << "Element" << elem->get_flat_index() << endl;
+            for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+            {
+                if (elem->SpaceElement<Space>::is_boundary(s_id))
+                {
+                    out << "Face " << s_id << endl;
+                    sp_values.template fill_cache<k>(elem, s_id);
+                    out << "values: " << endl;
+                    elem->template get_values<0, k>(s_id).print_info(out);
+//                  out << "values: " << endl;
+//                  elem->template get_values<1, k>(s_id).print_info(out);
+//                  elem->template get_values<2, k>(s_id).print_info(out);
+                }
+            }
+        }
     }
 }
 
@@ -108,8 +108,8 @@ int main()
 
     for (int num_knots = 2; num_knots<4; ++num_knots)
     {
-    	elem_values<2,1>(num_knots, p, 2);
-    	elem_values<3,2>(num_knots, p, 2);
+        elem_values<2,1>(num_knots, p, 2);
+        elem_values<3,2>(num_knots, p, 2);
     }
 
     return 0;

@@ -52,11 +52,11 @@ public:
            const Value &b);
 
     std::shared_ptr<base_t> clone() override
-            {
+    {
         return std::make_shared<self_t>(self_t(*this));
-            }
+    }
 
-    ConstantFunction(const self_t&) = default;
+    ConstantFunction(const self_t &) = default;
 
 protected:
     ConstantFunction(std::shared_ptr<GridType> grid,
@@ -107,7 +107,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    LinearFunction(const self_t&) = default;
+    LinearFunction(const self_t &) = default;
 
 protected:
     LinearFunction(std::shared_ptr<GridType> grid,
@@ -166,7 +166,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    BallFunction(const self_t&) = default;
+    BallFunction(const self_t &) = default;
 
 protected:
     BallFunction(std::shared_ptr<GridType> grid);

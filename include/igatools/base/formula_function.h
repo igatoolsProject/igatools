@@ -55,7 +55,7 @@ public:
 //
 //    void init_cache(ElementAccessor &elem, const variant_2& k) override;
 
-    void fill_cache(ElementAccessor &elem, const int j, const variant_2& k) override;
+    void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
 private:
     virtual void parametrization(const ValueVector<Points<dim>> &points_,
@@ -90,7 +90,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             auto &local_cache = function->get_cache(*elem);
             auto &cache = local_cache->template get_value_cache<T::k>(j);
@@ -99,7 +99,7 @@ private:
             if (!flags.fill_none())
             {
                 const auto points =
-                        elem->CartesianGridElement<dim>::template get_points<T::k>(j);
+                    elem->CartesianGridElement<dim>::template get_points<T::k>(j);
 
                 if (flags.fill_points())
                     function->parametrization(points, cache.points_);

@@ -54,8 +54,8 @@ space_to_ref_flag(const Transformation type, const NewValueFlags flags)
         fill_D2_phi_hat = fill_hessians;
     }
     else if (type == Transformation::h_div  ||
-             type == Transformation::h_curl ||
-             type == Transformation::l_2)
+    type == Transformation::h_curl ||
+    type == Transformation::l_2)
     {
         fill_D0_phi_hat = fill_values || fill_gradients || fill_hessians;
         fill_D1_phi_hat = fill_gradients || fill_hessians;
@@ -77,10 +77,10 @@ auto
 space_to_pf_flag(const NewValueFlags flags)
 {
     NewValueFlags transfer_flag =
-            NewValueFlags::measure |
-            NewValueFlags::w_measure |
-            NewValueFlags::normal |
-            NewValueFlags::point;
+        NewValueFlags::measure |
+        NewValueFlags::w_measure |
+        NewValueFlags::normal |
+        NewValueFlags::point;
 
     NewValueFlags pf_flag = flags & transfer_flag;
 

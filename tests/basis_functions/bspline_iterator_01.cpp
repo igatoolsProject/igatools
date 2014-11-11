@@ -56,24 +56,24 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-    	cache.template fill_cache<k>(elem, s_id);
+        cache.template fill_cache<k>(elem, s_id);
 
-    	out << "Sub Element: " << s_id << endl;
-    	auto values    = elem->template get_values<0,k>(s_id);
-    	auto gradients = elem->template get_values<1,k>(s_id);
-    	auto hessians  = elem->template get_values<2,k>(s_id);
+        out << "Sub Element: " << s_id << endl;
+        auto values    = elem->template get_values<0,k>(s_id);
+        auto gradients = elem->template get_values<1,k>(s_id);
+        auto hessians  = elem->template get_values<2,k>(s_id);
 
-    	out.begin_item("Values basis functions:");
-    	values.print_info(out);
-    	out.end_item();
+        out.begin_item("Values basis functions:");
+        values.print_info(out);
+        out.end_item();
 
-    	out.begin_item("Gradients basis functions:");
-    	gradients.print_info(out);
-    	out.end_item();
+        out.begin_item("Gradients basis functions:");
+        gradients.print_info(out);
+        out.end_item();
 
-    	out.begin_item("Hessians basis functions:");
-    	hessians.print_info(out);
-    	out.end_item();
+        out.begin_item("Hessians basis functions:");
+        hessians.print_info(out);
+        out.end_item();
     }
 }
 

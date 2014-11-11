@@ -55,7 +55,7 @@ create(std::shared_ptr<Space> space,
 template<class Space>
 auto
 IgFunction<Space>::
-reset(const NewValueFlags &flag, const variant_1& quad) -> void
+reset(const NewValueFlags &flag, const variant_1 &quad) -> void
 {
     parent_t::reset(flag, quad);
     reset_impl.flag = flag;
@@ -69,7 +69,7 @@ reset(const NewValueFlags &flag, const variant_1& quad) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-init_cache(ElementAccessor &elem, const variant_2& k) -> void
+init_cache(ElementAccessor &elem, const variant_2 &k) -> void
 {
     parent_t::init_cache(elem, k);
     init_cache_impl.space_handler_ = &space_filler_;
@@ -82,7 +82,7 @@ init_cache(ElementAccessor &elem, const variant_2& k) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-fill_cache(ElementAccessor &elem, const int j, const variant_2& k) -> void
+fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
 {
     parent_t::fill_cache(elem, j, k);
 

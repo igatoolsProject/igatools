@@ -33,62 +33,62 @@
 template<int dim, int k=dim-1>
 void sub_elem_values(const int n_knots, const int deg)
 {
-	OUTSTART
+    OUTSTART
 
-	auto grid = CartesianGrid<dim>::create(n_knots);
-	using Space = NewBSplineSpace<dim>;
-	using ElementHandler = typename Space::ElementHandler;
-	auto space = Space::create(deg, grid);
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    using Space = NewBSplineSpace<dim>;
+    using ElementHandler = typename Space::ElementHandler;
+    auto space = Space::create(deg, grid);
 
-	const int n_qp = 2;
-	QGauss<k>   k_quad(n_qp);
-	QGauss<dim> quad(n_qp);
-	auto flag = NewValueFlags::value;//|NewValueFlags::gradient|NewValueFlags::hessian;
-	ElementHandler cache(space);
-	cache.template reset<k>(flag, k_quad);
-	cache.template reset<dim>(flag, quad);
-	auto elem = space->begin();
-	auto end =  space->end();
-	cache.template init_cache<k>(elem);
-	cache.template init_cache<dim>(elem);
-	for (; elem != end; ++elem)
-	{
-		if (elem->is_boundary())
-		{
-			cache.template fill_cache<dim>(elem, 0);
-			out << "Element" << elem->get_flat_index() << endl;
-			elem->template get_values<0,dim>(0).print_info(out);
-			for(auto &s_id : UnitElement<dim>::template elems_ids<k>())
-			{
-				if (elem->is_boundary(s_id))
-				{
-					cache.template fill_cache<k>(elem, s_id);
-					out << "Sub Element: " << s_id << endl;
-					out.begin_item("Values basis functions:");
-					auto values = elem->template get_values<0,k>(s_id);
-					values.print_info(out);
-					out.end_item();
-				}
-			}
-		}
-	}
-	OUTEND
+    const int n_qp = 2;
+    QGauss<k>   k_quad(n_qp);
+    QGauss<dim> quad(n_qp);
+    auto flag = NewValueFlags::value;//|NewValueFlags::gradient|NewValueFlags::hessian;
+    ElementHandler cache(space);
+    cache.template reset<k>(flag, k_quad);
+    cache.template reset<dim>(flag, quad);
+    auto elem = space->begin();
+    auto end =  space->end();
+    cache.template init_cache<k>(elem);
+    cache.template init_cache<dim>(elem);
+    for (; elem != end; ++elem)
+    {
+        if (elem->is_boundary())
+        {
+            cache.template fill_cache<dim>(elem, 0);
+            out << "Element" << elem->get_flat_index() << endl;
+            elem->template get_values<0,dim>(0).print_info(out);
+            for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+            {
+                if (elem->is_boundary(s_id))
+                {
+                    cache.template fill_cache<k>(elem, s_id);
+                    out << "Sub Element: " << s_id << endl;
+                    out.begin_item("Values basis functions:");
+                    auto values = elem->template get_values<0,k>(s_id);
+                    values.print_info(out);
+                    out.end_item();
+                }
+            }
+        }
+    }
+    OUTEND
 }
-//	auto values    = elem->template get_values<0,k>(0);
-//	auto gradients = elem->template get_values<1,k>(0);
-//	auto hessians  = elem->template get_values<2,k>(0);
+//  auto values    = elem->template get_values<0,k>(0);
+//  auto gradients = elem->template get_values<1,k>(0);
+//  auto hessians  = elem->template get_values<2,k>(0);
 
-//	out.begin_item("Values basis functions:");
-//	values.print_info(out);
-//	out.end_item();
+//  out.begin_item("Values basis functions:");
+//  values.print_info(out);
+//  out.end_item();
 
-//	out.begin_item("Gradients basis functions:");
-//	gradients.print_info(out);
-//	out.end_item();
+//  out.begin_item("Gradients basis functions:");
+//  gradients.print_info(out);
+//  out.end_item();
 //
-//	out.begin_item("Hessians basis functions:");
-//	hessians.print_info(out);
-//	out.end_item();
+//  out.begin_item("Hessians basis functions:");
+//  hessians.print_info(out);
+//  out.end_item();
 
 
 //    for (; elem != end; ++elem)

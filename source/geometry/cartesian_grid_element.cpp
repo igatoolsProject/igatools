@@ -343,8 +343,8 @@ is_boundary(const Index id) const
     {
         auto dir = k_elem.constant_directions[i];
         auto val = k_elem.constant_values[i];
-        if ( ((index[dir] == 0)               && (val == 0)) ||
-             ((index[dir] == n_elem[dir] - 1) && (val == 1)) )
+        if (((index[dir] == 0)               && (val == 0)) ||
+            ((index[dir] == n_elem[dir] - 1) && (val == 1)))
             return true;
     }
 

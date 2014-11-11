@@ -101,13 +101,13 @@ private:
         template<int k>
         auto &get_inv_values()
         {
-        	return std::get<k>(inv_values_);
+            return std::get<k>(inv_values_);
         }
 
         template<int k>
         const auto &get_inv_values() const
         {
-        	return std::get<k>(inv_values_);
+            return std::get<k>(inv_values_);
         }
 
         MappingFlags flags_handler_;
@@ -116,48 +116,48 @@ private:
         ValueVector<Real> w_measures_;
 
         std::tuple<ValueVector<InvDerivative<0>>,
-        ValueVector<InvDerivative<1>>,
-        ValueVector<InvDerivative<2>>> inv_values_;
+            ValueVector<InvDerivative<1>>,
+            ValueVector<InvDerivative<2>>> inv_values_;
 
 
     };
 
     class LocalCache
-       {
-       public:
-           LocalCache() = default;
+    {
+    public:
+        LocalCache() = default;
 
-           LocalCache(const LocalCache &in) = default;
+        LocalCache(const LocalCache &in) = default;
 
-           LocalCache(LocalCache &&in) = default;
+        LocalCache(LocalCache &&in) = default;
 
-           ~LocalCache() = default;
+        ~LocalCache() = default;
 
 
-           LocalCache &operator=(const LocalCache &in) = delete;
+        LocalCache &operator=(const LocalCache &in) = delete;
 
-           LocalCache &operator=(LocalCache &&in) = delete;
+        LocalCache &operator=(LocalCache &&in) = delete;
 
-           void print_info(LogStream &out) const;
+        void print_info(LogStream &out) const;
 
-           template <int k>
-           ValuesCache &
-           get_value_cache(const int j)
-           {
-               return std::get<k>(values_)[j];
-           }
+        template <int k>
+        ValuesCache &
+        get_value_cache(const int j)
+        {
+            return std::get<k>(values_)[j];
+        }
 
-           template <int k>
-           const ValuesCache &
-           get_value_cache(const int j) const
-           {
-               return std::get<k>(values_)[j];
-           }
+        template <int k>
+        const ValuesCache &
+        get_value_cache(const int j) const
+        {
+            return std::get<k>(values_)[j];
+        }
 
-           CacheList<ValuesCache, dim> values_;
-       };
+        CacheList<ValuesCache, dim> values_;
+    };
 
-       std::shared_ptr<LocalCache> local_cache_;
+    std::shared_ptr<LocalCache> local_cache_;
 
 public:
     using CacheType = LocalCache;

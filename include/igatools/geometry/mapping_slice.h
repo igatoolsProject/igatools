@@ -35,7 +35,7 @@ template<int sub_dim, int dim, int spacedim>
 class SubFunction : public NewFunction<sub_dim, 0, spacedim, 1>
 {
 private:
-	using self_t = SubFunction<sub_dim, dim, spacedim>;
+    using self_t = SubFunction<sub_dim, dim, spacedim>;
 public:
     using base_t  = NewFunction<sub_dim, 0, spacedim, 1>;
     using SupFunc = NewFunction<    dim, 0, spacedim, 1>;
@@ -56,61 +56,61 @@ public:
                 std::shared_ptr<SupFunc> func,
                 const int s_id,
                 InterGridMap<sub_dim> &elem_map)
-:
-    base_t(grid),
-    sup_func_(func->clone()),
-    s_id_(s_id),
-    elem_map_(elem_map),
-	sup_elem_(sup_func_->begin())
-{}
+        :
+        base_t(grid),
+        sup_func_(func->clone()),
+        s_id_(s_id),
+        elem_map_(elem_map),
+        sup_elem_(sup_func_->begin())
+    {}
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid,
-            std::shared_ptr<SupFunc> func,
-            const int s_id,
-            InterGridMap<sub_dim> &elem_map)
-			{
-			return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
-			}
+           std::shared_ptr<SupFunc> func,
+           const int s_id,
+           InterGridMap<sub_dim> &elem_map)
+    {
+        return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
+    }
 
-void reset(const NewValueFlags &flag, const variant_1& quad) override
-{
-	base_t::reset(flag, quad);
-	auto q = boost::get<Quadrature<sub_dim>>(quad);
-	sup_func_->reset(flag, q);
+    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    {
+        base_t::reset(flag, quad);
+        auto q = boost::get<Quadrature<sub_dim>>(quad);
+        sup_func_->reset(flag, q);
 
-}
+    }
 
 
-void init_cache(ElementAccessor &elem, const variant_2& k1) override
-		{
-			base_t::init_cache(elem, k1);
-			sup_func_->init_cache(sup_elem_, Int<sub_dim>());
-		}
+    void init_cache(ElementAccessor &elem, const variant_2 &k1) override
+    {
+        base_t::init_cache(elem, k1);
+        sup_func_->init_cache(sup_elem_, Int<sub_dim>());
+    }
 
-void fill_cache(ElementAccessor &elem, const int j, const variant_2& k1) override
-		{
-	Assert(j==0, ExcNotImplemented());
-	typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
+    void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k1) override
+    {
+        Assert(j==0, ExcNotImplemented());
+        typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
 
-	sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
+        sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
-	base_t::fill_cache(elem, j, k1);
-	sup_func_->fill_cache(sup_elem_, s_id_, Int<sub_dim>());
-	auto &local_cache = this->get_cache(elem);
-	auto &cache = local_cache->template get_value_cache<sub_dim>(j);
-	auto &flags = cache.flags_handler_;
+        base_t::fill_cache(elem, j, k1);
+        sup_func_->fill_cache(sup_elem_, s_id_, Int<sub_dim>());
+        auto &local_cache = this->get_cache(elem);
+        auto &cache = local_cache->template get_value_cache<sub_dim>(j);
+        auto &flags = cache.flags_handler_;
 
-	if (flags.fill_values())
-		std::get<0>(cache.values_) = sup_elem_->template get_values<0, sub_dim>(s_id_);
-//	if (flags.fill_gradients())
-//		std::get<1>(cache.values_) = sup_elem_->template get_values<1, sub_dim>(j);
-//	if (flags.fill_hessians())
-//		std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
+        if (flags.fill_values())
+            std::get<0>(cache.values_) = sup_elem_->template get_values<0, sub_dim>(s_id_);
+//  if (flags.fill_gradients())
+//      std::get<1>(cache.values_) = sup_elem_->template get_values<1, sub_dim>(j);
+//  if (flags.fill_hessians())
+//      std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
 
-	cache.set_filled(true);
+        cache.set_filled(true);
 
-		}
+    }
 
 private:
     std::shared_ptr<SupFunc> sup_func_;

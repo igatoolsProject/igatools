@@ -59,11 +59,11 @@ public:
     create(std::shared_ptr<Space> space,
            const CoeffType &coeff);
 
-    void reset(const NewValueFlags &flag, const variant_1& quad) override;
+    void reset(const NewValueFlags &flag, const variant_1 &quad) override;
 
-    void init_cache(ElementAccessor &elem, const variant_2& k) override;
+    void init_cache(ElementAccessor &elem, const variant_2 &k) override;
 
-    void fill_cache(ElementAccessor &elem, const int j, const variant_2& k) override;
+    void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
 
 private:
@@ -81,7 +81,7 @@ private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             (*flags_)[T::dim] = flag;
             space_handler_->template reset<T::dim>(flag, quad);
@@ -96,7 +96,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             space_handler_->template init_cache<T::k>(*space_elem);
         }
@@ -111,7 +111,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T& quad)
+        void operator()(const T &quad)
         {
             space_handler_->template fill_cache<T::k>(*space_elem, j);
 
@@ -121,13 +121,13 @@ private:
 
             if (flags.fill_values())
                 std::get<0>(cache.values_) =
-                        space_elem->template linear_combination<0, T::k>(*loc_coeff, j);
+                    space_elem->template linear_combination<0, T::k>(*loc_coeff, j);
             if (flags.fill_gradients())
                 std::get<1>(cache.values_) =
-                        space_elem->template linear_combination<1, T::k>(*loc_coeff, j);
+                    space_elem->template linear_combination<1, T::k>(*loc_coeff, j);
             if (flags.fill_hessians())
                 std::get<2>(cache.values_) =
-                        space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
+                    space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
 
             cache.set_filled(true);
         }

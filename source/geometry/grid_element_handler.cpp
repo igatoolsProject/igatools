@@ -39,7 +39,7 @@ struct UniformQuadFunc
 };
 
 template<class Quad, class... Args>
-void init_unif_caches(const GridFlags &flag, const Quad& quad, std::tuple<Args...>& t)
+void init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args...> &t)
 {
     const int dim = Quad::dim;
     const int low = dim==0? 0 : dim-num_sub_elem;
@@ -53,7 +53,7 @@ void init_unif_caches(const GridFlags &flag, const Quad& quad, std::tuple<Args..
 template <int dim_>
 GridElementHandler<dim_>::
 GridElementHandler(shared_ptr<GridType> grid)
-                   :
+    :
     grid_(grid),
     lengths_(grid->get_element_lengths())
 {}
@@ -107,7 +107,7 @@ init_cache(ElementAccessor &elem)
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
         auto &quad = std::get<k>(quad_);
-        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id) );
+        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
     }
 }
 

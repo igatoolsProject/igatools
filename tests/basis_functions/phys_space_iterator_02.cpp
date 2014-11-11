@@ -41,71 +41,71 @@ template<int dim, int codim=0>
 auto
 create_function(shared_ptr<NewBSplineSpace<dim, dim + codim>> space)
 {
-	using Space = NewBSplineSpace<dim, dim + codim>;
+    using Space = NewBSplineSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
     typename Function::CoeffType control_pts(space->get_num_basis());
     if (dim == 1)
-        {
-            int id = 0 ;
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
-        }
-        else if (dim == 2)
-        {
-            int id = 0 ;
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
+    {
+        int id = 0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
+    }
+    else if (dim == 2)
+    {
+        int id = 0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
 
-            control_pts(id++) = 1.0 ;
-            control_pts(id++) = 1.0 ;
-        }
-        else if (dim == 3)
-        {
-            int id = 0 ;
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
+    }
+    else if (dim == 3)
+    {
+        int id = 0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
 
-            control_pts(id++) = 1.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
 
-            control_pts(id++) = 1.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
 
-            control_pts(id++) = 0.0 ;
-            control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
+        control_pts(id++) = 0.0 ;
 
-            control_pts(id++) = 1.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
 
-            control_pts(id++) = 1.0 ;
-            control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
+        control_pts(id++) = 1.0 ;
 
-        }
+    }
 
     return Function::create(space, control_pts);
 }
@@ -115,24 +115,24 @@ create_function(shared_ptr<NewBSplineSpace<dim, dim + codim>> space)
 template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
-	const int k = dim;
-	using RefSpace = NewBSplineSpace<dim, range, rank>;
-	using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
-	using ElementHandler = typename Space::ElementHandler;
+    const int k = dim;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using ElementHandler = typename Space::ElementHandler;
 
-	auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto grid  = CartesianGrid<dim>::create(n_knots);
 
-	auto ref_space = RefSpace::create(deg, grid);
-	auto map_func = create_function(ref_space);
+    auto ref_space = RefSpace::create(deg, grid);
+    auto map_func = create_function(ref_space);
 
-	auto space = Space::create(ref_space, map_func);
+    auto space = Space::create(ref_space, map_func);
 
-	const int n_qp = 3;
-	auto quad = QGauss<k>(n_qp);
+    const int n_qp = 3;
+    auto quad = QGauss<k>(n_qp);
 
     auto flag = NewValueFlags::value |
-    		NewValueFlags::gradient |
-			NewValueFlags::w_measure;
+                NewValueFlags::gradient |
+                NewValueFlags::w_measure;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);
@@ -142,19 +142,19 @@ void elem_values(const int n_knots = 2, const int deg=1)
     sp_values.template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
-       	sp_values.template fill_cache<k>(elem,0);
-       	elem->template get_values<0, k>().print_info(out);
-       	elem->template get_values<1, k>().print_info(out);
-       	elem->template get_w_measures<k>(0).print_info(out);
+        sp_values.template fill_cache<k>(elem,0);
+        elem->template get_values<0, k>().print_info(out);
+        elem->template get_values<1, k>().print_info(out);
+        elem->template get_w_measures<k>(0).print_info(out);
     }
 }
 
 int main()
 {
-	out.depth_console(10);
+    out.depth_console(10);
 
-	elem_values<1>();
-	elem_values<2>();
-	elem_values<3>();
+    elem_values<1>();
+    elem_values<2>();
+    elem_values<3>();
 
 }

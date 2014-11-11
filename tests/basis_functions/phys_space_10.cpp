@@ -78,7 +78,7 @@ template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init_elem(const NewValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
-	const int k = dim;
+    const int k = dim;
     OUTSTART
 
     using RefSpace = NewBSplineSpace<dim, range, rank>;
@@ -120,7 +120,7 @@ void cache_fill_elem(const NewValueFlags flag,
 {
     OUTSTART
 
-	const int k = dim;
+    const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
@@ -165,7 +165,7 @@ void cache_get_elem_values(const NewValueFlags flag,
                            const int n_knots = 5, const int deg=1)
 {
     OUTSTART
-	const int k = dim;
+    const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;

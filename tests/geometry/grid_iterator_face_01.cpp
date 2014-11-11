@@ -59,7 +59,7 @@ void face_values(const TensorSize<dim> &n_knots)
         elem->print_info(out);
         out << endl;
 
-        for (auto &face_id : UnitElement<dim>::template elems_ids<k>() )
+        for (auto &face_id : UnitElement<dim>::template elems_ids<k>())
         {
             if (elem->is_boundary(face_id))
             {

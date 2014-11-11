@@ -32,7 +32,7 @@
 template<int dim, int k = dim-1>
 void get_subgrid(const TensorSize<dim> &n_knots)
 {
-	OUTSTART
+    OUTSTART
     using Grid =  CartesianGrid<dim>;
     using SubGridMap = typename Grid::template InterGridMap<k>;
 
@@ -43,7 +43,7 @@ void get_subgrid(const TensorSize<dim> &n_knots)
 
     for (auto &i : UnitElement<dim>::template elems_ids<k>())
     {
-    	out.begin_item("Sub element: " + to_string(i));
+        out.begin_item("Sub element: " + to_string(i));
         SubGridMap elem_map;
         auto sub_grid = grid->template get_sub_grid<k>(i, elem_map);
         sub_grid->print_info(out);

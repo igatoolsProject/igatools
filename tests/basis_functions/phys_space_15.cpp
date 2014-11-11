@@ -65,7 +65,7 @@ template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 5, const int deg=1)
 {
     OUTSTART
-	const int k = dim;
+    const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
@@ -80,15 +80,15 @@ void elem_values(const int n_knots = 5, const int deg=1)
     auto flag = NewValueFlags::none;
     switch (order)
     {
-    case 0:
-    	flag |= NewValueFlags::value;
-    	break;
-    case 1:
-    	flag |= NewValueFlags::gradient;
-    	break;
-    case 2:
-    	flag |= NewValueFlags::hessian;
-    	break;
+        case 0:
+            flag |= NewValueFlags::value;
+            break;
+        case 1:
+            flag |= NewValueFlags::gradient;
+            break;
+        case 2:
+            flag |= NewValueFlags::hessian;
+            break;
     }
 
     auto quad = QGauss<k>(2);
@@ -101,8 +101,8 @@ void elem_values(const int n_knots = 5, const int deg=1)
     sp_values.template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
-    	sp_values.template fill_cache<k>(elem,0);
-    	elem->template get_values<0, k>().print_info(out);
+        sp_values.template fill_cache<k>(elem,0);
+        elem->template get_values<0, k>().print_info(out);
     }
 
     OUTEND

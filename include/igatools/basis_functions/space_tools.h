@@ -28,12 +28,12 @@ namespace space_tools
 {
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
-		                  NewFunction<dim, codim, range, rank> &g,
+                          NewFunction<dim, codim, range, rank> &g,
                           const Quadrature<dim> &quad,
                           const Norm &norm_flag,
                           vector<Real> &element_error)
 {
-	using Func = NewFunction<dim, codim, range, rank>;
+    using Func = NewFunction<dim, codim, range, rank>;
 
     bool is_L2_norm     = contains(norm_flag, Norm::L2);
     bool is_H1_norm     = contains(norm_flag, Norm::H1);
@@ -76,27 +76,27 @@ Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
     typename Func::Value err;
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
-            f.fill_cache(elem_f, 0, Int<dim>());
-            g.fill_cache(elem_g, 0, Int<dim>());
+        f.fill_cache(elem_f, 0, Int<dim>());
+        g.fill_cache(elem_g, 0, Int<dim>());
 
-            const int elem_id = elem_f->get_flat_index();
-            element_error[ elem_id ] = 0.0;
+        const int elem_id = elem_f->get_flat_index();
+        element_error[ elem_id ] = 0.0;
 
-            if (is_L2_norm)
+        if (is_L2_norm)
+        {
+            auto f_val = elem_f->template get_values<0,dim>(0);
+            auto g_val = elem_g->template get_values<0,dim>(0);
+            auto w_meas = elem_f->template get_w_measures<dim>(0);
+
+            Real element_err_L2_pow2 = 0.0;
+            for (int iPt = 0; iPt < n_points; ++iPt)
             {
-            	auto f_val = elem_f->template get_values<0,dim>(0);
-            	auto g_val = elem_g->template get_values<0,dim>(0);
-            	auto w_meas = elem_f->template get_w_measures<dim>(0);
-
-            	Real element_err_L2_pow2 = 0.0;
-            	for (int iPt = 0; iPt < n_points; ++iPt)
-            	{
-            		err = f_val[iPt] - g_val[iPt];
-            		element_err_L2_pow2 += err.norm_square() * w_meas[iPt];
-            	}
-            	element_error[ elem_id ] += element_err_L2_pow2;
+                err = f_val[iPt] - g_val[iPt];
+                element_err_L2_pow2 += err.norm_square() * w_meas[iPt];
             }
-            element_error[ elem_id ] = sqrt(element_error[ elem_id ]);
+            element_error[ elem_id ] += element_err_L2_pow2;
+        }
+        element_error[ elem_id ] = sqrt(element_error[ elem_id ]);
     }
 
 #if 0

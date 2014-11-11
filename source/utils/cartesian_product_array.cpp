@@ -99,7 +99,7 @@ template< class T, int rank>
 void CartesianProductArray<T,rank>::
 clear()
 {
-	TensorSizedContainer<rank>::reset_size(TensorSize<rank>());
+    TensorSizedContainer<rank>::reset_size(TensorSize<rank>());
     for (auto &v : data_)
         v.clear();
 }

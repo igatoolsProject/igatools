@@ -77,7 +77,7 @@ public:
                 ValueContainer<RefDerivative<range, rank, 1>>> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
-				const int s_id,
+                const int s_id,
                 EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         const auto &Dv_hat = std::get<1>(ref_values);
@@ -108,7 +108,7 @@ public:
                 ValueContainer<PhysValue<range, rank>>,
                 ValueContainer<PhysDerivative<range, rank, 1>>> &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
-				const int s_id,
+                const int s_id,
                 EnableIf<ttype == Transformation::h_grad> * = 0) const
     {
         const auto &D2v_hat = std::get<2>(ref_values);
@@ -127,7 +127,7 @@ public:
             {
                 for (int u=0; u<dim; ++u)
                 {
-                	auto &w = DF_inv[j_pt][u];
+                    auto &w = DF_inv[j_pt][u];
                     (*D2v_it)[u] = compose(
                                        action(*D2v_hat_it, w) - compose((*D1v_it),action(D2F[j_pt],w)),
                                        DF_inv[j_pt]);
