@@ -203,6 +203,9 @@ public:
     /** Move constructor. */
     GridForwardIterator(GridForwardIterator<Accessor> &&it) = default;
 
+
+    GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
+
     /** Destructor */
     ~GridForwardIterator() = default ;
     ///@}

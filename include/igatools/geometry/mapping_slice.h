@@ -23,21 +23,28 @@
 
 #include <igatools/base/new_function.h>
 #include <igatools/base/function_element.h>
-
+#include <boost/variant/get.hpp>
+#include<igatools/../../source/geometry/grid_forward_iterator.cpp>
 IGA_NAMESPACE_OPEN
 
 /**
  *
  * @author pauletti 2014
  */
-template<int k, int dim, int spacedim>
-class SubFunction : public NewFunction<dim - k, 0, spacedim, 1>
+template<int sub_dim, int dim, int spacedim>
+class SubFunction : public NewFunction<sub_dim, 0, spacedim, 1>
 {
+private:
+	using self_t = SubFunction<sub_dim, dim, spacedim>;
 public:
-    using base_t = NewFunction<dim - k, 0, spacedim, 1>;
-    using SupFunc = NewFunction<dim, 0, spacedim, 1>;
+    using base_t  = NewFunction<sub_dim, 0, spacedim, 1>;
+    using SupFunc = NewFunction<    dim, 0, spacedim, 1>;
 
     using typename base_t::GridType;
+
+    using typename base_t::variant_1;
+    using typename base_t::variant_2;
+    using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
     template <int j>
@@ -48,101 +55,69 @@ public:
     SubFunction(std::shared_ptr<GridType> grid,
                 std::shared_ptr<SupFunc> func,
                 const int s_id,
-                InterGridMap<k> &elem_map)
+                InterGridMap<sub_dim> &elem_map)
 :
     base_t(grid),
-    func_(std::make_shared<SupFunc>(*func)),
+    sup_func_(func),
     s_id_(s_id),
-    elem_map_(elem_map)
+    elem_map_(elem_map),
+	sup_elem_(sup_func_->begin())
 {}
 
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<GridType> grid,
+            std::shared_ptr<SupFunc> func,
+            const int s_id,
+            InterGridMap<sub_dim> &elem_map)
+			{
+			return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
+			}
 
- //   void reset(const NewValueFlags &flag, const variant_1& quad) override;
+void reset(const NewValueFlags &flag, const variant_1& quad) override
+{
+	base_t::reset(flag, quad);
+	auto q = boost::get<Quadrature<sub_dim>>(quad);
+	sup_func_->reset(flag, q);
 
-//    void init_cache(ElementAccessor &elem, const variant_2& k) override;
-//
-//    void fill_cache(ElementAccessor &elem, const int j, const variant_2& k) override;
+}
 
+
+void init_cache(ElementAccessor &elem, const variant_2& k1) override
+		{
+			base_t::init_cache(elem, k1);
+			sup_func_->init_cache(sup_elem_, Int<sub_dim>());
+		}
+
+void fill_cache(ElementAccessor &elem, const int j, const variant_2& k1) override
+		{
+	Assert(j==0, ExcNotImplemented());
+	typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
+
+
+	base_t::fill_cache(elem, j, k1);
+	sup_func_->fill_cache(sup_elem_, s_id_, Int<sub_dim>());
+	auto &local_cache = this->get_cache(elem);
+	auto &cache = local_cache->template get_value_cache<sub_dim>(j);
+	auto &flags = cache.flags_handler_;
+
+	if (flags.fill_values())
+		std::get<0>(cache.values_) = sup_elem_->template get_values<0, sub_dim>(s_id_);
+//	if (flags.fill_gradients())
+//		std::get<1>(cache.values_) = sup_elem_->template get_values<1, sub_dim>(j);
+//	if (flags.fill_hessians())
+//		std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
+
+	cache.set_filled(true);
+
+		}
 
 private:
-    std::shared_ptr<SupFunc> func_;
+    std::shared_ptr<SupFunc> sup_func_;
     const int s_id_;
-    InterGridMap<k> &elem_map_;
+    InterGridMap<sub_dim> &elem_map_;
 
-    typename SupFunc::ElementIterator elem_;
+    typename SupFunc::ElementIterator sup_elem_;
 
-
-private:
-    struct ResetDispatcher : boost::static_visitor<void>
-    {
-        template<class T>
-        void operator()(const T& quad)
-        {
-            (*flags_)[T::dim] = flag;
-            auto sup_quad = extend_sub_elem_quad<T::dim, dim>(quad, s_id);
-            func_->template reset<T::dim+k>(flag, sup_quad);
-        }
-
-        NewValueFlags flag;
-        SupFunc *func_;
-        std::array<FunctionFlags, dim - k + 1> *flags_;
-        int s_id;
-    };
-
-#if 0
-
-    struct InitCacheDispatcher : boost::static_visitor<void>
-    {
-        template<class T>
-        void operator()(const T& quad)
-        {
-            func_->template init_cache<T::k>(*sup_elem);
-        }
-
-        SupFunc *func_;
-        typename SupFunc::ElementIterator *sup_elem;
-
-
-    };
-
-
-    struct FillCacheDispatcher : boost::static_visitor<void>
-    {
-        template<class T>
-        void operator()(const T& quad)
-        {
-            space_handler_->template fill_cache<T::k>(*space_elem, j);
-
-            auto &local_cache = function->get_cache(*func_elem);
-            auto &cache = local_cache->template get_value_cache<T::k>(j);
-            auto &flags = cache.flags_handler_;
-
-            if (flags.fill_values())
-                std::get<0>(cache.values_) =
-                        space_elem->template linear_combination<0, T::k>(*loc_coeff, j);
-            if (flags.fill_gradients())
-                std::get<1>(cache.values_) =
-                        space_elem->template linear_combination<1, T::k>(*loc_coeff, j);
-            if (flags.fill_hessians())
-                std::get<2>(cache.values_) =
-                        space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
-
-            cache.set_filled(true);
-        }
-
-        int j;
-        self_t *function;
-        typename Space::ElementHandler *space_handler_;
-        ElementAccessor *func_elem;
-        typename Space::ElementAccessor *space_elem;
-        vector<Real> *loc_coeff;
-    };
-#endif
-
-
-    ResetDispatcher reset_impl;
-//    InitCacheDispatcher init_cache_impl;
-//    FillCacheDispatcher fill_cache_impl;
 
 };
 

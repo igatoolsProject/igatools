@@ -51,6 +51,15 @@ GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &co
 {}
 
 
+template <typename Accessor>
+inline
+GridForwardIterator<Accessor>::
+GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy)
+    :
+    accessor_(acc,copy_policy)
+{}
+
+
 
 template <typename Accessor>
 inline

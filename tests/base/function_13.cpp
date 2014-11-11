@@ -33,24 +33,23 @@
 
 
 template<int dim, int codim, int range>
-void test(NewFunction<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
+void values_of_F(NewFunction<dim, codim, range> &F)
 {
-    using ElementIterator = typename  NewFunction<dim, codim, range>::ElementIterator;
-    ElementIterator elem(grid, 0);
-    ElementIterator end(grid, IteratorState::pass_the_end);
+	auto elem = F.begin();
+    auto end  = F.end();
 
     F.init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)
     {
         F.fill_cache(elem, 0, Int<dim>());
-        elem->get_points().print_info(out);
-        out << endl;
+//        elem->get_points().print_info(out);
+//        out << endl;
         elem->get_values().print_info(out);
         out << endl;
-        elem->template get_values<1>().print_info(out);
-        out << endl;
-        elem->template get_values<2>().print_info(out);
-        out << endl;
+//        elem->template get_values<1>().print_info(out);
+//        out << endl;
+//        elem->template get_values<2>().print_info(out);
+//        out << endl;
     }
 }
 
@@ -70,7 +69,8 @@ void create_fun()
         b[i] = i;
     }
 
-    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
+    auto flag = NewValueFlags::point | NewValueFlags::value |
+    		NewValueFlags::gradient |
                 NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
@@ -84,12 +84,14 @@ void create_fun()
     SubGridMap elem_map;
     auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
 
-    SubFunction<dim-1, dim, range> subF(sub_grid,F, 0, elem_map);
+    auto subF = SubFunction<k, dim, range>::create(sub_grid, F, 0, elem_map);
 
+    auto sub_quad = QGauss<k>(2);
+    subF->reset(flag, sub_quad);
 
-
-    F->reset(flag, quad);
-    test<dim, codim, range>(*F, grid);
+    //F->reset(flag, quad);
+  //  values_of_F<dim, codim, range>(*F);
+    values_of_F<k, 0, range>(*subF);
 }
 
 
