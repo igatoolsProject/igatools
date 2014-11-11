@@ -23,7 +23,7 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-index_list = ['TensorIndex<%d>' %dim for dim in inst.domain_dims]
+index_list = ['TensorIndex<%d>' %dim for dim in inst.all_domain_dims]
 for row in index_list:
     f.write('template class %s; \n' % (row))
     f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))

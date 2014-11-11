@@ -29,9 +29,9 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim) 
-           for dim in inst.domain_dims]
+           for dim in inst.all_domain_dims]
 ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
-                     for  dim in inst.domain_dims for t in ('Real','Index','bool','vector<Index>')]
+                     for  dim in inst.all_domain_dims for t in ('Real','Index','bool','vector<Index>')]
 ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
            for deriv in inst.derivatives + inst.values + inst.divs]
 

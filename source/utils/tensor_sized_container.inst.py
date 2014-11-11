@@ -23,6 +23,6 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-ts_list=['TensorSizedContainer<%d>' %dim for dim in inst.domain_dims]
+ts_list=['TensorSizedContainer<%d>' %dim for dim in inst.all_domain_dims]
 for row in ts_list:
    f.write('template class %s; \n' % (row))

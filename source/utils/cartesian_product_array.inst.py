@@ -29,7 +29,7 @@ data = Instantiation(iga_inc_files, other_files)
 (f, inst) = (data.file_output, data.inst)
 
 types = ('Real','Real*', 'Index')
-for dim in inst.domain_dims:
+for dim in inst.all_domain_dims:
     for t in types:
         row = 'CartesianProductArray<%s,%d>' %(t,dim)
         f.write('template class %s; \n' % (row))
@@ -41,14 +41,14 @@ types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
 #types = types + ('Real','Real*', 'Index')
 ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
-           for dim in inst.domain_dims for t in types]
+           for dim in inst.all_domain_dims for t in types]
 
 for row in ma_list:
 	f.write('template class %s; \n' % (row))
 
 
 types = ['double','Index']
-for dim in inst.domain_dims:
+for dim in inst.all_domain_dims:
 	if dim >= 1:
 		for type in types:
 			ret_type = 'CartesianProductArray<%s,%d>' %(type,dim)
