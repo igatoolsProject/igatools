@@ -24,6 +24,6 @@ data = Instantiation()
 f = data.file_output
 inst = data.inst
 
-for dim in inst.ref_dom_dims:
+for dim in inst.all_domain_dims:
     f.write('template class TensorProductArray<%d> ;\n' %dim)
  

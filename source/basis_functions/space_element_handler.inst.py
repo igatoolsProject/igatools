@@ -32,20 +32,29 @@ include_files = ['basis_functions/bspline_element.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces_v2:
+for space in inst.AllPhysSpaces:
     x = space.spec
     ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
     phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>'
              %(ref_space, x.codim, x.trans_type))
     f.write('template class SpaceElementHandler<%s>; \n' %phys_sp)
     f.write('template class PhysicalSpaceElement<%s>; \n' %phys_sp)
-    f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' %phys_sp)
+    f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' 
+            %phys_sp)
     
+    
+for space in inst.PhysSpaces:
+    x = space.spec
+    ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
+    phys_sp = ( 'NewPhysicalSpace<%s, %d, Transformation::%s>'
+             %(ref_space, x.codim, x.trans_type))
     elemhandler = 'SpaceElementHandler<%s>' %phys_sp
-    k_members = ['void %s::fill_cache<k>(ElementAccessor &elem, const int j);' %elemhandler,
+    k_members = ['void %s::fill_cache<k>(ElementAccessor &elem, const int j);' 
+                 %elemhandler,
                  'void %s::init_cache<k>(ElementAccessor &elem);' %elemhandler,
-                 'void %s::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);' %elemhandler]
+                 'void %s::reset<k>(const NewValueFlags flag, ' %elemhandler + 
+                 'const Quadrature<k> &quad);' ]
     for fun in k_members:
-        for k in range(max(0, x.dim - inst.n_sub_element), x.dim + 1):
+        for k in inst.sub_dims(x.dim):
             s = fun.replace('k', '%d' % (k));
             f.write('template ' + s + '\n')        

@@ -18,22 +18,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
-from init_instantiation_data import *
-
-include_files = ['geometry/cartesian_grid_element.h',
-                 'geometry/mapping_element_accessor.h',
-                 'basis_functions/bspline_space.h',
-                 'basis_functions/bspline_element_accessor.h']
-# ,
-#                  'basis_functions/nurbs_space.h',
-#                  'basis_functions/nurbs_element_accessor.h']
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
-
-for sp in inst.IgmRefSpaces:
-#   for row in inst.all_mapping_dims:
-#      (dim, range, rank) = (row.dim, row.space_dim, 1)
-#      space = '%s< %d, %d, %d >' %(sp.name, dim, range, rank)
-      f.write('template class IgMapping< %s > ;\n' %sp)
-        
+# # QA (pauletti, Mar 19, 2014):
+# from init_instantiation_data import *
+# 
+# include_files = ['geometry/cartesian_grid_element.h',
+#                  'geometry/mapping_element_accessor.h',
+#                  'basis_functions/bspline_space.h',
+#                  'basis_functions/bspline_element_accessor.h']
+# # ,
+# #                  'basis_functions/nurbs_space.h',
+# #                  'basis_functions/nurbs_element_accessor.h']
+# data = Instantiation(include_files)
+# (f, inst) = (data.file_output, data.inst)
+# 
+# for sp in inst.IgmRefSpaces:
+# #   for row in inst.all_mapping_dims:
+# #      (dim, range, rank) = (row.dim, row.space_dim, 1)
+# #      space = '%s< %d, %d, %d >' %(sp.name, dim, range, rank)
+#       f.write('template class IgMapping< %s > ;\n' %sp)
+#         

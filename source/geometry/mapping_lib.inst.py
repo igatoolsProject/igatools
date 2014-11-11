@@ -18,15 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
-from init_instantiation_data import *
-data = Instantiation()
-(f, inst) = (data.file_output, data.inst)
-
-args = inst.user_mapping_dims
-maps = ['LinearMapping<%d, %d>' %(x.dim, x.codim) for x in args]
-maps = maps + ['BallMapping<%d>' %(x.dim) for x in args if x.codim==0 ]
-maps = maps + ['SphereMapping<%d>' %(x.dim) for x in args if x.codim==1 ]
-
-for row in maps:
-   f.write('template class %s; \n' %(row))
+# # QA (pauletti, Mar 19, 2014):
+# from init_instantiation_data import *
+# data = Instantiation()
+# (f, inst) = (data.file_output, data.inst)
+# 
+# args = inst.user_mapping_dims
+# maps = ['LinearMapping<%d, %d>' %(x.dim, x.codim) for x in args]
+# maps = maps + ['BallMapping<%d>' %(x.dim) for x in args if x.codim==0 ]
+# maps = maps + ['SphereMapping<%d>' %(x.dim) for x in args if x.codim==1 ]
+# 
+# for row in maps:
+#    f.write('template class %s; \n' %(row))

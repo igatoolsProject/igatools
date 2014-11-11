@@ -39,16 +39,9 @@ k_members = ['void NewMapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, con
              'void NewMapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
              'void NewMapping<dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
 
-for row in inst.all_mapping_dims:
+for row in inst.mapping_dims:
     for fun in k_members:
-        for k in range(max(0,row.dim-inst.n_sub_element), row.dim+1):
+        for k in inst.sub_dims(row.dim):
             s = fun.replace('dim','%d' %row.dim).replace('k','%d' %(k)).replace('cod','%d' %row.codim);
             f.write('template ' + s + '\n')
  
-s = 'template class NewMapping<0,0> ;\n' 
-f.write(s)      
-s = 'template class MappingElement<0,0> ;\n'
-f.write(s)
-s = 'template class GridForwardIterator<MappingElement<0,0>> ;\n' 
-f.write(s) 
-

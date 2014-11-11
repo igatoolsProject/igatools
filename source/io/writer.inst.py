@@ -18,64 +18,64 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-from init_instantiation_data import *
-include_files = ['basis_functions/bspline_space.h',
-                 'basis_functions/bspline_element_accessor.h',
-                 'basis_functions/nurbs_space.h',
-                 'basis_functions/nurbs_element_accessor.h',
-                 'basis_functions/physical_space.h',
-                 'geometry/cartesian_grid_element.h',
-                 'geometry/mapping_element_accessor.h',
-                 'geometry/push_forward_element_accessor.h',
-                 'basis_functions/physical_space_element_accessor.h']
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
-
-strings = []
-spaces = ['BSplineSpace']#, 'NURBSSpace']
-writer_real_types = ['double','float']
-
-
-
-for row in inst.user_phy_sp_dims:
-    for writer_real_t in writer_real_types:
-        writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
-        strings.append('template class %s ;\n' % (writer))
-for s in unique(strings): # Removing repeated entries.
-    f.write(s)
-
-
-
-strings = []
-for row in inst.user_phy_sp_dims:
-    for writer_real_t in writer_real_types:
-        writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
-        for name in spaces:
-            space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
-            PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
-            space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_phys,space_phys)
-            strings.append('template void %s::%s ;\n' % (writer,func))
-            func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_ref,space_ref)
-            strings.append('template void %s::%s ;\n' % (writer,func))
-
-
-############################################
-# TRILINOS specific instantiations -- begin
-f.write('#ifdef USE_TRILINOS\n')
-for s in unique(strings): # Removing repeated entries.
-    f.write(s.replace('LinAlgebra','LAPack::trilinos'))
-f.write('#endif\n')
-# TRILINOS specific instantiations -- end
-############################################
-
-
-############################################
-# PETSC specific instantiations -- begin
-f.write('#ifdef USE_PETSC\n')
-for s in unique(strings): # Removing repeated entries.
-    f.write(s.replace('LinAlgebra','LAPack::petsc'))
-f.write('#endif\n')
-# PETSC specific instantiations -- end
-############################################
+# from init_instantiation_data import *
+# include_files = ['basis_functions/bspline_space.h',
+#                  'basis_functions/bspline_element_accessor.h',
+#                  'basis_functions/nurbs_space.h',
+#                  'basis_functions/nurbs_element_accessor.h',
+#                  'basis_functions/physical_space.h',
+#                  'geometry/cartesian_grid_element.h',
+#                  'geometry/mapping_element_accessor.h',
+#                  'geometry/push_forward_element_accessor.h',
+#                  'basis_functions/physical_space_element_accessor.h']
+# data = Instantiation(include_files)
+# (f, inst) = (data.file_output, data.inst)
+# 
+# strings = []
+# spaces = ['BSplineSpace']#, 'NURBSSpace']
+# writer_real_types = ['double','float']
+# 
+# 
+# 
+# for row in inst.user_phy_sp_dims:
+#     for writer_real_t in writer_real_types:
+#         writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
+#         strings.append('template class %s ;\n' % (writer))
+# for s in unique(strings): # Removing repeated entries.
+#     f.write(s)
+# 
+# 
+# 
+# strings = []
+# for row in inst.user_phy_sp_dims:
+#     for writer_real_t in writer_real_types:
+#         writer = 'Writer<%d, %d, %s>' %(row.dim, row.codim, writer_real_t)
+#         for name in spaces:
+#             space_ref  = '%s<%d,%d,%d>' % (name, row.dim, row.range, row.rank)
+#             PushForward = 'PushForward<Transformation::%s,%d,%d>' %(row.trans_type, row.dim, row.codim)
+#             space_phys = 'PhysicalSpace<%s,%s>' %(space_ref,PushForward)
+#             func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_phys,space_phys)
+#             strings.append('template void %s::%s ;\n' % (writer,func))
+#             func = 'add_field<%s>(shared_ptr<%s>, const Vector<LinAlgebra> &, const string & )' % (space_ref,space_ref)
+#             strings.append('template void %s::%s ;\n' % (writer,func))
+# 
+# 
+# ############################################
+# # TRILINOS specific instantiations -- begin
+# f.write('#ifdef USE_TRILINOS\n')
+# for s in unique(strings): # Removing repeated entries.
+#     f.write(s.replace('LinAlgebra','LAPack::trilinos'))
+# f.write('#endif\n')
+# # TRILINOS specific instantiations -- end
+# ############################################
+# 
+# 
+# ############################################
+# # PETSC specific instantiations -- begin
+# f.write('#ifdef USE_PETSC\n')
+# for s in unique(strings): # Removing repeated entries.
+#     f.write(s.replace('LinAlgebra','LAPack::petsc'))
+# f.write('#endif\n')
+# # PETSC specific instantiations -- end
+# ############################################
 

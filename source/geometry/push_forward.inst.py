@@ -18,13 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-from init_instantiation_data import *
-
-include_files = ['geometry/push_forward_element_accessor.h']
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
- 
-pf_args = unique (inst.AllPushForwards + inst.RefPushForwards)
-      
-for pf in unique(pf_args):
-    f.write('template class %s ;\n' %(pf))
+# from init_instantiation_data import *
+# 
+# include_files = ['geometry/push_forward_element_accessor.h']
+# data = Instantiation(include_files)
+# (f, inst) = (data.file_output, data.inst)
+#  
+# pf_args = unique (inst.AllPushForwards + inst.RefPushForwards)
+#       
+# for pf in unique(pf_args):
+#     f.write('template class %s ;\n' %(pf))

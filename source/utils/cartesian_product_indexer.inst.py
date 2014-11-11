@@ -23,5 +23,5 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-for dim in inst.ref_dom_dims:
+for dim in inst.all_domain_dims:
     f.write('template class CartesianProductIndexer<%d> ;\n' %dim)
