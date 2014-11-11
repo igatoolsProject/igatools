@@ -72,26 +72,26 @@ void create_fun()
     auto flag = NewValueFlags::point | NewValueFlags::value |
     		NewValueFlags::gradient |
                 NewValueFlags::hessian;
-    auto quad = QGauss<dim>(2);
+
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, A, b);
 
 
     const int k = dim - 1;
-    const int s_id = 0;
-    using Grid =  CartesianGrid<dim>;
-    using SubGridMap = typename Grid::template InterGridMap<k>;
-    SubGridMap elem_map;
-    auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
+    for(auto &s_id : UnitElement<dim>::template elems_ids<k>())
+    {
+    	using Grid =  CartesianGrid<dim>;
+    	using SubGridMap = typename Grid::template InterGridMap<k>;
+    	SubGridMap elem_map;
+    	auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
 
-    auto subF = SubFunction<k, dim, range>::create(sub_grid, F, 0, elem_map);
+    	auto subF = SubFunction<k, dim, range>::create(sub_grid, F, s_id, elem_map);
 
-    auto sub_quad = QGauss<k>(2);
-    subF->reset(flag, sub_quad);
-
-    //F->reset(flag, quad);
-  //  values_of_F<dim, codim, range>(*F);
-    values_of_F<k, 0, range>(*subF);
+    	auto sub_quad = QGauss<k>(1);
+    	subF->reset(flag, sub_quad);
+    	out << "Face: " << s_id << endl;
+    	values_of_F<k, 0, range>(*subF);
+    }
 }
 
 

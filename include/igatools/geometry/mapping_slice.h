@@ -93,6 +93,7 @@ void fill_cache(ElementAccessor &elem, const int j, const variant_2& k1) overrid
 	Assert(j==0, ExcNotImplemented());
 	typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
 
+	sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
 	base_t::fill_cache(elem, j, k1);
 	sup_func_->fill_cache(sup_elem_, s_id_, Int<sub_dim>());
