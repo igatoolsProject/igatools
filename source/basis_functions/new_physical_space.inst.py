@@ -36,7 +36,7 @@ include_files = ['basis_functions/new_bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.PhysSpaces_v2:
+for space in inst.AllPhysSpaces:
     x = space.spec
     ref_space = 'NewBSplineSpace<%d,%d,%d>' % (x.dim, x.range, x.rank)
     f.write( 'template class NewPhysicalSpace<%s, %d, Transformation::%s>;\n' 

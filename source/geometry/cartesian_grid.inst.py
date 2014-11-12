@@ -24,13 +24,23 @@ include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for dim in inst.all_domain_dims:
+sub_dim_members = ['std::array<Points<dim>, dim-k> CartesianGrid<dim>::get_normal_space<k>(const int j) const;',
+                   'std::shared_ptr<CartesianGrid<k>> CartesianGrid<dim>::'+
+                   'get_sub_grid<k>(const int sub_elem_id, InterGridMap<k> &elem_map) const;']
+ 
+for dim in inst.sub_domain_dims:
     grid = 'CartesianGrid<%d>' %(dim)
     f.write('template class %s; \n' % (grid))
+    for fun in sub_dim_members:
+        k = dim
+        s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+        f.write('template ' + s + '\n')  
     
 for dim in inst.domain_dims:
     grid = 'CartesianGrid<%d>' %(dim)   
-    for k in inst.sub_dims(dim):
-        f.write('template std::shared_ptr<CartesianGrid<%d>> %s::get_sub_grid(const int sub_elem_id, InterGridMap<%d> &elem_map) const; \n' % (k,grid,k))
-        f.write('template std::array<Points<%d>, %d> ' %(dim,dim-k) +
-                '%s::get_normal_space<%d>(const int j) const; \n' % (grid,dim-k))
+    f.write('template class %s; \n' % (grid))
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(dim):
+            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+            f.write('template ' + s + '\n')
+       

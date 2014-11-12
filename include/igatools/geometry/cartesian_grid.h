@@ -347,10 +347,10 @@ public:
 
     /**
      * Returns the outward pointing
-     * unit normal vector space to the element of codimension k.
+     * unit normal vector space to the element of sub dim k.
      */
     template<int k>
-    std::array<Points<dim>, k> get_normal_space(const int j) const;
+    std::array<Points<dim>, dim-k> get_normal_space(const int j) const;
 
     template<int k>
     using InterGridMap = std::map<typename CartesianGrid<k>::ElementIterator, ElementIterator>;

@@ -351,13 +351,13 @@ template<int dim_>
 template<int k>
 auto
 CartesianGrid<dim_>::
-get_normal_space(const int j) const -> std::array<Point, k>
+get_normal_space(const int j) const -> std::array<Point, dim-k>
 {
     auto all_elems = UnitElement<dim>::all_elems;
-    auto element = std::get<dim-k>(all_elems)[j];
+    auto element = std::get<k>(all_elems)[j];
 
-    std::array<Point, k> normals;
-    for (int i=0; i<k; ++i)
+    std::array<Point, dim-k> normals;
+    for (int i=0; i<dim-k; ++i)
     {
         auto val = 2*element.constant_values[i]-1;
         normals[i][element.constant_directions[i]] = val;

@@ -75,8 +75,17 @@ class PhysSpaceSpecs:
       return None
    def __eq__(self, other):
         if isinstance(other, PhysSpaceSpecs):
-            return(self.dim == other.dim) and (self.codim == other.codim) and (self.range == other.range) and (self.rank == other.rank)and (self.trans_type == other.trans_type) 
+            return(self.dim == other.dim) and \
+              (self.codim == other.codim) and \
+              (self.range == other.range) and \
+              (self.rank == other.rank) and \
+              (self.trans_type == other.trans_type) 
         return NotImplemented
+    
+   def __hash__(self):
+        return hash((self.dim, self.codim, self.range, self.rank, self.trans_type))  
+
+    
    def physical_range(self, ref_range, space_dim, trans_type):
       if trans_type == 'h_grad':
          return ref_range
@@ -117,7 +126,9 @@ class FunctionRow:
               and (self.rank == other.rank) \
               and (self.codim == other.codim) 
       return NotImplemented
-
+  
+   def __hash__(self):
+        return hash((self.dim, self.codim, self.range, self.rank))
      
 
 class MappingRow:
@@ -133,7 +144,10 @@ class MappingRow:
           return(self.dim == other.dim) \
               and (self.codim == other.codim) 
       return NotImplemented
-
+  
+   def __hash__(self):
+        return hash((self.dim, self.codim, self.space_dim))
+    
 class PForwRow:
    #mappings dim, codim and space_dim
    def __init__(self, arg_list):
@@ -162,7 +176,9 @@ class RefSpaceRow:
                and (self.range == other.range) \
                and (self.rank == other.rank)
        return NotImplemented
-   
+    def __hash__(self):
+        return hash((self.dim, self.range, self.rank))
+    
 class InstantiationInfo:
    """ Stores "tables" with useful entries to be used for instantiations.
    
@@ -272,7 +288,12 @@ class InstantiationInfo:
       
       self.domain_dims     = unique([x.dim for x in self.function_dims])   
       self.all_domain_dims = unique([x.dim for x in self.all_function_dims])
-           
+
+      self.sub_domain_dims = list(set(self.all_domain_dims) - set(self.domain_dims))
+      self.sub_ref_sp_dims = list(set(self.all_ref_sp_dims) - set(self.ref_sp_dims))
+      self.sub_function_dims = list(set(self.all_function_dims) - set(self.function_dims))
+      self.sub_mapping_dims = list(set(self.all_mapping_dims) - set(self.mapping_dims))
+      
       return None
 
 
