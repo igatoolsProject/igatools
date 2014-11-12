@@ -329,8 +329,11 @@ class InstantiationInfo:
       
    def create_derivatives(self):
       '''Creates a list of the tensor types for the required values and derivatives'''
-    
-      dims_list = self.all_function_dims
+          
+      inv_func = unique([FunctionRow([x.space_dim,  0, x.dim, 1]) 
+                              for x in self.all_mapping_dims] )
+      dims_list = unique (self.all_function_dims + inv_func)
+      
       deriv ='Tensor<dim, order, tensor::covariant, Tensor<range, rank, tensor::contravariant, Tdouble>>'
       value ='Tensor<range, rank, tensor::contravariant, Tdouble>'
       div   ='Tensor<range, rank-1, tensor::contravariant, Tdouble>'

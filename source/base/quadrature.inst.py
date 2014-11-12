@@ -43,7 +43,7 @@ for dim in inst.domain_dims:
         
 
 ext_members = [ 'Quadrature<dim> extend_sub_elem_quad<k,dim>(const Quadrature<k> &quad, const int sub_elem_id);']   
-for dim in inst.domain_dims:
+for dim in inst.all_domain_dims:
     for fun in ext_members:
         for k in range(0, dim+1):
             s = fun.replace('dim','%d' %dim).replace('k','%d' %k);
