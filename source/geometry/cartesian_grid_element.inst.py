@@ -24,21 +24,33 @@ include_files = ['../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = ['CartesianGridElement<%d>' %(dim) for dim in inst.all_domain_dims]
-for row in accessors:
-    f.write('template class %s; \n' %(row))
-    f.write('template class GridForwardIterator<%s>;\n' %(row))
 
-k_members = [
+
+sub_dim_members = [
              'Real CartesianGridElement<dim>::get_measure<k>(const int j) const;',
              'ValueVector<Real> CartesianGridElement<dim>::get_w_measures<k>(const int j) const;',
              'const typename CartesianGridElement<dim>::Point &CartesianGridElement<dim>::get_coordinate_lengths<k>(const int j) const;',
              'ValueVector<typename CartesianGridElement<dim>::Point> CartesianGridElement<dim>::get_points<k>(const int j) const;',
              'bool CartesianGridElement<dim>::is_boundary<k>(const Index sub_elem_id) const;',
              'bool CartesianGridElement<dim>::is_boundary<k>() const;']
+
+
+for dim in inst.sub_domain_dims:
+    acc = 'CartesianGridElement<%d>' %(dim) 
+    f.write('template class %s; \n' %(acc))
+    f.write('template class GridForwardIterator<%s>;\n' %(acc))
+    for fun in sub_dim_members:
+        k = dim
+        s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+        f.write('template ' + s + '\n')
+
+
 for dim in inst.domain_dims:
-    for fun in k_members:
+    acc = 'CartesianGridElement<%d>' %(dim) 
+    f.write('template class %s; \n' %(acc))
+    f.write('template class GridForwardIterator<%s>;\n' %(acc))
+    for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
-            s = fun.replace('dim','%d' %dim).replace('k','%d' %k);
+            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')
             

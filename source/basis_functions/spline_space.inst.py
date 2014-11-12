@@ -24,17 +24,24 @@ data = Instantiation()
 f = data.file_output
 inst = data.inst
 
-k_members = ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
-             'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
+sub_dim_members = \
+ ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
+  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
 
-for x in inst.all_ref_sp_dims:
+for x in inst.sub_ref_sp_dims:
     space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('class', space).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
     
-    
+
 for x in inst.ref_sp_dims:
-    space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank) 
-    for fun in k_members:
+    space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+    for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
+            

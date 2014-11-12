@@ -22,7 +22,7 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-for row in inst.function_dims:
+for row in inst.all_function_dims:
     s = ('template class functions::LinearFunction<%d, %d, %d>;\n' 
          %(row.dim, row.codim, row.range) )
     f.write(s)

@@ -23,13 +23,24 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-for dim in inst.all_domain_dims:
+
+sub_dim_members = \
+ ['Quadrature<dim> Quadrature<dim>::collapse_to_sub_element<k>(const int id) const;']
+
+for dim in inst.sub_domain_dims:
     f.write('template class Quadrature<%d>; \n' %dim)
-        
+    for fun in sub_dim_members:
+        k = dim
+        s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
+
 for dim in inst.domain_dims:
-    for k in inst.sub_dims(dim):
-        f.write('template Quadrature<%d> Quadrature<%d>::' %(dim, dim) +
-                'collapse_to_sub_element<%d>(const int id) const; \n' %(k) )
+    f.write('template class Quadrature<%d>; \n' %dim)
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(dim):
+            s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')
+        
 
 ext_members = [ 'Quadrature<dim> extend_sub_elem_quad<k,dim>(const Quadrature<k> &quad, const int sub_elem_id);']   
 for dim in inst.domain_dims:

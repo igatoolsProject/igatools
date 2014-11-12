@@ -265,7 +265,10 @@ class InstantiationInfo:
       
           functions = unique( functions +
                               [FunctionRow([x.dim,  0, x.range, x.rank]) 
-                               for x in ref_spaces] )
+                               for x in ref_spaces] +
+                              [FunctionRow([x.dim,  0, x.dim, 1]) 
+                               for x in ref_spaces])
+          
           map_funcs = unique([FunctionRow([x.dim,  0, x.space_dim, 1]) 
                               for x in mappings] )
           

@@ -28,23 +28,37 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-for x in inst.all_ref_sp_dims:
-#     f.write('template class NewBSplineSpace<%d, %d, %d>; \n'
-#             %(x.dim, x.range, x.rank))
-    f.write('template class SpaceElement<NewBSplineSpace<%d, %d, %d>>; \n'
-            %(x.dim, x.range, x.rank))
-    f.write('template class BSplineElement<%d, %d, %d>; \n' 
-            %(x.dim, x.range, x.rank))
-    f.write('template class GridForwardIterator<BSplineElement<%d, %d, %d>>; \n' 
-            %(x.dim, x.range, x.rank))
+sub_dim_members = \
+['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);',
+'void elhandler::init_cache<k>(ElementAccessor &elem);' ,
+'void elhandler::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+
+for x in inst.sub_ref_sp_dims:
+    space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class SpaceElement<%s>; \n' %space)
+    acc = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s; \n' %acc)
+    f.write('template class GridForwardIterator<%s>; \n' %acc)
     elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class BSplineElementHandler<%d, %d, %d>; \n' 
-            %(x.dim, x.range, x.rank))
-    k_members = ['void %s::fill_cache<k>(ElementAccessor &elem, const int j);' %elemhandler,
-             'void %s::init_cache<k>(ElementAccessor &elem);' %elemhandler,
-             'void %s::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);' %elemhandler]
-    for fun in k_members:
+    f.write('template class %s; \n'  %elemhandler)
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
+
+
+
+for x in inst.ref_sp_dims:
+    space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class SpaceElement<%s>;' %space)
+    acc = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s; \n' %acc)
+    f.write('template class GridForwardIterator<%s>; \n' %acc)
+    elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s; \n'  %elemhandler)
+    for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')           
+            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')
+        
    

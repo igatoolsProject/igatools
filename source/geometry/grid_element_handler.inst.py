@@ -24,17 +24,25 @@ include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['GridElementHandler<%d>' % (dim) for dim in inst.all_domain_dims]
-for row in cartesian_grids:
-   f.write('template class %s; \n' % (row))
 
 
-k_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j);',
+sub_dim_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j);',
              'void GridElementHandler<dim>::init_cache<k>(ElementAccessor &elem);',
              'void GridElementHandler<dim>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);',
              'Size GridElementHandler<dim>::get_num_points<k>() const;']
+
+for dim in inst.sub_domain_dims:
+    gh = 'GridElementHandler<%d>' %(dim) 
+    f.write('template class %s; \n' %(gh))
+    for fun in sub_dim_members:
+        k = dim
+        s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+        f.write('template ' + s + '\n')
+
 for dim in inst.domain_dims:
-    for fun in k_members:
+    gh = 'GridElementHandler<%d>' %(dim) 
+    f.write('template class %s; \n' %(gh))
+    for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
-            s = fun.replace('dim','%d' %dim).replace('k','%d' %(k));
+            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')

@@ -27,20 +27,31 @@ include_files = ['../../source/base/function_element.cpp',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for row in inst.all_mapping_dims:
-    dims = '<Transformation::h_grad, %d, %d>' %(row.dim, row.codim)
+sub_dim_members = \
+['void NewPushForward<Transformation::h_grad,dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+
+for x in inst.sub_mapping_dims:
+    dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
     s = 'template class NewPushForward%s ;\n' %(dims)
     f.write(s)
     s = 'template class PushForwardElement%s ;\n' %(dims)
     f.write(s)
     s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
     f.write(s)
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
 
-k_members = ['void NewPushForward<Transformation::h_grad,dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
-
-for row in inst.mapping_dims:
-    for fun in k_members:
-        for k in inst.sub_dims(row.dim):
-            s = fun.replace('dim','%d' %row.dim).replace('k','%d' %(k)).replace('cod','%d' %row.codim);
+for x in inst.mapping_dims:
+    dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
+    s = 'template class NewPushForward%s ;\n' %(dims)
+    f.write(s)
+    s = 'template class PushForwardElement%s ;\n' %(dims)
+    f.write(s)
+    s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
+    f.write(s)
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
-            
