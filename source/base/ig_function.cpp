@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 IgFunction<Space>::
-IgFunction(std::shared_ptr<Space> space,
+IgFunction(std::shared_ptr<const Space> space,
            const CoeffType &coeff)
     :
     parent_t::NewFunction(space->get_grid()),
@@ -44,7 +44,7 @@ IgFunction(std::shared_ptr<Space> space,
 template<class Space>
 auto
 IgFunction<Space>::
-create(std::shared_ptr<Space> space,
+create(std::shared_ptr<const Space> space,
        const CoeffType &coeff) ->  std::shared_ptr<base_t>
 {
     return std::shared_ptr<base_t>(new self_t(space, coeff));

@@ -211,7 +211,7 @@ public:
      * Print the content of the vector, mostly for debug purposes.
      * @param out
      */
-    void print(LogStream &out) const;
+    void print_info(LogStream &out) const;
 
 
 

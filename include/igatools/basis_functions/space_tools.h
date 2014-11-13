@@ -22,10 +22,112 @@
 #define SPACE_TOOLS_H_
 
 #include <igatools/base/new_function.h>
+#include <igatools/base/ig_function.h>
+
+#include <igatools/linear_algebra/distributed_matrix.h>
+#include <igatools/linear_algebra/linear_solver.h>
 
 IGA_NAMESPACE_OPEN
 namespace space_tools
 {
+/**
+ * Perform an (L2)-Projection the function @p func
+ * onto the space @p space using the quadrature rule @p quad.
+ *  The projection is a numerical vector (the coefficients of
+ *  the projected function)
+ */
+template<class Space, LAPack la_pack = LAPack::trilinos>
+std::shared_ptr<IgFunction<Space> >
+projection_l2(const std::shared_ptr<const typename Space::Func> function,
+              std::shared_ptr<const Space> space,
+              const Quadrature<Space::dim> &quad)
+{
+    auto func = function->clone();
+    const int dim = Space::dim;
+
+    const auto space_manager = space->get_space_manager();
+    Matrix<la_pack> matrix(*space_manager);
+
+    const auto space_dofs_set = space_manager->get_row_dofs();
+    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
+    Vector<la_pack> rhs(space_dofs);
+    Vector<la_pack> sol(space_dofs);
+
+    auto func_flag = NewValueFlags::point | NewValueFlags::value;
+    func->reset(func_flag, quad);
+
+    typename Space::ElementHandler sp_filler(space);
+    auto sp_flag = NewValueFlags::point | NewValueFlags::value| NewValueFlags::w_measure;
+    sp_filler.template reset<dim>(sp_flag, quad);
+
+    auto f_elem = func->begin();
+    auto elem = space->begin();
+    auto end  = space->end();
+
+    func->init_cache(f_elem, Int<dim>());
+    sp_filler.template init_cache<dim>(elem);
+
+    const int n_qp = quad.get_num_points();
+    const int n_basis = elem->get_num_basis();
+    DenseVector loc_rhs(n_basis);
+    DenseMatrix loc_mat(n_basis, n_basis);
+
+
+    for (; elem != end; ++elem, ++f_elem)
+    {
+       func->fill_cache(f_elem, 0, Int<dim>());
+       sp_filler.template fill_cache<dim>(elem, 0);
+
+       loc_mat = 0.;
+       loc_rhs = 0.;
+
+       auto f_at_qp = f_elem->template get_values<0,dim>(0);
+       auto phi = elem->template get_values<0,dim>(0);
+
+
+
+       // computing the upper triangular part of the local matrix
+       auto w_meas = elem->get_w_measures();
+       for (int i = 0; i < n_basis; ++i)
+       {
+           const auto phi_i = phi.get_function_view(i);
+           for (int j = i; j < n_basis; ++j)
+           {
+               const auto phi_j = phi.get_function_view(j);
+               for (int q = 0; q < n_qp; ++q)
+                   loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+           }
+
+           for (int q = 0; q < n_qp; q++)
+               loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
+       }
+
+       // filling symmetric ;lower part of local matrix
+       for (int i = 0; i < n_basis; ++i)
+           for (int j = 0; j < i; ++j)
+               loc_mat(i, j) = loc_mat(j, i);
+
+       const auto local_dofs = elem->get_local_to_global();
+       matrix.add_block(local_dofs,local_dofs,loc_mat);
+       rhs.add_block(local_dofs,loc_rhs);
+    }
+    matrix.fill_complete();
+
+    // TODO (pauletti, Oct 9, 2014): the solver must use a precon
+    const Real tolerance = 1.0e-15;
+    const int max_num_iter = 1000;
+    using LinSolver = LinearSolver<la_pack>;
+    LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter);
+    solver.solve(matrix, rhs, sol);
+
+    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol));
+
+}
+
+
+
+
+
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
                           NewFunction<dim, codim, range, rank> &g,
@@ -145,7 +247,12 @@ Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
 
 }
 
+
+
 };
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

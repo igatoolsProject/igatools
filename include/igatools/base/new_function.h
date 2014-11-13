@@ -131,7 +131,7 @@ public:
 
     NewFunction(const self_t &) = default;
 
-    virtual std::shared_ptr<base_t> clone()
+    virtual std::shared_ptr<base_t> clone() const
     {
         Assert(false, ExcNotImplemented());
         return std::make_shared<base_t>(self_t(*this));

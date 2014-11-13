@@ -53,15 +53,15 @@ public:
 
     using CoeffType = Vector<LAPack::trilinos>;
 
-protected:
-    IgFunction(std::shared_ptr<Space> space, const CoeffType &coeff);
+
+    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 public:
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<Space> space, const CoeffType &coeff);
+    create(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 
-    std::shared_ptr<base_t> clone() override
+    std::shared_ptr<base_t> clone() const override
     {
         return std::make_shared<self_t>(self_t(*this));
     }
@@ -74,10 +74,14 @@ public:
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
+    void print_info(LogStream &out) const
+    {
+        coeff_.print_info(out);
+    }
 
 private:
 
-    std::shared_ptr<Space> space_;
+    std::shared_ptr<const Space> space_;
 
     const CoeffType coeff_;
 

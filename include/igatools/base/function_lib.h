@@ -51,7 +51,7 @@ public:
     create(std::shared_ptr<GridType> grid,
            const Value &b);
 
-    std::shared_ptr<base_t> clone() override
+    std::shared_ptr<base_t> clone() const override
     {
         return std::make_shared<self_t>(self_t(*this));
     }
@@ -64,13 +64,13 @@ protected:
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const;
+                    ValueVector<Value> &values) const override;
 
     void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const;
+                    ValueVector<Derivative<1>> &values) const override;
 
     void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const;
+                    ValueVector<Derivative<2>> &values) const override;
 
 private:
     const Value b_;
@@ -102,7 +102,7 @@ public:
            const Gradient &A,
            const Value &b);
 
-    std::shared_ptr<base_t> clone() override
+    std::shared_ptr<base_t> clone() const override
     {
         return std::make_shared<self_t>(self_t(*this));
     }
@@ -179,7 +179,7 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid);
 
-    std::shared_ptr<base_t> clone() override
+    std::shared_ptr<base_t> clone() const override
     {
         return std::make_shared<self_t>(self_t(*this));
     }
