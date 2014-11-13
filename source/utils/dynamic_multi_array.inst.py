@@ -18,11 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
+# QA needs reviewing
 from init_instantiation_data import *
 
 include_files = ['base/tensor.h',
-                 'basis_functions/bspline_element_accessor.h',
                  'utils/container_view.h',
                  'utils/concatenated_iterator.h']
 data = Instantiation(include_files)

@@ -175,13 +175,6 @@ public:
 };
 
 
-///**
-// * Output operator.
-// * @relates DynamicMultiArray
-// */
-//template<class T, int rank>
-//LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data);
-
 
 /**
  * Given a scalar @p a and a DynamicMultiArray @p B,

@@ -19,12 +19,12 @@
 #-+--------------------------------------------------------------------
 
 # # QA (pauletti, Mar 19, 2014):
-# from init_instantiation_data import *
-# include_files = ['basis_functions/bspline_space.h',
-#                  'basis_functions/nurbs_space.h']
-# # data = Instantiation(include_files)
-# data = Instantiation()
-# (f, inst) = (data.file_output, data.inst)
+from init_instantiation_data import *
+include_files = ['basis_functions/bspline_space.h',
+                 'basis_functions/nurbs_space.h']
+# data = Instantiation(include_files)
+data = Instantiation()
+(f, inst) = (data.file_output, data.inst)
 # 
 # 
 # grids = ['std::shared_ptr<CartesianGrid<%d>>' %(dim) for dim in inst.user_domain_dims]

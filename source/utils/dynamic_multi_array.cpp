@@ -18,14 +18,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/multi_array_utils.h>
 
-
-
 IGA_NAMESPACE_OPEN
-
 
 template<class T, int rank>
 DynamicMultiArray<T,rank>::
@@ -33,7 +29,6 @@ DynamicMultiArray()
     :
     DynamicMultiArray<T,rank>(0)
 {}
-
 
 
 
@@ -56,6 +51,7 @@ DynamicMultiArray(const Size dim)
 {}
 
 
+
 template<class T, int rank>
 DynamicMultiArray<T,rank>::
 DynamicMultiArray(const TensorSize<rank> &dim, const T &val)
@@ -64,7 +60,7 @@ DynamicMultiArray(const TensorSize<rank> &dim, const T &val)
 {
     this->resize(dim,val);
 }
-//*/
+
 
 
 template<class T, int rank>
@@ -76,6 +72,7 @@ resize(const Size dim)
 }
 
 
+
 template<class T, int rank>
 void
 DynamicMultiArray<T,rank>::
@@ -85,6 +82,7 @@ resize(const TensorSize<rank> &dim)
 }
 
 
+
 template<class T, int rank>
 void
 DynamicMultiArray<T,rank>::
@@ -92,7 +90,7 @@ resize(const TensorSize<rank> &dim, const T &val)
 {
     MultiArray<vector<T>,rank>::resize(dim,val);
 }
-//*/
+
 
 
 template<class T, int rank>
@@ -104,8 +102,6 @@ reshape(const TensorSize<rank> &new_sizes)
            ExcDimensionMismatch(new_sizes.flat_size(),this->flat_size()));
     TensorSizedContainer<rank>::reset_size(new_sizes);
 }
-
-
 
 
 
@@ -137,9 +133,6 @@ Conditional< (rank > 0),DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0> >
 DynamicMultiArray<T,rank>::
 get_slice(const int direction, const Index index) const
 {
-//  LogStream out ;
-//  out << *this << std::endl ;
-
     const auto tensor_size = this->tensor_size();
 
     Assert(direction >= 0 && direction < rank,
@@ -174,7 +167,6 @@ get_slice(const int direction, const Index index) const
         slice[flat_id_slice] = this->operator()(tensor_id);
     }
 
-
     return slice;
 }
 
@@ -185,10 +177,10 @@ inline
 void
 DynamicMultiArray<T,rank>::
 copy_slice(const int direction, const Index index,
-           const Conditional<(rank > 0),DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0>> &slice)
+           const Conditional<(rank > 0),
+		   DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0>> &slice)
 {
-    Assert(direction >= 0 && direction < rank,
-           ExcIndexRange(direction,0,rank));
+    Assert(direction >= 0 && direction < rank, ExcIndexRange(direction,0,rank));
 
 
 #ifndef NDEBUG
@@ -220,10 +212,8 @@ copy_slice(const int direction, const Index index,
 
         this->operator()(tensor_id) = slice[flat_id_slice];
     }
-
-
-//  AssertThrow(false,ExcNotImplemented());
 }
+
 
 
 template<class T, int rank>
@@ -235,6 +225,7 @@ clear() noexcept
 }
 
 
+
 template<class T, int rank>
 bool
 DynamicMultiArray<T,rank>::
@@ -243,22 +234,6 @@ empty() const
     return this->get_data().empty();
 }
 
-//template<class T, int rank>
-//LogStream &operator<<(LogStream &out, const DynamicMultiArray<T,rank> &data)
-//{
-//    Size size = data.flat_size();
-//
-//    for (Index i = 0 ; i < size ; ++i)
-//        out << data(i) << " ";
-//    return out;
-//}
-
-
-
-
-
 IGA_NAMESPACE_CLOSE
-
-
 
 #include <igatools/utils/dynamic_multi_array.inst>
