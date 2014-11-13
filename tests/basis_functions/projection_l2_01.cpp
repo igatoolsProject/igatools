@@ -39,7 +39,8 @@
 
 #include <igatools/io/writer.h>
 
-
+// TODO (pauletti, Nov 13, 2014): investigate dim==0 case and then remove this
+// test as it is already covered in _02
 using numbers::PI;
 
 template<int dim>
@@ -110,10 +111,6 @@ void do_test(const int p, const int num_knots = 10)
     QGauss<dim> quad(n_qpoints);
 
     auto f = BoundaryFunction<dim>::create(knots);
-
-
-
-
     auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
     proj_func->print_info(out);
 

@@ -101,8 +101,8 @@ class PhysSpace:
        self.spec   = specs
        self.name   = ( '%s <' %name + ref_space + 
                        '<%d,%d,%d>' % (specs.dim, specs.range, specs.rank) +
-                       ', PushForward<Transformation::%s, %d, %d> >' 
-                       %(specs.trans_type, specs.dim, specs.codim) )
+                       ' ,%d, Transformation::%s>' 
+                       %(specs.codim, specs.trans_type) )
 
 class RefSpace:
     def __init__(self, specs, ref_space):
@@ -296,7 +296,7 @@ class InstantiationInfo:
       self.sub_ref_sp_dims = list(set(self.all_ref_sp_dims) - set(self.ref_sp_dims))
       self.sub_function_dims = list(set(self.all_function_dims) - set(self.function_dims))
       self.sub_mapping_dims = list(set(self.all_mapping_dims) - set(self.mapping_dims))
-      
+      self.sub_phy_sp_dims = list(set(self.all_phy_sp_dims) - set(self.phy_sp_dims))
       return None
 
 
@@ -319,6 +319,9 @@ class InstantiationInfo:
                                  for sp in self.ig_spaces
                                  for x in self.all_phy_sp_dims] )
       
+      self.SubPhysSpaces = unique( [PhysSpace(x,sp,'NewPhysicalSpace')
+                                 for sp in self.ig_spaces
+                                 for x in self.sub_phy_sp_dims] )
       
       self.RefSpaces = unique( [RefSpace(x,sp)
                                 for sp in self.ig_spaces

@@ -33,16 +33,17 @@ IGA_NAMESPACE_OPEN
 
 class SpaceManager;
 
-//Forward declaration to avoid including the header
 template <class> class PhysicalSpaceElement;
+
 template <class> class SpaceElementHandler;
+
 /**
  *
  * @sa FunctionSpace
  *
  * @ingroup containers
  */
-template <class RefSpace_, int codim_, Transformation type_>
+template <class RefSpace_, int codim_, Transformation type_= Transformation::h_grad>
 class NewPhysicalSpace :
     public std::enable_shared_from_this<NewPhysicalSpace<RefSpace_, codim_, type_>>,
             public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
@@ -104,11 +105,7 @@ public:
     using DegreeTable = typename RefSpace::DegreeTable;
 
 public:
-#if 0
-    /** Type for the reference space on the face. */
-    using RefFaceSpace = typename RefSpace_::RefFaceSpace;
-    using FaceSpace = NewPhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
-#endif
+
 
     using ElementAccessor = PhysicalSpaceElement<self_t>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;
@@ -118,7 +115,7 @@ public:
 
     static std::shared_ptr<self_t>
     create(std::shared_ptr<RefSpace> ref_space,
-           std::shared_ptr<MapFunc> push_forward);
+           std::shared_ptr<MapFunc> map_func);
 
     /**
      * Total number of dofs of the space.
@@ -139,7 +136,7 @@ public:
      * Returns a element iterator to one-pass the end of patch.
      */
     ElementIterator end() const;
-#if 0
+
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
 
@@ -151,7 +148,7 @@ public:
 
     /** Returns the container with the patch dof distribution (non const version). */
     DofDistribution<dim, range, rank> &get_dof_distribution_patch();
-#endif
+
     auto get_num_all_element_basis() const
     {
         return ref_space_->get_num_all_element_basis();
@@ -195,11 +192,11 @@ public:
     void print_info(LogStream &out) const;
 
 
-#if 0
+
     std::shared_ptr<SpaceManager> get_space_manager();
 
     std::shared_ptr<const SpaceManager> get_space_manager() const;
-
+#if 0
 
 
     /**
@@ -256,7 +253,5 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
-
-#include<igatools/basis_functions/new_physical_space-inline.h>
 
 #endif

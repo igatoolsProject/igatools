@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the l2_projection function in other dimensions
+ *  Test for the l2_projection function
  *
  *  author: pauletti
  *  date: 2014-06-18
@@ -28,68 +28,87 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/base/formula_function.h>
+
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
+
 #include <igatools/basis_functions/space_tools.h>
+
 #include <igatools/io/writer.h>
 
+// TODO (pauletti, Nov 13, 2014):  add this function as the p-norm function
+// in the library
 
 template <int dim, int range, int rank>
-class TestFunc : public Function<dim, range, rank>
+class TestFunc : public FormulaFunction<dim, 0, range, rank>
 {
+private:
+    using base_t   = NewFunction<dim, 0, range, rank>;
+    using parent_t = FormulaFunction<dim, 0, range, rank>;
+    using self_t = TestFunc<dim, range, rank>;
+    using typename base_t::GridType;
 public:
-    using Base = Function<dim, range>;
-    using typename Base::Point;
-    using typename Base::Value;
-    using typename Base::Gradient;
-    using typename Base::Hessian;
-    void evaluate(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const
-    {
-        auto pt = points.begin();
-        auto val = values.begin();
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    template <int order>
+        using Derivative = typename parent_t::template Derivative<order>;
 
-        for (; pt != points.end(); ++pt, ++val)
+    TestFunc(std::shared_ptr<GridType> grid)
+    : parent_t(grid)
+      {}
+
+        static std::shared_ptr<base_t>
+        create(std::shared_ptr<GridType> grid)
         {
-            for (int i=0; i<dim; ++i)
-                (*val)[i] = (*pt)[i];
-            (*val)[dim] = pt->norm_square();
+            return std::shared_ptr<base_t>(new self_t(grid));
         }
+
+        std::shared_ptr<base_t> clone() const override
+        {
+            return std::make_shared<self_t>(self_t(*this));
+        }
+
+        void evaluate_0(const ValueVector<Point> &points,
+                        ValueVector<Value> &values) const override{
+            auto pt = points.begin();
+            auto val = values.begin();
+
+            for (; pt != points.end(); ++pt, ++val)
+            {
+                for (int i=0; i<dim; ++i)
+                    (*val)[i] = (*pt)[i];
+                (*val)[dim] = pt->norm_square();
+            }
     }
 
-    void evaluate_gradients(
-        const ValueVector<Point> &Point, ValueVector<Gradient> &) const
-    {}
 
-    void evaluate_hessians(
-        const ValueVector<Point> &,ValueVector<Hessian> &) const
-    {}
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const override
+                            {}
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const override
+                            {}
 };
 
 
 
-template<int dim , int range=1 ,int rank = 1>
-void test_proj(const int p)
+template<int dim, int range=1, int rank = 1, LAPack la_pack>
+void test_proj(const int p, const int n_knots = 4)
 {
-    using Space = BSplineSpace<dim,range,rank> ;
+    using Space = NewBSplineSpace<dim,range,rank> ;
     using Func = TestFunc<dim,range, rank>;
 
-    const int num_knots = 4;
-    auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = Space::create(p, knots);
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto space = Space::create(p, grid);
 
-    const int n_qpoints = 4;
-    QGauss<dim> quad(n_qpoints);
+    const int n_qp = 4;
+    QGauss<dim> quad(n_qp);
 
-    Func f;
-
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
-
-    auto proj_values = space_tools::projection_l2<Space,la_pack>(f,space, quad);
-    proj_values.print(out);
+    auto f = Func::create(grid);
+    auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
+    proj_func->print_info(out);
 
 //    Writer<dim> writer(knots,4);
 //    writer.add_field(space, proj_values, "Function");
@@ -99,7 +118,13 @@ void test_proj(const int p)
 
 int main()
 {
-    test_proj<2,3>(1);
+#if defined(USE_TRILINOS)
+    const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    const auto la_pack = LAPack::petsc;
+#endif
+
+    test_proj<2, 3, 1, la_pack>(1);
 
     return 0;
 }

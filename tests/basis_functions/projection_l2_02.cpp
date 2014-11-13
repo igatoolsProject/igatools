@@ -28,20 +28,49 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/push_forward.h>
+#include <igatools/base/formula_function.h>
+#include <igatools/base/function_lib.h>
+
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
+
 #include <igatools/basis_functions/space_tools.h>
+
 #include <igatools/io/writer.h>
+#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/space_element_handler.h>
 
 using numbers::PI;
 
 template<int dim>
-class BoundaryFunction : public Function<dim,1,1>
+class BoundaryFunction : public FormulaFunction<dim>
 {
+private:
+   using base_t = NewFunction<dim>;
+    using parent_t = FormulaFunction<dim>;
+   using self_t = BoundaryFunction<dim>;
+    using typename base_t::GridType;
 public:
-    BoundaryFunction() : Function<dim,1,1>() {}
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    template <int order>
+        using Derivative = typename parent_t::template Derivative<order>;
+public:
+    BoundaryFunction(std::shared_ptr<GridType> grid)
+    : FormulaFunction<dim>(grid)
+      {}
+
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<GridType> grid)
+    {
+        return std::shared_ptr<base_t>(new self_t(grid));
+    }
+
+    std::shared_ptr<base_t> clone() const override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
 
     Real value(Points<dim> x) const
     {
@@ -51,7 +80,8 @@ public:
         return f;
     }
 
-    void evaluate(const ValueVector< Points<dim> > &points, ValueVector<Points<1> > &values) const
+    void evaluate_0(const ValueVector<Point> &points,
+                       ValueVector<Value> &values) const override
     {
         for (int i = 0; i<points.size(); ++i)
         {
@@ -59,62 +89,62 @@ public:
             values[i][0] = this->value(p);
         }
     }
+    void evaluate_1(const ValueVector<Point> &points,
+                       ValueVector<Derivative<1>> &values) const override
+                               {}
 
+       void evaluate_2(const ValueVector<Point> &points,
+                       ValueVector<Derivative<2>> &values) const override
+                               {}
 };
 
 
-template<int dim , int spacedim>
-void do_test(const int p)
-{
-    const int codim = spacedim-dim;
-    using space_ref_t = BSplineSpace<dim,1,1>;
-    using pushforward_t = PushForward<Transformation::h_grad, dim, codim>;
-    using space_t = PhysicalSpace<space_ref_t, pushforward_t>;
 
-    const int num_knots = 10;
-    auto grid = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = space_ref_t::create(p, grid);
-    Points<spacedim> b;
-    Derivatives<dim, spacedim, 1, 1> A;
+template<int dim, int codim, int range, int rank, LAPack la_pack>
+void do_test(const int p, const int num_knots = 10)
+{
+    using RefSpace =  NewBSplineSpace<dim,range,rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim>;
+
+    auto knots = CartesianGrid<dim>::create(num_knots);
+    auto ref_space = RefSpace::create(p, knots);
+
+    using Function = functions::LinearFunction<dim, 0, dim + codim>;
+    typename Function::Value    b;
+    typename Function::Gradient A;
     for (int i = 0; i < dim; ++i)
     {
         A[i][i] = 1+i;
     }
-    auto map = LinearMapping<dim, codim>::create(grid, A, b);
-    auto pf = pushforward_t::create(map);
-    auto space = space_t::create(ref_space,pf);
+    auto map_func = Function::create(knots, A, b);
 
+    auto space = Space::create(ref_space, map_func);
 
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
 
-    BoundaryFunction<dim> f;
+    auto f = BoundaryFunction<dim>::create(knots);
+    auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
+    proj_func->print_info(out);
 
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
-
-    auto proj_values = space_tools::projection_l2
-                       <space_t,la_pack>(
-                           f,std::const_pointer_cast<const space_t>(space),quad);
-
-    proj_values.print(out);
-
-    Writer<dim> output(grid, 4);
-    output.add_field(space, proj_values, "projected function");
-    string filename = "proj_function-" + std::to_string(dim) +"d";
-    output.save(filename);
+//    Writer<dim> output(grid, 4);
+//    output.add_field(space, proj_values, "projected function");
+//    string filename = "proj_function-" + std::to_string(dim) +"d";
+//    output.save(filename);
 }
 
 
 
 int main()
 {
+    #if defined(USE_TRILINOS)
+    const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    const auto la_pack = LAPack::petsc;
+#endif
     out.depth_console(20);
     // do_test<1,1,1>(3);
-    do_test<2,2>(3);
+    do_test<2,0,1,1, la_pack>(3);
     //do_test<3,1,1>(1);
 
     return 0;

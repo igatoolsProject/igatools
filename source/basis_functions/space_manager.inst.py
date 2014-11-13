@@ -25,19 +25,11 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-#spaces = []
-#for space in inst.AllRefSpaces_v2:
-#    spaces.append( '%s' %space.name)
-#for space in inst.PhysSpaces_v2:
-#    spaces.append( '%s' %space.name)
-
 f.write( 'using SpacePtrVariant = Variant<\n')
-# for space in inst.AllRefSpaces_v2:
-#     f.write( 'std::shared_ptr<%s>,\n' %space.name)
-for space in inst.AllRefSpaces:
+
+for space in inst.AllRefSpaces + inst.AllPhysSpaces:
     f.write( 'std::shared_ptr<%s>,\n' %space.name)    
-# for space in inst.PhysSpaces_v2:
-#     f.write( 'std::shared_ptr<%s>,\n' %space.name)
+
 f.seek(f.tell()-2);
 f.write( '>;\n')
 
