@@ -89,8 +89,6 @@ public:
                                IteratorState::pass_the_end);
     }
 
-private:
-
 };
 
 

@@ -97,7 +97,7 @@ public:
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
-protected:
+//protected:
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
 
@@ -129,8 +129,7 @@ public:
 
     auto end() const -> ElementIterator
     {
-        return ElementIterator(F_->get_grid(),
-                               IteratorState::pass_the_end);
+        return ElementIterator(F_->get_grid(), IteratorState::pass_the_end);
     }
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>

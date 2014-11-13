@@ -31,20 +31,23 @@
 #include <igatools/geometry/new_push_forward.h>
 #include <igatools/geometry/push_forward_element.h>
 #include <igatools/geometry/mapping_element.h>
-#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
+
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/basis_functions/bspline_uniform_quad_cache.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 
 template<int dim, int codim>
 void test()
 {
     const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
+    using Space = NewBSplineSpace<dim>;
+    using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
+
     typename Function::Value    b;
     typename Function::Gradient A;
     for (int i=0; i<space_dim; i++)
@@ -55,39 +58,39 @@ void test()
         b[i] = i;
     }
 
-    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure|
-                ValueFlags::map_inv_gradient;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
-
-    using Space = BSplineSpace<dim>;
     auto space  = Space::create(1, grid);
-    auto sp_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
-    typename Space::UniformQuadCache sp_values(space, sp_flag, quad);
+    auto sp_flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::hessian;
+    typename Space::ElementHandler sp_values(space);
+    sp_values.template reset<dim>(sp_flag, quad);
     auto sp_elem = space->begin();
 
 
-    auto F = Function::create(grid, flag, quad, A, b);
-    using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
-    using ElementIt = typename PForward::ElementIterator;
-    PForward pf(F, flag, quad);
+    auto F = Function::create(grid, A, b);
+    PForward pf(F);
+
+    auto flag = NewValueFlags::point |
+                NewValueFlags::tran_value |
+                NewValueFlags::tran_gradient|
+                NewValueFlags::tran_hessian;
+
+    pf.template reset<dim>(flag, quad);
+
+    auto elem = pf.begin();
+    auto end  = pf.end();
 
 
-    ElementIt elem(grid, 0);
-    ElementIt end(grid, IteratorState::pass_the_end);
+    pf.template init_cache<dim>(elem.get_accessor());
+    sp_values.template init_cache<dim>(sp_elem);
 
-
-    pf.init_element(elem);
-    sp_values.init_element_cache(sp_elem);
     for (; elem != end; ++elem, ++sp_elem)
     {
-        sp_values.fill_element_cache(sp_elem);
-        pf.fill_element(elem);
+        sp_values.template fill_cache<dim>(sp_elem, 0);
+        pf.template fill_cache<dim>(elem.get_accessor(), 0);
 
-
-        const auto &ref_values = sp_elem->get_basis_values();
+        const auto &ref_values = sp_elem->template get_values<0,dim>(0);
         ValueTable<typename PForward::template PhysValue<Space::range, Space::rank>>
         values(ref_values.get_num_functions(), ref_values.get_num_points());
         elem->template transform_0<Space::range, Space::rank>
@@ -98,11 +101,11 @@ void test()
         values.print_info(out);
         out << endl;
 
-        const auto &ref_der_1 = sp_elem->get_basis_gradients();
+        const auto &ref_der_1 = sp_elem->template get_values<1,dim>(0);
         ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 1>>
         gradients(ref_values.get_num_functions(), ref_values.get_num_points());
-        elem->template transform_1<Space::range, Space::rank>
-        (std::make_tuple(ref_values, ref_der_1), values, gradients);
+        elem->template transform_1<Space::range, Space::rank, dim>
+        (std::make_tuple(ref_values, ref_der_1), values, gradients, 0);
 
         ref_der_1.print_info(out);
         out << endl;
@@ -110,13 +113,13 @@ void test()
         out << endl;
 
 
-        const auto &ref_der_2 = sp_elem->get_basis_hessians();
+        const auto &ref_der_2 = sp_elem->template get_values<2,dim>(0);
         ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 2>>
         hessians(ref_values.get_num_functions(), ref_values.get_num_points());
-        elem->template transform_2<Space::range, Space::rank>
+        elem->template transform_2<Space::range, Space::rank, dim>
         (std::make_tuple(ref_values, ref_der_1, ref_der_2),
          std::make_tuple(values, gradients),
-         hessians);
+         hessians, 0);
 
         ref_der_2.print_info(out);
         out << endl;
