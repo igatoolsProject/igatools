@@ -58,8 +58,7 @@ protected:
 
 public:
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<Space> space,
-           const CoeffType &coeff);
+    create(std::shared_ptr<Space> space, const CoeffType &coeff);
 
 
     std::shared_ptr<base_t> clone() override

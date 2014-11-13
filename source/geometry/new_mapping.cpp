@@ -54,6 +54,15 @@ NewMapping<dim, codim>::
 
 
 template<int dim, int codim>
+auto
+NewMapping<dim, codim>::
+create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
+{
+    return std::shared_ptr<self_t>(new self_t(F));
+}
+
+
+template<int dim, int codim>
 template <int k>
 auto
 NewMapping<dim, codim>::

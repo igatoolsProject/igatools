@@ -40,6 +40,8 @@ void test()
 
     const int space_dim = dim+codim;
     using Function = functions::LinearFunction<dim, 0, space_dim>;
+    using Mapping  = NewMapping<dim, codim>;
+
     typename Function::Value    b;
     typename Function::Gradient A;
     for (int i=0; i<space_dim; i++)
@@ -49,39 +51,34 @@ void test()
                 A[j][j] = 2.;
         b[i] = i;
     }
+    auto grid = CartesianGrid<dim>::create(3);
+    auto F = Function::create(grid, A, b);
 
     auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure;
+                    NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure;
     auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
 
-    auto F = Function::create(grid, A, b, flag, quad);
+    Mapping map(F);
+    map.template reset<dim>(flag, quad);
 
+    auto elem = map.begin();
+    auto end  = map.end();
 
-    using Mapping   = NewMapping<dim, codim>;
-    using ElementIt = typename Mapping::ElementIterator;
-
-    Mapping map(F, flag, quad);
-
-
-    ElementIt elem(grid, 0);
-    ElementIt end(grid, IteratorState::pass_the_end);
-
-    map.init_element(elem);
+    map.template init_cache<dim>(elem);
     for (; elem != end; ++elem)
     {
-        map.fill_element(elem);
+        map.template fill_cache<dim>(elem, 0);
         out << "Points:" << endl;
         elem->get_points().print_info(out);
         out << endl;
         out << "Values:" << endl;
-        elem->get_values().print_info(out);
+        elem->template get_values<0,dim>(0).print_info(out);
         out << endl;
         out << "Gradients:" << endl;
-        elem->get_gradients().print_info(out);
+        elem->template get_values<1,dim>(0).print_info(out);
         out << endl;
         out << "Hessians:" << endl;
-        elem->get_hessians().print_info(out);
+        elem->template get_values<2,dim>(0).print_info(out);
         out << endl;
 //        elem->get_measures().print_info(out);
 //        out << endl;

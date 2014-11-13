@@ -47,12 +47,11 @@ void test()
     auto space = Space::create(deg, grid);
     typename Function::CoeffType coeff(space->get_num_basis());
     coeff(0) = 1.;
-    shared_ptr<NewFunction<dim,0,range,1>> F
-                                        = std::make_shared<Function>(space, coeff);
+    auto F = Function::create (space, coeff);
     F->reset(flag, quad);
 
-    GridForwardIterator<FunctionElement<dim,0,range,1>> elem(grid, 0);
-    GridForwardIterator<FunctionElement<dim,0,range,1>> end(grid, IteratorState::pass_the_end);
+    auto elem = F->begin();
+    auto end  = F->end();
 
     F->init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)

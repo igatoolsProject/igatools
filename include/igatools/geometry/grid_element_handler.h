@@ -121,8 +121,8 @@ public:
 
     void print_info(LogStream &out) const;
 
-protected:
-    auto get_grid()
+
+    auto get_grid() const
     {
         return grid_;
     }

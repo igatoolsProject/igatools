@@ -33,11 +33,13 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 
-template<int dim, int codim>
+template<int dim, int codim, int sub_dim = dim>
 void test()
 {
-    const int space_dim = dim+codim;
+    const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
+    using Mapping   = NewMapping<dim, codim>;
+
     typename Function::Value    b;
     typename Function::Gradient A;
     for (int i=0; i<space_dim; i++)
@@ -48,29 +50,25 @@ void test()
         b[i] = i;
     }
 
-    auto flag = NewValueFlags::inv_hessian|NewValueFlags::inv_gradient|NewValueFlags::point;
-    auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
-
     auto F = Function::create(grid, A, b);
 
+    auto flag = NewValueFlags::inv_hessian|NewValueFlags::inv_gradient|NewValueFlags::point;
+    auto quad = QGauss<dim>(2);
 
-    using Mapping   = NewMapping<dim, codim>;
-    using ElementIt = typename Mapping::ElementIterator;
+    auto map = Mapping::create(F);
+    map->template reset<sub_dim>(flag, quad);
 
-    Mapping map(F, flag, quad);
-
-
-    ElementIt elem(grid, 0);
-    ElementIt end(grid, IteratorState::pass_the_end);
-
-    map.init_element(elem);
+    auto elem = map->begin();
+    auto end  = map->end();
+    const int s_id = 0;
+    map->template init_cache<sub_dim>(elem);
     for (; elem != end; ++elem)
     {
-        map.fill_element(elem);
-        elem->get_inverse_gradients().print_info(out);
+        map->template fill_cache<sub_dim>(elem, s_id);
+        elem->template get_inverse_values<1, sub_dim> (s_id).print_info(out);
         out << endl;
-        elem->get_inverse_hessians().print_info(out);
+        elem->template get_inverse_values<2, sub_dim> (s_id).print_info(out);
         out << endl;
     }
 

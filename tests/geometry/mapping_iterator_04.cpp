@@ -71,14 +71,11 @@ void run_test()
         control_pts[16] = 1.5;
         control_pts[17] = 2.0;
     }
-    else if (dim == 3)
+    else
     {
         AssertThrow(false,ExcNotImplemented());
     }
-    else if (dim == 1)
-    {
-        AssertThrow(false,ExcNotImplemented());
-    }
+
 
     auto map = IgMapping<RefSpace_t>::create(ref_space, control_pts);
     map->refine_h_direction(0, 2);

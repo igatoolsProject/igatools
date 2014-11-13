@@ -174,12 +174,12 @@ public:
         init_cache(elem.get_accessor(), k);
     }
 
-    auto begin()  -> ElementIterator
+    auto begin()  const -> ElementIterator
     {
         return ElementIterator(this->get_grid(), 0);
     }
 
-    auto end() -> ElementIterator
+    auto end() const -> ElementIterator
     {
         return ElementIterator(this->get_grid(),
         IteratorState::pass_the_end);

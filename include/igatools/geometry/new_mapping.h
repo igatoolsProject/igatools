@@ -91,6 +91,7 @@ public:
 
     ~NewMapping();
 
+    static std::shared_ptr<self_t>  create(std::shared_ptr<FuncType> F);
 
 public:
     template<int k>
@@ -116,11 +117,21 @@ public:
         init_cache<k>(elem.get_accessor());
     }
 
-    auto get_function()
+    auto get_function() const
     {
         return F_;
     }
 
+    auto begin()  const -> ElementIterator
+            {
+        return ElementIterator(F_->get_grid(), 0);
+            }
+
+    auto end() const -> ElementIterator
+            {
+        return ElementIterator(F_->get_grid(),
+                               IteratorState::pass_the_end);
+            }
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);

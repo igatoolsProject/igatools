@@ -36,7 +36,7 @@
 #include <igatools/base/function_element.h>
 
 
-template<int dim, int codim>
+template<int dim, int codim, int sub_dim=dim>
 void ig_mapping(const int deg = 1)
 {
     OUTSTART
@@ -44,7 +44,7 @@ void ig_mapping(const int deg = 1)
     using Space = NewBSplineSpace<dim, dim+codim>;
     using Function = IgFunction<Space>;
     using Mapping   = NewMapping<dim, codim>;
-    using ElementIt = typename Mapping::ElementIterator;
+
 
     auto flag =  NewValueFlags::value| NewValueFlags::gradient
                  | NewValueFlags::hessian;
@@ -54,21 +54,25 @@ void ig_mapping(const int deg = 1)
     auto space = Space::create(deg, grid);
     typename Function::CoeffType coeff(space->get_num_basis());
     coeff(0) = 1.;
-    auto F = Function::create(flag, quad, space, coeff);
+    auto F = Function::create(space, coeff);
 
-    Mapping map(F, flag, quad);
-    ElementIt elem(grid, 0);
-    ElementIt end(grid, IteratorState::pass_the_end);
+    auto map = Mapping::create(F);
+    map->template reset<sub_dim>(flag, quad);
 
-    map.init_element(elem);
+    auto elem = map->begin();
+    auto end  = map->end();
+    const int s_id = 0;
+
+    map->template init_cache<sub_dim>(elem);
     for (; elem != end; ++elem)
     {
-        map.fill_element(elem);
-        elem->get_values().print_info(out);
+        map->template fill_cache<sub_dim>(elem, s_id);
+
+        elem->template get_values<0,sub_dim>(s_id).print_info(out);
         out << endl;
-        elem->get_gradients().print_info(out);
+        elem->template get_values<1,sub_dim>(s_id).print_info(out);
         out << endl;
-        elem->get_hessians().print_info(out);
+        elem->template get_values<2,sub_dim>(s_id).print_info(out);
         out << endl;
     }
 
