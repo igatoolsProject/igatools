@@ -19,7 +19,10 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for linear mapping class
+ *  Test for the push foward using a mapping
+ *  with with a linear function
+ *  Getting Mapping quantities
+ *
  *  author: pauletti
  *  date: Oct 11, 2014
  */
@@ -29,7 +32,7 @@
 #include <igatools/geometry/new_push_forward.h>
 #include <igatools/geometry/push_forward_element.h>
 #include <igatools/geometry/mapping_element.h>
-#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
+
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
@@ -39,6 +42,8 @@ void test()
 {
     const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
+    using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
+
     typename Function::Value    b;
     typename Function::Gradient A;
     for (int i=0; i<space_dim; i++)
@@ -49,39 +54,37 @@ void test()
         b[i] = i;
     }
 
-    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
-    auto F = Function::create(grid, flag, quad, A, b);
+    auto flag = NewValueFlags::point | NewValueFlags::value
+            | NewValueFlags::gradient | NewValueFlags::hessian|
+            NewValueFlags::measure |
+                NewValueFlags::w_measure;
+    auto F = Function::create(grid, A, b);
+    PForward pf(F);
 
+    pf.template reset<dim>(flag, quad);
 
-    using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
-    using ElementIt = typename PForward::ElementIterator;
+    auto elem = pf.begin();
+    auto end  = pf.end();
 
-    PForward pf(F, flag, quad);
+    pf.template init_cache<dim>(elem.get_accessor());
 
-
-    ElementIt elem(grid, 0);
-    ElementIt end(grid, IteratorState::pass_the_end);
-
-
-    pf.init_element(elem);
     for (; elem != end; ++elem)
     {
-        pf.fill_element(elem);
+        pf.template fill_cache<dim>(elem.get_accessor(), 0);
         elem->get_points().print_info(out);
         out << endl;
-        elem->get_values().print_info(out);
+        elem->template get_values<0,dim>(0).print_info(out);
         out << endl;
-        elem->get_gradients().print_info(out);
+        elem->template get_values<1,dim>(0).print_info(out);
         out << endl;
-        elem->get_hessians().print_info(out);
+        elem->template get_values<2,dim>(0).print_info(out);
         out << endl;
-        elem->get_measures().print_info(out);
+        elem->template get_measures<dim>(0).print_info(out);
         out << endl;
-        elem->get_w_measures().print_info(out);
+        elem->template get_w_measures<dim>(0).print_info(out);
         out << endl;
     }
 

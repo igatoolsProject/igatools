@@ -36,7 +36,10 @@ pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags
     NewValueFlags transfer_flag = NewValueFlags::measure |
     NewValueFlags::w_measure |
     NewValueFlags::normal|
-    NewValueFlags::point;
+    NewValueFlags::point|
+    NewValueFlags::value|
+    NewValueFlags::gradient|
+    NewValueFlags::hessian;
 
     NewValueFlags map_flag = flags & transfer_flag;
 
