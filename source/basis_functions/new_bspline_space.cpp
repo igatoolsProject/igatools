@@ -200,7 +200,7 @@ get_ref_sub_space(const int s_id,
         typename GridType::template InterGridMap<k>  elem_map;
         sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
     }
-        auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
+    auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
     auto sub_degree = this->template get_sub_space_degree<k>(s_id);
 
     auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);

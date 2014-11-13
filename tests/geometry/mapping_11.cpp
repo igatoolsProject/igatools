@@ -55,7 +55,7 @@ void test()
     auto F = Function::create(grid, A, b);
 
     auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
-                    NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure;
+                NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure;
     auto quad = QGauss<dim>(2);
 
     Mapping map(F);

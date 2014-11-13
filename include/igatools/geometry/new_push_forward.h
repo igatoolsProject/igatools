@@ -78,6 +78,17 @@ public:
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);
 
+    auto begin()  const -> ElementIterator
+    {
+        return ElementIterator(this->get_function()->get_grid(), 0);
+    }
+
+    auto end() const -> ElementIterator
+    {
+        return ElementIterator(this->get_function()->get_grid(),
+                               IteratorState::pass_the_end);
+    }
+
 private:
 
 };

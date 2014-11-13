@@ -182,7 +182,7 @@ public:
     auto end() const -> ElementIterator
     {
         return ElementIterator(this->get_grid(),
-        IteratorState::pass_the_end);
+                               IteratorState::pass_the_end);
     }
 
 private:

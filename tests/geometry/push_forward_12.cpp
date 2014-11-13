@@ -19,7 +19,9 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for linear mapping class
+ *  Test for the push foward using a mapping
+ *  with with a linear function
+ *
  *  author: pauletti
  *  date: Oct 11, 2014
  */

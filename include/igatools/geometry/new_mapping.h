@@ -123,15 +123,15 @@ public:
     }
 
     auto begin()  const -> ElementIterator
-            {
+    {
         return ElementIterator(F_->get_grid(), 0);
-            }
+    }
 
     auto end() const -> ElementIterator
-            {
+    {
         return ElementIterator(F_->get_grid(),
                                IteratorState::pass_the_end);
-            }
+    }
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);

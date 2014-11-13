@@ -178,7 +178,7 @@ void
 DynamicMultiArray<T,rank>::
 copy_slice(const int direction, const Index index,
            const Conditional<(rank > 0),
-		   DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0>> &slice)
+           DynamicMultiArray<T,rank-1>,DynamicMultiArray<T,0>> &slice)
 {
     Assert(direction >= 0 && direction < rank, ExcIndexRange(direction,0,rank));
 
