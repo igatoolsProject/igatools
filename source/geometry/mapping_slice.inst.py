@@ -18,13 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# # QA (pauletti, Mar 19, 2014):
-# from init_instantiation_data import *
-# 
-# include_files = ['geometry/mapping_element_accessor.h']
-# data = Instantiation(include_files)
-# (f, inst) = (data.file_output, data.inst)
-# 
+
+from init_instantiation_data import *
+
+include_files = ['geometry/mapping_element_accessor.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
+
 # maps = ['template class MappingSlice<%d,%d> ;\n' %(row.dim, row.codim) 
 #         for row in inst.face_phy_sp_dims]
 # for map in unique(maps): 

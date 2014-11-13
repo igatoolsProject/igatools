@@ -18,17 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-include_files = ['basis_functions/bspline_space.h',
-                 'basis_functions/bspline_element_accessor.h',
-                 'basis_functions/nurbs_space.h',
-                 'basis_functions/nurbs_element_accessor.h',
-                 'basis_functions/physical_space.h',
+include_files = ['basis_functions/new_bspline_space.h',
+                 'basis_functions/bspline_element.h',
+                # 'basis_functions/nurbs_space.h',
+                # 'basis_functions/nurbs_element_accessor.h',
+                 'basis_functions/new_physical_space.h',
                  'geometry/cartesian_grid_element.h',
-                 'geometry/mapping_element_accessor.h',
-                 'geometry/push_forward_element_accessor.h',
-                 'basis_functions/physical_space_element_accessor.h']
+                 'geometry/mapping_element.h',
+                 'geometry/push_forward_element.h',
+                 'basis_functions/physical_space_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
