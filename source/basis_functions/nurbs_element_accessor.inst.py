@@ -18,15 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# from init_instantiation_data import *
-# 
-# include_files = ['geometry/cartesian_grid.h',
-#                  'geometry/cartesian_grid_element.h',
-#                  'basis_functions/bspline_space.h',
-#                  '../../source/geometry/grid_forward_iterator.cpp']
-# data = Instantiation(include_files)
-# (f, inst) = (data.file_output, data.inst)
-# 
+from init_instantiation_data import *
+
+include_files = ['geometry/cartesian_grid.h',
+                 'geometry/cartesian_grid_element.h',
+                 'basis_functions/new_bspline_space.h',
+                 '../../source/geometry/grid_forward_iterator.cpp']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
+
 # accessors = ['NURBSElementAccessor<%d, %d, %d>' %(x.dim, x.range, x.rank)  
 #           for x in inst.really_all_ref_sp_dims ]
 # for accessor in accessors:
