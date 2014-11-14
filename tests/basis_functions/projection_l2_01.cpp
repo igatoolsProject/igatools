@@ -28,6 +28,7 @@
  */
 
 #include "../tests.h"
+#include "./common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/formula_function.h>
@@ -41,62 +42,7 @@
 
 // TODO (pauletti, Nov 13, 2014): investigate dim==0 case and then remove this
 // test as it is already covered in _02
-using numbers::PI;
 
-template<int dim>
-class BoundaryFunction : public FormulaFunction<dim>
-{
-private:
-   using base_t = NewFunction<dim>;
-    using parent_t = FormulaFunction<dim>;
-   using self_t = BoundaryFunction<dim>;
-    using typename base_t::GridType;
-public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    template <int order>
-        using Derivative = typename parent_t::template Derivative<order>;
-public:
-    BoundaryFunction(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid)
-      {}
-
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid)
-    {
-        return std::shared_ptr<base_t>(new self_t(grid));
-    }
-
-    std::shared_ptr<base_t> clone() const override
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
-
-    Real value(Points<dim> x) const
-    {
-        Real f = 1;
-        for (int i = 0; i<dim; ++i)
-            f = f * cos(2*PI*x[i]);
-        return f;
-    }
-
-    void evaluate_0(const ValueVector<Point> &points,
-                       ValueVector<Value> &values) const override
-    {
-        for (int i = 0; i<points.size(); ++i)
-        {
-            Points<dim> p = points[i];
-            values[i][0] = this->value(p);
-        }
-    }
-    void evaluate_1(const ValueVector<Point> &points,
-                       ValueVector<Derivative<1>> &values) const override
-                               {}
-
-       void evaluate_2(const ValueVector<Point> &points,
-                       ValueVector<Derivative<2>> &values) const override
-                               {}
-};
 
 
 template<int dim , int range ,int rank, LAPack la_pack>

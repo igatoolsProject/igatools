@@ -190,20 +190,14 @@ public :
      * Returns the gradient determinant of the map at the dilated quadrature points.
      */
     using PhysSpace::PushForwardType::ElementAccessor::get_measures;
+    using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
 
-#if 0
-    /**
-     * Returns the gradient determinant of the map at the dilated quadrature points
-     * on the face specified by @p face_id.
-     */
-    using PhysSpace::PushForwardType::ElementAccessor::get_face_measures;
-#endif
 
     /**
      * Returns the quadrature weights multiplied by the
      * gradient determinant of map at the dilated quadrature points.
      */
-    using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
+
 
 #if 0
     /**

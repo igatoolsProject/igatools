@@ -21,7 +21,10 @@
 from init_instantiation_data import *
 include_files = ['basis_functions/new_bspline_space.h',
                  'basis_functions/bspline_element.h',
-                 'basis_functions/bspline_element_handler.h']
+                 'basis_functions/bspline_element_handler.h',
+                 'basis_functions/new_physical_space.h',
+                 'basis_functions/physical_space_element.h',
+                 'basis_functions/space_element_handler.h']
 # include_files = ['basis_functions/bspline_space.h',
 #                  'basis_functions/bspline_element_accessor.h',
 #                  'basis_functions/bspline_uniform_quad_cache.h',
@@ -41,12 +44,8 @@ include_files = ['basis_functions/new_bspline_space.h',
 data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
-for x in  inst.all_ref_sp_dims: 
-    s = ( 'template class IgFunction<NewBSplineSpace<%d,%d,%d>> ;\n' 
-          %(x.dim, x.range, x.rank) )
+for x in  inst.AllRefSpaces + inst.AllPhysSpaces: 
+    s = ( 'template class IgFunction<%s> ;\n'   %(x.name) )
     f.write(s)
     
-# for sp in inst.UserPhysSpaces + inst.UserRefSpaces:	
-# 	s = 'template class IgFunction<%s> ;\n' %(sp)
-# 	f.write(s)
-   
+  

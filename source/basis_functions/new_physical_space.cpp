@@ -190,7 +190,7 @@ get_id() const
 {
     return ref_space_->get_id();
 }
-
+#endif
 
 template <class RefSpace_,int codim_, Transformation type_>
 vector<Index>
@@ -209,7 +209,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
     return ref_space_->get_loc_to_patch(element);
 }
 
-#endif
+
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto

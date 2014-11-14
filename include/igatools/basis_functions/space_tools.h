@@ -27,6 +27,9 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
+#include<set>
+#include <igatools/geometry/mapping_slice.h>
+
 IGA_NAMESPACE_OPEN
 namespace space_tools
 {
@@ -87,7 +90,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
 
        // computing the upper triangular part of the local matrix
-       auto w_meas = elem->get_w_measures();
+       auto w_meas = elem->template get_w_measures<dim>(0);
        for (int i = 0; i < n_basis; ++i)
        {
            const auto phi_i = phi.get_function_view(i);
@@ -145,15 +148,21 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 		const std::set<boundary_id>  &boundary_ids,
 		std::map<Index, Real>  &boundary_values)
 {
-	const int sub_dim = Space::dim - 1;
+    const int dim   = Space::dim;
+    const int range = Space::range;
+    const int rank  = Space::rank;
+    const int space_dim = Space::space_dim;
+
+	const int sub_dim = dim - 1;
 	using SubSpace = typename Space::template SubSpace<sub_dim>;
 	using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
+	using SubFunc = SubFunction<sub_dim, dim, space_dim>;
 
 	const int n_faces = UnitElement<Space::dim>::faces_per_element;
 
 	auto grid = space->get_grid();
 
-	set<int> sub_elems;
+	std::set<int> sub_elems;
 	auto bdry_begin = boundary_ids.begin();
 	auto bdry_end   = boundary_ids.end();
 	for (auto &s_id : UnitElement<Space::dim>::template elems_id<sub_dim>())
@@ -167,8 +176,9 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 	{
 		InterSpaceMap  dof_map;
 		auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map);
+		auto sub_func = SubFunc::create(function, s_id);
 
-		auto proj = projection_l2<SubSpace,la_pack>(func, face_space, quad);
+		auto proj = projection_l2<SubSpace,la_pack>(sub_func, sub_space, quad);
 
 		const auto coef = proj->get_coefficients();
 		const int face_n_dofs = dof_map.size();

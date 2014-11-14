@@ -64,6 +64,22 @@ public:
         sup_elem_(sup_func_->begin())
     {}
 
+    SubFunction(std::shared_ptr<SupFunc> func,
+                const int s_id)
+            :
+            base_t(func->get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
+            sup_func_(func->clone()),
+            s_id_(s_id),
+            sup_elem_(sup_func_->begin())
+        {}
+
+    static std::shared_ptr<base_t>
+        create(std::shared_ptr<SupFunc> func,
+               const int s_id)
+        {
+            return std::shared_ptr<base_t>(new self_t(func, s_id));
+        }
+
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid,
            std::shared_ptr<SupFunc> func,

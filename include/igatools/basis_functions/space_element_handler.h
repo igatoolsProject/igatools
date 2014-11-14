@@ -50,7 +50,7 @@ public:
     using PhysSpace::PushForwardType::type;
 
     //Allocates and fill the (global) cache
-    SpaceElementHandler(std::shared_ptr<PhysSpace> space);
+    SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
 
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);
@@ -85,7 +85,7 @@ public:
     void print_info(LogStream &out) const;
 
 private:
-    std::shared_ptr<PhysSpace> space_;
+    std::shared_ptr<const PhysSpace> space_;
 
     std::array<FunctionFlags, dim + 1> flags_;
 

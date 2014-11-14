@@ -153,15 +153,18 @@ public:
     {
         return ref_space_->get_num_all_element_basis();
     }
+
+
 #if 0
     const DegreeTable &get_degree() const;
+#endif
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
 
-
+#if 0
     /**
      * Returns the element accessor with its flat id corresponding to @p elem_flat_id.
      *

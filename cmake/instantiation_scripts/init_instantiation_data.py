@@ -292,15 +292,21 @@ class InstantiationInfo:
 
       # for the get sub spaces of the reference spaces    
       self.all_phy_sp_dims = unique(self.all_phy_sp_dims +
-                                    [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad']) for x in self.all_ref_sp_dims])    
-
+                                    [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
+                                      for x in self.all_ref_sp_dims])    
+      self.phy_sp_dims = unique(self.phy_sp_dims +
+                                    [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
+                                      for x in self.all_ref_sp_dims])
       for k in range(1, self.n_sub_element + 1):
          self.all_phy_sp_dims = unique(self.all_phy_sp_dims +
-                                    [PhysSpaceSpecs([x.dim-k, k, x.range, x.rank, 'h_grad']) for x in self.ref_sp_dims  if x.dim>=k])
+                                    [PhysSpaceSpecs([x.dim-k, k, x.range, x.rank, 'h_grad']) 
+                                     for x in self.ref_sp_dims  if x.dim>=k])
 
       self.all_mapping_dims = unique(self.all_mapping_dims +
                                     [MappingRow([x.dim,  x.codim])  for x in self.all_phy_sp_dims] )
-      
+      self.all_function_dims = unique(self.all_function_dims +
+                                    [FunctionRow([x.dim,  x.codim, x.phys_range, x.phys_rank]) 
+                                for x in self.all_phy_sp_dims] )
       self.domain_dims     = unique([x.dim for x in self.function_dims])   
       self.all_domain_dims = unique([x.dim for x in self.all_function_dims])
 

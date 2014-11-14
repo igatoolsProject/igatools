@@ -101,7 +101,7 @@ using Index = int;
  */
 using Size = int;
 
-#if 0
+
 /**
  * Bit field flags for specifying which element values will be needed
  * through the iterator on the grid like containers.
@@ -110,147 +110,6 @@ using Size = int;
  * for efficient computations.
  * @todo put link to iterators_accessors.dox
  */
-enum class ValueFlags : std::int64_t
-{
-    /** Fill nothing */
-    none           =    0,
-
-    ///@name Applicable to elements of all grid-like containers
-    ///@{
-    /** Quadrature points on the element */
-    point          =    1L << 1,
-
-    /** Differential of measure (length, area, volume) at the
-     * quadrature points */
-    measure        =    1L << 2,
-
-    /** Differential of measure (length, area, volume) at the
-     * quadrature points times the unit quadrature weights */
-    w_measure      =    1L << 3,
-
-    /** Quadrature points on a face of the element */
-    face_point     =    1L << 4,
-
-    /** Differential of face measure (length, area, volume) at the
-     * quadrature points */
-    face_measure   =    1L << 5,
-
-    /** Differential of face measure (length, area, volume) at the
-     * quadrature points times the unit quadrature weights */
-    face_w_measure =    1L << 6,
-
-    /** Face outer (element boundary) normal at the quadrature points */
-    face_normal    =    1L << 7,
-
-    /** element coordinates length */
-    length         =    1L << 8,
-    ///@}
-
-    ///@name Reference element related values
-    ///@{
-    /** reference element measure (one single value) */
-//    ref_elem_measure       =    1L << 8,
-
-    /** reference element face measure (one single value) */
-//    ref_elem_face_measure  =    1L << 9,
-
-    /** reference element coordinate lengths */
-//    ref_elem_coord_length  =    1L << 10,
-
-    /** reference element face outer normal (one single value) */
-//    ref_elem_face_normal   =    1L << 11,
-
-    ///@}
-
-    ///@name Applicable to mapping, push-forward and physical space
-    ///@{
-    /** compute the element normal spaces */
-    elem_normal            =    1L << 12,
-
-    /** compute the element curvatures */
-    elem_curvature         =    1L << 13,
-    ///@}
-
-    ///@name Mapping related values
-    ///@{
-    /** compute the values of the map */
-    map_value              =    point,
-
-    /** compute the gradients of the map */
-    map_gradient           =    1L << 14,
-
-    /** compute the gradients of the map */
-    map_hessian            =    1L << 15,
-
-    /** compute the gradients of the map */
-    map_inv_gradient       =    1L << 16,
-
-    /** compute the gradients of the map */
-    map_inv_hessian        =    1L << 17,
-
-    /** compute the values of the map */
-    map_face_value         =    face_point,
-
-    /** compute the gradients of the map */
-    map_face_gradient      =    1L << 18,
-
-    /** compute the gradients of the map */
-    map_face_hessian       =    1L << 19,
-
-    /** compute the gradients of the map */
-    map_face_inv_gradient  =    1L << 20,
-
-    /** compute the gradients of the map */
-    map_face_inv_hessian   =    1L << 21,
-
-    ///@}
-
-
-    ///@name Transformation (pushforward) related
-    ///@{
-    /** transform the values of basis functions */
-    tran_value    =    1L << 22,
-
-    /** transform the gradients of basis functions */
-    tran_gradient =    1L << 23,
-
-    /** transform the second derivatives of basis functions */
-    tran_hessian  =    1L << 24,
-
-    ///@}
-
-
-    ///@name Basis function (space) related
-    ///@{
-    /** compute values of basis functions */
-    value         =    1L << 25,
-
-    /** compute the gradients of basis functions */
-    gradient      =    1L << 26,
-
-    /** compute the second derivatives of basis functions */
-    hessian       =    1L << 27,
-
-    /** compute the second derivatives of basis functions */
-    divergence    =    1L << 28,
-
-    /** compute values of basis functions */
-    face_value    =    1L << 29,
-
-    /** compute the gradients of basis functions */
-    face_gradient =    1L << 30,
-
-    /** compute the second derivatives of basis functions */
-    face_hessian  =    1L << 31,
-
-    /** compute the second derivatives of basis functions */
-    face_divergence    =    1L << 32
-
-                            ///@}
-};
-#endif
-
-
 enum class NewValueFlags : std::int64_t
 {
     /** Fill nothing */
@@ -475,14 +334,7 @@ int bitcount(Flag a)
     return count;
 }
 
-#if 0
-//TODO(pauletti, Feb 19, 2014): the item below should be documented
-inline
-std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
-{
-    return (stream << static_cast< int >(flag));
-}
-#endif
+
 inline
 std::ostream &operator<< (std::ostream &stream, const NewValueFlags &flag)
 {
@@ -659,6 +511,7 @@ using RefSpace = Conditional<(space_type == RefSpaceType::bspline),
       BSplineSpace<dim,range,rank>,
       NURBSSpace<dim,range,rank> >;
 
+// TODO (pauletti, Nov 14, 2014): delete after gcc implements correct std::max
 constexpr int max(int a, int b)
 {
     return a>b ? a : b;

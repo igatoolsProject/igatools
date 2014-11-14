@@ -27,6 +27,7 @@
  */
 
 #include "../tests.h"
+#include "./common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
 
@@ -39,36 +40,6 @@
 #include <igatools/linear_algebra/dof_tools.h>
 
 
-template<int dim>
-class BoundaryFunction : public Function<dim,1,1>
-{
-
-public:
-    BoundaryFunction() : Function<dim,1,1>() {}
-
-    Real value(Points<dim> P_) const
-    {
-        Real  PI = numbers::PI;
-
-        Real f = 1;
-        for (int cnt = 0; cnt<dim; cnt++)
-        {
-            f = f * cos(Real(2*PI*P_[cnt]));
-        }
-
-        return f;
-    }
-
-    void evaluate(const ValueVector< Points<dim> > &points, ValueVector<Points<1> > &values) const
-    {
-        for (int i =0; i<points.size(); i++)
-        {
-            Points<dim> p = points[i];
-            values[i][0] = this->value(p);
-        }
-    };
-
-};
 
 
 template<int dim, int space_dim, int range, int rank=1>
