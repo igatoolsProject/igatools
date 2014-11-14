@@ -25,11 +25,37 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+template<int dim>
+IdentityFunction<dim>::
+IdentityFunction(std::shared_ptr<GridType> grid)
+    :
+    parent_t::NewFunction(grid)
+{}
+
+
+
+template<int dim>
+auto
+IdentityFunction<dim>::
+fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
+{
+    parent_t::fill_cache(elem, j, k);
+    fill_cache_impl.j = j;
+    fill_cache_impl.function = this;
+    fill_cache_impl.elem = &elem;
+    fill_cache_impl.flags_ = &(this->flags_);
+    boost::apply_visitor(fill_cache_impl, k);
+}
+
+
+
+
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(std::shared_ptr<GridType> grid)
     :
-    parent_t::NewFunction(grid)
+    parent_t::NewFunction(grid),
+    mapping_(IdentityFunction<dim>::create(grid))
 {}
 
 

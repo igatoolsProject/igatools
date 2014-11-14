@@ -144,7 +144,7 @@ int main()
 #endif
     out.depth_console(20);
     // do_test<1,1,1>(3);
-    do_test<2,0,1,1, la_pack>(3);
+    do_test<2,0,1,1, la_pack>(1);
     //do_test<3,1,1>(1);
 
     return 0;

@@ -25,6 +25,77 @@
 
 IGA_NAMESPACE_OPEN
 
+template<int dim>
+class IdentityFunction : public NewFunction<dim, 0, dim, 1>
+{
+private:
+    using parent_t = NewFunction<dim, 0, dim, 1>;
+    using self_t = IdentityFunction<dim>;
+protected:
+    using typename parent_t::GridType;
+public:
+    using typename parent_t::variant_1;
+    using typename parent_t::variant_2;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    using parent_t::space_dim;
+
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+
+    IdentityFunction(std::shared_ptr<GridType> grid);
+
+    static std::shared_ptr<parent_t>
+        create(std::shared_ptr<GridType> grid)
+        {
+        return std::shared_ptr<parent_t>(new self_t(grid));
+        }
+
+    void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
+
+
+private:
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            auto &local_cache = function->get_cache(*elem);
+            auto &cache = local_cache->template get_value_cache<T::k>(j);
+            auto &flags = cache.flags_handler_;
+
+            if (!flags.fill_none())
+            {
+                const auto points =
+                    elem->CartesianGridElement<dim>::template get_points<T::k>(j);
+
+                if (flags.fill_points())
+                    cache.points_ = points;
+                if (flags.fill_values())
+                    std::get<0>(cache.values_) = points;
+//                if (flags.fill_gradients())
+//                    //std::get<1>(cache.values_) = identity;
+//                if (flags.fill_hessians())
+//                    //std::get<2>(cache.values_) = 0.;
+            }
+
+            cache.set_filled(true);
+        }
+
+        int j;
+        self_t *function;
+        ElementAccessor *elem;
+        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+    FillCacheDispatcher fill_cache_impl;
+    friend class FillCacheDispatcher;
+};
+
 /**
  *
  */
@@ -49,32 +120,30 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    FormulaFunction(std::shared_ptr<GridType> grid);
+    using Map = NewFunction<dim, 0, space_dim>;
 
-//    void reset(const NewValueFlags &flag, const variant_1& quad) override;
-//
-//    void init_cache(ElementAccessor &elem, const variant_2& k) override;
+    FormulaFunction(std::shared_ptr<GridType> grid);
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
 private:
-    virtual void parametrization(const ValueVector<Points<dim>> &points_,
-                                 ValueVector<Point> &values) const
-    {
-        const int num_points = points_.size();
-        for (int i = 0; i<num_points; i++)
-        {
-            const auto &x = points_[i];
-            for (int k = 0; k < dim; ++k)
-            {
-                values[i][k] = x[k];
-            }
-            for (int k = dim; k < codim; ++k)
-            {
-                values[i][k] = 0.;
-            }
-        }
-    }
+//    virtual void parametrization(const ValueVector<Points<dim>> &points_,
+//                                 ValueVector<Point> &values) const
+//    {
+//        const int num_points = points_.size();
+//        for (int i = 0; i<num_points; i++)
+//        {
+//            const auto &x = points_[i];
+//            for (int k = 0; k < dim; ++k)
+//            {
+//                values[i][k] = x[k];
+//            }
+//            for (int k = dim; k < codim; ++k)
+//            {
+//                values[i][k] = 0.;
+//            }
+//        }
+//    }
 
     virtual void evaluate_0(const ValueVector<Point> &points,
                             ValueVector<Value> &values) const = 0;
@@ -85,6 +154,9 @@ private:
     virtual void evaluate_2(const ValueVector<Point> &points,
                             ValueVector<Derivative<2>> &values) const = 0;
 
+
+private:
+    std::shared_ptr<Map> mapping_;
 
 
     struct FillCacheDispatcher : boost::static_visitor<void>
