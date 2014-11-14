@@ -74,6 +74,11 @@ public:
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
+    auto &get_coefficients() const
+    {
+    	return coeff_;
+    }
+
     void print_info(LogStream &out) const
     {
         coeff_.print_info(out);

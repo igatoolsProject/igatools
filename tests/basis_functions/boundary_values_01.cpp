@@ -29,6 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
+
 #include <igatools/geometry/identity_mapping.h>
 
 #include <igatools/basis_functions/bspline_space.h>

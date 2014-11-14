@@ -126,6 +126,56 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
 
 
+/**
+ * Projects (using the L2 scalar product) a function to the whole or part
+ * of the boundary of the domain.
+ * The piece of the domain is indicated by the boundary ids and the
+ * projection is computed using the provided quadrature rule.
+ *
+ * The projected function is returned in boundary_values, a map containing all
+ * indices of degrees of freedom at the boundary and the computed coefficient value
+ * for this degree of freedom.
+ *
+ */
+template<class Space, LAPack la_pack = LAPack::trilinos>
+void
+project_boundary_values(const std::shared_ptr<const typename Space::Func> function,
+		std::shared_ptr<const Space> space,
+		const Quadrature<Space::dim-1> &quad,
+		const std::set<boundary_id>  &boundary_ids,
+		std::map<Index, Real>  &boundary_values)
+{
+	const int sub_dim = Space::dim - 1;
+	using SubSpace = typename Space::template SubSpace<sub_dim>;
+	using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
+
+	const int n_faces = UnitElement<Space::dim>::faces_per_element;
+
+	auto grid = space->get_grid();
+
+	set<int> sub_elems;
+	auto bdry_begin = boundary_ids.begin();
+	auto bdry_end   = boundary_ids.end();
+	for (auto &s_id : UnitElement<Space::dim>::template elems_id<sub_dim>())
+	{
+		const auto bdry_id = grid->get_boundary_id(s_id);
+		if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
+			sub_elems.insert(s_id);
+	}
+
+	for (const Index &s_id : sub_elems)
+	{
+		InterSpaceMap  dof_map;
+		auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map);
+
+		auto proj = projection_l2<SubSpace,la_pack>(func, face_space, quad);
+
+		const auto coef = proj->get_coefficients();
+		const int face_n_dofs = dof_map.size();
+		for (Index i = 0; i< face_n_dofs; ++i)
+			boundary_values[dof_map[i]] = coef(i);
+	}
+}
 
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
