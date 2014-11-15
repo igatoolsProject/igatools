@@ -151,7 +151,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     const int dim   = Space::dim;
     const int range = Space::range;
     const int rank  = Space::rank;
-    const int co_dim = Space::codim;
+    const int codim = Space::codim;
     const int space_dim = Space::space_dim;
 
 	const int sub_dim = dim - 1;

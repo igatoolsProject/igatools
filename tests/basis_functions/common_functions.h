@@ -29,6 +29,7 @@
 
 
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/formula_function.h>
 
 
@@ -51,7 +52,7 @@ public:
         using Derivative = typename parent_t::template Derivative<order>;
 public:
     BoundaryFunction(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid)
+    : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
       {}
 
     static std::shared_ptr<base_t>

@@ -29,6 +29,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/formula_function.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
 
 #include <igatools/basis_functions/new_bspline_space.h>
@@ -58,7 +59,7 @@ public:
         using Derivative = typename parent_t::template Derivative<order>;
 public:
     BoundaryFunction(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid)
+    : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
       {}
 
     static std::shared_ptr<base_t>
@@ -116,7 +117,7 @@ void do_test(const int p, const int num_knots = 10)
     {
         A[i][i] = 1+i;
     }
-    auto map_func = Function::create(knots, A, b);
+    auto map_func = Function::create(knots, IdentityFunction<dim>::create(knots), A, b);
 
     auto space = Space::create(ref_space, map_func);
 
