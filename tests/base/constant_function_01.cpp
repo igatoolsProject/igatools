@@ -26,6 +26,7 @@
  */
 
 #include "../tests.h"
+#include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
@@ -72,7 +73,7 @@ void create_fun()
                 NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, b);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), b);
     F->reset(flag, quad);
     test<dim, codim, range>(F, grid);
 }

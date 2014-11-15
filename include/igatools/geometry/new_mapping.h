@@ -50,7 +50,7 @@ class NewMapping
 {
 private:
     using self_t = NewMapping<dim, codim>;
-    using FuncType = NewFunction<dim, 0, dim + codim>;
+    using FuncType = MapFunction<dim, dim + codim>;
 public:
     using ElementAccessor = MappingElement<dim, codim>;
     using ElementIterator = GridForwardIterator<ElementAccessor>;

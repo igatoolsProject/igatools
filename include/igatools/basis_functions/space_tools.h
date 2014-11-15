@@ -151,21 +151,21 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     const int dim   = Space::dim;
     const int range = Space::range;
     const int rank  = Space::rank;
+    const int co_dim = Space::codim;
     const int space_dim = Space::space_dim;
 
 	const int sub_dim = dim - 1;
 	using SubSpace = typename Space::template SubSpace<sub_dim>;
 	using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
-	using SubFunc = SubFunction<sub_dim, dim, space_dim>;
+	using SubFunc = SubFunction<sub_dim, dim, codim, range, rank>;
 
-	const int n_faces = UnitElement<Space::dim>::faces_per_element;
 
 	auto grid = space->get_grid();
 
 	std::set<int> sub_elems;
 	auto bdry_begin = boundary_ids.begin();
 	auto bdry_end   = boundary_ids.end();
-	for (auto &s_id : UnitElement<Space::dim>::template elems_id<sub_dim>())
+	for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
 	{
 		const auto bdry_id = grid->get_boundary_id(s_id);
 		if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)

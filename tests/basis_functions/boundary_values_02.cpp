@@ -19,83 +19,82 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the boundary projection function.
- *  This test ....
+ *  Test for the boundary l2 projection function.
+ *  On a BsplineSpace (a reference space)
+ *
  *  author: pauletti
- *  date: 2013-03-19
+ *  date: 2014-11-14
  *
  */
 
 #include "../tests.h"
+#include "common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/new_bspline_space.h>
 
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
 
-template<int dim>
-class BoundaryFunction : public Function<dim,1,1>
+//template<int dim>
+//class BoundaryFunction : public Function<dim,1,1>
+//{
+//
+//public:
+//    BoundaryFunction() : Function<dim,1,1>() {}
+//
+//    Real value(Points<dim> P_) const
+//    {
+//        Real  PI = numbers::PI;
+//
+//        Real f = 1;
+//        for (int cnt = 0; cnt<dim; cnt++)
+//        {
+//            f = f * cos(Real(2*PI*P_[cnt]));
+//        }
+//
+//        return f;
+//    }
+//
+//    void evaluate(const ValueVector< Points<dim> > &points, ValueVector<Points<1> > &values) const
+//    {
+//        for (int i =0; i<points.size(); i++)
+//        {
+//            Points<dim> p = points[i];
+//            values[i][0] = this->value(p);
+//        }
+//    };
+//
+//};
+
+
+template<int dim , int range ,int rank, LAPack la_pack>
+void do_test(const int p, const int num_knots = 10)
 {
-
-public:
-    BoundaryFunction() : Function<dim,1,1>() {}
-
-    Real value(Points<dim> P_) const
-    {
-        Real  PI = numbers::PI;
-
-        Real f = 1;
-        for (int cnt = 0; cnt<dim; cnt++)
-        {
-            f = f * cos(Real(2*PI*P_[cnt]));
-        }
-
-        return f;
-    }
-
-    void evaluate(const ValueVector< Points<dim> > &points, ValueVector<Points<1> > &values) const
-    {
-        for (int i =0; i<points.size(); i++)
-        {
-            Points<dim> p = points[i];
-            values[i][0] = this->value(p);
-        }
-    };
-
-};
-
-
-template<int dim , int range ,int rank>
-void do_test(const int p)
-{
+	const int sub_dim = dim - 1;
     out << "Dimension: " << dim << endl;
-    typedef BSplineSpace<dim,range,rank> space_ref_t;
+    using Space = NewBSplineSpace<dim, range, rank>;
 
-    const int num_knots = 10;
-    auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = space_ref_t::create(p, knots) ;
+
+    auto grid = CartesianGrid<dim>::create(num_knots);
+    auto space = Space::create(p, grid) ;
+    auto f = BoundaryFunction<dim>::create(grid);
+
 
     const int n_qpoints = 4;
-    QGauss<dim-1> quad(n_qpoints);
-
-    BoundaryFunction<dim> f;
+    QGauss<sub_dim> quad(n_qpoints);
 
     const boundary_id dirichlet = 1;
-    knots->set_boundary_id(0, dirichlet);
-    std::set<boundary_id> face_id;
-    face_id.insert(dirichlet);
+    grid->set_boundary_id(0, dirichlet);
+    std::set<boundary_id> bdry_ids;
+    bdry_ids.insert(dirichlet);
 
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
+
 
     std::map<Index,Real> boundary_values;
-    space_tools::project_boundary_values<space_ref_t,la_pack>(
-        f, space, quad, face_id,
+    space_tools::project_boundary_values<Space,la_pack>(
+        f, space, quad, bdry_ids,
         boundary_values);
 
     out << "basis index \t value" << endl;
@@ -108,11 +107,16 @@ void do_test(const int p)
 
 int main()
 {
+#if defined(USE_TRILINOS)
+    const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    const auto la_pack = LAPack::petsc;
+#endif
     out.depth_console(20);
 
     // do_test<1,1,1>(3);
-    do_test<2,1,1>(3);
-    do_test<3,1,1>(2);
+    do_test<2,1,1, la_pack>(3);
+    do_test<3,1,1, la_pack>(2);
 
     return 0;
 }

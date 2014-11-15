@@ -26,6 +26,7 @@
 
 #include "../tests.h"
 
+#include <igatools/base/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/function_element.h>
@@ -44,7 +45,7 @@ void values_of_F(NewFunction<dim, codim, range> &F)
         F.fill_cache(elem, 0, Int<dim>());
 //        elem->get_points().print_info(out);
 //        out << endl;
-        elem->get_values().print_info(out);
+        elem->template get_values<0, dim>(0).print_info(out);
         out << endl;
 //        elem->template get_values<1>().print_info(out);
 //        out << endl;
@@ -74,7 +75,7 @@ void create_fun()
                 NewValueFlags::hessian;
 
     auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, A, b);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
 
     const int k = dim - 1;
@@ -85,7 +86,7 @@ void create_fun()
         SubGridMap elem_map;
         auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
 
-        auto subF = SubFunction<k, dim, range>::create(sub_grid, F, s_id, elem_map);
+        auto subF = SubMapFunction<k, dim, range>::create(sub_grid, F, s_id, elem_map);
 
         auto sub_quad = QGauss<k>(1);
         subF->reset(flag, sub_quad);
@@ -95,12 +96,9 @@ void create_fun()
 }
 
 
-
-
 int main()
 {
     create_fun<2, 0, 2>();
-
     return 0;
 }
 

@@ -134,7 +134,7 @@ public:
     virtual std::shared_ptr<base_t> clone() const
     {
         Assert(false, ExcNotImplemented());
-        return std::make_shared<base_t>(self_t(*this));
+        return std::make_shared<self_t>(self_t(*this));
     }
 
     virtual void reset(const NewValueFlags &flag, const variant_1 &quad)
@@ -269,6 +269,10 @@ public:
 protected:
     std::array<FunctionFlags, dim + 1> flags_;
 };
+
+
+template<int dim, int space_dim>
+using MapFunction = NewFunction<dim, 0, space_dim, 1>;
 
 IGA_NAMESPACE_CLOSE
 

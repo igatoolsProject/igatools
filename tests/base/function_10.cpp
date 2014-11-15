@@ -59,11 +59,11 @@ void test()
         F->fill_cache(elem, 0, Int<dim>());
 //        elem->get_points().print_info(out);
 //        out << endl;
-        elem->get_values().print_info(out);
+        elem->template get_values<0, dim>(0).print_info(out);
         out << endl;
-        elem->template get_values<1>().print_info(out);
+        elem->template get_values<1, dim>(0).print_info(out);
         out << endl;
-        elem->template get_values<2>().print_info(out);
+        elem->template get_values<2, dim>(0).print_info(out);
         out << endl;
     }
 

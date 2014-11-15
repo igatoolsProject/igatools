@@ -73,7 +73,7 @@ public:
 
     static const int rank = RefSpace::rank;
 
-    using MapFunc =  NewFunction<dim, 0, space_dim>;
+    using MapFunc =  MapFunction<dim, space_dim>;
 
     static constexpr int n_components = constexpr_pow(range, rank);
 

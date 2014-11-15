@@ -43,9 +43,9 @@ private:
 public:
     using CartesianGridElement<dim>::CartesianGridElement;
 
-    template<int order = 0, int k = dim>
+    template<int order, int k>
     auto
-    get_values(const int j = 0) const
+    get_values(const int j) const
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());

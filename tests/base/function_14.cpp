@@ -26,6 +26,7 @@
 
 #include "../tests.h"
 
+#include <igatools/base/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/function_element.h>
@@ -45,11 +46,11 @@ void test(NewFunction<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid
         F.fill_cache(elem, 0, Int<dim>());
         elem->get_points().print_info(out);
         out << endl;
-        elem->get_values().print_info(out);
+        elem->template get_values<0, dim>(0).print_info(out);
         out << endl;
-        elem->template get_values<1>().print_info(out);
+        elem->template get_values<1, dim>(0).print_info(out);
         out << endl;
-        elem->template get_values<2>().print_info(out);
+        elem->template get_values<2, dim>(0).print_info(out);
         out << endl;
     }
 }
@@ -74,7 +75,7 @@ void create_fun()
                 NewValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, A, b);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     F->reset(flag, quad);
     test<dim, codim, range>(*F, grid);
 }

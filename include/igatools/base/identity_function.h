@@ -54,6 +54,13 @@ public:
         return std::shared_ptr<parent_t>(new self_t(grid));
         }
 
+    std::shared_ptr<parent_t> clone() const override
+        {
+
+            return std::make_shared<self_t>(self_t(*this));
+        }
+
+
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
 
