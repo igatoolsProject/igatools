@@ -57,15 +57,16 @@ public:
     using typename parent_t::Value;
     template <int order>
         using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
 public:
-    BoundaryFunction(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
+    BoundaryFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+    : FormulaFunction<dim>(grid, map)
       {}
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid)
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
     {
-        return std::shared_ptr<base_t>(new self_t(grid));
+        return std::shared_ptr<base_t>(new self_t(grid, map));
     }
 
     std::shared_ptr<base_t> clone() const override
@@ -124,7 +125,7 @@ void do_test(const int p, const int num_knots = 10)
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
 
-    auto f = BoundaryFunction<dim>::create(knots);
+    auto f = BoundaryFunction<dim>::create(knots, map_func);
     auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
@@ -145,7 +146,7 @@ int main()
 #endif
     out.depth_console(20);
     // do_test<1,1,1>(3);
-    do_test<2,0,1,1, la_pack>(1);
+    do_test<2,0,1,1, la_pack>(3);
     //do_test<3,1,1>(1);
 
     return 0;
