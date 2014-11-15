@@ -46,9 +46,10 @@ public:
     using typename parent_t::ElementAccessor;
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid,
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Value &b);
 
     std::shared_ptr<base_t> clone() const override
@@ -59,7 +60,7 @@ public:
     ConstantFunction(const self_t &) = default;
 
 protected:
-    ConstantFunction(std::shared_ptr<GridType> grid,
+    ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                      const Value &b);
 
 private:
@@ -96,9 +97,10 @@ public:
     using typename parent_t::ElementAccessor;
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid,
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Gradient &A,
            const Value &b);
 
@@ -110,7 +112,7 @@ public:
     LinearFunction(const self_t &) = default;
 
 protected:
-    LinearFunction(std::shared_ptr<GridType> grid,
+    LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                    const Gradient &A, const Value &b);
 
 
@@ -132,19 +134,19 @@ private:
 
 //------------------------------------------------------------------------------
 
-template<int dim, int codim=0>
-auto
-create_identity(std::shared_ptr<const CartesianGrid<dim>> grid)
-{
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-
-    for (int j=0; j<dim; j++)
-        A[j][j] = 1.;
-
-    return Function::create(grid, A, b);
-}
+//template<int dim, int codim=0>
+//auto
+//create_identity(std::shared_ptr<const CartesianGrid<dim>> grid)
+//{
+//    using Function = functions::LinearFunction<dim, 0, dim+codim>;
+//    typename Function::Value    b;
+//    typename Function::Gradient A;
+//
+//    for (int j=0; j<dim; j++)
+//        A[j][j] = 1.;
+//
+//    return Function::create(grid, A, b);
+//}
 
 
 
@@ -175,9 +177,10 @@ public:
     using typename parent_t::ElementAccessor;
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid);
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
     std::shared_ptr<base_t> clone() const override
     {
@@ -187,7 +190,7 @@ public:
     BallFunction(const self_t &) = default;
 
 protected:
-    BallFunction(std::shared_ptr<GridType> grid);
+    BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
 private:
     template<int order>

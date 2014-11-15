@@ -122,13 +122,30 @@ public:
 
     using Map = NewFunction<dim, 0, space_dim>;
 
-    FormulaFunction(std::shared_ptr<GridType> grid);
+    FormulaFunction(std::shared_ptr<GridType> grid,  std::shared_ptr<Map> map);
+
+    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    		{
+    	parent_t::reset(flag, quad);
+    	mapping_->reset(NewValueFlags::value|NewValueFlags::point, quad);
+    		}
+
+    void init_cache(ElementAccessor &elem, const variant_2 &k) override
+    		{
+    	parent_t::init_cache(elem, k);
+    	mapping_->init_cache(map_elem_, k);
+    		}
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
 private:
-//    virtual void parametrization(const ValueVector<Points<dim>> &points_,
-//                                 ValueVector<Point> &values) const
+
+//    template<int k>
+//    ValueVector<Point>
+//    void parametrization(const ValueVector<Points<dim>> &points) const
+//    {
+//
+//    }
 //    {
 //        const int num_points = points_.size();
 //        for (int i = 0; i<num_points; i++)
@@ -155,9 +172,10 @@ private:
                             ValueVector<Derivative<2>> &values) const = 0;
 
 
+
 private:
     std::shared_ptr<Map> mapping_;
-
+	typename Map::ElementIterator map_elem_;
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
@@ -173,8 +191,8 @@ private:
                 const auto points =
                     elem->CartesianGridElement<dim>::template get_points<T::k>(j);
 
-                if (flags.fill_points())
-                    function->parametrization(points, cache.points_);
+//                if (flags.fill_points())
+//                	cache.points_ = mapping_->template get_values<0, T::k>();
                 if (flags.fill_values())
                     function->evaluate_0(cache.points_, std::get<0>(cache.values_));
                 if (flags.fill_gradients())

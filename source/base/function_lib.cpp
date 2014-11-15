@@ -28,10 +28,10 @@ namespace functions
 
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
-ConstantFunction(std::shared_ptr<GridType> grid,
+ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                  const Value &b)
     :
-    parent_t::FormulaFunction(grid),
+    parent_t::FormulaFunction(grid, map),
     b_(b)
 {}
 
@@ -40,10 +40,10 @@ ConstantFunction(std::shared_ptr<GridType> grid,
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
-create(std::shared_ptr<GridType> grid,
+create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
        const Value &b) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, b));
+    return std::shared_ptr<base_t>(new self_t(grid, map, b));
 }
 
 
@@ -87,10 +87,10 @@ evaluate_2(const ValueVector<Point> &points,
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
-LinearFunction(std::shared_ptr<GridType> grid,
+LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                const Gradient &A, const Value &b)
     :
-    parent_t::FormulaFunction(grid),
+    parent_t::FormulaFunction(grid, map),
     A_(A),
     b_(b)
 {}
@@ -100,10 +100,10 @@ LinearFunction(std::shared_ptr<GridType> grid,
 template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
-create(std::shared_ptr<GridType> grid,
+create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
        const Gradient &A, const Value &b) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, A, b));
+    return std::shared_ptr<base_t>(new self_t(grid, map, A, b));
 }
 
 
@@ -151,9 +151,9 @@ evaluate_2(const ValueVector<Point> &points,
 
 template<int dim>
 BallFunction<dim>::
-BallFunction(std::shared_ptr<GridType> grid)
+BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
     :
-    parent_t::FormulaFunction(grid)
+    parent_t::FormulaFunction(grid, map)
 {}
 
 
@@ -161,9 +161,9 @@ BallFunction(std::shared_ptr<GridType> grid)
 template<int dim>
 auto
 BallFunction<dim>::
-create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
+create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid));
+    return std::shared_ptr<base_t>(new self_t(grid, map));
 }
 
 

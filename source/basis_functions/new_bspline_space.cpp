@@ -21,7 +21,7 @@
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/space_manager.h>
 #include <igatools/geometry/mapping_slice.h>
-#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 
 using std::endl;
 using std::array;
@@ -256,7 +256,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map) const
     auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
 
     auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
-    auto F = functions::create_identity<dim>(grid);
+    auto F = IdentityFunction<dim>::create(grid);
     auto sub_map_func = SubFunction<k, dim, dim>::create(sub_grid, F, s_id, elem_map);
     auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
     return sub_space;

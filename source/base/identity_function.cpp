@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/formula_function.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/function_element.h>
 
 using std::shared_ptr;
@@ -47,37 +47,6 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
     boost::apply_visitor(fill_cache_impl, k);
 }
 
-
-
-
-template<int dim, int codim, int range, int rank>
-FormulaFunction<dim, codim, range, rank>::
-FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
-    :
-    parent_t::NewFunction(grid),
-	mapping_(map),
-    map_elem_(mapping_->begin())
-{}
-
-
-
-template<int dim, int codim, int range, int rank>
-auto
-FormulaFunction<dim, codim, range, rank>::
-fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
-{
-    parent_t::fill_cache(elem, j, k);
-    map_elem_->move_to(elem.get_flat_index());
-    mapping_->fill_cache(map_elem_, j, k);
-    fill_cache_impl.j = j;
-    fill_cache_impl.function = this;
-    fill_cache_impl.elem = &elem;
-    fill_cache_impl.flags_ = &(this->flags_);
-    boost::apply_visitor(fill_cache_impl, k);
-}
-
-
-
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/formula_function.inst>
+#include <igatools/base/identity_function.inst>
