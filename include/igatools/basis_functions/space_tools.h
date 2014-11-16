@@ -30,6 +30,9 @@
 #include<set>
 #include <igatools/geometry/mapping_slice.h>
 
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/space_element_handler.h>
+
 IGA_NAMESPACE_OPEN
 namespace space_tools
 {
@@ -152,7 +155,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     const int range = Space::range;
     const int rank  = Space::rank;
     const int codim = Space::codim;
-    const int space_dim = Space::space_dim;
+    //const int space_dim = Space::space_dim;
 
 	const int sub_dim = dim - 1;
 	using SubSpace = typename Space::template SubSpace<sub_dim>;

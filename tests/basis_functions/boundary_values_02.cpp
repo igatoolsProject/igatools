@@ -32,7 +32,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/new_bspline_space.h>
-
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
