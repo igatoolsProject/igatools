@@ -64,6 +64,18 @@ public:
         sup_elem_(sup_func_->begin())
     {}
 
+    SubFunction(const self_t & sub_f)
+            :
+            base_t(sub_f),
+            sup_func_(sub_f.sup_func_->clone()),
+            s_id_(sub_f.s_id_),
+            elem_map_(sub_f.elem_map_),
+            sup_elem_(sub_f.sup_func_->begin())
+        {}
+
+
+
+
     SubFunction(std::shared_ptr<const SupFunc> func,
                 const int s_id)
             :
@@ -88,6 +100,13 @@ public:
     {
         return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
     }
+
+
+    std::shared_ptr<base_t> clone() const override
+            {
+
+                return std::make_shared<self_t>(self_t(*this));
+            }
 
     void reset(const NewValueFlags &flag, const variant_1 &quad) override
     {
@@ -119,11 +138,23 @@ public:
 
         if (flags.fill_values())
             std::get<0>(cache.values_) = sup_elem_->template get_values<0, sub_dim>(s_id_);
-//  if (flags.fill_gradients())
+        if (flags.fill_gradients())
+        {
+            auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
+            auto DF = sup_elem_->template get_values<1, sub_dim>(s_id_);
+            int j = 0;
+            for (auto &i : active)
+            {
+                std::get<1>(cache.values_)[j] = DF[i];
+                ++j;
+            }
 //      std::get<1>(cache.values_) = sup_elem_->template get_values<1, sub_dim>(j);
-//  if (flags.fill_hessians())
+        }
+        if (flags.fill_hessians())
+        {
+            Assert(false, ExcNotImplemented());
 //      std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
-
+        }
         cache.set_filled(true);
 
     }
@@ -227,10 +258,28 @@ public:
 
         if (flags.fill_values())
             std::get<0>(cache.values_) = sup_elem_->template get_values<0, sub_dim>(s_id_);
-//  if (flags.fill_gradients())
-//      std::get<1>(cache.values_) = sup_elem_->template get_values<1, sub_dim>(j);
-//  if (flags.fill_hessians())
-//      std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
+        if (flags.fill_gradients())
+        {
+            auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
+            auto DSupF  = sup_elem_->template get_values<1, sub_dim>(s_id_);
+            auto &DSubF = std::get<1>(cache.values_);
+
+           const auto n_points = DSupF.get_num_points();
+           for (int pt = 0; pt<n_points; ++pt)
+           {
+            int j = 0;
+            for (auto &i : active)
+            {
+                DSubF[pt][j] = DSupF[pt][i];
+                ++j;
+            }
+           }
+        }
+        if (flags.fill_hessians())
+        {
+            Assert(false, ExcNotImplemented());
+            //      std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
+        }
 
         cache.set_filled(true);
 

@@ -134,16 +134,6 @@ public:
     using RefPoint = Point;
 
 public:
-#if 0
-    /** Type for the reference face space.*/
-    using RefFaceSpace = Conditional<(dim>0),
-          NewBSplineSpace<dim-1,range,rank>,
-          NewBSplineSpace<0,range,rank> >;
-
-    using FaceSpace = NewPhysicalSpace<RefFaceSpace,
-          typename PushForwardType::FacePushForward>;
-#endif
-
     /** Type for the element accessor. */
     using ElementAccessor = BSplineElement<dim,range,rank>;
 
@@ -159,7 +149,6 @@ public:
     using typename BaseSpace::SpaceDimensionTable;
     using typename BaseSpace::EndBehaviour;
     using typename BaseSpace::EndBehaviourTable;
-
 
 public:
     /**
@@ -314,21 +303,10 @@ public:
 
     template<int k>
     std::shared_ptr<SubSpace<k> >
-    get_sub_space(const int sub_elem_id, InterSpaceMap<k> &dof_map) const;
+    get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid,
+                  std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;
 
-#if 0
-    /** Getting some underlying objects */
-    ///@{
-    std::shared_ptr<RefFaceSpace>
-    get_ref_face_space(const Index face_id,
-                       vector<Index> &face_to_element_dofs,
-                       typename GridType::FaceGridMap &elem_map) const;
-
-
-    std::shared_ptr<FaceSpace>
-    get_face_space(const Index face_id,
-                   vector<Index> &face_to_element_dofs) const;
-#endif
     std::shared_ptr<const self_t >
     get_reference_space() const;
 

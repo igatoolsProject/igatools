@@ -26,6 +26,18 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim>
+auto
+create_id_tensor()
+{
+    typename NewFunction<dim, 0, dim, 1>::Gradient res;
+    for (int i=0; i<dim; ++i)
+        res[i][i] = 1.;
+    return res;
+}
+
+
+
+template<int dim>
 class IdentityFunction : public NewFunction<dim, 0, dim, 1>
 {
 private:
@@ -84,12 +96,17 @@ private:
                     cache.points_ = points;
                 if (flags.fill_values())
                     std::get<0>(cache.values_) = points;
-//                if (flags.fill_gradients())
-//                    //std::get<1>(cache.values_) = identity;
-//                if (flags.fill_hessians())
-//                    //std::get<2>(cache.values_) = 0.;
+                if (flags.fill_gradients())
+                {
+                    auto identity = create_id_tensor<dim>();
+                    std::get<1>(cache.values_).fill(identity);
+                }
+                if (flags.fill_hessians())
+                {
+                Assert(false, ExcNotImplemented());
+                //std::get<2>(cache.values_) = 0.;
+                }
             }
-
             cache.set_filled(true);
         }
 
