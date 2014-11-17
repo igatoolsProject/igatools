@@ -19,74 +19,77 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the boundary projection function.
- *  This test ....
+ *  Test for the boundary l2 projection function.
+ *  On a PhysicalSpace
+ *
  *  author: pauletti
- *  date: 2013-03-19
+ *  date: 2014-11-14
  *
  */
 
 #include "../tests.h"
-#include "./common_functions.h"
+#include "common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
-
-#include <igatools/geometry/identity_mapping.h>
-
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/physical_space.h>
-
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
+#include <igatools/geometry/identity_mapping.h>
+#include <igatools/basis_functions/new_physical_space.h>
 
 
 
-template<int dim, int space_dim, int range, int rank=1>
-void do_test(const int p)
+template<int dim , int codim, int range ,int rank, LAPack la_pack>
+void do_test(const int p, const int num_knots = 10)
 {
-    const int codim = space_dim - dim;
-    using RefSpace = BSplineSpace<dim,range,rank>;
+    const int sub_dim = dim - 1;
+    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
-    typedef PushForward<Transformation::h_grad,dim,codim> PushForward ;
-    typedef PhysicalSpace<RefSpace, PushForward> space_phys_t ;
 
-    const int num_knots = 10;
-    auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = RefSpace::create(p, knots) ;
-    auto map = IdentityMapping<dim,codim>::create(knots);
-    auto phys_space = space_phys_t::create(space, PushForward::create(map));
+    auto grid = CartesianGrid<dim>::create(num_knots);
+    auto ref_space = RefSpace::create(p, grid) ;
+    auto map = IdentityFunction<dim>::create(grid);
+    auto space = Space::create(ref_space, map);
 
-    //Quadrature
+    auto f = BoundaryFunction<dim>::create(grid);
+
+
     const int n_qpoints = 4;
-    QGauss<dim-1> quad(n_qpoints);
+    QGauss<sub_dim> quad(n_qpoints);
 
-    BoundaryFunction<space_dim> bc;
+    const boundary_id dirichlet = 1;
+    grid->set_boundary_id(0, dirichlet);
+    std::set<boundary_id> bdry_ids;
+    bdry_ids.insert(dirichlet);
 
-    knots->set_boundary_id(0,1);
-    std::set<boundary_id> face_id;
-    face_id.insert(1);
 
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
 
-    std::map<Index, Real> boundary_values;
-    space_tools::project_boundary_values<space_phys_t,la_pack>(
-        bc, phys_space, quad, face_id, boundary_values);
+    std::map<Index,Real> boundary_values;
+    space_tools::project_boundary_values<Space,la_pack>(
+            f, space, quad, bdry_ids,
+            boundary_values);
 
-    for (auto entry: boundary_values)
+    out << "basis index \t value" << endl;
+    for (auto entry : boundary_values)
         out << entry.first << "\t" << entry.second << endl;
+
 }
 
 
 
 int main()
 {
+#if defined(USE_TRILINOS)
+    const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    const auto la_pack = LAPack::petsc;
+#endif
     out.depth_console(20);
-    do_test<2,2,1>(3);
+
+    do_test<2, 0, 1, 1, la_pack>(3);
 
     //do_test<3,3,1,1>(3);
 

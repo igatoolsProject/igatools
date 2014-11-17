@@ -155,6 +155,21 @@ public:
     }
 
 
+    template <int k>
+    using SubSpace = NewPhysicalSpace<typename RefSpace::template SubRefSpace<k>, codim + dim-k, type_>;
+
+    template <int k>
+    using InterGridMap = typename RefSpace::GridType::template InterGridMap<k>;
+
+    template <int k>
+    using InterSpaceMap = typename RefSpace::template InterSpaceMap<k>;
+
+    template<int k>
+    std::shared_ptr<SubSpace<k> >
+    get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid,
+                  std::shared_ptr<InterGridMap<k>> elem_map) const;
+
 #if 0
     const DegreeTable &get_degree() const;
 #endif
@@ -162,6 +177,8 @@ public:
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+
+
 
 
 #if 0
