@@ -27,17 +27,83 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/push_forward.h>
-#include <igatools/geometry/push_forward_element_accessor.h>
-#include <igatools/io/writer.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/function_element.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping_element.h>
 
+
+template <int dim>
+void mapping_values()
+{
+    using Function = functions::CylindricalAnnulus<dim>;
+
+    auto flag = NewValueFlags::point | NewValueFlags::value |
+                NewValueFlags::gradient |
+                NewValueFlags::hessian |
+                NewValueFlags::measure|
+                NewValueFlags::w_measure;
+
+    auto quad = QGauss<dim>(1);
+    auto grid = CartesianGrid<dim>::create();
+
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
+                              1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+
+
+    using Mapping   = NewMapping<dim, 0>;
+    using ElementIt = typename Mapping::ElementIterator;
+    Mapping map(F);
+    map.reset(flag, quad);
+
+    ElementIt elem(grid, 0);
+    ElementIt end(grid, IteratorState::pass_the_end);
+
+    map.template init_cache<dim>(elem);
+    for (; elem != end; ++elem)
+    {
+        map.template fill_cache<dim>(elem, 0);
+
+        out << "Points:" << endl;
+        elem->get_points().print_info(out);
+        out << endl;
+        out << "Values:" << endl;
+        elem->template get_values<0, dim>(0).print_info(out);
+        out << endl;
+        out << "Gradients:" << endl;
+        elem->template get_values<1, dim>(0).print_info(out);
+        out << endl;
+        out << "Hessians:" << endl;
+        elem->template get_values<2, dim>(0).print_info(out);
+        out << endl;
+        out << "Measure:" << endl;
+        elem->template get_measures<dim>(0).print_info(out);
+        out << endl;
+        out << "weight * measure:" << endl;
+        elem->template get_w_measures<dim>(0).print_info(out);
+        out << endl;
+    }
+}
+
+
+int main()
+{
+    out.depth_console(10);
+
+    mapping_values<3>();
+
+    return 0;
+}
+
+
+#if 0
 int main()
 {
     out.depth_console(20);
 
 
-    auto map = CylindricalAnnulus::create(1, 2, 0, 2.0, 0.0, numbers::PI / 2.0);
+    auto map = CylindricalAnnulus::create(1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
 
     const int num_pts = 1 ;
     QGauss<3> quad(num_pts) ;
@@ -68,13 +134,13 @@ int main()
     out << endl;
     out << endl;
 
-    string filename = "cylindrical_map-" + to_string(3) + "d";
-    Writer<3> writer(map, 4);
-    writer.save(filename);
+//    string filename = "cylindrical_map-" + to_string(3) + "d";
+//    Writer<3> writer(map, 4);
+//    writer.save(filename);
 
 
 //TODO(pauletti, Apr 27, 2014): the code below do NOT match the expected test
-
+#if 0
     //----------------------------------------------------------------------------------------------
     typedef PushForward<Transformation::h_grad,3,0> push_fwd_t ;
     auto push_forward = push_fwd_t::create(map);
@@ -126,8 +192,8 @@ int main()
         out << grad_phi2[iPt] << endl ;
     }
 
-
+#endif
 
     return (0) ;
 }
-
+#endif

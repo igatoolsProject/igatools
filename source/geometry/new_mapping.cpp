@@ -92,7 +92,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     {
         const auto &DF = elem.template get_values<1, k>(j);
         for (int i=0; i<n_points; ++i)
-            cache.measures_[i] = determinant<dim,space_dim>(DF[i]);
+            cache.measures_[i] = fabs(determinant<dim,space_dim>(DF[i]));
     }
 
     if (flags.fill_w_measures())
