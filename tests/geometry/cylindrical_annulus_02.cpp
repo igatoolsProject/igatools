@@ -27,10 +27,40 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/push_forward.h>
-#include <igatools/geometry/push_forward_element_accessor.h>
-#include <igatools/io/writer.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/function_element.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping_element.h>
+
+
+template <int dim>
+auto create_mapping(shared_ptr<const CartesianGrid<dim>> grid)
+{
+    using Function = functions::CylindricalAnnulus<dim>;
+    Function::create(grid, IdentityFunction<dim>::create(grid),
+                  1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+}
+
+
+template <int sub_dim, int dim>
+void mapping_normals()
+{
+    auto grid = CartesianGrid<dim>::create();
+    auto map_func =  create_mapping<dim>(grid);
+
+    auto flag = NewValueFlags::w_measure|NewValueFlags::point|NewValueFlags::normal;
+    auto quad = QGauss<dim>(3);
+
+
+
+    for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+    {
+
+
+    }
+
+}
 
 int main()
 {

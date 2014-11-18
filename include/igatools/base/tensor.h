@@ -1066,6 +1066,31 @@ determinant(const Derivatives<dim, range,1,1> &DF)
     return sqrt(det);
 }
 
+
+
+template<int dim>
+inline
+SubTensor<Derivatives<dim, dim+1, 1, 1>>
+cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
+{
+    SubTensor<Derivatives<dim, dim+1, 1, 1>> res;
+    const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
+    Derivatives<dim+1, dim+1, 1, 1> A;
+    for (int i = 0; i < dim; ++i)
+        A[i] = DF[i];
+
+    for (int i = 0; i < dim+1; ++i)
+    {
+        A[dim] = zero;
+        A[dim][i] = 1.;
+
+        res[i] = determinant(A);
+    }
+
+    return res;
+
+}
+
 /**
  * Trace of a rank_ 2 square tensor.
  *
