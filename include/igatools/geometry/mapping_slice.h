@@ -141,15 +141,21 @@ public:
         if (flags.fill_gradients())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
-            auto DF = sup_elem_->template get_values<1, sub_dim>(s_id_);
-            int j = 0;
-            for (auto &i : active)
+            auto DSupF  = sup_elem_->template get_values<1, sub_dim>(s_id_);
+            auto &DSubF = std::get<1>(cache.values_);
+
+            const auto n_points = DSupF.get_num_points();
+            for (int pt = 0; pt<n_points; ++pt)
             {
-                std::get<1>(cache.values_)[j] = DF[i];
-                ++j;
+                int j = 0;
+                for (auto &i : active)
+                {
+                    DSubF[pt][j] = DSupF[pt][i];
+                    ++j;
+                }
             }
-//      std::get<1>(cache.values_) = sup_elem_->template get_values<1, sub_dim>(j);
         }
+
         if (flags.fill_hessians())
         {
             Assert(false, ExcNotImplemented());
