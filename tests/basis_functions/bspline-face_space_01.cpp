@@ -17,54 +17,58 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for the BsplineSpace class face subspace extraction function.
- *  Here we print the information of the face spaces thus extracted.
+ *  Test for the BsplineSpace class reference subspace extraction
+ *
  *  author: pauletti
- *  date: Jan 29, 2013
- *  updated: 2013-04-02
+ *  date: 2014-11-18
  */
 
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/new_bspline_space.h>
-//#include <igatools/basis_functions/space_tools.h>
 
-template<int k, int dim, int range=1, int rank=1>
-void run_test(TensorSize<dim> n, const int degree = 1)
+
+template<int sub_dim, int dim, int range=1, int rank=1>
+void sub_ref_space(TensorSize<dim> n, const int degree = 1)
 {
+    OUTSTART
+
     using Space = NewBSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n);
     auto space = Space::create(degree, grid);
 
-    typename Space::template InterSpaceMap<k> dof_map;
-    typename CartesianGrid<dim>::template InterGridMap<k> elem_map;
+    typename Space::template InterSpaceMap<sub_dim> dof_map;
+    typename CartesianGrid<dim>::template InterGridMap<sub_dim> elem_map;
 
-    for (auto i : UnitElement<dim>::template elems_ids<k>())
+    for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
     {
-
-        out << "Face space: " << i << endl;
+        out.begin_item(to_string(i) + "-th " + "sub space:");
         auto sub_space =
-            space->template get_ref_sub_space<k>(i, dof_map);
+            space->template get_ref_sub_space<sub_dim>(i, dof_map);
+        out.begin_item("Reference Space:");
         sub_space->print_info(out);
+        out.end_item();
 
-        out << "Dofs face to space mapping: " << endl;
+        out.begin_item("Dofs sub element to space mapping:" );
         dof_map.print_info(out);
-        out << endl;
+        out.end_item();
+        out.end_item();
     }
+
+    OUTEND
 }
 
 
 
 int main()
 {
-    //out.depth_console(10);
 
-    run_test<0,1>(TensorSize<1>(arr::sequence<1>(2)));
-    run_test<1,2>(TensorSize<2>(arr::sequence<2>(2)));
-    //run_test<1,2,3>(TensorSize<2>(arr::sequence<2>(2)));
-    run_test<2,3>(TensorSize<3>(arr::sequence<3>(2)));
+    sub_ref_space<0,1>(TensorSize<1>(arr::sequence<1>(2)));
+    sub_ref_space<1,2>(TensorSize<2>(arr::sequence<2>(2)));
+    sub_ref_space<2,3>(TensorSize<3>(arr::sequence<3>(2)));
 
     return  0;
 }

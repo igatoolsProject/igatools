@@ -17,52 +17,102 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test for the BsplineSpace class face subspace extraction function.
- *  Here we print the information of the face spaces thus extracted.
+ *  Test for the BsplineSpace class subspace extraction
+ *
  *  author: pauletti
- *  date: Jan 29, 2013
- *  updated: 2013-04-02
+ *  date: 2014-11-18
  */
 
 #include "../tests.h"
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/new_bspline_space.h>
 
-template< int dim_domain, int dim_range, int rank >
-void run_test()
+
+template<int sub_dim, int dim, int range=1, int rank=1>
+void sub_space(TensorSize<dim> n, const int degree = 1)
 {
-    out << "-------------------------" <<endl;
-    out << "dim_dimain = " << dim_domain << endl;
-    out << "dim_range  = " << dim_range << endl;
-    out << "rank       = " << rank << endl;
+    OUTSTART
 
-    const int degree=1;
+    using Space = NewBSplineSpace<dim, range, rank>;
 
-    auto grid = CartesianGrid<dim_domain>::create(3);
-    auto space = BSplineSpace<dim_domain, dim_range, rank>::create(degree, grid);
+    auto grid = CartesianGrid<dim>::create(n);
+    auto space = Space::create(degree, grid);
 
-    vector<Index> dof_map;
+    typename Space::template InterSpaceMap<sub_dim> dof_map;
+    auto elem_map = make_shared<typename CartesianGrid<dim>::template InterGridMap<sub_dim>>() ;
 
-    int face_id = 0;
+    for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
+    {
+        auto sub_grid = space->get_grid()->template get_sub_grid<sub_dim>(i, *elem_map);
+        out.begin_item(to_string(i) + "-th " + "sub space:");
+        auto sub_space =
+            space->template get_sub_space<sub_dim>(i, dof_map, sub_grid, elem_map);
+        out.begin_item("Space:");
+        sub_space->print_info(out);
+        out.end_item();
 
-    auto face_space = space->get_face_space(face_id,dof_map);
+        out.begin_item("Dofs sub element to space mapping:" );
+        dof_map.print_info(out);
+        out.end_item();
+        out.end_item();
+    }
 
-    for (vector<Index>::iterator it=dof_map.begin() ; it < dof_map.end(); ++it)
-        out<< "face_id = "<< face_id << ", dof_id = "<< *it << endl;
-
-    out << "-------------------------" <<endl;
+    OUTEND
 }
 
 
 
 int main()
 {
-    //out.depth_console(10);
 
-    run_test<2,1,1>();
-    run_test<2,2,1>();
-    run_test<3,1,1>();
+    sub_space<0,1>(TensorSize<1>(arr::sequence<1>(2)));
+    sub_space<1,2>(TensorSize<2>(arr::sequence<2>(2)));
+    sub_space<2,3>(TensorSize<3>(arr::sequence<3>(2)));
 
     return  0;
 }
+
+
+//#include "../tests.h"
+//#include <igatools/basis_functions/bspline_space.h>
+//#include <igatools/basis_functions/space_tools.h>
+//
+//template< int dim_domain, int dim_range, int rank >
+//void run_test()
+//{
+//    out << "-------------------------" <<endl;
+//    out << "dim_dimain = " << dim_domain << endl;
+//    out << "dim_range  = " << dim_range << endl;
+//    out << "rank       = " << rank << endl;
+//
+//    const int degree=1;
+//
+//    auto grid = CartesianGrid<dim_domain>::create(3);
+//    auto space = BSplineSpace<dim_domain, dim_range, rank>::create(degree, grid);
+//
+//    vector<Index> dof_map;
+//
+//    int face_id = 0;
+//
+//    auto face_space = space->get_face_space(face_id,dof_map);
+//
+//    for (vector<Index>::iterator it=dof_map.begin() ; it < dof_map.end(); ++it)
+//        out<< "face_id = "<< face_id << ", dof_id = "<< *it << endl;
+//
+//    out << "-------------------------" <<endl;
+//}
+//
+//
+//
+//int main()
+//{
+//    //out.depth_console(10);
+//
+//    run_test<2,1,1>();
+//    run_test<2,2,1>();
+//    run_test<3,1,1>();
+//
+//    return  0;
+//}
