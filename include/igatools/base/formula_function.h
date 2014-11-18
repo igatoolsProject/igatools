@@ -54,23 +54,23 @@ public:
     FormulaFunction(std::shared_ptr<GridType> grid,  std::shared_ptr<Map> map);
 
     FormulaFunction(const self_t &func)
-    :
-    	parent_t::NewFunction(func),
-    	mapping_(func.mapping_->clone()),
-    	map_elem_(func.mapping_->begin())
+        :
+        parent_t::NewFunction(func),
+        mapping_(func.mapping_->clone()),
+        map_elem_(func.mapping_->begin())
     {}
 
     void reset(const NewValueFlags &flag, const variant_1 &quad) override
-    		{
-    	parent_t::reset(flag, quad);
-    	mapping_->reset(NewValueFlags::value|NewValueFlags::point, quad);
-    		}
+    {
+        parent_t::reset(flag, quad);
+        mapping_->reset(NewValueFlags::value|NewValueFlags::point, quad);
+    }
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override
-    		{
-    	parent_t::init_cache(elem, k);
-    	mapping_->init_cache(map_elem_, k);
-    		}
+    {
+        parent_t::init_cache(elem, k);
+        mapping_->init_cache(map_elem_, k);
+    }
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
@@ -111,7 +111,7 @@ private:
 
 private:
     std::shared_ptr<Map> mapping_;
-	typename Map::ElementIterator map_elem_;
+    typename Map::ElementIterator map_elem_;
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
@@ -124,7 +124,7 @@ private:
 
             if (!flags.fill_none())
             {
-            	cache.points_ = function->map_elem_->template get_values<0, T::k>(j);
+                cache.points_ = function->map_elem_->template get_values<0, T::k>(j);
                 if (flags.fill_values())
                     function->evaluate_0(cache.points_, std::get<0>(cache.values_));
                 if (flags.fill_gradients())

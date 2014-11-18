@@ -43,7 +43,7 @@
 template<int dim , int range ,int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-	const int sub_dim = dim - 1;
+    const int sub_dim = dim - 1;
     out << "Dimension: " << dim << endl;
     using Space = NewBSplineSpace<dim, range, rank>;
 

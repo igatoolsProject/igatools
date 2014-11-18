@@ -58,8 +58,8 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
 
     auto flag = NewValueFlags::point | NewValueFlags::value
-            | NewValueFlags::gradient | NewValueFlags::hessian|
-            NewValueFlags::measure |
+                | NewValueFlags::gradient | NewValueFlags::hessian|
+                NewValueFlags::measure |
                 NewValueFlags::w_measure;
     auto F = Function::create(grid, A, b);
     PForward pf(F);

@@ -81,41 +81,41 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
     for (; elem != end; ++elem, ++f_elem)
     {
-       func->fill_cache(f_elem, 0, Int<dim>());
-       sp_filler.template fill_cache<dim>(elem, 0);
+        func->fill_cache(f_elem, 0, Int<dim>());
+        sp_filler.template fill_cache<dim>(elem, 0);
 
-       loc_mat = 0.;
-       loc_rhs = 0.;
+        loc_mat = 0.;
+        loc_rhs = 0.;
 
-       auto f_at_qp = f_elem->template get_values<0,dim>(0);
-       auto phi = elem->template get_values<0,dim>(0);
+        auto f_at_qp = f_elem->template get_values<0,dim>(0);
+        auto phi = elem->template get_values<0,dim>(0);
 
 
 
-       // computing the upper triangular part of the local matrix
-       auto w_meas = elem->template get_w_measures<dim>(0);
-       for (int i = 0; i < n_basis; ++i)
-       {
-           const auto phi_i = phi.get_function_view(i);
-           for (int j = i; j < n_basis; ++j)
-           {
-               const auto phi_j = phi.get_function_view(j);
-               for (int q = 0; q < n_qp; ++q)
-                   loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
-           }
+        // computing the upper triangular part of the local matrix
+        auto w_meas = elem->template get_w_measures<dim>(0);
+        for (int i = 0; i < n_basis; ++i)
+        {
+            const auto phi_i = phi.get_function_view(i);
+            for (int j = i; j < n_basis; ++j)
+            {
+                const auto phi_j = phi.get_function_view(j);
+                for (int q = 0; q < n_qp; ++q)
+                    loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+            }
 
-           for (int q = 0; q < n_qp; q++)
-               loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
-       }
+            for (int q = 0; q < n_qp; q++)
+                loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
+        }
 
-       // filling symmetric ;lower part of local matrix
-       for (int i = 0; i < n_basis; ++i)
-           for (int j = 0; j < i; ++j)
-               loc_mat(i, j) = loc_mat(j, i);
+        // filling symmetric ;lower part of local matrix
+        for (int i = 0; i < n_basis; ++i)
+            for (int j = 0; j < i; ++j)
+                loc_mat(i, j) = loc_mat(j, i);
 
-       const auto local_dofs = elem->get_local_to_global();
-       matrix.add_block(local_dofs,local_dofs,loc_mat);
-       rhs.add_block(local_dofs,loc_rhs);
+        const auto local_dofs = elem->get_local_to_global();
+        matrix.add_block(local_dofs,local_dofs,loc_mat);
+        rhs.add_block(local_dofs,loc_rhs);
     }
     matrix.fill_complete();
 
@@ -146,10 +146,10 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 template<class Space, LAPack la_pack = LAPack::trilinos>
 void
 project_boundary_values(const std::shared_ptr<const typename Space::Func> function,
-		std::shared_ptr<const Space> space,
-		const Quadrature<Space::dim-1> &quad,
-		const std::set<boundary_id>  &boundary_ids,
-		std::map<Index, Real>  &boundary_values)
+                        std::shared_ptr<const Space> space,
+                        const Quadrature<Space::dim-1> &quad,
+                        const std::set<boundary_id>  &boundary_ids,
+                        std::map<Index, Real>  &boundary_values)
 {
     const int dim   = Space::dim;
     const int range = Space::range;
@@ -157,44 +157,44 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     const int codim = Space::codim;
     //const int space_dim = Space::space_dim;
 
-	const int sub_dim = dim - 1;
-	using GridType = typename Space::GridType;
-	using SubSpace = typename Space::template SubSpace<sub_dim>;
-	using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
-	using SubFunc = SubFunction<sub_dim, dim, codim, range, rank>;
+    const int sub_dim = dim - 1;
+    using GridType = typename Space::GridType;
+    using SubSpace = typename Space::template SubSpace<sub_dim>;
+    using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
+    using SubFunc = SubFunction<sub_dim, dim, codim, range, rank>;
 
 
-	auto grid = space->get_grid();
+    auto grid = space->get_grid();
 
-	std::set<int> sub_elems;
-	auto bdry_begin = boundary_ids.begin();
-	auto bdry_end   = boundary_ids.end();
-	for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
-	{
-		const auto bdry_id = grid->get_boundary_id(s_id);
-		if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-			sub_elems.insert(s_id);
-	}
+    std::set<int> sub_elems;
+    auto bdry_begin = boundary_ids.begin();
+    auto bdry_end   = boundary_ids.end();
+    for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
+    {
+        const auto bdry_id = grid->get_boundary_id(s_id);
+        if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
+            sub_elems.insert(s_id);
+    }
 
-	for (const Index &s_id : sub_elems)
-	{
-	    using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
-	    auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
+    for (const Index &s_id : sub_elems)
+    {
+        using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
+        auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
 
-	    auto grid = space->get_grid();
-	    auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
+        auto grid = space->get_grid();
+        auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
 
-		InterSpaceMap  dof_map;
-		auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map, sub_grid, elem_map);
-		auto sub_func = SubFunc::create(sub_grid, function, s_id, *elem_map);
+        InterSpaceMap  dof_map;
+        auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map, sub_grid, elem_map);
+        auto sub_func = SubFunc::create(sub_grid, function, s_id, *elem_map);
 
-		auto proj = projection_l2<SubSpace,la_pack>(sub_func, sub_space, quad);
+        auto proj = projection_l2<SubSpace,la_pack>(sub_func, sub_space, quad);
 
-		const auto coef = proj->get_coefficients();
-		const int face_n_dofs = dof_map.size();
-		for (Index i = 0; i< face_n_dofs; ++i)
-			boundary_values[dof_map[i]] = coef(i);
-	}
+        const auto coef = proj->get_coefficients();
+        const int face_n_dofs = dof_map.size();
+        for (Index i = 0; i< face_n_dofs; ++i)
+            boundary_values[dof_map[i]] = coef(i);
+    }
 }
 
 

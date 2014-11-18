@@ -64,33 +64,33 @@ public:
         sup_elem_(sup_func_->begin())
     {}
 
-    SubFunction(const self_t & sub_f)
-            :
-            base_t(sub_f),
-            sup_func_(sub_f.sup_func_->clone()),
-            s_id_(sub_f.s_id_),
-            elem_map_(sub_f.elem_map_),
-            sup_elem_(sub_f.sup_func_->begin())
-        {}
+    SubFunction(const self_t &sub_f)
+        :
+        base_t(sub_f),
+        sup_func_(sub_f.sup_func_->clone()),
+        s_id_(sub_f.s_id_),
+        elem_map_(sub_f.elem_map_),
+        sup_elem_(sub_f.sup_func_->begin())
+    {}
 
 
 
 
     SubFunction(std::shared_ptr<const SupFunc> func,
                 const int s_id)
-            :
-            base_t(func->get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
-            sup_func_(func->clone()),
-            s_id_(s_id),
-            sup_elem_(sup_func_->begin())
-        {}
+        :
+        base_t(func->get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
+        sup_func_(func->clone()),
+        s_id_(s_id),
+        sup_elem_(sup_func_->begin())
+    {}
 
     static std::shared_ptr<base_t>
-        create(std::shared_ptr<const SupFunc> func,
-               const int s_id)
-        {
-            return std::shared_ptr<base_t>(new self_t(func, s_id));
-        }
+    create(std::shared_ptr<const SupFunc> func,
+           const int s_id)
+    {
+        return std::shared_ptr<base_t>(new self_t(func, s_id));
+    }
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid,
@@ -103,10 +103,10 @@ public:
 
 
     std::shared_ptr<base_t> clone() const override
-            {
+    {
 
-                return std::make_shared<self_t>(self_t(*this));
-            }
+        return std::make_shared<self_t>(self_t(*this));
+    }
 
     void reset(const NewValueFlags &flag, const variant_1 &quad) override
     {
@@ -192,9 +192,9 @@ public:
 public:
 
     SubMapFunction(std::shared_ptr<GridType> grid,
-                std::shared_ptr<const SupFunc> func,
-                const int s_id,
-                InterGridMap<sub_dim> &elem_map)
+                   std::shared_ptr<const SupFunc> func,
+                   const int s_id,
+                   InterGridMap<sub_dim> &elem_map)
         :
         base_t(grid),
         sup_func_(func->clone()),
@@ -204,20 +204,20 @@ public:
     {}
 
     SubMapFunction(std::shared_ptr<const SupFunc> func,
-                const int s_id)
-            :
-            base_t(func->get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
-            sup_func_(func->clone()),
-            s_id_(s_id),
-            sup_elem_(sup_func_->begin())
-        {}
+                   const int s_id)
+        :
+        base_t(func->get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
+        sup_func_(func->clone()),
+        s_id_(s_id),
+        sup_elem_(sup_func_->begin())
+    {}
 
     static std::shared_ptr<base_t>
-        create(std::shared_ptr<const SupFunc> func,
-               const int s_id)
-        {
-            return std::shared_ptr<base_t>(new self_t(func, s_id));
-        }
+    create(std::shared_ptr<const SupFunc> func,
+           const int s_id)
+    {
+        return std::shared_ptr<base_t>(new self_t(func, s_id));
+    }
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid,
@@ -264,16 +264,16 @@ public:
             auto DSupF  = sup_elem_->template get_values<1, sub_dim>(s_id_);
             auto &DSubF = std::get<1>(cache.values_);
 
-           const auto n_points = DSupF.get_num_points();
-           for (int pt = 0; pt<n_points; ++pt)
-           {
-            int j = 0;
-            for (auto &i : active)
+            const auto n_points = DSupF.get_num_points();
+            for (int pt = 0; pt<n_points; ++pt)
             {
-                DSubF[pt][j] = DSupF[pt][i];
-                ++j;
+                int j = 0;
+                for (auto &i : active)
+                {
+                    DSubF[pt][j] = DSupF[pt][i];
+                    ++j;
+                }
             }
-           }
         }
         if (flags.fill_hessians())
         {

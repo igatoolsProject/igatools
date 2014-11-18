@@ -48,20 +48,20 @@ template<int dim>
 class BoundaryFunction : public FormulaFunction<dim>
 {
 private:
-   using base_t = NewFunction<dim>;
+    using base_t = NewFunction<dim>;
     using parent_t = FormulaFunction<dim>;
-   using self_t = BoundaryFunction<dim>;
+    using self_t = BoundaryFunction<dim>;
     using typename base_t::GridType;
 public:
     using typename parent_t::Point;
     using typename parent_t::Value;
     template <int order>
-        using Derivative = typename parent_t::template Derivative<order>;
+    using Derivative = typename parent_t::template Derivative<order>;
     using typename parent_t::Map;
 public:
     BoundaryFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
-    : FormulaFunction<dim>(grid, map)
-      {}
+        : FormulaFunction<dim>(grid, map)
+    {}
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
@@ -83,7 +83,7 @@ public:
     }
 
     void evaluate_0(const ValueVector<Point> &points,
-                       ValueVector<Value> &values) const override
+                    ValueVector<Value> &values) const override
     {
         for (int i = 0; i<points.size(); ++i)
         {
@@ -92,12 +92,12 @@ public:
         }
     }
     void evaluate_1(const ValueVector<Point> &points,
-                       ValueVector<Derivative<1>> &values) const override
-                               {}
+                    ValueVector<Derivative<1>> &values) const override
+    {}
 
-       void evaluate_2(const ValueVector<Point> &points,
-                       ValueVector<Derivative<2>> &values) const override
-                               {}
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const override
+    {}
 };
 
 
@@ -139,7 +139,7 @@ void do_test(const int p, const int num_knots = 10)
 
 int main()
 {
-    #if defined(USE_TRILINOS)
+#if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;

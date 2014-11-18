@@ -253,7 +253,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
-	using SubMap = SubMapFunction<k, dim, space_dim>;
+    using SubMap = SubMapFunction<k, dim, space_dim>;
     auto grid =  this->get_grid();
 //    typename GridType::template InterGridMap<k> elem_map;
 //    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);

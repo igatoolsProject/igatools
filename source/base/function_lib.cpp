@@ -369,6 +369,171 @@ evaluate_2(const ValueVector<Point> &points,
 
 
 //------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+
+
+template<int dim>
+CylindricalAnnulus<dim>::
+CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+                   const Real r0,
+                   const Real r1,
+                   const Real h0,
+                   const Real h1,
+                   const Real theta0,
+                   const Real theta1)
+    :
+    parent_t::FormulaFunction(grid, map),
+    r0_(r0),
+    r1_(r1),
+    h0_(h0),
+    h1_(h1),
+    theta0_(theta0),
+    theta1_(theta1),
+    dR_(r1_-r0_),
+    dT_(theta1_-theta0_),
+    dH_(h1_-h0_)
+{}
+
+
+
+template<int dim>
+auto
+CylindricalAnnulus<dim>::
+create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+       const Real r0,
+       const Real r1,
+       const Real h0,
+       const Real h1,
+       const Real theta0,
+       const Real theta1) ->  std::shared_ptr<base_t>
+{
+    return std::shared_ptr<base_t>(new self_t(grid, map, r0, r1, h0, h1, theta0, theta1));
+}
+
+
+
+
+template<int dim>
+auto
+CylindricalAnnulus<dim>::
+evaluate_0(const ValueVector<Point> &points,
+           ValueVector<Value> &values) const -> void
+{
+
+    const int n_points = points.size();
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &F = values[qp];
+        const auto &pt = points[qp];
+
+        const Real theta = pt[0];
+        const Real r     = pt[1];
+        const Real z     = pt[2];
+
+        F[0] = (dR_ * r + r0_) * cos(dT_ * theta);
+        F[1] = (dR_ * r + r0_) * sin(dT_ * theta);
+        F[2] = h0_ + z * dH_;
+    }
+}
+
+
+
+
+template<int dim>
+auto
+CylindricalAnnulus<dim>::
+evaluate_1(const ValueVector<Point> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+
+    const int n_points = points.size();
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &dF = values[qp];
+        const auto &pt = points[qp];
+
+        const Real theta = pt[0];
+        const Real r     = pt[1];
+
+        dF[0][0] = - dT_ * (dR_ * r + r0_) * sin(dT_ * theta);
+        dF[0][1] =   dT_ * (dR_ * r + r0_) * cos(dT_ * theta);
+        dF[0][2] = 0.0;
+
+        dF[1][0] = dR_ * cos(dT_ * theta);
+        dF[1][1] = dR_ * sin(dT_ * theta);
+        dF[1][2] = 0.0;
+
+        dF[2][0] = 0.0;
+        dF[2][1] = 0.0;
+        dF[2][2] = dH_;
+    }
+}
+
+
+
+
+template<int dim>
+auto
+CylindricalAnnulus<dim>::
+evaluate_2(const ValueVector<Point> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+    const int n_points = points.size();
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &d2F = values[qp];
+        const auto &pt = points[qp];
+
+        const Real theta = pt[0];
+        const Real r     = pt[1];
+
+        d2F[0][0][0] = - dT_ * dT_ * (dR_ * r + r0_) * cos(dT_ * theta);
+        d2F[0][0][1] = - dT_ * dT_ * (dR_ * r + r0_) * sin(dT_ * theta);
+        d2F[0][0][2] = 0.0;
+
+        d2F[1][0][0] = -dT_ * dR_ * sin(dT_ * theta);
+        d2F[1][0][1] =  dT_ * dR_ * cos(dT_ * theta);
+        d2F[1][0][2] = 0.0;
+
+        d2F[2][0][0] = 0.0;
+        d2F[2][0][1] = 0.0;
+        d2F[2][0][2] = 0.0;
+
+
+        d2F[0][1][0] = - dT_ * dR_ * sin(dT_ * theta);
+        d2F[0][1][1] =   dT_ * dR_ * cos(dT_ * theta);
+        d2F[0][1][2] = 0.0;
+
+        d2F[1][1][0] = 0.0;
+        d2F[1][1][1] = 0.0;
+        d2F[1][1][2] = 0.0;
+
+        d2F[2][1][0] = 0.0;
+        d2F[2][1][1] = 0.0;
+        d2F[2][1][2] = 0.0;
+
+
+        d2F[0][2][0] = 0.0;
+        d2F[0][2][1] = 0.0;
+        d2F[0][2][2] = 0.0;
+
+        d2F[1][2][0] = 0.0;
+        d2F[1][2][1] = 0.0;
+        d2F[1][2][2] = 0.0;
+
+        d2F[2][2][0] = 0.0;
+        d2F[2][2][1] = 0.0;
+        d2F[2][2][2] = 0.0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 } // of namespace functions.
 
 IGA_NAMESPACE_CLOSE

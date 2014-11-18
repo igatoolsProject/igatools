@@ -53,44 +53,45 @@ public:
     using typename parent_t::Point;
     using typename parent_t::Value;
     template <int order>
-        using Derivative = typename parent_t::template Derivative<order>;
+    using Derivative = typename parent_t::template Derivative<order>;
 
     TestFunc(std::shared_ptr<GridType> grid)
-    : parent_t(grid, IdentityFunction<dim>::create(grid))
-      {}
+        : parent_t(grid, IdentityFunction<dim>::create(grid))
+    {}
 
-        static std::shared_ptr<base_t>
-        create(std::shared_ptr<GridType> grid)
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<GridType> grid)
+    {
+        return std::shared_ptr<base_t>(new self_t(grid));
+    }
+
+    std::shared_ptr<base_t> clone() const override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const override
+    {
+        auto pt = points.begin();
+        auto val = values.begin();
+
+        for (; pt != points.end(); ++pt, ++val)
         {
-            return std::shared_ptr<base_t>(new self_t(grid));
+            for (int i=0; i<dim; ++i)
+                (*val)[i] = (*pt)[i];
+            (*val)[dim] = pt->norm_square();
         }
-
-        std::shared_ptr<base_t> clone() const override
-        {
-            return std::make_shared<self_t>(self_t(*this));
-        }
-
-        void evaluate_0(const ValueVector<Point> &points,
-                        ValueVector<Value> &values) const override{
-            auto pt = points.begin();
-            auto val = values.begin();
-
-            for (; pt != points.end(); ++pt, ++val)
-            {
-                for (int i=0; i<dim; ++i)
-                    (*val)[i] = (*pt)[i];
-                (*val)[dim] = pt->norm_square();
-            }
     }
 
 
     void evaluate_1(const ValueVector<Point> &points,
                     ValueVector<Derivative<1>> &values) const override
-                            {}
+    {}
 
     void evaluate_2(const ValueVector<Point> &points,
                     ValueVector<Derivative<2>> &values) const override
-                            {}
+    {}
 };
 
 

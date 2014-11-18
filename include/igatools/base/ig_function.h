@@ -76,7 +76,7 @@ public:
 
     auto &get_coefficients() const
     {
-    	return coeff_;
+        return coeff_;
     }
 
     void print_info(LogStream &out) const

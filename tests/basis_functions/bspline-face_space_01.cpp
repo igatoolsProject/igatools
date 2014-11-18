@@ -52,7 +52,7 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
         sub_space->print_info(out);
         out.end_item();
 
-        out.begin_item("Dofs sub element to space mapping:" );
+        out.begin_item("Dofs sub element to space mapping:");
         dof_map.print_info(out);
         out.end_item();
         out.end_item();

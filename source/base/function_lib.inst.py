@@ -35,3 +35,7 @@ for row in inst.function_dims:
 for dim in inst.domain_dims:
     s = ('template class functions::BallFunction<%d>;\n' %dim )
     f.write(s)
+
+s = ('template class functions::CylindricalAnnulus<%d>;\n' %3)
+f.write(s)
+

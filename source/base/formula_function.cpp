@@ -30,7 +30,7 @@ FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
     :
     parent_t::NewFunction(grid),
-	mapping_(map),
+    mapping_(map),
     map_elem_(mapping_->begin())
 {}
 

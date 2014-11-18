@@ -134,19 +134,6 @@ private:
 
 //------------------------------------------------------------------------------
 
-//template<int dim, int codim=0>
-//auto
-//create_identity(std::shared_ptr<const CartesianGrid<dim>> grid)
-//{
-//    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-//    typename Function::Value    b;
-//    typename Function::Gradient A;
-//
-//    for (int j=0; j<dim; j++)
-//        A[j][j] = 1.;
-//
-//    return Function::create(grid, A, b);
-//}
 
 
 
@@ -210,7 +197,107 @@ private:
 private:
     const Value b_;
 };
+//------------------------------------------------------------------------------
 
+
+
+
+//------------------------------------------------------------------------------
+/**
+ * \brief This class represent a cylindrical annulus mapping.
+ *
+ * The mapping is
+ * \f{equation*}{
+ *    \begin{aligned}
+ *    F(\hat{\theta},\hat{r},\hat{z}) \colon [0,1] \times[0,1]\times[0,1] & \to \Omega \\
+ *    (\hat{\theta},\hat{r},\hat{z}) & \mapsto
+ *    F(\hat{\theta},\hat{r},\hat{z}) =
+ *    \begin{pmatrix}
+ *      \bigl[ (r_1-r_0) \hat{r} + r_0 \bigr] \cos\bigl[ (\theta_1-\theta_0) \hat{\theta} \bigr] \\
+ *      \bigl[ (r_1-r_0) \hat{r} + r_0 \bigr] \sin\bigl[ (\theta_1-\theta_0) \hat{\theta} \bigr] \\
+ *      h_0 + (h_1-h_0) \hat{z}
+ *    \end{pmatrix}
+ *    \end{aligned}
+ * \f}
+ * where \f$ \Omega \f$ is a section of cylindrical annulus with the following characteristics:
+ *   section angle \f$ \theta \in [\theta_0,\theta_1] \f$,
+ *   radius \f$ r \in [r_0,r_1] \f$,
+ *   height \f$ z \in[h_0,h_1] \f$.
+ *
+ * \author M.Martinelli
+ * \date 31 Jan 2013
+ */
+template<int dim>
+class CylindricalAnnulus : public FormulaFunction<dim, 0, dim, 1>
+{
+private:
+    using base_t = NewFunction<dim, 0, dim, 1>;
+    using parent_t = FormulaFunction<dim, 0, dim, 1>;
+    using self_t = CylindricalAnnulus;
+    using typename base_t::GridType;
+public:
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
+
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+           const Real r0,
+           const Real r1,
+           const Real h0,
+           const Real h1,
+           const Real theta0,
+           const Real theta1);
+
+    std::shared_ptr<base_t> clone() const override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
+    CylindricalAnnulus(const self_t &) = default;
+
+protected:
+    CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+                       const Real r0,
+                       const Real r1,
+                       const Real h0,
+                       const Real h1,
+                       const Real theta0,
+                       const Real theta1);
+
+private:
+    template<int order>
+    auto
+    get_aux_vals(const ValueVector<Point> &points) const;
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const;
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const;
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const;
+
+private:
+private:
+    const Real r0_;
+    const Real r1_;
+    const Real h0_;
+    const Real h1_;
+    const Real theta0_;
+    const Real theta1_;
+
+    const Real dR_;
+    const Real dT_;
+    const Real dH_;
+};
 
 
 } // of namespace functions.

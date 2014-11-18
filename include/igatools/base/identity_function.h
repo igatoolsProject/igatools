@@ -61,16 +61,16 @@ public:
     IdentityFunction(std::shared_ptr<GridType> grid);
 
     static std::shared_ptr<parent_t>
-        create(std::shared_ptr<GridType> grid)
-        {
+    create(std::shared_ptr<GridType> grid)
+    {
         return std::shared_ptr<parent_t>(new self_t(grid));
-        }
+    }
 
     std::shared_ptr<parent_t> clone() const override
-        {
+    {
 
-            return std::make_shared<self_t>(self_t(*this));
-        }
+        return std::make_shared<self_t>(self_t(*this));
+    }
 
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
@@ -103,8 +103,8 @@ private:
                 }
                 if (flags.fill_hessians())
                 {
-                Assert(false, ExcNotImplemented());
-                //std::get<2>(cache.values_) = 0.;
+                    Assert(false, ExcNotImplemented());
+                    //std::get<2>(cache.values_) = 0.;
                 }
             }
             cache.set_filled(true);

@@ -69,8 +69,8 @@ void do_test(const int p, const int num_knots = 10)
 
     std::map<Index,Real> boundary_values;
     space_tools::project_boundary_values<Space,la_pack>(
-            f, space, quad, bdry_ids,
-            boundary_values);
+        f, space, quad, bdry_ids,
+        boundary_values);
 
     out << "basis index \t value" << endl;
     for (auto entry : boundary_values)
