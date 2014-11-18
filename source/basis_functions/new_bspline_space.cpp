@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/space_manager.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 #include <igatools/base/identity_function.h>
 
 using std::endl;

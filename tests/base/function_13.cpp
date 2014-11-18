@@ -30,7 +30,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/function_element.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 
 
 template<int dim, int codim, int range>

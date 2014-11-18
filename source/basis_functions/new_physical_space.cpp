@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/new_physical_space.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 #include <igatools/basis_functions/space_manager.h>
 
 

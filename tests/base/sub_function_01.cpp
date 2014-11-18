@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/function_element.h>
 

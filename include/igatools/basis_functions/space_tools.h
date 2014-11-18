@@ -28,7 +28,7 @@
 #include <igatools/linear_algebra/linear_solver.h>
 
 #include<set>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
@@ -334,7 +334,7 @@ IGA_NAMESPACE_CLOSE
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 #include <igatools/base/function.h>
 
 #include <igatools/basis_functions/physical_space.h>

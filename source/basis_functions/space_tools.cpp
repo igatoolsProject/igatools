@@ -28,7 +28,7 @@
 #include <igatools/linear_algebra/linear_solver.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/mapping_slice.h>
+#include <igatools/base/sub_function.h>
 
 #include <boost/numeric/ublas/io.hpp>
 
