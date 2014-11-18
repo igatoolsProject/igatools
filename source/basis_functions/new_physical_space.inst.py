@@ -36,5 +36,45 @@ include_files = ['basis_functions/new_bspline_space.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-for space in inst.AllPhysSpaces:
-      f.write( 'template class %s;\n' %space.name)
+
+sub_dim_members = \
+ ['std::shared_ptr<typename class::SubSpace<k> > ' +
+   'class::get_sub_space(const int s_id, InterSpaceMap<k> &dof_map, ' +
+   'std::shared_ptr<CartesianGrid<k>> sub_grid, ' + 
+   'std::shared_ptr<InterGridMap<k>> elem_map) const;']
+
+
+# for x in inst.sub_ref_sp_dims:
+#     space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     f.write('template class %s ;\n' %space)
+#     for fun in sub_dim_members:
+#         k = x.dim
+#         s = fun.replace('class', space).replace('k', '%d' % (k));
+#         f.write('template ' + s + '\n')
+
+
+# for x in inst.ref_sp_dims:
+#     space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     f.write('template class %s ;\n' %space)
+#     for fun in sub_dim_members:
+#         for k in inst.sub_dims(x.dim):
+#             s = fun.replace('class', space).replace('k', '%d' % (k));
+#             f.write('template ' + s + '\n')
+                        
+ 
+for space in inst.SubPhysSpaces:
+    x = space.spec
+    f.write( 'template class %s;\n' %space.name)
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('class', space.name).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
+
+
+for space in inst.PhysSpaces:
+    x = space.spec
+    f.write( 'template class %s;\n' %space.name)
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = fun.replace('class', space.name).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')

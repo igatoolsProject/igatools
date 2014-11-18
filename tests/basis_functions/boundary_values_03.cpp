@@ -24,71 +24,93 @@
  *  date: 2013-03-19
  *
  */
+//TODO: this test should be merge into the other ones
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/formula_function.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
 
 template<int dim>
-class BoundaryFunction : public Function<dim,1,1>
+class XProject : public FormulaFunction<dim>
 {
-
+private:
+	using base_t = NewFunction<dim>;
+	using parent_t = FormulaFunction<dim>;
+	using self_t = XProject<dim>;
+	using typename base_t::GridType;
 public:
-    BoundaryFunction() : Function<dim,1,1>() {}
+	using typename parent_t::Point;
+	using typename parent_t::Value;
+	template <int order>
+	using Derivative = typename parent_t::template Derivative<order>;
+public:
+	XProject(std::shared_ptr<GridType> grid)
+: FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
+  {}
 
-    void evaluate(const ValueVector< Points<dim> > &points,
-                  ValueVector<Points<1> > &values) const
-    {
-        for (int i =0; i<points.size(); i++)
-        {
-            Points<dim> p = points[i];
-            values[i][0] = p[0];
-        }
-    };
+	static std::shared_ptr<base_t>
+	create(std::shared_ptr<GridType> grid)
+	{
+		return std::shared_ptr<base_t>(new self_t(grid));
+	}
 
+	std::shared_ptr<base_t> clone() const override
+			{
+		return std::make_shared<self_t>(self_t(*this));
+			}
+
+	void evaluate_0(const ValueVector<Point> &points,
+			ValueVector<Value> &values) const override
+					{
+		for (int i = 0; i<points.size(); ++i)
+		{
+			Points<dim> p = points[i];
+			values[i][0] = p[0];
+		}
+					}
+	void evaluate_1(const ValueVector<Point> &points,
+			ValueVector<Derivative<1>> &values) const override
+					{}
+
+	void evaluate_2(const ValueVector<Point> &points,
+			ValueVector<Derivative<2>> &values) const override
+					{}
 };
 
 
-template<int dim>
-void do_test(const int p)
-{
-    out << "Dimension: " << dim << endl;
-    typedef BSplineSpace<dim> space_ref_t;
 
-    const int num_knots = 2;
-    TensorSize<dim> n_knots;
-    for (int i = 0; i < dim; ++i)
-    {
-        n_knots[i] = num_knots+i;
-    }
+
+template<int dim , int range ,int rank, LAPack la_pack>
+void do_test(const int p, TensorSize<dim> n_knots)
+{
+	const int sub_dim = dim - 1;
+    out << "Dimension: " << dim << endl;
+    using Space = NewBSplineSpace<dim, range, rank>;
+
+
     auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = space_ref_t::create(p, grid) ;
+    auto space = Space::create(p, grid) ;
+    auto f = XProject<dim>::create(grid);
 
     const int n_qpoints = 4;
-    QGauss<dim-1> quad(n_qpoints);
-
-    BoundaryFunction<dim> f;
+    QGauss<sub_dim> quad(n_qpoints);
 
     const boundary_id dirichlet = 1;
     grid->set_boundary_id(2, dirichlet);
-    std::set<boundary_id> face_id;
-    face_id.insert(dirichlet);
-
-
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
+    std::set<boundary_id> bdry_ids;
+    bdry_ids.insert(dirichlet);
 
     std::map<Index,Real> boundary_values;
-    space_tools::project_boundary_values<space_ref_t,la_pack>(
-        f, space, quad, face_id,
+    space_tools::project_boundary_values<Space,la_pack>(
+        f, space, quad, bdry_ids,
         boundary_values);
 
     out << "basis index \t value" << endl;
@@ -98,12 +120,18 @@ void do_test(const int p)
 }
 
 
-
 int main()
 {
-    out.depth_console(20);
-
-    do_test<2>(2);
+#if defined(USE_TRILINOS)
+    const auto la_pack = LAPack::trilinos;
+#elif defined(USE_PETSC)
+    const auto la_pack = LAPack::petsc;
+#endif
+    {
+    	const int dim = 2;
+    	TensorSize<dim> n_knots{ arr::sequence<dim>(2)};
+    	do_test<dim, 1, 1, la_pack>(2, n_knots);
+    }
 //    do_test<2,1,1>(3);
 //    do_test<3,1,1>(2);
 
