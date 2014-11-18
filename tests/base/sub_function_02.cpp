@@ -35,15 +35,14 @@
 
 
 template <int sub_dim, int dim, int space_dim>
-void sub_function(const int n_knots = 2)
+void sub_map(const int n_knots = 2)
 {
+    OUTSTART
     using Func = functions::LinearFunction<dim, 0, space_dim>;
     using GridType = CartesianGrid<dim>;
     using SubFunc = SubMapFunction<sub_dim, dim, space_dim>;
 
     auto grid = GridType::create(n_knots);
-
-
 
     typename Func::Gradient A;
     typename Func::Value    b;
@@ -54,24 +53,6 @@ void sub_function(const int n_knots = 2)
 
     auto func = Func::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    out << "Linear mapping" << "<" << dim << "," << space_dim << ">" << endl;
-    out << "A =" << endl << A << endl;
-    out << "b =" << b << endl << endl;
-
-
-
-    QGauss<dim> quad(1);
-    auto func_flag = NewValueFlags::point | NewValueFlags::value
-            | NewValueFlags::gradient;
-    func->reset(func_flag, quad);
-    auto elem =  func->begin();
-    func->init_cache(elem, Int<dim>());
-    func->fill_cache(elem, 0, Int<dim>());
-    elem->template get_values<0,dim>(0).print_info(out);
-    elem->template get_values<1,dim>(0).print_info(out);
-
-
-
     for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
     {
         using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
@@ -79,9 +60,6 @@ void sub_function(const int n_knots = 2)
 
         auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
         auto sub_func = SubFunc::create(sub_grid, func, s_id, *elem_map);
-
-
-        //out << "Face: " << s_id << endl;
 
         QGauss<sub_dim> f_quad(1);
         auto sub_func_flag = NewValueFlags::point | NewValueFlags::value
@@ -95,39 +73,14 @@ void sub_function(const int n_knots = 2)
 
         for (; f_elem != end; ++f_elem)
         {
-           // out << "face element: " <<  f_elem->get_flat_index() << endl;
             sub_func->fill_cache(f_elem, 0, Int<sub_dim>());
-            out << "Map Values (x1,x2,...):" << endl;
             f_elem->template get_values<0,sub_dim>(0).print_info(out);
             out << endl;
-            out << "Map Gradients (x1,x2,...):" << endl;
             f_elem->template get_values<1,sub_dim>(0).print_info(out);
             out << endl;
         }
     }
-
-//    for (int face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
-//    {
-//        auto elem_map = std::make_shared<typename CartesianGrid<dim>::FaceGridMap>();
-//        auto face_grid = grid->get_face_grid(face_id, *elem_map);
-//        auto face_map =
-//            MappingSlice<dim-1,codim+1>::create(map, face_id, face_grid, elem_map);
-//
-//
-//        QGauss<dim-1> face_quad(1);
-//        auto face_elem = face_map->begin();
-//        face_elem->init_cache(ValueFlags::point|ValueFlags::map_gradient, face_quad);
-//
-//        face_elem->fill_cache();
-//
-//        out << "Map Values (x1,x2,...):" << endl;
-//        face_elem->get_map_values().print_info(out);
-//        out << endl;
-//
-//        out << "Map Gradients (x1,x2,...):" << endl;
-//        face_elem->get_map_gradients().print_info(out);
-//        out << endl;
-//    }
+    OUTEND
 }
 
 
@@ -135,7 +88,7 @@ int main()
 {
     out.depth_console(10);
 
-    sub_function<1, 2, 2>();
+    sub_map<1, 2, 2>();
 
     return  0;
 }
