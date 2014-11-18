@@ -34,6 +34,7 @@
 #include <igatools/geometry/mapping_element.h>
 
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 
@@ -61,7 +62,7 @@ void test()
                 | NewValueFlags::gradient | NewValueFlags::hessian|
                 NewValueFlags::measure |
                 NewValueFlags::w_measure;
-    auto F = Function::create(grid, A, b);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     PForward pf(F);
 
     pf.template reset<dim>(flag, quad);
