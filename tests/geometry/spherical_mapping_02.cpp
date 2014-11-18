@@ -27,13 +27,14 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_mapping.h>
-#include <igatools/geometry/mapping_element.h>
-#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping_element.h>
+
 
 template <int dim>
 Real ball_volume(const int n_knots)
@@ -53,8 +54,7 @@ Real ball_volume(const int n_knots)
         box[dim-1] = {0., 2. * M_PI};
 
     auto grid = CartesianGrid<dim>::create(box, n_knots);
-
-    auto F = Function::create(grid);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
     using Mapping   = NewMapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;

@@ -28,13 +28,16 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_mapping.h>
-#include <igatools/geometry/mapping_element.h>
-#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping_element.h>
+
+//#include <igatools/../../source/geometry/grid_forward_iterator.cpp>
 
 template <int dim>
 void mapping_values()
@@ -50,7 +53,7 @@ void mapping_values()
     auto quad = QUniform<dim>(3);
     auto grid = CartesianGrid<dim>::create();
 
-    auto F = Function::create(grid);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
     using Mapping   = NewMapping<dim, 0>;
@@ -70,13 +73,13 @@ void mapping_values()
         elem->get_points().print_info(out);
         out << endl;
         out << "Values:" << endl;
-        elem->get_values().print_info(out);
+        elem->template get_values<0, dim>(0).print_info(out);
         out << endl;
         out << "Gradients:" << endl;
-        elem->template get_values<1>().print_info(out);
+        elem->template get_values<1, dim>(0).print_info(out);
         out << endl;
         out << "Hessians:" << endl;
-        elem->template get_values<2>().print_info(out);
+        elem->template get_values<2, dim>(0).print_info(out);
         out << endl;
         out << "Measure:" << endl;
         elem->template get_measures<dim>(0).print_info(out);

@@ -31,6 +31,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/new_physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
@@ -41,15 +42,16 @@ template<int dim, int codim=0>
 auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
-    using Function = functions::CilinderFunction<dim>;
-    //  auto map = CylindricalAnnulus::create(grid,1.0,2.0,1.0,numbers::PI/3.0);
-    return Function::create(grid);
+    using Function = functions::CylindricalAnnulus<dim>;
+    auto map = Function::create(grid, IdentityFunction<dim>::create(grid),
+                                1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
+    return map;
 }
 
 template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
-    out << "========== test PhysSpaceElemAccessor on CylindricalAnnulus --- begin =========" << endl;
+
     const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
     using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
@@ -91,7 +93,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
         out << "Basis hessians: " << endl;
         elem->template get_values<2, k>().print_info(out);
     }
-    out << "========== test PhysSpaceElemAccessor on CylindricalAnnulus --- end   =========" << endl;
+
     out << endl << endl;
 }
 
