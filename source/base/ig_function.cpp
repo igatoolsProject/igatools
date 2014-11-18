@@ -94,6 +94,7 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
     fill_cache_impl.function = this;
     auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
     fill_cache_impl.loc_coeff = &loc_coeff;
+    fill_cache_impl.j =j;
 
     boost::apply_visitor(fill_cache_impl, k);
 }
