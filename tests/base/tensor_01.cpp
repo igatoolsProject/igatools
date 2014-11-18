@@ -18,20 +18,70 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 //TODO: Add standard description
+
 #include "../tests.h"
 
-#include "igatools/base/tensor.h"
+#include <igatools/base/tensor.h>
 
 
 
 
 typedef Tensor< 1, 1, tensor::contravariant, Tdouble > ValueScalar ;
 
-
-int main(int argc, char *argv[])
+template <int dim>
+void
+compute_cp()
 {
+    OUTSTART
+    Derivatives<dim, dim+1, 1, 1> DF;
+    for (int i = 0; i < dim; ++i)
+    {
+        DF[i][i] = 1;
+    }
+
+    auto cp = cross_product<dim>(DF);
+    out << "cross product: " << cp << endl;
+
+    for (int i = 0; i < dim; ++i)
+    {
+        out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
+    }
+    OUTEND
+}
 
 
+
+template <int dim>
+void
+compute_cp2()
+{
+    OUTSTART
+    Derivatives<dim, dim+1, 1, 1> DF;
+    for (int i = 0; i < dim; ++i)
+    {
+        for (int j = 0; j < dim+1; ++j)
+            DF[i][j] = i+j;
+    }
+
+    auto cp = cross_product<dim>(DF);
+    out << "cross product: " << cp << endl;
+
+    for (int i = 0; i < dim; ++i)
+    {
+        out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
+    }
+    OUTEND
+}
+
+
+int main()
+{
+    compute_cp<1>();
+    compute_cp<2>();
+
+    compute_cp2<1>();
+    compute_cp2<2>();
+#if 0
     // testing the tensor.type for the scalar fields
     ValueScalar Value0 ;
     out << Value0 << endl ;
@@ -108,7 +158,7 @@ int main(int argc, char *argv[])
     Value6b = Value2 * 3.0 ;
     out << Value6b << endl ;
 
-
+#endif
 
     return (0) ;
 }
