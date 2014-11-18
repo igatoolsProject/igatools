@@ -29,6 +29,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/formula_function.h>
+#include <igatools/base/identity_function.h>
 
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
@@ -55,7 +56,7 @@ public:
         using Derivative = typename parent_t::template Derivative<order>;
 
     TestFunc(std::shared_ptr<GridType> grid)
-    : parent_t(grid)
+    : parent_t(grid, IdentityFunction<dim>::create(grid))
       {}
 
         static std::shared_ptr<base_t>

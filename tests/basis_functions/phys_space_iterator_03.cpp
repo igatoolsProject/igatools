@@ -31,6 +31,8 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/new_physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
@@ -42,7 +44,7 @@ auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
     using Function = functions::BallFunction<dim>;
-    return Function::create(grid);
+    return Function::create(grid, IdentityFunction<dim>::create(grid));
 }
 
 

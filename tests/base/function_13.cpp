@@ -71,8 +71,7 @@ void create_fun()
     }
 
     auto flag = NewValueFlags::point | NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::hessian;
+                NewValueFlags::gradient;
 
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);

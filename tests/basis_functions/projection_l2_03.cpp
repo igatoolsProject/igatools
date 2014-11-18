@@ -29,6 +29,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
@@ -49,7 +50,7 @@ void test_proj(const int p, const int n_knots = 4)
     for (int i=0; i<range; ++i)
         val[i] = i+3;
 
-    auto f = Func::create(grid, val);
+    auto f = Func::create(grid, IdentityFunction<dim>::create(grid), val);
 
     const int n_qp = 4;
     QGauss<dim> quad(n_qp);

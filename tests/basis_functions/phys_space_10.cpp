@@ -30,6 +30,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 
 #include <igatools/basis_functions/space_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
@@ -61,7 +62,7 @@ void cache_init(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, A, b);
+    auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
 
@@ -100,7 +101,7 @@ void cache_init_elem(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, A, b);
+    auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
     ElementHandler sp_values(space);
@@ -140,7 +141,7 @@ void cache_fill_elem(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, A, b);
+    auto map_func = Function::create(grid,IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
     ElementHandler sp_values(space);
@@ -185,7 +186,7 @@ void cache_get_elem_values(const NewValueFlags flag,
     }
 
     auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, A, b);
+    auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
     ElementHandler sp_values(space);

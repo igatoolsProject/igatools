@@ -30,6 +30,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/base/formula_function.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/basis_functions/space_tools.h>
 //#include <igatools/io/writer.h>
@@ -102,9 +103,9 @@ void do_test(const int deg)
     const int n_qpoints = ceil((2*dim + 1)/2.);
     QGauss<dim> quad(n_qpoints);
 
-    ProductFunction<dim> f(grid);
+    ProductFunction<dim> f(grid, IdentityFunction<dim>::create(grid));
     typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-    auto g = functions::ConstantFunction<dim,0,1>::create(grid, val);
+    auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
 
     vector<Real> elem_err(grid->get_num_active_elems());
     Real err = space_tools::integrate_difference<dim>
