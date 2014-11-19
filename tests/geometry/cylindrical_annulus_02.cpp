@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test of faces normals using a cylindrical annulus mapping.
+ *  Test of for the faces normals using a cylindrical annulus mapping.
  *  author: antolin
  *  date: 2014-03-18
  *
@@ -38,54 +38,59 @@ template <int dim>
 auto create_mapping(shared_ptr<const CartesianGrid<dim>> grid)
 {
     using Function = functions::CylindricalAnnulus<dim>;
+
+    return
     Function::create(grid, IdentityFunction<dim>::create(grid),
                   1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
 }
 
+//template <int dim>
+//auto create_mapping2(shared_ptr<const CartesianGrid<dim>> grid)
+//{
+//    using Function = functions::identity<dim>;
+//
+//    return
+//    Function::create(grid, IdentityFunction<dim>::create(grid),
+//                  1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+//}
 
-template <int sub_dim, int dim>
+template <int sub_dim, int dim, int codim =0 >
 void mapping_normals()
 {
+	 using Mapping = NewMapping<dim, codim>;
+
     auto grid = CartesianGrid<dim>::create();
     auto map_func =  create_mapping<dim>(grid);
 
-    auto flag = NewValueFlags::w_measure|NewValueFlags::point|NewValueFlags::normal;
+    auto flag = NewValueFlags::w_measure|NewValueFlags::point|NewValueFlags::outer_normal;
     auto quad = QGauss<dim>(3);
 
+    Mapping map(map_func);
+    map.reset(flag, quad);
 
+    auto elem = map.begin();
+    auto end = map.end();
 
-    for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+    map.template init_cache<dim>(elem);
+    for (; elem != end; ++elem)
     {
+    	map.template fill_cache<dim>(elem, 0);
+    	elem->get_normal_space().print_info(out);
+
+    	for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+    	{
+    		map.template fill_cache<dim>(elem, 0);
+    		elem->get_normal_space().print_info(out);
+    	}
+	}
 
 
-    }
 
 }
 
 int main()
 {
-    out.depth_console(20);
-
-
-    auto map = CylindricalAnnulus::create(1, 2, 0, 2.0, 0.0, numbers::PI / 4.0);
-
-    const int num_pts = 1 ;
-    QGauss<3> quad(num_pts) ;
-
-    auto elem = map->begin();
-    ValueFlags flag = ValueFlags::face_normal;
-    elem->init_cache(flag, quad);
-
-    for (Index face_id = 0 ; face_id < UnitElement<3>::faces_per_element ; face_id++)
-    {
-        elem->fill_face_cache(face_id);
-        auto normals = elem->get_face_normals(face_id);
-        out << "Face: " << face_id << endl;
-        out << "  Normal vector: " << endl ;;
-        normals.print_info(out);
-        out << endl;
-    }
-
-    return (0) ;
+    mapping_normals<2,3,0>();
+    return 0;
 }
 

@@ -21,6 +21,7 @@
 #ifndef MAPPING_ELEMENT_H_
 #define MAPPING_ELEMENT_H_
 
+#include <igatools/utils/array.h>
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/base/function_element.h>
 
@@ -67,6 +68,25 @@ public:
         return cache.template get_inv_values<order>();
     }
 
+
+    ValueVector<special_array<Points<space_dim>, codim>>
+	get_normal_space() const
+	{
+    	ValueVector<special_array<Points<space_dim>, codim>> res;
+    	const auto &DF = this->template get_values<1, dim>(0);
+        res.resize(DF.get_num_points());
+        return res;
+	}
+
+
+    ValueVector<Points<space_dim>>
+    get_boundary_normals() const
+	{
+    	ValueVector<Points<space_dim>> res;
+    	const auto &DF = this->template get_values<1, dim>(0);
+    	res.resize(DF.get_num_points());
+    	return res;
+	}
 
 private:
     class ValuesCache : public CacheStatus

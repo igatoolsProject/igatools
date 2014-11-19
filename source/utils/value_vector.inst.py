@@ -18,12 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-data = Instantiation()
+include_files = ['utils/array.h']
+data = Instantiation(include_files)
 f = data.file_output
 inst = data.inst
 
+normals = ['special_array<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
 value_vectors=['ValueVector<Real>']
 
 for deriv in inst.derivatives + inst.values + inst.divs:
@@ -34,3 +35,5 @@ for row in value_vectors:
     f.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
     f.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
     
+for row in normals:
+      f.write('template class ValueVector<%s>; \n' % (row))

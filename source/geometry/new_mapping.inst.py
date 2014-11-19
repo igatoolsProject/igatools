@@ -20,7 +20,8 @@
 
 from init_instantiation_data import *
 
-include_files = ['../../source/base/function_element.cpp',
+include_files = ['utils/array.h',
+                 '../../source/base/function_element.cpp',
                  '../../source/geometry/mapping_element.cpp',
                  '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
@@ -31,7 +32,6 @@ sub_dim_members = \
 ['void NewMapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j);',
  'void NewMapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
  'void NewMapping<dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
-
 
 for x in inst.sub_mapping_dims:
     dims = '<%d, %d>' %(x.dim, x.codim)

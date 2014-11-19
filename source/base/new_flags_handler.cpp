@@ -224,7 +224,7 @@ FunctionFlags::to_grid_flags(const NewValueFlags &flags)
 {
     NewValueFlags transfer_flag = NewValueFlags::measure |
                                   NewValueFlags::w_measure |
-                                  NewValueFlags::normal;
+                                  NewValueFlags::boundary_normal;
     NewValueFlags g_flag = flags & transfer_flag;
     if (contains(flags, NewValueFlags::point) || contains(flags, NewValueFlags::value))
     {
@@ -472,7 +472,7 @@ MappingFlags::to_function_flags(const NewValueFlags &flags)
 {
     NewValueFlags transfer_flag = NewValueFlags::measure |
                                   NewValueFlags::w_measure |
-                                  NewValueFlags::normal |
+                                  NewValueFlags::boundary_normal |
                                   FunctionFlags::valid_flags;
 
 
@@ -480,11 +480,12 @@ MappingFlags::to_function_flags(const NewValueFlags &flags)
 
     if (contains(flags, NewValueFlags::measure) ||
         contains(flags, NewValueFlags::w_measure) ||
-        contains(flags,  NewValueFlags::normal))
+        contains(flags,  NewValueFlags::outer_normal))
         f_flag |=  NewValueFlags::gradient;
 
-    if (contains(flags, NewValueFlags::inv_gradient))
-        f_flag |=  NewValueFlags::gradient;
+    if (contains(flags, NewValueFlags::inv_gradient) ||
+    	contains(flags, NewValueFlags::outer_normal))
+		f_flag |=  NewValueFlags::gradient;
 
     if (contains(flags, NewValueFlags::inv_hessian))
         f_flag |=  NewValueFlags::gradient | NewValueFlags::hessian;
