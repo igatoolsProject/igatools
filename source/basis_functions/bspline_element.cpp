@@ -323,7 +323,8 @@ evaluate_univariate_derivatives_at_points(
 
     const auto degree_table = this->space_->get_degree();
     const auto &bezier_op_ = this->space_->operators_;
-    const auto element_lengths = CartesianGridElement<dim>::get_coordinate_lengths();
+
+    const auto element_lengths = CartesianGridElement<dim>::template get_coordinate_lengths<dim>(0);
 
     for (int comp : funcs1D_table.get_active_components_id())
     {

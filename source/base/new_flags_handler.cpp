@@ -449,7 +449,8 @@ MappingFlags(const NewValueFlags &flags)
     :
     FunctionFlags::FunctionFlags(to_function_flags(flags))
 {
-    if (contains(flags, NewValueFlags::inv_gradient))
+    if ( (contains(flags, NewValueFlags::inv_gradient)) ||
+         (contains(flags, NewValueFlags::outer_normal)) )
         fill_inv_gradients_ = true;
 
     if (contains(flags, NewValueFlags::inv_hessian))
@@ -480,12 +481,10 @@ MappingFlags::to_function_flags(const NewValueFlags &flags)
 
     if (contains(flags, NewValueFlags::measure) ||
         contains(flags, NewValueFlags::w_measure) ||
+        contains(flags, NewValueFlags::inv_gradient) ||
         contains(flags,  NewValueFlags::outer_normal))
         f_flag |=  NewValueFlags::gradient;
 
-    if (contains(flags, NewValueFlags::inv_gradient) ||
-    	contains(flags, NewValueFlags::outer_normal))
-		f_flag |=  NewValueFlags::gradient;
 
     if (contains(flags, NewValueFlags::inv_hessian))
         f_flag |=  NewValueFlags::gradient | NewValueFlags::hessian;

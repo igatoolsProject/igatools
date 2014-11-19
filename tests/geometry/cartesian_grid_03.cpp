@@ -38,7 +38,7 @@ void normal_space()
     for (int j = 0; j < n_elems; ++j)
     {
         out << "Sub element index: " << j << endl;
-        auto normals = grid->template get_normal_space<k>(j);
+        auto normals = grid->template get_boundary_normals<k>(j);
         out << "Outer normals: ";
         for (int i=0; i<dim-k; ++i)
             out << normals[i] << " " << endl;

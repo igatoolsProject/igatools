@@ -345,12 +345,15 @@ public:
      */
     void set_boundary_id(const int face, const boundary_id id);
 
+
+    template<int sub_dim>
+    using BoundaryNormal = std::array<Points<dim>, dim-sub_dim>;
     /**
      * Returns the outward pointing
      * unit normal vector space to the element of sub dim k.
      */
-    template<int k>
-    std::array<Points<dim>, dim-k> get_normal_space(const int j) const;
+    template<int sub_dim>
+    BoundaryNormal<sub_dim> get_boundary_normals(const int s_id) const;
 
     template<int k>
     using InterGridMap = std::map<typename CartesianGrid<k>::ElementIterator, ElementIterator>;

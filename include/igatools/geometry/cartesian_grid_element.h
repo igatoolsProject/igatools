@@ -138,7 +138,7 @@ public:
     ///@}
 
 
-private:
+protected:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> get_grid() const;
 public:
@@ -250,18 +250,18 @@ public:
     Point vertex(const int i) const;
 
 public:
-    template<int k = dim>
-    const Point &get_coordinate_lengths(const int j = 0) const;
+    template<int k>
+    const Point &get_coordinate_lengths(const int j) const;
 
-    template <int k = dim>
-    Real get_measure(const int j = 0) const;
+    template <int k>
+    Real get_measure(const int j) const;
 
     /**
      * Returns the k dimiensional j-th sub-element measure
      * multiplied by the weights of the quadrature.
      */
-    template <int k = dim>
-    ValueVector<Real> get_w_measures(const int j = 0) const;
+    template <int k>
+    ValueVector<Real> get_w_measures(const int) const;
 
     /**
      * Returns measure of the element or of the element-face in the

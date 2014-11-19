@@ -31,7 +31,8 @@ data = Instantiation(include_files)
 sub_dim_members = \
 ['void NewMapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j);',
  'void NewMapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
- 'void NewMapping<dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+ 'void NewMapping<dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);',
+ 'ValueVector<Points<dim+cod>> MappingElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 for x in inst.sub_mapping_dims:
     dims = '<%d, %d>' %(x.dim, x.codim)

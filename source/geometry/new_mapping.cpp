@@ -98,7 +98,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     if (flags.fill_w_measures())
     {
         const auto &meas = cache.measures_;
-        const auto &w = elem.CartesianGridElement<dim>::get_w_measures();
+        const auto &w = elem.CartesianGridElement<dim>::template get_w_measures<k>(j);
         for (int i=0; i<n_points; ++i)
             cache.w_measures_[i] = w[i] * meas[i];
     }

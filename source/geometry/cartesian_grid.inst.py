@@ -24,7 +24,8 @@ include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = ['std::array<Points<dim>, dim-k> CartesianGrid<dim>::get_normal_space<k>(const int j) const;',
+sub_dim_members = ['CartesianGrid<dim>::template BoundaryNormal<k> ' +
+                   'CartesianGrid<dim>::get_boundary_normals<k>(const int s_id) const;',
                    'std::shared_ptr<CartesianGrid<k>> CartesianGrid<dim>::'+
                    'get_sub_grid<k>(const int sub_elem_id, InterGridMap<k> &elem_map) const;']
  

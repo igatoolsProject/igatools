@@ -348,16 +348,16 @@ get_boundary_id(const int face) const
 
 
 template<int dim_>
-template<int k>
+template<int sub_dim>
 auto
 CartesianGrid<dim_>::
-get_normal_space(const int j) const -> std::array<Point, dim-k>
+get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 {
     auto all_elems = UnitElement<dim>::all_elems;
-    auto element = std::get<k>(all_elems)[j];
+    auto element = std::get<sub_dim>(all_elems)[s_id];
 
-    std::array<Point, dim-k> normals;
-    for (int i=0; i<dim-k; ++i)
+    BoundaryNormal<sub_dim> normals;
+    for (int i=0; i<dim-sub_dim; ++i)
     {
         auto val = 2*element.constant_values[i]-1;
         normals[i][element.constant_directions[i]] = val;
