@@ -25,12 +25,17 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/base/quadrature.h>
 
 #include <igatools/utils/array.h>
 
 #include <string>
 
 IGA_NAMESPACE_OPEN
+
+
+template <class RefSpace_, int codim_, Transformation type_>
+class NewPhysicalSpace;
 
 
 template<int dim, int codim = 0, class T = double>
@@ -72,19 +77,19 @@ private:
 //    std::shared_ptr<const CartesianGrid<dim> > grid_;
 
 
-    std::shared_ptr<const NewMapping<dim,codim> > map_;
+    std::shared_ptr<NewMapping<dim,codim> > map_;
 
     /**
      * Unit element quadrature rule used for the plot.
      */
-    std::shared_ptr< Quadrature<dim> > quad_plot_;
+    std::shared_ptr< const Quadrature<dim> > quad_plot_;
 
 
 
     const TensorSize<dim> num_points_direction_;
 
 
-    const TensorSize<dim> num_subelements_direction_;
+    TensorSize<dim> num_subelements_direction_;
 
     /**
      * Number of VTK elements contained in each IGA element.
@@ -132,6 +137,11 @@ private:
 
     static const int n_vertices_per_vtk_element_ = UnitElement<dim>::template num_elem<dim>();
 
+
+    void fill_points_and_connectivity(
+        vector< vector< special_array<T,3> > > &points_in_iga_elements,
+        vector< vector< special_array<int,n_vertices_per_vtk_element_> > >
+        &vtk_elements_connectivity) const;
 
 };
 
@@ -397,10 +407,6 @@ private:
                        const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
                        &vtk_elements_connectivity) const;
 
-    void fill_points_and_connectivity(
-        vector< vector< std::array<T,3> > > &points_in_iga_elements,
-        vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-        &vtk_elements_connectivity) const;
 };
 
 

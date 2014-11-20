@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/io/writer.h>
+#include <igatools/basis_functions/physical_space_element.h>
 
 #include <fstream>
 
@@ -37,10 +38,10 @@ Writer(const shared_ptr<const NewMapping<dim,codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
     :
 //    grid_(map->get_function()->get_grid()),
-    map_(map),
+    map_(NewMapping<dim,codim>::create(map->get_function()->clone())),
     quad_plot_(quadrature),
     num_points_direction_(quad_plot_->get_num_points_direction()),
-    n_iga_elements_(map->get_grid()->get_num_active_elems()),
+    n_iga_elements_(map->get_function()->get_grid()->get_num_active_elems()),
     n_points_per_iga_element_(quad_plot_->get_num_points()),
     n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
     sizeof_Real_(sizeof(T)),
@@ -138,6 +139,37 @@ Writer(const shared_ptr<const CartesianGrid<dim> > grid)
     Assert(false,ExcNotImplemented());
 }
 //*/
+
+
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
+fill_points_and_connectivity(
+    vector<vector<special_array<T,3> > > &points_in_iga_elements,
+    vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
+    &vtk_elements_connectivity) const
+{
+    map_->reset(NewValueFlags::value, *quad_plot_);
+
+    auto m_elem = map_->begin();
+    auto m_end  = map_->end();
+
+    map_->init_cache(m_elem, Int<dim>());
+
+    for (; m_elem != m_end; ++m_elem)
+    {
+        map_->fill_cache(m_elem, 0, Int<dim>());
+
+        const auto elem_id = m_elem->get_flat_index();
+
+        this->get_subelements(
+            m_elem,
+            vtk_elements_connectivity[elem_id],
+            points_in_iga_elements[elem_id]);
+    }
+}
+
 
 
 template<int dim, int codim, class T>
@@ -457,28 +489,6 @@ add_field(shared_ptr<Space> space_,
 
 
 
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::fill_points_and_connectivity(
-    vector< vector< std::array<T,3> > > &points_in_iga_elements,
-    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-    &vtk_elements_connectivity) const
-{
-
-    auto element = map_->begin();
-    const auto element_end = map_->end();
-
-    element->init_cache(ValueFlags::map_value, quad_plot_);
-
-    for (; element != element_end; ++element)
-    {
-        const int iga_elem_id = element->get_flat_index();
-
-        element->fill_cache();
-        get_subelements(element,
-                        vtk_elements_connectivity[iga_elem_id],
-                        points_in_iga_elements[iga_elem_id]);
-    }
-}
 
 
 
