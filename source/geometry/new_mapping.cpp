@@ -90,9 +90,19 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (flags.fill_measures())
     {
+        auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
+
         const auto &DF = elem.template get_values<1, k>(j);
+        typename MapFunction<k, space_dim>::Gradient DF1;
+
+
         for (int i=0; i<n_points; ++i)
-            cache.measures_[i] = fabs(determinant<dim,space_dim>(DF[i]));
+        {
+            for (int l=0; l<k; ++l)
+                DF1[l] = DF[i][k_elem.active_directions[l]];
+
+            cache.measures_[i] = fabs(determinant<k,space_dim>(DF1));
+        }
     }
 
     if (flags.fill_w_measures())
