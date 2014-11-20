@@ -27,45 +27,59 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/mapping_element_accessor.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/io/writer.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/function_element.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping_element.h>
 
-template <int dim>
+// TODO (pauletti, Nov 20, 2014): this test is more about cylindrical annulus
+template <int dim, int sub_dim = dim-1>
 void test_evaluate()
 {
+    using Function = functions::CylindricalAnnulus<dim>;
+    using Mapping   = NewMapping<dim, 0>;
+
     auto grid = CartesianGrid<dim>::create();
-    auto map = CylindricalAnnulus::create(grid, 1.0, 2.0, 0.0, 1.0, 0.0, 1.57079632679490);
 
-    QGauss<dim> quad(3);
-    auto elem     = map->begin();
-    auto elem_end = map->end();
-    ValueFlags flag = ValueFlags::face_w_measure|ValueFlags::face_point;
-    elem->init_cache(flag, quad);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
+                              1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
+    Mapping map(F);
 
-    std::array<Real, UnitElement<dim>::n_faces> face_area ;
+    auto flag = NewValueFlags::point | NewValueFlags::w_measure;
+    auto quad = QGauss<sub_dim>(3);
+
+    map.reset(flag, quad);
+
+    auto elem = map.begin();
+    auto end  = map.end();
+
+
+    std::array<Real, UnitElement<dim>::template num_elem<sub_dim>()> face_area ;
     std::fill(face_area.begin(), face_area.end(), 0.0) ;
 
-    for (; elem != elem_end; ++elem)
+    map.template init_cache<sub_dim>(elem);
+
+    for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
         {
-            for (Index face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
+            for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
             {
-                if (elem->is_boundary(face_id))
+                if (elem->is_boundary(s_id))
                 {
-                    elem->fill_face_cache(face_id);
-                    auto &w_meas = elem->get_face_w_measures(face_id);
-                    for (int q = 0; q < w_meas.size(); ++q)
-                        face_area[face_id] += w_meas[q] ;
+                    map.template fill_cache<sub_dim>(elem, s_id);
+                    auto w_meas = elem->template get_w_measures<sub_dim>(s_id);
+                    for (auto &w : w_meas)
+                        face_area[s_id] += w;
                 }
             }
         }
     }
 
     out << "Dimension " << dim << endl;
-    for (Index face_id = 0; face_id < UnitElement<dim>::n_faces; ++face_id)
+    for (Index face_id = 0; face_id < UnitElement<dim>::template num_elem<sub_dim>(); ++face_id)
     {
         out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
     }
