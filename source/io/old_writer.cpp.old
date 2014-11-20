@@ -18,40 +18,89 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+
+#if 0
 #include <igatools/io/writer.h>
+#include <igatools/base/exceptions.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/physical_space_element_accessor.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/identity_mapping.h>
+#include <igatools/utils/multi_array_utils.h>
 
+#include <sstream>
 #include <fstream>
+#include <utility>
 
+
+using std::array;
 using std::shared_ptr;
+using std::make_shared;
 using std::string;
+using std::stringstream;
 using std::ofstream;
+using std::fstream;
 using std::ios;
+using std::pair;
+using std::to_string;
+using std::endl;
+
+#include <boost/detail/endian.hpp>
 
 IGA_NAMESPACE_OPEN
+
+//TODO: Add patch id as a cell field
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<Grid> grid)
+    :
+    Writer(IdentityMapping<dim, codim>::create(grid),
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
+{}
 
 
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const NewMapping<dim,codim> > map,
+Writer(const shared_ptr<Grid> grid,
+       const Index n_points_direction)
+    :
+    Writer(IdentityMapping<dim, codim>::create(grid),
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
+{}
+
+
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<const Map> map,
+       const Index n_points_direction)
+    :
+    Writer(map,
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
+{}
+
+
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<const Mapping<dim,codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
     :
-//    grid_(map->get_function()->get_grid()),
+    grid_(map->get_grid()),
     map_(map),
-    quad_plot_(quadrature),
-    num_points_direction_(quad_plot_->get_num_points_direction()),
-    n_iga_elements_(map->get_grid()->get_num_active_elems()),
-    n_points_per_iga_element_(quad_plot_->get_num_points()),
+    quad_plot_(*quadrature),
+    num_points_direction_(quad_plot_.get_num_points_direction()),
+    n_iga_elements_(grid_->get_num_active_elems()),
+    n_points_per_iga_element_(quad_plot_.get_num_points()),
     n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
     sizeof_Real_(sizeof(T)),
     sizeof_int_(sizeof(int)),
     sizeof_uchar_(sizeof(unsigned char)),
     offset_(0)
 {
-//  Assert(grid_ != nullptr, ExcNullPtr());
-    Assert(map_ != nullptr, ExcNullPtr());
-    Assert(quad_plot_ != nullptr, ExcNullPtr());
-
 #if defined( BOOST_LITTLE_ENDIAN )
     byte_order_ = "LittleEndian";
 #elif defined( BOOST_BIG_ENDIAN )
@@ -125,134 +174,6 @@ Writer(const shared_ptr<const NewMapping<dim,codim> > map,
     n_vtk_elements_ = n_vtk_elements_per_iga_element_ * n_iga_elements_;
     //--------------------------------------------------------------------------
 }
-
-
-/*
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<const CartesianGrid<dim> > grid)
-    :
-    grid_(grid)
-{
-    Assert(grid != nullptr,ExcNullPtr());
-    Assert(false,ExcNotImplemented());
-}
-//*/
-
-
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
-save(const string &filename, const string &format) const
-{
-    //--------------------------------------------------------------------------
-    Assert(format == "ascii" || format == "appended",
-           ExcMessage("Unsupported format."));
-    //--------------------------------------------------------------------------
-
-    vector< vector< special_array<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< special_array<T,3> >(n_points_per_iga_element_));
-
-    vector< vector< special_array< int, n_vertices_per_vtk_element_> > >
-    vtk_elements_connectivity(n_iga_elements_);
-    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
-        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
-
-    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
-
-    const string vtu_filename = filename + ".vtu";
-
-
-    if (format == "ascii")
-    {
-        ofstream file(vtu_filename);
-        file.setf(ios::scientific);
-        file.precision(precision_);
-        this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
-    }
-    else if (format == "appended")
-    {
-        this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
-    }
-}
-
-
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::print_info(LogStream &out) const
-{
-    vector< vector< special_array<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< special_array<T,3> >(n_points_per_iga_element_));
-
-    vector< vector< special_array< int, n_vertices_per_vtk_element_> > >
-    vtk_elements_connectivity(n_iga_elements_);
-    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
-        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
-
-    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
-
-    this->save_ascii(out, points_in_iga_elements, vtk_elements_connectivity);
-}
-
-
-
-#if 0
-#include <igatools/base/exceptions.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/identity_mapping.h>
-#include <igatools/utils/multi_array_utils.h>
-
-#include <sstream>
-#include <utility>
-
-
-using std::array;
-using std::make_shared;
-using std::string;
-using std::stringstream;
-using std::fstream;
-using std::pair;
-using std::to_string;
-using std::endl;
-
-#include <boost/detail/endian.hpp>
-
-
-//TODO: Add patch id as a cell field
-
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid> grid)
-    :
-    Writer(IdentityMapping<dim, codim>::create(grid),
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
-{}
-
-
-
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid> grid,
-       const Index n_points_direction)
-    :
-    Writer(IdentityMapping<dim, codim>::create(grid),
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
-{}
-
-
-
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<const Map> map,
-       const Index n_points_direction)
-    :
-    Writer(map,
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
-{}
-
-
-
 
 
 
@@ -1056,13 +977,61 @@ void Writer<dim, codim, T>::save_appended(const string &filename,
 
 
 
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
+save(const string &filename, const string &format) const
+{
+    //--------------------------------------------------------------------------
+    Assert(format == "ascii" || format == "appended",
+           ExcMessage("Unsupported format."));
+    //--------------------------------------------------------------------------
+
+    vector< vector< std::array<T,3> > >
+    points_in_iga_elements(n_iga_elements_, vector< array<T,3> >(n_points_per_iga_element_));
+
+    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
+    vtk_elements_connectivity(n_iga_elements_);
+    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
+        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
+
+    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
+
+    const string vtu_filename = filename + ".vtu";
 
 
+    if (format == "ascii")
+    {
+        ofstream file(vtu_filename);
+        file.setf(ios::scientific);
+        file.precision(precision_);
+        this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
+    }
+    else if (format == "appended")
+    {
+        this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
+    }
+}
 
 
-#endif
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::print_info(LogStream &out) const
+{
+
+    vector< vector< std::array<T,3> > >
+    points_in_iga_elements(n_iga_elements_, vector< array<T,3> >(n_points_per_iga_element_));
+
+    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
+    vtk_elements_connectivity(n_iga_elements_);
+    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
+        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
+
+    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
+
+    this->save_ascii(out, points_in_iga_elements, vtk_elements_connectivity);
+}
+
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/writer.inst>
-
+#endif

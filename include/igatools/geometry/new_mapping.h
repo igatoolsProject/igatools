@@ -117,6 +117,11 @@ public:
         init_cache<k>(elem.get_accessor());
     }
 
+    std::shared_ptr<const CartesianGrid<dim> > get_grid() const
+    {
+        return F_->get_grid();
+    }
+
     auto get_function() const
     {
         return F_;

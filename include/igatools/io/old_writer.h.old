@@ -18,134 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef WRITER_H_
-#define WRITER_H_
-
-#include <igatools/base/config.h>
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/new_mapping.h>
-#include <igatools/geometry/unit_element.h>
-
-#include <igatools/utils/array.h>
-
-#include <string>
-
-IGA_NAMESPACE_OPEN
-
-
-template<int dim, int codim = 0, class T = double>
-class Writer
-{
-public:
-    Writer(const std::shared_ptr<const CartesianGrid<dim> > grid);
-
-    /**
-     * This constructor builds a Writer object using a distribution for
-     * the evaluation points given by the @p quadrature scheme.
-     * \note Any field that will be added to the writer must refer to the same
-     * CartesianGrid used here, otherwise an exception will be raised.
-     * \note The number of points in each coordinate direction must be greater or equal than 2,
-     * otherwise an exception will be raised.
-     * \see add_field
-     */
-    Writer(const std::shared_ptr<const NewMapping<dim,codim> > mapping,
-           const std::shared_ptr<const Quadrature<dim>> quadrature);
-
-    /**
-     * Save the data on a .vtu file.
-     * \param[in] filename - Output file name.
-     * \param[in] format - Output format. It can be "ascii" or "appended".
-     * \note The .vtu extension should NOT part of the file name.
-     */
-    void save(const std::string &filename,
-              const std::string &format = "ascii") const;
-
-
-    /**
-     * Writes the vtu into a LogStream, filtering it for uniform
-     * output across different systems.
-     * @note this function is only for testing purposes
-     */
-    void print_info(LogStream &out) const;
-
-private:
-//    std::shared_ptr<const CartesianGrid<dim> > grid_;
-
-
-    std::shared_ptr<const NewMapping<dim,codim> > map_;
-
-    /**
-     * Unit element quadrature rule used for the plot.
-     */
-    std::shared_ptr< Quadrature<dim> > quad_plot_;
-
-
-
-    const TensorSize<dim> num_points_direction_;
-
-
-    const TensorSize<dim> num_subelements_direction_;
-
-    /**
-     * Number of VTK elements contained in each IGA element.
-     */
-    int n_vtk_elements_per_iga_element_;
-
-    /**
-     * Number of VTK elements handled by the Writer.
-     */
-    int n_vtk_elements_;
-
-
-    /**
-     * Number of IGA elements handled by the Writer.
-     */
-    const int n_iga_elements_;
-
-    /**
-     * Number of evaluation points in each IGA element.
-     */
-    const int n_points_per_iga_element_;
-
-    /**
-     * Number of VTK elements handled by the Writer.
-     */
-    const int n_vtk_points_;
-
-    unsigned char vtk_element_type_;
-
-
-    const int sizeof_Real_ = 0;
-    std::string string_Real_;
-
-    const int sizeof_int_  = 0;
-    std::string string_int_;
-
-    const int sizeof_uchar_  = 0;
-    std::string string_uchar_;
-
-    std::stringstream appended_data_;
-
-    int offset_;
-
-    int precision_;
-
-    static const int n_vertices_per_vtk_element_ = UnitElement<dim>::template num_elem<dim>();
-
-
-};
-
-
+#ifndef __WRITER_H_
+#define __WRITER_H_
 
 #if 0
+#include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/base/quadrature.h>
 
 #include <boost/variant.hpp>
 
+IGA_NAMESPACE_OPEN
 
 template < class RefSpace, class PushForward >
 class PhysicalSpace;
@@ -174,6 +62,7 @@ public:
     static const int space_dim = dim + codim;
     // TODO (pauletti, Jun 18, 2014): document this constructors
     //TODO(pauletti, Jun 21, 2014): should be a const Grid
+    Writer(const std::shared_ptr<Grid> grid);
 
     Writer(const std::shared_ptr<Grid> grid,
            const Index num_points_direction);
@@ -181,6 +70,17 @@ public:
     Writer(const std::shared_ptr<const Map> mapping,
            const Index num_points_direction);
 
+    /**
+     * This constructor builds a Writer object using a distribution for
+     * the evaluation points given by the @p quadrature scheme.
+     * \note Any field that will be added to the writer must refer to the same
+     * CartesianGrid used here, otherwise an exception will be raised.
+     * \note The number of points in each coordinate direction must be greater or equal than 2,
+     * otherwise an exception will be raised.
+     * \see add_field
+     */
+    Writer(const std::shared_ptr<const Map> mapping,
+           const std::shared_ptr<const Quadrature<dim>> quadrature);
 
 
     /**
@@ -224,7 +124,21 @@ public:
                           const std::string &name);
 
 
+    /**
+     * Save the data on a .vtu file.
+     * \param[in] filename - Output file name.
+     * \param[in] format - Output format. It can be "ascii" or "appended".
+     * \note The .vtu extension should NOT part of the file name.
+     */
+    void save(const std::string &filename,
+              const std::string &format = "ascii") const;
 
+    /**
+     * Writes the vtu into a LogStream, filtering it for uniform
+     * output across different systems.
+     * @note this function is only for testing purposes
+     */
+    void print_info(LogStream &out) const;
 
     /**
      * Returns the number of IGA elements handled by the Writer.
@@ -276,15 +190,54 @@ public:
 private:
     std::string byte_order_;
 
+    static const int n_vertices_per_vtk_element_ = UnitElement< dim >::vertices_per_element;
 
     const std::string filename_;
 
+    std::shared_ptr<const Grid> grid_;
+
+    std::shared_ptr<const Map> map_;
 
 protected:
+    /**
+     * Unit element quadrature rule used for the plot.
+     */
+    Quadrature< dim > quad_plot_;
 
 
 private:
+    TensorSize<dim> num_points_direction_;
 
+
+    TensorSize<dim> num_subelements_direction_;
+
+    /**
+     * Number of VTK elements contained in each IGA element.
+     */
+    Size n_vtk_elements_per_iga_element_;
+
+    /**
+     * Number of VTK elements handled by the Writer.
+     */
+    Size n_vtk_elements_;
+
+
+    /**
+     * Number of IGA elements handled by the Writer.
+     */
+    Size n_iga_elements_;
+
+    /**
+     * Number of evaluation points in each IGA element.
+     */
+    Size n_points_per_iga_element_;
+
+    /**
+     * Number of VTK elements handled by the Writer.
+     */
+    Size n_vtk_points_;
+
+    unsigned char vtk_element_type_;
 
 //TODO(pauletti, Jul 8, 2014): this documentation is incorrect
     /**
@@ -384,7 +337,20 @@ private:
     vector<std::string> names_cell_data_vector_;
     vector<std::string> names_cell_data_tensor_;
 
+    const int sizeof_Real_ = 0;
+    std::string string_Real_;
 
+    const int sizeof_int_  = 0;
+    std::string string_int_;
+
+    const int sizeof_uchar_  = 0;
+    std::string string_uchar_;
+
+    std::stringstream appended_data_;
+
+    int offset_;
+
+    int precision_;
 
     template<class Out>
     void save_ascii(Out &file,
@@ -404,8 +370,7 @@ private:
 };
 
 
+IGA_NAMESPACE_CLOSE
 #endif
 
-IGA_NAMESPACE_CLOSE
-
-#endif /* WRITER_H_ */
+#endif /* __WRITER_H_ */
