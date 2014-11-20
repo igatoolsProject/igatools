@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the push foward using a mapping
+ *  Test for the push forward using a mapping
  *  with with a linear function
  *
  *  Performing transforms
@@ -35,6 +35,7 @@
 #include <igatools/geometry/mapping_element.h>
 
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 
@@ -70,7 +71,7 @@ void test()
     auto sp_elem = space->begin();
 
 
-    auto F = Function::create(grid, A, b);
+    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     PForward pf(F);
 
     auto flag = NewValueFlags::point |

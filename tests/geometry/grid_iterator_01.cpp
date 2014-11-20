@@ -55,15 +55,15 @@ void elem_measure(const int n_knots = 5)
         elem->print_info(out);
 
         cache.fill_element_cache(elem);
-        out << "Measure: " << elem->get_measure() << endl;
+        out << "Measure: " << elem->template get_measure<dim>(0) << endl;
         out.begin_item("Weighted Measure:");
-        elem->get_w_measures().print_info(out);
+        elem->template get_w_measures<dim>(0).print_info(out);
         out.end_item();
 
         cache.template fill_cache<dim-1> (elem, 0);
         out << "Sub elem Measure: " << elem->template get_measure<dim-1>(0) << endl;
         out.begin_item("Weighted Measure:");
-        elem->template get_w_measures<dim-1>().print_info(out);
+        elem->template get_w_measures<dim-1>(0).print_info(out);
         out.end_item();
 
 
