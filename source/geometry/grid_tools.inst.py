@@ -24,7 +24,7 @@ include_files = ['geometry/cartesian_grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.domain_dims]
+cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.all_domain_dims]
 for row in cartesian_grids:
     f.write('template std::map<typename %s::ElementIterator, typename %s::ElementIterator>' % (row,row) +
             ' grid_tools::build_map_elements_between_cartesian_grids('
