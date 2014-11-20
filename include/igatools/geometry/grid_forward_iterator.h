@@ -203,8 +203,9 @@ public:
     /** Move constructor. */
     GridForwardIterator(GridForwardIterator<Accessor> &&it) = default;
 
-
+#if 0
     GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
+#endif
 
     /** Destructor */
     ~GridForwardIterator() = default ;
@@ -303,10 +304,7 @@ public:
     GridForwardIterator<Accessor> &operator++();
     ///@}
 
-    Accessor &get_accessor()
-    {
-        return accessor_;
-    }
+    Accessor &get_accessor();
 
     /**
      * @name Functions related to the indices of the element in the CartesianGrid pointed
@@ -321,8 +319,13 @@ public:
     ///@}
 
 protected:
-    /** Object holding the Real data. */
-    Accessor accessor_ ;
+    /**
+     * Pointer to the object holding the Real data.
+     * @note We use a pointer instead of a reference object because the type Accessor
+     * can be a virtual base class (and therefore have some virtual functions)
+     * that must be resolved at run-time.
+     */
+    std::shared_ptr<Accessor> accessor_ ;
 };
 
 

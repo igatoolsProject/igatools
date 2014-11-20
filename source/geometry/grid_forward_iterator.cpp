@@ -20,6 +20,8 @@
 
 #include <igatools/geometry/grid_forward_iterator.h>
 
+using std::shared_ptr;
+
 IGA_NAMESPACE_OPEN
 
 template <typename Accessor>
@@ -28,7 +30,7 @@ GridForwardIterator<Accessor>::
 GridForwardIterator(std::shared_ptr<ContainerType> grid,
                     const Index index)
     :
-    accessor_(grid, index)
+    accessor_(new Accessor(grid, index))
 {}
 
 
@@ -39,18 +41,30 @@ GridForwardIterator<Accessor>::
 GridForwardIterator(std::shared_ptr<ContainerType> grid,
                     const TensorIndex<dim> &index)
     :
-    accessor_(grid, index)
+    accessor_(new Accessor(grid, index))
 {}
 
 template <typename Accessor>
 inline
 GridForwardIterator<Accessor>::
 GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &copy_policy)
-    :
-    accessor_(it.accessor_,copy_policy)
-{}
+{
+    if (copy_policy == CopyPolicy::deep)
+    {
+        accessor_ = shared_ptr<Accessor>(new Accessor(*it.accessor_));
+    }
+    else if (copy_policy == CopyPolicy::shallow)
+    {
+        accessor_ = it.accessor_;
+    }
+    else
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+}
 
-
+#if 0
 template <typename Accessor>
 inline
 GridForwardIterator<Accessor>::
@@ -58,7 +72,7 @@ GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy)
     :
     accessor_(acc,copy_policy)
 {}
-
+#endif
 
 
 template <typename Accessor>
@@ -67,7 +81,7 @@ bool
 GridForwardIterator<Accessor>::
 jump(const TensorIndex<dim> &increment)
 {
-    return accessor_.jump(increment);
+    return accessor_->jump(increment);
 }
 
 template <typename Accessor>
@@ -75,7 +89,7 @@ inline
 void GridForwardIterator<Accessor>::
 move_to(const Index flat_index)
 {
-    accessor_.move_to(flat_index);
+    accessor_->move_to(flat_index);
 }
 
 
@@ -85,7 +99,7 @@ void
 GridForwardIterator<Accessor>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
-    accessor_.move_to(tensor_index);
+    accessor_->move_to(tensor_index);
 }
 
 
@@ -95,7 +109,7 @@ GridForwardIterator<Accessor> &
 GridForwardIterator<Accessor>::
 operator++()
 {
-    ++accessor_;
+    ++(*accessor_);
     return *this;
 }
 
@@ -107,7 +121,7 @@ const Accessor &
 GridForwardIterator<Accessor>::
 operator * () const
 {
-    return accessor_;
+    return *accessor_;
 }
 
 
@@ -118,7 +132,7 @@ Accessor &
 GridForwardIterator<Accessor>::
 operator * ()
 {
-    return accessor_;
+    return *accessor_;
 }
 
 
@@ -151,7 +165,7 @@ bool
 GridForwardIterator<Accessor>::
 operator==(const GridForwardIterator<Accessor> &i) const
 {
-    return accessor_ == i.accessor_;
+    return *accessor_ == *i.accessor_;
 }
 
 
@@ -162,7 +176,7 @@ bool
 GridForwardIterator<Accessor>::
 operator!=(const GridForwardIterator<Accessor> &i) const
 {
-    return accessor_.operator != (i.accessor_);
+    return accessor_->operator != (*i.accessor_);
 }
 
 template <typename Accessor>
@@ -171,7 +185,7 @@ Index
 GridForwardIterator<Accessor>::
 get_flat_index() const
 {
-    return accessor_.get_flat_index();
+    return accessor_->get_flat_index();
 }
 
 template <typename Accessor>
@@ -180,7 +194,17 @@ auto
 GridForwardIterator<Accessor>::
 get_tensor_index() const -> TensorIndex<dim>
 {
-    return accessor_.get_tensor_index();
+    return accessor_->get_tensor_index();
+}
+
+
+template <typename Accessor>
+inline
+Accessor &
+GridForwardIterator<Accessor>::
+get_accessor()
+{
+    return *accessor_;
 }
 
 IGA_NAMESPACE_CLOSE

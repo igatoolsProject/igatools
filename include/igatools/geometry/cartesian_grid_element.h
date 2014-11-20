@@ -138,7 +138,6 @@ public:
     ///@}
 
 
-protected:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<ContainerType> get_grid() const;
 public:
