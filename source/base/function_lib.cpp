@@ -421,7 +421,7 @@ SphereFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
         for (int der = 1; der < order; ++der)
         {
             auto res = std::div(der,2);
-            sin_val[der][qp][0] = der>1? 0. : 1.;
+            sin_val[der][qp][0] = R;
             for (int i = 1; i < space_dim; ++i)
             {
                 sin_val[der][qp][i] =
@@ -491,7 +491,7 @@ evaluate_1(const ValueVector<Point> &points,
             for (int j = 1; j < i+2; ++j)
             {
                 double djy = 1.;
-                for (int k = 0; k < i+1; ++k)
+                for (int k = 1; k < i+1; ++k)
                     djy *= k!=j ? s[qp][k] : s_p[qp][k];
                 grad[j-1][i] = djy * (i+1!=j ? c[qp][i] : c_p[qp][i]);
             }
@@ -529,44 +529,17 @@ evaluate_2(const ValueVector<Point> &points,
     const int n_points = points.size();
 
     for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &hessian = values[qp];
+        hessian = 0.;
+        for (int i = 0; i < space_dim-1; ++i)
         {
-            auto &hessian = values[qp];
-            hessian = 0.;
-            for (int i = 0; i < space_dim-1; ++i)
+            for (int j = 1; j < i+2; ++j)
             {
-                for (int j = 1; j < i+2; ++j)
-                {
-                    for (int k = 1; k < j+1; ++k)
-                    {
-                        double d2jy = 1.;
-                        for (int l = 0; l < i+1; ++l)
-                        {
-                            double factor;
-                            if (j==k)
-                                factor = l==j ? s_2p[qp][l] : s[qp][l];
-                            else
-                                factor = (l==j || l==k) ?  s_p[qp][l] : s[qp][l];
-
-                            d2jy *= factor;
-                        }
-                        double factor;
-                        if (j==k)
-                            factor = (i+1)==j ? c_2p[qp][i] : c[qp][i];
-                        else
-                            factor = ((i+1)==j || (i+1)==k) ?
-                                     c_p[qp][i] : c[qp][i];
-
-                        hessian[j-1][k-1][i] = d2jy * factor;
-                    }
-                }
-            }
-
-            const int i = space_dim-1;
-            for (int j = 11; j < dim; ++j)
                 for (int k = 1; k < j+1; ++k)
                 {
                     double d2jy = 1.;
-                    for (int l = 0; l < dim; ++l)
+                    for (int l = 0; l < i+1; ++l)
                     {
                         double factor;
                         if (j==k)
@@ -576,17 +549,44 @@ evaluate_2(const ValueVector<Point> &points,
 
                         d2jy *= factor;
                     }
-                    hessian[j-1][k-1][i] = d2jy;
+                    double factor;
+                    if (j==k)
+                        factor = (i+1)==j ? c_2p[qp][i] : c[qp][i];
+                    else
+                        factor = ((i+1)==j || (i+1)==k) ?
+                                 c_p[qp][i] : c[qp][i];
+
+                    hessian[j-1][k-1][i] = d2jy * factor;
                 }
-
-
-            for (int i = 0; i < space_dim; ++i)
-                for (int j = 0; j < dim; ++j)
-                    for (int k = 0; k< j; ++k)
-                    {
-                        hessian[k][j][i] = hessian[j][k][i];
-                    }
+            }
         }
+
+        const int i = space_dim-1;
+        for (int j = 1; j < dim; ++j)
+            for (int k = 1; k < j+1; ++k)
+            {
+                double d2jy = 1.;
+                for (int l = 0; l < dim; ++l)
+                {
+                    double factor;
+                    if (j==k)
+                        factor = l==j ? s_2p[qp][l] : s[qp][l];
+                    else
+                        factor = (l==j || l==k) ?  s_p[qp][l] : s[qp][l];
+
+                    d2jy *= factor;
+                }
+                hessian[j-1][k-1][i] = d2jy;
+            }
+
+
+        for (int i = 0; i < space_dim; ++i)
+            for (int j = 0; j < dim; ++j)
+                for (int k = 0; k< j; ++k)
+                {
+                    hessian[k][j][i] = hessian[j][k][i];
+                }
+    }
 }
 
 

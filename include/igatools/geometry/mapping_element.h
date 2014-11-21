@@ -70,34 +70,34 @@ public:
 
 
 //    ValueVector<special_array<Points<space_dim>, codim>>
-//	get_normal_space() const
-//	{
-//    	ValueVector<special_array<Points<space_dim>, codim>> res;
-//    	const auto &DF = this->template get_values<1, dim>(0);
+//  get_normal_space() const
+//  {
+//      ValueVector<special_array<Points<space_dim>, codim>> res;
+//      const auto &DF = this->template get_values<1, dim>(0);
 //        res.resize(DF.get_num_points());
 //        return res;
-//	}
+//  }
 
 
     template<int sub_dim>
     ValueVector<Points<space_dim>>
-    get_boundary_normals(const int s_id) const
-	{
+                                get_boundary_normals(const int s_id) const
+    {
         Assert(dim==sub_dim+1, ExcNotImplemented());
-    	ValueVector<Points<space_dim>> res;
-    	const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
-    	const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
+        ValueVector<Points<space_dim>> res;
+        const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
+        const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
 
-    	const auto n_points = DF_inv.get_num_points();
-    	res.resize(n_points);
-    	for (int i = 0; i< n_points; ++i)
-    	{
-    	    const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
-    	    res[i] = action(DF_inv_t, n_hat);
-    	    res[i] /= res[i].norm();
-    	}
-    	return res;
-	}
+        const auto n_points = DF_inv.get_num_points();
+        res.resize(n_points);
+        for (int i = 0; i< n_points; ++i)
+        {
+            const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
+            res[i] = action(DF_inv_t, n_hat);
+            res[i] /= res[i].norm();
+        }
+        return res;
+    }
 
 private:
     class ValuesCache : public CacheStatus

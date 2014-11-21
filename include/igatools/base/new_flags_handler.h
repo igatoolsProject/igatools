@@ -329,7 +329,7 @@ public:
         NewValueFlags::inv_hessian |
         NewValueFlags::measure|
         NewValueFlags::w_measure|
-		NewValueFlags::boundary_normal;
+        NewValueFlags::boundary_normal;
 
     static NewValueFlags to_function_flags(const NewValueFlags &flag);
 

@@ -131,8 +131,8 @@ enum class NewValueFlags : std::int64_t
     /** normal space */
     boundary_normal  =    1L << 4,
 
-	/** normal space */
-	outer_normal  =    1L << 5,
+    /** normal space */
+    outer_normal  =    1L << 5,
 
     /** element coordinates length */
     length         =    1L << 8,

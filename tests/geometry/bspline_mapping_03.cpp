@@ -177,7 +177,7 @@ void bspline_map(const int deg = 2)
 
     auto quad = QGauss<dim>(3);
     auto flag =  NewValueFlags::value| NewValueFlags::gradient
-            | NewValueFlags::hessian;
+                 | NewValueFlags::hessian;
 
     map->template reset<sub_dim>(flag, quad);
 

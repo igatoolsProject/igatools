@@ -1071,7 +1071,7 @@ determinant(const Derivatives<dim, range,1,1> &DF)
 template<int dim>
 inline
 SubTensor<Derivatives<dim, dim+1, 1, 1>>
-cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
+                                      cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
 {
     SubTensor<Derivatives<dim, dim+1, 1, 1>> res;
     const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;

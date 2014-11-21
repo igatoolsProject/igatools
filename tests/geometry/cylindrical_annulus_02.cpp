@@ -40,8 +40,8 @@ auto create_mapping1(shared_ptr<const CartesianGrid<dim>> grid)
     using Function = functions::CylindricalAnnulus<dim>;
 
     return
-    Function::create(grid, IdentityFunction<dim>::create(grid),
-                  1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+        Function::create(grid, IdentityFunction<dim>::create(grid),
+                         1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
 }
 
 template <int dim>
