@@ -44,10 +44,16 @@ void mapping_values()
 
     using Function = functions::SphereFunction<dim>;
 
-    auto flag = NewValueFlags::point | NewValueFlags::outer_normal;
+    auto flag = NewValueFlags::point |  NewValueFlags::value |NewValueFlags::outer_normal;
 
     auto quad = QUniform<dim>(3);
-    auto grid = CartesianGrid<dim>::create();
+
+    BBox<dim> box;
+    for (int i=0; i<dim-1; ++i)
+        box[i] = {0.+M_PI/8, M_PI-M_PI/8};
+    if (dim>=1)
+        box[dim-1] = {0., M_PI};
+    auto grid = CartesianGrid<dim>::create(box, 2);
 
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
@@ -63,16 +69,19 @@ void mapping_values()
     for (; elem != end; ++elem)
     {
         map.template fill_cache<dim>(elem, 0);
+        out << "Normals:" << endl;
+        elem->get_external_normals().print_info(out);
+        out << endl;
 
-//        out << "Points:" << endl;
-//        elem->get_points().print_info(out);
-//        out << endl;
-//        out << "Values:" << endl;
-//        elem->template get_values<0, dim>(0).print_info(out);
-//        out << endl;
-//        out << "Gradients:" << endl;
-//        elem->template get_values<1, dim>(0).print_info(out);
-//        out << endl;
+        out << "Points:" << endl;
+        elem->get_points().print_info(out);
+        out << endl;
+        out << "Values:" << endl;
+        elem->template get_values<0, dim>(0).print_info(out);
+        out << endl;
+        out << "Gradients:" << endl;
+        elem->template get_values<1, dim>(0).print_info(out);
+        out << endl;
 //        out << "Hessians:" << endl;
 //        elem->template get_values<2, dim>(0).print_info(out);
 //        out << endl;
@@ -81,7 +90,7 @@ void mapping_values()
 //        out << endl;
 //        out << "weight * measure:" << endl;
 //        elem->template get_w_measures<dim>(0).print_info(out);
-//        out << endl;
+        out << endl;
     }
 
     OUTEND

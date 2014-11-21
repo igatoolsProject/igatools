@@ -1087,6 +1087,8 @@ cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
         res[i] = determinant<dim+1, dim+1>(A);
     }
 
+    if (dim % 2 == 1)
+        res *= -1;
     return res;
 
 }
