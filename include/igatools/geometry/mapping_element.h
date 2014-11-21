@@ -70,17 +70,27 @@ public:
 
 
 //    ValueVector<special_array<Points<space_dim>, codim>>
-//  get_normal_space() const
-//  {
-//      ValueVector<special_array<Points<space_dim>, codim>> res;
-//      const auto &DF = this->template get_values<1, dim>(0);
-//        res.resize(DF.get_num_points());
-//        return res;
-//  }
+    ValueVector<Points<space_dim> >
+    get_external_normals() const
+    {
+        Assert(codim==1, ExcNotImplemented());
+        ValueVector<Points<space_dim> > res;
+        const auto &DF = this->template get_values<1, dim>(0);
+        const auto n_points = DF.get_num_points();
+
+        res.resize(n_points);
+        for (int i = 0; i< n_points; ++i)
+        {
+            res[i] = cross_product<dim, codim>(DF[i]);
+            res[i] /= res[i].norm();
+        }
+
+        return res;
+    }
 
 
     template<int sub_dim>
-    ValueVector<Points<space_dim>>
+    ValueVector<Points<space_dim> >
                                 get_boundary_normals(const int s_id) const
     {
         Assert(dim==sub_dim+1, ExcNotImplemented());

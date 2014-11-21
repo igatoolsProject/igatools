@@ -1068,12 +1068,12 @@ determinant(const Derivatives<dim, range,1,1> &DF)
 
 
 
-template<int dim>
+template<int dim, int codim>
 inline
-SubTensor<Derivatives<dim, dim+1, 1, 1>>
-                                      cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
+EnableIf<(codim==1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
+cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
 {
-    SubTensor<Derivatives<dim, dim+1, 1, 1>> res;
+    SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
     const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
     Derivatives<dim+1, dim+1, 1, 1> A;
     for (int i = 0; i < dim; ++i)
@@ -1090,6 +1090,20 @@ SubTensor<Derivatives<dim, dim+1, 1, 1>>
     return res;
 
 }
+
+template<int dim, int codim>
+inline
+EnableIf<(codim!=1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
+cross_product(const Derivatives<dim, dim+codim, 1, 1> &DF)
+{
+    SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
+    Assert(false, ExcNotImplemented());
+
+    return res;
+
+}
+
+
 
 /**
  * Trace of a rank_ 2 square tensor.

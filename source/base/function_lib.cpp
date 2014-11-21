@@ -498,10 +498,10 @@ evaluate_1(const ValueVector<Point> &points,
         }
 
         const int i = space_dim-1;
-        for (int j = 1; j < dim; ++j)
+        for (int j = 1; j < dim+1 ; ++j)
         {
             double djy = 1.;
-            for (int k = 0; k < i+1; ++k)
+            for (int k = 1; k < i+1; ++k)
                 djy *= k!=j ? s[qp][k] : s_p[qp][k];
             grad[j-1][i] = djy;
         }
@@ -562,7 +562,7 @@ evaluate_2(const ValueVector<Point> &points,
         }
 
         const int i = space_dim-1;
-        for (int j = 1; j < dim; ++j)
+        for (int j = 1; j < dim+1; ++j)
             for (int k = 1; k < j+1; ++k)
             {
                 double d2jy = 1.;
@@ -582,7 +582,7 @@ evaluate_2(const ValueVector<Point> &points,
 
         for (int i = 0; i < space_dim; ++i)
             for (int j = 0; j < dim; ++j)
-                for (int k = 0; k< j; ++k)
+                for (int k = 1; k< j; ++k)
                 {
                     hessian[k][j][i] = hessian[j][k][i];
                 }
