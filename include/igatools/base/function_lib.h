@@ -119,13 +119,13 @@ protected:
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const;
+                    ValueVector<Value> &values) const override;
 
     void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const;
+                    ValueVector<Derivative<1>> &values) const override;
 
     void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const;
+                    ValueVector<Derivative<2>> &values) const override;
 
 private:
     const Gradient A_;

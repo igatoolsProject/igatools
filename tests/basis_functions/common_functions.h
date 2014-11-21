@@ -31,7 +31,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/formula_function.h>
-
+#include <igatools/base/function_lib.h>
 
 
 // TODO (pauletti, Nov 13, 2014): delete this after cleaning and arranging test
@@ -91,6 +91,130 @@ public:
                        ValueVector<Derivative<2>> &values) const override
                                {}
 };
+
+
+
+/**
+ * The p-norm of this function on the unit square is
+ * (1/(p+1))^(n/p)
+ */
+template<int dim, int codim=0, int range = 1, int rank = 1>
+class ProductFunction : public FormulaFunction<dim>
+{
+private:
+    using base_t = NewFunction<dim, codim, range, rank>;
+    using parent_t = FormulaFunction<dim, codim, range, rank>;
+    using self_t = ProductFunction<dim, codim, range, rank>;
+public:
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+
+    using parent_t::FormulaFunction;
+
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const
+    {
+        auto pt = points.begin();
+        auto val = values.begin();
+
+        for (; pt != points.end(); ++pt, ++val)
+        {
+            *val = 1.;
+            for (int i=0; i<dim; ++i)
+                (*val) *= (*pt)[i];
+        }
+    }
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const
+    {}
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const
+    {}
+
+};
+
+
+/**
+ * Norm Function
+ * F(x) = (sum x_i ^ p)^(1/p)
+ */
+template<int dim>
+class NormFunction : public FormulaFunction<dim, 0, 1, 1>
+{
+
+public:
+    using base_t = NewFunction<dim, 0, 1, 1>;
+    using parent_t = FormulaFunction<dim, 0, 1, 1>;
+    using self_t = NormFunction<dim>;
+    using typename base_t::GridType;
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
+
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+           const Real p=2.)
+           {
+        return std::shared_ptr<base_t>(new self_t(grid, map, p));
+
+           }
+
+
+    std::shared_ptr<base_t> clone() const override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
+    NormFunction(const self_t &) = default;
+
+protected:
+    NormFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+                 const Real p)
+:
+    parent_t(grid, map),
+    p_(p)
+{}
+
+
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const override
+                    {
+        auto pt = points.begin();
+        for (auto &val : values)
+        {
+            val = std::pow(pt->norm_square(), p_/2.);
+            ++pt;
+        }
+                    }
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const override
+                            {}
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const override
+                            {}
+
+private:
+    const Real p_;
+};
+
 
 
 
