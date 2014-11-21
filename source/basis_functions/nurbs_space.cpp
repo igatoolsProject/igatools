@@ -37,28 +37,8 @@ using std::placeholders::_2;
 
 IGA_NAMESPACE_OPEN
 
-//TODO(pauletti, Jan 19, 2014): remove the is_bspline from this class
 
-template <int dim_, int range_, int rank_>
-const std::array<int, NURBSSpace<dim_, range_, rank_>::n_components>
-NURBSSpace<dim_, range_, rank_>::
-components = sequence<spline_space_t::n_components>();
-
-
-template <int dim_, int range_, int rank_>
-const std::array<int, NURBSSpace<dim_, range_, rank_>::dim>
-NURBSSpace<dim_, range_, rank_>::
-dims = sequence<dim>();
-
-template <int dim_, int range_, int rank_>
-void
-NURBSSpace<dim_, range_, rank_>::
-create_refinement_connection()
-{
-    // create a signal and a connection for the grid refinement
-    this->connect_refinement_h_function(
-        bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
-}
+#if 0
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
@@ -142,7 +122,7 @@ create(const DegreeTable &deg,
     return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends, weights));
 }
 
-
+#endif
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
@@ -153,8 +133,8 @@ NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
     sp_space_(bs_space),
     weights_(weights)
 {
-    create_refinement_connection();
-    perform_post_construction_checks();
+//    create_refinement_connection();
+//    perform_post_construction_checks();
 }
 
 
@@ -167,6 +147,17 @@ create(std::shared_ptr<spline_space_t> bs_space,
     return shared_ptr<self_t>(new self_t(bs_space, weights));
 }
 
+
+#if 0
+template <int dim_, int range_, int rank_>
+void
+NURBSSpace<dim_, range_, rank_>::
+create_refinement_connection()
+{
+    // create a signal and a connection for the grid refinement
+    this->connect_refinement_h_function(
+        bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
+}
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
@@ -181,7 +172,7 @@ perform_post_construction_checks() const
     }
 #endif
 }
-
+#endif
 
 
 template <int dim_, int range_, int rank_>
@@ -215,7 +206,7 @@ end() const -> ElementIterator
 }
 
 
-
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
@@ -404,7 +395,7 @@ refine_h_weights(
     this->perform_post_construction_checks();
 }
 
-
+#endif
 
 template <int dim_, int range_, int rank_>
 Size

@@ -27,7 +27,7 @@
 #ifdef NURBS
 
 #include <igatools/base/cache_status.h>
-#include <igatools/base/value_flags_handler.h>
+#include <igatools/base/new_flags_handler.h>
 #include <igatools/base/quadrature.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
@@ -45,7 +45,7 @@ IGA_NAMESPACE_OPEN
  * computational optimization cache.
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class NURBSUniformQuadCache : public GridElementHandler<dim_>
+class NURBSElementHandler : public BSplineElementHandler<dim_>
 {
     using base_t = GridElementHandler<dim_>;
     using Space = NURBSSpace<dim_,range_,rank_>;
@@ -61,19 +61,40 @@ class NURBSUniformQuadCache : public GridElementHandler<dim_>
     using Value = typename Space::Value;
 
 
-protected:
-    using ElementAccessor = typename Space::ElementAccessor;
-    void init_element_cache(ElementAccessor &elem);
-    void fill_element_cache(ElementAccessor &elem);
-    void fill_face_cache(ElementAccessor &elem, const int face);
-
 public:
     static const int dim = dim_;
 
-    //Allocates and fill the (global) cache
-    NURBSUniformQuadCache(std::shared_ptr<const Space> space,
-                          const ValueFlags flag,
-                          const Quadrature<dim> &quad);
+    NURBSElementHandler(std::shared_ptr<const Space> space);
+
+    template<int k>
+    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
+
+//protected:
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
+
+    template <int k>
+    void init_cache(ElementAccessor &elem);
+
+//    void init_all_caches(ElementAccessor &elem);
+public:
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(elem.get_accessor(), j);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+        init_cache<k>(elem.get_accessor());
+    }
+
+//    void init_all_caches(ElementIterator &elem)
+//    {
+//        init_all_caches(elem.get_accessor());
+//    }
+
 
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem);
@@ -81,67 +102,58 @@ public:
     //Fill the ElementIterator element_cache
     void fill_element_cache(ElementIterator &elem);
 
-    /**
-     * Fills the ElementIterator face_cache
-     * element dependent part
-     */
-    void fill_face_cache(ElementIterator &elem, const int face);
-
     void print_info(LogStream &out) const;
 
 private:
     std::shared_ptr<const Space> space_;
 
-    BasisElemValueFlagsHandler flags_;
+    std::array<FunctionFlags, dim + 1> flags_;
 
-    BasisFaceValueFlagsHandler face_flags_;
-
-    BSplineUniformQuadCache<dim_,range_,rank_> bspline_uniform_quad_cache_;
-
-
-    using ElementCache = typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache;
-
-    /**
-     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
-     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
-     * and the NURBS weights local to the element @p element_weights.
-     * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void
-    evaluate_nurbs_values(
-        const ElementCache &bspline_cache,
-        const vector<Real> &element_weights,
-        const ComponentContainer<int> &elem_basis_offset,
-        ValueTable<Value> &D0_phi_hat) const ;
-
-    /**
-     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
-     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
-     * and the NURBS weights local to the element @p element_weights.
-     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void
-    evaluate_nurbs_gradients(
-        const ElementCache &bspline_cache,
-        const vector<Real> &element_weights,
-        const ComponentContainer<int> &elem_basis_offset,
-        ValueTable< Derivative<1> > &D1_phi_hat) const ;
-
-    /**
-     * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
-     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
-     * and the NURBS weights local to the element @p element_weights.
-     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void
-    evaluate_nurbs_hessians(
-        const ElementCache &bspline_cache,
-        const vector<Real> &element_weights,
-        const ComponentContainer<int> &elem_basis_offset,
-        ValueTable< Derivative<2> > &D2_phi_hat) const ;
+//
+//
+//    using ElementCache = typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache;
+//
+//    /**
+//     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
+//     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
+//     * and the NURBS weights local to the element @p element_weights.
+//     * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
+//     * an exception will be raised.
+//     */
+//    void
+//    evaluate_nurbs_values(
+//        const ElementCache &bspline_cache,
+//        const vector<Real> &element_weights,
+//        const ComponentContainer<int> &elem_basis_offset,
+//        ValueTable<Value> &D0_phi_hat) const ;
+//
+//    /**
+//     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
+//     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
+//     * and the NURBS weights local to the element @p element_weights.
+//     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
+//     * an exception will be raised.
+//     */
+//    void
+//    evaluate_nurbs_gradients(
+//        const ElementCache &bspline_cache,
+//        const vector<Real> &element_weights,
+//        const ComponentContainer<int> &elem_basis_offset,
+//        ValueTable< Derivative<1> > &D1_phi_hat) const ;
+//
+//    /**
+//     * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
+//     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
+//     * and the NURBS weights local to the element @p element_weights.
+//     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
+//     * an exception will be raised.
+//     */
+//    void
+//    evaluate_nurbs_hessians(
+//        const ElementCache &bspline_cache,
+//        const vector<Real> &element_weights,
+//        const ComponentContainer<int> &elem_basis_offset,
+//        ValueTable< Derivative<2> > &D2_phi_hat) const ;
 
 
 };
