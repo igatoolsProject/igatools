@@ -24,10 +24,9 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/vector.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
 
 IGA_NAMESPACE_OPEN
 
@@ -43,7 +42,7 @@ IGA_NAMESPACE_OPEN
  * Therefore it can be used as a boost::numeric::ublas::matrix<Real>.
  *
  * @author M. Martinelli, 2012, 2013, 2014
- * @author S. Pauletti, 2012, 2013
+ * @author S. Pauletti, 2012, 2013, 2014
  */
 class DenseMatrix : public boost::numeric::ublas::matrix<Real>
 {
@@ -94,6 +93,9 @@ public:
      */
     DenseMatrix inverse();
 
+    vector<Real> eigen_values() const;
+
+    Real determinant() const;
 
     /**
      * Returns the <em>Frobenius norm</em> of the matrix, i.e.
@@ -104,7 +106,6 @@ public:
      * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
      */
     Real norm_frobenius() const;
-
 
     /**
      * Returns the <em>max-norm</em> (or <em>uniform norm</em>) of the matrix, i.e.
@@ -136,18 +137,13 @@ public:
      */
     Real norm_infinity() const;
 
-
     /** Returns the number of rows of the matrix. */
     Size get_num_rows() const;
 
     /** Returns the number of columns of the matrix. */
     Size get_num_cols() const;
 
-    void print_info(LogStream &out) const
-    {
-        out << *this;
-    }
-
+    void print_info(LogStream &out) const;
 };
 /**@}*/
 

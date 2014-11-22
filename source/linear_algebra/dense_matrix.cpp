@@ -20,7 +20,10 @@
 
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/base/exceptions.h>
+
+#include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
+#include "Teuchos_LAPACK.hpp"
 
 #include <algorithm>
 
@@ -79,7 +82,54 @@ size2() const
 }
 
 
+vector<Real> DenseMatrix::eigen_values() const
+{
+	Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
+	Teuchos::LAPACK<int, double> lapack;
+	const int n = this->size1();
+	BoostMatrix A(*this);
+	vector<Real> e_values(n);
+	int info;
+	double ws[3*n-1];
+	lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
+			ws, 3*n-1, &info);
+
+	Assert(info == 0, ExcMessage("e-values not found."));
+
+	return e_values;
+}
+
+
+
+Real DenseMatrix::determinant() const
+{
+	Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
+
+	using namespace boost::numeric::ublas;
+	using PMatrix = permutation_matrix<int>;
+
+	const int n = this->size1();
+	BoostMatrix A(*this);
+	PMatrix P(n);
+
+	int res = lu_factorize(A, P);
+	AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
+
+	Real det = 1.;
+	int sign = 1;
+	for (int i=0; i<n; ++i)
+	{
+		det *= A(i,i);
+		if(P(i) != i)
+			sign *= -1;
+	}
+
+	return sign * det;
+}
+
+
+//todo should be const
 DenseMatrix
 DenseMatrix::
 inverse()
@@ -106,6 +156,8 @@ inverse()
 
     return inv_A;
 }
+
+
 
 Size
 DenseMatrix::
@@ -199,6 +251,10 @@ norm_one() const
     return norm;
 }
 
-
+void DenseMatrix::
+print_info(LogStream &out) const
+{
+	out << *this;
+}
 IGA_NAMESPACE_CLOSE
 

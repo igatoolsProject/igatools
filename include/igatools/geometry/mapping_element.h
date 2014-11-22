@@ -91,7 +91,7 @@ public:
 
     template<int sub_dim>
     ValueVector<Points<space_dim> >
-                                get_boundary_normals(const int s_id) const
+    get_boundary_normals(const int s_id) const
     {
         Assert(dim==sub_dim+1, ExcNotImplemented());
         ValueVector<Points<space_dim>> res;

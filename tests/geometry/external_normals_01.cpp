@@ -36,6 +36,8 @@
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
+#include <igatools/linear_algebra/dense_matrix.h>
+#include "Teuchos_LAPACK.hpp"
 
 template <int dim>
 void mapping_values()
@@ -99,10 +101,34 @@ void mapping_values()
 
 int main()
 {
-    out.depth_console(10);
+	out.depth_console(10);
 
-    mapping_values<1>();
-    mapping_values<2>();
+	const int dim=2;
+
+	DenseMatrix A(dim, dim);
+	A(0,0)=3; A(0,1)=0; A(1,0)=0; A(1,1)=-2;
+
+	A.eigen_values().print_info(out);
+	out << endl;
+
+   // array<Real, dim> e_values;
+
+//	int info;
+//	double ws[3*dim-1];
+//
+//	A.print_info(out);
+//	out << endl;
+//	lapack.SYEV('V','U', dim, &(A.data()[0]), dim, &(e_values[0]),
+//				ws, 3*dim-1, &info);
+//	A.print_info(out);
+//	out << endl;
+//    for (int i=0; i<dim; ++i)
+//    	out << e_values[i] << " ";
+//    out << endl;
+
+
+    //mapping_values<1>();
+    //mapping_values<2>();
 
     return 0;
 }
