@@ -70,23 +70,44 @@ public:
 
 
 //    ValueVector<special_array<Points<space_dim>, codim>>
-    ValueVector<Points<space_dim> >
-    get_external_normals() const
-    {
-        Assert(codim==1, ExcNotImplemented());
-        ValueVector<Points<space_dim> > res;
-        const auto &DF = this->template get_values<1, dim>(0);
-        const auto n_points = DF.get_num_points();
+    ValueVector<Points<space_dim> > get_external_normals() const;
+//    {
+//        Assert(codim==1, ExcNotImplemented());
+//        ValueVector<Points<space_dim> > res;
+//        const auto &DF = this->template get_values<1, dim>(0);
+//        const auto n_points = DF.get_num_points();
+//
+//        res.resize(n_points);
+//        for (int i = 0; i< n_points; ++i)
+//        {
+//            res[i] = cross_product<dim, codim>(DF[i]);
+//            res[i] /= res[i].norm();
+//        }
+//
+//        return res;
+//    }
 
-        res.resize(n_points);
-        for (int i = 0; i< n_points; ++i)
-        {
-            res[i] = cross_product<dim, codim>(DF[i]);
-            res[i] /= res[i].norm();
-        }
+    ValueVector<vector<Real> > get_principal_curvatures() const;
+//	{
+//    	Assert(codim==1, ExcNotImplemented());
+//
+//    	const auto &D2_F  = this->template get_values<2, dim>(0);
+//    	const auto normal = this->get_external_normals();
+//
+//    	const auto n_points = D2_F.get_num_points();
+//    	ValueVector<vector<Real>> res(n_points);
+//    	DenseMatrix A(dim, dim);
+//    	for (int pt = 0; pt < n_points; ++pt)
+//    	{
+//    		for (int i = 0; i<dim; ++i)
+//    			for (int j = 0; j<dim; ++j)
+//    				A(i,j) = scalar_product(D2_F[pt][i][j], normal[pt]);
+//    		res[pt] = A.eigen_values();
+//    	}
+//
+//    	return res;
+//	}
 
-        return res;
-    }
 
 
     template<int sub_dim>

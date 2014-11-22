@@ -238,85 +238,6 @@ protected:
 
 
 
-#if 0
-
-/**
- * @brief This is an helper class that is intended to be used as a filter for the flags that
- * refers to a grid-like element-face accessor.
- *
- * The enum class NewValueFlags is a bitmask that implements a lot of different flags,
- * also referring to different concepts, and is therefore difficult to manage.
- * This is the reason that makes this class useful: the unique constructor
- * GridFaceValueFlagsHandler(const NewValueFlags &flags) takes as input argument a NewValueFlags
- * entry and filters the values that have valid meaning for a grid-like element accessor,
- * setting the corresponding boolean entries properly.
- *
- * The NewValueFlags filtered by this class are:
- * - NewValueFlags::face_point
- * - NewValueFlags::face_measure
- * - NewValueFlags::face_w_measure
- * - NewValueFlags::face_normal
- *
- * @author M. Martinelli
- * @date 14 Mar 2014
- */
-class GridFaceValueFlagsHandler : public GridFlags
-{
-public:
-    /** @name Constructors */
-    ///@{
-    /** Default constructor. Sets all boolean flags to false. */
-    GridFaceValueFlagsHandler();
-
-    /**
-     * Constructor. Transforms the value flags for grid-like element-face accessor in
-     * the correspondent booleans
-     * that specify the quantities that must be computed/filled.
-     */
-    GridFaceValueFlagsHandler(const NewValueFlags &flags);
-
-    /** Copy constructor. */
-    GridFaceValueFlagsHandler(const GridFaceValueFlagsHandler &in) = default;
-
-    /** Move constructor. */
-    GridFaceValueFlagsHandler(GridFaceValueFlagsHandler &&in) = default;
-
-
-    /** Destructor. */
-    ~GridFaceValueFlagsHandler() = default;
-    ///@}
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    GridFaceValueFlagsHandler &operator=(const GridFaceValueFlagsHandler &in) = default;
-
-
-    /** Move assignment operator. */
-    GridFaceValueFlagsHandler &operator=(GridFaceValueFlagsHandler &&in) = default;
-    ///@}
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the gradients inverse must be filled. */
-    bool fill_normals() const;
-
-    /** Returns true if the normals are filled. */
-    bool normals_filled() const;
-
-    /** Sets the filled status for normals. */
-    void set_normals_filled(const bool status);
-
-
-protected:
-    bool fill_normals_ = false;
-
-    bool normals_filled_ = false;
-};
-
-#endif
 
 class MappingFlags :
     public FunctionFlags
@@ -329,7 +250,9 @@ public:
         NewValueFlags::inv_hessian |
         NewValueFlags::measure|
         NewValueFlags::w_measure|
-        NewValueFlags::boundary_normal;
+        NewValueFlags::boundary_normal|
+        NewValueFlags::outer_normal|
+        NewValueFlags::curvature;
 
     static NewValueFlags to_function_flags(const NewValueFlags &flag);
 
