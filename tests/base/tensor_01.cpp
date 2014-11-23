@@ -17,148 +17,99 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-//TODO: Add standard description
 
+/*
+ *  Tensor initialization
+ *
+ *  author: unclaimed
+ *  date: 2014-11-23 (of notice)
+ *
+ */
+
+//TODO: this test should be rewritten and improve to current standards
 #include "../tests.h"
-
 #include <igatools/base/tensor.h>
 
-
-
-
-typedef Tensor< 1, 1, tensor::contravariant, Tdouble > ValueScalar ;
-
-template <int dim>
-void
-compute_cp()
-{
-    OUTSTART
-    Derivatives<dim, dim+1, 1, 1> DF;
-    for (int i = 0; i < dim; ++i)
-    {
-        DF[i][i] = 1;
-    }
-
-    auto cp = cross_product<dim>(DF);
-    out << "cross product: " << cp << endl;
-
-    for (int i = 0; i < dim; ++i)
-    {
-        out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
-    }
-    OUTEND
-}
-
-
-
-template <int dim>
-void
-compute_cp2()
-{
-    OUTSTART
-    Derivatives<dim, dim+1, 1, 1> DF;
-    for (int i = 0; i < dim; ++i)
-    {
-        for (int j = 0; j < dim+1; ++j)
-            DF[i][j] = i+j;
-    }
-
-    auto cp = cross_product<dim>(DF);
-    out << "cross product: " << cp << endl;
-
-    for (int i = 0; i < dim; ++i)
-    {
-        out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
-    }
-    OUTEND
-}
-
+typedef Tensor< 1, 1, tensor::contravariant, Tdouble > ValueScalar;
 
 int main()
 {
-    compute_cp<1>();
-    compute_cp<2>();
 
-    compute_cp2<1>();
-    compute_cp2<2>();
-#if 0
     // testing the tensor.type for the scalar fields
-    ValueScalar Value0 ;
-    out << Value0 << endl ;
+    ValueScalar Value0;
+    out << Value0 << endl;
 
 
-    ValueScalar Value1 ;
+    ValueScalar Value1;
     Value1 = 1.0;
-    out << Value1 << endl ;
+    out << Value1 << endl;
 
 
-    ValueScalar Value2 ;
-    Value2[0] = 2.0 ;
-    out << Value2 << endl ;
+    ValueScalar Value2;
+    Value2[0] = 2.0;
+    out << Value2 << endl;
 
 
-    ValueScalar Value2a(Value2) ;
-    out << Value2a << endl ;
+    ValueScalar Value2a(Value2);
+    out << Value2a << endl;
 
 
-    ValueScalar Value2b = Value2 ;
-    out << Value2b << endl ;
+    ValueScalar Value2b = Value2;
+    out << Value2b << endl;
 
 
-    ValueScalar Value2c ;
-    Value2c = Value2 ;
-    out << Value2c << endl ;
+    ValueScalar Value2c;
+    Value2c = Value2;
+    out << Value2c << endl;
 
 
-    ValueScalar Value3 ;
-    Value3 = 3.0 ;
-    out << Value3 << endl ;
+    ValueScalar Value3;
+    Value3 = 3.0;
+    out << Value3 << endl;
 
 
-    ValueScalar Value3a ;
-    Value3a = Value1 + Value2 ;
-    out << Value3a << endl ;
+    ValueScalar Value3a;
+    Value3a = Value1 + Value2;
+    out << Value3a << endl;
 
-    ValueScalar Value4 ;
-    Value4 = Value1 + Value3 ;
-    out << Value4 << endl ;
-
-
-    ValueScalar Value4b ;
-    Value4b = Value3 + Value1 ;
-    out << Value4b << endl ;
+    ValueScalar Value4;
+    Value4 = Value1 + Value3;
+    out << Value4 << endl;
 
 
-    ValueScalar Value1a ;
-    Value1a = Value3 - Value2 ;
-    out << Value1a << endl ;
+    ValueScalar Value4b;
+    Value4b = Value3 + Value1;
+    out << Value4b << endl;
 
 
-    ValueScalar Value4a ;
-    Value4a = Value3 + Value2 - Value1 ;
-    out << Value4a << endl ;
+    ValueScalar Value1a;
+    Value1a = Value3 - Value2;
+    out << Value1a << endl;
 
 
-    ValueScalar Value3b ;
-    Value3b = Value4 - Value1 ;
-    out << Value3b << endl ;
+    ValueScalar Value4a;
+    Value4a = Value3 + Value2 - Value1;
+    out << Value4a << endl;
 
 
-    ValueScalar Value6 ;
-    Value6 = Value3[0] * Value2[0] ;
-    out << Value6 << endl ;
+    ValueScalar Value3b;
+    Value3b = Value4 - Value1;
+    out << Value3b << endl;
 
 
-    ValueScalar Value6a ;
-    Value6a = 3.0 * Value2 ;
-    out << Value6a << endl ;
+    ValueScalar Value6;
+    Value6 = Value3[0] * Value2[0];
+    out << Value6 << endl;
 
 
-    ValueScalar Value6b ;
-    Value6b = Value2 * 3.0 ;
-    out << Value6b << endl ;
+    ValueScalar Value6a;
+    Value6a = 3.0 * Value2;
+    out << Value6a << endl;
 
-#endif
 
-    return (0) ;
+    ValueScalar Value6b;
+    Value6b = Value2 * 3.0;
+    out << Value6b << endl;
+
+    return 0;
 }

@@ -63,6 +63,8 @@ get_principal_curvatures() const -> ValueVector<vector<Real>>
 		for (int i = 0; i<dim; ++i)
 			for (int j = 0; j<dim; ++j)
 				A(i,j) = scalar_product(D2_F[pt][i][j], normal[pt]);
+
+
 		res[pt] = A.eigen_values();
 	}
 

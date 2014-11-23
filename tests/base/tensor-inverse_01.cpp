@@ -24,8 +24,6 @@
 
 #include <igatools/base/tensor.h>
 
-#include<iostream>
-
 
 template<int rdim, int cdim>
 void do_inverse()
