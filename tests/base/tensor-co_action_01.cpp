@@ -38,11 +38,10 @@ void run_test()
     out << "dim: " << dim  << " range: " << range << endl;
     Derivatives<dim, range, rank, 1> DF;
     for (int i = 0; i < dim; ++i)
-        DF[i][i] = double(i+1) ;
-    Derivatives<range, dim, rank, 1> DF_inv;
+    	DF[i][i] = double(i+1) ;
 
-
-    inverse<dim, range>(DF, DF_inv);
+    Real det;
+    auto DF_inv = inverse(DF, det);
 
     auto DF_inv_t = co_tensor(transpose(DF_inv));
 
