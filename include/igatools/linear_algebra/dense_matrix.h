@@ -91,7 +91,7 @@ public:
      * Matrix inversion routine.
      * @note Uses lu_factorize and lu_substitute in uBLAS to invert a matrix
      */
-    DenseMatrix inverse();
+    DenseMatrix inverse(Real &det) const;
 
     vector<Real> eigen_values() const;
 

@@ -118,7 +118,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         const auto &DF = elem.template get_values<1, k>(j);
         auto &D_invF = cache.template get_inv_values<1>();
         for (int i=0; i<n_points; ++i)
-            inverse<dim, space_dim>(DF[i], D_invF[i]);
+        	D_invF[i] = inverse(DF[i], cache.measures_[i]);
     }
 
     if (flags.fill_inv_hessians())

@@ -132,27 +132,34 @@ Real DenseMatrix::determinant() const
 //todo should be const
 DenseMatrix
 DenseMatrix::
-inverse()
+inverse(Real &det) const
 {
     using namespace boost::numeric::ublas;
-    using pmatrix_t = permutation_matrix<std::size_t>;
+    using namespace boost::numeric::ublas;
+    using PMatrix = permutation_matrix<int>;
 
-    // create a working copy of the input
-    BoostMatrix A(static_cast<BoostMatrix &>(*this)) ;
+    const int n = this->size1();
+    BoostMatrix A(*this);
+    PMatrix P(n);
 
-    // create a permutation matrix for the LU-factorization
-    pmatrix_t P(A.size1());
-
-    // perform LU-factorization
     int res = lu_factorize(A,P);
 
     AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
 
     // create identity matrix of "inverse"
-    BoostMatrix inv_A = identity_matrix<Real>(A.size1());
+    BoostMatrix inv_A = identity_matrix<Real>(n);
 
     // backsubstitute to get the inverse
     lu_substitute(A, P, inv_A);
+
+    det = 1.;
+    int sign = 1;
+    for (int i=0; i<n; ++i)
+    {
+    	det *= A(i,i);
+    	if(P(i) != i)
+    		sign *= -1;
+    }
 
     return inv_A;
 }

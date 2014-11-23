@@ -26,9 +26,11 @@
 #include <igatools/base/logstream.h>
 #include <igatools/utils/tensor_index.h>
 
+#include <igatools/linear_algebra/dense_matrix.h>
+
 #include <type_traits>
 #include <cstring>
-#include <cmath>
+//#include <cmath>
 
 IGA_NAMESPACE_OPEN
 
@@ -869,114 +871,175 @@ contract_1(const T1 &t1, const T2 &t2) noexcept
     return result;
 }
 
-template< class tensor_type1, class tensor_type2>
-inline
-Real
-inverse_(const Tensor<0,1,tensor_type1,Tensor<0,1,tensor_type2,Tdouble>> &t,
-         Tensor<0,1,typename tensor_type2::co_type,Tensor<0,1,typename tensor_type1::co_type,Tdouble>> &t_inv)
+
+
+/** experimental */
+template<class T>
+DenseMatrix
+unroll_to_matrix(const T& t)
 {
-    return 1.;
+	DenseMatrix A(T::value_t::dim, T::dim);
+	for (int i=0; i<T::value_t::dim; ++i)
+		for (int j=0; j<T::dim; ++j)
+			A(i,j) = t[j][i];
+	return A;
 }
 
-template< class tensor_type1, class tensor_type2>
+template<typename T>
+using Inverse =
+    Conditional<
+    T::is_tensor,
+    Conditional<
+    T::value_t::rank==0,
+    T,
+    Tensor<T::value_t::dim,T::value_t::rank,typename T::value_t::tensor_t::co_type,
+    Tensor<T::dim,T::rank,typename T::tensor_t::co_type,typename T::value_t::value_t> >
+    >,
+    Tdouble >;
+
+
+template<class T>
 inline
-Real
-inverse_(const Tensor<1,1,tensor_type1,Tensor<1,1,tensor_type2,Tdouble>> &t,
-         Tensor<1,1,typename tensor_type2::co_type,Tensor<1,1,typename tensor_type1::co_type,Tdouble>> &t_inv)
+EnableIf<(T::dim==0) && (T::value_t::dim == 0) &&
+         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+inverse_(const T &A, Real &det)
 {
-    const Real det = t[0][0];
+	det = 1.;
+    return Inverse<T>();
+}
+
+template<class T>
+inline
+EnableIf<(T::dim==1) && (T::value_t::dim == 1) &&
+         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+inverse_(const T &A, Real &det)
+{
+	det = A[0][0];
+   	Assert(det != Real(0.0), ExcDivideByZero());
+
+   	Inverse<T> A_inv;
+    A_inv[0][0] =  1.0 / det;
+
+    return A_inv;
+}
+
+
+
+template<class T>
+inline
+EnableIf<(T::dim==2) && (T::value_t::dim == 2) &&
+         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+inverse_(const T &A, Real &det)
+{
+    det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
     Assert(det != Real(0.0), ExcDivideByZero());
 
+    Inverse<T> A_inv;
     const Real InvDet = 1.0 / det;
 
-    t_inv[0][0] =  InvDet;
+    A_inv[0][0] = A[1][1] * InvDet;
+    A_inv[0][1] = A[0][1] * (-InvDet);
+    A_inv[1][0] = A[1][0] * (-InvDet);
+    A_inv[1][1] = A[0][0] * InvDet;
 
-    return det;
-}
-
-
-template< class tensor_type1, class tensor_type2>
-inline
-Real
-inverse_(const Tensor<2,1,tensor_type1,Tensor<2,1,tensor_type2,Tdouble>> &t,
-         Tensor<2,1,typename tensor_type2::co_type,Tensor<2,1,typename tensor_type1::co_type,Tdouble>> &t_inv)
-{
-    const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0];
-    Assert(det != Real(0.0), ExcDivideByZero());
-
-    const Real InvDet = 1.0 / det;
-
-
-    t_inv[0][0] = t[1][1] * InvDet;
-    t_inv[0][1] = t[0][1] * (-InvDet);
-    t_inv[1][0] = t[1][0] * (-InvDet);
-    t_inv[1][1] = t[0][0] * InvDet;
-
-    return det;
+    return A_inv;
 }
 
 
 
-
-template< class type1, class type2>
+template<class T>
 inline
-Real
-inverse_(const Tensor<3,1,type1,Tensor<3,1,type2,Tdouble>> &t,
-         Tensor<3,1,typename type2::co_type,Tensor<3,1,typename type1::co_type,Tdouble>> &t_inv)
+EnableIf<(T::dim==3) && (T::value_t::dim == 3) &&
+         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+inverse_(const T &A, Real &det)
 {
-    const Real t4 = t[0][0]*t[1][1];
-    const Real t6 = t[0][0]*t[1][2];
-    const Real t8 = t[0][1]*t[1][0];
-    const Real t00 = t[0][2]*t[1][0];
-    const Real t01 = t[0][1]*t[2][0];
-    const Real t04 = t[0][2]*t[2][0];
-    const Real det = (t4*t[2][2]-t6*t[2][1]-t8*t[2][2]+
-                      t00*t[2][1]+t01*t[1][2]-t04*t[1][1]);
+	Inverse<T> A_inv;
+
+    const Real t4 = A[0][0]*A[1][1];
+    const Real t6 = A[0][0]*A[1][2];
+    const Real t8 = A[0][1]*A[1][0];
+    const Real t00 = A[0][2]*A[1][0];
+    const Real t01 = A[0][1]*A[2][0];
+    const Real t04 = A[0][2]*A[2][0];
+    det = (t4*A[2][2]-t6*A[2][1]-t8*A[2][2]+
+    		t00*A[2][1]+t01*A[1][2]-t04*A[1][1]);
     Assert(det != Real(0.0), ExcDivideByZero());
 
     const Real t07 = 1.0/det;
-    t_inv[0][0] = (t[1][1]*t[2][2]-t[1][2]*t[2][1])*t07;
-    t_inv[0][1] = (t[0][2]*t[2][1]-t[0][1]*t[2][2])*t07;
-    t_inv[0][2] = (t[0][1]*t[1][2]-t[0][2]*t[1][1])*t07;
-    t_inv[1][0] = (t[1][2]*t[2][0]-t[1][0]*t[2][2])*t07;
-    t_inv[1][1] = (t[0][0]*t[2][2]-t04)*t07;
-    t_inv[1][2] = (t00-t6)*t07;
-    t_inv[2][0] = (t[1][0]*t[2][1]-t[1][1]*t[2][0])*t07;
-    t_inv[2][1] = (t01-t[0][0]*t[2][1])*t07;
-    t_inv[2][2] = (t4-t8)*t07;
+    A_inv[0][0] = (A[1][1]*A[2][2]-A[1][2]*A[2][1])*t07;
+    A_inv[0][1] = (A[0][2]*A[2][1]-A[0][1]*A[2][2])*t07;
+    A_inv[0][2] = (A[0][1]*A[1][2]-A[0][2]*A[1][1])*t07;
+    A_inv[1][0] = (A[1][2]*A[2][0]-A[1][0]*A[2][2])*t07;
+    A_inv[1][1] = (A[0][0]*A[2][2]-t04)*t07;
+    A_inv[1][2] = (t00-t6)*t07;
+    A_inv[2][0] = (A[1][0]*A[2][1]-A[1][1]*A[2][0])*t07;
+    A_inv[2][1] = (t01-A[0][0]*A[2][1])*t07;
+    A_inv[2][2] = (t4-t8)*t07;
 
-
-    return det;
+    return  A_inv;
 }
 
-
-
-template< int dim, int range >
+template<class T>
 inline
-EnableIf<(dim==range),Real>
-inverse(const Derivatives<dim, range, 1, 1> &DF,
-        Derivatives<range, dim, 1, 1> &DF_inv)
+EnableIf<(T::dim>3) && (T::value_t::dim == T::dim) &&
+         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+inverse_(const T &A, Real &det)
 {
-    return inverse_(DF, DF_inv);
+	const auto B = unroll_to_matrix(A);
+
+	const auto M = B.inverse(det);
+
+	Inverse<T> A_inv;
+	for (int i=0; i<T::value_t::dim; ++i)
+		for (int j=0; j<T::dim; ++j)
+			A_inv[j][i] = M(i,j);
+
+	return  A_inv;
+}
+
+template<class T>
+EnableIf<(T::dim == T::value_t::dim), Inverse<T> >
+inverse(const T &A, Real &det)
+{
+	return inverse_(A, det);
 }
 
 
-template< int dim, int range >
-inline
-EnableIf<(dim<range),Real>
-inverse(const Derivatives<dim,range,1,1> &DF,
-        Derivatives<range,dim,1,1> &DF_inv)
+/**
+ * right inverse, has the property that:
+ * A*R = I for all a in the range of A and
+ * R*A = I
+ */
+template<class T>
+EnableIf<(T::dim < T::value_t::dim), Inverse<T> >
+inverse(const T &A, Real &det)
 {
-    const auto DF_t = co_tensor(transpose(DF));
-    const auto G = compose(DF_t, DF);
+	const auto A_t   = co_tensor(transpose(A));
+    const auto G     = compose(A_t, A);
+    const auto G_inv = inverse(G, det);
+	det = sqrt(det);
 
-    Derivatives<dim,dim,1,1> G_inv;
-    const Real det = inverse_(G, G_inv);
-
-    DF_inv = compose(G_inv, DF_t);
-
-    return sqrt(det);
+	return compose(G_inv, A_t);
 }
+
+
+
+template<class T>
+EnableIf<(T::dim > T::value_t::dim), Inverse<T> >
+inverse(const T &A, Real &det)
+{
+	const auto A_t   = co_tensor(transpose(A));
+    const auto G     = compose(A, A_t);
+    const auto G_inv = inverse(G, det);
+	det = sqrt(det);
+
+	return compose(A_t, G_inv);
+}
+
+
+
+
+
 
 
 template< class tensor_type1, class tensor_type2>
