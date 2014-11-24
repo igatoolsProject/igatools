@@ -28,12 +28,15 @@
  *
  */
 // TODO (pauletti, Jun 3, 2014): the comment is not consistent with the test
+// TODO (pauletti, Nov 24, 2014): the filename is not good
+// TODO (pauletti, Nov 24, 2014):  this test needs to be rewritten
+
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
 
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/geometry/unit_element.h>
 
 #include <igatools/linear_algebra/sparsity_pattern.h>
@@ -66,7 +69,7 @@ int main()
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
+    auto bspline_space = NewBSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;
@@ -94,7 +97,7 @@ int main()
     for (Index i = 0; i<b.size() ; i++)
         b.add_entry(i,i*1.0);
 
-    b.print(out);
+    b.print_info(out);
     out << endl;
 
     VectorType x(bspline_space->get_num_basis());
@@ -102,7 +105,7 @@ int main()
     LinSolverType solver(LinSolverType::SolverType::GMRES);
     solver.solve(matrix,b,x);
 
-    x.print(out);
+    x.print_info(out);
     out << endl;
 
     out << "Achieved Tolerance = " << solver.get_achieved_tolerance() << endl;
