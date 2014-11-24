@@ -27,7 +27,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 func_list = []
-for x in inst.all_function_dims:
+for x in inst.all_mapping_dims:
     func = 'IdentityFunction<%d, %d>' %(x.dim, x.dim+x.codim)
     func_list.append(func)
 

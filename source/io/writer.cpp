@@ -165,7 +165,7 @@ fill_points_and_connectivity(
     vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
     &vtk_elements_connectivity) const
 {
-    map_->reset(NewValueFlags::value, *quad_plot_);
+    map_->reset(NewValueFlags::value | NewValueFlags::point, *quad_plot_);
 
     auto m_elem = map_->begin();
     auto m_end  = map_->end();
