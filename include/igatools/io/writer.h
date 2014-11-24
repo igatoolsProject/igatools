@@ -138,10 +138,108 @@ private:
     static const int n_vertices_per_vtk_element_ = UnitElement<dim>::template num_elem<dim>();
 
 
+
+    /**
+     * Specifier for the byte order. It can be "LittleEndian" or "BigEndian".
+     * It depends on the architecture on which igatools is built
+     * and it is inferred from the installed Boost version.
+     */
+    std::string byte_order_;
+
+
+    struct PointData
+    {
+
+        PointData(
+            const std::string &name,
+            const std::string &type,
+            const Size num_elements,
+            const Size num_points_per_element,
+            const Size num_components,
+            std::shared_ptr< vector<T> > values)
+            :
+            name_(name),
+            type_(type),
+            num_elements_(num_elements),
+            num_points_per_element_(num_points_per_element),
+            num_components_(num_components),
+            values_(values)
+        {};
+
+        const std::string name_;
+
+        const std::string type_;
+
+        Size num_elements_;
+
+        Size num_points_per_element_;
+
+        Size num_components_;
+
+
+        std::shared_ptr< vector<T> > values_;
+    };
+
+    vector< PointData > fields_;
+
+
+    vector<std::string> names_point_data_scalar_;
+    vector<std::string> names_point_data_vector_;
+    vector<std::string> names_point_data_tensor_;
+
+
+    template<class data_type>
+    struct CellData
+    {
+        CellData(
+            const vector<data_type> &values,
+            const std::string &name)
+            :
+            values_(new vector<data_type>(values)),
+            name_(name),
+            type_("scalar"),
+            num_components_(1)
+        {};
+
+        std::shared_ptr< vector<data_type> > values_;
+
+        const std::string name_;
+
+        const std::string type_;
+
+        iga::Size num_components_;
+    };
+    vector< CellData<double> > cell_data_double_;
+    vector< CellData<int> > cell_data_int_;
+
+
+    vector<std::string> names_cell_data_scalar_;
+    vector<std::string> names_cell_data_vector_;
+    vector<std::string> names_cell_data_tensor_;
+
+
+
     void fill_points_and_connectivity(
-        vector< vector< special_array<T,3> > > &points_in_iga_elements,
-        vector< vector< special_array<int,n_vertices_per_vtk_element_> > >
+        vector<vector<special_array<T,3> > > &points_in_iga_elements,
+        vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
         &vtk_elements_connectivity) const;
+
+    void get_subelements(
+        const typename NewMapping<dim,codim>::ElementIterator elem,
+        vector< special_array<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
+        vector< special_array<T,3> > &points_phys_iga_element) const;
+
+    template<class Out>
+    void save_ascii(Out &file,
+                    const vector<vector<special_array<T,3> > > &points_in_iga_elements,
+                    const vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
+                    &vtk_elements_connectivity) const;
+
+
+    void save_appended(const std::string &filename,
+                       const vector<vector<special_array<T,3> > > &points_in_iga_elements,
+                       const vector<vector<special_array< int,n_vertices_per_vtk_element_> > >
+                       &vtk_elements_connectivity) const;
 
 };
 
@@ -284,7 +382,6 @@ public:
 
 
 private:
-    std::string byte_order_;
 
 
     const std::string filename_;
@@ -324,88 +421,14 @@ private:
 
 
 protected:
-    struct PointData
-    {
 
-        PointData(
-            const std::string &name,
-            const std::string &type,
-            const Size num_elements,
-            const Size num_points_per_element,
-            const Size num_components,
-            std::shared_ptr< vector<T> > values)
-            :
-            name_(name),
-            type_(type),
-            num_elements_(num_elements),
-            num_points_per_element_(num_points_per_element),
-            num_components_(num_components),
-            values_(values)
-        {};
-
-        const std::string name_;
-
-        const std::string type_;
-
-        Size num_elements_;
-
-        Size num_points_per_element_;
-
-        Size num_components_;
-
-
-        std::shared_ptr< vector<T> > values_;
-    };
-
-    vector< PointData > fields_;
-
-    vector<std::string> names_point_data_scalar_;
-    vector<std::string> names_point_data_vector_;
-    vector<std::string> names_point_data_tensor_;
 
 private:
-    template<class data_type>
-    struct CellData
-    {
-        CellData(
-            const vector<data_type> &values,
-            const std::string &name)
-            :
-            values_(new vector<data_type>(values)),
-            name_(name),
-            type_("scalar"),
-            num_components_(1)
-        {};
-
-        std::shared_ptr< vector<data_type> > values_;
-
-        const std::string name_;
-
-        const std::string type_;
-
-        iga::Size num_components_;
-    };
-
-    vector< CellData<double> > cell_data_double_;
-
-    vector< CellData<int> > cell_data_int_;
-
-    vector<std::string> names_cell_data_scalar_;
-    vector<std::string> names_cell_data_vector_;
-    vector<std::string> names_cell_data_tensor_;
 
 
 
-    template<class Out>
-    void save_ascii(Out &file,
-                    const vector< vector< std::array<T,3> > > &points_in_iga_elements,
-                    const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-                    &vtk_elements_connectivity) const;
 
-    void save_appended(const std::string &filename,
-                       const vector< vector< std::array<T,3> > > &points_in_iga_elements,
-                       const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-                       &vtk_elements_connectivity) const;
+
 
 };
 

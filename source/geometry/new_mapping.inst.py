@@ -28,6 +28,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
+
 sub_dim_members = \
 ['void NewMapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j);',
  'void NewMapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
