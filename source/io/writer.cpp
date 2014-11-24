@@ -21,6 +21,8 @@
 #include <igatools/io/writer.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/quadrature_lib.h>
 
 #include <fstream>
 
@@ -35,6 +37,14 @@ using std::to_string;
 
 
 IGA_NAMESPACE_OPEN
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const shared_ptr<const CartesianGrid<dim>> grid)
+    :
+    Writer(NewMapping<dim, codim>::create(IdentityFunction<dim>::create(grid)),
+           shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
+{}
 
 
 
@@ -783,13 +793,6 @@ using std::endl;
 
 //TODO: Add patch id as a cell field
 
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid> grid)
-    :
-    Writer(IdentityMapping<dim, codim>::create(grid),
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
-{}
 
 
 
