@@ -26,8 +26,13 @@ data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
-for x in inst.all_domain_dims:
-    s = 'template class IdentityFunction<%d> ;\n' %x
+func_list = []
+for x in inst.all_function_dims:
+    func = 'IdentityFunction<%d, %d>' %(x.dim, x.dim+x.codim)
+    func_list.append(func)
+
+for func in unique(func_list):
+    s = 'template class %s ;\n' %func
     f.write(s)
     
 

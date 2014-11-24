@@ -25,11 +25,11 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim>
+template<int dim,int space_dim>
 auto
 create_id_tensor()
 {
-    typename NewFunction<dim, 0, dim, 1>::Gradient res;
+    typename NewFunction<dim, 0, space_dim, 1>::Gradient res;
     for (int i=0; i<dim; ++i)
         res[i][i] = 1.;
     return res;
@@ -37,12 +37,12 @@ create_id_tensor()
 
 
 
-template<int dim>
-class IdentityFunction : public NewFunction<dim, 0, dim, 1>
+template<int dim,int space_dim = dim>
+class IdentityFunction : public NewFunction<dim, 0, space_dim, 1>
 {
 private:
-    using parent_t = NewFunction<dim, 0, dim, 1>;
-    using self_t = IdentityFunction<dim>;
+    using parent_t = NewFunction<dim, 0, space_dim, 1>;
+    using self_t = IdentityFunction<dim,space_dim>;
 protected:
     using typename parent_t::GridType;
 public:
@@ -53,7 +53,7 @@ public:
     using typename parent_t::Gradient;
     using typename parent_t::ElementIterator;
     using typename parent_t::ElementAccessor;
-    using parent_t::space_dim;
+//    using parent_t::space_dim;
 
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
@@ -92,13 +92,22 @@ private:
                 const auto points =
                     elem->CartesianGridElement<dim>::template get_points<T::k>(j);
 
+                const auto n_pts = points.get_num_points();
+
                 if (flags.fill_points())
+                {
                     cache.points_ = points;
+                }
                 if (flags.fill_values())
-                    std::get<0>(cache.values_) = points;
+                {
+                    auto &values = std::get<0>(cache.values_);
+                    for (int pt = 0 ; pt < n_pts ; ++pt)
+                        for (int i = 0 ; i < dim ; ++i)
+                            values[pt][i] = points[pt][i];
+                }
                 if (flags.fill_gradients())
                 {
-                    auto identity = create_id_tensor<dim>();
+                    auto identity = create_id_tensor<dim,space_dim>();
                     std::get<1>(cache.values_).fill(identity);
                 }
                 if (flags.fill_hessians())
