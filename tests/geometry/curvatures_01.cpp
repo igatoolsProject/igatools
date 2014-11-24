@@ -70,25 +70,26 @@ void mapping_values()
     for (; elem != end; ++elem)
     {
         map.template fill_cache<dim>(elem, 0);
-//        out << "Normals:" << endl;
-//        elem->get_external_normals().print_info(out);
-//        out << endl;
+        out << "Normals:" << endl;
+        elem->get_external_normals().print_info(out);
+        out << endl;
 
         out << "Curvature:" << endl;
         elem->get_principal_curvatures().print_info(out);
         out << endl;
-        out << "Points:" << endl;
-        elem->get_points().print_info(out);
-        out << endl;
-        out << "Values:" << endl;
-        elem->template get_values<0, dim>(0).print_info(out);
-        out << endl;
+
+//        out << "Points:" << endl;
+//        elem->get_points().print_info(out);
+//        out << endl;
+//        out << "Values:" << endl;
+//        elem->template get_values<0, dim>(0).print_info(out);
+//        out << endl;
         out << "Gradients:" << endl;
         elem->template get_values<1, dim>(0).print_info(out);
         out << endl;
-//        out << "Hessians:" << endl;
-//        elem->template get_values<2, dim>(0).print_info(out);
-//        out << endl;
+        out << "Hessians:" << endl;
+        elem->template get_values<2, dim>(0).print_info(out);
+        out << endl;
 //        out << "Measure:" << endl;
 //        elem->template get_measures<dim>(0).print_info(out);
 //        out << endl;

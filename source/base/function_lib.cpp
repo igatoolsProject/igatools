@@ -539,7 +539,7 @@ evaluate_2(const ValueVector<Point> &points,
                 for (int k = 1; k < j+1; ++k)
                 {
                     double d2jy = 1.;
-                    for (int l = 0; l < i+1; ++l)
+                    for (int l = 1; l < i+1; ++l)
                     {
                         double factor;
                         if (j==k)
@@ -566,7 +566,7 @@ evaluate_2(const ValueVector<Point> &points,
             for (int k = 1; k < j+1; ++k)
             {
                 double d2jy = 1.;
-                for (int l = 0; l < dim; ++l)
+                for (int l = 1; l < i+1; ++l)
                 {
                     double factor;
                     if (j==k)
@@ -582,7 +582,7 @@ evaluate_2(const ValueVector<Point> &points,
 
         for (int i = 0; i < space_dim; ++i)
             for (int j = 0; j < dim; ++j)
-                for (int k = 1; k< j; ++k)
+                for (int k = 0; k < j; ++k)
                 {
                     hessian[k][j][i] = hessian[j][k][i];
                 }

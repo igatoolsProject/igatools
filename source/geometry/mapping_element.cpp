@@ -20,7 +20,7 @@
 
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/linear_algebra/dense_matrix.h>
-
+#include <boost/numeric/ublas/operation.hpp>
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
@@ -57,15 +57,18 @@ get_principal_curvatures() const -> ValueVector<vector<Real>>
 
 	const auto n_points = D2_F.get_num_points();
 	ValueVector<vector<Real>> res(n_points);
+	const auto G_inv = compute_inv_first_fundamental_form();
 	DenseMatrix A(dim, dim);
 	for (int pt = 0; pt < n_points; ++pt)
 	{
+		const auto B = unroll_to_matrix(G_inv[pt]);
 		for (int i = 0; i<dim; ++i)
 			for (int j = 0; j<dim; ++j)
-				A(i,j) = scalar_product(D2_F[pt][i][j], normal[pt]);
+				A(i,j) = -scalar_product(D2_F[pt][i][j], normal[pt]);
+		DenseMatrix C(dim, dim);
+		boost::numeric::ublas::axpy_prod(B, A, C, true);
 
-
-		res[pt] = A.eigen_values();
+		res[pt] = C.eigen_values();
 	}
 
 	return res;

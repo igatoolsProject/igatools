@@ -115,10 +115,12 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (flags.fill_inv_gradients())
     {
+    	// TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
         const auto &DF = elem.template get_values<1, k>(j);
         auto &D_invF = cache.template get_inv_values<1>();
+        Real det;
         for (int i=0; i<n_points; ++i)
-        	D_invF[i] = inverse(DF[i], cache.measures_[i]);
+        	D_invF[i] = inverse(DF[i], det);
     }
 
     if (flags.fill_inv_hessians())
@@ -169,59 +171,7 @@ init_cache(ElementAccessor &elem) -> void
 
 }
 
-//template<int dim, int codim>
-//auto
-//NewMapping<dim, codim>::
-//init_element(ElementAccessor &elem) -> void
-//{
-//    F_->init_elem(elem);
-//    auto &cache = this->get_cache(elem);
-//    if (cache == nullptr)
-//    {
-//        using Cache = typename ElementAccessor::CacheType;
-//        cache = shared_ptr<Cache>(new Cache);
-//    }
-//    cache->resize(flag_, quad_.get_num_points());
-//}
 
-
-
-//template<int dim, int codim>
-//auto
-//NewMapping<dim, codim>::
-//fill_element(ElementAccessor &elem) -> void
-//{
-//    F_->fill_elem(elem);
-//
-//    //const auto points = elem.CartesianGridElement<dim>::get_points();
-//    const auto n_points = quad_.get_num_points();
-//
-//    auto &cache = this->get_cache(elem);
-//
-//    if (flag_.fill_measures())
-//    {
-//        const auto &DF = elem.get_gradients();
-//        for (int i=0; i<n_points; ++i)
-//            cache->measures_[i] = determinant<dim,space_dim>(DF[i]);
-//
-//    }
-//
-//    if (flag_.fill_w_measures())
-//    {
-//        const auto &meas = cache->measures_;
-//        const auto &w = elem.CartesianGridElement<dim>::get_w_measures();
-//        for (int i=0; i<n_points; ++i)
-//            cache->w_measures_[i] = w[i] * meas[i];
-//    }
-//
-//    if (flag_.fill_inv_gradients())
-//    {
-//        const auto &DF = elem.get_gradients();
-//        auto &D_invF = std::get<1>(cache->inv_derivatives_);
-//        for (int i=0; i<n_points; ++i)
-//            inverse<dim, space_dim>(DF[i], D_invF[i]);
-//    }
-//
 //    if (flag_.fill_inv_hessians())
 //    {
 //        const auto &D1_F = elem.get_gradients();
@@ -241,26 +191,7 @@ init_cache(ElementAccessor &elem) -> void
 //            }
 //    }
 //}
-//
-//
-//
-//template<int dim, int codim>
-//auto
-//NewMapping<dim, codim>::
-//init_element(ElementIterator &elem) -> void
-//{
-//    init_element(elem.get_accessor());
-//}
-//
-//
-//
-//template<int dim, int codim>
-//auto
-//NewMapping<dim, codim>::
-//fill_element(ElementIterator &elem) -> void
-//{
-//    fill_element(elem.get_accessor());
-//}
+
 
 IGA_NAMESPACE_CLOSE
 
