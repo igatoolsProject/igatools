@@ -35,8 +35,8 @@ IGA_NAMESPACE_OPEN
 
 class SpaceManager;
 
-template < int, int, int> class BSplineElement;
-template < int, int, int> class BSplineElementHandler;
+template <int, int, int> class BSplineElement;
+template <int, int, int> class BSplineElementHandler;
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
  * valued B-spline space.
@@ -105,11 +105,6 @@ private:
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
-//    using PushForwardType = NewPushForward<Transformation::h_grad,dim_,0>;
-//    using PhysSpace = NewPhysicalSpace<self_t, 0, Transformation::h_grad>;
-//
-//    /** Required type for space templated functions */
-//    using RefSpace = self_t;
 
     using GridType = CartesianGrid<dim_>;
     using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
@@ -307,18 +302,9 @@ public:
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
                   std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;
 
-    std::shared_ptr<const self_t >
-    get_reference_space() const;
-
-#if 0
-    /** Return the push forward (non-const version). */
-    std::shared_ptr<PushForwardType> get_push_forward();
+    std::shared_ptr<const self_t > get_reference_space() const;
 
 
-    /** Return the push forward (const version). */
-    std::shared_ptr<const PushForwardType> get_push_forward() const;
-
-#endif
     std::shared_ptr<SpaceManager> get_space_manager();
 
 

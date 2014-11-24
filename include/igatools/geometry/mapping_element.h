@@ -70,34 +70,54 @@ public:
 
 
 //    ValueVector<special_array<Points<space_dim>, codim>>
-//	get_normal_space() const
-//	{
-//    	ValueVector<special_array<Points<space_dim>, codim>> res;
-//    	const auto &DF = this->template get_values<1, dim>(0);
-//        res.resize(DF.get_num_points());
-//        return res;
-//	}
+    ValueVector<Points<space_dim> > get_external_normals() const;
+
+    using TensorCov =
+    Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
+
+    ValueVector<TensorCov> compute_inv_first_fundamental_form() const
+    {
+    	ValueVector<TensorCov> res;
+    	const auto &DF = this->template get_values<1, dim>(0);
+    	const auto n_points = DF.get_num_points();
+
+    	res.resize(n_points);
+    	Real det;
+    	for (int i = 0; i< n_points; ++i)
+    	{
+    		const auto &A = DF[i];
+    		const auto A_t   = co_tensor(transpose(A));
+    	    const auto G     = compose(A_t, A);
+    	    res[i] = inverse(G, det);
+    	}
+
+    	return res;
+	}
+
+    ValueVector<vector<Real> > get_principal_curvatures() const;
+
+
 
 
     template<int sub_dim>
-    ValueVector<Points<space_dim>>
+    ValueVector<Points<space_dim> >
     get_boundary_normals(const int s_id) const
-	{
+    {
         Assert(dim==sub_dim+1, ExcNotImplemented());
-    	ValueVector<Points<space_dim>> res;
-    	const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
-    	const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
+        ValueVector<Points<space_dim>> res;
+        const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
+        const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
 
-    	const auto n_points = DF_inv.get_num_points();
-    	res.resize(n_points);
-    	for (int i = 0; i< n_points; ++i)
-    	{
-    	    const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
-    	    res[i] = action(DF_inv_t, n_hat);
-    	    res[i] /= res[i].norm();
-    	}
-    	return res;
-	}
+        const auto n_points = DF_inv.get_num_points();
+        res.resize(n_points);
+        for (int i = 0; i< n_points; ++i)
+        {
+            const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
+            res[i] = action(DF_inv_t, n_hat);
+            res[i] /= res[i].norm();
+        }
+        return res;
+    }
 
 private:
     class ValuesCache : public CacheStatus

@@ -17,62 +17,62 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+//TODO: Add standard description
+
 /*
- *  Test for the co transpose of a tensor.
+ *  Developing a new function for handling tensor inverses
  *
  *  author: pauletti
- *  date: apr 18, 2013
+ *  date: 2014-11-23
  *
  */
 
 #include "../tests.h"
-
 #include <igatools/base/tensor.h>
 
 
-
-template <int dim, int range, int rank>
-void run_test()
+template<int rdim, int cdim>
+void compute_inverse()
 {
+	OUTSTART
 
-    out << "dim: " << dim  << " range: " << range << endl;
-    Derivatives<dim, range, rank, 1> DF;
-    for (int i = 0; i < dim; ++i)
-    	DF[i][i] = double(i+1) ;
+    Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
+
+    for (int i = 0; i < cdim; ++i)
+    	for (int j = 0; j < rdim; ++j)
+    		A[i][j] = cos(i*j);
+
+    out << "A =" << endl;
+    out << A << endl;
 
     Real det;
-    auto DF_inv = inverse(DF, det);
+    auto B = inverse(A, det);
+    out << "Determinant(A) = " << det << endl;
 
-    auto DF_inv_t = co_tensor(transpose(DF_inv));
+    out << "A^(-1) =" << endl;
+    out << B << endl;
 
-    Points<dim> n_hat;
-    for (int i = 0; i < dim; ++i)
-        n_hat[i] = double(i+1) ;
-    auto n = action(DF,n_hat);
+    out << "A o A^(-1) =" << endl;
+    out << compose(A,B)  << endl;
+    out << "A^(-1) o A =" << endl;
+    out << compose(B,A)  << endl;
 
-    out << "Action of: " << DF << "on:" << n_hat;
-    out << "is:" << n << endl;
-
-    auto n1 = action(DF_inv_t, n_hat);
-
-    out << "Action of: " << DF_inv_t << "on:" << n_hat;
-    out << "is:" << n1 << endl;
-
+    OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+	compute_inverse<1,1>();
+	compute_inverse<2,2>();
+	compute_inverse<3,3>();
+	compute_inverse<4,4>();
 
-    run_test<1,1,1>();
-    run_test<2,2,1>();
-    run_test<3,3,1>();
+	compute_inverse<1,2>();
+	compute_inverse<2,1>();
 
-    run_test<1,2,1>();
-    run_test<1,3,1>();
-    run_test<2,3,1>();
+	compute_inverse<3,2>();
+	compute_inverse<2,3>();
 
-    return  0;
+    return 0;
 }
-

@@ -35,15 +35,15 @@ void test_contract_1()
     const int order = 2;
     Derivatives <dim, rdim, 1, order> D2F;
     Derivatives <dim, rdim, 1, order-1> DF;
-    Derivatives <rdim, dim, 1, order-1> invDF;
 
     double val = 0;
     for (int i = 0; i < dim; ++i)
         for (int j = 0; j < rdim; ++j)
             DF[i][i] = ++val;
 
+    Real det;
+    auto DF_inv = inverse(DF, det);
 
-    inverse<dim,rdim>(DF,invDF) ;
 
     out << "The contract_1 of:" << endl;
     out << D2F << endl;
@@ -55,9 +55,9 @@ void test_contract_1()
     out << "The contract_1 of:" << endl;
     out << D2F << endl;
     out << "with:" << endl;
-    out << co_tensor(transpose(invDF)) << endl;
+    out << co_tensor(transpose(DF_inv)) << endl;
     out << "is:" << endl;
-    out << contract_1(D2F,co_tensor(transpose(invDF))) << endl;
+    out << contract_1(D2F,co_tensor(transpose(DF_inv))) << endl;
     out << endl;
 }
 

@@ -370,6 +370,228 @@ evaluate_2(const ValueVector<Point> &points,
 
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+
+template<int dim>
+SphereFunction<dim>::
+SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+    :
+    parent_t::FormulaFunction(grid, map)
+{}
+
+
+
+template<int dim>
+auto
+SphereFunction<dim>::
+create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map) ->  std::shared_ptr<base_t>
+{
+    return std::shared_ptr<base_t>(new self_t(grid, map));
+}
+
+
+
+template<int dim>
+template<int order>
+auto
+SphereFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
+{
+    std::array<std::array<vector<std::array<double, space_dim> >, order>, 2> val_table;
+    auto &cos_val = val_table[0];
+    auto &sin_val = val_table[1];
+
+    const int n_points = points.size();
+
+    for (int der = 0; der < order; ++der)
+    {
+        cos_val[der].resize(n_points);
+        sin_val[der].resize(n_points);
+    }
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        sin_val[0][qp][0] = R;
+        for (int i = 1; i < space_dim; ++i)
+        {
+            sin_val[0][qp][i]   = sin(points[qp][i-1]);
+            cos_val[0][qp][i-1] = cos(points[qp][i-1]);
+        }
+        cos_val[0][qp][space_dim - 1] = 1;
+
+        for (int der = 1; der < order; ++der)
+        {
+            auto res = std::div(der,2);
+            sin_val[der][qp][0] = R;
+            for (int i = 1; i < space_dim; ++i)
+            {
+                sin_val[der][qp][i] =
+                    std::pow(-1, res.quot) *
+                    (res.rem == 0? sin_val[0][qp][i]: cos_val[0][qp][i-1]);
+                cos_val[der][qp][i-1] = -sin_val[der-1][qp][i];
+            }
+            cos_val[der][qp][space_dim - 1] = 1.;
+        }
+    }
+    return val_table;
+}
+
+
+template<int dim>
+auto
+SphereFunction<dim>::
+evaluate_0(const ValueVector<Point> &points,
+           ValueVector<Value> &values) const -> void
+{
+    const auto val_table = get_aux_vals<1>(points);
+    auto &cos_val = val_table[0];
+    auto &sin_val = val_table[1];
+
+    const int der = 0;
+    const auto &s = sin_val[der];
+    const auto &c = cos_val[der];
+    const int n_points = points.size();
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &x = values[qp];
+        double y = 1.;
+        for (int i = 0; i < space_dim; ++i)
+        {
+            y *= s[qp][i];
+            x[i] = y * c[qp][i];
+        }
+    }
+}
+
+
+
+template<int dim>
+auto
+SphereFunction<dim>::
+evaluate_1(const ValueVector<Point> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+    const auto val_table = get_aux_vals<2>(points);
+    auto &cos_val = val_table[0];
+    auto &sin_val = val_table[1];
+
+    const auto &s = sin_val[0];
+    const auto &c = cos_val[0];
+    const auto &s_p = sin_val[1];
+    const auto &c_p = cos_val[1];
+    const int n_points = points.size();
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &grad = values[qp];
+        grad = 0.;
+
+        for (int i = 0; i < space_dim-1; ++i)
+        {
+            for (int j = 1; j < i+2; ++j)
+            {
+                double djy = 1.;
+                for (int k = 1; k < i+1; ++k)
+                    djy *= k!=j ? s[qp][k] : s_p[qp][k];
+                grad[j-1][i] = djy * (i+1!=j ? c[qp][i] : c_p[qp][i]);
+            }
+        }
+
+        const int i = space_dim-1;
+        for (int j = 1; j < dim+1 ; ++j)
+        {
+            double djy = 1.;
+            for (int k = 1; k < i+1; ++k)
+                djy *= k!=j ? s[qp][k] : s_p[qp][k];
+            grad[j-1][i] = djy;
+        }
+    }
+}
+
+
+
+template<int dim>
+auto
+SphereFunction<dim>::
+evaluate_2(const ValueVector<Point> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+    const auto val_table = get_aux_vals<3>(points);
+    auto &cos_val = val_table[0];
+    auto &sin_val = val_table[1];
+
+    const auto &s = sin_val[0];
+    const auto &c = cos_val[0];
+    const auto &s_p = sin_val[1];
+    const auto &c_p = cos_val[1];
+    const auto &s_2p = sin_val[2];
+    const auto &c_2p = cos_val[2];
+    const int n_points = points.size();
+
+    for (int qp = 0; qp < n_points; ++qp)
+    {
+        auto &hessian = values[qp];
+        hessian = 0.;
+        for (int i = 0; i < space_dim-1; ++i)
+        {
+            for (int j = 1; j < i+2; ++j)
+            {
+                for (int k = 1; k < j+1; ++k)
+                {
+                    double d2jy = 1.;
+                    for (int l = 1; l < i+1; ++l)
+                    {
+                        double factor;
+                        if (j==k)
+                            factor = l==j ? s_2p[qp][l] : s[qp][l];
+                        else
+                            factor = (l==j || l==k) ?  s_p[qp][l] : s[qp][l];
+
+                        d2jy *= factor;
+                    }
+                    double factor;
+                    if (j==k)
+                        factor = (i+1)==j ? c_2p[qp][i] : c[qp][i];
+                    else
+                        factor = ((i+1)==j || (i+1)==k) ?
+                                 c_p[qp][i] : c[qp][i];
+
+                    hessian[j-1][k-1][i] = d2jy * factor;
+                }
+            }
+        }
+
+        const int i = space_dim-1;
+        for (int j = 1; j < dim+1; ++j)
+            for (int k = 1; k < j+1; ++k)
+            {
+                double d2jy = 1.;
+                for (int l = 1; l < i+1; ++l)
+                {
+                    double factor;
+                    if (j==k)
+                        factor = l==j ? s_2p[qp][l] : s[qp][l];
+                    else
+                        factor = (l==j || l==k) ?  s_p[qp][l] : s[qp][l];
+
+                    d2jy *= factor;
+                }
+                hessian[j-1][k-1][i] = d2jy;
+            }
+
+
+        for (int i = 0; i < space_dim; ++i)
+            for (int j = 0; j < dim; ++j)
+                for (int k = 0; k < j; ++k)
+                {
+                    hessian[k][j][i] = hessian[j][k][i];
+                }
+    }
+}
+
+
+
+//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 

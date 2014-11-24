@@ -27,83 +27,34 @@
 
 #include "../tests.h"
 
+#include "common_functions.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/space_tools.h>
-#include <igatools/io/writer.h>
-
-/**
- * Norm Function
- * F(x) = (sum x_i ^ p)^(1/p)
- */
-template<int dim>
-class NormFunction : public Function<dim>
-{
-public:
-    using Base = Function<dim>;
-    using typename Base::Point;
-    using typename Base::Value;
-    using typename Base::Gradient;
-    using typename Base::Hessian;
-
-    void evaluate(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const
-    {
-        auto pt = points.begin();
-        for (auto &val : values)
-        {
-            val = pt->norm();
-            ++pt;
-        }
-    }
-
-    void evaluate_gradients(
-        const ValueVector<Point> &points,
-        ValueVector<Gradient> &gradient) const
-    {}
-
-    void evaluate_hessians(
-        const ValueVector<Point> &points,
-        ValueVector<Hessian> &hessians) const
-    {}
-};
-
-
 
 template<int dim, int range = 1, int rank = 1>
-void test(const int deg,  const int n_knots)
+void integrate(const int deg,  const int n_knots)
 {
-    using Space = BSplineSpace<dim, range, rank>;
+    using Space = NewBSplineSpace<dim, range, rank>;
 
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto space = Space::create(deg, grid);
 
-    auto knots = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, knots);
-
-    const int n_qpoints = ceil((2*deg + 1)/2.);
+    const int n_qpoints = ceil((2*dim + 1)/2.);
     QGauss<dim> quad(n_qpoints);
 
-    NormFunction<dim> f;
 
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
+    auto f = NormFunction<dim>::create(grid, IdentityFunction<dim>::create(grid));
 
-    auto coeffs = space_tools::projection_l2<Space,la_pack>(f,space, quad);
+    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
+    auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
 
-    iga::vector<Real> elem_err(space->get_grid()->get_num_active_elems());
 
-    Real err = space_tools::integrate_difference<Space,la_pack>
-               (f, space, quad, Norm::L2, coeffs, elem_err);
+    vector<Real> elem_err(grid->get_num_active_elems());
+    Real err = space_tools::integrate_difference<dim>
+    (*f, *g, quad, Norm::L2, elem_err);
 
     out << err << endl;
-    //out << elem_err << endl;;
-
-//    Writer<dim> output(knots, 4);
-//    output.add_field(space, proj_values, "projected function");
-//    string filename = "proj_function-" + to_string(dim) +"d";
-//    output.save(filename);
 }
 
 
@@ -112,12 +63,8 @@ int main()
 {
     out.depth_console(20);
 
-    for (int n=2; n< std::pow(2,5); n*=2)
-    {
-        //    test<1,1,1>(1);
-        //    test<2,1,1>(1);
-        test<3,1,1>(1,n);
-    }
+    integrate<3,1,1>(1,3);
+
 
     return 0;
 }

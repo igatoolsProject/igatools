@@ -21,16 +21,17 @@
 #ifndef __NURBS_SPACE_H_
 #define __NURBS_SPACE_H_
 
-#include <igatools/base/config.h>
+
 
 #ifdef NURBS
-#include <igatools/basis_functions/bspline_space.h>
+
+#include <igatools/base/config.h>
+#include <igatools/basis_functions/new_bspline_space.h>
 
 IGA_NAMESPACE_OPEN
 
-//Forward declaration to avoid including the header
-template <int,int,int> class NURBSElementAccessor;
-template <int,int,int> class NURBSUniformQuadCache;
+template <int, int, int> class NURBSElement;
+template <int, int, int> class NURBSElementHandler;
 
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
@@ -47,62 +48,42 @@ class NURBSSpace :
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
     using self_t = NURBSSpace<dim_, range_, rank_>;
-    using spline_space_t = BSplineSpace<dim_, range_, rank_>;
+    using SpSpace = NewBSplineSpace<dim_, range_, rank_>;
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
-    using PushForwardType = PushForward<Transformation::h_grad,dim_,0>;
 
-    using RefSpace = self_t;
+    using GridType = CartesianGrid<dim_>;
+    static const int dim       = dim_;
+    static const int codim     = 0;
+    static const int space_dim = dim_;
+    static const int range     = range_;
+    static const int rank      = rank_;
 
-    using GridType = typename PushForwardType::GridType;
+    using SpSpace::n_components;
+    using SpSpace::components;
+    using SpSpace::dims;
 
-    static const int dim = PushForwardType::dim;
+public:
 
-    static const int codim = PushForwardType::codim;
 
-    static const int space_dim = PushForwardType::space_dim;
-
-    static const int range = spline_space_t::range;
-
-    static const int rank = spline_space_t::rank;
-
-    static const iga::RefSpaceType ref_space_type = iga::RefSpaceType(1);
-
-    static constexpr int n_components = spline_space_t::n_components;
-
-    static const std::array<int, n_components> components;
-
-    static const bool has_weights = true;
-
-    static const std::array<int, dim> dims;
-
-    /**
-     * Type alias for the boundary conditions on each face of each scalar component of the space.
-     */
-    using BCTable = typename spline_space_t::BCTable;
+    using BCTable = typename SpSpace::BCTable;
 
 
 public:
-    using Func = typename spline_space_t::Func;
+    using Func = typename SpSpace::Func;
     template <int order>
-    using Derivative = typename spline_space_t::template Derivative<order>;
-    using Point = typename spline_space_t::Point;
-    using Value = typename spline_space_t::Value;
-    using Div   = typename spline_space_t::Div;
+    using Derivative = typename SpSpace::template Derivative<order>;
+    using Point = typename SpSpace::Point;
+    using Value = typename SpSpace::Value;
+    using Div   = typename SpSpace::Div;
 
-    using RefPoint = typename spline_space_t::RefPoint;
+    using RefPoint = typename SpSpace::RefPoint;
 
 public:
-    /** Type for the reference face space.*/
-    using RefFaceSpace = Conditional<(dim>0),
-          NURBSSpace<dim-1, range, rank>,
-          NURBSSpace<0, range, rank> >;
-
-    using FaceSpace = PhysicalSpace<RefFaceSpace, typename PushForwardType::FacePushForward>;
 
     /** Type for the element accessor. */
-    using ElementAccessor = NURBSElementAccessor<dim, range, rank> ;
+    using ElementAccessor = NURBSElement<dim, range, rank> ;
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
@@ -110,22 +91,24 @@ public:
 public:
 //    /** Container indexed by the components of the space */
     template< class T>
-    using ComponentContainer = typename spline_space_t::template ComponentContainer<T>;
+    using ComponentContainer = typename SpSpace::template ComponentContainer<T>;
 
-    using DegreeTable = typename spline_space_t::DegreeTable;
-    using MultiplicityTable = typename spline_space_t::MultiplicityTable;
+    using DegreeTable = typename SpSpace::DegreeTable;
+    using MultiplicityTable = typename SpSpace::MultiplicityTable;
 
-    using EndBehaviour = typename spline_space_t::EndBehaviour;
-    using EndBehaviourTable = typename spline_space_t::EndBehaviourTable;
-    using InteriorReg= typename spline_space_t::InteriorReg;
-    using SpaceDimensionTable = typename spline_space_t::SpaceDimensionTable;
+    using EndBehaviour = typename SpSpace::EndBehaviour;
+    using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
+    using InteriorReg= typename SpSpace::InteriorReg;
+    using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
+    using WeightFunction = IgFunction<NewBSplineSpace<dim_, 1, 1>>;
     using Weights = DynamicMultiArray<Real,dim>;
-    using WeightsTable = ComponentContainer<Weights>;
+    using WeightsTable = ComponentContainer<WeightFunction>;
 
 
 
 public:
+#if 0
     /** @name Creators*/
     ///@{
     /**
@@ -159,12 +142,12 @@ public:
            std::shared_ptr<const MultiplicityTable> interior_mult,
            const EndBehaviourTable &ends = EndBehaviourTable(),
            const WeightsTable &weights = WeightsTable());
-
+#endif
     /**
      * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a table of weights.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<spline_space_t> bs_space,
+    create(std::shared_ptr<SpSpace> bs_space,
            const WeightsTable &weights);
 
     ///@}
@@ -181,7 +164,7 @@ public:
 protected:
     /** @name Constructor */
     ///@{
-
+#if 0
     /**
      * Constructs a maximum regularity NURBSSpace over CartesianGrid
      * @p knots for the given @p degree in all directions and homogeneous in all components.
@@ -211,10 +194,11 @@ protected:
                          const EndBehaviourTable &ends,
                          const WeightsTable &weights);
 
+#endif
     /**
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
-    explicit  NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
+    explicit  NURBSSpace(std::shared_ptr<SpSpace> bs_space,
                          const WeightsTable &weights);
 
     /**
@@ -260,6 +244,7 @@ public:
      */
     const DegreeTable &get_degree() const;
 
+#if 0
     /**
      * Returns the multiplicity of the internal knots that defines the BSpline
      * space for each component and for each coordinate direction.
@@ -267,7 +252,7 @@ public:
      * space for each component and for each coordinate direction.
      */
     std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
-
+#endif
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
@@ -275,9 +260,9 @@ public:
     ///@}
 
 
-
-    const std::shared_ptr<spline_space_t> get_spline_space() const;
-
+#if 0
+    const std::shared_ptr<SpSpace> get_spline_space() const;
+#endif
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
 
@@ -291,7 +276,7 @@ public:
     DofDistribution<dim, range, rank> &get_dof_distribution_patch();
 
 
-
+#if 0
     /** Return the push forward (non-const version). */
     std::shared_ptr<PushForwardType> get_push_forward();
 
@@ -311,7 +296,7 @@ public:
     get_face_space(const Index face_id,
                    vector<Index> &face_to_element_dofs) const;
 
-
+#endif
 
     /**
      * Adds an @p offset to the values of the dof ids.
@@ -337,19 +322,19 @@ public:
      * Get the weights of the NURBSSpace.
      */
     const WeightsTable &get_weights() const;
-
+#if 0
     /**
      * Reset the weights of the NURBSSpace.
      */
     void reset_weights(const WeightsTable &weights);
-
+#endif
     /**
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
      */
     void print_info(LogStream &out) const;
 
-
+#if 0
     /**
      * Returns a const-reference to the table containing
      * the boundary conditions on each face of each scalar component of the space.
@@ -389,18 +374,19 @@ public:
     {
         return sp_space_->get_boundary_conditions_table();
     }
-
+#endif
 private:
     /**
      * B-spline space
      */
-    std::shared_ptr<spline_space_t> sp_space_;
+    std::shared_ptr<SpSpace> sp_space_;
 
     /**
      * Weights associated to the basis functions.
      */
     WeightsTable weights_;
 
+#if 0
     /**
      * Refines the NURBSSpace after the uniform refinement of the BSplineSpace.
      *
@@ -421,11 +407,6 @@ private:
      * Create a signal and a connection for the refinement.
      */
     void create_refinement_connection();
-
-
-    friend ElementAccessor;
-    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
-
     /**
      * Performs checks after the construction of the object.
      * In debug mode, if something is going wrong, an assertion will be raised.
@@ -433,6 +414,13 @@ private:
      * @warning This function should be used as last line in the implementation of each constructor.
      */
     void perform_post_construction_checks() const;
+
+
+#endif
+    friend ElementAccessor;
+    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
+
+
 };
 
 

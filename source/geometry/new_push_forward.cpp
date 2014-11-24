@@ -36,7 +36,7 @@ pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags
     NewValueFlags transfer_flag = NewValueFlags::measure |
     NewValueFlags::w_measure |
     NewValueFlags::outer_normal|
-	NewValueFlags::boundary_normal|
+    NewValueFlags::boundary_normal|
     NewValueFlags::point|
     NewValueFlags::value|
     NewValueFlags::gradient|
