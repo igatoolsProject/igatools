@@ -271,7 +271,7 @@ public:
     ElementIterator end() const;
     ///@}
 
-
+    ElementHandler get_element_handler() const;
 
     template <int k>
     using InterGridMap = typename GridType::template InterGridMap<k>;

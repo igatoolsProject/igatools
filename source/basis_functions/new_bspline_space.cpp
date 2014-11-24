@@ -186,6 +186,17 @@ end() const -> ElementIterator
 }
 
 
+
+template<int dim_, int range_, int rank_>
+auto
+NewBSplineSpace<dim_, range_, rank_>::
+get_element_handler() const -> ElementHandler
+{
+    return ElementHandler(this->shared_from_this());
+}
+
+
+
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
@@ -266,101 +277,8 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 }
 
 
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-NewBSplineSpace<dim_, range_, rank_>::
-get_ref_face_space(const Index face_id,
-                   vector<Index> &face_to_element_dofs,
-                   typename GridType::FaceGridMap &elem_map) const
--> std::shared_ptr<RefFaceSpace>
-{
-
-    auto face_grid   = this->get_grid()->get_face_grid(face_id, elem_map);
-    auto face_mult   = this->get_face_mult(face_id);
-    auto face_degree = this->get_face_degree(face_id);
-
-    // TODO (pauletti, Jun 4, 2014): make sure the face space is compatible with the space end behaviou
-    auto f_space = RefFaceSpace::create(face_degree, face_grid, face_mult);
-
-    const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
-    const auto const_dir = UnitElement<dim>::face_constant_direction[face_id];
-    const auto face_side = UnitElement<dim>::face_side[face_id];
-
-    TensorIndex<dim> tensor_index;
-    face_to_element_dofs.resize(f_space->get_num_basis());
-    int k=0;
-    for (auto comp : components)
-    {
-        const int face_n_basis = f_space->get_num_basis(comp);
-        const auto &face_local_indices = f_space->get_dof_distribution_patch().get_index_table()[comp];
-        const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
-
-        for (Index i = 0; i < face_n_basis; ++i, ++k)
-        {
-            const auto f_tensor_idx = face_local_indices.flat_to_tensor(i);
-            const int fixed_idx = face_side * (this->get_num_basis(comp,const_dir) - 1);
-            for (int j : RefFaceSpace::dims)
-                tensor_index[active_dirs[j]] =  f_tensor_idx[j];
-            tensor_index[const_dir] = fixed_idx;
-
-//            face_to_element_dofs[k] = dof_distribution_global_.basis_tensor_to_flat(tensor_index, comp);
-
-            face_to_element_dofs[k] = elem_global_indices(tensor_index);
-        }
-    }
-    return f_space;
-}
 
 
-template<int dim_, int range_, int rank_>
-auto
-NewBSplineSpace<dim_, range_, rank_>::
-get_face_space(const Index face_id,
-               vector<Index> &face_to_element_dofs) const
--> std::shared_ptr<FaceSpace>
-{
-    auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
-    auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
-    auto map  = get_push_forward()->get_mapping();
-
-    auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
-    create(map, face_id, face_ref_sp->get_grid(), elem_map);
-    auto fpf = FaceSpace::PushForwardType::create(fmap);
-    auto face_space = FaceSpace::create(face_ref_sp,fpf);
-
-    return face_space;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-NewBSplineSpace<dim_, range_, rank_>::
-get_push_forward() -> shared_ptr<PushForwardType>
-{
-    return
-    PushForwardType::create(IdentityMapping<dim>::create(this->get_grid()));
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-NewBSplineSpace<dim_, range_, rank_>::
-get_push_forward() const -> shared_ptr<const PushForwardType>
-{
-    using PushForwardType1 = PushForward<Transformation::h_grad,dim,0>;
-    auto grid = this->get_grid();
-    auto push_fwd =
-    PushForwardType1::create(
-        IdentityMapping<dim>::create(
-            make_shared<GridType>(GridType(*grid))));
-
-    return push_fwd;
-}
-
-#endif
 
 template<int dim_, int range_, int rank_>
 void
