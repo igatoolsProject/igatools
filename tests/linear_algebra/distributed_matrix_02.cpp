@@ -27,10 +27,14 @@
  *
  */
 
+// TODO (pauletti, Jun 3, 2014): the comment is not consistent with the test
+// TODO (pauletti, Nov 24, 2014): the filename is not good
+// TODO (pauletti, Nov 24, 2014):  this test needs to be rewritten
+
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/geometry/unit_element.h>
 
 #include <igatools/linear_algebra/sparsity_pattern.h>
@@ -68,8 +72,8 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
-    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
+    auto bspline_space_rows = NewBSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
+    auto bspline_space_cols = NewBSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
 
     const auto dofs_view_row = bspline_space_rows->get_dof_distribution_global().get_dofs_view();
     const auto dofs_view_col = bspline_space_cols->get_dof_distribution_global().get_dofs_view();
@@ -135,7 +139,7 @@ int main(int argc, char *argv[])
     }
 
     out << "b vector" << endl;
-    b.print(out);
+    b.print_info(out);
     out << endl;
 
     VectorType c(vector<Index>(dofs_view_row.begin(),dofs_view_row.end()));
@@ -145,7 +149,7 @@ int main(int argc, char *argv[])
     A.multiply_by_right_vector(b,c,1.0,0.0);
 
     out << "c = A . b" << endl;
-    c.print(out);
+    c.print_info(out);
 
     out << endl;
 

@@ -1,22 +1,22 @@
 Traversing the elements of a 1-dimensional grid.
-The center of element: 0 is: [ 0.250000 ] 
-The center of element: 1 is: [ 0.750000 ] 
+The tensor index of element: 0 is: [0]
+The tensor index of element: 1 is: [1]
 
 Traversing the elements of a 2-dimensional grid.
-The center of element: 0 is: [ 0.250000 0.250000 ] 
-The center of element: 1 is: [ 0.750000 0.250000 ] 
-The center of element: 2 is: [ 0.250000 0.750000 ] 
-The center of element: 3 is: [ 0.750000 0.750000 ] 
+The tensor index of element: 0 is: [0,0]
+The tensor index of element: 1 is: [1,0]
+The tensor index of element: 2 is: [0,1]
+The tensor index of element: 3 is: [1,1]
 
 Traversing the elements of a 3-dimensional grid.
-The center of element: 0 is: [ 0.250000 0.250000 0.250000 ] 
-The center of element: 1 is: [ 0.750000 0.250000 0.250000 ] 
-The center of element: 2 is: [ 0.250000 0.750000 0.250000 ] 
-The center of element: 3 is: [ 0.750000 0.750000 0.250000 ] 
-The center of element: 4 is: [ 0.250000 0.250000 0.750000 ] 
-The center of element: 5 is: [ 0.750000 0.250000 0.750000 ] 
-The center of element: 6 is: [ 0.250000 0.750000 0.750000 ] 
-The center of element: 7 is: [ 0.750000 0.750000 0.750000 ] 
+The tensor index of element: 0 is: [0,0,0]
+The tensor index of element: 1 is: [1,0,0]
+The tensor index of element: 2 is: [0,1,0]
+The tensor index of element: 3 is: [1,1,0]
+The tensor index of element: 4 is: [0,0,1]
+The tensor index of element: 5 is: [1,0,1]
+The tensor index of element: 6 is: [0,1,1]
+The tensor index of element: 7 is: [1,1,1]
 
 
 Traversing the elements of a 1-dimensional B-spline space.

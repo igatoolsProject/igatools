@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
  *  Test for Vector class
  *
@@ -25,10 +26,9 @@
  *
  */
 
+// TODO (pauletti, Nov 24, 2014): this test can be improved
 #include "../tests.h"
-
 #include <igatools/linear_algebra/distributed_vector.h>
-
 
 void run_test()
 {
@@ -42,11 +42,11 @@ void run_test()
 
 
     VectorType v0(0);
-    v0.print(out);
+    v0.print_info(out);
     out << endl;
 
     VectorType v1(10);
-    v1.print(out);
+    v1.print_info(out);
     out << endl;
 
 }

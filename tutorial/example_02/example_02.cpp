@@ -24,11 +24,11 @@
  */
 // [old_includes]
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/new_bspline_space.h>
 // [old_includes]
 // [acc_includes]
 #include <igatools/geometry/cartesian_grid_element.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 // [acc_includes]
 #include <igatools/base/logstream.h>
 
@@ -51,8 +51,8 @@ void loop_on_grid()
     // [iter_grid]
     for (auto elem : *grid)
     {
-        out << "The center of element: " << elem.get_flat_index();
-        out << " is: "<< elem.center() << endl;
+        out << "The tensor index of element: " << elem.get_flat_index();
+        out << " is: "<< elem.get_tensor_index() << endl;
     }
     // [iter_grid]
     out << endl;
@@ -67,7 +67,7 @@ void loop_on_space()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
     const int degree = 2;
-    auto space = BSplineSpace<dim>::create(degree, grid);
+    auto space = NewBSplineSpace<dim>::create(degree, grid);
 
     for (auto elem : *space)
     {

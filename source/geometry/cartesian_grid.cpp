@@ -304,6 +304,16 @@ end() const -> ElementIterator
 
 
 template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_element_handler() const -> ElementHandler
+{
+    return ElementHandler(this->shared_from_this());
+}
+
+
+
+template<int dim_>
 Index
 CartesianGrid<dim_>::
 tensor_to_flat(const TensorIndex<dim_> &tensor_index) const

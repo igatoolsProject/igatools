@@ -318,6 +318,7 @@ public:
     ElementIterator end() const;
     ///@}
 
+    ElementHandler get_element_handler() const;
 
     /** @name Functions for the index transformations */
     ///@{
