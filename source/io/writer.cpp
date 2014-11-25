@@ -42,21 +42,28 @@ template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const shared_ptr<const CartesianGrid<dim>> grid)
     :
-    Writer(NewMapping<dim, codim>::create(IdentityFunction<dim,dim+codim>::create(grid)),
+    Writer(IdentityFunction<dim,dim+codim>::create(grid),
            shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
 {}
 
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
+       const Index num_points_direction)
+    :
+    Writer(map,shared_ptr<QUniform<dim> >(new QUniform<dim>(num_points_direction)))
+{}
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const NewMapping<dim,codim> > map,
+Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
     :
 //    grid_(map->get_function()->get_grid()),
-    map_(NewMapping<dim,codim>::create(map->get_function()->clone())),
+    map_(map->clone()),
     quad_plot_(quadrature),
     num_points_direction_(quad_plot_->get_num_points_direction()),
-    n_iga_elements_(map->get_function()->get_grid()->get_num_active_elems()),
+    n_iga_elements_(map->get_grid()->get_num_active_elems()),
     n_points_per_iga_element_(quad_plot_->get_num_points()),
     n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
     sizeof_Real_(sizeof(T)),
@@ -170,11 +177,13 @@ fill_points_and_connectivity(
     auto m_elem = map_->begin();
     auto m_end  = map_->end();
 
-    map_->template init_cache<dim>(m_elem);
+    const auto topology = Int<dim>();
+
+    map_->init_cache(m_elem,topology);
 
     for (; m_elem != m_end; ++m_elem)
     {
-        map_->template fill_cache<dim>(m_elem, 0);
+        map_->fill_cache(m_elem,0,topology);
 
         const auto elem_id = m_elem->get_flat_index();
 
@@ -190,7 +199,7 @@ fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-    const MappingElement<dim,codim> &elem,
+    const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
     vector< special_array<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
     vector< special_array<T,3> > &points_phys_iga_element) const
 {

@@ -26,6 +26,7 @@
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/base/function_element.h>
 
 #include <igatools/utils/array.h>
 
@@ -44,6 +45,10 @@ class Writer
 public:
     Writer(const std::shared_ptr<const CartesianGrid<dim> > grid);
 
+
+    Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
+           const Index num_points_direction);
+
     /**
      * This constructor builds a Writer object using a distribution for
      * the evaluation points given by the @p quadrature scheme.
@@ -53,8 +58,10 @@ public:
      * otherwise an exception will be raised.
      * \see add_field
      */
-    Writer(const std::shared_ptr<const NewMapping<dim,codim> > mapping,
+    Writer(const std::shared_ptr<const MapFunction<dim,dim+codim> > map,
            const std::shared_ptr<const Quadrature<dim>> quadrature);
+
+
 
     /**
      * Save the data on a .vtu file.
@@ -84,7 +91,7 @@ private:
 //    std::shared_ptr<const CartesianGrid<dim> > grid_;
 
 
-    std::shared_ptr<NewMapping<dim,codim> > map_;
+    std::shared_ptr<MapFunction<dim,dim+codim> > map_;
 
     /**
      * Unit element quadrature rule used for the plot.
@@ -232,7 +239,7 @@ private:
         &vtk_elements_connectivity) const;
 
     void get_subelements(
-        const MappingElement<dim,codim> &elem,
+        const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
         vector< special_array<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
         vector< special_array<T,3> > &points_phys_iga_element) const;
 
@@ -297,8 +304,6 @@ public:
     Writer(const std::shared_ptr<Grid> grid,
            const Index num_points_direction);
 
-    Writer(const std::shared_ptr<const Map> mapping,
-           const Index num_points_direction);
 
 
 

@@ -27,7 +27,6 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/geometry/mapping_element.h"
 
 template<int dim>
 void
