@@ -27,6 +27,7 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
+#include "igatools/geometry/cartesian_grid_element.h"
 
 template<int dim>
 void

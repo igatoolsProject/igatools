@@ -310,6 +310,56 @@ get_subelements(
 }
 
 template<int dim, int codim, class T>
+void
+Writer<dim, codim, T>::
+add_element_data(const vector<double> &element_data,
+                 const std::string &name)
+{
+    cell_data_double_.emplace_back(CellData<double>(element_data, name));
+
+    const string type = cell_data_double_.back().type_;
+    if (type == "scalar")
+    {
+        names_cell_data_scalar_.emplace_back(name);
+    }
+    else if (type == "vector")
+    {
+        names_cell_data_vector_.emplace_back(name);
+    }
+    else if (type == "tensor")
+    {
+        names_cell_data_tensor_.emplace_back(name);
+    }
+}
+
+
+
+template<int dim, int codim, class T>
+void
+Writer<dim, codim, T>::
+add_element_data(const vector<int> &element_data,
+                 const std::string &name)
+{
+    cell_data_int_.emplace_back(CellData<int>(element_data, name));
+
+    const string type = cell_data_int_.back().type_;
+    if (type == "scalar")
+    {
+        names_cell_data_scalar_.emplace_back(name);
+    }
+    else if (type == "vector")
+    {
+        names_cell_data_vector_.emplace_back(name);
+    }
+    else if (type == "tensor")
+    {
+        names_cell_data_tensor_.emplace_back(name);
+    }
+}
+
+
+
+template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 save(const string &filename, const string &format) const
 {
@@ -1027,51 +1077,6 @@ add_field(shared_ptr<Space> space_,
 
 
 
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
-add_element_data(const vector<double> &element_data,
-                 const std::string &name)
-{
-    cell_data_double_.emplace_back(CellData<double>(element_data, name));
-
-    const string type = cell_data_double_.back().type_;
-    if (type == "scalar")
-    {
-        names_cell_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_cell_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_cell_data_tensor_.emplace_back(name);
-    }
-}
-
-
-
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
-add_element_data(const vector<int> &element_data,
-                 const std::string &name)
-{
-    cell_data_int_.emplace_back(CellData<int>(element_data, name));
-
-    const string type = cell_data_int_.back().type_;
-    if (type == "scalar")
-    {
-        names_cell_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_cell_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_cell_data_tensor_.emplace_back(name);
-    }
-}
 
 
 

@@ -73,6 +73,13 @@ public:
      */
     void print_info(LogStream &out) const;
 
+
+    void add_element_data(const vector<double> &element_data,
+                          const std::string &name);
+
+    void add_element_data(const vector<int> &element_data,
+                          const std::string &name);
+
 private:
 //    std::shared_ptr<const CartesianGrid<dim> > grid_;
 
@@ -229,6 +236,8 @@ private:
         vector< special_array<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
         vector< special_array<T,3> > &points_phys_iga_element) const;
 
+
+
     template<class Out>
     void save_ascii(Out &file,
                     const vector<vector<special_array<T,3> > > &points_in_iga_elements,
@@ -240,6 +249,8 @@ private:
                        const vector<vector<special_array<T,3> > > &points_in_iga_elements,
                        const vector<vector<special_array< int,n_vertices_per_vtk_element_> > >
                        &vtk_elements_connectivity) const;
+
+
 
 };
 
@@ -325,11 +336,6 @@ public:
                    const std::string &name);
 
 
-    void add_element_data(const vector<double> &element_data,
-                          const std::string &name);
-
-    void add_element_data(const vector<int> &element_data,
-                          const std::string &name);
 
 
 
