@@ -179,7 +179,7 @@ fill_points_and_connectivity(
         const auto elem_id = m_elem->get_flat_index();
 
         this->get_subelements(
-            m_elem,
+            *m_elem,
             vtk_elements_connectivity[elem_id],
             points_in_iga_elements[elem_id]);
     }
@@ -190,7 +190,7 @@ fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-    const typename NewMapping<dim,codim>::ElementIterator elem,
+    const MappingElement<dim,codim> &elem,
     vector< special_array<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
     vector< special_array<T,3> > &points_phys_iga_element) const
 {
@@ -201,7 +201,7 @@ get_subelements(
            ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-    auto element_vertices_tmp = elem->template get_values<0,0>(0);
+    auto element_vertices_tmp = elem.template get_values<0,dim>(0);
 
     const T zero = T(0.0);
 
@@ -216,7 +216,7 @@ get_subelements(
     }
 
 
-    const int iga_element_id = elem->get_flat_index();
+    const int iga_element_id = elem.get_flat_index();
 
     vector< special_array<int,dim> > delta_idx(n_vertices_per_vtk_element_);
 

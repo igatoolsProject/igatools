@@ -47,6 +47,7 @@ public:
     auto
     get_values(const int j) const
     {
+        Assert(local_cache_ != nullptr,ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return std::get<order>(cache.values_);

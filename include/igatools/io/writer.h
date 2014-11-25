@@ -135,7 +135,7 @@ private:
 
     int precision_;
 
-    static const int n_vertices_per_vtk_element_ = UnitElement<dim>::template num_elem<dim>();
+    static const int n_vertices_per_vtk_element_ = UnitElement<dim>::template num_elem<0>();
 
 
 
@@ -225,7 +225,7 @@ private:
         &vtk_elements_connectivity) const;
 
     void get_subelements(
-        const typename NewMapping<dim,codim>::ElementIterator elem,
+        const MappingElement<dim,codim> &elem,
         vector< special_array<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
         vector< special_array<T,3> > &points_phys_iga_element) const;
 
