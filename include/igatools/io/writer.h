@@ -43,6 +43,18 @@ template<int dim, int codim = 0, class T = double>
 class Writer
 {
 public:
+
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    Writer() = delete;
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    Writer(const Writer<dim,codim,T> &writer) = delete;
+
+
     Writer(const std::shared_ptr<const CartesianGrid<dim> > grid);
 
 
@@ -61,6 +73,16 @@ public:
     Writer(const std::shared_ptr<const MapFunction<dim,dim+codim> > map,
            const std::shared_ptr<const Quadrature<dim>> quadrature);
 
+
+    /*
+     * Destructor.
+     */
+    ~Writer() = default;
+
+    /**
+     * Assignment operator. Not allowed to be used.
+     */
+    Writer<dim,codim,T> &operator=(const Writer<dim,codim,T> &writer) = delete;
 
 
     /**
@@ -86,6 +108,35 @@ public:
 
     void add_element_data(const vector<int> &element_data,
                           const std::string &name);
+
+    /**
+     * \brief Add data for every evaluation point to the output file.
+     * \param[in] n_values_per_point
+     * \param[in] type Type of add to be added. It can be scalar, vector
+     * or tensor.
+     * \param[in] name Name of the field.
+     * \param[in] data_iga_elements Data to be added. The different levels of
+     * the container are: the first vector level corresponds to the IGA
+     * elements; the second one to the evaluation points inside an IGA element;
+     * and the third one to the components of the data to be plotted.
+     * \note The number of entries of @p data_iga_elements must be equal to the
+     * number of IGA elements, otherwise an exception will be raised.
+     * \note The number of entries of eachy entry of @p data_iga_elements must
+     * be equal to the number of IGA elements, otherwise an exception will be
+     * raised.
+     * \note The number of values associated to every plot points that are
+     * specified in @p data_iga_elements must be equal to @ n_values_per_point,
+     * otherwise an exception will be raised.
+     */
+    void add_point_data(const int n_values_per_point,
+                        const std::string &type,
+                        const vector<vector<vector<T> > > &data_iga_elements,
+                        const std::string &name);
+
+    /**
+     * Returns the number of evaluation points used for each IGA (i.e. Bezier) element.
+     */
+    int get_num_points_per_iga_element() const;
 
 private:
 //    std::shared_ptr<const CartesianGrid<dim> > grid_;
@@ -307,20 +358,6 @@ public:
 
 
 
-    /**
-     * Default constructor. Not allowed to be used.
-     */
-    Writer() = delete;
-
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    Writer(const self_t &writer) = delete;
-
-    /**
-     * Assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(const self_t &writer) = delete;
 
     /**
      * \brief Add a field to the output file.
@@ -360,35 +397,8 @@ public:
      */
     int get_num_vtk_elements_per_iga_element() const;
 
-    /**
-     * Returns the number of evaluation points used for each IGA element.
-     */
-    int get_num_points_per_iga_element() const;
 
 
-    /**
-     * \brief Add data for every evaluation point to the output file.
-     * \param[in] n_values_per_point
-     * \param[in] type Type of add to be added. It can be scalar, vector
-     * or tensor.
-     * \param[in] name Name of the field.
-     * \param[in] data_iga_elements Data to be added. The different levels of
-     * the container are: the first vector level corresponds to the IGA
-     * elements; the second one to the evaluation points inside an IGA element;
-     * and the third one to the components of the data to be plotted.
-     * \note The number of entries of @p data_iga_elements must be equal to the
-     * number of IGA elements, otherwise an exception will be raised.
-     * \note The number of entries of eachy entry of @p data_iga_elements must
-     * be equal to the number of IGA elements, otherwise an exception will be
-     * raised.
-     * \note The number of values associated to every plot points that are
-     * specified in @p data_iga_elements must be equal to @ n_values_per_point,
-     * otherwise an exception will be raised.
-     */
-    void add_point_data(const int n_values_per_point,
-                        const std::string &type,
-                        const vector<vector<vector<T>>> &data_iga_elements,
-                        const std::string &name);
 
 
 

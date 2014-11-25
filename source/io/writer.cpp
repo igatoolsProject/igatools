@@ -369,6 +369,60 @@ add_element_data(const vector<int> &element_data,
 
 
 template<int dim, int codim, class T>
+void
+Writer<dim, codim, T>::
+add_point_data(const int n_values_per_point,
+               const std::string &type,
+               const vector<vector<vector<T>>> &data_iga_elements,
+               const std::string &name)
+{
+    Assert(data_iga_elements.size() == n_iga_elements_,
+           ExcDimensionMismatch(data_iga_elements.size(), n_iga_elements_));
+    Assert(type == "scalar" || type == "vector" || type == "tensor",
+           ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
+
+    shared_ptr<vector<T>> data_ptr(new vector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
+    auto &data = *data_ptr;
+
+    Index pos = 0;
+    for (const auto &data_element : data_iga_elements)
+    {
+        Assert(data_element.size() == n_points_per_iga_element_,
+               ExcDimensionMismatch(data_element.size(), n_points_per_iga_element_));
+
+        for (const auto &data_point : data_element)
+        {
+            Assert(data_point.size() == n_values_per_point,
+                   ExcDimensionMismatch(data_point.size(), n_values_per_point));
+
+            for (const double &value : data_point)
+            {
+                data[pos++] = value;
+            }
+        }
+    }
+    fields_.emplace_back(PointData(name,type,n_iga_elements_,
+                                   n_points_per_iga_element_,
+                                   n_values_per_point,
+                                   data_ptr));
+
+    if (type == "scalar")
+    {
+        names_point_data_scalar_.emplace_back(name);
+    }
+    else if (type == "vector")
+    {
+        names_point_data_vector_.emplace_back(name);
+    }
+    else if (type == "tensor")
+    {
+        names_point_data_tensor_.emplace_back(name);
+    }
+
+}
+
+
+template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 save(const string &filename, const string &format) const
 {
@@ -806,6 +860,7 @@ save_appended(const string &filename,
 }
 
 
+
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
@@ -822,6 +877,14 @@ void Writer<dim, codim, T>::print_info(LogStream &out) const
     this->save_ascii(out, points_in_iga_elements, vtk_elements_connectivity);
 }
 
+
+template<int dim, int codim, class T>
+int
+Writer<dim, codim, T>::
+get_num_points_per_iga_element() const
+{
+    return n_points_per_iga_element_;
+}
 
 
 #if 0
@@ -897,71 +960,12 @@ int Writer<dim, codim, T>::get_num_vtk_elements() const
 
 
 
-template<int dim, int codim, class T>
-int Writer<dim, codim, T>::get_num_points_per_iga_element() const
-{
-    return n_points_per_iga_element_;
-}
-
 
 
 template<int dim, int codim, class T>
 int Writer<dim, codim, T>::get_num_vtk_elements_per_iga_element() const
 {
     return n_vtk_elements_per_iga_element_;
-}
-
-
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
-add_point_data(const int n_values_per_point,
-               const std::string &type,
-               const vector<vector<vector<T>>> &data_iga_elements,
-               const std::string &name)
-{
-    Assert(data_iga_elements.size() == n_iga_elements_,
-           ExcDimensionMismatch(data_iga_elements.size(), n_iga_elements_));
-    Assert(type == "scalar" || type == "vector" || type == "tensor",
-           ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
-
-    shared_ptr<vector<T>> data_ptr(new vector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
-    auto &data = *data_ptr;
-
-    int pos = 0;
-    for (const auto &data_element : data_iga_elements)
-    {
-        Assert(data_element.size() == n_points_per_iga_element_,
-               ExcDimensionMismatch(data_element.size(), n_points_per_iga_element_));
-
-        for (const auto &data_point : data_element)
-        {
-            Assert(data_point.size() == n_values_per_point,
-                   ExcDimensionMismatch(data_point.size(), n_values_per_point));
-
-            for (const double &value : data_point)
-            {
-                data[pos++] = value;
-            }
-        }
-    }
-    fields_.emplace_back(PointData(name,type,n_iga_elements_,
-                                   n_points_per_iga_element_,
-                                   n_values_per_point,
-                                   data_ptr));
-
-    if (type == "scalar")
-    {
-        names_point_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_point_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_point_data_tensor_.emplace_back(name);
-    }
-
 }
 
 
