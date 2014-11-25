@@ -78,6 +78,7 @@ void mapping_values()
         elem->get_principal_curvatures().print_info(out);
         out << endl;
 
+ //       elem->compute_second_fundamental_form().print_info(out);
 //        out << "Points:" << endl;
 //        elem->get_points().print_info(out);
 //        out << endl;

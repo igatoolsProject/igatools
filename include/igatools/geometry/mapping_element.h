@@ -45,6 +45,9 @@ public:
     template<int order>
     using InvDerivative = typename Map::template InvDerivative<order>;
 
+    template <int order>
+    using Derivative = typename Map::template Derivative<order>;
+
     template<int k>
     ValueVector<Real> const &get_measures(const int j) const
     {
@@ -72,31 +75,16 @@ public:
 //    ValueVector<special_array<Points<space_dim>, codim>>
     ValueVector<Points<space_dim> > get_external_normals() const;
 
-    using TensorCov =
+    using MetricTensor =
     Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
 
-    ValueVector<TensorCov> compute_inv_first_fundamental_form() const
-    {
-    	ValueVector<TensorCov> res;
-    	const auto &DF = this->template get_values<1, dim>(0);
-    	const auto n_points = DF.get_num_points();
+    ValueVector<MetricTensor> compute_inv_first_fundamental_form() const;
 
-    	res.resize(n_points);
-    	Real det;
-    	for (int i = 0; i< n_points; ++i)
-    	{
-    		const auto &A = DF[i];
-    		const auto A_t   = co_tensor(transpose(A));
-    	    const auto G     = compose(A_t, A);
-    	    res[i] = inverse(G, det);
-    	}
+    ValueVector<MetricTensor> compute_second_fundamental_form() const;
 
-    	return res;
-	}
+    ValueVector< Derivative<1> > get_D_external_normals() const;
 
     ValueVector<vector<Real> > get_principal_curvatures() const;
-
-
 
 
     template<int sub_dim>
