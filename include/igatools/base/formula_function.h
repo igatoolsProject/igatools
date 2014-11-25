@@ -51,7 +51,7 @@ public:
 
     using Map = MapFunction<dim, space_dim>;
 
-    FormulaFunction(std::shared_ptr<GridType> grid,  std::shared_ptr<Map> map);
+    FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
     FormulaFunction(const self_t &func)
         :

@@ -27,7 +27,9 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/geometry/mapping_lib.h"
+#include "igatools/base/identity_function.h"
+#include "igatools/base/function_lib.h"
+//#include "igatools/geometry/mapping_element.h"
 
 template<int dim>
 void
@@ -35,8 +37,9 @@ test()
 {
     const int n_knots = 4;
     auto grid = CartesianGrid<dim>::create(n_knots);
-    auto map  = BallMapping<dim>::create(grid);
-    Writer<dim> writer(map, 4);
+    auto identity_function = IdentityFunction<dim>::create(grid);
+    auto ball_function = functions::BallFunction<dim>::create(grid,identity_function);
+    Writer<dim> writer(ball_function, 4);
 
     string filename = "map" + to_string(dim);
     writer.save(filename);
