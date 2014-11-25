@@ -246,22 +246,6 @@ private:
     InitCacheDispatcher init_cache_impl;
 
 
-
-//    virtual void init_elem(ElementAccessor &elem) = 0;
-//
-//    virtual void fill_elem(ElementAccessor &elem) = 0;
-//
-//    virtual void init_elem(ElementIterator &elem)
-//    {
-//        this->init_elem(elem.get_accessor());
-//    }
-//
-//    virtual void fill_elem(ElementIterator &elem)
-//    {
-//        this->fill_elem(elem.get_accessor());
-//    }
-
-//protected:
 public:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);

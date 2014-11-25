@@ -33,26 +33,26 @@
 template <int dim>
 void eigen_values()
 {
-	OUTSTART
+    OUTSTART
 
-	DenseMatrix A(dim, dim);
-	A.clear();
-	for (int i=0; i<dim; ++i)
-		A(i,i) = i+1;
+    DenseMatrix A(dim, dim);
+    A.clear();
+    for (int i=0; i<dim; ++i)
+        A(i,i) = i+1;
 
-	A.print_info(out);
-	out << endl << "Eigen Values:" << endl;
-	A.eigen_values().print_info(out);
-	out << endl;
+    A.print_info(out);
+    out << endl << "Eigen Values:" << endl;
+    A.eigen_values().print_info(out);
+    out << endl;
 
-	OUTEND
+    OUTEND
 }
 
 
 int main()
 {
-	eigen_values<2>();
-	eigen_values<3>();
+    eigen_values<2>();
+    eigen_values<3>();
 
     return 0;
 }

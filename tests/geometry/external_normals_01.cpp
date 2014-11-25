@@ -101,7 +101,7 @@ void mapping_values()
 
 int main()
 {
-	mapping_values<1>();
+    mapping_values<1>();
     mapping_values<2>();
 
     return 0;

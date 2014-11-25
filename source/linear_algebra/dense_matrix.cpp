@@ -84,48 +84,48 @@ size2() const
 
 vector<Real> DenseMatrix::eigen_values() const
 {
-	Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
+    Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
-	Teuchos::LAPACK<int, double> lapack;
-	const int n = this->size1();
-	BoostMatrix A(*this);
-	vector<Real> e_values(n);
-	int info;
-	double ws[3*n-1];
-	lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
-			ws, 3*n-1, &info);
+    Teuchos::LAPACK<int, double> lapack;
+    const int n = this->size1();
+    BoostMatrix A(*this);
+    vector<Real> e_values(n);
+    int info;
+    double ws[3*n-1];
+    lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
+                ws, 3*n-1, &info);
 
-	Assert(info == 0, ExcMessage("e-values not found."));
+    Assert(info == 0, ExcMessage("e-values not found."));
 
-	return e_values;
+    return e_values;
 }
 
 
 
 Real DenseMatrix::determinant() const
 {
-	Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
+    Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
-	using namespace boost::numeric::ublas;
-	using PMatrix = permutation_matrix<int>;
+    using namespace boost::numeric::ublas;
+    using PMatrix = permutation_matrix<int>;
 
-	const int n = this->size1();
-	BoostMatrix A(*this);
-	PMatrix P(n);
+    const int n = this->size1();
+    BoostMatrix A(*this);
+    PMatrix P(n);
 
-	int res = lu_factorize(A, P);
-	AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
+    int res = lu_factorize(A, P);
+    AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
 
-	Real det = 1.;
-	int sign = 1;
-	for (int i=0; i<n; ++i)
-	{
-		det *= A(i,i);
-		if(P(i) != i)
-			sign *= -1;
-	}
+    Real det = 1.;
+    int sign = 1;
+    for (int i=0; i<n; ++i)
+    {
+        det *= A(i,i);
+        if (P(i) != i)
+            sign *= -1;
+    }
 
-	return sign * det;
+    return sign * det;
 }
 
 
@@ -156,9 +156,9 @@ inverse(Real &det) const
     int sign = 1;
     for (int i=0; i<n; ++i)
     {
-    	det *= A(i,i);
-    	if(P(i) != i)
-    		sign *= -1;
+        det *= A(i,i);
+        if (P(i) != i)
+            sign *= -1;
     }
 
     return inv_A;
@@ -261,7 +261,7 @@ norm_one() const
 void DenseMatrix::
 print_info(LogStream &out) const
 {
-	out << *this;
+    out << *this;
 }
 IGA_NAMESPACE_CLOSE
 
