@@ -18,56 +18,47 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __WRITER_H_
-#define __WRITER_H_
+#ifndef WRITER_H_
+#define WRITER_H_
 
-#if 0
 #include <igatools/base/config.h>
-#include <igatools/base/logstream.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/linear_algebra/distributed_vector.h>
-#include <igatools/linear_algebra/dof_tools.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/base/function_element.h>
 
-#include <boost/variant.hpp>
+#include <igatools/utils/array.h>
+
+#include <string>
 
 IGA_NAMESPACE_OPEN
 
-template < class RefSpace, class PushForward >
-class PhysicalSpace;
 
-template< int dim_domain, int range, int rank >
-class NURBSSpace;
+template <class RefSpace_, int codim_, Transformation type_>
+class NewPhysicalSpace;
 
 
-//todo:add the add_celldata function
-
-/**
- * This class is use to generate and save output in graphical
- * format.
- *
- * @todo This class needs to be documented, and explained with an example.
- */
 template<int dim, int codim = 0, class T = double>
 class Writer
 {
-private:
-    using self_t = Writer<dim, codim, T>;
-    using Grid = CartesianGrid<dim>;
-    using Map  = Mapping<dim, codim>;
-
 public:
-    static const int space_dim = dim + codim;
-    // TODO (pauletti, Jun 18, 2014): document this constructors
-    //TODO(pauletti, Jun 21, 2014): should be a const Grid
-    Writer(const std::shared_ptr<Grid> grid);
 
-    Writer(const std::shared_ptr<Grid> grid,
-           const Index num_points_direction);
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    Writer() = delete;
 
-    Writer(const std::shared_ptr<const Map> mapping,
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    Writer(const Writer<dim,codim,T> &writer) = delete;
+
+
+    Writer(const std::shared_ptr<const CartesianGrid<dim> > grid);
+
+
+    Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
            const Index num_points_direction);
 
     /**
@@ -79,49 +70,19 @@ public:
      * otherwise an exception will be raised.
      * \see add_field
      */
-    Writer(const std::shared_ptr<const Map> mapping,
+    Writer(const std::shared_ptr<const MapFunction<dim,dim+codim> > map,
            const std::shared_ptr<const Quadrature<dim>> quadrature);
 
 
-    /**
-     * Default constructor. Not allowed to be used.
+    /*
+     * Destructor.
      */
-    Writer() = delete;
-
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    Writer(const self_t &writer) = delete;
+    ~Writer() = default;
 
     /**
      * Assignment operator. Not allowed to be used.
      */
-    self_t &operator=(const self_t &writer) = delete;
-
-    /**
-     * \brief Add a field to the output file.
-     * \param[in] space Space (i.e. basis function) that will be used for the field evaluation.
-     * \param[in] coefs Coefficients of the field as linear combination of the set of basis functions specified by space.
-     * \param[in] transformation_flag This flag specifies which kind of transformation will be used to push-forward the field.
-     * It can be only one choice between {h_grad, h_div, h_curl}. For their meaning see the documentation in Mapping.
-     * \param[in] name Name of the field.
-     * \param[in] format - If 'ascii' the field will be written using ASCII characters,
-     * if 'appended' the field will be written in binary format using.
-     * See the VTK file format documentation for details. Default is 'appended'.
-     * \note The number of coefficients must be equal to the number of basis functions specified
-     * by the space, otherwise an exception will be raised.
-     */
-    template<class Space, LAPack la_pack = LAPack::trilinos>
-    void add_field(std::shared_ptr<Space> space,
-                   const Vector<la_pack> &coefs,
-                   const std::string &name);
-
-
-    void add_element_data(const vector<double> &element_data,
-                          const std::string &name);
-
-    void add_element_data(const vector<int> &element_data,
-                          const std::string &name);
+    Writer<dim,codim,T> &operator=(const Writer<dim,codim,T> &writer) = delete;
 
 
     /**
@@ -133,6 +94,7 @@ public:
     void save(const std::string &filename,
               const std::string &format = "ascii") const;
 
+
     /**
      * Writes the vtu into a LogStream, filtering it for uniform
      * output across different systems.
@@ -140,26 +102,12 @@ public:
      */
     void print_info(LogStream &out) const;
 
-    /**
-     * Returns the number of IGA elements handled by the Writer.
-     */
-    int get_num_iga_elements() const;
 
-    /**
-     * Returns the number of VTK elements handled by the Writer.
-     */
-    int get_num_vtk_elements() const;
+    void add_element_data(const vector<double> &element_data,
+                          const std::string &name);
 
-    /**
-     * Returns the number of VTK elements used for each IGA element.
-     */
-    int get_num_vtk_elements_per_iga_element() const;
-
-    /**
-     * Returns the number of evaluation points used for each IGA element.
-     */
-    int get_num_points_per_iga_element() const;
-
+    void add_element_data(const vector<int> &element_data,
+                          const std::string &name);
 
     /**
      * \brief Add data for every evaluation point to the output file.
@@ -182,31 +130,37 @@ public:
      */
     void add_point_data(const int n_values_per_point,
                         const std::string &type,
-                        const vector<vector<vector<T>>> &data_iga_elements,
+                        const vector<vector<vector<T> > > &data_iga_elements,
                         const std::string &name);
 
 
+    /**
+     * \brief Add a field to the output file.
+     */
+    template<int range,int rank>
+    void add_field(std::shared_ptr<const NewFunction<dim,0,range,rank>> func,
+                   const std::string &name);
+
+
+    /**
+     * Returns the number of evaluation points used for each IGA (i.e. Bezier) element.
+     */
+    int get_num_points_per_iga_element() const;
 
 private:
-    std::string byte_order_;
+//    std::shared_ptr<const CartesianGrid<dim> > grid_;
 
-    static const int n_vertices_per_vtk_element_ = UnitElement< dim >::vertices_per_element;
 
-    const std::string filename_;
+    std::shared_ptr<MapFunction<dim,dim+codim> > map_;
 
-    std::shared_ptr<const Grid> grid_;
-
-    std::shared_ptr<const Map> map_;
-
-protected:
     /**
      * Unit element quadrature rule used for the plot.
      */
-    Quadrature< dim > quad_plot_;
+    std::shared_ptr< const Quadrature<dim> > quad_plot_;
 
 
-private:
-    TensorSize<dim> num_points_direction_;
+
+    const TensorSize<dim> num_points_direction_;
 
 
     TensorSize<dim> num_subelements_direction_;
@@ -214,59 +168,59 @@ private:
     /**
      * Number of VTK elements contained in each IGA element.
      */
-    Size n_vtk_elements_per_iga_element_;
+    int n_vtk_elements_per_iga_element_;
 
     /**
      * Number of VTK elements handled by the Writer.
      */
-    Size n_vtk_elements_;
+    int n_vtk_elements_;
 
 
     /**
      * Number of IGA elements handled by the Writer.
      */
-    Size n_iga_elements_;
+    const int n_iga_elements_;
 
     /**
      * Number of evaluation points in each IGA element.
      */
-    Size n_points_per_iga_element_;
+    const int n_points_per_iga_element_;
 
     /**
      * Number of VTK elements handled by the Writer.
      */
-    Size n_vtk_points_;
+    const int n_vtk_points_;
 
     unsigned char vtk_element_type_;
 
-//TODO(pauletti, Jul 8, 2014): this documentation is incorrect
+
+    const int sizeof_Real_ = 0;
+    std::string string_Real_;
+
+    const int sizeof_int_  = 0;
+    std::string string_int_;
+
+    const int sizeof_uchar_  = 0;
+    std::string string_uchar_;
+
+    std::stringstream appended_data_;
+
+    int offset_;
+
+    int precision_;
+
+    static const int n_vertices_per_vtk_element_ = UnitElement<dim>::template num_elem<0>();
+
+
+
     /**
-     * This function take as input an @p iga_element_id and a set of points in
-     * the [0,1]^dim domain, and maps
-     * those points to the reference domain and to the physical domain defined
-     * by the mapping used in the costructor.
-     * Moreover it returns the connectivity of the points on the element.
-     * @param[in] iga_element_id Element ID.
-     * @param[in] elem_quad Evaluation points in the [0,1]^dim domain.
-     * @param[out] element_connectivity Connectivity of the points defined on
-     * the element.
-     * @param[out] points_phys_iga_element Coordinate of the points in the
-     * physical domain.
-     * \note Due to the fact that VTK needs always points in 3D, when we have
-     *  the dimension of the physical space less than 3,
-     * we set the coordinate of the "missing dimension" to 0. In other words,
-     * if the dimension of the physical domain is 2, then the
-     * points are located on the plane z=0.
-     * If the dimension of the physical domain is 1, then the points are
-     * located on the line with y=0 and z=0.
+     * Specifier for the byte order. It can be "LittleEndian" or "BigEndian".
+     * It depends on the architecture on which igatools is built
+     * and it is inferred from the installed Boost version.
      */
-    void get_subelements(
-        const typename Mapping< dim, codim>::ElementIterator elem,
-        vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-        vector< std::array<T,3> > &points_phys_iga_element) const;
+    std::string byte_order_;
 
 
-protected:
     struct PointData
     {
 
@@ -302,11 +256,12 @@ protected:
 
     vector< PointData > fields_;
 
+
     vector<std::string> names_point_data_scalar_;
     vector<std::string> names_point_data_vector_;
     vector<std::string> names_point_data_tensor_;
 
-private:
+
     template<class data_type>
     struct CellData
     {
@@ -328,49 +283,281 @@ private:
 
         iga::Size num_components_;
     };
-
     vector< CellData<double> > cell_data_double_;
-
     vector< CellData<int> > cell_data_int_;
+
 
     vector<std::string> names_cell_data_scalar_;
     vector<std::string> names_cell_data_vector_;
     vector<std::string> names_cell_data_tensor_;
 
-    const int sizeof_Real_ = 0;
-    std::string string_Real_;
 
-    const int sizeof_int_  = 0;
-    std::string string_int_;
 
-    const int sizeof_uchar_  = 0;
-    std::string string_uchar_;
+    void fill_points_and_connectivity(
+        vector<vector<special_array<T,3> > > &points_in_iga_elements,
+        vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
+        &vtk_elements_connectivity) const;
 
-    std::stringstream appended_data_;
+    void get_subelements(
+        const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
+        vector< special_array<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
+        vector< special_array<T,3> > &points_phys_iga_element) const;
 
-    int offset_;
 
-    int precision_;
 
     template<class Out>
     void save_ascii(Out &file,
-                    const vector< vector< std::array<T,3> > > &points_in_iga_elements,
-                    const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
+                    const vector<vector<special_array<T,3> > > &points_in_iga_elements,
+                    const vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
                     &vtk_elements_connectivity) const;
 
+
     void save_appended(const std::string &filename,
-                       const vector< vector< std::array<T,3> > > &points_in_iga_elements,
-                       const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
+                       const vector<vector<special_array<T,3> > > &points_in_iga_elements,
+                       const vector<vector<special_array< int,n_vertices_per_vtk_element_> > >
                        &vtk_elements_connectivity) const;
 
-    void fill_points_and_connectivity(
-        vector< vector< std::array<T,3> > > &points_in_iga_elements,
-        vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-        &vtk_elements_connectivity) const;
+
+
 };
 
 
-IGA_NAMESPACE_CLOSE
+using std::string;
+using std::shared_ptr;
+
+template<int dim, int codim, class T>
+template<int range,int rank>
+inline
+void
+Writer<dim, codim, T>::
+add_field(shared_ptr<const NewFunction<dim,0,range,rank>> function,
+          const string &name)
+{
+    Assert(function != nullptr, ExcNullPtr());
+
+    auto func = function->clone();
+
+    Assert(map_->get_grid() == func->get_grid(),
+           ExcMessage("Different grids between the function and the Writer."));
+
+    //--------------------------------------------------------------------------
+    Assert(range <= 3,
+           ExcMessage("The maximum allowed physical domain for VTK file is 3."));
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    // get the fields to write and assign them to the vtkUnstructuredGrid object
+    func->reset(NewValueFlags::value, *quad_plot_);
+
+    auto f_elem = func->begin();
+    auto f_end  = func->end();
+
+    const auto topology = Int<dim>();
+
+    func->init_cache(f_elem,topology);
+
+
+    const auto n_elements = map_->get_grid()->get_num_active_elems();
+    const auto n_pts_per_elem = quad_plot_->get_num_points();
+
+    const int n_values_per_pt = (range == 1 ? 1 : std::pow(range, rank)) ;
+    shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
+    auto &data = *data_ptr;
+    if (rank == 0 || (rank == 1 && range == 1))
+    {
+        int pos = 0;
+        for (; f_elem != f_end; ++f_elem)
+        {
+            func->fill_cache(f_elem,0,topology);
+
+            const auto &field_values = f_elem->template get_values<0,dim>(0);
+
+            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+                data[pos++] = field_values[iPt][0];
+        }
+
+        fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
+        names_point_data_scalar_.emplace_back(name);
+    }
+    else if (rank == 1 && range > 1)
+    {
+        int pos = 0;
+        for (; f_elem != f_end; ++f_elem)
+        {
+            func->fill_cache(f_elem,0,topology);
+
+            const auto &field_values = f_elem->template get_values<0,dim>(0);
+
+            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+            {
+                const auto &field_value_ipt = field_values[iPt];
+                for (int i = 0; i < range; ++i)
+                    data[pos++] = field_value_ipt[i];
+            }
+        }
+
+        fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
+        names_point_data_vector_.emplace_back(name);
+    }
+    else if (rank == 2)
+    {
+        Assert(false,ExcNotImplemented());
+        int pos = 0;
+        for (; f_elem != f_end; ++f_elem)
+        {
+            // TODO (pauletti, Sep 12, 2014): fix next line
+            Assert(true, ExcMessage(" fix next line "));
+            func->fill_cache(f_elem,0,topology);
+
+            const auto &field_values = f_elem->template get_values<0,dim>(0);
+
+            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+            {
+                const auto &field_value_ipt = field_values[ iPt ];
+                for (int i = 0; i < range; ++i)
+                {
+                    const auto &field_value_ipt_i = field_value_ipt[i];
+
+                    for (int j = 0; j < range; ++j)
+                        data[pos++] = field_value_ipt_i[j];
+                }
+            }
+        }
+
+        fields_.emplace_back(PointData(name,"tensor",n_elements,n_pts_per_elem,n_values_per_pt,data_ptr));
+        names_point_data_tensor_.emplace_back(name);
+    }
+
+    //--------------------------------------------------------------------------
+}
+
+
+#if 0
+#include <igatools/base/logstream.h>
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/base/quadrature.h>
+
+#include <boost/variant.hpp>
+
+
+template < class RefSpace, class PushForward >
+class PhysicalSpace;
+
+template< int dim_domain, int range, int rank >
+class NURBSSpace;
+
+
+//todo:add the add_celldata function
+
+/**
+ * This class is use to generate and save output in graphical
+ * format.
+ *
+ * @todo This class needs to be documented, and explained with an example.
+ */
+template<int dim, int codim = 0, class T = double>
+class Writer
+{
+private:
+    using self_t = Writer<dim, codim, T>;
+    using Grid = CartesianGrid<dim>;
+    using Map  = Mapping<dim, codim>;
+
+public:
+    static const int space_dim = dim + codim;
+    // TODO (pauletti, Jun 18, 2014): document this constructors
+    //TODO(pauletti, Jun 21, 2014): should be a const Grid
+
+    Writer(const std::shared_ptr<Grid> grid,
+           const Index num_points_direction);
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Returns the number of IGA elements handled by the Writer.
+     */
+    int get_num_iga_elements() const;
+
+    /**
+     * Returns the number of VTK elements handled by the Writer.
+     */
+    int get_num_vtk_elements() const;
+
+    /**
+     * Returns the number of VTK elements used for each IGA element.
+     */
+    int get_num_vtk_elements_per_iga_element() const;
+
+
+
+
+
+
+private:
+
+
+    const std::string filename_;
+
+
+protected:
+
+
+private:
+
+
+//TODO(pauletti, Jul 8, 2014): this documentation is incorrect
+    /**
+     * This function take as input an @p iga_element_id and a set of points in
+     * the [0,1]^dim domain, and maps
+     * those points to the reference domain and to the physical domain defined
+     * by the mapping used in the costructor.
+     * Moreover it returns the connectivity of the points on the element.
+     * @param[in] iga_element_id Element ID.
+     * @param[in] elem_quad Evaluation points in the [0,1]^dim domain.
+     * @param[out] element_connectivity Connectivity of the points defined on
+     * the element.
+     * @param[out] points_phys_iga_element Coordinate of the points in the
+     * physical domain.
+     * \note Due to the fact that VTK needs always points in 3D, when we have
+     *  the dimension of the physical space less than 3,
+     * we set the coordinate of the "missing dimension" to 0. In other words,
+     * if the dimension of the physical domain is 2, then the
+     * points are located on the plane z=0.
+     * If the dimension of the physical domain is 1, then the points are
+     * located on the line with y=0 and z=0.
+     */
+    void get_subelements(
+        const typename Mapping< dim, codim>::ElementIterator elem,
+        vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
+        vector< std::array<T,3> > &points_phys_iga_element) const;
+
+
+protected:
+
+
+private:
+
+
+
+
+
+
+};
+
+
 #endif
 
-#endif /* __WRITER_H_ */
+IGA_NAMESPACE_CLOSE
+
+#endif /* WRITER_H_ */
