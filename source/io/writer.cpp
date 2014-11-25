@@ -150,17 +150,6 @@ Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
 }
 
 
-/*
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<const CartesianGrid<dim> > grid)
-    :
-    grid_(grid)
-{
-    Assert(grid != nullptr,ExcNullPtr());
-    Assert(false,ExcNotImplemented());
-}
-//*/
 
 
 
@@ -420,6 +409,9 @@ add_point_data(const int n_values_per_point,
     }
 
 }
+
+
+
 
 
 template<int dim, int codim, class T>

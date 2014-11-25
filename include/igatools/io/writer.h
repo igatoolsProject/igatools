@@ -133,6 +133,15 @@ public:
                         const vector<vector<vector<T> > > &data_iga_elements,
                         const std::string &name);
 
+
+    /**
+     * \brief Add a field to the output file.
+     */
+    template<int range,int rank>
+    void add_field(std::shared_ptr<const NewFunction<dim,0,range,rank>> func,
+                   const std::string &name);
+
+
     /**
      * Returns the number of evaluation points used for each IGA (i.e. Bezier) element.
      */
@@ -313,6 +322,116 @@ private:
 };
 
 
+using std::string;
+using std::shared_ptr;
+
+template<int dim, int codim, class T>
+template<int range,int rank>
+inline
+void
+Writer<dim, codim, T>::
+add_field(shared_ptr<const NewFunction<dim,0,range,rank>> function,
+          const string &name)
+{
+    Assert(function != nullptr, ExcNullPtr());
+
+    auto func = function->clone();
+
+    Assert(map_->get_grid() == func->get_grid(),
+           ExcMessage("Different grids between the function and the Writer."));
+
+    //--------------------------------------------------------------------------
+    Assert(range <= 3,
+           ExcMessage("The maximum allowed physical domain for VTK file is 3."));
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    // get the fields to write and assign them to the vtkUnstructuredGrid object
+    func->reset(NewValueFlags::value, *quad_plot_);
+
+    auto f_elem = func->begin();
+    auto f_end  = func->end();
+
+    const auto topology = Int<dim>();
+
+    func->init_cache(f_elem,topology);
+
+
+    const auto n_elements = map_->get_grid()->get_num_active_elems();
+    const auto n_pts_per_elem = quad_plot_->get_num_points();
+
+    const int n_values_per_pt = (range == 1 ? 1 : std::pow(range, rank)) ;
+    shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
+    auto &data = *data_ptr;
+    if (rank == 0 || (rank == 1 && range == 1))
+    {
+        int pos = 0;
+        for (; f_elem != f_end; ++f_elem)
+        {
+            func->fill_cache(f_elem,0,topology);
+
+            const auto &field_values = f_elem->template get_values<0,dim>(0);
+
+            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+                data[pos++] = field_values[iPt][0];
+        }
+
+        fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
+        names_point_data_scalar_.emplace_back(name);
+    }
+    else if (rank == 1 && range > 1)
+    {
+        int pos = 0;
+        for (; f_elem != f_end; ++f_elem)
+        {
+            func->fill_cache(f_elem,0,topology);
+
+            const auto &field_values = f_elem->template get_values<0,dim>(0);
+
+            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+            {
+                const auto &field_value_ipt = field_values[iPt];
+                for (int i = 0; i < range; ++i)
+                    data[pos++] = field_value_ipt[i];
+            }
+        }
+
+        fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
+        names_point_data_vector_.emplace_back(name);
+    }
+    else if (rank == 2)
+    {
+        Assert(false,ExcNotImplemented());
+        int pos = 0;
+        for (; f_elem != f_end; ++f_elem)
+        {
+            // TODO (pauletti, Sep 12, 2014): fix next line
+            Assert(true, ExcMessage(" fix next line "));
+            func->fill_cache(f_elem,0,topology);
+
+            const auto &field_values = f_elem->template get_values<0,dim>(0);
+
+            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+            {
+                const auto &field_value_ipt = field_values[ iPt ];
+                for (int i = 0; i < range; ++i)
+                {
+                    const auto &field_value_ipt_i = field_value_ipt[i];
+
+                    for (int j = 0; j < range; ++j)
+                        data[pos++] = field_value_ipt_i[j];
+                }
+            }
+        }
+
+        fields_.emplace_back(PointData(name,"tensor",n_elements,n_pts_per_elem,n_values_per_pt,data_ptr));
+        names_point_data_tensor_.emplace_back(name);
+    }
+
+    //--------------------------------------------------------------------------
+}
+
 
 #if 0
 #include <igatools/base/logstream.h>
@@ -359,23 +478,6 @@ public:
 
 
 
-    /**
-     * \brief Add a field to the output file.
-     * \param[in] space Space (i.e. basis function) that will be used for the field evaluation.
-     * \param[in] coefs Coefficients of the field as linear combination of the set of basis functions specified by space.
-     * \param[in] transformation_flag This flag specifies which kind of transformation will be used to push-forward the field.
-     * It can be only one choice between {h_grad, h_div, h_curl}. For their meaning see the documentation in Mapping.
-     * \param[in] name Name of the field.
-     * \param[in] format - If 'ascii' the field will be written using ASCII characters,
-     * if 'appended' the field will be written in binary format using.
-     * See the VTK file format documentation for details. Default is 'appended'.
-     * \note The number of coefficients must be equal to the number of basis functions specified
-     * by the space, otherwise an exception will be raised.
-     */
-    template<class Space, LAPack la_pack = LAPack::trilinos>
-    void add_field(std::shared_ptr<Space> space,
-                   const Vector<la_pack> &coefs,
-                   const std::string &name);
 
 
 
