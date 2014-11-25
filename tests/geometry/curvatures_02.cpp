@@ -38,7 +38,7 @@
 
 
 template <int dim>
-void principal_curvatures()
+void normal_derivatives()
 {
     OUTSTART
 
@@ -70,14 +70,24 @@ void principal_curvatures()
     for (; elem != end; ++elem)
     {
         map.template fill_cache<dim>(elem, 0);
+
+        auto normals = elem->get_external_normals();
+        auto D_normals = elem->get_D_external_normals();
+
+
         out << "Normals:" << endl;
-        elem->get_external_normals().print_info(out);
+        normals.print_info(out);
         out << endl;
 
-        out << "Curvature:" << endl;
-        elem->get_principal_curvatures().print_info(out);
+        out << "Der normal:" << endl;
+        D_normals.print_info(out);
         out << endl;
-    }
+
+        out << "Dn^t on n:" << endl;
+        for(int pt=0; pt<normals.get_num_points(); ++pt)
+            out << action(co_tensor(transpose(D_normals[pt])), normals[pt]) << endl;
+
+     }
 
     OUTEND
 }
@@ -87,8 +97,8 @@ int main()
 {
 	out.depth_console(10);
 
-	principal_curvatures<1>();
-	principal_curvatures<2>();
+	normal_derivatives<1>();
+	normal_derivatives<2>();
 
     return 0;
 }

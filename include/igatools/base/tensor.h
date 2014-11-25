@@ -30,10 +30,10 @@
 
 #include <type_traits>
 #include <cstring>
-//#include <cmath>
+
 
 IGA_NAMESPACE_OPEN
-
+// TODO (pauletti, Nov 25, 2014): code a co_transpose function
 //TODO (Nov 9, 2013, antolin): move implementation of functions to tensor.cpp or
 //                              in inline to tensor-inline.h.
 // TODO (pauletti, Feb 20, 2014): some members are missing documentation
@@ -689,6 +689,7 @@ tensor_product(const V1 &a, const V2 &b)
 }
 
 
+// TODO (pauletti, Nov 25, 2014): put assertion on correct dimension
 template<class T>
 EnableIf<T::is_tensor,T>
 action(const T &A, const Tdouble &x)
