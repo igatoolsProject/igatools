@@ -134,6 +134,7 @@ public:
                         const std::string &name);
 
 
+    // TODO (pauletti, Nov 26, 2014): templetize with function
     /**
      * \brief Add a field to the output file.
      */

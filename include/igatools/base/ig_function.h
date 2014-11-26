@@ -27,7 +27,8 @@
 IGA_NAMESPACE_OPEN
 
 template<class Space>
-class IgFunction : public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
+class IgFunction :
+        public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
 {
 public:
     static const int dim = Space::dim;
@@ -66,7 +67,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    IgFunction(const self_t &) = default;
+    IgFunction(const self_t &);
 
     void reset(const NewValueFlags &flag, const variant_1 &quad) override;
 

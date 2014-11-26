@@ -38,7 +38,16 @@ IgFunction(std::shared_ptr<const Space> space,
 {}
 
 
-
+template<class Space>
+IgFunction<Space>::
+IgFunction(const self_t &fun)
+:
+    parent_t::NewFunction(fun.space_->get_grid()),
+    space_(fun.space_),
+    coeff_(fun.coeff_),
+    elem_(space_->begin()),
+    space_filler_(space_)
+{}
 
 
 template<class Space>
