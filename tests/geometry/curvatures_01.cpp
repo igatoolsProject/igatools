@@ -45,7 +45,7 @@ void principal_curvatures()
     using Function = functions::SphereFunction<dim>;
 
     auto flag = NewValueFlags::point |  NewValueFlags::value |
-    		    NewValueFlags::curvature;
+                NewValueFlags::curvature;
 
     auto quad = QUniform<dim>(3);
 
@@ -85,10 +85,10 @@ void principal_curvatures()
 
 int main()
 {
-	out.depth_console(10);
+    out.depth_console(10);
 
-	principal_curvatures<1>();
-	principal_curvatures<2>();
+    principal_curvatures<1>();
+    principal_curvatures<2>();
 
     return 0;
 }

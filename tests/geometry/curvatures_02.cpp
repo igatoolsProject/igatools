@@ -45,7 +45,7 @@ void normal_derivatives()
     using Function = functions::SphereFunction<dim>;
 
     auto flag = NewValueFlags::point |  NewValueFlags::value |
-    		    NewValueFlags::curvature;
+                NewValueFlags::curvature;
 
     auto quad = QUniform<dim>(3);
 
@@ -84,10 +84,10 @@ void normal_derivatives()
         out << endl;
 
         out << "Dn^t on n:" << endl;
-        for(int pt=0; pt<normals.get_num_points(); ++pt)
+        for (int pt=0; pt<normals.get_num_points(); ++pt)
             out << action(co_tensor(transpose(D_normals[pt])), normals[pt]) << endl;
 
-     }
+    }
 
     OUTEND
 }
@@ -95,10 +95,10 @@ void normal_derivatives()
 
 int main()
 {
-	out.depth_console(10);
+    out.depth_console(10);
 
-	normal_derivatives<1>();
-	normal_derivatives<2>();
+    normal_derivatives<1>();
+    normal_derivatives<2>();
 
     return 0;
 }

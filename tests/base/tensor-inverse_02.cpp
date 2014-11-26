@@ -34,13 +34,13 @@
 template<int rdim, int cdim>
 void compute_inverse()
 {
-	OUTSTART
+    OUTSTART
 
     Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
 
     for (int i = 0; i < cdim; ++i)
-    	for (int j = 0; j < rdim; ++j)
-    		A[i][j] = cos(i*j);
+        for (int j = 0; j < rdim; ++j)
+            A[i][j] = cos(i*j);
 
     out << "A =" << endl;
     out << A << endl;
@@ -63,16 +63,16 @@ void compute_inverse()
 
 int main()
 {
-	compute_inverse<1,1>();
-	compute_inverse<2,2>();
-	compute_inverse<3,3>();
-	compute_inverse<4,4>();
+    compute_inverse<1,1>();
+    compute_inverse<2,2>();
+    compute_inverse<3,3>();
+    compute_inverse<4,4>();
 
-	compute_inverse<1,2>();
-	compute_inverse<2,1>();
+    compute_inverse<1,2>();
+    compute_inverse<2,1>();
 
-	compute_inverse<3,2>();
-	compute_inverse<2,3>();
+    compute_inverse<3,2>();
+    compute_inverse<2,3>();
 
     return 0;
 }

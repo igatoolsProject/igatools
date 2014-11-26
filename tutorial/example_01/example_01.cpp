@@ -43,10 +43,10 @@ int main()
     cout << grid->get_num_active_elems() << endl;
     // [grid]
 
-//    // [plot_grid]
-//    Writer<dim> output(grid);
-//    output.save("grid");
-//    // [plot_grid]
+    // [plot_grid]
+    Writer<dim> output(grid);
+    output.save("grid");
+    // [plot_grid]
 
     // [space]
     const int degree = 2;

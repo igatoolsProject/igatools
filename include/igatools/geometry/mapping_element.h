@@ -76,7 +76,7 @@ public:
     ValueVector<Points<space_dim> > get_external_normals() const;
 
     using MetricTensor =
-    Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
+        Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
 
     ValueVector<MetricTensor> compute_inv_first_fundamental_form() const;
 

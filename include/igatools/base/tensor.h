@@ -877,13 +877,13 @@ contract_1(const T1 &t1, const T2 &t2) noexcept
 /** experimental */
 template<class T>
 DenseMatrix
-unroll_to_matrix(const T& t)
+unroll_to_matrix(const T &t)
 {
-	DenseMatrix A(T::value_t::dim, T::dim);
-	for (int i=0; i<T::value_t::dim; ++i)
-		for (int j=0; j<T::dim; ++j)
-			A(i,j) = t[j][i];
-	return A;
+    DenseMatrix A(T::value_t::dim, T::dim);
+    for (int i=0; i<T::value_t::dim; ++i)
+        for (int j=0; j<T::dim; ++j)
+            A(i,j) = t[j][i];
+    return A;
 }
 
 template<typename T>
@@ -902,23 +902,23 @@ using Inverse =
 template<class T>
 inline
 EnableIf<(T::dim==0) && (T::value_t::dim == 0) &&
-         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-	det = 1.;
+    det = 1.;
     return Inverse<T>();
 }
 
 template<class T>
 inline
 EnableIf<(T::dim==1) && (T::value_t::dim == 1) &&
-         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-	det = A[0][0];
-   	Assert(det != Real(0.0), ExcDivideByZero());
+    det = A[0][0];
+    Assert(det != Real(0.0), ExcDivideByZero());
 
-   	Inverse<T> A_inv;
+    Inverse<T> A_inv;
     A_inv[0][0] =  1.0 / det;
 
     return A_inv;
@@ -929,7 +929,7 @@ inverse_(const T &A, Real &det)
 template<class T>
 inline
 EnableIf<(T::dim==2) && (T::value_t::dim == 2) &&
-         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
     det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
@@ -951,10 +951,10 @@ inverse_(const T &A, Real &det)
 template<class T>
 inline
 EnableIf<(T::dim==3) && (T::value_t::dim == 3) &&
-         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-	Inverse<T> A_inv;
+    Inverse<T> A_inv;
 
     const Real t4 = A[0][0]*A[1][1];
     const Real t6 = A[0][0]*A[1][2];
@@ -963,7 +963,7 @@ inverse_(const T &A, Real &det)
     const Real t01 = A[0][1]*A[2][0];
     const Real t04 = A[0][2]*A[2][0];
     det = (t4*A[2][2]-t6*A[2][1]-t8*A[2][2]+
-    		t00*A[2][1]+t01*A[1][2]-t04*A[1][1]);
+           t00*A[2][1]+t01*A[1][2]-t04*A[1][1]);
     Assert(det != Real(0.0), ExcDivideByZero());
 
     const Real t07 = 1.0/det;
@@ -982,27 +982,27 @@ inverse_(const T &A, Real &det)
 
 template<class T>
 inline
-EnableIf<(T::dim>3) && (T::value_t::dim == T::dim) &&
-         (T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+EnableIf<(T::dim>3)  &&(T::value_t::dim == T::dim) &&
+(T::rank==1)  &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-	const auto B = unroll_to_matrix(A);
+    const auto B = unroll_to_matrix(A);
 
-	const auto M = B.inverse(det);
+    const auto M = B.inverse(det);
 
-	Inverse<T> A_inv;
-	for (int i=0; i<T::value_t::dim; ++i)
-		for (int j=0; j<T::dim; ++j)
-			A_inv[j][i] = M(i,j);
+    Inverse<T> A_inv;
+    for (int i=0; i<T::value_t::dim; ++i)
+        for (int j=0; j<T::dim; ++j)
+            A_inv[j][i] = M(i,j);
 
-	return  A_inv;
+    return  A_inv;
 }
 
 template<class T>
 EnableIf<(T::dim == T::value_t::dim), Inverse<T> >
 inverse(const T &A, Real &det)
 {
-	return inverse_(A, det);
+    return inverse_(A, det);
 }
 
 
@@ -1015,12 +1015,12 @@ template<class T>
 EnableIf<(T::dim < T::value_t::dim), Inverse<T> >
 inverse(const T &A, Real &det)
 {
-	const auto A_t   = co_tensor(transpose(A));
+    const auto A_t   = co_tensor(transpose(A));
     const auto G     = compose(A_t, A);
     const auto G_inv = inverse(G, det);
-	det = sqrt(det);
+    det = sqrt(det);
 
-	return compose(G_inv, A_t);
+    return compose(G_inv, A_t);
 }
 
 
@@ -1029,12 +1029,12 @@ template<class T>
 EnableIf<(T::dim > T::value_t::dim), Inverse<T> >
 inverse(const T &A, Real &det)
 {
-	const auto A_t   = co_tensor(transpose(A));
+    const auto A_t   = co_tensor(transpose(A));
     const auto G     = compose(A, A_t);
     const auto G_inv = inverse(G, det);
-	det = sqrt(det);
+    det = sqrt(det);
 
-	return compose(A_t, G_inv);
+    return compose(A_t, G_inv);
 }
 
 

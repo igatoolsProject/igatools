@@ -36,10 +36,10 @@ void comp_determinant()
 {
     OUTSTART
 
-	DenseMatrix A(dim, dim);
+    DenseMatrix A(dim, dim);
     for (int i=0; i<dim; ++i)
-    	for (int j=0; j<dim; ++j)
-    		A(i,j) = pow(i,j);
+        for (int j=0; j<dim; ++j)
+            A(i,j) = pow(i,j);
 
     A.print_info(out);
     out << endl << "Determinant: " << A.determinant() << endl;
@@ -50,8 +50,8 @@ void comp_determinant()
 
 int main()
 {
-	comp_determinant<2>();
-	comp_determinant<3>();
+    comp_determinant<2>();
+    comp_determinant<3>();
 
     return 0;
 }

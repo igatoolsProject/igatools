@@ -57,7 +57,7 @@ void loop_on_grid_with_cache()
     for (; elem != elem_end; ++elem)
     {
         // [fill cache]
-    	elem_handler.template fill_cache<dim>(elem, 0);
+        elem_handler.template fill_cache<dim>(elem, 0);
         // [fill cache]
         out << "The tensor index of element: " << elem->get_flat_index();
         out << " is: "<< elem->get_tensor_index() << endl;
@@ -95,7 +95,7 @@ void loop_on_space_with_cache()
 
     for (; elem != elem_end; ++elem)
     {
-    	elem_handler.template fill_cache<dim>(elem, 0);
+        elem_handler.template fill_cache<dim>(elem, 0);
         out << "Element: " << elem->get_flat_index();
         out << " has global basis: ";
         elem->get_local_to_global().print_info(out);

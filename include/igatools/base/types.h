@@ -134,8 +134,8 @@ enum class NewValueFlags : std::int64_t
     /** normal space */
     outer_normal  =    1L << 5,
 
-	/** curvatures */
-	curvature     =    1L << 6,
+    /** curvatures */
+    curvature     =    1L << 6,
 
     /** element coordinates length */
     length         =    1L << 8,
