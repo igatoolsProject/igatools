@@ -23,17 +23,8 @@
 #ifndef READER_H_
 #define READER_H_
 
-#include <igatools/base/config.h>
-
-IGA_NAMESPACE_OPEN
-
-
-
-IGA_NAMESPACE_CLOSE
-
-#endif // #ifdef READER_H_
-
 #if 0
+#include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
@@ -43,6 +34,7 @@ IGA_NAMESPACE_CLOSE
 
 
 
+IGA_NAMESPACE_OPEN
 
 //TODO: This function has to be documented
 //TODO: Document the xml format
@@ -214,5 +206,5 @@ get_interior_multiplicity_from_xml(const boost::property_tree::ptree &tree);
 IGA_NAMESPACE_CLOSE
 
 #endif
-
+#endif
 

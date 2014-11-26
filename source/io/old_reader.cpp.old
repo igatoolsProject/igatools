@@ -18,17 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
-
-IGA_NAMESPACE_OPEN
-
-IGA_NAMESPACE_CLOSE
-
-#include <igatools/io/reader.inst>
-
-
-#if 0
 
 #ifdef NURBS
 #include <igatools/basis_functions/nurbs_element_accessor.h>
@@ -959,5 +951,6 @@ get_mapping_from_file(const std::string &filename)
 
 IGA_NAMESPACE_CLOSE
 
+#include <igatools/io/reader.inst>
 
 #endif
