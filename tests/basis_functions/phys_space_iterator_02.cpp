@@ -48,62 +48,62 @@ create_function(shared_ptr<NewBSplineSpace<dim, dim + codim>> space)
     if (dim == 1)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 2)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 3)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
     }
 
