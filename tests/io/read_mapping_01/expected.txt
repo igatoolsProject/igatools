@@ -1,489 +1,588 @@
-========== Test (Dimension: 1) --- begin ========== 
-Type = IgMapping
-	Reference space info:
-	Spline Space:
-	   Knots without repetition:
-	      Number of active elements: 2
-	      Number of intervals per direction: [ 2 ]
-	      Knot coordinates:
-	         Size: [ 3 ]  Weights: [3]
-	         Direction: 0
-	         [ 0 0.500000 1.00000 ]
-	      
-	   
-	   Degrees:
-	      Raw componets: 
-	         Size: [ 1 ]  Weights: [1]
-	      [ [2] ]
-	      Active componets ids: 
-	      [ 0 ]
-	      Inactive componets ids: 
-	      [ ]
-	   
-	   Interior multiplicities:
-	      Size: [ 1 ]  Weights: [1]
-	      Direction: 0
-	      [ 1 ]
-	   
-	   Dimensionality Table:
-	      Raw componets: 
-	         Size: [ 1 ]  Weights: [1]
-	      [ [ 4 ] ]
-	      Active componets ids: 
-	      [ 0 ]
-	      Inactive componets ids: 
-	      [ ]
-	   
-	   Component Dimension:
-	      Raw componets: 
-	         Size: [ 1 ]  Weights: [1]
-	      [ 4 ]
-	      Active componets ids: 
-	      [ 0 ]
-	      Inactive componets ids: 
-	      [ ]
-	   
-	   Total Dimension: 4
-	
-	Patch Basis Indices:
-	   Size: [ 4 ]  Weights: [4]
-	   [ 0 1 2 3 ]
-	   Element views:
-	      [ 0 1 2 ]
-	      [ 1 2 3 ]
-	   
-	
-	Global Basis Indices:
-	   Size: [ 4 ]  Weights: [4]
-	   [ 0 1 2 3 ]
-	   Element views:
-	      [ 0 1 2 ]
-	      [ 1 2 3 ]
-	   
-	
-	Bernstein Extraction:
-	   Component[0]: 
-	   Direction[0]:
-	   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-	   [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-	
-	
-		Control points info (projective coordinates):
-			Control mesh[0] = Size: [ 4 ]  Weights: [4]
-			[ 0 0.250000 0.750000 1.00000 ]
-			
-		Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 ]
-	
-	Quad pts.= 
-	ValueVector (num_points=2) : [ [ 0 ]  [ 1.00000 ]  ]
-	Loop using the BSplineElementAccessor
-	Element id: 0
-	Values = ValueTable (num_functions=3,num_points=2) :
-		Function[0] : [ 1.00000 ]  [ 0 ]  
-		Function[1] : [ 0 ]  [ 0.500000 ]  
-		Function[2] : [ 0 ]  [ 0.500000 ]  
-	
-	Element id: 1
-	Values = ValueTable (num_functions=3,num_points=2) :
-		Function[0] : [ 0.500000 ]  [ 0 ]  
-		Function[1] : [ 0.500000 ]  [ 0 ]  
-		Function[2] : [ 0 ]  [ 1.00000 ]  
-	
-	
-	Loop using the MappingElementAccessor
-	Element id: 0
-	    Point 1: [ 0 ] 
-	    Point 2: [ 0.500000 ] 
-	Element id: 1
-	    Point 1: [ 0.500000 ] 
-	    Point 2: [ 1.00000 ] 
-	
-	========== Test (Dimension: 1) --- end ========== 
-	
-	
-	
-	========== Test (Dimension: 2) --- begin ========== 
-	Type = IgMapping
-		Reference space info:
-		Spline Space:
-		   Knots without repetition:
-		      Number of active elements: 2
-		      Number of intervals per direction: [ 2 1 ]
-		      Knot coordinates:
-		         Size: [ 3 2 ]  Weights: [3,6]
-		         Direction: 0
-		         [ 0 0.500000 1.00000 ]
-		         Direction: 1
-		         [ 0 1.00000 ]
-		      
-		   
-		   Degrees:
-		      Raw componets: 
-		         Size: [ 2 ]  Weights: [2]
-		      [ [2,1] [2,1] ]
-		      Active componets ids: 
-		      [ 0 1 ]
-		      Inactive componets ids: 
-		      [ ]
-		   
-		   Interior multiplicities:
-		      Size: [ 1 0 ]  Weights: [1,0]
-		      Direction: 0
-		      [ 1 ]
-		      Direction: 1
-		      [ ]
-		      Size: [ 1 0 ]  Weights: [1,0]
-		      Direction: 0
-		      [ 1 ]
-		      Direction: 1
-		      [ ]
-		   
-		   Dimensionality Table:
-		      Raw componets: 
-		         Size: [ 2 ]  Weights: [2]
-		      [ [ 4 2 ] [ 4 2 ] ]
-		      Active componets ids: 
-		      [ 0 1 ]
-		      Inactive componets ids: 
-		      [ ]
-		   
-		   Component Dimension:
-		      Raw componets: 
-		         Size: [ 2 ]  Weights: [2]
-		      [ 8 8 ]
-		      Active componets ids: 
-		      [ 0 1 ]
-		      Inactive componets ids: 
-		      [ ]
-		   
-		   Total Dimension: 16
-		
-		Patch Basis Indices:
-		   Size: [ 4 2 ]  Weights: [4,8]
-		   [ 0 1 2 3 4 5 6 7 ]
-		   Size: [ 4 2 ]  Weights: [4,8]
-		   [ 8 9 10 11 12 13 14 15 ]
-		   Element views:
-		      [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
-		      [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
-		   
-		
-		Global Basis Indices:
-		   Size: [ 4 2 ]  Weights: [4,8]
-		   [ 0 1 2 3 4 5 6 7 ]
-		   Size: [ 4 2 ]  Weights: [4,8]
-		   [ 8 9 10 11 12 13 14 15 ]
-		   Element views:
-		      [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
-		      [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
-		   
-		
-		Bernstein Extraction:
-		   Component[0]: 
-		   Direction[0]:
-		   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-		   [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-		   Direction[1]:
-		   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-		   Component[1]: 
-		   Direction[0]:
-		   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-		   [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-		   Direction[1]:
-		   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-		
-		
-			Control points info (projective coordinates):
-				Control mesh[0] = Size: [ 4 2 ]  Weights: [4,8]
-				[ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 ]
-				Control mesh[1] = Size: [ 4 2 ]  Weights: [4,8]
-				[ 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
-				
-			Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
-		
-		Quad pts.= 
-		ValueVector (num_points=4) : [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
-		Loop using the BSplineElementAccessor
-		Element id: 0
-		Values = ValueTable (num_functions=12,num_points=4) :
-			Function[0] : [ 1.00000 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[1] : [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[2] : [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[3] : [ 0 0 ]  [ 0 0 ]  [ 1.00000 0 ]  [ 0 0 ]  
-			Function[4] : [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  
-			Function[5] : [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  
-			Function[6] : [ 0 1.00000 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[7] : [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[8] : [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[9] : [ 0 0 ]  [ 0 0 ]  [ 0 1.00000 ]  [ 0 0 ]  
-			Function[10] : [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  
-			Function[11] : [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  
-		
-		Element id: 1
-		Values = ValueTable (num_functions=12,num_points=4) :
-			Function[0] : [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[1] : [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[2] : [ 0 0 ]  [ 1.00000 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[3] : [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  
-			Function[4] : [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  
-			Function[5] : [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 1.00000 0 ]  
-			Function[6] : [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[7] : [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[8] : [ 0 0 ]  [ 0 1.00000 ]  [ 0 0 ]  [ 0 0 ]  
-			Function[9] : [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  
-			Function[10] : [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  
-			Function[11] : [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 1.00000 ]  
-		
-		
-		Loop using the MappingElementAccessor
-		Element id: 0
-		    Point 1: [ 0 0 ] 
-		    Point 2: [ 0.500000 0 ] 
-		    Point 3: [ 0 1.00000 ] 
-		    Point 4: [ 0.500000 1.00000 ] 
-		Element id: 1
-		    Point 1: [ 0.500000 0 ] 
-		    Point 2: [ 1.00000 0 ] 
-		    Point 3: [ 0.500000 1.00000 ] 
-		    Point 4: [ 1.00000 1.00000 ] 
-		
-		========== Test (Dimension: 2) --- end ========== 
-		
-		
-		
-		========== Test (Dimension: 3) --- begin ========== 
-		Type = IgMapping
-			Reference space info:
-			Spline Space:
-			   Knots without repetition:
-			      Number of active elements: 2
-			      Number of intervals per direction: [ 2 1 1 ]
-			      Knot coordinates:
-			         Size: [ 3 2 2 ]  Weights: [3,6,12]
-			         Direction: 0
-			         [ 0 0.500000 1.00000 ]
-			         Direction: 1
-			         [ 0 1.00000 ]
-			         Direction: 2
-			         [ 0 1.00000 ]
-			      
-			   
-			   Degrees:
-			      Raw componets: 
-			         Size: [ 3 ]  Weights: [3]
-			      [ [2,1,1] [0,0,0] [0,0,0] ]
-			      Active componets ids: 
-			      [ 0 ]
-			      Inactive componets ids: 
-			      [ 1 2 ]
-			   
-			   Interior multiplicities:
-			      Size: [ 1 0 0 ]  Weights: [1,0,0]
-			      Direction: 0
-			      [ 1 ]
-			      Direction: 1
-			      [ ]
-			      Direction: 2
-			      [ ]
-			      Size: [ 1 0 0 ]  Weights: [1,0,0]
-			      Direction: 0
-			      [ 1 ]
-			      Direction: 1
-			      [ ]
-			      Direction: 2
-			      [ ]
-			      Size: [ 1 0 0 ]  Weights: [1,0,0]
-			      Direction: 0
-			      [ 1 ]
-			      Direction: 1
-			      [ ]
-			      Direction: 2
-			      [ ]
-			   
-			   Dimensionality Table:
-			      Raw componets: 
-			         Size: [ 3 ]  Weights: [3]
-			      [ [ 4 2 2 ] [ 4 2 2 ] [ 4 2 2 ] ]
-			      Active componets ids: 
-			      [ 0 1 2 ]
-			      Inactive componets ids: 
-			      [ ]
-			   
-			   Component Dimension:
-			      Raw componets: 
-			         Size: [ 3 ]  Weights: [3]
-			      [ 16 16 16 ]
-			      Active componets ids: 
-			      [ 0 1 2 ]
-			      Inactive componets ids: 
-			      [ ]
-			   
-			   Total Dimension: 48
-			
-			Patch Basis Indices:
-			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
-			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
-			   Element views:
-			      [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
-			      [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
-			   
-			
-			Global Basis Indices:
-			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
-			   Size: [ 4 2 2 ]  Weights: [4,8,16]
-			   [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
-			   Element views:
-			      [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
-			      [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
-			   
-			
-			Bernstein Extraction:
-			   Component[0]: 
-			   Direction[0]:
-			   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-			   [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-			   Direction[1]:
-			   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-			   Direction[2]:
-			   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-			   Component[1]: 
-			   Direction[0]:
-			   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-			   [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-			   Direction[1]:
-			   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-			   Direction[2]:
-			   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-			   Component[2]: 
-			   Direction[0]:
-			   [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-			   [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-			   Direction[1]:
-			   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-			   Direction[2]:
-			   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-			
-			
-				Control points info (projective coordinates):
-					Control mesh[0] = Size: [ 4 2 2 ]  Weights: [4,8,16]
-					[ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 ]
-					Control mesh[1] = Size: [ 4 2 2 ]  Weights: [4,8,16]
-					[ 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
-					Control mesh[2] = Size: [ 4 2 2 ]  Weights: [4,8,16]
-					[ 0 0 0 0 0 0 0 0 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
-					
-				Control points info (euclidean coordinates): [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 0 0 0 0 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
-			
-			Quad pts.= 
-			ValueVector (num_points=8) : [ [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
-			Loop using the BSplineElementAccessor
-			Element id: 0
-			Values = ValueTable (num_functions=36,num_points=8) :
-				Function[0] : [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[1] : [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[2] : [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[3] : [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[4] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[5] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[6] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[7] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[8] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[9] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  
-				Function[10] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  
-				Function[11] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  
-				Function[12] : [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[13] : [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[14] : [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[15] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[16] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[17] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[18] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[19] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[20] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[21] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  
-				Function[22] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  
-				Function[23] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  
-				Function[24] : [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[25] : [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[26] : [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[27] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[28] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[29] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[30] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[31] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[32] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[33] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  
-				Function[34] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  
-				Function[35] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  
-			
-			Element id: 1
-			Values = ValueTable (num_functions=36,num_points=8) :
-				Function[0] : [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[1] : [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[2] : [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[3] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[4] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[5] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[6] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[7] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[8] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[9] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  
-				Function[10] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  
-				Function[11] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  
-				Function[12] : [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[13] : [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[14] : [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[15] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[16] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[17] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[18] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[19] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[20] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[21] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  
-				Function[22] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  
-				Function[23] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  
-				Function[24] : [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[25] : [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[26] : [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[27] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[28] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[29] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[30] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[31] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[32] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  
-				Function[33] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  
-				Function[34] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  
-				Function[35] : [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  
-			
-			
-			Loop using the MappingElementAccessor
-			Element id: 0
-			    Point 1: [ 0 0 0 ] 
-			    Point 2: [ 0.500000 0 0 ] 
-			    Point 3: [ 0 1.00000 0 ] 
-			    Point 4: [ 0.500000 1.00000 0 ] 
-			    Point 5: [ 0 0 1.00000 ] 
-			    Point 6: [ 0.500000 0 1.00000 ] 
-			    Point 7: [ 0 1.00000 1.00000 ] 
-			    Point 8: [ 0.500000 1.00000 1.00000 ] 
-			Element id: 1
-			    Point 1: [ 0.500000 0 0 ] 
-			    Point 2: [ 1.00000 0 0 ] 
-			    Point 3: [ 0.500000 1.00000 0 ] 
-			    Point 4: [ 1.00000 1.00000 0 ] 
-			    Point 5: [ 0.500000 0 1.00000 ] 
-			    Point 6: [ 1.00000 0 1.00000 ] 
-			    Point 7: [ 0.500000 1.00000 1.00000 ] 
-			    Point 8: [ 1.00000 1.00000 1.00000 ] 
-			
-			========== Test (Dimension: 3) --- end ========== 
-			
-			
-			
+========================================================================
+void run_test(std::string&) [with int dim = 1; std::string = std::basic_string<char>]
+========================================================================
+IgFunction infos:
+   Reference space info:
+      Spline Space:
+         Knots without repetition:
+            Number of active elements: 2
+            Number of intervals per direction: [ 2 ]
+            Knot coordinates:
+               Size: [ 3 ]  Weights: [3]
+               Direction: 0
+               [ 0 0.500000 1.00000 ]
+            
+         
+         Degrees:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [2] ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Interior multiplicities:
+            Size: [ 1 ]  Weights: [1]
+            Direction: 0
+            [ 1 ]
+         
+         Dimensionality Table:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 4 ] ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 4 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 4
+      
+      Patch Basis Indices:
+         Size: [ 4 ]  Weights: [4]
+         [ 0 1 2 3 ]
+         Element views:
+            [ 0 1 2 ]
+            [ 1 2 3 ]
+         
+      
+      Global Basis Indices:
+         Size: [ 4 ]  Weights: [4]
+         [ 0 1 2 3 ]
+         Element views:
+            [ 0 1 2 ]
+            [ 1 2 3 ]
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      
+   
+   
+   Control points info (euclidean coordinates):
+   [ 0 0.250000 0.750000 1.00000 ]
+   
+   Quad pts.:
+   ValueVector (num_points=2) : [ [ 0 ]  [ 1.00000 ]  ]
+   
+   Loop using the BSplineElement
+      Element id: 0
+      Values =  (num_functions=3,num_points=2) :
+      Function 0
+      [ 1.00000 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0.500000 ]  
+      Function 2
+      [ 0 ]  [ 0.500000 ]  
+      
+      Element id: 1
+      Values =  (num_functions=3,num_points=2) :
+      Function 0
+      [ 0.500000 ]  [ 0 ]  
+      Function 1
+      [ 0.500000 ]  [ 0 ]  
+      Function 2
+      [ 0 ]  [ 1.00000 ]  
+      
+   
+   
+   Loop using the FunctionElement
+      Element id: 0
+          Point 1: [ 0 ] 
+          Point 2: [ 0.500000 ] 
+      Element id: 1
+          Point 1: [ 0.500000 ] 
+          Point 2: [ 1.00000 ] 
+   
+   
+   ========================================================================
+   
+   ========================================================================
+   void run_test(std::string&) [with int dim = 2; std::string = std::basic_string<char>]
+   ========================================================================
+   IgFunction infos:
+      Reference space info:
+         Spline Space:
+            Knots without repetition:
+               Number of active elements: 2
+               Number of intervals per direction: [ 2 1 ]
+               Knot coordinates:
+                  Size: [ 3 2 ]  Weights: [3,6]
+                  Direction: 0
+                  [ 0 0.500000 1.00000 ]
+                  Direction: 1
+                  [ 0 1.00000 ]
+               
+            
+            Degrees:
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ [2,1] [2,1] ]
+               Active componets ids: 
+               [ 0 1 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Interior multiplicities:
+               Size: [ 1 0 ]  Weights: [1,0]
+               Direction: 0
+               [ 1 ]
+               Direction: 1
+               [ ]
+               Size: [ 1 0 ]  Weights: [1,0]
+               Direction: 0
+               [ 1 ]
+               Direction: 1
+               [ ]
+            
+            Dimensionality Table:
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ [ 4 2 ] [ 4 2 ] ]
+               Active componets ids: 
+               [ 0 1 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ 8 8 ]
+               Active componets ids: 
+               [ 0 1 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 16
+         
+         Patch Basis Indices:
+            Size: [ 4 2 ]  Weights: [4,8]
+            [ 0 1 2 3 4 5 6 7 ]
+            Size: [ 4 2 ]  Weights: [4,8]
+            [ 8 9 10 11 12 13 14 15 ]
+            Element views:
+               [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+               [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+            
+         
+         Global Basis Indices:
+            Size: [ 4 2 ]  Weights: [4,8]
+            [ 0 1 2 3 4 5 6 7 ]
+            Size: [ 4 2 ]  Weights: [4,8]
+            [ 8 9 10 11 12 13 14 15 ]
+            Element views:
+               [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+               [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+            
+         
+         Bernstein Extraction:
+            Component[0]: 
+            Direction[0]:
+            [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+            [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+            Direction[1]:
+            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            Component[1]: 
+            Direction[0]:
+            [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+            [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+            Direction[1]:
+            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         
+      
+      
+      Control points info (euclidean coordinates):
+      [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 ]
+      
+      Quad pts.:
+      ValueVector (num_points=4) : [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
+      
+      Loop using the BSplineElement
+         Element id: 0
+         Values =  (num_functions=12,num_points=4) :
+         Function 0
+         [ 1.00000 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 1
+         [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 2
+         [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 3
+         [ 0 0 ]  [ 0 0 ]  [ 1.00000 0 ]  [ 0 0 ]  
+         Function 4
+         [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  
+         Function 5
+         [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  
+         Function 6
+         [ 0 1.00000 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 7
+         [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 8
+         [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 9
+         [ 0 0 ]  [ 0 0 ]  [ 0 1.00000 ]  [ 0 0 ]  
+         Function 10
+         [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  
+         Function 11
+         [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  
+         
+         Element id: 1
+         Values =  (num_functions=12,num_points=4) :
+         Function 0
+         [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 1
+         [ 0.500000 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 2
+         [ 0 0 ]  [ 1.00000 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 3
+         [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  
+         Function 4
+         [ 0 0 ]  [ 0 0 ]  [ 0.500000 0 ]  [ 0 0 ]  
+         Function 5
+         [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 1.00000 0 ]  
+         Function 6
+         [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 7
+         [ 0 0.500000 ]  [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 8
+         [ 0 0 ]  [ 0 1.00000 ]  [ 0 0 ]  [ 0 0 ]  
+         Function 9
+         [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  
+         Function 10
+         [ 0 0 ]  [ 0 0 ]  [ 0 0.500000 ]  [ 0 0 ]  
+         Function 11
+         [ 0 0 ]  [ 0 0 ]  [ 0 0 ]  [ 0 1.00000 ]  
+         
+      
+      
+      Loop using the FunctionElement
+         Element id: 0
+             Point 1: [ 0 0 ] 
+             Point 2: [ 0.500000 0 ] 
+             Point 3: [ 0 1.00000 ] 
+             Point 4: [ 0.500000 1.00000 ] 
+         Element id: 1
+             Point 1: [ 0.500000 0 ] 
+             Point 2: [ 1.00000 0 ] 
+             Point 3: [ 0.500000 1.00000 ] 
+             Point 4: [ 1.00000 1.00000 ] 
+      
+      
+      ========================================================================
+      
+      ========================================================================
+      void run_test(std::string&) [with int dim = 3; std::string = std::basic_string<char>]
+      ========================================================================
+      IgFunction infos:
+         Reference space info:
+            Spline Space:
+               Knots without repetition:
+                  Number of active elements: 2
+                  Number of intervals per direction: [ 2 1 1 ]
+                  Knot coordinates:
+                     Size: [ 3 2 2 ]  Weights: [3,6,12]
+                     Direction: 0
+                     [ 0 0.500000 1.00000 ]
+                     Direction: 1
+                     [ 0 1.00000 ]
+                     Direction: 2
+                     [ 0 1.00000 ]
+                  
+               
+               Degrees:
+                  Raw componets: 
+                     Size: [ 3 ]  Weights: [3]
+                  [ [2,1,1] [0,0,0] [0,0,0] ]
+                  Active componets ids: 
+                  [ 0 ]
+                  Inactive componets ids: 
+                  [ 1 2 ]
+               
+               Interior multiplicities:
+                  Size: [ 1 0 0 ]  Weights: [1,0,0]
+                  Direction: 0
+                  [ 1 ]
+                  Direction: 1
+                  [ ]
+                  Direction: 2
+                  [ ]
+                  Size: [ 1 0 0 ]  Weights: [1,0,0]
+                  Direction: 0
+                  [ 1 ]
+                  Direction: 1
+                  [ ]
+                  Direction: 2
+                  [ ]
+                  Size: [ 1 0 0 ]  Weights: [1,0,0]
+                  Direction: 0
+                  [ 1 ]
+                  Direction: 1
+                  [ ]
+                  Direction: 2
+                  [ ]
+               
+               Dimensionality Table:
+                  Raw componets: 
+                     Size: [ 3 ]  Weights: [3]
+                  [ [ 4 2 2 ] [ 4 2 2 ] [ 4 2 2 ] ]
+                  Active componets ids: 
+                  [ 0 1 2 ]
+                  Inactive componets ids: 
+                  [ ]
+               
+               Component Dimension:
+                  Raw componets: 
+                     Size: [ 3 ]  Weights: [3]
+                  [ 16 16 16 ]
+                  Active componets ids: 
+                  [ 0 1 2 ]
+                  Inactive componets ids: 
+                  [ ]
+               
+               Total Dimension: 48
+            
+            Patch Basis Indices:
+               Size: [ 4 2 2 ]  Weights: [4,8,16]
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+               Size: [ 4 2 2 ]  Weights: [4,8,16]
+               [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
+               Size: [ 4 2 2 ]  Weights: [4,8,16]
+               [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
+               Element views:
+                  [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
+                  [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
+               
+            
+            Global Basis Indices:
+               Size: [ 4 2 2 ]  Weights: [4,8,16]
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+               Size: [ 4 2 2 ]  Weights: [4,8,16]
+               [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
+               Size: [ 4 2 2 ]  Weights: [4,8,16]
+               [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
+               Element views:
+                  [ 0 1 2 4 5 6 8 9 10 12 13 14 16 17 18 20 21 22 24 25 26 28 29 30 32 33 34 36 37 38 40 41 42 44 45 46 ]
+                  [ 1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 21 22 23 25 26 27 29 30 31 33 34 35 37 38 39 41 42 43 45 46 47 ]
+               
+            
+            Bernstein Extraction:
+               Component[0]: 
+               Direction[0]:
+               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               Direction[1]:
+               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               Direction[2]:
+               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               Component[1]: 
+               Direction[0]:
+               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               Direction[1]:
+               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               Direction[2]:
+               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               Component[2]: 
+               Direction[0]:
+               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               Direction[1]:
+               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               Direction[2]:
+               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            
+         
+         
+         Control points info (euclidean coordinates):
+         [ 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0.250000 0.750000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 1.00000 1.00000 1.00000 1.00000 0 0 0 0 0 0 0 0 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
+         
+         Quad pts.:
+         ValueVector (num_points=8) : [ [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
+         
+         Loop using the BSplineElement
+            Element id: 0
+            Values =  (num_functions=36,num_points=8) :
+            Function 0
+            [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 1
+            [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 2
+            [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 3
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 4
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 5
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 6
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 7
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 8
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 9
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  
+            Function 10
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  
+            Function 11
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  
+            Function 12
+            [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 13
+            [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 14
+            [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 15
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 16
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 17
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 18
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 19
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 20
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 21
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  
+            Function 22
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  
+            Function 23
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  
+            Function 24
+            [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 25
+            [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 26
+            [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 27
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 28
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 29
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 30
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 31
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 32
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 33
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  
+            Function 34
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  
+            Function 35
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  
+            
+            Element id: 1
+            Values =  (num_functions=36,num_points=8) :
+            Function 0
+            [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 1
+            [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 2
+            [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 3
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 4
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 5
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 6
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 7
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 8
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 9
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  
+            Function 10
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 0 0 0 ]  
+            Function 11
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 1.00000 0 0 ]  
+            Function 12
+            [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 13
+            [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 14
+            [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 15
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 16
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 17
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 18
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 19
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 20
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 21
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  
+            Function 22
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0.500000 0 ]  [ 0 0 0 ]  
+            Function 23
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 1.00000 0 ]  
+            Function 24
+            [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 25
+            [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 26
+            [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 27
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 28
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 29
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 30
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 31
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 32
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  [ 0 0 0 ]  [ 0 0 0 ]  
+            Function 33
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  
+            Function 34
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0.500000 ]  [ 0 0 0 ]  
+            Function 35
+            [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 1.00000 ]  
+            
+         
+         
+         Loop using the FunctionElement
+            Element id: 0
+                Point 1: [ 0 0 0 ] 
+                Point 2: [ 0.500000 0 0 ] 
+                Point 3: [ 0 1.00000 0 ] 
+                Point 4: [ 0.500000 1.00000 0 ] 
+                Point 5: [ 0 0 1.00000 ] 
+                Point 6: [ 0.500000 0 1.00000 ] 
+                Point 7: [ 0 1.00000 1.00000 ] 
+                Point 8: [ 0.500000 1.00000 1.00000 ] 
+            Element id: 1
+                Point 1: [ 0.500000 0 0 ] 
+                Point 2: [ 1.00000 0 0 ] 
+                Point 3: [ 0.500000 1.00000 0 ] 
+                Point 4: [ 1.00000 1.00000 0 ] 
+                Point 5: [ 0.500000 0 1.00000 ] 
+                Point 6: [ 1.00000 0 1.00000 ] 
+                Point 7: [ 0.500000 1.00000 1.00000 ] 
+                Point 8: [ 1.00000 1.00000 1.00000 ] 
+         
+         
+         ========================================================================
+         

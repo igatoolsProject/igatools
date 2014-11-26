@@ -126,7 +126,12 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter);
     solver.solve(matrix, rhs, sol);
 
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol));
+    //TODO (martinelli, Nov 26, 2014): the Vector class should have a get_coefs() function returning a vector<Real>
+    const auto n_coefs = sol.size();
+    vector<Real> coefs(n_coefs);
+    for (int i = 0 ; i < n_coefs ; ++i)
+        coefs[i] = sol(i);
+    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, coefs));
 
 }
 

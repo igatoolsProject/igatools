@@ -22,6 +22,7 @@
 #define __IGA_ARRAY_UTILS_H_
 
 #include <igatools/base/config.h>
+
 #include <array>
 #include <algorithm>
 #include <utility>
@@ -34,7 +35,8 @@ IGA_NAMESPACE_OPEN
  */
 template <typename Type, Type ...Indices>
 constexpr
-auto make_index_array(std::integer_sequence<Type, Indices...>)
+auto
+make_index_array(std::integer_sequence<Type, Indices...>)
 -> std::array<Type, sizeof...(Indices)>
 {
     return std::array<Type, sizeof...(Indices)>{Indices...};
@@ -42,7 +44,8 @@ auto make_index_array(std::integer_sequence<Type, Indices...>)
 
 template<Size N>
 constexpr
-auto sequence()
+auto
+sequence()
 -> std::array<Size, N>
 {
     return make_index_array(std::make_integer_sequence<Size, N>());
@@ -52,7 +55,8 @@ auto sequence()
 
 template <class T, int dim>
 inline
-std::array<T, dim> filled_array(const T &v)
+std::array<T, dim>
+filled_array(const T &v)
 {
     std::array<T,dim> res;
     res.fill(v);

@@ -26,7 +26,6 @@
 
 #include <algorithm>
 using std::endl;
-using std::array;
 
 using std::shared_ptr;
 using std::make_shared;
@@ -75,7 +74,7 @@ constexpr int CartesianGrid<dim_>::dim;
 
 
 template<int dim_>
-constexpr  std::array<Size, dim_> CartesianGrid<dim_>::dims;
+constexpr std::array<Size, dim_> CartesianGrid<dim_>::dims;
 
 
 
@@ -102,7 +101,7 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const TensorSize<dim> &n, const Kind kind)
     :
-    CartesianGrid(filled_array<array<Real,2>,dim>(array<Real,2> {{0,1}}), n, kind)
+    CartesianGrid(filled_array<std::array<Real,2>,dim>(std::array<Real,2> {{0,1}}), n, kind)
 {}
 
 
@@ -203,7 +202,7 @@ create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const array<vector<Real>,dim> &knot_coordinates)
+CartesianGrid(const std::array<vector<Real>,dim> &knot_coordinates)
     :
     self_t(CartesianProductArray<Real,dim>(knot_coordinates),
            Kind::direction_uniform)
@@ -214,7 +213,7 @@ CartesianGrid(const array<vector<Real>,dim> &knot_coordinates)
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-create(const array<vector<Real>,dim> &knot_coordinates) -> shared_ptr<self_t>
+create(const std::array<vector<Real>,dim> &knot_coordinates) -> shared_ptr<self_t>
 {
     return shared_ptr< self_t >(new self_t(knot_coordinates));
 }
@@ -442,8 +441,8 @@ template <int dim_>
 void
 CartesianGrid<dim_>::
 refine_directions(
-    const array<bool,dim> &refinement_directions,
-    const array<Size,dim> &n_subdivisions)
+    const std::array<bool,dim> &refinement_directions,
+    const std::array<Size,dim> &n_subdivisions)
 {
     // make a copy of the grid before the refinement
     grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
@@ -473,10 +472,10 @@ refine_direction(const int direction_id, const Size n_subdivisions)
     Assert(direction_id >= 0 && direction_id < dim,
            ExcIndexRange(direction_id, 0, dim));
 
-    array<bool,dim> refinement_directions = filled_array<bool,dim>(false);
+    std::array<bool,dim> refinement_directions = filled_array<bool,dim>(false);
     refinement_directions[direction_id] = true;
 
-    array<Size,dim> n_subdiv;
+    std::array<Size,dim> n_subdiv;
     n_subdiv[direction_id] = n_subdivisions;
 
     this->refine_directions(refinement_directions,n_subdiv);

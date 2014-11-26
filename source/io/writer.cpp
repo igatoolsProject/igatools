@@ -59,7 +59,6 @@ Writer<dim, codim, T>::
 Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
     :
-//    grid_(map->get_function()->get_grid()),
     map_(map->clone()),
     quad_plot_(quadrature),
     num_points_direction_(quad_plot_->get_num_points_direction()),
@@ -71,7 +70,6 @@ Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
     sizeof_uchar_(sizeof(unsigned char)),
     offset_(0)
 {
-//  Assert(grid_ != nullptr, ExcNullPtr());
     Assert(map_ != nullptr, ExcNullPtr());
     Assert(quad_plot_ != nullptr, ExcNullPtr());
 

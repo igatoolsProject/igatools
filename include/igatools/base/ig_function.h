@@ -51,7 +51,8 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    using CoeffType = Vector<LAPack::trilinos>;
+//    using CoeffType = Vector<LAPack::trilinos>;
+    using CoeffType = vector<Real>;
 
 
     IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
@@ -79,10 +80,9 @@ public:
         return coeff_;
     }
 
-    void print_info(LogStream &out) const
-    {
-        coeff_.print_info(out);
-    }
+    void print_info(LogStream &out) const;
+
+    std::shared_ptr<const Space> get_iga_space() const;
 
 private:
 
