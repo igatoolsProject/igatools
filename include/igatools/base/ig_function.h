@@ -80,6 +80,13 @@ public:
         return coeff_;
     }
 
+
+    auto &get_space() const
+    {
+        return space_;
+    }
+
+
     void print_info(LogStream &out) const
     {
         coeff_.print_info(out);
