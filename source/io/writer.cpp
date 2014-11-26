@@ -879,57 +879,13 @@ get_num_points_per_iga_element() const
 }
 
 
-#if 0
-#include <igatools/base/exceptions.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/identity_mapping.h>
-#include <igatools/utils/multi_array_utils.h>
-
-#include <sstream>
-#include <utility>
-
-
-using std::array;
-using std::make_shared;
-using std::string;
-using std::stringstream;
-using std::fstream;
-using std::pair;
-using std::to_string;
-using std::endl;
-
-#include <boost/detail/endian.hpp>
-
-
-//TODO: Add patch id as a cell field
-
-
-
-
 template<int dim, int codim, class T>
+int
 Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid> grid,
-       const Index n_points_direction)
-    :
-    Writer(IdentityMapping<dim, codim>::create(grid),
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
-{}
-
-
-
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<const Map> map,
-       const Index n_points_direction)
-    :
-    Writer(map,
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
-{}
-
-
+get_num_vtk_elements_per_iga_element() const
+{
+    return n_vtk_elements_per_iga_element_;
+}
 
 
 
@@ -945,156 +901,15 @@ get_num_iga_elements() const
 
 
 template<int dim, int codim, class T>
-int Writer<dim, codim, T>::get_num_vtk_elements() const
+int
+Writer<dim, codim, T>::
+get_num_vtk_elements() const
 {
     return n_vtk_elements_;
 }
 
 
 
-
-
-template<int dim, int codim, class T>
-int Writer<dim, codim, T>::get_num_vtk_elements_per_iga_element() const
-{
-    return n_vtk_elements_per_iga_element_;
-}
-
-
-
-template<int dim, int codim, class T>
-template<class Space, LAPack la_pack>
-void Writer<dim, codim, T>::
-add_field(shared_ptr<Space> space_,
-          const Vector<la_pack> &coefs,
-          const string &name)
-{
-    // Compromise to keep type safe but avoid the user for writing
-    // pedantically correct but comprehensible undesirable casting
-    shared_ptr<const Space> space = std::const_pointer_cast<const Space> (space_);
-
-    //--------------------------------------------------------------------------
-    Assert(space_dim <= 3,
-           ExcMessage("The maximum allowed physical domain for VTK file is 3."));
-    //--------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------
-    // get the fields to write and assign them to the vtkUnstructuredGrid object
-
-    auto element     = space->begin();
-    auto element_end = space->end();
-    // TODO (pauletti, Sep 12, 2014): fix next line
-    Assert(true, ExcMessage(" fix next line "));
-    //element->init_cache(ValueFlags::value, quad_plot_);
-
-
-
-    const int n_elements = grid_->get_num_active_elems();
-    const int n_pts_per_elem = quad_plot_.get_num_points();
-
-    static const int dim_phys_range = Space::range;
-    static const int rank = Space::rank;
-
-
-    const int n_values_per_pt =
-        dim_phys_range == 1 ? 1 : std::pow(dim_phys_range, rank);
-    shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
-    auto &data = *data_ptr;
-    if (rank == 0)
-    {
-        int pos = 0;
-        for (int iElement = 0; element != element_end; ++element, ++iElement)
-        {
-            // TODO (pauletti, Sep 12, 2014): fix next line
-            Assert(true, ExcMessage(" fix next line "));
-            // element->fill_cache();
-            const auto field_values = element->evaluate_field(
-                                          coefs.get_local_coefs(element->get_local_to_global()));
-
-            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
-                data[pos++] = field_values[iPt][0];
-        }
-
-        fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
-        names_point_data_scalar_.emplace_back(name);
-    }
-    else if (rank == 1)
-    {
-        int pos = 0;
-        for (int iElement = 0; element != element_end; ++element, ++iElement)
-        {
-            // TODO (pauletti, Sep 12, 2014): fix next line
-            Assert(true, ExcMessage(" fix next line "));
-            // element->fill_cache();
-
-            const auto field_values = element->evaluate_field(
-                                          coefs.get_local_coefs(element->get_local_to_global()));
-
-            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
-            {
-                const auto &field_value_ipt = field_values[ iPt ];
-                for (int i = 0; i < dim_phys_range; ++i)
-                    data[pos++] = field_value_ipt[i];
-            }
-        }
-
-        fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
-        names_point_data_vector_.emplace_back(name);
-    }
-    else if (rank == 2)
-    {
-        int pos = 0;
-        for (int iElement = 0; element != element_end; ++element, ++iElement)
-        {
-            // TODO (pauletti, Sep 12, 2014): fix next line
-            Assert(true, ExcMessage(" fix next line "));
-            //element->fill_cache();
-
-            const auto field_values = element->evaluate_field(
-                                          coefs.get_local_coefs(element->get_local_to_global()));
-
-            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
-            {
-                const auto &field_value_ipt = field_values[ iPt ];
-                for (int i = 0; i < dim_phys_range; ++i)
-                {
-                    const auto &field_value_ipt_i = field_value_ipt[i];
-
-                    for (int j = 0; j < dim_phys_range; ++j)
-                        data[pos++] = field_value_ipt_i[j];
-                }
-            }
-        }
-
-        fields_.emplace_back(PointData(name,"tensor",n_elements,n_pts_per_elem,n_values_per_pt,data_ptr));
-        names_point_data_tensor_.emplace_back(name);
-    }
-
-    //--------------------------------------------------------------------------
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif
 
 IGA_NAMESPACE_CLOSE
 
