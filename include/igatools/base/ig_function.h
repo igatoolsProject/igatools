@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 class IgFunction :
-        public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
+    public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
 {
 public:
     static const int dim = Space::dim;

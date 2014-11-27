@@ -42,7 +42,7 @@ IgFunction(std::shared_ptr<const Space> space,
 template<class Space>
 IgFunction<Space>::
 IgFunction(const self_t &fun)
-:
+    :
     parent_t::NewFunction(fun.space_->get_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
@@ -143,10 +143,10 @@ get_coefficients() const -> const CoeffType &
 template<class Space>
 auto
 IgFunction<Space>::
-operator +=(const self_t &fun) -> self_t&
+operator +=(const self_t &fun) -> self_t &
 {
     const auto size = coeff_.size();
-    for(int i=0; i<size; ++i)
+    for (int i=0; i<size; ++i)
         coeff_[i] += fun.coeff_[i];
 
     return *this;
