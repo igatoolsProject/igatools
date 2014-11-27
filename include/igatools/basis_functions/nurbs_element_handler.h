@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef NURBS_UNIFORM_QUAD_CACHE_H_
-#define NURBS_UNIFORM_QUAD_CACHE_H_
+#ifndef NURBS_ELEMENT_HANDLER_H_
+#define NURBS_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
 
@@ -50,7 +50,6 @@ class NURBSElementHandler : public BSplineElementHandler<dim_>
     using base_t = GridElementHandler<dim_>;
     using Space = NURBSSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
-    using ElementIterator = typename Space::ElementIterator;
 
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
@@ -59,6 +58,10 @@ class NURBSElementHandler : public BSplineElementHandler<dim_>
     using Derivative = typename Space::template Derivative<order>;
 
     using Value = typename Space::Value;
+
+protected:
+    using ElementIterator = typename Space::ElementIterator;
+    using ElementAccessor = typename Space::ElementAccessor;
 
 
 public:
@@ -164,6 +167,6 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#endif // #ifdef NURBS_UNIFORM_QUAD_CACHE_H_
+#endif // #ifndef NURBS_ELEMENT_HANDLER_H_
 
 #endif

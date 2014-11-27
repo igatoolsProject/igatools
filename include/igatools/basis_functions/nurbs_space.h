@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __NURBS_SPACE_H_
-#define __NURBS_SPACE_H_
+#ifndef NURBS_SPACE_H_
+#define NURBS_SPACE_H_
 
 
 
@@ -27,6 +27,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/base/ig_function.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -48,9 +49,11 @@ class NURBSSpace :
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
     using self_t = NURBSSpace<dim_, range_, rank_>;
-    using SpSpace = NewBSplineSpace<dim_, range_, rank_>;
 
 public:
+    using SpSpace = NewBSplineSpace<dim_, range_, rank_>;
+
+
     /** see documentation in \ref FunctionSpaceOnGrid */
 
     using GridType = CartesianGrid<dim_>;
@@ -60,9 +63,9 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-    using SpSpace::n_components;
-    using SpSpace::components;
-    using SpSpace::dims;
+    static const auto n_components = SpSpace::n_components;
+//    static constexpr auto   components = SpSpace::components;
+    static constexpr auto dims = SpSpace::dims;
 
 public:
 
@@ -88,6 +91,34 @@ public:
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
+    using ElementHandler = NURBSElementHandler<dim_, range_, rank_>;
+
+
+
+    template <int k>
+    using InterGridMap = typename GridType::template InterGridMap<k>;
+
+    template <int k>
+    using InterSpaceMap = vector<Index>;
+
+    template <int k>
+    using SubRefSpace = NURBSSpace<k, range, rank>;
+
+    template <int k>
+    using SubSpace = NewPhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+
+    /**
+     * Construct a sub space of dimension k conforming to
+     * the subspace sub element sub_elem_id and a map from the elements of
+     * the sub_element grid to the corresponding element of the current
+     * grid.
+     */
+    template<int k>
+    std::shared_ptr<SubRefSpace<k> >
+    get_ref_sub_space(const int sub_elem_id,
+                      InterSpaceMap<k> &dof_map,
+                      std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+
 public:
 //    /** Container indexed by the components of the space */
     template< class T>
@@ -101,9 +132,10 @@ public:
     using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
-    using WeightFunction = IgFunction<NewBSplineSpace<dim_, 1, 1>>;
+    using WeightFunction = IgFunction<NewBSplineSpace<dim_,1,1> >;
+    using WeightsFuncTable = ComponentContainer<WeightFunction>;
     using Weights = DynamicMultiArray<Real,dim>;
-    using WeightsTable = ComponentContainer<WeightFunction>;
+    using WeightsTable = ComponentContainer<Weights>;
 
 
 
@@ -418,7 +450,8 @@ private:
 
 #endif
     friend ElementAccessor;
-    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
+    friend ElementHandler;
+//    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
 
 
 };
@@ -426,8 +459,8 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-#endif
+#endif /* #ifdef NURBS */
 
-#endif /* __NURBS_SPACE_H_ */
+#endif /* NURBS_SPACE_H_ */
 
 

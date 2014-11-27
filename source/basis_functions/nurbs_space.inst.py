@@ -21,13 +21,50 @@
 
 from init_instantiation_data import *
  
-include_files = ['geometry/cartesian_grid_element.h',
-                  'basis_functions/bspline_element.h']
-#                  'basis_functions/nurbs_element_accessor.h']
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
-# 
-# spaces = ['NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)  
-#            for x in inst.really_all_ref_sp_dims ]
+# include_files = ['geometry/cartesian_grid_element.h',
+#                   'basis_functions/bspline_element.h',
+#                   'basis_functions/nurbs_element.h']
+# data = Instantiation(include_files)
+# (f, inst) = (data.file_output, data.inst)
+# # 
+# spaces = ['NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank) 
+#           for x in inst.really_all_ref_sp_dims ]
 # for sp in spaces:
 #     f.write('template class %s ;\n' %sp)
+
+
+
+include_files = ['geometry/cartesian_grid_element.h',
+                 'basis_functions/nurbs_element.h']
+data = Instantiation(include_files)
+(f, inst) = (data.file_output, data.inst)
+
+sub_dim_members = \
+ ['std::shared_ptr<typename class::template SubRefSpace<k>> ' + 
+  'class::get_ref_sub_space<k>(const int sub_elem_id, ' + 
+  'InterSpaceMap<k> &dof_map, ' + 
+  'std::shared_ptr<CartesianGrid<k>> sub_grid) const;',
+  'std::shared_ptr<typename class::template SubSpace<k>> ' + 
+  'class::get_sub_space<k>(const int sub_elem_id, ' + 
+  'InterSpaceMap<k> &dof_map, std::shared_ptr<CartesianGrid<k>> sub_grid,' + 
+  'std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;']
+
+
+for x in inst.sub_ref_sp_dims:
+    space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('class', space).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
+
+
+for x in inst.ref_sp_dims:
+    space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = fun.replace('class', space).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')
+            
+            

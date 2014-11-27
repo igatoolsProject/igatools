@@ -22,13 +22,13 @@
 #define IG_FUNCTIONS_H
 
 #include <igatools/base/new_function.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+//#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 template<class Space>
 class IgFunction :
-        public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
+    public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
 {
 public:
     static const int dim = Space::dim;

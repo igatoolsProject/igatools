@@ -22,6 +22,9 @@ from init_instantiation_data import *
 include_files = ['basis_functions/new_bspline_space.h',
                  'basis_functions/bspline_element.h',
                  'basis_functions/bspline_element_handler.h',
+                 'basis_functions/nurbs_space.h',
+                 'basis_functions/nurbs_element.h',
+                 'basis_functions/nurbs_element_handler.h',
                  'basis_functions/new_physical_space.h',
                  'basis_functions/physical_space_element.h',
                  'basis_functions/space_element_handler.h']

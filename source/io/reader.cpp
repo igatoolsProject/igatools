@@ -23,11 +23,14 @@
 //#include <igatools/utils/array.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/nurbs_element.h>
 
 
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+
+#include <set>
 
 using std::string;
 using std::shared_ptr;
@@ -314,7 +317,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
         using ref_space_t = NURBSSpace<dim,dim_phys,1>;
         auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
-        map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
+        map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
 #else
         Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
         AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -674,10 +677,14 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
 
+        Assert(false,ExcMessage("fix from here!"));
+        AssertThrow(false,ExcMessage("fix from here!"));
+        /*
         auto &w_comp = weights[comp_id];
         w_comp.resize(dofs_size);
         for (int flat_id = 0 ; flat_id < n_weights ; ++flat_id)
             w_comp[flat_id] = weights_vec[flat_id];
+            //*/
         //-------------------------------------------------------------------------
 
     } // end loop over the scalar components
@@ -691,7 +698,10 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
     }
 
-    auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour,weights);
+
+    auto ref_space = space_t::create(
+                         space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour),
+                         weights);
 
     return ref_space;
 }

@@ -284,6 +284,7 @@ public:
 
     template <int k>
     using SubSpace = NewPhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+
     /**
      * Construct a sub space of dimension k conforming to
      * the subspace sub element sub_elem_id and a map from the elements of

@@ -21,7 +21,7 @@
 from init_instantiation_data import *
 
 include_files = ['basis_functions/bspline_element.h',
-                 'basis_functions/nurbs_element_accessor.h',
+                 'basis_functions/nurbs_element.h',
                  'geometry/push_forward_element.h',
                  'basis_functions/physical_space_element.h',
                  '../../source/basis_functions/physical_space_element.cpp',
