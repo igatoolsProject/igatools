@@ -38,20 +38,13 @@
 #include <petscvec.h>
 #endif
 
-
 #include <memory>
-
 
 IGA_NAMESPACE_OPEN
 
-template < LAPack la_pack>
-class Vector;
-
-
-
+template < LAPack la_pack> class Vector;
 
 #ifdef USE_TRILINOS
-
 /**
  * Numerical distributed Vector.
  * It's a wrapper to a Trilinos distributed vector.
