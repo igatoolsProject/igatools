@@ -711,8 +711,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     		space_t::SpSpace::create(
     				ScalarDegreeTable(degrees[0]),
     				shared_ptr<CartesianGrid<dim>>(new CartesianGrid<dim>(*grid)),
-    				shared_ptr<ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0])),
-    				ScalarEndBehaviourTable(end_behaviour[0])),
+    				shared_ptr<ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]))),
     				weights[0].get_data()));
     // building the weight function --- end
     //----------------------------------------
