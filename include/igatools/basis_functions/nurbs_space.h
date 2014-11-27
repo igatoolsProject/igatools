@@ -27,6 +27,7 @@
 #include <igatools/base/config.h>
 
 #include <igatools/basis_functions/new_bspline_space.h>
+//#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/ig_function.h>
 
 #ifdef NURBS
@@ -147,8 +148,9 @@ public:
     using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
-    using WeightFunction = IgFunction<NewBSplineSpace<dim_,1,1> >;
-    using WeightsFuncTable = ComponentContainer<WeightFunction>;
+    using WeightSpace = NewBSplineSpace<dim_,1,1>;
+    using WeightFunction = IgFunction<WeightSpace>;
+    using WeightsFuncTable = ComponentContainer<std::shared_ptr<WeightFunction>>;
     using Weights = DynamicMultiArray<Real,dim>;
     using WeightsTable = ComponentContainer<Weights>;
 
@@ -433,6 +435,9 @@ private:
      * Weights associated to the basis functions.
      */
     WeightsTable weights_;
+
+    WeightsFuncTable weights_func_;
+
 
 #if 0
     /**

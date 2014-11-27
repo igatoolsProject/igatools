@@ -133,6 +133,23 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
     sp_space_(bs_space),
     weights_(weights)
 {
+    const auto &degree_table = sp_space_->get_degree_table();
+    const auto w_grid = CartesianGrid<dim>::create(*bs_space->get_grid());
+
+
+    for (const auto &comp : weights_.get_active_components_id())
+    {
+        Assert(false,ExcNotImplemented());
+        const auto &interior_mult_tmp = (*sp_space_->get_interior_mult())[comp];
+
+
+        auto w_sp = WeightSpace::create(degree_table[comp], w_grid, std::shared_ptr< const MultiplicityTable > interior_mult, const EndBehaviourTable &ends=EndBehaviourTable())
+
+                    const vector<Real> coeffs = weights_[comp].get_data();
+        weights_func[comp] = WeightFunction::create();
+    }
+
+
 //    create_refinement_connection();
 //    perform_post_construction_checks();
 }
