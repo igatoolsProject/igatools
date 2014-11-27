@@ -298,7 +298,7 @@ clear_row(const Index row)
 
 void
 Matrix<LAPack::trilinos>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     using std::endl;
 
