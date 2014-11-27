@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifdef NURBS
 
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element.h>
@@ -29,6 +30,8 @@ IGA_NAMESPACE_OPEN
 
 
 IGA_NAMESPACE_CLOSE
+
+#endif // #ifdef NURBS
 
 //#include <igatools/basis_functions/bspline_element.inst>
 

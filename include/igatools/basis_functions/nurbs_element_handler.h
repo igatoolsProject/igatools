@@ -53,7 +53,7 @@ template<int,int,int> class NURBSSpace;
 template<int dim_, int range_ = 1, int rank_ = 1>
 class NURBSElementHandler : public BSplineElementHandler<dim_,range_,rank_>
 {
-    using base_t = GridElementHandler<dim_>;
+    using base_t = BSplineElementHandler<dim_,range_,rank_>;
     using Space = NURBSSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 
@@ -172,7 +172,7 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#endif // #ifdef NURBS
 
 #endif // #ifndef NURBS_ELEMENT_HANDLER_H_
 
-#endif

@@ -18,11 +18,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/nurbs_element.h>
+
+using std::shared_ptr;
+
+#ifdef NURBS
 
 IGA_NAMESPACE_OPEN
 
+template<int dim_, int range_ , int rank_>
+NURBSElementHandler<dim_, range_, rank_>::
+NURBSElementHandler(shared_ptr<const Space> space)
+    :
+    base_t(space->get_spline_space()),
+    space_(space)
+{
+    Assert(false,ExcNotImplemented());
+}
 
 
 #if 0
@@ -407,3 +420,5 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element_handler.inst>
+
+#endif // #ifdef NURBS

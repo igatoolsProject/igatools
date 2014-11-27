@@ -23,6 +23,9 @@
 #define NURBS_ELEMENT_H_
 
 #include <igatools/base/config.h>
+
+#ifdef NURBS
+
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 
@@ -32,6 +35,7 @@
 //#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
 IGA_NAMESPACE_OPEN
+
 
 template <int dim, int range, int rank> class NURBSSpace;
 template <typename Accessor> class GridForwardIterator;
@@ -70,10 +74,17 @@ public:
      * BsplineSpace space.
      */
     NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const Index elem_index);
+                 const Index elem_index)
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
     NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const TensorIndex<dim> &elem_index);
+                 const TensorIndex<dim> &elem_index)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow copy).
@@ -81,7 +92,10 @@ public:
      * uses the deep copy.
      */
     NURBSElement(const self_t &elem,
-                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+                 const CopyPolicy &copy_policy = CopyPolicy::deep)
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
     /**
      * Move constructor.
@@ -113,7 +127,7 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-
+#endif // #ifdef NURBS
 
 
 #endif // end of #ifndef NURBS_ELEMENT_H_

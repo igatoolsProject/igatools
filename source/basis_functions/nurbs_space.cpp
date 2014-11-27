@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/nurbs_space.h>
-//#include <igatools/basis_functions/space_manager.h>
+#include <igatools/basis_functions/space_manager.h>
 //#include <igatools/basis_functions/space_tools.h>
 
 //#include <igatools/base/sub_function.h>
@@ -70,7 +70,7 @@ NURBSSpace(const DegreeTable &degree,
            const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(degree,knots)),
+    sp_space_(SpSpace::create(degree,knots)),
     weights_(weights)
 {
 
@@ -101,7 +101,7 @@ NURBSSpace(const DegreeTable &deg,
            const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(deg, knots, interior_mult, ends)),
+    sp_space_(SpSpace::create(deg, knots, interior_mult, ends)),
     weights_(weights)
 {
     create_refinement_connection();
@@ -126,7 +126,7 @@ create(const DegreeTable &deg,
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
+NURBSSpace(std::shared_ptr<SpSpace> bs_space,
            const WeightsTable &weights)
     :
     BaseSpace(bs_space->get_grid()),
@@ -141,7 +141,7 @@ NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(std::shared_ptr<spline_space_t> bs_space,
+create(std::shared_ptr<SpSpace> bs_space,
        const WeightsTable &weights) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(bs_space, weights));
@@ -438,6 +438,7 @@ get_degree() const -> const DegreeTable &
     return sp_space_->get_degree();
 }
 
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
@@ -445,7 +446,7 @@ get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
 {
     return sp_space_->get_interior_mult();
 }
-
+#endif
 
 template <int dim_, int range_, int rank_>
 auto
@@ -470,7 +471,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const -> vector<Index
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_spline_space() const -> const std::shared_ptr<spline_space_t>
+get_spline_space() const -> const std::shared_ptr<SpSpace>
 {
     return sp_space_;
 }
@@ -515,7 +516,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
     return sp_space_->get_dof_distribution_patch();
 }
 
-
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
@@ -539,6 +540,7 @@ get_reference_space() const -> std::shared_ptr<const self_t >
 {
     return this->shared_from_this();
 }
+#endif
 
 template <int dim_, int range_, int rank_>
 void
@@ -579,6 +581,97 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 }
 
 
+
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_ref_sub_space(const int s_id,
+                  InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
+-> std::shared_ptr<SubRefSpace<k> >
+{
+    //TODO (martinelli Nov 27,2014): implement this function
+#if 0
+    if (!(sub_grid))
+    {
+        typename GridType::template InterGridMap<k>  elem_map;
+        sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+    }
+    auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
+    auto sub_degree = this->template get_sub_space_degree<k>(s_id);
+
+    auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);
+
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
+
+    // Crating the mapping between the space degrees of freedom
+    const auto &active_dirs = k_elem.active_directions;
+    const int n_dir = k_elem.constant_directions.size();
+
+    TensorIndex<dim> tensor_index;
+    int comp_i = 0;
+    dof_map.resize(sub_space->get_num_basis());
+    for (auto comp : components)
+    {
+        const int n_basis = sub_space->get_num_basis(comp);
+        const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
+
+        for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
+        {
+            const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
+
+            for (int j=0; j<k; ++j)
+                tensor_index[active_dirs[j]] =  sub_base_id[j];
+            for (int j=0; j<n_dir; ++j)
+            {
+                auto dir = k_elem.constant_directions[j];
+                auto val = k_elem.constant_values[j];
+                const int fixed_id = val * (this->get_num_basis(comp, dir) - 1);
+                tensor_index[dir] = fixed_id;
+
+            }
+            dof_map[comp_i] = elem_global_indices(tensor_index);
+        }
+
+    }
+
+    return sub_space;
+#endif
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+}
+
+
+
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+              std::shared_ptr<CartesianGrid<k>> sub_grid,
+              std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
+-> std::shared_ptr<SubSpace<k> >
+{
+    //TODO (martinelli Nov 27,2014): implement this function
+#if 0
+    using SubMap = SubMapFunction<k, dim, space_dim>;
+    auto grid =  this->get_grid();
+//    typename GridType::template InterGridMap<k> elem_map;
+//    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+
+    auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
+    auto F = IdentityFunction<dim>::create(grid);
+    auto sub_map_func = SubMap::create(sub_grid, F, s_id, *elem_map);
+    auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
+    return sub_space;
+#endif
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+}
 
 template <int dim_, int range_, int rank_>
 void

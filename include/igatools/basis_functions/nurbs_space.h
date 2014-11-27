@@ -23,11 +23,14 @@
 
 
 
-#ifdef NURBS
 
 #include <igatools/base/config.h>
+
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/base/ig_function.h>
+
+#ifdef NURBS
+
 
 IGA_NAMESPACE_OPEN
 
@@ -118,6 +121,12 @@ public:
     get_ref_sub_space(const int sub_elem_id,
                       InterSpaceMap<k> &dof_map,
                       std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+
+    template<int k>
+    std::shared_ptr<SubSpace<k> >
+    get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid,
+                  std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;
 
 public:
 //    /** Container indexed by the components of the space */
@@ -292,9 +301,10 @@ public:
     ///@}
 
 
-#if 0
+
     const std::shared_ptr<SpSpace> get_spline_space() const;
-#endif
+
+
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
 
