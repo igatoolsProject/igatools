@@ -68,17 +68,17 @@ void do_test()
     auto  knots = CartesianGrid<dim>::create(coord);
     DegreeTable deg(degree);
 
-    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
+    auto  bsp = NewBSplineSpace<dim, range, rank >::create(deg, knots);
     WeightsTable weights;
     const auto n_basis = bsp->get_num_basis_table();
 
-    for (auto comp : Space::components)
+    for (auto comp : Space::get_components())
         weights[comp].resize(n_basis[comp],1.0);
 
     for (auto &w : weights)
         w.print_info(out);
 
-    auto nurbs_space = Space::create(deg, knots, weights);
+    auto nurbs_space = Space::create(bsp, weights);
     nurbs_space->print_info(out);
 }
 

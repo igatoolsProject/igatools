@@ -70,6 +70,12 @@ public:
 //    static constexpr auto   components = SpSpace::components;
     static constexpr auto dims = SpSpace::dims;
 
+    static std::array<Size,n_components> get_components()
+    {
+        return SpSpace::components;
+    }
+
+
 public:
 
 
@@ -239,8 +245,8 @@ protected:
     /**
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
-    explicit  NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-                         const WeightsTable &weights);
+    explicit NURBSSpace(std::shared_ptr<SpSpace> bs_space,
+                        const WeightsTable &weights);
 
     /**
      * Copy constructor. Not allowed to be used.
