@@ -38,6 +38,7 @@ IgFunction(std::shared_ptr<const Space> space,
 {}
 
 
+
 template<class Space>
 IgFunction<Space>::
 IgFunction(const self_t &fun)
@@ -48,6 +49,7 @@ IgFunction(const self_t &fun)
     elem_(space_->begin()),
     space_filler_(space_)
 {}
+
 
 
 template<class Space>
@@ -102,6 +104,8 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 
+
+    // TODO (pauletti, Nov 27, 2014): if code is in final state remove commented line else fix
     const auto local_ids = elem_->get_local_to_global();
     vector<Real> loc_coeff;
     for (const auto &id : local_ids)
@@ -115,13 +119,39 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
 }
 
 
+
 template<class Space>
-std::shared_ptr<const Space>
+auto
 IgFunction<Space>::
-get_iga_space() const
+get_iga_space() const -> std::shared_ptr<const Space>
 {
     return space_;
 }
+
+
+
+template<class Space>
+auto
+IgFunction<Space>::
+get_coefficients() const -> const CoeffType &
+{
+    return coeff_;
+}
+
+
+
+template<class Space>
+auto
+IgFunction<Space>::
+operator +=(const self_t &fun) -> self_t&
+{
+    const auto size = coeff_.size();
+    for(int i=0; i<size; ++i)
+        coeff_[i] += fun.coeff_[i];
+
+    return *this;
+}
+
 
 
 template<class Space>
@@ -144,7 +174,6 @@ print_info(LogStream &out) const
     coeff_.print_info(out);
     out.end_item();
 }
-
 
 IGA_NAMESPACE_CLOSE
 

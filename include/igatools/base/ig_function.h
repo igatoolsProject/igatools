@@ -74,17 +74,15 @@ public:
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
-    auto &get_coefficients() const
-    {
-        return coeff_;
-    }
+    std::shared_ptr<const Space> get_iga_space() const;
+
+    const CoeffType &get_coefficients() const;
+
+    self_t &operator +=(const self_t &fun);
 
     void print_info(LogStream &out) const;
 
-    std::shared_ptr<const Space> get_iga_space() const;
-
 private:
-
     std::shared_ptr<const Space> space_;
 
     CoeffType coeff_;
@@ -92,7 +90,6 @@ private:
     typename Space::ElementIterator elem_;
 
     typename Space::ElementHandler space_filler_;
-
 
 private:
     struct ResetDispatcher : boost::static_visitor<void>
@@ -157,13 +154,9 @@ private:
         vector<Real> *loc_coeff;
     };
 
-
-
     ResetDispatcher reset_impl;
     InitCacheDispatcher init_cache_impl;
     FillCacheDispatcher fill_cache_impl;
-
-
 };
 
 IGA_NAMESPACE_CLOSE
