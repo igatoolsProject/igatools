@@ -26,6 +26,7 @@ include_files = ['basis_functions/bspline_element.h',
                  'basis_functions/physical_space_element.h',
                  '../../source/basis_functions/physical_space_element.cpp',
                  '../../source/basis_functions/bspline_element.cpp',
+                 '../../source/basis_functions/nurbs_element.cpp',
                  'basis_functions/space_element.h',
                  '../../source/geometry/grid_forward_iterator.cpp']
 

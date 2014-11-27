@@ -23,9 +23,9 @@
 #define NURBS_ELEMENT_H_
 
 #include <igatools/base/config.h>
+#include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 
-//#include <igatools/basis_functions/space_element.h>
 
 //#include <igatools/linear_algebra/dense_matrix.h>
 //#include <igatools/basis_functions/bernstein_basis.h>

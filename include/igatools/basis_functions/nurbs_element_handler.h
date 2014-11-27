@@ -32,20 +32,26 @@
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
 //#include <igatools/utils/cartesian_product_array-template.h>
+//#include <igatools/basis_functions/nurbs_space.h>
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
+
+
 
 
 IGA_NAMESPACE_OPEN
+
+
+template<int,int,int> class NURBSSpace;
 
 /**
  * Global NURBSSpace uniform quadrature
  * computational optimization cache.
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class NURBSElementHandler : public BSplineElementHandler<dim_>
+class NURBSElementHandler : public BSplineElementHandler<dim_,range_,rank_>
 {
     using base_t = GridElementHandler<dim_>;
     using Space = NURBSSpace<dim_,range_,rank_>;
