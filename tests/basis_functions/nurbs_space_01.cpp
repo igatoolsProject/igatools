@@ -22,6 +22,7 @@
 #include "../tests.h"
 
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 template< int dim, int range, int rank = 1>
 void do_test()
@@ -78,7 +79,14 @@ void do_test()
     for (auto &w : weights)
         w.print_info(out);
 
-    auto nurbs_space = Space::create(bsp, weights);
+    using ScalarBSplineSpace = NewBSplineSpace<dim>;
+    using WeightFunc = IgFunction<ScalarBSplineSpace>;
+    auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
+    				ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord)),
+    				weights[0].get_data()));
+
+
+    auto nurbs_space = Space::create(bsp, weights, w_func);
     nurbs_space->print_info(out);
 }
 

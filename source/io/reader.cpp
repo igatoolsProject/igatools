@@ -699,9 +699,28 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     }
 
 
+    //----------------------------------------
+    // building the weight function --- begin
+    using ScalarBSplineSpace = NewBSplineSpace<dim>;
+    using WeightFunc = IgFunction<ScalarBSplineSpace>;
+
+    using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
+    using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
+    using ScalarEndBehaviourTable= typename ScalarBSplineSpace::EndBehaviourTable;
+    auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
+    		space_t::SpSpace::create(
+    				ScalarDegreeTable(degrees[0]),
+    				shared_ptr<CartesianGrid<dim>>(new CartesianGrid<dim>(*grid)),
+    				shared_ptr<ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0])),
+    				ScalarEndBehaviourTable(end_behaviour[0])),
+    				weights[0].get_data()));
+    // building the weight function --- end
+    //----------------------------------------
+
     auto ref_space = space_t::create(
                          space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour),
-                         weights);
+                         weights,
+                         w_func);
 
     return ref_space;
 }

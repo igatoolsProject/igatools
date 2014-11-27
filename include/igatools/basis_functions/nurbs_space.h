@@ -27,7 +27,7 @@
 #include <igatools/base/config.h>
 
 #include <igatools/basis_functions/new_bspline_space.h>
-//#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/ig_function.h>
 
 #ifdef NURBS
@@ -150,7 +150,7 @@ public:
 
     using WeightSpace = NewBSplineSpace<dim_,1,1>;
     using WeightFunction = IgFunction<WeightSpace>;
-    using WeightsFuncTable = ComponentContainer<std::shared_ptr<WeightFunction>>;
+    using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
     using Weights = DynamicMultiArray<Real,dim>;
     using WeightsTable = ComponentContainer<Weights>;
 
@@ -197,7 +197,8 @@ public:
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<SpSpace> bs_space,
-           const WeightsTable &weights);
+           const WeightsTable &weights,
+           const WeightFunctionPtr weight_func);
 
     ///@}
 
@@ -248,7 +249,8 @@ protected:
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
     explicit NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-                        const WeightsTable &weights);
+                        const WeightsTable &weights,
+                        const WeightFunctionPtr weight_func);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -436,7 +438,7 @@ private:
      */
     WeightsTable weights_;
 
-    WeightsFuncTable weights_func_;
+    WeightFunctionPtr weight_func_;
 
 
 #if 0

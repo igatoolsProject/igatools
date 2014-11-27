@@ -127,15 +127,21 @@ create(const DegreeTable &deg,
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-           const WeightsTable &weights)
+           const WeightsTable &weights,
+           const WeightFunctionPtr weight_func)
     :
     BaseSpace(bs_space->get_grid()),
     sp_space_(bs_space),
-    weights_(weights)
+    weights_(weights),
+    weight_func_(weight_func)
 {
+	Assert(weight_func_ != nullptr, ExcNullPtr());
+
+	Assert(this->get_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+
+#if 0
     const auto &degree_table = sp_space_->get_degree_table();
     const auto w_grid = CartesianGrid<dim>::create(*bs_space->get_grid());
-
 
     for (const auto &comp : weights_.get_active_components_id())
     {
@@ -148,7 +154,7 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
                     const vector<Real> coeffs = weights_[comp].get_data();
         weights_func[comp] = WeightFunction::create();
     }
-
+#endif
 
 //    create_refinement_connection();
 //    perform_post_construction_checks();
@@ -159,9 +165,10 @@ template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr<SpSpace> bs_space,
-       const WeightsTable &weights) -> shared_ptr<self_t>
+       const WeightsTable &weights,
+       const WeightFunctionPtr weight_func) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(bs_space, weights));
+    return shared_ptr<self_t>(new self_t(bs_space, weights,weight_func));
 }
 
 
