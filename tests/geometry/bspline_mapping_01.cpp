@@ -55,62 +55,62 @@ void bspline_map(const int deg = 1)
     if (dim == 1)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 2)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 3)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
     }
 

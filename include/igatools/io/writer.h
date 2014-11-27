@@ -148,9 +148,22 @@ public:
      */
     int get_num_points_per_iga_element() const;
 
-private:
-//    std::shared_ptr<const CartesianGrid<dim> > grid_;
+    /**
+     * Returns the number of VTK elements used for each IGA element.
+     */
+    int get_num_vtk_elements_per_iga_element() const;
 
+    /**
+     * Returns the number of IGA elements handled by the Writer.
+     */
+    int get_num_iga_elements() const;
+
+    /**
+     * Returns the number of VTK elements handled by the Writer.
+     */
+    int get_num_vtk_elements() const;
+
+private:
 
     std::shared_ptr<MapFunction<dim,dim+codim> > map_;
 
@@ -433,131 +446,6 @@ add_field(shared_ptr<const NewFunction<dim,0,range,rank>> function,
     //--------------------------------------------------------------------------
 }
 
-
-#if 0
-#include <igatools/base/logstream.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/linear_algebra/distributed_vector.h>
-#include <igatools/linear_algebra/dof_tools.h>
-#include <igatools/base/quadrature.h>
-
-#include <boost/variant.hpp>
-
-
-template < class RefSpace, class PushForward >
-class PhysicalSpace;
-
-template< int dim_domain, int range, int rank >
-class NURBSSpace;
-
-
-//todo:add the add_celldata function
-
-/**
- * This class is use to generate and save output in graphical
- * format.
- *
- * @todo This class needs to be documented, and explained with an example.
- */
-template<int dim, int codim = 0, class T = double>
-class Writer
-{
-private:
-    using self_t = Writer<dim, codim, T>;
-    using Grid = CartesianGrid<dim>;
-    using Map  = Mapping<dim, codim>;
-
-public:
-    static const int space_dim = dim + codim;
-    // TODO (pauletti, Jun 18, 2014): document this constructors
-    //TODO(pauletti, Jun 21, 2014): should be a const Grid
-
-    Writer(const std::shared_ptr<Grid> grid,
-           const Index num_points_direction);
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Returns the number of IGA elements handled by the Writer.
-     */
-    int get_num_iga_elements() const;
-
-    /**
-     * Returns the number of VTK elements handled by the Writer.
-     */
-    int get_num_vtk_elements() const;
-
-    /**
-     * Returns the number of VTK elements used for each IGA element.
-     */
-    int get_num_vtk_elements_per_iga_element() const;
-
-
-
-
-
-
-private:
-
-
-    const std::string filename_;
-
-
-protected:
-
-
-private:
-
-
-//TODO(pauletti, Jul 8, 2014): this documentation is incorrect
-    /**
-     * This function take as input an @p iga_element_id and a set of points in
-     * the [0,1]^dim domain, and maps
-     * those points to the reference domain and to the physical domain defined
-     * by the mapping used in the costructor.
-     * Moreover it returns the connectivity of the points on the element.
-     * @param[in] iga_element_id Element ID.
-     * @param[in] elem_quad Evaluation points in the [0,1]^dim domain.
-     * @param[out] element_connectivity Connectivity of the points defined on
-     * the element.
-     * @param[out] points_phys_iga_element Coordinate of the points in the
-     * physical domain.
-     * \note Due to the fact that VTK needs always points in 3D, when we have
-     *  the dimension of the physical space less than 3,
-     * we set the coordinate of the "missing dimension" to 0. In other words,
-     * if the dimension of the physical domain is 2, then the
-     * points are located on the plane z=0.
-     * If the dimension of the physical domain is 1, then the points are
-     * located on the line with y=0 and z=0.
-     */
-    void get_subelements(
-        const typename Mapping< dim, codim>::ElementIterator elem,
-        vector< std::array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-        vector< std::array<T,3> > &points_phys_iga_element) const;
-
-
-protected:
-
-
-private:
-
-
-
-
-
-
-};
-
-
-#endif
 
 IGA_NAMESPACE_CLOSE
 

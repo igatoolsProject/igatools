@@ -101,12 +101,50 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
     fill_cache_impl.space_elem = &(elem_.get_accessor());
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
-    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+
+    const auto local_ids = elem_->get_local_to_global();
+    vector<Real> loc_coeff;
+    for (const auto &id : local_ids)
+        loc_coeff.push_back(coeff_[id]);
+//    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j =j;
 
     boost::apply_visitor(fill_cache_impl, k);
 }
+
+
+template<class Space>
+std::shared_ptr<const Space>
+IgFunction<Space>::
+get_iga_space() const
+{
+    return space_;
+}
+
+
+template<class Space>
+void
+IgFunction<Space>::
+print_info(LogStream &out) const
+{
+    out.begin_item("Reference space info:");
+    space_->print_info(out);
+    out.end_item();
+    out << std::endl;
+
+#if 0
+    out << "Control points info (projective coordinates):" << endl;
+
+    //write the projective cooridnates if the reference space is NURBS
+#endif
+
+    out.begin_item("Control points info (euclidean coordinates):");
+    coeff_.print_info(out);
+    out.end_item();
+}
+
 
 IGA_NAMESPACE_CLOSE
 

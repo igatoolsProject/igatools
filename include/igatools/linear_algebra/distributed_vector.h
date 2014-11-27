@@ -73,7 +73,7 @@ public:
      * for @p n degrees of freedom.
      * All entries are set to zero.
      */
-    Vector(const Index n,CommPtr comm = Teuchos::createSerialComm<int>());
+    Vector(const Index n, CommPtr comm = Teuchos::createSerialComm<int>());
 
     /**
      * Construct a vector that gets a non consecutive indexing
@@ -99,7 +99,8 @@ public:
     ~Vector() = default;
     ///@}
 
-
+    // TODO (pauletti, Nov 27, 2014): Document this
+    vector<Real> get_as_vector() const;
 
     /** @name Assignment operators */
     ///@{

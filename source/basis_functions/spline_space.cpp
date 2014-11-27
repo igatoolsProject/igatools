@@ -22,8 +22,6 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 
-
-using std::array;
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -35,7 +33,7 @@ const Size SplineSpace<dim, range, rank>::n_components;
 
 
 template<int dim, int range, int rank>
-const array<Size, SplineSpace<dim, range, rank>::n_components>
+const std::array<Size, SplineSpace<dim, range, rank>::n_components>
 SplineSpace<dim, range, rank>::components =
     sequence<SplineSpace<dim, range, rank>::n_components>();
 
