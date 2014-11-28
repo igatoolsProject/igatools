@@ -20,8 +20,8 @@
 
 
 
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 // [new includes]
 #include <igatools/linear_algebra/dense_matrix.h>
@@ -44,7 +44,7 @@ public:
 
 private:
     shared_ptr<CartesianGrid<dim>>  grid;
-    shared_ptr<BSplineSpace<dim>>   space;
+    shared_ptr<NewBSplineSpace<dim>>   space;
 };
 // [class declaration]
 
@@ -54,7 +54,7 @@ template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
     :
     grid {CartesianGrid<dim>::create(n_knots)},
-     space {BSplineSpace<dim>::create(deg, grid)}
+     space {NewBSplineSpace<dim>::create(deg, grid)}
 {}
 // [constructor]
 
@@ -69,13 +69,16 @@ void  PoissonPreparation<dim>::local_assemble()
 
 
     // [iterate as before]
-    const QGauss<dim> quad(2);
-    ValueFlags fill_flags = ValueFlags::value|
-                            ValueFlags::gradient|
-                            ValueFlags::w_measure;
+    auto elem_handler = space->get_element_handler();
+    auto quad = QGauss<dim>(2);
+    auto flag = NewValueFlags::value | NewValueFlags::gradient |
+                NewValueFlags::w_measure;
+
+    elem_handler.template reset<dim>(flag, quad);
+
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem->init_cache(fill_flags, quad);
+    elem_handler.template init_cache<dim>(elem);
 
     const int n_qp = quad.get_num_points();
     for (; elem != elem_end; ++elem)
@@ -93,10 +96,10 @@ void  PoissonPreparation<dim>::local_assemble()
         // [local matrix]
 
         // [get the values]
-        elem->fill_cache();
-        auto values = elem->get_basis_values();
-        auto grads  = elem->get_basis_gradients();
-        auto w_meas = elem->get_w_measures();
+        elem_handler.template fill_cache<dim>(elem, 0);
+        auto values = elem->template get_values<0, dim>(0);
+        auto grads  = elem->template get_values<1, dim>(0);
+        auto w_meas = elem->template get_w_measures<dim>(0);
         // [get the values]
 
         // [assemble]

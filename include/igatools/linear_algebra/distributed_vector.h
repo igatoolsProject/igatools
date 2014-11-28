@@ -38,20 +38,13 @@
 #include <petscvec.h>
 #endif
 
-
 #include <memory>
-
 
 IGA_NAMESPACE_OPEN
 
-template < LAPack la_pack>
-class Vector;
-
-
-
+template < LAPack la_pack> class Vector;
 
 #ifdef USE_TRILINOS
-
 /**
  * Numerical distributed Vector.
  * It's a wrapper to a Trilinos distributed vector.
@@ -80,7 +73,7 @@ public:
      * for @p n degrees of freedom.
      * All entries are set to zero.
      */
-    Vector(const Index n,CommPtr comm = Teuchos::createSerialComm<int>());
+    Vector(const Index n, CommPtr comm = Teuchos::createSerialComm<int>());
 
     /**
      * Construct a vector that gets a non consecutive indexing
@@ -106,7 +99,8 @@ public:
     ~Vector() = default;
     ///@}
 
-
+    // TODO (pauletti, Nov 27, 2014): Document this
+    vector<Real> get_as_vector() const;
 
     /** @name Assignment operators */
     ///@{

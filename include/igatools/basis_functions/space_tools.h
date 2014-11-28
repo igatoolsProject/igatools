@@ -63,7 +63,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     func->reset(func_flag, quad);
 
     typename Space::ElementHandler sp_filler(space);
-    auto sp_flag = NewValueFlags::point | NewValueFlags::value| NewValueFlags::w_measure;
+    auto sp_flag = NewValueFlags::point | NewValueFlags::value |
+                   NewValueFlags::w_measure;
     sp_filler.template reset<dim>(sp_flag, quad);
 
     auto f_elem = func->begin();
@@ -78,7 +79,6 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     DenseVector loc_rhs(n_basis);
     DenseMatrix loc_mat(n_basis, n_basis);
 
-
     for (; elem != end; ++elem, ++f_elem)
     {
         func->fill_cache(f_elem, 0, Int<dim>());
@@ -89,8 +89,6 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
         auto f_at_qp = f_elem->template get_values<0,dim>(0);
         auto phi = elem->template get_values<0,dim>(0);
-
-
 
         // computing the upper triangular part of the local matrix
         auto w_meas = elem->template get_w_measures<dim>(0);
@@ -120,19 +118,13 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     matrix.fill_complete();
 
     // TODO (pauletti, Oct 9, 2014): the solver must use a precon
-    const Real tolerance = 1.0e-15;
-    const int max_num_iter = 1000;
+    const Real tol = 1.0e-15;
+    const int max_iter = 1000;
     using LinSolver = LinearSolver<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter);
+    LinSolver solver(LinSolver::SolverType::CG,tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
-    //TODO (martinelli, Nov 26, 2014): the Vector class should have a get_coefs() function returning a vector<Real>
-    const auto n_coefs = sol.size();
-    vector<Real> coefs(n_coefs);
-    for (int i = 0 ; i < n_coefs ; ++i)
-        coefs[i] = sol(i);
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, coefs));
-
+    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.get_as_vector()));
 }
 
 

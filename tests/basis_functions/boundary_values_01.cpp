@@ -36,7 +36,7 @@
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
-#include <igatools/geometry/identity_mapping.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/basis_functions/new_physical_space.h>
 
 

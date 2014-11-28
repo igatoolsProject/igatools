@@ -110,6 +110,20 @@ add_entry(const Index i, const Real value)
 
 auto
 Vector<LAPack::trilinos>::
+get_as_vector() const -> vector<Real>
+{
+    //TODO: A memcopy should be more efficient
+    const auto n_coefs = size();
+    vector<Real> coefs(n_coefs);
+    for (int i = 0 ; i < n_coefs ; ++i)
+        coefs[i] =(*this)(i);
+    return coefs;
+}
+
+
+
+auto
+Vector<LAPack::trilinos>::
 operator+=(const self_t &vec) -> self_t &
 {
     vector_->update(1., *(vec.vector_), 1.);
