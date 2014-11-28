@@ -74,16 +74,10 @@ public:
      * BsplineSpace space.
      */
     NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const Index elem_index)
-    {
-        Assert(false,ExcNotImplemented());
-    }
+                 const Index elem_index);
 
     NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const TensorIndex<dim> &elem_index)
-    {
-        Assert(false,ExcNotImplemented());
-    }
+                 const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.
@@ -122,6 +116,17 @@ public:
      */
     self_t &operator=(self_t &&elem) = default;
     ///@}
+
+
+private:
+    using SpSpace = typename Space::SpSpace;
+
+    typename SpSpace::ElementAccessor bspline_elem_;
+
+    using WeightFunction = typename Space::WeightFunction;
+    typename WeightFunction::ElementAccessor weight_elem_;
+
+    friend class NURBSElementHandler<dim, range, rank>;
 
 };
 

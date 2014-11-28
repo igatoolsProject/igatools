@@ -18,15 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifdef NURBS
 
-#include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element.h>
+#include <igatools/basis_functions/nurbs_space.h>
 
+#ifdef NURBS
 
 IGA_NAMESPACE_OPEN
 
 
+template <int dim, int range, int rank>
+NURBSElement<dim, range, rank>::
+NURBSElement(const std::shared_ptr<ContainerType> space,
+             const Index index)
+    :
+    parent_t(space,index),
+    bspline_elem_(space->get_spline_space(),index),
+    weight_elem_(space->weight_func_->get_grid(),index)
+{}
+
+
+
+template <int dim, int range, int rank>
+NURBSElement<dim, range, rank>::
+NURBSElement(const std::shared_ptr<ContainerType> space,
+             const TensorIndex<dim> &index)
+    :
+    parent_t(space,index),
+    bspline_elem_(space->get_spline_space(),index),
+    weight_elem_(space->weight_func_->get_grid(),index)
+{}
 
 
 IGA_NAMESPACE_CLOSE

@@ -30,7 +30,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/ig_function.h>
-#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/io/reader.h>
 
 template <int dim>
@@ -39,7 +39,7 @@ void run_test(std::string &file_name)
     OUTSTART
 
     // Reading input file.
-    using RefSpace = NewBSplineSpace<dim,dim,1>;
+    using RefSpace = NURBSSpace<dim,dim,1>;
     auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
     out.begin_item("IgFunction infos:");
     map->print_info(out);
@@ -56,7 +56,7 @@ void run_test(std::string &file_name)
     const auto ref_space = map->get_iga_space();
 
     //------------------------------------------------------
-    out.begin_item("Loop using the BSplineElement");
+    out.begin_item("Loop using the NURBSElement");
     using ElemHandler = typename RefSpace::ElementHandler;
     ElemHandler sp_elem_handler(ref_space);
     sp_elem_handler.reset(NewValueFlags::value,quad);

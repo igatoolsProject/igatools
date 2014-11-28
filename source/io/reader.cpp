@@ -249,6 +249,7 @@ get_mapping_from_file(const std::string &filename)
         string err_msg("Input file format version "+file_format_version+" not supported.");
         AssertThrow(false,ExcMessage(err_msg));
     }
+    AssertThrow(map != nullptr,ExcNullPtr());
 
     return map;
 }
@@ -331,6 +332,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
         map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
     }
     //-------------------------------------------------------------------------
+    AssertThrow(map != nullptr,ExcNullPtr());
 
     return map;
 }
@@ -351,6 +353,7 @@ get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     {
         AssertThrow(false,ExcNotImplemented());
     }
+    AssertThrow(map != nullptr,ExcNullPtr());
 
     return map;
 }

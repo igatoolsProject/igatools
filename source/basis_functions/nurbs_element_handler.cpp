@@ -33,9 +33,7 @@ NURBSElementHandler(shared_ptr<const Space> space)
     :
     base_t(space->get_spline_space()),
     space_(space)
-{
-    Assert(false,ExcNotImplemented());
-}
+{}
 
 
 #if 0
@@ -63,82 +61,8 @@ NURBSElementHandler<dim_, range_, rank_>::
 reset(const NewValueFlags flag,
       const Quadrature<k> &quad1)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-#if 0
-    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);
+    base_t::template reset<k>(flag, quad1);
     flags_[k] = flag;
-
-    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
-    {
-        auto &g_cache = std::get<k>(splines1d_)[s_id];
-        g_cache.clear();
-        g_cache.resize(space_->get_grid()->get_num_intervals(),
-                       BasisValues(space_->get_components_map()));
-        const auto &n_inter = space_->get_grid()->get_num_intervals();
-        const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
-        const auto &n_points = quad.get_num_points_direction();
-
-        // Allocate space for the BasisValues1D
-        for (int dir = 0 ; dir < dim ; ++dir)
-        {
-            const auto &n_pts = n_points[dir];
-            for (int j = 0 ; j < n_inter[dir] ; ++j)
-            {
-                auto &splines1d = g_cache.entry(dir, j);
-                for (auto comp : splines1d.get_active_components_id())
-                    splines1d[comp].resize(max_der, n_basis_[comp][dir], n_pts);
-            }
-        }
-
-        /*
-         * For each direction, interval and component we compute the 1D bspline
-         * basis evaluate at the 1D component of the tensor product quadrature
-         */
-        const auto &degree      = space_->get_degree();
-        const auto &bezier_op   = space_->operators_;
-        const auto &points      = quad.get_points();
-        const auto &lengths = this->lengths_;
-
-        BasisValues bernstein_values(n_basis_.get_comp_map());
-
-        for (int dir = 0 ; dir < dim ; ++dir)
-        {
-            // fill values and derivatives of the Bernstein's polynomials at
-            // quad points in [0,1]
-            for (auto comp : bernstein_values.get_active_components_id())
-            {
-                const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
-                const auto &pt_coords = points.get_data_direction(dir);
-                for (int order = 0; order < max_der; ++order)
-                    bernstein_values[comp].get_derivative(order) =
-                        BernsteinBasis::derivative(order, deg, pt_coords);
-            }
-
-            const auto &inter_lengths = lengths.get_data_direction(dir);
-            for (int j = 0 ; j < n_inter[dir] ; ++j)
-            {
-                auto &splines1d = g_cache.entry(dir, j);
-                for (auto comp : splines1d.get_active_components_id())
-                {
-                    const auto &berns_values = bernstein_values[comp];
-                    auto &basis = splines1d[comp];
-                    const auto &oper = bezier_op.get_operator(comp,dir)[j];
-                    const Real one_div_size = 1.0 / inter_lengths[j];
-                    for (int order = 0; order < max_der; ++order)
-                    {
-                        const Real scale = std::pow(one_div_size, order);
-                        const auto &b_values = berns_values.get_derivative(order);
-                        basis.get_derivative(order) =
-                            scale * prec_prod(oper, b_values);
-                    }
-                }
-            }
-
-        }
-    }
-#endif
 }
 
 
@@ -149,10 +73,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 init_cache(ElementAccessor &elem)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-#if 0
-    base_t::template init_cache<k>(elem);
+    base_t::template init_cache<k>(elem.bspline_elem_);
 
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
@@ -169,7 +90,6 @@ init_cache(ElementAccessor &elem)
         const auto n_points = this->template get_num_points<k>();
         s_cache.resize(flags_[k], n_points, n_basis);
     }
-#endif
 }
 
 
@@ -342,43 +262,33 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 fill_cache(ElementAccessor &elem, const int j)
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-#if 0
+    base_t::template fill_cache<k>(elem.bspline_elem_, j);
 
-    base_t::template fill_cache<k> (elem, j);
-
-    auto &g_cache = std::get<k>(splines1d_)[j];
 
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
-    const auto &index = elem.get_tensor_index();
-    //const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
-
     auto &flags = cache.flags_handler_;
-    auto val_1d = g_cache.get_element_values(index);
     if (flags.fill_values())
     {
         auto &values = cache.template get_der<0>();
-        evaluate_bspline_values(val_1d, values);
+        evaluate_nurbs_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
         flags.set_values_filled(true);
     }
     if (flags.fill_gradients())
     {
         auto &values = cache.template get_der<1>();
-        evaluate_bspline_derivatives<1>(val_1d, values);
+        evaluate_nurbs_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
         flags.set_gradients_filled(true);
     }
     if (flags.fill_hessians())
     {
         auto &values = cache.template get_der<2>();
-        evaluate_bspline_derivatives<2>(val_1d, values);
+        evaluate_nurbs_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
         flags.set_hessians_filled(true);
     }
 
     cache.set_filled(true);
-#endif
 }
 
 
@@ -414,7 +324,38 @@ print_info(LogStream &out) const
 #endif
 }
 
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+evaluate_nurbs_from_bspline(
+    const typename Space::SpSpace::ElementAccessor &bspline_elem,
+    const typename Space::WeightFunction::ElementAccessor &weight_elem,
+    ValueTable<Value> &phi) const
+{
+    Assert(false,ExcNotImplemented());
+}
 
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+evaluate_nurbs_from_bspline(
+    const typename Space::SpSpace::ElementAccessor &bspline_elem,
+    const typename Space::WeightFunction::ElementAccessor &weight_elem,
+    ValueTable<Derivative<1>> &D1_phi) const
+{
+    Assert(false,ExcNotImplemented());
+}
+
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+evaluate_nurbs_from_bspline(
+    const typename Space::SpSpace::ElementAccessor &bspline_elem,
+    const typename Space::WeightFunction::ElementAccessor &weight_elem,
+    ValueTable<Derivative<2>> &D2_phi) const
+{
+    Assert(false,ExcNotImplemented());
+}
 
 
 IGA_NAMESPACE_CLOSE

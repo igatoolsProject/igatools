@@ -118,52 +118,46 @@ private:
 
     std::array<FunctionFlags, dim + 1> flags_;
 
-//
-//
-//    using ElementCache = typename BSplineElementAccessor<dim_,range_,rank_>::ValuesCache;
-//
-//    /**
-//     * Computes the 0-th order derivative of the non-zero NURBS basis functions over the element
-//     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
-//     * and the NURBS weights local to the element @p element_weights.
-//     * \warning If the output result @p D0_phi_hat is not correctly pre-allocated,
-//     * an exception will be raised.
-//     */
-//    void
-//    evaluate_nurbs_values(
-//        const ElementCache &bspline_cache,
-//        const vector<Real> &element_weights,
-//        const ComponentContainer<int> &elem_basis_offset,
-//        ValueTable<Value> &D0_phi_hat) const ;
-//
-//    /**
-//     * Computes the 1-st order derivative of the non-zero NURBS basis functions over the element
-//     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
-//     * and the NURBS weights local to the element @p element_weights.
-//     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
-//     * an exception will be raised.
-//     */
-//    void
-//    evaluate_nurbs_gradients(
-//        const ElementCache &bspline_cache,
-//        const vector<Real> &element_weights,
-//        const ComponentContainer<int> &elem_basis_offset,
-//        ValueTable< Derivative<1> > &D1_phi_hat) const ;
-//
-//    /**
-//     * Computes the 2-st order derivative of the non-zero NURBS basis functions over the element,
-//     * at the evaluation points, from the BSpline values contained in <tt>bspline_cache</tt>
-//     * and the NURBS weights local to the element @p element_weights.
-//     * \warning If the output result @p D1_phi_hat is not correctly pre-allocated,
-//     * an exception will be raised.
-//     */
-//    void
-//    evaluate_nurbs_hessians(
-//        const ElementCache &bspline_cache,
-//        const vector<Real> &element_weights,
-//        const ComponentContainer<int> &elem_basis_offset,
-//        ValueTable< Derivative<2> > &D2_phi_hat) const ;
 
+
+    /**
+     * Computes the value of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_from_bspline(
+        const typename Space::SpSpace::ElementAccessor &bspline_elem,
+        const typename Space::WeightFunction::ElementAccessor &weight_elem,
+        ValueTable<Value> &phi) const;
+
+    /**
+     * Computes the 1st order derivative of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_from_bspline(
+        const typename Space::SpSpace::ElementAccessor &bspline_elem,
+        const typename Space::WeightFunction::ElementAccessor &weight_elem,
+        ValueTable<Derivative<1>> &D1_phi) const;
+
+    /**
+     * Computes the 2nd order derivative of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_from_bspline(
+        const typename Space::SpSpace::ElementAccessor &bspline_elem,
+        const typename Space::WeightFunction::ElementAccessor &weight_elem,
+        ValueTable<Derivative<2>> &D2_phi) const;
 
 };
 
