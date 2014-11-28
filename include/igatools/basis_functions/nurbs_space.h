@@ -193,11 +193,10 @@ public:
            const WeightsTable &weights = WeightsTable());
 #endif
     /**
-     * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a table of weights.
+     * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a scalar weight function.
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<SpSpace> bs_space,
-           const WeightsTable &weights,
            const WeightFunctionPtr weight_func);
 
     ///@}
@@ -249,7 +248,6 @@ protected:
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
     explicit NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-                        const WeightsTable &weights,
                         const WeightFunctionPtr weight_func);
 
     /**
@@ -434,10 +432,8 @@ private:
     std::shared_ptr<SpSpace> sp_space_;
 
     /**
-     * Weights associated to the basis functions.
+     * Weight function. It belongs to a scalar BSpline space.
      */
-    WeightsTable weights_;
-
     WeightFunctionPtr weight_func_;
 
 

@@ -543,8 +543,8 @@ template <int dim, int range, int rank>
 shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 {
-    Assert(false,ExcMessage("This function mus be checked (MM:26/11/2014!"));
-    AssertThrow(false,ExcMessage("This function mus be checked (MM:26/11/2014!"));
+//    Assert(false,ExcMessage("This function must be checked (MM:26/11/2014!"));
+//    AssertThrow(false,ExcMessage("This function must be checked (MM:26/11/2014!"));
 
     AssertThrow(xml_element_is_unique(tree,"NURBSSpace"),
                 ExcMessage("The NURBSSpace tag is not unique."));
@@ -676,15 +676,6 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
         vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
-
-        Assert(false,ExcMessage("fix from here!"));
-        AssertThrow(false,ExcMessage("fix from here!"));
-        /*
-        auto &w_comp = weights[comp_id];
-        w_comp.resize(dofs_size);
-        for (int flat_id = 0 ; flat_id < n_weights ; ++flat_id)
-            w_comp[flat_id] = weights_vec[flat_id];
-            //*/
         //-------------------------------------------------------------------------
 
     } // end loop over the scalar components
@@ -728,7 +719,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //----------------------------------------
 
 
-    auto ref_space = space_t::create(spline_space,weights,w_func);
+    auto ref_space = space_t::create(spline_space,w_func);
 
     return ref_space;
 }

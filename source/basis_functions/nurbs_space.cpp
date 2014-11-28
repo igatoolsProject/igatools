@@ -127,12 +127,10 @@ create(const DegreeTable &deg,
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-           const WeightsTable &weights,
            const WeightFunctionPtr weight_func)
     :
     BaseSpace(bs_space->get_grid()),
     sp_space_(bs_space),
-    weights_(weights),
     weight_func_(weight_func)
 {
     Assert(weight_func_ != nullptr, ExcNullPtr());
@@ -165,10 +163,9 @@ template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr<SpSpace> bs_space,
-       const WeightsTable &weights,
        const WeightFunctionPtr weight_func) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(bs_space, weights,weight_func));
+    return shared_ptr<self_t>(new self_t(bs_space,weight_func));
 }
 
 
@@ -706,11 +703,8 @@ print_info(LogStream &out) const
     sp_space_->print_info(out);
     out.end_item();
 
-    out.begin_item("Weights:");
-    for (auto w : weights_)
-    {
-        w.print_info(out);
-    }
+    out.begin_item("Weight function:");
+    weight_func_->print_info(out);
     out.end_item();
 }
 
