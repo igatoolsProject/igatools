@@ -135,9 +135,9 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
     weights_(weights),
     weight_func_(weight_func)
 {
-	Assert(weight_func_ != nullptr, ExcNullPtr());
+    Assert(weight_func_ != nullptr, ExcNullPtr());
 
-	Assert(this->get_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+    Assert(*this->get_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
 #if 0
     const auto &degree_table = sp_space_->get_degree_table();

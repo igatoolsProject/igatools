@@ -20,7 +20,7 @@
 
 
 /*
- *  Test for the ig mapping class iterator, geometrical quantities
+ *  Test for the ig mapping class iterator, geometrical quantities using a BSpline mapping
  *  author: antolin
  *  date: 2014-04-23
  *
@@ -30,8 +30,6 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/ig_function.h>
-//#include <igatools/basis_functions/new_bspline_space.h>
-//#include <igatools/geometry/mapping_element.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/io/reader.h>
 
@@ -42,10 +40,6 @@ void run_test(std::string &file_name)
 
     // Reading input file.
     using RefSpace = NewBSplineSpace<dim,dim,1>;
-//    shared_ptr<IgFunction<RefSpace>> map;
-//    shared_ptr<MapFunction<dim,dim> > map = get_mapping_from_file<dim,0>(file_name);
-
-//    shared_ptr<NewMapping<dim,0>> map;
     auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
     out.begin_item("IgFunction infos:");
     map->print_info(out);
@@ -60,12 +54,6 @@ void run_test(std::string &file_name)
 
 
     const auto ref_space = map->get_iga_space();
-    /*
-        out.begin_item("Reference space infos:");
-        ref_space->print_info(out);
-        out.end_item();
-        out << endl;
-    //*/
 
     //------------------------------------------------------
     out.begin_item("Loop using the BSplineElement");
@@ -103,7 +91,6 @@ void run_test(std::string &file_name)
     const auto topology = Int<dim>();
 
     map->init_cache(*map_elem,topology);
-//    map->template init_cache<dim>(map_elem);
 
     for (; map_elem != map_elem_end; ++map_elem)
     {
@@ -119,8 +106,6 @@ void run_test(std::string &file_name)
     out << endl;
     //------------------------------------------------------
     OUTEND
-
-//    out << endl << endl << endl;
 }
 
 

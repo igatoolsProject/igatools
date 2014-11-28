@@ -698,6 +698,9 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
     }
 
+    auto spline_space = space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour);
+    //---------------------------------------------------------------------------------
+
 
     //----------------------------------------
     // building the weight function --- begin
@@ -705,21 +708,27 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     using WeightFunc = IgFunction<ScalarBSplineSpace>;
 
     using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
+    const ScalarDegreeTable scalar_degree_table(degrees[0]);
+
+    auto new_grid = CartesianGrid<dim>::create(*grid);
+
     using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
-    using ScalarEndBehaviourTable= typename ScalarBSplineSpace::EndBehaviourTable;
+    const shared_ptr<const ScalarMultiplicityTable> scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
+
+    std::shared_ptr<ScalarBSplineSpace> scalar_spline_space =
+        ScalarBSplineSpace::create(scalar_degree_table,
+                                   new_grid,
+                                   scalar_mult_table);
+
     auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
-    		space_t::SpSpace::create(
-    				ScalarDegreeTable(degrees[0]),
-    				shared_ptr<CartesianGrid<dim>>(new CartesianGrid<dim>(*grid)),
-    				shared_ptr<ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]))),
-    				weights[0].get_data()));
+                                             scalar_spline_space,
+                                             vector<Real>(weights[0].get_data())));
+    //*/
     // building the weight function --- end
     //----------------------------------------
 
-    auto ref_space = space_t::create(
-                         space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour),
-                         weights,
-                         w_func);
+
+    auto ref_space = space_t::create(spline_space,weights,w_func);
 
     return ref_space;
 }
