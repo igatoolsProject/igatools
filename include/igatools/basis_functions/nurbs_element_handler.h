@@ -128,7 +128,7 @@ private:
      * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
-    void evaluate_nurbs_from_bspline(
+    void evaluate_nurbs_values_from_bspline(
         const typename Space::SpSpace::ElementAccessor &bspline_elem,
         const typename Space::WeightFunction::ElementAccessor &weight_elem,
         ValueTable<Value> &phi) const;
@@ -141,7 +141,7 @@ private:
      * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
-    void evaluate_nurbs_from_bspline(
+    void evaluate_nurbs_gradients_from_bspline(
         const typename Space::SpSpace::ElementAccessor &bspline_elem,
         const typename Space::WeightFunction::ElementAccessor &weight_elem,
         ValueTable<Derivative<1>> &D1_phi) const;
@@ -154,7 +154,7 @@ private:
      * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
      * an exception will be raised.
      */
-    void evaluate_nurbs_from_bspline(
+    void evaluate_nurbs_hessians_from_bspline(
         const typename Space::SpSpace::ElementAccessor &bspline_elem,
         const typename Space::WeightFunction::ElementAccessor &weight_elem,
         ValueTable<Derivative<2>> &D2_phi) const;

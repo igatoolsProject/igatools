@@ -678,7 +678,11 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         AssertThrow(n_weights == dofs_size.flat_size(),ExcLowerRange(n_weights,dofs_size.flat_size()));
 
         vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
+        AssertThrow(!weights_vec.empty(), ExcEmptyObject());
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
+
+        weights[comp_id].resize(dofs_size);
+        std::copy(weights_vec.begin(), weights_vec.end(), weights[comp_id].begin());
         //-------------------------------------------------------------------------
 
     } // end loop over the scalar components

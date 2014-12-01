@@ -61,7 +61,49 @@ NURBSElementHandler<dim_, range_, rank_>::
 reset(const NewValueFlags flag,
       const Quadrature<k> &quad1)
 {
+    //--------------------------------------
+    // resetting the BSplineElementHandler (for the numerator)
     base_t::template reset<k>(flag, quad1);
+    //--------------------------------------
+
+
+    //--------------------------------------------------
+    // resetting the Function for the weight (for the denominator)
+    int max_deriv_order = -1;
+    if (contains(flag, NewValueFlags::point) ||
+        contains(flag, NewValueFlags::value))
+        max_deriv_order = 0;
+
+    if (contains(flag, NewValueFlags::measure) ||
+        contains(flag, NewValueFlags::w_measure) ||
+        contains(flag, NewValueFlags::boundary_normal) ||
+        contains(flag, NewValueFlags::outer_normal) ||
+        contains(flag, NewValueFlags::gradient) ||
+        contains(flag, NewValueFlags::inv_gradient))
+        max_deriv_order = 1;
+
+
+    if (contains(flag, NewValueFlags::curvature) ||
+        contains(flag, NewValueFlags::hessian) ||
+        contains(flag, NewValueFlags::inv_hessian))
+        max_deriv_order = 2;
+
+
+    NewValueFlags weight_flag;
+    if (max_deriv_order == 0)
+        weight_flag = NewValueFlags::value;
+    else if (max_deriv_order == 1)
+        weight_flag = NewValueFlags::value | NewValueFlags::gradient;
+    else if (max_deriv_order == 2)
+        weight_flag = NewValueFlags::value | NewValueFlags::gradient;
+    else
+        Assert(false,ExcMessage("Not a right value flag."));
+
+    space_->weight_func_->reset(weight_flag,quad1);
+    //--------------------------------------------------
+
+
+
     flags_[k] = flag;
 }
 
@@ -74,6 +116,11 @@ NURBSElementHandler<dim_, range_, rank_>::
 init_cache(ElementAccessor &elem)
 {
     base_t::template init_cache<k>(elem.bspline_elem_);
+
+    const auto topology = Int<k>();
+    space_->weight_func_->init_cache(elem.weight_elem_,topology);
+
+
 
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
@@ -264,6 +311,8 @@ fill_cache(ElementAccessor &elem, const int j)
 {
     base_t::template fill_cache<k>(elem.bspline_elem_, j);
 
+    const auto topology = Int<k>();
+    space_->weight_func_->fill_cache(elem.weight_elem_,j,topology);
 
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
@@ -272,19 +321,19 @@ fill_cache(ElementAccessor &elem, const int j)
     if (flags.fill_values())
     {
         auto &values = cache.template get_der<0>();
-        evaluate_nurbs_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
+        evaluate_nurbs_values_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
         flags.set_values_filled(true);
     }
     if (flags.fill_gradients())
     {
-        auto &values = cache.template get_der<1>();
-        evaluate_nurbs_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
+        auto &gradients = cache.template get_der<1>();
+        evaluate_nurbs_gradients_from_bspline(elem.bspline_elem_,elem.weight_elem_,gradients);
         flags.set_gradients_filled(true);
     }
     if (flags.fill_hessians())
     {
-        auto &values = cache.template get_der<2>();
-        evaluate_nurbs_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
+        auto &hessians = cache.template get_der<2>();
+        evaluate_nurbs_hessians_from_bspline(elem.bspline_elem_,elem.weight_elem_,hessians);
         flags.set_hessians_filled(true);
     }
 
@@ -327,18 +376,58 @@ print_info(LogStream &out) const
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-evaluate_nurbs_from_bspline(
+evaluate_nurbs_values_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
     const typename Space::WeightFunction::ElementAccessor &weight_elem,
     ValueTable<Value> &phi) const
 {
-    Assert(false,ExcNotImplemented());
+    /*
+     * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the i-th NURBS basis function is defined as
+     *
+     *         P_i
+     * R_i = -------
+     *          Q
+     *
+     * and
+     *
+     * P_i = w_i * N_i
+     *
+     *
+     *
+     *     _n_
+     *     \
+     * Q = /__  P_i
+     *    i = 0
+     *
+     */
+
+    Assert(phi.size() > 0, ExcEmptyObject());
+
+    const auto &P = bspline_elem.template get_values<0,dim>(0);
+    const auto &Q =  weight_elem.template get_values<0,dim>(0);
+
+    Assert(P.get_num_points() == Q.get_num_points(),
+           ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
+    const auto n_pts = P.get_num_points();
+    const auto n_funcs = P.get_num_functions();
+
+    for (int fn = 0 ; fn < n_funcs ; ++fn)
+    {
+        const auto &P_fn = P.get_function_view(fn);
+
+        auto R_fn = phi.get_function_view(fn);
+
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+            R_fn[pt] = P_fn[pt] / Q[pt](0);
+    }
 }
 
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-evaluate_nurbs_from_bspline(
+evaluate_nurbs_gradients_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
     const typename Space::WeightFunction::ElementAccessor &weight_elem,
     ValueTable<Derivative<1>> &D1_phi) const
@@ -349,7 +438,7 @@ evaluate_nurbs_from_bspline(
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-evaluate_nurbs_from_bspline(
+evaluate_nurbs_hessians_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
     const typename Space::WeightFunction::ElementAccessor &weight_elem,
     ValueTable<Derivative<2>> &D2_phi) const
