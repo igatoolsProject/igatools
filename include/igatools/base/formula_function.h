@@ -76,28 +76,6 @@ public:
 
 private:
 
-//    template<int k>
-//    ValueVector<Point>
-//    void parametrization(const ValueVector<Points<dim>> &points) const
-//    {
-//
-//    }
-//    {
-//        const int num_points = points_.size();
-//        for (int i = 0; i<num_points; i++)
-//        {
-//            const auto &x = points_[i];
-//            for (int k = 0; k < dim; ++k)
-//            {
-//                values[i][k] = x[k];
-//            }
-//            for (int k = dim; k < codim; ++k)
-//            {
-//                values[i][k] = 0.;
-//            }
-//        }
-//    }
-
     virtual void evaluate_0(const ValueVector<Point> &points,
                             ValueVector<Value> &values) const = 0;
 
@@ -106,8 +84,6 @@ private:
 
     virtual void evaluate_2(const ValueVector<Point> &points,
                             ValueVector<Derivative<2>> &values) const = 0;
-
-
 
 private:
     std::shared_ptr<Map> mapping_;
