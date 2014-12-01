@@ -50,6 +50,17 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
 {}
 
 
+template <int dim, int range, int rank>
+void
+NURBSElement<dim, range, rank>::
+operator++()
+{
+    parent_t::operator++();
+    ++bspline_elem_;
+    ++weight_elem_;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifdef NURBS

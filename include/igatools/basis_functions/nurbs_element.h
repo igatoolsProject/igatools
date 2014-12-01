@@ -117,6 +117,7 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
+    void operator++();
 
 private:
     using SpSpace = typename Space::SpSpace;
