@@ -178,6 +178,8 @@ enum class NewValueFlags : std::int64_t
 };
 
 
+const std::array<NewValueFlags, max_der> DerivativeFlags =
+        {NewValueFlags::value, NewValueFlags::gradient,  NewValueFlags::hessian};
 
 
 
