@@ -155,7 +155,7 @@ public:
         return cache.template get_der<order>();
     }
 
-    template<int order = 0, int k = dim>
+    template<int order, int k>
     auto
     linear_combination(const vector<Real> &loc_coefs, const int id) const
     {

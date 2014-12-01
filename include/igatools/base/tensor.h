@@ -677,13 +677,13 @@ operator/(const T &A, const Real scalar) noexcept;
  * @relates Tensor
  */
 template<class V1, class V2>
-Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble> >
+auto
 tensor_product(const V1 &a, const V2 &b)
 {
-    Tensor<V2::dim, 1, typename V2::tensor_t::co_type,Tensor<V1::dim, 1, typename V1::tensor_t,Tdouble>> R;
-
+	Tensor<V2::dim, 1, typename V2::tensor_t::co_type,
+	Tensor<V1::dim, 1, typename V1::tensor_t, Tdouble> > R;
     for (int u = 0; u < V2::dim; ++u)
-        R[u] = b[u] * a;
+        R[u] = b[u][0] * a;
 
     return R;
 }
