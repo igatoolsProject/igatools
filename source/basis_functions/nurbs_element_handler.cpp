@@ -95,7 +95,7 @@ reset(const NewValueFlags flag,
     else if (max_deriv_order == 1)
         weight_flag = NewValueFlags::value | NewValueFlags::gradient;
     else if (max_deriv_order == 2)
-        weight_flag = NewValueFlags::value | NewValueFlags::gradient;
+        weight_flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::hessian;
     else
         Assert(false,ExcMessage("Not a right value flag."));
 
@@ -390,20 +390,12 @@ evaluate_nurbs_values_from_bspline(
      * R_i = -------
      *          Q
      *
-     * and
-     *
-     * P_i = w_i * N_i
-     *
-     *
-     *
-     *     _n_
-     *     \
-     * Q = /__  P_i
-     *    i = 0
+     * with P_i a basis function of a BSplineSpace
+     * and Q an IgFunction built over a scalar BSpline space
      *
      */
 
-    Assert(phi.size() > 0, ExcEmptyObject());
+    Assert(!phi.empty(), ExcEmptyObject());
 
     const auto &P = bspline_elem.template get_values<0,dim>(0);
     const auto &Q =  weight_elem.template get_values<0,dim>(0);
@@ -413,6 +405,12 @@ evaluate_nurbs_values_from_bspline(
     const auto n_pts = P.get_num_points();
     const auto n_funcs = P.get_num_functions();
 
+
+    vector<Real> invQ(n_pts);
+    for (int pt = 0 ; pt < n_pts ; ++pt)
+        invQ[pt] = 1.0 / Q[pt](0);
+
+
     for (int fn = 0 ; fn < n_funcs ; ++fn)
     {
         const auto &P_fn = P.get_function_view(fn);
@@ -420,7 +418,7 @@ evaluate_nurbs_values_from_bspline(
         auto R_fn = phi.get_function_view(fn);
 
         for (int pt = 0 ; pt < n_pts ; ++pt)
-            R_fn[pt] = P_fn[pt] / Q[pt](0);
+            R_fn[pt] = P_fn[pt] * invQ[pt];
     }
 }
 
@@ -432,7 +430,82 @@ evaluate_nurbs_gradients_from_bspline(
     const typename Space::WeightFunction::ElementAccessor &weight_elem,
     ValueTable<Derivative<1>> &D1_phi) const
 {
-    Assert(false,ExcNotImplemented());
+    /*
+     * This function evaluates the gradients of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the i-th NURBS basis function is defined as
+     *
+     *         P_i
+     * R_i = -------
+     *          Q
+     *
+     * with P_i a basis function of a BSplineSpace
+     * and Q an IgFunction built over a scalar space.
+     *
+     * Then the gradient dR_i is:
+     *
+     *         dP_i       P_i * dQ
+     * dR_i = ------- -  ----------
+     *           Q           Q^2
+     *
+     */
+
+    Assert(!D1_phi.empty(), ExcEmptyObject());
+
+    const auto &P = bspline_elem.template get_values<0,dim>(0);
+    const auto &dP = bspline_elem.template get_values<1,dim>(0);
+
+    const auto &Q =  weight_elem.template get_values<0,dim>(0);
+    const auto &dQ =  weight_elem.template get_values<1,dim>(0);
+
+    Assert(P.get_num_points() == Q.get_num_points(),
+           ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
+    const auto n_pts = P.get_num_points();
+    const auto n_funcs = P.get_num_functions();
+
+    vector<Real> invQ(n_pts);
+    vector<array<Real,dim>> dQ_invQ2(n_pts);
+    for (int pt = 0 ; pt < n_pts ; ++pt)
+    {
+        invQ[pt] = 1.0 / Q[pt](0);
+
+        const auto &dQ_pt = dQ[pt];
+        auto &dQ_invQ2_pt = dQ_invQ2[pt];
+
+        for (int i = 0 ; i < dim ; ++i)
+            dQ_invQ2_pt[i] = invQ[pt] * invQ[pt] * dQ_pt(i)(0);
+    }
+
+
+    for (int fn = 0 ; fn < n_funcs ; ++fn)
+    {
+        const auto &P_fn =  P.get_function_view(fn);
+        const auto &dP_fn = dP.get_function_view(fn);
+
+        auto dR_fn = D1_phi.get_function_view(fn);
+
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+        {
+            auto &dR_fn_pt = dR_fn[pt];
+
+            const auto   &P_fn_pt =  P_fn[pt];
+            const auto &dP_fn_pt = dP_fn[pt];
+
+            const Real invQ_pt = invQ[pt];
+            const auto &dQ_invQ2_pt = dQ_invQ2[pt];
+
+            const auto &P_fn_pt_0 = P_fn_pt(0);
+            for (int i = 0 ; i < dim ; ++i)
+            {
+                const auto &dP_fn_pt_i = dP_fn_pt(i);
+                const auto &dQ_invQ2_pt_i = dQ_invQ2_pt[i];
+
+                auto &dR_fn_pt_i = dR_fn_pt(i);
+                for (int comp = 0 ; comp < n_components ; ++comp)
+                    dR_fn_pt_i(comp) = dP_fn_pt_i(comp) * invQ_pt - P_fn_pt_0(comp) * dQ_invQ2_pt_i;
+            } // end loop i
+        } // end loop pt
+    } // end loop fn
 }
 
 template<int dim_, int range_ , int rank_>
@@ -443,7 +516,128 @@ evaluate_nurbs_hessians_from_bspline(
     const typename Space::WeightFunction::ElementAccessor &weight_elem,
     ValueTable<Derivative<2>> &D2_phi) const
 {
-    Assert(false,ExcNotImplemented());
+    /*
+     * This function evaluates the gradients of the n+1 NURBS basis function R_0,...,R_n
+     * from the set of BSpline basis function N_0,...,N_n
+     * where the k-th NURBS basis function is defined as
+     *
+     *        Pk
+     * Rk = -------
+     *         Q
+     *
+     * with Pk a basis function of a BSplineSpace
+     * and Q an IgFunction built over a scalar space.
+     *
+     * Then the gradient dRk is defined by the partial derivatives:
+     *
+     *          dPk_i     Pk * dQ_i
+     * dRk_i = ------- - -----------
+     *            Q          Q^2
+     *
+     * And the hessian d2Rk is:
+     *                                _                                         _
+     *            d2Pk_ij      1     |                                           |    2 * Pk
+     * d2Rk_ij = --------- - ----- * | dPk_i * dQ_j + dPk_j * dQ_i + Pk * d2Q_ij | + -------- * dQ_i * dQ_j
+     *               Q        Q^2    |_                                         _|      Q^3
+     *
+     */
+    Assert(!D2_phi.empty(), ExcEmptyObject());
+
+    const auto   &P = bspline_elem.template get_values<0,dim>(0);
+    const auto &dP = bspline_elem.template get_values<1,dim>(0);
+    const auto &d2P = bspline_elem.template get_values<2,dim>(0);
+
+    const auto   &Q =  weight_elem.template get_values<0,dim>(0);
+    const auto &dQ =  weight_elem.template get_values<1,dim>(0);
+    const auto &d2Q =  weight_elem.template get_values<2,dim>(0);
+
+    Assert(P.get_num_points() == Q.get_num_points(),
+           ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
+    const auto n_pts = P.get_num_points();
+    const auto n_funcs = P.get_num_functions();
+
+    vector<Real> invQ(n_pts);
+    vector<Real> invQ2(n_pts);
+    vector<array<Real,dim> > dQ_invQ2(n_pts);
+    vector<array<array<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
+
+    for (int pt = 0 ; pt < n_pts ; ++pt)
+    {
+        auto &invQ_pt  = invQ[pt];
+        auto &invQ2_pt = invQ2[pt];
+
+        const auto &dQ_pt = dQ[pt];
+        const auto &d2Q_pt = d2Q[pt];
+
+        auto &dQ_invQ2_pt = dQ_invQ2[pt];
+        auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
+
+        invQ_pt = 1.0 / Q[pt](0);
+        invQ2_pt = invQ_pt * invQ_pt;
+
+        const Real two_invQ_pt = 2.0 * invQ_pt;
+
+        int hessian_entry_fid = 0;
+        for (int i = 0 ; i < dim ; ++i)
+        {
+            dQ_invQ2_pt[i] = invQ2_pt * dQ_pt(i)(0);
+
+            for (int j = 0 ; j < dim ; ++j, ++hessian_entry_fid)
+                Q_terms_2nd_order_pt[i][j] = dQ_invQ2_pt[i] * dQ_pt(j)(0) * two_invQ_pt
+                                             - d2Q_pt(hessian_entry_fid)(0) * invQ2_pt;
+        } // end loop i
+
+    } // end loop pt
+
+
+    for (int fn = 0 ; fn < n_funcs ; ++fn)
+    {
+        const auto   &P_fn =   P.get_function_view(fn);
+        const auto &dP_fn =  dP.get_function_view(fn);
+        const auto &d2P_fn = d2P.get_function_view(fn);
+
+        auto d2R_fn = D2_phi.get_function_view(fn);
+
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+        {
+            auto &d2R_fn_pt = d2R_fn[pt];
+
+            const auto    &P_fn_pt =   P_fn[pt];
+            const auto   &dP_fn_pt =  dP_fn[pt];
+            const auto &d2P_fn_pt = d2P_fn[pt];
+
+            const Real invQ_pt = invQ[pt];
+            const auto &dQ_invQ2_pt = dQ_invQ2[pt];
+            const auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
+
+            const auto &P_fn_pt_0 = P_fn_pt(0);
+            int hessian_entry_fid = 0;
+            for (int i = 0 ; i < dim ; ++i)
+            {
+
+                const auto &dP_fn_pt_i = dP_fn_pt(i);
+                const auto &dQ_invQ2_pt_i = dQ_invQ2_pt[i];
+                const auto &Q_terms_2nd_order_pt_i = Q_terms_2nd_order_pt[i];
+
+                for (int j = 0 ; j < dim ; ++j, ++hessian_entry_fid)
+                {
+                    const auto &dP_fn_pt_j = dP_fn_pt(j);
+                    const auto &dQ_invQ2_pt_j = dQ_invQ2_pt[j];
+                    const auto &Q_terms_2nd_order_pt_i_j = Q_terms_2nd_order_pt_i[j];
+
+                    auto &d2R_fn_pt_i_j = d2R_fn_pt(hessian_entry_fid);
+                    const auto &d2P_fn_pt_i_j = d2P_fn_pt(hessian_entry_fid);
+
+                    for (int comp = 0 ; comp < n_components ; ++comp)
+                        d2R_fn_pt_i_j(comp) =
+                            d2P_fn_pt_i_j(comp) * invQ_pt
+                            -  dP_fn_pt_i(comp) * dQ_invQ2_pt_j
+                            -  dP_fn_pt_j(comp) * dQ_invQ2_pt_i
+                            +   P_fn_pt_0(comp) * Q_terms_2nd_order_pt_i_j;
+                } // end loop j
+            } // end loop i
+        } // end loop pt
+    } // end loop fn
 }
 
 

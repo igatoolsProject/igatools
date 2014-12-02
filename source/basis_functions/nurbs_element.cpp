@@ -60,6 +60,38 @@ operator++()
     ++weight_elem_;
 }
 
+template <int dim, int range, int rank>
+bool
+NURBSElement<dim, range, rank>::
+jump(const TensorIndex<dim> &increment)
+{
+    const bool    grid_elem_active =     parent_t::jump(increment);
+    const bool bspline_elem_active = bspline_elem_.jump(increment);
+    const bool  weight_elem_active =  weight_elem_.jump(increment);
+
+    return grid_elem_active && bspline_elem_active && weight_elem_active;
+}
+
+template <int dim, int range, int rank>
+void
+NURBSElement<dim, range, rank>::
+move_to(const Index flat_index)
+{
+    parent_t::move_to(flat_index);
+    bspline_elem_.move_to(flat_index);
+    weight_elem_.move_to(flat_index);
+}
+
+
+template <int dim, int range, int rank>
+void
+NURBSElement<dim, range, rank>::
+move_to(const TensorIndex<dim> &tensor_index)
+{
+    parent_t::move_to(tensor_index);
+    bspline_elem_.move_to(tensor_index);
+    weight_elem_.move_to(tensor_index);
+}
 
 IGA_NAMESPACE_CLOSE
 
