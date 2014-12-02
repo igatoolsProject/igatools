@@ -473,6 +473,13 @@ private:
 //    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
 
 
+
+
+    /**
+     * Returns the weight coefficient associated with a given basis function.
+     */
+    Real get_weight_coef_from_basis_id(const Index basis_id) const;
+
 };
 
 

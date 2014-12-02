@@ -19,10 +19,11 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the NURBS space iterator
+ *  Test for the NURBS space iterator (weights coefficients equal to 1.0)
  *
- *  author: pauletti
- *  date: Jun 11, 2014
+ *
+ *  author: martinelli
+ *  date: Dec 02, 2014
  *
  */
 
@@ -37,7 +38,6 @@ void test()
 {
     OUTSTART
     const int r = 2;
-//    out << "test<" << dim << "," << range << ">" << endl;
 
     using Space = NURBSSpace< dim, range, rank >;
     using DegreeTable = typename Space::DegreeTable;
@@ -55,8 +55,8 @@ void test()
 
     using WeightFunc = IgFunction<ScalarSpSpace>;
     DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis,1.0);
-    auto weight_function = std::shared_ptr<WeightFunc>(new WeightFunc(
-                                                           scalar_bsp_space,vector<Real>(weights_coef.get_data())));
+    auto weight_function = std::shared_ptr<WeightFunc>(
+                               new WeightFunc(scalar_bsp_space,vector<Real>(weights_coef.get_data())));
 
     auto space = Space::create(bsp_space,weight_function);
 

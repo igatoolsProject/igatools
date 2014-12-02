@@ -709,6 +709,25 @@ print_info(LogStream &out) const
 }
 
 
+
+template <int dim_, int range_, int rank_>
+Real
+NURBSSpace<dim_, range_, rank_>::
+get_weight_coef_from_basis_id(const Index basis_id) const
+{
+    const auto &basis_offset = sp_space_->get_basis_offset();
+
+    int comp_id = 0;
+    for (; comp_id < n_components-1 ; ++comp_id)
+        if (basis_id < basis_offset[comp_id+1])
+            break;
+
+    const Index w_id = basis_id - basis_offset[comp_id];
+
+    return weight_func_->get_coefficients()[w_id];
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_space.inst>

@@ -398,7 +398,14 @@ evaluate_nurbs_values_from_bspline(
     Assert(!phi.empty(), ExcEmptyObject());
 
     const auto &P = bspline_elem.template get_values<0,dim>(0);
-    const auto &Q =  weight_elem.template get_values<0,dim>(0);
+    const auto &Q = weight_elem.template get_values<0,dim>(0);
+
+    /*
+        LogStream out;
+        out.begin_item("Denominator values");
+        Q.print_info(out);
+        out.end_item();
+    //*/
 
     Assert(P.get_num_points() == Q.get_num_points(),
            ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
@@ -410,6 +417,7 @@ evaluate_nurbs_values_from_bspline(
     for (int pt = 0 ; pt < n_pts ; ++pt)
         invQ[pt] = 1.0 / Q[pt](0);
 
+    const auto local_to_patch = bspline_elem.get_local_to_patch();
 
     for (int fn = 0 ; fn < n_funcs ; ++fn)
     {
@@ -417,8 +425,10 @@ evaluate_nurbs_values_from_bspline(
 
         auto R_fn = phi.get_function_view(fn);
 
+        const Real w = space_->get_weight_coef_from_basis_id(local_to_patch[fn]);
+
         for (int pt = 0 ; pt < n_pts ; ++pt)
-            R_fn[pt] = P_fn[pt] * invQ[pt];
+            R_fn[pt] = P_fn[pt] * invQ[pt] * w ;
     }
 }
 
@@ -452,11 +462,11 @@ evaluate_nurbs_gradients_from_bspline(
 
     Assert(!D1_phi.empty(), ExcEmptyObject());
 
-    const auto &P = bspline_elem.template get_values<0,dim>(0);
+    const auto &P  = bspline_elem.template get_values<0,dim>(0);
     const auto &dP = bspline_elem.template get_values<1,dim>(0);
 
-    const auto &Q =  weight_elem.template get_values<0,dim>(0);
-    const auto &dQ =  weight_elem.template get_values<1,dim>(0);
+    const auto &Q  = weight_elem.template get_values<0,dim>(0);
+    const auto &dQ = weight_elem.template get_values<1,dim>(0);
 
     Assert(P.get_num_points() == Q.get_num_points(),
            ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
@@ -477,12 +487,16 @@ evaluate_nurbs_gradients_from_bspline(
     }
 
 
+    const auto local_to_patch = bspline_elem.get_local_to_patch();
+
     for (int fn = 0 ; fn < n_funcs ; ++fn)
     {
         const auto &P_fn =  P.get_function_view(fn);
         const auto &dP_fn = dP.get_function_view(fn);
 
         auto dR_fn = D1_phi.get_function_view(fn);
+
+        const Real w = space_->get_weight_coef_from_basis_id(local_to_patch[fn]);
 
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
@@ -494,7 +508,6 @@ evaluate_nurbs_gradients_from_bspline(
             const Real invQ_pt = invQ[pt];
             const auto &dQ_invQ2_pt = dQ_invQ2[pt];
 
-            const auto &P_fn_pt_0 = P_fn_pt(0);
             for (int i = 0 ; i < dim ; ++i)
             {
                 const auto &dP_fn_pt_i = dP_fn_pt(i);
@@ -502,7 +515,7 @@ evaluate_nurbs_gradients_from_bspline(
 
                 auto &dR_fn_pt_i = dR_fn_pt(i);
                 for (int comp = 0 ; comp < n_components ; ++comp)
-                    dR_fn_pt_i(comp) = dP_fn_pt_i(comp) * invQ_pt - P_fn_pt_0(comp) * dQ_invQ2_pt_i;
+                    dR_fn_pt_i(comp) = (dP_fn_pt_i(comp) * invQ_pt - P_fn_pt(comp) * dQ_invQ2_pt_i) * w;
             } // end loop i
         } // end loop pt
     } // end loop fn
@@ -543,13 +556,13 @@ evaluate_nurbs_hessians_from_bspline(
      */
     Assert(!D2_phi.empty(), ExcEmptyObject());
 
-    const auto   &P = bspline_elem.template get_values<0,dim>(0);
-    const auto &dP = bspline_elem.template get_values<1,dim>(0);
+    const auto &P   = bspline_elem.template get_values<0,dim>(0);
+    const auto &dP  = bspline_elem.template get_values<1,dim>(0);
     const auto &d2P = bspline_elem.template get_values<2,dim>(0);
 
-    const auto   &Q =  weight_elem.template get_values<0,dim>(0);
-    const auto &dQ =  weight_elem.template get_values<1,dim>(0);
-    const auto &d2Q =  weight_elem.template get_values<2,dim>(0);
+    const auto &Q   = weight_elem.template get_values<0,dim>(0);
+    const auto &dQ  = weight_elem.template get_values<1,dim>(0);
+    const auto &d2Q = weight_elem.template get_values<2,dim>(0);
 
     Assert(P.get_num_points() == Q.get_num_points(),
            ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
@@ -560,6 +573,7 @@ evaluate_nurbs_hessians_from_bspline(
     vector<Real> invQ2(n_pts);
     vector<array<Real,dim> > dQ_invQ2(n_pts);
     vector<array<array<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
+
 
     for (int pt = 0 ; pt < n_pts ; ++pt)
     {
@@ -590,27 +604,30 @@ evaluate_nurbs_hessians_from_bspline(
     } // end loop pt
 
 
+    const auto local_to_patch = bspline_elem.get_local_to_patch();
+
     for (int fn = 0 ; fn < n_funcs ; ++fn)
     {
-        const auto   &P_fn =   P.get_function_view(fn);
-        const auto &dP_fn =  dP.get_function_view(fn);
+        const auto &P_fn   =   P.get_function_view(fn);
+        const auto &dP_fn  =  dP.get_function_view(fn);
         const auto &d2P_fn = d2P.get_function_view(fn);
 
         auto d2R_fn = D2_phi.get_function_view(fn);
+
+        const Real w = space_->get_weight_coef_from_basis_id(local_to_patch[fn]);
 
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             auto &d2R_fn_pt = d2R_fn[pt];
 
-            const auto    &P_fn_pt =   P_fn[pt];
-            const auto   &dP_fn_pt =  dP_fn[pt];
+            const auto   &P_fn_pt =   P_fn[pt];
+            const auto  &dP_fn_pt =  dP_fn[pt];
             const auto &d2P_fn_pt = d2P_fn[pt];
 
             const Real invQ_pt = invQ[pt];
             const auto &dQ_invQ2_pt = dQ_invQ2[pt];
             const auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
 
-            const auto &P_fn_pt_0 = P_fn_pt(0);
             int hessian_entry_fid = 0;
             for (int i = 0 ; i < dim ; ++i)
             {
@@ -630,10 +647,10 @@ evaluate_nurbs_hessians_from_bspline(
 
                     for (int comp = 0 ; comp < n_components ; ++comp)
                         d2R_fn_pt_i_j(comp) =
-                            d2P_fn_pt_i_j(comp) * invQ_pt
-                            -  dP_fn_pt_i(comp) * dQ_invQ2_pt_j
-                            -  dP_fn_pt_j(comp) * dQ_invQ2_pt_i
-                            +   P_fn_pt_0(comp) * Q_terms_2nd_order_pt_i_j;
+                            (d2P_fn_pt_i_j(comp) * invQ_pt
+                             - dP_fn_pt_i(comp) * dQ_invQ2_pt_j
+                             - dP_fn_pt_j(comp) * dQ_invQ2_pt_i
+                             +  P_fn_pt(comp) * Q_terms_2nd_order_pt_i_j) * w;
                 } // end loop j
             } // end loop i
         } // end loop pt
