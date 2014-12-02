@@ -28,6 +28,7 @@
 #ifdef NURBS
 using std::array;
 
+using std::to_string;
 using std::endl;
 using std::shared_ptr;
 using std::make_shared;
@@ -127,35 +128,28 @@ create(const DegreeTable &deg,
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-           const WeightFunctionPtr weight_func)
+           const WeightFunctionPtrTable &weight_func_table)
     :
     BaseSpace(bs_space->get_grid()),
     sp_space_(bs_space),
-    weight_func_(weight_func)
+    weight_func_table_(weight_func_table)
 {
-    Assert(weight_func_ != nullptr, ExcNullPtr());
-
-    Assert(*this->get_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
-
-#if 0
-    const auto &degree_table = sp_space_->get_degree_table();
-    const auto w_grid = CartesianGrid<dim>::create(*bs_space->get_grid());
-
-    for (const auto &comp : weights_.get_active_components_id())
+#ifndef NDEBUG
+    int comp_id = 0;
+    for (const auto &w_func : weight_func_table_)
     {
-        Assert(false,ExcNotImplemented());
-        const auto &interior_mult_tmp = (*sp_space_->get_interior_mult())[comp];
+        Assert(w_func != nullptr, ExcNullPtr());
 
+        Assert(*this->get_grid() == *w_func->get_grid(),ExcMessage("Mismatching grids."));
 
-        auto w_sp = WeightSpace::create(degree_table[comp], w_grid, std::shared_ptr< const MultiplicityTable > interior_mult, const EndBehaviourTable &ends=EndBehaviourTable())
+        Assert(sp_space_->get_num_basis_table()[comp_id] ==
+               w_func->get_iga_space()->get_num_basis_table()[0],
+               ExcMessage("Mismatching number of basis functions and weight "
+                          "coefficients for scalar component " + to_string(comp_id)));
 
-                    const vector<Real> coeffs = weights_[comp].get_data();
-        weights_func[comp] = WeightFunction::create();
+        ++comp_id;
     }
 #endif
-
-//    create_refinement_connection();
-//    perform_post_construction_checks();
 }
 
 
@@ -163,9 +157,9 @@ template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr<SpSpace> bs_space,
-       const WeightFunctionPtr weight_func) -> shared_ptr<self_t>
+       const WeightFunctionPtrTable &weight_func_table) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(bs_space,weight_func));
+    return shared_ptr<self_t>(new self_t(bs_space,weight_func_table));
 }
 
 
@@ -703,9 +697,16 @@ print_info(LogStream &out) const
     sp_space_->print_info(out);
     out.end_item();
 
-    out.begin_item("Weight function:");
-    weight_func_->print_info(out);
-    out.end_item();
+    int comp_id = 0;
+    for (const auto &w_func :weight_func_table_)
+    {
+
+        out.begin_item("Weight function[" + to_string(comp_id) +"] :");
+        w_func->print_info(out);
+        out.end_item();
+
+        ++comp_id;
+    }
 }
 
 
@@ -724,7 +725,7 @@ get_weight_coef_from_basis_id(const Index basis_id) const
 
     const Index w_id = basis_id - basis_offset[comp_id];
 
-    return weight_func_->get_coefficients()[w_id];
+    return weight_func_table_[comp_id]->get_coefficients()[w_id];
 }
 
 

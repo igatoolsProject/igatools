@@ -151,6 +151,7 @@ public:
     using WeightSpace = NewBSplineSpace<dim_,1,1>;
     using WeightFunction = IgFunction<WeightSpace>;
     using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
+    using WeightFunctionPtrTable = ComponentContainer<WeightFunctionPtr>;
     using Weights = DynamicMultiArray<Real,dim>;
     using WeightsTable = ComponentContainer<Weights>;
 
@@ -197,7 +198,7 @@ public:
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<SpSpace> bs_space,
-           const WeightFunctionPtr weight_func);
+           const WeightFunctionPtrTable &weight_func_table);
 
     ///@}
 
@@ -248,7 +249,7 @@ protected:
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
     explicit NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-                        const WeightFunctionPtr weight_func);
+                        const WeightFunctionPtrTable &weight_func_table);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -432,9 +433,10 @@ private:
     std::shared_ptr<SpSpace> sp_space_;
 
     /**
-     * Weight function. It belongs to a scalar BSpline space.
+     * Weight function component table. Each component of the table is a shared_ptr to an IgFunction
+     * built using a scalar BSplineSpace.
      */
-    WeightFunctionPtr weight_func_;
+    WeightFunctionPtrTable weight_func_table_;
 
 
 #if 0
