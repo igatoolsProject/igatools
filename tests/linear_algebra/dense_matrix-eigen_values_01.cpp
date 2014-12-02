@@ -29,7 +29,7 @@
 #include "../tests.h"
 #include <igatools/linear_algebra/dense_matrix.h>
 
-
+#include <igatools/base/tensor.h>
 template <int dim>
 void eigen_values()
 {
@@ -54,5 +54,21 @@ int main()
     eigen_values<2>();
     eigen_values<3>();
 
+    const int dim=2;
+    Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> > B;
+        B[0][0] = 1;
+        B[0][1] = 2;
+        B[1][0] = 3;
+        B[1][1] = 4;
+    const auto A = unroll_to_matrix(B);
+
+//    A.clear();
+//    A(0,0) = 1;
+//    A(0,1) = 2;
+//    A(1,0) = 3;
+//    A(1,1) = 4;
+    out << endl << "Eigen Values:" << endl;
+    A.eigen_values().print_info(out);
+    out << endl;
     return 0;
 }

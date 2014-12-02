@@ -99,7 +99,7 @@ get_principal_curvatures() const -> ValueVector<vector<Real>>
 
     for (int pt = 0; pt < n_points; ++pt)
     {
-        const auto B = compose(H[pt], G_inv[pt]);
+        const MetricTensor B = compose(H[pt], G_inv[pt]);
         const auto A = unroll_to_matrix(B);
         res[pt] = A.eigen_values();
     }
@@ -142,12 +142,14 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
     const auto G_inv = compute_inv_first_fundamental_form();
 
     const auto n_points = H.get_num_points();
-    ValueVector< Derivative<1> > res(n_points);
+    ValueVector< Derivative<1> > Dn(n_points);
 
     for (int pt = 0; pt< n_points; ++pt)
-        res[pt] = compose(DF[pt], compose(H[pt], G_inv[pt]));
-
-    return res;
+    {
+        auto L = compose(DF[pt], G_inv[pt]);
+        Dn[pt] = compose(L, H[pt]);
+    }
+    return Dn;
 }
 
 
