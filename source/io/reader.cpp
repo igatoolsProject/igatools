@@ -23,11 +23,14 @@
 //#include <igatools/utils/array.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/nurbs_element.h>
 
 
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+
+#include <set>
 
 using std::string;
 using std::shared_ptr;
@@ -246,6 +249,7 @@ get_mapping_from_file(const std::string &filename)
         string err_msg("Input file format version "+file_format_version+" not supported.");
         AssertThrow(false,ExcMessage(err_msg));
     }
+    AssertThrow(map != nullptr,ExcNullPtr());
 
     return map;
 }
@@ -314,7 +318,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
         using ref_space_t = NURBSSpace<dim,dim_phys,1>;
         auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
-        map = IgMapping<ref_space_t>::create(ref_space,cntrl_pts);
+        map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
 #else
         Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
         AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -328,6 +332,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
         map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
     }
     //-------------------------------------------------------------------------
+    AssertThrow(map != nullptr,ExcNullPtr());
 
     return map;
 }
@@ -348,6 +353,7 @@ get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     {
         AssertThrow(false,ExcNotImplemented());
     }
+    AssertThrow(map != nullptr,ExcNullPtr());
 
     return map;
 }
@@ -540,8 +546,8 @@ template <int dim, int range, int rank>
 shared_ptr< NURBSSpace<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 {
-    Assert(false,ExcMessage("This function mus be checked (MM:26/11/2014!"));
-    AssertThrow(false,ExcMessage("This function mus be checked (MM:26/11/2014!"));
+//    Assert(false,ExcMessage("This function must be checked (MM:26/11/2014!"));
+//    AssertThrow(false,ExcMessage("This function must be checked (MM:26/11/2014!"));
 
     AssertThrow(xml_element_is_unique(tree,"NURBSSpace"),
                 ExcMessage("The NURBSSpace tag is not unique."));
@@ -672,12 +678,11 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         AssertThrow(n_weights == dofs_size.flat_size(),ExcLowerRange(n_weights,dofs_size.flat_size()));
 
         vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
+        AssertThrow(!weights_vec.empty(), ExcEmptyObject());
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
 
-        auto &w_comp = weights[comp_id];
-        w_comp.resize(dofs_size);
-        for (int flat_id = 0 ; flat_id < n_weights ; ++flat_id)
-            w_comp[flat_id] = weights_vec[flat_id];
+        weights[comp_id].resize(dofs_size);
+        std::copy(weights_vec.begin(), weights_vec.end(), weights[comp_id].begin());
         //-------------------------------------------------------------------------
 
     } // end loop over the scalar components
@@ -691,7 +696,37 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
     }
 
-    auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour,weights);
+    auto spline_space = space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour);
+    //---------------------------------------------------------------------------------
+
+
+    //----------------------------------------
+    // building the weight function --- begin
+    using ScalarBSplineSpace = NewBSplineSpace<dim>;
+    using WeightFunc = IgFunction<ScalarBSplineSpace>;
+
+    using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
+    const ScalarDegreeTable scalar_degree_table(degrees[0]);
+
+    auto new_grid = CartesianGrid<dim>::create(*grid);
+
+    using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
+    const shared_ptr<const ScalarMultiplicityTable> scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
+
+    std::shared_ptr<ScalarBSplineSpace> scalar_spline_space =
+        ScalarBSplineSpace::create(scalar_degree_table,
+                                   new_grid,
+                                   scalar_mult_table);
+
+    auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
+                                             scalar_spline_space,
+                                             vector<Real>(weights[0].get_data())));
+    //*/
+    // building the weight function --- end
+    //----------------------------------------
+
+
+    auto ref_space = space_t::create(spline_space,w_func);
 
     return ref_space;
 }

@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/nurbs_space.h>
-//#include <igatools/basis_functions/space_manager.h>
+#include <igatools/basis_functions/space_manager.h>
 //#include <igatools/basis_functions/space_tools.h>
 
 //#include <igatools/base/sub_function.h>
@@ -70,7 +70,7 @@ NURBSSpace(const DegreeTable &degree,
            const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(degree,knots)),
+    sp_space_(SpSpace::create(degree,knots)),
     weights_(weights)
 {
 
@@ -101,7 +101,7 @@ NURBSSpace(const DegreeTable &deg,
            const WeightsTable &weights)
     :
     BaseSpace(knots),
-    sp_space_(spline_space_t::create(deg, knots, interior_mult, ends)),
+    sp_space_(SpSpace::create(deg, knots, interior_mult, ends)),
     weights_(weights)
 {
     create_refinement_connection();
@@ -126,13 +126,34 @@ create(const DegreeTable &deg,
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
-           const WeightsTable &weights)
+NURBSSpace(std::shared_ptr<SpSpace> bs_space,
+           const WeightFunctionPtr weight_func)
     :
     BaseSpace(bs_space->get_grid()),
     sp_space_(bs_space),
-    weights_(weights)
+    weight_func_(weight_func)
 {
+    Assert(weight_func_ != nullptr, ExcNullPtr());
+
+    Assert(*this->get_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+
+#if 0
+    const auto &degree_table = sp_space_->get_degree_table();
+    const auto w_grid = CartesianGrid<dim>::create(*bs_space->get_grid());
+
+    for (const auto &comp : weights_.get_active_components_id())
+    {
+        Assert(false,ExcNotImplemented());
+        const auto &interior_mult_tmp = (*sp_space_->get_interior_mult())[comp];
+
+
+        auto w_sp = WeightSpace::create(degree_table[comp], w_grid, std::shared_ptr< const MultiplicityTable > interior_mult, const EndBehaviourTable &ends=EndBehaviourTable())
+
+                    const vector<Real> coeffs = weights_[comp].get_data();
+        weights_func[comp] = WeightFunction::create();
+    }
+#endif
+
 //    create_refinement_connection();
 //    perform_post_construction_checks();
 }
@@ -141,10 +162,10 @@ NURBSSpace(std::shared_ptr<spline_space_t> bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(std::shared_ptr<spline_space_t> bs_space,
-       const WeightsTable &weights) -> shared_ptr<self_t>
+create(std::shared_ptr<SpSpace> bs_space,
+       const WeightFunctionPtr weight_func) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(bs_space, weights));
+    return shared_ptr<self_t>(new self_t(bs_space,weight_func));
 }
 
 
@@ -438,6 +459,7 @@ get_degree() const -> const DegreeTable &
     return sp_space_->get_degree();
 }
 
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
@@ -445,7 +467,7 @@ get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
 {
     return sp_space_->get_interior_mult();
 }
-
+#endif
 
 template <int dim_, int range_, int rank_>
 auto
@@ -470,7 +492,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const -> vector<Index
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_spline_space() const -> const std::shared_ptr<spline_space_t>
+get_spline_space() const -> const std::shared_ptr<SpSpace>
 {
     return sp_space_;
 }
@@ -515,7 +537,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
     return sp_space_->get_dof_distribution_patch();
 }
 
-
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
@@ -539,6 +561,7 @@ get_reference_space() const -> std::shared_ptr<const self_t >
 {
     return this->shared_from_this();
 }
+#endif
 
 template <int dim_, int range_, int rank_>
 void
@@ -580,6 +603,97 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 
 
 
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_ref_sub_space(const int s_id,
+                  InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
+-> std::shared_ptr<SubRefSpace<k> >
+{
+    //TODO (martinelli Nov 27,2014): implement this function
+#if 0
+    if (!(sub_grid))
+    {
+        typename GridType::template InterGridMap<k>  elem_map;
+        sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+    }
+    auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
+    auto sub_degree = this->template get_sub_space_degree<k>(s_id);
+
+    auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);
+
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
+
+    // Crating the mapping between the space degrees of freedom
+    const auto &active_dirs = k_elem.active_directions;
+    const int n_dir = k_elem.constant_directions.size();
+
+    TensorIndex<dim> tensor_index;
+    int comp_i = 0;
+    dof_map.resize(sub_space->get_num_basis());
+    for (auto comp : components)
+    {
+        const int n_basis = sub_space->get_num_basis(comp);
+        const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
+
+        for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
+        {
+            const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
+
+            for (int j=0; j<k; ++j)
+                tensor_index[active_dirs[j]] =  sub_base_id[j];
+            for (int j=0; j<n_dir; ++j)
+            {
+                auto dir = k_elem.constant_directions[j];
+                auto val = k_elem.constant_values[j];
+                const int fixed_id = val * (this->get_num_basis(comp, dir) - 1);
+                tensor_index[dir] = fixed_id;
+
+            }
+            dof_map[comp_i] = elem_global_indices(tensor_index);
+        }
+
+    }
+
+    return sub_space;
+#endif
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+}
+
+
+
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+              std::shared_ptr<CartesianGrid<k>> sub_grid,
+              std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
+-> std::shared_ptr<SubSpace<k> >
+{
+    //TODO (martinelli Nov 27,2014): implement this function
+#if 0
+    using SubMap = SubMapFunction<k, dim, space_dim>;
+    auto grid =  this->get_grid();
+//    typename GridType::template InterGridMap<k> elem_map;
+//    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+
+    auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
+    auto F = IdentityFunction<dim>::create(grid);
+    auto sub_map_func = SubMap::create(sub_grid, F, s_id, *elem_map);
+    auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
+    return sub_space;
+#endif
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+}
+
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
@@ -589,17 +703,34 @@ print_info(LogStream &out) const
     sp_space_->print_info(out);
     out.end_item();
 
-    out.begin_item("Weights:");
-    for (auto w : weights_)
-    {
-        w.print_info(out);
-    }
+    out.begin_item("Weight function:");
+    weight_func_->print_info(out);
     out.end_item();
+}
+
+
+
+template <int dim_, int range_, int rank_>
+Real
+NURBSSpace<dim_, range_, rank_>::
+get_weight_coef_from_basis_id(const Index basis_id) const
+{
+    const auto &basis_offset = sp_space_->get_basis_offset();
+
+    int comp_id = 0;
+    for (; comp_id < n_components-1 ; ++comp_id)
+        if (basis_id < basis_offset[comp_id+1])
+            break;
+
+    const Index w_id = basis_id - basis_offset[comp_id];
+
+    return weight_func_->get_coefficients()[w_id];
 }
 
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_space.inst>
+
 #endif // #ifdef NURBS
 

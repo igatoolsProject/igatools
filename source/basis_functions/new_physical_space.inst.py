@@ -28,9 +28,10 @@ include_files = ['basis_functions/new_bspline_space.h',
                  'geometry/mapping_element.h',
                  'geometry/push_forward_element.h',
                  'basis_functions/bspline_element.h',
+                 'basis_functions/nurbs_element.h',
                  '../../source/basis_functions/physical_space_element.cpp',
                  '../../source/basis_functions/bspline_element.cpp',
-                 'basis_functions/nurbs_element_accessor.h',
+                 '../../source/basis_functions/nurbs_element.cpp',
                  'basis_functions/physical_space_element.h']
 #                 '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)

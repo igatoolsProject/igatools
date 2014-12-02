@@ -18,15 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __NURBS_SPACE_H_
-#define __NURBS_SPACE_H_
+#ifndef NURBS_SPACE_H_
+#define NURBS_SPACE_H_
 
 
+
+
+#include <igatools/base/config.h>
+
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/base/ig_function.h>
 
 #ifdef NURBS
 
-#include <igatools/base/config.h>
-#include <igatools/basis_functions/new_bspline_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -48,9 +53,11 @@ class NURBSSpace :
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
     using self_t = NURBSSpace<dim_, range_, rank_>;
-    using SpSpace = NewBSplineSpace<dim_, range_, rank_>;
 
 public:
+    using SpSpace = NewBSplineSpace<dim_, range_, rank_>;
+
+
     /** see documentation in \ref FunctionSpaceOnGrid */
 
     using GridType = CartesianGrid<dim_>;
@@ -60,9 +67,15 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-    using SpSpace::n_components;
-    using SpSpace::components;
-    using SpSpace::dims;
+    static const auto n_components = SpSpace::n_components;
+//    static constexpr auto   components = SpSpace::components;
+    static constexpr auto dims = SpSpace::dims;
+
+    static std::array<Size,n_components> get_components()
+    {
+        return SpSpace::components;
+    }
+
 
 public:
 
@@ -88,6 +101,40 @@ public:
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
+    using ElementHandler = NURBSElementHandler<dim_, range_, rank_>;
+
+
+
+    template <int k>
+    using InterGridMap = typename GridType::template InterGridMap<k>;
+
+    template <int k>
+    using InterSpaceMap = vector<Index>;
+
+    template <int k>
+    using SubRefSpace = NURBSSpace<k, range, rank>;
+
+    template <int k>
+    using SubSpace = NewPhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+
+    /**
+     * Construct a sub space of dimension k conforming to
+     * the subspace sub element sub_elem_id and a map from the elements of
+     * the sub_element grid to the corresponding element of the current
+     * grid.
+     */
+    template<int k>
+    std::shared_ptr<SubRefSpace<k> >
+    get_ref_sub_space(const int sub_elem_id,
+                      InterSpaceMap<k> &dof_map,
+                      std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+
+    template<int k>
+    std::shared_ptr<SubSpace<k> >
+    get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid,
+                  std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;
+
 public:
 //    /** Container indexed by the components of the space */
     template< class T>
@@ -101,9 +148,11 @@ public:
     using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
-    using WeightFunction = IgFunction<NewBSplineSpace<dim_, 1, 1>>;
+    using WeightSpace = NewBSplineSpace<dim_,1,1>;
+    using WeightFunction = IgFunction<WeightSpace>;
+    using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
     using Weights = DynamicMultiArray<Real,dim>;
-    using WeightsTable = ComponentContainer<WeightFunction>;
+    using WeightsTable = ComponentContainer<Weights>;
 
 
 
@@ -144,11 +193,11 @@ public:
            const WeightsTable &weights = WeightsTable());
 #endif
     /**
-     * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a table of weights.
+     * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a scalar weight function.
      */
     static std::shared_ptr<self_t>
     create(std::shared_ptr<SpSpace> bs_space,
-           const WeightsTable &weights);
+           const WeightFunctionPtr weight_func);
 
     ///@}
 
@@ -198,8 +247,8 @@ protected:
     /**
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
-    explicit  NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-                         const WeightsTable &weights);
+    explicit NURBSSpace(std::shared_ptr<SpSpace> bs_space,
+                        const WeightFunctionPtr weight_func);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -260,9 +309,10 @@ public:
     ///@}
 
 
-#if 0
+
     const std::shared_ptr<SpSpace> get_spline_space() const;
-#endif
+
+
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
 
@@ -382,9 +432,10 @@ private:
     std::shared_ptr<SpSpace> sp_space_;
 
     /**
-     * Weights associated to the basis functions.
+     * Weight function. It belongs to a scalar BSpline space.
      */
-    WeightsTable weights_;
+    WeightFunctionPtr weight_func_;
+
 
 #if 0
     /**
@@ -418,16 +469,24 @@ private:
 
 #endif
     friend ElementAccessor;
-    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
+    friend ElementHandler;
+//    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
 
+
+
+
+    /**
+     * Returns the weight coefficient associated with a given basis function.
+     */
+    Real get_weight_coef_from_basis_id(const Index basis_id) const;
 
 };
 
 
 
 IGA_NAMESPACE_CLOSE
-#endif
+#endif /* #ifdef NURBS */
 
-#endif /* __NURBS_SPACE_H_ */
+#endif /* NURBS_SPACE_H_ */
 
 

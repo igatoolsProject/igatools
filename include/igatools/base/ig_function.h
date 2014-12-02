@@ -22,7 +22,7 @@
 #define IG_FUNCTIONS_H
 
 #include <igatools/base/new_function.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+//#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -36,12 +36,19 @@ public:
     static const int range = Space::range;
     static const int rank = Space::rank;
 
+    using CoeffType = vector<Real>;
+
 private:
     using base_t = NewFunction<dim, codim, range, rank>;
     using parent_t = NewFunction<dim, codim, range, rank>;
     using self_t = IgFunction<Space>;
 
 public:
+
+    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
+
+    IgFunction(const self_t &);
+
     using typename parent_t::variant_1;
     using typename parent_t::variant_2;
     using typename parent_t::Point;
@@ -52,9 +59,7 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    using CoeffType = vector<Real>;
 
-    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 public:
     static std::shared_ptr<base_t>
@@ -66,7 +71,6 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    IgFunction(const self_t &);
 
     void reset(const NewValueFlags &flag, const variant_1 &quad) override;
 

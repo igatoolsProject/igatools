@@ -34,6 +34,7 @@
 #include <igatools/basis_functions/new_bspline_space.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -194,5 +195,6 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
+
 
 #endif
