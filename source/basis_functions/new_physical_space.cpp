@@ -44,7 +44,7 @@ NewPhysicalSpace(shared_ptr<RefSpace> ref_space,
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
-    map_func_(map_func)
+    map_func_(map_func->clone())
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());

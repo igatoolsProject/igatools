@@ -192,7 +192,8 @@ private:
         void operator()(const T &quad)
         {
             (*flags_)[T::dim] = flag;
-            grid_handler->template reset<T::dim>(flag, quad);
+
+            grid_handler->template reset<T::dim>(FunctionFlags::to_grid_flags(flag), quad);
         }
 
         NewValueFlags flag;

@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 // [functions]
+#include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
 // [functions]
 // [old includes]
@@ -103,6 +104,8 @@ PoissonProblem(const int n_knots, const int deg)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
+    auto grid = space->get_grid();
+
     using Function = ConstantFunction<dim,0,1,1>;
     using Value = typename Function::Value;
 
@@ -111,20 +114,17 @@ void PoissonProblem<dim>::assemble()
 
     auto elem_handler = space->get_element_handler();
 
-
-
-
     auto flag = NewValueFlags::value | NewValueFlags::gradient |
                 NewValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, elem_quad);
-    f.reset(NewValueFlags::value, elem_quad);
+    f->reset(NewValueFlags::value, elem_quad);
 
     auto f_elem = f->begin();
     auto elem   = space->begin();
     const auto elem_end = space->end();
     elem_handler.template init_cache<dim>(elem);
-    f.init_cache(f_elem, Int<dim>());
+    f->init_cache(f_elem, Int<dim>());
 
     const int n_qp = elem_quad.get_num_points();
 
@@ -140,21 +140,21 @@ void PoissonProblem<dim>::assemble()
 
         elem_handler.template fill_cache<dim>(elem, 0);
         auto phi = elem->template get_values<0, dim>(0);
-        auto gra_phi  = elem->template get_values<1, dim>(0);
+        auto grad_phi  = elem->template get_values<1, dim>(0);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
-        f.fill_cache<dim>(f_elem, 0, Int<dim>());
+        f->template fill_cache<dim>(f_elem, 0, Int<dim>());
         auto f_values = f_elem->template get_values<0,dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
         {
-            auto grd_phi_i = grd_phi.get_function_view(i);
+            auto grad_phi_i = grad_phi.get_function_view(i);
             for (int j = 0; j < n_basis; ++j)
             {
-                auto grd_phi_j = grd_phi.get_function_view(j);
+                auto grad_phi_j = grad_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
+                        scalar_product(grad_phi_i[qp], grad_phi_j[qp])
                         * w_meas[qp];
             }
             auto phi_i = phi.get_function_view(i);
@@ -174,7 +174,7 @@ void PoissonProblem<dim>::assemble()
     // [dirichlet constraint]
 
     auto g = Function::
-            create(grid, IdentityFunction<dim>::create(grid), {0.});
+             create(grid, IdentityFunction<dim>::create(grid), {0.});
 
 
     const boundary_id dir_id = 0;

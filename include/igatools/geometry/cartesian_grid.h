@@ -241,6 +241,17 @@ public:
      */
     static std::shared_ptr<self_t>
     create(const BBox<dim> &end_points, const TensorSize<dim> &n);
+
+    /**
+     * Creates a CastesianGrid object (wrapped by a shared_ptr) using
+     * the copy constructor.
+     *
+     * @note A grid built in this way is totally uncoupled from the grid used as argument
+     * of this function. For example, a refinement of a grid does not affect the other gird.
+     */
+    static std::shared_ptr<self_t>
+    create(const self_t &grid);
+
     ///@}
 
     /**
