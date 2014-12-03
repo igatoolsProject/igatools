@@ -18,89 +18,61 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#if 0
 #include <igatools/io/writer.h>
-#include <igatools/base/exceptions.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/identity_mapping.h>
+#include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/quadrature_lib.h>
 
-#include <sstream>
 #include <fstream>
-#include <utility>
 
-
-using std::array;
 using std::shared_ptr;
-using std::make_shared;
 using std::string;
-using std::stringstream;
 using std::ofstream;
-using std::fstream;
 using std::ios;
-using std::pair;
-using std::to_string;
 using std::endl;
+using std::to_string;
 
 #include <boost/detail/endian.hpp>
 
-IGA_NAMESPACE_OPEN
 
-//TODO: Add patch id as a cell field
+IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid> grid)
+Writer(const shared_ptr<const CartesianGrid<dim>> grid)
     :
-    Writer(IdentityMapping<dim, codim>::create(grid),
+    Writer(IdentityFunction<dim,dim+codim>::create(grid),
            shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
 {}
 
-
-
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid> grid,
-       const Index n_points_direction)
+Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
+       const Index num_points_direction)
     :
-    Writer(IdentityMapping<dim, codim>::create(grid),
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
+    Writer(map,shared_ptr<QUniform<dim> >(new QUniform<dim>(num_points_direction)))
 {}
 
-
-
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const Map> map,
-       const Index n_points_direction)
-    :
-    Writer(map,
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(n_points_direction)))
-{}
-
-
-
-template<int dim, int codim, class T>
-Writer<dim, codim, T>::
-Writer(const shared_ptr<const Mapping<dim,codim> > map,
+Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
     :
-    grid_(map->get_grid()),
-    map_(map),
-    quad_plot_(*quadrature),
-    num_points_direction_(quad_plot_.get_num_points_direction()),
-    n_iga_elements_(grid_->get_num_active_elems()),
-    n_points_per_iga_element_(quad_plot_.get_num_points()),
+    map_(map->clone()),
+    quad_plot_(quadrature),
+    num_points_direction_(quad_plot_->get_num_points_direction()),
+    n_iga_elements_(map->get_grid()->get_num_active_elems()),
+    n_points_per_iga_element_(quad_plot_->get_num_points()),
     n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
     sizeof_Real_(sizeof(T)),
     sizeof_int_(sizeof(int)),
     sizeof_uchar_(sizeof(unsigned char)),
     offset_(0)
 {
+    Assert(map_ != nullptr, ExcNullPtr());
+    Assert(quad_plot_ != nullptr, ExcNullPtr());
+
 #if defined( BOOST_LITTLE_ENDIAN )
     byte_order_ = "LittleEndian";
 #elif defined( BOOST_BIG_ENDIAN )
@@ -177,227 +149,35 @@ Writer(const shared_ptr<const Mapping<dim,codim> > map,
 
 
 
-template<int dim, int codim, class T>
-int
-Writer<dim, codim, T>::
-get_num_iga_elements() const
-{
-    return n_iga_elements_;
-}
 
-
-
-template<int dim, int codim, class T>
-int Writer<dim, codim, T>::get_num_vtk_elements() const
-{
-    return n_vtk_elements_;
-}
-
-
-
-template<int dim, int codim, class T>
-int Writer<dim, codim, T>::get_num_points_per_iga_element() const
-{
-    return n_points_per_iga_element_;
-}
-
-
-
-template<int dim, int codim, class T>
-int Writer<dim, codim, T>::get_num_vtk_elements_per_iga_element() const
-{
-    return n_vtk_elements_per_iga_element_;
-}
 
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
-add_point_data(const int n_values_per_point,
-               const std::string &type,
-               const vector<vector<vector<T>>> &data_iga_elements,
-               const std::string &name)
-{
-    Assert(data_iga_elements.size() == n_iga_elements_,
-           ExcDimensionMismatch(data_iga_elements.size(), n_iga_elements_));
-    Assert(type == "scalar" || type == "vector" || type == "tensor",
-           ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
-
-    shared_ptr<vector<T>> data_ptr(new vector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
-    auto &data = *data_ptr;
-
-    int pos = 0;
-    for (const auto &data_element : data_iga_elements)
-    {
-        Assert(data_element.size() == n_points_per_iga_element_,
-               ExcDimensionMismatch(data_element.size(), n_points_per_iga_element_));
-
-        for (const auto &data_point : data_element)
-        {
-            Assert(data_point.size() == n_values_per_point,
-                   ExcDimensionMismatch(data_point.size(), n_values_per_point));
-
-            for (const double &value : data_point)
-            {
-                data[pos++] = value;
-            }
-        }
-    }
-    fields_.emplace_back(PointData(name,type,n_iga_elements_,
-                                   n_points_per_iga_element_,
-                                   n_values_per_point,
-                                   data_ptr));
-
-    if (type == "scalar")
-    {
-        names_point_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_point_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_point_data_tensor_.emplace_back(name);
-    }
-
-}
-
-
-
-template<int dim, int codim, class T>
-template<class Space, LAPack la_pack>
-void Writer<dim, codim, T>::
-add_field(shared_ptr<Space> space_,
-          const Vector<la_pack> &coefs,
-          const string &name)
-{
-    // Compromise to keep type safe but avoid the user for writing
-    // pedantically correct but comprehensible undesirable casting
-    shared_ptr<const Space> space = std::const_pointer_cast<const Space> (space_);
-
-    //--------------------------------------------------------------------------
-    Assert(space_dim <= 3,
-           ExcMessage("The maximum allowed physical domain for VTK file is 3."));
-    //--------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------
-    // get the fields to write and assign them to the vtkUnstructuredGrid object
-
-    auto element     = space->begin();
-    auto element_end = space->end();
-    // TODO (pauletti, Sep 12, 2014): fix next line
-    Assert(true, ExcMessage(" fix next line "));
-    //element->init_cache(ValueFlags::value, quad_plot_);
-
-
-
-    const int n_elements = grid_->get_num_active_elems();
-    const int n_pts_per_elem = quad_plot_.get_num_points();
-
-    static const int dim_phys_range = Space::range;
-    static const int rank = Space::rank;
-
-
-    const int n_values_per_pt =
-        dim_phys_range == 1 ? 1 : std::pow(dim_phys_range, rank);
-    shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
-    auto &data = *data_ptr;
-    if (rank == 0)
-    {
-        int pos = 0;
-        for (int iElement = 0; element != element_end; ++element, ++iElement)
-        {
-            // TODO (pauletti, Sep 12, 2014): fix next line
-            Assert(true, ExcMessage(" fix next line "));
-            // element->fill_cache();
-            const auto field_values = element->evaluate_field(
-                                          coefs.get_local_coefs(element->get_local_to_global()));
-
-            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
-                data[pos++] = field_values[iPt][0];
-        }
-
-        fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
-        names_point_data_scalar_.emplace_back(name);
-    }
-    else if (rank == 1)
-    {
-        int pos = 0;
-        for (int iElement = 0; element != element_end; ++element, ++iElement)
-        {
-            // TODO (pauletti, Sep 12, 2014): fix next line
-            Assert(true, ExcMessage(" fix next line "));
-            // element->fill_cache();
-
-            const auto field_values = element->evaluate_field(
-                                          coefs.get_local_coefs(element->get_local_to_global()));
-
-            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
-            {
-                const auto &field_value_ipt = field_values[ iPt ];
-                for (int i = 0; i < dim_phys_range; ++i)
-                    data[pos++] = field_value_ipt[i];
-            }
-        }
-
-        fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
-        names_point_data_vector_.emplace_back(name);
-    }
-    else if (rank == 2)
-    {
-        int pos = 0;
-        for (int iElement = 0; element != element_end; ++element, ++iElement)
-        {
-            // TODO (pauletti, Sep 12, 2014): fix next line
-            Assert(true, ExcMessage(" fix next line "));
-            //element->fill_cache();
-
-            const auto field_values = element->evaluate_field(
-                                          coefs.get_local_coefs(element->get_local_to_global()));
-
-            for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
-            {
-                const auto &field_value_ipt = field_values[ iPt ];
-                for (int i = 0; i < dim_phys_range; ++i)
-                {
-                    const auto &field_value_ipt_i = field_value_ipt[i];
-
-                    for (int j = 0; j < dim_phys_range; ++j)
-                        data[pos++] = field_value_ipt_i[j];
-                }
-            }
-        }
-
-        fields_.emplace_back(PointData(name,"tensor",n_elements,n_pts_per_elem,n_values_per_pt,data_ptr));
-        names_point_data_tensor_.emplace_back(name);
-    }
-
-    //--------------------------------------------------------------------------
-}
-
-
-
-template<int dim, int codim, class T>
-void Writer<dim, codim, T>::fill_points_and_connectivity(
-    vector< vector< std::array<T,3> > > &points_in_iga_elements,
-    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
+fill_points_and_connectivity(
+    vector<vector<special_array<T,3> > > &points_in_iga_elements,
+    vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
     &vtk_elements_connectivity) const
 {
+    map_->reset(NewValueFlags::value | NewValueFlags::point, *quad_plot_);
 
-    auto element = map_->begin();
-    const auto element_end = map_->end();
+    auto m_elem = map_->begin();
+    auto m_end  = map_->end();
 
-    element->init_cache(ValueFlags::map_value, quad_plot_);
+    const auto topology = Int<dim>();
 
-    for (; element != element_end; ++element)
+    map_->init_cache(m_elem,topology);
+
+    for (; m_elem != m_end; ++m_elem)
     {
-        const int iga_elem_id = element->get_flat_index();
+        map_->fill_cache(m_elem,0,topology);
 
-        element->fill_cache();
-        get_subelements(element,
-                        vtk_elements_connectivity[iga_elem_id],
-                        points_in_iga_elements[iga_elem_id]);
+        const auto elem_id = m_elem->get_flat_index();
+
+        this->get_subelements(
+            *m_elem,
+            vtk_elements_connectivity[elem_id],
+            points_in_iga_elements[elem_id]);
     }
 }
 
@@ -406,11 +186,10 @@ void Writer<dim, codim, T>::fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-    const typename Mapping< dim, codim>::ElementIterator elem,
-    vector< array< int, n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-    vector< array<T,3> > &points_phys_iga_element) const
+    const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
+    vector< special_array<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
+    vector< special_array<T,3> > &points_phys_iga_element) const
 {
-
     Assert(Size(points_phys_iga_element.size()) == n_points_per_iga_element_,
            ExcDimensionMismatch(points_phys_iga_element.size(), n_points_per_iga_element_));
 
@@ -418,25 +197,24 @@ get_subelements(
            ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-    auto element_vertices_tmp = elem->get_map_values();
+    auto element_vertices_tmp = elem.template get_values<0,dim>(0);
 
     const T zero = T(0.0);
 
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
     {
-        for (int i = 0; i < space_dim; ++i)
+        for (int i = 0; i < NewMapping<dim,codim>::space_dim; ++i)
             points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
 
-        for (int i = space_dim; i < 3; ++i)
+        for (int i = NewMapping<dim,codim>::space_dim; i < 3; ++i)
             points_phys_iga_element[ipt][i] = zero;
     }
 
 
-    const int iga_element_id = elem->get_flat_index();
+    const int iga_element_id = elem.get_flat_index();
 
-    vector< array<int,dim> > delta_idx(n_vertices_per_vtk_element_);
-
+    vector< special_array<int,dim> > delta_idx(n_vertices_per_vtk_element_);
 
     if (dim == 1)
     {
@@ -503,7 +281,7 @@ get_subelements(
     //--------------------------------------------------------------------------
     // grid defining the vtk elements inside the iga element
 
-    const auto  vtk_elements_grid = CartesianGrid<dim>::create(num_points_direction_);
+    const auto vtk_elements_grid = CartesianGrid<dim>::create(num_points_direction_);
     auto vtk_elem = vtk_elements_grid->begin();
     const auto vtk_elem_end = vtk_elements_grid->end();
 
@@ -530,7 +308,8 @@ get_subelements(
 
 
 template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
+void
+Writer<dim, codim, T>::
 add_element_data(const vector<double> &element_data,
                  const std::string &name)
 {
@@ -554,7 +333,8 @@ add_element_data(const vector<double> &element_data,
 
 
 template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
+void
+Writer<dim, codim, T>::
 add_element_data(const vector<int> &element_data,
                  const std::string &name)
 {
@@ -578,11 +358,106 @@ add_element_data(const vector<int> &element_data,
 
 
 template<int dim, int codim, class T>
+void
+Writer<dim, codim, T>::
+add_point_data(const int n_values_per_point,
+               const std::string &type,
+               const vector<vector<vector<T>>> &data_iga_elements,
+               const std::string &name)
+{
+    Assert(data_iga_elements.size() == n_iga_elements_,
+           ExcDimensionMismatch(data_iga_elements.size(), n_iga_elements_));
+    Assert(type == "scalar" || type == "vector" || type == "tensor",
+           ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
+
+    shared_ptr<vector<T>> data_ptr(new vector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
+    auto &data = *data_ptr;
+
+    Index pos = 0;
+    for (const auto &data_element : data_iga_elements)
+    {
+        Assert(data_element.size() == n_points_per_iga_element_,
+               ExcDimensionMismatch(data_element.size(), n_points_per_iga_element_));
+
+        for (const auto &data_point : data_element)
+        {
+            Assert(data_point.size() == n_values_per_point,
+                   ExcDimensionMismatch(data_point.size(), n_values_per_point));
+
+            for (const double &value : data_point)
+            {
+                data[pos++] = value;
+            }
+        }
+    }
+    fields_.emplace_back(PointData(name,type,n_iga_elements_,
+                                   n_points_per_iga_element_,
+                                   n_values_per_point,
+                                   data_ptr));
+
+    if (type == "scalar")
+    {
+        names_point_data_scalar_.emplace_back(name);
+    }
+    else if (type == "vector")
+    {
+        names_point_data_vector_.emplace_back(name);
+    }
+    else if (type == "tensor")
+    {
+        names_point_data_tensor_.emplace_back(name);
+    }
+
+}
+
+
+
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::
+save(const string &filename, const string &format) const
+{
+    //--------------------------------------------------------------------------
+    Assert(format == "ascii" || format == "appended",
+           ExcMessage("Unsupported format."));
+    //--------------------------------------------------------------------------
+
+    vector< vector< special_array<T,3> > >
+    points_in_iga_elements(n_iga_elements_, vector< special_array<T,3> >(n_points_per_iga_element_));
+
+    vector< vector< special_array< int, n_vertices_per_vtk_element_> > >
+    vtk_elements_connectivity(n_iga_elements_);
+    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
+        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
+
+    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
+
+    const string vtu_filename = filename + ".vtu";
+
+
+    if (format == "ascii")
+    {
+        ofstream file(vtu_filename);
+        file.setf(ios::scientific);
+        file.precision(precision_);
+        this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
+    }
+    else if (format == "appended")
+    {
+        this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
+    }
+}
+
+
+
+template<int dim, int codim, class T>
 template<class Out>
-void Writer<dim, codim, T>::save_ascii(Out &file,
-                                       const vector< vector< std::array<T,3> > > &points_in_iga_elements,
-                                       const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-                                       &vtk_elements_connectivity) const
+void Writer<dim, codim, T>::
+save_ascii(Out &file,
+           const vector< vector< special_array<T,3> > > &points_in_iga_elements,
+           const vector< vector< special_array<int,n_vertices_per_vtk_element_> > >
+           &vtk_elements_connectivity) const
 {
     const string tab1("\t");
     const string tab2 = tab1 + tab1;
@@ -738,10 +613,11 @@ void Writer<dim, codim, T>::save_ascii(Out &file,
 
 
 template<int dim, int codim, class T>
-void Writer<dim, codim, T>::save_appended(const string &filename,
-                                          const vector< vector< std::array<T,3> > > &points_in_iga_elements,
-                                          const vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-                                          &vtk_elements_connectivity) const
+void Writer<dim, codim, T>::
+save_appended(const string &filename,
+              const vector< vector< special_array<T,3> > > &points_in_iga_elements,
+              const vector< vector< special_array< int,n_vertices_per_vtk_element_> > >
+              &vtk_elements_connectivity) const
 {
     ofstream file(filename);
     file.setf(ios::scientific);
@@ -978,49 +854,12 @@ void Writer<dim, codim, T>::save_appended(const string &filename,
 
 
 template<int dim, int codim, class T>
-void Writer<dim, codim, T>::
-save(const string &filename, const string &format) const
-{
-    //--------------------------------------------------------------------------
-    Assert(format == "ascii" || format == "appended",
-           ExcMessage("Unsupported format."));
-    //--------------------------------------------------------------------------
-
-    vector< vector< std::array<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< array<T,3> >(n_points_per_iga_element_));
-
-    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
-    vtk_elements_connectivity(n_iga_elements_);
-    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
-        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
-
-    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
-
-    const string vtu_filename = filename + ".vtu";
-
-
-    if (format == "ascii")
-    {
-        ofstream file(vtu_filename);
-        file.setf(ios::scientific);
-        file.precision(precision_);
-        this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
-    }
-    else if (format == "appended")
-    {
-        this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
-    }
-}
-
-
-template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
+    vector< vector< special_array<T,3> > >
+    points_in_iga_elements(n_iga_elements_, vector< special_array<T,3> >(n_points_per_iga_element_));
 
-    vector< vector< std::array<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< array<T,3> >(n_points_per_iga_element_));
-
-    vector< vector< std::array< int,n_vertices_per_vtk_element_> > >
+    vector< vector< special_array< int, n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
@@ -1031,7 +870,48 @@ void Writer<dim, codim, T>::print_info(LogStream &out) const
 }
 
 
+template<int dim, int codim, class T>
+int
+Writer<dim, codim, T>::
+get_num_points_per_iga_element() const
+{
+    return n_points_per_iga_element_;
+}
+
+
+template<int dim, int codim, class T>
+int
+Writer<dim, codim, T>::
+get_num_vtk_elements_per_iga_element() const
+{
+    return n_vtk_elements_per_iga_element_;
+}
+
+
+
+
+template<int dim, int codim, class T>
+int
+Writer<dim, codim, T>::
+get_num_iga_elements() const
+{
+    return n_iga_elements_;
+}
+
+
+
+template<int dim, int codim, class T>
+int
+Writer<dim, codim, T>::
+get_num_vtk_elements() const
+{
+    return n_vtk_elements_;
+}
+
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/writer.inst>
-#endif
+

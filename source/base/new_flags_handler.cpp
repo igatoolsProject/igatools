@@ -357,76 +357,7 @@ print_info(LogStream &out) const
 
 
 
-#if 0
 
-//====================================================
-GridFaceValueFlagsHandler::
-GridFaceValueFlagsHandler()
-    :
-    GridFlags(),
-    fill_normals_(false),
-    normals_filled_(false)
-{}
-
-bool
-GridFaceValueFlagsHandler::
-fill_none() const
-{
-    bool fill_none = true;
-
-    if (fill_normals_ || !GridFlags::fill_none())
-        fill_none = false;
-
-    return fill_none;
-}
-
-
-GridFaceValueFlagsHandler::
-GridFaceValueFlagsHandler(const NewValueFlags &flags)
-{
-    if (contains(flags, NewValueFlags::face_point))
-    {
-        fill_points_  = true;
-        fill_lengths_ = true;
-    }
-    if (contains(flags, NewValueFlags::face_measure))
-    {
-        fill_measures_ = true;
-        fill_lengths_  = true;
-    }
-    if (contains(flags, NewValueFlags::face_w_measure))
-    {
-        fill_measures_ = true;
-        fill_lengths_  = true;
-        fill_w_measures_ = true;
-    }
-
-}
-
-
-bool
-GridFaceValueFlagsHandler::
-fill_normals() const
-{
-    return fill_normals_;
-}
-
-bool
-GridFaceValueFlagsHandler::
-normals_filled() const
-{
-    return normals_filled_;
-}
-
-void
-GridFaceValueFlagsHandler::
-set_normals_filled(const bool status)
-{
-    normals_filled_ = status;
-}
-//====================================================
-
-#endif
 
 
 
@@ -444,13 +375,15 @@ fill_none() const
     return fill_none;
 }
 
+
 MappingFlags::
 MappingFlags(const NewValueFlags &flags)
     :
     FunctionFlags::FunctionFlags(to_function_flags(flags))
 {
-    if ( (contains(flags, NewValueFlags::inv_gradient)) ||
-         (contains(flags, NewValueFlags::outer_normal)) )
+    if (contains(flags, NewValueFlags::inv_gradient)    ||
+        contains(flags, NewValueFlags::boundary_normal) ||
+        contains(flags, NewValueFlags::curvature))
         fill_inv_gradients_ = true;
 
     if (contains(flags, NewValueFlags::inv_hessian))
@@ -482,11 +415,11 @@ MappingFlags::to_function_flags(const NewValueFlags &flags)
     if (contains(flags, NewValueFlags::measure) ||
         contains(flags, NewValueFlags::w_measure) ||
         contains(flags, NewValueFlags::inv_gradient) ||
-        contains(flags,  NewValueFlags::outer_normal))
+        contains(flags, NewValueFlags::outer_normal))
         f_flag |=  NewValueFlags::gradient;
 
-
-    if (contains(flags, NewValueFlags::inv_hessian))
+    if (contains(flags, NewValueFlags::inv_hessian) ||
+        contains(flags, NewValueFlags::curvature))
         f_flag |=  NewValueFlags::gradient | NewValueFlags::hessian;
 
     return f_flag;

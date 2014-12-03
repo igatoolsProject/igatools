@@ -29,7 +29,8 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief iga version on std::array
+ * @brief iga version on std::array. It can be used as a std::array but in Debug mode
+ * it provides bounds checking.
  */
 template<class T, Size N>
 class special_array
@@ -51,6 +52,23 @@ public:
     {
         data_.fill(val);
     }
+
+    /**
+     * Constructor using a std::array
+     */
+    special_array(const base_t &data)
+        :
+        data_(data)
+    {};
+
+    /**
+     * Initializer-list constructor.
+     */
+    constexpr special_array(const std::initializer_list<T> &list)
+        :
+        data_(list)
+    {};
+
 
     iterator begin() noexcept
     {

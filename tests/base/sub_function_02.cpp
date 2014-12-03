@@ -63,7 +63,7 @@ void sub_map(const int n_knots = 2)
 
         QGauss<sub_dim> f_quad(1);
         auto sub_func_flag = NewValueFlags::point | NewValueFlags::value
-                | NewValueFlags::gradient;
+                             | NewValueFlags::gradient;
         sub_func->reset(sub_func_flag, f_quad);
 
         auto f_elem =  sub_func->begin();

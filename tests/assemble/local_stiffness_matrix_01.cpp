@@ -29,12 +29,13 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/basis_functions/space_uniform_quad_cache.h>
+#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/physical_space_element.h>
+//#include <igatools/basis_functions/space_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/identity_mapping.h>
+#include <igatools/base/identity_function.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
 
@@ -45,41 +46,44 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    typedef BSplineSpace<dim> RefSpace;
+    using RefSpace = NewBSplineSpace<dim>;
     auto ref_space = RefSpace::create(deg, grid) ;
 
-    typedef PushForward<Transformation::h_grad,dim,0> PushForward ;
-    auto push_forward = PushForward::create(IdentityMapping<dim>::create(grid)) ;
+    using PhysSpace = NewPhysicalSpace<RefSpace,0,Transformation::h_grad>;
+    auto phys_space = PhysSpace::create(ref_space, IdentityFunction<dim>::create(grid)) ;
 
-    typedef PhysicalSpace<RefSpace,PushForward> PhysSpace;
-    auto phys_space = PhysSpace::create(ref_space, push_forward) ;
+    using ElementHandler = typename PhysSpace::ElementHandler;
+    ElementHandler elem_handler(phys_space);
 
     auto quad = QGauss<dim>(deg+1);
-    auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
-    SpaceUniformQuadCache<PhysSpace> cache(phys_space, flag, quad);
+    auto flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::w_measure;
+    elem_handler.reset(flag,quad);
 
     const int n_qpoints =  quad.get_num_points();
 
     auto elem           = phys_space->begin();
     const auto elem_end = phys_space->end();
-    cache.init_element_cache(elem);
+
     const int n_basis = elem->get_num_basis();
     DenseMatrix loc_mat(n_basis,n_basis);
 
+    elem_handler.template init_cache<dim>(elem);
     for (; elem != elem_end; ++elem)
     {
-        cache.fill_element_cache(elem);
+        elem_handler.template fill_cache<dim>(elem,0);
+
         loc_mat = 0.0;
 
-        const auto w_meas = elem->get_w_measures();
+        const auto w_meas = elem->template get_w_measures<dim>(0);
+        const auto grad = elem->template get_values<1,dim>(0);
 
         for (int i=0; i<n_basis; ++i)
         {
-            const auto grad_i = elem->get_basis_gradients(i);
+            const auto grad_i = grad.get_function_view(i);
 
             for (int j=0; j<n_basis; ++j)
             {
-                const auto grad_j = elem->get_basis_gradients(j);
+                const auto grad_j = grad.get_function_view(j);
                 for (int qp = 0; qp < n_qpoints; ++qp)
                     loc_mat(i,j) += scalar_product(grad_i[qp], grad_j[qp]) * w_meas[qp];
             }

@@ -57,13 +57,13 @@ public:
 
     static const int space_dim = dim + codim;
 
-private:
+public:
     /** Type for the given order derivatives of the
      *  the mapping. */
     template<int order>
     using Derivative = typename FuncType::template Derivative<order>;
 
-public:
+
     /** Type for the diferent order derivatives of the inverse of
      * the mapping
      */
@@ -115,6 +115,11 @@ public:
     void init_cache(ElementIterator &elem)
     {
         init_cache<k>(elem.get_accessor());
+    }
+
+    std::shared_ptr<const CartesianGrid<dim> > get_grid() const
+    {
+        return F_->get_grid();
     }
 
     auto get_function() const

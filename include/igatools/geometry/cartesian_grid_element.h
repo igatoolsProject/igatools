@@ -190,10 +190,6 @@ public:
      */
     void move_to(const TensorIndex<dim> &tensor_index);
 
-    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
-    // someone made them public due to hackish code in NURBSelementaccessor
-    // we must rethink that code
-
     /** Moves the element to the next valid element in the CartesianGrid. */
     void operator++();
     ///@}

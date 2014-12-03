@@ -20,8 +20,9 @@
 
 # # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-include_files = ['basis_functions/bspline_space.h',
-                 'basis_functions/nurbs_space.h']
+include_files = []
+#include_files = ['basis_functions/bspline_space.h',
+#                 'basis_functions/nurbs_space.h']
 # data = Instantiation(include_files)
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
@@ -32,10 +33,14 @@ data = Instantiation()
 # for grid in grids:
 #     f.write('template %s get_cartesian_grid_from_xml(const boost::property_tree::ptree &);\n' %grid)
 # 
-# maps = ['std::shared_ptr<Mapping<%d,%d>>' %(row.dim, row.codim) for row in inst.user_mapping_dims]
-# for map in maps:
-#     f.write('template %s get_mapping_from_xml(const boost::property_tree::ptree &);\n' %map)
-#     f.write('template %s get_mapping_from_file(const std::string &);\n' %map)
+#maps = ['std::shared_ptr<MapFunction<%d,%d>>' %(row.dim,row.dim+row.codim) for row in inst.mapping_dims]
+#for map in maps:
+#    f.write('template %s get_mapping_from_xml(const boost::property_tree::ptree &);\n' %map)
+#    f.write('template %s get_mapping_from_file(const std::string &);\n' %map)
+for x in inst.mapping_dims:
+    map = 'std::shared_ptr<MapFunction<%d,%d>>' %(x.dim, x.dim + x.codim)
+    f.write('template %s get_mapping_from_file<%d,%d>(const std::string &);\n' %(map,x.dim,x.codim))
+
 # 
 # bsp_spaces = ['std::shared_ptr<BSplineSpace<%d,%d,%d>>' %(x.dim, x.range, x.rank)  
 #           for x in inst.all_ref_sp_dims ] 

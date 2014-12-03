@@ -132,7 +132,7 @@ public:
     void add_block(
         const vector<Index> &row_glob_ids,
         const vector<Index> &cln_glob_ids,
-        const DenseMatrix &local_matrix) ;
+        const DenseMatrix &local_matrix);
 
     /**
      * Given two global indices @p i and @p j, return the (i,j) entry of the matrix.
@@ -150,27 +150,27 @@ public:
      * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
      * concrete Trilinos distributed matrix. Const version.
      */
-    Teuchos::RCP<const MatrixImpl> get_trilinos_matrix() const ;
+    Teuchos::RCP<const MatrixImpl> get_trilinos_matrix() const;
 
     /**
      * Return the Trilinos RCP (Reference-Counted-Pointer, i.e. a smart pointer) wrapping the
      * concrete Trilinos distributed matrix. Non-const version.
      */
-    Teuchos::RCP<MatrixImpl> get_trilinos_matrix() ;
+    Teuchos::RCP<MatrixImpl> get_trilinos_matrix();
     ///@}
 
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
-    void print(LogStream &out) const ;
+    void print_info(LogStream &out) const;
 
     /** Return the number of global rows of the matrix */
-    Index get_num_rows() const ;
+    Index get_num_rows() const;
 
     /** Return the number of global columns of the matrix */
-    Index get_num_columns() const ;
+    Index get_num_columns() const;
 
     /** Return the number of entries in the matrix.*/
-    Index get_num_entries() const ;
+    Index get_num_entries() const;
 
     ///@}
 
@@ -222,7 +222,7 @@ public:
 private:
 
     /** The real Trilinos::TPetra matrix */
-    Teuchos::RCP<MatrixImpl> matrix_ ;
+    Teuchos::RCP<MatrixImpl> matrix_;
 };
 #endif // #ifdef USE_TRILINOS
 
@@ -318,7 +318,7 @@ public:
     void add_block(
         const vector<Index> &row_glob_ids,
         const vector<Index> &cln_glob_ids,
-        const DenseMatrix &local_matrix) ;
+        const DenseMatrix &local_matrix);
 
     /**
      * Given two global indices @p i and @p j, return the (i,j) entry of the matrix.
@@ -335,24 +335,24 @@ public:
     /**
      * todo: add documentation
      */
-    Mat get_petsc_matrix() const ;
+    Mat get_petsc_matrix() const;
 
     /**
      * todo: add documentation
      */
-    Mat get_petsc_matrix() ;
+    Mat get_petsc_matrix();
     ///@}
 
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
-    void print(LogStream &out) const ;
+    void print(LogStream &out) const;
 
 
     /** Return the number of global rows of the matrix */
-    Index get_num_rows() const ;
+    Index get_num_rows() const;
 
     /** Return the number of global columns of the matrix */
-    Index get_num_columns() const ;
+    Index get_num_columns() const;
     ///@}
 
     /** @name Matrix-by-vector multiplication */

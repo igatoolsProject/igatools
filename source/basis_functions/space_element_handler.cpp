@@ -80,7 +80,7 @@ space_to_pf_flag(const NewValueFlags flags)
         NewValueFlags::measure |
         NewValueFlags::w_measure |
         NewValueFlags::outer_normal |
-		NewValueFlags::boundary_normal |
+        NewValueFlags::boundary_normal |
         NewValueFlags::point;
 
     NewValueFlags pf_flag = flags & transfer_flag;

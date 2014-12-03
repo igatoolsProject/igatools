@@ -24,16 +24,12 @@
 
 #include <igatools/base/tensor.h>
 
-#include<iostream>
-
 
 template<int rdim, int cdim>
 void do_inverse()
 {
 
     Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
-    Tensor<rdim, 1, tensor::covariant, Tensor< cdim, 1, tensor::contravariant, Tdouble> > B;
-    Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > C;
 
     Tensor< cdim, 1, tensor::contravariant, Tdouble> u;
     Tensor< rdim, 1, tensor::contravariant, Tdouble> v;
@@ -56,17 +52,9 @@ void do_inverse()
     out << v << std::endl;
 
 
-//    out << "Its transpose action on:" << std::endl;
-//    out << v << std::endl;
-//    out << "is:" << std::endl;
-//    u = transpose_action(A,v);
-//    out << u << std::endl;
-
-
-
-
+    Real det;
     out << "Its inverse is:" << std::endl;
-    inverse<cdim, rdim> (A,B);
+    auto B = inverse(A,det);
     out << B << std::endl;
 
     out << "compose A by its inverse to get:" << std::endl;
@@ -75,12 +63,13 @@ void do_inverse()
     out << std::endl;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     do_inverse<2,2>();
     do_inverse<3,2>();
     do_inverse<3,3>();
-    //do_inverse<2,1>();
+
+    return 0;
 
 }
 

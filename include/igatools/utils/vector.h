@@ -54,6 +54,7 @@ public :
         Assert(n<size(), ExcIndexRange(n, 0, size()));
         return std::vector<T>::operator[](n);
     }
+
     /**
      * @name Printing info
      */

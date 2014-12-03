@@ -55,62 +55,62 @@ void bspline_map(const int deg = 1)
     if (dim == 1)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 2)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 3)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
     }
 
@@ -119,7 +119,7 @@ void bspline_map(const int deg = 1)
 
     auto quad = QGauss<dim>(3);
     auto flag =  NewValueFlags::value| NewValueFlags::gradient
-                | NewValueFlags::hessian;
+                 | NewValueFlags::hessian;
 
     map->template reset<sub_dim>(flag, quad);
 
@@ -141,7 +141,7 @@ void bspline_map(const int deg = 1)
 //        out << endl;
     }
 
-OUTEND
+    OUTEND
 }
 
 int main()

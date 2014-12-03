@@ -40,6 +40,7 @@ public:
 private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
+
 public:
     using CartesianGridElement<dim>::CartesianGridElement;
 
@@ -47,23 +48,12 @@ public:
     auto
     get_values(const int j) const
     {
+        Assert(local_cache_ != nullptr,ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return std::get<order>(cache.values_);
     }
 
-#if 0
-    ValueVector<Point> const &get_points() const;
-    ValueVector<Value> const &get_values() const;
-
-private:
-    template<int order>
-    auto const &get_derivative() const;
-public:
-    ValueVector<Gradient> const &get_gradients() const;
-
-    ValueVector<Hessian> const &get_hessians() const;
-#endif
 
 private:
     class ValuesCache : public CacheStatus

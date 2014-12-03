@@ -52,123 +52,123 @@ void bspline_map(const int deg = 2)
     if (dim == 1)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.75 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.75 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 2)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
 
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
 
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.5 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.0 ;
     }
     else if (dim == 3)
     {
         int id = 0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.0 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 0.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.5 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
-        control_pts(id++) = 1.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.0 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 0.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.5 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
+        control_pts[id++] = 1.0 ;
 
     }
 
@@ -177,7 +177,7 @@ void bspline_map(const int deg = 2)
 
     auto quad = QGauss<dim>(3);
     auto flag =  NewValueFlags::value| NewValueFlags::gradient
-            | NewValueFlags::hessian;
+                 | NewValueFlags::hessian;
 
     map->template reset<sub_dim>(flag, quad);
 

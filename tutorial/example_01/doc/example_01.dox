@@ -55,7 +55,7 @@ and BSplineSpace instead of iga::BSplineSpace.
 
 Then creates a uniformly distributed 2 dimensional knot vector with 3 knots
 in each direction for the unit square.
-notice the strange \<dim\> notation that appears everywhere, it is part
+Notice the strange \<dim\> notation that appears everywhere, it is part
 of the template programming the library uses to be dimension independent
 \snippet example_01.cpp grid
 

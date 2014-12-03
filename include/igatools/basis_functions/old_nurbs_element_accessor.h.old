@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 
+#if 0
 
 #ifdef NURBS
 #include <igatools/basis_functions/bspline_element_accessor.h>
@@ -227,8 +228,10 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
-#endif
+#endif // #ifdef NURBS
+
+#endif // #if 0
+
 
 #endif /* NURBS_ELEMENT_ACCESSOR_H_ */
-
 
