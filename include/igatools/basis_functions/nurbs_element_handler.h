@@ -161,6 +161,28 @@ private:
         const WeightElemTable &weight_elem_table,
         ValueTable<Derivative<2>> &D2_phi) const;
 
+
+#if 0
+    /**
+     * Returns the active components id for the NURBS values and derivatives.
+     *
+     * @note The active components id is the union of the active components for the numerator
+     * (basis function belonging to a BSplineSpace) and the active components for the denominator
+     * (a ComponentTable of scalar IgFunction(s)).
+     */
+    vector<int> get_active_components_id() const;
+
+
+    /**
+     * Returns the active components id for the NURBS values and derivatives.
+     *
+     * @note The incative components id are the complement of the active components id with respect
+     * to the sequence 0,1,...,n_components-1
+     *
+     * @see get_active_components_id()
+     */
+    vector<int> get_inactive_components_id() const;
+#endif
 };
 
 

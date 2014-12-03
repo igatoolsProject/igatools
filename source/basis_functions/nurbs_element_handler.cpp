@@ -21,6 +21,8 @@
 #include <igatools/basis_functions/nurbs_element_handler.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
+#include <algorithm>
+
 using std::shared_ptr;
 
 #ifdef NURBS
@@ -401,33 +403,42 @@ evaluate_nurbs_values_from_bspline(
     Assert(!phi.empty(), ExcEmptyObject());
 
     const auto &P = bspline_elem.template get_values<0,dim>(0);
-
-    const auto &weight_elem = weight_elem_table[0];
-
-    const auto &Q = weight_elem.template get_values<0,dim>(0);
-
-    Assert(P.get_num_points() == Q.get_num_points(),
-           ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
     const auto n_pts = P.get_num_points();
-    const auto n_funcs = P.get_num_functions();
 
+    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
 
-    vector<Real> invQ(n_pts);
-    for (int pt = 0 ; pt < n_pts ; ++pt)
-        invQ[pt] = 1.0 / Q[pt](0);
+    const auto comp_offset = space_->sp_space_->get_basis_offset();
 
-    const auto local_to_patch = bspline_elem.get_local_to_patch();
-
-    for (int fn = 0 ; fn < n_funcs ; ++fn)
+    int fn_id = 0;
+    for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &P_fn = P.get_function_view(fn);
+        const auto &weight_elem = weight_elem_table[comp];
 
-        auto R_fn = phi.get_function_view(fn);
+        const auto &Q = weight_elem.template get_values<0,dim>(0);
 
-        const Real w = space_->get_weight_coef_from_basis_id(local_to_patch[fn]);
+        Assert(n_pts == Q.get_num_points(),
+               ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
+        vector<Real> invQ(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
-            R_fn[pt] = P_fn[pt] * invQ[pt] * w ;
+            invQ[pt] = 1.0 / Q[pt](0);
+
+        const int n_funcs_comp = bspline_elem.get_num_basis(comp);
+
+        const auto &w_coefs = space_->weight_func_table_[comp]->get_coefficients();
+
+        const auto offset = comp_offset[comp];
+        for (int scalar_fn_id = 0 ; scalar_fn_id < n_funcs_comp ; ++scalar_fn_id, ++fn_id)
+        {
+            const auto &P_fn = P.get_function_view(fn_id);
+
+            auto R_fn = phi.get_function_view(fn_id);
+
+            const Real w = w_coefs[bsp_local_to_patch[fn_id]-offset];
+
+            for (int pt = 0 ; pt < n_pts ; ++pt)
+                R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
+        }
     }
 }
 
@@ -660,6 +671,46 @@ evaluate_nurbs_hessians_from_bspline(
     } // end loop fn
 }
 
+#if 0
+template<int dim_, int range_ , int rank_>
+vector<int>
+NURBSElementHandler<dim_, range_, rank_>::
+get_active_components_id() const
+{
+    const auto bsp_components_map = space_->sp_space_->get_components_map();
+    const auto   w_components_map = space_->weight_func_table_.get_comp_map();
+
+    vector<int> active_components_id(2*n_components);
+    const auto it = std::set_union(
+                        bsp_components_map.begin(),bsp_components_map.end(),
+                        w_components_map.begin(),  w_components_map.end(),
+                        active_components_id.begin());
+    active_components_id.resize(it - active_components_id.begin());
+
+    return active_components_id;
+}
+
+
+template<int dim_, int range_ , int rank_>
+vector<int>
+NURBSElementHandler<dim_, range_, rank_>::
+get_inactive_components_id() const
+{
+    const auto active_components_id = this->get_active_components_id();
+
+    vector<int> all_ids(n_components);
+    std::iota(all_ids.begin(),all_ids.end(),0);
+
+    vector<int> inactive_components_id(n_components);
+    const auto it = std::set_difference(
+                        all_ids.begin(),all_ids.end(),
+                        active_components_id.begin(),active_components_id.end(),
+                        inactive_components_id.begin());
+    inactive_components_id.resize(it-inactive_components_id.begin());
+
+    return inactive_components_id;
+}
+#endif
 
 IGA_NAMESPACE_CLOSE
 
