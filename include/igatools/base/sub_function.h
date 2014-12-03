@@ -201,6 +201,22 @@ public:
         sup_elem_(sup_func_->begin())
     {}
 
+    SubMapFunction(const self_t &sub_f)
+            :
+            base_t(sub_f),
+            sup_func_(sub_f.sup_func_->clone()),
+            s_id_(sub_f.s_id_),
+            elem_map_(sub_f.elem_map_),
+            sup_elem_(sub_f.sup_func_->begin())
+        {}
+
+    std::shared_ptr<base_t> clone() const override
+        {
+
+            return std::make_shared<self_t>(self_t(*this));
+        }
+
+
     static std::shared_ptr<base_t>
     create(std::shared_ptr<const SupFunc> func,
            const int s_id)

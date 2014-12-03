@@ -41,7 +41,7 @@ template<int dim, int codim>
 NewMapping<dim, codim>::
 NewMapping(std::shared_ptr<FuncType> F)
     :
-    F_(F)
+    F_(F->clone())
 {}
 
 

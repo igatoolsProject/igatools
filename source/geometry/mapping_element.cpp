@@ -60,36 +60,53 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 
     const auto n_points = D2_F.get_num_points();
 
-    const auto G_inv = compute_inv_first_fundamental_form();
+   // const auto G_inv = compute_inv_first_fundamental_form();
 
     ValueVector<MetricTensor> res;
     res.resize(n_points);
 
+    MetricTensor A;
     for (int pt = 0; pt < n_points; ++pt)
     {
         for (int u=0; u<dim; ++u)
         {
-            auto  A = compose(G_inv[pt], co_tensor(transpose(D2_F[pt][u])));
-
-            res[pt][u] = -action(A, normal[pt]);
+            auto  B = co_tensor(transpose(D2_F[pt][u]));
+            A[u] = action(B, normal[pt]);
         }
-    }
+        res[pt] = -A;
 
-//    DenseMatrix A(dim, dim);
-//    for (int pt = 0; pt < n_points; ++pt)
-//    {
-//        const auto B = unroll_to_matrix(G_inv[pt]);
-//        for (int i = 0; i<dim; ++i)
-//            for (int j = 0; j<dim; ++j)
-//                A(i,j) = -scalar_product(D2_F[pt][i][j], normal[pt]);
-//        DenseMatrix C(dim, dim);
-//        boost::numeric::ublas::axpy_prod(B, A, C, true);
-//
-//        res[pt] = C.eigen_values();
-//    }
+       // res[pt] = -compose(A, G_inv[pt]);
+
+    }
 
     return res;
 }
+
+
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+get_principal_curvatures() const -> ValueVector<vector<Real>>
+{
+    Assert(codim==1, ExcNotImplemented());
+
+    const auto H = compute_second_fundamental_form();
+    const auto G_inv = compute_inv_first_fundamental_form();
+
+    const auto n_points = H.get_num_points();
+
+    ValueVector<vector<Real>> res(n_points);
+
+    for (int pt = 0; pt < n_points; ++pt)
+    {
+        const MetricTensor B = compose(H[pt], G_inv[pt]);
+        const auto A = unroll_to_matrix(B);
+        res[pt] = A.eigen_values();
+    }
+    return res;
+}
+
+
 
 
 
@@ -122,34 +139,22 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 
     const auto H = compute_second_fundamental_form();
     const auto &DF = this->template get_values<1, dim>(0);
+    const auto G_inv = compute_inv_first_fundamental_form();
 
     const auto n_points = H.get_num_points();
-    ValueVector< Derivative<1> > res(n_points);
+    ValueVector< Derivative<1> > Dn(n_points);
 
     for (int pt = 0; pt< n_points; ++pt)
-        res[pt] = compose(DF[pt], H[pt]);
-
-    return res;
+    {
+        auto L = compose(DF[pt], G_inv[pt]);
+        Dn[pt] = compose(L, H[pt]);
+    }
+    return Dn;
 }
 
 
 
-template<int dim_, int codim_>
-auto
-MappingElement<dim_, codim_>::
-get_principal_curvatures() const -> ValueVector<vector<Real>>
-{
-    Assert(codim==1, ExcNotImplemented());
 
-    const auto H = compute_second_fundamental_form();
-    const auto n_points = H.get_num_points();
-    ValueVector<vector<Real>> res(n_points);
-
-    for (int pt = 0; pt < n_points; ++pt)
-    {
-        const auto A = unroll_to_matrix(H[pt]);
-        res[pt] = A.eigen_values();
-    }
 
 //  const auto &D2_F  = this->template get_values<2, dim>(0);
 //  const auto normal = this->get_external_normals();
@@ -169,9 +174,6 @@ get_principal_curvatures() const -> ValueVector<vector<Real>>
 //
 //      res[pt] = C.eigen_values();
 //  }
-
-    return res;
-}
 
 
 

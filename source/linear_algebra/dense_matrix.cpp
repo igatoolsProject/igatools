@@ -89,15 +89,21 @@ vector<Real> DenseMatrix::eigen_values() const
     Teuchos::LAPACK<int, double> lapack;
     const int n = this->size1();
     BoostMatrix A(*this);
-    vector<Real> e_values(n);
+    vector<Real> e_values_re(n);
+    vector<Real> e_values_im(n);
+    double e_v[6];
     int info;
-    double ws[3*n-1];
-    lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
-                ws, 3*n-1, &info);
+    double ws[3*n];
+//    lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
+//                ws, 3*n-1, &info);
+    lapack.GEEV('N','N', n, &(A.data()[0]), n,
+                &(e_values_re[0]), &(e_values_im[0]),
+                e_v, n, e_v, n,
+                ws, 3*n, &info);
 
     Assert(info == 0, ExcMessage("e-values not found."));
 
-    return e_values;
+    return e_values_re;
 }
 
 
