@@ -578,103 +578,111 @@ evaluate_nurbs_hessians_from_bspline(
     const auto &dP  = bspline_elem.template get_values<1,dim>(0);
     const auto &d2P = bspline_elem.template get_values<2,dim>(0);
 
-    const auto &weight_elem = weight_elem_table[0];
-
-    const auto &Q   = weight_elem.template get_values<0,dim>(0);
-    const auto &dQ  = weight_elem.template get_values<1,dim>(0);
-    const auto &d2Q = weight_elem.template get_values<2,dim>(0);
-
-    Assert(P.get_num_points() == Q.get_num_points(),
-           ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
     const auto n_pts = P.get_num_points();
-    const auto n_funcs = P.get_num_functions();
 
-    vector<Real> invQ(n_pts);
-    vector<Real> invQ2(n_pts);
-    vector<array<Real,dim> > dQ_invQ2(n_pts);
-    vector<array<array<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
+    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
+    const auto comp_offset = space_->sp_space_->get_basis_offset();
 
-
-    for (int pt = 0 ; pt < n_pts ; ++pt)
+    int bsp_fn_id = 0;
+    for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        auto &invQ_pt  = invQ[pt];
-        auto &invQ2_pt = invQ2[pt];
+        const auto &weight_elem = weight_elem_table[comp];
 
-        const auto &dQ_pt = dQ[pt];
-        const auto &d2Q_pt = d2Q[pt];
+        const auto &Q   = weight_elem.template get_values<0,dim>(0);
+        const auto &dQ  = weight_elem.template get_values<1,dim>(0);
+        const auto &d2Q = weight_elem.template get_values<2,dim>(0);
 
-        auto &dQ_invQ2_pt = dQ_invQ2[pt];
-        auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
-
-        invQ_pt = 1.0 / Q[pt](0);
-        invQ2_pt = invQ_pt * invQ_pt;
-
-        const Real two_invQ_pt = 2.0 * invQ_pt;
-
-        int hessian_entry_fid = 0;
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            dQ_invQ2_pt[i] = invQ2_pt * dQ_pt(i)(0);
-
-            for (int j = 0 ; j < dim ; ++j, ++hessian_entry_fid)
-                Q_terms_2nd_order_pt[i][j] = dQ_invQ2_pt[i] * dQ_pt(j)(0) * two_invQ_pt
-                                             - d2Q_pt(hessian_entry_fid)(0) * invQ2_pt;
-        } // end loop i
-
-    } // end loop pt
+        Assert(n_pts == Q.get_num_points(),
+               ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
 
-    const auto local_to_patch = bspline_elem.get_local_to_patch();
-
-    for (int fn = 0 ; fn < n_funcs ; ++fn)
-    {
-        const auto &P_fn   =   P.get_function_view(fn);
-        const auto &dP_fn  =  dP.get_function_view(fn);
-        const auto &d2P_fn = d2P.get_function_view(fn);
-
-        auto d2R_fn = D2_phi.get_function_view(fn);
-
-        const Real w = space_->get_weight_coef_from_basis_id(local_to_patch[fn]);
-
+        vector<Real> invQ(n_pts);
+        vector<Real> invQ2(n_pts);
+        vector<array<Real,dim> > dQ_invQ2(n_pts);
+        vector<array<array<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
-            auto &d2R_fn_pt = d2R_fn[pt];
+            auto &invQ_pt  = invQ[pt];
+            auto &invQ2_pt = invQ2[pt];
 
-            const auto   &P_fn_pt =   P_fn[pt];
-            const auto  &dP_fn_pt =  dP_fn[pt];
-            const auto &d2P_fn_pt = d2P_fn[pt];
+            const auto &dQ_pt = dQ[pt];
+            const auto &d2Q_pt = d2Q[pt];
 
-            const Real invQ_pt = invQ[pt];
-            const auto &dQ_invQ2_pt = dQ_invQ2[pt];
-            const auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
+            auto &dQ_invQ2_pt = dQ_invQ2[pt];
+            auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
+
+            invQ_pt = 1.0 / Q[pt](0);
+            invQ2_pt = invQ_pt * invQ_pt;
+
+            const Real two_invQ_pt = 2.0 * invQ_pt;
 
             int hessian_entry_fid = 0;
             for (int i = 0 ; i < dim ; ++i)
             {
-
-                const auto &dP_fn_pt_i = dP_fn_pt(i);
-                const auto &dQ_invQ2_pt_i = dQ_invQ2_pt[i];
-                const auto &Q_terms_2nd_order_pt_i = Q_terms_2nd_order_pt[i];
+                dQ_invQ2_pt[i] = invQ2_pt * dQ_pt(i)(0);
 
                 for (int j = 0 ; j < dim ; ++j, ++hessian_entry_fid)
-                {
-                    const auto &dP_fn_pt_j = dP_fn_pt(j);
-                    const auto &dQ_invQ2_pt_j = dQ_invQ2_pt[j];
-                    const auto &Q_terms_2nd_order_pt_i_j = Q_terms_2nd_order_pt_i[j];
-
-                    auto &d2R_fn_pt_i_j = d2R_fn_pt(hessian_entry_fid);
-                    const auto &d2P_fn_pt_i_j = d2P_fn_pt(hessian_entry_fid);
-
-                    for (int comp = 0 ; comp < n_components ; ++comp)
-                        d2R_fn_pt_i_j(comp) =
-                            (d2P_fn_pt_i_j(comp) * invQ_pt
-                             - dP_fn_pt_i(comp) * dQ_invQ2_pt_j
-                             - dP_fn_pt_j(comp) * dQ_invQ2_pt_i
-                             +  P_fn_pt(comp) * Q_terms_2nd_order_pt_i_j) * w;
-                } // end loop j
+                    Q_terms_2nd_order_pt[i][j] = dQ_invQ2_pt[i] * dQ_pt(j)(0) * two_invQ_pt
+                                                 - d2Q_pt(hessian_entry_fid)(0) * invQ2_pt;
             } // end loop i
+
         } // end loop pt
-    } // end loop fn
+
+
+        const int n_funcs_comp = bspline_elem.get_num_basis(comp);
+
+        const auto &w_coefs = space_->weight_func_table_[comp]->get_coefficients();
+        Assert(space_->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(space_->get_num_basis(comp),w_coefs.size()));
+
+        const auto offset = comp_offset[comp];
+        for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
+        {
+            const auto &P_fn   =   P.get_function_view(bsp_fn_id);
+            const auto &dP_fn  =  dP.get_function_view(bsp_fn_id);
+            const auto &d2P_fn = d2P.get_function_view(bsp_fn_id);
+
+            auto d2R_fn = D2_phi.get_function_view(bsp_fn_id);
+
+            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
+
+            for (int pt = 0 ; pt < n_pts ; ++pt)
+            {
+                auto &d2R_fn_pt = d2R_fn[pt];
+
+                const auto   &P_fn_pt_comp = P_fn[pt](comp);
+                const auto  &dP_fn_pt =  dP_fn[pt];
+                const auto &d2P_fn_pt = d2P_fn[pt];
+
+                const Real invQ_pt = invQ[pt];
+                const auto &dQ_invQ2_pt = dQ_invQ2[pt];
+                const auto &Q_terms_2nd_order_pt = Q_terms_2nd_order[pt];
+
+                int hessian_entry_fid = 0;
+                for (int i = 0 ; i < dim ; ++i)
+                {
+                    const auto &dP_fn_pt_i_comp = dP_fn_pt(i)(comp);
+                    const auto &dQ_invQ2_pt_i = dQ_invQ2_pt[i];
+                    const auto &Q_terms_2nd_order_pt_i = Q_terms_2nd_order_pt[i];
+
+                    for (int j = 0 ; j < dim ; ++j, ++hessian_entry_fid)
+                    {
+                        const auto &dP_fn_pt_j_comp = dP_fn_pt(j)(comp);
+                        const auto &dQ_invQ2_pt_j = dQ_invQ2_pt[j];
+                        const auto &Q_terms_2nd_order_pt_i_j = Q_terms_2nd_order_pt_i[j];
+
+                        auto &d2R_fn_pt_i_j_comp = d2R_fn_pt(hessian_entry_fid)(comp);
+                        const auto &d2P_fn_pt_i_j_comp = d2P_fn_pt(hessian_entry_fid)(comp);
+
+                        d2R_fn_pt_i_j_comp = (d2P_fn_pt_i_j_comp * invQ_pt
+                                              - dP_fn_pt_i_comp  * dQ_invQ2_pt_j
+                                              - dP_fn_pt_j_comp * dQ_invQ2_pt_i
+                                              +  P_fn_pt_comp * Q_terms_2nd_order_pt_i_j) * w;
+                    } // end loop j
+                } // end loop i
+            } // end loop pt
+        } // end loop w_fn_id
+    } // end loop comp
 }
 
 #if 0
