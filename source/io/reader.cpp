@@ -701,7 +701,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
     //----------------------------------------
-    // building the weight function --- begin
+    // building the weight function table --- begin
     using ScalarBSplineSpace = NewBSplineSpace<dim>;
     using WeightFunc = IgFunction<ScalarBSplineSpace>;
 
@@ -718,15 +718,21 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
                                    new_grid,
                                    scalar_mult_table);
 
-    auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
-                                             scalar_spline_space,
-                                             vector<Real>(weights[0].get_data())));
+    using WeightFuncPtr = shared_ptr<WeightFunc>;
+    using WeightFuncPtrTable = typename space_t::template ComponentContainer<WeightFuncPtr>;
+    WeightFuncPtrTable w_func_table;
+    int comp = 0;
+    for (const auto &w_coefs : weights)
+        w_func_table[comp++] = WeightFuncPtr(
+                                   new WeightFunc(scalar_spline_space,vector<Real>(w_coefs.get_data())));
+
+
     //*/
-    // building the weight function --- end
+    // building the weight function table --- end
     //----------------------------------------
 
 
-    auto ref_space = space_t::create(spline_space,w_func);
+    auto ref_space = space_t::create(spline_space,w_func_table);
 
     return ref_space;
 }

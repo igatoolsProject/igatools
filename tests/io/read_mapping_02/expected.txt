@@ -71,7 +71,7 @@ IgFunction infos:
             [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
          
       
-      Weight function:
+      Weight function[0] :
          Reference space info:
             Spline Space:
                Knots without repetition:
@@ -278,7 +278,86 @@ IgFunction infos:
                [2,2]((1.00000,0.00000),(0.00000,1.00000))
             
          
-         Weight function:
+         Weight function[0] :
+            Reference space info:
+               Spline Space:
+                  Knots without repetition:
+                     Number of active elements: 2
+                     Number of intervals per direction: [ 2 1 ]
+                     Knot coordinates:
+                        Size: [ 3 2 ]  Weights: [3,6]
+                        Direction: 0
+                        [ 0 0.500000 1.00000 ]
+                        Direction: 1
+                        [ 0 1.00000 ]
+                     
+                  
+                  Degrees:
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ [2,1] ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
+                  Interior multiplicities:
+                     Size: [ 1 0 ]  Weights: [1,0]
+                     Direction: 0
+                     [ 1 ]
+                     Direction: 1
+                     [ ]
+                  
+                  Dimensionality Table:
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ [ 4 2 ] ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
+                  Component Dimension:
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ 8 ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
+                  Total Dimension: 8
+               
+               Patch Basis Indices:
+                  Size: [ 4 2 ]  Weights: [4,8]
+                  [ 0 1 2 3 4 5 6 7 ]
+                  Element views:
+                     [ 0 1 2 4 5 6 ]
+                     [ 1 2 3 5 6 7 ]
+                  
+               
+               Global Basis Indices:
+                  Size: [ 4 2 ]  Weights: [4,8]
+                  [ 0 1 2 3 4 5 6 7 ]
+                  Element views:
+                     [ 0 1 2 4 5 6 ]
+                     [ 1 2 3 5 6 7 ]
+                  
+               
+               Bernstein Extraction:
+                  Component[0]: 
+                  Direction[0]:
+                  [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+                  [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+                  Direction[1]:
+                  [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               
+            
+            
+            Control points info (euclidean coordinates):
+            [ 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
+         
+         Weight function[1] :
             Reference space info:
                Spline Space:
                   Knots without repetition:
@@ -560,7 +639,177 @@ IgFunction infos:
                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
                
             
-            Weight function:
+            Weight function[0] :
+               Reference space info:
+                  Spline Space:
+                     Knots without repetition:
+                        Number of active elements: 2
+                        Number of intervals per direction: [ 2 1 1 ]
+                        Knot coordinates:
+                           Size: [ 3 2 2 ]  Weights: [3,6,12]
+                           Direction: 0
+                           [ 0 0.500000 1.00000 ]
+                           Direction: 1
+                           [ 0 1.00000 ]
+                           Direction: 2
+                           [ 0 1.00000 ]
+                        
+                     
+                     Degrees:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ [2,1,1] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Interior multiplicities:
+                        Size: [ 1 0 0 ]  Weights: [1,0,0]
+                        Direction: 0
+                        [ 1 ]
+                        Direction: 1
+                        [ ]
+                        Direction: 2
+                        [ ]
+                     
+                     Dimensionality Table:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ [ 4 2 2 ] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Component Dimension:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ 16 ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Total Dimension: 16
+                  
+                  Patch Basis Indices:
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     Element views:
+                        [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+                        [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+                     
+                  
+                  Global Basis Indices:
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     Element views:
+                        [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+                        [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+                     
+                  
+                  Bernstein Extraction:
+                     Component[0]: 
+                     Direction[0]:
+                     [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+                     [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+                     Direction[1]:
+                     [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                     Direction[2]:
+                     [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                  
+               
+               
+               Control points info (euclidean coordinates):
+               [ 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
+            
+            Weight function[1] :
+               Reference space info:
+                  Spline Space:
+                     Knots without repetition:
+                        Number of active elements: 2
+                        Number of intervals per direction: [ 2 1 1 ]
+                        Knot coordinates:
+                           Size: [ 3 2 2 ]  Weights: [3,6,12]
+                           Direction: 0
+                           [ 0 0.500000 1.00000 ]
+                           Direction: 1
+                           [ 0 1.00000 ]
+                           Direction: 2
+                           [ 0 1.00000 ]
+                        
+                     
+                     Degrees:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ [2,1,1] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Interior multiplicities:
+                        Size: [ 1 0 0 ]  Weights: [1,0,0]
+                        Direction: 0
+                        [ 1 ]
+                        Direction: 1
+                        [ ]
+                        Direction: 2
+                        [ ]
+                     
+                     Dimensionality Table:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ [ 4 2 2 ] ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Component Dimension:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ 16 ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Total Dimension: 16
+                  
+                  Patch Basis Indices:
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     Element views:
+                        [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+                        [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+                     
+                  
+                  Global Basis Indices:
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     Element views:
+                        [ 0 1 2 4 5 6 8 9 10 12 13 14 ]
+                        [ 1 2 3 5 6 7 9 10 11 13 14 15 ]
+                     
+                  
+                  Bernstein Extraction:
+                     Component[0]: 
+                     Direction[0]:
+                     [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
+                     [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+                     Direction[1]:
+                     [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                     Direction[2]:
+                     [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                  
+               
+               
+               Control points info (euclidean coordinates):
+               [ 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 ]
+            
+            Weight function[2] :
                Reference space info:
                   Spline Space:
                      Knots without repetition:
