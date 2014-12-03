@@ -162,9 +162,6 @@ BSplineElementHandler(shared_ptr<const Space> space)
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
         comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
-
-
-
 }
 
 template<int dim_, int range_ , int rank_>

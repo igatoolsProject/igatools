@@ -27,8 +27,8 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include<igatools/geometry/new_mapping.h>
-#include<igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/new_push_forward.h>
 #include <igatools/basis_functions/new_physical_space.h>
 
 IGA_NAMESPACE_OPEN
@@ -284,6 +284,7 @@ public:
 
     template <int k>
     using SubSpace = NewPhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+
     /**
      * Construct a sub space of dimension k conforming to
      * the subspace sub element sub_elem_id and a map from the elements of

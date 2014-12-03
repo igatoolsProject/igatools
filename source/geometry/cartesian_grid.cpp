@@ -218,6 +218,14 @@ create(const std::array<vector<Real>,dim> &knot_coordinates) -> shared_ptr<self_
     return shared_ptr< self_t >(new self_t(knot_coordinates));
 }
 
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+create(const self_t &grid) -> std::shared_ptr<self_t>
+{
+    return shared_ptr<self_t>(new self_t(grid));
+}
+
 
 
 template<int dim_>
