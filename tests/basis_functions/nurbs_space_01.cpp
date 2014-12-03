@@ -27,6 +27,7 @@
 template< int dim, int range, int rank = 1>
 void do_test()
 {
+    OUTSTART
     using iga::vector;
     vector<Real> coord_x {0,1,2,3,4};
     vector<Real> coord_y {5,6,7,8};
@@ -82,6 +83,9 @@ void do_test()
 
     auto nurbs_space = Space::create(bsp, w_func);
     nurbs_space->print_info(out);
+
+    OUTEND
+
 }
 
 

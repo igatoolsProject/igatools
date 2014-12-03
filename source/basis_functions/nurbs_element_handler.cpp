@@ -99,7 +99,8 @@ reset(const NewValueFlags flag,
     else
         Assert(false,ExcMessage("Not a right value flag."));
 
-    space_->weight_func_->reset(weight_flag,quad1);
+    for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
+        space_->weight_func_table_[comp_id]->reset(weight_flag,quad1);
     //--------------------------------------------------
 
 
@@ -118,7 +119,8 @@ init_cache(ElementAccessor &elem)
     base_t::template init_cache<k>(elem.bspline_elem_);
 
     const auto topology = Int<k>();
-    space_->weight_func_->init_cache(elem.weight_elem_,topology);
+    for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
+        space_->weight_func_table_[comp_id]->init_cache(elem.weight_elem_table_[comp_id],topology);
 
 
 
@@ -312,7 +314,8 @@ fill_cache(ElementAccessor &elem, const int j)
     base_t::template fill_cache<k>(elem.bspline_elem_, j);
 
     const auto topology = Int<k>();
-    space_->weight_func_->fill_cache(elem.weight_elem_,j,topology);
+    for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
+        space_->weight_func_table_[comp_id]->fill_cache(elem.weight_elem_table_[comp_id],j,topology);
 
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
@@ -321,19 +324,19 @@ fill_cache(ElementAccessor &elem, const int j)
     if (flags.fill_values())
     {
         auto &values = cache.template get_der<0>();
-        evaluate_nurbs_values_from_bspline(elem.bspline_elem_,elem.weight_elem_,values);
+        evaluate_nurbs_values_from_bspline(elem.bspline_elem_,elem.weight_elem_table_,values);
         flags.set_values_filled(true);
     }
     if (flags.fill_gradients())
     {
         auto &gradients = cache.template get_der<1>();
-        evaluate_nurbs_gradients_from_bspline(elem.bspline_elem_,elem.weight_elem_,gradients);
+        evaluate_nurbs_gradients_from_bspline(elem.bspline_elem_,elem.weight_elem_table_,gradients);
         flags.set_gradients_filled(true);
     }
     if (flags.fill_hessians())
     {
         auto &hessians = cache.template get_der<2>();
-        evaluate_nurbs_hessians_from_bspline(elem.bspline_elem_,elem.weight_elem_,hessians);
+        evaluate_nurbs_hessians_from_bspline(elem.bspline_elem_,elem.weight_elem_table_,hessians);
         flags.set_hessians_filled(true);
     }
 
@@ -378,7 +381,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 evaluate_nurbs_values_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
-    const typename Space::WeightFunction::ElementAccessor &weight_elem,
+    const WeightElemTable &weight_elem_table,
     ValueTable<Value> &phi) const
 {
     /*
@@ -398,14 +401,10 @@ evaluate_nurbs_values_from_bspline(
     Assert(!phi.empty(), ExcEmptyObject());
 
     const auto &P = bspline_elem.template get_values<0,dim>(0);
-    const auto &Q = weight_elem.template get_values<0,dim>(0);
 
-    /*
-        LogStream out;
-        out.begin_item("Denominator values");
-        Q.print_info(out);
-        out.end_item();
-    //*/
+    const auto &weight_elem = weight_elem_table[0];
+
+    const auto &Q = weight_elem.template get_values<0,dim>(0);
 
     Assert(P.get_num_points() == Q.get_num_points(),
            ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
@@ -437,7 +436,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 evaluate_nurbs_gradients_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
-    const typename Space::WeightFunction::ElementAccessor &weight_elem,
+    const WeightElemTable &weight_elem_table,
     ValueTable<Derivative<1>> &D1_phi) const
 {
     /*
@@ -464,6 +463,8 @@ evaluate_nurbs_gradients_from_bspline(
 
     const auto &P  = bspline_elem.template get_values<0,dim>(0);
     const auto &dP = bspline_elem.template get_values<1,dim>(0);
+
+    const auto &weight_elem = weight_elem_table[0];
 
     const auto &Q  = weight_elem.template get_values<0,dim>(0);
     const auto &dQ = weight_elem.template get_values<1,dim>(0);
@@ -526,7 +527,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 evaluate_nurbs_hessians_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
-    const typename Space::WeightFunction::ElementAccessor &weight_elem,
+    const WeightElemTable &weight_elem_table,
     ValueTable<Derivative<2>> &D2_phi) const
 {
     /*
@@ -559,6 +560,8 @@ evaluate_nurbs_hessians_from_bspline(
     const auto &P   = bspline_elem.template get_values<0,dim>(0);
     const auto &dP  = bspline_elem.template get_values<1,dim>(0);
     const auto &d2P = bspline_elem.template get_values<2,dim>(0);
+
+    const auto &weight_elem = weight_elem_table[0];
 
     const auto &Q   = weight_elem.template get_values<0,dim>(0);
     const auto &dQ  = weight_elem.template get_values<1,dim>(0);

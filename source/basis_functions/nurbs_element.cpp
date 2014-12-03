@@ -34,8 +34,11 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     :
     parent_t(space,index),
     bspline_elem_(space->get_spline_space(),index),
-    weight_elem_(space->weight_func_->get_grid(),index)
-{}
+    weight_elem_table_(space->weight_func_table_.get_comp_map())
+{
+    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+        weight_elem_table_[comp_id] = WeightElem(space->weight_func_table_[comp_id]->get_grid(),index);
+}
 
 
 
@@ -46,8 +49,11 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     :
     parent_t(space,index),
     bspline_elem_(space->get_spline_space(),index),
-    weight_elem_(space->weight_func_->get_grid(),index)
-{}
+    weight_elem_table_(space->weight_func_table_.get_comp_map())
+{
+    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+        weight_elem_table_[comp_id] = WeightElem(space->weight_func_table_[comp_id]->get_grid(),index);
+}
 
 
 template <int dim, int range, int rank>
@@ -56,8 +62,11 @@ NURBSElement<dim, range, rank>::
 operator++()
 {
     parent_t::operator++();
+
     ++bspline_elem_;
-    ++weight_elem_;
+
+    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+        ++(weight_elem_table_[comp_id]);
 }
 
 template <int dim, int range, int rank>
@@ -67,9 +76,12 @@ jump(const TensorIndex<dim> &increment)
 {
     const bool    grid_elem_active =     parent_t::jump(increment);
     const bool bspline_elem_active = bspline_elem_.jump(increment);
-    const bool  weight_elem_active =  weight_elem_.jump(increment);
 
-    return grid_elem_active && bspline_elem_active && weight_elem_active;
+    bool  weight_elems_active = true;
+    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+        weight_elems_active = weight_elems_active && weight_elem_table_[comp_id].jump(increment);
+
+    return grid_elem_active && bspline_elem_active && weight_elems_active;
 }
 
 template <int dim, int range, int rank>
@@ -79,7 +91,9 @@ move_to(const Index flat_index)
 {
     parent_t::move_to(flat_index);
     bspline_elem_.move_to(flat_index);
-    weight_elem_.move_to(flat_index);
+
+    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+        weight_elem_table_[comp_id].move_to(flat_index);
 }
 
 
@@ -90,7 +104,9 @@ move_to(const TensorIndex<dim> &tensor_index)
 {
     parent_t::move_to(tensor_index);
     bspline_elem_.move_to(tensor_index);
-    weight_elem_.move_to(tensor_index);
+
+    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+        weight_elem_table_[comp_id].move_to(tensor_index);
 }
 
 IGA_NAMESPACE_CLOSE

@@ -119,6 +119,8 @@ private:
     std::array<FunctionFlags, dim + 1> flags_;
 
 
+    using WeightElem = typename Space::WeightFunction::ElementAccessor;
+    using WeightElemTable = typename Space::template ComponentContainer<WeightElem>;
 
     /**
      * Computes the value of the non-zero NURBS basis
@@ -130,7 +132,7 @@ private:
      */
     void evaluate_nurbs_values_from_bspline(
         const typename Space::SpSpace::ElementAccessor &bspline_elem,
-        const typename Space::WeightFunction::ElementAccessor &weight_elem,
+        const WeightElemTable &weight_elem_table,
         ValueTable<Value> &phi) const;
 
     /**
@@ -143,7 +145,7 @@ private:
      */
     void evaluate_nurbs_gradients_from_bspline(
         const typename Space::SpSpace::ElementAccessor &bspline_elem,
-        const typename Space::WeightFunction::ElementAccessor &weight_elem,
+        const WeightElemTable &weight_elem_table,
         ValueTable<Derivative<1>> &D1_phi) const;
 
     /**
@@ -156,7 +158,7 @@ private:
      */
     void evaluate_nurbs_hessians_from_bspline(
         const typename Space::SpSpace::ElementAccessor &bspline_elem,
-        const typename Space::WeightFunction::ElementAccessor &weight_elem,
+        const WeightElemTable &weight_elem_table,
         ValueTable<Derivative<2>> &D2_phi) const;
 
 };

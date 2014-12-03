@@ -157,7 +157,8 @@ private:
     typename SpSpace::ElementAccessor bspline_elem_;
 
     using WeightFunction = typename Space::WeightFunction;
-    typename WeightFunction::ElementAccessor weight_elem_;
+    using WeightElem = typename WeightFunction::ElementAccessor;
+    typename Space::template ComponentContainer<WeightElem> weight_elem_table_;
 
     friend class NURBSElementHandler<dim, range, rank>;
 
