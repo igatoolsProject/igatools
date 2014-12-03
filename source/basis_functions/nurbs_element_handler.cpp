@@ -406,10 +406,9 @@ evaluate_nurbs_values_from_bspline(
     const auto n_pts = P.get_num_points();
 
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
-
     const auto comp_offset = space_->sp_space_->get_basis_offset();
 
-    int fn_id = 0;
+    int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
         const auto &weight_elem = weight_elem_table[comp];
@@ -426,20 +425,22 @@ evaluate_nurbs_values_from_bspline(
         const int n_funcs_comp = bspline_elem.get_num_basis(comp);
 
         const auto &w_coefs = space_->weight_func_table_[comp]->get_coefficients();
+        Assert(space_->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(space_->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
-        for (int scalar_fn_id = 0 ; scalar_fn_id < n_funcs_comp ; ++scalar_fn_id, ++fn_id)
+        for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
         {
-            const auto &P_fn = P.get_function_view(fn_id);
+            const auto &P_fn = P.get_function_view(bsp_fn_id);
 
-            auto R_fn = phi.get_function_view(fn_id);
+            auto R_fn = phi.get_function_view(bsp_fn_id);
 
-            const Real w = w_coefs[bsp_local_to_patch[fn_id]-offset];
+            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
                 R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
-        }
-    }
+        } // end loop w_fn_id
+    } // end loop comp
 }
 
 template<int dim_, int range_ , int rank_>
@@ -475,62 +476,67 @@ evaluate_nurbs_gradients_from_bspline(
     const auto &P  = bspline_elem.template get_values<0,dim>(0);
     const auto &dP = bspline_elem.template get_values<1,dim>(0);
 
-    const auto &weight_elem = weight_elem_table[0];
-
-    const auto &Q  = weight_elem.template get_values<0,dim>(0);
-    const auto &dQ = weight_elem.template get_values<1,dim>(0);
-
-    Assert(P.get_num_points() == Q.get_num_points(),
-           ExcDimensionMismatch(P.get_num_points(),Q.get_num_points()));
     const auto n_pts = P.get_num_points();
-    const auto n_funcs = P.get_num_functions();
 
-    vector<Real> invQ(n_pts);
-    vector<array<Real,dim>> dQ_invQ2(n_pts);
-    for (int pt = 0 ; pt < n_pts ; ++pt)
+    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
+    const auto comp_offset = space_->sp_space_->get_basis_offset();
+
+    int bsp_fn_id = 0;
+    for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        invQ[pt] = 1.0 / Q[pt](0);
+        const auto &weight_elem = weight_elem_table[comp];
 
-        const auto &dQ_pt = dQ[pt];
-        auto &dQ_invQ2_pt = dQ_invQ2[pt];
+        const auto &Q  = weight_elem.template get_values<0,dim>(0);
+        const auto &dQ = weight_elem.template get_values<1,dim>(0);
 
-        for (int i = 0 ; i < dim ; ++i)
-            dQ_invQ2_pt[i] = invQ[pt] * invQ[pt] * dQ_pt(i)(0);
-    }
+        Assert(n_pts == Q.get_num_points(),
+               ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
 
-    const auto local_to_patch = bspline_elem.get_local_to_patch();
-
-    for (int fn = 0 ; fn < n_funcs ; ++fn)
-    {
-        const auto &P_fn =  P.get_function_view(fn);
-        const auto &dP_fn = dP.get_function_view(fn);
-
-        auto dR_fn = D1_phi.get_function_view(fn);
-
-        const Real w = space_->get_weight_coef_from_basis_id(local_to_patch[fn]);
-
+        vector<Real> invQ(n_pts);
+        vector<array<Real,dim>> dQ_invQ2(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
-            auto &dR_fn_pt = dR_fn[pt];
+            invQ[pt] = 1.0 / Q[pt](0);
 
-            const auto   &P_fn_pt =  P_fn[pt];
-            const auto &dP_fn_pt = dP_fn[pt];
-
-            const Real invQ_pt = invQ[pt];
-            const auto &dQ_invQ2_pt = dQ_invQ2[pt];
+            const auto &dQ_pt = dQ[pt];
+            auto &dQ_invQ2_pt = dQ_invQ2[pt];
 
             for (int i = 0 ; i < dim ; ++i)
-            {
-                const auto &dP_fn_pt_i = dP_fn_pt(i);
-                const auto &dQ_invQ2_pt_i = dQ_invQ2_pt[i];
+                dQ_invQ2_pt[i] = invQ[pt] * invQ[pt] * dQ_pt(i)(0);
+        }
 
-                auto &dR_fn_pt_i = dR_fn_pt(i);
-                for (int comp = 0 ; comp < n_components ; ++comp)
-                    dR_fn_pt_i(comp) = (dP_fn_pt_i(comp) * invQ_pt - P_fn_pt(comp) * dQ_invQ2_pt_i) * w;
-            } // end loop i
-        } // end loop pt
-    } // end loop fn
+        const int n_funcs_comp = bspline_elem.get_num_basis(comp);
+
+        const auto &w_coefs = space_->weight_func_table_[comp]->get_coefficients();
+        Assert(space_->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(space_->get_num_basis(comp),w_coefs.size()));
+
+        const auto offset = comp_offset[comp];
+        for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
+        {
+            const auto &P_fn  =  P.get_function_view(bsp_fn_id);
+            const auto &dP_fn = dP.get_function_view(bsp_fn_id);
+
+            auto dR_fn = D1_phi.get_function_view(bsp_fn_id);
+
+            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
+
+            for (int pt = 0 ; pt < n_pts ; ++pt)
+            {
+                auto &dR_fn_pt = dR_fn[pt];
+
+                const auto   &P_fn_pt =  P_fn[pt];
+                const auto &dP_fn_pt = dP_fn[pt];
+
+                const Real invQ_pt = invQ[pt];
+                const auto &dQ_invQ2_pt = dQ_invQ2[pt];
+
+                for (int i = 0 ; i < dim ; ++i)
+                    dR_fn_pt(i)(comp) = (dP_fn_pt(i)(comp)*invQ_pt - P_fn_pt(comp)*dQ_invQ2_pt[i]) * w;
+            } // end loop pt
+        } // end loop w_fn_id
+    } // end loop comp
 }
 
 template<int dim_, int range_ , int rank_>
