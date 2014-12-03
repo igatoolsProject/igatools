@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
 
     out << "A matrix" << endl;
-    A.print(out);
+    A.print_info(out);
     out << endl;
 
 

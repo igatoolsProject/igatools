@@ -90,7 +90,7 @@ int main()
 
     matrix.fill_complete();
 
-    matrix.print(out);
+    matrix.print_info(out);
     out << std::endl;
 
     VectorType b(bspline_space->get_num_basis());
