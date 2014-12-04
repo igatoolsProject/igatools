@@ -40,11 +40,11 @@ void mapping_values()
 {
     using Function = functions::CylindricalAnnulus<dim>;
 
-    auto flag = NewValueFlags::point | NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::hessian |
-                NewValueFlags::measure|
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::value |
+                ValueFlags::gradient |
+                ValueFlags::hessian |
+                ValueFlags::measure|
+                ValueFlags::w_measure;
 
     auto quad = QGauss<dim>(1);
     auto grid = CartesianGrid<dim>::create();

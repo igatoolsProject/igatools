@@ -46,8 +46,8 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
 
     QGauss<k> quad(n_qp);
-    auto flag = NewValueFlags::value|NewValueFlags::gradient
-                |NewValueFlags::hessian;
+    auto flag = ValueFlags::value|ValueFlags::gradient
+                |ValueFlags::hessian;
     ElementHandler cache(space);
     cache.template reset<k>(flag, quad);
 

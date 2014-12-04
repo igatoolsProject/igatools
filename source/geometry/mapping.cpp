@@ -66,7 +66,7 @@ template<int dim, int codim>
 template <int k>
 auto
 Mapping<dim, codim>::
-reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
+reset(const ValueFlags flag, const Quadrature<k> &quad) -> void
 {
     F_->reset(MappingFlags::to_function_flags(flag), quad);
     flags_[k] = flag;

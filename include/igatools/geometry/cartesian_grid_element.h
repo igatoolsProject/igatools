@@ -394,7 +394,7 @@ protected:
     /**
      * ExceptionUnsupported Value Flag.
      */
-    DeclException2(ExcFillFlagNotSupported, NewValueFlags, NewValueFlags,
+    DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
                    << "The passed ValueFlag " << arg2
                    << " contains a non admissible flag " << (arg1 ^arg2));
 

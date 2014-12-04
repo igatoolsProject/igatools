@@ -56,7 +56,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     ElementHandler elem_handler(phys_space);
 
     auto quad = QGauss<dim>(deg+1);
-    auto flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::w_measure;
+    auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
     elem_handler.reset(flag,quad);
 
     const int n_qpoints =  quad.get_num_points();

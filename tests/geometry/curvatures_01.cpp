@@ -44,8 +44,8 @@ void principal_curvatures()
 
     using Function = functions::SphereFunction<dim>;
 
-    auto flag = NewValueFlags::point |  NewValueFlags::value |
-                NewValueFlags::curvature;
+    auto flag = ValueFlags::point |  ValueFlags::value |
+                ValueFlags::curvature;
 
     auto quad = QUniform<dim>(3);
 

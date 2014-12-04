@@ -54,8 +54,8 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::hessian |NewValueFlags::measure|NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
     auto quad = QGauss<dim>(2);
 
     Mapping map(F);

@@ -32,7 +32,7 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 template <int dim, int range=1, int rank=1>
-void uniform_space_cache(const NewValueFlags flag,
+void uniform_space_cache(const ValueFlags flag,
                          const int n_knots = 5, const int deg=1)
 {
     OUTSTART
@@ -56,9 +56,9 @@ int main()
 {
     out.depth_console(10);
 
-    uniform_space_cache<1>(NewValueFlags::value);
-    uniform_space_cache<2>(NewValueFlags::value);
+    uniform_space_cache<1>(ValueFlags::value);
+    uniform_space_cache<2>(ValueFlags::value);
 
-    uniform_space_cache<1>(NewValueFlags::gradient);
+    uniform_space_cache<1>(ValueFlags::gradient);
     return  0;
 }

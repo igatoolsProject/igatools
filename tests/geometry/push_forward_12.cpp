@@ -65,7 +65,7 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
 
     auto space  = Space::create(1, grid);
-    auto sp_flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::hessian;
+    auto sp_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
     typename Space::ElementHandler sp_values(space);
     sp_values.template reset<dim>(sp_flag, quad);
     auto sp_elem = space->begin();
@@ -74,10 +74,10 @@ void test()
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     PForward pf(F);
 
-    auto flag = NewValueFlags::point |
-                NewValueFlags::tran_value |
-                NewValueFlags::tran_gradient|
-                NewValueFlags::tran_hessian;
+    auto flag = ValueFlags::point |
+                ValueFlags::tran_value |
+                ValueFlags::tran_gradient|
+                ValueFlags::tran_hessian;
 
     pf.template reset<dim>(flag, quad);
 

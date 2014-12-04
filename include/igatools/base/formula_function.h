@@ -60,10 +60,10 @@ public:
         map_elem_(func.mapping_->begin())
     {}
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         parent_t::reset(flag, quad);
-        mapping_->reset(NewValueFlags::value|NewValueFlags::point, quad);
+        mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
     }
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override

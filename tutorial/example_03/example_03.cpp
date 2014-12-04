@@ -43,7 +43,7 @@ void loop_on_grid_with_cache()
     auto elem_handler = grid->get_element_handler();
 
     auto quad = QGauss<dim>(2);
-    auto flag = NewValueFlags::w_measure;
+    auto flag = ValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, quad);
 
@@ -85,7 +85,7 @@ void loop_on_space_with_cache()
 
     auto elem_handler = space->get_element_handler();
     auto quad = QGauss<dim>(1);
-    auto flag = NewValueFlags::value;
+    auto flag = ValueFlags::value;
 
     elem_handler.template reset<dim>(flag, quad);
 

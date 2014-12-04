@@ -71,8 +71,8 @@ void  PoissonPreparation<dim>::local_assemble()
     // [iterate as before]
     auto elem_handler = space->get_element_handler();
     auto quad = QGauss<dim>(2);
-    auto flag = NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, quad);
 

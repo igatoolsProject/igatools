@@ -59,12 +59,12 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
-    auto func_flag = NewValueFlags::point | NewValueFlags::value;
+    auto func_flag = ValueFlags::point | ValueFlags::value;
     func->reset(func_flag, quad);
 
     typename Space::ElementHandler sp_filler(space);
-    auto sp_flag = NewValueFlags::point | NewValueFlags::value |
-                   NewValueFlags::w_measure;
+    auto sp_flag = ValueFlags::point | ValueFlags::value |
+                   ValueFlags::w_measure;
     sp_filler.template reset<dim>(sp_flag, quad);
 
     auto f_elem = func->begin();
@@ -226,13 +226,13 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
         is_H1_seminorm = true;
     }
 
-    auto flag = NewValueFlags::point | NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::w_measure;
 
     if (is_L2_norm)
-        flag |= NewValueFlags::value;
+        flag |= ValueFlags::value;
 
     if (is_H1_seminorm)
-        flag |= NewValueFlags::gradient;
+        flag |= ValueFlags::gradient;
 
     f.reset(flag, quad);
     g.reset(flag, quad);

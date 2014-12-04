@@ -60,8 +60,8 @@ void boundary_normals()
     auto grid = CartesianGrid<dim>::create();
     auto map_func =  create_mapping1<dim>(grid);
 
-    auto flag = NewValueFlags::w_measure|NewValueFlags::point|
-                NewValueFlags::boundary_normal;
+    auto flag = ValueFlags::w_measure|ValueFlags::point|
+                ValueFlags::boundary_normal;
     auto quad = QGauss<sub_dim>(1);
 
     Mapping map(map_func);

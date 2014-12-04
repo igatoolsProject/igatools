@@ -362,7 +362,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
 
     //--------------------------------------------------------------------------
     // get the fields to write and assign them to the vtkUnstructuredGrid object
-    func->reset(NewValueFlags::value, *quad_plot_);
+    func->reset(ValueFlags::value, *quad_plot_);
 
     auto f_elem = func->begin();
     auto f_end  = func->end();

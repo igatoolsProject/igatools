@@ -47,7 +47,7 @@ void test_evaluate()
                               1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
     Mapping map(F);
 
-    auto flag = NewValueFlags::point | NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::w_measure;
     auto quad = QGauss<sub_dim>(3);
 
     map.reset(flag, quad);

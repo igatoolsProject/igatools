@@ -72,7 +72,7 @@ public:
     }
 
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override;
+    void reset(const ValueFlags &flag, const variant_1 &quad) override;
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override;
 
@@ -105,7 +105,7 @@ private:
             space_handler_->template reset<T::dim>(flag, quad);
         }
 
-        NewValueFlags flag;
+        ValueFlags flag;
         typename Space::ElementHandler *space_handler_;
         std::array<FunctionFlags, dim + 1> *flags_;
     };

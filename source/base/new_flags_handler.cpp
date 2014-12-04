@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 
 //====================================================
 GridFlags::
-GridFlags(const NewValueFlags &flags)
+GridFlags(const ValueFlags &flags)
 {
     /*
      * meas -> lengths
@@ -34,17 +34,17 @@ GridFlags(const NewValueFlags &flags)
      * general_points -> meas
      * w_meas -> meas
      */
-    if (contains(flags, NewValueFlags::point))
+    if (contains(flags, ValueFlags::point))
     {
         fill_points_  = true;
         fill_lengths_ = true;
     }
-    if (contains(flags, NewValueFlags::measure))
+    if (contains(flags, ValueFlags::measure))
     {
         fill_measures_ = true;
         fill_lengths_  = true;
     }
-    if (contains(flags, NewValueFlags::w_measure))
+    if (contains(flags, ValueFlags::w_measure))
     {
         fill_measures_ = true;
         fill_w_measures_ = true;
@@ -195,7 +195,7 @@ print_info(LogStream &out) const
 /**
  * Exception used when a ValueFlag is not admissibile for the caller object.
  */
-DeclException2(ExcFillFlagNotSupported, NewValueFlags, NewValueFlags,
+DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
                << "The passed ValueFlag " << arg2
                << " contains a non admissible flag " << (arg1 ^arg2));
 
@@ -203,32 +203,32 @@ DeclException2(ExcFillFlagNotSupported, NewValueFlags, NewValueFlags,
 
 
 FunctionFlags::
-FunctionFlags(const NewValueFlags &flags)
+FunctionFlags(const ValueFlags &flags)
 {
-    if (contains(flags, NewValueFlags::point))
+    if (contains(flags, ValueFlags::point))
         fill_points_ = true;
 
-    if (contains(flags, NewValueFlags::value))
+    if (contains(flags, ValueFlags::value))
         fill_values_ = true;
 
-    if (contains(flags, NewValueFlags::gradient))
+    if (contains(flags, ValueFlags::gradient))
         fill_gradients_ = true;
 
-    if (contains(flags, NewValueFlags::hessian))
+    if (contains(flags, ValueFlags::hessian))
         fill_hessians_ = true;
 }
 
 
-NewValueFlags
-FunctionFlags::to_grid_flags(const NewValueFlags &flags)
+ValueFlags
+FunctionFlags::to_grid_flags(const ValueFlags &flags)
 {
-    NewValueFlags transfer_flag = NewValueFlags::measure |
-                                  NewValueFlags::w_measure |
-                                  NewValueFlags::boundary_normal;
-    NewValueFlags g_flag = flags & transfer_flag;
-    if (contains(flags, NewValueFlags::point) || contains(flags, NewValueFlags::value))
+    ValueFlags transfer_flag = ValueFlags::measure |
+                               ValueFlags::w_measure |
+                               ValueFlags::boundary_normal;
+    ValueFlags g_flag = flags & transfer_flag;
+    if (contains(flags, ValueFlags::point) || contains(flags, ValueFlags::value))
     {
-        g_flag |= NewValueFlags::point;
+        g_flag |= ValueFlags::point;
     }
     return g_flag;
 }
@@ -377,22 +377,22 @@ fill_none() const
 
 
 MappingFlags::
-MappingFlags(const NewValueFlags &flags)
+MappingFlags(const ValueFlags &flags)
     :
     FunctionFlags::FunctionFlags(to_function_flags(flags))
 {
-    if (contains(flags, NewValueFlags::inv_gradient)    ||
-        contains(flags, NewValueFlags::boundary_normal) ||
-        contains(flags, NewValueFlags::curvature))
+    if (contains(flags, ValueFlags::inv_gradient)    ||
+        contains(flags, ValueFlags::boundary_normal) ||
+        contains(flags, ValueFlags::curvature))
         fill_inv_gradients_ = true;
 
-    if (contains(flags, NewValueFlags::inv_hessian))
+    if (contains(flags, ValueFlags::inv_hessian))
         fill_inv_hessians_ = true;
 
-    if (contains(flags, NewValueFlags::measure))
+    if (contains(flags, ValueFlags::measure))
         fill_measures_ = true;
 
-    if (contains(flags, NewValueFlags::w_measure))
+    if (contains(flags, ValueFlags::w_measure))
     {
         fill_measures_ = true;
         fill_w_measures_ = true;
@@ -401,26 +401,26 @@ MappingFlags(const NewValueFlags &flags)
 
 
 
-NewValueFlags
-MappingFlags::to_function_flags(const NewValueFlags &flags)
+ValueFlags
+MappingFlags::to_function_flags(const ValueFlags &flags)
 {
-    NewValueFlags transfer_flag = NewValueFlags::measure |
-                                  NewValueFlags::w_measure |
-                                  NewValueFlags::boundary_normal |
-                                  FunctionFlags::valid_flags;
+    ValueFlags transfer_flag = ValueFlags::measure |
+                               ValueFlags::w_measure |
+                               ValueFlags::boundary_normal |
+                               FunctionFlags::valid_flags;
 
 
-    NewValueFlags f_flag = flags & transfer_flag;
+    ValueFlags f_flag = flags & transfer_flag;
 
-    if (contains(flags, NewValueFlags::measure) ||
-        contains(flags, NewValueFlags::w_measure) ||
-        contains(flags, NewValueFlags::inv_gradient) ||
-        contains(flags, NewValueFlags::outer_normal))
-        f_flag |=  NewValueFlags::gradient;
+    if (contains(flags, ValueFlags::measure) ||
+        contains(flags, ValueFlags::w_measure) ||
+        contains(flags, ValueFlags::inv_gradient) ||
+        contains(flags, ValueFlags::outer_normal))
+        f_flag |=  ValueFlags::gradient;
 
-    if (contains(flags, NewValueFlags::inv_hessian) ||
-        contains(flags, NewValueFlags::curvature))
-        f_flag |=  NewValueFlags::gradient | NewValueFlags::hessian;
+    if (contains(flags, ValueFlags::inv_hessian) ||
+        contains(flags, ValueFlags::curvature))
+        f_flag |=  ValueFlags::gradient | ValueFlags::hessian;
 
     return f_flag;
 }
@@ -563,52 +563,52 @@ fill_none() const
 }
 
 MappingFaceValueFlagsHandler::
-MappingFaceValueFlagsHandler(const NewValueFlags &flags)
+MappingFaceValueFlagsHandler(const ValueFlags &flags)
 {
-    if (contains(flags, NewValueFlags::face_point) ||
-        contains(flags, NewValueFlags::map_face_value))
+    if (contains(flags, ValueFlags::face_point) ||
+        contains(flags, ValueFlags::map_face_value))
     {
         GridFlags::fill_points_ = true;
         fill_values_ = true;
     }
 
-    if (contains(flags, NewValueFlags::map_face_gradient))
+    if (contains(flags, ValueFlags::map_face_gradient))
     {
         fill_gradients_ = true;
     }
 
-    if (contains(flags, NewValueFlags::map_face_hessian))
+    if (contains(flags, ValueFlags::map_face_hessian))
     {
         fill_hessians_ = true;
     }
 
-    if (contains(flags, NewValueFlags::map_face_inv_gradient))
+    if (contains(flags, ValueFlags::map_face_inv_gradient))
     {
         fill_gradients_ = true;
         fill_measures_ = true;
         fill_inv_gradients_ = true;
     }
 
-    if (contains(flags, NewValueFlags::map_face_inv_hessian))
+    if (contains(flags, ValueFlags::map_face_inv_hessian))
     {
         fill_hessians_ = true;
         fill_inv_hessians_ = true;
     }
 
-    if (contains(flags, NewValueFlags::face_measure))
+    if (contains(flags, ValueFlags::face_measure))
     {
         fill_gradients_ = true;
         fill_measures_ = true;
     }
 
-    if (contains(flags, NewValueFlags::face_w_measure))
+    if (contains(flags, ValueFlags::face_w_measure))
     {
         fill_gradients_ = true;
         fill_measures_ = true;
         fill_w_measures_ = true;
     }
 
-    if (contains(flags, NewValueFlags::face_normal))
+    if (contains(flags, ValueFlags::face_normal))
     {
         fill_normals_ = true;
     }
@@ -664,24 +664,24 @@ fill_none() const
 
 
 BasisElemValueFlagsHandler::
-BasisElemValueFlagsHandler(const NewValueFlags &flags)
+BasisElemValueFlagsHandler(const ValueFlags &flags)
 {
-    if (contains(flags, NewValueFlags::value))
+    if (contains(flags, ValueFlags::value))
     {
         fill_values_ = true;
     }
 
-    if (contains(flags, NewValueFlags::gradient))
+    if (contains(flags, ValueFlags::gradient))
     {
         fill_gradients_ = true;
     }
 
-    if (contains(flags, NewValueFlags::hessian))
+    if (contains(flags, ValueFlags::hessian))
     {
         fill_hessians_ = true;
     }
 
-    if (contains(flags, NewValueFlags::divergence))
+    if (contains(flags, ValueFlags::divergence))
     {
         fill_gradients_ = true;
         fill_divergences_ = true;
@@ -727,24 +727,24 @@ print_info(LogStream &out) const
 
 //====================================================
 BasisFaceValueFlagsHandler::
-BasisFaceValueFlagsHandler(const NewValueFlags &flags)
+BasisFaceValueFlagsHandler(const ValueFlags &flags)
 {
-    if (contains(flags, NewValueFlags::face_value))
+    if (contains(flags, ValueFlags::face_value))
     {
         fill_values_ = true;
     }
 
-    if (contains(flags, NewValueFlags::face_gradient))
+    if (contains(flags, ValueFlags::face_gradient))
     {
         fill_gradients_ = true;
     }
 
-    if (contains(flags, NewValueFlags::face_hessian))
+    if (contains(flags, ValueFlags::face_hessian))
     {
         fill_hessians_ = true;
     }
 
-    if (contains(flags, NewValueFlags::face_divergence))
+    if (contains(flags, ValueFlags::face_divergence))
     {
         fill_gradients_ = true;
         fill_divergences_ = true;

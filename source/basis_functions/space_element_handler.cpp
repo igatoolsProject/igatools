@@ -27,20 +27,20 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 auto
-space_to_ref_flag(const Transformation type, const NewValueFlags flags)
--> NewValueFlags
+space_to_ref_flag(const Transformation type, const ValueFlags flags)
+-> ValueFlags
 {
-    NewValueFlags ref_flag = NewValueFlags::none;
+    ValueFlags ref_flag = ValueFlags::none;
 
     bool fill_values = false;
     bool fill_gradients = false;
     bool fill_hessians = false;
 
-    if (contains(flags , NewValueFlags::value))
+    if (contains(flags , ValueFlags::value))
         fill_values = true;
-    if (contains(flags , NewValueFlags::gradient))
+    if (contains(flags , ValueFlags::gradient))
         fill_gradients = true;
-    if (contains(flags , NewValueFlags::hessian))
+    if (contains(flags , ValueFlags::hessian))
         fill_hessians = true;
 
     bool fill_D0_phi_hat = false;
@@ -63,36 +63,36 @@ space_to_ref_flag(const Transformation type, const NewValueFlags flags)
     }
 
     if (fill_D0_phi_hat)
-        ref_flag |= NewValueFlags::value;
+        ref_flag |= ValueFlags::value;
     if (fill_D1_phi_hat)
-        ref_flag |= NewValueFlags::gradient;
+        ref_flag |= ValueFlags::gradient;
     if (fill_D2_phi_hat)
-        ref_flag |= NewValueFlags::hessian;
+        ref_flag |= ValueFlags::hessian;
 
     return ref_flag;
 }
 
 
 auto
-space_to_pf_flag(const NewValueFlags flags)
+space_to_pf_flag(const ValueFlags flags)
 {
-    NewValueFlags transfer_flag =
-        NewValueFlags::measure |
-        NewValueFlags::w_measure |
-        NewValueFlags::outer_normal |
-        NewValueFlags::boundary_normal |
-        NewValueFlags::point;
+    ValueFlags transfer_flag =
+        ValueFlags::measure |
+        ValueFlags::w_measure |
+        ValueFlags::outer_normal |
+        ValueFlags::boundary_normal |
+        ValueFlags::point;
 
-    NewValueFlags pf_flag = flags & transfer_flag;
+    ValueFlags pf_flag = flags & transfer_flag;
 
-    if (contains(flags , NewValueFlags::value))
-        pf_flag |= NewValueFlags::tran_value;
+    if (contains(flags , ValueFlags::value))
+        pf_flag |= ValueFlags::tran_value;
 
-    if (contains(flags , NewValueFlags::gradient))
-        pf_flag |= NewValueFlags::tran_gradient;
+    if (contains(flags , ValueFlags::gradient))
+        pf_flag |= ValueFlags::tran_gradient;
 
-    if (contains(flags , NewValueFlags::hessian))
-        pf_flag |= NewValueFlags::tran_hessian;
+    if (contains(flags , ValueFlags::hessian))
+        pf_flag |= ValueFlags::tran_hessian;
 
     return pf_flag;
 }
@@ -116,7 +116,7 @@ template<class PhysSpace>
 template<int k>
 void
 SpaceElementHandler<PhysSpace>::
-reset(const NewValueFlags flag, const Quadrature<k> &quad)
+reset(const ValueFlags flag, const Quadrature<k> &quad)
 {
     RefSpaceElementHandler::template reset<k>(space_to_ref_flag(type, flag), quad);
     PFCache::template reset<k>(space_to_pf_flag(flag), quad);

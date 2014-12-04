@@ -91,7 +91,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         base_t::reset(flag, quad);
         auto q = boost::get<Quadrature<sub_dim>>(quad);
@@ -233,7 +233,7 @@ public:
         return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
     }
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         base_t::reset(flag, quad);
         auto q = boost::get<Quadrature<sub_dim>>(quad);

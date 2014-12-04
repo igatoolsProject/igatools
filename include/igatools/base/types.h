@@ -110,7 +110,7 @@ using Size = int;
  * for efficient computations.
  * @todo put link to iterators_accessors.dox
  */
-enum class NewValueFlags : std::int64_t
+enum class ValueFlags : std::int64_t
 {
     /** Fill nothing */
     none           =    0,
@@ -178,8 +178,8 @@ enum class NewValueFlags : std::int64_t
 };
 
 
-const std::array<NewValueFlags, max_der> DerivativeFlags =
-        {NewValueFlags::value, NewValueFlags::gradient,  NewValueFlags::hessian};
+const std::array<ValueFlags, max_der> DerivativeFlags =
+{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian};
 
 
 
@@ -344,7 +344,7 @@ int bitcount(Flag a)
 
 
 inline
-std::ostream &operator<< (std::ostream &stream, const NewValueFlags &flag)
+std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
 {
     return (stream << static_cast< int >(flag));
 }

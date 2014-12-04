@@ -54,7 +54,7 @@ public:
     SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
 
     template<int k>
-    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
     //protected:
     template <int k>

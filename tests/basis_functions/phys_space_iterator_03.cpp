@@ -67,10 +67,10 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     const int n_qp = 2;
     auto quad = QGauss<k>(n_qp);
-    auto flag = NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::hessian |
-                NewValueFlags::point;
+    auto flag = ValueFlags::value |
+                ValueFlags::gradient |
+                ValueFlags::hessian |
+                ValueFlags::point;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);

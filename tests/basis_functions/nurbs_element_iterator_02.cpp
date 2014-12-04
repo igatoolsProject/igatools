@@ -76,7 +76,7 @@ void test()
     auto elem     = space->begin();
     auto end_element = space->end();
 
-    const auto flag = NewValueFlags::value|NewValueFlags::gradient|NewValueFlags::hessian;
+    const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
 
     using ElemHandler = typename Space::ElementHandler;
     auto elem_filler = ElemHandler(space);

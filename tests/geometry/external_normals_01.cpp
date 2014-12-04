@@ -46,7 +46,7 @@ void mapping_values()
 
     using Function = functions::SphereFunction<dim>;
 
-    auto flag = NewValueFlags::point |  NewValueFlags::value |NewValueFlags::outer_normal;
+    auto flag = ValueFlags::point |  ValueFlags::value |ValueFlags::outer_normal;
 
     auto quad = QUniform<dim>(3);
 

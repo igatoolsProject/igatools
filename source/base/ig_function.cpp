@@ -70,7 +70,7 @@ create(std::shared_ptr<const Space> space,
 template<class Space>
 auto
 IgFunction<Space>::
-reset(const NewValueFlags &flag, const variant_1 &quad) -> void
+reset(const ValueFlags &flag, const variant_1 &quad) -> void
 {
     parent_t::reset(flag, quad);
     reset_impl.flag = flag;

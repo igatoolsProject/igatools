@@ -64,8 +64,8 @@ void StokesProblem<dim>::assemble_Bt()
     using PreElementHandler = typename PreSpace::ElementHandler;
     using VelElementHandler = typename VelSpace::ElementHandler;
 
-    const auto vel_flag = NewValueFlags::divergence | NewValueFlags::w_measure;
-    const auto pre_flag = NewValueFlags::value;
+    const auto vel_flag = ValueFlags::divergence | ValueFlags::w_measure;
+    const auto pre_flag = ValueFlags::value;
     PreElementHandler pre_sp_values(pre_space_);
     pre_sp_values.template reset<k> (pre_flag, quad);
     VelElementHandler vel_sp_values(vel_space_);

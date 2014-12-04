@@ -41,7 +41,7 @@ Real ball_volume(const int n_knots)
 {
     using Function = functions::BallFunction<dim>;
 
-    auto flag = NewValueFlags::w_measure|NewValueFlags::point;
+    auto flag = ValueFlags::w_measure|ValueFlags::point;
 
     auto quad = QGauss<dim>(3);
 

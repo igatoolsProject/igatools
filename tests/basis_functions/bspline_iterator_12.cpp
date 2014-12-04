@@ -33,7 +33,7 @@
 
 template <int dim, int range=1, int rank=1>
 void space_cache_init_elem(
-    const NewValueFlags flag,
+    const ValueFlags flag,
     const int n_knots = 5, const int deg=1)
 {
     OUTSTART
@@ -59,11 +59,11 @@ void space_cache_init_elem(
 int main()
 {
     out.depth_console(10);
-    space_cache_init_elem<1>(NewValueFlags::value, 2);
-    space_cache_init_elem<1>(NewValueFlags::gradient, 3);
+    space_cache_init_elem<1>(ValueFlags::value, 2);
+    space_cache_init_elem<1>(ValueFlags::gradient, 3);
 
-    space_cache_init_elem<2>(NewValueFlags::value);
-    space_cache_init_elem<2>(NewValueFlags::gradient);
+    space_cache_init_elem<2>(ValueFlags::value);
+    space_cache_init_elem<2>(ValueFlags::gradient);
 
     return  0;
 }

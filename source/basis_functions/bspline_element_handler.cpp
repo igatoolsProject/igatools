@@ -168,7 +168,7 @@ template<int dim_, int range_ , int rank_>
 template<int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-reset(const NewValueFlags flag,
+reset(const ValueFlags flag,
       const Quadrature<k> &quad1)
 {
     base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);

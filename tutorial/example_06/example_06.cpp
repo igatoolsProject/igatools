@@ -114,11 +114,11 @@ void PoissonProblem<dim>::assemble()
 
     auto elem_handler = space->get_element_handler();
 
-    auto flag = NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, elem_quad);
-    f->reset(NewValueFlags::value, elem_quad);
+    f->reset(ValueFlags::value, elem_quad);
 
     auto f_elem = f->begin();
     auto elem   = space->begin();

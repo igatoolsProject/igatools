@@ -137,7 +137,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    virtual void reset(const NewValueFlags &flag, const variant_1 &quad)
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad)
     {
         reset_impl.flag = flag;
         reset_impl.grid_handler = this;
@@ -196,7 +196,7 @@ private:
             grid_handler->template reset<T::dim>(FunctionFlags::to_grid_flags(flag), quad);
         }
 
-        NewValueFlags flag;
+        ValueFlags flag;
         parent_t *grid_handler;
         std::array<FunctionFlags, dim + 1> *flags_;
     };

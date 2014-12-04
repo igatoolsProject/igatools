@@ -31,7 +31,7 @@ data = Instantiation(include_files)
 sub_dim_members = \
 ['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);',
 'void elhandler::init_cache<k>(ElementAccessor &elem);' ,
-'void elhandler::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
 for x in inst.sub_ref_sp_dims:
     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)

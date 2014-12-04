@@ -42,11 +42,11 @@ void mapping_values()
 {
     using Function = functions::BallFunction<dim>;
 
-    auto flag = NewValueFlags::point | NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::hessian |
-                NewValueFlags::measure|
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::value |
+                ValueFlags::gradient |
+                ValueFlags::hessian |
+                ValueFlags::measure|
+                ValueFlags::w_measure;
 
     auto quad = QUniform<dim>(3);
     auto grid = CartesianGrid<dim>::create();

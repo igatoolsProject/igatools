@@ -43,7 +43,7 @@ void sub_elem_values(const int n_knots, const int deg)
     const int n_qp = 2;
     QGauss<k>   k_quad(n_qp);
     QGauss<dim> quad(n_qp);
-    auto flag = NewValueFlags::value;//|NewValueFlags::gradient|NewValueFlags::hessian;
+    auto flag = ValueFlags::value;//|ValueFlags::gradient|ValueFlags::hessian;
     ElementHandler cache(space);
     cache.template reset<k>(flag, k_quad);
     cache.template reset<dim>(flag, quad);
