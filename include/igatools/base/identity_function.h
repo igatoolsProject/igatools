@@ -89,21 +89,25 @@ private:
 
             if (!flags.fill_none())
             {
-                const auto points =
-                    elem->CartesianGridElement<dim>::template get_points<T::k>(j);
 
-                const auto n_pts = points.get_num_points();
+                if (flags.fill_points() || flags.fill_values())
+                {
+                    const auto points =
+                        elem->CartesianGridElement<dim>::template get_points<T::k>(j);
 
-                if (flags.fill_points())
-                {
-                    cache.points_ = points;
-                }
-                if (flags.fill_values())
-                {
-                    auto &values = std::get<0>(cache.values_);
-                    for (int pt = 0 ; pt < n_pts ; ++pt)
-                        for (int i = 0 ; i < dim ; ++i)
-                            values[pt][i] = points[pt][i];
+                    if (flags.fill_points())
+                    {
+                        cache.points_ = points;
+                    }
+                    if (flags.fill_values())
+                    {
+                        const auto n_pts = points.get_num_points();
+
+                        auto &values = std::get<0>(cache.values_);
+                        for (int pt = 0 ; pt < n_pts ; ++pt)
+                            for (int i = 0 ; i < dim ; ++i)
+                                values[pt][i] = points[pt][i];
+                    }
                 }
                 if (flags.fill_gradients())
                 {
