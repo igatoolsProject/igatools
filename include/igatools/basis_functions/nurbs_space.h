@@ -47,11 +47,10 @@ template <int, int, int> class NURBSElementHandler;
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBSSpace :
     public std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_> >,
-    public FunctionSpaceOnGrid<CartesianGrid<dim_> >
-
+    public ReferenceSpace<dim_,range_,rank_>
 {
 private:
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
+    using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
     using self_t = NURBSSpace<dim_, range_, rank_>;
 
 public:
@@ -293,6 +292,11 @@ public:
      * The first index of the returned object is the component id, the second index is the direction id.
      */
     const DegreeTable &get_degree() const;
+
+    virtual bool is_bspline() const override final
+    {
+        return false;
+    }
 
 #if 0
     /**

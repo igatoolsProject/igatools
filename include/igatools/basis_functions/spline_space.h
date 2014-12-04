@@ -44,6 +44,9 @@ public:
     using GridSpace::dims;
 
     using GridSpace::GridSpace;
+
+
+    virtual bool is_bspline() const = 0;
 };
 
 
@@ -546,6 +549,13 @@ protected:
     /** This function initialize the member variables from the constructor
      * arguments or after an h-refinement. */
     void init();
+
+public:
+    virtual bool is_bspline() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."))
+        return true;
+    }
 };
 
 

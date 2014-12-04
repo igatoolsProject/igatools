@@ -390,6 +390,12 @@ public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
                    << " space.");
+
+
+    virtual bool is_bspline() const override final
+    {
+        return true;
+    }
 };
 
 IGA_NAMESPACE_CLOSE
