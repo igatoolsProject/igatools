@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/base/new_flags_handler.h>
+#include <igatools/base/flags_handler.h>
 #include <igatools/base/exceptions.h>
 
 IGA_NAMESPACE_OPEN

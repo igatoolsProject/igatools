@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tuple_utils.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/new_flags_handler.h>
+#include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
