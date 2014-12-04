@@ -20,7 +20,10 @@
 
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/base/exceptions.h>
+
+#include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
+#include "Teuchos_LAPACK.hpp"
 
 #include <algorithm>
 
@@ -79,33 +82,95 @@ size2() const
 }
 
 
+vector<Real> DenseMatrix::eigen_values() const
+{
+    Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
+    Teuchos::LAPACK<int, double> lapack;
+    const int n = this->size1();
+    BoostMatrix A(*this);
+    vector<Real> e_values_re(n);
+    vector<Real> e_values_im(n);
+    double e_v[6];
+    int info;
+    double ws[3*n];
+//    lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
+//                ws, 3*n-1, &info);
+    lapack.GEEV('N','N', n, &(A.data()[0]), n,
+                &(e_values_re[0]), &(e_values_im[0]),
+                e_v, n, e_v, n,
+                ws, 3*n, &info);
+
+    Assert(info == 0, ExcMessage("e-values not found."));
+
+    return e_values_re;
+}
+
+
+
+Real DenseMatrix::determinant() const
+{
+    Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
+
+    using namespace boost::numeric::ublas;
+    using PMatrix = permutation_matrix<int>;
+
+    const int n = this->size1();
+    BoostMatrix A(*this);
+    PMatrix P(n);
+
+    int res = lu_factorize(A, P);
+    AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
+
+    Real det = 1.;
+    int sign = 1;
+    for (int i=0; i<n; ++i)
+    {
+        det *= A(i,i);
+        if (P(i) != i)
+            sign *= -1;
+    }
+
+    return sign * det;
+}
+
+
+//todo should be const
 DenseMatrix
 DenseMatrix::
-inverse()
+inverse(Real &det) const
 {
     using namespace boost::numeric::ublas;
-    using pmatrix_t = permutation_matrix<std::size_t>;
+    using namespace boost::numeric::ublas;
+    using PMatrix = permutation_matrix<int>;
 
-    // create a working copy of the input
-    BoostMatrix A(static_cast<BoostMatrix &>(*this)) ;
+    const int n = this->size1();
+    BoostMatrix A(*this);
+    PMatrix P(n);
 
-    // create a permutation matrix for the LU-factorization
-    pmatrix_t P(A.size1());
-
-    // perform LU-factorization
     int res = lu_factorize(A,P);
 
     AssertThrow(res == 0, ExcMessage("LU factorization failed!"));
 
     // create identity matrix of "inverse"
-    BoostMatrix inv_A = identity_matrix<Real>(A.size1());
+    BoostMatrix inv_A = identity_matrix<Real>(n);
 
     // backsubstitute to get the inverse
     lu_substitute(A, P, inv_A);
 
+    det = 1.;
+    int sign = 1;
+    for (int i=0; i<n; ++i)
+    {
+        det *= A(i,i);
+        if (P(i) != i)
+            sign *= -1;
+    }
+
     return inv_A;
 }
+
+
 
 Size
 DenseMatrix::
@@ -199,6 +264,10 @@ norm_one() const
     return norm;
 }
 
-
+void DenseMatrix::
+print_info(LogStream &out) const
+{
+    out << *this;
+}
 IGA_NAMESPACE_CLOSE
 

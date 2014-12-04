@@ -19,10 +19,11 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the NURBS space iterator
+ *  Test for the NURBS space iterator (weights coefficients equal to 1.0)
  *
- *  author: pauletti
- *  date: Jun 11, 2014
+ *
+ *  author: martinelli
+ *  date: Dec 02, 2014
  *
  */
 
@@ -30,60 +31,70 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/nurbs_element_accessor.h>
+#include <igatools/basis_functions/nurbs_element.h>
 
 template< int dim, int range, int rank = 1>
 void test()
 {
+    OUTSTART
     const int r = 2;
-    out << "test<" << dim << "," << range << ">" << endl;
 
     using Space = NURBSSpace< dim, range, rank >;
-    using WeightsTable = typename Space::WeightsTable;
     using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create();
 
     auto degree = TensorIndex<dim>(r);
     DegreeTable deg(degree);
 
-    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
-    WeightsTable weights;
-    const auto n_basis = bsp->get_num_basis_table();
-    for (auto comp : Space::components)
-        weights[comp].resize(n_basis[comp],1.0);
+    auto bsp_space = BSplineSpace<dim,range,rank>::create(deg, knots);
 
-    auto space = Space::create(deg, knots, weights);
+    using ScalarSpSpace = BSplineSpace<dim,1,1>;
+    auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
+
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
+
+    using WeightFunc = IgFunction<ScalarSpSpace>;
+    DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis,1.0);
+    auto weight_function = std::shared_ptr<WeightFunc>(
+                               new WeightFunc(scalar_bsp_space,vector<Real>(weights_coef.get_data())));
+
+    auto space = Space::create(bsp_space,weight_function);
 
     const int n_points = 3;
     QGauss<dim> quad(n_points);
-
 
     auto elem     = space->begin();
     auto end_element = space->end();
 
     const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
 
-    NURBSUniformQuadCache<dim,range,rank> cache(space,flag,quad);
+    using ElemHandler = typename Space::ElementHandler;
+    auto elem_filler = ElemHandler(space);
+    elem_filler.reset(flag,quad);
 
-    cache.init_element_cache(elem);
-
+    elem_filler.template init_cache<dim>(elem);
     for (; elem != end_element; ++elem)
     {
-        cache.fill_element_cache(elem);
-        out << "Element: " << elem->get_flat_index()<< endl;
+        elem_filler.template fill_cache<dim>(elem,0);
+        out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
-        out << "Values basis functions:" << endl;
-        auto values = elem->get_basis_values();
+        out.begin_item("Values basis functions:");
+        auto values = elem->template get_values<0,dim>();
         values.print_info(out);
+        out.end_item();
 
-        out << "Gradients basis functions:" << endl;
-        auto gradients = elem->get_basis_gradients();
+        out.begin_item("Gradients basis functions:");
+        auto gradients = elem->template get_values<1,dim>();
         gradients.print_info(out);
+        out.end_item();
 
-        out << "Hessians basis functions:" << endl;
-        auto hessians = elem->get_basis_hessians();
+        out.begin_item("Hessians basis functions:");
+        auto hessians = elem->template get_values<2,dim>();
         hessians.print_info(out);
+        out.end_item();
     }
+
+    OUTEND
 }
 
 

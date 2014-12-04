@@ -32,7 +32,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/new_physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
@@ -53,8 +53,8 @@ void elem_values(const int n_knots = 2, const int deg=1)
 {
 
     const int k = dim;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -66,10 +66,10 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     const int n_qp = 2;
     auto quad = QGauss<k>(n_qp);
-    auto flag = NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::hessian |
-                NewValueFlags::point;
+    auto flag = ValueFlags::value |
+                ValueFlags::gradient |
+                ValueFlags::hessian |
+                ValueFlags::point;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);

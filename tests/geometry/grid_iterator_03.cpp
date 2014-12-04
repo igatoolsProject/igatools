@@ -45,11 +45,11 @@ void run_test()
 
     QGauss<dim> q1(2);
     ElementHandler cache1(grid);
-    cache1.template reset<dim>(NewValueFlags::w_measure, q1);
+    cache1.template reset<dim>(ValueFlags::w_measure, q1);
 
     QGauss<dim> q2(1);
     ElementHandler cache2(grid);
-    cache2.template reset<dim>(NewValueFlags::w_measure, q2);
+    cache2.template reset<dim>(ValueFlags::w_measure, q2);
 
     auto el1 = grid->begin();
     cache1.init_element_cache(el1);

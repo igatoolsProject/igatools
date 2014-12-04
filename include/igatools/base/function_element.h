@@ -21,7 +21,7 @@
 #ifndef FUNCTION_ELEMENT_H
 #define FUNCTION_ELEMENT_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 
 IGA_NAMESPACE_OPEN
@@ -30,7 +30,7 @@ template<int dim, int codim, int range = 1, int rank = 1>
 class FunctionElement : public CartesianGridElement<dim>
 {
 public:
-    using Func = NewFunction<dim, codim, range, rank>;
+    using Func = Function<dim, codim, range, rank>;
     using Point = typename Func::Point;
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
@@ -40,6 +40,7 @@ public:
 private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
+
 public:
     using CartesianGridElement<dim>::CartesianGridElement;
 
@@ -47,23 +48,12 @@ public:
     auto
     get_values(const int j) const
     {
+        Assert(local_cache_ != nullptr,ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return std::get<order>(cache.values_);
     }
 
-#if 0
-    ValueVector<Point> const &get_points() const;
-    ValueVector<Value> const &get_values() const;
-
-private:
-    template<int order>
-    auto const &get_derivative() const;
-public:
-    ValueVector<Gradient> const &get_gradients() const;
-
-    ValueVector<Hessian> const &get_hessians() const;
-#endif
 
 private:
     class ValuesCache : public CacheStatus
@@ -148,7 +138,7 @@ public:
     using CacheType = LocalCache;
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewFunction<dim, codim, range, rank>;
+    friend class Function<dim, codim, range, rank>;
 };
 
 IGA_NAMESPACE_CLOSE

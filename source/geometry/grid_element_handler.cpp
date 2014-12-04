@@ -64,7 +64,7 @@ template <int dim_>
 template<int k>
 void
 GridElementHandler<dim_>::
-reset(const NewValueFlags flag,
+reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
     flags_[k] = flag;

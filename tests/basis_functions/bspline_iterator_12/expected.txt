@@ -1,5 +1,5 @@
 ========================================================================
-void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -149,7 +149,7 @@ Hessians:
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -299,7 +299,7 @@ Hessians:
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -697,7 +697,7 @@ Hessians:
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::NewValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0

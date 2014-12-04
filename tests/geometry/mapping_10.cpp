@@ -26,11 +26,11 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/function_element.h>
 
@@ -40,19 +40,19 @@ void ig_mapping(const int deg = 1)
 {
     OUTSTART
 
-    using Space = NewBSplineSpace<dim, dim+codim>;
+    using Space = BSplineSpace<dim, dim+codim>;
     using Function = IgFunction<Space>;
-    using Mapping   = NewMapping<dim, codim>;
+    using Mapping   = Mapping<dim, codim>;
 
 
-    auto flag =  NewValueFlags::value| NewValueFlags::gradient
-                 | NewValueFlags::hessian;
+    auto flag =  ValueFlags::value| ValueFlags::gradient
+                 | ValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
     auto space = Space::create(deg, grid);
     typename Function::CoeffType coeff(space->get_num_basis());
-    coeff(0) = 1.;
+    coeff[0] = 1.;
     auto F = Function::create(space, coeff);
 
     auto map = Mapping::create(F);

@@ -33,9 +33,10 @@ ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim)
 ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
                      for  dim in inst.all_domain_dims for t in ('Real','Index','bool','vector<Index>')]
 normals = ['special_array<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
+curvatures = ['vector<Real>']
 
 ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
-           for deriv in inst.derivatives + inst.values + inst.divs + normals]
+           for deriv in inst.derivatives + inst.values + inst.divs + normals + curvatures]
 
     		
 

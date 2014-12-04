@@ -33,7 +33,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/formula_function.h>
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -48,7 +48,7 @@
 template<int dim , int range ,int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-    using Space =  NewBSplineSpace<dim,range,rank>;
+    using Space =  BSplineSpace<dim,range,rank>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
     auto space = Space::create(p, knots) ;

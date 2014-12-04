@@ -18,6 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+// TODO (pauletti, Nov 21, 2014): it may be better if we can avoid the space container
+// dependence on space manager
+
 #ifndef SPACE_MANAGER_H_
 #define SPACE_MANAGER_H_
 
@@ -26,9 +29,9 @@
 #include <igatools/base/equality_constraint.h>
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 
 
 #include <igatools/contrib/variant.h>

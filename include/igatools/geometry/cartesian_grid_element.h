@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/new_flags_handler.h>
+#include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
 
@@ -189,10 +189,6 @@ public:
      * are doing.
      */
     void move_to(const TensorIndex<dim> &tensor_index);
-
-    // TODO (pauletti, Aug 21, 2014): the next operators should be protected
-    // someone made them public due to hackish code in NURBSelementaccessor
-    // we must rethink that code
 
     /** Moves the element to the next valid element in the CartesianGrid. */
     void operator++();
@@ -397,7 +393,7 @@ protected:
     /**
      * ExceptionUnsupported Value Flag.
      */
-    DeclException2(ExcFillFlagNotSupported, NewValueFlags, NewValueFlags,
+    DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
                    << "The passed ValueFlag " << arg2
                    << " contains a non admissible flag " << (arg1 ^arg2));
 

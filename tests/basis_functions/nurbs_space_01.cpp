@@ -22,10 +22,12 @@
 #include "../tests.h"
 
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 template< int dim, int range, int rank = 1>
 void do_test()
 {
+    OUTSTART
     using iga::vector;
     vector<Real> coord_x {0,1,2,3,4};
     vector<Real> coord_y {5,6,7,8};
@@ -63,23 +65,27 @@ void do_test()
 
 
     using Space = NURBSSpace< dim, range, rank >;
-    using WeightsTable = typename Space::WeightsTable;
     using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create(coord);
     DegreeTable deg(degree);
 
     auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
-    WeightsTable weights;
     const auto n_basis = bsp->get_num_basis_table();
 
-    for (auto comp : Space::components)
-        weights[comp].resize(n_basis[comp],1.0);
+    DynamicMultiArray<Real,dim> weights(n_basis[0],1.0);
 
-    for (auto &w : weights)
-        w.print_info(out);
+    using ScalarBSplineSpace = BSplineSpace<dim>;
+    using WeightFunc = IgFunction<ScalarBSplineSpace>;
+    auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
+                                             ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord)),
+                                             weights.get_data()));
 
-    auto nurbs_space = Space::create(deg, knots, weights);
+
+    auto nurbs_space = Space::create(bsp, w_func);
     nurbs_space->print_info(out);
+
+    OUTEND
+
 }
 
 

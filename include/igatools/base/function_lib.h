@@ -34,7 +34,7 @@ template<int dim, int codim, int range, int rank = 1>
 class ConstantFunction : public FormulaFunction<dim, codim, range, rank>
 {
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
     using parent_t = FormulaFunction<dim, codim, range, rank>;
     using self_t = ConstantFunction<dim, codim, range, rank>;
     using typename base_t::GridType;
@@ -86,7 +86,7 @@ class LinearFunction : public FormulaFunction<dim, codim, range, 1>
 {
 
 public:
-    using base_t = NewFunction<dim, codim, range, 1>;
+    using base_t = Function<dim, codim, range, 1>;
     using parent_t = FormulaFunction<dim, codim, range, 1>;
     using self_t = LinearFunction<dim, codim, range>;
     using typename base_t::GridType;
@@ -119,13 +119,13 @@ protected:
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const;
+                    ValueVector<Value> &values) const override;
 
     void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const;
+                    ValueVector<Derivative<1>> &values) const override;
 
     void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const;
+                    ValueVector<Derivative<2>> &values) const override;
 
 private:
     const Gradient A_;
@@ -152,7 +152,7 @@ template<int dim>
 class BallFunction : public FormulaFunction<dim, 0, dim, 1>
 {
 private:
-    using base_t = NewFunction<dim, 0, dim, 1>;
+    using base_t = Function<dim, 0, dim, 1>;
     using parent_t = FormulaFunction<dim, 0, dim, 1>;
     using self_t = BallFunction<dim>;
     using typename base_t::GridType;
@@ -201,6 +201,72 @@ private:
 
 
 
+//------------------------------------------------------------------------------
+/**
+ * Maps a hyper rectangle into a spherical ball sector using the
+ * dim-dimensional spherical coordinates, maps a hyper-rectangle
+ * r in [0,R], phi_1 in [0, 2 pi], and phi_2, phi_dim-1 in [0,pi]
+ * such that
+ * x1 = r cos (phi_1)
+ * x2 = r sin (phi_1) cos (phi_2)
+ * etc
+ *
+ */
+template<int dim>
+class SphereFunction : public FormulaFunction<dim, 0, dim+1, 1>
+{
+private:
+    static const int space_dim = dim + 1;
+    using base_t = Function<dim, 0, dim+1, 1>;
+    using parent_t = FormulaFunction<dim, 0, dim+1, 1>;
+    using self_t = SphereFunction<dim>;
+    using typename base_t::GridType;
+public:
+    using typename parent_t::Point;
+    using typename parent_t::Value;
+    using typename parent_t::Gradient;
+    using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
+    template <int order>
+    using Derivative = typename parent_t::template Derivative<order>;
+    using typename parent_t::Map;
+
+    static std::shared_ptr<base_t>
+    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+
+    std::shared_ptr<base_t> clone() const override
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
+    SphereFunction(const self_t &) = default;
+
+protected:
+    SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+
+private:
+    template<int order>
+    auto
+    get_aux_vals(const ValueVector<Point> &points) const;
+
+private:
+    void evaluate_0(const ValueVector<Point> &points,
+                    ValueVector<Value> &values) const;
+
+    void evaluate_1(const ValueVector<Point> &points,
+                    ValueVector<Derivative<1>> &values) const;
+
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const;
+
+    static const int R = 1.;
+
+};
+//------------------------------------------------------------------------------
+
+
+
+
 
 //------------------------------------------------------------------------------
 /**
@@ -231,7 +297,7 @@ template<int dim>
 class CylindricalAnnulus : public FormulaFunction<dim, 0, dim, 1>
 {
 private:
-    using base_t = NewFunction<dim, 0, dim, 1>;
+    using base_t = Function<dim, 0, dim, 1>;
     using parent_t = FormulaFunction<dim, 0, dim, 1>;
     using self_t = CylindricalAnnulus;
     using typename base_t::GridType;

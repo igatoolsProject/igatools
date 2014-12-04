@@ -26,7 +26,7 @@
  * 30 May 2014
  *
  */
-
+// TODO (pauletti, Nov 24, 2014): divide in two different tests
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>

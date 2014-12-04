@@ -19,11 +19,12 @@
 //-+--------------------------------------------------------------------
 
 // [functions]
+#include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
 // [functions]
 // [old includes]
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
@@ -103,19 +104,31 @@ PoissonProblem(const int n_knots, const int deg)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
+    auto grid = space->get_grid();
 
-    ConstantFunction<dim> f({5.});
-    using Value = typename Function<dim>::Value;
-    const int n_qp = elem_quad.get_num_points();
-    ValueVector<Value> f_values(n_qp);
+    using Function = ConstantFunction<dim,0,1,1>;
+    using Value = typename Function::Value;
 
-    auto elem = space->begin();
+    Value b = {5.};
+    auto f = ConstantFunction<dim,0,1,1>::create(grid, IdentityFunction<dim>::create(grid), b);
+
+    auto elem_handler = space->get_element_handler();
+
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::w_measure;
+
+    elem_handler.template reset<dim>(flag, elem_quad);
+    f->reset(ValueFlags::value, elem_quad);
+
+    auto f_elem = f->begin();
+    auto elem   = space->begin();
     const auto elem_end = space->end();
-    ValueFlags fill_flags = ValueFlags::value | ValueFlags::gradient |
-                            ValueFlags::w_measure | ValueFlags::point;
-    elem->init_cache(fill_flags, elem_quad);
+    elem_handler.template init_cache<dim>(elem);
+    f->init_cache(f_elem, Int<dim>());
 
-    for (; elem != elem_end; ++elem)
+    const int n_qp = elem_quad.get_num_points();
+
+    for (; elem != elem_end; ++elem, ++f_elem)
     {
         const int n_basis = elem->get_num_basis();
 
@@ -125,24 +138,23 @@ void PoissonProblem<dim>::assemble()
         DenseVector loc_rhs(n_basis);
         loc_rhs = 0.0;
 
-        elem->fill_cache();
+        elem_handler.template fill_cache<dim>(elem, 0);
+        auto phi = elem->template get_values<0, dim>(0);
+        auto grad_phi  = elem->template get_values<1, dim>(0);
+        auto w_meas = elem->template get_w_measures<dim>(0);
 
-        auto points  = elem->get_points();
-        auto phi     = elem->get_basis_values();
-        auto grd_phi = elem->get_basis_gradients();
-        auto w_meas  = elem->get_w_measures();
-
-        f.evaluate(points, f_values);
+        f->template fill_cache<dim>(f_elem, 0, Int<dim>());
+        auto f_values = f_elem->template get_values<0,dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
         {
-            auto grd_phi_i = grd_phi.get_function_view(i);
+            auto grad_phi_i = grad_phi.get_function_view(i);
             for (int j = 0; j < n_basis; ++j)
             {
-                auto grd_phi_j = grd_phi.get_function_view(j);
+                auto grad_phi_j = grad_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
+                        scalar_product(grad_phi_i[qp], grad_phi_j[qp])
                         * w_meas[qp];
             }
             auto phi_i = phi.get_function_view(i);
@@ -160,7 +172,11 @@ void PoissonProblem<dim>::assemble()
     matrix->fill_complete();
 
     // [dirichlet constraint]
-    ConstantFunction<dim> g({0.0});
+
+    auto g = Function::
+             create(grid, IdentityFunction<dim>::create(grid), {0.});
+
+
     const boundary_id dir_id = 0;
     std::map<Index, Real> values;
     project_boundary_values<Space,LAPack::trilinos>(g, space, face_quad, dir_id, values);

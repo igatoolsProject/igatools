@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 
@@ -597,7 +597,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                         for (int i = 0; i < deriv_order; ++i)
                             ++(deriv_order_tid[entry_eval_tid[i]]);
 
-                        //TODO: remove this if!!! (Maybe re-think about the NewBSplineSpace for dim==0)
+                        //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
                         if (dim > 0)
                         {
                             Real value = bspline_basis[deriv_order_tid[0]][0][basis_tid[0]];

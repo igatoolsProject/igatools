@@ -25,18 +25,18 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim>
-IdentityFunction<dim>::
+template<int dim,int space_dim>
+IdentityFunction<dim,space_dim>::
 IdentityFunction(std::shared_ptr<GridType> grid)
     :
-    parent_t::NewFunction(grid)
+    parent_t::Function(grid)
 {}
 
 
 
-template<int dim>
+template<int dim,int space_dim>
 auto
-IdentityFunction<dim>::
+IdentityFunction<dim,space_dim>::
 fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
 {
     parent_t::fill_cache(elem, j, k);

@@ -21,11 +21,12 @@
 from init_instantiation_data import *
 
 include_files = ['basis_functions/bspline_element.h',
-                 'basis_functions/nurbs_element_accessor.h',
+                 'basis_functions/nurbs_element.h',
                  'geometry/push_forward_element.h',
                  'basis_functions/physical_space_element.h',
                  '../../source/basis_functions/physical_space_element.cpp',
                  '../../source/basis_functions/bspline_element.cpp',
+                 '../../source/basis_functions/nurbs_element.cpp',
                  'basis_functions/space_element.h',
                  '../../source/geometry/grid_forward_iterator.cpp']
 
@@ -40,7 +41,7 @@ data = Instantiation(include_files)
 sub_dim_members = \
 ['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);' ,
  'void elhandler::init_cache<k>(ElementAccessor &elem);',
- 'void elhandler::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);' ]
+ 'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);' ]
 
 for space in inst.SubPhysSpaces:
     x = space.spec

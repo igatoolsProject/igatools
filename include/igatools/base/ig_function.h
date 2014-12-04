@@ -21,13 +21,14 @@
 #ifndef IG_FUNCTIONS_H
 #define IG_FUNCTIONS_H
 
-#include <igatools/base/new_function.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/base/function.h>
+//#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 template<class Space>
-class IgFunction : public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
+class IgFunction :
+    public Function<Space::dim, Space::codim, Space::range, Space::rank>
 {
 public:
     static const int dim = Space::dim;
@@ -35,12 +36,19 @@ public:
     static const int range = Space::range;
     static const int rank = Space::rank;
 
+    using CoeffType = vector<Real>;
+
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
-    using parent_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
+    using parent_t = Function<dim, codim, range, rank>;
     using self_t = IgFunction<Space>;
 
 public:
+
+    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
+
+    IgFunction(const self_t &);
+
     using typename parent_t::variant_1;
     using typename parent_t::variant_2;
     using typename parent_t::Point;
@@ -51,10 +59,7 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    using CoeffType = Vector<LAPack::trilinos>;
 
-
-    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 public:
     static std::shared_ptr<base_t>
@@ -66,34 +71,29 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    IgFunction(const self_t &) = default;
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override;
+    void reset(const ValueFlags &flag, const variant_1 &quad) override;
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override;
 
     void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
 
-    auto &get_coefficients() const
-    {
-        return coeff_;
-    }
+    std::shared_ptr<const Space> get_iga_space() const;
 
-    void print_info(LogStream &out) const
-    {
-        coeff_.print_info(out);
-    }
+    const CoeffType &get_coefficients() const;
+
+    self_t &operator +=(const self_t &fun);
+
+    void print_info(LogStream &out) const;
 
 private:
-
     std::shared_ptr<const Space> space_;
 
-    const CoeffType coeff_;
+    CoeffType coeff_;
 
     typename Space::ElementIterator elem_;
 
     typename Space::ElementHandler space_filler_;
-
 
 private:
     struct ResetDispatcher : boost::static_visitor<void>
@@ -105,7 +105,7 @@ private:
             space_handler_->template reset<T::dim>(flag, quad);
         }
 
-        NewValueFlags flag;
+        ValueFlags flag;
         typename Space::ElementHandler *space_handler_;
         std::array<FunctionFlags, dim + 1> *flags_;
     };
@@ -158,13 +158,9 @@ private:
         vector<Real> *loc_coeff;
     };
 
-
-
     ResetDispatcher reset_impl;
     InitCacheDispatcher init_cache_impl;
     FillCacheDispatcher fill_cache_impl;
-
-
 };
 
 IGA_NAMESPACE_CLOSE

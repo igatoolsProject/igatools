@@ -27,7 +27,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
@@ -39,7 +39,7 @@ void evaluate_field(const int deg = 1)
 
     auto grid = CartesianGrid<dim>::create();
 
-    using Space = NewBSplineSpace<dim,range,rank>;
+    using Space = BSplineSpace<dim,range,rank>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto space = Space::create(deg, grid);
@@ -61,7 +61,7 @@ void evaluate_field(const int deg = 1)
     }
 
     QGauss<dim> quad(2) ;
-    const auto flag = NewValueFlags::value|NewValueFlags::gradient;
+    const auto flag = ValueFlags::value|ValueFlags::gradient;
 
     ElementHandler cache1(space);
     cache1.template reset<dim>(flag, quad);

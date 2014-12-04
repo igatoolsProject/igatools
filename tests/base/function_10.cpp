@@ -29,24 +29,24 @@
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 
 template<int dim, int range>
 void test()
 {
-    using Space = NewBSplineSpace<dim>;
+    using Space = BSplineSpace<dim>;
     using Function = IgFunction<Space>;
 
-    auto flag = NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::hessian;
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
     const int deg = 1;
     auto space = Space::create(deg, grid);
     typename Function::CoeffType coeff(space->get_num_basis());
-    coeff(0) = 1.;
+    coeff[0] = 1.;
     auto F = Function::create(space, coeff);
     F->reset(flag, quad);
 

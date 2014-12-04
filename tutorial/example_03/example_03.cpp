@@ -21,7 +21,7 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 // [quad include]
 #include <igatools/base/quadrature_lib.h>
 // [quad include]
@@ -40,25 +40,30 @@ void loop_on_grid_with_cache()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
+    auto elem_handler = grid->get_element_handler();
+
+    auto quad = QGauss<dim>(2);
+    auto flag = ValueFlags::w_measure;
+
+    elem_handler.template reset<dim>(flag, quad);
+
     auto elem = grid->begin();
     const auto elem_end = grid->end();
     // [loop as before]
     // [init cache]
-    QGauss<dim> quad(2);
-    ValueFlags fill_flag = ValueFlags::w_measure;
-    elem->init_cache(fill_flag, quad);
+    elem_handler.template init_cache<dim>(elem);
     // [init cache]
 
     for (; elem != elem_end; ++elem)
     {
         // [fill cache]
-        elem->fill_cache();
+        elem_handler.template fill_cache<dim>(elem, 0);
         // [fill cache]
-        out << "The center of element: " << elem->get_flat_index();
-        out << " is: "<< elem->center() << endl;
+        out << "The tensor index of element: " << elem->get_flat_index();
+        out << " is: "<< elem->get_tensor_index() << endl;
 
         // [get meas]
-        auto w_meas = elem->get_w_measures();
+        auto w_meas = elem->template get_w_measures<dim>(0);
         out << "The weighted measure is: ";
         w_meas.print_info(out);
         // [get meas]
@@ -78,22 +83,28 @@ void loop_on_space_with_cache()
     const int degree = 2;
     auto space = BSplineSpace<dim>::create(degree, grid);
 
+    auto elem_handler = space->get_element_handler();
+    auto quad = QGauss<dim>(1);
+    auto flag = ValueFlags::value;
+
+    elem_handler.template reset<dim>(flag, quad);
+
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem->init_cache(ValueFlags::value, QGauss<dim>(1));
+    elem_handler.template init_cache<dim>(elem);
+
     for (; elem != elem_end; ++elem)
     {
-        elem->fill_cache();
+        elem_handler.template fill_cache<dim>(elem, 0);
         out << "Element: " << elem->get_flat_index();
         out << " has global basis: ";
         elem->get_local_to_global().print_info(out);
         out << endl;
-        elem->get_basis_values().print_info(out);
+        elem->template get_values<0, dim>(0).print_info(out);
         out<< endl;
     }
     out << endl;
 }
-
 
 
 int main()

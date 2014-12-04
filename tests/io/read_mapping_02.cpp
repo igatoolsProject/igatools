@@ -20,7 +20,7 @@
 
 
 /*
- *  Test for the ig mapping class iterator, geometrical quantities
+ *  Test for the ig mapping class iterator, geometrical quantities using a NURBS mapping
  *  author: antolin
  *  date: 2014-04-23
  *
@@ -29,72 +29,83 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/ig_mapping.h>
-#include <igatools/geometry/mapping_element_accessor.h>
-#include <igatools/basis_functions/nurbs_element_accessor.h>
+#include <igatools/base/ig_function.h>
+#include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/io/reader.h>
 
 template <int dim>
 void run_test(std::string &file_name)
 {
-    out << "========== Test (Dimension: " << dim << ") --- begin ========== " << endl;
+    OUTSTART
 
     // Reading input file.
-    auto map = dynamic_pointer_cast<IgMapping<NURBSSpace<dim,dim,1>>>(get_mapping_from_file<dim,0>(file_name));
+    using RefSpace = NURBSSpace<dim,dim,1>;
+    auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
+    out.begin_item("IgFunction infos:");
     map->print_info(out);
     out << endl;
 
     QTrapez<dim> quad(Real(0.0));
     const auto quad_pts = quad.get_points().get_flat_cartesian_product();
-    out << "Quad pts.= " << endl;
+    out.begin_item("Quad pts.:");
     quad_pts.print_info(out);
-
-    const auto ref_space = map->get_iga_space();
+    out.end_item();
     out << endl;
 
+
+    const auto ref_space = map->get_iga_space();
+
     //------------------------------------------------------
-    out << "Loop using the NURBSElementAccessor" << endl;
+    out.begin_item("Loop using the NURBSElement");
+    using ElemHandler = typename RefSpace::ElementHandler;
+    ElemHandler sp_elem_handler(ref_space);
+    sp_elem_handler.reset(ValueFlags::value,quad);
+
     auto sp_elem     = ref_space->begin();
     auto sp_elem_end = ref_space->end();
 
-    sp_elem->init_cache(ValueFlags::value, quad);
+    sp_elem_handler.template init_cache<dim>(sp_elem);
     for (; sp_elem != sp_elem_end; ++sp_elem)
     {
-        sp_elem->fill_cache();
+        sp_elem_handler.template fill_cache<dim>(sp_elem,0);
 
         out << "Element id: " << sp_elem->get_flat_index() << endl;
 
-        const auto values = sp_elem->get_basis_values();
+        const auto &values = sp_elem->template get_values<0,dim>(0);
         out << "Values = ";
         values.print_info(out);
         out<< endl;
     }
+    out.end_item();
     out << endl;
     //------------------------------------------------------
 
 
-
     //------------------------------------------------------
-    out << "Loop using the MappingElementAccessor" << endl;
+    out.begin_item("Loop using the FunctionElement");
+    map->reset(ValueFlags::point, quad);
+
     auto map_elem     = map->begin();
     auto map_elem_end = map->end();
 
-    map_elem->init_cache(ValueFlags::point, quad);
+    const auto topology = Int<dim>();
+
+    map->init_cache(*map_elem,topology);
+
     for (; map_elem != map_elem_end; ++map_elem)
     {
-        map_elem->fill_cache();
+        map->fill_cache(*map_elem,0,topology);
         out << "Element id: " << map_elem->get_flat_index() << endl;
 
-        auto points = map_elem->get_map_values();
+        const auto &points = map_elem->get_points();
         int qp = 0;
         for (auto p : points)
             out << "    Point " << ++qp << ": " << p << endl;
     }
-    //------------------------------------------------------
+    out.end_item();
     out << endl;
-    out << "========== Test (Dimension: " << dim << ") --- end ========== " << endl;
-
-    out << endl << endl << endl;
+    //------------------------------------------------------
+    OUTEND
 }
 
 

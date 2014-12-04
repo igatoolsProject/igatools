@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 
 
 template<int sub_dim, int dim, int range=1, int rank=1>
@@ -35,7 +35,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 {
     OUTSTART
 
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n);
     auto space = Space::create(degree, grid);

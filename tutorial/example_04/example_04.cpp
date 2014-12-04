@@ -19,9 +19,12 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 // [new include]
-#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/base/ig_function.h>
+
+// TODO (pauletti, Nov 26, 2014): this is not correct, fix the writer
+#include <igatools/base/identity_function.h>
 // [new include]
 #include <igatools/io/writer.h>
 #include <igatools/base/logstream.h>
@@ -35,35 +38,40 @@ LogStream out;
 template <int dim>
 void plot_basis(const int deg)
 {
+    using Space  = BSplineSpace<dim>;
+    using Coeffs = typename IgFunction<Space>::CoeffType;
+
     const int n_knots = deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = BSplineSpace<dim>::create(deg, grid);
+    auto space = Space::create(deg, grid);
     // [plot function]
 
     // [init vec]
     const int n_basis = space->get_num_basis();
-    Vector<LAPack::trilinos> coeffs(n_basis);
+    Coeffs coeffs(n_basis);
     // [init vec]
 
     // [tensor to flat]
     TensorIndex<dim> basis_t_index(deg);
     auto basis_index = space->get_global_dof_id(basis_t_index, 0);
-    coeffs(basis_index) = 1.;
+    coeffs[basis_index] = 1.;
     // [tensor to flat]
 
     // [print vector]
     out << "Coefficient vector of: " << basis_index << "-th basis" << endl;
-    coeffs.print(out);
+    coeffs.print_info(out);
     out << endl;
     // [print vector]
 
     // [plot basis]
     out << "Saving basis plot" << endl;
     const int n_plot_points = 5;
-    Writer<dim> output(grid, n_plot_points);
+    Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
 
     string field_name = "basis " + to_string(basis_index);
-    output.add_field(space, coeffs, field_name);
+
+    auto basis = IgFunction<Space>::create(space, coeffs);
+    output.template add_field<1,1>(basis, field_name);
 
     string file_name = "bspline_basis-" + to_string(dim) + "d";
     output.save(file_name);

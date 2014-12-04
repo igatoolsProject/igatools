@@ -21,7 +21,7 @@
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/ig_function.h>
 
 #include <igatools/linear_algebra/distributed_matrix.h>
@@ -59,11 +59,12 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
-    auto func_flag = NewValueFlags::point | NewValueFlags::value;
+    auto func_flag = ValueFlags::point | ValueFlags::value;
     func->reset(func_flag, quad);
 
     typename Space::ElementHandler sp_filler(space);
-    auto sp_flag = NewValueFlags::point | NewValueFlags::value| NewValueFlags::w_measure;
+    auto sp_flag = ValueFlags::point | ValueFlags::value |
+                   ValueFlags::w_measure;
     sp_filler.template reset<dim>(sp_flag, quad);
 
     auto f_elem = func->begin();
@@ -78,7 +79,6 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     DenseVector loc_rhs(n_basis);
     DenseMatrix loc_mat(n_basis, n_basis);
 
-
     for (; elem != end; ++elem, ++f_elem)
     {
         func->fill_cache(f_elem, 0, Int<dim>());
@@ -89,8 +89,6 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
         auto f_at_qp = f_elem->template get_values<0,dim>(0);
         auto phi = elem->template get_values<0,dim>(0);
-
-
 
         // computing the upper triangular part of the local matrix
         auto w_meas = elem->template get_w_measures<dim>(0);
@@ -120,14 +118,13 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     matrix.fill_complete();
 
     // TODO (pauletti, Oct 9, 2014): the solver must use a precon
-    const Real tolerance = 1.0e-15;
-    const int max_num_iter = 1000;
+    const Real tol = 1.0e-15;
+    const int max_iter = 1000;
     using LinSolver = LinearSolver<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG,tolerance,max_num_iter);
+    LinSolver solver(LinSolver::SolverType::CG,tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol));
-
+    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.get_as_vector()));
 }
 
 
@@ -193,7 +190,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
         const auto coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
-            boundary_values[dof_map[i]] = coef(i);
+            boundary_values[dof_map[i]] = coef[i];
     }
 }
 
@@ -201,13 +198,13 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
-                          NewFunction<dim, codim, range, rank> &g,
+Real integrate_difference(Function<dim, codim, range, rank> &f,
+                          Function<dim, codim, range, rank> &g,
                           const Quadrature<dim> &quad,
                           const Norm &norm_flag,
                           vector<Real> &element_error)
 {
-    using Func = NewFunction<dim, codim, range, rank>;
+    using Func = Function<dim, codim, range, rank>;
 
     bool is_L2_norm     = contains(norm_flag, Norm::L2);
     bool is_H1_norm     = contains(norm_flag, Norm::H1);
@@ -229,13 +226,13 @@ Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
         is_H1_seminorm = true;
     }
 
-    auto flag = NewValueFlags::point | NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::w_measure;
 
     if (is_L2_norm)
-        flag |= NewValueFlags::value;
+        flag |= ValueFlags::value;
 
     if (is_H1_seminorm)
-        flag |= NewValueFlags::gradient;
+        flag |= ValueFlags::gradient;
 
     f.reset(flag, quad);
     g.reset(flag, quad);

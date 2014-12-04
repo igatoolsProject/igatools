@@ -22,7 +22,7 @@
 #define MAPPING_ELEMENT_H_
 
 #include <igatools/utils/array.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/base/function_element.h>
 
 IGA_NAMESPACE_OPEN
@@ -35,7 +35,7 @@ class MappingElement
 private:
     using self_t  = MappingElement<dim_, codim_>;
     using paren_t = FunctionElement<dim_, 0, dim_+codim_>;
-    using Map = NewMapping<dim_, codim_>;
+    using Map = Mapping<dim_, codim_>;
 public:
     static const int dim = dim_;
     static const int codim = codim_;
@@ -44,6 +44,9 @@ public:
 
     template<int order>
     using InvDerivative = typename Map::template InvDerivative<order>;
+
+    template <int order>
+    using Derivative = typename Map::template Derivative<order>;
 
     template<int k>
     ValueVector<Real> const &get_measures(const int j) const
@@ -70,34 +73,39 @@ public:
 
 
 //    ValueVector<special_array<Points<space_dim>, codim>>
-//	get_normal_space() const
-//	{
-//    	ValueVector<special_array<Points<space_dim>, codim>> res;
-//    	const auto &DF = this->template get_values<1, dim>(0);
-//        res.resize(DF.get_num_points());
-//        return res;
-//	}
+    ValueVector<Points<space_dim> > get_external_normals() const;
+
+    using MetricTensor =
+        Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
+
+    ValueVector<MetricTensor> compute_inv_first_fundamental_form() const;
+
+    ValueVector<MetricTensor> compute_second_fundamental_form() const;
+
+    ValueVector< Derivative<1> > get_D_external_normals() const;
+
+    ValueVector<vector<Real> > get_principal_curvatures() const;
 
 
     template<int sub_dim>
-    ValueVector<Points<space_dim>>
+    ValueVector<Points<space_dim> >
     get_boundary_normals(const int s_id) const
-	{
+    {
         Assert(dim==sub_dim+1, ExcNotImplemented());
-    	ValueVector<Points<space_dim>> res;
-    	const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
-    	const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
+        ValueVector<Points<space_dim>> res;
+        const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
+        const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
 
-    	const auto n_points = DF_inv.get_num_points();
-    	res.resize(n_points);
-    	for (int i = 0; i< n_points; ++i)
-    	{
-    	    const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
-    	    res[i] = action(DF_inv_t, n_hat);
-    	    res[i] /= res[i].norm();
-    	}
-    	return res;
-	}
+        const auto n_points = DF_inv.get_num_points();
+        res.resize(n_points);
+        for (int i = 0; i< n_points; ++i)
+        {
+            const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
+            res[i] = action(DF_inv_t, n_hat);
+            res[i] /= res[i].norm();
+        }
+        return res;
+    }
 
 private:
     class ValuesCache : public CacheStatus
@@ -195,7 +203,7 @@ public:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewMapping<dim, codim>;
+    friend class Mapping<dim, codim>;
 
 };
 

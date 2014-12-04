@@ -162,16 +162,13 @@ BSplineElementHandler(shared_ptr<const Space> space)
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
         comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
-
-
-
 }
 
 template<int dim_, int range_ , int rank_>
 template<int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-reset(const NewValueFlags flag,
+reset(const ValueFlags flag,
       const Quadrature<k> &quad1)
 {
     base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);

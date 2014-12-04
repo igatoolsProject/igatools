@@ -26,7 +26,7 @@
 
 #include <igatools/base/quadrature.h>
 #include <igatools/basis_functions/bspline_element.h>
-//#include <igatools/basis_functions/nurbs_element_accessor.h>
+#include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/geometry/push_forward_element.h>
 
 IGA_NAMESPACE_OPEN

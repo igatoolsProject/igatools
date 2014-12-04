@@ -25,6 +25,7 @@ f = data.file_output
 inst = data.inst
 
 normals = ['special_array<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
+curvatures = ['vector<Real>']    
 value_vectors=['ValueVector<Real>']
 
 for deriv in inst.derivatives + inst.values + inst.divs:
@@ -35,5 +36,5 @@ for row in value_vectors:
     f.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
     f.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
     
-for row in normals:
+for row in normals + curvatures:
       f.write('template class ValueVector<%s>; \n' % (row))

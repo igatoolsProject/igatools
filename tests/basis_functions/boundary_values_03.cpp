@@ -31,7 +31,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/formula_function.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -42,7 +42,7 @@ template<int dim>
 class XProject : public FormulaFunction<dim>
 {
 private:
-    using base_t = NewFunction<dim>;
+    using base_t = Function<dim>;
     using parent_t = FormulaFunction<dim>;
     using self_t = XProject<dim>;
     using typename base_t::GridType;
@@ -93,7 +93,7 @@ void do_test(const int p, TensorSize<dim> n_knots)
 {
     const int sub_dim = dim - 1;
     out << "Dimension: " << dim << endl;
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
 
     auto grid = CartesianGrid<dim>::create(n_knots);

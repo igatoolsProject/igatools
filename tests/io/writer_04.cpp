@@ -36,21 +36,20 @@ test()
     auto grid = CartesianGrid<dim>::create(n_knots);
     Writer<dim> writer(grid);
 
-    const Size n_iga_elements = writer.get_num_iga_elements();
+    const Size n_iga_elements = grid->get_num_active_elems();
     const Size n_points_iga_element = writer.get_num_points_per_iga_element();
 
-    vector<vector<vector<Real>>> data_scalar(n_iga_elements,
-                                             vector<vector<Real>>(n_points_iga_element, vector<Real>(1)));
+    using Vec = vector<Real>;
+    using VecOfVec = vector<Vec>;
+    vector<VecOfVec> data_scalar(n_iga_elements,VecOfVec(n_points_iga_element, Vec(1)));
 
-    vector<vector<vector<Real>>> data_vector(n_iga_elements,
-                                             vector<vector<Real>>(n_points_iga_element, vector<Real>(dim)));
+    vector<VecOfVec> data_vector(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim)));
 
-    vector<vector<vector<Real>>> data_tensor(n_iga_elements,
-                                             vector<vector<Real>>(n_points_iga_element, vector<Real>(dim * dim)));
+    vector<VecOfVec> data_tensor(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim * dim)));
 
-    for (uint i_el = 0; i_el < n_iga_elements; ++i_el)
+    for (int i_el = 0; i_el < n_iga_elements; ++i_el)
     {
-        for (uint i_Pt = 0; i_Pt < n_points_iga_element; ++i_Pt)
+        for (int i_Pt = 0; i_Pt < n_points_iga_element; ++i_Pt)
         {
             auto &data_scalar_el_Pt = data_scalar[i_el][i_Pt];
             auto &data_vector_el_Pt = data_vector[i_el][i_Pt];

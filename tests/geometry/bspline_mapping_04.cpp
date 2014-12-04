@@ -25,22 +25,31 @@
  *
  */
 
+// TODO (pauletti, Nov 20, 2014): the relation with the other test should be
+// clarify
+
 #include "../tests.h"
 
-#include <igatools/geometry/ig_mapping.h>
-#include <igatools/geometry/mapping_element_accessor.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
-
+#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/mapping_element.h>
+#include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/io/writer.h>
-#include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/base/function_element.h>
 
-template <int dim>
-void test_evaluate()
+
+
+template <int dim, int codim = 0, int rank = 1>
+void bspline_map(const int deg = 2)
 {
+    const int sub_dim = dim;
 
-    const int rank = (dim==1) ? 0 : 1 ;
+    using Space = BSplineSpace<dim, dim+codim, rank>;
+    using Function = IgFunction<Space>;
+    using Mapping   = Mapping<dim, codim>;
+
+
 
     //----------------------------------------------------------------------------------------------
     out << "Dim: " << dim << endl ;
@@ -55,19 +64,10 @@ void test_evaluate()
     }
 
 
-    int p = 2 ;
+    auto grid = CartesianGrid<dim>::create(coord);
+    auto space = Space::create(deg, grid);
 
-
-    auto knots = CartesianGrid<dim>::create(coord);
-
-    typedef BSplineSpace<dim,dim,rank> Space_t ;
-
-    shared_ptr< Space_t > bspline_space = Space_t::create(p, knots)  ;
-    //----------------------------------------------------------------------------------------------
-
-
-    //----------------------------------------------------------------------------------------------
-    vector<Real> control_pts(bspline_space->get_num_basis()) ;
+    typename Function::CoeffType control_pts(space->get_num_basis());
 
     if (dim == 2)
     {
@@ -213,34 +213,34 @@ void test_evaluate()
     }
 
 
+    auto F = Function::create(space, control_pts);
+    auto map = Mapping::create(F);
 
-    auto map = IgMapping<Space_t>::create(bspline_space, control_pts) ;
+    auto quad = QGauss<dim>(3);
+    auto flag =  ValueFlags::value| ValueFlags::gradient
+                 | ValueFlags::hessian;
 
+    map->template reset<sub_dim>(flag, quad);
 
-    QGauss<dim> quad(3);
     auto elem = map->begin();
-    elem->init_cache(ValueFlags::point|ValueFlags::map_gradient|ValueFlags::map_hessian, quad);
-    elem->fill_cache();
+    auto end  = map->end();
+    const int s_id = 0;
 
-    auto values = elem->get_map_values();
-    auto gradients = elem->get_map_gradients();
-    auto hessians = elem->get_map_hessians();
+    map->template init_cache<sub_dim>(elem);
+    for (; elem != end; ++elem)
+    {
+        map->template fill_cache<sub_dim>(elem, s_id);
+        out << "Values : ";
+        elem->template get_values<0,sub_dim>(s_id).print_info(out);
+        out << endl;
+        out << "Gradients : ";
+        elem->template get_values<1,sub_dim>(s_id).print_info(out);
+        out << endl;
+        out << "Hessians : ";
+        elem->template get_values<2,sub_dim>(s_id).print_info(out);
+        out << endl;
+    }
 
-    out << "Values : ";
-    values.print_info(out);
-    out << endl;
-
-    out << "Gradients : ";
-    gradients.print_info(out);
-    out << endl;
-
-    out << "Hessians : ";
-    hessians.print_info(out);
-    out << endl;
-
-    string filename = "bspline_map-" + to_string(dim) + "d";
-    Writer<dim> writer(map, 4);
-    writer.save(filename) ;
 
 }
 
@@ -248,7 +248,7 @@ int main()
 {
     out.depth_console(10);
 
-    test_evaluate<2>();
-    test_evaluate<3>();
+    bspline_map<2>();
+    bspline_map<3>();
 
 }

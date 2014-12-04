@@ -110,7 +110,7 @@ using Size = int;
  * for efficient computations.
  * @todo put link to iterators_accessors.dox
  */
-enum class NewValueFlags : std::int64_t
+enum class ValueFlags : std::int64_t
 {
     /** Fill nothing */
     none           =    0,
@@ -131,8 +131,11 @@ enum class NewValueFlags : std::int64_t
     /** normal space */
     boundary_normal  =    1L << 4,
 
-	/** normal space */
-	outer_normal  =    1L << 5,
+    /** normal space */
+    outer_normal  =    1L << 5,
+
+    /** curvatures */
+    curvature     =    1L << 6,
 
     /** element coordinates length */
     length         =    1L << 8,
@@ -175,6 +178,8 @@ enum class NewValueFlags : std::int64_t
 };
 
 
+const std::array<ValueFlags, max_der> DerivativeFlags =
+{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian};
 
 
 
@@ -339,7 +344,7 @@ int bitcount(Flag a)
 
 
 inline
-std::ostream &operator<< (std::ostream &stream, const NewValueFlags &flag)
+std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
 {
     return (stream << static_cast< int >(flag));
 }
@@ -403,17 +408,6 @@ using EnableIf = typename std::enable_if<B,T>::type;
  */
 BOOST_TTI_HAS_MEMBER_FUNCTION(print_info)
 
-/**
- * Type for specifying the type of reference space (BSpline or NURBS).
- */
-enum class RefSpaceType : int
-{
-    /** Use the the BSpline basis functions.*/
-    bspline = 0,
-
-    /** Use the the NURBS basis functions.*/
-    nurbs   = 1
-};
 
 
 /**
@@ -502,17 +496,6 @@ enum class CopyPolicy : int
     deep = 2
 };
 
-template<int dim, int range, int rank>
-class BSplineSpace;
-
-template<int dim, int range, int rank>
-class NURBSSpace;
-
-/** Alias for the reference space type. */
-template<int dim, int range, int rank,RefSpaceType space_type>
-using RefSpace = Conditional<(space_type == RefSpaceType::bspline),
-      BSplineSpace<dim,range,rank>,
-      NURBSSpace<dim,range,rank> >;
 
 // TODO (pauletti, Nov 14, 2014): delete after gcc implements correct std::max
 constexpr int max(int a, int b)
