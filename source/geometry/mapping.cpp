@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/base/tensor.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 using std::shared_ptr;

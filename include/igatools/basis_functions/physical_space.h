@@ -22,7 +22,7 @@
 #define __NEW_PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/new_push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>

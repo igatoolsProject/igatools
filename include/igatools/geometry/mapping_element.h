@@ -22,7 +22,7 @@
 #define MAPPING_ELEMENT_H_
 
 #include <igatools/utils/array.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/base/function_element.h>
 
 IGA_NAMESPACE_OPEN

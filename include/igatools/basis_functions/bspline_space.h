@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/new_push_forward.h>
 #include <igatools/basis_functions/physical_space.h>
 

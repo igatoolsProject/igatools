@@ -31,7 +31,7 @@
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/function_element.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 

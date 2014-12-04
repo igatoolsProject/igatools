@@ -22,7 +22,7 @@
 #define NEW_PUSHFORWARD_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN

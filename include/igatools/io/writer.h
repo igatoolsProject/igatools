@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/base/function_element.h>
