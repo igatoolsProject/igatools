@@ -35,7 +35,7 @@
 template<int dim, int range = 1, int rank = 1>
 void integrate(const int deg,  const int n_knots)
 {
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);

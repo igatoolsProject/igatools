@@ -39,9 +39,9 @@
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<NewBSplineSpace<dim, dim + codim>> space)
+create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 {
-    using Space = NewBSplineSpace<dim, dim + codim>;
+    using Space = BSplineSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
     typename Function::CoeffType control_pts(space->get_num_basis());
@@ -116,7 +116,7 @@ template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
     const int k = dim;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 

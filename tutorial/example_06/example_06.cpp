@@ -70,7 +70,7 @@ private:
 
     // [members]
 private:
-    using Space = NewBSplineSpace<dim>;
+    using Space = BSplineSpace<dim>;
     shared_ptr<Space> space;
 
     const Quadrature<dim>   elem_quad;

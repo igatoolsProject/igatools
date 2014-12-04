@@ -39,7 +39,7 @@ void evaluate_field(const int deg = 1)
 
     auto grid = CartesianGrid<dim>::create();
 
-    using Space = NewBSplineSpace<dim,range,rank>;
+    using Space = BSplineSpace<dim,range,rank>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto space = Space::create(deg, grid);

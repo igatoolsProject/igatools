@@ -36,7 +36,7 @@
 template<int dim, int range>
 void test()
 {
-    using Space = NewBSplineSpace<dim>;
+    using Space = BSplineSpace<dim>;
     using Function = IgFunction<Space>;
 
     auto flag = NewValueFlags::value | NewValueFlags::gradient |

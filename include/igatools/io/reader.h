@@ -190,7 +190,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree);
  * @date 04 Mar 2014
  */
 template <int dim, int range, int rank>
-std::shared_ptr< NewBSplineSpace<dim,range,rank> >
+std::shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree);
 
 #ifdef NURBS

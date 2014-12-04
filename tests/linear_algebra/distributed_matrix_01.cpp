@@ -69,7 +69,7 @@ int main()
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = NewBSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;

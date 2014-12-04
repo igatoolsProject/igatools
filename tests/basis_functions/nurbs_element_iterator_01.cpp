@@ -46,9 +46,9 @@ void test()
     auto degree = TensorIndex<dim>(r);
     DegreeTable deg(degree);
 
-    auto bsp_space = NewBSplineSpace<dim,range,rank>::create(deg, knots);
+    auto bsp_space = BSplineSpace<dim,range,rank>::create(deg, knots);
 
-    using ScalarSpSpace = NewBSplineSpace<dim,1,1>;
+    using ScalarSpSpace = BSplineSpace<dim,1,1>;
     auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
 
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];

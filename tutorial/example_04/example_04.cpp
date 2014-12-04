@@ -38,7 +38,7 @@ LogStream out;
 template <int dim>
 void plot_basis(const int deg)
 {
-    using Space  = NewBSplineSpace<dim>;
+    using Space  = BSplineSpace<dim>;
     using Coeffs = typename IgFunction<Space>::CoeffType;
 
     const int n_knots = deg + 2;

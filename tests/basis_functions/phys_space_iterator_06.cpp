@@ -57,7 +57,7 @@ create_function(shared_ptr<CartesianGrid<dim>> grid)
 template <int dim, int k=dim, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 

@@ -326,7 +326,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     }
     else
     {
-        using ref_space_t = NewBSplineSpace<dim,dim_phys,1>;
+        using ref_space_t = BSplineSpace<dim,dim_phys,1>;
         auto ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
@@ -406,7 +406,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
 
 
 template <int dim, int range, int rank>
-shared_ptr< NewBSplineSpace<dim,range,rank> >
+shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
     AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
@@ -414,7 +414,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
     const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
 
-    using space_t = NewBSplineSpace<dim,range,rank>;
+    using space_t = BSplineSpace<dim,range,rank>;
 
     //-------------------------------------------------------------------------
     // reading the BSplineSpace attributes
@@ -702,7 +702,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     //----------------------------------------
     // building the weight function table --- begin
-    using ScalarBSplineSpace = NewBSplineSpace<dim>;
+    using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<ScalarBSplineSpace>;
 
     using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;

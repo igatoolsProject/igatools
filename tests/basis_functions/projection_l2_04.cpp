@@ -99,7 +99,7 @@ public:
 template<int dim, int range=1, int rank = 1, LAPack la_pack>
 void test_proj(const int p, const int n_knots = 4)
 {
-    using Space = NewBSplineSpace<dim,range,rank> ;
+    using Space = BSplineSpace<dim,range,rank> ;
     using Func = TestFunc<dim,range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);

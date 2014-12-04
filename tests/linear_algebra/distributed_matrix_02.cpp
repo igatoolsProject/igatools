@@ -72,8 +72,8 @@ int main(int argc, char *argv[])
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space_rows = NewBSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
-    auto bspline_space_cols = NewBSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
+    auto bspline_space_rows = BSplineSpace< dim_domain, dim_range, rank  >::create(p_r, knots) ;
+    auto bspline_space_cols = BSplineSpace< dim_domain, dim_range, rank  >::create(p_c, knots) ;
 
     const auto dofs_view_row = bspline_space_rows->get_dof_distribution_global().get_dofs_view();
     const auto dofs_view_col = bspline_space_cols->get_dof_distribution_global().get_dofs_view();

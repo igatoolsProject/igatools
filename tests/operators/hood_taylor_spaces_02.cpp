@@ -40,8 +40,8 @@ private:
     void assemble_Bt();
 
 private:
-    using PreSpace = NewBSplineSpace<dim>;
-    using VelSpace = NewBSplineSpace<dim, dim>;
+    using PreSpace = BSplineSpace<dim>;
+    using VelSpace = BSplineSpace<dim, dim>;
 
     shared_ptr<PreSpace> pre_space_;
     shared_ptr<VelSpace> vel_space_;

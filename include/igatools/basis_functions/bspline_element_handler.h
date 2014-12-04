@@ -46,7 +46,7 @@ template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineElementHandler : public GridElementHandler<dim_>
 {
     using base_t = GridElementHandler<dim_>;
-    using Space = NewBSplineSpace<dim_,range_,rank_>;
+    using Space = BSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 
 

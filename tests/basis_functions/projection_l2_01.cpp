@@ -48,7 +48,7 @@
 template<int dim , int range ,int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-    using Space =  NewBSplineSpace<dim,range,rank>;
+    using Space =  BSplineSpace<dim,range,rank>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
     auto space = Space::create(p, knots) ;

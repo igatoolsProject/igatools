@@ -40,7 +40,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
     using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 

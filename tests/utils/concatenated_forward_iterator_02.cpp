@@ -42,7 +42,7 @@ do_test_1()
 {
     out << "========== do_test_1() dim=" << dim << " --- begin ==========" << endl;
     using Grid = CartesianGrid<dim>;
-    using RefSpace = NewBSplineSpace<dim>;
+    using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename DMA::iterator;
     using VecConstIt = typename DMA::const_iterator;
@@ -103,7 +103,7 @@ do_test_2()
 {
     out << "========== do_test_2() dim=" << dim << " --- begin ==========" << endl;
     using Grid = CartesianGrid<dim>;
-    using RefSpace = NewBSplineSpace<dim>;
+    using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename vector<Index>::iterator;
     using VecConstIt = typename vector<Index>::const_iterator;

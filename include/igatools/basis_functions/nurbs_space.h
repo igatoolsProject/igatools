@@ -55,7 +55,7 @@ private:
     using self_t = NURBSSpace<dim_, range_, rank_>;
 
 public:
-    using SpSpace = NewBSplineSpace<dim_, range_, rank_>;
+    using SpSpace = BSplineSpace<dim_, range_, rank_>;
 
 
     /** see documentation in \ref FunctionSpaceOnGrid */
@@ -148,7 +148,7 @@ public:
     using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
-    using WeightSpace = NewBSplineSpace<dim_,1,1>;
+    using WeightSpace = BSplineSpace<dim_,1,1>;
     using WeightFunction = IgFunction<WeightSpace>;
     using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
     using WeightFunctionPtrTable = ComponentContainer<WeightFunctionPtr>;

@@ -38,7 +38,7 @@ void space_cache_init_elem(
 {
     OUTSTART
 
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);
 

@@ -37,7 +37,7 @@
 template<int dim, int range = 1, int rank = 1>
 void do_test(const int deg, const int n_knots = 10)
 {
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
 
     auto grid = CartesianGrid<dim>::create(n_knots);

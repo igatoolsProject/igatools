@@ -93,7 +93,7 @@ void do_test(const int p, TensorSize<dim> n_knots)
 {
     const int sub_dim = dim - 1;
     out << "Dimension: " << dim << endl;
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
 
     auto grid = CartesianGrid<dim>::create(n_knots);

@@ -45,7 +45,7 @@ template<int dim , int codim, int range ,int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
     const int sub_dim = dim - 1;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
 

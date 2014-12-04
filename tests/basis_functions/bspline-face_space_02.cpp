@@ -35,7 +35,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 {
     OUTSTART
 
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n);
     auto space = Space::create(degree, grid);

@@ -48,7 +48,7 @@ void test()
 {
     const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
-    using Space = NewBSplineSpace<dim>;
+    using Space = BSplineSpace<dim>;
     using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
 
     typename Function::Value    b;

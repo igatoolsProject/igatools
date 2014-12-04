@@ -34,7 +34,7 @@ sub_dim_members = \
 'void elhandler::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
 
 for x in inst.sub_ref_sp_dims:
-    space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class SpaceElement<%s>; \n' %space)
     acc = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %acc)
@@ -49,7 +49,7 @@ for x in inst.sub_ref_sp_dims:
 
 
 for x in inst.ref_sp_dims:
-    space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class SpaceElement<%s>;' %space)
     acc = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %acc)
