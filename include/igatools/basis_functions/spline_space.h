@@ -33,6 +33,21 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template<int dim, int range = 1, int rank = 1>
+class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim>>
+{
+public:
+    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+    using typename GridSpace::GridType;
+
+    using GridSpace::dims;
+
+    using GridSpace::GridSpace;
+};
+
+
+
 /**
  * @brief Tensor product spline space
  *
@@ -53,12 +68,15 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-    public FunctionSpaceOnGrid<CartesianGrid<dim>>
+    public ReferenceSpace<dim,range,rank>
+//    public FunctionSpaceOnGrid<CartesianGrid<dim>>
 {
 
 private:
+    using RefSpace = ReferenceSpace<dim,range,rank>;
     using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
     using typename GridSpace::GridType;
+
 
 public:
     using GridSpace::dims;

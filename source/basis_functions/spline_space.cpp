@@ -44,7 +44,7 @@ SplineSpace(const DegreeTable &deg,
             shared_ptr<const MultiplicityTable> interior_mult,
             const PeriodicTable &periodic)
     :
-    GridSpace(knots),
+    RefSpace(knots),
     interior_mult_(interior_mult),
     deg_(deg),
     periodic_(periodic)
