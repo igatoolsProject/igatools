@@ -34,7 +34,7 @@ template<int dim, int codim, int range, int rank = 1>
 class ConstantFunction : public FormulaFunction<dim, codim, range, rank>
 {
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
     using parent_t = FormulaFunction<dim, codim, range, rank>;
     using self_t = ConstantFunction<dim, codim, range, rank>;
     using typename base_t::GridType;
@@ -86,7 +86,7 @@ class LinearFunction : public FormulaFunction<dim, codim, range, 1>
 {
 
 public:
-    using base_t = NewFunction<dim, codim, range, 1>;
+    using base_t = Function<dim, codim, range, 1>;
     using parent_t = FormulaFunction<dim, codim, range, 1>;
     using self_t = LinearFunction<dim, codim, range>;
     using typename base_t::GridType;
@@ -152,7 +152,7 @@ template<int dim>
 class BallFunction : public FormulaFunction<dim, 0, dim, 1>
 {
 private:
-    using base_t = NewFunction<dim, 0, dim, 1>;
+    using base_t = Function<dim, 0, dim, 1>;
     using parent_t = FormulaFunction<dim, 0, dim, 1>;
     using self_t = BallFunction<dim>;
     using typename base_t::GridType;
@@ -217,7 +217,7 @@ class SphereFunction : public FormulaFunction<dim, 0, dim+1, 1>
 {
 private:
     static const int space_dim = dim + 1;
-    using base_t = NewFunction<dim, 0, dim+1, 1>;
+    using base_t = Function<dim, 0, dim+1, 1>;
     using parent_t = FormulaFunction<dim, 0, dim+1, 1>;
     using self_t = SphereFunction<dim>;
     using typename base_t::GridType;
@@ -297,7 +297,7 @@ template<int dim>
 class CylindricalAnnulus : public FormulaFunction<dim, 0, dim, 1>
 {
 private:
-    using base_t = NewFunction<dim, 0, dim, 1>;
+    using base_t = Function<dim, 0, dim, 1>;
     using parent_t = FormulaFunction<dim, 0, dim, 1>;
     using self_t = CylindricalAnnulus;
     using typename base_t::GridType;

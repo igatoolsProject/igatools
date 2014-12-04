@@ -34,9 +34,9 @@
 
 
 template<int dim, int codim, int range>
-void test(NewFunction<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
+void test(Function<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 {
-    using ElementIterator = typename  NewFunction<dim, codim, range>::ElementIterator;
+    using ElementIterator = typename  Function<dim, codim, range>::ElementIterator;
     ElementIterator elem(grid, 0);
     ElementIterator end(grid, IteratorState::pass_the_end);
 

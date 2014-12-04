@@ -62,11 +62,11 @@ template <int, int, int, int> class FunctionElement;
  * Function Class
  */
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-class NewFunction : public GridElementHandler<dim>
+class Function : public GridElementHandler<dim>
 {
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
-    using self_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
+    using self_t = Function<dim, codim, range, rank>;
     using parent_t = GridElementHandler<dim>;
 
 public:
@@ -123,13 +123,13 @@ public:
     /** @name Constructors and destructor. */
     ///@{
     /** Constructor */
-    NewFunction(std::shared_ptr<GridType> grid);
+    Function(std::shared_ptr<GridType> grid);
 
     /** Destructor */
-    virtual ~NewFunction() = default;
+    virtual ~Function() = default;
     ///@}
 
-    NewFunction(const self_t &) = default;
+    Function(const self_t &) = default;
 
     virtual std::shared_ptr<base_t> clone() const
     {
@@ -257,7 +257,7 @@ protected:
 
 
 template<int dim, int space_dim>
-using MapFunction = NewFunction<dim, 0, space_dim, 1>;
+using MapFunction = Function<dim, 0, space_dim, 1>;
 
 IGA_NAMESPACE_CLOSE
 

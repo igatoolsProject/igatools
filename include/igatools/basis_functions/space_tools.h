@@ -198,13 +198,13 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-Real integrate_difference(NewFunction<dim, codim, range, rank> &f,
-                          NewFunction<dim, codim, range, rank> &g,
+Real integrate_difference(Function<dim, codim, range, rank> &f,
+                          Function<dim, codim, range, rank> &g,
                           const Quadrature<dim> &quad,
                           const Norm &norm_flag,
                           vector<Real> &element_error)
 {
-    using Func = NewFunction<dim, codim, range, rank>;
+    using Func = Function<dim, codim, range, rank>;
 
     bool is_L2_norm     = contains(norm_flag, Norm::L2);
     bool is_H1_norm     = contains(norm_flag, Norm::H1);

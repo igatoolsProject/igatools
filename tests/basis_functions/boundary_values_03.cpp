@@ -42,7 +42,7 @@ template<int dim>
 class XProject : public FormulaFunction<dim>
 {
 private:
-    using base_t = NewFunction<dim>;
+    using base_t = Function<dim>;
     using parent_t = FormulaFunction<dim>;
     using self_t = XProject<dim>;
     using typename base_t::GridType;

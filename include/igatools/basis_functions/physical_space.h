@@ -85,7 +85,7 @@ public:
     using BCTable = typename RefSpace::BCTable;
 
 public:
-    using Func = NewFunction<dim, codim, range, rank>;
+    using Func = Function<dim, codim, range, rank>;
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
     using Point = typename Func::Point;
@@ -262,7 +262,7 @@ public:
 
 private:
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                     std::shared_ptr<MapFunc>  map_func);
+                  std::shared_ptr<MapFunc>  map_func);
 
 
     std::shared_ptr<RefSpace> ref_space_;

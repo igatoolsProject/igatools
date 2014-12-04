@@ -34,7 +34,7 @@
 
 
 template<int dim, int codim, int range>
-void values_of_F(NewFunction<dim, codim, range> &F)
+void values_of_F(Function<dim, codim, range> &F)
 {
     auto elem = F.begin();
     auto end  = F.end();

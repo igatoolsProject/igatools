@@ -45,14 +45,14 @@ test()
     using ScalarFunc = functions::ConstantFunction<dim,0,1,1>;
     using ScalarValue = typename ScalarFunc::Value;
     ScalarValue scalar_value({1.0});
-    shared_ptr<const NewFunction<dim,0,1,1>> scalar_function = ScalarFunc::create(grid,identity_function,scalar_value);
+    shared_ptr<const Function<dim,0,1,1>> scalar_function = ScalarFunc::create(grid,identity_function,scalar_value);
 
     using VectorFunc = functions::ConstantFunction<dim,0,dim,1>;
     using VectorValue = typename VectorFunc::Value;
     VectorValue vector_value;
     for (int i = 0 ; i < dim ; ++i)
         vector_value[i] = i;
-    shared_ptr<const NewFunction<dim,0,dim,1>> vector_function = VectorFunc::create(grid,identity_function,vector_value);
+    shared_ptr<const Function<dim,0,dim,1>> vector_function = VectorFunc::create(grid,identity_function,vector_value);
 
 #if 0
     using TensorFunc = functions::ConstantFunction<dim,0,dim,2>;
@@ -61,7 +61,7 @@ test()
     for (int i = 0 ; i < dim ; ++i)
         for (int j = 0 ; j < dim ; ++j)
             tensor_value[i][j] = i*dim + j;
-    shared_ptr<const NewFunction<dim,0,dim,2>> tensor_function = TensorFunc::create(grid,identity_function,tensor_value);
+    shared_ptr<const Function<dim,0,dim,2>> tensor_function = TensorFunc::create(grid,identity_function,tensor_value);
 #endif
 
     vector<Real> cell_data(grid->get_num_active_elems());

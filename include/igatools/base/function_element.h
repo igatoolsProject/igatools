@@ -30,7 +30,7 @@ template<int dim, int codim, int range = 1, int rank = 1>
 class FunctionElement : public CartesianGridElement<dim>
 {
 public:
-    using Func = NewFunction<dim, codim, range, rank>;
+    using Func = Function<dim, codim, range, rank>;
     using Point = typename Func::Point;
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
@@ -138,7 +138,7 @@ public:
     using CacheType = LocalCache;
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewFunction<dim, codim, range, rank>;
+    friend class Function<dim, codim, range, rank>;
 };
 
 IGA_NAMESPACE_CLOSE

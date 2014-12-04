@@ -66,7 +66,7 @@ public:
 
 
 
-    using Func = NewFunction<dim, 0, range, rank>;
+    using Func = Function<dim, 0, range, rank>;
 
 public:
     template <int order>

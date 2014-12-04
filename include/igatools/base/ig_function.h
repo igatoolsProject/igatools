@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 class IgFunction :
-    public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
+    public Function<Space::dim, Space::codim, Space::range, Space::rank>
 {
 public:
     static const int dim = Space::dim;
@@ -39,8 +39,8 @@ public:
     using CoeffType = vector<Real>;
 
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
-    using parent_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
+    using parent_t = Function<dim, codim, range, rank>;
     using self_t = IgFunction<Space>;
 
 public:

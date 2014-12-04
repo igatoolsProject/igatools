@@ -24,8 +24,8 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank >
-NewFunction<dim, codim, range, rank >::
-NewFunction(std::shared_ptr<GridType> grid)
+Function<dim, codim, range, rank >::
+Function(std::shared_ptr<GridType> grid)
     :
     GridElementHandler<dim>(grid)
 {}
@@ -34,7 +34,7 @@ NewFunction(std::shared_ptr<GridType> grid)
 
 template<int dim, int codim, int range, int rank>
 auto
-NewFunction<dim, codim, range, rank >::
+Function<dim, codim, range, rank >::
 get_cache(ElementAccessor &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {

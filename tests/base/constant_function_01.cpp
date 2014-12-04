@@ -35,7 +35,7 @@ using namespace functions;
 
 template<int dim, int codim, int range, int rank>
 void
-test(shared_ptr<NewFunction<dim,codim, range,rank>> F)
+test(shared_ptr<Function<dim,codim, range,rank>> F)
 {
     auto elem = F->begin();
     auto end  = F->end();

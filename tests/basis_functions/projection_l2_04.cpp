@@ -45,7 +45,7 @@ template <int dim, int range, int rank>
 class TestFunc : public FormulaFunction<dim, 0, range, rank>
 {
 private:
-    using base_t   = NewFunction<dim, 0, range, rank>;
+    using base_t   = Function<dim, 0, range, rank>;
     using parent_t = FormulaFunction<dim, 0, range, rank>;
     using self_t = TestFunc<dim, range, rank>;
     using typename base_t::GridType;

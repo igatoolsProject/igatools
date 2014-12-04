@@ -30,7 +30,7 @@
 int main()
 {
     {
-        typedef NewFunction< 1, 0, 1, 1 > Func ;
+        typedef Function< 1, 0, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 1, 1, 0 >::Value" << endl ;
         Func::Value v ;
@@ -56,7 +56,7 @@ int main()
 
 
     {
-        typedef NewFunction< 2, 0, 1, 1 > Func ;
+        typedef Function< 2, 0, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 2, 1, 0 >::Value" << endl ;
         Func::Value v ;
@@ -84,7 +84,7 @@ int main()
 
 
     {
-        typedef NewFunction< 2, 0, 2, 1 > Func ;
+        typedef Function< 2, 0, 2, 1 > Func ;
 
         out << "FunctionWithGradient< 2, 2, 1 >::Value" << endl ;
         Func::Value v ;
@@ -114,7 +114,7 @@ int main()
     }
 
     {
-        typedef NewFunction< 2, 0, 2, 2 > Func ;
+        typedef Function< 2, 0, 2, 2 > Func ;
 
         out << "FunctionWithGradient< 2, 2, 2 >::Value" << endl ;
         Func::Value v ;
@@ -150,7 +150,7 @@ int main()
     }
 
     {
-        typedef NewFunction< 3, 0, 1, 1 > Func ;
+        typedef Function< 3, 0, 1, 1 > Func ;
 
         out << "FunctionWithGradient< 3, 1, 0 >::Value" << endl ;
         Func::Value v ;
@@ -180,7 +180,7 @@ int main()
 
 
     {
-        typedef NewFunction< 3, 0, 3, 1 > Func ;
+        typedef Function< 3, 0, 3, 1 > Func ;
 
         out << "FunctionWithGradient< 3, 3, 0 >::Value" << endl ;
         Func::Value v ;
@@ -218,7 +218,7 @@ int main()
 
 
     {
-        typedef NewFunction< 3, 0, 3, 2 > Func ;
+        typedef Function< 3, 0, 3, 2 > Func ;
 
         out << "FunctionWithGradient< 3, 3, 2 >::Value" << endl ;
         Func::Value v ;

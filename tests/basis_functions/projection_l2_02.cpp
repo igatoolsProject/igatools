@@ -48,7 +48,7 @@ template<int dim>
 class BoundaryFunction : public FormulaFunction<dim>
 {
 private:
-    using base_t = NewFunction<dim>;
+    using base_t = Function<dim>;
     using parent_t = FormulaFunction<dim>;
     using self_t = BoundaryFunction<dim>;
     using typename base_t::GridType;

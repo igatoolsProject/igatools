@@ -139,7 +139,7 @@ public:
      * \brief Add a field to the output file.
      */
     template<int range, int rank>
-    void add_field(std::shared_ptr<const NewFunction<dim, codim, range, rank>> func,
+    void add_field(std::shared_ptr<const Function<dim, codim, range, rank>> func,
                    const std::string &name);
 
 
@@ -344,7 +344,7 @@ template<int range, int rank>
 inline
 void
 Writer<dim, codim, T>::
-add_field(shared_ptr<const NewFunction<dim, codim, range, rank>> function,
+add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
           const string &name)
 {
     Assert(function != nullptr, ExcNullPtr());

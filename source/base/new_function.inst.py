@@ -28,7 +28,7 @@ data = Instantiation(include_files)
 
 for row in inst.all_function_dims:
     dims = '<%d, %d, %d, %d>' %(row.dim, row.codim, row.range, row.rank)
-    s = 'template class NewFunction%s ;\n' %(dims)
+    s = 'template class Function%s ;\n' %(dims)
     f.write(s)
     s = 'template class FunctionElement%s ;\n' %(dims)
     f.write(s)

@@ -29,7 +29,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/space_element_handler.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
