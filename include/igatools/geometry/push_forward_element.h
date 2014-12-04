@@ -21,7 +21,7 @@
 #ifndef NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
@@ -34,7 +34,7 @@ class PushForwardElement
 private:
     using self_t  = PushForwardElement<type_, dim_, codim_>;
     using parent_t = MappingElement<dim_, codim_>;
-    using PF      = NewPushForward<type_, dim_, codim_>;
+    using PF      = PushForward<type_, dim_, codim_>;
 public:
 
     using parent_t::dim;
@@ -159,7 +159,7 @@ public:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewPushForward<type_, dim_, codim_>;
+    friend class PushForward<type_, dim_, codim_>;
 
 };
 

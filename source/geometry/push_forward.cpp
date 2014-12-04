@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 
 
 using std::array;
@@ -119,8 +119,8 @@ pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags
 
 
 template<Transformation type, int dim, int codim>
-NewPushForward<type, dim, codim>::
-NewPushForward(std::shared_ptr<FuncType> F)
+PushForward<type, dim, codim>::
+PushForward(std::shared_ptr<FuncType> F)
     :
     MapType(F)
 {}
@@ -130,7 +130,7 @@ NewPushForward(std::shared_ptr<FuncType> F)
 template<Transformation type, int dim, int codim>
 template<int k>
 auto
-NewPushForward<type, dim, codim>::
+PushForward<type, dim, codim>::
 reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
 {
     MapType::template reset<k>(pushforward_to_mapping_flag(type, flag), quad);

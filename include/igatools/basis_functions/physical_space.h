@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/grid_forward_iterator.h>
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
@@ -55,7 +55,7 @@ private:
 public:
     ///@{
     /** see documentation in \ref FunctionSpaceOnGrid */
-    using PushForwardType = NewPushForward<type_, RefSpace_::dim, codim_>;
+    using PushForwardType = PushForward<type_, RefSpace_::dim, codim_>;
 
     using RefSpace = RefSpace_;
 

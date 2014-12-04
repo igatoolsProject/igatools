@@ -36,10 +36,10 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
 template <Transformation, int, int> class PushForwardElement;
 
 template<Transformation type_, int dim_, int codim_ = 0>
-class NewPushForward : public Mapping<dim_, codim_>
+class PushForward : public Mapping<dim_, codim_>
 {
 private:
-    using self_t = NewPushForward<type_, dim_, codim_>;
+    using self_t = PushForward<type_, dim_, codim_>;
     using MapType = Mapping<dim_, codim_>;
     using typename MapType::FuncType;
 public:
@@ -71,9 +71,9 @@ public:
 
 public:
 
-    NewPushForward(std::shared_ptr<FuncType> F);
+    PushForward(std::shared_ptr<FuncType> F);
 
-    ~NewPushForward() = default;
+    ~PushForward() = default;
 
     template<int k>
     void reset(const NewValueFlags flag, const Quadrature<k> &quad);

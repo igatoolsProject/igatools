@@ -29,7 +29,7 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/push_forward_element.h>
 #include <igatools/geometry/mapping_element.h>
 
@@ -43,7 +43,7 @@ void test()
 {
     const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
-    using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
+    using PForward  = PushForward<Transformation::h_grad, dim, codim>;
 
     typename Function::Value    b;
     typename Function::Gradient A;

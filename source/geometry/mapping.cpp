@@ -195,5 +195,5 @@ init_cache(ElementAccessor &elem) -> void
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/new_mapping.inst>
+#include <igatools/geometry/mapping.inst>
 

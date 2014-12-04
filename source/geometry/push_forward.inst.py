@@ -28,11 +28,11 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 sub_dim_members = \
-['void NewPushForward<Transformation::h_grad,dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
+['void PushForward<Transformation::h_grad,dim,cod>::reset<k>(const NewValueFlags flag, const Quadrature<k> &quad);']
 
 for x in inst.sub_mapping_dims:
     dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
-    s = 'template class NewPushForward%s ;\n' %(dims)
+    s = 'template class PushForward%s ;\n' %(dims)
     f.write(s)
     s = 'template class PushForwardElement%s ;\n' %(dims)
     f.write(s)
@@ -45,7 +45,7 @@ for x in inst.sub_mapping_dims:
 
 for x in inst.mapping_dims:
     dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
-    s = 'template class NewPushForward%s ;\n' %(dims)
+    s = 'template class PushForward%s ;\n' %(dims)
     f.write(s)
     s = 'template class PushForwardElement%s ;\n' %(dims)
     f.write(s)
