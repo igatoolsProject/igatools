@@ -117,7 +117,7 @@ void StokesProblem<dim>::assemble_Bt()
 
     out << endl;
     out << "B^t matrix" << endl;
-    Bt_->print(out);
+    Bt_->print_info(out);
     out << endl;
 
 }
